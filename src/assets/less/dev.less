@@ -1,0 +1,137 @@
+@paddingLeft: 200px;
+
+body.dev {
+  margin-left: @paddingLeft;
+  // padding-right: 10px;
+  // padding-top: 50px;
+  overflow-x: hidden;
+  position: relative;
+  width: calc(100vw - 200px);
+  transition: all .4s ease;
+}
+
+.p-development {
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 1;
+  // 开发菜单
+  .m-devMenu {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: @paddingLeft;
+    transition: left .4s ease;
+    >.ant-menu {
+      height: calc(100vh - 50px);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    >.devOpts {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0px;
+      background: #f8f8f8;
+      .cell {
+        line-height: 50px;
+        padding: 0 10px;
+        border-right: 1px solid #ddd;
+        border-top: 1px solid #ddd;
+        cursor: pointer;
+        .anticon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+    }
+  }
+  // 面包屑
+  .m-devBreadNav {
+    position: fixed;
+    top: 0; right: 0;
+    left: @paddingLeft;
+    line-height: 40px;
+    height: 40px;
+    padding-left: 10px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    transition: left .4s ease;
+    .toggleMenu {
+      float: left;
+      margin-right: 10px;
+    }
+    .nav {
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      li {
+        float: left;
+        color: #999;
+        margin-right: 10px;
+        .anticon {
+          margin-left: 5px;
+          font-size: 12px;
+        }
+      }
+      li:last-child {
+        color: #666;
+        .anticon {
+          display: none;
+        }
+      }
+    }
+    >.right {
+      position: absolute;
+      right: 0; top: 0;
+      padding-right: 10px;
+    }
+  }
+}
+
+body.dev {
+  // 登录页面
+  .m-devLogin {
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 100px;
+  }
+}
+
+// 关闭菜单
+body.dev.closeMenu {
+  margin-left: 0;
+  width: 100%;
+  .p-development {
+    .m-devMenu {
+      left: -200px;
+    }
+  }
+  .m-devBreadNav {
+    left: 0;
+  }
+}
+
+.ant-drawer-left.dev {
+  left: 0;
+}
+
+// 开发环境设置
+body.dev .p-devOpts {
+  .item {
+    overflow: hidden;
+    line-height: 40px;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+      border-bottom: none;
+    }
+    .label {
+      float: left;
+    }
+    .tool {
+      float: right;
+    }
+  }
+}

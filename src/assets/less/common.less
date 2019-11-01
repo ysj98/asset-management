@@ -1,0 +1,129 @@
+/*通用动画部分*/
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+@keyframes slideInRight {
+  from {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+.slideInRight {
+  -webkit-animation-name: slideInRight;
+  animation-name: slideInRight;
+}
+@keyframes slideOutLeft {
+  from {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+.slideOutLeft {
+  -webkit-animation-name: slideOutLeft;
+  animation-name: slideOutLeft;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fadeOut {
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
+}
+/**页面高度控制*/
+.router-view>div{
+  min-height: -webkit-calc(~"100vh - 40px");
+  min-height: -moz-calc(~"100vh - 40px");
+  min-height: calc(~"100vh - 40px");
+  position: relative;
+}
+/*滚动条样式*/
+::-webkit-scrollbar{
+  background-color: #fff;
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(232,232,232,0.8);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(232,232,232,1);
+}
+::-webkit-scrollbar-button {
+  background-color: transparent;
+  height: 0;
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+::-webkit-scrollbar-arrow-color {
+  background-color: transparent;
+}
+// 连接到详情页数据
+.nav_name{
+  color: #1890FF;
+  text-decoration: underline;
+  cursor: pointer;
+}
+// 按钮点击
+.btn_click{
+  color:#0084FF;
+  cursor: pointer;
+}
+// 下载按钮
+.down_btn{
+  color: #959DAB;
+  text-decoration:underline;
+  cursor: pointer;
+  &:hover{
+    color: #0084FF;
+  }
+}
+// 弹窗底部样式
+.dialog-footer{
+  background: #fafafa;
+  text-align: center;
+  padding: 19px 30px;
+  border-radius: 0 0 8px 8px;
+  border-top: 1px solid #e8e8e8;
+}
+// 必填
+.must-write{
+  color: #FB7474;
+  font-size: 16px;
+}
