@@ -372,3 +372,26 @@ label{
   border-right: 1px solid rgba(239,244,249,1);
   border-bottom: 1px solid rgba(239,244,249,1);
 }
+
+// 标签页修改样式
+.custom-tabs {
+  .ant-tabs {
+    margin-top: 30px;
+    .ant-tabs-nav {
+      margin-left: 30px;
+    }
+    &.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab  {
+      background: #fff;
+      line-height: 30px;
+      font-size: 12px;
+    }
+    &.ant-tabs-card .ant-tabs-card-bar .ant-tabs-nav-container {
+      height: 32px;
+    }
+    &.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+      color: #fff;
+      border-color: #0084FF;
+      background: #0084FF;
+    }
+  }
+}

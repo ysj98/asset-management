@@ -1,6 +1,11 @@
 <template>
   <div class="wrapper">
-    资产信息管理 
+    <div class="custom-tabs">
+      <a-tabs @change="callback" type="card" :tabBarGutter="10">
+        <a-tab-pane tab="资产变动登记" key="1">资产变动登记</a-tab-pane>
+        <a-tab-pane tab="资产变动一览表" key="2">资产变动一览表</a-tab-pane>
+      </a-tabs>
+    </div>
   </div>
 </template>
 
@@ -15,6 +20,9 @@ export default {
   computed: {
   },
   methods: {
+    callback(key) {
+      console.log(key);
+    }
   },
   created () {
   },
@@ -24,3 +32,4 @@ export default {
 </script>
 <style lang="less" scoped>
 </style>
+ 
