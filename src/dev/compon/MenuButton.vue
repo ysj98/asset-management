@@ -73,7 +73,7 @@ export default {
   methods: {
     // open gitlab project url
     openGitlab () {
-      window.open('http://192.168.1.6:9200/web-sys/data-report')
+      window.open('http://192.168.1.6:9200/web-sys/asset-management')
     },
     // open ant vue docs
     openAntDocs () {
@@ -81,7 +81,7 @@ export default {
     },
     // open lanhu Ui
     openLanhu () {
-      window.open('https://lanhuapp.com/url/m8pFJ-lFALs')
+      window.open('https://lanhuapp.com/web/#/item/project/board?pid=40bdae3a-630a-46bd-a38e-993a6b8ea422&teamId=d22c4265-5e0a-42cc-b87b-c861a865c661')
     },
     openUi () {
       window.open('http://sgui.rxshc.com/segi-ant/index.html#/comlist/sg-button?tdsourcetag=s_pctim_aiomsg')
