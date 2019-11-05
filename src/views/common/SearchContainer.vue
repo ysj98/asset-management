@@ -2,31 +2,29 @@
 <template>
   <div class="search-box">
     <!-- header -->
-    <div class='search-header'>
+    <div class='search-header' :style="headerStyle">
       <div class='search-header-left'>
         <slot name="headerBtns"></slot>
       </div>
       <div class='search-header-right'>
         <slot name="headerForm"></slot>
       </div>
-      <div class="search-icon-box" v-if="type==='fold'">
+      <div class="search-icon-box" v-if="type==='fold'" @click="toggleFold">
         <slot name="toggleIcon">
-          <i class="search-icon" :class="[value&&'active']"><a-icon type="double-right" /></i>
+          <a-icon class="search-icon" :class="[value&&'active']" type="double-right" />
         </slot>
       </div>
     </div>
     <!-- content -->
-    <div class="search-content">
+    <div class="search-content" :style="contentStyle" :class="[!value&&'off-content']">
       <!-- 图标 -->
-      <div class="content-icon">
+      <div class="content-icon" :style="searchIconStyle">
         <slot name="searchIcon">
-          <i>
-
-          </i>
+          <i class="search-icon"></i>
         </slot>
       </div>
       <!-- 搜索内容 -->
-      <div>
+      <div class="content-form">
         <slot name="contentForm"></slot>
       </div>
     </div>
@@ -45,6 +43,9 @@ export default {
       default: () =>({})
     },
     contentStyle: {
+      default: () => ({})
+    },
+    searchIconStyle: {
       default: () => ({})
     }
   },
@@ -68,9 +69,10 @@ export default {
       justify-content: space-between;
       border-bottom: 1px solid rgba(239,244,249,1);
       .search-header-left{
-        flex: 1;
+        // flex: 1;
       }
       .search-header-right{
+        text-align: right;
         flex: 1;
       }
       .search-icon-box{
@@ -83,11 +85,41 @@ export default {
         position: relative;
         cursor: pointer;
         .search-icon{
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%) rotate(90deg);
+          transform-origin: center center;
           transition: transform .2s ease;
-          .active{
+          cursor: pointer;
+          &.active{
             transform: translate(-50%, -50%) rotate(-90deg);
           }
         }
+      }
+    }
+    .search-content{
+      padding: 30px 20px 30px 0px;
+      display: flex;
+      transition: all .2s ease;
+      overflow: hidden;
+      &.off-content{
+        height: 0;
+        padding: 0;
+      }
+      .content-icon{
+        padding:0 70px 0 76px;
+        .search-icon{
+          display: inline-block;
+          width: 106px;
+          height: 76px;
+          background-image: url('../../assets/image/icon/search-icon.png');
+          background-size: 100% 100%;
+        }
+      }
+      .content-form{
+        flex: 1;
+        text-align: right;
       }
     }
   }
