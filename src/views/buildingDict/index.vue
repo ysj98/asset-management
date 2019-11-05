@@ -14,7 +14,14 @@
     </SG-SearchContainer>
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary">新增</SG-Button><SG-Button icon="plus" type="primary">新增</SG-Button><SG-Button icon="plus" type="primary">新增</SG-Button><SG-Button icon="plus" type="primary">新增</SG-Button>
+        <SG-Button icon="plus" type="primary">新增</SG-Button>
+        <SG-Button icon="plus" type="primary">新增</SG-Button>
+        <SG-Button icon="plus" type="primary">新增</SG-Button>
+        <SG-Button icon="plus" type="primary">新增</SG-Button>
+      </div>
+      <div slot="headerForm">
+        <a-input placeholder="default size" />
+        <a-input placeholder="default size" />
       </div>
     </SearchContainer>
   </div>

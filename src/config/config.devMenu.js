@@ -11,6 +11,10 @@ export default [
         title: '楼盘字典',
         path: '/buildingDict'
       },
+      {
+        title: '资产变动',
+        path: '/assetChange'
+      }
     ]
   },
   {
