@@ -8,8 +8,8 @@ export default [
     title: '业务菜单',
     children: [
       {
-        title: '用户管理',
-        path: '/user'
+        title: '楼盘字典',
+        path: '/buildingDict'
       },
     ]
   },

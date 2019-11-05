@@ -4,10 +4,9 @@
 
 let proRouter = [
   {
-    path: '/user',
-    name: '用户列表',
-    component: () => import('@/views/user/index.vue')
+    path: '/buildingDict',
+    name: '楼盘字典',
+    component: () => import('@/views/buildingDict/index.vue')
   },
-
 ]
 export default proRouter
