@@ -73,7 +73,7 @@ export default {
   methods: {
     // open gitlab project url
     openGitlab () {
-      window.open('http://192.168.1.6:9200/web-sys/data-report')
+      window.open('http://192.168.1.6:9200/web-sys/asset-management')
     },
     // open ant vue docs
     openAntDocs () {

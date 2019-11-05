@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import proBreadNav from '@/views/common/proBreadNav'
+import proBreadNav from '@/components/proBreadNav'
 export default {
   components: {
     proBreadNav
