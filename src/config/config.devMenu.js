@@ -11,6 +11,10 @@ export default [
         title: '用户管理',
         path: '/user'
       },
+      {
+        title: '资产变动',
+        path: '/assetChange'
+      }
     ]
   },
   {
