@@ -2,7 +2,7 @@
   资产变动
 -->
 <template>
-  <div class="wrapper">
+  <div class="assetChange">
     <div class="custom-tabs">
       <a-tabs @change="callback" type="card" :tabBarGutter="10">
         <a-tab-pane tab="资产变动登记" key="1">

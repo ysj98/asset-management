@@ -15,7 +15,7 @@ export const User = {
   // 获取菜单数据
   menus: '/uhomecp-sso//v3/propertyUser/menus',
   // 获取权限数据
-  popedomCode: '/uhomecp-sso/v3/propertyUser/popedomCode'
+  popedomCode: '/uhomecp-sso/v3/propertyUser/popedomCode',
 }
 
 export const Global = {
@@ -36,5 +36,7 @@ export const assets = {
   project: {
     // 图片预览地址
     getProject: '/getProject',
+    // 异步组织机构树 组织机构管理 POST
+    queryAsynOrganByUserId: '/basic-data-api/rest-api/v1/organApi/queryAsynOrganByUserId'
   }
 }

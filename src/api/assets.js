@@ -14,3 +14,8 @@ import { assets } from '../config/config.url'
 //     responseType: 'blob'
 //   })
 // }
+
+// 组织机构树
+export function queryAsynOrganByUserId (data) {
+  return axiosPost(assets.project.queryAsynOrganByUserId, data, false, false)
+}
