@@ -84,6 +84,10 @@ export default {
         border-radius: 4px;
         position: relative;
         cursor: pointer;
+        &:hover{
+          color: #299fff;
+          border-color: #299fff;
+        }
         .search-icon{
           position: absolute;
           left: 50%;

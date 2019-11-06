@@ -7,10 +7,12 @@
 import * as auth from './auth'
 import * as global from './global'
 import * as assets from './assets'
+import * as basics from './basics'
 const API = {
   auth,
   global,
-  assets
+  assets,
+  basics
 }
 
 export default {
