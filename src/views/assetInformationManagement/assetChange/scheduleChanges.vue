@@ -2,7 +2,7 @@
   资产变动一览表
 -->
 <template>
-  <div class="assetsRegistration">
+  <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn">
       <div slot="headerBtns">
         <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button> -->
@@ -46,7 +46,7 @@
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
-        class="custom-table"
+        class="custom-table td-pd10"
         :pagination="false"
         >
         <!-- <template slot="operation" slot-scope="text, record">
@@ -297,7 +297,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.assetsRegistration {
+.scheduleChanges {
   .from-second {
     padding-top: 14px;
   }
