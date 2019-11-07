@@ -1,4 +1,8 @@
-<!-- 楼盘字典 -->
+<!--
+ * @Date: 2019-11-05 10:55:52
+ * @Author: chen han
+ * @Description: 楼盘字典首页
+ -->
 <template>
   <div class="buildingDict-page">
     <div class="custom-tabs">
@@ -33,3 +37,9 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+  .buildingDict-page{
+    position: relative;
+    padding-bottom: 60px;
+  }
+</style>

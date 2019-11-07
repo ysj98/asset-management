@@ -1,6 +1,10 @@
-<!--房间信息-->
+<!--
+ * @Date: 2019-11-05 16:16:34
+ * @Author: chen han
+ * @Description: 房间信息
+ -->
 <template>
-  <div class="houseInfo-page">
+  <div class="houseInfo-page pb70">
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
         <SG-Button class="mr10" icon="plus" type="primary">新增</SG-Button>
@@ -48,8 +52,8 @@
           :filterOption="filterOption"
           notFoundContent="没有查询到数据"
          />
-         <SG-Button class="mr10" type="primary">查询</SG-Button>
-         <SG-Button>清除</SG-Button>
+         <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+         <SG-Button @click="restQuery">清除</SG-Button>
         </div>
         <div class="two-row">
           <!-- 房屋建筑形态 -->
@@ -92,28 +96,53 @@
           <a-select
             showSearch
             placeholder="请输入房间状态"
-            v-model="queryCondition.houseStatus"
+            v-model="queryCondition.status"
             optionFilterProp="children"
             :style="allWidth"
-            :options="houseStatusOpt"
+            :options="statusOpt"
             :allowClear="false"
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
         </div>
-        <div>
-
-        </div>
       </div>
     </SearchContainer>
+    <!-- 表格部分 -->
+    <div class="table-layout-fixed">
+      <a-table
+        class="custom-table td-pd10"
+        :loading="table.loading"
+        :pagination="false"
+        :columns="table.columns"
+        :dataSource="table.dataSource"
+        :locale="{emptyText: '暂无数据'}"
+        >
+        <template slot="operation" slot-scope="text, record">
+            <OperationPopover :operationData="operationData"  @operationFun="operationFun($event, record)"></OperationPopover>
+          </template>
+      </a-table>
+      <SG-FooterPagination
+        :pageSize="queryCondition.pageSize"
+        :totalCount="table.totalCount"
+        location="absolute"
+        v-model="queryCondition.pageNum"
+        @change="handleChange"
+      />
+    </div>
   </div>
 </template>
 <script>
 import SearchContainer from '@/views/common/SearchContainer'
 import segiIcon from '@/components/segiIcon.vue'
 import topOrganByUser from '@/views/common/topOrganByUser'
+import {utils} from '@/utils/utils'
+import OperationPopover from '@/components/OperationPopover'
+
+let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px'}
 let queryCondition = {
+  pageNum: 1,
+  pageSize: 10,
   organId: '',
   buildId: '',
   unitId: '',
@@ -121,36 +150,137 @@ let queryCondition = {
   houseCategory: '', //建筑形态
   houseType: '', //房间类型
   resType: '', // 房间用途
-  houseStatus: '', // 房间状态
+  status: '', // 房间状态
 }
+const buildOpt = [{label: '全部楼栋', value: ''}]
+const unitOpt = [{label: '全部单元', value: ''}]
+const houseOpt = [{label: '全部房号', value: ''}]
+const houseCategoryOpt = [{label: '所有建筑形态', value: ''}]
+const houseTypeOpt = [{label: '全部房间类型', value: ''}]
+const resTypeOpt = [{label: '全部房间用途', value: ''}]
+const statusOpt = [{label: '全部状态', value: ''}, {label: '有效', value: '1'}, {label: '无效', value: '0'}]
+// 表格数据
+let columns = [{
+  title: '房间ID',
+  dataIndex: 'houseId',
+  width: '15%'
+}, {
+  title: '房间名称',
+  dataIndex: 'houseName',
+  scopedSlots: { customRender: 'houseName' }
+}, {
+  title: '房间类型',
+  dataIndex: 'houseTypeName',
+  width: '15%'
+}, {
+  title: '建筑面积(㎡)',
+  dataIndex: 'area',
+  width: '15%'
+}, {
+  title: '套内面积(㎡)',
+  dataIndex: 'billArea',
+  width: '15%'
+}, {
+  title: '房间状态',
+  dataIndex: 'houseStatusName',
+  width: '10%'
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  scopedSlots: { customRender: 'operation' },
+  width: '124px'
+}]
+// 操作按钮
+const operationData = [
+  {iconType: 'edit', text: '编辑', editType: 'edit'},
+  {iconType: 'play-circle', text: '启用', editType: 'on'},
+  {iconType: 'close-circle', text: '禁用', editType: 'off'},
+  {iconType: 'file-text', text: '详情', editType: 'detail'},
+  {iconType: 'copy', text: '复制', editType: 'copy'},
+]
 export default {
   components: {
     SearchContainer,
     segiIcon,
-    topOrganByUser
+    topOrganByUser,
+    OperationPopover
   },
   data () {
     return {
       allWidth,
       toggle: true,
+      operationData,
       queryCondition: {...queryCondition},
-      organIdOpt: [],
-      buildOpt: [],
-      unitOpt: [],
-      houseOpt: [],
-      houseCategoryOpt: [],
-      houseTypeOpt: [],
-      resTypeOpt: [],
-      houseStatusOpt: [],
+      buildOpt: utils.deepClone(buildOpt),
+      unitOpt: utils.deepClone(unitOpt),
+      houseOpt: utils.deepClone(houseOpt),
+      houseCategoryOpt: utils.deepClone(houseCategoryOpt),
+      houseTypeOpt: utils.deepClone(houseTypeOpt),
+      resTypeOpt: utils.deepClone(resTypeOpt),
+      statusOpt: utils.deepClone(statusOpt),
+      table: {
+        columns,
+        dataSource: [],
+        loading: false,
+        totalCount: 0
+      }
     }
   },
   methods: {
+    // 查询房屋列表
     query () {
-      
+      let data = {
+        ...this.queryCondition
+      }
+      this.$api.building.queryHouseByPage(data).then(res => {
+        if (res.data.code === '0') {
+          this.table.dataSource = res.data.data.data.map(item => {
+            return {
+              key: getUuid(),
+              ...item
+            }
+          })
+          this.table.totalCount = res.data.data.count || '' 
+        }
+      })
+    },
+    // 重置分页查询
+    searchQuery () {
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
+    // 重置查询条件
+    restQuery () {
+      let queryCondition = {
+          buildId: '',
+          unitId: '',
+          houseId: '',
+          houseCategory: '', //建筑形态
+          houseType: '', //房间类型
+          resType: '', // 房间用途
+          status: '', // 房间状态
+        }
+      this.queryCondition.buildId = ''
+      this.queryCondition.unitId = ''
+      this.queryCondition.houseId = ''
+      this.queryCondition.houseCategory = ''
+      this.queryCondition.houseType = ''
+      this.queryCondition.resType = ''
+      this.queryCondition.status = ''
     },
     // orangId改变
     organIdChange (o) {
       console.log('一级物业改变', o)
+      this.searchQuery()
+    },
+    // 操作事件函数
+    operationFun (type, record) {
+      console.log('操作事件', type, record)
+    },
+    handleChange (data) {
+      this.queryCondition.pageNum = data.pageNum
+      this.queryCondition.pageSize = data.pageSize
+      this.query()
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -159,9 +289,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .two-row{
-    margin-top: 14px;
-    text-align: right;
-    padding-right: 190px;
-  }
+.two-row{
+  margin-top: 14px;
+  text-align: right;
+  padding-right: 190px;
+}
 </style>

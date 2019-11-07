@@ -1,8 +1,8 @@
 <!--
- 一级物业选择框 organId
- v-model
- @change
--->
+ * @Date: 2019-11-06 10:30:14
+ * @Author: chen han
+ * @Description: 一级物业选择框
+ -->
 <template>
     <a-select
       :defaultValue="selectValue === '' ? undefined : selectValue"
@@ -31,6 +31,7 @@ export default {
     formStyle: {
       default: () => ({})
     },
+    // 绑定的organId
     value: {
       type: [Number, String],
       default: ''

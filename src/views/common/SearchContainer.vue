@@ -1,8 +1,12 @@
-<!--搜索折叠组件-->
+<!--
+ * @Date: 2019-11-05 13:36:19
+ * @Author: chen han
+ * @Description: 搜索折叠组件
+ -->
 <template>
   <div class="search-box">
     <!-- header -->
-    <div class='search-header' :style="headerStyle">
+    <div class='search-header' :class="[!value&&'off']" :style="headerStyle">
       <div class='search-header-left'>
         <slot name="headerBtns"></slot>
       </div>
@@ -33,24 +37,25 @@
 <script>
 export default {
   props: {
+    // 是否为折叠模式 默认是
     type: {
       default: 'fold'
     },
+    // 用于v-model 张开true 折叠false
     value: {
       default: true
     },
+    // 头部样式 可选
     headerStyle: {
       default: () =>({})
     },
+    // 折叠内容样式 可选
     contentStyle: {
       default: () => ({})
     },
+    // 图标传入
     searchIconStyle: {
       default: () => ({})
-    }
-  },
-  data () {
-    return {
     }
   },
   methods: {
@@ -68,8 +73,8 @@ export default {
       display: flex;
       justify-content: space-between;
       border-bottom: 1px solid rgba(239,244,249,1);
-      .search-header-left{
-        // flex: 1;
+      &.off{
+        border-bottom: none;
       }
       .search-header-right{
         text-align: right;
