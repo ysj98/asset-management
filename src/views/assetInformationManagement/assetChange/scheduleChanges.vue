@@ -125,7 +125,7 @@ const columns = [
   },
   {
     title: '状态',
-    dataIndex: 'approvalStatus'
+    dataIndex: 'approvalStatusName'
   }
 ]
 const operationData = [
