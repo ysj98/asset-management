@@ -13,7 +13,7 @@
       :filterOption="filterOption"
       @change="handleChange"
       notFoundContent="没有查询到数据"
-      :placeholder="hasAll?'全部一级物业': '所选一级物业'"
+      :placeholder="hasAll?'全部项目': '所选项目'"
       >
         <a-select-option
           v-for="(item) in options"
