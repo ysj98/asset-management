@@ -37,6 +37,12 @@ export const basics = {
   },
   // 查询所有一级物业
   queryAllTopOrganByUser: '/basic-data-api/rest-api/v1/organInfo/queryAllTopOrganByUser',
+  // 请求楼栋单元
+  getOptions: '/basic-data-api/rest-api/v1/common/getOptions',
+  // 请求业态类型
+  queryNodesByRootCode: '/basic-data-api/rest-api/v1/professionType/queryNodesByRootCode',
+  // 建筑形态
+  queryChildNodesById: '/basic-data-api/rest-api/v1/professionType/queryChildNodesById',
 }
 
 // 资产管理
