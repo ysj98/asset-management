@@ -89,6 +89,8 @@ export const building = {
   addHouse: '/ams/houseApi/addHouse',
   // 查询房屋详情
   getHouseDetail: '/ams/houseApi/getHouseDetail',
+  // 修改房屋状态
+  updateHouseStatus: '/ams/houseApi/updateHouseStatus',
   // 修改楼栋
   updateBuild: '/ams/buildApi/updateBuild',
   // 删除楼栋
