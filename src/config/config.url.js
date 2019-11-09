@@ -79,6 +79,34 @@ export const assets = {
     stopDelivery: '/ams/assetChange/stopDelivery',
     // 房屋资产分页查询
     assetHousePage: '/ams/asset-house/page'
+  },
+  // 资产清理
+  assetClear: {
+    // 资产清理-分页列表
+    getCleanupPage: '/ams/assetCleanup/getCleanupPage',
+    // 资产清理-删除
+    deleteCleanup: '/ams/assetCleanup/deleteCleanup',
+    // 资产清理-审批
+    approvalCleanup: '/ams/assetCleanup/approvalCleanup',
+    // 资产清理-新增编辑保存
+    submitCleanup: '/ams/assetCleanup/submitCleanup',
+    // 资产清理-编辑查询明细
+    getCleanupInfo: '/ams/assetCleanup/getCleanupInfo',
+    // 资产清理-详情
+    getCleanupDetail: '/ams/assetCleanup/getCleanupDetail'
+  },
+  // 资产分类设置
+  assetClassSet: {
+    // 资产分类设置-资产分类列表
+    getPage: '/categoryCfg/getPage',
+    // 资产分类设置-导出资产分类列表
+    exportList: '/categoryCfg/export',
+    // 资产分类设置-修改资产分类
+    update: '/categoryCfg/update',
+    // 资产分类设置-修改资产分类状态
+    updateStatus: '/categoryCfg/updateStatus',
+    // 资产分类设置-获取资产分类详情
+    getDetail: '/categoryCfg/getDetail'
   }
 }
 // 楼盘字典
@@ -91,6 +119,8 @@ export const building = {
   addHouse: '/ams/houseApi/addHouse',
   // 查询房屋详情
   getHouseDetail: '/ams/houseApi/getHouseDetail',
+  // 修改房屋状态
+  updateHouseStatus: '/ams/houseApi/updateHouseStatus',
   // 修改楼栋
   updateBuild: '/ams/buildApi/updateBuild',
   // 删除楼栋

@@ -7,7 +7,7 @@
   <div class="houseInfo-page pb70">
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
-        <SG-Button class="mr10" icon="plus" type="primary">新增</SG-Button>
+        <SG-Button class="mr10" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
         <SG-Button class="mr10"><segiIcon type="#icon-ziyuan4" class="icon-right"/>房间资料导入</SG-Button>
         <SG-Button class="mr10"><segiIcon type="#icon-ziyuan10" class="icon-right"/>房间导出</SG-Button>
         <SG-Button icon="sync">批量更新</SG-Button>
@@ -143,6 +143,13 @@ import OperationPopover from '@/components/OperationPopover'
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px'}
+// 页面跳转
+const operationTypes = {
+  create: '/buildingDict/createHouse',
+  edit: '/buildingDict/editHouse',
+  detail: '/buildingDict/detailHouse',
+  copy: '/buildingDict/createHouse'
+}
 let queryCondition = {
   pageNum: 1,
   pageSize: 10,
@@ -229,6 +236,10 @@ export default {
       }
     }
   },
+  mounted () {
+    this.queryNodesByRootCode('20')
+    this.queryNodesByRootCode('60')
+  },
   methods: {
     // 查询房屋列表
     query () {
@@ -285,10 +296,6 @@ export default {
       console.log('一级物业改变', o)
       this.watchOrganChange()
       this.searchQuery()
-    },
-    // 操作事件函数
-    operationFun (type, record) {
-      console.log('操作事件', type, record)
     },
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -434,14 +441,46 @@ export default {
         }
       })
     },
+    // 操作事件函数
+    operationFun (type, record) {
+      console.log('操作事件', type, record)
+      if (['edit', 'copy', 'detail'].includes(type)) {
+        this.goPage(type, record)
+      }
+      if (['on', 'off'].includes(type)) {
+        this.$SG_Modal.confirm({
+          title: `确定${type==='on' ? '启用' : '禁用'}该房间吗?`,
+          okText: '确定',
+          cancelText: '关闭',
+          onOk: () => {
+            let data = {
+              houseId: record.houseId,
+              status: type === 'on' ? '1' : '0'
+            }
+            this.$api.building.updateHouseStatus(data).then(res => {
+              if (res.data.code === '0') {
+               this.$SG_Message.success(`${type==='on' ? '启用' : '禁用'}成功！`)
+               this.query()
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+        })
+      }
+    },
+    // 页面跳转
+    goPage (type, record) {
+      let query = {type}
+      if (['edit', 'copy', 'detail'].includes(type)) {
+        query.houseId = record.houseId
+      }
+      this.$router.push({path: operationTypes[type], query: query || {}})
+    },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
   },
-  mounted () {
-    this.queryNodesByRootCode('20')
-    this.queryNodesByRootCode('60')
-  }
 }
 </script>
 <style lang="less" scoped>

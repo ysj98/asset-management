@@ -76,3 +76,51 @@ export function assetHousePage (data) {
   return axiosPost(assets.management.assetHousePage, data)
 }
 
+// 资产清理
+// 资产清理-分页列表
+export function getCleanupPage (data) {
+  return axiosPost(assets.assetClear.getCleanupPage, data, true, false)
+}
+// 资产清理-删除
+export function deleteCleanup (data) {
+  return axiosPost(assets.assetClear.deleteCleanup, data, false, false)
+}
+// 资产清理-审批
+export function approvalCleanup (data) {
+  return axiosPost(assets.assetClear.approvalCleanup, data, false, false)
+}
+// 资产清理-新增编辑保存
+export function submitCleanup (data) {
+  return axiosPost(assets.assetClear.submitCleanup, data, false, false)
+}
+// 资产清理-编辑查询明细
+export function getCleanupInfo (data) {
+  return axiosGet(assets.assetClear.getCleanupInfo, data)
+}
+// 资产清理-详情
+export function getCleanupDetail (data) {
+  return axiosGet(assets.assetClear.getCleanupDetail, data)
+}
+
+//资产分类设置
+// 资产分类设置-资产分类列表
+export function getPage (data) {
+  return axiosPost(assets.assetClassSet.getPage, data, true, false)
+}
+// 资产分类设置-导出资产分类列表
+export function exportList (data) {
+  return axiosPost(assets.assetClassSet.exportList, data, false, false)
+}
+// 资产分类设置-修改资产分类
+export function update (data) {
+  return axiosPost(assets.assetClassSet.update, data, false, false)
+}
+// 资产分类设置-修改资产分类状态
+export function updateStatus (data) {
+  return axiosPost(assets.assetClassSet.updateStatus, data, false, false)
+}
+// 资产分类设置-获取资产分类详情
+export function getDetail (data) {
+  return axiosGet(assets.assetClassSet.getDetail, data)
+}
+

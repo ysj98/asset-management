@@ -26,6 +26,10 @@ export function addHouse (data) {
 export function getHouseDetail (data) {
   return axiosPost(building.getHouseDetail, data)
 }
+// 修改房屋状态
+export function updateHouseStatus (data) {
+  return axiosPost(building.updateHouseStatus, data)
+}
 // 修改楼栋
 export function updateBuild (data) {
   return axiosPost(building.updateBuild, data)
