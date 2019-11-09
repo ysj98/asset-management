@@ -8,6 +8,11 @@
      <div class="title-box">
        <SG-Title noMargin :title="title" />
      </div>
+     <!-- 表单部分 -->
+     <div>
+       <!-- <a-form :form="form" @submit="handleSave" layout="horizontal">
+       </a-form> -->
+     </div>
      <FormFooter>
        <SG-Button class="mr10" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button @click="handleCancel" type="danger" ghost>删除</SG-Button>
