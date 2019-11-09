@@ -115,6 +115,6 @@ export const building = {
   addUnit: '/ams/unitApi/addUnit',
   // 查询单元详情
   getUnitDetail: '/ams/unitApi/getUnitDetail',
-  // 位置分类Position（异步）
-  positionSelectAsyn: '/basic-data-api/ams/position/positionSelectAsyn'
+  // 位置分类Position（异步） 位置管理-位置树查询 POST
+  positionSelectAsyn: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsyn',
 }
