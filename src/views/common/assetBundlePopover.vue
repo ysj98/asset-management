@@ -211,7 +211,8 @@ export default {
               otherArea: '',
               originalValue: '',
               changeProjectId: '',
-              address: ''
+              address: '',
+              operationArea: ''
             },
             {
               assetCode: '2',

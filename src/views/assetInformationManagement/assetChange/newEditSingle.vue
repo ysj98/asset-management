@@ -1,3 +1,6 @@
+<!--
+  新增编辑
+-->
 <template>
   <div class="newEditSingle">
     <div class="newEditSingle-nav">
@@ -158,9 +161,9 @@
               <a-input-number size="small" :min="1" :step="1.00" v-model="record.transferOperationArea"/>
             </template>
             <!-- 使用方向变动 -->
-            <!-- <template v-if="changeType === 'fxbd'" slot="transferOperationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.transferOperationArea"/>
-            </template> -->
+            <template v-if="changeType === 'fxbd'" slot="operationArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" v-model="record.operationArea"/>
+            </template>
             <template v-if="changeType === 'fxbd'" slot="selfUserArea" slot-scope="text, record">
               <a-input-number size="small" :min="1" :step="1.00" v-model="record.selfUserArea"/>
             </template>

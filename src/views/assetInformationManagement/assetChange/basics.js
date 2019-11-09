@@ -93,9 +93,9 @@ export const changeDirectionUse = [{
   dataIndex: 'communityName'
 }, {
   title: '运营面积(㎡)',
-  dataIndex: 'transferOperationArea',
+  dataIndex: 'operationArea',
   align: 'center',
-  scopedSlots: { customRender: 'transferOperationArea' }
+  scopedSlots: { customRender: 'operationArea' }
 }, {
   title: '自用面积(㎡)',
   dataIndex: 'selfUserArea',
