@@ -25,7 +25,7 @@
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
-    <div>
+    <div class="table-layout-fixed">
      <a-table
       :loading="loading"
       :columns="columns"

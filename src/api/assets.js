@@ -60,8 +60,8 @@ export function exportChange (data) {
   return axiosGet(assets.management.exportChange, data)
 }
 // 资产变动-新增编辑
-export function updateInsertChange (data) {
-  return axiosPost(assets.management.updateInsertChange, data)
+export function submitChange (data) {
+  return axiosPost(assets.management.submitChange, data)
 }
 // 资产变动-明细
 export function getChangeInfo (data) {

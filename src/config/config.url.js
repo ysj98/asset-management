@@ -72,7 +72,7 @@ export const assets = {
     // 资产变动-导出
     exportChange: '/ams/assetChange/exportChange',
     // 资产变动-新增编辑
-    updateInsertChange: '/ams/assetCleanup/updateInsertChange',
+    submitChange: '/ams/assetCleanup/submitChange',
     // 资产变动-明细
     getChangeInfo: '/ams/assetCleanup/getChangeInfo',
     // 资产变动-终止交付
