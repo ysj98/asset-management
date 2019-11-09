@@ -23,13 +23,13 @@ import { assets } from '../config/config.url'
 
 // 组织机构树
 export function queryAsynOrganByUserId (data) {
-  return axiosPost(assets.project.queryAsynOrganByUserId, data, false, false)
+  return axiosPost(assets.project.queryAsynOrganByUserId, data)
 }
 
 // 资产变动
 // 资产变动-一览表-分页列表
 export function getChangeSchedulePage (data) {
-  return axiosGet(assets.management.getChangeSchedulePage, data)
+  return axiosPost(assets.management.getChangeSchedulePage, data)
 }
 // 资产变动-详情
 export function getChangeDetail (data) {
@@ -37,23 +37,23 @@ export function getChangeDetail (data) {
 }
 // 资产变动-一览表-导出
 export function exportChangeScheduleList (data) {
-  return axiosGet(assets.management.exportChangeScheduleList, data)
+  return axiosPost(assets.management.exportChangeScheduleList, data)
 }
 // 资产变动-分页列表
 export function getChangePage (data) {
-  return axiosGet(assets.management.getChangePage, data)
+  return axiosPost(assets.management.getChangePage, data)
 }
 // 资产变动-删除
 export function deleteChange (data) {
-  return axiosPost(assets.management.deleteChange, data, false, false)
+  return axiosPost(assets.management.deleteChange, data)
 }
 // 资产变动-审批
 export function approveChange (data) {
-  return axiosPost(assets.management.approveChange, data, false, false)
+  return axiosPost(assets.management.approveChange, data)
 }
 // 资产变动-导入
 export function importChange (data) {
-  return axiosPost(assets.management.importChange, data, false, false)
+  return axiosPost(assets.management.importChange, data)
 }
 // 资产变动-导出
 export function exportChange (data) {
@@ -61,7 +61,7 @@ export function exportChange (data) {
 }
 // 资产变动-新增编辑
 export function updateInsertChange (data) {
-  return axiosPost(assets.management.updateInsertChange, data, false, false)
+  return axiosPost(assets.management.updateInsertChange, data)
 }
 // 资产变动-明细
 export function getChangeInfo (data) {
@@ -69,5 +69,10 @@ export function getChangeInfo (data) {
 }
 // 资产变动-终止交付
 export function stopDelivery (data) {
-  return axiosPost(assets.management.stopDelivery, data, false, false)
+  return axiosPost(assets.management.stopDelivery, data)
 }
+// 房屋资产分页查询
+export function assetHousePage (data) {
+  return axiosPost(assets.management.assetHousePage, data)
+}
+

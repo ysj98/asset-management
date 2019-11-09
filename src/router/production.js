@@ -12,6 +12,11 @@ let proRouter = [
     path: '/assetChange',
     name: '资产变动',
     component: () => import('@/views/assetInformationManagement/assetChange/index.vue')
+  },
+  {
+    path: '/assetChange/newEditSingle',
+    name: '变动单申请',
+    component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
   }
 ]
 export default proRouter

@@ -76,7 +76,9 @@ export const assets = {
     // 资产变动-明细
     getChangeInfo: '/ams/assetCleanup/getChangeInfo',
     // 资产变动-终止交付
-    stopDelivery: '/ams/assetChange/stopDelivery'
+    stopDelivery: '/ams/assetChange/stopDelivery',
+    // 房屋资产分页查询
+    assetHousePage: '/ams/asset-house/page'
   }
 }
 // 楼盘字典
