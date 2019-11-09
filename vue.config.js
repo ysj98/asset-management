@@ -16,7 +16,7 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress()
 const target = 'http://192.168.1.11:10080'
-const mock = 'http://192.168.1.10:9090/mock/5cef3bc1f6a05570f0437a8b'
+const mock = 'http://192.168.1.10:9090/mock/5dbfda7704a31c60dc1862a1'
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
@@ -58,6 +58,7 @@ class Proxy {
 const proxy = new Proxy()
 // 添加代理数据，如需代理多个地址，继续调用实例的 addUrls 方法即可
 proxy.addUrls(proxyURL, localhost, target)
+proxy.addUrls(['/ams'], localhost, mock)
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

@@ -1,3 +1,9 @@
+/*
+ * @fileName: Do not edit
+ * @Author: han
+ * @createTime: Do not edit
+ * @desc: Do not Edit
+ */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { assets } from '../config/config.url'
 // post请求示例
