@@ -14,6 +14,14 @@ export default [
       {
         title: '资产变动',
         path: '/assetChange'
+      },
+      {
+        title: '资产清理',
+        path: '/assetClear'
+      },
+      {
+        title: '资产分类设置',
+        path: '/assetClassSet'
       }
     ]
   },

@@ -160,7 +160,7 @@ export default {
   data () {
     return {
       loading: false,
-      noPageTools: true,
+      noPageTools: false,
       location: 'absolute',
       allStyle: 'width: 170px; margin-right: 10px;',
       toggle: true,
@@ -252,6 +252,7 @@ export default {
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
+      this.query()
     },
     // 清空
     eliminateFn () {},

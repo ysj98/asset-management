@@ -32,6 +32,26 @@ let proRouter = [
     path: '/assetChange',
     name: '资产变动',
     component: () => import('@/views/assetInformationManagement/assetChange/index.vue')
+  },
+  {
+    path: '/assetChange/newEditSingle',
+    name: '变动单申请',
+    component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
+  },
+  {
+    path: '/assetClear',
+    name: '资产清理',
+    component: () => import('@/views/assetInformationManagement/assetClear/index.vue')
+  },
+  {
+    path: '/assetClear/newClearForm',
+    name: '新增清理单',
+    component: () => import('@/views/assetInformationManagement/assetClear/newClearForm.vue')
+  },
+  {
+    path: '/assetClassSet',
+    name: '资产分类设置',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue')
   }
 ]
 export default proRouter
