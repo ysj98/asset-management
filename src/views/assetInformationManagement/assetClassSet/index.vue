@@ -145,6 +145,7 @@ export default {
     },
     // 查询列表
     queryList () {
+      console.log('query')
     }
   }
 }
