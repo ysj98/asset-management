@@ -13,12 +13,14 @@
           :style="allStyle"
           v-model="status"
           :options="statusOptions"
+          @change="queryClick"
         ></a-select>
-        <a-input-search placeholder="类别名称/编码" :style="allStyle" @search="queryList" />
+        <a-input-search placeholder="类别名称/编码" :style="allStyle" v-model="codeName" @search="queryClick" />
       </div>
     </SG-SearchContainer>
     <div>
       <a-table
+        :loading="loading"
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table"
@@ -120,6 +122,7 @@ export default {
         {label: '启用', value: '1'},
         {label: '停用', value: '2'}
       ],
+      codeName: '',
       columns,
       dataSource: [],
       operationData,
@@ -127,13 +130,15 @@ export default {
         pageNo: 1,
         pageLength: 10,
         totalCount: 0
-      }
+      },
+      loading: false
     }
   },
   methods: {
     changeTree (value, label) {
       this.organName = label
       this.organId = value
+      this.queryClick()
     },
     // 页码发生变化
     handlePageChange (pageNo) {
@@ -143,9 +148,24 @@ export default {
     operationFun (editType) {
       console.log(editType)
     },
+    // 点击查询
+    queryClick () {
+      this.paginator.pageNo = 1
+      this.queryList()
+    },
     // 查询列表
     queryList () {
       console.log('query')
+      let form = {
+        organId: this.organId,
+        status: this.status,
+        codeName: this.codeName,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
+      }
+      this.$api.assets.getPage(form).then(res => {
+        console.log(res)
+      })
     }
   }
 }
