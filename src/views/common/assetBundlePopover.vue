@@ -157,22 +157,31 @@ export default {
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
+    // 提交返回数据
     statusFn () {
       if (this.selectedRowKeys.length <= 0) {
         this.$message.info('请先选择资产')
         return
       }
       let checkedData = []
+      let rowsData = []
       console.log(this.selectedRowKeys, '选中的')
       console.log(this.overallData, '总的')
       this.selectedRowKeys.forEach(item => {
         this.overallData.forEach((element, index) => {
           if (item === element.assetCode) {
             checkedData.push(element.assetCode)
+            rowsData.push(element)
           }
         })
       })
-      this.$emit('status', checkedData)
+      this.$emit('status', checkedData, rowsData)
+    },
+    // 外面删除了后剩下给回来的数据
+    redactCheckedDataFn (redactChecked) {
+      this.$nextTick(() => {
+        this.selectedRowKeys = redactChecked
+      })
     },
     handleCancel () {
       this.show = false
@@ -193,7 +202,17 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: '',
+              operationArea: ''
             },
             {
               assetCode: '2',
@@ -204,7 +223,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '3',
@@ -215,7 +243,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '4',
@@ -226,7 +263,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '5',
@@ -237,7 +283,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '6',
@@ -248,7 +303,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '7',
@@ -259,7 +323,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '8',
@@ -270,7 +343,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '9',
@@ -281,7 +363,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             },
             {
               assetCode: '10',
@@ -292,7 +383,16 @@ export default {
               createTime: '资产分类',
               province: '所在位置',
               status: '资产状态',
-              approvalStatusName: '1'
+              approvalStatusName: '1',
+              transferArea: '',
+              transferOperationArea: '',
+              idleArea: '',
+              selfUserArea: '',
+              occupationArea: '',
+              otherArea: '',
+              originalValue: '',
+              changeProjectId: '',
+              address: ''
             }
           ]
           if (data) {

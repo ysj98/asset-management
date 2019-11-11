@@ -2,10 +2,10 @@
   资产变动登记
 -->
 <template>
-  <div class="assetsRegistration">
+  <div class="assetRegister">
     <Cephalosome :rightCol="22" :leftCol="2">
       <div slot="col-l">
-        <a-button icon="plus" type="primary" @click="newChangeSheetFn">新建变动单</a-button>
+        <a-button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</a-button>
       </div>
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -34,7 +34,6 @@
       :pagination="false"
       >
       <template slot="operation" slot-scope="text, record">
-        <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
         <div class="tab-opt">
           <span @click="operationFn(record, 'particulars')">详情</span>
           <span @click="operationFn(record, 'edit')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">编辑</span>
@@ -93,40 +92,32 @@ const approvalStatusData = [
 ]
 const columns = [
   {
-    title: '标题',
-    dataIndex: 'title'
+    title: '登记单编号',
+    dataIndex: 'registerOrderCode'
   },
   {
-    title: '所属机构',
+    title: '管理机构',
     dataIndex: 'organName'
-  },
-  {
-    title: '变动类型',
-    dataIndex: 'changeTypeName'
   },
   {
     title: '资产项目名称',
     dataIndex: 'projectName'
   },
   {
-    title: '变动资产数量',
-    dataIndex: 'assetChangeCount'
+    title: '资产类型',
+    dataIndex: 'assetType'
+  },
+  {
+    title: '资产数量',
+    dataIndex: 'assetNum'
   },
   {
     title: '创建日期',
-    dataIndex: 'createTime'
-  },
-  {
-    title: '创建人',
-    dataIndex: 'createByName'
-  },
-  {
-    title: '变动日期',
-    dataIndex: 'changeDate'
+    dataIndex: 'createDate'
   },
   {
     title: '状态',
-    dataIndex: 'approvalStatusName'
+    dataIndex: 'approvalStatus'
   },
   {
     title: '操作',
@@ -192,7 +183,7 @@ export default {
       // 详情
       if (str === 'particulars') {
         let particularsData = JSON.stringify([val])
-        this.$router.push({path: '/assetChange/particulars', query: { record: particularsData, setType: 'new' }})
+        this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'new' }})
       } else if (str === 'delete') {  // 删除
         this.commonTitle = '删除'
         this.changeOrderId = val.changeOrderId
@@ -296,7 +287,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.assetsRegistration {
+.assetRegister {
   .box {
     display: inline-block;
     margin-right: 10px;

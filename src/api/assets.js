@@ -60,10 +60,10 @@ export function exportChange (data) {
   return axiosGet(assets.management.exportChange, data)
 }
 // 资产变动-新增编辑
-export function updateInsertChange (data) {
-  return axiosPost(assets.management.updateInsertChange, data)
+export function submitChange (data) {
+  return axiosPost(assets.management.submitChange, data)
 }
-// 资产变动-明细
+// 资产变动-编辑明细
 export function getChangeInfo (data) {
   return axiosGet(assets.management.getChangeInfo, data)
 }
@@ -74,6 +74,10 @@ export function stopDelivery (data) {
 // 房屋资产分页查询
 export function assetHousePage (data) {
   return axiosPost(assets.management.assetHousePage, data)
+}
+// 资产变动-变动明细分页
+export function getChangeDetailPage (data) {
+  return axiosGet(assets.management.getChangeDetailPage, data)
 }
 
 // 资产清理

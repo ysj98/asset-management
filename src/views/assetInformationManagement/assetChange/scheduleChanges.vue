@@ -41,7 +41,7 @@
         </div>
       </div>
     </SearchContainer>
-    <div>
+    <div class="table-layout-fixed">
       <a-table
         :loading="loading"
         :columns="columns"
