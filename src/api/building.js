@@ -82,4 +82,7 @@ export function getUnitDetail (data) {
 export function positionSelectAsyn (data) {
   return axiosPost(building.positionSelectAsyn, data)
 }
-
+// 查询楼栋下可挂位置类型 位置管理-位置树查询 GET
+export function queryBellowPositionType (data) {
+  return axiosGet(building.queryBellowPositionType, data)
+}

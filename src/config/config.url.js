@@ -43,6 +43,10 @@ export const basics = {
   queryNodesByRootCode: '/basic-data-api/rest-api/v1/professionType/queryNodesByRootCode',
   // 建筑形态
   queryChildNodesById: '/basic-data-api/rest-api/v1/professionType/queryChildNodesById',
+  // 查询省列表
+  queryProvinceList: '/basic-data-api/rest-api/v1/regionApi/queryProvinceList',
+  /* 查询市、区、街道办 */
+  queryCityAndAreaList: '/basic-data-api/rest-api/v1/regionApi/queryRegionByPId',
 }
 
 // 资产管理
@@ -149,4 +153,6 @@ export const building = {
   getUnitDetail: '/ams/unitApi/getUnitDetail',
   // 位置分类Position（异步） 位置管理-位置树查询 POST
   positionSelectAsyn: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsyn',
+  // 查询楼栋下可挂位置类型 位置管理-位置树查询 GET
+  queryBellowPositionType: '/basic-data-api/rest-api/v1/positionApi/queryBellowPositionType',
 }

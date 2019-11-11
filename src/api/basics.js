@@ -1,3 +1,8 @@
+/*
+ * @Date: 2019-11-06 10:17:50
+ * @Author: chen han
+ * @Description: 
+ */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { basics } from '../config/config.url'
 // post请求示例
@@ -28,4 +33,12 @@ export function queryNodesByRootCode (data) {
 // 根据业态Id 获取下面的子节点
 export function queryChildNodesById (data) {
   return axiosGet(basics.queryChildNodesById, data)
+}
+// 查询省列表 省市区域接口 POST
+export function queryProvinceList (data) {
+  return axiosPost(basics.queryProvinceList, data)
+}
+// 查询省列表 省市区域接口 POST
+export function queryCityAndAreaList (data) {
+  return axiosPost(basics.queryCityAndAreaList, data)
 }
