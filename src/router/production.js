@@ -40,13 +40,18 @@ let proRouter = [
   },
   {
     path: '/assetChange/particulars',
-    name: '变动详情',
+    name: '变动单详情',
     component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
   },
   {
     path: '/assetRegister',
     name: '资产登记',
     component: () => import('@/views/assetInformationManagement/assetRegister/index.vue')
+  },
+  {
+    path: '/assetRegister/particulars',
+    name: '登记单详情',
+    component: () => import('@/views/assetInformationManagement/assetRegister/particulars.vue')
   },
   {
     path: '/assetClear',
