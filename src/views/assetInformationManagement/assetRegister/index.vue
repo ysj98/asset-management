@@ -39,7 +39,7 @@
           <span @click="operationFn(record, 'edit')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">编辑</span>
           <span @click="operationFn(record, 'delete')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">删除</span>
           <span v-if="record.approvalStatus === '2'">审核</span>
-          <span @click="operationFn(record, 'delivery')" v-if="record.approvalStatus === '1'">终止交付</span>
+          <span v-if="record.approvalStatus === '1'">反审核</span>
         </div>
       </template>
     </a-table>
@@ -176,7 +176,7 @@ export default {
     // 新建变动单
     newChangeSheetFn () {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
-      this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, setType: 'new' }})
+      this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'new' }})
     },
     // 操作
     operationFn (val, str) {
@@ -197,7 +197,7 @@ export default {
       } else if (str === 'edit') {
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([val])
-        this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
+        this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
       }
     },
     commonFn () {
