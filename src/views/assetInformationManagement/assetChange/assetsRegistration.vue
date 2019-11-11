@@ -37,10 +37,10 @@
         <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
         <div class="tab-opt">
           <span @click="operationFn(record, 'particulars')">详情</span>
-          <span v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">编辑</span>
-          <span v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">删除</span>
+          <span @click="operationFn(record, 'edit')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">编辑</span>
+          <span @click="operationFn(record, 'delete')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">删除</span>
           <span v-if="record.approvalStatus === '2'">审核</span>
-          <span v-if="record.approvalStatus === '1'">终止交付</span>
+          <span @click="operationFn(record, 'delivery')" v-if="record.approvalStatus === '1'">终止交付</span>
         </div>
       </template>
     </a-table>
@@ -53,6 +53,15 @@
       @change="handleChange"
     />
     </div>
+    <SG-Modal
+      width="400px"
+      v-model="commonShow"
+      :title="commonTitle"
+      @ok="commonFn"
+    >
+      <div v-if="judge === 'delete'">确认要删除该资产登记单吗？</div>
+      <div v-else>确认要种植交付该资产登记单吗？</div>
+    </SG-Modal>
   </div>
 </template>
 
@@ -131,6 +140,9 @@ export default {
   props: {},
   data () {
     return {
+      commonShow: false,
+      commonTitle: '',
+      judge: '',
       loading: false,
       noPageTools: true,
       location: 'absolute',
@@ -181,6 +193,53 @@ export default {
       if (str === 'particulars') {
         let particularsData = JSON.stringify([val])
         this.$router.push({path: '/assetChange/particulars', query: { record: particularsData, setType: 'new' }})
+      } else if (str === 'delete') {  // 删除
+        this.commonTitle = '删除'
+        this.changeOrderId = val.changeOrderId
+        this.judge = 'delete'
+        this.commonShow = true
+      } else if (str === 'delivery') {   // 终止交付
+      this.commonTitle = '终止交付'
+        this.judge = 'delivery'
+        this.changeOrderId = val.changeOrderId
+        this.commonShow = true
+      } else if (str === 'edit') {
+        let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
+        let enitData = JSON.stringify([val])
+        this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
+      }
+    },
+    commonFn () {
+      // 删除
+      if (this.judge === 'delete') {
+        let obj = {
+          changeOrderId: this.changeOrderId
+        }
+        this.$api.assets.deleteChange(obj).then(res => {
+          if (Number(res.data.code) === 0) {
+            this.$message.error('删除成功')
+            this.commonShow = false
+            this.query()
+          } else {
+            this.$message.error(res.data.message)
+            this.commonShow = false
+          }
+        })
+      // 终止交付
+      } else if (this.judge === 'delivery') {
+        let obj = {
+          changeOrderId: this.changeOrderId
+        }
+        this.$api.assets.stopDelivery(obj).then(res => {
+          if (Number(res.data.code) === 0) {
+            this.$message.error('终止交付成功')
+            this.commonShow = false
+            this.query()
+          } else {
+            this.$message.error(res.data.message)
+            this.commonShow = false
+          }
+        })
       }
     },
     changeTree (value, label) {

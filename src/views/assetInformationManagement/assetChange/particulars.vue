@@ -1,5 +1,6 @@
 <!--
-  详情和审核
+  详情: particulars
+  审核: audit  一期暂时不做审核和审核轨迹
 -->
 <template>
   <div class="particulars">
@@ -34,7 +35,7 @@
     <div class="particulars-nav">
       <span class="section-title blue">资产列表</span>
       <div class="particulars-obj">
-        <div class="table-layout-fixed">
+        <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"
             :columns="columns"

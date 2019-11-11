@@ -22,6 +22,10 @@ export default [
       {
         title: '资产分类设置',
         path: '/assetClassSet'
+      },
+      {
+        title: '资产登记',
+        path: '/assetRegister'
       }
     ]
   },

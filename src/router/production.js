@@ -44,6 +44,11 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
   },
   {
+    path: '/assetRegister',
+    name: '资产登记',
+    component: () => import('@/views/assetInformationManagement/assetRegister/index.vue')
+  },
+  {
     path: '/assetClear',
     name: '资产清理',
     component: () => import('@/views/assetInformationManagement/assetClear/index.vue')

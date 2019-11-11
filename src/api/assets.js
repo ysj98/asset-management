@@ -63,7 +63,7 @@ export function exportChange (data) {
 export function submitChange (data) {
   return axiosPost(assets.management.submitChange, data)
 }
-// 资产变动-明细
+// 资产变动-编辑明细
 export function getChangeInfo (data) {
   return axiosGet(assets.management.getChangeInfo, data)
 }
