@@ -36,7 +36,7 @@
       <template slot="operation" slot-scope="text, record">
         <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
         <div class="tab-opt">
-          <span>详情</span>
+          <span @click="operationFn(record, 'particulars')">详情</span>
           <span v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">编辑</span>
           <span v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">删除</span>
           <span v-if="record.approvalStatus === '2'">审核</span>
@@ -174,6 +174,14 @@ export default {
     newChangeSheetFn () {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
       this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, setType: 'new' }})
+    },
+    // 操作
+    operationFn (val, str) {
+      // 详情
+      if (str === 'particulars') {
+        let particularsData = JSON.stringify([val])
+        this.$router.push({path: '/assetChange/particulars', query: { record: particularsData, setType: 'new' }})
+      }
     },
     changeTree (value, label) {
       this.organName = label

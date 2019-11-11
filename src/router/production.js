@@ -35,8 +35,13 @@ let proRouter = [
   },
   {
     path: '/assetChange/newEditSingle',
-    name: '变动单申请',
+    name: '变动申请',
     component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
+  },
+  {
+    path: '/assetChange/particulars',
+    name: '变动详情',
+    component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
   },
   {
     path: '/assetClear',

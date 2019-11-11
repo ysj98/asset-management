@@ -78,7 +78,9 @@ export const assets = {
     // 资产变动-终止交付
     stopDelivery: '/ams/assetChange/stopDelivery',
     // 房屋资产分页查询
-    assetHousePage: '/ams/asset-house/page'
+    assetHousePage: '/ams/asset-house/page',
+    // 资产变动-变动明细分页
+    getChangeDetailPage: '/ams/assetCleanup/getChangeDetailPage'
   },
   // 资产清理
   assetClear: {

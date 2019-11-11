@@ -75,6 +75,10 @@ export function stopDelivery (data) {
 export function assetHousePage (data) {
   return axiosPost(assets.management.assetHousePage, data)
 }
+// 资产变动-变动明细分页
+export function getChangeDetailPage (data) {
+  return axiosGet(assets.management.getChangeDetailPage, data)
+}
 
 // 资产清理
 // 资产清理-分页列表
