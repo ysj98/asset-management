@@ -27,6 +27,10 @@ export default {
   props: {
     title: {
       default: '选择地址'
+    },
+    // 初始化位置
+    point: {
+      default: () => ({})
     }
   },
   data () {
@@ -61,37 +65,46 @@ export default {
         return
       }
       this.map = new BMap.Map('map-container')
-      this.map.centerAndZoom(new BMap.Point(113.275, 23.117), 10)
-      // 地图缩放控件
-      // const topLeftControl = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT})
-      // 城市选择控件
       const cityListControl = new BMap.CityListControl({anchor: BMAP_ANCHOR_TOP_RIGHT})
-      // 比例尺控件
-      // const topLeftNavigation = new BMap.NavigationControl()
-      // this.map.addControl(topLeftControl)
-      // this.map.addControl(topLeftNavigation)
-      this.map.addControl(cityListControl)
+      // this.map.addControl(cityListControl)
+      var geolocation = new BMap.Geolocation();
+      // 初始化位置
+      if (!this.point.lng) {
+        geolocation.getCurrentPosition((r) => {
+          console.log('您的位置：'+r.point.lng+','+r.point.lat);
+          this.map.centerAndZoom(new BMap.Point(r.point.lng, r.point.lat), 10)  
+          // this.setPoint(r.point.lng, r.point.lat)
+        });
+      } else {
+        this.map.centerAndZoom(new BMap.Point(this.point.lng, this.point.lat), 10)
+        this.setPoint(this.point.lng, this.point.lat)
+        this.location.lng = this.point.lng
+        this.location.lat = this.point.lat
+      }
       const _this = this
       // 鼠标缩放
       setTimeout(function () {
         _this.map.setZoom(11)
-      }, 2000) // 2秒后放大到11级
+      }, 1000) // 2秒后放大到11级
       this.map.enableScrollWheelZoom(true)
       // 点击获取经纬度
       this.map.addEventListener('click', (e) => {
-        _this.location.lng = parseFloat(e.point.lng).toFixed(3)
-        _this.location.lat = parseFloat(e.point.lat).toFixed(3)
-        console.log('gggg', _this.location)
-        // 移除上一次标注
-        if (_this.upMarker) {
-          _this.map.removeOverlay(_this.upMarker)
-        }
-        // 新增标注
-        var point = new BMap.Point(_this.location.lng, _this.location.lat);
-        var marker = new BMap.Marker(point);        // 创建标注
-        _this.upMarker = marker
-        _this.map.addOverlay(marker);
+        this.location.lng = parseFloat(e.point.lng).toFixed(3)
+        this.location.lat = parseFloat(e.point.lat).toFixed(3)
+        this.setPoint(this.location.lng, this.location.lat)
       })
+    },
+    // 新增和移除标注
+    setPoint (lng, lat) {
+      // 移除上一次标注
+      if (this.upMarker) {
+        this.map.removeOverlay(this.upMarker)
+      }
+      // 新增标注
+      var point = new BMap.Point(lng, lat);
+      var marker = new BMap.Marker(point);        // 创建标注
+      this.upMarker = marker
+      this.map.addOverlay(marker);
     },
     // 搜索位置
     search () {
@@ -107,6 +120,7 @@ export default {
       });
       local.search(result);
     },
+    // 重置数据
     resetData () {
       this.location = {
         lng: '',
@@ -117,11 +131,17 @@ export default {
         this.map.removeOverlay(this.upMarker)
       }
     },
+    // 确定
     handleSave () {
+      if (!this.location.lng) {
+        this.$message.error('请选择地址!')
+        return
+      }
       this.$emit('change', {...this.location})
+      this.visible = false
     },
+    // 取消
     hideModal () {
-      console.log('取消')
       this.visible = false
     }
   }

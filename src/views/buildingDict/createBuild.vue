@@ -15,7 +15,7 @@
             <a-row>
                 <a-col :span="8">
                   <a-form-item label="楼栋名称" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['name', {initialValue: '' || undefined}]"/>
+                    <a-input :style="allWidth" v-decorator="['name', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请输入楼栋名称'}]}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
@@ -25,34 +25,34 @@
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="房屋数量" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="承建商" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['contractor', {initialValue: '' || undefined}]"/>
+                    <a-input :maxLength="30" :style="allWidth" v-decorator="['contractor', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="开发商" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['developer', {initialValue: '' || undefined}]"/>
+                    <a-input :maxLength="30" :style="allWidth" v-decorator="['developer', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
-                  <a-form-item label="楼高" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['buildHeight', {initialValue: '' || undefined}]"/>
+                  <a-form-item label="楼高(m)" v-bind="formItemLayout">
+                    <a-input-number :style="allWidth" v-decorator="['buildHeight', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
+                    <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="楼栋类型" v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
-                      :getPopupContainer="getPopupContainer"
+                      :getCalendarContainer="getPopupContainer"
                         placeholder="请选择楼栋类型"
                         showSearch
                         optionFilterProp="children"
@@ -60,7 +60,7 @@
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['buildType']"
+                        v-decorator="['buildType', {rules: [{required: true, whitespace: true, message: '请选择楼栋类型'}]}]"
                       />
                   </a-form-item>
                 </a-col>
@@ -76,18 +76,18 @@
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['useType']"
+                        v-decorator="['useType', {rules: [{required: true, whitespace: true, message: '请选择楼栋用途'}]}]"
                       />
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
-                  <a-form-item label="地上层高" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['upGroundHigh', {initialValue: '' || undefined}]"/>
+                  <a-form-item label="地上层高(m)" v-bind="formItemLayout">
+                    <a-input-number :max="999.99" :style="allWidth" v-decorator="['upGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
-                  <a-form-item label="地下层高" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['downGroundHigh', {initialValue: '' || undefined}]"/>
+                  <a-form-item label="地下层高(m)" v-bind="formItemLayout">
+                    <a-input-number :max="999.99" :style="allWidth" v-decorator="['downGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
               <a-col :span="8">
@@ -102,23 +102,23 @@
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['buildStruct']"
+                        v-decorator="['buildStruct', {rules: [{required: true, whitespace: true, message: '请选择楼栋用途'}]}]"
                       />
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="总楼层" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['buildFloor', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['buildFloor', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="地上层数" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['upFloorNum', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['upFloorNum', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="地下层数" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['downFloorNum', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['downFloorNum', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="24">
@@ -132,10 +132,10 @@
                         optionFilterProp="children"
                         :options="provinceOpt"
                         :allowClear="false"
-                        @change="cityOrRegionChange($event, 'city')"
-                        v-model="province"
+                        @change="cityOrRegionChange($event, 'province')"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
+                        v-decorator="['province', {initialValue: '' || undefined, rules: [{validator: validateAddress}]}]"
                       />
                       <a-select
                       :style="allWidth1"
@@ -146,7 +146,7 @@
                         :options="cityOpt"
                         v-model="city"
                         :allowClear="false"
-                        @change="cityOrRegionChange($event, 'region')"
+                        @change="cityOrRegionChange($event, 'city')"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
@@ -157,46 +157,51 @@
                         showSearch
                         optionFilterProp="children"
                         v-model="region"
-                        @change="cityOrRegionChange($event)"
+                        @change="cityOrRegionChange($event, 'region')"
                         :options="regionOpt"
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
-                      <a-input :style="allWidth2" placeholder="详细地址"/>
+                      <a-input :maxLength="100" @input="getLL" v-model="address" :style="allWidth2" placeholder="详细地址"/>
                     </div>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="经纬度" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['longitudelatitude', {initialValue: '' || undefined}]">
+                    <a-input :style="allWidth" v-decorator="['lngAndlat', {initialValue: '' || undefined}]">
                       <a-icon type="plus" @click="showSelectMap" class="pointer" slot="suffix"/>
                     </a-input>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="楼栋排序" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['seq', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['seq', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="电梯数量" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['liftNum', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['liftNum', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="丘地号" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/>
+                    <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="建筑年代" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['builtAge', {initialValue: '' || undefined}]"/>
+                    <a-input :maxLength='20' :style="allWidth" v-decorator="['builtAge', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
-                  <a-form-item label="竣工年代" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['completionDate', {initialValue: '' || undefined}]"/>
+                  <a-form-item label="竣工日期" v-bind="formItemLayout">
+                    <a-date-picker
+                    width="100%"
+                    placeholder="请选择竣工日期"
+                    :getPopupContainer="getPopupContainer"
+                    v-decorator="['completionDate', {initialValue: '' || undefined}]"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :span="24">
@@ -223,13 +228,15 @@
        <SG-Button class="mr10" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
-     <selectLngAndLat @change="bMapChange" ref="longitudeAndLatitud"/>
+     <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>
    </div>
 </template>
 <script>
 import FormFooter from '@/components/FormFooter.vue'
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
-const allWidth = {maxWidth: 'auto'}
+import utils from '@/utils/utils'
+import moment from 'moment'
+const allWidth = {width: '100%'}
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
 export default {
@@ -239,7 +246,20 @@ export default {
   },
   props: {
     type: {
-      default: 'edit'
+      default: 'create'
+    },
+    objectData: {
+      default: () => ({})
+    }
+  },
+  watch: {
+    // 监听楼栋编辑框变化
+    type () {
+      this.init()
+    },
+    // 监听id变化
+    objectData () {
+      this.init()
     }
   },
   data () {
@@ -247,17 +267,21 @@ export default {
       allWidth,
       allWidth1,
       allWidth2,
-      province: undefined,
-      region: undefined,
-      city: undefined,
+      region: undefined, // 区/县
+      city: undefined, // 市
+      address: '', // 详细地址
       provinceOpt: [], // 省
       cityOpt: [], // 市
       regionOpt: [], // 区/县
+      point: {  // 经纬度
+        lng: '',
+        lat: ''
+      },
+      picPath: [], // 平面图
+      filepaths: [], // 附件
       buildTypeOpt: [], // 楼栋类型
       useTypeOpt: [], // 楼栋用途
       buildStructOpt: [], // 建筑结构
-      picPath: [], // 平面图
-      filepaths: [], // 附件
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -292,12 +316,72 @@ export default {
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
+    this.init()
   },
   methods: {
-    handleSave () {},
+    init () {
+      console.log('this.type', this.type, this.objectData)
+      this.resetAll()
+      if (this.type === 'edit') {
+        this.queryBuildDetail(this.objectData.positionId)
+      }
+    },
+    handleSave () {
+      this.form.validateFields((err, values) => {
+        console.log('得到值=>', values)
+        if (!err) {}
+      })
+    },
     handleCancel () {},
-    bMapChange (o) {
-      console.log('经纬度改变=>', o)
+    queryBuildDetail (buildId) {
+      let data = {
+        buildId
+      }
+      this.$api.building.queryBuildDetail(data).then(res => {
+        if (res.data.code === '0') {
+          this.handleEdit({...res.data.data})
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 处理编辑数据
+    handleEdit (data) {
+      // 处理时间类型
+      if (data.completionDate) {
+        data.completionDate = moment(data.completionDate, 'YYYY-MM-DD')
+      }
+      // 处理经纬度
+      // 处理图片
+      let o = this.form.getFieldsValue()
+      console.log('表单数据=>', o)
+      let values = {}
+      utils.each(o, (value, key) => {
+        if (data[key] && data[key] !== 0) {
+          values[key] = data[key]
+        }
+      })
+      console.log('得到值all=>', values)
+      this.form.setFieldsValue(values)
+    },
+    // 重置所有数据
+    resetAll () {
+      this.form.resetFields()
+      this.region = undefined // 区/县
+      this.city = undefined // 市
+      this.address = '' // 详细地址
+      this.point = {  // 经纬度
+        lng: '',
+        lat: ''
+      }
+      this.picPath = [] // 平面图
+      this.filepaths = [] // 附件
+    },
+    bMapChange (point) {
+      console.log('经纬度改变=>', point)
+      let lngAndlat = point.lng + '-' + point.lat
+      this.form.setFieldsValue({lngAndlat})
+      this.point = {...point}
     },
     // 显示百度地图
     showSelectMap () {
@@ -351,26 +435,90 @@ export default {
             return {label: item.name, value: item.regionId}
           })
           // 市
-          if (type === 'city') {
-            this.region = undefined
+          if (type === 'province') {
             this.regionOpt = []
-            this.city = undefined
             this.cityOpt = result
           }
           // 区
-          if (type === 'region') {
-            this.region = undefined
+          if (type === 'city') {
             this.regionOpt = result
           }
         }
       })
     },
-    cityOrRegionChange (e, type) {
-      console.log(e, type)
-      if (!type) {
-        return
+    // 验证省市区
+    validateAddress  (rule, value, callback) {
+      console.log('ss', this.city)
+      if (!value) {
+        callback('请选择省份')
+      } else if (!this.city) {
+        callback('请选择市')
+      } else if (!this.region) {
+        callback('请选择区/县')
+      } else {
+        callback()
       }
-      this.queryCityAndAreaList(e, type)
+    },
+    cityOrRegionChange (e, type) {
+      console.log('改变项', e, type)
+      // 如果是区/县 请求经纬度
+      if (type === 'region') {
+        this.getLL()
+      }
+      // 市
+      if (type === 'province') {
+        this.region = undefined
+        this.city = undefined
+      }
+      // 区
+      if (type === 'city') {
+        this.region = undefined
+      }
+      // 触发验证
+      if (['region', 'city'].includes(type)) {
+        this.form.validateFields(['province'], {force: true})
+      }
+      // 请求联动数据
+      if (['province', 'city'].includes(type)) {
+        this.queryCityAndAreaList(e, type)
+      }
+    },
+    transformProvince () {
+      let value = this.form.getFieldsValue().province
+      let arr = this.provinceOpt.filter(item => String(item.value) === String(value))
+      return arr[0].label
+    },
+    transformCity () {
+      let value = this.city
+      let arr = this.cityOpt.filter(item => String(item.value) === String(value))
+      return arr[0].label
+    },
+    transformArea () {
+      let value = this.region
+      let arr = this.regionOpt.filter(item => String(item.value) === String(value))
+      return arr[0].label
+    },
+    // 请求经纬度坐标
+    getLL () {
+      if (!BMap) return
+      if (!this.region) return
+      var myGeo = new BMap.Geocoder()
+      let self = this
+      let longitude = 0
+      let latitude = 0
+      let transformProvince = this.transformProvince()
+      let transformCity = this.transformCity()
+      let transformArea = this.transformArea()
+      let address = this.address
+      console.log('动态经纬度=>', transformProvince)
+      if (transformProvince && transformCity && transformArea) {
+        myGeo.getPoint(transformProvince + transformCity + transformArea + address, (point) => {
+          if (point) {
+            let lngAndlat = point.lng + '-' + point.lat
+            this.form.setFieldsValue({lngAndlat})
+          }
+        })
+      }
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -400,5 +548,6 @@ export default {
   }
   .address-box{
     display: flex;
+    margin-top: 7px;
   }
 </style>

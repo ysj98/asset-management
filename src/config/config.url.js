@@ -134,7 +134,7 @@ export const building = {
   // 新增楼栋
   addBuild: '/ams/buildApi/addBuild',
   // 查询楼栋详情
-  getBuildDetail: '/ams/buildApi/getBuildDetail',
+  queryBuildDetail: '/ams/buildApi/queryBuildDetail',
   // 修改楼层
   updateFloor: '/ams/floorApi/updateFloor',
   // 删除楼层
