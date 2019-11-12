@@ -223,16 +223,19 @@
        <SG-Button class="mr10" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
+     <selectLngAndLat @change="bMapChange" ref="longitudeAndLatitud"/>
    </div>
 </template>
 <script>
 import FormFooter from '@/components/FormFooter.vue'
+import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
 const allWidth = {maxWidth: 'auto'}
-const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 100px'}
+const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
 export default {
   components: {
-    FormFooter
+    FormFooter,
+    selectLngAndLat
   },
   props: {
     type: {
@@ -293,9 +296,12 @@ export default {
   methods: {
     handleSave () {},
     handleCancel () {},
+    bMapChange (o) {
+      console.log('经纬度改变=>', o)
+    },
     // 显示百度地图
     showSelectMap () {
-      
+      this.$refs.longitudeAndLatitud.visible = true
     },
     /* 根据根节点业态code获取下面的业态类型 */
     queryNodesByRootCode (code) {
