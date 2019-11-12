@@ -2,11 +2,11 @@
 export const columnsData = [
   {
     title: '楼栋名称--1',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName1'
   },
   {
     title: '房屋名称--2',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName2'
   },
   {
     title: '资产名称',
@@ -18,11 +18,11 @@ export const columnsData = [
   },
   {
     title: '建筑面积--3',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName3'
   },
   {
     title: '坐落位置--4',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName4'
   },
   {
     title: '权属情况',
@@ -34,7 +34,7 @@ export const columnsData = [
   },
   {
     title: '装修情况--5',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName5'
   },
   {
     title: '资产原值',

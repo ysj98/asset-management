@@ -101,7 +101,7 @@
         <span class="section-title blue">资产明细</span>
         <div class="button-box">
           <div class="buytton-nav">
-            <SG-Button type="primary" weaken @click="addTheAsset">下载模板</SG-Button>
+            <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
             <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
             <SG-Button type="primary" weaken @click="addTheAsset">清空列表</SG-Button>
           </div>
@@ -126,6 +126,29 @@
       <a-button type="primary" @click="save">提交</a-button>
       <a-button @click="cancel">取消</a-button>
     </FormFooter>
+    <SG-Modal
+      width="500px"
+      v-model="modalShow"
+      okText="下载模板"
+      title="下载模板"
+      @ok="commonFn"
+    >
+      <div>
+        <div class="modal-nav">
+          <a-radio-group v-model="checkboxAssetType">
+            资产类型：<a-radio v-for="(item, index) in checkboxData" :key="index" disabled :value="item.value">{{item.name}}</a-radio>
+          </a-radio-group>
+        </div>
+        楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" :defaultValue="buildIds">
+          <a-select-option v-for="(item, index) in buildIdsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <div class="modal-nav">
+          <a-checkbox-group v-model="scope" @change="onChange">
+            数据范围：<a-checkbox v-for="(item, index) in scopeData" :key="index" :value="item.value">{{item.name}}</a-checkbox>
+          </a-checkbox-group>
+        </div>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
@@ -143,11 +166,48 @@ const newEditSingleData = {
   files: [],
   organId: ''
 }
+const checkboxData = [
+  {
+    value: '1',
+    name: '房屋'
+  }, {
+    value: '2',
+    name: '土地'
+  }, {
+    value: '3',
+    name: '设备'
+  }
+]
+const scopeData = [
+  {
+    value: '1',
+    name: '楼栋'
+  }, {
+    value: '2',
+    name: '房屋'
+  }
+]
 export default {
   components: {AssetBundlePopover, FormFooter},
   props: {},
   data () {
     return {
+      buildIds: ['0'],
+      buildIdsData: [
+        {
+          name: '楼栋01',
+          value: '0'
+        },
+        {
+          name: '楼栋02',
+          value: '1'
+        },
+      ],
+      checkboxAssetType: '1',
+      scope: [],
+      modalShow: false,   // 下载模板
+      checkboxData: [...checkboxData],
+      scopeData: [...scopeData],
       enitData: '',
       checkedData: [],
       show: false,
@@ -214,6 +274,30 @@ export default {
     // 添加资产
     addTheAsset () {
     },
+    // 下载模板
+    downloadTemplate () {
+      this.modalShow = true
+    },
+    // 下载模板确认
+    commonFn () {
+      let obj = {
+        assetType: this.assetType,
+        buildIds: this.buildIds,
+        scope: this.scope
+      }
+      this.$api.assets.downloadTemplate(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产登记模板.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        this.modalShow = false
+      })
+    },
+    onChange () {},
     // 资产类型
     assetTypeChange (val) {
       this.assetType = val
@@ -367,5 +451,8 @@ export default {
   .postAssignment-icon:hover {
     color: red;
   }
+}
+.modal-nav {
+  line-height: 40px;
 }
 </style>
