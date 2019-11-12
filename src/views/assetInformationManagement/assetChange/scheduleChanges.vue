@@ -262,15 +262,15 @@ export default {
       let obj = {
         projectId: this.queryCondition.projectId,       // 资产项目Id
         organId: this.queryCondition.organId,         // 组织机构id
-        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
+        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         startDate: this.queryCondition.startDate,       // 创建日期开始日期
         endDate: this.queryCondition.endDate,    // 创建日期结束日期
         currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
-        changeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
-        assetClassify: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
+        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
+        multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
         assetName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
         changStartDate: this.queryCondition.changStartDate,  // 变动日期开始
         changEndDate: this.queryCondition.changEndDate   // 变动日期结束

@@ -80,6 +80,52 @@ export function getChangeDetailPage (data) {
   return axiosGet(assets.management.getChangeDetailPage, data)
 }
 
+// 资产登记
+// 资产登记-删除
+export function deleteByRegisterOrderId (data) {
+  return axiosPost(assets.assetRegister.deleteByRegisterOrderId, data)
+}
+// 资产登记-反审核
+export function registerOrderReAudit (data) {
+  return axiosPost(assets.assetRegister.registerOrderReAudit, data)
+}
+// 资产登记-审核
+export function registerOrderAudit (data) {
+  return axiosPost(assets.assetRegister.registerOrderAudit, data)
+}
+// 资产登记-新增保存
+export function saveRegisterOrder (data) {
+  return axiosPost(assets.assetRegister.saveRegisterOrder, data)
+}
+// 资产登记-编辑保存
+export function updateRegisterOrder (data) {
+  return axiosPost(assets.assetRegister.updateRegisterOrder, data)
+}
+// 资产登记-编辑回显
+export function getRegisterOrderById (data) {
+  return axiosGet(assets.assetRegister.getRegisterOrderById, data)
+}
+// 资产登记明细列表-分页
+export function getRegisterOrderDetailsPageById (data) {
+  return axiosPost(assets.assetRegister.getRegisterOrderDetailsPageById, data)
+}
+//资产登记列表-分页查询
+export function getProjectListPage (data) {
+  return axiosPost(assets.assetRegister.getProjectListPage, data)
+}
+// 资产登记新增-下载导入模板
+export function downloadTemplate (data) {
+  return axiosPost(assets.assetRegister.downloadTemplate, data)
+}
+// 资产登记转运营信息-根据资产项目ID
+export function getTransferByProjectId (data) {
+  return axiosPost(assets.assetRegister.getTransferByProjectId, data)
+}
+// 资产登记明细列表-不分页
+export function getRegisterOrderDetailsById (data) {
+  return axiosGet(assets.assetRegister.getRegisterOrderDetailsById, data)
+}
+
 // 资产清理
 // 资产清理-分页列表
 export function getCleanupPage (data) {

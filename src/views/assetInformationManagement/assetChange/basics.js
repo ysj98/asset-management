@@ -6,7 +6,7 @@ export const deliveryProperty = [{
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
-  width: '10'
+  width: '10%'
 }, {
   title: '所在位置',
   dataIndex: 'province',
@@ -43,7 +43,7 @@ export const deliveryOperation = [{
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
-  width: '10'
+  width: '10%'
 }, {
   title: '所在位置',
   dataIndex: 'province',
@@ -131,7 +131,7 @@ export const projectChange = [{
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
-  width: '10'
+  width: '10%'
 }, {
   title: '所在位置',
   dataIndex: 'province',
@@ -168,7 +168,7 @@ export const variationOriginalValue = [{
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
-  width: '10'
+  width: '10%'
 }, {
   title: '所在位置',
   dataIndex: 'province',
@@ -206,7 +206,7 @@ export const positionChange = [{
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
-  width: '10'
+  width: '10%'
 }, {
   title: '所在位置',
   dataIndex: 'province',
