@@ -1,6 +1,6 @@
 <!--
   详情: particulars
-  审核: audit  一期暂时不做审核和审核轨迹
+  审核: audit
 -->
 <template>
   <div class="particulars">
@@ -8,11 +8,11 @@
       <span class="section-title blue">基本信息</span>
       <div class="particulars-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8">登记单编号：{{particularsData.projectName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.organName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产类型：{{particularsData.approvalStatusName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">创建人：{{particularsData.createTime || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">创建时间：{{particularsData.createByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderCode || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.objectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetType || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建时间：{{particularsData.objectName || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
@@ -29,9 +29,10 @@
     <div class="particulars-nav">
       <span class="section-title blue">资产列表</span>
       <div class="particulars-obj">
-        <div class="table-layout-fixed table-border">
+        <!-- table-layout-fixed -->
+        <div class="table-border">
           <a-table
-            :scroll="{ x: 3500 }"
+            :scroll="{ x: 2600}"
             :loading="loading"
             :columns="columns"
             :dataSource="tableData"
@@ -50,109 +51,35 @@
         </div>
       </div>
     </div>
+    <div class="particulars-nav" v-if="type === 'audit'">
+      <span class="section-title blue">审核信息</span>
+      <div class="particulars-obj">
+        <a-col class="playground-col" :span="8">审核人：{{particularsData.projectName || '--'}}</a-col>
+        <a-col class="playground-col" :span="8">审核时间：{{particularsData.organName || '--'}}</a-col>
+        <a-col class="playground-col remark" :span="24">审核意见：
+          <a-textarea placeholder="请输入审核意见"
+          :style="{width:'94%'}"
+          :autosize="{ minRows: 3, maxRows: 3 }"
+          v-decorator="remark"
+          />
+        </a-col>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-
-const columns = [
-  {
-    title: '楼栋名称',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '房屋名称',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '资产名称',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '资产编码',
-    dataIndex: 'assetCode'
-  },
-  {
-    title: '建筑面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '坐落位置',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '权属情况',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '权证号',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '装修情况',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '资产原值',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '市场价值',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '转运营日期',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '转运营面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '闲置面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '自用面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '占用面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '其他面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '转物业面积',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '转物业日期',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '使用期限(月)',
-    dataIndex: 'validPeriod'
-  },
-  {
-    title: '开始使用日期',
-    dataIndex: 'startDate'
-  },
-  {
-    title: '已使用期数(月)',
-    dataIndex: 'usedDate'
-  }
-]
+import {columnsData} from './registerBasics'
 export default {
   components: {},
   props: {},
   data () {
     return {
+      type: '',
+      remark: '',     // 意见
       particularsData: {},
       files: [],
-      columns: columns,
+      columns: [...columnsData],
       loading: false,
       tableData: [],
       location: '',
@@ -170,9 +97,9 @@ export default {
     // 查询详情
     query () {
       let obj = {
-        changeOrderId: ''
+        registerOrderId: ''
       }
-      this.$api.assets.getChangeDetail(obj).then(res => {
+      this.$api.assets.getRegisterOrderById(obj).then(res => {
         console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
@@ -184,14 +111,14 @@ export default {
       })
     },
     // 资产列表
-    getChangeDetailPageFn () {
+    getRegisterOrderDetailsPageByIdFn () {
       this.loading = true
       let obj = {
-        changeOrderId: '',
+        registerOrderId: '',
         pageNum: this.queryCondition.pageNum,
         pageSize: this.queryCondition.pageSize
       }
-      this.$api.assets.getChangeDetailPage(obj).then(res => {
+      this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -210,19 +137,22 @@ export default {
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.getChangeDetailPageFn()
+      this.getRegisterOrderDetailsPageByIdFn()
     },
   },
   created () {
   },
   mounted () {
+    console.log(this.columnsData, '12321')
     this.query()
-    this.getChangeDetailPageFn()
+    this.getRegisterOrderDetailsPageByIdFn()
   }
 }
 </script>
 <style lang="less" scoped>
 .particulars {
+  overflow: hidden;
+  padding-bottom: 70px;
   .particulars-nav{
       padding: 42px 126px 20px 70px;
       .particulars-obj {
@@ -246,5 +176,13 @@ export default {
   .file {
     margin: 20px 0 0 40px;
   }
+}
+.playground-col {
+    height: 40px;
+    line-height: 40px;
+    font-size: 12px;
+  }
+.remark {
+  line-height: 64px;
 }
 </style>

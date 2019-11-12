@@ -20,7 +20,7 @@
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
-          <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD" @change="changeDate"></SG-DatePicker>
+          <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
@@ -161,7 +161,7 @@ export default {
         changeType: '',            // 备注：变动类型id(多个用，分割)
         startCreateDate: '',       // 备注：开始创建日期
         endCreateDate: '',         // 备注：结束创建日期
-        currentOrgan: true            // 备注：仅当前机构下资产清理单 0 否 1 是
+        currentOrgan: false            // 备注：仅当前机构下资产清理单 0 否 1 是
       },
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
@@ -251,7 +251,6 @@ export default {
       this.queryCondition.currentOrgan = e.target.checked
     },
     approvalStatusFn () {},
-    changeDate () {},
     // 分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -264,12 +263,12 @@ export default {
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: this.queryCondition.projectId,            // 资产项目Id
         organId: this.queryCondition.organId,                // 组织机构id
-        changeType: this.queryCondition.changeType > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型id(多个用，分割)
-        startCreateDate: this.queryCondition.startCreateDate,         // 开始创建日期
-        endCreateDate: this.queryCondition.endCreateDate,             // 结束创建日期
+        multiChangeType: this.queryCondition.changeType > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型id(多个用，分割)
+        startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
+        endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
         currentOrgan: this.queryCondition.currentOrgan ? 1 : 0                // 仅当前机构下资产清理单 0 否 1 是
       }
       this.$api.assets.getChangePage(obj).then(res => {

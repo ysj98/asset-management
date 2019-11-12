@@ -86,6 +86,33 @@ export const assets = {
     // 资产变动-变动明细分页
     getChangeDetailPage: '/ams/assetCleanup/getChangeDetailPage'
   },
+  // 资产登记
+  assetRegister: {
+    // 资产登记-删除
+    deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
+    // 资产登记-反审核
+    registerOrderReAudit: '/ams/registerOrder/registerOrderReAudit',
+    // 资产登记-审核
+    registerOrderAudit: '/ams/registerOrder/registerOrderAudit',
+    // 资产登记-新增保存
+    saveRegisterOrder: '/ams/registerOrder/saveRegisterOrder',
+    // 资产登记-编辑保存
+    updateRegisterOrder: '/ams/registerOrder/updateRegisterOrder',
+    // 资产登记-编辑回显
+    getRegisterOrderById: '/ams/registerOrder/getRegisterOrderById',
+    // 资产登记-详情回显
+    // getRegisterOrderById:/ams/registerOrder/getRegisterOrderById,
+    // 资产登记列表-分页查询
+    getProjectListPage: '/ams/registerOrder/getProjectListPage',
+    // 资产登记新增-下载导入模板
+    downloadTemplate: '/ams/registerOrder/downloadTemplate',
+    // 资产登记转运营信息-根据资产项目ID
+    getTransferByProjectId: '/ams/registerOrder/getTransferByProjectId',
+    // 资产登记明细列表-分页
+    getRegisterOrderDetailsPageById: '/ams/registerOrder/getRegisterOrderDetailsPageById',
+    // 资产登记明细列表-不分页
+    getRegisterOrderDetailsById: '/ams/registerOrder/getRegisterOrderDetailsById'
+  },
   // 资产清理
   assetClear: {
     // 资产清理-分页列表

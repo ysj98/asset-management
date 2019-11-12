@@ -13,7 +13,7 @@
               <a-input placeholder="请输入登记单编号"
               :style="allWidth"
               :max="10"
-              v-decorator="['title',
+              v-decorator="['saveRegisterOrder',
                 {rules: [{required: true, max: 50, whitespace: true, message: '请输入登记单编号(不超过50字符)'}], initialValue: newEditSingleData.title}
               ]"/>
             </a-form-item>
@@ -47,17 +47,17 @@
                 showSearch
                 :style="allWidth"
                 placeholder="请选择资产类型"
-                v-decorator="['changeType',{
+                v-decorator="['assetType',{
                     rules: [{required: true, message: '请选择资产类型'}],
-                    initialValue: newEditSingleData.changeType
+                    initialValue: newEditSingleData.assetType
                   }]"
-                @change="changeTypeChange"
+                @change="assetTypeChange"
                 :allowClear="false"
                 :filterOption="filterOption"
-                notFoundContent="没有查询到变动类型"
+                notFoundContent="没有查询到资产类型"
                 >
                 <a-select-option
-                  v-for="(item) in changeTypeData"
+                  v-for="(item) in assetTypeData"
                   :key="item.value"
                   :value='item.value'>
                   {{item.name}}
@@ -70,7 +70,7 @@
               <a-date-picker
               :style="allWidth"
               placeholder="请选择接管日期"
-              v-decorator="['changeDate',
+              v-decorator="['createTime',
                 {rules: [{required: true, message: '请选择接管日期'}]}
               ]"
               />
@@ -99,10 +99,17 @@
       </a-row>
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
-        <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
-        <div class="table-layout-fixed table-border">
+        <div class="button-box">
+          <div class="buytton-nav">
+            <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
+            <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
+            <SG-Button type="primary" weaken @click="addTheAsset">清空列表</SG-Button>
+          </div>
+        </div>
+        <!-- table-layout-fixed -->
+        <div class="table-border">
           <a-table
-            :scroll="{y: 450}"
+            :scroll="{y: 450, x: 2600}"
             :columns="columns"
             :dataSource="tableData"
             class="custom-table td-pd10"
@@ -115,13 +122,33 @@
         </div>
       </div>
     </div>
-    <!-- 选择资产 -->
-    <!-- <AssetBundlePopover ref="assetBundlePopover" @status="status"></AssetBundlePopover> -->
     <FormFooter>
-      <a-button type="primary" @click="save('save')">提交</a-button>
-      <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
+      <a-button type="primary" @click="save">提交</a-button>
       <a-button @click="cancel">取消</a-button>
     </FormFooter>
+    <SG-Modal
+      width="500px"
+      v-model="modalShow"
+      okText="下载模板"
+      title="下载模板"
+      @ok="commonFn"
+    >
+      <div>
+        <div class="modal-nav">
+          <a-radio-group v-model="checkboxAssetType">
+            资产类型：<a-radio v-for="(item, index) in checkboxData" :key="index" disabled :value="item.value">{{item.name}}</a-radio>
+          </a-radio-group>
+        </div>
+        楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" :defaultValue="buildIds">
+          <a-select-option v-for="(item, index) in buildIdsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <div class="modal-nav">
+          <a-checkbox-group v-model="scope" @change="onChange">
+            数据范围：<a-checkbox v-for="(item, index) in scopeData" :key="index" :value="item.value">{{item.name}}</a-checkbox>
+          </a-checkbox-group>
+        </div>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
@@ -129,29 +156,65 @@
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
+import {columnsData} from './registerBasics'
 const newEditSingleData = {
-  title: '',   // 验收单名称
-  changeType: '',     // 变动类型
+  saveRegisterOrder: '',   // 验收单名称
+  assetType: '',     // 资产类型
   projectId: '',     // 资产项目
-  deliveryCompany: '',    // 交付单位
-  changeDate: {},       // 变动日期
+  createTime: {},       // 接管日期
   remark: '',          // 备注
   files: [],
   organId: ''
 }
+const checkboxData = [
+  {
+    value: '1',
+    name: '房屋'
+  }, {
+    value: '2',
+    name: '土地'
+  }, {
+    value: '3',
+    name: '设备'
+  }
+]
+const scopeData = [
+  {
+    value: '1',
+    name: '楼栋'
+  }, {
+    value: '2',
+    name: '房屋'
+  }
+]
 export default {
   components: {AssetBundlePopover, FormFooter},
   props: {},
   data () {
     return {
+      buildIds: ['0'],
+      buildIdsData: [
+        {
+          name: '楼栋01',
+          value: '0'
+        },
+        {
+          name: '楼栋02',
+          value: '1'
+        },
+      ],
+      checkboxAssetType: '1',
+      scope: [],
+      modalShow: false,   // 下载模板
+      checkboxData: [...checkboxData],
+      scopeData: [...scopeData],
       enitData: '',
-      changeType: '',          // 用来判断对象变动类型
       checkedData: [],
       show: false,
-      columns: [],
+      columns: [...columnsData],
       tableData: [],
       organIdData: [],
-      changeTypeData: [
+      assetTypeData: [
         {
           name: '交付运营',
           value: 'jfyy'
@@ -210,12 +273,34 @@ export default {
   methods: {
     // 添加资产
     addTheAsset () {
-      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData)
-      this.$refs.assetBundlePopover.show = true
     },
-    // 变动类型
-    changeTypeChange (val) {
-      this.changeType = val
+    // 下载模板
+    downloadTemplate () {
+      this.modalShow = true
+    },
+    // 下载模板确认
+    commonFn () {
+      let obj = {
+        assetType: this.assetType,
+        buildIds: this.buildIds,
+        scope: this.scope
+      }
+      this.$api.assets.downloadTemplate(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产登记模板.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        this.modalShow = false
+      })
+    },
+    onChange () {},
+    // 资产类型
+    assetTypeChange (val) {
+      this.assetType = val
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -244,31 +329,39 @@ export default {
       })
     },
     // 提交
-    save (str) {
+    save () {
       this.form.validateFields((err, values) => {
         if (!err) {
           if (this.tableData.length <= 0) {
-            this.$message.info('请选择变动资产')
+            this.$message.info('请选择资产明细')
             return
           }
           let obj = {
-            saveType: str === 'saveType' ? 0 : 1,
-            changeOrderId: '',                // 资产变动单Id（新增为空）
-            title: values.title,                // 标题
-            projectId: title.projectId,                // 资产项目Id
-            changeType: values.changeType,                // 变动类型Id
-            deliveryCompany: values.deliveryCompany,                // 交付单位
+            registerOrderId: '',                // 资产变动单Id（新增为空）
+            saveRegisterOrder: values.saveRegisterOrder,                // 登记单编号
+            projectId: values.projectId,                // 资产项目Id
+            assetType: values.assetType,                // 资产类型Id
             remark: values.remark,                // 备注
             organId: values.organId,                // 组织机构id
-            changeDate: `${values.changeDate.format('YYYY-MM-DD')}`,                // 变动日期
-            assetDetailList: []
+            createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
+            assetHouseList: []
           }
           console.log(obj)
-          this.$api.assets.submitChange(obj).then(res => {
-            if (Number(res.data.code) === 0) {
-              console.log('提交成功')
-            }
-          })
+          // 编辑
+          if (this.setType === 'edit') {
+            this.$api.assets.updateRegisterOrder(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                console.log('提交成功')
+              }
+            }) 
+          } else {
+          // 新增
+            this.$api.assets.saveRegisterOrder(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                console.log('编辑成功')
+              }
+            }) 
+          }
         }
       })
     },
@@ -279,29 +372,36 @@ export default {
     // 编辑获取接口
     editFn () {
       let obj = {
-        changeOrderId: this.changeOrderId
+        registerOrderId: this.registerOrderId
       }
-      this.$api.assets.getChangeInfo(obj).then(res => {
+      this.$api.assets.getRegisterOrderById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data, '拿到是')
           this.form.setFieldsValue({
-            organId: this.organIdData[0].value,
             projectId: data.projectId,
-            title: data.title,
-            changeType: String(data.changeType),
-            deliveryCompany: data.deliveryCompany,
-            changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
+            registerOrderCode: data.registerOrderCode,
+            assetType: String(data.assetType),
+            createTime: moment(data.createTime, 'YYYY-MM-DD'),
             remark: data.remark
           })
-          this.changeType = data.changeType
-          data.assetDetailList.forEach(item => {
-            item.key = item.assetCode
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    getRegisterOrderDetailsByIdFn () {
+      let obj = {
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsById(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          data.forEach((item, index) => {
+            item.key = index
           })
           this.$nextTick(() => {
-            this.tableData = data.assetDetailList
+            this.tableData = data
           })
-          console.log(this.tableData, '拿到的数据')
         } else {
           this.$message.error(res.data.message)
         }
@@ -316,10 +416,7 @@ export default {
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
       this.editFn()
-    } else {
-      this.form.setFieldsValue({
-        organId: this.organIdData[0].value
-      })
+      this.getRegisterOrderDetailsByIdFn()
     }
   }
 }
@@ -340,6 +437,9 @@ export default {
       margin-bottom: 10px;
       .buytton-nav {
         float: right;
+        .choice {
+          margin: 0 10px;
+        }
       }
     }
   }
@@ -351,5 +451,8 @@ export default {
   .postAssignment-icon:hover {
     color: red;
   }
+}
+.modal-nav {
+  line-height: 40px;
 }
 </style>
