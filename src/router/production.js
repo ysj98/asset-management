@@ -52,6 +52,16 @@ let proRouter = [
     path: '/assetClassSet',
     name: '资产分类设置',
     component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue')
+  },
+  {
+    path: '/assetClassSet/edit',
+    name: '编辑',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/editClassSet.vue')
+  },
+  {
+    path: '/assetClassSet/detail',
+    name: '详情',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
   }
 ]
 export default proRouter

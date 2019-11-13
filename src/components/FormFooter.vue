@@ -7,7 +7,7 @@
   <div class="form-footer">
     <slot>
       <a-button v-if="showSave" type="primary" @click="$emit('save')">{{leftButtonName}}</a-button>
-      <a-button v-if="showCancel" @click="$emit('cancel')">{{rightButtonName}}</a-button>
+      <a-button v-if="showCancel" :type="rightButtonType" @click="$emit('cancel')">{{rightButtonName}}</a-button>
     </slot>
   </div>
 </template>
@@ -35,6 +35,10 @@ export default {
     showCancel: {
       type: Boolean,
       default: true
+    },
+    rightButtonType: {
+      type: String,
+      default: 'default'
     }
   },
   data () {
@@ -56,5 +60,10 @@ export default {
     bottom: 0;
     right: 0;
     z-index: 999;
+    button {
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+    }
   }
 </style>

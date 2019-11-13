@@ -98,15 +98,15 @@ export const assets = {
   // 资产分类设置
   assetClassSet: {
     // 资产分类设置-资产分类列表
-    getPage: '/categoryCfg/getPage',
+    getPage: '/ams/categoryCfg/getPage',
     // 资产分类设置-导出资产分类列表
-    exportList: '/categoryCfg/export',
+    exportList: '/ams/categoryCfg/export',
     // 资产分类设置-修改资产分类
-    update: '/categoryCfg/update',
+    update: '/ams/categoryCfg/update',
     // 资产分类设置-修改资产分类状态
-    updateStatus: '/categoryCfg/updateStatus',
+    updateStatus: '/ams/categoryCfg/updateStatus',
     // 资产分类设置-获取资产分类详情
-    getDetail: '/categoryCfg/getDetail'
+    getDetail: '/ams/categoryCfg/getDetail'
   }
 }
 // 楼盘字典
