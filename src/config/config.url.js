@@ -43,6 +43,10 @@ export const basics = {
   queryNodesByRootCode: '/basic-data-api/rest-api/v1/professionType/queryNodesByRootCode',
   // 建筑形态
   queryChildNodesById: '/basic-data-api/rest-api/v1/professionType/queryChildNodesById',
+  // 查询省列表
+  queryProvinceList: '/basic-data-api/rest-api/v1/regionApi/queryProvinceList',
+  /* 查询市、区、街道办 */
+  queryCityAndAreaList: '/basic-data-api/rest-api/v1/regionApi/queryRegionByPId',
 }
 
 // 资产管理
@@ -72,13 +76,42 @@ export const assets = {
     // 资产变动-导出
     exportChange: '/ams/assetChange/exportChange',
     // 资产变动-新增编辑
-    updateInsertChange: '/ams/assetCleanup/updateInsertChange',
+    submitChange: '/ams/assetCleanup/submitChange',
     // 资产变动-明细
     getChangeInfo: '/ams/assetCleanup/getChangeInfo',
     // 资产变动-终止交付
     stopDelivery: '/ams/assetChange/stopDelivery',
     // 房屋资产分页查询
-    assetHousePage: '/ams/asset-house/page'
+    assetHousePage: '/ams/asset-house/page',
+    // 资产变动-变动明细分页
+    getChangeDetailPage: '/ams/assetCleanup/getChangeDetailPage'
+  },
+  // 资产登记
+  assetRegister: {
+    // 资产登记-删除
+    deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
+    // 资产登记-反审核
+    registerOrderReAudit: '/ams/registerOrder/registerOrderReAudit',
+    // 资产登记-审核
+    registerOrderAudit: '/ams/registerOrder/registerOrderAudit',
+    // 资产登记-新增保存
+    saveRegisterOrder: '/ams/registerOrder/saveRegisterOrder',
+    // 资产登记-编辑保存
+    updateRegisterOrder: '/ams/registerOrder/updateRegisterOrder',
+    // 资产登记-编辑回显
+    getRegisterOrderById: '/ams/registerOrder/getRegisterOrderById',
+    // 资产登记-详情回显
+    // getRegisterOrderById:/ams/registerOrder/getRegisterOrderById,
+    // 资产登记列表-分页查询
+    getProjectListPage: '/ams/registerOrder/getProjectListPage',
+    // 资产登记新增-下载导入模板
+    downloadTemplate: '/ams/registerOrder/downloadTemplate',
+    // 资产登记转运营信息-根据资产项目ID
+    getTransferByProjectId: '/ams/registerOrder/getTransferByProjectId',
+    // 资产登记明细列表-分页
+    getRegisterOrderDetailsPageById: '/ams/registerOrder/getRegisterOrderDetailsPageById',
+    // 资产登记明细列表-不分页
+    getRegisterOrderDetailsById: '/ams/registerOrder/getRegisterOrderDetailsById'
   },
   // 资产清理
   assetClear: {
@@ -128,7 +161,7 @@ export const building = {
   // 新增楼栋
   addBuild: '/ams/buildApi/addBuild',
   // 查询楼栋详情
-  getBuildDetail: '/ams/buildApi/getBuildDetail',
+  queryBuildDetail: '/ams/buildApi/queryBuildDetail',
   // 修改楼层
   updateFloor: '/ams/floorApi/updateFloor',
   // 删除楼层
@@ -145,6 +178,8 @@ export const building = {
   addUnit: '/ams/unitApi/addUnit',
   // 查询单元详情
   getUnitDetail: '/ams/unitApi/getUnitDetail',
-  // 位置分类Position（异步）
-  positionSelectAsyn: '/basic-data-api/ams/position/positionSelectAsyn'
+  // 位置分类Position（异步） 位置管理-位置树查询 POST
+  positionSelectAsyn: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsyn',
+  // 查询楼栋下可挂位置类型 位置管理-位置树查询 GET
+  queryBellowPositionType: '/basic-data-api/rest-api/v1/positionApi/queryBellowPositionType',
 }
