@@ -169,7 +169,7 @@ export const building = {
   // 新增楼层
   addFloor: '/ams/floorApi/addFloor',
   // 查询楼层详情
-  getFloorDetail: '/ams/floorApi/getFloorDetail',
+  queryFloorDetail: '/ams/floorApi/queryFloorDetail',
   // 修改单元
   updateUnit: '/ams/unitApi/updateUnit',
   // 删除单元
@@ -177,7 +177,7 @@ export const building = {
   // 新增单元
   addUnit: '/ams/unitApi/addUnit',
   // 查询单元详情
-  getUnitDetail: '/ams/unitApi/getUnitDetail',
+  queryUnitDetail: '/ams/unitApi/queryUnitDetail',
   // 位置分类Position（异步） 位置管理-位置树查询 POST
   positionSelectAsyn: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsyn',
   // 查询楼栋下可挂位置类型 位置管理-位置树查询 GET

@@ -13,42 +13,42 @@
         <div>
           <a-form :form="form" @submit="handleSave" layout="horizontal">
             <a-row>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋名称" v-bind="formItemLayout">
                     <a-input :style="allWidth" v-decorator="['name', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请输入楼栋名称'}]}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋编码" v-bind="formItemLayout">
                     <a-input :style="allWidth" v-decorator="['code', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="房屋数量" v-bind="formItemLayout">
-                    <a-input-number :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
+                    <a-input-number :max="99999" :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="承建商" v-bind="formItemLayout">
                     <a-input :maxLength="30" :style="allWidth" v-decorator="['contractor', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="开发商" v-bind="formItemLayout">
                     <a-input :maxLength="30" :style="allWidth" v-decorator="['developer', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼高(m)" v-bind="formItemLayout">
                     <a-input-number :style="allWidth" v-decorator="['buildHeight', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
                     <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋类型" v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
@@ -64,7 +64,7 @@
                       />
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋用途" v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
@@ -80,17 +80,17 @@
                       />
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="地上层高(m)" v-bind="formItemLayout">
                     <a-input-number :max="999.99" :style="allWidth" v-decorator="['upGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="地下层高(m)" v-bind="formItemLayout">
                     <a-input-number :max="999.99" :style="allWidth" v-decorator="['downGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-              <a-col :span="8">
+              <a-col v-bind="formSpan">
                   <a-form-item label="建筑结构" v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
@@ -106,17 +106,17 @@
                       />
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="总楼层" v-bind="formItemLayout">
                     <a-input-number :style="allWidth" v-decorator="['buildFloor', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="地上层数" v-bind="formItemLayout">
                     <a-input-number :style="allWidth" v-decorator="['upFloorNum', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="地下层数" v-bind="formItemLayout">
                     <a-input-number :style="allWidth" v-decorator="['downFloorNum', {initialValue: '' || undefined}]"/>
                   </a-form-item>
@@ -167,34 +167,34 @@
                     </div>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="经纬度" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['lngAndlat', {initialValue: '' || undefined}]">
+                    <a-input :style="allWidth" v-decorator="['lngAndlat', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请选择或输入经纬度'}]}]">
                       <a-icon type="plus" @click="showSelectMap" class="pointer" slot="suffix"/>
                     </a-input>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋排序" v-bind="formItemLayout">
                     <a-input-number :style="allWidth" v-decorator="['seq', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="电梯数量" v-bind="formItemLayout">
-                    <a-input-number :style="allWidth" v-decorator="['liftNum', {initialValue: '' || undefined}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['liftNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="丘地号" v-bind="formItemLayout">
                     <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="建筑年代" v-bind="formItemLayout">
                     <a-input :maxLength='20' :style="allWidth" v-decorator="['builtAge', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
+                <a-col v-bind="formSpan">
                   <a-form-item label="竣工日期" v-bind="formItemLayout">
                     <a-date-picker
                     width="100%"
@@ -212,7 +212,7 @@
                 </a-col>
                 <a-col :span="24">
                     <a-form-item label="平面图" v-bind="formItemLayout2">
-                      <SG-UploadFile v-model="picPath"/>
+                      <SG-UploadFile v-model="picPath" :max="1"/>
                     </a-form-item>
                   </a-col>
                   <a-col :span="24">
@@ -225,8 +225,8 @@
         </div>
     </div>
      <FormFooter>
-       <SG-Button class="mr10" @click="handleSave" type="primary">保存</SG-Button>
-       <SG-Button @click="handleCancel" type="danger" ghost>删除</SG-Button>
+       <SG-Button :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
+       <SG-Button v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
      <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>
    </div>
@@ -248,6 +248,9 @@ export default {
     type: {
       default: 'create'
     },
+    organId: {
+      default: ''
+    },
     objectData: {
       default: () => ({})
     }
@@ -267,6 +270,11 @@ export default {
       allWidth,
       allWidth1,
       allWidth2,
+      formSpan: {
+       xl: 8,
+       sm: 12
+      },
+      loading: false,
       region: undefined, // 区/县
       city: undefined, // 市
       address: '', // 详细地址
@@ -320,7 +328,6 @@ export default {
   },
   methods: {
     init () {
-      console.log('this.type', this.type, this.objectData)
       this.resetAll()
       if (this.type === 'edit') {
         this.queryBuildDetail(this.objectData.positionId)
@@ -329,20 +336,97 @@ export default {
     handleSave () {
       this.form.validateFields((err, values) => {
         console.log('得到值=>', values)
-        if (!err) {}
+        if (!err) {
+          let data = {}
+          utils.each(values, (value, key) => {
+            data[key] = value || ''
+          })
+          // 处理时间类型
+           if (data.completionDate) {
+             data.completionDate = data.completionDate.format('YYYY-MM-DD')
+           }
+          // 处理经纬度
+          let lngAnLatArr = data.lngAndlat.split('-')
+          data.longitude = lngAnLatArr[0]
+          data.latitude = lngAnLatArr[1]
+          // 处理图片
+          if (this.picPath.length > 0) {
+            data.picPath = this.picPath[0].url
+          }
+          // 处理附件
+          if (this.filepaths.length > 0) {
+            data.filepaths = this.filepaths.map(item => item.url).join(',')
+          }
+          // 处理省市区的联动start
+          data.city = this.city
+          data.region = this.region
+          data.address = this.address
+          //删除多余字段
+          delete data.lngAndlat
+          // 新增楼栋
+          if (this.type === 'create') {
+            data.organId = this.organId
+            data.upPositionId = this.objectData.positionId
+            this.$api.building.addBuild(data).then(res => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success('新增楼栋成功')
+                this.$emit('create')
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+          // 编辑楼栋
+          if (this.type === 'edit') {
+            data.organId = this.organId
+            data.buildId = this.objectData.buildId
+            data.upPositionId = this.objectData.upPositionId
+            this.$api.building.updateBuild(data).then(res => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success('编辑楼栋成功')
+                this.$emit('edit')
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+        }
       })
     },
-    handleCancel () {},
+    handleCancel () {
+      this.$SG_Modal.confirm({
+          title: `确定删除该楼栋吗?`,
+          okText: '确定',
+          cancelText: '在想想',
+          onOk: () => {
+            let data = {
+              buildId: this.objectData.buildId
+            }
+            this.$api.building.deleteBuild(data).then(res => {
+              if (res.data.code === '0') {
+               this.$SG_Message.success(`删除成功`)
+               this.$emit('delete')
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+        })
+    },
     queryBuildDetail (buildId) {
       let data = {
         buildId
       }
+      this.loading = true
       this.$api.building.queryBuildDetail(data).then(res => {
+        this.loading = false
         if (res.data.code === '0') {
           this.handleEdit({...res.data.data})
         } else {
           this.$message.error(res.data.message)
         }
+      }, () => {
+        this.loading = false
       })
     },
     // 处理编辑数据
@@ -352,7 +436,33 @@ export default {
         data.completionDate = moment(data.completionDate, 'YYYY-MM-DD')
       }
       // 处理经纬度
+      if (data.longitude) {
+        data.lngAndlat = data.longitude + '-' + data.latitude
+        this.point = {
+          lng: data.longitude,
+          lat: data.latitude
+        }
+      }
       // 处理图片
+      if (data.picPath) {
+        // this.picPath = [data.picPath]
+        this.picPath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+      }
+      // 处理附件
+      if (data.filepaths) {
+        // this.filepaths = data.filepaths.split(',')
+        this.filepaths = [
+          { url: '/doc/2019/07/23/8/2019/07/23/1563883528442.txt', name: '1563883528442.txt' },
+          { url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }
+        ]
+      }
+      // 处理省市区的联动start
+      this.city = data.city
+      this.region = data.region
+      this.address = data.address
+      this.queryCityAndAreaList(data.province, 'province')
+      this.queryCityAndAreaList(data.city, 'city')
+      // end
       let o = this.form.getFieldsValue()
       console.log('表单数据=>', o)
       let values = {}
@@ -402,12 +512,13 @@ export default {
           let resultArr = result.map(item => {
             return {
               label: item.typeName,
-              value: item.typeCode + ',' + item.typeId,
+              value: item.typeId,
               ...item
             }
           })
           if (code === '30') {
             this.buildTypeOpt = [ ...resultArr]
+            this.buildStructOpt = [...resultArr]
           }
           if (code === '60') {
             this.useTypeOpt = [...resultArr]

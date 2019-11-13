@@ -59,8 +59,8 @@ export function addFloor (data) {
   return axiosPost(building.addFloor, data)
 }
 // 查询楼层详情
-export function getFloorDetail (data) {
-  return axiosPost(building.getFloorDetail, data)
+export function queryFloorDetail (data) {
+  return axiosPost(building.queryFloorDetail, data)
 }
 // 修改单元
 export function updateUnit (data) {
@@ -75,8 +75,8 @@ export function addUnit (data) {
   return axiosPost(building.addUnit, data)
 }
 // 查询单元详情
-export function getUnitDetail (data) {
-  return axiosPost(building.addUnit, data)
+export function queryUnitDetail (data) {
+  return axiosPost(building.queryUnitDetail, data)
 }
 // 位置分类Position（异步）
 export function positionSelectAsyn (data) {

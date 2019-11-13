@@ -23,11 +23,11 @@
     <!-- 新增内容部分 -->
     <div class="create-content">
       <!-- 新建楼栋 -->
-      <createBuild :type="pageType" :objectData="activeItem"  v-if="showCreateBuild"/>
+      <createBuild :type="pageType" :organId="organId" :objectData="activeItem"  v-if="showCreateBuild"/>
       <!-- 新建单元 -->
-      <createUnit :type="pageType" :objectData="activeItem" v-if="showCreateUnit"/>
+      <createUnit :type="pageType" :organId="organId" :objectData="activeItem" v-if="showCreateUnit"/>
       <!-- 新建楼层 -->
-      <createFloor :type="pageType" :objectData="activeItem" v-if="showCreateFloor"/>
+      <createFloor :type="pageType" :organId="organId" :objectData="activeItem" v-if="showCreateFloor"/>
       <!-- 无页面 -->
       <div v-if="!pageType" class="no_page"></div>
     </div>
@@ -101,7 +101,7 @@ export default {
     // 点击树节点改变
     checkTreeChange (item) {
       this.activeType = String(item.subPositionType)
-      this.pageType = 'edit'
+      this.pageType = this.activeType === '-2' ? '' :'edit'
       this.createType = ''
       this.activeItem = {...item}
       // 如果点击的是树结构
