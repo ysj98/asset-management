@@ -30,8 +30,8 @@
           <OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>
         </template>
         <template slot="statusName" slot-scope="text, record, index">
-          <SG-Switch disabled checked  :id="index" v-if="text === '启用'">启用</SG-Switch>
-          <SG-Switch disabled :id="index" v-else>停用</SG-Switch>
+          <div v-if="record.status === '1'"><SG-Switch disabled checked  :id="index" style="margin-right: 10px;"></SG-Switch>启用</div>
+          <div v-else><SG-Switch disabled :id="index" style="margin-right: 10px;"></SG-Switch>停用</div>
         </template>
       </a-table>
     </div>
@@ -48,6 +48,7 @@
 <script>
 import segiIcon from '@/components/segiIcon.vue'
 import TreeSelect from '../../common/treeSelect'
+import OperationPopover from '@/components/OperationPopover'
 
 const columns = [
   {
@@ -102,14 +103,20 @@ const columns = [
     scopedSlots: { customRender: 'operation' },
   }
 ]
-const operationData = [
+const operationData1 = [
+  {iconType: 'play-circle', text: '启用', editType: 'start'},
+  {iconType: 'form', text: '编辑', editType: 'edit'},
+  {iconType: 'bars', text: '详情', editType: 'detail'}
+]
+const operationData2 = [
+  {iconType: 'pause-circle', text: '停用', editType: 'stop'},
   {iconType: 'form', text: '编辑', editType: 'edit'},
   {iconType: 'bars', text: '详情', editType: 'detail'}
 ]
 
 export default {
   components: {
-    segiIcon, TreeSelect
+    segiIcon, TreeSelect, OperationPopover
   },
   data () {
     return {
@@ -125,7 +132,8 @@ export default {
       codeName: '',
       columns,
       dataSource: [],
-      operationData,
+      operationData1,
+      operationData2,
       paginator: {
         pageNo: 1,
         pageLength: 10,
@@ -145,8 +153,35 @@ export default {
       this.paginator.pageNo = pageNo
     },
     // 操作回调
-    operationFun (editType) {
+    operationFun (editType, record) {
       console.log(editType)
+      console.log(record)
+      switch (editType) {
+        case 'start': this.changeStatus(1, record.categoryConfId)
+          break
+        case 'stop': this.changeStatus(0, record.categoryConfId)
+          break
+        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit'}})
+          break
+        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail'}})
+          break
+        default: break
+      }
+    },
+    // 改变状态
+    changeStatus (status, id) {
+      let form = {
+        categoryConfId: id,
+        status: status
+      }
+      this.$api.assets.updateStatus(form).then(res => {
+        if (res.data.code === '0') {
+          this.$message.success('修改成功')
+          this.queryList()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     // 点击查询
     queryClick () {
@@ -163,8 +198,22 @@ export default {
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
+      this.loading = true
       this.$api.assets.getPage(form).then(res => {
         console.log(res)
+        if (res.data.code === '0') {
+          let data = res.data.data.data
+          data.forEach((item, index) => {
+            item.key = index
+            item.operationData = item.status === '0' ? operationData1 : operationData2
+          })
+          this.dataSource = data
+          this.paginator.totalCount = res.data.data.count
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
       })
     }
   }

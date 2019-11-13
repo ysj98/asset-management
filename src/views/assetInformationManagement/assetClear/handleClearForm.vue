@@ -7,15 +7,15 @@
       <div class="edit-box-title"><i></i><span>基础信息</span></div>
       <div class="edit-box-content">
         <div class="edit-box-content-item">
-          <span class="label-name" :class="{'label-space-between': pageType === 'new' || pageType === 'edit'}">清理单编号<i></i></span>：
-          <span class="label-value" v-show="pageType === 'new' || pageType === 'edit'">
+          <span class="label-name" :class="{'label-space-between': editable}">清理单编号<i></i></span>：
+          <span class="label-value" v-show="editable">
             <a-input :style="allStyle" v-model="cleaningOrderCode" placeholder="请输入清理单编号" type="text"></a-input>
           </span>
-          <span class="label-value" v-show="pageType === 'detail' || pageType === 'audit'">{{cleaningOrderCode || '--'}}</span>
+          <span class="label-value" v-show="!editable">{{cleaningOrderCode || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name" :class="{'label-space-between': pageType === 'new' || pageType === 'edit'}">资产项目<i></i></span>：
-          <span class="label-value" v-show="pageType === 'new' || pageType === 'edit'">
+          <span class="label-name" :class="{'label-space-between': editable}">资产项目<i></i></span>：
+          <span class="label-value" v-show="editable">
             <a-select
               showSearch
               allowClear
@@ -26,11 +26,11 @@
               :filterOption="filterOption"
             ></a-select>
           </span>
-          <span class="label-value" v-show="pageType === 'detail' || pageType === 'audit'">{{projectName || '--'}}</span>
+          <span class="label-value" v-show="!editable">{{projectName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name" :class="{'label-space-between': pageType === 'new' || pageType === 'edit'}">资产类型<i></i></span>：
-          <span class="label-value" v-show="pageType === 'new' || pageType === 'edit'">
+          <span class="label-name" :class="{'label-space-between': editable}">资产类型<i></i></span>：
+          <span class="label-value" v-show="editable">
             <a-select
               showSearch
               allowClear
@@ -41,11 +41,11 @@
               :filterOption="filterOption"
             ></a-select>
           </span>
-          <span class="label-value" v-show="pageType === 'detail' || pageType === 'audit'">{{assetTypeName || '--'}}</span>
+          <span class="label-value" v-show="!editable">{{assetTypeName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name" :class="{'label-space-between': pageType === 'new' || pageType === 'edit'}">清理原因<i></i></span>：
-          <span class="label-value" v-show="pageType === 'new' || pageType === 'edit'">
+          <span class="label-name" :class="{'label-space-between': editable}">清理原因<i></i></span>：
+          <span class="label-value" v-show="editable">
             <a-select
               :maxTagCount="1"
               :style="allStyle"
@@ -56,39 +56,38 @@
               <a-select-option v-for="(item, index) in cleanupTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
           </span>
-          <span class="label-value" v-show="pageType === 'detail' || pageType === 'audit'">{{cleanupTypeName || '--'}}</span>
+          <span class="label-value" v-show="!editable">{{cleanupTypeName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name" :class="{'label-space-between': pageType === 'new' || pageType === 'edit'}">所属机构<i></i></span>：
-          <span class="label-value" v-show="pageType === 'new' || pageType === 'edit'">
+          <span class="label-name" :class="{'label-space-between': editable}">所属机构<i></i></span>：
+          <span class="label-value" v-show="editable">
             <a-input :style="allStyle" v-model="organName" type="text" disabled></a-input>
           </span>
           <span class="label-value" v-show="pageType === 'detail'">{{organName || '--'}}</span>
         </div>
-        <div class="edit-box-content-item" v-show="pageType === 'detail' || pageType === 'audit'">
+        <div class="edit-box-content-item" v-show="!editable">
           <span class="label-name">创建人</span>：
           <span class="label-value">{{createByName || '--'}}</span>
         </div>
-        <div class="edit-box-content-item" v-show="pageType === 'detail' || pageType === 'audit'">
+        <div class="edit-box-content-item" v-show="!editable">
           <span class="label-name">创建时间</span>：
           <span class="label-value">{{createTime || '--'}}</span>
         </div>
-        <div class="edit-box-content-item" v-show="pageType === 'detail' || pageType === 'audit'">
+        <div class="edit-box-content-item" v-show="!editable">
           <span class="label-name">备注</span>：
           <span class="label-value">{{remark || '--'}}</span>
         </div>
-        <div class="edit-box-content-item-totalWidth" v-show="pageType === 'new' || pageType === 'edit'">
-          <span class="label-name-box" :class="{'edit-label': pageType === 'new' || pageType === 'edit'}"><span class="label-name label-space-between">备注<i></i></span>：</span>
+        <div class="edit-box-content-item-totalWidth" v-show="editable">
+          <span class="label-name-box" :class="{'edit-label': editable}"><span class="label-name label-space-between">备注<i></i></span>：</span>
           <span class="label-value">
             <a-textarea v-model="remark" placeholder="请输入描述" :rows="3"></a-textarea>
           </span>
-          <span class="label-value" v-show="pageType === 'detail'">{{remark || '--'}}</span>
         </div>
         <div class="edit-box-content-item-totalWidth">
-          <span class="label-name-box" :class="{'edit-label': pageType === 'new' || pageType === 'edit'}"><span class="label-name" :class="{'label-space-between': pageType === 'new' || pageType === 'edit'}">附件<i></i></span>：</span>
+          <span class="label-name-box" :class="{'edit-label': editable}"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span>：</span>
           <span class="label-value">
-            <SG-UploadFile v-model="files" type="all" :show="pageType === 'detail' || pageType === 'audit'" />
-            <span class="file-null" v-show="(pageType === 'detail' || pageType === 'audit') && files.length === 0">--</span>
+            <SG-UploadFile v-model="files" type="all" :show="!editable" />
+            <span class="file-null" v-show="!editable && files.length === 0">--</span>
           </span>
         </div>
       </div>
@@ -111,10 +110,32 @@
         </a-table>
       </div>
     </div>
+    <div class="edit-box" v-show="pageType === 'audit'">
+      <div class="edit-box-title"><i></i><span>审核信息</span></div>
+      <div class="edit-box-content">
+        <div class="edit-box-content-item">
+          <span class="label-name">审核人</span>：
+          <span class="label-value">{{auditor || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">审核时间</span>：
+          <span class="label-value">{{auditTime || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item-totalWidth">
+          <span class="label-name-box"><span class="label-name">审核意见<i></i></span>：</span>
+          <span class="label-value">
+            <a-textarea v-model="auditOpinion" placeholder="请输入审核意见" :rows="3"></a-textarea>
+          </span>
+        </div>
+      </div>
+    </div>
+    <form-footer v-show="pageType === 'new'" leftButtonName="提交审核" rightButtonName="取消" @save="submitAudit" @cancel="cancel"></form-footer>
+    <form-footer v-show="pageType === 'audit'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="approveAudit" @cancel="rejectAudit"></form-footer>
   </div>
 </template>
 
 <script>
+import FormFooter from '@/components/FormFooter'
 const columns = [
   {
     title: '资产名称',
@@ -162,9 +183,13 @@ const columns = [
     scopedSlots: { customRender: 'operation' },
   }]
 export default {
+  components: {
+    FormFooter
+  },
   data () {
     return {
       pageType: 'new',
+      editable: false,
       allStyle: 'width: 160px;',
       organId: '',
       organName: 'XX集团',
@@ -194,7 +219,10 @@ export default {
       remark: '',
       files: [],
       columns,
-      dataSource: []
+      dataSource: [],
+      auditor: '',
+      auditTime: '',
+      auditOpinion: ''
     }
   },
   methods: {
@@ -205,10 +233,20 @@ export default {
     },
     // 新增行
     addItem () {
-    }
+    },
+    // 提交审核
+    submitAudit () {
+    },
+    // 取消
+    cancel () {},
+    // 审核通过
+    approveAudit () {},
+    // 驳回
+    rejectAudit () {}
   },
   mounted () {
     this.pageType = this.$route.query.pageType
+    this.editable = this.pageType === 'new' || this.pageType === 'edit'
   }
 }
 </script>

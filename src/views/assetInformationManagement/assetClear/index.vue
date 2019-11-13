@@ -31,6 +31,7 @@
           :tokenSeparators="[',']"
           placeholder="全部状态"
           :defaultValue="queryCondition.approvalStatus"
+          @change="changeStatus"
         >
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -41,6 +42,7 @@
           placeholder="全部资产类型"
           :defaultValue="queryCondition.assetType"
           style="width: 190px; margin-right: 10px;"
+          @change="changeAssetType"
         >
           <a-select-option v-for="(item, index) in assetTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -116,6 +118,13 @@
         </template>
       </a-table>
     </div>
+    <SG-FooterPagination
+      :pageLength="paginator.pageLength"
+      :totalCount="paginator.totalCount"
+      location="absolute"
+      v-model="paginator.pageNo"
+      @input="handlePageChange"
+    />
   </div>
 </template>
 
@@ -129,22 +138,53 @@ import moment from 'moment'
 
 const columns = [
   {
-    title: 'name',
-    dataIndex: 'name',
-    width: '25%'
+    title: '清理单编号',
+    dataIndex: 'cleaningOrderCode',
+    width: '160px'
   },
   {
-    title: 'age',
-    dataIndex: 'age',
-    width: '15%'
+    title: '管理机构',
+    dataIndex: 'organName',
+    width: '160px'
   },
   {
-    title: 'address',
-    dataIndex: 'address',
-    width: '40%'
+    title: '资产项目名称',
+    dataIndex: 'projectName',
+    width: '160px'
   },
   {
-    title: 'operation',
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: '160px'
+  },
+  {
+    title: '资产数量',
+    dataIndex: 'assetCount',
+    width: '120px'
+  },
+  {
+    title: '清理原因',
+    dataIndex: 'cleanupTypeName',
+    width: '160px'
+  },
+  {
+    title: '创建日期',
+    dataIndex: 'createTime',
+    width: '160px'
+  },
+  {
+    title: '创建人',
+    dataIndex: 'createByName',
+    width: '120px'
+  },
+  {
+    title: '当前状态',
+    dataIndex: 'approvalStatusName',
+    width: '120px'
+  },
+  {
+    title: '操作',
+    width: '120px',
     dataIndex: 'operation',
     scopedSlots: { customRender: 'operation' },
   }
@@ -191,14 +231,7 @@ export default {
       columns,
       organName: '',
       organId: '',
-      dataSource: [
-        {
-          key: '1',
-          name: 'name',
-          age: 'age',
-          address: 'address'
-        }
-      ],
+      dataSource: [],
       operationData: [...operationData],
       approvalStatusData: [...approvalStatusData],
       assetProjectOptions: [
@@ -219,7 +252,13 @@ export default {
         beginDate: getThreeMonthsAgoDate(),
         endDate: getCurrentDate(),
         onlyCurrentOrgan: false
-      }
+      },
+      paginator: {
+        pageNo: 1,
+        pageLength: 10,
+        totalCount: 0
+      },
+      loading: false
     }
   },
   methods: {
@@ -227,6 +266,13 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.organId = value
+      this.queryClick()
+    },
+    changeStatus (status) {
+      console.log(status)
+    },
+    changeAssetType (type) {
+      console.log(type)
     },
     filterOption(input, option) {
       return (
@@ -238,8 +284,13 @@ export default {
       this.queryCondition.beginDate = val[0]
       this.queryCondition.endDate = val[1]
     },
+    // 复选框发生变化
     onOnlyCurrentOrganChange (event) {
       this.queryCondition.onlyCurrentOrgan = event.target.checked
+    },
+    // 页码发生变化
+    handlePageChange (pageNo) {
+      this.paginator.pageNo = pageNo
     },
     // 新增清理单
     newClearForm () {
@@ -247,11 +298,16 @@ export default {
     },
     // 详情
     operationFun () {},
-    // 搜索
-    onSearch () {},
     // 高级搜索控制
     searchContainerFn (val) {
       this.toggle = val
+    },
+    // 点击查询
+    queryClick () {
+      this.paginator.pageNo = 1
+      this.queryList()
+    },
+    queryList () {
     }
   },
   created () {
