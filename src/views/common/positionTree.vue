@@ -204,12 +204,15 @@ export default {
     onChange (e) {
       let value = this.searchValueInput
       // 找到需要的节点
-      const expandedKeys = this.dataList.map((item) => {
+      let expandedKeys = this.dataList.map((item) => {
         if (item.title.indexOf(value) > -1 && value.trim()) {
           return getParentKey(item.key, this.gData)
         }
         return null
       }).filter((item, i, self) => item && self.indexOf(item) === i)
+      if (!expandedKeys.length) {
+        expandedKeys = [topItem.key]
+      }
       Object.assign(this, {
         expandedKeys,
         // searchValue: value,

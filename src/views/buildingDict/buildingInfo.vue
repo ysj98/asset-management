@@ -11,9 +11,9 @@
      <div class="create-btn">
        <span class="create-title" >楼栋信息</span>
        <div>
-         <SG-Button v-if="activeType==='0'" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
-         <SG-Button v-if="activeType==='1'" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
-         <SG-Button v-if="activeType==='-2'" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
+         <SG-Button v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
+         <SG-Button v-if="showCreateUnitBtn" :class="[childNodeType==='0'&&'mr5']" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
+         <SG-Button v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
        </div>
      </div>
      <div class="tree-content">
@@ -23,11 +23,11 @@
     <!-- 新增内容部分 -->
     <div class="create-content">
       <!-- 新建楼栋 -->
-      <createBuild v-if="activeType==='0' || (activeType==='-2'&&pageType==='create')"/>
+      <createBuild :type="pageType" :organId="organId" :objectData="activeItem"  v-if="showCreateBuild"/>
       <!-- 新建单元 -->
-      <createUnit v-if="activeType==='1' || (activeType==='0'&&pageType==='create')"/>
+      <createUnit :type="pageType" :organId="organId" :objectData="activeItem" v-if="showCreateUnit"/>
       <!-- 新建楼层 -->
-      <createFloor v-if="activeType==='2' || (activeType==='1'&&pageType==='create')"/>
+      <createFloor :type="pageType" :organId="organId" :objectData="activeItem" v-if="showCreateFloor"/>
       <!-- 无页面 -->
       <div v-if="!pageType" class="no_page"></div>
     </div>
@@ -55,7 +55,34 @@ export default {
     return {
       activeType: '', // -2楼栋列表，0楼栋, 1单元, 2楼层
       pageType: '', // create新增， edit编辑，
-      activeItem: {}
+      createType: '', // unit新建单元，build新建楼栋，floor新建楼层 
+      activeItem: {},
+      childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
+    }
+  },
+  computed: {
+    showCreateBuild () {
+      return (this.activeType==='0' && this.createType === '') 
+             || (this.activeType==='-2'&&this.createType==='build')
+    },
+    showCreateUnit () {
+      return (this.activeType==='1' && this.createType === '') 
+             || (this.activeType==='0' && this.createType==='unit')
+    },
+    showCreateFloor () {
+      return (this.activeType==='2' && this.createType === '') 
+             || (this.activeType==='0' && this.createType === 'floor')
+             || (this.activeType==='1'&&this.createType === 'floor')
+    },
+    showCreateBuildBtn () {
+      return this.activeType==='-2'
+    },
+    showCreateUnitBtn () {
+      return this.activeType==='0'&&['0', '1'].includes(this.childNodeType)
+    },
+    showCreateFloorBtn () {
+      return this.activeType==='0'&&['0', '2'].includes(this.childNodeType) 
+             || this.activeType==='1'
     }
   },
   mounted () {
@@ -68,13 +95,26 @@ export default {
     // 点击新增按钮
     createPage (type) {
      this.pageType = 'create'
+     this.createType = type
+     console.log('点击新增=>', type)
     },
     // 点击树节点改变
     checkTreeChange (item) {
-      console.log('点击树节点改变=>', item)
       this.activeType = String(item.subPositionType)
-      this.pageType = 'edit'
+      this.pageType = this.activeType === '-2' ? '' :'edit'
+      this.createType = ''
       this.activeItem = {...item}
+      // 如果点击的是树结构
+      if (this.activeType === '0') {
+        this.$api.building.queryBellowPositionType({positionId: item.positionId}).then(res => {
+          if (res.data.code === '0') {
+            this.childNodeType = res.data.data
+          }
+        })
+      } else {
+        this.childNodeType = ''
+      }
+      console.log('点击树节点改变=>', item, this.activeType, this.pageType)
     },
     computedHeight () {
       let elem = this.$refs.buildingInfo
@@ -134,10 +174,10 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 320px;
-    height: 230px;
-    margin-left: -160px;
-    margin-top: -115px;
+    width: 214px;
+    height: 154px;
+    margin-left: -107px;
+    margin-top: -77px;
     background-image: url('../../assets/image/undertake/init_no.png');
     background-size: 100% 100%;
   }

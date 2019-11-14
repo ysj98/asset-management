@@ -8,7 +8,40 @@
     <title>资产管理</title>
     <% if (process.env.NODE_ENV === 'production') { %>
       <script src="/configs.js?v=<%=new Date().getTime()%>"></script>
+      <script>
+        /**
+         * 加载 CDN 资源函数
+         * urls: 资源列表
+         * target: CDN 服务器
+         */
+        function loadCdnScript (urls, target) {
+          // 获取配置
+          var configs = window.__configs
+          target = target || configs.cdnURL
+          // 使用变量防止转义
+          var script = '/script'
+          for (var i = 0; i < urls.length; i++) {
+            // 如果已配置CDN，则使用CDN文件
+            if (configs && configs.cdnURL) {
+              document.write("<script src='" + target + urls[i] + "'><" + script + '>')
+            // 否则使用根目录下的 /lib/ 下的文件
+            } else {
+              document.write("<script src='/lib" + urls[i] + "'><" + script + '>')
+            }
+          }
+        }
+        var SCRS = [
+          '/vue/2.6.6/vue.min.js',
+          '/vue-router/3.0.2/vue-router.min.js',
+          '/vuex/3.0.1/vuex.min.js',
+          '/axios/0.18.0/axios.min.js',
+          '/moment.js/2.24.0/moment.min.js',
+          '/ant-design-vue/1.3.16/dist/antd.min.js'
+        ]
+        loadCdnScript(SCRS)
+      </script>
     <% } %>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=qT7Gt3iEPGDpduW64wdaKxMaCwQG3OWx"></script>
     <script src="./static/font/iconfont.js"></script>
   </head>
   <body>

@@ -34,6 +34,10 @@ export default [
       {
         title: '资产项目管理',
         path: '/assetProjectManage'
+      },
+      {
+        title: '资产登记',
+        path: '/assetRegister'
       }
     ]
   },

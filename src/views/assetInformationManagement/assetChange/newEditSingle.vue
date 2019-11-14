@@ -1,5 +1,6 @@
 <!--
-  新增编辑
+  新增: new
+  编辑: edit
 -->
 <template>
   <div class="newEditSingle">
@@ -44,6 +45,7 @@
           <a-col class="playground-col" :span="8">
             <a-form-item label="变动类型：" v-bind="formItemLayout">
               <a-select
+                :disabled="setType === 'edit'"
                 showSearch
                 :style="allWidth"
                 placeholder="请选择变动类型"
@@ -202,7 +204,11 @@
     </div>
     <!-- 选择资产 -->
     <AssetBundlePopover ref="assetBundlePopover" @status="status"></AssetBundlePopover>
-    <FormFooter @save="save" @cancel="cancel"></FormFooter>
+    <FormFooter>
+      <a-button type="primary" @click="save('save')">提交</a-button>
+      <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
+      <a-button @click="cancel">取消</a-button>
+    </FormFooter>
   </div>
 </template>
 
@@ -210,9 +216,10 @@
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import {deliveryProperty, deliveryOperation, changeDirectionUse, variationOriginalValue, positionChange, projectChange} from './basics'
 import FormFooter from '@/components/FormFooter'
+import moment from 'moment'
 const newEditSingleData = {
   title: '',   // 验收单名称
-  changeType: 'jfwy',     // 变动类型
+  changeType: '',     // 变动类型
   projectId: '',     // 资产项目
   deliveryCompany: '',    // 交付单位
   changeDate: {},       // 变动日期
@@ -226,7 +233,8 @@ export default {
   props: {},
   data () {
     return {
-      changeType: 'jfwy',          // 用来判断对象变动类型
+      enitData: '',
+      changeType: '',          // 用来判断对象变动类型
       checkedData: [],
       show: false,
       columns: [],
@@ -362,10 +370,15 @@ export default {
       }
     },
     // 提交
-    save () {
+    save (str) {
       this.form.validateFields((err, values) => {
         if (!err) {
+          if (this.tableData.length <= 0) {
+            this.$message.info('请选择变动资产')
+            return
+          }
           let obj = {
+            saveType: str === 'saveType' ? 0 : 1,
             changeOrderId: '',                // 资产变动单Id（新增为空）
             title: values.title,                // 标题
             projectId: title.projectId,                // 资产项目Id
@@ -390,14 +403,52 @@ export default {
     cancel () {
       this.$router.push({path: '/asset-management/#/assetChange'})
     },
+    // 编辑获取接口
+    editFn () {
+      let obj = {
+        changeOrderId: this.changeOrderId
+      }
+      this.$api.assets.getChangeInfo(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          console.log(data, '拿到是')
+          this.form.setFieldsValue({
+            organId: this.organIdData[0].value,
+            projectId: data.projectId,
+            title: data.title,
+            changeType: String(data.changeType),
+            deliveryCompany: data.deliveryCompany,
+            changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
+            expiryDate: moment(data.expiryDate, 'YYYY-MM-DD'),
+            remark: data.remark
+          })
+          this.changeType = data.changeType
+          data.assetDetailList.forEach(item => {
+            item.key = item.assetCode
+          })
+          this.$nextTick(() => {
+            this.tableData = data.assetDetailList
+          })
+          console.log(this.tableData, '拿到的数据')
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
+    this.setType = this.$route.query.setType
   },
   mounted () {
-    this.form.setFieldsValue({
-      organId: this.organIdData[0].value
-    })
+    if (this.setType === 'edit') {
+      this.enitData = JSON.parse(this.$route.query.enitData)
+      this.editFn()
+    } else {
+      this.form.setFieldsValue({
+        organId: this.organIdData[0].value
+      })
+    }
   }
 }
 </script>

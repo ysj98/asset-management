@@ -35,8 +35,28 @@ let proRouter = [
   },
   {
     path: '/assetChange/newEditSingle',
-    name: '变动单申请',
+    name: '变动申请',
     component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
+  },
+  {
+    path: '/assetChange/particulars',
+    name: '变动单详情',
+    component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
+  },
+  {
+    path: '/assetRegister',
+    name: '资产登记',
+    component: () => import('@/views/assetInformationManagement/assetRegister/index.vue')
+  },
+  {
+    path: '/assetRegister/newEditSingle',
+    name: '新建登记单',
+    component: () => import('@/views/assetInformationManagement/assetRegister/newEditSingle.vue')
+  },
+  {
+    path: '/assetRegister/particulars',
+    name: '登记单详情',
+    component: () => import('@/views/assetInformationManagement/assetRegister/particulars.vue')
   },
   {
     path: '/assetClear',
@@ -82,6 +102,16 @@ let proRouter = [
     path: '/assetProjectDetail',
     name: '资产项目管理详情',
     component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
+  },
+  {
+    path: '/assetClassSet/edit',
+    name: '编辑',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/editClassSet.vue')
+  },
+  {
+    path: '/assetClassSet/detail',
+    name: '详情',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
   }
 ]
 export default proRouter
