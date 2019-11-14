@@ -9,6 +9,7 @@ import Vuex from 'vuex'
 import dev from './modules/dev'
 import auth from './modules/auth'
 import pro from './modules/pro'
+import asset from './modules/asset'
 
 Vue.use(Vuex)
 
@@ -25,6 +26,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     dev,
-    pro
+    pro,
+    asset
   }
 })
