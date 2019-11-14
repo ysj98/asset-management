@@ -62,7 +62,7 @@
     >
       <base-info ref="baseInfo" :isEdit="false"/>
     </SG-Modal>
-    <router-link to="/assetProjectDetail">戳我去详情页</router-link>
+    <!--<router-link to="/assetProjectDetail">戳我去详情页</router-link>-->
   </div>
 </template>
 
@@ -75,7 +75,7 @@
     components: { BaseInfo, SearchContainer, OverviewNumber },
     data () {
       return {
-        fold: false, // 查询条件折叠
+        fold: true, // 查询条件折叠
         name: '', // 资源项目名称
         isPrivate: false, // 是否仅当前机构下资产项目
         ownOptions: [], // 是否接管选项
@@ -95,13 +95,13 @@
           rowKey: 'assetCode',
           loading: false,
           dataSource: [],
-          scroll: { x: 1500, y: 300 },
+          scroll: { x: true },
           columns: [
-            { title: 'Age', dataIndex: 'name', key: 'name', fixed: 'left' },
-            { title: 'Age', dataIndex: 'age', key: 'age' },
-            { title: 'Address', dataIndex: 'address', key: 'address' },
-            { title: 'Tags', key: 'tags', dataIndex: 'tags', scopedSlots: { customRender: 'tags' } },
-            { title: 'Action', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right' },
+            { title: '管理机构', dataIndex: 'name', key: 'name', fixed: 'left' },
+            { title: '资产项目名称', dataIndex: 'age', key: 'age' },
+            { title: '资产项目编码', dataIndex: 'address', key: 'address' },
+            { title: '来源方式', key: 'tags', dataIndex: 'tags', scopedSlots: { customRender: 'tags' } },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 },
           ]
         },
         paginationObj: { pageNo: 0, totalCount: 0, pageLength: 0, location: 'absolute' }
@@ -176,5 +176,12 @@
 <style lang='less' scoped>
   .project_manage {
     padding: 8px;
+    .custom-table {
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+    }
   }
 </style>

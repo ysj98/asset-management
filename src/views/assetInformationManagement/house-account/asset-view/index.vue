@@ -66,7 +66,7 @@
         :columns="tableObj.initColumns"
       />
     </SG-Modal>
-    <router-link to="/assetViewDetail" class="btn-primary">戳我看详情</router-link>
+    <!--<router-link to="/assetViewDetail" class="btn-primary">戳我看详情</router-link>-->
   </div>
 </template>
 
@@ -87,11 +87,13 @@
           loading: false,
           columns: [],
           dataSource: [],
-          scroll: { x: 1500 },
+          scroll: { x: true },
           initColumns: [
-            { title: 'Address', dataIndex: 'address', key: 'address' },
-            { title: 'Tags', key: 'tags', dataIndex: 'tags', scopedSlots: { customRender: 'tags' } },
-            { title: 'Action', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: 100, fixed: 'right' }
+            { title: '资产名称', dataIndex: 'name', key: 'name', fixed: 'left' },
+            { title: '资产编码', dataIndex: 'age', key: 'age' },
+            { title: '接管机构', dataIndex: 'address', key: 'address' },
+            { title: '丘地号', key: 'tags', dataIndex: 'tags', scopedSlots: { customRender: 'tags' } },
+            { title: '建筑面积', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right' }
           ]
         },
         key: 0, // 更新Modal包裹的子组件
@@ -149,5 +151,11 @@
 </script>
 
 <style lang='less' scoped>
-
+  .custom-table {
+    /*if you want to set scroll: { x: true }*/
+    /*you need to add style .ant-table td { white-space: nowrap; }*/
+    & /deep/ .ant-table-thead th, .ant-table td {
+      white-space: nowrap;
+    }
+  }
 </style>

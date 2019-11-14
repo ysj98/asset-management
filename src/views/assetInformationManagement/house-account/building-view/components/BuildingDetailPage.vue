@@ -2,9 +2,9 @@
 <template>
   <div class="building_detail">
     <!--基本信息-->
-    <base-info-part/>
+    <base-info-part v-if="organId" :data="baseData"/>
     <!--资产使用方向-->
-    <asset-direct-part/>
+    <asset-direct-part v-if="assetHouseId" :houseId="assetHouseId" :organId="organId"/>
     <!--其它信息-->
     <other-info-part/>
   </div>
@@ -18,10 +18,24 @@
     name: 'BuildingDetailPage',
     components: { AssetDirectPart, BaseInfoPart, OtherInfoPart },
     data () {
-      return {}
+      return {
+        projectId: '', // 项目id
+        organId: '', // 组织机构id
+        assetHouseId: '', // 房间id
+        baseData: {}, // 基础信息部分的数据
+      }
     },
 
-    methods: {}
+    methods: {},
+
+    mounted () {
+      const {organId, projectId, assetHouseId, ...others} = this.$route.params
+      debugger
+      Object.assign(this, {
+        baseData: others,
+        organId, projectId, assetHouseId
+      })
+    }
   }
 </script>
 

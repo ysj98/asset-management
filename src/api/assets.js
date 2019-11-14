@@ -174,3 +174,23 @@ export function getDetail (data) {
   return axiosGet(assets.assetClassSet.getDetail, data)
 }
 
+// 房屋台账-楼栋视图
+// 查询楼栋视图面积使用统计
+export function queryFloorArea (data) {
+  return axiosPost(assets.buildingView.queryFloorArea, data, false, false)
+}
+
+// 楼栋视图分页查询
+export function queryViewPage (data) {
+  return axiosPost(assets.buildingView.queryViewPage, data, false, false)
+}
+
+// 导出楼栋视图excel
+export function exportExcel (data) {
+  return axiosPost(assets.buildingView.exportExcel, data, false, false)
+}
+
+// 楼层信息查询
+export function queryFloorInfo (data) {
+  return axiosGet(assets.buildingView.queryFloorInfo, data)
+}

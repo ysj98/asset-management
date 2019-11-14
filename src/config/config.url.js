@@ -140,6 +140,17 @@ export const assets = {
     updateStatus: '/ams/categoryCfg/updateStatus',
     // 资产分类设置-获取资产分类详情
     getDetail: '/ams/categoryCfg/getDetail'
+  },
+  // 房屋台账 - 楼栋视图
+  buildingView: {
+    // 导出楼栋视图excel
+    exportExcel: '/asset-house/build/excel',
+    // 楼层信息查询
+    queryFloorInfo: '/asset-house/build/floor',
+    // 楼栋视图分页查询
+    queryViewPage: '/asset-house/build/page',
+    // 楼栋视图面积使用统计
+    queryFloorArea: '/asset-house/build/area'
   }
 }
 // 楼盘字典

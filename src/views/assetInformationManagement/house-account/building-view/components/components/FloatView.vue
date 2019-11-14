@@ -41,9 +41,7 @@
         const { clientX, clientY } = position
         this.count += clientX ? 1 : 0
         // 获取浮窗的宽度和高度
-        let {height, width} = getComputedStyle(document.getElementsByClassName('float_view')[0])
-        let h = parseFloat(height)
-        let w = parseFloat(width)
+        let { offsetHeight: h, offsetWidth: w } = document.getElementsByClassName('float_view')[0]
         // 获取当前视图的宽度和高度
         let ch = document.documentElement.clientHeight
         let cw = document.documentElement.clientWidth
