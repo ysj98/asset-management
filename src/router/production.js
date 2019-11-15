@@ -1,7 +1,7 @@
 /*
  * @Date: 2019-11-01 09:42:51
  * @Author: chen han
- * @Description: 
+ * @Description:
  */
 /**
  *  生产环境路由
@@ -72,6 +72,36 @@ let proRouter = [
     path: '/assetClassSet',
     name: '资产分类设置',
     component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue')
+  },
+  {
+    path: '/assetView',
+    name: '资产视图',
+    component: () => import('@/views/assetInformationManagement/house-account/asset-view')
+  },
+  {
+    path: '/assetViewDetail',
+    name: '资产视图详情',
+    component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
+  },
+  {
+    path: '/buildingView',
+    name: '楼栋视图',
+    component: () => import('@/views/assetInformationManagement/house-account/building-view')
+  },
+  {
+    path: '/buildingViewDetail',
+    name: '楼栋视图详情',
+    component: () => import('@/views/assetInformationManagement/house-account/building-view/components/BuildingDetailPage')
+  },
+  {
+    path: '/assetProjectManage',
+    name: '资产项目管理',
+    component: () => import('@/views/assetInformationManagement/asset-project-manage')
+  },
+  {
+    path: '/assetProjectDetail',
+    name: '资产项目管理详情',
+    component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
   },
   {
     path: '/assetClassSet/edit',
