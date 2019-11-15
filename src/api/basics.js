@@ -19,6 +19,12 @@ import { basics } from '../config/config.url'
 //     responseType: 'blob'
 //   })
 // }
+// 文件下载
+export function fileDownLoad (data) {
+  return axiosGet(basics.fileDownLoad, data, false, {
+    responseType: 'blob'
+  })
+}
 export function queryAllTopOrganByUser (data) {
   return axiosGet(basics.queryAllTopOrganByUser, data)
 }
@@ -41,4 +47,12 @@ export function queryProvinceList (data) {
 // 查询省列表 省市区域接口 POST
 export function queryCityAndAreaList (data) {
   return axiosPost(basics.queryCityAndAreaList, data)
+}
+// 按照一级物业公司查询楼栋列表
+export function queryBuildList (data) {
+  return axiosPost(basics.queryBuildList, data)
+}
+//  请求楼层
+export function queryFloorListByPosId (data) {
+  return axiosGet(basics.queryFloorListByPosId, data)
 }

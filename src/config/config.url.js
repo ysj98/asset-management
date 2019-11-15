@@ -35,6 +35,8 @@ export const basics = {
     // 图片预览地址
     imgStr: host.hostImg,
   },
+  // 文件下载
+  fileDownLoad: '/uis/fileApi/fileDownLoad',
   // 查询所有一级物业
   queryAllTopOrganByUser: '/basic-data-api/rest-api/v1/organInfo/queryAllTopOrganByUser',
   // 请求楼栋单元
@@ -47,6 +49,10 @@ export const basics = {
   queryProvinceList: '/basic-data-api/rest-api/v1/regionApi/queryProvinceList',
   /* 查询市、区、街道办 */
   queryCityAndAreaList: '/basic-data-api/rest-api/v1/regionApi/queryRegionByPId',
+  // 按照一级物业公司查询楼栋列表
+  queryBuildList: '/basic-data-api/rest-api/v1/ams/buildApi/queryBuildList',
+  // 请求楼层
+  queryFloorListByPosId: '/basic-data-api/rest-api/v1/floorApi/queryFloorListByPosId',
 }
 
 // 资产管理
@@ -151,7 +157,7 @@ export const building = {
   // 新增房屋
   addHouse: '/ams/houseApi/addHouse',
   // 查询房屋详情
-  getHouseDetail: '/ams/houseApi/getHouseDetail',
+  queryHouseDetailById: '/ams/houseApi/queryHouseDetailById',
   // 修改房屋状态
   updateHouseStatus: '/ams/houseApi/updateHouseStatus',
   // 修改楼栋

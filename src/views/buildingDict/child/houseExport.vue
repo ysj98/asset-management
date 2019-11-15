@@ -1,33 +1,33 @@
 <!--
  * @Date: 2019-11-07 17:14:17
  * @Author: chen han
- * @Description: 房间资料导出
+ * @Description: 房间导出
  -->
 <template>
-  <a-modal
-  @cancel="closeModal"
-      :title="modal.title"
-      v-model="modal.show"
-      :width="450"
-      :keyboard="false"
-      :maskClosable="false"
-      :footer="null"
-      :bodyStyle="{ 'overflow-y': 'auto',padding: '0 0px'}"
+<SG-Modal
+    @cancel="hiddeModal"
+    title="导出房间信息"
+    v-model="visible"
+    :width="450"
+    :maskClosable="false"
+    :noPadding="true"
+    :keyboard="false"
+    :footer="null"
+    :bodyStyle="{ 'overflow-y': 'auto',padding: '0 0px'}"
   >
    <div class="export-box">
      <div class="export-item">
      <a-select
         showSearch
         placeholder="请选择项目"
-        @search="handleSearch"
-        v-model="communityId"
+        v-model="organId"
         optionFilterProp="children"
         :defaultActiveFirstOption="false"
         :dropdownMatchSelectWidth="false"
         :style="inputStyple"
-        :options="communityOpt"
+        :options="organOpt"
         :allowClear="false"
-        :filterOption="false"
+        :filterOption="filterOption"
         notFoundContent="没有查询到数据"
         />
        </div>
@@ -37,11 +37,12 @@
         showSearch
         placeholder="请选择楼栋"
         v-model="buildId"
+        @search="handleSearch"
         optionFilterProp="children"
         :style="inputStyple"
         :options="buildOpt"
-        :allowClear="false"
-        :filterOption="filterOption"
+        :allowClear="true"
+        :filterOption="false"
         notFoundContent="没有查询到数据"
         />
         </div> 
@@ -54,7 +55,7 @@
         optionFilterProp="children"
         :style="inputStyple"
         :options="unitOpt"
-        :allowClear="false"
+        :allowClear="true"
         :filterOption="filterOption"
         notFoundContent="没有查询到数据"
         />
@@ -63,69 +64,44 @@
           <a-button class="fr" @click="exportHouse" type="primary">下载模板</a-button>
         </div>
    </div>
-  </a-modal>
+</SG-Modal>
 </template>
 <script>
-import {Modal, Select, Button} from 'ant-design-vue'
-import Utils from '@/api/utils'
-import * as api from '@/api/basicInfo.js'
-import _ from 'lodash'
+import {utils, debounce} from '@/utils/utils'
 let fintItem = (data, value) => {
-  // console.log('chuangruid', value)
-  // let flag = true
-  // if (flag) {
-  //   return {label: 'a+b+c+d', value: '2'}
-  // }
   if (!value) {
     return {label: '', value: ''}
   }
   return data.find(item => item.value === value)
 }
 export default {
-  components: {
-    AModal: Modal,
-    ASelect: Select,
-    AButton: Button
-  },
   props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
   },
   data () {
     return {
+      visible: false,
       inputStyple: {width: '100%'},
-      modal: {
-        title: '下载房间信息',
-        show: false
-      },
-      communityId: undefined,
+      organId: undefined,
       buildId: undefined,
       unitId: undefined,
-      communityOpt: [],
+      organOpt: [],
       buildOpt: [],
       unitOpt: []
     }
   },
   watch: {
-    show (newVal) {
-      this.modal.show = this.show
+    visible (newVal) {
       if (!newVal) {
-        // this.communityId = this.communityOpt[0].value
-        this.getOptions('getCommunityByName')
-        this.buildId = undefined
-        this.unitId = undefined
-        this.unitOpt = []
+        this.hiddeModal()
       }
     },
-    communityId (newVal) {
+    organId (newVal) {
       this.buildId = undefined
       this.unitId = undefined
       this.buildOpt = []
       this.unitOpt = []
       if (newVal) {
-        this.getOptions('getBuildByRealCommunityId', newVal)
+        this.queryBuildList(newVal)
       }
     },
     buildId (newVal) {
@@ -137,27 +113,50 @@ export default {
     }
   },
   mounted () {
-    this.getOptions('getCommunityByName')
+    this.queryAllTopOrganByUser()
   },
   methods: {
-    // 获取项目楼栋单元房号
+    // 隐藏弹窗
+    hiddeModal () {
+      this.buildId = undefined
+      this.unitId = undefined
+      this.unitOpt = []
+    },
+    // 请求一级物业
+    queryAllTopOrganByUser () {
+      this.$api.basics.queryAllTopOrganByUser({}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.organOpt = result.map(item => {
+            return {label: item.organName, value: item.organId}
+          })
+          console.log('一级组织机构=>', this.organOpt)
+          // 默认选中第一个
+          if (this.organOpt.length) {
+            this.organId = this.organOpt[0].value
+            this.queryBuildList(this.organOpt[0].value)
+          }
+        }
+      })
+    },
+    // 请求楼栋列表默认20条
+    queryBuildList (organId, buildName) {
+      this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.buildOpt = result.map(item => {
+            return {label: item.buildName, value: item.buildId}
+          })
+        }
+      })
+    },
+    // 请求单元楼层
     getOptions (type, value = '') {
       if (!type) {
         return
       }
       let PARAMS = ''
       let resetArr = []
-      // 请求项目
-      if (type === 'getCommunityByName') {
-        PARAMS = '#NAME:'
-        resetArr = []
-        this.communityOpt = resetArr
-      }
-      // 请求楼栋
-      if (type === 'getBuildByRealCommunityId') {
-        PARAMS = '#COMMUNITY_ID:' + value
-        this.buildOpt = resetArr
-      }
       // 请求单元
       if (type === 'getUnitByBuildId') {
         PARAMS = '#BUILD_ID:' + value
@@ -167,7 +166,7 @@ export default {
         SQL_CODE: type,
         PARAMS: PARAMS
       }
-      api.getOptions(data).then(res => {
+      this.$api.basics.getOptions(data).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
           resetArr.push(...result.map(item => {
@@ -176,58 +175,45 @@ export default {
               value: item.C_VALUE
             }
           }))
-          // 如果请求的是项目，默认展示第一个
-          if (type === 'getCommunityByName' && resetArr.length) {
-            this.communityId = resetArr[0]['value']
-          }
         }
       })
     },
-    // 搜索后端数据
-    updateOptions: _.debounce(function () {
-      let data = {
-        SQL_CODE: 'getCommunityByName',
-        PARAMS: '#NAME:' + (this.searchCommunityName || '')
-      }
-      api.getOptions(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          this.communityOpt = result.map(item => {
-            return {
-              label: item.C_TEXT,
-              value: item.C_VALUE
-            }
-          })
-        }
-      })
-    }, 300),
+    // 楼栋搜索
+    handleSearch (value) {
+      this.searchBuildName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceMothed: debounce(function () {
+        this.queryBuildList(this.organId, this.searchBuildName || '')
+    }, 200),
     handleSearch (value) {
       this.searchCommunityName = value
       this.updateOptions()
     },
     exportHouse () {
-      let data = {
-        communityId: this.communityId || '',
-        unitId: this.unitId || '',
-        buildId: this.buildId || ''
-      }
-      data.communityName = fintItem(this.communityOpt, data.communityId).label
-      data.buildName = fintItem(this.buildOpt, data.buildId).label
-      data.unitName = fintItem(this.unitOpt, data.unitId).label
-      let fromData = new FormData()
-      for (let key in data) {
-        data[key] = data[key].replace(/\+/g, '%2B')
-        fromData.append(key, data[key])
-      }
-      api.exportHouse(fromData).then(res => {
-        if (+res.data.code === 0) {
-          let fileName = res.data.msg
-          let temp = window.open(Utils.paths.basicinfo.house.downLoadExcel + '?fileName=' + fileName)
-          temp.location.reload()
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
+      // let data = {
+      //   organId: this.organId || '',
+      //   unitId: this.unitId || '',
+      //   buildId: this.buildId || ''
+      // }
+      // data.communityName = fintItem(this.organOpt, data.organId).label
+      // data.buildName = fintItem(this.buildOpt, data.buildId).label
+      // data.unitName = fintItem(this.unitOpt, data.unitId).label
+      // let fromData = new FormData()
+      // for (let key in data) {
+      //   data[key] = data[key].replace(/\+/g, '%2B')
+      //   fromData.append(key, data[key])
+      // }
+      // api.exportHouse(fromData).then(res => {
+      //   if (+res.data.code === 0) {
+      //     let fileName = res.data.msg
+      //     let temp = window.open(Utils.paths.basicinfo.house.downLoadExcel + '?fileName=' + fileName)
+      //     temp.location.reload()
+      //   } else {
+      //     this.$message.error(res.data.msg)
+      //   }
+      // })
     },
     closeModal () {
       this.$emit('close')

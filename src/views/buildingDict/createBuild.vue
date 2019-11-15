@@ -217,7 +217,7 @@
                   </a-col>
                   <a-col :span="24">
                     <a-form-item label="附件" v-bind="formItemLayout2">
-                      <SG-UploadFile v-model="filepaths"/>
+                      <SG-UploadFile type="all" v-model="filepaths"/>
                     </a-form-item>
                   </a-col>
             </a-row>  

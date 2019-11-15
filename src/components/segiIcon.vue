@@ -1,3 +1,9 @@
+<!--
+ * @Date: 2019-11-01 09:42:51
+ * @Author: chen han
+ * @Description: 用于扩展阿里巴巴矢量图标
+ -->
+
 <template>
   <svg class="icon" aria-hidden="true">
     <use :xlink:href="type"></use>

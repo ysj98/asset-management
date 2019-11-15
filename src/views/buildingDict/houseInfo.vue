@@ -8,9 +8,9 @@
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
         <SG-Button class="mr10" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
-        <SG-Button class="mr10"><segiIcon type="#icon-ziyuan4" class="icon-right"/>房间资料导入</SG-Button>
-        <SG-Button class="mr10"><segiIcon type="#icon-ziyuan10" class="icon-right"/>房间导出</SG-Button>
-        <SG-Button icon="sync">批量更新</SG-Button>
+        <SG-Button class="mr10" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
+        <SG-Button class="mr10" @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
+        <SG-Button icon="sync" @click="openImportModal">批量更新</SG-Button>
       </div>
       <div slot="contentForm">
         <div>
@@ -120,6 +120,9 @@
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
         >
+        <template slot="houseName" slot-scope="text, record">
+           <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+        </template>
         <template slot="operation" slot-scope="text, record">
             <OperationPopover :operationData="operationData"  @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
@@ -132,14 +135,23 @@
         @change="handleChange"
       />
     </div>
+    <!-- 房间资料导入 -->
+    <houseDataImport ref="houseDataImport"/>
+    <!-- 房间导出 -->
+    <houseExport ref="houseExport"/>
+    <!-- 批量更新 -->
+    <eportAndDownFile ref="eportAndDownFile" title="房间批量更新" :showDown="false"/>
   </div>
 </template>
 <script>
 import SearchContainer from '@/views/common/SearchContainer'
 import segiIcon from '@/components/segiIcon.vue'
 import topOrganByUser from '@/views/common/topOrganByUser'
-import {utils} from '@/utils/utils'
+import {utils, debounce} from '@/utils/utils'
 import OperationPopover from '@/components/OperationPopover'
+import houseExport from './child/houseExport.vue'
+import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
+import houseDataImport from './child/houseDataImport.vue'
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px'}
@@ -213,7 +225,10 @@ export default {
     SearchContainer,
     segiIcon,
     topOrganByUser,
-    OperationPopover
+    OperationPopover,
+    houseExport,
+    eportAndDownFile,
+    houseDataImport
   },
   data () {
     return {
@@ -294,6 +309,7 @@ export default {
     // orangId改变
     organIdChange (o) {
       console.log('一级物业改变', o)
+      this.organName = o.name
       this.watchOrganChange()
       this.searchQuery()
     },
@@ -441,6 +457,18 @@ export default {
         }
       })
     },
+    // 显示房间资料导入弹窗
+    showHouseDataImport () {
+      this.$refs.houseDataImport.visible = true
+    },
+    // 显示房间导出弹出
+    openExportModal () {
+      this.$refs.houseExport.visible = true
+    },
+    // 显示批量更新弹窗
+    openImportModal () {
+      this.$refs.eportAndDownFile.visible = true
+    },
     // 操作事件函数
     operationFun (type, record) {
       console.log('操作事件', type, record)
@@ -473,7 +501,9 @@ export default {
     goPage (type, record) {
       let query = {type}
       if (['edit', 'copy', 'detail'].includes(type)) {
-        query.houseId = record.houseId
+        query.houseId = record.houseId,
+        query.organId = this.queryCondition.organId
+        query.organName = this.organName
       }
       this.$router.push({path: operationTypes[type], query: query || {}})
     },
