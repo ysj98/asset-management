@@ -146,7 +146,7 @@ export default {
     },
     queryUnitDetail () {
       let data = {
-        sid: this.objectData.unitId
+        sid: this.objectData.positionId
       }
       this.$api.building.queryUnitDetail(data).then(res => {
         if (res.data.code === '0') {
@@ -159,10 +159,8 @@ export default {
     // 处理编辑数据
     handleEdit (data) {
       // 处理图片
-      // 处理图片
       if (data.picPath) {
-        // this.picPath = [data.picPath]
-        this.picPath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+        this.picPath = [{url: data.picPath, name: ''}]
       }
       let o = this.form.getFieldsValue()
       console.log('表单数据=>', o)
@@ -189,7 +187,7 @@ export default {
             data[key] = value || ''
           })
           // 处理图片
-          if (this.picPath.length > 0) {
+          if (this.picPath.length) {
             data.picPath = this.picPath[0].url
           }
           // 新增单元
@@ -199,7 +197,7 @@ export default {
             this.$api.building.addUnit(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('新增单元成功')
-                this.$emit('create')
+                this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -208,12 +206,12 @@ export default {
           // 编辑楼栋
           if (this.type === 'edit') {
             data.organId = this.organId
-            data.sid = this.objectData.unitId
+            data.sid = this.objectData.positionId
             data.upPositionId = this.objectData.upPositionId
             this.$api.building.updateUnit(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑单元成功')
-                this.$emit('edit')
+                // this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -229,12 +227,12 @@ export default {
         cancelText: '在想想',
         onOk: () => {
           let data = {
-            sid: this.objectData.unitId
+            sid: this.objectData.positionId
           }
           this.$api.building.deleteUnit(data).then(res => {
             if (res.data.code === '0') {
               this.$SG_Message.success(`删除成功`)
-              this.$emit('delete')
+              this.$emit('success')
             } else {
               this.$message.error(res.data.message)
             }

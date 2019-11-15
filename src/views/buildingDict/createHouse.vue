@@ -305,12 +305,10 @@ export default {
       this.houseId = this.$route.query.houseId || ''
       this.organName = this.$route.query.organName || ''
       this.organId = this.$route.query.organId || ''
-      this.organOpt = [{label: this.organName, value: this.organId}]
       this.queryHouseDetailById()
     }
     // 如果是复制
     if (this.type === 'copy') {
-      this.queryAllTopOrganByUser()
       this.organId = this.$route.query.organId || ''
       this.houseId = this.$route.query.houseId || ''
       this.queryHouseDetailById()
@@ -320,7 +318,54 @@ export default {
     this.form = this.$form.createForm(this)
   },
   methods: {
-    handleSave () {},
+    handleSave () {
+      this.form.validateFields((err, values) => {
+        console.log('得到值=>', values)
+        if (!err) {
+          let data = {}
+          utils.each(values, (value, key) => {
+            data[key] = value || ''
+          })
+          // 处理时间类型
+          if (data.deliveryTime) {
+            data.deliveryTime = data.deliveryTime.format('YYYY-MM-DD')
+          }
+          if (data.repairTime) {
+            data.repairTime = data.repairTime.format('YYYY-MM-DD')
+          }
+          // 处理图片
+          if (this.planeFigurePath.length) {
+            data.planeFigurePath = this.planeFigurePath[0].url
+          }
+          // 处理附件
+          if (this.filepaths.length) {
+            data.filepaths = this.filepaths.map(item => item.url).join(',')
+          }
+          // 新增房间
+          if (this.type === 'create' || this.type === 'copy') {
+            this.$api.building.addHouse(data).then(res => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success(`新增房间成功`)
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+          // 编辑房间
+          if (this.type === 'edit') {
+            data.houseId = this.houseId
+            this.$api.building.updateHouse(data).then(res => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success('编辑楼房间成功')
+                // this.$emit('success')
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+        }
+      })
+    },
     handleCancel () {},
     queryHouseDetailById () {
       let data = {
@@ -336,7 +381,15 @@ export default {
     },
     // 处理编辑数据
     handleEditData (data) {
+      // 处理时间
+      if (data.repairTime) {
+        data.repairTime = moment(data.repairTime, 'YYYY-MM-DD')
+      }
+      if (data.deliveryTime) {
+        data.deliveryTime = moment(data.deliveryTime, 'YYYY-MM-DD')
+      }
       this.form.setFieldsValue({
+        organId: this.organId,
         buildId: data.buildId || undefined,
         unitId: data.unitId || undefined,
         floorId: data.floorId || undefined,
@@ -351,30 +404,39 @@ export default {
         face: data.face || undefined,
         description: data.description || undefined,
         code: data.code || undefined,
+        deliveryTime: data.deliveryTime || undefined,
+        repairTime: data.repairTime || undefined
       })
-      // 处理时间
-      if (data.repairTime) {
-        data.repairTime = moment(data.repairTime, 'YYYY-MM-DD')
-      }
-      if (data.deliveryTime) {
-        data.deliveryTime = moment(data.deliveryTime, 'YYYY-MM-DD')
-      }
       // 处理图片
       if (data.planeFigurePath) {
-        // this.planeFigurePath = [data.planeFigurePath]
-        this.planeFigurePath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+        this.planeFigurePath = [{url: data.planeFigurePath, name: ''}]
       }
       // 处理附件
       if (data.filepaths) {
-        // this.filepaths = data.filepaths.split(',')
-        this.filepaths = [
-          { url: '/doc/2019/07/23/8/2019/07/23/1563883528442.txt', name: '1563883528442.txt' },
-          { url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }
-        ]
+        let filepaths = data.filepaths.split(',')
+        this.filepaths = filepaths.map(item => {
+          return {url: item, name: ''}
+        })
+      }
+      // 如果是编辑
+      if (this.type === 'edit') {
+        this.organOpt = [{label: data.organName, value: this.organId}]
+        this.buildOpt = [{label: data.buildName, value: data.buildId}]
+        this.unitOpt = [{label: data.unitName, value: data.unitId}]
       }
       // 处理请求
-      // 房间类型请求
-      // 楼层请求
+      if (this.type === 'copy') {
+        this.queryAllTopOrganByUser() // 项目
+        this.queryBuildList(this.organId) // 请求楼栋
+        this.getOptions('getUnitByBuildId', data.buildId) // 请求单元
+      }
+      // 如果有单元
+      if (data.unitId) {
+        this.queryAddFloorOptions(data.unitId, '1') // 单元请求楼层
+      } else {
+        this.queryAddFloorOptions(data.buildId, '0') // 楼栋请求楼层
+      }
+      this.queryChildNodesById(data.houseCategoryId) // 请求房间类型
     },
     // 监听一级物业改变
     watchOrganChange (organId) {
@@ -432,7 +494,7 @@ export default {
       let typeId = this.houseCategoryOpt.filter(item => typeCode === item.typeCode)
       this.queryChildNodesById(typeId[0].typeId)
     },
-    // 请求单元楼层
+    // 请求单元
     getOptions (type, value = '') {
       if (!type) {
         return
@@ -555,7 +617,7 @@ export default {
     debounceMothed: debounce(function () {
       let organId = this.form.getFieldsValue(['organId'])
         this.queryBuildList(organId.organId || '', this.searchBuildName || '')
-    }, 200),
+    }, 300),
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },

@@ -102,7 +102,7 @@
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['buildStruct', {rules: [{required: true, whitespace: true, message: '请选择楼栋用途'}]}]"
+                        v-decorator="['buildStruct', {rules: [{required: true, message: '请选择楼栋用途'}]}]"
                       />
                   </a-form-item>
                 </a-col>
@@ -135,7 +135,7 @@
                         @change="cityOrRegionChange($event, 'province')"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['province', {initialValue: '' || undefined, rules: [{validator: validateAddress}]}]"
+                        v-decorator="['province', {initialValue: '' || undefined, rules: [{required: true, message: '请选择省'}, {validator: validateAddress}]}]"
                       />
                       <a-select
                       :style="allWidth1"
@@ -324,6 +324,7 @@ export default {
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
+    this.queryDictDataList()
     this.init()
   },
   methods: {
@@ -370,7 +371,7 @@ export default {
             this.$api.building.addBuild(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('新增楼栋成功')
-                this.$emit('create')
+                this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -379,12 +380,12 @@ export default {
           // 编辑楼栋
           if (this.type === 'edit') {
             data.organId = this.organId
-            data.buildId = this.objectData.buildId
-            data.upPositionId = this.objectData.upPositionId
+            data.buildId = this.objectData.positionId // 当前节点
+            data.upPositionId = this.objectData.upPositionId // 上级节点
             this.$api.building.updateBuild(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼栋成功')
-                this.$emit('edit')
+                // this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -400,12 +401,12 @@ export default {
           cancelText: '在想想',
           onOk: () => {
             let data = {
-              buildId: this.objectData.buildId
+              buildId: this.objectData.positionId
             }
             this.$api.building.deleteBuild(data).then(res => {
               if (res.data.code === '0') {
                this.$SG_Message.success(`删除成功`)
-               this.$emit('delete')
+               this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -445,16 +446,15 @@ export default {
       }
       // 处理图片
       if (data.picPath) {
-        // this.picPath = [data.picPath]
-        this.picPath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+        let picPath = [{url: data.picPath, name: ''}]
+        this.picPath = picPath
       }
       // 处理附件
       if (data.filepaths) {
-        // this.filepaths = data.filepaths.split(',')
-        this.filepaths = [
-          { url: '/doc/2019/07/23/8/2019/07/23/1563883528442.txt', name: '1563883528442.txt' },
-          { url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }
-        ]
+        let filepaths = data.filepaths.split(',')
+        this.filepaths = filepaths.map(item => {
+          return {url: item, name: ''}
+        })
       }
       // 处理省市区的联动start
       this.city = data.city
@@ -518,11 +518,29 @@ export default {
           })
           if (code === '30') {
             this.buildTypeOpt = [ ...resultArr]
-            this.buildStructOpt = [...resultArr]
           }
           if (code === '60') {
             this.useTypeOpt = [...resultArr]
           }
+        }
+      })
+    },
+    // 机构字典
+    queryDictDataList () {
+      let data = {
+        dictCode: 'BUILD_STRUCT',
+        groupId: this.organId
+      }
+      this.$api.basics.queryDictDataList(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          let arr = []
+          result.forEach(item => {
+            if (String(item.dictStatus) === '1') {
+              arr.push({label: item.dictName, value: item.dictValue, ...item})
+            }
+          })
+          this.buildStructOpt = arr
         }
       })
     },

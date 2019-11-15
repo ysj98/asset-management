@@ -72,9 +72,9 @@ const getParentKey = (key, tree) => {
 const topItem = {
   key: getUuid(),
   type: 'top',
-  id: '1123',
-  upPositionId: '1123',
-  positionId: '1123',
+  id: '-1',
+  upPositionId: '-1',
+  positionId: '-1',
   subPositionType: '-2',
   title: '楼栋列表',
   scopedSlots: { title: 'title' }
@@ -131,6 +131,10 @@ export default {
       this.activeKey = scope.key
       this.$emit('change', {...scope})
     },
+    // 重新加载
+    resetLoad () {
+      this.positionSelectAsyn(this.organId)
+    },
     hanldSelect () {
     },
     onExpand  (expandedKeys) {
@@ -139,14 +143,13 @@ export default {
     },
     // 异步加载数据
     onLoadData (treeNode) {
-      if (String(treeNode.dataRef.subPositionType) === '2') {
+      if (String(treeNode.dataRef.subPositionType) === '-2') {
         return Promise.resolve()
       }
       let data = {
         upPositionId: treeNode.dataRef.id,
         positionType: '1',
-        // organId: this.organId,
-        communityId: 67
+        organId: this.organId,
       }
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
       // return Promise.resolve()
@@ -155,9 +158,8 @@ export default {
     positionSelectAsyn (organId) {
       this.emptyTreeData()
       let data = {
-        // organId: this.organId,
-        communityId: 67,
-        upPositionId: '1123',
+        organId: this.organId,
+        upPositionId: '-1',
         positionType: '1'
       }
       return this.$api.building.positionSelectAsyn(data).then(res => {

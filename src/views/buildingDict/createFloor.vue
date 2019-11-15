@@ -27,7 +27,7 @@
                   <a-form-item label="楼层顺序" v-bind="formItemLayout">
                     <a-input-number :style="allWidth" v-decorator="['floorIndex', {initialValue: '' || undefined, 
                     rules: [
-                    {required: true, whitespace: true, message: '请输入楼层顺序'},
+                    {required: true, message: '请输入楼层顺序'},
                     {pattern: /^[0-9]*$/, message: '请输入整数'}]}
                     ]"/>
                   </a-form-item>
@@ -41,7 +41,7 @@
                   <a-form-item label="层高(㎡)" v-bind="formItemLayout">
                     <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined, 
                     rules: [
-                    {required: true, whitespace: true, message: '请输入楼层高度'},
+                    {required: true, message: '请输入楼层高度'},
                     {pattern: /^(\.*)(\d+)(\.?)(\d{0,2}).*$/, message: '最多保留2位小数'}]}]"/>
                   </a-form-item>
                 </a-col>
@@ -159,7 +159,7 @@ export default {
     },
     queryFloorDetail () {
       let data = {
-        floorId: this.objectData.floorId
+        floorId: this.objectData.positionId
       }
       this.$api.building.queryFloorDetail(data).then(res => {
         if (res.data.code === '0') {
@@ -172,14 +172,11 @@ export default {
     // 处理编辑数据
     handleEdit (data) {
       // 处理图片
-      // 处理图片
       if (data.picPath) {
-        // this.picPath = [data.picPath]
-        this.picPath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+        this.picPath = [{url: data.picPath, name: ''}]
       }
       if (data.planePicPath) {
-        // this.picPath = [data.picPath]
-        this.planePicPath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+        this.planePicPath = [{url: data.planePicPath, name: ''}]
       }
       let o = this.form.getFieldsValue()
       console.log('表单数据=>', o)
@@ -206,17 +203,21 @@ export default {
             data[key] = value || ''
           })
           // 处理图片
-          if (this.picPath.length > 0) {
+          if (this.picPath.length) {
             data.picPath = this.picPath[0].url
+          }
+          // 处理平面图
+          if (this.planePicPath.length) {
+            data.planePicPath = this.planePicPath[0].url
           }
           // 新增楼层
           if (this.type === 'create') {
             data.organId = this.organId
             data.upPositionId = this.objectData.positionId
-            this.$api.building.addUnit(data).then(res => {
+            this.$api.building.addFloor(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('新增楼层成功')
-                this.$emit('create')
+                this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -225,12 +226,12 @@ export default {
           // 编辑楼栋
           if (this.type === 'edit') {
             data.organId = this.organId
-            data.floorId = this.objectData.floorId
+            data.floorId = this.objectData.positionId
             data.upPositionId = this.objectData.upPositionId
             this.$api.building.updateFloor(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼层成功')
-                this.$emit('edit')
+                // this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -246,12 +247,12 @@ export default {
         cancelText: '在想想',
         onOk: () => {
           let data = {
-            floorId: this.objectData.floorId
+            floorId: this.objectData.positionId
           }
           this.$api.building.deleteFloor(data).then(res => {
             if (res.data.code === '0') {
               this.$SG_Message.success(`删除成功`)
-              this.$emit('delete')
+              this.$emit('success')
             } else {
               this.$message.error(res.data.message)
             }

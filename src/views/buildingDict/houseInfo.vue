@@ -22,11 +22,12 @@
           placeholder="请选择楼栋"
           v-model="queryCondition.buildId"
           optionFilterProp="children"
+          @search="handleSearch"
           @change="watchBuildChange"
           :style="allWidth"
           :options="buildOpt"
           :allowClear="false"
-          :filterOption="filterOption"
+          :filterOption="false"
           notFoundContent="没有查询到数据"
          />
          <!-- 单元 -->
@@ -174,6 +175,10 @@ let queryCondition = {
   resType: '', // 房间用途
   status: '', // 房间状态
 }
+const statusMap = {
+  '1': '有效',
+  '0': '无效'
+}
 const buildOpt = [{label: '全部楼栋', value: ''}]
 const unitOpt = [{label: '全部单元', value: ''}]
 const houseOpt = [{label: '全部房号', value: ''}]
@@ -200,11 +205,11 @@ let columns = [{
   width: '15%'
 }, {
   title: '套内面积(㎡)',
-  dataIndex: 'billArea',
+  dataIndex: 'innerArea',
   width: '15%'
 }, {
   title: '房间状态',
-  dataIndex: 'houseStatusName',
+  dataIndex: 'statusName',
   width: '10%'
 }, {
   title: '操作',
@@ -235,6 +240,7 @@ export default {
       allWidth,
       toggle: true,
       operationData,
+      searchBuildName: '', // 搜索楼栋字符
       queryCondition: {...queryCondition},
       buildOpt: utils.deepClone(buildOpt),
       unitOpt: utils.deepClone(unitOpt),
@@ -270,13 +276,17 @@ export default {
       this.$api.building.queryHouseByPage(data).then(res => {
         this.table.loading = false
         if (res.data.code === '0') {
-          this.table.dataSource = res.data.data.data.map(item => {
+          this.table.dataSource = res.data.data.map(item => {
+            item.innerArea = item.innerArea || '-'
+            item.area = item.area || '-'
+            item.houseName = item.houseName || '-'
+            item.statusName = statusMap[item.status] || '-'
             return {
               key: getUuid(),
               ...item
             }
           })
-          this.table.totalCount = res.data.data.count || '' 
+          this.table.totalCount = res.data.paginator.totalCount || '' 
         }
       }, () => {
         this.table.loading = false
@@ -310,8 +320,11 @@ export default {
     organIdChange (o) {
       console.log('一级物业改变', o)
       this.organName = o.name
-      this.watchOrganChange()
-      this.searchQuery()
+      if (o.value) {
+        this.watchOrganChange(o.value)
+        this.searchQuery()
+      }
+      
     },
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -325,7 +338,10 @@ export default {
       this.houseOpt = utils.deepClone(houseOpt)
       this.queryCondition.houseId = ''
       this.queryCondition.unitId = ''
-      this.getOptions('getUnitByBuildId', '39')
+      if (!value) {
+        return
+      }
+      this.getOptions('getUnitByBuildId', value)
     },
     // 监听单元变化
     watchUnitChange (value) {
@@ -336,19 +352,19 @@ export default {
       }
       this.getOptions('getHouseByUnitId', value)
     },
-    // 请求楼栋
-    watchOrganChange () {
+    // 监听项目改变
+    watchOrganChange (organId) {
       this.buildOpt = utils.deepClone(buildOpt)
       this.unitOpt = utils.deepClone(unitOpt)
       this.houseOpt = utils.deepClone(houseOpt)
       this.queryCondition.houseId = ''
       this.queryCondition.unitId = ''
       this.queryCondition.buildId = ''
-      let data = {
-        organId: this.queryCondition.organId
+      console.log('监听项目改变')
+      if (!organId) {
+        return
       }
-      console.log('请求楼栋=>', getUuid(), data)
-      this.buildOpt = utils.deepClone(buildOpt).concat([{label: '1栋', value: '1'}, {label: '2栋', value: '2'},])
+      this.queryBuildList(organId)
     },
     // 监听建筑形态变化
     watchHouseCategory (value) {
@@ -360,6 +376,20 @@ export default {
       }
       let typeId = value.split(',')[1]
       this.queryChildNodesById(typeId)
+    },
+    // 请求楼栋列表默认20条
+    queryBuildList (organId, buildName) {
+      this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.buildOpt = utils.deepClone(buildOpt)
+          result.forEach(item => {
+            this.buildOpt.push({label: item.buildName, value: item.buildId})
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     // 获取项目楼栋单元房号
     getOptions (type, value = '') {
@@ -411,9 +441,6 @@ export default {
     queryNodesByRootCode (code) {
       /**
        * 20  建筑形态
-       * 30  房间类型
-       * 40  生命周期
-       * 50  房间状态
        * 60  房间用途
       */
       let data = {
@@ -503,10 +530,18 @@ export default {
       if (['edit', 'copy', 'detail'].includes(type)) {
         query.houseId = record.houseId,
         query.organId = this.queryCondition.organId
-        query.organName = this.organName
       }
       this.$router.push({path: operationTypes[type], query: query || {}})
     },
+    // 楼栋搜索
+    handleSearch (value) {
+      this.searchBuildName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceMothed: debounce(function () {
+      this.queryBuildList(this.queryCondition.organId, this.searchBuildName || '')
+    }, 300),
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },

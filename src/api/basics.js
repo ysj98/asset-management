@@ -56,3 +56,8 @@ export function queryBuildList (data) {
 export function queryFloorListByPosId (data) {
   return axiosGet(basics.queryFloorListByPosId, data)
 }
+// 查询组织机构字典
+export function queryDictDataList (data) {
+  return axiosPost(basics.queryDictDataList, data)
+}
+

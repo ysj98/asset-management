@@ -17,17 +17,17 @@
        </div>
      </div>
      <div class="tree-content">
-       <positionTree @change="checkTreeChange" :organId="organId"/>
+       <positionTree @change="checkTreeChange" ref="positionTree" :organId="organId"/>
      </div>
     </div>
     <!-- 新增内容部分 -->
     <div class="create-content">
       <!-- 新建楼栋 -->
-      <createBuild :type="pageType" :organId="organId" :objectData="activeItem"  v-if="showCreateBuild"/>
+      <createBuild :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem"  v-if="showCreateBuild"/>
       <!-- 新建单元 -->
-      <createUnit :type="pageType" :organId="organId" :objectData="activeItem" v-if="showCreateUnit"/>
+      <createUnit :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem" v-if="showCreateUnit"/>
       <!-- 新建楼层 -->
-      <createFloor :type="pageType" :organId="organId" :objectData="activeItem" v-if="showCreateFloor"/>
+      <createFloor :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem" v-if="showCreateFloor"/>
       <!-- 无页面 -->
       <div v-if="!pageType" class="no_page"></div>
     </div>
@@ -92,6 +92,17 @@ export default {
     })
   },
   methods: {
+    resetInit () {
+      this.activeType = '' // -2楼栋列表，0楼栋, 1单元, 2楼层
+      this.pageType = '' // create新增， edit编辑，
+      this.createType = '' // unit新建单元，build新建楼栋，floor新建楼层 
+      this.activeItem = {}
+      this.childNodeType = '' // 0可新建楼栋, 1单元， 2楼层
+    },
+    handleBuildSucc () {
+      this.resetInit()
+      this.$refs.positionTree.resetLoad()
+    },
     // 点击新增按钮
     createPage (type) {
      this.pageType = 'create'

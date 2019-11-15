@@ -134,13 +134,13 @@ export default {
           // 默认选中第一个
           if (this.organOpt.length) {
             this.organId = this.organOpt[0].value
-            this.queryBuildList(this.organOpt[0].value)
           }
         }
       })
     },
     // 请求楼栋列表默认20条
     queryBuildList (organId, buildName) {
+      console.log('导入导出进来=>')
       this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
@@ -187,10 +187,6 @@ export default {
     debounceMothed: debounce(function () {
         this.queryBuildList(this.organId, this.searchBuildName || '')
     }, 200),
-    handleSearch (value) {
-      this.searchCommunityName = value
-      this.updateOptions()
-    },
     exportHouse () {
       // let data = {
       //   organId: this.organId || '',

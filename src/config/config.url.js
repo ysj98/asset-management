@@ -53,6 +53,8 @@ export const basics = {
   queryBuildList: '/basic-data-api/rest-api/v1/ams/buildApi/queryBuildList',
   // 请求楼层
   queryFloorListByPosId: '/basic-data-api/rest-api/v1/floorApi/queryFloorListByPosId',
+  // 03_通过字典code和groupId(集团一级组织ID)查询字典列表信息
+  queryDictDataList: '/basic-data-api/rest-api/v1/dictApi/queryDictDataList',
 }
 
 // 资产管理
@@ -162,41 +164,41 @@ export const assets = {
 // 楼盘字典
 export const building = {
   // 房屋列表
-  queryHouseByPage: '/ams/houseApi/queryHouseByPage',
+  queryHouseByPage: '/basic-data-api/rest-api/v1/ams/houseApi/queryHouseByPage',
   // 修改房屋
-  updateHouse: '/ams/houseApi/updateHouse',
+  updateHouse: '/basic-data-api/rest-api/v1/ams/houseApi/updateHouse',
   // 新增房屋
-  addHouse: '/ams/houseApi/addHouse',
+  addHouse: '/basic-data-api/rest-api/v1/ams/houseApi/addHouse',
   // 查询房屋详情
-  queryHouseDetailById: '/ams/houseApi/queryHouseDetailById',
+  queryHouseDetailById: '/basic-data-api/rest-api/v1/ams/houseApi/queryHouseDetailById',
   // 修改房屋状态
-  updateHouseStatus: '/ams/houseApi/updateHouseStatus',
+  updateHouseStatus: '/basic-data-api/rest-api/v1/ams/houseApi/updateHouseStatus',
   // 修改楼栋
-  updateBuild: '/ams/buildApi/updateBuild',
+  updateBuild: '/basic-data-api/rest-api/v1/ams/buildApi/updateBuild',
   // 删除楼栋
-  deleteBuild: '/ams/buildApi/deleteBuild',
+  deleteBuild: '/basic-data-api/rest-api/v1/ams/buildApi/deleteBuild',
   // 新增楼栋
-  addBuild: '/ams/buildApi/addBuild',
+  addBuild: '/basic-data-api/rest-api/v1/ams/buildApi/addBuild',
   // 查询楼栋详情
-  queryBuildDetail: '/ams/buildApi/queryBuildDetail',
+  queryBuildDetail: '/basic-data-api/rest-api/v1/ams/buildApi/queryBuildDetail',
   // 修改楼层
-  updateFloor: '/ams/floorApi/updateFloor',
+  updateFloor: '/basic-data-api/rest-api/v1/ams/floorApi/updateFloor',
   // 删除楼层
-  deleteFloor: '/ams/floorApi/deleteFloor',
+  deleteFloor: '/basic-data-api/rest-api/v1/ams/floorApi/deleteFloor',
   // 新增楼层
-  addFloor: '/ams/floorApi/addFloor',
+  addFloor: '/basic-data-api/rest-api/v1/ams/floorApi/addFloor',
   // 查询楼层详情
-  queryFloorDetail: '/ams/floorApi/queryFloorDetail',
+  queryFloorDetail: '/basic-data-api/rest-api/v1/ams/floorApi/queryFloorDetail',
   // 修改单元
-  updateUnit: '/ams/unitApi/updateUnit',
+  updateUnit: '/basic-data-api/rest-api/v1/ams/unitApi/updateUnit',
   // 删除单元
-  deleteUnit: '/ams/unitApi/deleteUnit',
+  deleteUnit: '/basic-data-api/rest-api/v1/ams/unitApi/deleteUnit',
   // 新增单元
-  addUnit: '/ams/unitApi/addUnit',
+  addUnit: '/basic-data-api/rest-api/v1/ams/unitApi/addUnit',
   // 查询单元详情
-  queryUnitDetail: '/ams/unitApi/queryUnitDetail',
+  queryUnitDetail: '/basic-data-api/rest-api/v1/ams/unitApi/queryUnitDetail',
   // 位置分类Position（异步） 位置管理-位置树查询 POST
-  positionSelectAsyn: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsyn',
+  positionSelectAsyn: '/basic-data-api/rest-api/v1/ams/positionApi/positionSelectAsyn',
   // 查询楼栋下可挂位置类型 位置管理-位置树查询 GET
   queryBellowPositionType: '/basic-data-api/rest-api/v1/positionApi/queryBellowPositionType',
 }
