@@ -2,23 +2,30 @@
 <template>
   <div class="asset_view">
     <!--基础信息部分-->
-    <base-info-part/>
+    <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId"/>
     <!--其它信息部分-->
-    <other-info-part/>
+    <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId"/>
   </div>
 </template>
 
 <script>
-  import OtherInfoPart from "./components/OtherInfoPart";
   import BaseInfoPart from './components/BaseInfoPart'
+  import OtherInfoPart from "./components/OtherInfoPart"
   export default {
     name: 'AssetViewPage',
-    components: {OtherInfoPart, BaseInfoPart},
+    components: { OtherInfoPart, BaseInfoPart },
     data () {
-      return {}
+      return {
+        assetHouseId: '' // 房屋Id
+      }
     },
 
-    methods: {}
+    methods: {},
+    
+    created () {
+      const { params: { houseId } } = this.$route
+      this.assetHouseId = houseId
+    }
   }
 </script>
 
@@ -27,7 +34,7 @@
     /*抽离子组件的公共样式*/
     & /deep/ .title_div {
       margin-left: 45px;
-      .ant-col-8, .ant-col-24, .ant-col-12{
+      .ant-col-8, .ant-col-24, .ant-col-12, .ant-col-16{
         margin: 15px 0;
       }
     }

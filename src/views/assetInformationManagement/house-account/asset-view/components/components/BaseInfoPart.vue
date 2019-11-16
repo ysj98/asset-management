@@ -3,16 +3,16 @@
   <div>
     <!--基本信息-->
     <SG-Title title="基本信息" noMargin/>
-    <a-row class="title_div">
+    <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span style="margin:0 15px 0 4px; color: #49505E">{{baseInfoData[key] || '无'}}</span>
-        <a-icon v-if="key==='assetName'" type="edit" style="color: #0084FF; cursor: pointer" @click="handleModalOpen('edit')"/>
+        <span style="margin-left: 9px; color: #49505E">{{baseInfoData[key] || '无'}}</span>
+        <a-icon v-if="key==='assetName'" type="edit" style="color: #0084FF; cursor: pointer; margin-left: 11px" @click="handleModalOpen('edit')"/>
       </a-col>
     </a-row>
     <!--空间位置-->
     <SG-Title title="空间位置" noMargin/>
-    <a-row class="title_div">
+    <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, span} in spaceInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
         <span style="margin:0 15px 0 4px; color: #49505E">{{spaceInfoData[key] || '无'}}</span>
@@ -21,7 +21,7 @@
     </a-row>
     <!--资产使用方向-->
     <SG-Title title="资产使用方向" noMargin/>
-    <overview-number :numList="overviewNumList" class="title_div"/>
+    <overview-number :numList="overviewNumList" class="title_div" style="margin-top: 21px"/>
     <!--编辑资产详情弹窗-->
     <SG-Modal
       v-bind="modalObj"
@@ -40,13 +40,14 @@
   export default {
     name: 'BaseInfoPart',
     components: { EditAssetDetail, OverviewNumber },
+    props: ['assetHouseId'],
     data () {
       return {
         baseInfoKeys: [
-          {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'code'}, {title: '资产分类', key: 'assetCatalog'},
-          {title: '资产类型', key: 'assetType'}, {title: '房屋形态', key: 'status'}, {title: '户型', key: 'houseType'},
+          {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectTypeName'},
+          {title: '资产类型', key: 'typeName'}, {title: '房屋形态', key: 'assetStatus'}, {title: '户型', key: 'houseType'},
           {title: '装修情况', key: 'decorate'}, {title: '建筑结构', key: 'structure'}, {title: '资产用途', key: 'use'},
-          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'doneDate'}, {title: '维修日期', key: 'fixDate'},
+          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'validPeriod'}, {title: '维修日期', key: 'fixDate'},
           {title: '资产状态', key: 'assetStatus'}, {title: '相关描述', key: 'desc', span: 16},
           {title: '资产二维码', key: 'QRCode', span: 24}
         ], // 基本信息字段
@@ -92,10 +93,6 @@
         }).catch(err => {
           debugger
         })
-      },
-
-      // Modal打开
-      handleModal () {
       }
     }
   }

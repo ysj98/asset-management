@@ -176,21 +176,51 @@ export function getDetail (data) {
 
 // 房屋台账-楼栋视图
 // 查询楼栋视图面积使用统计
-export function queryFloorArea (data) {
+export function queryBuildingViewFloorArea (data) {
   return axiosPost(assets.buildingView.queryFloorArea, data, false, false)
 }
 
 // 楼栋视图分页查询
-export function queryViewPage (data) {
+export function queryBuildingViewPage (data) {
   return axiosPost(assets.buildingView.queryViewPage, data, false, false)
 }
 
 // 导出楼栋视图excel
-export function exportExcel (data) {
+export function exportBuildingViewExcel (data) {
   return axiosPost(assets.buildingView.exportExcel, data, false, false)
 }
 
 // 楼层信息查询
-export function queryFloorInfo (data) {
+export function queryBuildingViewFloorInfo (data) {
   return axiosGet(assets.buildingView.queryFloorInfo, data)
+}
+
+// 房屋台账 - 资产视图
+// 房屋资产基本信息查询
+export function queryAssetViewBaseInfo (data) {
+  return axiosGet(assets.assetView.queryHouseInfo, data)
+}
+
+// 资产使用面积详情
+export function queryAssetViewHouseArea (data) {
+  return axiosGet(assets.assetView.queryHouseArea, data)
+}
+
+// 分页查询房屋资产信息
+export function queryAssetViewPage (data) {
+  return axiosPost(assets.assetView.queryAssetViewPage, data)
+}
+
+// 资产视图使用面积统计
+export function queryAssetArea (data) {
+  return axiosPost(assets.assetView.queryAssetArea, data)
+}
+
+// 导出房屋卡片
+export function exportHouseExcel (data) {
+  return axiosGet(assets.assetView.exportHouseExcel, data)
+}
+// 导出房屋卡片
+export function exportAssetExcel (data) {
+  return axiosGet(assets.assetView.exportAssetExcel, data)
 }

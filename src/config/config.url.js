@@ -144,13 +144,30 @@ export const assets = {
   // 房屋台账 - 楼栋视图
   buildingView: {
     // 导出楼栋视图excel
-    exportExcel: '/asset-house/build/excel',
+    exportExcel: '/ams/asset-house/build/excel',
     // 楼层信息查询
-    queryFloorInfo: '/asset-house/build/floor',
+    queryFloorInfo: '/ams/asset-house/build/floor',
     // 楼栋视图分页查询
-    queryViewPage: '/asset-house/build/page',
+    queryViewPage: '/ams/asset-house/build/page',
     // 楼栋视图面积使用统计
-    queryFloorArea: '/asset-house/build/area'
+    queryFloorArea: '/ams/asset-house/build/area'
+  },
+  // 房屋台账 - 资产视图
+  assetView: {
+    // 房屋资产信息查询
+    queryHouseInfo: '/ams/asset-house',
+    // 资产使用面积详情
+    queryHouseArea: '/ams/asset-house/area',
+    // 资产视图使用面积统计
+    queryAssetArea: '/ams//asset-hose/house/area',
+    // 分页查询房屋资产信息
+    queryAssetViewPage: '/ams/asset-house/house/page',
+    // 导出房屋卡片
+    exportHouseExcel: '/ams/asset-house/card',
+    // 导出房屋卡片
+    exportAssetExcel: '/ams/asset-house/house/excel',
+    // 资产编辑保存
+    saveHouseInfo: '/ams/asset-house'
   }
 }
 // 楼盘字典

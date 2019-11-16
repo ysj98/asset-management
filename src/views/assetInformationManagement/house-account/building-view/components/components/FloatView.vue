@@ -7,11 +7,11 @@
     @mouseleave="handleMouseAction(false)"
   >
     <a-spin :spinning="spinning">
-      <div class="title">{{title}}</div>
+      <div class="title">{{roomNo}}</div>
       <div class="content">
-        <div v-for="{status, value, percent} in dataList" :key="status" style="padding-bottom: 17px">
-          <span style="margin-right: 8px">{{typeObj[status]}}:</span>
-          <span>{{`${value || 0}㎡（${percent || 0}%）`}}</span>
+        <div v-for="{title, value} in dataList" :key="title" style="padding-bottom: 17px">
+          <span style="margin-right: 8px">{{title}}:</span>
+          <span>{{value || 0 }}</span>
         </div>
       </div>
     </a-spin>
@@ -21,17 +21,21 @@
 <script>
   export default {
     name: 'FloatView',
-    props: ['position', 'roomId'],
+    props: ['position', 'roomId', 'roomNo'],
     data () {
       return {
         count: 0, // 何时设置transition的标志
         timeoutId: 0, // 请求接口的定时器Id
         spinning: false,
-        title: '测试房间110',
         positionObj: { top: 0, left: 0 },
-        typeObj: { 1: '运营', 2: '闲置', 3: '自用', 4: '占用', 5: '其它'},
+        dataList: [
+          { title: '运营(㎡)', key: 'totalOperationArea', value: 0 },
+          { title: '闲置(㎡)', key: 'totalIdleArea', value: 0 },
+          { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0 },
+          { title: '占用(㎡)', key: 'totalOccupationArea', value: 0 },
+          { title: '其他(㎡)', key: 'totalOtherArea', value: 0 }
+        ],
         roomDataCache: new Map(), // Map与Array有互转API，便于删除最早放入的键值对，且增删键值对有性能优势(详见MDN)
-        dataList: [{status: 1, value: 100, percent: 10}, {status: 2, value: 100, percent: 10}, {status: 3, value: 100}]
       }
     },
 
@@ -59,10 +63,21 @@
         this.$emit('handleMouseAction', bool)
       },
 
-      // 查询room数据
+      // 查询room的面积数据
       searchRoomData (id) {
-        // wofdoewdf//////////////////////////
-        this.storeRoomCache({id, data: {}})
+        // this.spinning = true
+        new Promise((resolve, reject) => {
+          this.$emit('queryAreaInfo', {resolve, reject, id})
+        }).then(data => {
+          this.spinning = false
+          if (data) {
+            this.dataList = data
+            this.storeRoomCache({id, data})
+          }
+        }).catch(() => {
+          // this.$message.error(err)
+          this.spinning = false
+        })
       },
 
       // 缓存15个房间的信息
@@ -87,9 +102,11 @@
       
       roomId: function (id) {
         if (!id) { return false }
+        this.spinning = true
         const { roomDataCache } = this
         if (roomDataCache.has(id)) {
-          return this.dataList = roomDataCache.get(id)
+          this.spinning = false
+          this.dataList = roomDataCache.get(id)
         } else {
           let _this = this
           clearTimeout(_this.timeoutId)

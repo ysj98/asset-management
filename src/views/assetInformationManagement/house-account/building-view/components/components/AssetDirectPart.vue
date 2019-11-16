@@ -1,75 +1,121 @@
 <!--楼栋视图业务-楼栋视图详情页面-资产使用方向组件-->
 <template>
   <div class="asset_detail">
-    <SG-Title title="资产使用方向" noMargin/>
-    <div class="title_div">
-      <overview-number :numList="numList"/>
-      <!--楼层数据-->
-      <div class="building_style" v-if="buildingList.length">
-        <div class="floor_style" v-for="floor in buildingList" :key="floor.floorName">
-          <div class="floor_num">{{floor.floorName}}</div>
-          <div class="floor_rooms">
-            <div
-              class="room_style"
-              v-for="room in floor.roomList"
-              :key="room.roomNo"
-              :style="handleStyle(room.status, room.area)"
-              @mousemove="handleMouseMove($event, true, room.roomNo)"
-              @mouseout="handleMouseMove($event, false)"
-            >
-              {{room.name}}
+    <a-spin :spinning="spinning">
+      <SG-Title title="资产使用方向" noMargin/>
+      <div class="title_div" style="margin-top: 20px">
+        <overview-number :numList="numList" style="margin-bottom: 12px"/>
+        <!--楼层数据-->
+        <div class="building_style" v-if="buildingList.length">
+          <div class="floor_style" v-for="floor in buildingList" :key="floor.floorName">
+            <div class="floor_num">{{floor.floorName}}</div>
+            <div class="floor_rooms">
+              <div
+                class="room_style"
+                v-for="room in floor.roomList"
+                :key="room.roomNo"
+                :style="handleStyle(room.areaInfo, room.totalArea)"
+                @mousemove="handleMouseMove($event, true, room.roomId, room.roomNo)"
+                @mouseout="handleMouseMove($event, false)"
+              >
+                {{room.roomNo}}
+              </div>
             </div>
           </div>
         </div>
+        <float-view
+          v-if="roomId"
+          :roomNo="roomNo"
+          :roomId="roomId"
+          :position='position'
+          v-show="isShowFloatView"
+          @queryAreaInfo="queryHouseAreaInfo"
+          @handleMouseAction="handleShowFloatView"
+        />
       </div>
-      <float-view
-        :id="roomId"
-        v-if="roomId"
-        :position='position'
-        v-show="isShowFloatView"
-        @handleMouseAction="handleShowFloatView"
-      />
-    </div>
+    </a-spin>
   </div>
 </template>
 
 <script>
-  import {mapState} from 'vuex'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import FloatView from './FloatView'
   export default {
     name: 'AssetDirectPart',
     components: { OverviewNumber, FloatView },
+    props: ['organId', 'assetHouseId', 'projectId'],
     data () {
       return {
-        ...mapState('asset', ['buildingView']),
+        spinning: false, // 加载状态
         timeoutId: 0, // 定时器Id
         roomId: '', // 房间Id
+        roomNo: '', // 房间名称
         position: { clientX: 0, clientY: 0 }, // 设置浮窗的定位位置
         isShowFloatView: false, // 控制浮窗显示
         maxTotalArea: 1, // 每层所有房间面积之和中的最大值
         numList: [
-          {title: '运营(㎡)', value: 0, bgColor: '#4BD288'}, {title: '闲置(㎡)', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', value: 0, bgColor: '#DD81E6'}, {title: '占用(㎡)', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', value: 0, bgColor: '#BBC8D6'}
+          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
+          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
-        bgColorObj: {1: '#1890FF', 2: '#DD81E6', 3: '#FD7474', 4: '#BBC8D6', 5: '#4BD288'}, // 房间背景色映射
+        bgColorObj: {
+          idleArea: '#1890FF',
+          otherArea: '#BBC8D6',
+          selfUserArea: '#DD81E6',
+          occupationArea: '#FD7474',
+          transferOperationArea: '#4BD288'
+        }, // 房间背景色映射
         buildingList: [
           {
             floorName: '一层',
+            floorArea: 110,
             roomList: [
-              { area: 100, roomNo: 1011, name: 101, status: 2 },
-              { area: 10, roomNo: 10121, name: 102, status: 4 }
+              { totalArea: 100, roomNo: 1011, roomId: 101, areaInfo: {
+                  transferOperationArea: 15,
+                  idleArea: 35,
+                  selfUserArea: 75,
+                  occupationArea: 15,
+                  otherArea: 25
+                }
+              },
+              { totalArea: 10, roomNo: 10121, roomId: 102, areaInfo: {
+                  transferOperationArea: null,
+                  idleArea: null,
+                  selfUserArea: null,
+                  occupationArea: null,
+                  otherArea: 25
+                } }
             ]
           },
           {
             floorName: '二层',
+            floorArea: 150,
             roomList: [
-              { area: 10, roomNo: 7101, name: 21011, status: 1 },
-              { area: 20, roomNo: 1701, name: 21012 },
-              { area: 30, roomNo: 19801, name: 21013, status: 5 },
-              { area: 40, roomNo: 17801, name: 21014 },
-              { area: 50, roomNo: 10781, name: 21015, status: 3 }
+              { totalArea: 10, roomNo: 7101, roomId: 21011, areaInfo: {
+                  transferOperationArea: 15,
+                  idleArea: 25,
+                  selfUserArea: null,
+                  occupationArea: null,
+                  otherArea: null
+                } },
+              { totalArea: 20, roomNo: 1701, roomId: 21012, areaInfo: {} },
+              { totalArea: 30, roomNo: 19801, roomId: 21013, areaInfo: {
+                  transferOperationArea: null,
+                  idleArea: null,
+                  selfUserArea: null,
+                  occupationArea: null,
+                  otherArea: 25
+                } },
+              { totalArea: 40, roomNo: 17801, roomId: 21014, areaInfo: {} },
+              { totalArea: 50, roomNo: 10781, roomId: 21015, areaInfo: {
+                  transferOperationArea: null,
+                  idleArea: 35,
+                  selfUserArea: null,
+                  occupationArea: null,
+                  otherArea: null
+                } }
             ]
           }
         ]
@@ -78,26 +124,27 @@
 
     methods: {
       // 处理背景色和宽度
-      handleStyle (status, area) {
+      handleStyle (areaInfo, totalArea) {
         const { bgColorObj, maxTotalArea } = this
-        let color = bgColorObj[status] || ''
-        let width = (Number(area) / maxTotalArea * 100).toFixed(2)
-        return `background-color: ${color}; width: ${width}%`
+        let colorArr = Object.keys(areaInfo).filter(n => areaInfo[n])
+        let bagColor = colorArr.length === 1 ? bgColorObj[colorArr[0]] : ''
+        let fontColor = colorArr.length > 1 ? '#687485' : '#fff'
+        let width = (Number(totalArea) / maxTotalArea * 100).toFixed(2)
+        return `background-color: ${bagColor}; width: ${width}%; color: ${fontColor}`
       },
 
       // 计算每层所有房间面积之和中的最大值，作为所有房间宽度百分比的基数
-      calcMaxTotalArea () {
-        const {buildingList} = this
-        let totalList = buildingList.map(item => {
-          return (item.roomList || []).reduce((accumulator, currentValue) => {
-            return accumulator + Number(currentValue.area || 0)
-          }, 0)
-        })
+      calcMaxTotalArea (list) {
+        let totalList = list.map(item => Number(item.floorArea))
+          // return (item.roomList || []).reduce((accumulator, currentValue) => {
+          //   return accumulator + Number(currentValue.totalArea || 0)
+          // }, 0)
+        // })
         this.maxTotalArea = Math.max(...totalList)
       },
       
       // 鼠标移入房间区域内
-      handleMouseMove (e, bool, roomId) {
+      handleMouseMove (e, bool, roomId, roomNo) {
         let _this = this
         clearTimeout(_this.timeoutId)
         if (!bool) {
@@ -107,7 +154,7 @@
         _this.timeoutId = setTimeout(() => {
           let {clientX, clientY} = e
           Object.assign(_this, {
-            roomId,
+            roomId, roomNo,
             isShowFloatView: true,
             position: { clientX, clientY }
           })
@@ -125,11 +172,54 @@
         _this.timeoutId = setTimeout(() => {
           _this.isShowFloatView = false
         }, 300)
+      },
+
+      // 查询楼栋视图面积概览数据
+      queryHouseAreaInfo (args) {
+        const { buildingId, numList } = this
+        return this.$api.assets.queryAssetViewHouseArea({ assetHouseId: args ? args.id : buildingId }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            // 查楼栋视图详情的面积数据
+            let arr = numList.map(m => {
+              const { percent, number } = res.data[m.key]
+              return {
+                ...m,
+                value: `${number}(${percent})`
+              }
+            })
+            // 查浮窗的面积数据与详情页面的面积数据共用一个接口
+            return args.id ? args.resolve(arr) : this.numList = arr
+          }
+          throw res.message || '查询楼栋视图面积使用统计出错'
+        }).catch(err => {
+          args.id && args.reject()
+          this.$message.error(err || '查询楼栋视图面积使用统计出错')
+        })
+      },
+
+      // 楼层信息查询
+      queryFloorInfo () {
+        this.spinning = true
+        this.$api.assets.queryBuildingViewFloorInfo({assetHouseId: this.houseId, organId: this.organId}).then(r => {
+          this.spinning = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.buildingList = res.data
+            return this.calcMaxTotalArea(res.data)
+          }
+          throw res.message || '查询楼层信息出错'
+        }).catch(err => {
+          this.spinning = false
+          this.$message.error(err || '查询楼层信息出错')
+        })
       }
     },
 
     mounted () {
-      this.calcMaxTotalArea()
+      this.calcMaxTotalArea(this.buildingList)
+      // this.queryFloorInfo()
+      // this.queryHouseAreaInfo()
     }
   }
 </script>
@@ -165,7 +255,7 @@
           }
           .room_style {
             height: 100%;
-            color: #687485;
+            /*color: #fff;*/
             min-width: 10px;
             cursor: default;
             overflow: hidden;

@@ -30,7 +30,7 @@
 <style lang='less' scoped>
   .overview_num {
     height: 83px;
-    margin: 10px 0;
+    /*margin: 10px 0;*/
     border: 1px solid #EFF2F7;
     border-right: none;
     .view_item {

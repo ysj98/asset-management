@@ -48,7 +48,7 @@
     
     computed: {
       options: function () {
-        return this.columns.map(item => ({label: item.title, value: item.dataIndex})).filter(m => m.value !== 'action')
+        return this.columns.map(item => ({ label: item.title, value: item.dataIndex })).filter(m => m.value !== 'action')
       }
     },
     

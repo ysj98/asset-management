@@ -4,54 +4,73 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" :loading='exportAssetBtn' @click="handleExport('exportAssetBtn')">导出资产视图</SG-Button>
-        <SG-Button icon="import" style="margin: 0 10px" :loading="exportHouseBtn" @click="handleExport('exportHouseBtn')">导出房屋卡片</SG-Button>
-        <SG-Button icon="import" style="margin: 0 10px" @click="handleClick('tenement')">转物业</SG-Button>
-        <SG-Button icon="import" style="margin: 0 10px" @click="handleClick('operation')">转运营</SG-Button>
+        <SG-Button
+          icon="plus"
+          type="primary"
+          :loading='exportAssetBtn'
+          @click="handleExport('exportAssetBtn')"
+          :disabled="!tableObj.dataSource.length"
+          :title="tableObj.dataSource.length ? '' : '无可导出数据'"
+        >导出资产视图</SG-Button>
+        <SG-Button
+          icon="import"
+          style="margin: 0 10px"
+          :loading="exportHouseBtn"
+          @click="handleExport('exportHouseBtn')"
+          :disabled="!tableObj.dataSource.length"
+          :title="tableObj.dataSource.length ? '' : '无可导出数据'"
+        >导出房屋卡片</SG-Button>
+        <SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>
+        <SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>
         <SG-Button icon="setting" @click="handleModalStatus(true)">列表设置</SG-Button>
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
           <a-col :span="12">
-            <organ-project-building/>
+            <organ-project-building v-model="organProjectBuildingValue"/>
           </a-col>
           <a-col :span="4">
             <a-select
-              v-model="buildingIds"
+              v-model="status"
               mode="multiple"
               :maxTagCount="1"
               style="width: 100%"
               placeholder="请选择资产状态"
-              :options="buildingOptions"
+              :options="statusOptions"
             />
           </a-col>
           <a-col :span="6">
-            <SG-Button type="primary" @click="handleModalOpen('add')">查询</SG-Button>
+            <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
             <SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>
           </a-col>
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
           <a-col :span="12">
-            <province-city-district/>
+            <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
           <a-col :span="4">
-            <a-input placeholder="请输入资产名称"/>
+            <a-input placeholder="请输入资产名称" v-model="assetName"/>
           </a-col>
         </a-row>
       </div>
-      <div slot="btns">
-        <SG-Button icon="search" type="primary">查询</SG-Button>
-      </div>
     </search-container>
     <!--数据概览信息-->
-    <overview-number :numList="numList"/>
+    <a-spin :spinning="overviewNumSpinning">
+      <overview-number :numList="numList"/>
+    </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table">
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <span slot="projectName" slot-scope="text, record">
+        <router-link :to="{ name: '资产视图详情', params: { houseId: record.assetHouseId } }">{{text}}</router-link>
+      </span>
+      <span slot="buildName" slot-scope="text, record">
+        <router-link :to="{ name: '资产视图详情', params: { houseId: record.assetHouseId } }">{{text}}</router-link>
+      </span>
       <span slot="action" slot-scope="text, record">
-        <span class="btn-text">详情</span>
+        <router-link :to="{ name: '资产视图详情', params: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
     </a-table>
-    <SG-FooterPagination v-bind="paginationObj" @change="handleChangePage"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
     <SG-Modal
       v-bind="modalObj"
@@ -66,7 +85,6 @@
         :columns="tableObj.initColumns"
       />
     </SG-Modal>
-    <!--<router-link to="/assetViewDetail" class="btn-primary">戳我看详情</router-link>-->
   </div>
 </template>
 
@@ -82,18 +100,49 @@
     data () {
       return {
         fold: true,
+        assetName: '', // 查询条件-资产名称
+        status: '', // 查询条件-资产状态值
+        statusOptions: [
+          { title: '未生效', key: '0' }, { title: '正常', key: '1' }, { title: '报废', key: '2' },
+          { title: '转让', key: '3' }, { title: '报损', key: '4' }, { title: '已清理', key: '5' }
+        ], // 查询条件-资产状态选项
+        provinceCityDistrictValue: {}, // 查询条件-省-市-区值对象
+        organProjectBuildingValue: {}, // 查询条件-组织机构-资产项目-楼栋对象
+        overviewNumSpinning: false, // 查询视图面积概览数据loading
         tableObj: {
-          rowKey: 'assetCode',
+          rowKey: 'assetHouseId',
           loading: false,
           columns: [],
           dataSource: [],
           scroll: { x: true },
           initColumns: [
-            { title: '资产名称', dataIndex: 'name', key: 'name', fixed: 'left' },
-            { title: '资产编码', dataIndex: 'age', key: 'age' },
-            { title: '接管机构', dataIndex: 'address', key: 'address' },
-            { title: '丘地号', key: 'tags', dataIndex: 'tags', scopedSlots: { customRender: 'tags' } },
-            { title: '建筑面积', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right' }
+            { title: '资产名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left' },
+            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode' },
+            { title: '接管机构', dataIndex: 'ownerOrganName', key: 'ownerOrganName' },
+            { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
+            { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
+            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName', scopedSlots: { customRender: 'projectName' } },
+            { title: '楼栋名称', dataIndex: 'buildName', key: 'buildName', scopedSlots: { customRender: 'buildName' } },
+            { title: '单元', dataIndex: 'unitName', key: 'unitName' },
+            { title: '楼层', dataIndex: 'floorNum', key: 'floorNum' },
+            { title: '层高', dataIndex: 'floorHeight', key: 'floorHeight' },
+            { title: '分类', dataIndex: 'objectTypeName', key: 'objectTypeName' },
+            { title: '用途', dataIndex: 'useType', key: 'useType' },
+            { title: '资产形态', dataIndex: 'typeName', key: 'typeName' },
+            // { title: '权属形式', dataIndex: 'ownershipStatusName', key: 'ownershipStatusName' },
+            { title: '权属状态', dataIndex: 'ownershipStatusName', key: 'ownershipStatusName' },
+            { title: '权证号', dataIndex: 'warrantNbr', key: 'warrantNbr' },
+            { title: '接管时间', dataIndex: 'startDate', key: 'startDate' },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea', key: 'transferOperationArea' },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea', key: 'selfUserArea' },
+            { title: '闲置(㎡)', dataIndex: 'idleArea', key: 'idleArea' },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', key: 'occupationArea' },
+            { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
+            { title: '财务卡片编码', dataIndex: 'finicialCode', key: 'finicialCode' },
+            { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
+            { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
+            { title: '资产状态', dataIndex: 'statusName', key: 'statusName' },
+            { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right' }
           ]
         },
         key: 0, // 更新Modal包裹的子组件
@@ -102,24 +151,25 @@
           {title: '自用(㎡)', value: 0, bgColor: '#DD81E6'}, {title: '占用(㎡)', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据，title 标题，value 数值，color 背景色
-        checkedHeaderArr: ['tags'], // 格式如['name', 'age']
+        checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
         exportAssetBtn: false, // 导出资产视图button loading标志
         paginationObj: { pageNo: 0, totalCount: 0, pageLength: 0, location: 'absolute' },
-        modalObj: { title: '展示列表设置', details: {}, status: false, okText: '保存', width: 605 },
+        modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
       }
     },
 
     methods: {
-      // 导出资产视图/房屋卡片
-      handleExport (type) {
-        this[type] = true
-        new Promise.reject().then(res => {
-          this[type] = false
-          debugger
-        }).catch(err => {
-          this[type] = false
-        })
+      // 列表设置Modal保存
+      handleModalOk () {
+        let arr = this.$refs['tableHeader'].checkedList
+        if (!arr.length) {
+          return this.$message.info('请至少选中一项!')
+        }
+        this.modalObj.status = false
+        let{ initColumns } = this.tableObj
+        this.checkedHeaderArr = arr
+        this.tableObj.columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
       },
 
       // 打开/关闭列表列头编辑Modal
@@ -128,17 +178,97 @@
         status && (this.key = new Date().getTime())
       },
 
-      // Modal提交
-      handleModalOk () {
-        let arr = this.$refs['tableHeader'].checkedList
-        if (!arr.length) {
-          arr = this.checkedHeaderArr
-          return this.$message.info('请至少选中一项!')
+      // 查询列表数据
+      queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        // if (!houseIdList) { return this.$message.info('请选择楼栋!') }
+        const {
+          organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status
+        } = this
+        this.tableObj.loading = true
+        let form = {
+          organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo,
+          province, city, region, assetName, status: status || null
         }
-        this.modalObj.status = false
-        let{ initColumns } = this.tableObj
-        this.checkedHeaderArr = arr
-        this.tableObj.columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
+        this.$api.assets.queryAssetViewPage(form).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { count, data } = res.data
+            this.tableObj.dataSource = data
+            Object.assign(this.paginationObj, {
+              totalCount: count,
+              pageNo, pageLength
+            })
+            // 查询楼栋面积统计数据
+            if (type === 'search') { this.queryAssetAreaInfo() }
+            return false
+          }
+          throw res.message || '查询接口出错'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '查询接口出错')
+        })
+      },
+
+      // 查询楼栋视图面积概览数据
+      queryAssetAreaInfo () {
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList }, numList } = this
+        this.overviewNumSpinning = true
+        this.$api.assets.queryAssetArea({ organId, houseIdList, projectIdList }).then(r => {
+          this.overviewNumSpinning = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.numList = numList.map(m => {
+              return {
+                ...m,
+                value: res.data[m.key]
+              }
+            })
+          }
+          throw res.message || '查询资产视图面积使用统计出错'
+        }).catch(err => {
+          this.overviewNumSpinning = false
+          this.$message.error(err || '查询资产视图面积使用统计出错')
+        })
+      },
+
+      // 导出资产视图/房屋卡片
+      handleExport (type) {
+        this[type] = true
+        let api = { exportHouseBtn: 'exportHouseExcel', exportAssetBtn: 'exportAssetExcel' }
+        const {
+          organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status,
+          tableObj: { columns }
+        } = this
+        let form = {}
+        if (type === 'exportHouseExcel') {
+          form = {
+            assetHouseId: buildIdList.join(',')
+          }
+        } else {
+          form = {
+            organId, buildIdList, projectIdList,
+            province, city, region, assetName, status: status || null,
+            display: columns.map(m => m.dataIndex).filter(n => n !== 'action')
+          }
+        }
+        this.$api.assets[api[type]](form).then(res => {
+          this[type] = false
+          if (res && String(res.code) === '0') {
+            return false
+          }
+          throw res.message || '导出失败'
+        }).catch(err => {
+          this[type] = false
+          this.$message.error(err || '导出失败')
+        })
+      },
+      
+      // 转物业、转运营
+      handleTransform (type) {
+        type && this.$router.push('www.baidu.com')
       }
     },
 
@@ -146,6 +276,10 @@
       // 初始化Table列头
       let{ initColumns } = this.tableObj
       this.tableObj.columns = initColumns
+      // 初始化被选中的列头数据
+      this.checkedHeaderArr = initColumns.map(m => m.dataIndex).filter(n => n !== 'action')
+      // 模拟查询，要删除！
+      this.queryTableData({})
     }
   }
 </script>
@@ -156,6 +290,11 @@
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {
       white-space: nowrap;
+    }
+    & /deep/ .ant-table-body {
+      &::-webkit-scrollbar {
+        height: 8px !important;
+      }
     }
   }
 </style>

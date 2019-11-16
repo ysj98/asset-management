@@ -1,7 +1,7 @@
 <!--资产视图业务-资产视图详情页面-其它信息组件-->
 <template>
   <div class="other_info">
-    <SG-Title title="其他信息" noMargin/>
+    <SG-Title title="其他信息"/>
     <a-tabs defaultActiveKey="receive" v-model="tabKey" class="title_div">
       <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" :key="itemKey">
         <!--散列信息-->
@@ -18,7 +18,7 @@
           :rowKey="item['table']['rowKey']"
           :columns="item['table']['columns']"
           :dataSource="tableData"
-          class="custom-table"
+          class="custom-table td-pd10"
         />
         <!--特殊处理：权属信息展示的第两个Table-->
         <div v-if="item['table2']">
@@ -27,7 +27,7 @@
             :rowKey="item['table2']['rowKey']"
             :columns="item['table2']['columns']"
             :dataSource="tableData"
-            class="custom-table"
+            class="custom-table td-pd10"
           >
           <span slot="action" slot-scope="text, record">
             <span class="btn-text">{{text}}</span>
@@ -43,6 +43,7 @@
   import infoKeys from './otherInfoKeys'
   export default {
     name: 'OtherInfoPart',
+    props: ['assetHouseId'],
     data () {
       return {
         infoKeys, // 所以Tab的展示字段
@@ -70,5 +71,17 @@
 
 <style lang='less' scoped>
   .other_info {
+    .custom-table {
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+      & /deep/ .ant-table-body {
+        &::-webkit-scrollbar {
+          height: 8px !important;
+        }
+      }
+    }
   }
 </style>

@@ -1,8 +1,8 @@
 <!--楼栋视图业务-楼栋视图详情页面-其它信息组件-->
 <template>
   <div class="other_info">
-    <SG-Title title="其它信息" noMargin/>
-    <a-table v-bind="tableObj" class="custom-table title_div">
+    <SG-Title title="其它信息"/>
+    <a-table v-bind="tableObj" class="custom-table  td-pd10 title_div">
       <span slot="action" slot-scope="text, record">
         <span class="btn-text">下载</span>
       </span>
