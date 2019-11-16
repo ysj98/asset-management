@@ -143,7 +143,7 @@ export default {
     },
     // 异步加载数据
     onLoadData (treeNode) {
-      if (String(treeNode.dataRef.subPositionType) === '-2') {
+      if (['-2', '2'].includes(String(treeNode.dataRef.subPositionType))) {
         return Promise.resolve()
       }
       let data = {
@@ -152,7 +152,6 @@ export default {
         organId: this.organId,
       }
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
-      // return Promise.resolve()
     },
     // 一级机构id 请求楼栋
     positionSelectAsyn (organId) {
@@ -174,7 +173,7 @@ export default {
             this.dataList.push({...item})
             return {...item}
           })
-          this.expandedKeys = [...this.expandedKeys]
+          this.expandedKeys = [topItem.key]
         } else {
           this.$message.error(res.data.message)
         }
@@ -197,6 +196,7 @@ export default {
           let _item = fetchItem(this.gData, key, 'key')
           if (_item) {
             this.$set(_item, 'children', result)
+            this.treeUuid = getUuid()
           }
         } else {
           this.$message.error(res.data.message)

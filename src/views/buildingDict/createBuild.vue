@@ -197,7 +197,7 @@
                 <a-col v-bind="formSpan">
                   <a-form-item label="竣工日期" v-bind="formItemLayout">
                     <a-date-picker
-                    width="100%"
+                    :style="allWidth"
                     placeholder="请选择竣工日期"
                     :getPopupContainer="getPopupContainer"
                     v-decorator="['completionDate', {initialValue: '' || undefined}]"

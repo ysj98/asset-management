@@ -257,6 +257,42 @@ export default {
       }
     }
   },
+  created () {
+    // 是否有记住搜索条件
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.organId = query.organId
+      this.queryCondition.buildId = query.buildId
+      this.queryCondition.unitId = query.unitId
+      this.queryCondition.houseId = query.houseId
+      this.queryCondition.houseCategory = query.houseCategory
+      this.queryCondition.houseType = query.houseType
+      this.queryCondition.resType = query.resType
+      this.queryCondition.status = query.status
+      this.organName = query.organName
+      this.formChildPage = true // 用于项目记录一次
+    }
+    // 楼栋
+    if (this.queryCondition.organId) {
+        this.queryBuildList(this.queryCondition.organId)
+    }
+    // 单元
+    if (this.queryCondition.buildId) {
+      this.getOptions('getUnitByBuildId', this.queryCondition.buildId)
+    }
+    // 房号
+    if (this.queryCondition.unitId) {
+      this.getOptions('getHouseByUnitId', this.queryCondition.unitId)
+    }
+    // 房间类型
+    if (this.queryCondition.houseCategory) {
+      let typeId = this.queryCondition.houseCategory.split(',')[1]
+      this.queryChildNodesById(typeId)
+    }
+    this.query()
+  },
   mounted () {
     this.queryNodesByRootCode('20')
     this.queryNodesByRootCode('60')
@@ -264,6 +300,7 @@ export default {
   methods: {
     // 查询房屋列表
     query () {
+      this.queryConditionStore = {...this.queryCondition}
       let data = {
         ...this.queryCondition
       }
@@ -318,6 +355,11 @@ export default {
     },
     // orangId改变
     organIdChange (o) {
+      // 如果第一次进来为子页面
+      if (this.formChildPage) {
+        this.formChildPage = false
+        return
+      }
       console.log('一级物业改变', o)
       this.organName = o.name
       if (o.value) {
@@ -526,6 +568,13 @@ export default {
     },
     // 页面跳转
     goPage (type, record) {
+      // 存储缓存搜索缓存数据
+      let o = {
+        ...this.queryConditionStore,
+        organName: this.organName || '',
+        showKey: 'house'
+      }
+      this.SET_ROUTE_QUERY(this.$route.path, o)
       let query = {type}
       if (['edit', 'copy', 'detail'].includes(type)) {
         query.houseId = record.houseId,
@@ -555,3 +604,4 @@ export default {
   padding-right: 190px;
 }
 </style>
+

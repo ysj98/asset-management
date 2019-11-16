@@ -19,6 +19,7 @@
                   <a-select
                     :style="allWidth"
                     placeholder="请选择项目"
+                    :disabled="type==='edit'"
                     showSearch
                     @change="watchOrganChange"
                     optionFilterProp="children"
@@ -37,6 +38,7 @@
                   <a-select
                   :style="allWidth"
                     placeholder="请选择楼栋"
+                    :disabled="type==='edit'"
                     @change="watchBuildChange"
                     @search="handleSearch"
                     showSearch
@@ -55,8 +57,9 @@
                 <a-form-item label="单元" v-bind="formItemLayout">
                   <a-select
                   :style="allWidth"
-                    placeholder="请选择单元"
+                    :placeholder="type==='edit'?'--':'请选择单元'"
                     @change="watchUnitChange"
+                    :disabled="type==='edit'"
                     showSearch
                     optionFilterProp="children"
                     :options="unitOpt"
@@ -225,7 +228,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="平面图" v-bind="formItemLayout2">
-                  <SG-UploadFile v-model="planeFigurePath"/>
+                  <SG-UploadFile :max="1" v-model="planeFigurePath"/>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -248,7 +251,7 @@ import FormFooter from '@/components/FormFooter.vue'
 import {utils, debounce} from '@/utils/utils'
 import moment from 'moment'
 let getUuid = ((uuid = 1) => () => ++uuid)()
-const allWidth = {maxWidth: 'auto'}
+const allWidth = {width: '100%'}
 // 页面跳转
 const operationTypes = {
   index: '/buildingDict'
@@ -346,6 +349,7 @@ export default {
             this.$api.building.addHouse(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success(`新增房间成功`)
+                this.goPage('index')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -357,7 +361,7 @@ export default {
             this.$api.building.updateHouse(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼房间成功')
-                // this.$emit('success')
+                this.goPage('index')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -366,7 +370,9 @@ export default {
         }
       })
     },
-    handleCancel () {},
+    handleCancel () {
+      this.goPage('index')
+    },
     queryHouseDetailById () {
       let data = {
         houseId: this.houseId
@@ -608,6 +614,11 @@ export default {
         }
       })
     },
+    // 页面跳转
+    goPage (type) {
+      let query = {}
+      this.$router.push({path: operationTypes[type], query: query || {}})
+    },
     // 楼栋搜索
     handleSearch (value) {
       this.searchBuildName = value
@@ -632,4 +643,28 @@ export default {
     position: relative;
     padding: 42px 100px 70px 94px;
   }
+</style>
+<style lang="less">
+  // 表单禁止框样式
+.createHouse-page{
+  .ant-select-disabled{
+    color: rgba(0, 0, 0, 0.65);
+    .ant-select-selection{
+      border:none;
+      background: #fff;
+      .ant-select-arrow{display: none;}
+    }
+  }
+  .ant-select-selection-selected-value{
+    user-select: text;
+    cursor: text;
+  }
+  .ant-select-selection__rendered{
+    user-select: text;
+    cursor: default;
+  }
+  .ant-select-disabled .ant-select-selection{
+    cursor: default;
+  }
+}
 </style>

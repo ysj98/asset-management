@@ -17,31 +17,31 @@
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">项目名称：</div>
-                  <div class="item-content">招商租赁项目</div>
+                  <div class="item-content">{{houseInfo.organName || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">楼栋：</div>
-                  <div class="item-content">25栋</div>
+                  <div class="item-content">{{houseInfo.buildName || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">单元：</div>
-                  <div class="item-content">— —</div>
+                  <div class="item-content">{{houseInfo.unitName || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">楼     层：</div>
-                  <div class="item-content">3层</div>
+                  <div class="item-content">{{houseInfo.floorName || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">房号：</div>
-                  <div class="item-content">201室</div>
+                  <div class="item-content">{{houseInfo.roomNo || '-'}}</div>
                 </div>
               </a-col>
             </a-row>
@@ -60,19 +60,19 @@
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">建筑面积(㎡)：</div>
-                  <div class="item-content">102</div>
+                  <div class="item-content">{{houseInfo.area || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">分摊面积(㎡)：</div>
-                  <div class="item-content">7.02</div>
+                  <div class="item-content">{{houseInfo.shareArea || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">套内面积(㎡)：</div>
-                  <div class="item-content">69.23</div>
+                  <div class="item-content">{{houseInfo.innerArea || '-'}}</div>
                 </div>
               </a-col>
             </a-row>
@@ -91,19 +91,19 @@
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">建筑形态：</div>
-                  <div class="item-content">园区</div>
+                  <div class="item-content">{{houseInfo.houseCategoryName || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">房间类型：</div>
-                  <div class="item-content">商铺</div>
+                  <div class="item-content">{{houseInfo.houseTypeName || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">房间用途：</div>
-                  <div class="item-content">出租</div>
+                  <div class="item-content">{{houseInfo.resTypeName || '-'}}</div>
                 </div>
               </a-col>
             </a-row>
@@ -122,52 +122,54 @@
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">户型：</div>
-                  <div class="item-content">1室</div>
+                  <div class="item-content">{{houseInfo.houseMode || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">朝向：</div>
-                  <div class="item-content">南</div>
+                  <div class="item-content">{{houseInfo.face || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">房间编码：</div>
-                  <div class="item-content">1001</div>
+                  <div class="item-content">{{houseInfo.code || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">交付日期：</div>
-                  <div class="item-content">2019-05-12</div>
+                  <div class="item-content">{{houseInfo.deliveryTime || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
                   <div class="item-label">保修到期时间：</div>
-                  <div class="item-content">2020-10-15 12:02:12</div>
+                  <div class="item-content">{{houseInfo.repairTime || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-item">
                   <div class="item-label">详细描述：</div>
-                  <div class="item-content">无</div>
+                  <div class="item-content">{{houseInfo.description || '-'}}</div>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-item">
                   <div class="item-label">平面图：</div>
                   <div class="item-content">
-                    <SG-UploadFile :show="true" v-model="planeFigurePath"/>
+                    <SG-UploadFile v-if="planeFigurePath.length" :show="true" v-model="planeFigurePath"/>
+                    <span v-else>-</span>
                   </div>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-item">
-                  <div class="item-label">附件：</div>
+                  <div class="item-label">附&nbsp;&nbsp;&nbsp;&nbsp;件：</div>
                   <div class="item-content">
-                    <SG-UploadFile :show="true" type="all" v-model="filepaths"/>
+                    <SG-UploadFile v-if="filepaths.length" :show="true" type="all" v-model="filepaths"/>
+                    <span v-else>-</span>
                   </div>
                 </div>
               </a-col>
@@ -184,6 +186,7 @@
        filepaths: [],
        planeFigurePath: [],
        houseInfo: {},
+       houseId: '',
      }
    },
    mounted () {
@@ -207,21 +210,17 @@
     handleEditData (data) {
       // 处理图片
       this.houseInfo = data
+      // 处理图片
       if (data.planeFigurePath) {
-        // this.planeFigurePath = [data.planeFigurePath]
-        this.planeFigurePath = [{ url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }]
+        this.planeFigurePath = [{url: data.planeFigurePath, name: ''}]
       }
       // 处理附件
       if (data.filepaths) {
-        // this.filepaths = data.filepaths.split(',')
-        this.filepaths = [
-          { url: '/doc/2019/07/23/8/2019/07/23/1563883528442.txt', name: '1563883528442.txt' },
-          { url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }
-        ]
+        let filepaths = data.filepaths.split(',')
+        this.filepaths = filepaths.map(item => {
+          return {url: item, name: ''}
+        })
       }
-      // 处理请求
-      // 房间类型请求
-      // 楼层请求
     },
    }
  }

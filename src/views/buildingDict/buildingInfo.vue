@@ -86,10 +86,10 @@ export default {
     }
   },
   mounted () {
-    this.computedHeight()
-    window.addEventListener('resize', () => {
-      this.debounceMothed()
-    })
+    // this.computedHeight()
+    // window.addEventListener('resize', () => {
+    //   this.debounceMothed()
+    // })
   },
   methods: {
     resetInit () {
@@ -149,6 +149,7 @@ export default {
     margin: 30px;
     margin-top: 0;
     display: flex;
+    height: calc(100vh - 132px);
     .tree-box{
       flex: 0 0 265px;
       height: 100%;
