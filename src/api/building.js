@@ -23,8 +23,8 @@ export function addHouse (data) {
   return axiosPost(building.addHouse, data)
 }
 // 查询房屋详情
-export function getHouseDetail (data) {
-  return axiosPost(building.getHouseDetail, data)
+export function queryHouseDetailById (data) {
+  return axiosPost(building.queryHouseDetailById, data)
 }
 // 修改房屋状态
 export function updateHouseStatus (data) {

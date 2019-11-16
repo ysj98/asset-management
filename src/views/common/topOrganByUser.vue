@@ -85,6 +85,7 @@ export default {
             arr.push(o)
           })
           this.options = arr
+          // 如果有默认选项
           if (this.value) {
             this.selectValue = this.value
             this.handleChange(this.value)
