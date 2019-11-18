@@ -166,7 +166,7 @@
       // 获取Table表宽度
       // let { offsetWidth } = document.getElementsByClassName('custom-table')[0]
       // this.tableObj.scroll.y = offsetWidth || 1000
-      this.queryTableData({ type: 'search' })
+      // this.queryTableData({ type: 'search' }) // 模拟调用接口
     },
 
     watch: {

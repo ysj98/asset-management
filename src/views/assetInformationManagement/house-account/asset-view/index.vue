@@ -279,7 +279,7 @@
       // 初始化被选中的列头数据
       this.checkedHeaderArr = initColumns.map(m => m.dataIndex).filter(n => n !== 'action')
       // 模拟查询，要删除！
-      this.queryTableData({})
+      // this.queryTableData({})
     }
   }
 </script>
