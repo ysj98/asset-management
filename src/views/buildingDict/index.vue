@@ -41,6 +41,14 @@ export default {
       organId: ''
     }
   },
+  created () {
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    if (Object.keys(query).length > 0) {
+      if (query.showKey === 'house') {
+        this.showKey = 'house'
+      }
+    }
+  },
   methods: {
     tabChange (v) {
       console.log(v)

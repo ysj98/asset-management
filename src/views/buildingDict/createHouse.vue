@@ -17,11 +17,13 @@
               <a-col :span="8">
                 <a-form-item label="项目名称" v-bind="formItemLayout">
                   <a-select
-                  :style="allWidth"
+                    :style="allWidth"
                     placeholder="请选择项目"
+                    :disabled="type==='edit'"
                     showSearch
+                    @change="watchOrganChange"
                     optionFilterProp="children"
-                    :options="organOptions"
+                    :options="organOpt"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -36,11 +38,14 @@
                   <a-select
                   :style="allWidth"
                     placeholder="请选择楼栋"
+                    :disabled="type==='edit'"
+                    @change="watchBuildChange"
+                    @search="handleSearch"
                     showSearch
                     optionFilterProp="children"
                     :options="buildOpt"
                     :allowClear="false"
-                    :filterOption="filterOption"
+                    :filterOption="false"
                     notFoundContent="没有查询到数据"
                     v-decorator="['buildId',
                       { rules: [{required: true, message: '请选择楼栋'}]}
@@ -52,16 +57,16 @@
                 <a-form-item label="单元" v-bind="formItemLayout">
                   <a-select
                   :style="allWidth"
-                    placeholder="请选择单元"
+                    :placeholder="type==='edit'?'--':'请选择单元'"
+                    @change="watchUnitChange"
+                    :disabled="type==='edit'"
                     showSearch
                     optionFilterProp="children"
                     :options="unitOpt"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
-                    v-decorator="['unitId',
-                      { rules: [{required: true, message: '请选择单元'}]}
-                    ]"
+                    v-decorator="['unitId']"
                   />
                 </a-form-item>
               </a-col>
@@ -130,6 +135,7 @@
                   :style="allWidth"
                     placeholder="请选择建筑形态"
                     showSearch
+                    @change="watchHouseCategory"
                     optionFilterProp="children"
                     :options="houseCategoryOpt"
                     :allowClear="false"
@@ -173,7 +179,7 @@
                   />
                 </a-form-item>
               </a-col>
-            </a-row>  
+            </a-row>
           </div>
         </div>
         <!-- 详细信息 -->
@@ -185,7 +191,7 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="户型" v-bind="formItemLayout">
-                  <a-input  :style="allWidth" v-decorator="['apartmentId', {initialValue: '' || undefined}]"/>
+                  <a-input :maxLength="30"  :style="allWidth" v-decorator="['houseMode', {initialValue: '' || undefined}]"/>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -195,7 +201,7 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="房间编码" v-bind="formItemLayout">
-                  <a-input :style="allWidth" v-decorator="['code', {initialValue: '' || undefined}]"/>
+                  <a-input :maxLength="30" :style="allWidth" v-decorator="['code', {initialValue: '' || undefined}]"/>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -217,23 +223,19 @@
                 <a-form-item label="描述" v-bind="formItemLayout2">
                   <a-textarea v-decorator="['description', {initialValue: ''}]"/>
                 </a-form-item>
-                <!-- <component :is="currItem.disabled?'a-input':'a-textarea'" :autosize="!currItem.disabled"  :disabled="currItem.disabled" v-else-if="currItem.formType === 'textarea'" :placeholder="(currItem.disabled?'':currItem.attrName) | filterInput" 
-                  v-decorator="[currItem.attrCode, 
-                    {initialValue: currItem.attrValue || undefined, rules: currItem.ruleConf}
-                ]"/> -->
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="24">
                 <a-form-item label="平面图" v-bind="formItemLayout2">
-                  <SG-UploadFile v-model="planeFigurePath"/>
+                  <SG-UploadFile :max="1" v-model="planeFigurePath"/>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile v-model="filepaths"/>
+                  <SG-UploadFile type="all" v-model="filepaths"/>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -246,15 +248,23 @@
  </template>
 <script>
 import FormFooter from '@/components/FormFooter.vue'
-const allWidth = {maxWidth: 'auto'}
+import {utils, debounce} from '@/utils/utils'
+import moment from 'moment'
+let getUuid = ((uuid = 1) => () => ++uuid)()
+const allWidth = {width: '100%'}
+// 页面跳转
+const operationTypes = {
+  index: '/buildingDict'
+}
 export default {
   components: {
     FormFooter
   },
   data () {
     return {
+      type: '',
       allWidth,
-      organOptions: [],
+      organOpt: [],
       buildOpt: [],
       unitOpt: [],
       floorOpt: [],
@@ -285,13 +295,340 @@ export default {
       }
     }
   },
-  
+  mounted () {
+    this.queryNodesByRootCode('20')
+    this.queryNodesByRootCode('60')
+    this.type = this.$route.query.type
+    // 如果是新增
+    if (this.type === 'create') {
+      this.queryAllTopOrganByUser()
+    }
+    // 如果是编辑
+    if (this.type === 'edit') {
+      this.houseId = this.$route.query.houseId || ''
+      this.organName = this.$route.query.organName || ''
+      this.organId = this.$route.query.organId || ''
+      this.queryHouseDetailById()
+    }
+    // 如果是复制
+    if (this.type === 'copy') {
+      this.organId = this.$route.query.organId || ''
+      this.houseId = this.$route.query.houseId || ''
+      this.queryHouseDetailById()
+    }
+  },
   beforeCreate () {
     this.form = this.$form.createForm(this)
   },
   methods: {
-    handleSave () {},
-    handleCancel () {},
+    handleSave () {
+      this.form.validateFields((err, values) => {
+        console.log('得到值=>', values)
+        if (!err) {
+          let data = {}
+          utils.each(values, (value, key) => {
+            data[key] = value || ''
+          })
+          // 处理时间类型
+          if (data.deliveryTime) {
+            data.deliveryTime = data.deliveryTime.format('YYYY-MM-DD')
+          }
+          if (data.repairTime) {
+            data.repairTime = data.repairTime.format('YYYY-MM-DD')
+          }
+          // 处理图片
+          if (this.planeFigurePath.length) {
+            data.planeFigurePath = this.planeFigurePath[0].url
+          }
+          // 处理附件
+          if (this.filepaths.length) {
+            data.filepaths = this.filepaths.map(item => item.url).join(',')
+          }
+          // 新增房间
+          if (this.type === 'create' || this.type === 'copy') {
+            this.$api.building.addHouse(data).then(res => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success(`新增房间成功`)
+                this.goPage('index')
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+          // 编辑房间
+          if (this.type === 'edit') {
+            data.houseId = this.houseId
+            this.$api.building.updateHouse(data).then(res => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success('编辑楼房间成功')
+                this.goPage('index')
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+        }
+      })
+    },
+    handleCancel () {
+      this.goPage('index')
+    },
+    queryHouseDetailById () {
+      let data = {
+        houseId: this.houseId
+      }
+      this.$api.building.queryHouseDetailById(data).then(res => {
+        if (res.data.code === '0') {
+          this.handleEditData({...res.data.data})
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 处理编辑数据
+    handleEditData (data) {
+      // 处理时间
+      if (data.repairTime) {
+        data.repairTime = moment(data.repairTime, 'YYYY-MM-DD')
+      }
+      if (data.deliveryTime) {
+        data.deliveryTime = moment(data.deliveryTime, 'YYYY-MM-DD')
+      }
+      this.form.setFieldsValue({
+        organId: this.organId,
+        buildId: data.buildId || undefined,
+        unitId: data.unitId || undefined,
+        floorId: data.floorId || undefined,
+        roomNo: data.roomNo || undefined,
+        area: data.area || undefined,
+        shareArea: data.shareArea || undefined,
+        innerArea: data.innerArea || undefined,
+        houseCategory: data.houseCategory || undefined,
+        houseType: data.houseType || undefined,
+        resType: data.resType || undefined,
+        houseMode: data.houseMode || undefined,
+        face: data.face || undefined,
+        description: data.description || undefined,
+        code: data.code || undefined,
+        deliveryTime: data.deliveryTime || undefined,
+        repairTime: data.repairTime || undefined
+      })
+      // 处理图片
+      if (data.planeFigurePath) {
+        this.planeFigurePath = [{url: data.planeFigurePath, name: ''}]
+      }
+      // 处理附件
+      if (data.filepaths) {
+        let filepaths = data.filepaths.split(',')
+        this.filepaths = filepaths.map(item => {
+          return {url: item, name: ''}
+        })
+      }
+      // 如果是编辑
+      if (this.type === 'edit') {
+        this.organOpt = [{label: data.organName, value: this.organId}]
+        this.buildOpt = [{label: data.buildName, value: data.buildId}]
+        this.unitOpt = [{label: data.unitName, value: data.unitId}]
+      }
+      // 处理请求
+      if (this.type === 'copy') {
+        this.queryAllTopOrganByUser() // 项目
+        this.queryBuildList(this.organId) // 请求楼栋
+        this.getOptions('getUnitByBuildId', data.buildId) // 请求单元
+      }
+      // 如果有单元
+      if (data.unitId) {
+        this.queryAddFloorOptions(data.unitId, '1') // 单元请求楼层
+      } else {
+        this.queryAddFloorOptions(data.buildId, '0') // 楼栋请求楼层
+      }
+      this.queryChildNodesById(data.houseCategoryId) // 请求房间类型
+    },
+    // 监听一级物业改变
+    watchOrganChange (organId) {
+      this.form.setFieldsValue({
+        buildId: undefined,
+        unitId: undefined,
+        floorId: undefined,
+      })
+      this.buildOpt = []
+      this.unitOpt = []
+      this.floorOpt = []
+      if (!organId) {
+        return
+      }
+      this.queryBuildList(organId)
+    },
+    // 监听楼栋改变
+    watchBuildChange (buildId) {
+      this.form.setFieldsValue({
+        unitId: undefined,
+        floorId: undefined,
+      })
+      this.unitOpt = []
+      this.floorOpt = []
+      if (!buildId) {
+        return
+      }
+      // 请求单元
+      this.getOptions('getUnitByBuildId', buildId)
+      // 请求楼层
+      this.queryAddFloorOptions(buildId, '0')
+    },
+    // 监听单元改变
+    watchUnitChange (unitId) {
+      this.form.setFieldsValue({
+        floorId: undefined,
+      })
+      this.floorOpt = []
+      if (!unitId) {
+        return
+      }
+      // 请求楼层
+      this.queryAddFloorOptions(unitId, '1')
+    },
+    // 监听建筑形态变化
+    watchHouseCategory (typeCode) {
+      console.log('建筑形态变化=>', typeCode)
+      this.form.setFieldsValue({
+        houseType: undefined,
+      })
+      this.houseTypeOpt = []
+      if (!typeCode) {
+        return
+      }
+      let typeId = this.houseCategoryOpt.filter(item => typeCode === item.typeCode)
+      this.queryChildNodesById(typeId[0].typeId)
+    },
+    // 请求单元
+    getOptions (type, value = '') {
+      if (!type) {
+        return
+      }
+      let PARAMS = ''
+      let resetArr = []
+      // 请求单元
+      if (type === 'getUnitByBuildId') {
+        PARAMS = '#BUILD_ID:' + value
+        this.unitOpt = resetArr
+      }
+      let data = {
+        SQL_CODE: type,
+        PARAMS: PARAMS
+      }
+      this.$api.basics.getOptions(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          resetArr.push(...result.map(item => {
+            return {
+              label: item.C_TEXT,
+              value: item.C_VALUE
+            }
+          }))
+        }
+      })
+    },
+    // 请求楼层
+    queryAddFloorOptions (positionId, subPositionType) {
+      // 新增时 subPositionType 0: 楼栋，1，单元
+      this.$api.basics.queryFloorListByPosId({positionId, subPositionType}).then(res => {
+        if (res.data.code === '0') {
+          this.floorOpt = res.data.data.map(item => {
+            return {label: item.floorName, value: item.floorId + '', key: item.floorId + ''}
+          })
+        }
+      })
+    },
+    /* 根据根节点业态code获取下面的业态类型 */
+    queryNodesByRootCode (code) {
+      /**
+       * 20  建筑形态
+       * 60  房间用途
+      */
+      let data = {
+        categoryCode: code
+      }
+      return this.$api.basics.queryNodesByRootCode(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          let resultArr = result.map(item => {
+            return {
+              label: item.typeName,
+              value: item.typeCode,
+              ...item
+            }
+          })
+          // 建筑类型
+          if (code === '20') {
+            this.houseCategoryOpt = [...resultArr]
+          }
+          // 房间用途
+          if (code === '60') {
+            this.resTypeOpt = [...resultArr]
+          }
+        }
+      })
+    },
+    // 根据业态Id 获取下面的子节点 请求房间类型
+    queryChildNodesById (typeId) {
+      let data = {typeId}
+      this.$api.basics.queryChildNodesById(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          let resultArr = result.map(item => {
+            return {
+              label: item.typeName,
+              value: item.typeCode,
+              ...item
+            }
+          })
+          this.houseTypeOpt = [...resultArr]
+        }
+      })
+    },
+    // 请求一级物业
+    queryAllTopOrganByUser () {
+      this.$api.basics.queryAllTopOrganByUser({}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.organOpt = result.map(item => {
+            return {label: item.organName, value: item.organId}
+          })
+          console.log('一级组织机构=>', this.organOpt)
+          // 默认选中第一个
+          if (this.organOpt.length) {
+            this.form.setFieldsValue({organId: this.organOpt[0].value})
+            this.queryBuildList(this.organOpt[0].value)
+          }
+        }
+      })
+    },
+    // 请求楼栋列表默认20条
+    queryBuildList (organId, buildName) {
+      this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.buildOpt = result.map(item => {
+            return {label: item.buildName, value: item.buildId}
+          })
+        }
+      })
+    },
+    // 页面跳转
+    goPage (type) {
+      let query = {}
+      this.$router.push({path: operationTypes[type], query: query || {}})
+    },
+    // 楼栋搜索
+    handleSearch (value) {
+      this.searchBuildName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceMothed: debounce(function () {
+      let organId = this.form.getFieldsValue(['organId'])
+        this.queryBuildList(organId.organId || '', this.searchBuildName || '')
+    }, 300),
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
@@ -306,4 +643,28 @@ export default {
     position: relative;
     padding: 42px 100px 70px 94px;
   }
+</style>
+<style lang="less">
+  // 表单禁止框样式
+.createHouse-page{
+  .ant-select-disabled{
+    color: rgba(0, 0, 0, 0.65);
+    .ant-select-selection{
+      border:none;
+      background: #fff;
+      .ant-select-arrow{display: none;}
+    }
+  }
+  .ant-select-selection-selected-value{
+    user-select: text;
+    cursor: text;
+  }
+  .ant-select-selection__rendered{
+    user-select: text;
+    cursor: default;
+  }
+  .ant-select-disabled .ant-select-selection{
+    cursor: default;
+  }
+}
 </style>

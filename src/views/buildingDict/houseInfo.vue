@@ -8,9 +8,9 @@
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
         <SG-Button class="mr10" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
-        <SG-Button class="mr10"><segiIcon type="#icon-ziyuan4" class="icon-right"/>房间资料导入</SG-Button>
-        <SG-Button class="mr10"><segiIcon type="#icon-ziyuan10" class="icon-right"/>房间导出</SG-Button>
-        <SG-Button icon="sync">批量更新</SG-Button>
+        <SG-Button class="mr10" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
+        <SG-Button class="mr10" @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
+        <SG-Button icon="sync" @click="openImportModal">批量更新</SG-Button>
       </div>
       <div slot="contentForm">
         <div>
@@ -22,11 +22,12 @@
           placeholder="请选择楼栋"
           v-model="queryCondition.buildId"
           optionFilterProp="children"
+          @search="handleSearch"
           @change="watchBuildChange"
           :style="allWidth"
           :options="buildOpt"
           :allowClear="false"
-          :filterOption="filterOption"
+          :filterOption="false"
           notFoundContent="没有查询到数据"
          />
          <!-- 单元 -->
@@ -120,6 +121,9 @@
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
         >
+        <template slot="houseName" slot-scope="text, record">
+           <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+        </template>
         <template slot="operation" slot-scope="text, record">
             <OperationPopover :operationData="operationData"  @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
@@ -132,14 +136,23 @@
         @change="handleChange"
       />
     </div>
+    <!-- 房间资料导入 -->
+    <houseDataImport ref="houseDataImport"/>
+    <!-- 房间导出 -->
+    <houseExport ref="houseExport"/>
+    <!-- 批量更新 -->
+    <eportAndDownFile ref="eportAndDownFile" title="房间批量更新" :showDown="false"/>
   </div>
 </template>
 <script>
 import SearchContainer from '@/views/common/SearchContainer'
 import segiIcon from '@/components/segiIcon.vue'
 import topOrganByUser from '@/views/common/topOrganByUser'
-import {utils} from '@/utils/utils'
+import {utils, debounce} from '@/utils/utils'
 import OperationPopover from '@/components/OperationPopover'
+import houseExport from './child/houseExport.vue'
+import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
+import houseDataImport from './child/houseDataImport.vue'
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px'}
@@ -161,6 +174,10 @@ let queryCondition = {
   houseType: '', //房间类型
   resType: '', // 房间用途
   status: '', // 房间状态
+}
+const statusMap = {
+  '1': '有效',
+  '0': '无效'
 }
 const buildOpt = [{label: '全部楼栋', value: ''}]
 const unitOpt = [{label: '全部单元', value: ''}]
@@ -188,11 +205,11 @@ let columns = [{
   width: '15%'
 }, {
   title: '套内面积(㎡)',
-  dataIndex: 'billArea',
+  dataIndex: 'innerArea',
   width: '15%'
 }, {
   title: '房间状态',
-  dataIndex: 'houseStatusName',
+  dataIndex: 'statusName',
   width: '10%'
 }, {
   title: '操作',
@@ -213,13 +230,17 @@ export default {
     SearchContainer,
     segiIcon,
     topOrganByUser,
-    OperationPopover
+    OperationPopover,
+    houseExport,
+    eportAndDownFile,
+    houseDataImport
   },
   data () {
     return {
       allWidth,
       toggle: true,
       operationData,
+      searchBuildName: '', // 搜索楼栋字符
       queryCondition: {...queryCondition},
       buildOpt: utils.deepClone(buildOpt),
       unitOpt: utils.deepClone(unitOpt),
@@ -236,6 +257,42 @@ export default {
       }
     }
   },
+  created () {
+    // 是否有记住搜索条件
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.organId = query.organId
+      this.queryCondition.buildId = query.buildId
+      this.queryCondition.unitId = query.unitId
+      this.queryCondition.houseId = query.houseId
+      this.queryCondition.houseCategory = query.houseCategory
+      this.queryCondition.houseType = query.houseType
+      this.queryCondition.resType = query.resType
+      this.queryCondition.status = query.status
+      this.organName = query.organName
+      this.formChildPage = true // 用于项目记录一次
+    }
+    // 楼栋
+    if (this.queryCondition.organId) {
+        this.queryBuildList(this.queryCondition.organId)
+    }
+    // 单元
+    if (this.queryCondition.buildId) {
+      this.getOptions('getUnitByBuildId', this.queryCondition.buildId)
+    }
+    // 房号
+    if (this.queryCondition.unitId) {
+      this.getOptions('getHouseByUnitId', this.queryCondition.unitId)
+    }
+    // 房间类型
+    if (this.queryCondition.houseCategory) {
+      let typeId = this.queryCondition.houseCategory.split(',')[1]
+      this.queryChildNodesById(typeId)
+    }
+    this.query()
+  },
   mounted () {
     this.queryNodesByRootCode('20')
     this.queryNodesByRootCode('60')
@@ -243,6 +300,7 @@ export default {
   methods: {
     // 查询房屋列表
     query () {
+      this.queryConditionStore = {...this.queryCondition}
       let data = {
         ...this.queryCondition
       }
@@ -255,13 +313,17 @@ export default {
       this.$api.building.queryHouseByPage(data).then(res => {
         this.table.loading = false
         if (res.data.code === '0') {
-          this.table.dataSource = res.data.data.data.map(item => {
+          this.table.dataSource = res.data.data.map(item => {
+            item.innerArea = item.innerArea || '-'
+            item.area = item.area || '-'
+            item.houseName = item.houseName || '-'
+            item.statusName = statusMap[item.status] || '-'
             return {
               key: getUuid(),
               ...item
             }
           })
-          this.table.totalCount = res.data.data.count || '' 
+          this.table.totalCount = res.data.paginator.totalCount || '' 
         }
       }, () => {
         this.table.loading = false
@@ -293,9 +355,18 @@ export default {
     },
     // orangId改变
     organIdChange (o) {
+      // 如果第一次进来为子页面
+      if (this.formChildPage) {
+        this.formChildPage = false
+        return
+      }
       console.log('一级物业改变', o)
-      this.watchOrganChange()
-      this.searchQuery()
+      this.organName = o.name
+      if (o.value) {
+        this.watchOrganChange(o.value)
+        this.searchQuery()
+      }
+      
     },
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -309,7 +380,10 @@ export default {
       this.houseOpt = utils.deepClone(houseOpt)
       this.queryCondition.houseId = ''
       this.queryCondition.unitId = ''
-      this.getOptions('getUnitByBuildId', '39')
+      if (!value) {
+        return
+      }
+      this.getOptions('getUnitByBuildId', value)
     },
     // 监听单元变化
     watchUnitChange (value) {
@@ -320,19 +394,19 @@ export default {
       }
       this.getOptions('getHouseByUnitId', value)
     },
-    // 请求楼栋
-    watchOrganChange () {
+    // 监听项目改变
+    watchOrganChange (organId) {
       this.buildOpt = utils.deepClone(buildOpt)
       this.unitOpt = utils.deepClone(unitOpt)
       this.houseOpt = utils.deepClone(houseOpt)
       this.queryCondition.houseId = ''
       this.queryCondition.unitId = ''
       this.queryCondition.buildId = ''
-      let data = {
-        organId: this.queryCondition.organId
+      console.log('监听项目改变')
+      if (!organId) {
+        return
       }
-      console.log('请求楼栋=>', getUuid(), data)
-      this.buildOpt = utils.deepClone(buildOpt).concat([{label: '1栋', value: '1'}, {label: '2栋', value: '2'},])
+      this.queryBuildList(organId)
     },
     // 监听建筑形态变化
     watchHouseCategory (value) {
@@ -344,6 +418,20 @@ export default {
       }
       let typeId = value.split(',')[1]
       this.queryChildNodesById(typeId)
+    },
+    // 请求楼栋列表默认20条
+    queryBuildList (organId, buildName) {
+      this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.buildOpt = utils.deepClone(buildOpt)
+          result.forEach(item => {
+            this.buildOpt.push({label: item.buildName, value: item.buildId})
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     // 获取项目楼栋单元房号
     getOptions (type, value = '') {
@@ -395,9 +483,6 @@ export default {
     queryNodesByRootCode (code) {
       /**
        * 20  建筑形态
-       * 30  房间类型
-       * 40  生命周期
-       * 50  房间状态
        * 60  房间用途
       */
       let data = {
@@ -441,6 +526,18 @@ export default {
         }
       })
     },
+    // 显示房间资料导入弹窗
+    showHouseDataImport () {
+      this.$refs.houseDataImport.visible = true
+    },
+    // 显示房间导出弹出
+    openExportModal () {
+      this.$refs.houseExport.visible = true
+    },
+    // 显示批量更新弹窗
+    openImportModal () {
+      this.$refs.eportAndDownFile.visible = true
+    },
     // 操作事件函数
     operationFun (type, record) {
       console.log('操作事件', type, record)
@@ -471,12 +568,29 @@ export default {
     },
     // 页面跳转
     goPage (type, record) {
+      // 存储缓存搜索缓存数据
+      let o = {
+        ...this.queryConditionStore,
+        organName: this.organName || '',
+        showKey: 'house'
+      }
+      this.SET_ROUTE_QUERY(this.$route.path, o)
       let query = {type}
       if (['edit', 'copy', 'detail'].includes(type)) {
-        query.houseId = record.houseId
+        query.houseId = record.houseId,
+        query.organId = this.queryCondition.organId
       }
       this.$router.push({path: operationTypes[type], query: query || {}})
     },
+    // 楼栋搜索
+    handleSearch (value) {
+      this.searchBuildName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceMothed: debounce(function () {
+      this.queryBuildList(this.queryCondition.organId, this.searchBuildName || '')
+    }, 300),
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
@@ -490,3 +604,4 @@ export default {
   padding-right: 190px;
 }
 </style>
+

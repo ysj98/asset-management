@@ -24,6 +24,18 @@ export default [
         path: '/assetClassSet'
       },
       {
+        title: '资产视图',
+        path: '/assetView'
+      },
+      {
+        title: '楼栋视图',
+        path: '/buildingView'
+      },
+      {
+        title: '资产项目管理',
+        path: '/assetProjectManage'
+      },
+      {
         title: '资产登记',
         path: '/assetRegister'
       },

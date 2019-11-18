@@ -4,16 +4,17 @@
  * @Description: 房间资料导入
  -->
 <template>
-   <a-modal
-    @cancel="cancel"
+<SG-Modal
+    @cancel="hiddeModal"
     title="导入数据"
     v-model="visible"
     :width="543"
-    :keyboard="false"
+    @ok="handleSave"
+    okText="导入"
     :maskClosable="false"
-    :footer="null"
+    :noPadding="true"
     :bodyStyle="{ 'overflow-y': 'auto',padding: '0 0px'}"
-    >
+  >
     <div class="export-box">
       <!-- 导入头部 -->
        <div class="export-head">
@@ -25,15 +26,14 @@
            <a-select
             showSearch
             placeholder="请输入项目名称"
-            @search="handleSearch"
-            v-model="communityId"
+            v-model="organId"
             optionFilterProp="children"
             :defaultActiveFirstOption="false"
             :dropdownMatchSelectWidth="true"
             :style="inputStyple"
-            :options="communityOpt"
+            :options="organOpt"
             :allowClear="false"
-            :filterOption="false"
+            :filterOption="filterOption"
             notFoundContent="没有查询到数据"
             />
          </div>
@@ -52,7 +52,7 @@
              <a-icon type="close" class="delete-icon" @click="deleteFile"/>
            </div>
        </div>
-      <!-- 底部按钮 -->
+      <!-- 底部按钮
       <div class="footer">
         <SG-Button @click="handleSave"  type="primary" class="padd-lr-30 marg-r-12">
           导入
@@ -60,20 +60,19 @@
         <SG-Button type="cancel" class="padd-lr-30" @click="cancel">
           取消
         </SG-Button>
-      </div>
+      </div> -->
       <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     </div>
-    <importReulte :tipText="tipText" ref="importReulte" />
-   </a-modal>
+    <!-- <importReulte :tipText="tipText" ref="importReulte" /> -->
+</SG-Modal>
 </template>
 <script>
-import * as api from '@/api/basicInfo.js'
-import importReulte from './importReulte.vue'
+// import importReulte from './importReulte.vue'
 import {Modal, Select, Button, Icon} from 'ant-design-vue'
 import _ from 'lodash'
 export default {
   components: {
-    importReulte,
+    // importReulte,
     AModal: Modal,
     ASelect: Select,
     AButton: Button,
@@ -83,8 +82,8 @@ export default {
     return {
       visible: false,
       searchCommunityName: '',
-      communityOpt: [],
-      communityId: '',
+      organOpt: [],
+      organId: '',
       inputStyple: {width: '165px'},
       fileName: '',
       formData: null,
@@ -97,7 +96,7 @@ export default {
   watch: {
     visible (nv) {
       if (nv) {
-        this.getOptions('getCommunityByName')
+        // this.getOptions('getCommunityByName')
       }
     }
   },
@@ -108,33 +107,33 @@ export default {
     hiddeModal () {
       this.visible = false
       this.searchCommunityName = ''
-      this.communityOpt = []
-      this.communityId = ''
+      this.organOpt = []
+      this.organId = ''
       this.fileName = ''
       this.formData = null
       this.$refs.fileUpload.value = ''
     },
     handleSave () {
-      if (this.formData === null) {
-        return this.$message.error('请先上传文件!')
-      }
-      let loadingName = this.$SG_Message.loading({content: '导入中...'})
-      api.houseImport(this.formData, this.communityId).then(res => {
-        this.$SG_Message.destroy(loadingName)
-        if (res.data.code === '0') {
-          this.$SG_Message.success('导入成功!')
-          this.hideModal()
-        } else {
-          this.$SG_Message.destroy(loadingName)
-          // this.$message.error(res.data.message, 4)
-          this.$SG_Message.error('导入部分数据失败!')
-          this.$refs.importReulte.visible = true
-          this.tipText = res.data.message
-        }
-      }, () => {
-        this.$SG_Message.destroy(loadingName)
-        this.$SG_Message.error('导入失败!')
-      })
+      // if (this.formData === null) {
+      //   return this.$message.error('请先上传文件!')
+      // }
+      // let loadingName = this.$SG_Message.loading({content: '导入中...'})
+      // api.houseImport(this.formData, this.organId).then(res => {
+      //   this.$SG_Message.destroy(loadingName)
+      //   if (res.data.code === '0') {
+      //     this.$SG_Message.success('导入成功!')
+      //     this.hideModal()
+      //   } else {
+      //     this.$SG_Message.destroy(loadingName)
+      //     // this.$message.error(res.data.message, 4)
+      //     this.$SG_Message.error('导入部分数据失败!')
+      //     this.$refs.importReulte.visible = true
+      //     this.tipText = res.data.message
+      //   }
+      // }, () => {
+      //   this.$SG_Message.destroy(loadingName)
+      //   this.$SG_Message.error('导入失败!')
+      // })
     },
     checkFile (fileName, fileSize) {
       // 检查文件类型
@@ -177,34 +176,34 @@ export default {
     },
     // 下载文件
     downHouseSource () {
-      if (!this.communityId) {
-        return this.$message.error('请选择项目!')
-      }
-      let loadingName = this.$SG_Message.loading({content: '下载中...'})
-      api.downloadHouseImport(this.communityId).then(res => {
-        console.log('res', res)
-        if (res.data.code === '0' && res.data.data) {
-          let fileName = res.data.data
-          api.downloadHouseImportModule(fileName).then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.body])
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            a.download = fileName
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
-          }, rej => {
-            this.$SG_Message.destroy(loadingName)
-          })
-        } else {
-          this.$SG_Message.destroy(loadingName)
-          this.$SG_Message.error('导出房间模板失败!')
-        }
-      }, () => {
-        this.$SG_Message.destroy(loadingName)
-      })
+      // if (!this.organId) {
+      //   return this.$message.error('请选择项目!')
+      // }
+      // let loadingName = this.$SG_Message.loading({content: '下载中...'})
+      // api.downloadHouseImport(this.organId).then(res => {
+      //   console.log('res', res)
+      //   if (res.data.code === '0' && res.data.data) {
+      //     let fileName = res.data.data
+      //     api.downloadHouseImportModule(fileName).then(res => {
+      //       this.$SG_Message.destroy(loadingName)
+      //       let blob = new Blob([res.body])
+      //       let a = document.createElement('a')
+      //       a.href = URL.createObjectURL(blob)
+      //       a.download = fileName
+      //       a.style.display = 'none'
+      //       document.body.appendChild(a)
+      //       a.click()
+      //       a.remove()
+      //     }, rej => {
+      //       this.$SG_Message.destroy(loadingName)
+      //     })
+      //   } else {
+      //     this.$SG_Message.destroy(loadingName)
+      //     this.$SG_Message.error('导出房间模板失败!')
+      //   }
+      // }, () => {
+      //   this.$SG_Message.destroy(loadingName)
+      // })
     },
     cancel () {
       this.hiddeModal()
@@ -215,60 +214,9 @@ export default {
       this.formData = null
       this.$refs.fileUpload.value = ''
     },
-    handleSearch (value) {
-      this.searchCommunityName = value
-      this.updateOptions()
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
-    // 搜索后端数据
-    updateOptions: _.debounce(function () {
-      let data = {
-        SQL_CODE: 'getCommunityByName',
-        PARAMS: '#NAME:' + (this.searchCommunityName || '')
-      }
-      api.getOptions(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          this.communityOpt = result.map(item => {
-            return {
-              label: item.C_TEXT,
-              value: item.C_VALUE
-            }
-          })
-        }
-      })
-    }, 300),
-    getOptions (type, value = '') {
-      if (!type) {
-        return
-      }
-      let PARAMS = ''
-      let resetArr = []
-      // 请求项目
-      if (type === 'getCommunityByName') {
-        PARAMS = '#NAME:'
-        resetArr = []
-        this.communityOpt = resetArr
-      }
-      let data = {
-        SQL_CODE: type,
-        PARAMS: PARAMS
-      }
-      api.getOptions(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          resetArr.push(...result.map(item => {
-            return {
-              label: item.C_TEXT,
-              value: item.C_VALUE
-            }
-          }))
-          // 如果请求的是项目，默认展示第一个
-          if (type === 'getCommunityByName' && resetArr.length) {
-            this.communityId = resetArr[0]['value']
-          }
-        }
-      })
-    }
   }
 }
 </script>
@@ -319,7 +267,7 @@ export default {
     padding-top: 30px;
     .not_data_img{
       height: 103px;
-      background-image: url('../../../assets/image/house/house_no_data.png');
+      background-image: url('../../../assets/image/house_no_data.png');
       background-size: 100% 100%;
     }
     .tip{
