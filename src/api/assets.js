@@ -26,9 +26,9 @@ export function queryAsynOrganByUserId (data) {
   return axiosPost(assets.project.queryAsynOrganByUserId, data)
 }
 // 资产项目下拉
-export function getObjectKeyValueByOrganId (data) {
-  return axiosGet(assets.project.getObjectKeyValueByOrganId, data)
-}
+// export function getObjectKeyValueByOrganId (data) {
+//   return axiosGet(assets.project.getObjectKeyValueByOrganId, data)
+// }
 // 机构字典
 export function organDict (data) {
   return axiosGet(assets.project.organDict, data)
