@@ -20,7 +20,6 @@
     </SG-SearchContainer>
     <div>
       <a-table
-        :loading="loading"
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table"
@@ -139,7 +138,6 @@ export default {
         pageLength: 10,
         totalCount: 0
       },
-      loading: false
     }
   },
   methods: {
@@ -151,19 +149,18 @@ export default {
     // 页码发生变化
     handlePageChange (pageNo) {
       this.paginator.pageNo = pageNo
+      this.queryList()
     },
     // 操作回调
     operationFun (editType, record) {
-      console.log(editType)
-      console.log(record)
       switch (editType) {
         case 'start': this.changeStatus(1, record.categoryConfId)
           break
         case 'stop': this.changeStatus(0, record.categoryConfId)
           break
-        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit'}})
+        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId}})
           break
-        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail'}})
+        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail', categoryConfId: record.categoryConfId}})
           break
         default: break
       }
@@ -198,9 +195,7 @@ export default {
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
-      this.loading = true
       this.$api.assets.getPage(form).then(res => {
-        console.log(res)
         if (res.data.code === '0') {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -209,10 +204,8 @@ export default {
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count
-          this.loading = false
         } else {
           this.$message.error(res.data.message)
-          this.loading = false
         }
       })
     }

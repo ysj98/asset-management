@@ -11,7 +11,7 @@
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" style="margin-right: 10px">查询</SG-Button>
+        <SG-Button type="primary" style="margin-right: 10px" @click="queryClick">查询</SG-Button>
         <SG-Button>清空</SG-Button>
       </div>
       <div slot="form" class="formCon">
@@ -30,22 +30,20 @@
           mode="multiple"
           :tokenSeparators="[',']"
           placeholder="全部状态"
-          :defaultValue="queryCondition.approvalStatus"
-          @change="changeStatus"
-        >
-          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
+          v-model="queryCondition.approvalStatus"
+          :options="approvalStatusData"
+          @select="changeStatus"
+        ></a-select>
         <a-select
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
           placeholder="全部资产类型"
-          :defaultValue="queryCondition.assetType"
+          v-model="queryCondition.assetType"
+          :options="assetTypeOptions"
           style="width: 190px; margin-right: 10px;"
-          @change="changeAssetType"
-        >
-          <a-select-option v-for="(item, index) in assetTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
+          @select="changeAssetType"
+        ></a-select>
         <segi-range-picker label="录入时间" style="margin-right: 10px;" :defaultValue="[moment(queryCondition.beginDate, 'YYYY-MM-DD'), moment(queryCondition.endDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
         <a-checkbox style="line-height: 32px" :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅当前机构下资产清理单</a-checkbox>
       </div>
@@ -111,10 +109,11 @@
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
-          <a class="operation-btn">审核</a>
-          <a class="operation-btn">编辑</a>
-          <a class="operation-btn">删除</a>
-          <a class="operation-btn">详情</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)">审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="antiAudit(record)">反审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)">编辑</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="deleteClearForm(record)">删除</a>
+          <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
         </template>
       </a-table>
     </div>
@@ -131,7 +130,6 @@
 <script>
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
-import OperationPopover from '@/components/OperationPopover'
 import SegiRangePicker from '@/components/SegiRangePicker'
 import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
 import moment from 'moment'
@@ -140,89 +138,85 @@ const columns = [
   {
     title: '清理单编号',
     dataIndex: 'cleaningOrderCode',
-    width: '160px'
+    width: 160
   },
   {
     title: '管理机构',
     dataIndex: 'organName',
-    width: '160px'
+    width: 160
   },
   {
     title: '资产项目名称',
     dataIndex: 'projectName',
-    width: '160px'
+    width: 160
   },
   {
     title: '资产类型',
     dataIndex: 'assetTypeName',
-    width: '160px'
+    width: 160
   },
   {
     title: '资产数量',
     dataIndex: 'assetCount',
-    width: '120px'
+    width: 120
   },
   {
     title: '清理原因',
     dataIndex: 'cleanupTypeName',
-    width: '160px'
+    width: 160
   },
   {
     title: '创建日期',
     dataIndex: 'createTime',
-    width: '160px'
+    width: 160
   },
   {
     title: '创建人',
     dataIndex: 'createByName',
-    width: '120px'
+    width: 120
   },
   {
     title: '当前状态',
     dataIndex: 'approvalStatusName',
-    width: '120px'
+    width: 120
   },
   {
     title: '操作',
-    width: '120px',
+    width: 160,
     dataIndex: 'operation',
     scopedSlots: { customRender: 'operation' },
   }
 ]
-const operationData = [
-  {iconType: 'form', text: '修改', editType: 'edit'},
-  {iconType: 'delete', text: '删除', editType: 'delete'}
-]
+
 const approvalStatusData = [
   {
-    name: '全部状态',
+    label: '全部状态',
     value: ''
   },
   {
-    name: '草稿',
+    label: '草稿',
     value: '0'
   },
   {
-    name: '待审批',
+    label: '待审批',
     value: '2'
   },
   {
-    name: '已驳回',
+    label: '已驳回',
     value: '3'
   },
   {
-    name: '已审批',
+    label: '已审批',
     value: '1'
   },
   {
-    name: '已取消',
+    label: '已取消',
     value: '4'
   }
 ]
-
 export default {
   components: {
-    SearchContainer, TreeSelect, OperationPopover, SegiRangePicker
+    SearchContainer, TreeSelect, SegiRangePicker
   },
   data () {
     return {
@@ -232,7 +226,6 @@ export default {
       organName: '',
       organId: '',
       dataSource: [],
-      operationData: [...operationData],
       approvalStatusData: [...approvalStatusData],
       assetProjectOptions: [
         {label: '全部资产项目', value: ''},
@@ -240,10 +233,10 @@ export default {
         {label: '廉租房2018', value: '2'}
       ],
       assetTypeOptions: [
-        {name: '全部资产类型', value: ''},
-        {name: '房屋', value: '1'},
-        {name: '构筑物', value: '2'},
-        {name: '设备', value: '3'},
+        {label: '全部资产类型', value: ''},
+        {label: '房屋', value: '1'},
+        {label: '构筑物', value: '2'},
+        {label: '设备', value: '3'}
       ],
       queryCondition: {
         approvalStatus: [''],
@@ -258,21 +251,49 @@ export default {
         pageLength: 10,
         totalCount: 0
       },
-      loading: false
     }
   },
   methods: {
     moment,
+    // 高级搜索控制
+    searchContainerFn (val) {
+      this.toggle = val
+    },
     changeTree (value, label) {
       this.organName = label
       this.organId = value
       this.queryClick()
     },
-    changeStatus (status) {
-      console.log(status)
+    // 状态发生变化
+    changeStatus (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+      })
     },
-    changeAssetType (type) {
-      console.log(type)
+    // 资产类型发生变化
+    changeAssetType (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeOptions)
+      })
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
     },
     filterOption(input, option) {
       return (
@@ -291,16 +312,57 @@ export default {
     // 页码发生变化
     handlePageChange (pageNo) {
       this.paginator.pageNo = pageNo
+      this.queryList()
     },
     // 新增清理单
     newClearForm () {
-      this.$router.push({path: '/assetClear/newClearForm', query: {pageType: 'new'}})
+      this.$router.push({path: '/assetClear/new', query: {pageType: 'new', organId: this.organId, organName: this.organName}})
     },
-    // 详情
-    operationFun () {},
-    // 高级搜索控制
-    searchContainerFn (val) {
-      this.toggle = val
+    // 删除清理单
+    deleteClearForm (record) {
+      let self = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要删除该资产清理单吗？',
+        onOk() {
+          let form = {
+            cleaningOrderId: record.cleaningOrderId
+          }
+          console.log(form)
+          self.$api.assets.deleteCleanup(form).then(res => {
+            if (res.data.code === '0') {
+              self.$message.success('删除成功')
+              self.queryList()
+            } else {
+              self.$message.error(res.data.message)
+            }
+          })
+        }
+      })
+    },
+    antiAudit (record) {
+      let self = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要对此清理单反审核吗？',
+        onOk() {
+          let form = {
+            cleaningOrderId: record.cleaningOrderId
+          }
+          console.log(form)
+          self.$api.assets.reverseApproveCleanup(form).then(res => {
+            if (res.data.code === '0') {
+              self.$message.success('操作成功')
+              self.queryList()
+            } else {
+              self.$message.error(res.data.message)
+            }
+          })
+        }
+      })
+    },
+    handleOperation (pageType, record) {
+      this.$router.push({path: '/assetClear/' + pageType, query: {pageType: pageType, cleaningOrderId: record.cleaningOrderId, organId: this.organId, organName: this.organName}})
     },
     // 点击查询
     queryClick () {
@@ -308,6 +370,29 @@ export default {
       this.queryList()
     },
     queryList () {
+      let form = {
+        organId: this.organId,
+        projectId: this.queryCondition.assetProject,
+        multiAssetType: this.queryCondition.assetType.join(','),
+        multiApprovalStatus: this.queryCondition.approvalStatus.join(','),
+        currentOrganId: this.queryCondition.onlyCurrentOrgan ? '1' : '0',
+        startCreateDate: this.queryCondition.beginDate,
+        endCreateDate: this.queryCondition.endDate,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
+      }
+      this.$api.assets.getCleanupPage(form).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data.data
+          data.forEach((item, index) => {
+            item.key = index
+          })
+          this.dataSource = data
+          this.paginator.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     }
   },
   created () {

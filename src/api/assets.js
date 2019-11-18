@@ -139,6 +139,10 @@ export function deleteCleanup (data) {
 export function approvalCleanup (data) {
   return axiosPost(assets.assetClear.approvalCleanup, data, false, false)
 }
+// 资产清理-审批
+export function reverseApproveCleanup (data) {
+  return axiosPost(assets.assetClear.reverseApproveCleanup, data, false, false)
+}
 // 资产清理-新增编辑保存
 export function submitCleanup (data) {
   return axiosPost(assets.assetClear.submitCleanup, data, false, false)
@@ -174,3 +178,70 @@ export function getDetail (data) {
   return axiosGet(assets.assetClassSet.getDetail, data)
 }
 
+// 房屋台账-资产项目视图
+// 资产项目视图列表-查询房屋和楼栋信息分页查询
+export function viewGetAssetHouseList (data) {
+  return axiosPost(assets.assetProjectView.viewGetAssetHouseList, data, true, false)
+}
+// 资产项目视图列表头-查询房屋和楼栋信息统计
+export function viewGetAssetHouseStatistics (data) {
+  return axiosPost(assets.assetProjectView.viewGetAssetHouseStatistics, data, false, false)
+}
+// 资产项目视图详情-资产状况统计列表分页
+export function viewDetailsPage (data) {
+  return axiosPost(assets.assetProjectView.viewDetailsPage, data, false, false)
+}
+// 资产项目视图（详情）-资产状况统计
+export function viewProjectHouseDetails (data) {
+  return axiosPost(assets.assetProjectView.viewProjectHouseDetails, data, false, false)
+}
+
+// 房屋台账-资产项目
+// 分页查询资产项目列表-根据组织ID
+export function getAssetProjectListPage (data) {
+  return axiosPost(assets.assetProject.getProjectListPage, data, true, false)
+}
+// 查询资产项目列表-根据组织ID(统计)
+export function getProjectListStatistics (data) {
+  return axiosPost(assets.assetProject.getProjectListStatistics, data, false, false)
+}
+// 查询资产项目编辑-根据资产项目ID
+export function projectDetailsForModifyById (data) {
+  return axiosPost(assets.assetProject.projectDetailsForModifyById, data, false, false)
+}
+// 查询资产项目详情-根据资产项目ID
+export function projectDetailsById (data) {
+  return axiosPost(assets.assetProject.projectDetailsById, data, false, false)
+}
+// 资产项目-下拉框查询
+export function getObjectKeyValueByOrganId (data) {
+  return axiosGet(assets.assetProject.getObjectKeyValueByOrganId, data)
+}
+// 资产项目-删除
+export function deleteProjectById (data) {
+  return axiosPost(assets.assetProject.deleteProjectById, data, false, false)
+}
+// 资产项目-反审核
+export function projectReAudit (data) {
+  return axiosPost(assets.assetProject.projectReAudit, data, false, false)
+}
+// 资产项目-导入保存
+export function importProject (data) {
+  return axiosPost(assets.assetProject.importProject, data, false, false)
+}
+// 资产项目-提交审核
+export function projectAudit (data) {
+  return axiosPost(assets.assetProject.projectAudit, data, false, false)
+}
+// 资产项目-新增保存
+export function saveProject (data) {
+  return axiosPost(assets.assetProject.saveProject, data, false, false)
+}
+// 资产项目-编辑保存
+export function modifyProject (data) {
+  return axiosPost(assets.assetProject.modifyProject, data, false, false)
+}
+// 资产项目-转运营信息统计
+export function getProjectTransferByProjectId (data) {
+  return axiosPost(assets.assetProject.getTransferByProjectId, data, false, false)
+}
