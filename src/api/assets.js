@@ -25,6 +25,22 @@ import { assets } from '../config/config.url'
 export function queryAsynOrganByUserId (data) {
   return axiosPost(assets.project.queryAsynOrganByUserId, data)
 }
+// 资产项目下拉
+export function getObjectKeyValueByOrganId (data) {
+  return axiosGet(assets.project.getObjectKeyValueByOrganId, data)
+}
+// 机构字典
+export function organDict (data) {
+  return axiosGet(assets.project.organDict, data)
+}
+// 平台字典
+export function platformDict (data) {
+  return axiosGet(assets.project.platformDict, data)
+}
+// 查询资产分类列表
+export function getList (data) {
+  return axiosGet(assets.project.getList, data)
+}
 
 // 资产变动
 // 资产变动-一览表-分页列表
@@ -78,6 +94,10 @@ export function assetHousePage (data) {
 // 资产变动-变动明细分页
 export function getChangeDetailPage (data) {
   return axiosGet(assets.management.getChangeDetailPage, data)
+}
+// 资产列表
+export function assetListPage (data) {
+  return axiosPost(assets.management.assetListPage, data)
 }
 
 // 资产登记

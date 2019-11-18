@@ -63,18 +63,26 @@ export const assets = {
     // 图片预览地址
     getProject: '/getProject',
     // 异步组织机构树 组织机构管理 POST
-    queryAsynOrganByUserId: '/basic-data-api/rest-api/v1/organApi/queryAsynOrganByUserId'
+    queryAsynOrganByUserId: '/basic-data-api/rest-api/v1/organApi/queryAsynOrganByUserId',
+    // --------项目下拉-------
+    getObjectKeyValueByOrganId: '/ams/project/getObjectKeyValueByOrganId',
+    // 机构字典
+    organDict: '/ams/assetDict/organDict',
+    // 平台字典
+    platformDict: '/ams/assetDict/platformDict',
+    // 查询资产分类列表
+    getList: '/ams/categoryCfg/getList'
   },
   // 资产变动
   management: {
     // 资产变动-一览表-分页列表
-    getChangeSchedulePage: '/ams/assetCleanup/getChangeSchedulePage',
+    getChangeSchedulePage: '/ams/assetChange/getChangeSchedulePage',
     // 资产变动-详情
-    getChangeDetail: '/ams/assetCleanup/getChangeDetail',
+    getChangeDetail: '/ams/assetChange/getChangeDetail',
     // 资产变动-一览表-导出
-    exportChangeScheduleList: '/ams/assetCleanup/exportChangeScheduleList',
+    exportChangeScheduleList: '/ams/assetChange/exportChangeScheduleList',
     // 资产变动-分页列表
-    getChangePage: '/ams/assetCleanup/getChangePage',
+    getChangePage: '/ams/assetChange/getChangePage',
     // 资产变动-删除
     deleteChange: '/ams/assetChange/deleteChange',
     // 资产变动-审批
@@ -84,15 +92,17 @@ export const assets = {
     // 资产变动-导出
     exportChange: '/ams/assetChange/exportChange',
     // 资产变动-新增编辑
-    submitChange: '/ams/assetCleanup/submitChange',
+    submitChange: '/ams/assetChange/submitChange',
     // 资产变动-明细
-    getChangeInfo: '/ams/assetCleanup/getChangeInfo',
+    getChangeInfo: '/ams/assetChange/getChangeInfo',
     // 资产变动-终止交付
     stopDelivery: '/ams/assetChange/stopDelivery',
     // 房屋资产分页查询
     assetHousePage: '/ams/asset-house/page',
     // 资产变动-变动明细分页
-    getChangeDetailPage: '/ams/assetCleanup/getChangeDetailPage'
+    getChangeDetailPage: '/ams/assetChange/getChangeDetailPage',
+    // 资产列表
+    assetListPage: '/ams/registerOrder/assetListPage'
   },
   // 资产登记
   assetRegister: {
