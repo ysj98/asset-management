@@ -176,6 +176,33 @@ export const assets = {
     exportAssetExcel: '/ams/asset-house/house/excel',
     // 资产编辑保存
     saveHouseInfo: '/ams/asset-house'
+  },
+  // 资产项目管理
+  projectManage: {
+    // 分页查询资产项目列表-根据组织ID
+    queryProjectListPage: '/ams/project/getProjectListPage',
+    // 查询资产项目列表-根据组织ID(统计)
+    queryProjectStatistics: '/ams/project/getProjectListStatistics',
+    // 资产项目-删除
+    deleteProjectById: '/ams/project/deleteProjectById',
+    // 查询资产项目详情-根据资产项目ID
+    queryDetailById: '/ams/project/projectDetailsById',
+    // 查询资产项目编辑-根据资产项目ID
+    queryEditDetailById: '/ams/project/projectDetailsForModifyById',
+    // 根据组织Id查资产项目
+    queryProjectByOrganId: '/ams/project/getObjectKeyValueByOrganId',
+    // 资产项目-反审核
+    reauditAction: '/ams/project/projectReAudit',
+    // 资产项目-导入保存
+    importProject: '/ams/project/importProject',
+    // 资产项目-提交审核
+    AuditAction: '/ams/project/projectAudit',
+    // 资产项目-新增保存
+    saveNewProject: '/ams/project/saveProject',
+    // 资产项目-编辑保存
+    saveEditProject: '/ams/project/modifyProject',
+    // 资产项目-转运营信息统计
+    queryTransferStatistics: '/ams/project/getTransferByProjectId'
   }
 }
 // 楼盘字典

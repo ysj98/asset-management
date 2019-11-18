@@ -139,7 +139,7 @@
           this.$refs['editAssetDetail'].handleSubmit(resolve, reject)
         }).then(values => {
           this.modalObj.confirmLoading = true
-          this.$api.assets.saveHouseInfo({...values, assetHouseId: this.assetHouseId}).then(r =>{
+          this.$api.assets.saveAssetViewHouseInfo({...values, assetHouseId: this.assetHouseId}).then(r =>{
             this.modalObj.confirmLoading = false
             let res = r.data
             if (res && String(res.code) === '0') {

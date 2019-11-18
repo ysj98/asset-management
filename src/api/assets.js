@@ -212,19 +212,78 @@ export function queryAssetViewPage (data) {
 }
 
 // 资产视图使用面积统计
-export function queryAssetArea (data) {
+export function queryAssetViewArea (data) {
   return axiosPost(assets.assetView.queryAssetArea, data)
 }
 
 // 导出房屋卡片
-export function exportHouseExcel (data) {
+export function exportAssetViewHouseExcel (data) {
   return axiosGet(assets.assetView.exportHouseExcel, data)
 }
-// 导出房屋卡片
-export function exportAssetExcel (data) {
+// 导出资产信息
+export function exportAssetViewExcel (data) {
   return axiosGet(assets.assetView.exportAssetExcel, data)
 }
 // 资产编辑保存
-export function saveHouseInfo (data) {
+export function saveAssetViewHouseInfo (data) {
   return axiosPost(assets.assetView.saveHouseInfo, data)
+}
+
+// 资产项目管理
+// 分页查询资产项目列表-根据组织ID
+export function queryProjectManageListPage (data) {
+  return axiosPost(assets.projectManage.queryProjectListPage, data)
+}
+
+// 查询资产项目列表-根据组织ID(统计)
+export function queryProjectManageProjectStatistics (data) {
+  return axiosPost(assets.projectManage.queryProjectStatistics, data)
+}
+
+// 资产项目-删除
+export function deleteProjectManageProjectById (data) {
+  return axiosPost(assets.projectManage.deleteProjectById, data)
+}
+// 查询资产项目详情-根据资产项目ID
+export function queryProjectManageDetailById (data) {
+  return axiosPost(assets.projectManage.queryDetailById, data)
+}
+
+// 查询资产项目编辑-根据资产项目ID
+export function queryProjectManageEditDetailById (data) {
+  return axiosPost(assets.projectManage.queryEditDetailById, data)
+}
+
+// 根据组织Id查资产项目
+export function queryProjectManageProjectByOrganId (data) {
+  return axiosGet(assets.assetView.queryProjectByOrganId, data)
+}
+
+// 资产项目-反审核
+export function doProjectManagereaudit (data) {
+  return axiosPost(assets.projectManage.reauditAction, data)
+}
+// 资产项目-导入保存
+export function importProjectManageData (data) {
+  return axiosPost(assets.projectManage.importProject, data)
+}
+
+// 资产项目-提交审核
+export function doProjectManageAudit (data) {
+  return axiosPost(assets.projectManage.AuditAction, data)
+}
+
+// 资产项目-新增保存
+export function saveProjectManageNewProject (data) {
+  return axiosPost(assets.projectManage.saveNewProject, data)
+}
+
+// 资产项目-编辑保存
+export function saveProjectManageEditProject (data) {
+  return axiosPost(assets.projectManage.saveEditProject, data)
+}
+
+// 资产项目-转运营信息统计
+export function queryProjectManageTransferStatistics (data) {
+  return axiosPost(assets.projectManage.queryTransferStatistics, data)
 }
