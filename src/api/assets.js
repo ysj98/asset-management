@@ -224,3 +224,7 @@ export function exportHouseExcel (data) {
 export function exportAssetExcel (data) {
   return axiosGet(assets.assetView.exportAssetExcel, data)
 }
+// 资产编辑保存
+export function saveHouseInfo (data) {
+  return axiosPost(assets.assetView.saveHouseInfo, data)
+}
