@@ -81,6 +81,13 @@ export default {
       formData: null,
     }
   },
+  watch: {
+    visible (nv) {
+      if (!nv) {
+        this.hideModal()
+      }
+    }
+  },
   methods: {
     // 选择文件
     handleUpload () {

@@ -10,10 +10,10 @@
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-checkbox :value="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
-        <a-select :style="allStyle" placeholder="全部资产项目" :defaultValue="queryCondition.projectId" @change="approvalStatusFn">
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" @change="projectDataFn">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :defaultValue="queryCondition.changeType" @change="approvalStatusFn">
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" v-model="queryCondition.changeType" @change="changeTypeFn">
           <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :defaultValue="queryCondition.approvalStatus" @change="approvalStatusFn">
@@ -37,10 +37,10 @@
         <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
         <div class="tab-opt">
           <span @click="operationFn(record, 'particulars')">详情</span>
-          <span @click="operationFn(record, 'edit')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">编辑</span>
-          <span @click="operationFn(record, 'delete')" v-if="record.approvalStatus === '0' || record.approvalStatus === '3'">删除</span>
+          <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
+          <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
           <span v-if="record.approvalStatus === '2'">审核</span>
-          <span @click="operationFn(record, 'delivery')" v-if="record.approvalStatus === '1'">终止交付</span>
+          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate">终止交付</span>
         </div>
       </template>
     </a-table>
@@ -60,7 +60,7 @@
       @ok="commonFn"
     >
       <div v-if="judge === 'delete'">确认要删除该资产登记单吗？</div>
-      <div v-else>确认要种植交付该资产登记单吗？</div>
+      <div v-else>确认要终止交付该资产交付单吗？</div>
     </SG-Modal>
   </div>
 </template>
@@ -158,19 +158,14 @@ export default {
         pageSize: 10,               // 每页显示记录数
         projectId: '',              // 资产项目Id
         organId:1,                 // 组织机构id
-        changeType: '',            // 备注：变动类型id(多个用，分割)
+        changeType: [],            // 备注：变动类型id(多个用，分割)
         startCreateDate: '',       // 备注：开始创建日期
         endCreateDate: '',         // 备注：结束创建日期
         currentOrgan: false            // 备注：仅当前机构下资产清理单 0 否 1 是
       },
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
-      changeTypeData: [
-        {
-          name: '全部变动类型',
-          value: ''
-        }
-      ],
+      changeTypeData: [],
       projectData: [
         {
           name: '全部资产项目',
@@ -192,7 +187,7 @@ export default {
       // 详情
       if (str === 'particulars') {
         let particularsData = JSON.stringify([val])
-        this.$router.push({path: '/assetChange/particulars', query: { record: particularsData, setType: 'new' }})
+        this.$router.push({path: '/assetChange/particulars', query: { record: particularsData }})
       } else if (str === 'delete') {  // 删除
         this.commonTitle = '删除'
         this.changeOrderId = val.changeOrderId
@@ -204,6 +199,7 @@ export default {
         this.changeOrderId = val.changeOrderId
         this.commonShow = true
       } else if (str === 'edit') {
+        console.log(val)
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([val])
         this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
@@ -217,7 +213,7 @@ export default {
         }
         this.$api.assets.deleteChange(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('删除成功')
+            this.$message.info('删除成功')
             this.commonShow = false
             this.query()
           } else {
@@ -232,7 +228,7 @@ export default {
         }
         this.$api.assets.stopDelivery(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('终止交付成功')
+            this.$message.info('终止交付成功')
             this.commonShow = false
             this.query()
           } else {
@@ -242,15 +238,87 @@ export default {
         })
       }
     },
+    // 选择组织机构
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
+      if (!this.isChild) {
+        this.queryCondition.pageNo = 1
+        this.query()
+      } else {
+        this.isChild = false
+      }
+      this.getObjectKeyValueByOrganIdFn()
+    },
+    // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.queryCondition.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectData = [...this.projectData, ...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 平台字典获取变动类型
+    platformDictFn (str) {
+      let obj = {
+        code: str
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          if (str === 'asset_change_type') {
+            this.changeTypeData = [...data]
+            let arr = []
+            this.changeTypeData.forEach(item => {
+              arr.push(item.value)
+            })
+            this.queryCondition.changeType = arr
+          } else if (str === 'approval_status_type') {
+            this.approvalStatusData = [...data]
+            let status = []
+            this.approvalStatusData.forEach(item => {
+              status.push(item.value)
+            })
+            this.queryCondition.approvalStatus = status
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    platformDictStatusFn () {
+      // approval_status_type
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
       this.queryCondition.currentOrgan = e.target.checked
     },
-    approvalStatusFn () {},
+    // 审批状态
+    approvalStatusFn (val) {
+      this.queryCondition.approvalStatus = val
+    },
+    // 变动单选择
+    changeTypeFn (val) {
+      this.queryCondition.changeType = val
+    },
+    // 资产项目
+    projectDataFn (val) {
+      this.queryCondition.projectId = val
+    },
     // 分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -265,20 +333,25 @@ export default {
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: this.queryCondition.projectId,            // 资产项目Id
-        organId: this.queryCondition.organId,                // 组织机构id
-        multiChangeType: this.queryCondition.changeType > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型id(多个用，分割)
+        organId: this.queryCondition.organId,                // 组织机构id this.queryCondition.organId,
+        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型id(多个用，分割)
         startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
-        currentOrgan: this.queryCondition.currentOrgan ? 1 : 0                // 仅当前机构下资产清理单 0 否 1 是
+        currentOrganId: this.queryCondition.currentOrgan ? 1 : 0                // 仅当前机构下资产清理单 0 否 1 是
       }
       this.$api.assets.getChangePage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
-          data.forEach((item, index) => {
-            item.key = index
-          })
-          this.tableData = data
-          this.count = res.data.data.count
+          if (data && data.length > 0) {
+            data.forEach((item, index) => {
+              item.key = index
+            })
+            this.tableData = data
+            this.count = res.data.data.count
+          } else {
+            this.tableData = []
+            this.count = 0
+          }
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -288,9 +361,48 @@ export default {
     }
   },
   created () {
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.approvalStatus = query.approvalStatus
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.projectId = query.projectId
+      this.queryCondition.changeType = query.changeType
+      this.queryCondition.startCreateDate = query.startCreateDate
+      this.queryCondition.endCreateDate = query.endCreateDate
+      this.queryCondition.currentOrgan = query.currentOrgan
+      this.queryCondition.organId = query.organId
+      this.isChild = query.isChild
+      this.query()
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    let o = {key: this.$route.path, data: {}}
+    if (to.path.indexOf(from.path) !== -1) {
+      o = {
+        key: from.path,
+        data: {
+          approvalStatus: this.queryCondition.approvalStatus,
+          pageNum: this.queryCondition.pageNum,
+          pageSize: this.queryCondition.pageSize,
+          projectId: this.queryCondition.projectId,
+          changeType: this.queryCondition.changeType,
+          startCreateDate: this.queryCondition.startCreateDate,
+          endCreateDate: this.queryCondition.endCreateDate,
+          currentOrgan: this.queryCondition.currentOrgan,
+          organId: this.queryCondition.organId,
+          isChild: true
+        }
+      }
+    }
+    this.$store.commit('pro/SET_ROUTE_QUERY', o)
+    next()
   },
   mounted () {
-    this.query()
+    // 获取变动类型
+    this.platformDictFn('asset_change_type')
+    // 获取状态
+    // this.platformDictFn('approval_status_type')
   }
 }
 </script>

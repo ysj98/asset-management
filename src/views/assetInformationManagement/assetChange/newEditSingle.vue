@@ -111,7 +111,7 @@
               />
               </a-form-item>
           </a-col>
-          <a-col class="playground-col" :span="8">
+          <a-col class="playground-col" :span="8" v-if="+changeType === 1 || +changeType === 2">
             <a-form-item label="截止日期：" v-bind="formItemLayout">
               <a-date-picker
               :style="allWidth"
@@ -154,42 +154,42 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
-            <!-- 交付物业 -->
-            <template v-if="changeType === 'jfwy'" slot="transferArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.transferArea"/>
-            </template>
             <!-- 交付运营 -->
-            <template v-if="changeType === 'jfyy'" slot="transferOperationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.transferOperationArea"/>
+            <template v-if="changeType === '1'" slot="transferOperationArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.transferOperationArea"/>
+            </template>
+            <!-- 交付物业 -->
+            <template v-if="changeType === '2'" slot="transferArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.transferArea"/>
             </template>
             <!-- 使用方向变动 -->
-            <template v-if="changeType === 'fxbd'" slot="operationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.operationArea"/>
+            <template v-if="changeType === '4'" slot="operationArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.operationArea"/>
             </template>
-            <template v-if="changeType === 'fxbd'" slot="selfUserArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.selfUserArea"/>
+            <template v-if="changeType === '4'" slot="selfUserArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.selfUserArea"/>
             </template>
-            <template v-if="changeType === 'fxbd'" slot="idleArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.idleArea"/>
+            <template v-if="changeType === '4'" slot="idleArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.idleArea"/>
             </template>
-            <template v-if="changeType === 'fxbd'" slot="occupationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.occupationArea"/>
+            <template v-if="changeType === '4'" slot="occupationArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.occupationArea"/>
             </template>
-            <template v-if="changeType === 'fxbd'" slot="otherArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.otherArea"/>
+            <template v-if="changeType === '4'" slot="otherArea" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.otherArea"/>
             </template>
             <!-- 原值变动 -->
-            <template v-if="changeType === 'fxbd'" slot="originalValue" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.originalValue"/>
+            <template v-if="changeType === '3'" slot="originalValue" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.originalValue"/>
             </template>
             <!-- 位置变动 -->
-            <template v-if="changeType === 'fxbd'" slot="address" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" v-model="record.address"/>
+            <template v-if="changeType === '5'" slot="addressName" slot-scope="text, record">
+              <a-input size="small" maxlength="100" v-model="record.addressName"/>
             </template>
             <!-- 资产项目变动 -->
-            <template v-if="changeType === 'xmbd'" slot="changeProjectId" slot-scope="text, record">
+            <template v-if="changeType === '6'" slot="changeProjectId" slot-scope="text, record">
               <a-select :defaultValue="record.changeProjectId === '' ? undefined : record.changeProjectId" v-model="record.changeProjectId === '' ? record.changeProjectId = undefined : record.changeProjectId" :allowClear="false"
-                :filterOption="filterOption" :placeholder="'请选择服务类型'" style="width: 120px">
+                :filterOption="filterOption" :placeholder="'请选择资产项目'" style="width: 120px">
                 <a-select-option v-for="(opt) in projectIdData" :key="opt.value" :value='opt.value'>
                   {{opt.name}}
                 </a-select-option>
@@ -203,11 +203,13 @@
       </div>
     </div>
     <!-- 选择资产 -->
-    <AssetBundlePopover ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
     <FormFooter>
-      <a-button type="primary" @click="save('save')">提交</a-button>
-      <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
-      <a-button @click="cancel">取消</a-button>
+      <div>
+        <a-button type="primary" @click="save('save')">提交</a-button>
+        <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
+        <a-button @click="cancel">取消</a-button>
+      </div>
     </FormFooter>
   </div>
 </template>
@@ -219,8 +221,8 @@ import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
 const newEditSingleData = {
   title: '',   // 验收单名称
-  changeType: '',     // 变动类型
-  projectId: '',     // 资产项目
+  changeType: undefined,     // 变动类型
+  projectId: undefined,     // 资产项目
   deliveryCompany: '',    // 交付单位
   changeDate: {},       // 变动日期
   expiryDate: {},        // 截止日期
@@ -233,6 +235,8 @@ export default {
   props: {},
   data () {
     return {
+      changeOrderId: '',
+      organId: '',
       enitData: '',
       changeType: '',          // 用来判断对象变动类型
       checkedData: [],
@@ -240,38 +244,8 @@ export default {
       columns: [],
       tableData: [],
       organIdData: [],
-      changeTypeData: [
-        {
-          name: '交付运营',
-          value: 'jfyy'
-        },
-        {
-          name: '交付物业',
-          value: 'jfwy'
-        },
-        {
-          name: '原值变动',
-          value: 'yzbd'
-        },
-        {
-          name: '使用方向变动',
-          value: 'fxbd'
-        },
-        {
-          name: '位置变动',
-          value: 'wzbd'
-        },
-        {
-          name: '资产项目变动',
-          value: 'xmbd'
-        }
-      ],
-      projectIdData: [
-        {
-          name: '资产项目',
-          value: '1'
-        }
-      ],
+      changeTypeData: [],
+      projectIdData: [],
       newEditSingleData: {...newEditSingleData},
       form: this.$form.createForm(this),
       allWidth: 'width: 160px',
@@ -300,17 +274,17 @@ export default {
     'changeType' (val) {
       this.checkedData = []
       this.tableData = []
-      if (val === 'jfwy') {
+      if (val === '2') {
         this.columns = deliveryProperty
-      } else if (val === 'jfyy') {
+      } else if (val === '1') {
         this.columns = deliveryOperation
-      } else if (val === 'fxbd') {
+      } else if (val === '4') {
         this.columns = changeDirectionUse
-      } else if (val === 'yzbd') {
+      } else if (val === '3') {
         this.columns = variationOriginalValue
-      } else if (val === 'wzbd') {
+      } else if (val === '5') {
         this.columns = positionChange
-      } else if (val === 'xmbd') {
+      } else if (val === '6') {
         this.columns = projectChange
       }
     }
@@ -320,15 +294,23 @@ export default {
     status (val, data) {
       this.checkedData = [...val]
       data.forEach((item, index) => {
-        item.key = item.assetCode
+        item.key = item.assetObjectId
       })
       this.tableData = data
       this.$refs.assetBundlePopover.show = false
     },
     // 添加资产
     addTheAsset () {
-      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData)
-      this.$refs.assetBundlePopover.show = true
+      if (!this.form.getFieldValue('projectId')) {
+        this.$message.info('请先选择资产项目')
+        return
+      }
+      if (this.changeType) {
+        this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'))
+        this.$refs.assetBundlePopover.show = true
+      } else {
+        this.$message.info('请先选择变动类型')
+      }
     },
     // 变动类型
     changeTypeChange (val) {
@@ -350,12 +332,12 @@ export default {
     // 删除
     deleteFn (record) {
       this.tableData.forEach((item, index) => {
-        if (item.assetCode === record.assetCode) {
+        if (item.assetObjectId === record.assetObjectId) {
           this.tableData.splice(index, 1)
         }
       })
       this.checkedData.forEach((item, index) => {
-        if (record.assetCode === item) {
+        if (record.assetObjectId === item) {
           this.checkedData.splice(index, 1)
         }
       })
@@ -369,6 +351,42 @@ export default {
         this.tableData = newData
       }
     },
+    // 平台字典获取变动类型
+    platformDictFn () {
+      let obj = {
+        code: 'asset_change_type'
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.changeTypeData = [...data]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectIdData = [...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 提交
     save (str) {
       this.form.validateFields((err, values) => {
@@ -377,23 +395,96 @@ export default {
             this.$message.info('请选择变动资产')
             return
           }
+          let files = []
+          if (this.newEditSingleData.files.length > 0) {
+            this.newEditSingleData.files.forEach(list => {
+              files.push(list.url)
+            })
+          }
+          let arr = []
+          for (let i = 0; i < this.tableData.length; i++) {
+            if (String(this.changeType) === '1') {
+              if (!this.tableData[i].transferOperationArea) {
+                this.$message.info('请输入交付运营面积')
+                return
+              }
+            } else if (String(this.changeType) === '2') {
+              if (!this.tableData[i].transferArea) {
+                this.$message.info('请输入交付物业面积')
+                return
+              }
+            } else if (String(this.changeType) === '3') {
+              if (!this.tableData[i].originalValue) {
+                this.$message.info('请输入变动后原值')
+                return
+              }
+            } else if (String(this.changeType) === '4') {
+              if (!this.tableData[i].operationArea) {
+                this.$message.info('请输入运营面积')
+                return
+              } else if (!this.tableData[i].selfUserArea) {
+                this.$message.info('请输入自用面积')
+                return
+              } else if (!this.tableData[i].idleArea) {
+                this.$message.info('请输入闲置面积')
+                return
+              } else if (!this.tableData[i].occupationArea) {
+                this.$message.info('请输入占用面积')
+                return
+              } else if (!this.tableData[i].otherArea) {
+                this.$message.info('请输入其他面积')
+                return
+              }
+            } else if (String(this.changeType) === '5') {
+              if (!this.tableData[i].addressName) {
+                this.$message.info('请输入变动后位置')
+                return
+              }
+            } else if (String(this.changeType) === '6') {
+              if (!this.tableData[i].changeProjectId) {
+                this.$message.info('请选择变动后资产项目')
+                return
+              }
+            }
+          }
+          this.tableData.forEach(item => {
+            arr.push({
+              projectId: Number(item.projectId),        // 资产项目Id
+              changeProjectId: Number(item.changeProjectId),
+              assetType: item.assetType,                       // 资产类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
+              assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
+              address: item.addressName,              // 变动位置
+              transferArea: item.transferArea,    // 交付物业面积-交付物业变动
+              transferOperationArea: item.transferOperationArea,   // 交付运营面积-交付运营变动
+              operationArea: item.operationArea,  // 运营面积-使用方向变动
+              idleArea: item.idleArea,            // 闲置面积
+              selfUserArea: item.selfUserArea,    // 自用面积
+              occupationArea: item.occupationArea, // 占用面积
+              otherArea: item.otherArea,          // 其他面积
+              originalValue: item.originalValue   // 资产原值
+            })
+          })
           let obj = {
-            saveType: str === 'saveType' ? 0 : 1,
-            changeOrderId: '',                // 资产变动单Id（新增为空）
-            title: values.title,                // 标题
-            projectId: title.projectId,                // 资产项目Id
-            changeType: values.changeType,                // 变动类型Id
-            deliveryCompany: values.deliveryCompany,                // 交付单位
-            remark: values.remark,                // 备注
-            organId: values.organId,                // 组织机构id
-            changeDate: `${values.changeDate.format('YYYY-MM-DD')}`,                // 变动日期
-            expiryDate: `${values.expiryDate.format('YYYY-MM-DD')}`,                // 截止日期
-            assetDetailList: []
+            saveType: str === 'draft' ? 0 : 1,
+            changeOrderId: this.changeOrderId,                          // 资产变动单Id（新增为空）
+            title: values.title,                                        // 标题
+            projectId: Number(values.projectId),                        // 资产项目Id
+            changeType: values.changeType,                              // 变动类型Id
+            deliveryCompany: values.deliveryCompany,                    // 交付单位
+            remark: values.remark,                                      // 备注
+            organId: Number(values.organId),                            // 组织机构id
+            changeDate: `${values.changeDate.format('YYYY-MM-DD')}`,    // 变动日期
+            expiryDate: values.expiryDate === undefined ? '' : `${values.expiryDate.format('YYYY-MM-DD')}`,    // 截止日期
+            attachmentPath: files.length > 0 ? files.join(',') : '',                                         // 附件
+            assetDetailList: arr
           }
           console.log(obj)
           this.$api.assets.submitChange(obj).then(res => {
             if (Number(res.data.code) === 0) {
-              console.log('提交成功')
+              this.$message.info('提交成功')
+              this.$router.push({path: '/assetChange'})
+            } else {
+              this.$message.error(res.data.message)
             }
           })
         }
@@ -401,7 +492,7 @@ export default {
     },
     // 取消
     cancel () {
-      this.$router.push({path: '/asset-management/#/assetChange'})
+      this.$router.push({path: '/assetChange'})
     },
     // 编辑获取接口
     editFn () {
@@ -411,22 +502,33 @@ export default {
       this.$api.assets.getChangeInfo(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data, '拿到是')
-          this.form.setFieldsValue({
-            organId: this.organIdData[0].value,
-            projectId: data.projectId,
-            title: data.title,
-            changeType: String(data.changeType),
-            deliveryCompany: data.deliveryCompany,
-            changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
-            expiryDate: moment(data.expiryDate, 'YYYY-MM-DD'),
-            remark: data.remark
-          })
-          this.changeType = data.changeType
-          data.assetDetailList.forEach(item => {
-            item.key = item.assetCode
+          this.changeType = String(data.changeType)
+          let files = []
+          if (data.attachmentPath) {
+            let arr = data.attachmentPath.split(',')
+              arr.forEach(item => {
+              files.push({
+                url: item,
+                name: item.split('/').pop()
+              })
+            })
+          }
+          this.newEditSingleData.files = files
+          data.assetDetailList.forEach((item, index) => {
+            item.key = item.assetObjectId + index
+            item.addressName = item.address
           })
           this.$nextTick(() => {
+            this.form.setFieldsValue({
+              organId: this.organIdData[0].value,
+              projectId: data.projectId,
+              title: data.title,
+              changeType: String(data.changeType),
+              deliveryCompany: data.deliveryCompany,
+              changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
+              expiryDate: data.expiryDate ? moment(data.expiryDate, 'YYYY-MM-DD') : '',
+              remark: data.remark
+            })
             this.tableData = data.assetDetailList
           })
           console.log(this.tableData, '拿到的数据')
@@ -438,11 +540,15 @@ export default {
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
+    this.organId = this.organIdData[0].value
     this.setType = this.$route.query.setType
   },
   mounted () {
+    this.getObjectKeyValueByOrganIdFn()
+    this.platformDictFn()
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
+      this.changeOrderId = this.enitData[0].changeOrderId
       this.editFn()
     } else {
       this.form.setFieldsValue({

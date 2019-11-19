@@ -9,34 +9,34 @@
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-        <a-input-search placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
+        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>
       <div slot="contentForm">
         <div class="form-first">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :defaultValue="queryCondition.approvalStatus" @change="approvalStatusFn">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :defaultValue="queryCondition.changeType" @change="approvalStatusFn">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" v-model="queryCondition.changeType">
             <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :style="allStyle" placeholder="全部资产项目" :defaultValue="queryCondition.projectId" @change="approvalStatusFn">
+          <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
         <div class="from-second">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :defaultValue="queryCondition.assetType" @change="approvalStatusFn">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" v-model="queryCondition.assetType" @change="assetTypeFn">
             <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :defaultValue="queryCondition.assetClassify" @change="approvalStatusFn">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" v-model="queryCondition.assetClassify">
             <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <div class="box">
-            <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD" @change="changeDate"></SG-DatePicker>
+            <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
           <div class="box box-left">
-            <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD" @change="alterationFn"></SG-DatePicker>
+            <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ import segiIcon from '@/components/segiIcon.vue'
 const columns = [
   {
     title: '变动编号',
-    dataIndex: 'changeOrderCode'
+    dataIndex: 'changeOrderDetailId'
   },
   {
     title: '资产编号',
@@ -174,7 +174,7 @@ export default {
         organId: '',   // 组织机构id
         approvalStatus: ['0', '1', '2', '3', '4'],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: '',   // 资产项目Id
-        changeType: [''],   // 变动类型
+        changeType: [],   // 变动类型
         assetType: [''],    // 资产类型Id
         assetClassify: [''], // 资产分类
         startDate: '',       // 创建日期开始日期
@@ -193,18 +193,8 @@ export default {
           value: ''
         }
       ],
-      changeTypeData: [
-        {
-          name: '全部变动类型',
-          value: ''
-        }
-      ],
-      assetTypeData: [
-        {
-          name: '全部资产类型',
-          value: ''
-        }
-      ],
+      changeTypeData: [],
+      assetTypeData: [],
       assetClassifyData: [
         {
           name: '全部分类',
@@ -223,26 +213,14 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
+      this.getObjectKeyValueByOrganIdFn()
+      this.getListFn()
       this.query()
-    },
-    // 变动单状态
-    approvalStatusFn (value) {
-      this.queryCondition.approvalStatus = value
     },
     // 搜索
     onSearch () {
       this.queryCondition.pageNum = 1
       this.query()
-    },
-    // 提交日期
-    changeDate (val) {
-      this.queryCondition.startDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
-      this.queryCondition.endDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
-    },
-    // 变更日期
-    alterationFn (val) {
-      this.queryCondition.changStartDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
-      this.queryCondition.changStartDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
     },
     // 高级搜索控制
     searchContainerFn (val) {
@@ -254,35 +232,127 @@ export default {
       this.queryCondition.pageSize = data.pageLength
       this.query()
     },
+    // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.queryCondition.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectData = [...this.projectData, ...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 平台字典获取变动类型
+    platformDictFn (str) {
+      let obj = {
+        code: str
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          if (str === 'asset_change_type') {
+            this.changeTypeData = [...data]
+            let arr = []
+            this.changeTypeData.forEach(item => {
+              arr.push(item.value)
+            })
+            this.queryCondition.changeType = arr
+          } else if (str === 'approval_status_type') {
+            this.approvalStatusData = [...data]
+            let status = []
+            this.approvalStatusData.forEach(item => {
+              status.push(item.value)
+            })
+            this.queryCondition.approvalStatus = status
+          } else if (str === 'asset_type') {
+            this.assetTypeData = [...data]
+            let asset = []
+            this.assetTypeData.forEach(item => {
+              asset.push(item.value)
+            })
+            this.queryCondition.assetType = asset
+            this.getListFn()
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 资产分类列表
+    getListFn () {
+      let obj = {
+        organId: this.queryCondition.organId,
+        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : ''
+      }
+      this.$api.assets.getList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.professionName,
+              value: item.categoryConfId
+            })
+          })
+          this.assetClassifyData = [...this.assetClassifyData, ...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 资产类别
+    assetTypeFn () {
+      this.getListFn()
+    },
     // 清空
-    eliminateFn () {},
+    eliminateFn () {
+      this.alterationDate = []
+      this.queryCondition.assetName = ''
+    },
     // 查询
     query () {
       this.loading = true
       let obj = {
         projectId: this.queryCondition.projectId,       // 资产项目Id
-        organId: this.queryCondition.organId,         // 组织机构id
+        organId: Number(this.queryCondition.organId),         // 组织机构id
         multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
         multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startDate: this.queryCondition.startDate,       // 创建日期开始日期
-        endDate: this.queryCondition.endDate,    // 创建日期结束日期
+        startDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
+        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
         currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
         multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
         multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
         assetName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        changStartDate: this.queryCondition.changStartDate,  // 变动日期开始
-        changEndDate: this.queryCondition.changEndDate   // 变动日期结束
+        changStartDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
+        changEndDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
       }
       this.$api.assets.getChangeSchedulePage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
-          data.forEach((item, index) => {
-            item.key = index
-          })
-          this.tableData = data
-          this.count = res.data.data.count
+          if (data && data.length > 0) {
+            data.forEach((item, index) => {
+              item.key = index
+            })
+            this.tableData = data
+            this.count = res.data.data.count
+          } else {
+            this.tableData = []
+            this.count = 0
+          }
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -294,6 +364,12 @@ export default {
   created () {
   },
   mounted () {
+    // 获取变动类型
+    this.platformDictFn('asset_change_type')
+    // 获取状态
+    // this.platformDictFn('approval_status_type')
+    // 资产类型
+    this.platformDictFn('asset_type')
   }
 }
 </script>

@@ -23,19 +23,8 @@
            <SG-Button @click="handleUpload" class="right-btn" type="primary" weaken>上传文件</SG-Button>
          </div>
          <div :style="inputStyple">
-           <a-select
-            showSearch
-            placeholder="请输入项目名称"
-            v-model="organId"
-            optionFilterProp="children"
-            :defaultActiveFirstOption="false"
-            :dropdownMatchSelectWidth="true"
-            :style="inputStyple"
-            :options="organOpt"
-            :allowClear="false"
-            :filterOption="filterOption"
-            notFoundContent="没有查询到数据"
-            />
+           <!-- 公司 -->
+          <topOrganByUser @change="organIdChange" :formStyle="inputStyple" v-model="organId" :hasAll="false" :selectFirst="true"/>
          </div>
        </div>
        <!-- 中间内容 -->
@@ -52,88 +41,77 @@
              <a-icon type="close" class="delete-icon" @click="deleteFile"/>
            </div>
        </div>
-      <!-- 底部按钮
-      <div class="footer">
-        <SG-Button @click="handleSave"  type="primary" class="padd-lr-30 marg-r-12">
-          导入
-        </SG-Button>
-        <SG-Button type="cancel" class="padd-lr-30" @click="cancel">
-          取消
-        </SG-Button>
-      </div> -->
       <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     </div>
-    <!-- <importReulte :tipText="tipText" ref="importReulte" /> -->
+    <downErrorFile ref="downErrorFile">
+      <div>{{upErrorInfo}}</div>
+    </downErrorFile>
 </SG-Modal>
 </template>
 <script>
-// import importReulte from './importReulte.vue'
-import {Modal, Select, Button, Icon} from 'ant-design-vue'
+import topOrganByUser from '@/views/common/topOrganByUser'
+import downErrorFile from '@/views/common/downErrorFile'
 import _ from 'lodash'
 export default {
   components: {
-    // importReulte,
-    AModal: Modal,
-    ASelect: Select,
-    AButton: Button,
-    AIcon: Icon
+    topOrganByUser,
+    downErrorFile
   },
   data () {
     return {
       visible: false,
-      searchCommunityName: '',
-      organOpt: [],
       organId: '',
+      organName: '',
+      upErrorInfo: '',
       inputStyple: {width: '165px'},
       fileName: '',
       formData: null,
       fileMaxSize: 10240,
       fileType: ['xls', 'xlsx'],
       tipText: ''
-      // fileName: '培训分享计划跟踪表.png'
     }
   },
   watch: {
     visible (nv) {
-      if (nv) {
-        // this.getOptions('getCommunityByName')
+      if (!nv) {
+       this.hiddeModal()
       }
     }
   },
-  created () {
-    // this.getOptions('getCommunityByName')
-  },
   methods: {
     hiddeModal () {
-      this.visible = false
-      this.searchCommunityName = ''
-      this.organOpt = []
-      this.organId = ''
+      this.upErrorInfo = ''
       this.fileName = ''
       this.formData = null
       this.$refs.fileUpload.value = ''
     },
+    // orangId改变
+    organIdChange (o) {
+      this.organName = o.name
+    },
     handleSave () {
-      // if (this.formData === null) {
-      //   return this.$message.error('请先上传文件!')
-      // }
-      // let loadingName = this.$SG_Message.loading({content: '导入中...'})
-      // api.houseImport(this.formData, this.organId).then(res => {
-      //   this.$SG_Message.destroy(loadingName)
-      //   if (res.data.code === '0') {
-      //     this.$SG_Message.success('导入成功!')
-      //     this.hideModal()
-      //   } else {
-      //     this.$SG_Message.destroy(loadingName)
-      //     // this.$message.error(res.data.message, 4)
-      //     this.$SG_Message.error('导入部分数据失败!')
-      //     this.$refs.importReulte.visible = true
-      //     this.tipText = res.data.message
-      //   }
-      // }, () => {
-      //   this.$SG_Message.destroy(loadingName)
-      //   this.$SG_Message.error('导入失败!')
-      // })
+      if (this.formData === null) {
+        return this.$message.error('请先上传文件!')
+      }
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.building.importExcel(this.organId, this.formData).then(res => {
+        if (res.data.code === '0') {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            this.visible = false
+            this.$emit('success')
+          }) 
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$refs.downErrorFile.visible = true
+            this.upErrorInfo = res.data.message
+          })
+        }
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
     },
     checkFile (fileName, fileSize) {
       // 检查文件类型
@@ -176,34 +154,25 @@ export default {
     },
     // 下载文件
     downHouseSource () {
-      // if (!this.organId) {
-      //   return this.$message.error('请选择项目!')
-      // }
-      // let loadingName = this.$SG_Message.loading({content: '下载中...'})
-      // api.downloadHouseImport(this.organId).then(res => {
-      //   console.log('res', res)
-      //   if (res.data.code === '0' && res.data.data) {
-      //     let fileName = res.data.data
-      //     api.downloadHouseImportModule(fileName).then(res => {
-      //       this.$SG_Message.destroy(loadingName)
-      //       let blob = new Blob([res.body])
-      //       let a = document.createElement('a')
-      //       a.href = URL.createObjectURL(blob)
-      //       a.download = fileName
-      //       a.style.display = 'none'
-      //       document.body.appendChild(a)
-      //       a.click()
-      //       a.remove()
-      //     }, rej => {
-      //       this.$SG_Message.destroy(loadingName)
-      //     })
-      //   } else {
-      //     this.$SG_Message.destroy(loadingName)
-      //     this.$SG_Message.error('导出房间模板失败!')
-      //   }
-      // }, () => {
-      //   this.$SG_Message.destroy(loadingName)
-      // })
+      if (!this.organId) {
+        return this.$message.error('请选择项目!')
+      }
+      let loadingName = this.$SG_Message.loading({content: '下载中...'})
+      this.$api.building.downLoadExcel({organId: this.organId}).then(res => {
+            this.$SG_Message.destroy(loadingName)
+            let blob = new Blob([res.data])
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(blob)
+            // ${this.organName}
+            a.download = `房间资料模板.xls`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+      }, () => {
+        this.$SG_Message.destroy(loadingName)
+        this.$SG_Message.error('导出房间模板失败!')
+      })
     },
     cancel () {
       this.hiddeModal()

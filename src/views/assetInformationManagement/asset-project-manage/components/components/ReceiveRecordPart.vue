@@ -3,7 +3,7 @@
   <div class="step_line">
     <!--接收记录-->
     <SG-Title title="接收记录" noMargin/>
-    <div class="title_div">
+    <div class="title_div" v-if="stepList.length" style="margin: 30px 0">
       <div class="step_item" @click="getPosition($event)" v-for="(item, i) in stepList" :key="i">
         <a-icon type="arrow-right" class="step_icon" :style="`background-color: ${item.isCurrent ? '#0084FF' : '#CFD8DC'}`"/>
         <div :style="`display: inline-block; color: ${item.isCurrent ? '#0084FF' : '#CFD8DC'}`">
@@ -36,6 +36,7 @@
         </a-row>
       </div>
     </div>
+    <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
   </div>
 </template>
 
@@ -45,7 +46,7 @@
     data () {
       return {
         left: '16px', // 接收记录详情指示箭头左偏移量
-        stepList: [{desc: '你个达萨比'}, {desc: '你个达萨比', isCurrent: true}, {desc: '你个达萨比'}]
+        stepList: []
       }
     },
     

@@ -81,6 +81,7 @@ export default {
     return {
       visible: false,
       inputStyple: {width: '100%'},
+      organName: '',
       organId: undefined,
       buildId: undefined,
       unitId: undefined,
@@ -130,7 +131,6 @@ export default {
           this.organOpt = result.map(item => {
             return {label: item.organName, value: item.organId}
           })
-          console.log('一级组织机构=>', this.organOpt)
           // 默认选中第一个
           if (this.organOpt.length) {
             this.organId = this.organOpt[0].value
@@ -140,7 +140,6 @@ export default {
     },
     // 请求楼栋列表默认20条
     queryBuildList (organId, buildName) {
-      console.log('导入导出进来=>')
       this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
@@ -188,28 +187,33 @@ export default {
         this.queryBuildList(this.organId, this.searchBuildName || '')
     }, 200),
     exportHouse () {
-      // let data = {
-      //   organId: this.organId || '',
-      //   unitId: this.unitId || '',
-      //   buildId: this.buildId || ''
-      // }
-      // data.communityName = fintItem(this.organOpt, data.organId).label
-      // data.buildName = fintItem(this.buildOpt, data.buildId).label
-      // data.unitName = fintItem(this.unitOpt, data.unitId).label
-      // let fromData = new FormData()
-      // for (let key in data) {
-      //   data[key] = data[key].replace(/\+/g, '%2B')
-      //   fromData.append(key, data[key])
-      // }
-      // api.exportHouse(fromData).then(res => {
-      //   if (+res.data.code === 0) {
-      //     let fileName = res.data.msg
-      //     let temp = window.open(Utils.paths.basicinfo.house.downLoadExcel + '?fileName=' + fileName)
-      //     temp.location.reload()
-      //   } else {
-      //     this.$message.error(res.data.msg)
-      //   }
-      // })
+      let data = {
+        organId: this.organId || '',
+        unitId: this.unitId || '',
+        buildId: this.buildId || ''
+      }
+      let organName = fintItem(this.organOpt, data.organId).label
+      let buildName = fintItem(this.buildOpt, data.buildId).label
+      let unitName = fintItem(this.unitOpt, data.unitId).label
+      let loadingName = this.SG_Loding('导出中...')
+      this.$api.building.exportHouse(data).then(res => {
+        this.DE_Loding(loadingName).then(() => {
+          this.visible = false
+          let blob = new Blob([res.data])
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(blob)
+            // ${this.organName}
+            a.download = `${organName + buildName + unitName}房间.xls`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+        })
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导出失败！')
+        })
+      })
     },
     closeModal () {
       this.$emit('close')
