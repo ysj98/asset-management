@@ -9,15 +9,15 @@ export const deliveryProperty = [{
   width: '10%'
 }, {
   title: '所在位置',
-  dataIndex: 'province',
+  dataIndex: 'address',
   width: '10%'
 }, {
   title: '分类',
-  dataIndex: 'type',
+  dataIndex: 'assetCategoryName',
   width: '10%'
 }, {
   title: '用途',
-  dataIndex: 'instStatusName',
+  dataIndex: 'assetUse',
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
@@ -46,15 +46,15 @@ export const deliveryOperation = [{
   width: '10%'
 }, {
   title: '所在位置',
-  dataIndex: 'province',
+  dataIndex: 'address',
   width: '10%'
 }, {
   title: '分类',
-  dataIndex: 'type',
+  dataIndex: 'assetCategoryName',
   width: '10%'
 }, {
   title: '用途',
-  dataIndex: 'instStatusName',
+  dataIndex: 'assetUse',
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
@@ -81,13 +81,13 @@ export const changeDirectionUse = [{
   dataIndex: 'assetCode'
 }, {
   title: '所在位置',
-  dataIndex: 'province'
+  dataIndex: 'address'
 }, {
   title: '分类',
-  dataIndex: 'type'
+  dataIndex: 'assetCategoryName'
 }, {
   title: '用途',
-  dataIndex: 'instStatusName'
+  dataIndex: 'assetUse'
 }, {
   title: '建筑面积(㎡)',
   dataIndex: 'communityName'
@@ -134,15 +134,15 @@ export const projectChange = [{
   width: '10%'
 }, {
   title: '所在位置',
-  dataIndex: 'province',
+  dataIndex: 'address',
   width: '10%'
 }, {
   title: '分类',
-  dataIndex: 'type',
+  dataIndex: 'assetCategoryName',
   width: '10%'
 }, {
   title: '用途',
-  dataIndex: 'instStatusName',
+  dataIndex: 'assetUse',
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
@@ -171,15 +171,15 @@ export const variationOriginalValue = [{
   width: '10%'
 }, {
   title: '所在位置',
-  dataIndex: 'province',
+  dataIndex: 'address',
   width: '10%'
 }, {
   title: '分类',
-  dataIndex: 'type',
+  dataIndex: 'assetCategoryName',
   width: '10%'
 }, {
   title: '用途',
-  dataIndex: 'instStatusName',
+  dataIndex: 'assetUse',
   width: '10%'
 }, {
   title: '变动前原值',
@@ -209,15 +209,15 @@ export const positionChange = [{
   width: '10%'
 }, {
   title: '所在位置',
-  dataIndex: 'province',
+  dataIndex: 'address',
   width: '10%'
 }, {
   title: '分类',
-  dataIndex: 'type',
+  dataIndex: 'assetCategoryName',
   width: '10%'
 }, {
   title: '用途',
-  dataIndex: 'instStatusName',
+  dataIndex: 'assetUse',
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
@@ -225,9 +225,9 @@ export const positionChange = [{
   width: '10%'
 }, {
   title: '变动后位置',
-  dataIndex: 'address',
+  dataIndex: 'addressName',
   align: 'center',
-  scopedSlots: { customRender: 'address' }
+  scopedSlots: { customRender: 'addressName' }
 },  {
   title: '操作',
   dataIndex: 'operation',

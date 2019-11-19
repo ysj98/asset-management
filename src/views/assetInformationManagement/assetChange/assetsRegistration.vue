@@ -40,7 +40,7 @@
           <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
           <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
           <span v-if="record.approvalStatus === '2'">审核</span>
-          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && record.expiryDate === '' || +record.changeType === 2 && record.expiryDate === ''">终止交付</span>
+          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate">终止交付</span>
         </div>
       </template>
     </a-table>
@@ -213,7 +213,7 @@ export default {
         }
         this.$api.assets.deleteChange(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('删除成功')
+            this.$message.info('删除成功')
             this.commonShow = false
             this.query()
           } else {
@@ -228,7 +228,7 @@ export default {
         }
         this.$api.assets.stopDelivery(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('终止交付成功')
+            this.$message.info('终止交付成功')
             this.commonShow = false
             this.query()
           } else {
@@ -242,6 +242,12 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
+      if (!this.isChild) {
+        this.queryCondition.pageNo = 1
+        this.query()
+      } else {
+        this.isChild = false
+      }
       this.getObjectKeyValueByOrganIdFn()
     },
     // 资产项目
@@ -355,9 +361,44 @@ export default {
     }
   },
   created () {
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.approvalStatus = query.approvalStatus
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.projectId = query.projectId
+      this.queryCondition.changeType = query.changeType
+      this.queryCondition.startCreateDate = query.startCreateDate
+      this.queryCondition.endCreateDate = query.endCreateDate
+      this.queryCondition.currentOrgan = query.currentOrgan
+      this.queryCondition.organId = query.organId
+      this.isChild = query.isChild
+      this.query()
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    let o = {key: this.$route.path, data: {}}
+    if (to.path.indexOf(from.path) !== -1) {
+      o = {
+        key: from.path,
+        data: {
+          approvalStatus: this.queryCondition.approvalStatus,
+          pageNum: this.queryCondition.pageNum,
+          pageSize: this.queryCondition.pageSize,
+          projectId: this.queryCondition.projectId,
+          changeType: this.queryCondition.changeType,
+          startCreateDate: this.queryCondition.startCreateDate,
+          endCreateDate: this.queryCondition.endCreateDate,
+          currentOrgan: this.queryCondition.currentOrgan,
+          organId: this.queryCondition.organId,
+          isChild: true
+        }
+      }
+    }
+    this.$store.commit('pro/SET_ROUTE_QUERY', o)
+    next()
   },
   mounted () {
-    // this.query()
     // 获取变动类型
     this.platformDictFn('asset_change_type')
     // 获取状态
