@@ -63,18 +63,26 @@ export const assets = {
     // 图片预览地址
     getProject: '/getProject',
     // 异步组织机构树 组织机构管理 POST
-    queryAsynOrganByUserId: '/basic-data-api/rest-api/v1/organApi/queryAsynOrganByUserId'
+    queryAsynOrganByUserId: '/basic-data-api/rest-api/v1/organApi/queryAsynOrganByUserId',
+    // --------项目下拉-------
+    getObjectKeyValueByOrganId: '/ams/project/getObjectKeyValueByOrganId',
+    // 机构字典
+    organDict: '/ams/assetDict/organDict',
+    // 平台字典
+    platformDict: '/ams/assetDict/platformDict',
+    // 查询资产分类列表
+    getList: '/ams/categoryCfg/getList'
   },
   // 资产变动
   management: {
     // 资产变动-一览表-分页列表
-    getChangeSchedulePage: '/ams/assetCleanup/getChangeSchedulePage',
+    getChangeSchedulePage: '/ams/assetChange/getChangeSchedulePage',
     // 资产变动-详情
-    getChangeDetail: '/ams/assetCleanup/getChangeDetail',
+    getChangeDetail: '/ams/assetChange/getChangeDetail',
     // 资产变动-一览表-导出
-    exportChangeScheduleList: '/ams/assetCleanup/exportChangeScheduleList',
+    exportChangeScheduleList: '/ams/assetChange/exportChangeScheduleList',
     // 资产变动-分页列表
-    getChangePage: '/ams/assetCleanup/getChangePage',
+    getChangePage: '/ams/assetChange/getChangePage',
     // 资产变动-删除
     deleteChange: '/ams/assetChange/deleteChange',
     // 资产变动-审批
@@ -84,15 +92,17 @@ export const assets = {
     // 资产变动-导出
     exportChange: '/ams/assetChange/exportChange',
     // 资产变动-新增编辑
-    submitChange: '/ams/assetCleanup/submitChange',
+    submitChange: '/ams/assetChange/submitChange',
     // 资产变动-明细
-    getChangeInfo: '/ams/assetCleanup/getChangeInfo',
+    getChangeInfo: '/ams/assetChange/getChangeInfo',
     // 资产变动-终止交付
     stopDelivery: '/ams/assetChange/stopDelivery',
     // 房屋资产分页查询
     assetHousePage: '/ams/asset-house/page',
     // 资产变动-变动明细分页
-    getChangeDetailPage: '/ams/assetCleanup/getChangeDetailPage'
+    getChangeDetailPage: '/ams/assetChange/getChangeDetailPage',
+    // 资产列表
+    assetListPage: '/ams/registerOrder/assetListPage'
   },
   // 资产登记
   assetRegister: {
@@ -129,6 +139,8 @@ export const assets = {
     deleteCleanup: '/ams/assetCleanup/deleteCleanup',
     // 资产清理-审批
     approvalCleanup: '/ams/assetCleanup/approvalCleanup',
+    // 资产清理-反审批
+    reverseApproveCleanup: '/ams/assetCleanup/reverseApproveCleanup',
     // 资产清理-新增编辑保存
     submitCleanup: '/ams/assetCleanup/submitCleanup',
     // 资产清理-编辑查询明细
@@ -148,6 +160,44 @@ export const assets = {
     updateStatus: '/ams/categoryCfg/updateStatus',
     // 资产分类设置-获取资产分类详情
     getDetail: '/ams/categoryCfg/getDetail'
+  },
+  // 房屋台账-资产项目视图
+  assetProjectView: {
+    // 资产项目视图列表-查询房屋和楼栋信息分页查询
+    viewGetAssetHouseList: '/ams/project/viewGetAssetHouseList',
+    // 资产项目视图列表头-查询房屋和楼栋信息统计
+    viewGetAssetHouseStatistics: '/ams/project/viewGetAssetHouseStatistics',
+    // 资产项目视图详情-资产状况统计列表分页
+    viewDetailsPage: '/ams/project/viewDetailsPage',
+    // 资产项目视图（详情）-资产状况统计
+    viewProjectHouseDetails: '/ams/project/viewProjectHouseDetails'
+  },
+  // 房屋台账-资产项目
+  assetProject: {
+    // 分页查询资产项目列表-根据组织ID
+    getProjectListPage: '/ams/project/getProjectListPage',
+    // 查询资产项目列表-根据组织ID(统计)
+    getProjectListStatistics: '/ams/project/getProjectListStatistics',
+    // 查询资产项目编辑-根据资产项目ID
+    projectDetailsForModifyById: '/ams/project/projectDetailsForModifyById',
+    // 查询资产项目详情-根据资产项目ID
+    projectDetailsById: '/ams/project/projectDetailsById',
+    // 资产项目-下拉框查询
+    getObjectKeyValueByOrganId: '/ams/project/getObjectKeyValueByOrganId',
+    // 资产项目-删除
+    deleteProjectById: '/ams/project/deleteProjectById',
+    // 资产项目-反审核
+    projectReAudit: '/ams/project/projectReAudit',
+    // 资产项目-导入保存
+    importProject: '/ams/project/importProject',
+    // 资产项目-提交审核
+    projectAudit: '/ams/project/projectAudit',
+    // 资产项目-新增保存
+    saveProject: '/ams/project/saveProject',
+    // 资产项目-编辑保存
+    modifyProject: '/ams/project/modifyProject',
+    // 资产项目-转运营信息统计
+    getTransferByProjectId: '/ams/project/getTransferByProjectId'
   },
   // 房屋台账 - 楼栋视图
   buildingView: {

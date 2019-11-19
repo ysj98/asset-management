@@ -38,6 +38,10 @@ export default [
       {
         title: '资产登记',
         path: '/assetRegister'
+      },
+      {
+        title: '房屋台账',
+        path: '/houseStandingBook'
       }
     ]
   },
