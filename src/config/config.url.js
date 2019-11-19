@@ -218,4 +218,12 @@ export const building = {
   positionSelectAsyn: '/basic-data-api/rest-api/v1/ams/positionApi/positionSelectAsyn',
   // 查询楼栋下可挂位置类型 位置管理-位置树查询 GET
   queryBellowPositionType: '/basic-data-api/rest-api/v1/positionApi/queryBellowPositionType',
+  // 下载房屋资料模板-（房间信息导入）
+  downLoadExcel: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/downLoadExcel',
+  // 导入房间资料
+  importExcel: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/importExcel',
+  // 房间批量更新
+  acctHouseCodeImport: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/acctHouseCodeImport',
+  // 房屋导出
+  exportHouse: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/exportHouse'
 }

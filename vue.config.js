@@ -23,6 +23,7 @@ const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
   '/basic-data-api/',
+  '/basic-data-batch-api',
   '/uhomecp-app/',
   '/common-api',
   '/uis/'
