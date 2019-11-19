@@ -298,7 +298,7 @@ export function queryProjectManageProjectByOrganId (data) {
 }
 
 // 资产项目-反审核
-export function doProjectManagereaudit (data) {
+export function doProjectManageReaudit (data) {
   return axiosPost(assets.projectManage.reauditAction, data)
 }
 // 资产项目-导入保存
@@ -373,5 +373,10 @@ export function modifyProject (data) {
 }
 // 资产项目-转运营信息统计
 export function getProjectTransferByProjectId (data) {
-  return axiosPost(assets.assetProject.getTransferByProjectId, data, false, false)
+  return axiosPost(assets.projectManage.queryTransferStatistics, data, false, false)
+}
+
+// 资产项目-资产项目详情-资产概况
+export function queryProjectManageGeneralInfo (data) {
+  return axiosGet(assets.projectManage.queryGeneralInfo, data)
 }

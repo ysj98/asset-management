@@ -252,7 +252,9 @@ export const assets = {
     // 资产项目-编辑保存
     saveEditProject: '/ams/project/modifyProject',
     // 资产项目-转运营信息统计
-    queryTransferStatistics: '/ams/project/getTransferByProjectId'
+    queryTransferStatistics: '/ams/project/getTransferByProjectId',
+    // 资产项目-资产项目详情-资产概况
+    queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
   }
 }
 // 楼盘字典
