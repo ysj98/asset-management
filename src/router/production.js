@@ -64,9 +64,24 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/assetClear/index.vue')
   },
   {
-    path: '/assetClear/newClearForm',
-    name: '新增清理单',
+    path: '/assetClear/new',
+    name: '新建清理单',
     component: () => import('@/views/assetInformationManagement/assetClear/newClearForm.vue')
+  },
+  {
+    path: '/assetClear/edit',
+    name: '编辑清理单',
+    component: () => import('@/views/assetInformationManagement/assetClear/editClearForm.vue')
+  },
+  {
+    path: '/assetClear/audit',
+    name: '清理单审核',
+    component: () => import('@/views/assetInformationManagement/assetClear/auditClearForm.vue')
+  },
+  {
+    path: '/assetClear/detail',
+    name: '清理单详情',
+    component: () => import('@/views/assetInformationManagement/assetClear/checkClearForm.vue')
   },
   {
     path: '/assetClassSet',
@@ -112,6 +127,16 @@ let proRouter = [
     path: '/assetClassSet/detail',
     name: '详情',
     component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
+  },
+  {
+    path: '/houseStandingBook',
+    name: '房屋台账',
+    component: () => import('@/views/assetInformationManagement/houseStandingBook/index.vue')
+  },
+  {
+    path: '/houseStandingBook/assetProjectViewDetail',
+    name: '资产项目视图详情',
+    component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail.vue')
   }
 ]
 export default proRouter

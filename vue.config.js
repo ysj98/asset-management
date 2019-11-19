@@ -26,7 +26,8 @@ const proxyURL = [
   '/basic-data-batch-api',
   '/uhomecp-app/',
   '/common-api',
-  '/uis/'
+  '/uis/',
+  '/ams/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接
@@ -62,7 +63,7 @@ const proxy = new Proxy()
 // 添加代理数据，如需代理多个地址，继续调用实例的 addUrls 方法即可
 // proxy.addUrls(['/basic-data-api/rest-api/v1/ams'], localhost, mock)
 proxy.addUrls(proxyURL, localhost, target)
-proxy.addUrls(['/ams'], localhost, mock)
+// proxy.addUrls(['/ams'], localhost, mock)
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

@@ -13,16 +13,16 @@
         <a-select :style="allStyle" placeholder="全部资产项目" :defaultValue="selecData.projectId" @change="approvalStatusFn">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类型" :defaultValue="selecData.type" @change="approvalStatusFn">
+        <a-select :style="allStyle" placeholder="全部资产类型" :defaultValue="selecData.assetType" @change="approvalStatusFn">
           <a-select-option v-for="(item, index) in typeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类别" :defaultValue="selecData.category" @change="approvalStatusFn">
-          <a-select-option v-for="(item, index) in categoryData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        <a-select :style="allStyle" placeholder="全部资产类别" :defaultValue="selecData.objectType" @change="approvalStatusFn">
+          <a-select-option v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
+        <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
           <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <a-input style="width:140px; margin: 0 10px;" v-model="selecData.assetName" placeholder="资产名称/编码"/>
+        </a-select> -->
+        <a-input style="width:140px; margin: 0 10px;" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
         <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </Cephalosome>
@@ -64,7 +64,7 @@ const columns = [
   },
   {
     title: '所属机构',
-    dataIndex: 'changeTypeName'
+    dataIndex: 'organName'
   },
   {
     title: '资产项目',
@@ -72,19 +72,19 @@ const columns = [
   },
   {
     title: '资产类型',
-    dataIndex: 'type'
+    dataIndex: 'assetTypeName'
   },
   {
     title: '资产分类',
-    dataIndex: 'createTime'
+    dataIndex: 'assetCategoryName'
   },
   {
     title: '所在位置',
-    dataIndex: 'province'
+    dataIndex: 'address'
   },
   {
     title: '资产状态',
-    dataIndex: 'status'
+    dataIndex: 'assetStatusName'
   },
   {
     title: '配套数量',
@@ -93,7 +93,12 @@ const columns = [
 ]
 export default {
   components: {Cephalosome},
-  props: {},
+  props: {
+    organId: {
+      type: [String, Number],
+      default: ''
+    }
+  },
   data () {
     return {
       columns,
@@ -113,7 +118,7 @@ export default {
           value: ''
         }
       ],
-      categoryData: [
+      objectTypeData: [
         {
           name: '全部资产类型',
           value: ''
@@ -128,11 +133,11 @@ export default {
       allStyle: 'width: 140px; margin-right: 10px;',
       show: false,
       selecData: {
-        assetName: '',
-        projectId: '',
-        type: '',
-        category: '',
-        status: '',
+        assetType: '',   // 资产类型
+        objectType: '',  // 资产类别
+        assetNameCodeCode: '',  // 资产名称/编码
+        queryType: '1',   // 查询类型 1 资产变动，2 资产清理 3权属登记
+        projectId: '',  // 资产项目ID
         pageSize: 10,
         pageNum: 1
       },
@@ -183,219 +188,38 @@ export default {
         this.selectedRowKeys = redactChecked
       })
     },
+    // 关闭弹窗
     handleCancel () {
-      console.log('9090')
       this.show = false
+    },
+    // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectData = [...this.projectData, ...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     query () {
       this.loading = true
       let obj = this.selecData
-      this.$api.assets.assetHousePage(obj).then(res => {
+      this.$api.assets.assetListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          // let data = res.data.data.data
-          let data = [
-            {
-              assetCode: '1',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: '',
-              operationArea: ''
-            },
-            {
-              assetCode: '2',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '3',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '4',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '5',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '6',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '7',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '8',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '9',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            },
-            {
-              assetCode: '10',
-              assetName: '资产名称',
-              changeTypeName: '所属机构',
-              projectName: '资产项目',
-              type: '资产类型',
-              createTime: '资产分类',
-              province: '所在位置',
-              status: '资产状态',
-              approvalStatusName: '1',
-              transferArea: '',
-              transferOperationArea: '',
-              idleArea: '',
-              selfUserArea: '',
-              occupationArea: '',
-              otherArea: '',
-              originalValue: '',
-              changeProjectId: '',
-              address: ''
-            }
-          ]
+          let data = res.data.data.data
           if (data) {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
@@ -435,6 +259,7 @@ export default {
   created () {
   },
   mounted () {
+    this.getObjectKeyValueByOrganIdFn()
     this.query()
   }
 }

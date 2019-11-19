@@ -68,56 +68,21 @@
           transferOperationArea: '#4BD288'
         }, // 房间背景色映射
         buildingList: [
-          {
-            floorName: '一层',
-            floorArea: 110,
-            roomList: [
-              { totalArea: 100, roomNo: 1011, roomId: 101, areaInfo: {
-                  transferOperationArea: 15,
-                  idleArea: 35,
-                  selfUserArea: 75,
-                  occupationArea: 15,
-                  otherArea: 25
-                }
-              },
-              { totalArea: 10, roomNo: 10121, roomId: 102, areaInfo: {
-                  transferOperationArea: null,
-                  idleArea: null,
-                  selfUserArea: null,
-                  occupationArea: null,
-                  otherArea: 25
-                } }
-            ]
-          },
-          {
-            floorName: '二层',
-            floorArea: 150,
-            roomList: [
-              { totalArea: 10, roomNo: 7101, roomId: 21011, areaInfo: {
-                  transferOperationArea: 15,
-                  idleArea: 25,
-                  selfUserArea: null,
-                  occupationArea: null,
-                  otherArea: null
-                } },
-              { totalArea: 20, roomNo: 1701, roomId: 21012, areaInfo: {} },
-              { totalArea: 30, roomNo: 19801, roomId: 21013, areaInfo: {
-                  transferOperationArea: null,
-                  idleArea: null,
-                  selfUserArea: null,
-                  occupationArea: null,
-                  otherArea: 25
-                } },
-              { totalArea: 40, roomNo: 17801, roomId: 21014, areaInfo: {} },
-              { totalArea: 50, roomNo: 10781, roomId: 21015, areaInfo: {
-                  transferOperationArea: null,
-                  idleArea: 35,
-                  selfUserArea: null,
-                  occupationArea: null,
-                  otherArea: null
-                } }
-            ]
-          }
+          // {
+          //   floorName: '一层',
+          //   floorArea: 110,
+          //   roomList: [
+          //     {
+          //       totalArea: 100, roomNo: 1011, roomId: 101, areaInfo: {
+          //         transferOperationArea: 15,
+          //         idleArea: 35,
+          //         selfUserArea: 75,
+          //         occupationArea: 15,
+          //         otherArea: 25
+          //       }
+          //     }
+          //   ]
+          // }
         ]
       }
     },
@@ -217,7 +182,8 @@
     },
 
     mounted () {
-      this.calcMaxTotalArea(this.buildingList)
+      // 模拟调用接口
+      // this.calcMaxTotalArea(this.buildingList)
       // this.queryFloorInfo()
       // this.queryHouseAreaInfo()
     }
