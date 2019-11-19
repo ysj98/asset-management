@@ -102,7 +102,7 @@
           <div class="buytton-nav">
             <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
             <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
-            <SG-Button type="primary" weaken @click="addTheAsset">清空列表</SG-Button>
+            <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
           </div>
         </div>
         <!-- table-layout-fixed -->
@@ -237,6 +237,10 @@ export default {
     // 添加资产
     addTheAsset () {
       this.$refs.input.click()
+    },
+    // 清空列表
+    emptyFn () {
+      this.tableData = []
     },
     importf (file, event) {
       this.$importf(file, event).then(v => {
@@ -419,18 +423,28 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           if (this.tableData.length <= 0) {
-            this.$message.info('请选择资产明细')
+            this.$message.info('请导入资产明细')
             return
           }
+          let files = []
+          if (this.newEditSingleData.files.length > 0) {
+            this.newEditSingleData.files.forEach(list => {
+              files.push({
+                attachmentPath: list.url,
+                oldAttachmentName: list.name
+              })
+            })
+          }
           let obj = {
-            registerOrderId: '',                // 资产变动单Id（新增为空）
-            saveRegisterOrder: values.saveRegisterOrder,                // 登记单编号
-            projectId: values.projectId,                // 资产项目Id
-            assetType: values.assetType,                // 资产类型Id
-            remark: values.remark,                // 备注
-            organId: values.organId,                // 组织机构id
+            registerOrderId: '',                         // 资产变动单Id（新增为空）
+            saveRegisterOrder: values.saveRegisterOrder, // 登记单编号
+            projectId: values.projectId,                 // 资产项目Id
+            assetType: values.assetType,                 // 资产类型Id
+            remark: values.remark,                       // 备注
+            organId: values.organId,                      // 组织机构id
             createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
-            assetHouseList: this.tableData
+            assetHouseList: this.tableData,
+            attachment: files
           }
           console.log(obj)
           // 编辑

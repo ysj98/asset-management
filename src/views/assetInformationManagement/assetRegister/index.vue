@@ -13,10 +13,10 @@
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" v-model="queryCondition.assetType">
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
           <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" v-model="queryCondition.approvalStatus" @change="approvalStatusFn">
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
@@ -69,6 +69,10 @@ import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 const approvalStatusData = [
+  {
+    name: '全部状态',
+    value: ''
+  },
   {
     name: '草稿',
     value: '0'
@@ -144,7 +148,7 @@ export default {
       organId: '',
       tableData: [],
       queryCondition: {
-        approvalStatus: ['0', '1', '2', '3', '4'],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         pageNum: 1,                // 当前页
         pageSize: 10,               // 每页显示记录数
         projectId: '',              // 资产项目Id
@@ -208,7 +212,7 @@ export default {
         }
         this.$api.assets.deleteByRegisterOrderId(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('删除成功')
+            this.$message.info('删除成功')
             this.commonShow = false
             this.query()
           } else {
@@ -223,7 +227,7 @@ export default {
         }
         this.$api.assets.registerOrderReAudit(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('反审核成功')
+            this.$message.info('反审核成功')
             this.commonShow = false
             this.query()
           } else {
@@ -232,6 +236,36 @@ export default {
           }
         })
       }
+    },
+    // 状态发生变化
+    approvalStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+      })
+    },
+    // 资产类型变化
+    assetTypeDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+      })
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
     },
     changeTree (value, label) {
       this.organName = label
@@ -288,12 +322,7 @@ export default {
             })
             this.queryCondition.approvalStatus = status
           } else if (str === 'asset_type') {
-            this.assetTypeData = [...data]
-            let asset = []
-            this.assetTypeData.forEach(item => {
-              asset.push(item.value)
-            })
-            this.queryCondition.assetType = asset
+            this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
           }
         } else {
           this.$message.error(res.data.message)
@@ -306,17 +335,17 @@ export default {
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatuss: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: this.queryCondition.projectId,            // 资产项目Id
         organId: Number(this.queryCondition.organId),                // 组织机构id
-        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
+        assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
         createDateS: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
         isCurrent: this.queryCondition.isCurrent               // 仅当前机构下资产清理单 0 否 1 是
       }
       this.$api.assets.getProjectListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = res.data.data
           data.forEach((item, index) => {
             item.key = index
           })
