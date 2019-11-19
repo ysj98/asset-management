@@ -76,21 +76,47 @@
         cities: [],
         district: undefined,
         districts: [],
+        timeoutId: 0,
         properties: {} // 属性值
       }
     },
 
     methods: {
       // 查询省市区接口
-      queryData () {
+      queryData (type, parentRegionId) {
         this.loading = true
+        const api = {
+          province: 'queryProvinceList',
+          cities: 'queryCityAndAreaList',
+          districts: 'queryCityAndAreaList'
+        }
+        let form = type === 'province' ? {} : { parentRegionId }
+        clearTimeout(this.timeoutId)
+        let _this = this
+        _this.timeoutId = setTimeout(() => {
+          _this.$api.basics[api[type]](form).then(r => {
+            _this.loading = false
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              _this[type] = (res.data || []).map(item => {
+                return { value: item.regionId, name: item.name }
+              })
+              return false
+            }
+            throw res.message || '区域查询失败'
+          }).catch(err => {
+            _this.loading = false
+            _this.$message.error(err || '区域查询失败')
+          })
+        })
       }
     },
     
-    mounted () {
+    created () {
       const { allowClear, size, showSearch, value } = this
       this.properties = { allowClear, size, showSearch }
       Object.assign(this, { ...value })
+      this.queryData('province')
     },
     watch: {
       province: function (province) {
@@ -99,13 +125,14 @@
           district: undefined
         })
         this.$emit('input', { province, city: undefined, district: undefined })
-        this.queryData()
+        this.queryData('cities', province)
       },
 
       city: function (city) {
         const {province} = this
         this.district = undefined
         this.$emit('input', { province, city, district: undefined })
+        this.queryData('districts', city)
       },
 
       district: function (district) {
