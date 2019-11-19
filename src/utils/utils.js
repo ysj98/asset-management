@@ -102,6 +102,17 @@ class Units {
     }
     return fmt
   }
+  xlsxDate (numb, format="-") {
+    let time = new Date((numb - 1) * 24 * 3600000 + 1)
+    time.setYear(time.getFullYear() - 70)
+    let year = time.getFullYear() + ''
+    let month = time.getMonth() + 1 + ''
+    let date = time.getDate() + ''
+    if(format && format.length === 1) {
+        return year + format + month + format + date
+    }
+    return year+(month < 10 ? '0' + month : month)+(date < 10 ? '0' + date : date)
+  }
   // 调整控件高度，使页面不因控件太高而出现滚动条
   AdjustHeight (elem) {
     // elem.style.overflowY = 'auto'

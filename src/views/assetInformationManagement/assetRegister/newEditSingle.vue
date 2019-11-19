@@ -51,7 +51,6 @@
                     rules: [{required: true, message: '请选择资产类型'}],
                     initialValue: newEditSingleData.assetType
                   }]"
-                @change="assetTypeChange"
                 :allowClear="false"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到资产类型"
@@ -126,6 +125,7 @@
       <a-button type="primary" @click="save">提交</a-button>
       <a-button @click="cancel">取消</a-button>
     </FormFooter>
+     <input class="ipt-file" ref="input" type="file" @change="importf($event.target.files, $event)" />
     <SG-Modal
       width="500px"
       v-model="modalShow"
@@ -139,7 +139,7 @@
             资产类型：<a-radio v-for="(item, index) in checkboxData" :key="index" disabled :value="item.value">{{item.name}}</a-radio>
           </a-radio-group>
         </div>
-        楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" :defaultValue="buildIds">
+        楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" v-model="buildIds"  @search="handleSearch">
           <a-select-option v-for="(item, index) in buildIdsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="modal-nav">
@@ -157,10 +157,11 @@ import AssetBundlePopover from '../../common/assetBundlePopover'
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
 import {columnsData} from './registerBasics'
+import {debounce, utils} from '@/utils/utils'
 const newEditSingleData = {
   saveRegisterOrder: '',   // 验收单名称
-  assetType: '',     // 资产类型
-  projectId: '',     // 资产项目
+  assetType: undefined,     // 资产类型
+  projectId: undefined,     // 资产项目
   createTime: {},       // 接管日期
   remark: '',          // 备注
   files: [],
@@ -192,19 +193,11 @@ export default {
   props: {},
   data () {
     return {
-      buildIds: ['0'],
-      buildIdsData: [
-        {
-          name: '楼栋01',
-          value: '0'
-        },
-        {
-          name: '楼栋02',
-          value: '1'
-        },
-      ],
+      organId: '',
+      buildIds: undefined,
+      buildIdsData: [],
       checkboxAssetType: '1',
-      scope: [],
+      scope: ['1', '2'],
       modalShow: false,   // 下载模板
       checkboxData: [...checkboxData],
       scopeData: [...scopeData],
@@ -214,38 +207,8 @@ export default {
       columns: [...columnsData],
       tableData: [],
       organIdData: [],
-      assetTypeData: [
-        {
-          name: '交付运营',
-          value: 'jfyy'
-        },
-        {
-          name: '交付物业',
-          value: 'jfwy'
-        },
-        {
-          name: '原值变动',
-          value: 'yzbd'
-        },
-        {
-          name: '使用方向变动',
-          value: 'fxbd'
-        },
-        {
-          name: '位置变动',
-          value: 'wzbd'
-        },
-        {
-          name: '资产项目变动',
-          value: 'xmbd'
-        }
-      ],
-      projectIdData: [
-        {
-          name: '资产项目',
-          value: '1'
-        }
-      ],
+      assetTypeData: [],
+      projectIdData: [],
       newEditSingleData: {...newEditSingleData},
       form: this.$form.createForm(this),
       allWidth: 'width: 160px',
@@ -273,6 +236,105 @@ export default {
   methods: {
     // 添加资产
     addTheAsset () {
+      this.$refs.input.click()
+    },
+    importf (file, event) {
+      this.$importf(file, event).then(v => {
+        console.log(v, '拿到的数据')
+        if (v.length > 0) {
+          let arr = []
+          let a = '使用期限(月)'
+          let b = '已使用期数(月)'
+          for (let i = 0; i < v.length; i++) {
+            if (!v[i].资产名称) {
+              this.$message.info('请填写资产名称')
+              return
+            } else if (!v[i].资产编码) {
+              this.$message.info('请填写资产编码')
+              return
+            } else if (!v[i].权属情况) {
+              this.$message.info('请填写权属情况')
+              return
+            } else if (!v[i].权证号) {
+              this.$message.info('请填写权证号')
+              return
+            } else if (!v[i].装修情况) {
+              this.$message.info('请填写装修情况')
+              return
+            } else if (!v[i].资产原值) {
+              this.$message.info('请填写资产原值')
+              return
+            } else if (!v[i].市场价值) {
+              this.$message.info('请填写市场价值')
+              return
+            } else if (!v[i].转运营日期) {
+              this.$message.info('请填写转运营日期')
+              return
+            } else if (!v[i].转运营日期) {
+              this.$message.info('请填写转运营日期')
+              return
+            } else if (!v[i].转运营面积) {
+              this.$message.info('请填写转运营面积')
+              return
+            } else if (!v[i].闲置面积) {
+              this.$message.info('请填写闲置面积')
+              return
+            } else if (!v[i].占用面积) {
+              this.$message.info('请填写占用面积')
+              return
+            } else if (!v[i].其他面积) {
+              this.$message.info('请填写其他面积')
+              return
+            } else if (!v[i].转物业面积) {
+              this.$message.info('请填写转物业面积')
+              return
+            } else if (!v[i].转物业日期) {
+              this.$message.info('请填写转物业日期')
+              return
+            } else if (!v[i][a]) {
+              this.$message.info('请填写使用期限(月)')
+              return
+            } else if (!v[i].开始使用日期) {
+              this.$message.info('请填写开始使用日期')
+              return
+            } else if (!v[i][b]) {
+              this.$message.info('请填写已使用期数(月)')
+              return
+            }
+            arr.push({
+              key: i,
+              type: v[i].类型,
+              objectId: v[i].楼栋ID,
+              buildId: v[i].对象ID,
+              assetName: v[i].资产名称,
+              buildingName: v[i].楼栋名称,
+              houseName: v[i].房屋名称,
+              assetCode: v[i].资产编码,
+              coveredArea: v[i].建筑面积,
+              seatingPosition: v[i].坐落位置,
+              ownershipStatus: v[i].权属情况,
+              warrantNbr: v[i].权证号,
+              decorateSituation: v[i].装修情况,
+              originalValue: v[i].资产原值,
+              marketValue: v[i].市场价值,
+              transferOperationTime: utils.xlsxDate(v[i].转运营日期),
+              transferOperationArea: v[i].转运营面积,
+              selfUserArea: v[i].闲置面积,
+              occupationArea: v[i].自用面积,
+              occupationArea: v[i].占用面积,
+              otherArea: v[i].其他面积,
+              transferArea: v[i].转物业面积,
+              transferTime: utils.xlsxDate(v[i].转物业日期),
+              validPeriod: utils.xlsxDate(v[i][a]),
+              startDate: utils.xlsxDate(v[i].开始使用日期),
+              usedDate: v[i][b]
+            })
+            this.tableData = arr
+          }
+        } else {
+          this.$message.info('请填写数据后在上传')
+        }
+      })
     },
     // 下载模板
     downloadTemplate () {
@@ -280,10 +342,18 @@ export default {
     },
     // 下载模板确认
     commonFn () {
+      if (!this.buildIds || this.buildIds.length < 0) {
+        this.$message.info('请选择楼栋名称')
+        return
+      }
+      if (this.scope.length < 0) {
+        this.$message.info('请选择数据范围')
+        return
+      }
       let obj = {
-        assetType: this.assetType,
-        buildIds: this.buildIds,
-        scope: this.scope
+        assetType: this.checkboxAssetType,
+        buildIds: this.buildIds.join(','),
+        scope: this.scope.join(',')
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])
@@ -298,10 +368,6 @@ export default {
       })
     },
     onChange () {},
-    // 资产类型
-    assetTypeChange (val) {
-      this.assetType = val
-    },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
@@ -328,6 +394,26 @@ export default {
         }
       })
     },
+    // 楼栋搜索
+    handleSearch (value) {
+      this.searchBuildName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceMothed: debounce(function () {
+        this.queryBuildList(this.organId, this.searchBuildName || '')
+    }, 200),
+    // 请求楼栋列表默认20条
+    queryBuildList (organId, buildName) {
+      this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          this.buildIdsData = result.map(item => {
+            return {name: item.buildName, value: item.buildId}
+          })
+        }
+      })
+    },
     // 提交
     save () {
       this.form.validateFields((err, values) => {
@@ -344,7 +430,7 @@ export default {
             remark: values.remark,                // 备注
             organId: values.organId,                // 组织机构id
             createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
-            assetHouseList: []
+            assetHouseList: this.tableData
           }
           console.log(obj)
           // 编辑
@@ -389,6 +475,7 @@ export default {
         }
       })
     },
+    // 获取详情
     getRegisterOrderDetailsByIdFn () {
       let obj = {
         registerOrderId: this.registerOrderId
@@ -406,13 +493,57 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    }
+    },
+     // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectIdData = [...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 平台字典获取变动类型
+    platformDictFn () {
+      let obj = {
+        code: 'asset_type'
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.assetTypeData = [...data]
+          let asset = []
+          this.assetTypeData.forEach(item => {
+            asset.push(item.value)
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
+    this.organId = this.organIdData[0].value
     this.setType = this.$route.query.setType
   },
   mounted () {
+    this.getObjectKeyValueByOrganIdFn()
+    this.platformDictFn()
+    this.queryBuildList('1300')
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
       this.editFn()
@@ -453,6 +584,9 @@ export default {
   }
 }
 .modal-nav {
-  line-height: 40px;
+  line-height: 60px;
+}
+.ipt-file {
+  display: none !important;
 }
 </style>

@@ -1,91 +1,113 @@
 // 资产列表
 export const columnsData = [
   {
-    title: '楼栋名称--1',
-    dataIndex: 'assetName1'
+    title: '楼栋名称',
+    dataIndex: 'buildingName',
+    width: '80px'
   },
   {
-    title: '房屋名称--2',
-    dataIndex: 'assetName2'
+    title: '房屋名称',
+    dataIndex: 'houseName',
+    width: '80px'
   },
   {
     title: '资产名称',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName',
+    width: '80px'
   },
   {
     title: '资产编码',
-    dataIndex: 'assetCode'
+    dataIndex: 'assetCode',
+    width: '80px'
   },
   {
-    title: '建筑面积--3',
-    dataIndex: 'assetName3'
+    title: '建筑面积',
+    dataIndex: 'coveredArea',
+    width: '80px'
   },
   {
-    title: '坐落位置--4',
-    dataIndex: 'assetName4'
+    title: '坐落位置',
+    dataIndex: 'seatingPosition',
+    width: '80px'
   },
   {
     title: '权属情况',
-    dataIndex: 'ownershipStatus'
+    dataIndex: 'ownershipStatus',
+    width: '80px'
   },
   {
     title: '权证号',
-    dataIndex: 'warrantNbr'
+    dataIndex: 'warrantNbr',
+    width: '80px'
   },
   {
-    title: '装修情况--5',
-    dataIndex: 'assetName5'
+    title: '装修情况',
+    dataIndex: 'decorateSituation',
+    width: '80px'
   },
   {
     title: '资产原值',
-    dataIndex: 'originalValue'
+    dataIndex: 'originalValue',
+    width: '80px'
   },
   {
     title: '市场价值',
-    dataIndex: 'marketValue'
+    dataIndex: 'marketValue',
+    width: '80px'
   },
   {
     title: '转运营日期',
-    dataIndex: 'transferOperationTime'
+    dataIndex: 'transferOperationTime',
+    width: '80px'
   },
   {
     title: '转运营面积',
-    dataIndex: 'transferOperationArea'
+    dataIndex: 'transferOperationArea',
+    width: '80px'
   },
   {
     title: '闲置面积',
-    dataIndex: 'idleArea'
+    dataIndex: 'idleArea',
+    width: '80px'
   },
   {
     title: '自用面积',
-    dataIndex: 'selfUserArea'
+    dataIndex: 'selfUserArea',
+    width: '80px'
   },
   {
     title: '占用面积',
-    dataIndex: 'occupationArea'
+    dataIndex: 'occupationArea',
+    width: '80px'
   },
   {
     title: '其他面积',
-    dataIndex: 'otherArea'
+    dataIndex: 'otherArea',
+    width: '80px'
   },
   {
     title: '转物业面积',
-    dataIndex: 'transferArea'
+    dataIndex: 'transferArea',
+    width: '80px'
   },
   {
     title: '转物业日期',
-    dataIndex: 'transferTime'
+    dataIndex: 'transferTime',
+    width: '80px'
   },
   {
     title: '使用期限(月)',
-    dataIndex: 'validPeriod'
+    dataIndex: 'validPeriod',
+    width: '80px'
   },
   {
     title: '开始使用日期',
-    dataIndex: 'startDate'
+    dataIndex: 'startDate',
+    width: '80px'
   },
   {
     title: '已使用期数(月)',
-    dataIndex: 'usedDate'
+    dataIndex: 'usedDate',
+    width: '100px'
   }
 ]
