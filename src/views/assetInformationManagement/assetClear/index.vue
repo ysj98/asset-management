@@ -7,7 +7,7 @@
       <div slot="headBtns">
         <SG-Button icon="plus" type="primary" @click="newClearForm">新建清理单</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <treeSelect @changeTree="changeTree" :showSearch="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         </div>
       </div>
       <div slot="btns">
@@ -222,22 +222,13 @@ export default {
     return {
       allStyle: 'width: 170px; margin-right: 10px;',
       toggle: false,
-      columns,
       organName: '',
       organId: '',
+      columns,
       dataSource: [],
       approvalStatusData: [...approvalStatusData],
-      assetProjectOptions: [
-        {label: '全部资产项目', value: ''},
-        {label: '公建2019', value: '1'},
-        {label: '廉租房2018', value: '2'}
-      ],
-      assetTypeOptions: [
-        {label: '全部资产类型', value: ''},
-        {label: '房屋', value: '1'},
-        {label: '构筑物', value: '2'},
-        {label: '设备', value: '3'}
-      ],
+      assetProjectOptions: [],
+      assetTypeOptions: [],
       queryCondition: {
         approvalStatus: [''],
         assetProject: '',
@@ -262,6 +253,7 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.organId = value
+      this.getAssetProjectOptions()
       this.queryClick()
     },
     // 状态发生变化
@@ -393,11 +385,52 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+    },
+    getAssetProjectOptions () {
+      let form = {
+        organId: this.organId
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = [{label: '全部资产项目', value: ''}]
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.projectName,
+              value: item.projectId
+            }
+            arr.push(obj)
+          })
+          this.assetProjectOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    getAssetTypeOptions () {
+      let form = {
+        code: 'asset_type'
+      }
+      this.$api.basics.platformDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = [{label: '全部资产类型', value: ''}]
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: item.value
+            }
+            arr.push(obj)
+          })
+          this.assetTypeOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     }
   },
   created () {
   },
   mounted () {
+    this.getAssetTypeOptions()
   }
 }
 </script>

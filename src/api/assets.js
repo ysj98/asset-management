@@ -165,6 +165,10 @@ export function getPage (data) {
 export function exportList (data) {
   return axiosPost(assets.assetClassSet.exportList, data, false, false)
 }
+// 资产分类设置-获取费用科目类列表
+export function getFeeTypeList (data) {
+  return axiosGet(assets.assetClassSet.getFeeTypeList, data)
+}
 // 资产分类设置-修改资产分类
 export function update (data) {
   return axiosPost(assets.assetClassSet.update, data, false, false)

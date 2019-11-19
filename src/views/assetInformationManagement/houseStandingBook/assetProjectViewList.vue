@@ -155,12 +155,8 @@ export default {
     return {
       allStyle: 'width: 170px; margin-right: 10px;',
       organId: '',
-      assetProject: undefined,
-      assetProjectOptions: [
-        {label: '全部资产项目', value: ''},
-        {label: '公建2019', value: '1'},
-        {label: '廉租房2018', value: '2'}
-      ],
+      assetProject: '',
+      assetProjectOptions: [],
       onlyCurrentOrgan: false,
       assetStatistics: [
         {title: '所有资产(㎡)', area: ''},
@@ -182,6 +178,7 @@ export default {
   methods: {
     changeTree (value, label) {
       this.organId = value
+      this.getAssetProjectOptions()
       this.queryClick()
     },
     // 复选框发生变化
@@ -211,11 +208,13 @@ export default {
       let form = {
         organId: this.organId,
         projectId: this.assetProject,
-        isCurrent: this.onlyCurrentOrgan
+        isCurrent: this.onlyCurrentOrgan,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
       }
       this.$api.assets.viewGetAssetHouseList(form).then(res => {
         if (res.data.code === '0') {
-          let data = res.data.data.data
+          let data = res.data.data
           data.forEach((item, index) => {
             item.key = index
           })
@@ -245,7 +244,27 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    }
+    },
+    getAssetProjectOptions () {
+      let form = {
+        organId: this.organId
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = [{label: '全部资产项目', value: ''}]
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.projectName,
+              value: item.projectId
+            }
+            arr.push(obj)
+          })
+          this.assetProjectOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
   }
 }
 </script>

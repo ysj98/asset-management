@@ -16,9 +16,9 @@
                 :max="30"
                 v-if="editable"
                 v-decorator="['cleaningOrderCode',
-                {rules: [{required: true, max: 30, whitespace: true, message: '请输入清理单编号(不超过30字符)'}], initialValue: cleaningOrderCode}
+                {rules: [{required: true, max: 30, whitespace: true, message: '请输入清理单编号(不超过30字符)'}], initialValue: detail.cleaningOrderCode}
               ]"/>
-              <span class="label-value" v-else>{{cleaningOrderCode || '--'}}</span>
+              <span class="label-value" v-else>{{detail.cleaningOrderCode || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -33,10 +33,10 @@
                 :options="projectIdOptions"
                 :filterOption="filterOption"
                 v-decorator="['projectId',
-                {rules: [{required: true,  message: '请选择资产项目'}], initialValue: projectId}]"
+                {rules: [{required: true,  message: '请选择资产项目'}], initialValue: detail.projectId}]"
                 v-if="editable"
               ></a-select>
-              <span class="label-value" v-else>{{projectName || '--'}}</span>
+              <span class="label-value" v-else>{{detail.projectName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -51,10 +51,10 @@
                 :options="assetTypeOptions"
                 :filterOption="filterOption"
                 v-decorator="['assetType',
-                {rules: [{required: true,  message: '请选择资产类型'}], initialValue: assetType}]"
+                {rules: [{required: true,  message: '请选择资产类型'}], initialValue: detail.assetType}]"
                 v-if="editable"
               ></a-select>
-              <span class="label-value" v-else>{{assetTypeName || '--'}}</span>
+              <span class="label-value" v-else>{{detail.assetTypeName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -64,18 +64,15 @@
                 showSearch
                 allowClear
                 placeholder="请选择清理原因"
-                mode="multiple"
-                :tokenSeparators="[',']"
-                :maxTagCount="1"
                 optionFilterProp="children"
                 :style="allStyle"
                 :options="cleanupTypeOptions"
                 :filterOption="filterOption"
                 v-decorator="['cleanupType',
-                {rules: [{required: true,  message: '请选择清理原因'}], initialValue: cleanupType}]"
+                {rules: [{required: true,  message: '请选择清理原因'}], initialValue: detail.cleanupType}]"
                 v-if="editable"
               ></a-select>
-              <span class="label-value" v-else>{{cleanupTypeName || '--'}}</span>
+              <span class="label-value" v-else>{{detail.cleanupTypeName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -88,19 +85,19 @@
           <div class="edit-box-content-item" v-show="!editable">
             <div class="label-name-box"><span class="label-name">创建人<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{createByName || '--'}}</span>
+              <span class="label-value">{{detail.createByName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-show="!editable">
             <div class="label-name-box"><span class="label-name">创建时间<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{createTime || '--'}}</span>
+              <span class="label-value">{{detail.createTime || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-show="!editable">
             <div class="label-name-box"><span class="label-name">备注<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{remark || '--'}}</span>
+              <span class="label-value">{{detail.remark || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width" v-show="editable">
@@ -110,7 +107,7 @@
                 placeholder="请输入描述（最多200字）"
                 :rows="3"
                 v-decorator="['remark',
-                {rules: [{validator: validateRemark}], initialValue: remark}]"></a-textarea>
+                {rules: [{validator: validateRemark}], initialValue: detail.remark}]"></a-textarea>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
@@ -119,9 +116,8 @@
               <SG-UploadFile
                 type="all"
                 :show="!editable"
-                v-decorator="['files',
-                {rules: [], initialValue: files}]"  />
-              <span class="file-null" v-if="!editable && files.length === 0">--</span>
+                v-model="detail.files"/>
+              <span class="file-null" v-if="!editable && detail.files.length === 0">--</span>
             </a-form-item>
           </div>
         </div>
@@ -150,13 +146,13 @@
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name">审核人</span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{auditor || '--'}}</span>
+              <span class="label-value">{{audit.auditor || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name">审核时间</span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{auditTime || '--'}}</span>
+              <span class="label-value">{{audit.auditTime || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
@@ -165,17 +161,24 @@
               <a-textarea
                 placeholder="请输入审核意见"
                 :rows="3"
-                v-model="auditOpinion"
+                v-model="audit.auditOpinion"
               ></a-textarea>
             </a-form-item>
           </div>
         </div>
       </div>
     </a-form>
-    <form-footer v-show="pageType === 'new' || pageType === 'edit'" leftButtonName="提交审核" rightButtonName="取消" @save="handleSubmit" @cancel="cancel"></form-footer>
-    <form-footer v-show="pageType === 'audit'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="approveAudit" @cancel="rejectAudit"></form-footer>
+    <form-footer v-show="pageType === 'new' || pageType === 'edit'">
+      <slot>
+        <SG-Button type="primary" @click="handleSubmit(1)">审核通过</SG-Button>
+        <SG-Button type="primary" weaken @click="handleSubmit(0)">存为草稿</SG-Button>
+        <SG-Button @click="cancel">取消</SG-Button>
+      </slot>
+    </form-footer>
+    <form-footer v-show="pageType === 'audit'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="approveAudit" @cancel="rejectAudit">
+    </form-footer>
     <!-- 选择资产 -->
-    <AssetBundlePopover ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <AssetBundlePopover ref="assetBundlePopover" @status="status" v-if="editable"></AssetBundlePopover>
   </div>
 </template>
 
@@ -241,37 +244,30 @@ export default {
       organId: '',
       organName: '',
       cleaningOrderId: '',
-      cleaningOrderCode: '',
-      projectId: undefined,
-      projectName: '',
-      projectIdOptions: [
-        {label: '公建2019', value: '1'},
-        {label: '廉租房2018', value: '2'}
-      ],
-      assetType: undefined,
-      assetTypeName: '',
-      assetTypeOptions: [
-        {label: '房屋', value: '1'},
-        {label: '构筑物', value: '2'},
-        {label: '设备', value: '3'}
-      ],
-      cleanupType: undefined,
-      cleanupTypeName: '',
-      cleanupTypeOptions: [
-        {label: '资产转让', value: '1'},
-        {label: '资产报废', value: '2'},
-        {label: '资产销售', value: '3'}
-      ],
-      createByName: '',
-      createTime: '',
-      remark: '',
-      files: [],
+      detail: {
+        cleaningOrderCode: '',
+        projectId: undefined,
+        projectName: '',
+        assetType: undefined,
+        assetTypeName: '',
+        cleanupType: undefined,
+        cleanupTypeName: '',
+        createByName: '',
+        createTime: '',
+        remark: '',
+        files: []
+      },
+      projectIdOptions: [],
+      assetTypeOptions: [],
+      cleanupTypeOptions: [],
       columns: [...defaultColumns],
       dataSource: [],
       checkedData: [],
-      auditor: '',
-      auditTime: '',
-      auditOpinion: ''
+      audit: {
+        auditor: '',
+        auditTime: '',
+        auditOpinion: ''
+      }
     }
   },
   methods: {
@@ -279,6 +275,73 @@ export default {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
+    },
+    // 获取资产项目下拉列表
+    getProjectIdOptions () {
+      let form = {
+        organId: this.organId
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.projectName,
+              value: item.projectId
+            }
+            arr.push(obj)
+          })
+          this.projectIdOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 获取资产类型下拉列表
+    getAssetTypeOptions () {
+      let form = {
+        code: 'asset_type'
+      }
+      this.$api.basics.platformDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: item.value
+            }
+            arr.push(obj)
+          })
+          this.assetTypeOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 获取资产清理原因下拉列表
+    getCleanupTypeOptions() {
+      // let form = {
+      //   dictCode: 'asset_cleanup_type',
+      //   groupId: this.organId
+      // }
+      let form = {
+        code: 'asset_cleanup_type'
+      }
+      this.$api.basics.organDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: item.value
+            }
+            arr.push(obj)
+          })
+          this.cleanupTypeOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     // 添加资产
     addAsset () {
@@ -317,11 +380,44 @@ export default {
         callback()
       }
     },
-    // 提交表单
-    handleSubmit () {
+    // 新增编辑提交
+    handleSubmit (saveType) {
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
+          console.log(saveType)
+          console.log(values)
+          console.log(this.detail.files)
+          let form = {
+            organId: this.organId,
+            cleaningOrderCode: values.cleaningOrderCode,
+            projectId: values.projectId,
+            assetType: values.assetType,
+            cleanupType: values.cleanupType,
+            remark: values.remark,
+            attachmentPath: '',
+            saveType: saveType
+          }
+          let arr = []
+          this.dataSource.forEach(item => {
+            let obj = {
+              projectId: item.projectId,
+              assetType: values.assetType,
+              assetObjectId: item.assetObjectId
+            }
+            arr.push(obj)
+          })
+          form.assetDetailList = arr
+          console.log(form)
+          if (this.pageType === 'edit') {
+            form.cleaningOrderId = this.cleaningOrderId
+          }
+          this.$api.assets.submitCleanup(form).then(res => {
+            if (res.data.code === '0') {
+              this.$message.success('提交成功')
+            } else {
+              this.$message.error(res.data.message)
+            }
+          })
         }
       })
     },
@@ -338,6 +434,24 @@ export default {
         this.$message.warning('驳回时审核意见不能为空')
         return
       }
+    },
+    getDetail () {
+      let form = {
+        cleaningOrderId: this.cleaningOrderId
+      }
+      this.$api.assets.getCleanupInfo(form).then(res => {
+        if (res.data.code === '0') {
+          console.log(res)
+          let data = res.data.data
+          this.detail = data
+          this.detail.files = []
+          this.detail.assetDetailList.forEach((item, index) => {
+            item.key = index.toString()
+          })
+          console.log(this.detail)
+          this.dataSource = this.detail.assetDetailList
+        }
+      })
     }
   },
   mounted () {
@@ -345,8 +459,14 @@ export default {
     this.editable = this.pageType === 'new' || this.pageType === 'edit'
     this.organId = this.$route.query.organId
     this.organName = this.$route.query.organName
+    if (this.editable) {
+      this.getProjectIdOptions()
+      this.getAssetTypeOptions()
+      this.getCleanupTypeOptions()
+    }
     if (this.pageType !== 'new') {
       this.cleaningOrderId = this.$route.query.cleaningOrderId
+      this.getDetail()
     }
     if (!this.editable) {
       this.columns = this.columns.slice(0, this.columns.length - 1)
