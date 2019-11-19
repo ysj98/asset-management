@@ -60,4 +60,11 @@ export function queryFloorListByPosId (data) {
 export function queryDictDataList (data) {
   return axiosPost(basics.queryDictDataList, data)
 }
-
+// 平台字典
+export function platformDict (data) {
+  return axiosGet(basics.platformDict, data)
+}
+// 机构字典
+export function organDict (data) {
+  return axiosGet(basics.organDict, data)
+}

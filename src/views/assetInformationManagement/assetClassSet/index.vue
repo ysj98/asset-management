@@ -5,10 +5,10 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
-        <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
+        <SG-Button type="primary" @click="exportList"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
       </div>
       <div slot="form">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <topOrganByUser @change="organIdChange" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true"/>
         <a-select
           :style="allStyle"
           v-model="status"
@@ -27,9 +27,13 @@
       >
         <template slot="operation" slot-scope="text, record">
           <OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>
+          <!--<a class="operation-btn" v-if="+record.status === 0" @click="operationFun('start', record)">启用</a>-->
+          <!--<a class="operation-btn" v-else @click="operationFun('stop', record)">停用</a>-->
+          <!--<a class="operation-btn" v-show="+record.status === 1" @click="operationFun('edit', record)">编辑</a>-->
+          <!--<a class="operation-btn" @click="operationFun('detail', record)">详情</a>-->
         </template>
         <template slot="statusName" slot-scope="text, record, index">
-          <div v-if="record.status === '1'"><SG-Switch disabled checked  :id="index" style="margin-right: 10px;"></SG-Switch>启用</div>
+          <div v-if="+record.status === 1"><SG-Switch disabled checked  :id="index" style="margin-right: 10px;"></SG-Switch>启用</div>
           <div v-else><SG-Switch disabled :id="index" style="margin-right: 10px;"></SG-Switch>停用</div>
         </template>
       </a-table>
@@ -46,13 +50,13 @@
 
 <script>
 import segiIcon from '@/components/segiIcon.vue'
-import TreeSelect from '../../common/treeSelect'
+import topOrganByUser from '@/views/common/topOrganByUser'
 import OperationPopover from '@/components/OperationPopover'
 
 const columns = [
   {
     title: '分类编号',
-    dataIndex: 'categoryConfId',
+    dataIndex: 'professionId',
     width: '160'
   },
   {
@@ -115,7 +119,7 @@ const operationData2 = [
 
 export default {
   components: {
-    segiIcon, TreeSelect, OperationPopover
+    segiIcon, OperationPopover, topOrganByUser
   },
   data () {
     return {
@@ -126,7 +130,7 @@ export default {
       statusOptions: [
         {label: '全部状态', value: ''},
         {label: '启用', value: '1'},
-        {label: '停用', value: '2'}
+        {label: '停用', value: '0'}
       ],
       codeName: '',
       columns,
@@ -141,6 +145,9 @@ export default {
     }
   },
   methods: {
+    organIdChange (value) {
+      this.queryClick()
+    },
     changeTree (value, label) {
       this.organName = label
       this.organId = value
@@ -154,11 +161,11 @@ export default {
     // 操作回调
     operationFun (editType, record) {
       switch (editType) {
-        case 'start': this.changeStatus(1, record.categoryConfId)
+        case 'start': this.changeStatus(1, record.categoryConfId, record.professionCode)
           break
-        case 'stop': this.changeStatus(0, record.categoryConfId)
+        case 'stop': this.changeStatus(0, record.categoryConfId, record.professionCode)
           break
-        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId}})
+        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId, organId: this.organId}})
           break
         case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail', categoryConfId: record.categoryConfId}})
           break
@@ -166,10 +173,12 @@ export default {
       }
     },
     // 改变状态
-    changeStatus (status, id) {
+    changeStatus (status, id, professionCode) {
       let form = {
         categoryConfId: id,
-        status: status
+        status: status,
+        organId: this.organId,
+        professionCode: professionCode
       }
       this.$api.assets.updateStatus(form).then(res => {
         if (res.data.code === '0') {
@@ -200,7 +209,7 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
-            item.operationData = item.status === '0' ? operationData1 : operationData2
+            item.operationData = +item.status === 0 ? operationData1 : operationData2
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count
@@ -208,11 +217,31 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+    },
+    exportList () {
+      let form = {
+        organId: this.organId,
+        status: this.status,
+        codeName: this.codeName
+      }
+      this.$api.assets.exportList(form).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产分类.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+  .operation-btn {
+    color: #0084FF;
+    margin-right: 10px;
+  }
 </style>

@@ -26,7 +26,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">计量单位<i></i></span><span>：</span></div>
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">计量单位<i></i></span><span>：</span></div>
             <a-form-item>
               <a-select
                 allowClear
@@ -34,7 +34,7 @@
                 :style="allStyle"
                 :options="unitOptions"
                 v-decorator="['unit',
-                {rules: [], initialValue: detail.unit}]"
+                {rules: [{required: true, message: '请选择计量单位'}], initialValue: detail.unit}]"
                 v-if="editable"
               ></a-select>
               <span class="label-value" v-else>{{detail.unitName || '--'}}</span>
@@ -238,6 +238,7 @@
 
 <script>
 import FormFooter from '@/components/FormFooter'
+import {dateToString} from 'utils/formatTime'
 const columns = [
     {
       title: '编号',
@@ -291,15 +292,8 @@ export default {
         assetCardCodePrx: '',
         assetCardCodeLen: 5,
       },
-      unitOptions: [
-        {label: '平方米', value: '1'},
-        {label: '米', value: '2'},
-        {label: '亩', value: '3'}
-      ],
-      depreciationMethodOptions: [
-        {label: '平均年限法（基于入账原值）', value: '1'},
-        {label: '平均年限法（基于入账净值）', value: '2'}
-      ],
+      unitOptions: [],
+      depreciationMethodOptions: [],
       assetCodePreview: '', // 资产编码预览
       assetCodePrxOK: false, // 资产编码前缀是否通过校验
       assetCodeLenOK: true, // 资产编码长度是否通过校验
@@ -308,11 +302,7 @@ export default {
       assetCardCodeLenOK: true,
       columns,
       dataSource: [],
-      billConfigOptions: [
-        {label: '科目001', value: '1'},
-        {label: '科目002', value: '2'},
-        {label: '科目003', value: '3'}
-      ],
+      billConfigOptions: [],
       showSubjectSetModal: false, // 是否展示费用科目设置弹窗
       subjectSetType: '', // 费用科目设置弹窗类型
       multiSetSubject: ''
@@ -387,6 +377,10 @@ export default {
     },
     // 生成对应长度的预览编码
     createCode (prx, len) {
+      console.log(typeof prx)
+      if (prx === null) {
+        return ''
+      }
       let str = prx
       for (let i = 0; i < len - 1; i++) {
         str += '0'
@@ -416,11 +410,96 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
+          let form = values
+          form.categoryConfId = this.categoryConfId
+          let arr = []
+          this.dataSource.forEach(item => {
+            let obj = {
+              billConfId: item.billConfId,
+              disposalType: item.disposalType,
+              disposalCostSubject: item.disposalCostSubject,
+              disposalIncomeSubject: item.disposalIncomeSubject
+            }
+            arr.push(obj)
+          })
+          form.billCfgList = arr
+          this.$api.assets.update(form).then(res => {
+            if (res.data.code === '0') {
+              this.$message.success('修改成功')
+            } else {
+              this.$message.error(res.data.message)
+            }
+          })
         }
       })
     },
     // 取消
     cancel () {},
+    getUnitOptions () {
+      // let form = {
+      //   dictCode: 'MEASURE_UNIT',
+      //   groupId: this.organId
+      // }
+      let form = {
+        code: 'MEASURE_UNIT',
+        organId: this.organId
+      }
+      this.$api.basics.organDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: item.value
+            }
+            arr.push(obj)
+          })
+          this.unitOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    getDepreciationMethodOptions () {
+      let form = {
+        code: 'DEPRECIATION_METHOD'
+      }
+      this.$api.basics.platformDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: item.value
+            }
+            arr.push(obj)
+          })
+          this.depreciationMethodOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    getFeeTypeList () {
+      let form = {
+        organId: this.organId
+      }
+      this.$api.assets.getFeeTypeList(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.feeTypeName,
+              value: item.feeTypeId
+            }
+            arr.push(obj)
+          })
+          this.billConfigOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     getDetail () {
       let form = {
         categoryConfId: this.categoryConfId
@@ -430,6 +509,9 @@ export default {
           console.log(res)
           let data = res.data.data
           this.detail = data
+          if (this.detail.createTime) {
+            this.detail.createTime = dateToString(new Date(this.detail.createTime))
+          }
           this.assetCodePrxOK = true
           this.assetCardCodePrxOK = true
           this.detail.billCfgList.forEach((item, index) => {
@@ -444,6 +526,12 @@ export default {
     this.pageType = this.$route.query.pageType
     this.categoryConfId = this.$route.query.categoryConfId
     this.editable = this.pageType === 'edit'
+    if (this.editable) {
+      this.organId = this.$route.query.organId
+      this.getUnitOptions()
+      this.getDepreciationMethodOptions()
+      this.getFeeTypeList()
+    }
     this.getDetail()
   },
   watch: {
