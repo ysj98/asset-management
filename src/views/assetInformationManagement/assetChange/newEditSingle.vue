@@ -398,7 +398,10 @@ export default {
           let files = []
           if (this.newEditSingleData.files.length > 0) {
             this.newEditSingleData.files.forEach(list => {
-              files.push(list.url)
+              files.push({
+                attachmentPath: list.url,
+                oldAttachmentName: list.name
+              })
             })
           }
           let arr = []
@@ -475,7 +478,7 @@ export default {
             organId: Number(values.organId),                            // 组织机构id
             changeDate: `${values.changeDate.format('YYYY-MM-DD')}`,    // 变动日期
             expiryDate: values.expiryDate === undefined ? '' : `${values.expiryDate.format('YYYY-MM-DD')}`,    // 截止日期
-            attachmentPath: files.length > 0 ? files.join(',') : '',                                         // 附件
+            attachment: files,                                         // 附件
             assetDetailList: arr
           }
           console.log(obj)
@@ -504,12 +507,11 @@ export default {
           let data = res.data.data
           this.changeType = String(data.changeType)
           let files = []
-          if (data.attachmentPath) {
-            let arr = data.attachmentPath.split(',')
-              arr.forEach(item => {
+          if (data.attachment && data.attachment.length > 0) {
+              data.attachment.forEach(item => {
               files.push({
-                url: item,
-                name: item.split('/').pop()
+                url: item.attachmentPath,
+                name: item.newAttachmentName
               })
             })
           }

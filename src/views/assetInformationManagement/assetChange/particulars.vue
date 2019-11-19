@@ -118,12 +118,11 @@ export default {
           let data = res.data.data
           this.particularsData = data
           let files = []
-          if (data.attachmentPath) {
-            let arr = data.attachmentPath.split(',')
-              arr.forEach(item => {
+          if (data.attachment && data.attachment.length > 0) {
+              data.attachment.forEach(item => {
               files.push({
-                url: item,
-                name: item.split('/').pop()
+                url: item.attachmentPath,
+                name: item.newAttachmentName
               })
             })
           }

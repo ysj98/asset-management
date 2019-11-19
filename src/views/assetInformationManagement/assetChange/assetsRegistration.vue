@@ -10,13 +10,13 @@
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-checkbox :value="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" @change="projectDataFn">
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" v-model="queryCondition.changeType" @change="changeTypeFn">
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
           <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :defaultValue="queryCondition.approvalStatus" @change="approvalStatusFn">
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
@@ -70,6 +70,10 @@ import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 const approvalStatusData = [
+  {
+    name: '全部状态',
+    value: ''
+  },
   {
     name: '草稿',
     value: '0'
@@ -131,7 +135,7 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
-    width: 150,
+    width: 170,
     scopedSlots: { customRender: 'operation' },
   }
 ]
@@ -153,12 +157,12 @@ export default {
       organId: '',
       tableData: [],
       queryCondition: {
-        approvalStatus: ['0', '1', '2', '3', '4'],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         pageNum: 1,                // 当前页
         pageSize: 10,               // 每页显示记录数
         projectId: '',              // 资产项目Id
         organId:1,                 // 组织机构id
-        changeType: [],            // 备注：变动类型id(多个用，分割)
+        changeType: '',            // 备注：变动类型id(多个用，分割)
         startCreateDate: '',       // 备注：开始创建日期
         endCreateDate: '',         // 备注：结束创建日期
         currentOrgan: false            // 备注：仅当前机构下资产清理单 0 否 1 是
@@ -204,6 +208,36 @@ export default {
         let enitData = JSON.stringify([val])
         this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
       }
+    },
+    // 状态发生变化
+    changeStatus (value) {
+      this.$nextTick(function () {
+        this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData)
+      })
+    },
+    // 状态发生变化
+    approvalStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+      })
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
     },
     commonFn () {
       // 删除
@@ -281,12 +315,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'asset_change_type') {
-            this.changeTypeData = [...data]
-            let arr = []
-            this.changeTypeData.forEach(item => {
-              arr.push(item.value)
-            })
-            this.queryCondition.changeType = arr
+            this.changeTypeData = [{name: '全部资产项目', value: ''}, ...data]
           } else if (str === 'approval_status_type') {
             this.approvalStatusData = [...data]
             let status = []
@@ -306,18 +335,6 @@ export default {
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
       this.queryCondition.currentOrgan = e.target.checked
-    },
-    // 审批状态
-    approvalStatusFn (val) {
-      this.queryCondition.approvalStatus = val
-    },
-    // 变动单选择
-    changeTypeFn (val) {
-      this.queryCondition.changeType = val
-    },
-    // 资产项目
-    projectDataFn (val) {
-      this.queryCondition.projectId = val
     },
     // 分页查询
     handleChange (data) {

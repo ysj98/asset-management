@@ -13,10 +13,10 @@
       </div>
       <div slot="contentForm">
         <div class="form-first">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" v-model="queryCondition.approvalStatus">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" v-model="queryCondition.changeType">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
             <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
@@ -26,10 +26,10 @@
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
         <div class="from-second">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" v-model="queryCondition.assetType" @change="assetTypeFn">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
             <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" v-model="queryCondition.assetClassify">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
             <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <div class="box">
@@ -134,6 +134,10 @@ const operationData = [
 ]
 const approvalStatusData = [
   {
+    name: '全部状态',
+    value: ''
+  },
+  {
     name: '草稿',
     value: '0'
   },
@@ -172,10 +176,10 @@ export default {
       approvalStatusData: [...approvalStatusData],
       queryCondition: {
         organId: '',   // 组织机构id
-        approvalStatus: ['0', '1', '2', '3', '4'],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: '',   // 资产项目Id
-        changeType: [],   // 变动类型
-        assetType: [''],    // 资产类型Id
+        changeType: '',   // 变动类型
+        assetType: '',    // 资产类型Id
         assetClassify: [''], // 资产分类
         startDate: '',       // 创建日期开始日期
         endDate: '',    // 创建日期结束日期
@@ -263,12 +267,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'asset_change_type') {
-            this.changeTypeData = [...data]
-            let arr = []
-            this.changeTypeData.forEach(item => {
-              arr.push(item.value)
-            })
-            this.queryCondition.changeType = arr
+            this.changeTypeData = [{name: '全部变动类型', value: ''}, ...data]
           } else if (str === 'approval_status_type') {
             this.approvalStatusData = [...data]
             let status = []
@@ -277,12 +276,7 @@ export default {
             })
             this.queryCondition.approvalStatus = status
           } else if (str === 'asset_type') {
-            this.assetTypeData = [...data]
-            let asset = []
-            this.assetTypeData.forEach(item => {
-              asset.push(item.value)
-            })
-            this.queryCondition.assetType = asset
+            this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
             this.getListFn()
           }
         } else {
@@ -306,7 +300,7 @@ export default {
               value: item.categoryConfId
             })
           })
-          this.assetClassifyData = [...this.assetClassifyData, ...arr]
+          this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
         } else {
           this.$message.error(res.data.message)
         }
@@ -315,6 +309,48 @@ export default {
     // 资产类别
     assetTypeFn () {
       this.getListFn()
+    },
+    // 资产分类
+    assetClassifyDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyData)
+      })
+    },
+    // 资产类型变化
+    assetTypeDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+      })
+    },
+    // 状态发生变化
+    changeStatus (value) {
+      this.$nextTick(function () {
+        this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData)
+      })
+    },
+    // 状态发生变化
+    approvalStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+      })
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
     },
     // 清空
     eliminateFn () {
