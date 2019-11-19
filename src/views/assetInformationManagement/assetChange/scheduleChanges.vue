@@ -26,7 +26,7 @@
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
         <div class="from-second">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" v-model="queryCondition.assetType">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" v-model="queryCondition.assetType" @change="assetTypeFn">
             <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" v-model="queryCondition.assetClassify">
@@ -283,6 +283,7 @@ export default {
               asset.push(item.value)
             })
             this.queryCondition.assetType = asset
+            this.getListFn()
           }
         } else {
           this.$message.error(res.data.message)
@@ -310,6 +311,10 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+    },
+    // 资产类别
+    assetTypeFn () {
+      this.getListFn()
     },
     // 清空
     eliminateFn () {
