@@ -86,3 +86,23 @@ export function positionSelectAsyn (data) {
 export function queryBellowPositionType (data) {
   return axiosGet(building.queryBellowPositionType, data)
 }
+// 下载房屋模板
+export function downLoadExcel (data) {
+  return axiosGet(building.downLoadExcel, {}, false, {
+    responseType: 'blob'
+  })
+}
+// 导入房间资料
+export function importExcel (organId, data) {
+  return axiosPost(building.importExcel + '/' + organId, data)
+}
+// 房间批量更新
+export function acctHouseCodeImport (data) {
+  return axiosPost(building.acctHouseCodeImport, data)
+}
+// 房间导出
+export function exportHouse (data) {
+  return axiosPost(building.exportHouse, data, false, true, {
+    responseType: 'blob'
+  })
+}

@@ -125,7 +125,7 @@
            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
         </template>
         <template slot="operation" slot-scope="text, record">
-            <OperationPopover :operationData="operationData"  @operationFun="operationFun($event, record)"></OperationPopover>
+            <OperationPopover :operationData="String(record.status) === '1'?operationDataOn:operationDataOff"  @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
       </a-table>
       <SG-FooterPagination
@@ -137,11 +137,15 @@
       />
     </div>
     <!-- 房间资料导入 -->
-    <houseDataImport ref="houseDataImport"/>
+    <houseDataImport ref="houseDataImport" @success="houseDataImportSuccess"/>
     <!-- 房间导出 -->
     <houseExport ref="houseExport"/>
     <!-- 批量更新 -->
-    <eportAndDownFile ref="eportAndDownFile" title="房间批量更新" :showDown="false"/>
+    <eportAndDownFile @upload="uploadHouseFile" ref="eportAndDownFile" title="房间批量更新" :showDown="false"/>
+    <!-- 导入错误信息 -->
+    <downErrorFile ref="downErrorFile">
+      <div>{{upErrorInfo}}</div>
+    </downErrorFile>
   </div>
 </template>
 <script>
@@ -153,6 +157,8 @@ import OperationPopover from '@/components/OperationPopover'
 import houseExport from './child/houseExport.vue'
 import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 import houseDataImport from './child/houseDataImport.vue'
+import downErrorFile from '@/views/common/downErrorFile'
+
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px'}
@@ -218,9 +224,14 @@ let columns = [{
   width: '124px'
 }]
 // 操作按钮
-const operationData = [
+const operationDataOff = [
   {iconType: 'edit', text: '编辑', editType: 'edit'},
   {iconType: 'play-circle', text: '启用', editType: 'on'},
+  {iconType: 'file-text', text: '详情', editType: 'detail'},
+  {iconType: 'copy', text: '复制', editType: 'copy'},
+]
+const operationDataOn = [
+  {iconType: 'edit', text: '编辑', editType: 'edit'},
   {iconType: 'close-circle', text: '禁用', editType: 'off'},
   {iconType: 'file-text', text: '详情', editType: 'detail'},
   {iconType: 'copy', text: '复制', editType: 'copy'},
@@ -233,13 +244,16 @@ export default {
     OperationPopover,
     houseExport,
     eportAndDownFile,
-    houseDataImport
+    houseDataImport,
+    downErrorFile
   },
   data () {
     return {
+      upErrorInfo: '', // 导入文件错误提示
       allWidth,
       toggle: true,
-      operationData,
+      operationDataOff,
+      operationDataOn,
       searchBuildName: '', // 搜索楼栋字符
       queryCondition: {...queryCondition},
       buildOpt: utils.deepClone(buildOpt),
@@ -537,6 +551,35 @@ export default {
     // 显示批量更新弹窗
     openImportModal () {
       this.$refs.eportAndDownFile.visible = true
+    },
+    // 上传文件
+    uploadHouseFile (file) {
+      // this.$refs.eportAndDownFile.hideModal()
+      console.log('批量更新', file)
+      let fileData = new FormData()
+      fileData.append('acctHouseCodeImport', file)
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.building.acctHouseCodeImport(fileData).then(res => {
+        if (res.data.code === '0') {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            this.query()
+          }) 
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$refs.downErrorFile.visible = true
+            this.upErrorInfo = res.data.message
+          })
+        }
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
+    },
+    // 导入房间资料成功
+    houseDataImportSuccess () {
+      this.query()
     },
     // 操作事件函数
     operationFun (type, record) {

@@ -21,9 +21,11 @@
             <i class="dialog-img-box"></i>
           </div>
           <div class="dialog-num">
-            <div>成功导入<span>{{errorInfo.successNum}}</span>行数据，有<span>{{errorInfo.failNum}}</span>行导入失败。</div>
-            <div>问题文档 <span v-if="errorInfo.failDataTextPath" class="down_btn" @click="down">下载</span></div>
-            <div>修复问题后可继续导入</div>
+            <slot>
+               <div>成功导入<span>{{errorInfo.successNum}}</span>行数据，有<span>{{errorInfo.failNum}}</span>行导入失败。</div>
+                <div>问题文档 <span v-if="errorInfo.failDataTextPath" class="down_btn" @click="down">下载</span></div>
+                <div>修复问题后可继续导入</div>
+            </slot>
           </div>
         </div>
         <div class="dialog-footer">

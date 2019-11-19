@@ -101,7 +101,7 @@
       return {
         fold: true,
         assetName: '', // 查询条件-资产名称
-        status: '', // 查询条件-资产状态值
+        status: undefined, // 查询条件-资产状态值
         statusOptions: [
           { title: '未生效', key: '0' }, { title: '正常', key: '1' }, { title: '报废', key: '2' },
           { title: '转让', key: '3' }, { title: '报损', key: '4' }, { title: '已清理', key: '5' }
@@ -215,7 +215,7 @@
       queryAssetAreaInfo () {
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList }, numList } = this
         this.overviewNumSpinning = true
-        this.$api.assets.queryAssetArea({ organId, houseIdList, projectIdList }).then(r => {
+        this.$api.assets.queryAssetViewArea({ organId, houseIdList, projectIdList }).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -236,7 +236,7 @@
       // 导出资产视图/房屋卡片
       handleExport (type) {
         this[type] = true
-        let api = { exportHouseBtn: 'exportHouseExcel', exportAssetBtn: 'exportAssetExcel' }
+        let api = { exportHouseBtn: 'exportAssetViewHouseExcel', exportAssetBtn: 'exportAssetViewExcel' }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status,
