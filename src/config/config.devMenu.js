@@ -23,14 +23,14 @@ export default [
         title: '资产分类设置',
         path: '/assetClassSet'
       },
-      {
-        title: '资产视图',
-        path: '/assetView'
-      },
-      {
-        title: '楼栋视图',
-        path: '/buildingView'
-      },
+      // {
+      //   title: '资产视图',
+      //   path: '/assetView'
+      // },
+      // {
+      //   title: '楼栋视图',
+      //   path: '/buildingView'
+      // },
       {
         title: '资产项目管理',
         path: '/assetProjectManage'

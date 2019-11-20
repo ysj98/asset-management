@@ -104,21 +104,21 @@ let proRouter = [
     name: '详情',
     component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
   },
-  {
-    path: '/assetView',
-    name: '资产视图',
-    component: () => import('@/views/assetInformationManagement/house-account/asset-view')
-  },
+  // {
+  //   path: '/assetView',
+  //   name: '资产视图',
+  //   component: () => import('@/views/assetInformationManagement/house-account/asset-view')
+  // },
   {
     path: '/assetViewDetail',
     name: '资产视图详情',
     component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
   },
-  {
-    path: '/buildingView',
-    name: '楼栋视图',
-    component: () => import('@/views/assetInformationManagement/house-account/building-view')
-  },
+  // {
+  //   path: '/buildingView',
+  //   name: '楼栋视图',
+  //   component: () => import('@/views/assetInformationManagement/house-account/building-view')
+  // },
   {
     path: '/buildingViewDetail',
     name: '楼栋视图详情',

@@ -84,6 +84,7 @@
         loading: false, // 加载状态
         organId: '',
         organName: '',
+        timeoutId: '',
         projectId: undefined, // 多选和单选值类型不同，定义undefined
         projectOptions: [],
         buildingId: undefined,
@@ -102,14 +103,23 @@
       // 查询资产项目接口
       queryProjectData () {
         this.loading = true
-        // 查询所选组织机构下所有的资产项目
-        new Promise.reject({}).then(res => {
-          if (res && String(res.code) === '0') {
-            return res.data
-          }
-          throw res.message || '查询资产项目接口出错'
-        }).catch(err => {
-          this.$message.error(err || '查询资产项目接口出错')
+        clearTimeout(this.timeoutId)
+        let _this = this
+        _this.timeoutId = setTimeout(() => {
+          _this.$api.assets.getObjectKeyValueByOrganId({organId: this.organId}).then(r => {
+            _this.loading = false
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              _this.projectOptions = (res.data || []).map(item => {
+                return { value: item.projectId, name: item.projectName }
+              })
+              return false
+            }
+            throw res.message || '查询资产项目失败'
+          }).catch(err => {
+            _this.loading = false
+            _this.$message.error(err || '查询资产项目失败')
+          })
         })
       },
 

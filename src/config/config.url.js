@@ -125,7 +125,7 @@ export const assets = {
     // 资产登记-详情回显
     // getRegisterOrderById:/ams/registerOrder/getRegisterOrderById,
     // 资产登记列表-分页查询
-    getProjectListPage: '/ams/registerOrder/getProjectListPage',
+    getProjectListPage: '/ams/registerOrder/getRegisterOrderListPage',
     // 资产登记新增-下载导入模板
     downloadTemplate: '/ams/registerOrder/downloadTemplate',
     // 资产登记转运营信息-根据资产项目ID
