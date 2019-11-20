@@ -40,6 +40,7 @@ export default function (Vue) {
       el.pd = el.parentNode
       if (!Power.has(value)) {
         el.parentNode.removeChild(el)
+        el.isDelStatus = true
       }
     },
     // 数据更新的时候重新挂载或移除
@@ -50,8 +51,10 @@ export default function (Vue) {
         } else {
           el.pd.appendChild(el)
         }
+        el.isDelStatus = false
       } else {
-        el.parentNode.removeChild(el)
+        if (el.isDelStatus) return
+        el.pd.removeChild(el)
       }
     }
   })
