@@ -23,7 +23,7 @@
     methods: {},
     
     created () {
-      const { params: { houseId } } = this.$route
+      const { query: { houseId } } = this.$route
       this.assetHouseId = houseId
     }
   }

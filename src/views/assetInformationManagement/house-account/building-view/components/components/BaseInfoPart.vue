@@ -7,8 +7,8 @@
       <a-row :gutter="16">
         <a-col v-for="(item, i) in baseInfoKeys" :span="8" :key="i">
           <div v-for="{title, key} in item" :key="key" class="item_detail">
-            <div v-if="key==='buildingImg'" style="text-align: center">
-              <img src="./L123.png" style="width: 185px"/>
+            <div v-if="key==='picturePath'" style="text-align: center">
+              <img :src="baseInfoData['picturePath']" style="height: 115px"/>
             </div>
             <div v-else>
               <span style="color: #282D5B">{{title ? `${title}:` : ''}}</span>
@@ -30,7 +30,7 @@
         spinning: false, // 页面加载状态
         baseInfoKeys: [
           [
-            {title: '主图', key: 'buildingImg'}, {title: '地理位置', key: 'location'}, {title: '地上层数', key: 'upFloorNum'},
+            {title: '主图', key: 'picturePath'}, {title: '地理位置', key: 'totalAddress'}, {title: '地上层数', key: 'upFloorNum'},
             {title: '权属状态', key: ''}, {title: '最新估值', key: 'assetValuation'}
           ], // 列1
           [
@@ -57,7 +57,6 @@
             let temp = res.data
             temp.structure = '未知'
             temp.ownText = Number(temp.type) === 1 ? '房屋' : '楼栋'
-            temp.location = `${temp.province}${temp.city}${temp.region}${temp.address}`
             return this.baseInfoData = temp
           }
           throw res.message || '查询资产基本信息出错'

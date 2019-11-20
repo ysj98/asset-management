@@ -9,10 +9,10 @@
           <asset-project-view-list></asset-project-view-list>
         </a-tab-pane>
         <a-tab-pane tab="楼栋视图" key="2">
-          <asset-view/>
+          <building-view/>
         </a-tab-pane>
         <a-tab-pane tab="资产视图" key="3">
-          <building-view/>
+          <asset-view/>
         </a-tab-pane>
       </a-tabs>
     </div>

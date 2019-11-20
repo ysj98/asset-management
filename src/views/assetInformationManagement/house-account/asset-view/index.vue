@@ -26,10 +26,10 @@
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
-          <a-col :span="12">
+          <a-col :span="15">
             <organ-project-building v-model="organProjectBuildingValue"/>
           </a-col>
-          <a-col :span="4">
+          <a-col :span="5">
             <a-select
               v-model="status"
               mode="multiple"
@@ -39,16 +39,16 @@
               :options="statusOptions"
             />
           </a-col>
-          <a-col :span="6">
+          <a-col :span="4">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
-            <SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="12">
+          <a-col :span="15">
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
-          <a-col :span="4">
+          <a-col :span="5">
             <a-input placeholder="请输入资产名称" v-model="assetName"/>
           </a-col>
         </a-row>
@@ -61,13 +61,13 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <span slot="projectName" slot-scope="text, record">
-        <router-link :to="{ name: '资产视图详情', params: { houseId: record.assetHouseId } }">{{text}}</router-link>
+        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>
       </span>
       <span slot="buildName" slot-scope="text, record">
-        <router-link :to="{ name: '资产视图详情', params: { houseId: record.assetHouseId } }">{{text}}</router-link>
+        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>
       </span>
       <span slot="action" slot-scope="text, record">
-        <router-link :to="{ name: '资产视图详情', params: { houseId: record.assetHouseId } }">详情</router-link>
+        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -116,8 +116,8 @@
           dataSource: [],
           scroll: { x: true },
           initColumns: [
-            { title: '资产名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left' },
-            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode' },
+            { title: '资产名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left', width: 120 },
+            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode', fixed: 'left', width: 120 },
             { title: '接管机构', dataIndex: 'ownerOrganName', key: 'ownerOrganName' },
             { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
@@ -142,7 +142,7 @@
             { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
             { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
             { title: '资产状态', dataIndex: 'statusName', key: 'statusName' },
-            { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right' }
+            { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]
         },
         key: 0, // 更新Modal包裹的子组件
@@ -180,11 +180,11 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        // if (!houseIdList) { return this.$message.info('请选择楼栋!') }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status
         } = this
+        // if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo,
@@ -268,7 +268,8 @@
       
       // 转物业、转运营
       handleTransform (type) {
-        type && this.$router.push('www.baidu.com')
+        // type && this.$router.push('www.baidu.com')
+        type && this.$message.info('暂不支持该操作')
       }
     },
 
@@ -278,8 +279,7 @@
       this.tableObj.columns = initColumns
       // 初始化被选中的列头数据
       this.checkedHeaderArr = initColumns.map(m => m.dataIndex).filter(n => n !== 'action')
-      // 模拟查询，要删除！
-      // this.queryTableData({})
+      this.queryTableData({})
     }
   }
 </script>

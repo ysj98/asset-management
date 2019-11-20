@@ -28,7 +28,7 @@
     methods: {},
 
     created () {
-      const { organId, projectId, assetHouseId } = this.$route.params
+      const { organId, projectId, assetHouseId } = this.$route.query
       Object.assign(this, {
         organId, projectId, assetHouseId
       })

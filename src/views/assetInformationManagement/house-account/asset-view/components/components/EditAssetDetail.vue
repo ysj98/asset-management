@@ -26,10 +26,9 @@
       :wrapper-col="formItemLayout.wrapperCol"
       label="装修情况"
     >
-      <a-select
+      <a-input
         v-decorator="[ 'decorationSituation' ]"
         placeholder="请选择装修情况"
-        :options="decorateOptions"
       />
     </a-form-item>
     <a-form-item
@@ -69,8 +68,8 @@
         // organId: '', // 保管部门
         // assetName: '', // 资产名
         // assetCode: '', // 资产编码
+        // decorateOptions: '', // 装修情况选项
         userOptions: [], // 使用人选项
-        decorateOptions: [], // 装修情况选项
       }
     },
 
@@ -82,7 +81,22 @@
       
       // 提交数据
       handleSubmit (resolve, reject) {
-        this.form.validateFields((err, values) => err ? reject() : resolve(values))
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            this.$api.assets.saveAssetViewHouseInfo({...values, assetHouseId: this.details.assetHouseId}).then(r =>{
+              let res = r.data
+              if (res && String(res.code) === '0') {
+                return resolve()
+              }
+              throw res.message || '保存接口出错'
+            }).catch(err => {
+              this.$message.error(err || '保存接口出错')
+              reject()
+            })
+          } else {
+            reject()
+          }
+        })
       }
     },
 

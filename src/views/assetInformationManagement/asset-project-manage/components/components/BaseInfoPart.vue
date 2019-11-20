@@ -7,7 +7,7 @@
       <a-row>
         <a-col :span="colSpan">
           <a-form-item label="管理机构" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <span>{{organName}}</span>
+            <span style="margin-left: 11px">{{organName}}</span>
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
@@ -24,7 +24,7 @@
             <a-select
               :disabled="!isEdit"
               style="width: 100%;"
-              placeholder="请选择来源方式"
+              :placeholder="isEdit ? '请选择来源方式' : ''"
               :options="sourceTypeOptions || []"
               v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
             />
@@ -68,7 +68,7 @@
               :show="!isEdit"
               v-decorator="['attachment']"
             />
-            <span v-else style="margin-left: 11px">无</span>
+            <span v-else style="margin-left: 12px">无</span>
           </a-form-item>
         </a-col>
       </a-row>
@@ -81,7 +81,7 @@
             <a-date-picker
               :disabled="!isEdit"
               style="width: 100%"
-              placeholder="请选择划转批复下发时间"
+              :placeholder="isEdit ? '请选择划转批复下发时间' : ''"
               v-decorator="['transferApprovalDate']"
             />
           </a-form-item>
@@ -91,7 +91,7 @@
             <a-date-picker
               :disabled="!isEdit"
               style="width: 100%"
-              placeholder="请选择协议签署时间"
+              :placeholder="isEdit ? '请选择协议签署时间' : ''"
               v-decorator="['agreementSignDate']"
             />
           </a-form-item>
@@ -101,7 +101,7 @@
             <a-date-picker
               :disabled="!isEdit"
               style="width: 100%"
-              placeholder="请选择上报基础情况表时间"
+              :placeholder="isEdit ? '请选择上报基础情况表时间' : ''"
               v-decorator="['reportBasicInfoDate']"
             />
           </a-form-item>
@@ -111,7 +111,7 @@
             <a-date-picker
               :disabled="!isEdit"
               style="width: 100%"
-              placeholder="请选择划上报房屋划转请示时间"
+              :placeholder="isEdit ? '请选择划上报房屋划转请示时间' : ''"
               v-decorator="['reportHouseTransferReqDate']"
             />
           </a-form-item>
@@ -121,7 +121,7 @@
             <a-date-picker
               :disabled="!isEdit"
               style="width: 100%"
-              placeholder="请选择房屋核实时间"
+              :placeholder="isEdit ? '请选择房屋核实时间' : ''"
               v-decorator="['houseVerificationDate']"
             />
           </a-form-item>

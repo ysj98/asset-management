@@ -214,7 +214,9 @@ export const assets = {
     // 楼栋视图分页查询
     queryViewPage: '/ams/asset-house/build/page',
     // 楼栋视图面积使用统计
-    queryFloorArea: '/ams/asset-house/build/area'
+    queryFloorArea: '/ams/asset-house/build/area',
+    // 查询当前组织机构下所有的楼栋
+    queryBuildingByOrganId: '/ams//asset-house/organ/build'
   },
   // 房屋台账 - 资产视图
   assetView: {
