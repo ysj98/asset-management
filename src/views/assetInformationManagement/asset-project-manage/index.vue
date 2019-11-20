@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" @click="handleModalOpen('add')">新增资产项目</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="handleModalOpen('add', new Date().getTime())">新增资产项目</SG-Button>
         <SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>
       </div>
       <div slot="contentForm">
@@ -172,8 +172,8 @@
         this.$api.assets.organDict({code: ' source_type', organId: this.organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.sourceTypeOptions = (res.data || []).map(item => {
-              return { value: item.value, name: item.name }
+            this.sourceTypeOptions = (res.data.data || []).map(item => {
+              return { key: item.value, title: item.name }
             })
             return false
           }

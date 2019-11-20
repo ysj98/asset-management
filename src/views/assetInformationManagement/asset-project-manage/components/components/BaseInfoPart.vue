@@ -15,7 +15,7 @@
             <a-input
               :disabled="!isEdit"
               placeholder="请输入资产项目名称"
-              v-decorator="['projectName', {initialValue, rules: [{required: true, message: '请输入资产项目名称'}]}]"
+              v-decorator="['projectName', {initialValue, rules: [{required: true, message: '请输入资产项目名称'}, {max: 30, message: '最多30个字符'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -35,7 +35,7 @@
             <a-input
               :disabled="!isEdit"
               placeholder="请输入来源渠道"
-              v-decorator="['sourceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}]}]"
+              v-decorator="['sourceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -44,7 +44,7 @@
             <a-input
               :disabled="!isEdit"
               placeholder="请输入资产项目编码"
-              v-decorator="['projectCode', {initialValue, rules: [{required: true, message: '请输入资产项目编码'}]}]"
+              v-decorator="['projectCode', {initialValue, rules: [{required: true, message: '请输入资产项目编码'}, {max: 30, message: '最多30个字符'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -53,9 +53,9 @@
             <a-textarea
               :disabled="!isEdit"
               style="resize: none"
-              :autosize="{maxRows: 5}"
+              :autosize="{maxRows: 3}"
               placeholder="请输入备注"
-              v-decorator="['remark', { initialValue }]"
+              v-decorator="['remark', { initialValue, rules: [{max: 200, message: '最多200个字符'}] }]"
             />
           </a-form-item>
         </a-col>
@@ -131,9 +131,9 @@
             <a-textarea
               :disabled="!isEdit"
               style="resize: none"
-              :autosize="{maxRows: 5}"
+              :autosize="{maxRows: 3}"
               placeholder="请输入权属办理中存在问题"
-              v-decorator="['ownershipHandleProblems', { initialValue }]"
+              v-decorator="['ownershipHandleProblems', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
             />
           </a-form-item>
         </a-col>
@@ -142,9 +142,9 @@
             <a-textarea
               :disabled="!isEdit"
               style="resize: none"
-              :autosize="{maxRows: 5}"
+              :autosize="{maxRows: 3}"
               placeholder="请输入房屋划转历史遗留问题"
-              v-decorator="['houseTransferHisProblem', { initialValue }]"
+              v-decorator="['houseTransferHisProblem', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
             />
           </a-form-item>
         </a-col>
@@ -184,7 +184,7 @@
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { attachment, organId, type } = this
+          const { attachment, organId, type, projectId } = this
           let attachArr = attachment.map(m => {
             const { url: attachmentPath, suffix: attachmentSuffix, name: oldAttachmentName } = m
             return { attachmentPath, attachmentSuffix, oldAttachmentName, newAttachmentName: name }
@@ -200,6 +200,7 @@
             reportHouseTransferReqDate: reportHouseTransferReqDate ? moment(reportHouseTransferReqDate).format('YYYY-MM-DD') : ''
           } // 转换日期格式为string
           let form = Object.assign({}, { attachment: attachArr, organId }, values, dateObj)
+          type === 'saveProjectManageEditProject' ? form.projectId = projectId : '' // 编辑时传入projectId
           this.$api.assets[api[type]](form).then(r => {
             this.spinning = false
             let res = r.data

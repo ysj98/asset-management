@@ -184,7 +184,7 @@
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status
         } = this
-        // if (!organId) { return this.$message.info('请选择组织机构') }
+        if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo,
@@ -279,7 +279,6 @@
       this.tableObj.columns = initColumns
       // 初始化被选中的列头数据
       this.checkedHeaderArr = initColumns.map(m => m.dataIndex).filter(n => n !== 'action')
-      this.queryTableData({})
     }
   }
 </script>

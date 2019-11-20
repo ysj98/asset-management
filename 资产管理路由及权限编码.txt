@@ -5,6 +5,7 @@ V1.0
 /asset-management/#/assetClear          资产清理
 /asset-management/#/assetClassSet       资产分类设置
 /asset-management/#/houseStandingBook   房屋台账
+/asset-management/#/assetProjectManage  资产项目管理
 
 
 
@@ -20,3 +21,10 @@ zcgl_asset_clear_reverse_audit      资产清理-反审核清理单
 zcgl_asset_clear_delete             资产清理-删除清理单
 zcgl_asset_class_set_edit           资产分类-编辑资产分类信息
 zcgl_asset_class_set_change_status  资产分类-启用/停用资产分类信息(状态)
+
+资产项目管理（后台开发中）
+x               资产项目管理-新建
+x               资产项目管理-编辑
+x               资产项目管理-审核
+x               资产项目管理-删除
+x               资产项目管理-反审核

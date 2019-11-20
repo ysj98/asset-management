@@ -7,7 +7,7 @@
       label="资产名称"
     >
       <a-input
-        v-decorator="[ 'assetName', { rules: [{ required: true, message: '请填写资产名称' }] } ]"
+        v-decorator="[ 'assetName', { rules: [{ required: true, message: '请填写资产名称' }, {max: 30, message: '最多30个字符'}] } ]"
         placeholder="请填写资产名称"
       />
     </a-form-item>
@@ -17,7 +17,7 @@
       label="资产编码"
     >
       <a-input
-        v-decorator="[ 'assetCode', { rules: [{ required: true, message: '请填写资产编码' }] } ]"
+        v-decorator="[ 'assetCode', { rules: [{ required: true, message: '请填写资产编码' }, {max: 30, message: '最多30个字符'}] } ]"
         placeholder="请填写资产名称"
       />
     </a-form-item>
@@ -27,7 +27,7 @@
       label="装修情况"
     >
       <a-input
-        v-decorator="[ 'decorationSituation' ]"
+        v-decorator="[ 'decorationSituation', { rules: [{max: 30, message: '最多30个字符'}] }]"
         placeholder="请选择装修情况"
       />
     </a-form-item>
