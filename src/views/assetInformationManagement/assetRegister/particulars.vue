@@ -9,10 +9,10 @@
       <div class="particulars-obj">
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderCode || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.objectName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetType || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">创建时间：{{particularsData.objectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
@@ -75,6 +75,7 @@ export default {
   props: {},
   data () {
     return {
+      record: '',
       type: '',
       remark: '',     // 意见
       particularsData: {},
@@ -97,14 +98,22 @@ export default {
     // 查询详情
     query () {
       let obj = {
-        registerOrderId: ''
+        registerOrderId: this.registerOrderId
       }
       this.$api.assets.getRegisterOrderById(obj).then(res => {
-        console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data, '-=-=')
           this.particularsData = data
+          let files = []
+          if (data.attachment && data.attachment.length > 0) {
+              data.attachment.forEach(item => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName
+              })
+            })
+          }
+          this.files = files
         } else {
           this.$message.error(res.data.message)
         }
@@ -114,7 +123,7 @@ export default {
     getRegisterOrderDetailsPageByIdFn () {
       this.loading = true
       let obj = {
-        registerOrderId: '',
+        registerOrderId: this.registerOrderId,
         pageNum: this.queryCondition.pageNum,
         pageSize: this.queryCondition.pageSize
       }
@@ -143,7 +152,9 @@ export default {
   created () {
   },
   mounted () {
-    console.log(this.columnsData, '12321')
+    this.record = JSON.parse(this.$route.query.record)
+    this.registerOrderId = this.record[0].registerOrderId
+    console.log(this.record, '0-0-0-')
     this.query()
     this.getRegisterOrderDetailsPageByIdFn()
   }

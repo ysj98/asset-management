@@ -13,8 +13,8 @@
               <a-input placeholder="请输入登记单编号"
               :style="allWidth"
               :max="10"
-              v-decorator="['saveRegisterOrder',
-                {rules: [{required: true, max: 50, whitespace: true, message: '请输入登记单编号(不超过50字符)'}], initialValue: newEditSingleData.title}
+              v-decorator="['registerOrderCode',
+                {rules: [{required: true, max: 30, whitespace: true, message: '请输入登记单编号(不超过30字符)'}], initialValue: newEditSingleData.title}
               ]"/>
             </a-form-item>
           </a-col>
@@ -98,6 +98,12 @@
       </a-row>
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
+        <div class="tab-exhibition">
+          <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
+            <p>{{item.name}}</p>
+            <p>{{item.value}}</p>
+          </div>
+        </div>
         <div class="button-box">
           <div class="buytton-nav">
             <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
@@ -159,7 +165,7 @@ import moment from 'moment'
 import {columnsData} from './registerBasics'
 import {debounce, utils} from '@/utils/utils'
 const newEditSingleData = {
-  saveRegisterOrder: '',   // 验收单名称
+  registerOrderCode: '',   // 验收单名称
   assetType: undefined,     // 资产类型
   projectId: undefined,     // 资产项目
   createTime: {},       // 接管日期
@@ -188,11 +194,30 @@ const scopeData = [
     name: '房屋'
   }
 ]
+let assetsTotal = [
+  {
+    name: '资产数量',
+    value: '300'
+  },
+  {
+    name: '建筑面积',
+    value: '100'
+  },
+  {
+    name: '资产原值',
+    value: '300'
+  },
+  {
+    name: '市场价值',
+    value: '100'
+  }
+]
 export default {
   components: {AssetBundlePopover, FormFooter},
   props: {},
   data () {
     return {
+      assetsTotal,
       organId: '',
       buildIds: undefined,
       buildIdsData: [],
@@ -307,6 +332,12 @@ export default {
             }
             arr.push({
               key: i,
+              useType: v[i].用途,
+              province: v[i].省,
+              city: v[i].市,
+              region: v[i].区,
+              address: v[i].详细地址,
+              objectType: v[i].资产分类,
               type: v[i].类型,
               objectId: v[i].楼栋ID,
               buildId: v[i].对象ID,
@@ -323,13 +354,13 @@ export default {
               marketValue: v[i].市场价值,
               transferOperationTime: utils.xlsxDate(v[i].转运营日期),
               transferOperationArea: v[i].转运营面积,
-              selfUserArea: v[i].闲置面积,
-              occupationArea: v[i].自用面积,
+              idleArea: v[i].闲置面积,
+              selfUserArea: v[i].自用面积,
               occupationArea: v[i].占用面积,
               otherArea: v[i].其他面积,
               transferArea: v[i].转物业面积,
               transferTime: utils.xlsxDate(v[i].转物业日期),
-              validPeriod: utils.xlsxDate(v[i][a]),
+              validPeriod: v[i][a],
               startDate: utils.xlsxDate(v[i].开始使用日期),
               usedDate: v[i][b]
             })
@@ -356,8 +387,9 @@ export default {
       }
       let obj = {
         assetType: this.checkboxAssetType,
-        buildIds: this.buildIds.join(','),
-        scope: this.scope.join(',')
+        buildIds: this.buildIds,
+        scope: this.scope.join(','),
+        organId: this.organId
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])
@@ -437,28 +469,34 @@ export default {
           }
           let obj = {
             registerOrderId: '',                         // 资产变动单Id（新增为空）
-            saveRegisterOrder: values.saveRegisterOrder, // 登记单编号
+            registerOrderCode: values.registerOrderCode, // 登记单编号
             projectId: values.projectId,                 // 资产项目Id
             assetType: values.assetType,                 // 资产类型Id
             remark: values.remark,                       // 备注
             organId: values.organId,                      // 组织机构id
             createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
             assetHouseList: this.tableData,
-            attachment: files
+            attachment: files.length === 0 ? '' : files
           }
           console.log(obj)
           // 编辑
           if (this.setType === 'edit') {
             this.$api.assets.updateRegisterOrder(obj).then(res => {
               if (Number(res.data.code) === 0) {
-                console.log('提交成功')
+                this.$message.info('提交成功')
+                this.$router.push({path: '/assetRegister'})
+              } else {
+                this.$message.error(res.data.message)
               }
             }) 
           } else {
           // 新增
             this.$api.assets.saveRegisterOrder(obj).then(res => {
               if (Number(res.data.code) === 0) {
-                console.log('编辑成功')
+                this.$message.info('提交成功')
+                this.$router.push({path: '/assetRegister'})
+              } else {
+                this.$message.error(res.data.message)
               }
             }) 
           }
@@ -585,6 +623,36 @@ export default {
         .choice {
           margin: 0 10px;
         }
+      }
+    }
+    .tab-exhibition {
+      margin: 10px 0;
+      display: flex;
+      height: 83px;
+      .exhibition {
+        flex: 1;
+        color: #fff;
+        text-align: center;
+        p:nth-of-type(1) {
+          padding-top: 14px;
+          font-size: 12px;
+        }
+        p:nth-of-type(2) {
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .exhibition:nth-of-type(1){
+        background-color: rgb(75, 210, 136);
+      }
+      .exhibition:nth-of-type(2){
+        background-color: rgb(24, 144, 255);
+      }
+      .exhibition:nth-of-type(3){
+        background-color: rgb(221, 129, 230);
+      }
+      .exhibition:nth-of-type(4){
+        background-color: rgb(253, 116, 116);
       }
     }
   }

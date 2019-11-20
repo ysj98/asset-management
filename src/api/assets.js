@@ -127,8 +127,8 @@ export function getRegisterOrderDetailsPageById (data) {
   return axiosPost(assets.assetRegister.getRegisterOrderDetailsPageById, data)
 }
 //资产登记列表-分页查询
-export function getProjectListPage (data) {
-  return axiosPost(assets.assetRegister.getProjectListPage, data)
+export function getRegisterOrderListPage (data) {
+  return axiosPost(assets.assetRegister.getRegisterOrderListPage, data)
 }
 // 资产登记新增-下载导入模板
 export function downloadTemplate (data) {

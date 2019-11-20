@@ -9,7 +9,7 @@
       </div>
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-        <a-checkbox :value="queryCondition.isCurrent" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
+        <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -117,7 +117,7 @@ const columns = [
   },
   {
     title: '创建日期',
-    dataIndex: 'createDate'
+    dataIndex: 'createTime'
   },
   {
     title: '状态',
@@ -277,7 +277,6 @@ export default {
     checkboxFn (e) {
       this.queryCondition.isCurrent = e.target.checked
     },
-    approvalStatusFn () {},
     // 分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -343,7 +342,7 @@ export default {
         crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
         isCurrent: this.queryCondition.isCurrent               // 仅当前机构下资产清理单 0 否 1 是
       }
-      this.$api.assets.getProjectListPage(obj).then(res => {
+      this.$api.assets.getRegisterOrderListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           data.forEach((item, index) => {
