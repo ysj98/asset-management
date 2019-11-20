@@ -129,10 +129,10 @@
           </template>
       </a-table>
       <SG-FooterPagination
-        :pageSize="queryCondition.pageSize"
+        :pageLength="queryCondition.pageLength"
         :totalCount="table.totalCount"
         location="absolute"
-        v-model="queryCondition.pageNum"
+        v-model="queryCondition.pageNo"
         @change="handleChange"
       />
     </div>
@@ -170,8 +170,8 @@ const operationTypes = {
   copy: '/buildingDict/createHouse'
 }
 let queryCondition = {
-  pageNum: 1,
-  pageSize: 10,
+  pageNo: 1,
+  pageLength: 10,
   organId: '',
   buildId: '',
   unitId: '',
@@ -275,8 +275,8 @@ export default {
     // 是否有记住搜索条件
     let query = this.GET_ROUTE_QUERY(this.$route.path)
     if (Object.keys(query).length > 0) {
-      this.queryCondition.pageSize = query.pageSize
-      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.pageLength = query.pageLength
+      this.queryCondition.pageNo = query.pageNo
       this.queryCondition.organId = query.organId
       this.queryCondition.buildId = query.buildId
       this.queryCondition.unitId = query.unitId
@@ -345,7 +345,7 @@ export default {
     },
     // 重置分页查询
     searchQuery () {
-      this.queryCondition.pageNum = 1
+      this.queryCondition.pageNo = 1
       this.query()
     },
     // 重置查询条件
@@ -383,8 +383,8 @@ export default {
       
     },
     handleChange (data) {
-      this.queryCondition.pageNum = data.pageNo
-      this.queryCondition.pageSize = data.pageLength
+      this.queryCondition.pageNo = data.pageNo
+      this.queryCondition.pageLength = data.pageLength
       this.query()
     },
     // 监听楼栋变化
