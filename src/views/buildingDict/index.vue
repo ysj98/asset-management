@@ -49,6 +49,16 @@ export default {
       }
     }
   },
+  beforeRouteLeave (to, from, next) {
+    if (to.path.indexOf(from.path) === -1) {
+      let o = {
+        key: from.path,
+        data: {}
+      }
+      this.$store.commit('pro/SET_ROUTE_QUERY', o)
+    }
+    next()
+  },
   methods: {
     tabChange (v) {
       console.log(v)
