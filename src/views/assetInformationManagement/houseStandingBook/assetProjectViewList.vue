@@ -47,7 +47,7 @@
       :totalCount="paginator.totalCount"
       location="absolute"
       v-model="paginator.pageNo"
-      @input="handlePageChange"
+      @change="handlePageChange"
     />
   </div>
 </template>
@@ -75,12 +75,12 @@ const columns = [
   },
   {
     title: '来源方式',
-    dataIndex: 'sourceType',
+    dataIndex: 'sourceTypeName',
     width: 120
   },
   {
     title: '来源渠道',
-    dataIndex: 'sourceChannelType',
+    dataIndex: 'souceChannelType',
     width: 120
   },
   {
@@ -194,8 +194,9 @@ export default {
       this.$router.push({path: '/houseStandingBook/assetProjectViewDetail', query: {projectId: record.projectId}})
     },
     // 页码发生变化
-    handlePageChange (pageNo) {
-      this.paginator.pageNo = pageNo
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 点击查询
@@ -217,6 +218,9 @@ export default {
           let data = res.data.data
           data.forEach((item, index) => {
             item.key = index
+            for (let key in item) {
+              item[key] = item[key] || '--'
+            }
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count

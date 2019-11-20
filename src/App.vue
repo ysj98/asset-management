@@ -2,7 +2,10 @@
   <div id="app" style="height: 100%;">
     <proBreadNav/>
     <div class="router-view">
-      <router-view/>
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"/>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"/>
     </div>
   </div>
 </template>

@@ -61,12 +61,10 @@
               <a-input-number
                 placeholder="请输入净残值率(%)"
                 :style="allStyle"
-                :min="0"
-                :max="100"
                 step="1"
                 v-if="editable"
                 v-decorator="['netSalvageRate',
-                {rules: [{required: true, message: '请输入净残值率(%)'}], initialValue: detail.netSalvageRate}
+                {rules: [validateRate], initialValue: detail.netSalvageRate}
               ]"/>
               <span class="label-value" v-else>{{detail.netSalvageRate || '--'}}</span>
             </a-form-item>
@@ -150,7 +148,7 @@
                   :style="allStyle"
                   v-if="editable"
                   v-decorator="['assetCardCodePrx',
-                {rules: [{required: true, message: '请输入资产卡片编码前缀'}, validateAssetCardCodePrx], initialValue: detail.assetCardCodePrx}
+                {rules: [validateAssetCardCodePrx], initialValue: detail.assetCardCodePrx}
               ]"/>
                 <span class="label-value" v-else>{{detail.assetCardCodePrx || '--'}}</span>
               </a-form-item>
@@ -164,7 +162,7 @@
                   step="1"
                   v-if="editable"
                   v-decorator="['assetCardCodeLen',
-                {rules: [{required: true, message: '请输入资产卡片编码长度'}, validateAssetCardCodeLen], initialValue: detail.assetCardCodeLen}
+                {rules: [validateAssetCardCodeLen], initialValue: detail.assetCardCodeLen}
               ]"/>
                 <span class="label-value" v-else>{{detail.assetCardCodeLen || '--'}}</span>
               </a-form-item>
@@ -309,6 +307,14 @@ export default {
     }
   },
   methods: {
+    validateRate (rule, value, callback) {
+      if (!value) {
+        callback('请输入净残值率(%)')
+      } else if (value < 0 || value > 100) {
+        callback('净残值率取值范围为0-100')
+      }
+      callback()
+    },
     // 校验备注
     validateRemark (rule, value, callback) {
       if (value.length > 200) {
@@ -339,7 +345,7 @@ export default {
       this.assetCardCodePrxOK = false
       this.detail.assetCardCodePrx = value
       if (!value) {
-        callback('请输入资产编码前缀')
+        callback('请输入资产卡片编码前缀')
       } else if (value.length !== 3){
         callback('编码前缀必须为3位字符')
       } else if (!reg.test(value)) {
@@ -353,10 +359,13 @@ export default {
     validateAssetCodeLen (rule, value, callback) {
       this.detail.assetCodeLen = value
       this.assetCodeLenOK = false
+      let reg =  /^[0-9]*[1-9][0-9]*$/
       if (!value) {
         callback('请输入资产编码长度')
       } else if (value < 5 || value > 10) {
         callback('资产编码长度取值范围为5-10')
+      } else if (!reg.test(value)) {
+        callback('资产编码长度必须为正整数')
       } else {
         this.assetCodeLenOK = true
         callback()
@@ -366,10 +375,13 @@ export default {
     validateAssetCardCodeLen (rule, value, callback) {
       this.detail.assetCardCodeLen = value
       this.assetCardCodeLenOK = false
+      let reg =  /^[0-9]*[1-9][0-9]*$/
       if (!value) {
         callback('请输入资产卡片编码长度')
       } else if (value < 4 || value > 10) {
         callback('资产卡片编码长度取值范围为4-10')
+      } else if (!reg.test(value)) {
+        callback('资产卡片编码长度必须为正整数')
       } else {
         this.assetCardCodeLenOK = true
         callback()
@@ -378,7 +390,7 @@ export default {
     // 生成对应长度的预览编码
     createCode (prx, len) {
       console.log(typeof prx)
-      if (prx === null) {
+      if (!prx) {
         return ''
       }
       let str = prx
@@ -407,11 +419,17 @@ export default {
     },
     // 提交表单
     handleSubmit () {
+      console.log('提交表单')
       this.form.validateFields((err, values) => {
+        console.log(err)
+        console.log(values)
         if (!err) {
           console.log('Received values of form: ', values)
           let form = values
           form.categoryConfId = this.categoryConfId
+          form.organId = this.organId
+          form.assetType = this.assetType
+          form.professionCode = this.professionCode
           let arr = []
           this.dataSource.forEach(item => {
             let obj = {
@@ -426,15 +444,20 @@ export default {
           this.$api.assets.update(form).then(res => {
             if (res.data.code === '0') {
               this.$message.success('修改成功')
+              this.$router.push({path: '/assetClassSet'})
             } else {
               this.$message.error(res.data.message)
             }
           })
         }
+      }, err => {
+        console.log(err)
       })
     },
     // 取消
-    cancel () {},
+    cancel () {
+      this.$router.push({path: '/assetClassSet'})
+    },
     getUnitOptions () {
       // let form = {
       //   dictCode: 'MEASURE_UNIT',
@@ -501,16 +524,38 @@ export default {
       })
     },
     getDetail () {
-      let form = {
-        categoryConfId: this.categoryConfId
+      let form = {}
+      if (this.categoryConfId !== null) {
+        form = {
+          categoryConfId: this.categoryConfId
+        }
+      } else {
+        form = {
+          organId: this.organId,
+          professionCode: this.professionCode,
+          assetType: this.assetType
+        }
       }
       this.$api.assets.getDetail(form).then(res => {
         if (res.data.code === '0') {
-          console.log(res)
           let data = res.data.data
           this.detail = data
           if (this.detail.createTime) {
             this.detail.createTime = dateToString(new Date(this.detail.createTime))
+          }
+          for (let item in this.detail) {
+            if (this.detail[item] === null) {
+              this.detail[item] = ''
+              if (item === 'unit' || item === 'depreciationMethod') {
+                this.detail[item] = undefined
+              }
+              if (item === 'assetCodeLen') {
+                this.detail[item] = 7
+              }
+              if (item === 'assetCardCodeLen') {
+                this.detail[item] = 5
+              }
+            }
           }
           this.assetCodePrxOK = true
           this.assetCardCodePrxOK = true
@@ -524,10 +569,12 @@ export default {
   },
   mounted () {
     this.pageType = this.$route.query.pageType
+    this.organId = this.$route.query.organId
     this.categoryConfId = this.$route.query.categoryConfId
+    this.professionCode = this.$route.query.professionCode
+    this.assetType = this.$route.query.assetType
     this.editable = this.pageType === 'edit'
     if (this.editable) {
-      this.organId = this.$route.query.organId
       this.getUnitOptions()
       this.getDepreciationMethodOptions()
       this.getFeeTypeList()

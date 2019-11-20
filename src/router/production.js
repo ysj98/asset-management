@@ -61,7 +61,10 @@ let proRouter = [
   {
     path: '/assetClear',
     name: '资产清理',
-    component: () => import('@/views/assetInformationManagement/assetClear/index.vue')
+    component: () => import('@/views/assetInformationManagement/assetClear/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetClear/new',
@@ -86,7 +89,20 @@ let proRouter = [
   {
     path: '/assetClassSet',
     name: '资产分类设置',
-    component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue')
+    component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetClassSet/edit',
+    name: '编辑',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/editClassSet.vue')
+  },
+  {
+    path: '/assetClassSet/detail',
+    name: '详情',
+    component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
   },
   // {
   //   path: '/assetView',
@@ -119,19 +135,12 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
   },
   {
-    path: '/assetClassSet/edit',
-    name: '编辑',
-    component: () => import('@/views/assetInformationManagement/assetClassSet/editClassSet.vue')
-  },
-  {
-    path: '/assetClassSet/detail',
-    name: '详情',
-    component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
-  },
-  {
     path: '/houseStandingBook',
     name: '房屋台账',
-    component: () => import('@/views/assetInformationManagement/houseStandingBook/index.vue')
+    component: () => import('@/views/assetInformationManagement/houseStandingBook/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/houseStandingBook/assetProjectViewDetail',
