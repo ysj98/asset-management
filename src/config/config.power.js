@@ -34,4 +34,34 @@ export const GLOBAL = {
    ASSET_CLASS_SET_EDIT: 'zcgl_asset_class_set_edit',
    // 资产分类-启用/停用资产分类信息(状态)
    ASSET_CLASS_SET_CHANGE_STATUS: 'zcgl_asset_class_set_change_status',
+   // 楼盘字典-新增房间
+   ZCGL_ADD_HOUSE: 'zcgl_add_house',
+   // 楼盘字典-编辑房间
+   ZCGL_EDIT_HOUSE: 'zcgl_edit_house',
+   // 楼盘字典-房间资料导入
+   ZCGL_HOUSEZL_IN: 'zcgl_housezl_in',
+   // 楼盘字典-房间导入批量更新
+   ZCGL_HOUSE_IN: 'zcgl_house_in',
+   // 楼盘字典-房间导出
+   ZCGL_HOUSE_OUT: 'zcgl_house_out',
+   // 楼盘字典-房间状态
+   ZCGL_HOUSE_STATE: 'zcgl_house_state',
+   // 楼盘字典-新建楼栋
+   ZCGL_BUILD_ADD: 'zcgl_build_add',
+   // 楼盘字典-编辑楼栋
+   ZCGL_BUILD_EDIT: 'zcgl_build_edit',
+   // 楼盘字典-删除楼栋
+   ZCGL_BUILD_DELETE: 'zcgl_build_delete',
+   // 楼盘字典-新建楼层
+   ZCGL_FLOOR_ADD: 'zcgl_floor_add',
+   // 楼盘字典-编辑楼层
+   ZCGL_FLOOR_EDIT: 'zcgl_floor_edit',
+   // 楼盘字典-删除楼层
+   ZCGL_FLOOR_DELETE: 'zcgl_floor_delete',
+   // 楼盘字典-新建单元
+   ZCGL_UNIT_ADD: 'zcgl_unit_add',
+   // 楼盘字典-编辑单元
+   ZCGL_UNIT_EDIT: 'zcgl_unit_edit',
+   // 楼盘字典-删除单元
+   ZCGL_UNIT_DELETE: 'zcgl_unit_delete',
  }

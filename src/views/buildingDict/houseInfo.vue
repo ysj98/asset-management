@@ -7,10 +7,10 @@
   <div class="houseInfo-page pb70">
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
-        <SG-Button class="mr10" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
-        <SG-Button class="mr10" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
-        <SG-Button class="mr10" @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
-        <SG-Button icon="sync" @click="openImportModal">批量更新</SG-Button>
+        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ZCGL_ADD_HOUSE" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
+        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ZCGL_HOUSEZL_IN" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
+        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ZCGL_HOUSE_OUT" @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
+        <SG-Button icon="sync" v-power="ASSET_MANAGEMENT.ZCGL_HOUSE_IN" @click="openImportModal">批量更新</SG-Button>
       </div>
       <div slot="contentForm">
         <div>
@@ -158,7 +158,7 @@ import houseExport from './child/houseExport.vue'
 import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 import houseDataImport from './child/houseDataImport.vue'
 import downErrorFile from '@/views/common/downErrorFile'
-
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px'}
@@ -224,18 +224,18 @@ let columns = [{
   width: '124px'
 }]
 // 操作按钮
-const operationDataOff = [
-  {iconType: 'edit', text: '编辑', editType: 'edit'},
-  {iconType: 'play-circle', text: '启用', editType: 'on'},
-  {iconType: 'file-text', text: '详情', editType: 'detail'},
-  {iconType: 'copy', text: '复制', editType: 'copy'},
-]
-const operationDataOn = [
-  {iconType: 'edit', text: '编辑', editType: 'edit'},
-  {iconType: 'close-circle', text: '禁用', editType: 'off'},
-  {iconType: 'file-text', text: '详情', editType: 'detail'},
-  {iconType: 'copy', text: '复制', editType: 'copy'},
-]
+// const operationDataOff = [
+//   {iconType: 'edit', text: '编辑', editType: 'edit'},
+//   {iconType: 'play-circle', text: '启用', editType: 'on'},
+//   {iconType: 'file-text', text: '详情', editType: 'detail'},
+//   {iconType: 'copy', text: '复制', editType: 'copy'},
+// ]
+// const operationDataOn = [
+//   {iconType: 'edit', text: '编辑', editType: 'edit'},
+//   {iconType: 'close-circle', text: '禁用', editType: 'off'},
+//   {iconType: 'file-text', text: '详情', editType: 'detail'},
+//   {iconType: 'copy', text: '复制', editType: 'copy'},
+// ]
 export default {
   components: {
     SearchContainer,
@@ -249,11 +249,12 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       upErrorInfo: '', // 导入文件错误提示
       allWidth,
       toggle: true,
-      operationDataOff,
-      operationDataOn,
+      operationDataOff: [],
+      operationDataOn: [],
       searchBuildName: '', // 搜索楼栋字符
       queryCondition: {...queryCondition},
       buildOpt: utils.deepClone(buildOpt),
@@ -272,6 +273,7 @@ export default {
     }
   },
   created () {
+    this.handleBtn()
     // 是否有记住搜索条件
     let query = this.GET_ROUTE_QUERY(this.$route.path)
     if (Object.keys(query).length > 0) {
@@ -342,6 +344,31 @@ export default {
       }, () => {
         this.table.loading = false
       })
+    },
+    // 处理按钮
+    handleBtn () {
+      this.operationDataOff = []
+      this.operationDataOn = []
+      // 编辑权限
+      if (this.$power.has(ASSET_MANAGEMENT.ZCGL_EDIT_HOUSE)) {
+        let o = {iconType: 'edit', text: '编辑', editType: 'edit'}
+        this.operationDataOff.push(o)
+        this.operationDataOn.push(o)
+      }
+      // 禁止启用
+      if (this.$power.has(ASSET_MANAGEMENT.ZCGL_HOUSE_STATE)) {
+        this.operationDataOff.push({iconType: 'play-circle', text: '启用', editType: 'on'})
+        this.operationDataOn.push({iconType: 'close-circle', text: '禁用', editType: 'off'})
+      }
+      let obj = {iconType: 'file-text', text: '详情', editType: 'detail'}
+      this.operationDataOff.push(obj)
+      this.operationDataOn.push(obj)
+      // 新增权限
+      if (this.$power.has(ASSET_MANAGEMENT.ZCGL_ADD_HOUSE)) {
+        let o = {iconType: 'copy', text: '复制', editType: 'copy'}
+        this.operationDataOff.push(o)
+        this.operationDataOn.push(o)
+      }
     },
     // 重置分页查询
     searchQuery () {
