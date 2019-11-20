@@ -5,7 +5,8 @@
   <div class="assetRegister">
     <Cephalosome :rightCol="22" :leftCol="2">
       <div slot="col-l">
-        <a-button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
+        <!-- v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" -->
+        <a-button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</a-button>
       </div>
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
