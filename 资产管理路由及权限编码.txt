@@ -1,0 +1,13 @@
+路由配置如下
+
+V1.0
+1. /asset-management/#/buildingDict   楼盘字典
+
+
+
+
+
+
+新增权限编码如下:
+楼盘字典
+zcgl_addhouse   新增房间
