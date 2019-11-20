@@ -11,9 +11,9 @@
      <div class="create-btn">
        <span class="create-title" >楼栋信息</span>
        <div>
-         <SG-Button v-power="ASSET_MANAGEMENT.ZCGL_FLOOR_ADD" v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
-         <SG-Button v-power="ASSET_MANAGEMENT.ZCGL_UNIT_ADD" v-if="showCreateUnitBtn" :class="[childNodeType==='0'&&'mr5']" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
-         <SG-Button v-power="ASSET_MANAGEMENT.ZCGL_BUILD_ADD" v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
+         <SG-Button  v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
+         <SG-Button  v-if="showCreateUnitBtn" :class="[childNodeType==='0'&&'mr5']" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
+         <SG-Button  v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
        </div>
      </div>
      <div class="tree-content">

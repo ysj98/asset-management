@@ -170,7 +170,7 @@
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
-import {columnsData} from './registerBasics'
+import {columnsData, judgmentData} from './registerBasics'
 import {debounce, utils} from '@/utils/utils'
 const newEditSingleData = {
   registerOrderCode: '',   // 验收单名称
@@ -229,6 +229,7 @@ export default {
   props: {},
   data () {
     return {
+      setType: '',
       recordKey: '',
       commonShow: false,
       commonTitle: '',
@@ -278,61 +279,34 @@ export default {
   methods: {
     importf (file, event) {
       this.$importf(file, event).then(v => {
-        console.log(v, '拿到的数据')
         if (v.length > 0) {
           let arr = []
-          let a = '使用期限(月)'
-          let b = '已使用期数(月)'
           for (let i = 0; i < v.length; i++) {
-            if (!v[i].资产名称) {
-              this.$message.info('请填写资产名称')
-              return
-            } else if (!v[i].建筑面积) {
-              this.$message.info('请填写建筑面积')
-              return
-            } else if (!v[i].坐落位置) {
-              this.$message.info('请填写坐落位置')
-              return
-            } else if (!v[i].权属情况) {
-              this.$message.info('请填写权属情况')
-              return
+            let opt = {key: i}
+            for (let j = 0; j < judgmentData.length; j++) {
+              if (judgmentData[j].required) {
+                if (!v[i][judgmentData[j].title]) {
+                  this.$message.info(`请输入${judgmentData[j].title}`)
+                  return
+                }
+              }
+              if (judgmentData[j].type === 'number') {
+                if (!(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].title])) {
+                  this.$message.info(`请输入正确${judgmentData[j].title}`)
+                  return
+                }
+              }
+              if (judgmentData[j].fontLength) {
+                if (String(v[i][judgmentData[j].title]).length > judgmentData[j].fontLength) {
+                  this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
+                  return
+                }
+              }
+              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].title]
             }
-            arr.push({
-              key: i,
-              useType: v[i].用途,
-              province: v[i].省,
-              city: v[i].市,
-              region: v[i].区,
-              address: v[i].详细地址,
-              objectType: v[i].资产分类,
-              type: v[i].类型,
-              objectId: v[i].楼栋ID,
-              buildId: v[i].对象ID,
-              assetName: v[i].资产名称,
-              buildingName: v[i].楼栋名称,
-              houseName: v[i].房屋名称,
-              assetCode: v[i].资产编码,
-              coveredArea: v[i].建筑面积,
-              seatingPosition: v[i].坐落位置,
-              ownershipStatus: v[i].权属情况,
-              warrantNbr: v[i].权证号,
-              decorateSituation: v[i].装修情况,
-              originalValue: v[i].资产原值,
-              marketValue: v[i].市场价值,
-              transferOperationTime: utils.xlsxDate(v[i].转运营日期),
-              transferOperationArea: v[i].转运营面积,
-              idleArea: v[i].闲置面积,
-              selfUserArea: v[i].自用面积,
-              occupationArea: v[i].占用面积,
-              otherArea: v[i].其他面积,
-              transferArea: v[i].转物业面积,
-              transferTime: utils.xlsxDate(v[i].转物业日期),
-              validPeriod: v[i][a],
-              startDate: utils.xlsxDate(v[i].开始使用日期),
-              usedDate: v[i][b]
-            })
-            this.tableData = arr
+            arr.push(opt)
           }
+          this.tableData = arr
         } else {
           this.$message.info('请填写数据后在上传')
         }

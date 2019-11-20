@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <Cephalosome :rightCol="22" :leftCol="2">
       <div slot="col-l">
-        <a-button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</a-button>
+        <a-button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
       </div>
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -36,10 +36,10 @@
       <template slot="operation" slot-scope="text, record">
         <div class="tab-opt">
           <span @click="operationFn(record, 'particulars')">详情</span>
-          <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
-          <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
-          <span v-if="+record.approvalStatus === 2">审核</span>
-          <span @click="operationFn(record, 'theAudit')" v-if="+record.approvalStatus === 1">反审核</span>
+          <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_EDIT">编辑</span>
+          <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_DELETE">删除</span>
+          <span v-if="+record.approvalStatus === 2" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_AUDIT">审核</span>
+          <span @click="operationFn(record, 'theAudit')" v-if="+record.approvalStatus === 1" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_REVERSE_AUDIT">反审核</span>
         </div>
       </template>
     </a-table>
@@ -67,6 +67,7 @@
 <script>
 import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import moment from 'moment'
 const approvalStatusData = [
   {
@@ -109,7 +110,7 @@ const columns = [
   },
   {
     title: '资产类型',
-    dataIndex: 'assetType'
+    dataIndex: 'assetTypeName'
   },
   {
     title: '资产数量',
@@ -121,7 +122,7 @@ const columns = [
   },
   {
     title: '状态',
-    dataIndex: 'approvalStatus'
+    dataIndex: 'approvalStatusName'
   },
   {
     title: '操作',
@@ -135,6 +136,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       isChild: false,
       commonShow: false,
       commonTitle: '',

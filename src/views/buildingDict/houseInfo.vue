@@ -7,10 +7,10 @@
   <div class="houseInfo-page pb70">
     <SearchContainer v-model="toggle">
       <div slot="headerBtns">
-        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ZCGL_ADD_HOUSE" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
-        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ZCGL_HOUSEZL_IN" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
-        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ZCGL_HOUSE_OUT" @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
-        <SG-Button icon="sync" v-power="ASSET_MANAGEMENT.ZCGL_HOUSE_IN" @click="openImportModal">批量更新</SG-Button>
+        <SG-Button class="mr10"  icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
+        <SG-Button class="mr10"  @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
+        <SG-Button class="mr10"  @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
+        <SG-Button icon="sync"  @click="openImportModal">批量更新</SG-Button>
       </div>
       <div slot="contentForm">
         <div>
@@ -224,18 +224,18 @@ let columns = [{
   width: '124px'
 }]
 // 操作按钮
-// const operationDataOff = [
-//   {iconType: 'edit', text: '编辑', editType: 'edit'},
-//   {iconType: 'play-circle', text: '启用', editType: 'on'},
-//   {iconType: 'file-text', text: '详情', editType: 'detail'},
-//   {iconType: 'copy', text: '复制', editType: 'copy'},
-// ]
-// const operationDataOn = [
-//   {iconType: 'edit', text: '编辑', editType: 'edit'},
-//   {iconType: 'close-circle', text: '禁用', editType: 'off'},
-//   {iconType: 'file-text', text: '详情', editType: 'detail'},
-//   {iconType: 'copy', text: '复制', editType: 'copy'},
-// ]
+const operationDataOff = [
+  {iconType: 'edit', text: '编辑', editType: 'edit'},
+  {iconType: 'play-circle', text: '启用', editType: 'on'},
+  {iconType: 'file-text', text: '详情', editType: 'detail'},
+  {iconType: 'copy', text: '复制', editType: 'copy'},
+]
+const operationDataOn = [
+  {iconType: 'edit', text: '编辑', editType: 'edit'},
+  {iconType: 'close-circle', text: '禁用', editType: 'off'},
+  {iconType: 'file-text', text: '详情', editType: 'detail'},
+  {iconType: 'copy', text: '复制', editType: 'copy'},
+]
 export default {
   components: {
     SearchContainer,
@@ -253,8 +253,8 @@ export default {
       upErrorInfo: '', // 导入文件错误提示
       allWidth,
       toggle: true,
-      operationDataOff: [],
-      operationDataOn: [],
+      operationDataOff,
+      operationDataOn,
       searchBuildName: '', // 搜索楼栋字符
       queryCondition: {...queryCondition},
       buildOpt: utils.deepClone(buildOpt),
@@ -273,7 +273,7 @@ export default {
     }
   },
   created () {
-    this.handleBtn()
+    // this.handleBtn()
     // 是否有记住搜索条件
     let query = this.GET_ROUTE_QUERY(this.$route.path)
     if (Object.keys(query).length > 0) {

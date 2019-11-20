@@ -1,5 +1,5 @@
 
-// import XLSX from 'xlsx'
+import XLSX from 'xlsx'
  
 /**
  * 导入ex表格 得到json数据
