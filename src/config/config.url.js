@@ -133,7 +133,9 @@ export const assets = {
     // 资产登记明细列表-分页
     getRegisterOrderDetailsPageById: '/ams/registerOrder/getRegisterOrderDetailsPageById',
     // 资产登记明细列表-不分页
-    getRegisterOrderDetailsById: '/ams/registerOrder/getRegisterOrderDetailsById'
+    getRegisterOrderDetailsById: '/ams/registerOrder/getRegisterOrderDetailsById',
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatistics: '/ams/registerOrder/getRegisterOrderDetailsStatistics'
   },
   // 资产清理
   assetClear: {

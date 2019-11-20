@@ -288,7 +288,7 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       if (!this.isChild) {
-        this.queryCondition.pageNo = 1
+        this.queryCondition.pageNum = 1
         this.query()
       } else {
         this.isChild = false

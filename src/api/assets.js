@@ -142,6 +142,10 @@ export function getTransferByProjectId (data) {
 export function getRegisterOrderDetailsById (data) {
   return axiosGet(assets.assetRegister.getRegisterOrderDetailsById, data)
 }
+// 资产登记-详情明细统计
+export function getRegisterOrderDetailsStatistics (data) {
+  return axiosGet(assets.assetRegister.getRegisterOrderDetailsStatistics, data)
+}
 
 // 资产清理
 // 资产清理-分页列表

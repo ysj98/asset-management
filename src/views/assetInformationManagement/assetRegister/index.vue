@@ -135,6 +135,7 @@ export default {
   props: {},
   data () {
     return {
+      isChild: false,
       commonShow: false,
       commonTitle: '',
       judge: '',
@@ -271,7 +272,12 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.getObjectKeyValueByOrganIdFn()
-      this.query()
+      if (!this.isChild) {
+        this.queryCondition.pageNum = 1
+        this.query()
+      } else {
+        this.isChild = false
+      }
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
@@ -359,6 +365,36 @@ export default {
     }
   },
   created () {
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    console.log(query, 'jiss')
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.approvalStatus = query.approvalStatus
+      this.queryCondition.assetType = query.assetType
+      this.queryCondition.crateDateE = query.crateDateE
+      this.queryCondition.createDateS = query.createDateS
+      this.queryCondition.isCurrent = query.isCurrent
+      this.queryCondition.organId = query.organId
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.projectId = query.projectId
+      this.isChild = query.isChild
+      this.query()
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    let o = {key: this.$route.path, data: {}}
+    if (to.path.indexOf(from.path) !== -1) {
+      o = {
+        key: from.path,
+        data: {
+          ...this.queryCondition,
+          ...this.defaultValue,
+          isChild: true
+        }
+      }
+    }
+    this.$store.commit('pro/SET_ROUTE_QUERY', o)
+    next()
   },
   mounted () {
     // 获取状态

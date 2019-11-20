@@ -27,7 +27,15 @@
       </div>
     </div>
     <div class="particulars-nav">
-      <span class="section-title blue">资产列表</span>
+      <span class="section-title blue">资产明细</span>
+      <div class="particulars-obj">
+        <div class="tab-exhibition">
+          <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
+            <p>{{item.name}}</p>
+            <p>{{item.value}}</p>
+          </div>
+        </div>
+      </div>
       <div class="particulars-obj">
         <!-- table-layout-fixed -->
         <div class="table-border">
@@ -70,11 +78,34 @@
 
 <script>
 import {columnsData} from './registerBasics'
+const assetsTotal = [
+  {
+    code: 'assetsNum',
+    name: '资产数量',
+    value: ''
+  },
+  {
+    code: 'areaNum',
+    name: '建筑面积',
+    value: ''
+  },
+  {
+    code: 'originalNum',
+    name: '资产原值',
+    value: ''
+  },
+  {
+    code: 'marketValueNum',
+    name: '市场价值',
+    value: ''
+  }
+]
 export default {
   components: {},
   props: {},
   data () {
     return {
+      assetsTotal: [...assetsTotal],
       record: '',
       type: '',
       remark: '',     // 意见
@@ -148,6 +179,26 @@ export default {
       this.queryCondition.pageSize = data.pageLength
       this.getRegisterOrderDetailsPageByIdFn()
     },
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatisticsFn () {
+      let obj = {
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.assetsTotal.forEach(item => {
+            Object.keys(data).forEach(key => {
+              if (item.code === key) {
+                item.value = data[key]
+              }
+            })
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
   },
   created () {
   },
@@ -157,6 +208,7 @@ export default {
     console.log(this.record, '0-0-0-')
     this.query()
     this.getRegisterOrderDetailsPageByIdFn()
+    this.getRegisterOrderDetailsStatisticsFn()
   }
 }
 </script>
@@ -165,21 +217,52 @@ export default {
   overflow: hidden;
   padding-bottom: 70px;
   .particulars-nav{
-      padding: 42px 126px 20px 70px;
-      .particulars-obj {
-        padding: 20px 0 20px 40px;
-        .playground-row {
-          .playground-col {
-            height: 40px;
-            line-height: 40px;
-            font-size: 12px;
-          }
+    padding: 42px 126px 20px 70px;
+    .particulars-obj {
+      padding: 20px 0 20px 40px;
+      .playground-row {
+        .playground-col {
+          height: 40px;
+          line-height: 40px;
+          font-size: 12px;
         }
       }
-      .correspondingTask {
-        margin:35px 40px 0 40px;
-        border: 1px solid #F0F2F5;
+    }
+    .tab-exhibition {
+      margin: 10px 0;
+      display: flex;
+      height: 83px;
+      .exhibition {
+        flex: 1;
+        color: #fff;
+        text-align: center;
+        border-right: 1px solid #EFF2F7;
+        p:nth-of-type(1) {
+          padding-top: 14px;
+          font-size: 12px;
+        }
+        p:nth-of-type(2) {
+          font-size: 16px;
+          font-weight: bold;
+        }
       }
+      .exhibition:nth-of-type(1){
+        background-color: rgb(75, 210, 136);
+      }
+      .exhibition:nth-of-type(2){
+        background-color: rgb(24, 144, 255);
+      }
+      .exhibition:nth-of-type(3){
+        background-color: rgb(221, 129, 230);
+      }
+      .exhibition:nth-of-type(4){
+        background-color: rgb(253, 116, 116);
+      }
+    }
+    .correspondingTask {
+      margin:35px 40px 0 40px;
+      border: 1px solid #F0F2F5;
+    }
   }
   .nav-box {
     padding-bottom: 100px;

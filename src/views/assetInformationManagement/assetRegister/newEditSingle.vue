@@ -117,7 +117,6 @@
             :scroll="{y: 450, x: 2600}"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
             :pagination="false"
             >
             <template slot="operation" slot-scope="text, record">
@@ -154,6 +153,15 @@
           </a-checkbox-group>
         </div>
       </div>
+    </SG-Modal>
+    <SG-Modal
+      width="400px"
+      v-model="commonShow"
+      :title="commonTitle"
+      @ok="commomDelete"
+    >
+      <div v-if="judge === 'delete'">确认要删除该资产吗？</div>
+      <div v-else>确认要清空资产列表？</div>
     </SG-Modal>
   </div>
 </template>
@@ -194,22 +202,26 @@ const scopeData = [
     name: '房屋'
   }
 ]
-let assetsTotal = [
+const assetsTotal = [
   {
+    code: 'assetsNum',
     name: '资产数量',
-    value: '300'
+    value: ''
   },
   {
+    code: 'areaNum',
     name: '建筑面积',
-    value: '100'
+    value: ''
   },
   {
+    code: 'originalNum',
     name: '资产原值',
-    value: '300'
+    value: ''
   },
   {
+    code: 'marketValueNum',
     name: '市场价值',
-    value: '100'
+    value: ''
   }
 ]
 export default {
@@ -217,7 +229,12 @@ export default {
   props: {},
   data () {
     return {
-      assetsTotal,
+      recordKey: '',
+      commonShow: false,
+      commonTitle: '',
+      judge: '',
+      registerOrderId: '',
+      assetsTotal: [...assetsTotal],
       organId: '',
       buildIds: undefined,
       buildIdsData: [],
@@ -259,14 +276,6 @@ export default {
   computed: {
   },
   methods: {
-    // 添加资产
-    addTheAsset () {
-      this.$refs.input.click()
-    },
-    // 清空列表
-    emptyFn () {
-      this.tableData = []
-    },
     importf (file, event) {
       this.$importf(file, event).then(v => {
         console.log(v, '拿到的数据')
@@ -278,56 +287,14 @@ export default {
             if (!v[i].资产名称) {
               this.$message.info('请填写资产名称')
               return
-            } else if (!v[i].资产编码) {
-              this.$message.info('请填写资产编码')
+            } else if (!v[i].建筑面积) {
+              this.$message.info('请填写建筑面积')
+              return
+            } else if (!v[i].坐落位置) {
+              this.$message.info('请填写坐落位置')
               return
             } else if (!v[i].权属情况) {
               this.$message.info('请填写权属情况')
-              return
-            } else if (!v[i].权证号) {
-              this.$message.info('请填写权证号')
-              return
-            } else if (!v[i].装修情况) {
-              this.$message.info('请填写装修情况')
-              return
-            } else if (!v[i].资产原值) {
-              this.$message.info('请填写资产原值')
-              return
-            } else if (!v[i].市场价值) {
-              this.$message.info('请填写市场价值')
-              return
-            } else if (!v[i].转运营日期) {
-              this.$message.info('请填写转运营日期')
-              return
-            } else if (!v[i].转运营日期) {
-              this.$message.info('请填写转运营日期')
-              return
-            } else if (!v[i].转运营面积) {
-              this.$message.info('请填写转运营面积')
-              return
-            } else if (!v[i].闲置面积) {
-              this.$message.info('请填写闲置面积')
-              return
-            } else if (!v[i].占用面积) {
-              this.$message.info('请填写占用面积')
-              return
-            } else if (!v[i].其他面积) {
-              this.$message.info('请填写其他面积')
-              return
-            } else if (!v[i].转物业面积) {
-              this.$message.info('请填写转物业面积')
-              return
-            } else if (!v[i].转物业日期) {
-              this.$message.info('请填写转物业日期')
-              return
-            } else if (!v[i][a]) {
-              this.$message.info('请填写使用期限(月)')
-              return
-            } else if (!v[i].开始使用日期) {
-              this.$message.info('请填写开始使用日期')
-              return
-            } else if (!v[i][b]) {
-              this.$message.info('请填写已使用期数(月)')
               return
             }
             arr.push({
@@ -417,18 +384,38 @@ export default {
         }
       })
     },
+    // 添加资产
+    addTheAsset () {
+      this.$refs.input.click()
+    },
+    // 清空列表
+    emptyFn () {
+      if (this.tableData.length === 0) {
+        this.$message.info('暂无资产清空')
+        return
+      }
+      this.commonTitle = '清空列表'
+      this.judge = 'empty'
+      this.commonShow = true
+    },
     // 删除
     deleteFn (record) {
-      this.tableData.forEach((item, index) => {
-        if (item.assetCode === record.assetCode) {
-          this.tableData.splice(index, 1)
-        }
-      })
-      this.checkedData.forEach((item, index) => {
-        if (record.assetCode === item) {
-          this.checkedData.splice(index, 1)
-        }
-      })
+      this.commonTitle = '删除'
+      this.judge = 'delete'
+      this.commonShow = true
+      this.recordKey = record.key
+    },
+    commomDelete () {
+      if (this.judge === 'delete') {
+        this.tableData.forEach((item, index) => {
+          if (item.key === this.recordKey) {
+            this.tableData.splice(index, 1)
+          }
+        })
+      } else {
+        this.tableData = []
+      }
+      this.commonShow = false
     },
     // 楼栋搜索
     handleSearch (value) {
@@ -468,7 +455,7 @@ export default {
             })
           }
           let obj = {
-            registerOrderId: '',                         // 资产变动单Id（新增为空）
+            registerOrderId: this.registerOrderId,                         // 资产变动单Id（新增为空）
             registerOrderCode: values.registerOrderCode, // 登记单编号
             projectId: values.projectId,                 // 资产项目Id
             assetType: values.assetType,                 // 资产类型Id
@@ -586,6 +573,26 @@ export default {
         }
       })
     },
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatisticsFn () {
+      let obj = {
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.assetsTotal.forEach(item => {
+            Object.keys(data).forEach(key => {
+              if (item.code === key) {
+                item.value = data[key]
+              }
+            })
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
@@ -596,10 +603,13 @@ export default {
     this.getObjectKeyValueByOrganIdFn()
     this.platformDictFn()
     this.queryBuildList('1300')
+    // this.queryBuildList(this.organId)
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
+      this.registerOrderId = this.enitData[0].registerOrderId
       this.editFn()
       this.getRegisterOrderDetailsByIdFn()
+      this.getRegisterOrderDetailsStatisticsFn()
     }
   }
 }
@@ -633,6 +643,7 @@ export default {
         flex: 1;
         color: #fff;
         text-align: center;
+        border-right: 1px solid #EFF2F7;
         p:nth-of-type(1) {
           padding-top: 14px;
           font-size: 12px;
