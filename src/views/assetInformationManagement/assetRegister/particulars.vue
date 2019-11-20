@@ -111,7 +111,7 @@ export default {
       remark: '',     // 意见
       particularsData: {},
       files: [],
-      columns: [...columnsData],
+      columns: columnsData.splice(0, columnsData.length - 1),
       loading: false,
       tableData: [],
       location: '',
@@ -205,7 +205,7 @@ export default {
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.registerOrderId = this.record[0].registerOrderId
-    console.log(this.record, '0-0-0-')
+    this.Data = columnsData
     this.query()
     this.getRegisterOrderDetailsPageByIdFn()
     this.getRegisterOrderDetailsStatisticsFn()

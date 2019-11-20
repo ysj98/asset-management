@@ -86,23 +86,17 @@ export default {
     'changeType' (value) {
       let val = String(value)
       if (val === '2') {
-        deliveryProperty.pop()
-        this.columns = deliveryProperty
+        this.columns = deliveryProperty.splice(0, deliveryProperty.length - 1)
       } else if (val === '1') {
-        deliveryOperation.pop()
-        this.columns = deliveryOperation
+        this.columns = deliveryOperation.splice(0, deliveryOperation.length - 1)
       } else if (val === '4') {
-        changeDirectionUse.pop()
-        this.columns = changeDirectionUse
+        this.columns = changeDirectionUse.splice(0, changeDirectionUse.length - 1)
       } else if (val === '3') {
-        variationOriginalValue.pop()
-        this.columns = variationOriginalValue
+        this.columns = variationOriginalValue.splice(0, variationOriginalValue.length - 1)
       } else if (val === '5') {
-        positionChange.pop()
-        this.columns = positionChange
+        this.columns = positionChange.splice(0, positionChange.length - 1)
       } else if (val === '6') {
-        projectChange.pop()
-        this.columns = projectChange
+        this.columns = projectChange.splice(0, projectChange.length - 1)
       }
     }
   },

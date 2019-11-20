@@ -109,7 +109,7 @@ const columns = [
   },
   {
     title: '资产类型',
-    dataIndex: 'assetType'
+    dataIndex: 'assetTypeName'
   },
   {
     title: '资产数量',
@@ -121,7 +121,7 @@ const columns = [
   },
   {
     title: '状态',
-    dataIndex: 'approvalStatus'
+    dataIndex: 'approvalStatusName'
   },
   {
     title: '操作',
