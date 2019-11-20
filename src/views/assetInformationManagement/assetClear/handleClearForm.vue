@@ -91,7 +91,7 @@
           <div class="edit-box-content-item" v-show="!editable">
             <div class="label-name-box"><span class="label-name">创建时间<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{detail.createTime || '--'}}</span>
+              <span class="label-value">{{formatDate(detail.createTime) || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-show="!editable">
@@ -116,15 +116,15 @@
               <SG-UploadFile
                 type="all"
                 :show="!editable"
-                v-model="detail.files"/>
-              <span class="file-null" v-if="!editable && detail.files.length === 0">--</span>
+                v-model="detail.attachment"/>
+              <span class="file-null" v-if="!editable && detail.attachment.length === 0">--</span>
             </a-form-item>
           </div>
         </div>
       </div>
       <div class="edit-box">
         <div class="edit-box-title"><i></i><span>资产明细</span></div>
-        <div class="edit-box-content">
+        <div class="edit-box-content" style="padding-bottom: 50px">
           <div class="table-header-btn" v-show="editable">
             <SG-Button type="primary" weaken @click="addAsset">添加资产</SG-Button>
           </div>
@@ -138,6 +138,14 @@
               <a class="operation-btn" @click="deleteFn(record)">删除</a>
             </template>
           </a-table>
+          <SG-FooterPagination
+            v-if="!editable"
+            :pageLength="paginator.pageLength"
+            :totalCount="paginator.totalCount"
+            location="absolute"
+            v-model="paginator.pageNo"
+            @change="handlePageChange"
+          />
         </div>
       </div>
       <div class="edit-box" v-show="pageType === 'audit'">
@@ -178,13 +186,14 @@
     <form-footer v-show="pageType === 'audit'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="approveAudit" @cancel="rejectAudit">
     </form-footer>
     <!-- 选择资产 -->
-    <AssetBundlePopover ref="assetBundlePopover" @status="status" v-if="editable"></AssetBundlePopover>
+    <AssetBundlePopover ref="assetBundlePopover" :organId="organId" queryType="2" @status="status" v-if="editable"></AssetBundlePopover>
   </div>
 </template>
 
 <script>
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
+import {dateToString} from 'utils/formatTime'
 const defaultColumns = [
   {
     title: '资产名称',
@@ -208,7 +217,7 @@ const defaultColumns = [
   },
   {
     title: '所在位置',
-    dataIndex: 'position',
+    dataIndex: 'address',
     width: '160'
   },
   {
@@ -217,13 +226,8 @@ const defaultColumns = [
     width: '160'
   },
   {
-    title: '规格',
-    dataIndex: 'specification',
-    width: '160'
-  },
-  {
     title: '资产状态',
-    dataIndex: 'assetStatus',
+    dataIndex: 'assetStatusName',
     width: '160'
   },
   {
@@ -255,7 +259,7 @@ export default {
         createByName: '',
         createTime: '',
         remark: '',
-        files: []
+        attachment: []
       },
       projectIdOptions: [],
       assetTypeOptions: [],
@@ -267,14 +271,31 @@ export default {
         auditor: '',
         auditTime: '',
         auditOpinion: ''
+      },
+      paginator: {
+        pageNo: 1,
+        pageLength: 10,
+        totalCount: 0
       }
     }
   },
   methods: {
+    formatDate (value) {
+      if (value) {
+        return dateToString(new Date(value), 'yyyy-mm-dd')
+      }
+      return ''
+    },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
+    },
+    // 页码发生变化
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
+      this.getAssetDetailList()
     },
     // 获取资产项目下拉列表
     getProjectIdOptions () {
@@ -287,7 +308,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.projectName,
-              value: item.projectId
+              value: +item.projectId
             }
             arr.push(obj)
           })
@@ -308,7 +329,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.name,
-              value: item.value
+              value: +item.value
             }
             arr.push(obj)
           })
@@ -333,7 +354,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.name,
-              value: item.value
+              value: +item.value
             }
             arr.push(obj)
           })
@@ -345,7 +366,11 @@ export default {
     },
     // 添加资产
     addAsset () {
-      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData)
+      if (!this.form.getFieldValue('projectId')) {
+        this.$message.info('请先选择资产项目')
+        return
+      }
+      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'))
       this.$refs.assetBundlePopover.show = true
     },
     // 资产变动时
@@ -362,12 +387,12 @@ export default {
     // 删除
     deleteFn (record) {
       this.dataSource.forEach((item, index) => {
-        if (item.assetCode === record.assetCode) {
+        if (item.assetObjectId === record.assetObjectId) {
           this.dataSource.splice(index, 1)
         }
       })
       this.checkedData.forEach((item, index) => {
-        if (record.assetCode === item) {
+        if (record.assetObjectId === item) {
           this.checkedData.splice(index, 1)
         }
       })
@@ -384,9 +409,10 @@ export default {
     handleSubmit (saveType) {
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log(saveType)
-          console.log(values)
-          console.log(this.detail.files)
+          if (this.dataSource.length === 0) {
+            this.$message.info('资产明细列表不能为空')
+            return
+          }
           let form = {
             organId: this.organId,
             cleaningOrderCode: values.cleaningOrderCode,
@@ -394,9 +420,17 @@ export default {
             assetType: values.assetType,
             cleanupType: values.cleanupType,
             remark: values.remark,
-            attachmentPath: '',
             saveType: saveType
           }
+          let attachment = []
+          this.detail.attachment.forEach(item => {
+            let obj = {
+              attachmentPath: item.url,
+              oldAttachmentName: item.name
+            }
+            attachment.push(obj)
+          })
+          form.attachment = attachment
           let arr = []
           this.dataSource.forEach(item => {
             let obj = {
@@ -414,6 +448,7 @@ export default {
           this.$api.assets.submitCleanup(form).then(res => {
             if (res.data.code === '0') {
               this.$message.success('提交成功')
+              this.$router.push({path: '/assetClear'})
             } else {
               this.$message.error(res.data.message)
             }
@@ -425,7 +460,9 @@ export default {
     submitAudit () {
     },
     // 取消
-    cancel () {},
+    cancel () {
+      this.$router.push({path: '/assetClear'})
+    },
     // 审核通过
     approveAudit () {},
     // 驳回
@@ -435,7 +472,7 @@ export default {
         return
       }
     },
-    getDetail () {
+    getEditDetail () {
       let form = {
         cleaningOrderId: this.cleaningOrderId
       }
@@ -444,12 +481,48 @@ export default {
           console.log(res)
           let data = res.data.data
           this.detail = data
-          this.detail.files = []
+          this.detail.attachment.forEach(item => {
+            item.url = item.attachmentPath
+            item.name = item.oldAttachmentName
+          })
           this.detail.assetDetailList.forEach((item, index) => {
             item.key = index.toString()
           })
           console.log(this.detail)
           this.dataSource = this.detail.assetDetailList
+        }
+      })
+    },
+    getDetail () {
+      let form = {
+        cleaningOrderId: this.cleaningOrderId
+      }
+      this.$api.assets.getCleanupDetail(form).then(res => {
+        if (res.data.code === '0') {
+          console.log(res)
+          let data = res.data.data
+          this.detail = data
+          this.detail.attachment.forEach(item => {
+            item.url = item.attachmentPath
+            item.name = item.oldAttachmentName
+          })
+        }
+      })
+    },
+    getAssetDetailList () {
+      let form = {
+        cleaningOrderId: this.cleaningOrderId,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
+      }
+      this.$api.assets.getCleanupDetailPage(form).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data.data
+          data.forEach((item, index) => {
+            item.key = index.toString()
+          })
+          this.dataSource = data
+          this.paginator.totalCount = res.data.data.count
         }
       })
     }
@@ -466,7 +539,12 @@ export default {
     }
     if (this.pageType !== 'new') {
       this.cleaningOrderId = this.$route.query.cleaningOrderId
-      this.getDetail()
+      if (this.pageType === 'edit') {
+        this.getEditDetail()
+      } else {
+        this.getDetail()
+        this.getAssetDetailList()
+      }
     }
     if (!this.editable) {
       this.columns = this.columns.slice(0, this.columns.length - 1)

@@ -84,6 +84,7 @@
         :organTitle="organName"
         :key="modalObj.projectId"
         :projectId="modalObj.projectId"
+        :sourceTypeOptions="sourceTypeOptions"
       />
     </SG-Modal>
   </div>
@@ -103,19 +104,23 @@
         overviewNumSpinning: false, // 统计查询loading
         assetName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
-        takeOverOptions: [], // 查询条件-是否接管选项
+        takeOverOptions: [
+          {key: -1, title: '全部接管'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+        ], // 查询条件-是否接管选项
         isCurrent:false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id
         organName: '', // 查询条件-组织Id
         approvalStatus: undefined, // 查询条件-项目状态
         statusOptions: [
-          {key: 0, title: '全部状态'}, {key: 1, title: '待审批'},
-          {key: 2, title: '已驳回'}, {key: 3, title: '已审批'}
+          {key: -1, title: '全部状态'}, {key: 0, title: '草稿'},
+          {key: 2, title: '已驳回'}, {key: 3, title: '已审批'}, {key: 1, title: '待审批'}
         ], // 查询条件-项目状态选项
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项
         transferToOperation: undefined, // 查询条件-是否转运营
-        operateOptions: [], // 查询条件-是否转运营选项
+        operateOptions: [
+          {key: -1, title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
+        ], // 查询条件-是否转运营选项
         numList: [
           {title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057'},
           {title: '待审核', value: 0, num: 'toBeAuditedNum', percent: 'toBeAuditedPercent', fontColor: '#324057'},
@@ -134,7 +139,7 @@
             { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName', fixed: 'left', width: '120px' },
             { title: '资产项目编码', dataIndex: 'projectCode', key: 'projectCode' },
             { title: '来源方式', key: 'sourceTypeName', dataIndex: 'sourceTypeName' },
-            { title: '来源渠道', dataIndex: 'sourceChannelType', key: 'sourceChannelType' },
+            { title: '来源渠道', dataIndex: 'souceChannelType', key: 'sourceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum', key: 'assetsNum' },
             { title: '资产项目状态', dataIndex: 'approvalStatusName', key: 'approvalStatusName' },
             { title: '审核日期', dataIndex: 'auditDate', key: 'auditDate' },
@@ -161,6 +166,22 @@
       //       // this.handleModalOpen()
       //   }
       // },
+      
+      // 查询数据来源方式字典接口
+      querySourceTypeList () {
+        this.$api.assets.organDict({code: ' source_type', organId: this.organId}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.sourceTypeOptions = (res.data || []).map(item => {
+              return { value: item.value, name: item.name }
+            })
+            return false
+          }
+          throw res.message || '查询来源方式失败'
+        }).catch(err => {
+          this.$message.error(err || '查询来源方式失败')
+        })
+      },
 
       // Modal提交
       handleModalOk () {
@@ -312,8 +333,11 @@
       }
     },
 
-    mounted () {
+    created () {
+      // 查询来源方式字典
+      this.querySourceTypeList()
       // 模拟接口调用
+      // debugger
       this.queryTableData({})
     }
   }

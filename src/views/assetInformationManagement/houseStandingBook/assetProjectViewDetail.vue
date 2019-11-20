@@ -123,6 +123,13 @@
             <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.occupyNum}}<span>({{item.occupyNumPercent}})</span></div></div></a-col>
             <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.otherNum}}<span>({{item.otherNumPercent}})</span></div></div></a-col>
           </a-row>
+          <SG-FooterPagination
+            :pageLength="paginator.pageLength"
+            :totalCount="paginator.totalCount"
+            location="absolute"
+            v-model="paginator.pageNo"
+            @change="handlePageChange"
+          />
         </div>
       </div>
     </div>
@@ -131,6 +138,8 @@
 
 <script>
 import {dateToString} from 'utils/formatTime'
+import { basics } from '@/config/config.url'
+import _ from 'lodash'
 const columns = [
   {
     title: '转运营日期',
@@ -185,6 +194,8 @@ export default {
         {title: '其他(㎡)', area: '', percent: ''}
       ],
       assetList: [],
+      imgPrx: basics.common.imgStr,
+      defaultImg: require('./../../../assets/image/default_house.png'),
       paginator: {
         pageNo: 1,
         pageLength: 10,
@@ -198,6 +209,12 @@ export default {
         return dateToString(new Date(value), 'yyyy-mm-dd')
       }
       return ''
+    },
+    // 页码发生变化
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
+      this.getAssetList()
     },
     getDetail () {
       let form = {
@@ -261,9 +278,19 @@ export default {
       }
       this.$api.assets.viewDetailsPage(form).then(res => {
         if (res.data.code === '0') {
-          console.log(res)
           let data = res.data.data.data
           this.assetList = data
+          // this.assetList[0].pictureUrl = '/picture/2019/11/19/338/201911191743467970_1920_1080.JPEG'
+          // let obj = _.cloneDeep(this.assetList[0])
+          // this.assetList.push(obj)
+          // this.assetList[1].pictureUrl = null
+          this.assetList.forEach(item => {
+            if (item.pictureUrl) {
+              item.pictureUrl = this.imgPrx + item.pictureUrl
+            } else {
+              item.pictureUrl = this.defaultImg
+            }
+          })
           this.paginator.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
@@ -329,6 +356,12 @@ export default {
           width: 100%;
         }
         .asset-condition {
+          border: 1px solid #EFF2F7;
+          /*border-left: 1px solid #EFF2F7;*/
+          /*border-top: 1px solid #EFF2F7;*/
+          border-right: none;
+          position: relative;
+          padding-bottom: 50px;
           .asset-project-header {
             .asset-project-item {
               height: 80px;
@@ -336,6 +369,7 @@ export default {
               text-align: center;
               color: white;
               border-right: 1px solid #EFF2F7;
+              border-bottom: 1px solid #EFF2F7;
               .asset-project-item-title {
                 font-size: 12px;
                 margin-bottom: 3px;
@@ -377,6 +411,13 @@ export default {
               padding: 10px;
               border-right: 1px solid #EFF2F7;
               border-bottom: 1px solid #EFF2F7;
+              display: flex;
+              align-items: center;
+              img {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+              }
             }
             .asset-project-item {
               height: 80px;

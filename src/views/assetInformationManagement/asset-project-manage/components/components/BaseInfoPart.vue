@@ -21,10 +21,12 @@
         </a-col>
         <a-col :span="colSpan">
           <a-form-item label="来源方式" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-input
+            <a-select
               :disabled="!isEdit"
+              style="width: 100%;"
               placeholder="请选择来源方式"
-              v-decorator="['sourceType', {initialValue, rules: [{required: true, message: '请选择来源方式'}]}]"
+              :options="sourceTypeOptions || []"
+              v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -78,8 +80,9 @@
           <a-form-item label="划转批复下发时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit"
+              style="width: 100%"
               placeholder="请选择划转批复下发时间"
-              v-decorator="['transferApprovalDate', { initialValue }]"
+              v-decorator="['transferApprovalDate']"
             />
           </a-form-item>
         </a-col>
@@ -87,8 +90,9 @@
           <a-form-item label="协议签署时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit"
+              style="width: 100%"
               placeholder="请选择协议签署时间"
-              v-decorator="['agreementSignDate', { initialValue }]"
+              v-decorator="['agreementSignDate']"
             />
           </a-form-item>
         </a-col>
@@ -96,8 +100,9 @@
           <a-form-item label="上报基础情况表时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit"
+              style="width: 100%"
               placeholder="请选择上报基础情况表时间"
-              v-decorator="['reportBasicInfoDate', { initialValue }]"
+              v-decorator="['reportBasicInfoDate']"
             />
           </a-form-item>
         </a-col>
@@ -105,8 +110,9 @@
           <a-form-item label="上报房屋划转请示时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit"
+              style="width: 100%"
               placeholder="请选择划上报房屋划转请示时间"
-              v-decorator="['reportHouseTransferReqDate', { initialValue }]"
+              v-decorator="['reportHouseTransferReqDate']"
             />
           </a-form-item>
         </a-col>
@@ -114,8 +120,9 @@
           <a-form-item label="房屋核实时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit"
+              style="width: 100%"
               placeholder="请选择房屋核实时间"
-              v-decorator="['houseVerificationDate', { initialValue }]"
+              v-decorator="['houseVerificationDate']"
             />
           </a-form-item>
         </a-col>
@@ -148,9 +155,10 @@
 </template>
 
 <script>
-export default {
+  import moment from 'moment'
+  export default {
   name: 'BaseInfo',
-  props: ['type', 'projectId', 'organTitle', 'organId'],
+  props: ['type', 'projectId', 'organTitle', 'organId', 'sourceTypeOptions'],
   data () {
     return {
       colSpan: 8,
@@ -162,7 +170,7 @@ export default {
       form: this.$form.createForm(this), // 注册form
       attachment: [], // 附件
       organName: '', // 管理机构
-      initData: {} // 编辑时保存用作入参
+      organKey: '', // 管理机构
     }
   },
   
@@ -176,9 +184,22 @@ export default {
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { initData, attachment, organId, type } = this
-          let form = Object.assign({}, initData, attachment, values)
-          type === 'add' && (form.organId = organId) // 当为新增时organId取自props，编辑时取自initData
+          const { attachment, organId, type } = this
+          let attachArr = attachment.map(m => {
+            const { url: attachmentPath, suffix: attachmentSuffix, name: oldAttachmentName } = m
+            return { attachmentPath, attachmentSuffix, oldAttachmentName, newAttachmentName: name }
+          }) // 处理附件格式
+          let {
+            agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate, transferApprovalDate
+          } = values
+          let dateObj = {
+            agreementSignDate: agreementSignDate ? moment(agreementSignDate).format('YYYY-MM-DD') : '',
+            reportBasicInfoDate: reportBasicInfoDate ? moment(reportBasicInfoDate).format('YYYY-MM-DD') : '',
+            transferApprovalDate: transferApprovalDate ? moment(transferApprovalDate).format('YYYY-MM-DD') : '',
+            houseVerificationDate: houseVerificationDate ? moment(houseVerificationDate).format('YYYY-MM-DD') : '',
+            reportHouseTransferReqDate: reportHouseTransferReqDate ? moment(reportHouseTransferReqDate).format('YYYY-MM-DD') : ''
+          } // 转换日期格式为string
+          let form = Object.assign({}, { attachment: attachArr, organId }, values, dateObj)
           this.$api.assets[api[type]](form).then(r => {
             this.spinning = false
             let res = r.data
@@ -207,14 +228,30 @@ export default {
         this.spinning = false
         let res = r.data
         if (res && String(res.code) === '0') {
-          const { attachment, organName,  ...others} = res.data
+          const {
+            attachment, organName, organId, projectName, sourceType, sourceChannelType, projectCode,
+            agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate,
+            ownershipHandleProblems, transferApprovalDate, remark
+          } = res.data
           let attachArr = attachment.map(m => {
             return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
+          }) // 处理附件格式
+          Object.assign(this, {
+            attachment: attachArr,
+            organKey: organId, // 保存管理机构id
+            organName: organName // 展示管理机构名称
           })
-          this.attachment = attachArr
-          this.organName = organName  // 展示管理机构名称
-          this.initData = others // 复制当前接口数据，保存时用
-          return this.form.setFieldsValue({...others, attachment: attachArr})
+          // 转换日期格式为moment
+          let formData = {
+            attachment: attachArr,
+            agreementSignDate: moment(agreementSignDate || null, 'YYYY-MM-DD'),
+            reportBasicInfoDate: moment(reportBasicInfoDate || null, 'YYYY-MM-DD'),
+            transferApprovalDate: moment(transferApprovalDate || null, 'YYYY-MM-DD'),
+            houseVerificationDate: moment(houseVerificationDate || null, 'YYYY-MM-DD'),
+            reportHouseTransferReqDate: moment(reportHouseTransferReqDate || null, 'YYYY-MM-DD'),
+            projectName, sourceType, sourceChannelType, projectCode, remark, ownershipHandleProblems
+          }
+          return this.form.setFieldsValue(formData)
         }
         throw res.message || '查询资产项目详情出错'
       }).catch(err => {
@@ -235,6 +272,7 @@ export default {
         if (type == 'add') {
           // 新增时管理机构名称和Id取自props
           this.organName = this.organTitle
+          this.organKey = this.organId
         } else {
           // 编辑时调用接口查询详情
           this.queryDetail('edit')

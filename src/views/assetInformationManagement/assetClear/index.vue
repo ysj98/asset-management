@@ -122,7 +122,7 @@
       :totalCount="paginator.totalCount"
       location="absolute"
       v-model="paginator.pageNo"
-      @input="handlePageChange"
+      @change="handlePageChange"
     />
   </div>
 </template>
@@ -302,8 +302,9 @@ export default {
       this.queryCondition.onlyCurrentOrgan = event.target.checked
     },
     // 页码发生变化
-    handlePageChange (pageNo) {
-      this.paginator.pageNo = pageNo
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 新增清理单
@@ -320,7 +321,6 @@ export default {
           let form = {
             cleaningOrderId: record.cleaningOrderId
           }
-          console.log(form)
           self.$api.assets.deleteCleanup(form).then(res => {
             if (res.data.code === '0') {
               self.$message.success('删除成功')
@@ -378,6 +378,9 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
+            for (let key in item) {
+              item[key] = item[key] || '--'
+            }
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count

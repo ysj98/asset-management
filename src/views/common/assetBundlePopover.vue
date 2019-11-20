@@ -2,7 +2,7 @@
   organId: 组织机构id
   projectId: 项目id
   queryType: 查询类型 1 资产变动，2 资产清理 3权属登记
-  redactCheckedDataFn()    // 外成删除后给回来的数据调这个方法 this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData)
+  redactCheckedDataFn()    // 外层删除后给回来的数据调这个方法 this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData)
   this.$refs.assetBundlePopover.show = true    // 弹窗控制
 -->
 <template>
@@ -159,6 +159,12 @@ export default {
       }
     }
   },
+  watch: {
+    'selectedData.projectId' () {
+      console.log('projectId发生变化')
+      this.query()
+    }
+  },
   methods: {
     // 选中的
     onSelectChange (selectedRowKeys) {
@@ -186,7 +192,10 @@ export default {
     },
     // 外面删除了后剩下给回来的数据
     redactCheckedDataFn (redactChecked, projectId) {
-      this.selecData.projectId = projectId
+      if (this.selecData.projectId !== projectId) {
+        this.selecData.projectId = projectId
+        this.query()
+      }
       this.$nextTick(() => {
         this.selectedRowKeys = redactChecked
       })

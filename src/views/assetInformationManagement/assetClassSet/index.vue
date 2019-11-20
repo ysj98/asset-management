@@ -43,7 +43,7 @@
       :totalCount="paginator.totalCount"
       location="absolute"
       v-model="paginator.pageNo"
-      @input="handlePageChange"
+      @change="handlePageChange"
     />
   </div>
 </template>
@@ -81,7 +81,7 @@ const columns = [
   },
   {
     title: '计量单位',
-    dataIndex: 'unit',
+    dataIndex: 'unitName',
     width: '160'
   },
   {
@@ -91,7 +91,7 @@ const columns = [
   },
   {
     title: '折旧方法',
-    dataIndex: 'depreciationMethod',
+    dataIndex: 'depreciationMethodName',
     width: '160'
   },
   {
@@ -154,8 +154,9 @@ export default {
       this.queryClick()
     },
     // 页码发生变化
-    handlePageChange (pageNo) {
-      this.paginator.pageNo = pageNo
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 操作回调
@@ -165,9 +166,9 @@ export default {
           break
         case 'stop': this.changeStatus(0, record.categoryConfId, record.professionCode)
           break
-        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId, organId: this.organId}})
+        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId, organId: this.organId, professionCode: record.professionCode, assetType: record.assetType}})
           break
-        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail', categoryConfId: record.categoryConfId}})
+        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail', categoryConfId: record.categoryConfId, organId: this.organId, professionCode: record.professionCode, assetType: record.assetType}})
           break
         default: break
       }
@@ -210,6 +211,9 @@ export default {
           data.forEach((item, index) => {
             item.key = index
             item.operationData = +item.status === 0 ? operationData1 : operationData2
+            for (let key in item) {
+              item[key] = item[key] || '--'
+            }
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count
@@ -225,6 +229,7 @@ export default {
         codeName: this.codeName
       }
       this.$api.assets.exportList(form).then(res => {
+        console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
