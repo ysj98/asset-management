@@ -12,7 +12,7 @@ V1.0
 
 新增权限编码如下:
 楼盘字典
-zcgl_addhouse   新增房间
+zcgl_add_house   新增房间
 
 zcgl_asset_clear_new                资产清理-新建清理单
 zcgl_asset_clear_edit               资产清理-编辑清理单
