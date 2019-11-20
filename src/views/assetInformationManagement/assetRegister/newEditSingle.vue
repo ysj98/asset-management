@@ -278,31 +278,33 @@ export default {
   },
   methods: {
     importf (file, event) {
-      this.$importf(file, event).then(v => {
+      this.$importf(file, event).then(vv => {
+        let v = vv.splice(1, vv.length)
+        console.log(v, '拿到的')
         if (v.length > 0) {
           let arr = []
           for (let i = 0; i < v.length; i++) {
             let opt = {key: i}
             for (let j = 0; j < judgmentData.length; j++) {
               if (judgmentData[j].required) {
-                if (!v[i][judgmentData[j].title]) {
+                if (!v[i][judgmentData[j].empty]) {
                   this.$message.info(`请输入${judgmentData[j].title}`)
                   return
                 }
               }
               if (judgmentData[j].type === 'number') {
-                if (!(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].title])) {
+                if (!(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].empty])) {
                   this.$message.info(`请输入正确${judgmentData[j].title}`)
                   return
                 }
               }
               if (judgmentData[j].fontLength) {
-                if (String(v[i][judgmentData[j].title]).length > judgmentData[j].fontLength) {
+                if (String(v[i][judgmentData[j].empty]).length > judgmentData[j].fontLength) {
                   this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
                   return
                 }
               }
-              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].title]
+              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].empty]
             }
             arr.push(opt)
           }
