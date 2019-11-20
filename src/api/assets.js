@@ -245,6 +245,11 @@ export function queryBuildingViewFloorInfo (data) {
   return axiosGet(assets.buildingView.queryFloorInfo, data)
 }
 
+// 查询当前组织机构下所有的楼栋
+export function queryBuildingByOrganId (data) {
+  return axiosGet(assets.buildingView.queryBuildingByOrganId, data)
+}
+
 // 房屋台账 - 资产视图
 // 房屋资产基本信息查询
 export function queryAssetViewBaseInfo (data) {

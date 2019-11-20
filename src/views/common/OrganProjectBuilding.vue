@@ -88,7 +88,7 @@
         projectId: undefined, // 多选和单选值类型不同，定义undefined
         projectOptions: [],
         buildingId: undefined,
-        buildingOptions: [{name: '11', id: 2}, {name: '101', id: 20}],
+        buildingOptions: [],
         properties: {} // 属性值
       }
     },
@@ -101,32 +101,32 @@
       },
 
       // 查询资产项目接口
-      queryProjectData () {
+      queryData (type) {
+        if (!this.isShowBuilding && type === 'buildingOptions') { return false } // 不展示楼栋不执行调接口
+        const api = { buildingOptions: 'queryBuildingByOrganId', projectOptions: 'getObjectKeyValueByOrganId' }
         this.loading = true
         clearTimeout(this.timeoutId)
         let _this = this
         _this.timeoutId = setTimeout(() => {
-          _this.$api.assets.getObjectKeyValueByOrganId({organId: this.organId}).then(r => {
+          _this.$api.assets[api[type]]({organId: this.organId}).then(r => {
             _this.loading = false
             let res = r.data
             if (res && String(res.code) === '0') {
-              _this.projectOptions = (res.data || []).map(item => {
-                return { value: item.projectId, name: item.projectName }
+              _this[type] = (res.data || []).map(item => {
+                return {
+                  value: item.assetHouseId || item.projectId,
+                  name: item.assetName || item.projectName
+                }
               })
               return false
             }
-            throw res.message || '查询资产项目失败'
+            throw res.message || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`
           }).catch(err => {
             _this.loading = false
-            _this.$message.error(err || '查询资产项目失败')
+            _this.$message.error(err || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`)
           })
         })
-      },
-
-      // 查询楼栋信息
-      queryBuildingData () {
-        this.loading = true
-      },
+      }
     },
 
     mounted () {
@@ -145,14 +145,14 @@
           buildingId: undefined
         })
         this.$emit('input', { organId, projectId: undefined, buildingId: undefined })
-        this.queryProjectData()
+        this.queryData('projectOptions')
       },
 
       projectId: function (projectId) {
         const { organId } = this
         this.buildingId = ''
         this.$emit('input', { organId, projectId, buildingId: undefined })
-        this.queryBuildingData()
+        this.queryData('buildingOptions')
       },
 
       buildingId: function (buildingId) {

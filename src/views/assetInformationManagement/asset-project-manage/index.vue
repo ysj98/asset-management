@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" @click="handleModalOpen('add')">新增资产项目</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="handleModalOpen('add', new Date().getTime())">新增资产项目</SG-Button>
         <SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>
       </div>
       <div slot="contentForm">
@@ -13,14 +13,14 @@
             <tree-select @changeTree="changeTree" style="width: 100%;"/>
           </a-col>
           <a-col :span="6">
-            <a-select v-model="approvalStatus" mode="multiple" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
+            <a-select v-model="approvalStatus" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
           </a-col>
           <a-col :span="6">
-            <a-select v-model="sourceTypeList" placeholder="请选择来源方式" style="width: 100%;" :options="sourceTypeOptions"/>
+            <a-select v-model="sourceTypeList" :maxTagCount="1" placeholder="请选择来源方式" style="width: 100%;" :options="sourceTypeOptions"/>
           </a-col>
-          <a-col :span="6">
+          <a-col :span="6" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
-            <SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
           </a-col>
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
@@ -34,7 +34,7 @@
             <a-input placeholder="请输入资产项目名称" v-model="assetName"/>
           </a-col>
           <a-col :span="6" style="text-align: left">
-            <a-checkbox :checked="isCurrent" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
+            <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
           </a-col>
         </a-row>
       </div>
@@ -71,12 +71,13 @@
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--新增、编辑、审核弹窗-->
-    <SG-Modal
-      v-bind="modalObj"
-      v-model="modalObj.status"
-      @ok="handleModalOk"
-      @cancel="handleModalCancel"
-    >
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status">
+      <template slot="footer">
+        <a-button key="submit" type="primary" :loading="tableObj.loading" @click="handleModalOk">
+          {{modalObj.okText}}
+        </a-button>
+        <a-button key="back" @click="handleModalCancel" :loading="tableObj.loading">{{modalObj.cancelText}}</a-button>
+      </template>
       <base-info
         ref="baseInfo"
         :organId="organId"
@@ -105,21 +106,23 @@
         assetName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
-          {key: -1, title: '全部接管'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+          // {key: -1, title: '全部接管'},
+          {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
         ], // 查询条件-是否接管选项
-        isCurrent:false, // 查询条件-是否仅当前机构
+        isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id
         organName: '', // 查询条件-组织Id
         approvalStatus: undefined, // 查询条件-项目状态
         statusOptions: [
-          {key: -1, title: '全部状态'}, {key: 0, title: '草稿'},
-          {key: 2, title: '已驳回'}, {key: 3, title: '已审批'}, {key: 1, title: '待审批'}
+          // {key: -1, title: '全部状态'},
+          {key: 0, title: '草稿'}, {key: 2, title: '已驳回'}, {key: 3, title: '已审批'}, {key: 1, title: '待审批'}
         ], // 查询条件-项目状态选项
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项
         transferToOperation: undefined, // 查询条件-是否转运营
         operateOptions: [
-          {key: -1, title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
+          // {key: -1, title: '全部运营状态'},
+          {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
         ], // 查询条件-是否转运营选项
         numList: [
           {title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057'},
@@ -159,21 +162,18 @@
     },
     
     methods: {
-      // 编辑、新增、审核按钮事件
-      // handleClickAction (type) {
-      //   switch (type) {
-      //     case 'search':
-      //       // this.handleModalOpen()
-      //   }
-      // },
-      
+      // 处理是否选中仅当前机构
+      changeChecked (e) {
+        this.isCurrent = e.target.checked
+      },
+
       // 查询数据来源方式字典接口
       querySourceTypeList () {
         this.$api.assets.organDict({code: ' source_type', organId: this.organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.sourceTypeOptions = (res.data || []).map(item => {
-              return { value: item.value, name: item.name }
+            this.sourceTypeOptions = (res.data.data || []).map(item => {
+              return { key: item.value, title: item.name }
             })
             return false
           }
@@ -189,8 +189,10 @@
         // 编辑基本信息时保存
         if (type === 'add' || type === 'edit') {
           new Promise((resolve, reject) => {
+            this.tableObj.loading = true
             this.$refs['baseInfo'].handleSubmit(resolve, reject)
           }).then(() => {
+            this.tableObj.loading = false
             this.modalObj.status = false
           })
         } else if (type === 'approval') {
@@ -201,6 +203,7 @@
             let res = r.data
             if (res && String(res.code) === '0') {
               this.$message.success('审核成功')
+              this.modalObj.status = false
               // 更新列表
               const { pageNo, pageLength } = this.paginationObj
               return this.queryTableData({pageNo, pageLength, type: 'search'})
@@ -233,6 +236,28 @@
 
       // Modal关闭
       handleModalCancel () {
+        const { modalObj: { type }, projectId } = this
+        if (type === 'approval') {
+          this.$message.info(projectId + '别点了，二期开发')
+          // 审核提交
+          // this.tableObj.loading = true
+          // this.$api.assets.doProjectManageAudit({ projectId }).then(r => {
+          //   this.tableObj.loading = false
+          //   let res = r.data
+          //   if (res && String(res.code) === '0') {
+          //     this.$message.success('驳回成功')
+          //     this.modalObj.status = false
+          //     // 更新列表
+          //     const { pageNo, pageLength } = this.paginationObj
+          //     return this.queryTableData({pageNo, pageLength, type: 'search'})
+          //   }
+          //   throw res.message || '驳回失败'
+          // }).catch(err => {
+          //   this.tableObj.loading = false
+          //   this.$message.error(err || '驳回失败')
+          // })
+          // return false
+        }
         this.modalObj.status = false
       },
 
@@ -282,8 +307,8 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        // if (!houseIdList) { return this.$message.info('请选择楼栋!') }
         const { organId, approvalStatus, sourceTypeList, takeOver, isCurrent, assetName, transferToOperation } = this
+        if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           assetName, approvalStatus: approvalStatus || null, transferToOperation,
@@ -336,9 +361,6 @@
     created () {
       // 查询来源方式字典
       this.querySourceTypeList()
-      // 模拟接口调用
-      // debugger
-      this.queryTableData({})
     }
   }
 </script>

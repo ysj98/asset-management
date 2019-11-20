@@ -28,15 +28,14 @@
     <SG-Title title="资产使用方向" noMargin/>
     <overview-number :numList="numList" class="title_div" style="margin-top: 21px"/>
     <!--编辑资产详情弹窗-->
-    <SG-Modal
-      v-bind="modalObj"
-      v-model="modalObj.status"
-      @ok="handleModalOk"
-      @cancel="handleModalCancel"
-    >
-      <a-spin :spinning="modalObj.confirmLoading">
-        <edit-asset-detail ref="editAssetDetail" :details="details"/>
-      </a-spin>
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status">
+      <template slot="footer">
+        <a-button key="submit" type="primary" :loading="modalObj.loading" @click="handleModalOk">
+          {{modalObj.okText}}
+        </a-button>
+        <a-button key="back" @click="handleModalCancel">{{modalObj.cancelText}}</a-button>
+      </template>
+      <edit-asset-detail ref="editAssetDetail" :details="details"/>
     </SG-Modal>
   </a-spin>
 </template>
@@ -54,7 +53,7 @@
         baseInfoKeys: [
           {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'},
           {title: '资产类型', key: 'type'}, {title: '房屋形态', key: 'houseStatus'}, {title: '户型', key: 'houseType'},
-          {title: '装修情况', key: 'decorate'}, {title: '建筑结构', key: 'structure'}, {title: '资产用途', key: 'use'},
+          {title: '装修情况', key: 'decorateOptions'}, {title: '建筑结构', key: 'structure'}, {title: '资产用途', key: 'use'},
           {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'validPeriod'}, {title: '维修日期', key: 'fixDate'},
           {title: '资产状态', key: 'status'}, {title: '相关描述', key: 'desc', span: 16},
           {title: '资产二维码', key: 'QRCode', span: 24}
@@ -66,7 +65,7 @@
         ], // 空间位置字段
         infoData: {}, // 信息数据
         details: {}, // 编辑基本信息数据
-        modalObj: { title: '编辑资产信息', status: false, confirmLoading: false, okText: '保存', width: 550 },
+        modalObj: { title: '编辑资产信息', status: false, okText: '保存', cancelText: '取消', width: 550, loading: false },
         numList: [
           {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
@@ -120,12 +119,11 @@
       // 打开编辑Modal
       handleModalOpen (type) {
         if (type === 'location') {
-          return
+          return false
         }
-        Object.assign(this.modalObj, {
-          status: true,
-          details: {}
-        })
+        const { infoData: { assetName, assetCode, decorateOptions } } = this
+        this.modalObj.status = true
+        this.details = { assetName, assetCode, decorateOptions }
       },
 
       // Modal关闭
@@ -135,21 +133,17 @@
 
       // Modal提交
       handleModalOk () {
+        this.modalObj.loading = true
         new Promise((resolve, reject) => {
           this.$refs['editAssetDetail'].handleSubmit(resolve, reject)
-        }).then(values => {
-          this.modalObj.confirmLoading = true
-          this.$api.assets.saveAssetViewHouseInfo({...values, assetHouseId: this.assetHouseId}).then(r =>{
-            this.modalObj.confirmLoading = false
-            let res = r.data
-            if (res && String(res.code) === '0') {
-              this.modalObj.status = false
-              return this.$message.success('保存成功')
-            }
-            this.$message.error(res.message || '保存接口出错')
-          })
+        }).then(() => {
+          this.modalObj.loading = false
+          this.modalObj.status = false
+          // 更新页面
+          this.queryDetailInfo()
+          this.queryHouseAreaInfo()
         }).catch(() => {
-          this.modalObj.confirmLoading = false
+          this.modalObj.loading = false
         })
       }
     },

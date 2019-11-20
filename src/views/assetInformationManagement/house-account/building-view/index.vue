@@ -2,7 +2,7 @@
 <template>
   <div>
     <!--搜索条件-->
-    <div style="padding: 19px 30px">
+    <div style="padding: 20px 30px">
       <a-row :gutter="10">
         <a-col :span="8">
           <SG-Button
@@ -22,8 +22,6 @@
             icon="search"
             type="primary"
             @click="queryTableData({type: 'search'})"
-            :disabled="!organProjectBuildingValue.organId"
-            :title="organProjectBuildingValue.projectId ? '' : '请先选择资产项目'"
           >查询</SG-Button>
         </a-col>
       </a-row>
@@ -67,7 +65,8 @@
           scroll: { x: true },
           rowKey: 'assetHouseId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left' }, { title: '楼栋编号', dataIndex: 'assetCode', key: 'assetCode' },
+            { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left', width: 80 },
+            { title: '楼栋编号', dataIndex: 'assetCode', key: 'assetCode' },
             { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName' }, { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
             { title: '建筑年代', dataIndex: 'years', key: 'years' },
             { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
@@ -81,7 +80,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
             { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
             { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right' }
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]
         },
         paginationObj: { pageNo: 0, totalCount: 0, pageLength: 10, location: 'absolute' }
@@ -94,13 +93,13 @@
         // const { organId } = this.organProjectBuildingValue
         // router name模式式不支持详情页面刷新,如需要刷新页面请使用router query或vuex
         const { projectId, assetHouseId } = record
-        assetHouseId && this.$router.push({ name: '楼栋视图详情', params: {organId: 1111, projectId, assetHouseId }})
+        assetHouseId && this.$router.push({ path: '/buildingViewDetail', query: {organId: 1111, projectId, assetHouseId }})
       },
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
-        // if (!houseIdList) { return this.$message.info('请选择楼栋!') }
+        if (!houseIdList || !projectIdList || !organId) { return this.$message.info('请选择搜索条件') }
         this.tableObj.loading = true
         this.$api.assets.queryBuildingViewPage({ organId, houseIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
           this.tableObj.loading = false
@@ -159,19 +158,6 @@
           this.exportBtnLoading = false
           this.$message.error(err || '导出楼栋视图失败')
         })
-      }
-    },
-
-    mounted () {
-      // 获取Table表宽度
-      // let { offsetWidth } = document.getElementsByClassName('custom-table')[0]
-      // this.tableObj.scroll.y = offsetWidth || 1000
-      // this.queryTableData({ type: 'search' }) // 模拟调用接口
-    },
-
-    watch: {
-      'organProjectBuildingValue.buildingId': function (buildingId) {
-        buildingId && this.queryTableData({ type: 'search'})
       }
     }
   }
