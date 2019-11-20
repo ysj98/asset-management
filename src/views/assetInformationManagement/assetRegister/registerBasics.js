@@ -109,5 +109,13 @@ export const columnsData = [
     title: '已使用期数(月)',
     dataIndex: 'usedDate',
     width: '100px'
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    align: 'center',
+    fixed: 'right',
+    width: 100,
+    scopedSlots: { customRender: 'operation' }
   }
 ]

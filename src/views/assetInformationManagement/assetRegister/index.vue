@@ -9,7 +9,7 @@
       </div>
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-        <a-checkbox :value="queryCondition.isCurrent" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
+        <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -117,7 +117,7 @@ const columns = [
   },
   {
     title: '创建日期',
-    dataIndex: 'createDate'
+    dataIndex: 'createTime'
   },
   {
     title: '状态',
@@ -135,6 +135,7 @@ export default {
   props: {},
   data () {
     return {
+      isChild: false,
       commonShow: false,
       commonTitle: '',
       judge: '',
@@ -271,13 +272,17 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.getObjectKeyValueByOrganIdFn()
-      this.query()
+      if (!this.isChild) {
+        this.queryCondition.pageNum = 1
+        this.query()
+      } else {
+        this.isChild = false
+      }
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
       this.queryCondition.isCurrent = e.target.checked
     },
-    approvalStatusFn () {},
     // 分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -343,7 +348,7 @@ export default {
         crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
         isCurrent: this.queryCondition.isCurrent               // 仅当前机构下资产清理单 0 否 1 是
       }
-      this.$api.assets.getProjectListPage(obj).then(res => {
+      this.$api.assets.getRegisterOrderListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           data.forEach((item, index) => {
@@ -360,6 +365,36 @@ export default {
     }
   },
   created () {
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    console.log(query, 'jiss')
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.approvalStatus = query.approvalStatus
+      this.queryCondition.assetType = query.assetType
+      this.queryCondition.crateDateE = query.crateDateE
+      this.queryCondition.createDateS = query.createDateS
+      this.queryCondition.isCurrent = query.isCurrent
+      this.queryCondition.organId = query.organId
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.projectId = query.projectId
+      this.isChild = query.isChild
+      this.query()
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    let o = {key: this.$route.path, data: {}}
+    if (to.path.indexOf(from.path) !== -1) {
+      o = {
+        key: from.path,
+        data: {
+          ...this.queryCondition,
+          ...this.defaultValue,
+          isChild: true
+        }
+      }
+    }
+    this.$store.commit('pro/SET_ROUTE_QUERY', o)
+    next()
   },
   mounted () {
     // 获取状态

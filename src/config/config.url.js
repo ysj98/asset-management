@@ -125,7 +125,7 @@ export const assets = {
     // 资产登记-详情回显
     // getRegisterOrderById:/ams/registerOrder/getRegisterOrderById,
     // 资产登记列表-分页查询
-    getProjectListPage: '/ams/registerOrder/getRegisterOrderListPage',
+    getRegisterOrderListPage: '/ams/registerOrder/getRegisterOrderListPage',
     // 资产登记新增-下载导入模板
     downloadTemplate: '/ams/registerOrder/downloadTemplate',
     // 资产登记转运营信息-根据资产项目ID
@@ -133,7 +133,9 @@ export const assets = {
     // 资产登记明细列表-分页
     getRegisterOrderDetailsPageById: '/ams/registerOrder/getRegisterOrderDetailsPageById',
     // 资产登记明细列表-不分页
-    getRegisterOrderDetailsById: '/ams/registerOrder/getRegisterOrderDetailsById'
+    getRegisterOrderDetailsById: '/ams/registerOrder/getRegisterOrderDetailsById',
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatistics: '/ams/registerOrder/getRegisterOrderDetailsStatistics'
   },
   // 资产清理
   assetClear: {
@@ -150,7 +152,9 @@ export const assets = {
     // 资产清理-编辑查询明细
     getCleanupInfo: '/ams/assetCleanup/getCleanupInfo',
     // 资产清理-详情
-    getCleanupDetail: '/ams/assetCleanup/getCleanupDetail'
+    getCleanupDetail: '/ams/assetCleanup/getCleanupDetail',
+    // 资产清理-资产明细分页列表
+    getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage'
   },
   // 资产分类设置
   assetClassSet: {

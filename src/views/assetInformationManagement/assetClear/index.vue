@@ -5,7 +5,7 @@
   <div class="assets-clear">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button icon="plus" type="primary" @click="newClearForm">新建清理单</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newClearForm" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_NEW">新建清理单</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" :showSearch="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         </div>
@@ -109,10 +109,10 @@
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
-          <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)">审核</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="antiAudit(record)">反审核</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)">编辑</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="deleteClearForm(record)">删除</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_AUDIT">审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="antiAudit(record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_REVERSE_AUDIT">反审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)"  v-power="ASSET_MANAGEMENT.ASSET_CLEAR_EDIT">编辑</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="deleteClearForm(record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_DELETE">删除</a>
           <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
         </template>
       </a-table>
@@ -122,17 +122,17 @@
       :totalCount="paginator.totalCount"
       location="absolute"
       v-model="paginator.pageNo"
-      @input="handlePageChange"
+      @change="handlePageChange"
     />
   </div>
 </template>
 
 <script>
-import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import SegiRangePicker from '@/components/SegiRangePicker'
 import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
 import moment from 'moment'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const columns = [
   {
@@ -216,10 +216,11 @@ const approvalStatusData = [
 ]
 export default {
   components: {
-    SearchContainer, TreeSelect, SegiRangePicker
+    TreeSelect, SegiRangePicker
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       allStyle: 'width: 170px; margin-right: 10px;',
       toggle: false,
       organName: '',
@@ -302,8 +303,9 @@ export default {
       this.queryCondition.onlyCurrentOrgan = event.target.checked
     },
     // 页码发生变化
-    handlePageChange (pageNo) {
-      this.paginator.pageNo = pageNo
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 新增清理单
@@ -320,7 +322,6 @@ export default {
           let form = {
             cleaningOrderId: record.cleaningOrderId
           }
-          console.log(form)
           self.$api.assets.deleteCleanup(form).then(res => {
             if (res.data.code === '0') {
               self.$message.success('删除成功')
@@ -378,6 +379,11 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
+            for (let key in item) {
+              if (item[key] === '') {
+                item[key] = '--'
+              }
+            }
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count

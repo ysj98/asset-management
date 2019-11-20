@@ -41,9 +41,10 @@
         </div>
       </div>
     </SearchContainer>
-    <div class="table-layout-fixed">
+    <div class="table-layout-fixed" ref="table_box">
       <a-table
         :loading="loading"
+        :scroll="scrollHeight"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
@@ -70,6 +71,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
+import {utils, debounce} from '@/utils/utils.js'
 const columns = [
   {
     title: '变动编号',
@@ -163,6 +165,7 @@ export default {
   props: {},
   data () {
     return {
+      scrollHeight: {y: 0},
       loading: false,
       noPageTools: false,
       location: 'absolute',
@@ -357,6 +360,21 @@ export default {
       this.alterationDate = []
       this.queryCondition.assetName = ''
     },
+    // 计算滚动条宽度
+    computedHeight () {
+      let elem = this.$refs.table_box
+      if (!elem) {
+        return
+      }
+      let height = utils.AdjustHeight(elem)
+      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
+      this.scrollHeight = {y: y - 70 - 40}
+      console.log(this.scrollHeight, '-=-=-=')
+    },
+    // 防抖函数
+    debounceMothed: debounce(function () {
+      this.computedHeight()
+    }, 200),
     // 查询
     query () {
       this.loading = true
@@ -400,6 +418,10 @@ export default {
   created () {
   },
   mounted () {
+    this.computedHeight()
+    window.addEventListener('resize', () => {
+      this.debounceMothed()
+    })
     // 获取变动类型
     this.platformDictFn('asset_change_type')
     // 获取状态

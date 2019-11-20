@@ -9,10 +9,10 @@
       <div class="particulars-obj">
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderCode || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.objectName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetType || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">创建时间：{{particularsData.objectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
@@ -27,7 +27,15 @@
       </div>
     </div>
     <div class="particulars-nav">
-      <span class="section-title blue">资产列表</span>
+      <span class="section-title blue">资产明细</span>
+      <div class="particulars-obj">
+        <div class="tab-exhibition">
+          <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
+            <p>{{item.name}}</p>
+            <p>{{item.value}}</p>
+          </div>
+        </div>
+      </div>
       <div class="particulars-obj">
         <!-- table-layout-fixed -->
         <div class="table-border">
@@ -70,11 +78,35 @@
 
 <script>
 import {columnsData} from './registerBasics'
+const assetsTotal = [
+  {
+    code: 'assetsNum',
+    name: '资产数量',
+    value: ''
+  },
+  {
+    code: 'areaNum',
+    name: '建筑面积',
+    value: ''
+  },
+  {
+    code: 'originalNum',
+    name: '资产原值',
+    value: ''
+  },
+  {
+    code: 'marketValueNum',
+    name: '市场价值',
+    value: ''
+  }
+]
 export default {
   components: {},
   props: {},
   data () {
     return {
+      assetsTotal: [...assetsTotal],
+      record: '',
       type: '',
       remark: '',     // 意见
       particularsData: {},
@@ -97,14 +129,22 @@ export default {
     // 查询详情
     query () {
       let obj = {
-        registerOrderId: ''
+        registerOrderId: this.registerOrderId
       }
       this.$api.assets.getRegisterOrderById(obj).then(res => {
-        console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data, '-=-=')
           this.particularsData = data
+          let files = []
+          if (data.attachment && data.attachment.length > 0) {
+              data.attachment.forEach(item => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName
+              })
+            })
+          }
+          this.files = files
         } else {
           this.$message.error(res.data.message)
         }
@@ -114,7 +154,7 @@ export default {
     getRegisterOrderDetailsPageByIdFn () {
       this.loading = true
       let obj = {
-        registerOrderId: '',
+        registerOrderId: this.registerOrderId,
         pageNum: this.queryCondition.pageNum,
         pageSize: this.queryCondition.pageSize
       }
@@ -139,13 +179,36 @@ export default {
       this.queryCondition.pageSize = data.pageLength
       this.getRegisterOrderDetailsPageByIdFn()
     },
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatisticsFn () {
+      let obj = {
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.assetsTotal.forEach(item => {
+            Object.keys(data).forEach(key => {
+              if (item.code === key) {
+                item.value = data[key]
+              }
+            })
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
   },
   created () {
   },
   mounted () {
-    console.log(this.columnsData, '12321')
+    this.record = JSON.parse(this.$route.query.record)
+    this.registerOrderId = this.record[0].registerOrderId
+    console.log(this.record, '0-0-0-')
     this.query()
     this.getRegisterOrderDetailsPageByIdFn()
+    this.getRegisterOrderDetailsStatisticsFn()
   }
 }
 </script>
@@ -154,21 +217,52 @@ export default {
   overflow: hidden;
   padding-bottom: 70px;
   .particulars-nav{
-      padding: 42px 126px 20px 70px;
-      .particulars-obj {
-        padding: 20px 0 20px 40px;
-        .playground-row {
-          .playground-col {
-            height: 40px;
-            line-height: 40px;
-            font-size: 12px;
-          }
+    padding: 42px 126px 20px 70px;
+    .particulars-obj {
+      padding: 20px 0 20px 40px;
+      .playground-row {
+        .playground-col {
+          height: 40px;
+          line-height: 40px;
+          font-size: 12px;
         }
       }
-      .correspondingTask {
-        margin:35px 40px 0 40px;
-        border: 1px solid #F0F2F5;
+    }
+    .tab-exhibition {
+      margin: 10px 0;
+      display: flex;
+      height: 83px;
+      .exhibition {
+        flex: 1;
+        color: #fff;
+        text-align: center;
+        border-right: 1px solid #EFF2F7;
+        p:nth-of-type(1) {
+          padding-top: 14px;
+          font-size: 12px;
+        }
+        p:nth-of-type(2) {
+          font-size: 16px;
+          font-weight: bold;
+        }
       }
+      .exhibition:nth-of-type(1){
+        background-color: rgb(75, 210, 136);
+      }
+      .exhibition:nth-of-type(2){
+        background-color: rgb(24, 144, 255);
+      }
+      .exhibition:nth-of-type(3){
+        background-color: rgb(221, 129, 230);
+      }
+      .exhibition:nth-of-type(4){
+        background-color: rgb(253, 116, 116);
+      }
+    }
+    .correspondingTask {
+      margin:35px 40px 0 40px;
+      border: 1px solid #F0F2F5;
+    }
   }
   .nav-box {
     padding-bottom: 100px;

@@ -26,11 +26,11 @@
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
-          <OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>
-          <!--<a class="operation-btn" v-if="+record.status === 0" @click="operationFun('start', record)">启用</a>-->
-          <!--<a class="operation-btn" v-else @click="operationFun('stop', record)">停用</a>-->
-          <!--<a class="operation-btn" v-show="+record.status === 1" @click="operationFun('edit', record)">编辑</a>-->
-          <!--<a class="operation-btn" @click="operationFun('detail', record)">详情</a>-->
+          <!--<OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>-->
+          <a class="operation-btn" v-if="+record.status === 0" @click="operationFun('start', record)" v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS">启用</a>
+          <a class="operation-btn" v-else @click="operationFun('stop', record)" v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS">停用</a>
+          <a class="operation-btn" v-show="+record.status === 1" @click="operationFun('edit', record)" v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_EDIT">编辑</a>
+          <a class="operation-btn" @click="operationFun('detail', record)">详情</a>
         </template>
         <template slot="statusName" slot-scope="text, record, index">
           <div v-if="+record.status === 1"><SG-Switch disabled checked  :id="index" style="margin-right: 10px;"></SG-Switch>启用</div>
@@ -43,7 +43,7 @@
       :totalCount="paginator.totalCount"
       location="absolute"
       v-model="paginator.pageNo"
-      @input="handlePageChange"
+      @change="handlePageChange"
     />
   </div>
 </template>
@@ -51,78 +51,70 @@
 <script>
 import segiIcon from '@/components/segiIcon.vue'
 import topOrganByUser from '@/views/common/topOrganByUser'
-import OperationPopover from '@/components/OperationPopover'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const columns = [
   {
     title: '分类编号',
     dataIndex: 'professionId',
-    width: '160'
+    width: 160
   },
   {
     title: '所属机构',
     dataIndex: 'organName',
-    width: '200'
+    width: 200
   },
   {
     title: '资产类型',
     dataIndex: 'assetTypeName',
-    width: '160'
+    width: 160
   },
   {
     title: '分类名称',
     dataIndex: 'professionName',
-    width: '160'
+    width: 160
   },
   {
     title: '分类编码',
     dataIndex: 'professionCode',
-    width: '160'
+    width: 160
   },
   {
     title: '计量单位',
-    dataIndex: 'unit',
-    width: '160'
+    dataIndex: 'unitName',
+    width: 160
   },
   {
     title: '净残值率(%)',
     dataIndex: 'netSalvageRate',
-    width: '160'
+    width: 160
   },
   {
     title: '折旧方法',
-    dataIndex: 'depreciationMethod',
-    width: '160'
+    dataIndex: 'depreciationMethodName',
+    width: 200
   },
   {
     title: '状态',
     dataIndex: 'statusName',
-    width: '180',
+    width: 180,
     scopedSlots: { customRender: 'statusName' },
   },
   {
     title: '操作',
     dataIndex: 'operation',
+    width: 180,
     scopedSlots: { customRender: 'operation' },
   }
-]
-const operationData1 = [
-  {iconType: 'play-circle', text: '启用', editType: 'start'},
-  {iconType: 'form', text: '编辑', editType: 'edit'},
-  {iconType: 'bars', text: '详情', editType: 'detail'}
-]
-const operationData2 = [
-  {iconType: 'pause-circle', text: '停用', editType: 'stop'},
-  {iconType: 'form', text: '编辑', editType: 'edit'},
-  {iconType: 'bars', text: '详情', editType: 'detail'}
 ]
 
 export default {
   components: {
-    segiIcon, OperationPopover, topOrganByUser
+    segiIcon, topOrganByUser
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       allStyle: 'width: 150px; marginLeft: 10px;',
       organId: '',
       organName: '',
@@ -135,8 +127,6 @@ export default {
       codeName: '',
       columns,
       dataSource: [],
-      operationData1,
-      operationData2,
       paginator: {
         pageNo: 1,
         pageLength: 10,
@@ -154,8 +144,9 @@ export default {
       this.queryClick()
     },
     // 页码发生变化
-    handlePageChange (pageNo) {
-      this.paginator.pageNo = pageNo
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 操作回调
@@ -165,9 +156,9 @@ export default {
           break
         case 'stop': this.changeStatus(0, record.categoryConfId, record.professionCode)
           break
-        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId, organId: this.organId}})
+        case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId, organId: this.organId, professionCode: record.professionCode, assetType: record.assetType}})
           break
-        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail', categoryConfId: record.categoryConfId}})
+        case 'detail': this.$router.push({path: '/assetClassSet/detail', query: {pageType: 'detail', categoryConfId: record.categoryConfId, organId: this.organId, professionCode: record.professionCode, assetType: record.assetType}})
           break
         default: break
       }
@@ -209,7 +200,11 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
-            item.operationData = +item.status === 0 ? operationData1 : operationData2
+            for (let key in item) {
+              if (item[key] === '') {
+                item[key] = '--'
+              }
+            }
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count
@@ -225,6 +220,7 @@ export default {
         codeName: this.codeName
       }
       this.$api.assets.exportList(form).then(res => {
+        console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
