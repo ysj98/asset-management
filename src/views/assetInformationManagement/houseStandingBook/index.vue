@@ -9,10 +9,10 @@
           <asset-project-view-list></asset-project-view-list>
         </a-tab-pane>
         <a-tab-pane tab="楼栋视图" key="2">
-          <!---->
+          <asset-view/>
         </a-tab-pane>
         <a-tab-pane tab="资产视图" key="3">
-          <!---->
+          <building-view/>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -20,9 +20,11 @@
 </template>
 
 <script>
+import AssetView from '../house-account/asset-view'
+import BuildingView from '../house-account/building-view'
 import assetProjectViewList from './assetProjectViewList'
 export default {
-  components: {assetProjectViewList},
+  components: {assetProjectViewList, AssetView, BuildingView},
   props: {},
   data () {
     return {
@@ -43,4 +45,3 @@ export default {
 </script>
 <style lang="less" scoped>
 </style>
- 

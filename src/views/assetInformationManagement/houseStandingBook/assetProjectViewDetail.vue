@@ -32,7 +32,7 @@
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">接管时间：</span>
-          <span class="label-value">{{detail.takeOverDate || '--'}}</span>
+          <span class="label-value">{{formatDate(detail.takeOverDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">备注：</span>
@@ -58,23 +58,23 @@
       <div class="edit-box-content">
         <div class="edit-box-content-item">
           <span class="label-name">划转批复下发时间：</span>
-          <span class="label-value">{{detail.transferApprovalDate || '--'}}</span>
+          <span class="label-value">{{formatDate(detail.transferApprovalDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">协议签署时间：</span>
-          <span class="label-value">{{detail.agreementSignDate || '--'}}</span>
+          <span class="label-value">{{formatDate(detail.agreementSignDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">上报基础情况表时间：</span>
-          <span class="label-value">{{detail.reportBasicInfoDate || '--'}}</span>
+          <span class="label-value">{{formatDate(detail.reportBasicInfoDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">资产核实时间：</span>
-          <span class="label-value">{{detail.houseVerificationDate || '--'}}</span>
+          <span class="label-value">{{formatDate(detail.houseVerificationDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">上报划转请示时间：</span>
-          <span class="label-value">{{detail.reportHouseTransferReqDate || '--'}}</span>
+          <span class="label-value">{{formatDate(detail.reportHouseTransferReqDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">权属办理中存在问题：</span>
@@ -110,6 +110,19 @@
               </div>
             </a-col>
           </a-row>
+          <a-row class="asset-project-content" v-for="(item,index) in assetList" :key="index">
+            <a-col :span="4">
+              <div class="asset-project-introduction">
+                <img :src="item.pictureUrl">
+                <div class="asset-project-introduction-name">{{item.buildName}}</div>
+              </div>
+            </a-col>
+            <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.operationNum}}<span>({{item.operationNumPercent}})</span></div></div></a-col>
+            <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.idleNum}}<span>({{item.idleNumPercent}})</span></div></div></a-col>
+            <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.selfUseNum}}<span>({{item.selfUseNumPercent}})</span></div></div></a-col>
+            <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.occupyNum}}<span>({{item.occupyNumPercent}})</span></div></div></a-col>
+            <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.otherNum}}<span>({{item.otherNumPercent}})</span></div></div></a-col>
+          </a-row>
         </div>
       </div>
     </div>
@@ -117,6 +130,7 @@
 </template>
 
 <script>
+import {dateToString} from 'utils/formatTime'
 const columns = [
   {
     title: '转运营日期',
@@ -170,9 +184,21 @@ export default {
         {title: '占用(㎡)', area: '', percent: ''},
         {title: '其他(㎡)', area: '', percent: ''}
       ],
+      assetList: [],
+      paginator: {
+        pageNo: 1,
+        pageLength: 10,
+        totalCount: 0
+      }
     }
   },
   methods: {
+    formatDate (value) {
+      if (value) {
+        return dateToString(new Date(value), 'yyyy-mm-dd')
+      }
+      return ''
+    },
     getDetail () {
       let form = {
         projectId: this.projectId
@@ -180,6 +206,7 @@ export default {
       this.$api.assets.projectDetailsById(form).then(res => {
         if (res.data.code === '0') {
           this.detail = res.data.data
+          this.detail.attachment = []
         } else {
           this.$message.error(res.data.message)
         }
@@ -194,6 +221,8 @@ export default {
         if (res.data.code === '0') {
           let data = res.data.data
           data.key = 0
+          data.transferOperationTime = this.formatDate(data.transferOperationTime)
+          data.transferTime = this.formatDate(data.transferTime)
           this.dataSource = [data]
         } else {
           this.$message.error(res.data.message)
@@ -208,17 +237,34 @@ export default {
       this.$api.assets.viewProjectHouseDetails(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
-          this.assetStatistics[0].area = data.allAssetsNum.toFixed(2)
+          this.assetStatistics[0].area = data.allArea.toFixed(2)
           this.assetStatistics[1].area = data.operationNum.toFixed(2)
-          this.assetStatistics[1].percent = data.operationPercent
-          this.assetStatistics[2].area = data.lieIdleNum.toFixed(2)
-          this.assetStatistics[2].percent = data.lieIdlePercent
+          this.assetStatistics[1].percent = data.operationNumPercent
+          this.assetStatistics[2].area = data.idleNum.toFixed(2)
+          this.assetStatistics[2].percent = data.idleNumPercent
           this.assetStatistics[3].area = data.selfUseNum.toFixed(2)
-          this.assetStatistics[3].percent = data.selfUsePercent
+          this.assetStatistics[3].percent = data.selfUseNumPercent
           this.assetStatistics[4].area = data.occupyNum.toFixed(2)
-          this.assetStatistics[4].percent = data.occupyPercent
+          this.assetStatistics[4].percent = data.occupyNumPercent
           this.assetStatistics[5].area = data.otherNum.toFixed(2)
-          this.assetStatistics[5].percent = data.otherPercent
+          this.assetStatistics[5].percent = data.otherNumPercent
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    getAssetList () {
+      let form = {
+        projectId: this.projectId,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
+      }
+      this.$api.assets.viewDetailsPage(form).then(res => {
+        if (res.data.code === '0') {
+          console.log(res)
+          let data = res.data.data.data
+          this.assetList = data
+          this.paginator.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
         }
@@ -230,6 +276,7 @@ export default {
     this.getDetail()
     this.getTransferInfo()
     this.getAssetStatistics()
+    this.getAssetList()
   }
 }
 </script>
@@ -321,6 +368,32 @@ export default {
               }
               &:nth-child(6) {
                 background: #BBC8D6;
+              }
+            }
+          }
+          .asset-project-content {
+            .asset-project-introduction {
+              height: 80px;
+              padding: 10px;
+              border-right: 1px solid #EFF2F7;
+              border-bottom: 1px solid #EFF2F7;
+            }
+            .asset-project-item {
+              height: 80px;
+              text-align: center;
+              color: #959DAB;
+              border-right: 1px solid #EFF2F7;
+              border-bottom: 1px solid #EFF2F7;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              .asset-project-item-number {
+                font-size: 16px;
+                font-weight:bold;
+                span {
+                  font-size: 12px;
+                  font-weight: normal;
+                }
               }
             }
           }

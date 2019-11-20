@@ -182,6 +182,10 @@ export function getPage (data) {
 export function exportList (data) {
   return axiosPost(assets.assetClassSet.exportList, data, false, false)
 }
+// 资产分类设置-获取费用科目类列表
+export function getFeeTypeList (data) {
+  return axiosGet(assets.assetClassSet.getFeeTypeList, data)
+}
 // 资产分类设置-修改资产分类
 export function update (data) {
   return axiosPost(assets.assetClassSet.update, data, false, false)
@@ -298,7 +302,7 @@ export function queryProjectManageProjectByOrganId (data) {
 }
 
 // 资产项目-反审核
-export function doProjectManagereaudit (data) {
+export function doProjectManageReaudit (data) {
   return axiosPost(assets.projectManage.reauditAction, data)
 }
 // 资产项目-导入保存
@@ -373,5 +377,10 @@ export function modifyProject (data) {
 }
 // 资产项目-转运营信息统计
 export function getProjectTransferByProjectId (data) {
-  return axiosPost(assets.assetProject.getTransferByProjectId, data, false, false)
+  return axiosPost(assets.projectManage.queryTransferStatistics, data, false, false)
+}
+
+// 资产项目-资产项目详情-资产概况
+export function queryProjectManageGeneralInfo (data) {
+  return axiosGet(assets.projectManage.queryGeneralInfo, data)
 }

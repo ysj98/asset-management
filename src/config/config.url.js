@@ -55,6 +55,10 @@ export const basics = {
   queryFloorListByPosId: '/basic-data-api/rest-api/v1/floorApi/queryFloorListByPosId',
   // 03_通过字典code和groupId(集团一级组织ID)查询字典列表信息
   queryDictDataList: '/basic-data-api/rest-api/v1/dictApi/queryDictDataList',
+  // 平台字典
+  platformDict: '/ams/assetDict/platformDict',
+  // 机构字典
+  organDict: '/ams/assetDict/organDict'
 }
 
 // 资产管理
@@ -121,7 +125,7 @@ export const assets = {
     // 资产登记-详情回显
     // getRegisterOrderById:/ams/registerOrder/getRegisterOrderById,
     // 资产登记列表-分页查询
-    getProjectListPage: '/ams/registerOrder/getProjectListPage',
+    getProjectListPage: '/ams/registerOrder/getRegisterOrderListPage',
     // 资产登记新增-下载导入模板
     downloadTemplate: '/ams/registerOrder/downloadTemplate',
     // 资产登记转运营信息-根据资产项目ID
@@ -154,6 +158,8 @@ export const assets = {
     getPage: '/ams/categoryCfg/getPage',
     // 资产分类设置-导出资产分类列表
     exportList: '/ams/categoryCfg/export',
+    // 资产分类设置-获取费用科目类列表
+    getFeeTypeList: '/ams/categoryCfg/getFeeTypeList',
     // 资产分类设置-修改资产分类
     update: '/ams/categoryCfg/update',
     // 资产分类设置-修改资产分类状态
@@ -252,7 +258,9 @@ export const assets = {
     // 资产项目-编辑保存
     saveEditProject: '/ams/project/modifyProject',
     // 资产项目-转运营信息统计
-    queryTransferStatistics: '/ams/project/getTransferByProjectId'
+    queryTransferStatistics: '/ams/project/getTransferByProjectId',
+    // 资产项目-资产项目详情-资产概况
+    queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
   }
 }
 // 楼盘字典

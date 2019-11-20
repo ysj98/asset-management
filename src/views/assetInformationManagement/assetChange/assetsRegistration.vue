@@ -10,13 +10,13 @@
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-checkbox :value="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" @change="projectDataFn">
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" v-model="queryCondition.changeType" @change="changeTypeFn">
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
           <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :defaultValue="queryCondition.approvalStatus" @change="approvalStatusFn">
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
@@ -40,7 +40,7 @@
           <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
           <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
           <span v-if="record.approvalStatus === '2'">审核</span>
-          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && record.expiryDate === '' || +record.changeType === 2 && record.expiryDate === ''">终止交付</span>
+          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate">终止交付</span>
         </div>
       </template>
     </a-table>
@@ -70,6 +70,10 @@ import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 const approvalStatusData = [
+  {
+    name: '全部状态',
+    value: ''
+  },
   {
     name: '草稿',
     value: '0'
@@ -131,7 +135,7 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
-    width: 150,
+    width: 170,
     scopedSlots: { customRender: 'operation' },
   }
 ]
@@ -153,12 +157,12 @@ export default {
       organId: '',
       tableData: [],
       queryCondition: {
-        approvalStatus: ['0', '1', '2', '3', '4'],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         pageNum: 1,                // 当前页
         pageSize: 10,               // 每页显示记录数
         projectId: '',              // 资产项目Id
         organId:1,                 // 组织机构id
-        changeType: [],            // 备注：变动类型id(多个用，分割)
+        changeType: '',            // 备注：变动类型id(多个用，分割)
         startCreateDate: '',       // 备注：开始创建日期
         endCreateDate: '',         // 备注：结束创建日期
         currentOrgan: false            // 备注：仅当前机构下资产清理单 0 否 1 是
@@ -205,6 +209,36 @@ export default {
         this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
       }
     },
+    // 状态发生变化
+    changeStatus (value) {
+      this.$nextTick(function () {
+        this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData)
+      })
+    },
+    // 状态发生变化
+    approvalStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+      })
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
+    },
     commonFn () {
       // 删除
       if (this.judge === 'delete') {
@@ -213,7 +247,7 @@ export default {
         }
         this.$api.assets.deleteChange(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('删除成功')
+            this.$message.info('删除成功')
             this.commonShow = false
             this.query()
           } else {
@@ -228,7 +262,7 @@ export default {
         }
         this.$api.assets.stopDelivery(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.error('终止交付成功')
+            this.$message.info('终止交付成功')
             this.commonShow = false
             this.query()
           } else {
@@ -242,6 +276,12 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
+      if (!this.isChild) {
+        this.queryCondition.pageNo = 1
+        this.query()
+      } else {
+        this.isChild = false
+      }
       this.getObjectKeyValueByOrganIdFn()
     },
     // 资产项目
@@ -275,12 +315,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'asset_change_type') {
-            this.changeTypeData = [...data]
-            let arr = []
-            this.changeTypeData.forEach(item => {
-              arr.push(item.value)
-            })
-            this.queryCondition.changeType = arr
+            this.changeTypeData = [{name: '全部资产项目', value: ''}, ...data]
           } else if (str === 'approval_status_type') {
             this.approvalStatusData = [...data]
             let status = []
@@ -300,18 +335,6 @@ export default {
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
       this.queryCondition.currentOrgan = e.target.checked
-    },
-    // 审批状态
-    approvalStatusFn (val) {
-      this.queryCondition.approvalStatus = val
-    },
-    // 变动单选择
-    changeTypeFn (val) {
-      this.queryCondition.changeType = val
-    },
-    // 资产项目
-    projectDataFn (val) {
-      this.queryCondition.projectId = val
     },
     // 分页查询
     handleChange (data) {
@@ -355,9 +378,44 @@ export default {
     }
   },
   created () {
+    let query = this.GET_ROUTE_QUERY(this.$route.path)
+    if (Object.keys(query).length > 0) {
+      this.queryCondition.approvalStatus = query.approvalStatus
+      this.queryCondition.pageNum = query.pageNum
+      this.queryCondition.pageSize = query.pageSize
+      this.queryCondition.projectId = query.projectId
+      this.queryCondition.changeType = query.changeType
+      this.queryCondition.startCreateDate = query.startCreateDate
+      this.queryCondition.endCreateDate = query.endCreateDate
+      this.queryCondition.currentOrgan = query.currentOrgan
+      this.queryCondition.organId = query.organId
+      this.isChild = query.isChild
+      this.query()
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    let o = {key: this.$route.path, data: {}}
+    if (to.path.indexOf(from.path) !== -1) {
+      o = {
+        key: from.path,
+        data: {
+          approvalStatus: this.queryCondition.approvalStatus,
+          pageNum: this.queryCondition.pageNum,
+          pageSize: this.queryCondition.pageSize,
+          projectId: this.queryCondition.projectId,
+          changeType: this.queryCondition.changeType,
+          startCreateDate: this.queryCondition.startCreateDate,
+          endCreateDate: this.queryCondition.endCreateDate,
+          currentOrgan: this.queryCondition.currentOrgan,
+          organId: this.queryCondition.organId,
+          isChild: true
+        }
+      }
+    }
+    this.$store.commit('pro/SET_ROUTE_QUERY', o)
+    next()
   },
   mounted () {
-    // this.query()
     // 获取变动类型
     this.platformDictFn('asset_change_type')
     // 获取状态

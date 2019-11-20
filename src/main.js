@@ -21,6 +21,8 @@ import Power from './utils/power'
 // 引入全局指令
 import Directive from './utils/directive'
 
+import importf from './utils/file'
+
 Vue.mixin(mixins)
 Vue.use(Antd)
 Vue.use(SG_UI)
@@ -29,6 +31,8 @@ Vue.use(Axios)
 Vue.use(Dev)
 Vue.use(Power)
 Vue.use(Directive)
+
+Vue.prototype.$importf = importf
 
 Vue.config.productionTip = false
 
