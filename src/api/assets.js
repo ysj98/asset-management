@@ -172,6 +172,10 @@ export function getCleanupInfo (data) {
 export function getCleanupDetail (data) {
   return axiosGet(assets.assetClear.getCleanupDetail, data)
 }
+// 资产清理-资产明细分页列表
+export function getCleanupDetailPage (data) {
+  return axiosGet(assets.assetClear.getCleanupDetailPage, data)
+}
 
 //资产分类设置
 // 资产分类设置-资产分类列表
@@ -180,7 +184,7 @@ export function getPage (data) {
 }
 // 资产分类设置-导出资产分类列表
 export function exportList (data) {
-  return axiosPost(assets.assetClassSet.exportList, data, false, false)
+  return axiosPost(assets.assetClassSet.exportList, data, false, false, {responseType: 'blob'})
 }
 // 资产分类设置-获取费用科目类列表
 export function getFeeTypeList (data) {
@@ -196,7 +200,7 @@ export function updateStatus (data) {
 }
 // 资产分类设置-获取资产分类详情
 export function getDetail (data) {
-  return axiosGet(assets.assetClassSet.getDetail, data)
+  return axiosPost(assets.assetClassSet.getDetail, data, false, false)
 }
 
 // 房屋台账-资产项目视图

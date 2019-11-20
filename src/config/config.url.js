@@ -150,7 +150,9 @@ export const assets = {
     // 资产清理-编辑查询明细
     getCleanupInfo: '/ams/assetCleanup/getCleanupInfo',
     // 资产清理-详情
-    getCleanupDetail: '/ams/assetCleanup/getCleanupDetail'
+    getCleanupDetail: '/ams/assetCleanup/getCleanupDetail',
+    // 资产清理-资产明细分页列表
+    getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage'
   },
   // 资产分类设置
   assetClassSet: {
