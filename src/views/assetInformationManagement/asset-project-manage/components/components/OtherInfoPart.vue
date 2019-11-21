@@ -41,7 +41,7 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          rowKey: 'transferOperationTime',
+          // rowKey: 'transferOperationTime',
           columns: [
             { title: '转运营日期', dataIndex: 'transferOperationTime', key: 'transferOperationTime' },
             { title: '转运营面积(㎡)', dataIndex: 'transferOperationArea', key: 'transferOperationArea' },
@@ -98,7 +98,7 @@
           this.operateTable.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.operateTable.dataSource = [res.data]
+            this.operateTable.dataSource = [{...res.data, key: 1}]
             return false
           }
           throw res.message || '查询转运营信息接口出错'

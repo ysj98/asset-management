@@ -154,7 +154,7 @@
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
         exportAssetBtn: false, // 导出资产视图button loading标志
-        paginationObj: { pageNo: 0, totalCount: 0, pageLength: 0, location: 'absolute' },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
       }
     },
