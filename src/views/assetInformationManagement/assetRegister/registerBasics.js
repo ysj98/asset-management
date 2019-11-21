@@ -3,112 +3,112 @@ export const columnsData = [
   {
     title: '楼栋名称',
     dataIndex: 'buildingName',
-    width: '80px'
+    width: 100
   },
   {
     title: '房屋名称',
     dataIndex: 'houseName',
-    width: '80px'
+    width: 100
   },
   {
     title: '资产名称',
     dataIndex: 'assetName',
-    width: '80px'
+    width: 100
   },
   {
     title: '资产编码',
     dataIndex: 'assetCode',
-    width: '80px'
+    width: 100
   },
   {
     title: '建筑面积',
     dataIndex: 'coveredArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '坐落位置',
-    dataIndex: 'seatingPosition',
-    width: '80px'
+    dataIndex: 'pasitionString',
+    width: 100
   },
   {
     title: '权属情况',
     dataIndex: 'ownershipStatus',
-    width: '80px'
+    width: 100
   },
   {
     title: '权证号',
     dataIndex: 'warrantNbr',
-    width: '80px'
+    width: 100
   },
   {
     title: '装修情况',
     dataIndex: 'decorateSituation',
-    width: '80px'
+    width: 100
   },
   {
     title: '资产原值',
     dataIndex: 'originalValue',
-    width: '80px'
+    width: 100
   },
   {
     title: '市场价值',
     dataIndex: 'marketValue',
-    width: '80px'
+    width: 100
   },
   {
     title: '转运营日期',
     dataIndex: 'transferOperationTime',
-    width: '80px'
+    width: 100
   },
   {
     title: '转运营面积',
     dataIndex: 'transferOperationArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '闲置面积',
     dataIndex: 'idleArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '自用面积',
     dataIndex: 'selfUserArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '占用面积',
     dataIndex: 'occupationArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '其他面积',
     dataIndex: 'otherArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '转物业面积',
     dataIndex: 'transferArea',
-    width: '80px'
+    width: 100
   },
   {
     title: '转物业日期',
     dataIndex: 'transferTime',
-    width: '80px'
+    width: 100
   },
   {
     title: '使用期限(月)',
     dataIndex: 'validPeriod',
-    width: '80px'
+    width: 100
   },
   {
     title: '开始使用日期',
     dataIndex: 'startDate',
-    width: '80px'
+    width: 100
   },
   {
     title: '已使用期数(月)',
     dataIndex: 'usedDate',
-    width: '100px'
+    width: 100
   },
   {
     title: '操作',
@@ -120,6 +120,120 @@ export const columnsData = [
   }
 ]
 
+
+// 资产列表
+export const particulars = [
+  {
+    title: '楼栋名称',
+    dataIndex: 'buildingName',
+    width: 100
+  },
+  {
+    title: '房屋名称',
+    dataIndex: 'houseName',
+    width: 100
+  },
+  {
+    title: '资产名称',
+    dataIndex: 'assetName',
+    width: 100
+  },
+  {
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    width: 100
+  },
+  {
+    title: '建筑面积',
+    dataIndex: 'coveredArea',
+    width: 100
+  },
+  {
+    title: '坐落位置',
+    dataIndex: 'pasitionString',
+    width: 100
+  },
+  {
+    title: '权属情况',
+    dataIndex: 'ownershipStatus',
+    width: 100
+  },
+  {
+    title: '权证号',
+    dataIndex: 'warrantNbr',
+    width: 100
+  },
+  {
+    title: '装修情况',
+    dataIndex: 'decorateSituation',
+    width: 100
+  },
+  {
+    title: '资产原值',
+    dataIndex: 'originalValue',
+    width: 100
+  },
+  {
+    title: '市场价值',
+    dataIndex: 'marketValue',
+    width: 100
+  },
+  {
+    title: '转运营日期',
+    dataIndex: 'transferOperationTime',
+    width: 100
+  },
+  {
+    title: '转运营面积',
+    dataIndex: 'transferOperationArea',
+    width: 100
+  },
+  {
+    title: '闲置面积',
+    dataIndex: 'idleArea',
+    width: 100
+  },
+  {
+    title: '自用面积',
+    dataIndex: 'selfUserArea',
+    width: 100
+  },
+  {
+    title: '占用面积',
+    dataIndex: 'occupationArea',
+    width: 100
+  },
+  {
+    title: '其他面积',
+    dataIndex: 'otherArea',
+    width: 100
+  },
+  {
+    title: '转物业面积',
+    dataIndex: 'transferArea',
+    width: 100
+  },
+  {
+    title: '转物业日期',
+    dataIndex: 'transferTime',
+    width: 100
+  },
+  {
+    title: '使用期限(月)',
+    dataIndex: 'validPeriod',
+    width: 100
+  },
+  {
+    title: '开始使用日期',
+    dataIndex: 'startDate',
+    width: 100
+  },
+  {
+    title: '已使用期数(月)',
+    dataIndex: 'usedDate',
+    width: 100
+  }
+]
 
 // 楼栋名称（必填，字符型，取楼栋名称）、
 // 房屋名称（非必填，字符型，取房间名称）、
@@ -227,14 +341,14 @@ export const judgmentData = [
   {
     title: '建筑面积',
     dataIndex: 'coveredArea',
-    required: true,
+    required: false,
     type: 'number',
     empty: '__EMPTY_12'
   },
   {
     title: '坐落位置',
-    dataIndex: 'seatingPosition',
-    required: true,
+    dataIndex: 'pasitionString',
+    required: false,
     empty: '__EMPTY_13'
   },
   {
@@ -246,21 +360,21 @@ export const judgmentData = [
   {
     title: '权证号',
     dataIndex: 'warrantNbr',
-    required: true,
+    required: false,
     fontLength: 50,
     empty: '__EMPTY_15'
   },
   {
     title: '装修情况',
     dataIndex: 'decorateSituation',
-    required: false,
+    required: true,
     fontLength: 30,
     empty: '__EMPTY_16'
   },
   {
     title: '资产原值',
     dataIndex: 'originalValue',
-    required: false,
+    required: true,
     type: 'number',
     empty: '__EMPTY_17'
   },
@@ -281,35 +395,35 @@ export const judgmentData = [
   {
     title: '转运营面积',
     dataIndex: 'transferOperationArea',
-    required: false,
+    required: true,
     type: 'number',
     empty: '__EMPTY_20'
   },
   {
     title: '闲置面积',
     dataIndex: 'idleArea',
-    required: false,
+    required: true,
     type: 'number',
     empty: '__EMPTY_21'
   },
   {
     title: '自用面积',
     dataIndex: 'selfUserArea',
-    required: false,
+    required: true,
     type: 'number',
     empty: '__EMPTY_22'
   },
   {
     title: '占用面积',
     dataIndex: 'occupationArea',
-    required: false,
+    required: true,
     type: 'number',
     empty: '__EMPTY_23'
   },
   {
     title: '其他面积',
     dataIndex: 'otherArea',
-    required: false,
+    required: true,
     type: 'number',
     empty: '__EMPTY_24'
   },

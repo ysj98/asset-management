@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import {columnsData} from './registerBasics'
+import {particulars} from './registerBasics'
 const assetsTotal = [
   {
     code: 'assetsNum',
@@ -111,7 +111,7 @@ export default {
       remark: '',     // 意见
       particularsData: {},
       files: [],
-      columns: columnsData.splice(0, columnsData.length - 1),
+      columns: particulars,
       loading: false,
       tableData: [],
       location: '',
@@ -163,6 +163,7 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
+            item.ownershipStatus = item.ownershipStatusName
           })
           this.tableData = data
           this.queryCondition.count = res.data.data.count
@@ -205,7 +206,6 @@ export default {
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.registerOrderId = this.record[0].registerOrderId
-    this.Data = columnsData
     this.query()
     this.getRegisterOrderDetailsPageByIdFn()
     this.getRegisterOrderDetailsStatisticsFn()

@@ -1,5 +1,5 @@
 路由配置如下
-
+不需要加 /web/前缀
 V1.0
 /asset-management/#/buildingDict        楼盘字典
 /asset-management/#/assetClear          资产清理
