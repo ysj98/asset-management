@@ -282,6 +282,8 @@ export default {
       let _this = this
       let loadName = _this.$SG_Message.loading({ duration: 0 })
       this.$importf(file, event).then(vv => {
+        let firstData = Object.getOwnPropertyNames(vv[0])
+        judgmentData[0].empty = firstData[1]
         let v = vv.splice(1, vv.length)
         if (v.length > 0) {
           let arr = []
@@ -318,24 +320,25 @@ export default {
                   v[i][judgmentData[j].empty] = utils.xlsxDate(v[i][judgmentData[j].empty])
                 }
               }
-              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].empty] || 0
+              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].empty] || ''
             }
             arr.push(opt)
           }
-          // 数字去重
+          // 数组去重根据type和objectId
           let arrData = utils.deepClone([...this.tableData, ...arr])
           let hash = {}
           arrData = arrData.reduce((preVal, curVal) => {
-            hash[Number(curVal.buildId) + Number(curVal.type)] ? '' : hash[Number(curVal.buildId) + Number(curVal.type)] = true && preVal.push(curVal)
+            hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
             return preVal
           }, [])
           // 存着全部数据
-          console.log(arrData, '过滤后的数据')
           arrData.forEach(((item, index) => {
             item.key = index
             this.assetsTotal[1].value = calc.add(this.assetsTotal[1].value, item.coveredArea || 0)
             this.assetsTotal[2].value = calc.add(this.assetsTotal[2].value, item.originalValue || 0)
             this.assetsTotal[3].value = calc.add(this.assetsTotal[3].value, item.marketValue || 0)
+            item.coveredArea = item.coveredArea ? item.coveredArea : 0
+            item.transferArea = item.transferArea ? item.transferArea : 0
           }))
           this.assetsTotal[0].value = arrData.length
           this.tableData = arrData

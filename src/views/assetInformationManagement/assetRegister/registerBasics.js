@@ -304,13 +304,13 @@ export const judgmentData = [
   },
   {
     title: '楼栋ID',
-    dataIndex: 'objectId',
+    dataIndex: 'buildId',
     required: false,
     empty: '__EMPTY_6'
   },
   {
     title: '对象ID',
-    dataIndex: 'buildId',
+    dataIndex: 'objectId',
     required: false,
     empty: '__EMPTY_7'
   },
