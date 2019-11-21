@@ -105,7 +105,21 @@ export const GLOBAL = {
   // 资产登记-反审核
   ASSET_REGISTER_REVERSE_AUDIT: 'zcgl_asset_register_reverse_audit',
   // 资产登记-删除
-  ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete'
+   ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete',
+
+   /**
+    * 资产项目管理APM （asset-project-manage）
+    **/
+   // 资产项目管理-删除
+   ASSET_APM_DELETE: 'zcgl_apm_delete',
+   // 资产项目管理-反审核
+   ASSET_APM_REAPPROVAL: 'zcgl_apm_reApproval',
+   // 资产项目管理-审核
+  ASSET_APM_APPROVAL: 'zcgl_apm_approval',
+   // 资产项目管理-编辑
+   ASSET_APM_EDIT: 'zcgl_apm_edit',
+   // 资产项目管理-新建
+   ASSET_APM_NEW: 'zcgl_apm_new'
 }
 
- 
+

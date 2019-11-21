@@ -41,9 +41,9 @@ zcgl_unit_edit                楼盘字典-编辑单元
 zcgl_unit_delete              楼盘字典-删除单元
 
 
-资产项目管理（后台开发中）
-x               资产项目管理-新建
-x               资产项目管理-编辑
-x               资产项目管理-审核
-x               资产项目管理-删除
-x               资产项目管理-反审核
+资产项目管理APM （asset-project-manage）
+zcgl_apm_new                  资产项目管理-新建
+zcgl_apm_edit                 资产项目管理-编辑
+zcgl_apm_approval             资产项目管理-审核
+zcgl_apm_delete               资产项目管理-删除
+zcgl_apm_reApproval           资产项目管理-反审核
