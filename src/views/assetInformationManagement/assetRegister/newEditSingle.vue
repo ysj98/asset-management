@@ -280,31 +280,41 @@ export default {
     importf (file, event) {
       this.$importf(file, event).then(vv => {
         let v = vv.splice(1, vv.length)
-        console.log(v, '拿到的')
+        console.log(vv, '拿到的')
+         console.log(v, '拿到的')
         if (v.length > 0) {
           let arr = []
           for (let i = 0; i < v.length; i++) {
             let opt = {key: i}
             for (let j = 0; j < judgmentData.length; j++) {
+              // 必填字段
               if (judgmentData[j].required) {
                 if (!v[i][judgmentData[j].empty]) {
                   this.$message.info(`请输入${judgmentData[j].title}`)
                   return
                 }
               }
+              // 判断只能为数字
               if (judgmentData[j].type === 'number') {
-                if (!(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].empty])) {
+                if (v[i][judgmentData[j].empty] && !(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].empty])) {
                   this.$message.info(`请输入正确${judgmentData[j].title}`)
                   return
                 }
               }
+              // 判断不超过多少字符
               if (judgmentData[j].fontLength) {
-                if (String(v[i][judgmentData[j].empty]).length > judgmentData[j].fontLength) {
+                if (v[i][judgmentData[j].empty] && String(v[i][judgmentData[j].empty]).length > judgmentData[j].fontLength) {
                   this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
                   return
                 }
               }
-              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].empty]
+              // 判断时间转换
+              if (judgmentData[j].date) {
+                if (v[i][judgmentData[j].empty]) {
+                  v[i][judgmentData[j].empty] = utils.xlsxDate(v[i][judgmentData[j].empty])
+                }
+              }
+              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].empty] || ''
             }
             arr.push(opt)
           }
@@ -430,6 +440,16 @@ export default {
               })
             })
           }
+          let data = utils.deepClone(this.tableData)
+          data.forEach(item => {
+            if (item.ownershipStatus === '有证') {
+              item.ownershipStatus = 1
+            } else if (item.ownershipStatus === '无证') {
+              item.ownershipStatus = 0
+            } else {
+              item.ownershipStatus = 2
+            }
+          })
           let obj = {
             registerOrderId: this.registerOrderId,                         // 资产变动单Id（新增为空）
             registerOrderCode: values.registerOrderCode, // 登记单编号
@@ -438,7 +458,7 @@ export default {
             remark: values.remark,                       // 备注
             organId: values.organId,                      // 组织机构id
             createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
-            assetHouseList: this.tableData,
+            assetHouseList: data,
             attachment: files.length === 0 ? '' : files
           }
           console.log(obj)
