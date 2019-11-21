@@ -59,14 +59,15 @@
          </div>    
      </div>
      <FormFooter>
-       <SG-Button :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
-       <SG-Button v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
+       <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
+       <SG-Button v-power="ASSET_MANAGEMENT.ASSET_UNIT_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
    </div>
 </template>
 <script>
 import FormFooter from '@/components/FormFooter.vue'
 import utils from '@/utils/utils'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 const allWidth = {width: '100%'}
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
@@ -87,6 +88,8 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
+      hasUpdatePower: false,
       allWidth,
       allWidth1,
       allWidth2,
@@ -136,12 +139,21 @@ export default {
   },
   mounted () {
     this.init()
+    this.handleBtn()
   },
   methods: {
     init () {
       this.resetAll()
       if (this.type === 'edit') {
         this.queryUnitDetail()
+      }
+    },
+    handleBtn () {
+      if (this.type==='create') {
+        this.hasUpdatePower = true
+      }
+      if (this.type==='edit' && this.$power.has(ASSET_MANAGEMENT.ASSET_UNIT_EDIT)) {
+        this.hasUpdatePower = true
       }
     },
     queryUnitDetail () {

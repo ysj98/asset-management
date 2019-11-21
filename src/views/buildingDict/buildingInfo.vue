@@ -11,9 +11,9 @@
      <div class="create-btn">
        <span class="create-title" >楼栋信息</span>
        <div>
-         <SG-Button  v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
-         <SG-Button  v-if="showCreateUnitBtn" :class="[childNodeType==='0'&&'mr5']" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
-         <SG-Button  v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
+         <SG-Button v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
+         <SG-Button v-if="showCreateUnitBtn" :class="[childNodeType==='0'&&'mr5']" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
+         <SG-Button v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
        </div>
      </div>
      <div class="tree-content">
@@ -76,15 +76,18 @@ export default {
              || (this.activeType==='0' && this.createType === 'floor')
              || (this.activeType==='1'&&this.createType === 'floor')
     },
+    // 显示创建楼栋按钮
     showCreateBuildBtn () {
-      return this.activeType==='-2'
+      return (this.activeType==='-2')&&this.$power.has(ASSET_MANAGEMENT.ASSET_BUILD_ADD)
     },
+    // 显示创建单元按钮
     showCreateUnitBtn () {
-      return this.activeType==='0'&&['0', '1'].includes(this.childNodeType)
+      return (this.activeType==='0'&&['0', '1'].includes(this.childNodeType))&&this.$power.has(ASSET_MANAGEMENT.ASSET_UNIT_ADD)
     },
+    // 显示楼层按钮
     showCreateFloorBtn () {
-      return this.activeType==='0'&&['0', '2'].includes(this.childNodeType) 
-             || this.activeType==='1'
+      return (this.activeType==='0'&&['0', '2'].includes(this.childNodeType) 
+             || this.activeType==='1')&&this.$power.has(ASSET_MANAGEMENT.ASSET_FLOOR_ADD)
     }
   },
   mounted () {

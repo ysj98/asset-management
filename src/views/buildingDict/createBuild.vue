@@ -225,8 +225,8 @@
         </div>
     </div>
      <FormFooter>
-       <SG-Button :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
-       <SG-Button v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
+       <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
+       <SG-Button v-power="ASSET_MANAGEMENT.ASSET_BUILD_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
      <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>
    </div>
@@ -236,6 +236,7 @@ import FormFooter from '@/components/FormFooter.vue'
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
 import utils from '@/utils/utils'
 import moment from 'moment'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 const allWidth = {width: '100%'}
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
@@ -267,6 +268,8 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
+      hasUpdatePower: false,
       allWidth,
       allWidth1,
       allWidth2,
@@ -326,12 +329,21 @@ export default {
     this.queryNodesByRootCode('60')
     this.queryDictDataList()
     this.init()
+    this.handleBtn()
   },
   methods: {
     init () {
       this.resetAll()
       if (this.type === 'edit') {
         this.queryBuildDetail(this.objectData.positionId)
+      }
+    },
+    handleBtn () {
+      if (this.type==='create') {
+        this.hasUpdatePower = true
+      }
+      if (this.type==='edit' && this.$power.has(ASSET_MANAGEMENT.ASSET_BUILD_EDIT)) {
+        this.hasUpdatePower = true
       }
     },
     handleSave () {
