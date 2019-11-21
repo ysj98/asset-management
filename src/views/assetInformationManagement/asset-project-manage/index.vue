@@ -4,7 +4,12 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" @click="handleModalOpen('add', new Date().getTime())">新增资产项目</SG-Button>
+        <SG-Button
+          icon="plus"
+          type="primary"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_REAPPROVAL"
+          @click="handleModalOpen('add', new Date().getTime())"
+        >新增资产项目</SG-Button>
         <SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>
       </div>
       <div slot="contentForm">
@@ -51,21 +56,35 @@
         <a-popconfirm
           okText="确定"
           cancelText="取消"
-          @confirm="confirmDelete(record.projectId)"
           title="确定要删除该资产项目吗?"
+          @confirm="confirmDelete(record.projectId)"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_DELETE"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
         >
           <span class="action_text">删除</span>
         </a-popconfirm>
         <a-popconfirm
           okText="确定"
           cancelText="取消"
-          @confirm="confirmApproval(record.projectId)"
           title="确认要反审核该资产项目吗?"
+          @confirm="confirmApproval(record.projectId)"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_REAPPROVAL"
+          v-if="Number(record.approvalStatus) === 1"
         >
           <span class="action_text">反审核</span>
         </a-popconfirm>
-        <span class="action_text" @click="handleModalOpen('edit', record.projectId)">编辑</span>
-        <span class="action_text" @click="handleModalOpen('approval', record.projectId)">审核</span>
+        <span
+          class="action_text"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_EDIT"
+          @click="handleModalOpen('edit', record.projectId)"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
+        >编辑</span>
+        <span
+          class="action_text"
+          v-if="Number(record.approvalStatus) === 2"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_APPROVAL"
+          @click="handleModalOpen('approval', record.projectId)"
+        >审核</span>
         <router-link :to="{ path: '/assetProjectDetail', query: { projectId: record.projectId } }" class="action_text">详情</router-link>
       </span>
     </a-table>
@@ -93,15 +112,17 @@
 
 <script>
   import TreeSelect from 'src/views/common/treeSelect'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
+  import BaseInfo from './components/components/BaseInfoPart'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
-  import BaseInfo from './components/components/BaseInfoPart'
   export default {
     name: 'index',
     components: { BaseInfo, SearchContainer, OverviewNumber, TreeSelect },
     data () {
       return {
         fold: true, // 查询条件折叠
+        ASSET_MANAGEMENT, // 权限对象
         overviewNumSpinning: false, // 统计查询loading
         assetName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
@@ -308,7 +329,7 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { organId, approvalStatus, sourceTypeList, takeOver, isCurrent, assetName, transferToOperation } = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
+        // if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           assetName, approvalStatus: approvalStatus || null, transferToOperation,
@@ -361,6 +382,7 @@
     created () {
       // 查询来源方式字典
       this.querySourceTypeList()
+      this.queryTableData({})
     }
   }
 </script>

@@ -138,7 +138,7 @@
             { title: '闲置(㎡)', dataIndex: 'idleArea', key: 'idleArea' },
             { title: '占用(㎡)', dataIndex: 'occupationArea', key: 'occupationArea' },
             { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
-            { title: '财务卡片编码', dataIndex: 'finicialCode', key: 'finicialCode' },
+            { title: '财务卡片编码', dataIndex: 'financialCode', key: 'financialCode' },
             { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
             { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
             { title: '资产状态', dataIndex: 'statusName', key: 'statusName' },

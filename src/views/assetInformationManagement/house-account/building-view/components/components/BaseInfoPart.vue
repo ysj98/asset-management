@@ -31,11 +31,11 @@
         baseInfoKeys: [
           [
             {title: '主图', key: 'picturePath'}, {title: '地理位置', key: 'totalAddress'}, {title: '地上层数', key: 'upFloorNum'},
-            {title: '权属状态', key: ''}, {title: '最新估值', key: 'assetValuation'}
+            {title: '权属状态', key: 'ownershipStatus'}, {title: '最新估值', key: 'assetValuation'}
           ], // 列1
           [
-            {title: '楼栋名称', key: 'assetName'}, {title: '楼栋编码', key: 'assetCode'}, {title: '建筑面积', key: 'area'},
-            {title: '房屋数量', key: 'assetNum'}, {title: '地下层数', key: 'downFloorNum'}, {title: '建筑结构', key: 'structure'}
+            {title: '楼栋名称', key: 'buildName'}, {title: '楼栋编码', key: 'assetHouseId'}, {title: '建筑面积', key: 'area'},
+            {title: '房屋数量', key: 'assetNum'}, {title: '地下层数', key: 'downFloorNum'}, {title: '建筑结构', key: 'buildStruct'}
           ], // 列2
           [
             {title: '建筑年代', key: 'years'}, {title: '丘地号', key: 'addressNo'}, {title: '楼高', key: 'buildHeight'},
@@ -55,7 +55,6 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             let temp = res.data
-            temp.structure = '未知'
             temp.ownText = Number(temp.type) === 1 ? '房屋' : '楼栋'
             return this.baseInfoData = temp
           }
