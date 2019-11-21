@@ -140,7 +140,7 @@ export function getTransferByProjectId (data) {
 }
 // 资产登记明细列表-不分页
 export function getRegisterOrderDetailsById (data) {
-  return axiosGet(assets.assetRegister.getRegisterOrderDetailsById, data)
+  return axiosPost(assets.assetRegister.getRegisterOrderDetailsById, data)
 }
 // 资产登记-详情明细统计
 export function getRegisterOrderDetailsStatistics (data) {

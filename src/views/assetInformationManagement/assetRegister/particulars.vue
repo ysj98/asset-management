@@ -82,22 +82,22 @@ const assetsTotal = [
   {
     code: 'assetsNum',
     name: '资产数量',
-    value: ''
+    value: '0'
   },
   {
     code: 'areaNum',
     name: '建筑面积',
-    value: ''
+    value: '0'
   },
   {
     code: 'originalNum',
     name: '资产原值',
-    value: ''
+    value: '0'
   },
   {
     code: 'marketValueNum',
     name: '市场价值',
-    value: ''
+    value: '0'
   }
 ]
 export default {

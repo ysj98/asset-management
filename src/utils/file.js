@@ -9,7 +9,10 @@ import XLSX from 'xlsx'
  * 例：<input type="file" id="file22" @change="importf('file22')" />
  * this.$importf(id) 得到 json数据
  */
+// import SG_UI from 'segi-ant'
 
+// const SG_Message = SG_UI.SG_Message.Message
+// SG_Message.loading()
 const importf = (FileList, Event) => {
   let promise = new Promise((resolve, reject) => {
     // 导入
