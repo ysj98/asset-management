@@ -3,6 +3,7 @@
   编辑: edit
 -->
 <template>
+  <a-spin :spinning="spinning">
   <div class="newEditSingle">
     <div class="newEditSingle-nav">
       <span class="section-title blue">基础信息</span>
@@ -165,6 +166,7 @@
       <div v-else>确认要清空资产列表？</div>
     </SG-Modal>
   </div>
+</a-spin>
 </template>
 
 <script>
@@ -230,6 +232,7 @@ export default {
   props: {},
   data () {
     return {
+      spinning: false,
       setType: '',
       recordKey: '',
       commonShow: false,
@@ -279,8 +282,7 @@ export default {
   },
   methods: {
     importf (file, event) {
-      let _this = this
-      let loadName = _this.$SG_Message.loading({ duration: 0 })
+      this.spinning = true
       this.$importf(file, event).then(vv => {
         let firstData = Object.getOwnPropertyNames(vv[0])
         judgmentData[0].empty = firstData[1]
@@ -293,7 +295,7 @@ export default {
               // 必填字段
               if (judgmentData[j].required) {
                 if (!v[i][judgmentData[j].empty]) {
-                  _this.$SG_Message.destroy(loadName)
+                  this.spinning = false
                   this.$message.info(`请输入${judgmentData[j].title}`)
                   return
                 }
@@ -301,7 +303,7 @@ export default {
               // 判断只能为数字
               if (judgmentData[j].type === 'number') {
                 if (v[i][judgmentData[j].empty] && !(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].empty])) {
-                  _this.$SG_Message.destroy(loadName)
+                  this.spinning = false
                   this.$message.info(`请输入正确${judgmentData[j].title}`)
                   return
                 }
@@ -309,7 +311,7 @@ export default {
               // 判断不超过多少字符
               if (judgmentData[j].fontLength) {
                 if (v[i][judgmentData[j].empty] && String(v[i][judgmentData[j].empty]).length > judgmentData[j].fontLength) {
-                  _this.$SG_Message.destroy(loadName)
+                  this.spinning = false
                   this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
                   return
                 }
@@ -334,17 +336,17 @@ export default {
           // 存着全部数据
           arrData.forEach(((item, index) => {
             item.key = index
+            item.coveredArea = item.coveredArea ? item.coveredArea : 0
+            item.transferArea = item.transferArea ? item.transferArea : 0
             this.assetsTotal[1].value = calc.add(this.assetsTotal[1].value, item.coveredArea || 0)
             this.assetsTotal[2].value = calc.add(this.assetsTotal[2].value, item.originalValue || 0)
             this.assetsTotal[3].value = calc.add(this.assetsTotal[3].value, item.marketValue || 0)
-            item.coveredArea = item.coveredArea ? item.coveredArea : 0
-            item.transferArea = item.transferArea ? item.transferArea : 0
           }))
           this.assetsTotal[0].value = arrData.length
           this.tableData = arrData
-          _this.$SG_Message.destroy(loadName)
+          this.spinning = false
         } else {
-          _this.$SG_Message.destroy(loadName)
+          this.spinning = false
           this.$message.info('请填写数据后在上传')
         }
       })
