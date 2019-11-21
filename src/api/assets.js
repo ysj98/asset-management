@@ -50,7 +50,7 @@ export function getChangeDetail (data) {
 }
 // 资产变动-一览表-导出
 export function exportChangeScheduleList (data) {
-  return axiosPost(assets.management.exportChangeScheduleList, data)
+  return axiosPost(assets.management.exportChangeScheduleList, data, false, false, {responseType: 'blob'})
 }
 // 资产变动-分页列表
 export function getChangePage (data) {
@@ -140,7 +140,7 @@ export function getTransferByProjectId (data) {
 }
 // 资产登记明细列表-不分页
 export function getRegisterOrderDetailsById (data) {
-  return axiosGet(assets.assetRegister.getRegisterOrderDetailsById, data)
+  return axiosPost(assets.assetRegister.getRegisterOrderDetailsById, data)
 }
 // 资产登记-详情明细统计
 export function getRegisterOrderDetailsStatistics (data) {

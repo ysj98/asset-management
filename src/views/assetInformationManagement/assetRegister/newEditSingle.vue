@@ -3,6 +3,7 @@
   编辑: edit
 -->
 <template>
+  <a-spin :spinning="spinning">
   <div class="newEditSingle">
     <div class="newEditSingle-nav">
       <span class="section-title blue">基础信息</span>
@@ -101,7 +102,7 @@
         <div class="tab-exhibition">
           <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
             <p>{{item.name}}</p>
-            <p>{{item.value}}</p>
+            <p>{{item.value || 0}}</p>
           </div>
         </div>
         <div class="button-box">
@@ -114,6 +115,7 @@
         <!-- table-layout-fixed -->
         <div class="table-border">
           <a-table
+            class="table-box"
             :scroll="{y: 450, x: 2600}"
             :columns="columns"
             :dataSource="tableData"
@@ -164,6 +166,7 @@
       <div v-else>确认要清空资产列表？</div>
     </SG-Modal>
   </div>
+</a-spin>
 </template>
 
 <script>
@@ -171,7 +174,7 @@ import AssetBundlePopover from '../../common/assetBundlePopover'
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
 import {columnsData, judgmentData} from './registerBasics'
-import {debounce, utils} from '@/utils/utils'
+import {debounce, utils, calc} from '@/utils/utils'
 const newEditSingleData = {
   registerOrderCode: '',   // 验收单名称
   assetType: undefined,     // 资产类型
@@ -206,22 +209,22 @@ const assetsTotal = [
   {
     code: 'assetsNum',
     name: '资产数量',
-    value: ''
+    value: 0
   },
   {
     code: 'areaNum',
     name: '建筑面积',
-    value: ''
+    value: 0
   },
   {
     code: 'originalNum',
     name: '资产原值',
-    value: ''
+    value: 0
   },
   {
     code: 'marketValueNum',
     name: '市场价值',
-    value: ''
+    value: 0
   }
 ]
 export default {
@@ -229,13 +232,14 @@ export default {
   props: {},
   data () {
     return {
+      spinning: false,
       setType: '',
       recordKey: '',
       commonShow: false,
       commonTitle: '',
       judge: '',
       registerOrderId: '',
-      assetsTotal: [...assetsTotal],
+      assetsTotal: assetsTotal,
       organId: '',
       buildIds: undefined,
       buildIdsData: [],
@@ -278,10 +282,11 @@ export default {
   },
   methods: {
     importf (file, event) {
+      this.spinning = true
       this.$importf(file, event).then(vv => {
+        let firstData = Object.getOwnPropertyNames(vv[0])
+        judgmentData[0].empty = firstData[1]
         let v = vv.splice(1, vv.length)
-        console.log(vv, '拿到的')
-         console.log(v, '拿到的')
         if (v.length > 0) {
           let arr = []
           for (let i = 0; i < v.length; i++) {
@@ -290,6 +295,7 @@ export default {
               // 必填字段
               if (judgmentData[j].required) {
                 if (!v[i][judgmentData[j].empty]) {
+                  this.spinning = false
                   this.$message.info(`请输入${judgmentData[j].title}`)
                   return
                 }
@@ -297,6 +303,7 @@ export default {
               // 判断只能为数字
               if (judgmentData[j].type === 'number') {
                 if (v[i][judgmentData[j].empty] && !(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].empty])) {
+                  this.spinning = false
                   this.$message.info(`请输入正确${judgmentData[j].title}`)
                   return
                 }
@@ -304,6 +311,7 @@ export default {
               // 判断不超过多少字符
               if (judgmentData[j].fontLength) {
                 if (v[i][judgmentData[j].empty] && String(v[i][judgmentData[j].empty]).length > judgmentData[j].fontLength) {
+                  this.spinning = false
                   this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
                   return
                 }
@@ -318,8 +326,27 @@ export default {
             }
             arr.push(opt)
           }
-          this.tableData = arr
+          // 数组去重根据type和objectId
+          let arrData = utils.deepClone([...this.tableData, ...arr])
+          let hash = {}
+          arrData = arrData.reduce((preVal, curVal) => {
+            hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
+            return preVal
+          }, [])
+          // 存着全部数据
+          arrData.forEach(((item, index) => {
+            item.key = index
+            item.coveredArea = item.coveredArea ? item.coveredArea : 0
+            item.transferArea = item.transferArea ? item.transferArea : 0
+            this.assetsTotal[1].value = calc.add(this.assetsTotal[1].value, item.coveredArea || 0)
+            this.assetsTotal[2].value = calc.add(this.assetsTotal[2].value, item.originalValue || 0)
+            this.assetsTotal[3].value = calc.add(this.assetsTotal[3].value, item.marketValue || 0)
+          }))
+          this.assetsTotal[0].value = arrData.length
+          this.tableData = arrData
+          this.spinning = false
         } else {
+          this.spinning = false
           this.$message.info('请填写数据后在上传')
         }
       })
@@ -456,7 +483,7 @@ export default {
             projectId: values.projectId,                 // 资产项目Id
             assetType: values.assetType,                 // 资产类型Id
             remark: values.remark,                       // 备注
-            organId: values.organId,                      // 组织机构id
+            organId: this.organId,                      // 组织机构id
             createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
             assetHouseList: data,
             attachment: files.length === 0 ? '' : files
@@ -464,22 +491,32 @@ export default {
           console.log(obj)
           // 编辑
           if (this.setType === 'edit') {
+            let loadingName = this.SG_Loding('保存中...')
             this.$api.assets.updateRegisterOrder(obj).then(res => {
               if (Number(res.data.code) === 0) {
-                this.$message.info('提交成功')
-                this.$router.push({path: '/assetRegister'})
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.success('提交成功')
+                  this.$router.push({path: '/assetRegister'})
+                })
               } else {
-                this.$message.error(res.data.message)
+                this.DE_Loding(loadingName).then(() => {
+                  this.$message.error(res.data.message)
+                })
               }
             }) 
           } else {
           // 新增
+           let loadingName = this.SG_Loding('保存中...')
             this.$api.assets.saveRegisterOrder(obj).then(res => {
               if (Number(res.data.code) === 0) {
-                this.$message.info('提交成功')
-                this.$router.push({path: '/assetRegister'})
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.success('提交成功')
+                  this.$router.push({path: '/assetRegister'})
+                })
               } else {
-                this.$message.error(res.data.message)
+                this.DE_Loding(loadingName).then(() => {
+                  this.$message.error(res.data.message)
+                })
               }
             }) 
           }
@@ -502,24 +539,35 @@ export default {
             projectId: data.projectId,
             registerOrderCode: data.registerOrderCode,
             assetType: String(data.assetType),
-            createTime: moment(data.createTime, 'YYYY-MM-DD'),
+            createTime: moment(data.createTime, 'YYYY-MM-DD') || '',
             remark: data.remark
           })
+          let files = []
+          if (data.attachment && data.attachment.length > 0) {
+              data.attachment.forEach(item => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName
+              })
+            })
+          }
+          this.newEditSingleData.files = files
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    // 获取详情
+    // 获取详情列表
     getRegisterOrderDetailsByIdFn () {
       let obj = {
-        registerOrderId: this.registerOrderId
+        registerOrderId: Number(this.registerOrderId)
       }
       this.$api.assets.getRegisterOrderDetailsById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           data.forEach((item, index) => {
             item.key = index
+            item.ownershipStatus = item.ownershipStatusName
           })
           this.$nextTick(() => {
             this.tableData = data
@@ -677,5 +725,33 @@ export default {
 }
 .ipt-file {
   display: none !important;
+}
+</style>
+
+<style lang="scss">
+.table-box {
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 6px 6px;
+  }
+  .ant-table-tbody {
+    tr:nth-child(even){
+      background-color: #F9FBFD;
+    }
+  }
+  table{
+    table-layout:fixed;
+    td{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    tr:hover{
+      td{
+        white-space: normal;
+        overflow: auto;
+        text-overflow: clip;
+      }
+    }
+  }
 }
 </style>

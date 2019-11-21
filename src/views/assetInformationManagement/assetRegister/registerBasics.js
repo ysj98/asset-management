@@ -2,7 +2,7 @@
 export const columnsData = [
   {
     title: '楼栋名称',
-    dataIndex: 'buildingName',
+    dataIndex: 'buildName',
     width: 100
   },
   {
@@ -125,7 +125,7 @@ export const columnsData = [
 export const particulars = [
   {
     title: '楼栋名称',
-    dataIndex: 'buildingName',
+    dataIndex: 'buildName',
     width: 100
   },
   {
@@ -304,19 +304,19 @@ export const judgmentData = [
   },
   {
     title: '楼栋ID',
-    dataIndex: 'objectId',
+    dataIndex: 'buildId',
     required: false,
     empty: '__EMPTY_6'
   },
   {
     title: '对象ID',
-    dataIndex: 'buildId',
+    dataIndex: 'objectId',
     required: false,
     empty: '__EMPTY_7'
   },
   {
     title: '楼栋名称',
-    dataIndex: 'buildingName',
+    dataIndex: 'buildName',
     required: false,
     empty: '__EMPTY_8'
   },
