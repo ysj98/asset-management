@@ -20,11 +20,10 @@
           v-model="projectId"
           v-bind="properties"
           class="project_style"
+          :options="projectOptions"
           placeholder="请选择资产项目"
           :loading="loading && !projectOptions.length"
-        >
-          <a-select-option v-for="{name, id} in projectOptions" :key="id">{{`${name}(${id})`}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
       <a-col :span="8">
         <a-select
@@ -33,10 +32,9 @@
           v-bind="properties"
           class="building_style"
           placeholder="请选择楼栋"
+          :options="buildingOptions"
           :loading="loading && !buildingOptions.length"
-        >
-          <a-select-option v-for="{name, id} in buildingOptions" :key="id">{{name}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
     </a-row>
   </div>
@@ -114,8 +112,8 @@
             if (res && String(res.code) === '0') {
               _this[type] = (res.data || []).map(item => {
                 return {
-                  value: item.assetHouseId || item.projectId,
-                  name: item.assetName || item.projectName
+                  key: item.assetHouseId || item.projectId,
+                  title: item.assetName || item.projectName
                 }
               })
               return false

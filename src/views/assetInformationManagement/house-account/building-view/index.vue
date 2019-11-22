@@ -83,7 +83,7 @@
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]
         },
-        paginationObj: { pageNo: 0, totalCount: 0, pageLength: 10, location: 'absolute' }
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
       }
     },
 
