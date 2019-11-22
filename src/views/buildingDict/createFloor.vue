@@ -243,7 +243,7 @@ export default {
             this.$api.building.updateFloor(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼层成功')
-                // this.$emit('success')
+                this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }

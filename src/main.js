@@ -1,3 +1,8 @@
+/*
+ * @Date: 2019-11-01 09:42:51
+ * @Author: chen han
+ * @Description: 
+ */
 import Vue from 'vue'
 // import App from './App.vue'
 import App from './LocalApp'
@@ -9,7 +14,7 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.less'
 import SG_UI from 'segi-ant'
 import 'segi-ant/lib/segi-ant.css'
-
+console.dir(Vue)
 // 引入服务
 import API from './api'
 import Axios from './utils/axios'
