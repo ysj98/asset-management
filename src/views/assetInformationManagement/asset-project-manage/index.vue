@@ -7,7 +7,7 @@
         <SG-Button
           icon="plus"
           type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_APM_REAPPROVAL"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_NEW"
           @click="handleModalOpen('add', new Date().getTime())"
         >新增资产项目</SG-Button>
         <SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>
@@ -18,10 +18,10 @@
             <tree-select @changeTree="changeTree" style="width: 100%;"/>
           </a-col>
           <a-col :span="6">
-            <a-select v-model="approvalStatus" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
+            <a-select v-model="approvalStatusList" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
           </a-col>
           <a-col :span="6">
-            <a-select v-model="sourceTypeList" :maxTagCount="1" placeholder="请选择来源方式" style="width: 100%;" :options="sourceTypeOptions"/>
+            <a-select v-model="sourceTypeList" mode="multiple" :maxTagCount="1" placeholder="请选择来源方式" style="width: 100%;" :options="sourceTypeOptions"/>
           </a-col>
           <a-col :span="6" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
@@ -36,7 +36,7 @@
             <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 100%;" :options="operateOptions"/>
           </a-col>
           <a-col :span="6">
-            <a-input placeholder="请输入资产项目名称" v-model="assetName"/>
+            <a-input placeholder="请输入资产项目名称" v-model="projectName"/>
           </a-col>
           <a-col :span="6" style="text-align: left">
             <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
@@ -52,6 +52,7 @@
       <!--<span slot="ownershipProgress" slot-scope="text">-->
         <!--<a-progress :percent="text || 0" :format="a => a" size="small"/>-->
       <!--</span>-->
+      <span slot="takeOver" slot-scope="text">{{text ? "已接管": "未接管" }}</span>
       <span slot="action" slot-scope="text, record">
         <a-popconfirm
           okText="确定"
@@ -95,7 +96,9 @@
         <a-button key="submit" type="primary" :loading="tableObj.loading" @click="handleModalOk">
           {{modalObj.okText}}
         </a-button>
-        <a-button key="back" @click="handleModalCancel" :loading="tableObj.loading">{{modalObj.cancelText}}</a-button>
+        <a-button key="back" @click="handleModalCancel" :loading="modalObj.type === 'approval' ? tableObj.loading : false">
+          {{modalObj.cancelText}}
+        </a-button>
       </template>
       <base-info
         ref="baseInfo"
@@ -124,7 +127,7 @@
         fold: true, // 查询条件折叠
         ASSET_MANAGEMENT, // 权限对象
         overviewNumSpinning: false, // 统计查询loading
-        assetName: '', // 查询条件-资源项目名称
+        projectName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
           // {key: -1, title: '全部接管'},
@@ -133,7 +136,7 @@
         isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id
         organName: '', // 查询条件-组织Id
-        approvalStatus: undefined, // 查询条件-项目状态
+        approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
           // {key: -1, title: '全部状态'},
           {key: 0, title: '草稿'}, {key: 2, title: '已驳回'}, {key: 3, title: '已审批'}, {key: 1, title: '待审批'}
@@ -152,9 +155,9 @@
           {title: '已接管', value: 0, num: 'takeOveredNum', percent: 'takeOveredPercent', fontColor: '#324057'},
           {title: '转运营', value: 0, num: 'transferOperationNum', percent: 'transferOperationNumPercent', fontColor: '#324057'},
         ], // 概览数据，title 标题，value 数值，bgColor 背景色
-        modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '' },
+        modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '', maskClosable: false },
         tableObj: {
-          rowKey: 'projectCode',
+          rowKey: 'projectId',
           loading: false,
           dataSource: [],
           scroll: { x: true },
@@ -163,17 +166,17 @@
             { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName', fixed: 'left', width: '120px' },
             { title: '资产项目编码', dataIndex: 'projectCode', key: 'projectCode' },
             { title: '来源方式', key: 'sourceTypeName', dataIndex: 'sourceTypeName' },
-            { title: '来源渠道', dataIndex: 'souceChannelType', key: 'sourceChannelType' },
+            { title: '来源渠道', dataIndex: 'souceChannelType', key: 'souceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum', key: 'assetsNum' },
             { title: '资产项目状态', dataIndex: 'approvalStatusName', key: 'approvalStatusName' },
             { title: '审核日期', dataIndex: 'auditDate', key: 'auditDate' },
-            { title: '是否接管', dataIndex: 'takeOver', key: 'takeOver' },
+            { title: '是否接管', dataIndex: 'takeOver', key: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
             { title: '接管日期', dataIndex: 'takeOverDate', key: 'takeOverDate' },
             { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
           ]
         },
-        paginationObj: { pageNo: 0, totalCount: 0, pageLength: 0, location: 'absolute' },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalTextObj: {
           add: {title: '新建资产项目', okText: '提交审核', cancelText: '取消'},
           edit: {title: '编辑资产项目', okText: '提交审核', cancelText: '取消'},
@@ -190,10 +193,10 @@
 
       // 查询数据来源方式字典接口
       querySourceTypeList () {
-        this.$api.assets.organDict({code: ' source_type', organId: this.organId}).then(r => {
+        this.$api.assets.organDict({code: 'source_type', organId: this.organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.sourceTypeOptions = (res.data.data || []).map(item => {
+            this.sourceTypeOptions = (res.data || []).map(item => {
               return { key: item.value, title: item.name }
             })
             return false
@@ -206,7 +209,7 @@
 
       // Modal提交
       handleModalOk () {
-        const { modalObj: { type }, projectId } = this
+        const { modalObj: { type }, projectId, paginationObj: { pageNo, pageLength } } = this
         // 编辑基本信息时保存
         if (type === 'add' || type === 'edit') {
           new Promise((resolve, reject) => {
@@ -215,6 +218,9 @@
           }).then(() => {
             this.tableObj.loading = false
             this.modalObj.status = false
+            this.queryTableData({pageNo, pageLength, type: 'search'})
+          }).catch(() => {
+            this.tableObj.loading = false
           })
         } else if (type === 'approval') {
           // 审核提交
@@ -242,6 +248,9 @@
       // 编辑、新增、审核按钮控制Modal打开
       handleModalOpen (type, projectId = '') {
         // type ：add 新增，edit 编辑，approval 审核
+        if (type === 'add' && !this.organId) {
+          return this.$message.info('请先选择组织机构')
+        }
         const { modalTextObj } = this
         Object.assign(this.modalObj, {
           type,
@@ -257,6 +266,7 @@
 
       // Modal关闭
       handleModalCancel () {
+        this.tableObj.loading = false
         const { modalObj: { type }, projectId } = this
         if (type === 'approval') {
           this.$message.info(projectId + '别点了，二期开发')
@@ -324,15 +334,17 @@
       changeTree (id, name) {
         this.organId = id
         this.organName = name
+        // 根据organId查询来源方式字典
+        id && this.querySourceTypeList()
       },
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        const { organId, approvalStatus, sourceTypeList, takeOver, isCurrent, assetName, transferToOperation } = this
-        // if (!organId) { return this.$message.info('请选择组织机构') }
+        const { organId, approvalStatusList, sourceTypeList, takeOver, isCurrent, projectName, transferToOperation } = this
+        if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          assetName, approvalStatus: approvalStatus || null, transferToOperation,
+          projectName, approvalStatusList, transferToOperation,
           organId, sourceTypeList, takeOver, isCurrent, pageSize: pageLength, pageNum: pageNo
         }
         this.$api.assets.queryProjectManageListPage(form).then(r => {
@@ -361,29 +373,25 @@
         this.overviewNumSpinning = true
         this.$api.assets.queryProjectManageProjectStatistics(form).then(r => {
           this.overviewNumSpinning = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
+          let { data, code, message } = r.data
+          if (data && String(code) === '0') {
             return this.numList = this.numList.map(m => {
               const { num, percent } = m
               return {
                 ...m,
-                value: `${res[num]}${ percent ? `(${res[percent]})` : ''}`
+                value: `${data[num]}${ percent ? `(${data[percent]})` : ''}`
               }
             })
           }
-          throw res.message || '查询资产项目统计信息出错'
+          throw message || '查询资产项目统计信息出错'
         }).catch(err => {
           this.overviewNumSpinning = false
           this.$message.error(err || '查询资产项目统计信息出错')
         })
       }
-    },
-
-    created () {
-      // 查询来源方式字典
-      this.querySourceTypeList()
-      this.queryTableData({})
     }
+
+    // created () {}
   }
 </script>
 

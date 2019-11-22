@@ -5,7 +5,7 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn">
       <div slot="headerBtns">
-        <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button> -->
+        <SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -215,6 +215,36 @@ export default {
   computed: {
   },
   methods: {
+    // 导出
+    downloadFn () {
+      let obj = {
+        projectId: this.queryCondition.projectId,       // 资产项目Id
+        organId: Number(this.queryCondition.organId),         // 组织机构id
+        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
+        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        startDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
+        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
+        currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
+        // pageNum: this.queryCondition.pageNum,     // 当前页
+        // pageSize: this.queryCondition.pageSize,    // 每页显示记录数
+        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
+        multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
+        assetName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
+        changStartDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
+        changEndDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
+      }
+      this.$api.assets.exportChangeScheduleList(obj).then(res => {
+        console.log(res)
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产变动一览表.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+    },
     // 组织机构树
     changeTree (value, label) {
       this.organName = label

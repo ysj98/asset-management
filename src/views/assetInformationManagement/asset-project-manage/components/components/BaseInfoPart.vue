@@ -26,7 +26,7 @@
               style="width: 100%;"
               :placeholder="isEdit ? '请选择来源方式' : ''"
               :options="sourceTypeOptions || []"
-              v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
+              v-decorator="['souceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -35,7 +35,7 @@
             <a-input
               :disabled="!isEdit"
               placeholder="请输入来源渠道"
-              v-decorator="['sourceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
+              v-decorator="['souceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -66,7 +66,7 @@
             <SG-UploadFile
               v-if="isEdit || attachment.length"
               :show="!isEdit"
-              v-decorator="['attachment']"
+              v-model="attachment"
             />
             <span v-else style="margin-left: 12px">无</span>
           </a-form-item>
@@ -185,13 +185,14 @@
         if (!err) {
           this.spinning = true
           const { attachment, organId, type, projectId } = this
-          let attachArr = attachment.map(m => {
-            const { url: attachmentPath, suffix: attachmentSuffix, name: oldAttachmentName } = m
-            return { attachmentPath, attachmentSuffix, oldAttachmentName, newAttachmentName: name }
-          }) // 处理附件格式
           let {
-            agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate, transferApprovalDate
+            agreementSignDate, reportBasicInfoDate,
+            houseVerificationDate, transferApprovalDate, reportHouseTransferReqDate
           } = values
+          let attachArr = attachment.map(m => {
+            const { url: attachmentPath, suffix, name } = m
+            return { attachmentPath, attachmentSuffix: suffix || name.split('.')[1], oldAttachmentName: name, newAttachmentName: name }
+          }) // 处理附件格式
           let dateObj = {
             agreementSignDate: agreementSignDate ? moment(agreementSignDate).format('YYYY-MM-DD') : '',
             reportBasicInfoDate: reportBasicInfoDate ? moment(reportBasicInfoDate).format('YYYY-MM-DD') : '',
@@ -230,9 +231,9 @@
         let res = r.data
         if (res && String(res.code) === '0') {
           const {
-            attachment, organName, organId, projectName, sourceType, sourceChannelType, projectCode,
+            attachment, organName, organId, projectName, souceType, souceChannelType, projectCode,
             agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate,
-            ownershipHandleProblems, transferApprovalDate, remark
+            ownershipHandleProblems, transferApprovalDate, remark, houseTransferHisProblem
           } = res.data
           let attachArr = attachment.map(m => {
             return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
@@ -244,13 +245,14 @@
           })
           // 转换日期格式为moment
           let formData = {
-            attachment: attachArr,
-            agreementSignDate: moment(agreementSignDate || null, 'YYYY-MM-DD'),
-            reportBasicInfoDate: moment(reportBasicInfoDate || null, 'YYYY-MM-DD'),
-            transferApprovalDate: moment(transferApprovalDate || null, 'YYYY-MM-DD'),
-            houseVerificationDate: moment(houseVerificationDate || null, 'YYYY-MM-DD'),
-            reportHouseTransferReqDate: moment(reportHouseTransferReqDate || null, 'YYYY-MM-DD'),
-            projectName, sourceType, sourceChannelType, projectCode, remark, ownershipHandleProblems
+            ownershipHandleProblems: ownershipHandleProblems || '无',
+            houseTransferHisProblem: houseTransferHisProblem || '无',
+            projectName, souceType: String(souceType), souceChannelType, projectCode, remark: remark || '',
+            agreementSignDate: agreementSignDate ? moment(agreementSignDate, 'YYYY-MM-DD') : null,
+            reportBasicInfoDate: reportBasicInfoDate ? moment(reportBasicInfoDate || null, 'YYYY-MM-DD') : null,
+            transferApprovalDate: transferApprovalDate ? moment(transferApprovalDate || null, 'YYYY-MM-DD') : null,
+            houseVerificationDate: houseVerificationDate ? moment(houseVerificationDate || null, 'YYYY-MM-DD') : null,
+            reportHouseTransferReqDate: reportHouseTransferReqDate ? moment(reportHouseTransferReqDate || null, 'YYYY-MM-DD') : null
           }
           return this.form.setFieldsValue(formData)
         }
@@ -264,7 +266,7 @@
     // 初始化复制
     initAction (type) {
       if (!type) { return false }
-      if (type != 'approval') {
+      if (type == 'add' || type == 'edit') {
         Object.assign(this, {
           colSpan: 12,
           isEdit: true,
@@ -290,7 +292,7 @@
   },
 
   created () {
-    this.initAction(this.type)
+    this.initAction(this.type || 'show')
   },
   
   watch: {

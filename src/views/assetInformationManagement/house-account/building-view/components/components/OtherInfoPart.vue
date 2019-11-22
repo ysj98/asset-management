@@ -16,6 +16,7 @@
     data () {
       return {
         tableObj: {
+          pagination: false,
           rowKey: 'assetCode',
           dataSource: [],
           columns: [

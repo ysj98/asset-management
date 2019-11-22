@@ -50,7 +50,7 @@ export function getChangeDetail (data) {
 }
 // 资产变动-一览表-导出
 export function exportChangeScheduleList (data) {
-  return axiosPost(assets.management.exportChangeScheduleList, data)
+  return axiosPost(assets.management.exportChangeScheduleList, data, false, false, {responseType: 'blob'})
 }
 // 资产变动-分页列表
 export function getChangePage (data) {

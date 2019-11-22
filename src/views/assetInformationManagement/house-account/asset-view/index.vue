@@ -110,14 +110,15 @@
         organProjectBuildingValue: {}, // 查询条件-组织机构-资产项目-楼栋对象
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         tableObj: {
+          pagination: false,
           rowKey: 'assetHouseId',
           loading: false,
           columns: [],
           dataSource: [],
           scroll: { x: true },
           initColumns: [
-            { title: '资产名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left', width: 120 },
-            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode', fixed: 'left', width: 120 },
+            { title: '资产名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left' },
+            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode', fixed: 'left' },
             { title: '接管机构', dataIndex: 'ownerOrganName', key: 'ownerOrganName' },
             { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
@@ -154,7 +155,7 @@
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
         exportAssetBtn: false, // 导出资产视图button loading标志
-        paginationObj: { pageNo: 0, totalCount: 0, pageLength: 0, location: 'absolute' },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
       }
     },

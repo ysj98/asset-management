@@ -8,11 +8,11 @@
         <a-col v-for="(item, i) in baseInfoKeys" :span="8" :key="i">
           <div v-for="{title, key} in item" :key="key" class="item_detail">
             <div v-if="key==='picturePath'" style="text-align: center">
-              <img :src="baseInfoData['picturePath']" style="height: 115px"/>
+              <img :src="baseInfoData['picturePath'] ? `${imgPrx}${baseInfoData['picturePath']}` : defaultImgUrl" style="height: 115px"/>
             </div>
             <div v-else>
               <span style="color: #282D5B">{{title ? `${title}:` : ''}}</span>
-              <span style="margin-left:4px; color: #49505E">{{baseInfoData[key] || '无'}}</span>
+              <span style="margin-left:4px; color: #49505E">{{(baseInfoData[key] !== '' && baseInfoData[key] !== null) ? baseInfoData[key] : '无'}}</span>
             </div>
           </div>
         </a-col>
@@ -22,20 +22,23 @@
 </template>
 
 <script>
+  import { basics } from '@/config/config.url'
   export default {
     name: 'BaseInfoPart',
     props: ['houseId'],
     data () {
       return {
+        imgPrx: basics.common.imgStr,
         spinning: false, // 页面加载状态
+        defaultImgUrl: require('src/assets/image/default_house.png'),
         baseInfoKeys: [
           [
             {title: '主图', key: 'picturePath'}, {title: '地理位置', key: 'totalAddress'}, {title: '地上层数', key: 'upFloorNum'},
             {title: '权属状态', key: 'ownershipStatus'}, {title: '最新估值', key: 'assetValuation'}
           ], // 列1
           [
-            {title: '楼栋名称', key: 'buildName'}, {title: '楼栋编码', key: 'assetHouseId'}, {title: '建筑面积', key: 'area'},
-            {title: '房屋数量', key: 'assetNum'}, {title: '地下层数', key: 'downFloorNum'}, {title: '建筑结构', key: 'buildStruct'}
+            {title: '楼栋名称', key: 'buildName'}, {title: '楼栋编码', key: 'buildCode'}, {title: '建筑面积', key: 'area'},
+            {title: '房屋数量', key: 'roomNum'}, {title: '地下层数', key: 'downFloorNum'}, {title: '建筑结构', key: 'buildStruct'}
           ], // 列2
           [
             {title: '建筑年代', key: 'years'}, {title: '丘地号', key: 'addressNo'}, {title: '楼高', key: 'buildHeight'},

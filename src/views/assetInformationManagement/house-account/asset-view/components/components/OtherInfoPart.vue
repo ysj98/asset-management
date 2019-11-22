@@ -18,6 +18,7 @@
           :rowKey="item['table']['rowKey']"
           :columns="item['table']['columns']"
           :dataSource="tableData"
+          :pagination="false"
           class="custom-table td-pd10"
         />
         <!--特殊处理：权属信息展示的第两个Table-->
@@ -27,6 +28,7 @@
             :rowKey="item['table2']['rowKey']"
             :columns="item['table2']['columns']"
             :dataSource="tableData"
+            :pagination="false"
             class="custom-table td-pd10"
           >
           <span slot="action" slot-scope="text, record">

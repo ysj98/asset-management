@@ -20,11 +20,11 @@
           v-model="projectId"
           v-bind="properties"
           class="project_style"
+          :options="projectOptions"
           placeholder="请选择资产项目"
+          :filterOption="filterOption"
           :loading="loading && !projectOptions.length"
-        >
-          <a-select-option v-for="{name, id} in projectOptions" :key="id">{{`${name}(${id})`}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
       <a-col :span="8">
         <a-select
@@ -33,10 +33,10 @@
           v-bind="properties"
           class="building_style"
           placeholder="请选择楼栋"
+          :options="buildingOptions"
+          :filterOption="filterOption"
           :loading="loading && !buildingOptions.length"
-        >
-          <a-select-option v-for="{name, id} in buildingOptions" :key="id">{{name}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
     </a-row>
   </div>
@@ -94,6 +94,13 @@
     },
 
     methods: {
+      // 搜索过滤选项
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
+
       // 获取选择的组织机构
       changeTree (organId, name) {
         this.organName = name
@@ -114,8 +121,8 @@
             if (res && String(res.code) === '0') {
               _this[type] = (res.data || []).map(item => {
                 return {
-                  value: item.assetHouseId || item.projectId,
-                  name: item.assetName || item.projectName
+                  key: item.assetHouseId || item.projectId,
+                  title: item.assetName || item.projectName
                 }
               })
               return false
@@ -142,7 +149,9 @@
       organId: function (organId) {
         Object.assign(this, {
           projectId: undefined,
-          buildingId: undefined
+          projectOptions: [],
+          buildingId: undefined,
+          buildingOptions: [],
         })
         this.$emit('input', { organId, projectId: undefined, buildingId: undefined })
         this.queryData('projectOptions')
@@ -150,7 +159,8 @@
 
       projectId: function (projectId) {
         const { organId } = this
-        this.buildingId = ''
+        this.buildingId = undefined
+        this.buildingOptions = []
         this.$emit('input', { organId, projectId, buildingId: undefined })
         this.queryData('buildingOptions')
       },
