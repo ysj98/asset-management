@@ -46,7 +46,10 @@ let proRouter = [
   {
     path: '/assetRegister',
     name: '资产登记',
-    component: () => import('@/views/assetInformationManagement/assetRegister/index.vue')
+    component: () => import('@/views/assetInformationManagement/assetRegister/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetRegister/newEditSingle',

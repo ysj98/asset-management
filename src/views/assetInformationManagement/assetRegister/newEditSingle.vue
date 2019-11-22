@@ -501,7 +501,7 @@ export default {
               if (Number(res.data.code) === 0) {
                 this.DE_Loding(loadingName).then(() => {
                   this.$SG_Message.success('提交成功')
-                  this.$router.push({path: '/assetRegister'})
+                  this.$router.push({path: '/assetRegister', query: {refresh: true}})
                 })
               } else {
                 this.DE_Loding(loadingName).then(() => {
@@ -516,7 +516,7 @@ export default {
               if (Number(res.data.code) === 0) {
                 this.DE_Loding(loadingName).then(() => {
                   this.$SG_Message.success('提交成功')
-                  this.$router.push({path: '/assetRegister'})
+                  this.$router.push({path: '/assetRegister', query: {refresh: true}})
                 })
               } else {
                 this.DE_Loding(loadingName).then(() => {
