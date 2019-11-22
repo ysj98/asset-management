@@ -78,6 +78,7 @@
                     initialValue: newEditSingleData.projectId
                   }]"
                 :allowClear="false"
+                @change="projectChangeFn"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到资产项目"
                 >
@@ -315,6 +316,10 @@ export default {
     // 变动类型
     changeTypeChange (val) {
       this.changeType = val
+    },
+    projectChangeFn () {
+      this.checkedData = []
+      this.tableData = []
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
