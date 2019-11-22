@@ -366,38 +366,45 @@ export default {
       })
     }
   },
-  created () {
-    let query = this.GET_ROUTE_QUERY(this.$route.path)
-    console.log(query, 'jiss')
-    if (Object.keys(query).length > 0) {
-      this.queryCondition.approvalStatus = query.approvalStatus
-      this.queryCondition.assetType = query.assetType
-      this.queryCondition.crateDateE = query.crateDateE
-      this.queryCondition.createDateS = query.createDateS
-      this.queryCondition.isCurrent = query.isCurrent
-      this.queryCondition.organId = query.organId
-      this.queryCondition.pageNum = query.pageNum
-      this.queryCondition.pageSize = query.pageSize
-      this.queryCondition.projectId = query.projectId
-      this.isChild = query.isChild
-      this.query()
-    }
-  },
-  beforeRouteLeave (to, from, next) {
-    let o = {key: this.$route.path, data: {}}
-    if (to.path.indexOf(from.path) !== -1) {
-      o = {
-        key: from.path,
-        data: {
-          ...this.queryCondition,
-          ...this.defaultValue,
-          isChild: true
-        }
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/assetRegister' && this.$route.query.refresh) {
+        this.query()
       }
     }
-    this.$store.commit('pro/SET_ROUTE_QUERY', o)
-    next()
   },
+  // created () {
+  //   let query = this.GET_ROUTE_QUERY(this.$route.path)
+  //   console.log(query, 'jiss')
+  //   if (Object.keys(query).length > 0) {
+  //     this.queryCondition.approvalStatus = query.approvalStatus
+  //     this.queryCondition.assetType = query.assetType
+  //     this.queryCondition.crateDateE = query.crateDateE
+  //     this.queryCondition.createDateS = query.createDateS
+  //     this.queryCondition.isCurrent = query.isCurrent
+  //     this.queryCondition.organId = query.organId
+  //     this.queryCondition.pageNum = query.pageNum
+  //     this.queryCondition.pageSize = query.pageSize
+  //     this.queryCondition.projectId = query.projectId
+  //     this.isChild = query.isChild
+  //     this.query()
+  //   }
+  // },
+  // beforeRouteLeave (to, from, next) {
+  //   let o = {key: this.$route.path, data: {}}
+  //   if (to.path.indexOf(from.path) !== -1) {
+  //     o = {
+  //       key: from.path,
+  //       data: {
+  //         ...this.queryCondition,
+  //         ...this.defaultValue,
+  //         isChild: true
+  //       }
+  //     }
+  //   }
+  //   this.$store.commit('pro/SET_ROUTE_QUERY', o)
+  //   next()
+  // },
   mounted () {
     // 获取状态
     // this.platformDictFn('approval_status_type')
