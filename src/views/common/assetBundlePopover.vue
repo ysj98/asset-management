@@ -20,7 +20,7 @@
         <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类型" v-model="selecData.assetType" @change="assetTypeFn">
+        <a-select :style="allStyle" placeholder="全部资产类型" v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
           <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
@@ -134,6 +134,7 @@ export default {
       ],
       allStyle: 'width: 140px; margin-right: 10px;',
       show: false,
+      assetTypeDisabled: false,
       selecData: {
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
@@ -191,9 +192,14 @@ export default {
       this.$emit('status', checkedData, rowsData)
     },
     // 外面删除了后剩下给回来的数据
-    redactCheckedDataFn (redactChecked, projectId) {
+    redactCheckedDataFn (redactChecked, projectId, assetType) {
       if (this.selecData.projectId !== projectId) {
         this.selecData.projectId = projectId
+        this.query()
+      }
+      if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
+        this.selecData.assetType = assetType
+        this.assetTypeDisabled = true
         this.query()
       }
       this.$nextTick(() => {
