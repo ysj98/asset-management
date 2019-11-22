@@ -352,7 +352,7 @@ export default {
       }
       this.$api.assets.getRegisterOrderListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
           })
