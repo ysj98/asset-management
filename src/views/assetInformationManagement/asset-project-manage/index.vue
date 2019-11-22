@@ -7,7 +7,7 @@
         <SG-Button
           icon="plus"
           type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_APM_REAPPROVAL"
+          v-power="ASSET_MANAGEMENT.ASSET_APM_NEW"
           @click="handleModalOpen('add', new Date().getTime())"
         >新增资产项目</SG-Button>
         <SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>
@@ -166,7 +166,7 @@
             { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName', fixed: 'left', width: '120px' },
             { title: '资产项目编码', dataIndex: 'projectCode', key: 'projectCode' },
             { title: '来源方式', key: 'sourceTypeName', dataIndex: 'sourceTypeName' },
-            { title: '来源渠道', dataIndex: 'souceChannelType', key: 'sourceChannelType' },
+            { title: '来源渠道', dataIndex: 'souceChannelType', key: 'souceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum', key: 'assetsNum' },
             { title: '资产项目状态', dataIndex: 'approvalStatusName', key: 'approvalStatusName' },
             { title: '审核日期', dataIndex: 'auditDate', key: 'auditDate' },

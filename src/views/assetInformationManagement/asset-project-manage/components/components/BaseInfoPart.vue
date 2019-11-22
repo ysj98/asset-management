@@ -35,7 +35,7 @@
             <a-input
               :disabled="!isEdit"
               placeholder="请输入来源渠道"
-              v-decorator="['sourceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
+              v-decorator="['souceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -231,7 +231,7 @@
         let res = r.data
         if (res && String(res.code) === '0') {
           const {
-            attachment, organName, organId, projectName, souceType, sourceChannelType, projectCode,
+            attachment, organName, organId, projectName, souceType, souceChannelType, projectCode,
             agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate,
             ownershipHandleProblems, transferApprovalDate, remark, houseTransferHisProblem
           } = res.data
@@ -247,7 +247,7 @@
           let formData = {
             ownershipHandleProblems: ownershipHandleProblems || '无',
             houseTransferHisProblem: houseTransferHisProblem || '无',
-            projectName, souceType: String(souceType), sourceChannelType, projectCode, remark: remark || '',
+            projectName, souceType: String(souceType), souceChannelType, projectCode, remark: remark || '',
             agreementSignDate: agreementSignDate ? moment(agreementSignDate, 'YYYY-MM-DD') : null,
             reportBasicInfoDate: reportBasicInfoDate ? moment(reportBasicInfoDate || null, 'YYYY-MM-DD') : null,
             transferApprovalDate: transferApprovalDate ? moment(transferApprovalDate || null, 'YYYY-MM-DD') : null,

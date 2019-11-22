@@ -9,34 +9,34 @@
         <a-select
           v-model="province"
           v-bind="properties"
+          :options="provinces"
           class="province_style"
           placeholder="请选择省份"
+          :filterOption="filterOption"
           :loading="loading && !provinces.length"
-        >
-          <a-select-option v-for="provinceValue in provinces" :key="provinceValue">{{provinceValue}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
       <a-col :span="8">
         <a-select
           v-model="city"
           v-bind="properties"
+          :options="cities"
           class="city_style"
           placeholder="请选择城市"
+          :filterOption="filterOption"
           :loading="loading && !cities.length"
-        >
-          <a-select-option v-for="cityValue in cities" :key="cityValue">{{cityValue}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
       <a-col :span="8">
         <a-select
           v-model="district"
           v-bind="properties"
+          :options="districts"
           class="district_style"
           placeholder="请选择地区"
+          :filterOption="filterOption"
           :loading="loading && !districts.length"
-        >
-          <a-select-option v-for="districtValue in districts" :key="districtValue">{{districtValue}}</a-select-option>
-        </a-select>
+        ></a-select>
       </a-col>
     </a-row>
   </div>
@@ -54,7 +54,7 @@
       // 是否可搜索
       showSearch: {
         type: Boolean,
-        default: () => false
+        default: () => true
       },
       // 是否可清除
       allowClear: {
@@ -82,15 +82,22 @@
     },
 
     methods: {
+      // 搜索过滤选项
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
+
       // 查询省市区接口
       queryData (type, parentRegionId) {
         this.loading = true
         const api = {
-          province: 'queryProvinceList',
+          provinces: 'queryProvinceList',
           cities: 'queryCityAndAreaList',
           districts: 'queryCityAndAreaList'
         }
-        let form = type === 'province' ? {} : { parentRegionId }
+        let form = type === 'provinces' ? {} : { parentRegionId }
         clearTimeout(this.timeoutId)
         let _this = this
         _this.timeoutId = setTimeout(() => {
@@ -99,7 +106,7 @@
             let res = r.data
             if (res && String(res.code) === '0') {
               _this[type] = (res.data || []).map(item => {
-                return { value: item.regionId, name: item.name }
+                return { key: item.regionId, title: item.name }
               })
               return false
             }
@@ -116,23 +123,26 @@
       const { allowClear, size, showSearch, value } = this
       this.properties = { allowClear, size, showSearch }
       Object.assign(this, { ...value })
-      this.queryData('province')
+      this.queryData('provinces')
     },
     watch: {
       province: function (province) {
         Object.assign(this, {
           city: undefined,
-          district: undefined
+          cities: [],
+          district: undefined,
+          districts: [],
         })
         this.$emit('input', { province, city: undefined, district: undefined })
-        this.queryData('cities', province)
+        province && this.queryData('cities', province)
       },
 
       city: function (city) {
         const {province} = this
         this.district = undefined
+        this.districts = []
         this.$emit('input', { province, city, district: undefined })
-        this.queryData('districts', city)
+        city && this.queryData('districts', city)
       },
 
       district: function (district) {

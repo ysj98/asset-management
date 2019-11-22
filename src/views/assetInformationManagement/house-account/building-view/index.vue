@@ -63,6 +63,7 @@
           dataSource: [],
           loading: false,
           scroll: { x: true },
+          pagination: false,
           rowKey: 'assetHouseId',
           columns: [
             { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left', width: 80 },
@@ -99,7 +100,7 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
-        if (!houseIdList || !projectIdList || !organId) { return this.$message.info('请选择搜索条件') }
+        if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         this.$api.assets.queryBuildingViewPage({ organId, houseIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
           this.tableObj.loading = false
