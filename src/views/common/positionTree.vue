@@ -196,7 +196,6 @@ export default {
           let _item = fetchItem(this.gData, key, 'key')
           if (_item) {
             this.$set(_item, 'children', result)
-            this.treeUuid = getUuid()
             if (result.length) {
               this.treeUuid = getUuid()
             }
