@@ -20,7 +20,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                    <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['area', {initialValue: '' || undefined}]"/>
+                    <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['area', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -39,7 +39,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="层高(m)" v-bind="formItemLayout">
-                    <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined, 
+                    <a-input-number :min="0" :max="9999.99" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined, 
                     rules: [
                     {required: true, message: '请输入楼层高度'},
                     {pattern: /^(\.*)(\d+)(\.?)(\d{0,2}).*$/, message: '最多保留2位小数'}]}]"/>
@@ -47,7 +47,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="房屋数量" v-bind="formItemLayout">
-                    <a-input-number :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
+                    <a-input-number :min="0" :max="9999999" :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="24">
