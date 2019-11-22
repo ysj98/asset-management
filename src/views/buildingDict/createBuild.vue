@@ -25,7 +25,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="房屋数量" v-bind="formItemLayout">
-                    <a-input-number :max="99999" :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
+                    <a-input-number :min="0" :max="9999999" :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -82,12 +82,12 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="地上层高(m)" v-bind="formItemLayout">
-                    <a-input-number :max="999.99" :style="allWidth" v-decorator="['upGroundHigh', {initialValue: '' || undefined}]"/>
+                    <a-input-number :min="0" :max="999.99" :style="allWidth" v-decorator="['upGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="地下层高(m)" v-bind="formItemLayout">
-                    <a-input-number :max="999.99" :style="allWidth" v-decorator="['downGroundHigh', {initialValue: '' || undefined}]"/>
+                    <a-input-number :min="0" :max="999.99" :style="allWidth" v-decorator="['downGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
               <a-col v-bind="formSpan">
@@ -181,7 +181,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="电梯数量" v-bind="formItemLayout">
-                    <a-input-number :style="allWidth" v-decorator="['liftNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['liftNums', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">

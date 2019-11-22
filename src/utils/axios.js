@@ -32,7 +32,7 @@ axiosX.interceptors.request.use(
     return Promise.reject(err)
   }
 )
-let errCodeArr = ['-0000001', '-0000002', '-0000003']
+let errCodeArr = ['0000002', '0000001', '-0000003']
 // response 拦截
 axiosX.interceptors.response.use(
   response => {

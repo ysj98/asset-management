@@ -32,6 +32,7 @@
                 :style="allStyle"
                 :options="projectIdOptions"
                 :filterOption="filterOption"
+                @change="changeProjectId"
                 v-decorator="['projectId',
                 {rules: [{required: true,  message: '请选择资产项目'}], initialValue: detail.projectId}]"
                 v-if="editable"
@@ -50,6 +51,7 @@
                 :style="allStyle"
                 :options="assetTypeOptions"
                 :filterOption="filterOption"
+                @change="changeAssetType"
                 v-decorator="['assetType',
                 {rules: [{required: true,  message: '请选择资产类型'}], initialValue: detail.assetType}]"
                 v-if="editable"
@@ -291,6 +293,16 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
+    // 资产项目发生变化
+    changeProjectId () {
+      this.dataSource = []
+      this.checkedData = []
+    },
+    // 资产类型发生变化
+    changeAssetType () {
+      this.dataSource = []
+      this.checkedData = []
+    },
     // 页码发生变化
     handlePageChange (page) {
       this.paginator.pageNo = page.pageNo
@@ -308,7 +320,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.projectName,
-              value: +item.projectId
+              value: item.projectId
             }
             arr.push(obj)
           })
@@ -329,7 +341,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.name,
-              value: +item.value
+              value: item.value
             }
             arr.push(obj)
           })
@@ -354,7 +366,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.name,
-              value: +item.value
+              value: item.value
             }
             arr.push(obj)
           })
@@ -370,7 +382,12 @@ export default {
         this.$message.info('请先选择资产项目')
         return
       }
-      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'))
+      if (!this.form.getFieldValue('assetType')) {
+        this.$message.info('请先选择资产类型')
+        return
+      }
+      console.log(this.form.getFieldValue('assetType'))
+      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.form.getFieldValue('assetType'))
       this.$refs.assetBundlePopover.show = true
     },
     // 资产变动时
