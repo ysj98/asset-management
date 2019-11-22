@@ -31,7 +31,10 @@ let proRouter = [
   {
     path: '/assetChange',
     name: '资产变动',
-    component: () => import('@/views/assetInformationManagement/assetChange/index.vue')
+    component: () => import('@/views/assetInformationManagement/assetChange/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetChange/newEditSingle',
@@ -46,7 +49,10 @@ let proRouter = [
   {
     path: '/assetRegister',
     name: '资产登记',
-    component: () => import('@/views/assetInformationManagement/assetRegister/index.vue')
+    component: () => import('@/views/assetInformationManagement/assetRegister/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetRegister/newEditSingle',

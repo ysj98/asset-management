@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-/asset-management
+/asset-management/
 /asset-management.zip
 # local env files
 .env.local

@@ -223,7 +223,7 @@ export default {
             this.$api.building.updateUnit(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑单元成功')
-                // this.$emit('success')
+                this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }

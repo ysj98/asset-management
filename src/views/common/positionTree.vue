@@ -21,7 +21,7 @@
         @select="hanldSelect"
         >
         <template slot="title" slot-scope="scope">
-          <div class="tree-bg-box" :class="[scope.key===activeKey&&'active']" @click="hanldeOper(scope)">
+          <div class="tree-bg-box" :key="scope.key" :class="[scope.key===activeKey&&'active']" @click="hanldeOper(scope)">
             <!-- 标题及搜索 -->
             <span style="color: #1890ff" class="tree-node-title" v-if="scope.title.indexOf(searchValueInput) > -1 && searchValueInput">{{scope.title}}</span>
             <span class="tree-node-title" v-else>{{scope.title}}</span>
@@ -107,7 +107,7 @@ export default {
     return {
       activeKey: '', // 当前点击项
       expandedKeys: [topItem.key],
-      autoExpandParent: true,
+      autoExpandParent: false,
       gData: [{...topItem}],
       dataList: [{...topItem}], // 缓存每一项请求
       selectItem: {}, // 当前添加项
@@ -194,13 +194,19 @@ export default {
             this.dataList.push({...item})
           }
           let _item = fetchItem(this.gData, key, 'key')
+          this.expandedKeys.push(key)
+          this.expandedKeys = [...new Set(this.expandedKeys)]
+          // this.autoExpandParent = true
           if (_item) {
             this.$set(_item, 'children', result)
-            this.treeUuid = getUuid()
+            if (result.length) {
+              // this.treeUuid = getUuid()
+            }
           }
         } else {
           this.$message.error(res.data.message)
         }
+      }, () => {
       })
     },
     onChange (e) {

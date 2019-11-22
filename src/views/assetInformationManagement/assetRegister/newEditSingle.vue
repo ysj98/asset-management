@@ -100,7 +100,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
         <div class="tab-exhibition">
-          <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
+          <div class="exhibition" v-for="(item, index) in assetsCount" :key="index">
             <p>{{item.name}}</p>
             <p>{{item.value || 0}}</p>
           </div>
@@ -205,28 +205,28 @@ const scopeData = [
     name: '房屋'
   }
 ]
-const assetsTotal = [
-  {
-    code: 'assetsNum',
-    name: '资产数量',
-    value: 0
-  },
-  {
-    code: 'areaNum',
-    name: '建筑面积',
-    value: 0
-  },
-  {
-    code: 'originalNum',
-    name: '资产原值',
-    value: 0
-  },
-  {
-    code: 'marketValueNum',
-    name: '市场价值',
-    value: 0
-  }
-]
+// const assetsCount = [
+//   {
+//     code: 'assetsNum',
+//     name: '资产数量',
+//     value: 0
+//   },
+//   {
+//     code: 'areaNum',
+//     name: '建筑面积',
+//     value: 0
+//   },
+//   {
+//     code: 'originalNum',
+//     name: '资产原值',
+//     value: 0
+//   },
+//   {
+//     code: 'marketValueNum',
+//     name: '市场价值',
+//     value: 0
+//   }
+// ]
 export default {
   components: {AssetBundlePopover, FormFooter},
   props: {},
@@ -239,7 +239,7 @@ export default {
       commonTitle: '',
       judge: '',
       registerOrderId: '',
-      assetsTotal: assetsTotal,
+      assetsCount: '',
       organId: '',
       buildIds: undefined,
       buildIdsData: [],
@@ -342,12 +342,12 @@ export default {
             item.key = index
             item.coveredArea = item.coveredArea ? item.coveredArea : 0
             item.transferArea = item.transferArea ? item.transferArea : 0
-            this.assetsTotal[1].value = calc.add(this.assetsTotal[1].value, item.coveredArea || 0)
-            this.assetsTotal[2].value = calc.add(this.assetsTotal[2].value, item.originalValue || 0)
-            this.assetsTotal[3].value = calc.add(this.assetsTotal[3].value, item.marketValue || 0)
+            this.assetsCount[1].value = calc.add(this.assetsCount[1].value, item.coveredArea || 0)
+            this.assetsCount[2].value = calc.add(this.assetsCount[2].value, item.originalValue || 0)
+            this.assetsCount[3].value = calc.add(this.assetsCount[3].value, item.marketValue || 0)
           }))
           console.log(arrData, '拿到数据')
-          this.assetsTotal[0].value = arrData.length
+          this.assetsCount[0].value = arrData.length
           this.tableData = arrData
           this.spinning = false
         } else {
@@ -501,7 +501,7 @@ export default {
               if (Number(res.data.code) === 0) {
                 this.DE_Loding(loadingName).then(() => {
                   this.$SG_Message.success('提交成功')
-                  this.$router.push({path: '/assetRegister'})
+                  this.$router.push({path: '/assetRegister', query: {refresh: true}})
                 })
               } else {
                 this.DE_Loding(loadingName).then(() => {
@@ -516,7 +516,7 @@ export default {
               if (Number(res.data.code) === 0) {
                 this.DE_Loding(loadingName).then(() => {
                   this.$SG_Message.success('提交成功')
-                  this.$router.push({path: '/assetRegister'})
+                  this.$router.push({path: '/assetRegister', query: {refresh: true}})
                 })
               } else {
                 this.DE_Loding(loadingName).then(() => {
@@ -630,7 +630,7 @@ export default {
       this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          this.assetsTotal.forEach(item => {
+          this.assetsCount.forEach(item => {
             Object.keys(data).forEach(key => {
               if (item.code === key) {
                 item.value = data[key]
@@ -649,10 +649,29 @@ export default {
     this.setType = this.$route.query.setType
   },
   mounted () {
+    this.assetsCount = [{
+      code: 'assetsNum',
+      name: '资产数量',
+      value: 0
+    },
+    {
+      code: 'areaNum',
+      name: '建筑面积',
+      value: 0
+    },
+    {
+      code: 'originalNum',
+      name: '资产原值',
+      value: 0
+    },
+    {
+      code: 'marketValueNum',
+      name: '市场价值',
+      value: 0
+    }]
     this.getObjectKeyValueByOrganIdFn()
     this.platformDictFn()
-    this.queryBuildList('1300')
-    // this.queryBuildList(this.organId)
+    this.queryBuildList(this.organId)
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
       this.registerOrderId = this.enitData[0].registerOrderId

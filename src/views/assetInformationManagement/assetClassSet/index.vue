@@ -134,13 +134,15 @@ export default {
       },
     }
   },
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/assetClassSet' && this.$route.query.refresh) {
+        this.queryList()
+      }
+    }
+  },
   methods: {
     organIdChange (value) {
-      this.queryClick()
-    },
-    changeTree (value, label) {
-      this.organName = label
-      this.organId = value
       this.queryClick()
     },
     // 页码发生变化
