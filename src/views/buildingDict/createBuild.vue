@@ -102,7 +102,7 @@
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['buildStruct', {rules: [{required: true, message: '请选择楼栋用途'}]}]"
+                        v-decorator="['buildStruct', {rules: [{required: true, message: '请选择楼栋建筑结构'}]}]"
                       />
                   </a-form-item>
                 </a-col>

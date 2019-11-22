@@ -62,6 +62,13 @@ export default {
       childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
     }
   },
+  watch: {
+    organId (nv) {
+      if (nv) {
+        this.resetInit()
+      }
+    }
+  },
   computed: {
     showCreateBuild () {
       return (this.activeType==='0' && this.createType === '') 
@@ -97,6 +104,7 @@ export default {
     // })
   },
   methods: {
+    // 初始化数据
     resetInit () {
       this.activeType = '' // -2楼栋列表，0楼栋, 1单元, 2楼层
       this.pageType = '' // create新增， edit编辑，

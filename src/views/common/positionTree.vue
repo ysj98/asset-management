@@ -197,10 +197,14 @@ export default {
           if (_item) {
             this.$set(_item, 'children', result)
             this.treeUuid = getUuid()
+            if (result.length) {
+              this.treeUuid = getUuid()
+            }
           }
         } else {
           this.$message.error(res.data.message)
         }
+      }, () => {
       })
     },
     onChange (e) {
