@@ -335,6 +335,10 @@ export default {
           }, [])
           // 存着全部数据
           arrData.forEach(((item, index) => {
+            // 过滤掉没有id的
+            if (!item.objectId) {
+              arrData.splice(index, 1)
+            }
             item.key = index
             item.coveredArea = item.coveredArea ? item.coveredArea : 0
             item.transferArea = item.transferArea ? item.transferArea : 0
@@ -342,6 +346,7 @@ export default {
             this.assetsTotal[2].value = calc.add(this.assetsTotal[2].value, item.originalValue || 0)
             this.assetsTotal[3].value = calc.add(this.assetsTotal[3].value, item.marketValue || 0)
           }))
+          console.log(arrData, '拿到数据')
           this.assetsTotal[0].value = arrData.length
           this.tableData = arrData
           this.spinning = false
