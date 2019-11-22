@@ -194,7 +194,7 @@ export default {
       // 详情
       if (str === 'particulars') {
         let particularsData = JSON.stringify([val])
-        this.goPage()
+        // this.goPage()
         this.$router.push({path: '/assetChange/particulars', query: { record: particularsData }})
       } else if (str === 'delete') {  // 删除
         this.commonTitle = '删除'
@@ -209,19 +209,19 @@ export default {
       } else if (str === 'edit') {
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([val])
-        this.goPage()
+        // this.goPage()
         this.$router.push({path: '/assetChange/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
       }
     },
     // 页面跳转
-    goPage (type, record) {
-      // 存储缓存搜索缓存数据
-      let o = {
-        ...this.queryCondition,
-        isChild: true
-      }
-      this.SET_ROUTE_QUERY(this.$route.path, o)
-    },
+    // goPage (type, record) {
+    //   // 存储缓存搜索缓存数据
+    //   let o = {
+    //     ...this.queryCondition,
+    //     isChild: true
+    //   }
+    //   this.SET_ROUTE_QUERY(this.$route.path, o)
+    // },
     // 状态发生变化
     changeStatus (value) {
       this.$nextTick(function () {
@@ -390,22 +390,29 @@ export default {
       })
     }
   },
-  created () {
-    let query = this.GET_ROUTE_QUERY(this.$route.path)
-    if (Object.keys(query).length > 0) {
-      this.queryCondition.approvalStatus = query.approvalStatus
-      this.queryCondition.pageNum = query.pageNum
-      this.queryCondition.pageSize = query.pageSize
-      this.queryCondition.projectId = query.projectId
-      this.queryCondition.changeType = query.changeType
-      this.queryCondition.startCreateDate = query.startCreateDate
-      this.queryCondition.endCreateDate = query.endCreateDate
-      this.queryCondition.currentOrgan = query.currentOrgan
-      this.queryCondition.organId = query.organId
-      this.isChild = query.isChild
-      this.query()
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/assetChange' && this.$route.query.refresh) {
+        this.query()
+      }
     }
   },
+  // created () {
+  //   let query = this.GET_ROUTE_QUERY(this.$route.path)
+  //   if (Object.keys(query).length > 0) {
+  //     this.queryCondition.approvalStatus = query.approvalStatus
+  //     this.queryCondition.pageNum = query.pageNum
+  //     this.queryCondition.pageSize = query.pageSize
+  //     this.queryCondition.projectId = query.projectId
+  //     this.queryCondition.changeType = query.changeType
+  //     this.queryCondition.startCreateDate = query.startCreateDate
+  //     this.queryCondition.endCreateDate = query.endCreateDate
+  //     this.queryCondition.currentOrgan = query.currentOrgan
+  //     this.queryCondition.organId = query.organId
+  //     this.isChild = query.isChild
+  //     this.query()
+  //   }
+  // },
   mounted () {
     // 获取变动类型
     this.platformDictFn('asset_change_type')

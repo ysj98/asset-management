@@ -160,6 +160,22 @@ const approvalStatusData = [
     value: '4'
   }
 ]
+const queryCondition =  {
+    organId: '',   // 组织机构id
+    approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+    projectId: '',   // 资产项目Id
+    changeType: '',   // 变动类型
+    assetType: '',    // 资产类型Id
+    assetClassify: [''], // 资产分类
+    startDate: '',       // 创建日期开始日期
+    endDate: '',    // 创建日期结束日期
+    changStartDate: '',  // 变动日期开始
+    changEndDate: '',   // 变动日期结束
+    currentOrganId: '',   // 仅当前机构下资产清理单 0 否 1 是
+    assetName: '',    // 资产名称/编码模糊查询
+    pageNum: 1,     // 当前页
+    pageSize: 10    // 每页显示记录数
+  }
 export default {
   components: {SearchContainer, TreeSelect, segiIcon},
   props: {},
@@ -177,22 +193,7 @@ export default {
       tableData: [],
       operationData: [...operationData],
       approvalStatusData: [...approvalStatusData],
-      queryCondition: {
-        organId: '',   // 组织机构id
-        approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectId: '',   // 资产项目Id
-        changeType: '',   // 变动类型
-        assetType: '',    // 资产类型Id
-        assetClassify: [''], // 资产分类
-        startDate: '',       // 创建日期开始日期
-        endDate: '',    // 创建日期结束日期
-        changStartDate: '',  // 变动日期开始
-        changEndDate: '',   // 变动日期结束
-        currentOrganId: '',   // 仅当前机构下资产清理单 0 否 1 是
-        assetName: '',    // 资产名称/编码模糊查询
-        pageNum: 1,     // 当前页
-        pageSize: 10    // 每页显示记录数
-      },
+      queryCondition: {...queryCondition},
       count: '',
       projectData: [
         {
@@ -387,8 +388,12 @@ export default {
     },
     // 清空
     eliminateFn () {
+      let organId = this.queryCondition.organId
       this.alterationDate = []
-      this.queryCondition.assetName = ''
+      this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
+      this.queryCondition = {...queryCondition}
+      this.queryCondition.organId = organId
+      this.query()
     },
     // 计算滚动条宽度
     computedHeight () {

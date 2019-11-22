@@ -147,7 +147,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产列表</span>
         <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
-        <div class="table-layout-fixed table-border">
+        <div class="table-layout-fixed table-border" v-if="columns.length !== 0">
           <a-table
             :scroll="{y: 450}"
             :columns="columns"
@@ -200,6 +200,9 @@
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
             </template>
           </a-table>
+        </div>
+        <div v-else style="text-align: center">
+          暂无数据
         </div>
       </div>
     </div>
@@ -487,10 +490,13 @@ export default {
             assetDetailList: arr
           }
           console.log(obj)
+          let loadingName = this.SG_Loding('保存中...')
           this.$api.assets.submitChange(obj).then(res => {
             if (Number(res.data.code) === 0) {
-              this.$message.info('提交成功')
-              this.$router.push({path: '/assetChange'})
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.success('提交成功')
+                this.$router.push({path: '/assetChange', query: {refresh: true}})
+              })
             } else {
               this.$message.error(res.data.message)
             }
