@@ -11,7 +11,7 @@
     <SG-Title title="权属情况" noMargin/>
     <a-table v-bind="ownTable" class="custom-table td-pd10 title_div" style="border: 1px solid #e8e8e8"/>
     <!--审批轨迹-->
-    <SG-Title title="审批轨迹" noMargin class="custom-table"/>
+    <SG-Title title="审批轨迹" noMargin/>
     <SG-TrackStep v-if="stepList.length" :stepList="stepList" class="title_div"/>
     <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
   </div>

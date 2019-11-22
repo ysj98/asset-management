@@ -67,11 +67,11 @@
         details: {}, // 编辑基本信息数据
         modalObj: { title: '编辑资产信息', status: false, okText: '保存', cancelText: '取消', width: 550, loading: false },
         numList: [
-          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
       }
     },
@@ -104,10 +104,7 @@
             // 查楼栋视图详情的面积数据
             return this.numList = numList.map(m => {
               const { percent, number } = res.data[m.key]
-              return {
-                ...m,
-                value: `${number}(${percent})`
-              }
+              return { ...m, value: `${number}（${percent}）` }
             })
           }
           throw res.message || '查询视图面积详情出错'

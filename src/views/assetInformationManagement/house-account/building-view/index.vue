@@ -36,7 +36,7 @@
         <span style="color: #0084FF; cursor: pointer">{{text}}</span>
       </span>
       <span slot="action" slot-scope="text, record">
-        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.assetHouseId)">详情</span>
       </span>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -66,7 +66,7 @@
           pagination: false,
           rowKey: 'assetHouseId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left', width: 80 },
+            { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName' },
             { title: '楼栋编号', dataIndex: 'assetCode', key: 'assetCode' },
             { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName' }, { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
             { title: '建筑年代', dataIndex: 'years', key: 'years' },
@@ -90,11 +90,11 @@
 
     methods: {
       // 查看楼栋视图详情
-      handleViewDetail (record) {
+      handleViewDetail (assetHouseId) {
         // const { organId } = this.organProjectBuildingValue
         // router name模式式不支持详情页面刷新,如需要刷新页面请使用router query或vuex
-        const { projectId, assetHouseId } = record
-        assetHouseId && this.$router.push({ path: '/buildingViewDetail', query: {organId: 1111, projectId, assetHouseId }})
+        const { organProjectBuildingValue: { organId } } = this
+        assetHouseId && this.$router.push({ path: '/buildingViewDetail', query: {organId, assetHouseId }})
       },
 
       // 查询列表数据
@@ -112,8 +112,6 @@
               totalCount: count,
               pageNo, pageLength
             })
-            // 查询楼栋面积统计数据
-            if (type === 'search') { this.queryAreaInfo() }
             return false
           }
           throw res.message || '查询资产项目接口出错'
@@ -121,6 +119,8 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询资产项目接口出错')
         })
+        // 查询楼栋面积统计数据
+        if (type === 'search') { this.queryAreaInfo() }
       },
 
       // 查询楼栋视图面积概览数据
@@ -132,10 +132,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.numList = numList.map(m => {
-              return {
-                ...m,
-                value: res.data[m.key]
-              }
+              return { ...m, value: res.data[m.key] }
             })
           }
           throw res.message || '查询楼栋视图面积使用统计出错'
@@ -166,6 +163,7 @@
 
 <style lang='less' scoped>
   .custom-table {
+    padding-bottom: 75px;
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {

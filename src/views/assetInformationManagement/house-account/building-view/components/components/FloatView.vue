@@ -29,11 +29,11 @@
         spinning: false,
         positionObj: { top: 0, left: 0 },
         dataList: [
-          { title: '运营(㎡)', key: 'totalOperationArea', value: 0 },
-          { title: '闲置(㎡)', key: 'totalIdleArea', value: 0 },
-          { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0 },
-          { title: '占用(㎡)', key: 'totalOccupationArea', value: 0 },
-          { title: '其他(㎡)', key: 'totalOtherArea', value: 0 }
+          {title: '运营(㎡)', key: 'operationArea', value: 0},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0},
+          {title: '自用(㎡)', key: 'selfUserArea', value: 0},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0},
+          {title: '其他(㎡)', key: 'otherArea', value: 0}
         ],
         roomDataCache: new Map(), // Map与Array有互转API，便于删除最早放入的键值对，且增删键值对有性能优势(详见MDN)
       }

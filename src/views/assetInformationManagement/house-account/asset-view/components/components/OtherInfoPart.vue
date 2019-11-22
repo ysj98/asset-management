@@ -74,6 +74,7 @@
 <style lang='less' scoped>
   .other_info {
     .custom-table {
+      padding-bottom: 75px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {

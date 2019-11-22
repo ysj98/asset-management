@@ -229,7 +229,7 @@ export const assets = {
     // 资产使用面积详情
     queryHouseArea: '/ams/asset-house/area',
     // 资产视图使用面积统计
-    queryAssetArea: '/ams//asset-hose/house/area',
+    queryAssetArea: '/ams/asset-hose/house/area',
     // 分页查询房屋资产信息
     queryAssetViewPage: '/ams/asset-house/house/page',
     // 导出房屋卡片
