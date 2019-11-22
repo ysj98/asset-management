@@ -444,7 +444,7 @@ export default {
           this.$api.assets.update(form).then(res => {
             if (res.data.code === '0') {
               this.$message.success('修改成功')
-              this.$router.push({path: '/assetClassSet'})
+              this.$router.push({path: '/assetClassSet', query: {refresh: true}})
             } else {
               this.$message.error(res.data.message)
             }

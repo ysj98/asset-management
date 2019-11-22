@@ -245,6 +245,13 @@ export default {
       },
     }
   },
+  watch: {
+    '$route' () {
+      if (this.$route.query.refresh) {
+        this.queryList()
+      }
+    }
+  },
   methods: {
     moment,
     // 高级搜索控制

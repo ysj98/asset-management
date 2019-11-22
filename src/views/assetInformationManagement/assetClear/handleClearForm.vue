@@ -379,7 +379,7 @@ export default {
       console.log(data)
       this.checkedData = [...val]
       data.forEach((item, index) => {
-        item.key = item.assetCode
+        item.key = index.toString()
       })
       this.dataSource = data
       this.$refs.assetBundlePopover.show = false
@@ -448,7 +448,7 @@ export default {
           this.$api.assets.submitCleanup(form).then(res => {
             if (res.data.code === '0') {
               this.$message.success('提交成功')
-              this.$router.push({path: '/assetClear'})
+              this.$router.push({path: '/assetClear', query: {refresh: true}})
             } else {
               this.$message.error(res.data.message)
             }
