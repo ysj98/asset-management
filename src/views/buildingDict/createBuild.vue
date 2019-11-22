@@ -397,7 +397,7 @@ export default {
             this.$api.building.updateBuild(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼栋成功')
-                // this.$emit('success')
+                this.$emit('success')
               } else {
                 this.$message.error(res.data.message)
               }
