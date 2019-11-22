@@ -38,7 +38,7 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-item label="层高(㎡)" v-bind="formItemLayout">
+                  <a-form-item label="层高(m)" v-bind="formItemLayout">
                     <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined, 
                     rules: [
                     {required: true, message: '请输入楼层高度'},

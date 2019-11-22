@@ -181,7 +181,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="电梯数量" v-bind="formItemLayout">
-                    <a-input-number :style="allWidth" v-decorator="['liftNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
+                    <a-input-number :style="allWidth" v-decorator="['liftNums', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
