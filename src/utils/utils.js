@@ -437,6 +437,10 @@ class Units {
     }
     return o
   }
+  // 截取文件名包括后缀
+  getFileName (str) {
+    return str.substring(str.lastIndexOf('/')+1)
+  }
 }
 /**
  * 节流函数，对多次触发的函数，单位时间内只执行一次
