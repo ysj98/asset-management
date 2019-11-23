@@ -1,6 +1,9 @@
 <!--资产项目管理业务-资产项目管理详情页面-->
 <template>
   <div class="asset_project_detail" v-if="projectId">
+    <SG-Button icon="rollback" style="position: absolute; top: 10px; right: 30px; z-index: 999" @click="$router.back()">
+      返回
+    </SG-Button>
     <!--基础信息部分-->
     <base-info-part :projectId="projectId"/>
     <!--接收记录部分-->
@@ -37,6 +40,7 @@
 
 <style lang='less' scoped>
   .asset_project_detail {
+    position: relative;
     /*抽离子组件的公共样式*/
     & /deep/ .title_div {
       margin-left: 40px;

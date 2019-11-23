@@ -10,7 +10,8 @@
           v-power="ASSET_MANAGEMENT.ASSET_APM_NEW"
           @click="handleModalOpen('add', new Date().getTime())"
         >新增资产项目</SG-Button>
-        <SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>
+        <!--二期开发-->
+        <!--<SG-Button icon="import" style="margin-left: 10px">导入资产项目</SG-Button>-->
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
@@ -130,23 +131,21 @@
         projectName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
-          // {key: -1, title: '全部接管'},
-          {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+          {key: -1, title: '全部接管'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
         ], // 查询条件-是否接管选项
         isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id
         organName: '', // 查询条件-组织Id
         approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
-          // {key: -1, title: '全部状态'},
-          {key: 0, title: '草稿'}, {key: 2, title: '已驳回'}, {key: 3, title: '已审批'}, {key: 1, title: '待审批'}
+          {key: -1, title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
+          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '待审批'}
         ], // 查询条件-项目状态选项
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项
         transferToOperation: undefined, // 查询条件-是否转运营
         operateOptions: [
-          // {key: -1, title: '全部运营状态'},
-          {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
+          {key: -1, title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
         ], // 查询条件-是否转运营选项
         numList: [
           {title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057'},
@@ -162,8 +161,8 @@
           dataSource: [],
           scroll: { x: true },
           columns: [
-            { title: '管理机构', dataIndex: 'organName', key: 'organName', fixed: 'left', width: '120px' },
-            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName', fixed: 'left', width: '120px' },
+            { title: '管理机构', dataIndex: 'organName', key: 'organName' },
+            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName' },
             { title: '资产项目编码', dataIndex: 'projectCode', key: 'projectCode' },
             { title: '来源方式', key: 'sourceTypeName', dataIndex: 'sourceTypeName' },
             { title: '来源渠道', dataIndex: 'souceChannelType', key: 'souceChannelType' },
@@ -172,7 +171,7 @@
             { title: '审核日期', dataIndex: 'auditDate', key: 'auditDate' },
             { title: '是否接管', dataIndex: 'takeOver', key: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
             { title: '接管日期', dataIndex: 'takeOverDate', key: 'takeOverDate' },
-            { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
+            // { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
           ]
         },
@@ -193,12 +192,16 @@
 
       // 查询数据来源方式字典接口
       querySourceTypeList () {
+        this.sourceTypeOptions = [] // 清空旧数据
+        const { organId } = this
+        if (!organId) { return false }
         this.$api.assets.organDict({code: 'source_type', organId: this.organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.sourceTypeOptions = (res.data || []).map(item => {
+            let temp = (res.data || []).map(item => {
               return { key: item.value, title: item.name }
             })
+            this.sourceTypeOptions = [{key: 'allType', title: '全部来源'}].concat(temp)
             return false
           }
           throw res.message || '查询来源方式失败'
@@ -335,7 +338,8 @@
         this.organId = id
         this.organName = name
         // 根据organId查询来源方式字典
-        id && this.querySourceTypeList()
+        this.querySourceTypeList()
+        this.queryTableData({type: 'search'})
       },
 
       // 查询列表数据
@@ -344,8 +348,11 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          projectName, approvalStatusList, transferToOperation,
-          organId, sourceTypeList, takeOver, isCurrent, pageSize: pageLength, pageNum: pageNo
+          takeOver: takeOver === -1 ? "" : takeOver,
+          organId, isCurrent, pageSize: pageLength, pageNum: pageNo, projectName,
+          transferToOperation: transferToOperation === -1 ? "" : transferToOperation,
+          sourceTypeList: (sourceTypeList && sourceTypeList.includes('allType')) ? [] : sourceTypeList,
+          approvalStatusList: (approvalStatusList && approvalStatusList.includes(-1)) ? [] : approvalStatusList
         }
         this.$api.assets.queryProjectManageListPage(form).then(r => {
           this.tableObj.loading = false
@@ -357,8 +364,6 @@
               totalCount: count,
               pageNo, pageLength
             })
-            // 查询面积统计数据
-            if (type === 'search') { this.queryStatistics(form) }
             return false
           }
           throw res.message || '查询接口出错'
@@ -366,6 +371,8 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询接口出错')
         })
+        // 查询面积统计数据
+        if (type === 'search') { this.queryStatistics(form) }
       },
 
       // 查询统计数据
@@ -389,9 +396,23 @@
           this.$message.error(err || '查询资产项目统计信息出错')
         })
       }
-    }
+    },
 
-    // created () {}
+    watch: {
+      // 全选与其他选项互斥处理
+      approvalStatusList: function (val) {
+        if (val && val.length !== 1 && val.includes(-1)) {
+          this.approvalStatusList = [-1]
+        }
+      },
+
+      // 全选与其他选项互斥处理
+      sourceTypeList: function (val) {
+        if (val && val.length !== 1 && val.includes('allType')) {
+          this.sourceTypeList = ['allType']
+        }
+      }
+    }
   }
 </script>
 
@@ -399,6 +420,7 @@
   .project_manage {
     /*padding: 8px;*/
     .custom-table {
+      padding-bottom: 75px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {

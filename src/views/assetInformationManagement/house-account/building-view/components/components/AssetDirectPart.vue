@@ -43,7 +43,7 @@
   export default {
     name: 'AssetDirectPart',
     components: { OverviewNumber, FloatView },
-    props: ['organId', 'assetHouseId', 'projectId'],
+    props: ['organId', 'houseId'],
     data () {
       return {
         spinning: false, // 加载状态
@@ -54,11 +54,11 @@
         isShowFloatView: false, // 控制浮窗显示
         maxTotalArea: 1, // 每层所有房间面积之和中的最大值
         numList: [
-          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
         bgColorObj: {
           idleArea: '#1890FF',
@@ -67,23 +67,7 @@
           occupationArea: '#FD7474',
           transferOperationArea: '#4BD288'
         }, // 房间背景色映射
-        buildingList: [
-          // {
-          //   floorName: '一层',
-          //   floorArea: 110,
-          //   roomList: [
-          //     {
-          //       totalArea: 100, roomNo: 1011, roomId: 101, areaInfo: {
-          //         transferOperationArea: 15,
-          //         idleArea: 35,
-          //         selfUserArea: 75,
-          //         occupationArea: 15,
-          //         otherArea: 25
-          //       }
-          //     }
-          //   ]
-          // }
-        ]
+        buildingList: []
       }
     },
 
@@ -141,24 +125,21 @@
 
       // 查询楼栋视图面积概览数据
       queryHouseAreaInfo (args) {
-        const { buildingId, numList } = this
-        return this.$api.assets.queryAssetViewHouseArea({ assetHouseId: args ? args.id : buildingId }).then(r => {
+        const { houseId, numList } = this
+        return this.$api.assets.queryAssetViewHouseArea({ assetHouseId: args ? args.id : houseId }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             // 查楼栋视图详情的面积数据
             let arr = numList.map(m => {
               const { percent, number } = res.data[m.key]
-              return {
-                ...m,
-                value: `${number}(${percent})`
-              }
+              return { ...m, value: `${number}（${percent}）` }
             })
             // 查浮窗的面积数据与详情页面的面积数据共用一个接口
-            return args.id ? args.resolve(arr) : this.numList = arr
+            return args ? args.resolve(arr) : this.numList = arr
           }
           throw res.message || '查询楼栋视图面积使用统计出错'
         }).catch(err => {
-          args.id && args.reject()
+          args && args.reject()
           this.$message.error(err || '查询楼栋视图面积使用统计出错')
         })
       },
@@ -182,10 +163,8 @@
     },
 
     mounted () {
-      // 模拟调用接口
-      // this.calcMaxTotalArea(this.buildingList)
-      // this.queryFloorInfo()
-      // this.queryHouseAreaInfo()
+      this.queryFloorInfo()
+      this.queryHouseAreaInfo()
     }
   }
 </script>

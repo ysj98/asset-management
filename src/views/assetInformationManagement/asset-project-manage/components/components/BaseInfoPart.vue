@@ -25,8 +25,8 @@
               :disabled="!isEdit"
               style="width: 100%;"
               :placeholder="isEdit ? '请选择来源方式' : ''"
-              :options="sourceTypeOptions || []"
-              v-decorator="['souceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
+              :options="typeOptions"
+              v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -171,6 +171,7 @@
       attachment: [], // 附件
       organName: '', // 管理机构
       organKey: '', // 管理机构
+      typeOptions: (this.sourceTypeOptions || []).splice(1) // 删除"全部"的选项
     }
   },
   
@@ -231,9 +232,9 @@
         let res = r.data
         if (res && String(res.code) === '0') {
           const {
-            attachment, organName, organId, projectName, souceType, souceChannelType, projectCode,
+            attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
             agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate,
-            ownershipHandleProblems, transferApprovalDate, remark, houseTransferHisProblem
+            ownershipHandleProblems, transferApprovalDate, remark, houseTransferHisProblem, sourceTypeName
           } = res.data
           let attachArr = attachment.map(m => {
             return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
@@ -247,7 +248,8 @@
           let formData = {
             ownershipHandleProblems: ownershipHandleProblems || '无',
             houseTransferHisProblem: houseTransferHisProblem || '无',
-            projectName, souceType: String(souceType), souceChannelType, projectCode, remark: remark || '',
+            sourceType: type === 'show' ? sourceTypeName : String(sourceType),
+            projectName, souceChannelType, projectCode, remark: remark || '',
             agreementSignDate: agreementSignDate ? moment(agreementSignDate, 'YYYY-MM-DD') : null,
             reportBasicInfoDate: reportBasicInfoDate ? moment(reportBasicInfoDate || null, 'YYYY-MM-DD') : null,
             transferApprovalDate: transferApprovalDate ? moment(transferApprovalDate || null, 'YYYY-MM-DD') : null,

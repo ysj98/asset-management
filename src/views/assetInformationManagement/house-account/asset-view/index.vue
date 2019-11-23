@@ -60,12 +60,12 @@
     </a-spin>
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
-      <span slot="projectName" slot-scope="text, record">
-        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>
-      </span>
-      <span slot="buildName" slot-scope="text, record">
-        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>
-      </span>
+      <!--<span slot="projectName" slot-scope="text, record">-->
+        <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
+      <!--</span>-->
+      <!--<span slot="buildName" slot-scope="text, record">-->
+        <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
+      <!--</span>-->
       <span slot="action" slot-scope="text, record">
         <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
@@ -113,12 +113,12 @@
           pagination: false,
           rowKey: 'assetHouseId',
           loading: false,
-          columns: [],
+          initColumns: [],
           dataSource: [],
           scroll: { x: true },
-          initColumns: [
-            { title: '资产名称', dataIndex: 'assetName', key: 'assetName', fixed: 'left' },
-            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode', fixed: 'left' },
+          columns: [
+            { title: '资产名称', dataIndex: 'assetName', key: 'assetName' },
+            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', key: 'ownerOrganName' },
             { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
@@ -130,7 +130,6 @@
             { title: '分类', dataIndex: 'objectTypeName', key: 'objectTypeName' },
             { title: '用途', dataIndex: 'useType', key: 'useType' },
             { title: '资产形态', dataIndex: 'typeName', key: 'typeName' },
-            // { title: '权属形式', dataIndex: 'ownershipStatusName', key: 'ownershipStatusName' },
             { title: '权属状态', dataIndex: 'ownershipStatusName', key: 'ownershipStatusName' },
             { title: '权证号', dataIndex: 'warrantNbr', key: 'warrantNbr' },
             { title: '接管时间', dataIndex: 'startDate', key: 'startDate' },
@@ -148,9 +147,11 @@
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
-          {title: '运营(㎡)', value: 0, bgColor: '#4BD288'}, {title: '闲置(㎡)', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', value: 0, bgColor: '#DD81E6'}, {title: '占用(㎡)', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', value: 0, bgColor: '#BBC8D6'}
+          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
@@ -201,8 +202,6 @@
               totalCount: count,
               pageNo, pageLength
             })
-            // 查询楼栋面积统计数据
-            if (type === 'search') { this.queryAssetAreaInfo() }
             return false
           }
           throw res.message || '查询接口出错'
@@ -210,6 +209,8 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询接口出错')
         })
+        // 查询楼栋面积统计数据
+        if (type === 'search') { this.queryAssetAreaInfo() }
       },
 
       // 查询楼栋视图面积概览数据
@@ -221,10 +222,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.numList = numList.map(m => {
-              return {
-                ...m,
-                value: res.data[m.key]
-              }
+              return { ...m, value: res.data[m.key] }
             })
           }
           throw res.message || '查询资产视图面积使用统计出错'
@@ -276,16 +274,17 @@
 
     created () {
       // 初始化Table列头
-      let{ initColumns } = this.tableObj
-      this.tableObj.columns = initColumns
+      let{ columns } = this.tableObj
+      this.tableObj.initColumns = columns
       // 初始化被选中的列头数据
-      this.checkedHeaderArr = initColumns.map(m => m.dataIndex).filter(n => n !== 'action')
+      this.checkedHeaderArr = columns.map(m => m.dataIndex).filter(n => n !== 'action')
     }
   }
 </script>
 
 <style lang='less' scoped>
   .custom-table {
+    padding-bottom: 75px;
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {
