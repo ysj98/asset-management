@@ -68,6 +68,7 @@
 </template>
 <script>
 import {utils, debounce} from '@/utils/utils'
+// let getUuid = ((uuid = 1) => () => ++uuid)()
 let fintItem = (data, value) => {
   if (!value) {
     return {label: '', value: ''}
@@ -76,9 +77,13 @@ let fintItem = (data, value) => {
 }
 export default {
   props: {
+    organIdCopy: {
+      default: ''
+    }
   },
   data () {
     return {
+      // uuid: getUuid(),
       visible: false,
       inputStyple: {width: '100%'},
       organName: '',
@@ -91,6 +96,11 @@ export default {
     }
   },
   watch: {
+    organIdCopy (nv) {
+      if (nv) {
+        this.organId = nv
+      }
+    },
     visible (newVal) {
       if (!newVal) {
         this.hiddeModal()
@@ -113,6 +123,12 @@ export default {
       }
     }
   },
+  created () {
+    if (this.organIdCopy) {
+      console.log('ssss')
+      this.organId = this.organIdCopy
+    }
+  },
   mounted () {
     this.queryAllTopOrganByUser()
   },
@@ -132,6 +148,9 @@ export default {
             return {label: item.organName, value: item.organId}
           })
           // 默认选中第一个
+          if (this.organId) {
+            return
+          }
           if (this.organOpt.length) {
             this.organId = this.organOpt[0].value
           }

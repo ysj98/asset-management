@@ -310,7 +310,8 @@ export default {
         return
       }
       if (this.changeType) {
-        this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'))
+        console.log(this.checkedData, '给回去的')
+        this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), '', this.tableData)
         this.$refs.assetBundlePopover.show = true
       } else {
         this.$message.info('请先选择变动类型')
@@ -527,9 +528,11 @@ export default {
             })
           }
           this.newEditSingleData.files = files
+          let checkedData = []
           data.assetDetailList.forEach((item, index) => {
             item.key = item.assetObjectId + index
             item.addressName = item.address
+            checkedData.push(item.assetObjectId)
           })
           this.$nextTick(() => {
             this.form.setFieldsValue({
@@ -539,9 +542,10 @@ export default {
               changeType: String(data.changeType),
               deliveryCompany: data.deliveryCompany,
               changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
-              expiryDate: data.expiryDate ? moment(data.expiryDate, 'YYYY-MM-DD') : '',
+              expiryDate: data.expiryDate ? moment(data.expiryDate, 'YYYY-MM-DD') : undefined,
               remark: data.remark
             })
+            this.checkedData = [...checkedData]
             this.tableData = data.assetDetailList
           })
           console.log(this.tableData, '拿到的数据')

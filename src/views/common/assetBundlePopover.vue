@@ -192,7 +192,18 @@ export default {
       this.$emit('status', checkedData, rowsData)
     },
     // 外面删除了后剩下给回来的数据
-    redactCheckedDataFn (redactChecked, projectId, assetType) {
+    redactCheckedDataFn (redactChecked, projectId, assetType, overallData) {
+      // overallData 给回来的数据合并在去重
+      if (overallData.length !== 0) {
+        let arrData = [...this.overallData, ...overallData]
+        let hash = {}
+        arrData = arrData.reduce((preVal, curVal) => {
+          hash[curVal.assetObjectId] ? '' : hash[curVal.assetObjectId] = true && preVal.push(curVal)
+          return preVal
+        }, [])
+        // 存着全部数据
+        this.overallData = arrData
+      }
       if (this.selecData.projectId !== projectId) {
         this.selecData.projectId = projectId
         this.query()
