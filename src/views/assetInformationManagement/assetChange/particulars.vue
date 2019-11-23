@@ -59,6 +59,7 @@
 
 <script>
 import {deliveryProperty, deliveryOperation, changeDirectionUse, variationOriginalValue, positionChange, projectChange} from './basics'
+import {utils} from '@/utils/utils.js'
 export default {
   components: {},
   props: {},
@@ -85,18 +86,25 @@ export default {
   watch: {
     'changeType' (value) {
       let val = String(value)
+      let arr = []
       if (val === '2') {
-        this.columns = deliveryProperty.splice(0, deliveryProperty.length - 1)
+        arr = utils.deepClone(deliveryProperty)
+        this.columns = arr.splice(0, arr.length - 1)
       } else if (val === '1') {
-        this.columns = deliveryOperation.splice(0, deliveryOperation.length - 1)
+        arr = utils.deepClone(deliveryOperation)
+        this.columns = arr.splice(0, arr.length - 1)
       } else if (val === '4') {
-        this.columns = changeDirectionUse.splice(0, changeDirectionUse.length - 1)
+        arr = utils.deepClone(changeDirectionUse)
+        this.columns = arr.splice(0, arr.length - 1)
       } else if (val === '3') {
-        this.columns = variationOriginalValue.splice(0, variationOriginalValue.length - 1)
+        arr = utils.deepClone(variationOriginalValue)
+        this.columns = arr.splice(0, arr.length - 1)
       } else if (val === '5') {
-        this.columns = positionChange.splice(0, positionChange.length - 1)
+        arr = utils.deepClone(positionChange)
+        this.columns = arr.splice(0, arr.length - 1)
       } else if (val === '6') {
-        this.columns = projectChange.splice(0, projectChange.length - 1)
+        arr = utils.deepClone(projectChange)
+        this.columns = arr.splice(0, arr.length - 1)
       }
     }
   },
