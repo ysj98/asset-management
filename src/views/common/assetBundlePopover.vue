@@ -194,7 +194,7 @@ export default {
     // 外面删除了后剩下给回来的数据
     redactCheckedDataFn (redactChecked, projectId, assetType, overallData) {
       // overallData 给回来的数据合并在去重
-      if (overallData.length !== 0) {
+      if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
         let hash = {}
         arrData = arrData.reduce((preVal, curVal) => {
