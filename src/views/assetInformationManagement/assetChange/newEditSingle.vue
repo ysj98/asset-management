@@ -542,7 +542,7 @@ export default {
               changeType: String(data.changeType),
               deliveryCompany: data.deliveryCompany,
               changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
-              expiryDate: data.expiryDate ? moment(data.expiryDate, 'YYYY-MM-DD') : '',
+              expiryDate: data.expiryDate ? moment(data.expiryDate, 'YYYY-MM-DD') : undefined,
               remark: data.remark
             })
             this.checkedData = [...checkedData]
