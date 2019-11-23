@@ -52,15 +52,15 @@
         spinning: false,
         baseInfoKeys: [
           {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'},
-          {title: '资产类型', key: 'type'}, {title: '房屋形态', key: 'houseStatus'}, {title: '户型', key: 'houseType'},
-          {title: '装修情况', key: 'decorateOptions'}, {title: '建筑结构', key: 'structure'}, {title: '资产用途', key: 'use'},
-          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'validPeriod'}, {title: '维修日期', key: 'fixDate'},
-          {title: '资产状态', key: 'status'}, {title: '相关描述', key: 'desc', span: 16},
-          {title: '资产二维码', key: 'QRCode', span: 24}
+          {title: '资产类型', key: 'assetType'}, {title: '房屋形态', key: 'houseType'}, {title: '户型', key: ''},
+          {title: '装修情况', key: 'decorationSituation'}, {title: '建筑结构', key: 'buildStruct'}, {title: '资产用途', key: 'useType'},
+          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'validPeriod'}, {title: '维修日期', key: ''},
+          {title: '资产状态', key: 'status'}, {title: '相关描述', key: '', span: 16}
+          // {title: '资产二维码', key: 'QRCode', span: 24}
         ], // 基本信息字段
         spaceInfoKeys: [
-          {title: '项目名称', key: 'use'}, {title: '所在楼栋', key: 'building'}, {title: '所在单元', key: 'unit'},
-          {title: '所在楼层', key: 'floor'}, {title: '层高', key: 'floors'}, {title: '省市区', key: 'PCD'},
+          {title: '项目名称', key: ''}, {title: '所在楼栋', key: ''}, {title: '所在单元', key: ''},
+          {title: '所在楼层', key: ''}, {title: '层高', key: ''}, {title: '省市区', key: ''},
           {title: '地理位置', key: 'address', span: 24},
         ], // 空间位置字段
         infoData: {}, // 信息数据
@@ -85,7 +85,9 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             let temp = res.data
-            temp.PCD = `${temp.province}${temp.city}${temp.region}`
+            // temp.PCD = `${temp.province}${temp.city}${temp.region}`
+            temp.assetType = '房屋'
+            temp.houseType = '房屋'
             return this.infoData = temp
           }
           throw res.message || '查询接口出错'
@@ -118,9 +120,9 @@
         if (type === 'location') {
           return false
         }
-        const { infoData: { assetName, assetCode, decorateOptions } } = this
+        const { infoData: { assetName, assetCode, decorationSituation, assetHouseId } } = this
         this.modalObj.status = true
-        this.details = { assetName, assetCode, decorateOptions }
+        this.details = { assetName, assetCode, decorationSituation, assetHouseId }
       },
 
       // Modal关闭

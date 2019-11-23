@@ -78,7 +78,7 @@
         let colorArr = Object.keys(areaInfo).filter(n => areaInfo[n])
         let bagColor = colorArr.length === 1 ? bgColorObj[colorArr[0]] : ''
         let fontColor = colorArr.length > 1 ? '#687485' : '#fff'
-        let width = (Number(totalArea) / maxTotalArea * 100).toFixed(2)
+        let width = Math.floor(Number(totalArea || 0) * 100000 / maxTotalArea) / 1000
         return `background-color: ${bagColor}; width: ${width}%; color: ${fontColor}`
       },
 

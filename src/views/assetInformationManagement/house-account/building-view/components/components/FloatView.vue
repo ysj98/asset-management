@@ -75,7 +75,14 @@
             this.storeRoomCache({id, data})
           }
         }).catch(() => {
-          // this.$message.error(err)
+          // 重置数据
+          this.dataList = [
+            {title: '运营(㎡)', key: 'operationArea', value: 0},
+            {title: '闲置(㎡)', key: 'idleArea', value: 0},
+            {title: '自用(㎡)', key: 'selfUserArea', value: 0},
+            {title: '占用(㎡)', key: 'occupationArea', value: 0},
+            {title: '其他(㎡)', key: 'otherArea', value: 0}
+          ]
           this.spinning = false
         })
       },
@@ -93,6 +100,8 @@
 
     mounted () {
       this.setPos(this.position)
+      // 第一次查询,后面查询通过watch监听执行
+      this.searchRoomData(this.roomId)
     },
 
     watch: {

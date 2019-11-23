@@ -5,24 +5,25 @@
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
         <SG-Button
-          icon="plus"
+          icon="import"
           type="primary"
           :loading='exportAssetBtn'
           @click="handleExport('exportAssetBtn')"
           :disabled="!tableObj.dataSource.length"
           :title="tableObj.dataSource.length ? '' : '无可导出数据'"
         >导出资产视图</SG-Button>
-        <SG-Button
-          icon="import"
-          style="margin: 0 10px"
-          :loading="exportHouseBtn"
-          @click="handleExport('exportHouseBtn')"
-          :disabled="!tableObj.dataSource.length"
-          :title="tableObj.dataSource.length ? '' : '无可导出数据'"
-        >导出房屋卡片</SG-Button>
-        <SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>
-        <SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>
-        <SG-Button icon="setting" @click="handleModalStatus(true)">列表设置</SG-Button>
+        <!--二期开发-->
+        <!--<SG-Button-->
+          <!--icon="import"-->
+          <!--style="margin: 0 10px"-->
+          <!--:loading="exportHouseBtn"-->
+          <!--@click="handleExport('exportHouseBtn')"-->
+          <!--:disabled="!tableObj.dataSource.length"-->
+          <!--:title="tableObj.dataSource.length ? '' : '无可导出数据'"-->
+        <!--&gt;导出房屋卡片</SG-Button>-->
+        <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
+        <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
+        <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
@@ -147,11 +148,11 @@
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
-          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
+          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
@@ -241,22 +242,23 @@
           provinceCityDistrictValue: { province, city, district: region }, assetName, status,
           tableObj: { columns }
         } = this
-        let form = {}
-        if (type === 'exportHouseExcel') {
-          form = {
-            assetHouseId: buildIdList.join(',')
-          }
-        } else {
-          form = {
-            organId, buildIdList, projectIdList,
-            province, city, region, assetName, status: status || null,
-            display: columns.map(m => m.dataIndex).filter(n => n !== 'action')
-          }
+        let form = type === 'exportHouseBtn' ? {
+          assetHouseId: buildIdList.join(',')
+        } : {
+          organId, buildIdList, projectIdList,
+          province, city, region, assetName, status: status || null,
+          display: columns.map(m => m.dataIndex).filter(n => n !== 'action')
         }
         this.$api.assets[api[type]](form).then(res => {
           this[type] = false
-          if (res && String(res.code) === '0') {
-            return false
+          if (res.status === 200 && res.data && res.data.size) {
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(new Blob([res.data]))
+            a.download = `${type === 'exportHouseExcel' ? '房屋卡片' : '资产视图'}导出列表.xls`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            return a.remove()
           }
           throw res.message || '导出失败'
         }).catch(err => {
@@ -278,13 +280,19 @@
       this.tableObj.initColumns = columns
       // 初始化被选中的列头数据
       this.checkedHeaderArr = columns.map(m => m.dataIndex).filter(n => n !== 'action')
+    },
+
+    watch: {
+      organProjectBuildingValue: function (val) {
+        val && val.organId && this.queryTableData({type: 'search'})
+      }
     }
   }
 </script>
 
 <style lang='less' scoped>
   .custom-table {
-    padding-bottom: 75px;
+    padding-bottom: 55px;
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {

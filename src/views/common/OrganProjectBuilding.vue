@@ -154,7 +154,7 @@
           buildingOptions: [],
         })
         this.$emit('input', { organId, projectId: undefined, buildingId: undefined })
-        this.queryData('projectOptions')
+        organId && this.queryData('projectOptions')
       },
 
       projectId: function (projectId) {

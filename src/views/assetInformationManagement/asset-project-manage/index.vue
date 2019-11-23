@@ -156,9 +156,10 @@
         ], // 概览数据，title 标题，value 数值，bgColor 背景色
         modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '', maskClosable: false },
         tableObj: {
-          rowKey: 'projectId',
-          loading: false,
           dataSource: [],
+          loading: false,
+          pagination: false,
+          rowKey: 'projectId',
           scroll: { x: true },
           columns: [
             { title: '管理机构', dataIndex: 'organName', key: 'organName' },
@@ -339,7 +340,7 @@
         this.organName = name
         // 根据organId查询来源方式字典
         this.querySourceTypeList()
-        this.queryTableData({type: 'search'})
+        id && this.queryTableData({type: 'search'})
       },
 
       // 查询列表数据
@@ -420,7 +421,7 @@
   .project_manage {
     /*padding: 8px;*/
     .custom-table {
-      padding-bottom: 75px;
+      padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {

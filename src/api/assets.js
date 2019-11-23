@@ -237,7 +237,7 @@ export function queryBuildingViewPage (data) {
 
 // 导出楼栋视图excel
 export function exportBuildingViewExcel (data) {
-  return axiosPost(assets.buildingView.exportExcel, data, false, false)
+  return axiosPost(assets.buildingView.exportExcel, data, false, false, {responseType: 'blob'})
 }
 
 // 楼层信息查询
@@ -273,11 +273,11 @@ export function queryAssetViewArea (data) {
 
 // 导出房屋卡片
 export function exportAssetViewHouseExcel (data) {
-  return axiosGet(assets.assetView.exportHouseExcel, data)
+  return axiosGet(assets.assetView.exportHouseExcel, data, false, {responseType: 'blob'})
 }
 // 导出资产信息
 export function exportAssetViewExcel (data) {
-  return axiosGet(assets.assetView.exportAssetExcel, data)
+  return axiosPost(assets.assetView.exportAssetExcel, data, false, false, {responseType: 'blob'})
 }
 // 资产编辑保存
 export function saveAssetViewHouseInfo (data) {
