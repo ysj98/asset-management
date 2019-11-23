@@ -146,6 +146,10 @@ export function getRegisterOrderDetailsById (data) {
 export function getRegisterOrderDetailsStatistics (data) {
   return axiosGet(assets.assetRegister.getRegisterOrderDetailsStatistics, data)
 }
+// 资产登记-读取excel模板文件
+export function readExcelModel (data) {
+  return axiosPost(assets.assetRegister.readExcelModel, data)
+}
 
 // 资产清理
 // 资产清理-分页列表
