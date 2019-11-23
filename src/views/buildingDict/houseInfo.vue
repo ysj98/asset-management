@@ -137,9 +137,9 @@
       />
     </div>
     <!-- 房间资料导入 -->
-    <houseDataImport ref="houseDataImport" @success="houseDataImportSuccess"/>
+    <houseDataImport ref="houseDataImport" :organIdCopy="queryCondition.organId" @success="houseDataImportSuccess"/>
     <!-- 房间导出 -->
-    <houseExport ref="houseExport"/>
+    <houseExport :organIdCopy="queryCondition.organId" ref="houseExport"/>
     <!-- 批量更新 -->
     <eportAndDownFile @upload="uploadHouseFile" ref="eportAndDownFile" title="房间批量更新" :showDown="false"/>
     <!-- 导入错误信息 -->
@@ -350,13 +350,13 @@ export default {
       this.operationDataOff = []
       this.operationDataOn = []
       // 编辑权限
-      if (this.$power.has(ASSET_MANAGEMENT.ZCGL_EDIT_HOUSE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_EDIT_HOUSE)) {
         let o = {iconType: 'edit', text: '编辑', editType: 'edit'}
         this.operationDataOff.push(o)
         this.operationDataOn.push(o)
       }
       // 禁止启用
-      if (this.$power.has(ASSET_MANAGEMENT.ZCGL_HOUSE_STATE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_HOUSE_STATE)) {
         this.operationDataOff.push({iconType: 'play-circle', text: '启用', editType: 'on'})
         this.operationDataOn.push({iconType: 'close-circle', text: '禁用', editType: 'off'})
       }
@@ -364,7 +364,7 @@ export default {
       this.operationDataOff.push(obj)
       this.operationDataOn.push(obj)
       // 新增权限
-      if (this.$power.has(ASSET_MANAGEMENT.ZCGL_ADD_HOUSE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_ADD_HOUSE)) {
         let o = {iconType: 'copy', text: '复制', editType: 'copy'}
         this.operationDataOff.push(o)
         this.operationDataOn.push(o)

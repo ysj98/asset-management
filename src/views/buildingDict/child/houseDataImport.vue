@@ -53,9 +53,20 @@ import topOrganByUser from '@/views/common/topOrganByUser'
 import downErrorFile from '@/views/common/downErrorFile'
 import _ from 'lodash'
 export default {
+  props: {
+    organIdCopy: {
+      default: ''
+    }
+  },
   components: {
     topOrganByUser,
     downErrorFile
+  },
+  created () {
+    if (this.organIdCopy) {
+      console.log('1', this.organIdCopy)
+      this.organId = this.organIdCopy
+    }
   },
   data () {
     return {
@@ -75,6 +86,12 @@ export default {
     visible (nv) {
       if (!nv) {
        this.hiddeModal()
+      }
+    },
+    organIdCopy (nv) {
+      console.log('2', nv)
+      if (nv) {
+        this.organId = nv
       }
     }
   },
