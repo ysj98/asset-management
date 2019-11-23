@@ -137,9 +137,9 @@
       />
     </div>
     <!-- 房间资料导入 -->
-    <houseDataImport ref="houseDataImport" @success="houseDataImportSuccess"/>
+    <houseDataImport ref="houseDataImport" :organIdCopy="queryCondition.organId" @success="houseDataImportSuccess"/>
     <!-- 房间导出 -->
-    <houseExport ref="houseExport"/>
+    <houseExport :organIdCopy="queryCondition.organId" ref="houseExport"/>
     <!-- 批量更新 -->
     <eportAndDownFile @upload="uploadHouseFile" ref="eportAndDownFile" title="房间批量更新" :showDown="false"/>
     <!-- 导入错误信息 -->

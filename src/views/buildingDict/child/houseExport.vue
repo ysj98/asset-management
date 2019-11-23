@@ -76,6 +76,9 @@ let fintItem = (data, value) => {
 }
 export default {
   props: {
+    organIdCopy: {
+      default: ''
+    }
   },
   data () {
     return {
@@ -91,6 +94,11 @@ export default {
     }
   },
   watch: {
+    organIdCopy (nv) {
+      if (nv) {
+        this.organId = nv
+      }
+    },
     visible (newVal) {
       if (!newVal) {
         this.hiddeModal()
@@ -111,6 +119,11 @@ export default {
       if (newVal) {
         this.getOptions('getUnitByBuildId', newVal)
       }
+    }
+  },
+  created () {
+    if (this.organIdCopy) {
+      this.organId = this.organIdCopy
     }
   },
   mounted () {
