@@ -4,15 +4,15 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button
-          icon="import"
-          type="primary"
-          :loading='exportAssetBtn'
-          @click="handleExport('exportAssetBtn')"
-          :disabled="!tableObj.dataSource.length"
-          :title="tableObj.dataSource.length ? '' : '无可导出数据'"
-        >导出资产视图</SG-Button>
         <!--二期开发-->
+        <!--<SG-Button-->
+          <!--icon="import"-->
+          <!--type="primary"-->
+          <!--:loading='exportAssetBtn'-->
+          <!--@click="handleExport('exportAssetBtn')"-->
+          <!--:disabled="!tableObj.dataSource.length"-->
+          <!--:title="tableObj.dataSource.length ? '' : '无可导出数据'"-->
+        <!--&gt;导出资产视图</SG-Button>-->
         <!--<SG-Button-->
           <!--icon="import"-->
           <!--style="margin: 0 10px"-->
