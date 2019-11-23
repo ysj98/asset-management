@@ -91,8 +91,6 @@
     methods: {
       // 查看楼栋视图详情
       handleViewDetail (assetHouseId) {
-        // const { organId } = this.organProjectBuildingValue
-        // router name模式式不支持详情页面刷新,如需要刷新页面请使用router query或vuex
         const { organProjectBuildingValue: { organId } } = this
         assetHouseId && this.$router.push({ path: '/buildingViewDetail', query: {organId, assetHouseId }})
       },
@@ -148,8 +146,14 @@
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
         this.$api.assets.exportBuildingViewExcel({organId, houseIdList, projectIdList}).then(res => {
           this.exportBtnLoading = false
-          if (res && String(res.code) === '0') {
-            return false
+          if (res.status === 200 && res.data && res.data.size) {
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(new Blob([res.data]))
+            a.download = '楼栋视图导出列表.xls'
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            return a.remove()
           }
           throw res.message || '导出楼栋视图失败'
         }).catch(err => {
@@ -157,13 +161,19 @@
           this.$message.error(err || '导出楼栋视图失败')
         })
       }
+    },
+
+    watch: {
+      organProjectBuildingValue: function (val) {
+        val && val.organId && this.queryTableData({type: 'search'})
+      }
     }
   }
 </script>
 
 <style lang='less' scoped>
   .custom-table {
-    padding-bottom: 75px;
+    padding-bottom: 55px;
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {

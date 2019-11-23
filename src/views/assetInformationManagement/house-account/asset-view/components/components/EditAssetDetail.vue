@@ -86,6 +86,7 @@
             this.$api.assets.saveAssetViewHouseInfo({...values, assetHouseId: this.details.assetHouseId}).then(r =>{
               let res = r.data
               if (res && String(res.code) === '0') {
+                this.$message.success('保存成功')
                 return resolve()
               }
               throw res.message || '保存接口出错'
