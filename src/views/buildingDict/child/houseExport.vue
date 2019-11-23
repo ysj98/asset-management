@@ -68,6 +68,7 @@
 </template>
 <script>
 import {utils, debounce} from '@/utils/utils'
+// let getUuid = ((uuid = 1) => () => ++uuid)()
 let fintItem = (data, value) => {
   if (!value) {
     return {label: '', value: ''}
@@ -82,6 +83,7 @@ export default {
   },
   data () {
     return {
+      // uuid: getUuid(),
       visible: false,
       inputStyple: {width: '100%'},
       organName: '',
@@ -123,6 +125,7 @@ export default {
   },
   created () {
     if (this.organIdCopy) {
+      console.log('ssss')
       this.organId = this.organIdCopy
     }
   },
@@ -145,6 +148,9 @@ export default {
             return {label: item.organName, value: item.organId}
           })
           // 默认选中第一个
+          if (this.organId) {
+            return
+          }
           if (this.organOpt.length) {
             this.organId = this.organOpt[0].value
           }

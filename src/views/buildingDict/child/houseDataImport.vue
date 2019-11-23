@@ -24,7 +24,7 @@
          </div>
          <div :style="inputStyple">
            <!-- 公司 -->
-          <topOrganByUser @change="organIdChange" :formStyle="inputStyple" v-model="organId" :hasAll="false" :selectFirst="true"/>
+          <topOrganByUser  @change="organIdChange" :formStyle="inputStyple" v-model="organId" :hasAll="false" :selectFirst="true"/>
          </div>
        </div>
        <!-- 中间内容 -->
@@ -51,7 +51,7 @@
 <script>
 import topOrganByUser from '@/views/common/topOrganByUser'
 import downErrorFile from '@/views/common/downErrorFile'
-import _ from 'lodash'
+// let getUuid = ((uuid = 1) => () => ++uuid)()
 export default {
   props: {
     organIdCopy: {
@@ -64,12 +64,12 @@ export default {
   },
   created () {
     if (this.organIdCopy) {
-      console.log('1', this.organIdCopy)
       this.organId = this.organIdCopy
     }
   },
   data () {
     return {
+      // uuid: getUuid(),
       visible: false,
       organId: '',
       organName: '',
@@ -92,6 +92,7 @@ export default {
       console.log('2', nv)
       if (nv) {
         this.organId = nv
+        // this.uuid = getUuid()
       }
     }
   },

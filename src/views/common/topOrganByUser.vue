@@ -63,6 +63,13 @@ export default {
   mounted () {
     this.query()
   },
+  watch: {
+    value (nv) {
+      if (nv) {
+        this.selectValue = nv
+      }
+    }
+  },
   methods: {
     handleChange (item) {
       let o = this.options.filter(val => {
