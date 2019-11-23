@@ -217,8 +217,8 @@
       // 处理附件
       if (data.filepaths) {
         let filepaths = data.filepaths.split(',')
-        this.filepaths = filepaths.map(item => {
-          return {url: item, name: ''}
+        this.filepaths = filepaths.map(url => {
+          return {url, name: url.substring(url.lastIndexOf('/')+1)}
         })
       }
     },
