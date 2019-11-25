@@ -132,7 +132,7 @@ export function getRegisterOrderListPage (data) {
 }
 // 资产登记新增-下载导入模板
 export function downloadTemplate (data) {
-  return axiosPost(assets.assetRegister.downloadTemplate, data)
+  return axiosPost(assets.assetRegister.downloadTemplate, data, false, false, {responseType: 'blob'})
 }
 // 资产登记转运营信息-根据资产项目ID
 export function getTransferByProjectId (data) {
