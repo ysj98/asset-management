@@ -52,15 +52,15 @@
         spinning: false,
         baseInfoKeys: [
           {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'},
-          {title: '资产类型', key: 'assetType'}, {title: '房屋形态', key: 'houseType'}, {title: '户型', key: ''},
+          {title: '资产类型', key: 'assetType'}, {title: '房屋形态', key: 'houseType'}, {title: '户型', key: 'apartmentName'},
           {title: '装修情况', key: 'decorationSituation'}, {title: '建筑结构', key: 'buildStruct'}, {title: '资产用途', key: 'useType'},
-          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'validPeriod'}, {title: '维修日期', key: ''},
-          {title: '资产状态', key: 'status'}, {title: '相关描述', key: '', span: 16}
+          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'completionDate'}, {title: '维修日期', key: 'repair'},
+          {title: '资产状态', key: 'status'}, {title: '相关描述', key: 'desc', span: 16}
           // {title: '资产二维码', key: 'QRCode', span: 24}
         ], // 基本信息字段
         spaceInfoKeys: [
-          {title: '项目名称', key: ''}, {title: '所在楼栋', key: ''}, {title: '所在单元', key: ''},
-          {title: '所在楼层', key: ''}, {title: '层高', key: ''}, {title: '省市区', key: ''},
+          {title: '项目名称', key: 'projectName'}, {title: '所在楼栋', key: 'buildName'}, {title: '所在单元', key: 'unitName'},
+          {title: '所在楼层', key: 'floor'}, {title: '层高', key: 'groundHigh'}, {title: '省市区', key: 'proCity'},
           {title: '地理位置', key: 'address', span: 24},
         ], // 空间位置字段
         infoData: {}, // 信息数据
