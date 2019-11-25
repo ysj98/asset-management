@@ -202,7 +202,7 @@
             reportHouseTransferReqDate: reportHouseTransferReqDate ? moment(reportHouseTransferReqDate).format('YYYY-MM-DD') : ''
           } // 转换日期格式为string
           let form = Object.assign({}, { attachment: attachArr, organId }, values, dateObj)
-          type === 'saveProjectManageEditProject' ? form.projectId = projectId : '' // 编辑时传入projectId
+          type === 'edit' ? form.projectId = projectId : '' // 编辑时传入projectId
           this.$api.assets[api[type]](form).then(r => {
             this.spinning = false
             let res = r.data
