@@ -581,7 +581,7 @@ export default {
     },
     // 取消
     cancel () {
-      this.$router.push({path: '/asset-management/#/assetRegister'})
+      this.$router.push({path: '/assetRegister'})
     },
     // 编辑获取接口
     editFn () {
