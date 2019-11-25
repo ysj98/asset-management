@@ -61,7 +61,7 @@ export default {
   methods: {
     // 初始化地图
     init () {
-      if (!BMap) {
+      if (!window.BMap) {
         return
       }
       this.map = new BMap.Map('map-container')
@@ -109,7 +109,7 @@ export default {
     // 搜索位置
     search () {
       let result = this.searchValue
-      if (!BMap) {
+      if (!window.BMap) {
         return
       }
       if(result.length ==0){

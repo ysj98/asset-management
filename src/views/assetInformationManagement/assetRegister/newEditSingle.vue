@@ -132,7 +132,7 @@
       <a-button type="primary" @click="save">提交</a-button>
       <a-button @click="cancel">取消</a-button>
     </FormFooter>
-     <input class="ipt-file" ref="input" type="file" @change="importf($event.target.files, $event)" />
+     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <SG-Modal
       width="500px"
       v-model="modalShow"
@@ -232,6 +232,8 @@ export default {
   props: {},
   data () {
     return {
+      fileType: ['xls', 'xlsx'],
+      formData: null,
       spinning: false,
       setType: '',
       recordKey: '',
@@ -281,79 +283,132 @@ export default {
   computed: {
   },
   methods: {
-    importf (file, event) {
-      this.spinning = true
-      this.$importf(file, event).then(vv => {
-        let firstData = Object.getOwnPropertyNames(vv[0])
-        judgmentData[0].empty = firstData[1]
-        let v = vv.splice(1, vv.length)
-        if (v.length > 0) {
-          let arr = []
-          for (let i = 0; i < v.length; i++) {
-            let opt = {key: i}
-            for (let j = 0; j < judgmentData.length; j++) {
-              // 必填字段
-              if (judgmentData[j].required) {
-                if (!v[i][judgmentData[j].empty]) {
-                  this.spinning = false
-                  this.$message.info(`请输入${judgmentData[j].title}`)
-                  return
-                }
-              }
-              // 判断只能为数字
-              if (judgmentData[j].type === 'number') {
-                if (v[i][judgmentData[j].empty] && !(/^\d+(\.\d{1,2})?$/).test(v[i][judgmentData[j].empty])) {
-                  this.spinning = false
-                  this.$message.info(`请输入正确${judgmentData[j].title}`)
-                  return
-                }
-              }
-              // 判断不超过多少字符
-              if (judgmentData[j].fontLength) {
-                if (v[i][judgmentData[j].empty] && String(v[i][judgmentData[j].empty]).length > judgmentData[j].fontLength) {
-                  this.spinning = false
-                  this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
-                  return
-                }
-              }
-              // 判断时间转换
-              if (judgmentData[j].date) {
-                if (v[i][judgmentData[j].empty]) {
-                  v[i][judgmentData[j].empty] = utils.xlsxDate(v[i][judgmentData[j].empty])
-                }
-              }
-              opt[judgmentData[j].dataIndex] = v[i][judgmentData[j].empty] || ''
-            }
-            arr.push(opt)
-          }
+    // 添加资产
+    addTheAsset () {
+      this.$refs.fileUpload.click()
+    },
+    checkFile (fileName, fileSize) {
+      // 检查文件类型
+      let myFileType = false
+      if (this.fileType.length) {
+        const FileType = fileName.split('.').pop().toLowerCase()
+        myFileType = this.fileType.some(item => item.toLowerCase() === FileType)
+      }
+      // 检查文件大小
+      let mfileSize = true
+      if (fileSize) {
+        mfileSize = fileSize <= (this.fileMaxSize * 1024)
+      }
+      return {
+        size: mfileSize,
+        type: myFileType
+      }
+    },
+    // 文件上传
+    change (files, e) {
+      if (!files.length) { return }
+      let fileData = new FormData()
+      fileData.append('registerOrderModelFile', files[0])
+      let validObj = this.checkFile(files[0].name, files[0].size)
+      if (!validObj.type) {
+        this.$message.error('上传文件类型错误!')
+        return
+      }
+      this.fileName = files[0].name
+      this.formData = fileData
+      if (this.formData === null) {
+        return this.$message.error('请先上传文件!')
+      }
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.assets.readExcelModel(this.formData).then(res => {
+        if (res.data.code === '0') {
+          e.target.value = ''
+          let resData = res.data.data
+          console.log(resData, 'opopo')
+          let arrData = utils.deepClone([...resData, ...this.tableData])
           // 数组去重根据type和objectId
-          let arrData = utils.deepClone([...this.tableData, ...arr])
           let hash = {}
           arrData = arrData.reduce((preVal, curVal) => {
             hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
             return preVal
           }, [])
-          // 存着全部数据
-          arrData.forEach(((item, index) => {
-            // 过滤掉没有id的
-            if (!item.objectId) {
-              arrData.splice(index, 1)
+          // 遍历判断必填有字段
+          for (let i = 0; i < arrData.length; i++) {
+            for (let j = 0; j < judgmentData.length; j++) {
+             // 必填字段
+              if (judgmentData[j].required) {
+                if (!arrData[i][judgmentData[j].dataIndex]) {
+                  this.DE_Loding(loadingName).then(() => {
+                    this.$message.info(`请输入${judgmentData[j].title}`)
+                  })
+                  return
+                }
+              }
+              // 判断只能为数字小数
+              if (judgmentData[j].type === 'float') {
+                if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][judgmentData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {
+                    this.$message.info(`请输入正确${judgmentData[j].title}`)
+                  })
+                  return
+                }
+              }
+              // 判断只能为整数
+              if (judgmentData[j].type === 'number') {
+                if (arrData[i][judgmentData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][judgmentData[j].dataIndex]))) {
+                  this.DE_Loding(loadingName).then(() => {
+                    this.$message.info(`请输入正确${judgmentData[j].title}`)
+                  })
+                  return
+                }
+              }
+              // 判断不超过多少字符
+              if (judgmentData[j].fontLength) {
+                if (arrData[i][judgmentData[j].dataIndex] && String(arrData[i][judgmentData[j].dataIndex]).length > judgmentData[j].fontLength) {
+                  this.DE_Loding(loadingName).then(() => {
+                    this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
+                  })
+                  return
+                }
+              }
+              // 判断时间转换
+              if (judgmentData[j].date) {
+                if (arrData[i][judgmentData[j].dataIndex]) {
+                  arrData[i][judgmentData[j].dataIndex] = utils.xlsxDate(arrData[i][judgmentData[j].dataIndex])
+                }
+              }
             }
-            item.key = index
-            item.coveredArea = item.coveredArea ? item.coveredArea : 0
-            item.transferArea = item.transferArea ? item.transferArea : 0
-            this.assetsCount[1].value = calc.add(this.assetsCount[1].value, item.coveredArea || 0)
-            this.assetsCount[2].value = calc.add(this.assetsCount[2].value, item.originalValue || 0)
-            this.assetsCount[3].value = calc.add(this.assetsCount[3].value, item.marketValue || 0)
-          }))
-          console.log(arrData, '拿到数据')
+            if (arrData[i].ownershipStatusName === '有证') {
+              if (!arrData[i].warrantNbr) {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$message.info('当权属情况为有证时需输入权证号')
+                })
+                return
+              }
+            }
+            arrData[i].key = i
+            arrData[i].coveredArea = arrData[i].coveredArea ? arrData[i].coveredArea : 0
+            arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
+            this.assetsCount[1].value = calc.add(this.assetsCount[1].value, arrData[i].coveredArea || 0)
+            this.assetsCount[2].value = calc.add(this.assetsCount[2].value, arrData[i].originalValue || 0)
+            this.assetsCount[3].value = calc.add(this.assetsCount[3].value, arrData[i].marketValue || 0)
+          }
           this.assetsCount[0].value = arrData.length
           this.tableData = arrData
-          this.spinning = false
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+          })
         } else {
-          this.spinning = false
-          this.$message.info('请填写数据后在上传')
+          e.target.value = ''
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(res.data.message)
+          })
         }
+      }, () => {
+        e.target.value = ''
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
       })
     },
     // 下载模板
@@ -401,10 +456,6 @@ export default {
           // console.log('Received values of form: ', values)
         }
       })
-    },
-    // 添加资产
-    addTheAsset () {
-      this.$refs.input.click()
     },
     // 清空列表
     emptyFn () {
@@ -474,9 +525,9 @@ export default {
           }
           let data = utils.deepClone(this.tableData)
           data.forEach(item => {
-            if (item.ownershipStatus === '有证') {
+            if (item.ownershipStatusName === '有证') {
               item.ownershipStatus = 1
-            } else if (item.ownershipStatus === '无证') {
+            } else if (item.ownershipStatusName === '无证') {
               item.ownershipStatus = 0
             } else {
               item.ownershipStatus = 2
@@ -530,7 +581,7 @@ export default {
     },
     // 取消
     cancel () {
-      this.$router.push({path: '/asset-management/#/assetRegister'})
+      this.$router.push({path: '/assetRegister'})
     },
     // 编辑获取接口
     editFn () {
@@ -572,7 +623,6 @@ export default {
           let data = res.data.data
           data.forEach((item, index) => {
             item.key = index
-            item.ownershipStatus = item.ownershipStatusName
           })
           this.$nextTick(() => {
             this.tableData = data

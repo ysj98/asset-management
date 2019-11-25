@@ -584,7 +584,7 @@ export default {
       // this.$refs.eportAndDownFile.hideModal()
       console.log('批量更新', file)
       let fileData = new FormData()
-      fileData.append('acctHouseCodeImport', file)
+      fileData.append('acctHouseCodeFile', file)
       let loadingName = this.SG_Loding('导入中...')
       this.$api.building.acctHouseCodeImport(fileData).then(res => {
         if (res.data.code === '0') {

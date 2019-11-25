@@ -25,9 +25,10 @@
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
-    <div class="table-layout-fixed">
+    <div class="table-layout-fixed" ref="table_box">
      <a-table
       :loading="loading"
+      :scroll="scrollHeight"
       :columns="columns"
       :dataSource="tableData"
       class="custom-table td-pd10"
@@ -69,6 +70,7 @@ import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import moment from 'moment'
+import {utils, debounce} from '@/utils/utils.js'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -136,13 +138,14 @@ export default {
   props: {},
   data () {
     return {
+      scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
       commonShow: false,
       commonTitle: '',
       judge: '',
       loading: false,
-      noPageTools: true,
+      noPageTools: false,
       location: 'absolute',
       approvalStatusData: [...approvalStatusData],
       allStyle: 'width: 140px; margin-right: 10px;',
@@ -336,6 +339,21 @@ export default {
         }
       })
     },
+    // 计算滚动条宽度
+    computedHeight () {
+      let elem = this.$refs.table_box
+      if (!elem) {
+        return
+      }
+      let height = utils.AdjustHeight(elem)
+      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
+      this.scrollHeight = {y: y - 70 - 40}
+      console.log(this.scrollHeight, '-=-=-=')
+    },
+    // 防抖函数
+    debounceMothed: debounce(function () {
+      this.computedHeight()
+    }, 200),
     // 查询
     query () {
       this.loading = true
@@ -406,6 +424,10 @@ export default {
   //   next()
   // },
   mounted () {
+    this.computedHeight()
+    window.addEventListener('resize', () => {
+      this.debounceMothed()
+    })
     // 获取状态
     // this.platformDictFn('approval_status_type')
     // 资产类型

@@ -32,7 +32,7 @@ export const columnsData = [
   },
   {
     title: '权属情况',
-    dataIndex: 'ownershipStatus',
+    dataIndex: 'ownershipStatusName',
     width: 100
   },
   {
@@ -42,7 +42,7 @@ export const columnsData = [
   },
   {
     title: '装修情况',
-    dataIndex: 'decorateSituation',
+    dataIndex: 'decorationSituation',
     width: 100
   },
   {
@@ -155,7 +155,7 @@ export const particulars = [
   },
   {
     title: '权属情况',
-    dataIndex: 'ownershipStatus',
+    dataIndex: 'ownershipStatusName',
     width: 100
   },
   {
@@ -165,7 +165,7 @@ export const particulars = [
   },
   {
     title: '装修情况',
-    dataIndex: 'decorateSituation',
+    dataIndex: 'decorationSituation',
     width: 100
   },
   {
@@ -263,203 +263,172 @@ export const judgmentData = [
   {
     title: '用途',
     dataIndex: 'useType',
-    required: false,
-    empty: '1.请勿改变模版中的字段位置 2.黄色背景列为必填字段、白色为非必填、灰色为不可修改 3.各字段填写格式见批注信息'
+    required: false
   },
   {
     title: '省',
     dataIndex: 'province',
-    required: false,
-    empty: '__EMPTY'
+    required: false
   },
   {
     title: '市',
     dataIndex: 'city',
-    required: false,
-    empty: '__EMPTY_1'
+    required: false
   },
   {
     title: '区',
     dataIndex: 'region',
-    required: false,
-    empty: '__EMPTY_2'
+    required: false
   },
   {
     title: '详细地址',
     dataIndex: 'address',
-    required: false,
-    empty: '__EMPTY_3'
+    required: false
   },
   {
     title: '资产分类',
     dataIndex: 'objectType',
-    required: false,
-    empty: '__EMPTY_4'
+    required: false
   },
   {
     title: '类型',
     dataIndex: 'type',
-    required: false,
-    empty: '__EMPTY_5'
+    required: false
   },
   {
     title: '楼栋ID',
     dataIndex: 'buildId',
-    required: false,
-    empty: '__EMPTY_6'
+    required: false
   },
   {
     title: '对象ID',
     dataIndex: 'objectId',
-    required: false,
-    empty: '__EMPTY_7'
+    required: false
   },
   {
     title: '楼栋名称',
     dataIndex: 'buildName',
-    required: false,
-    empty: '__EMPTY_8'
+    required: false
   },
   {
     title: '房屋名称',
     dataIndex: 'houseName',
-    required: false,
-    empty: '__EMPTY_9'
+    required: false
   },
   {
     title: '资产名称',
     dataIndex: 'assetName',
-    required: true,
-    empty: '__EMPTY_10'
+    required: true
   },
   {
     title: '资产编码',
     dataIndex: 'assetCode',
-    required: false,
-    empty: '__EMPTY_11'
+    required: false
   },
   {
     title: '建筑面积',
     dataIndex: 'coveredArea',
     required: false,
-    type: 'number',
-    empty: '__EMPTY_12'
+    type: 'number'
   },
   {
     title: '坐落位置',
     dataIndex: 'pasitionString',
-    required: false,
-    empty: '__EMPTY_13'
+    required: false
   },
   {
     title: '权属情况',
-    dataIndex: 'ownershipStatus',
-    required: true,
-    empty: '__EMPTY_14'
+    dataIndex: 'ownershipStatusName',
+    required: true
   },
   {
     title: '权证号',
     dataIndex: 'warrantNbr',
     required: false,
-    fontLength: 50,
-    empty: '__EMPTY_15'
+    fontLength: 50
   },
   {
     title: '装修情况',
-    dataIndex: 'decorateSituation',
+    dataIndex: 'decorationSituation',
     required: true,
-    fontLength: 30,
-    empty: '__EMPTY_16'
+    fontLength: 30
   },
   {
     title: '资产原值',
     dataIndex: 'originalValue',
     required: true,
-    type: 'number',
-    empty: '__EMPTY_17'
+    type: 'float'
   },
   {
     title: '市场价值',
     dataIndex: 'marketValue',
     required: false,
-    type: 'number',
-    empty: '__EMPTY_18'
+    type: 'float'
   },
   {
     title: '转运营日期',
     dataIndex: 'transferOperationTime',
     required: false,
-    date: true,
-    empty: '__EMPTY_19'
+    date: true
   },
   {
     title: '转运营面积',
     dataIndex: 'transferOperationArea',
     required: true,
-    type: 'number',
-    empty: '__EMPTY_20'
+    type: 'float'
   },
   {
     title: '闲置面积',
     dataIndex: 'idleArea',
     required: true,
-    type: 'number',
-    empty: '__EMPTY_21'
+    type: 'float'
   },
   {
     title: '自用面积',
     dataIndex: 'selfUserArea',
     required: true,
-    type: 'number',
-    empty: '__EMPTY_22'
+    type: 'float'
   },
   {
     title: '占用面积',
     dataIndex: 'occupationArea',
     required: true,
-    type: 'number',
-    empty: '__EMPTY_23'
+    type: 'float'
   },
   {
     title: '其他面积',
     dataIndex: 'otherArea',
     required: true,
-    type: 'number',
-    empty: '__EMPTY_24'
+    type: 'float'
   },
   {
     title: '转物业日期',
     dataIndex: 'transferTime',
     required: false,
-    date: true,
-    empty: '__EMPTY_25'
+    date: true
   },
   {
     title: '转物业面积',
     dataIndex: 'transferArea',
     required: false,
-    type: 'number',
-    empty: '__EMPTY_26'
+    type: 'float'
   },
   {
     title: '使用期限(月)',
     dataIndex: 'validPeriod',
     required: false,
-    type: 'number',
-    empty: '__EMPTY_27'
+    type: 'number'
   },
   {
     title: '开始使用日期',
     dataIndex: 'startDate',
     required: false,
-    date: true,
-    empty: '__EMPTY_28'
+    date: true
   },
   {
     title: '已使用期数(月)',
     dataIndex: 'usedDate',
     required: false,
-    type: 'number',
-    empty: '__EMPTY_29'
+    type: 'number'
   }
 ]
