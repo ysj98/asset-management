@@ -242,4 +242,7 @@ export default {
     color: #0084FF;
     margin-right: 10px;
   }
+  .custom-table {
+    padding-bottom: 50px;
+  }
 </style>

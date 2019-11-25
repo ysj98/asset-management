@@ -171,7 +171,7 @@
       attachment: [], // 附件
       organName: '', // 管理机构
       organKey: '', // 管理机构
-      typeOptions: (this.sourceTypeOptions || []).splice(1) // 删除"全部"的选项
+      typeOptions: (this.sourceTypeOptions || []).slice(1) // 删除"全部"的选项
     }
   },
   
