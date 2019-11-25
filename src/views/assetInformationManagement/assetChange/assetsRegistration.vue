@@ -411,6 +411,8 @@ export default {
   watch: {
     '$route' () {
       if (this.$route.path === '/assetChange' && this.$route.query.refresh) {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
         this.query()
       }
     }
