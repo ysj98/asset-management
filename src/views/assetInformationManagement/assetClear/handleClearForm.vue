@@ -404,12 +404,12 @@ export default {
     // 删除
     deleteFn (record) {
       this.dataSource.forEach((item, index) => {
-        if (item.assetObjectId === record.assetObjectId) {
+        if (item.assetId === record.assetId) {
           this.dataSource.splice(index, 1)
         }
       })
       this.checkedData.forEach((item, index) => {
-        if (record.assetObjectId === item) {
+        if (record.assetId === item) {
           this.checkedData.splice(index, 1)
         }
       })
@@ -451,6 +451,7 @@ export default {
           let arr = []
           this.dataSource.forEach(item => {
             let obj = {
+              assetId: item.assetId,
               projectId: item.projectId,
               assetType: values.assetType,
               assetObjectId: item.assetObjectId
@@ -504,9 +505,12 @@ export default {
           })
           this.detail.assetType = this.detail.assetType.toString()
           this.detail.cleanupType = this.detail.cleanupType.toString()
+          let checkedData = []
           this.detail.assetDetailList.forEach((item, index) => {
             item.key = index.toString()
+            checkedData.push(item.assetId)
           })
+          this.checkedData = checkedData
           console.log(this.detail)
           this.dataSource = this.detail.assetDetailList
         }

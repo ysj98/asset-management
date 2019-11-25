@@ -240,7 +240,7 @@ import {dateToString} from 'utils/formatTime'
 const columns = [
     {
       title: '编号',
-      dataIndex: 'billConfId',
+      dataIndex: 'index',
       width: '160'
     },
     {
@@ -561,6 +561,7 @@ export default {
           this.assetCardCodePrxOK = true
           this.detail.billCfgList.forEach((item, index) => {
             item.key = index.toString()
+            item.index = index + 1
           })
           this.dataSource = this.detail.billCfgList
         }
