@@ -298,7 +298,7 @@ export default {
     status (val, data) {
       this.checkedData = [...val]
       data.forEach((item, index) => {
-        item.key = item.assetObjectId
+        item.key = item.assetId
       })
       this.tableData = data
       this.$refs.assetBundlePopover.show = false
@@ -341,12 +341,12 @@ export default {
     // 删除
     deleteFn (record) {
       this.tableData.forEach((item, index) => {
-        if (item.assetObjectId === record.assetObjectId) {
+        if (item.assetId === record.assetId) {
           this.tableData.splice(index, 1)
         }
       })
       this.checkedData.forEach((item, index) => {
-        if (record.assetObjectId === item) {
+        if (record.assetId === item) {
           this.checkedData.splice(index, 1)
         }
       })
@@ -461,6 +461,7 @@ export default {
           }
           this.tableData.forEach(item => {
             arr.push({
+              assetId: item.assetId,
               projectId: Number(item.projectId),        // 资产项目Id
               changeProjectId: Number(item.changeProjectId),
               assetType: item.assetType,                       // 资产类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
@@ -530,9 +531,9 @@ export default {
           this.newEditSingleData.files = files
           let checkedData = []
           data.assetDetailList.forEach((item, index) => {
-            item.key = item.assetObjectId + index
+            item.key = item.assetId + index
             item.addressName = item.address
-            checkedData.push(item.assetObjectId)
+            checkedData.push(item.assetId)
           })
           this.$nextTick(() => {
             this.form.setFieldsValue({

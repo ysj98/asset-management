@@ -313,4 +313,7 @@ export default {
       }
     }
   }
+  .custom-table {
+    padding-bottom: 50px;
+  }
 </style>

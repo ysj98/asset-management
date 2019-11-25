@@ -286,7 +286,7 @@ export default {
               value: item.projectId
             })
           })
-          this.projectData = [...this.projectData, ...arr]
+          this.projectData = [{name: '全部资产项目', value: ''}, ...arr]
         } else {
           this.$message.error(res.data.message)
         }

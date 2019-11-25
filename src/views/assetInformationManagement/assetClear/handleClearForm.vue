@@ -180,8 +180,8 @@
     </a-form>
     <form-footer v-show="pageType === 'new' || pageType === 'edit'">
       <slot>
-        <SG-Button type="primary" @click="handleSubmit(1)">审核通过</SG-Button>
-        <SG-Button type="primary" weaken @click="handleSubmit(0)">存为草稿</SG-Button>
+        <SG-Button type="primary" @click="handleSubmit(1)">提交</SG-Button>
+        <SG-Button type="primary" weaken @click="handleSubmit(0)">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </slot>
     </form-footer>
@@ -387,7 +387,7 @@ export default {
         return
       }
       console.log(this.form.getFieldValue('assetType'))
-      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.form.getFieldValue('assetType'))
+      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.form.getFieldValue('assetType'), this.dataSource)
       this.$refs.assetBundlePopover.show = true
     },
     // 资产变动时
@@ -404,12 +404,12 @@ export default {
     // 删除
     deleteFn (record) {
       this.dataSource.forEach((item, index) => {
-        if (item.assetObjectId === record.assetObjectId) {
+        if (item.assetId === record.assetId) {
           this.dataSource.splice(index, 1)
         }
       })
       this.checkedData.forEach((item, index) => {
-        if (record.assetObjectId === item) {
+        if (record.assetId === item) {
           this.checkedData.splice(index, 1)
         }
       })
@@ -451,6 +451,7 @@ export default {
           let arr = []
           this.dataSource.forEach(item => {
             let obj = {
+              assetId: item.assetId,
               projectId: item.projectId,
               assetType: values.assetType,
               assetObjectId: item.assetObjectId
@@ -502,9 +503,14 @@ export default {
             item.url = item.attachmentPath
             item.name = item.oldAttachmentName
           })
+          this.detail.assetType = this.detail.assetType.toString()
+          this.detail.cleanupType = this.detail.cleanupType.toString()
+          let checkedData = []
           this.detail.assetDetailList.forEach((item, index) => {
             item.key = index.toString()
+            checkedData.push(item.assetId)
           })
+          this.checkedData = checkedData
           console.log(this.detail)
           this.dataSource = this.detail.assetDetailList
         }
@@ -572,11 +578,11 @@ export default {
 
 <style lang="less" scoped>
   .handle-clear-form {
-    padding: 40px 105px 0 95px;
+    padding: 40px 105px 40px 95px;
     .edit-box {
       text-align: left;
       color: #49505E;
-      margin-bottom: 40px;
+      margin-bottom: 16px;
       .edit-box-title {
         height: 14px;
         font-size: 14px;

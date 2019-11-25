@@ -153,10 +153,18 @@ export default {
     },
     // 操作回调
     operationFun (editType, record) {
+      let self = this
       switch (editType) {
         case 'start': this.changeStatus(1, record.categoryConfId, record.professionCode)
           break
-        case 'stop': this.changeStatus(0, record.categoryConfId, record.professionCode)
+        case 'stop':
+          this.$confirm({
+          title: '提示',
+          content: '确认要停用该资产分类吗？',
+          onOk() {
+            self.changeStatus(0, record.categoryConfId, record.professionCode)
+          }
+        })
           break
         case 'edit': this.$router.push({path: '/assetClassSet/edit', query: {pageType: 'edit', categoryConfId: record.categoryConfId, organId: this.organId, professionCode: record.professionCode, assetType: record.assetType}})
           break
@@ -241,5 +249,8 @@ export default {
   .operation-btn {
     color: #0084FF;
     margin-right: 10px;
+  }
+  .custom-table {
+    padding-bottom: 50px;
   }
 </style>

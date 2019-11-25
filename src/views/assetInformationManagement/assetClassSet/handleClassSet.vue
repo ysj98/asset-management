@@ -104,114 +104,114 @@
             </a-form-item>
           </div>
         </div>
-        <div class="edit-box">
-          <div class="edit-box-title"><i></i><span>基础信息</span></div>
-          <div class="edit-box-content">
-            <div class="edit-box-content-item long-label">
-              <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产编码前缀<i></i></span><span>：</span></div>
-              <a-form-item class="label-value">
-                <a-input
-                  placeholder="请输入资产编码前缀"
-                  :style="allStyle"
-                  v-if="editable"
-                  v-decorator="['assetCodePrx',
+      </div>
+      <div class="edit-box">
+        <div class="edit-box-title"><i></i><span>资产编码规则</span></div>
+        <div class="edit-box-content">
+          <div class="edit-box-content-item long-label">
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产编码前缀<i></i></span><span>：</span></div>
+            <a-form-item class="label-value">
+              <a-input
+                placeholder="请输入资产编码前缀"
+                :style="allStyle"
+                v-if="editable"
+                v-decorator="['assetCodePrx',
                 {rules: [validateAssetCodePrx], initialValue: detail.assetCodePrx}
               ]"/>
-                <span class="label-value" v-else>{{detail.assetCodePrx || '--'}}</span>
-              </a-form-item>
-            </div>
-            <div class="edit-box-content-item long-label">
-              <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产编码长度<i></i></span><span>：</span></div>
-              <a-form-item>
-                <a-input-number
-                  placeholder="请输入资产编码长度"
-                  :style="allStyle"
-                  step="1"
-                  v-if="editable"
-                  v-decorator="['assetCodeLen',
+              <span class="label-value" v-else>{{detail.assetCodePrx || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item long-label">
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产编码长度<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-input-number
+                placeholder="请输入资产编码长度"
+                :style="allStyle"
+                step="1"
+                v-if="editable"
+                v-decorator="['assetCodeLen',
                 {rules: [validateAssetCodeLen], initialValue: detail.assetCodeLen}
               ]"/>
-                <span class="label-value" v-else>{{detail.assetCodeLen || '--'}}</span>
-              </a-form-item>
-            </div>
-            <div class="edit-box-content-item">
-              <div class="label-name-box"><span class="label-name">预览<i></i></span><span>：</span></div>
-              <a-form-item>
-                <span class="label-value">{{assetCodePreview || '--'}}</span>
-              </a-form-item>
-            </div>
-            <div class="edit-box-content-item long-label">
-              <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产卡片编码前缀<i></i></span><span>：</span></div>
-              <a-form-item>
-                <a-input
-                  placeholder="请输入资产卡片编码前缀"
-                  :style="allStyle"
-                  v-if="editable"
-                  v-decorator="['assetCardCodePrx',
+              <span class="label-value" v-else>{{detail.assetCodeLen || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item">
+            <div class="label-name-box"><span class="label-name">预览<i></i></span><span>：</span></div>
+            <a-form-item>
+              <span class="label-value">{{assetCodePreview || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item long-label">
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产卡片编码前缀<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-input
+                placeholder="请输入资产卡片编码前缀"
+                :style="allStyle"
+                v-if="editable"
+                v-decorator="['assetCardCodePrx',
                 {rules: [validateAssetCardCodePrx], initialValue: detail.assetCardCodePrx}
               ]"/>
-                <span class="label-value" v-else>{{detail.assetCardCodePrx || '--'}}</span>
-              </a-form-item>
-            </div>
-            <div class="edit-box-content-item long-label">
-              <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产卡片编码长度<i></i></span><span>：</span></div>
-              <a-form-item>
-                <a-input-number
-                  placeholder="请输入资产卡片编码长度"
-                  :style="allStyle"
-                  step="1"
-                  v-if="editable"
-                  v-decorator="['assetCardCodeLen',
+              <span class="label-value" v-else>{{detail.assetCardCodePrx || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item long-label">
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产卡片编码长度<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-input-number
+                placeholder="请输入资产卡片编码长度"
+                :style="allStyle"
+                step="1"
+                v-if="editable"
+                v-decorator="['assetCardCodeLen',
                 {rules: [validateAssetCardCodeLen], initialValue: detail.assetCardCodeLen}
               ]"/>
-                <span class="label-value" v-else>{{detail.assetCardCodeLen || '--'}}</span>
-              </a-form-item>
-            </div>
-            <div class="edit-box-content-item">
-              <div class="label-name-box"><span class="label-name">预览<i></i></span><span>：</span></div>
-              <a-form-item>
-                <span class="label-value">{{assetCardCodePreview || '--'}}</span>
-              </a-form-item>
-            </div>
+              <span class="label-value" v-else>{{detail.assetCardCodeLen || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item">
+            <div class="label-name-box"><span class="label-name">预览<i></i></span><span>：</span></div>
+            <a-form-item>
+              <span class="label-value">{{assetCardCodePreview || '--'}}</span>
+            </a-form-item>
           </div>
         </div>
-        <div class="edit-box">
-          <div class="edit-box-title"><i></i><span>费用科目设置</span></div>
-          <div class="edit-box-content">
-            <a-table
-              :columns="columns"
-              :dataSource="dataSource"
-              class="custom-table"
-              :pagination="false"
-            >
-              <template slot="disposalCostSubject">
-                <a @click="openSubjectModal('cost')" v-if="editable">处置成本费用科目</a>
-                <span v-else>处置成本费用科目</span>
-              </template>
-              <template slot="disposalIncomeSubject">
-                <a @click="openSubjectModal('income')" v-if="editable">处置收入费用科目</a>
-                <span v-else>处置收入费用科目</span>
-              </template>
-              <template slot="disposalCostSubject" slot-scope="text, record">
-                <a-select
-                  style="width: 80%"
-                  v-model="record.disposalCostSubject"
-                  :options="billConfigOptions"
-                  v-if="editable"
-                ></a-select>
-                <span v-else>{{record.disposalCostSubjectName}}</span>
-              </template>
-              <template slot="disposalIncomeSubject" slot-scope="text, record">
-                <a-select
-                  style="width: 80%"
-                  v-model="record.disposalIncomeSubject"
-                  :options="billConfigOptions"
-                  v-if="editable"
-                ></a-select>
-                <span v-else>{{record.disposalIncomeSubjectName}}</span>
-              </template>
-            </a-table>
-          </div>
+      </div>
+      <div class="edit-box">
+        <div class="edit-box-title"><i></i><span>费用科目设置</span></div>
+        <div class="edit-box-content">
+          <a-table
+            :columns="columns"
+            :dataSource="dataSource"
+            class="custom-table"
+            :pagination="false"
+          >
+            <template slot="disposalCostSubject">
+              <a @click="openSubjectModal('cost')" v-if="editable">处置成本费用科目</a>
+              <span v-else>处置成本费用科目</span>
+            </template>
+            <template slot="disposalIncomeSubject">
+              <a @click="openSubjectModal('income')" v-if="editable">处置收入费用科目</a>
+              <span v-else>处置收入费用科目</span>
+            </template>
+            <template slot="disposalCostSubject" slot-scope="text, record">
+              <a-select
+                style="width: 80%"
+                v-model="record.disposalCostSubject"
+                :options="billConfigOptions"
+                v-if="editable"
+              ></a-select>
+              <span v-else>{{record.disposalCostSubjectName}}</span>
+            </template>
+            <template slot="disposalIncomeSubject" slot-scope="text, record">
+              <a-select
+                style="width: 80%"
+                v-model="record.disposalIncomeSubject"
+                :options="billConfigOptions"
+                v-if="editable"
+              ></a-select>
+              <span v-else>{{record.disposalIncomeSubjectName}}</span>
+            </template>
+          </a-table>
         </div>
       </div>
     </a-form>
@@ -240,7 +240,7 @@ import {dateToString} from 'utils/formatTime'
 const columns = [
     {
       title: '编号',
-      dataIndex: 'billConfId',
+      dataIndex: 'index',
       width: '160'
     },
     {
@@ -561,6 +561,7 @@ export default {
           this.assetCardCodePrxOK = true
           this.detail.billCfgList.forEach((item, index) => {
             item.key = index.toString()
+            item.index = index + 1
           })
           this.dataSource = this.detail.billCfgList
         }
@@ -620,7 +621,7 @@ export default {
     .edit-box {
       text-align: left;
       color: #49505E;
-      margin-bottom: 40px;
+      margin-bottom: 16px;
       .edit-box-title {
         height: 14px;
         font-size: 14px;
