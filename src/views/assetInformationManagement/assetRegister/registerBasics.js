@@ -369,6 +369,7 @@ export const judgmentData = [
     title: '转运营日期',
     dataIndex: 'transferOperationTime',
     required: false,
+    type: 'number',
     date: true
   },
   {
@@ -405,6 +406,7 @@ export const judgmentData = [
     title: '转物业日期',
     dataIndex: 'transferTime',
     required: false,
+    type: 'number',
     date: true
   },
   {
@@ -423,6 +425,7 @@ export const judgmentData = [
     title: '开始使用日期',
     dataIndex: 'startDate',
     required: false,
+    type: 'number',
     date: true
   },
   {
