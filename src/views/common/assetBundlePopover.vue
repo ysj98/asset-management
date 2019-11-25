@@ -183,8 +183,8 @@ export default {
       console.log(this.overallData, '总的')
       this.selectedRowKeys.forEach(item => {
         this.overallData.forEach((element, index) => {
-          if (item === element.assetObjectId) {
-            checkedData.push(element.assetObjectId)
+          if (item === element.assetId) {
+            checkedData.push(element.assetId)
             rowsData.push(element)
           }
         })
@@ -198,7 +198,7 @@ export default {
         let arrData = [...this.overallData, ...overallData]
         let hash = {}
         arrData = arrData.reduce((preVal, curVal) => {
-          hash[curVal.assetObjectId] ? '' : hash[curVal.assetObjectId] = true && preVal.push(curVal)
+          hash[curVal.assetId] ? '' : hash[curVal.assetId] = true && preVal.push(curVal)
           return preVal
         }, [])
         // 存着全部数据
@@ -315,7 +315,7 @@ export default {
           if (data) {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
-              element.key = element.assetObjectId
+              element.key = element.assetId
               arrData.push(element)
             })
             this.tableData = data
@@ -324,7 +324,7 @@ export default {
             this.$nextTick(() => {
               let hash = {}
               arrData = arrData.reduce((preVal, curVal) => {
-                hash[curVal.assetObjectId] ? '' : hash[curVal.assetObjectId] = true && preVal.push(curVal)
+                hash[curVal.assetId] ? '' : hash[curVal.assetId] = true && preVal.push(curVal)
                 return preVal
               }, [])
               // 存着全部数据
