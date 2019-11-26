@@ -271,6 +271,17 @@ export const assets = {
     queryTransferStatistics: '/ams/project/getTransferByProjectId',
     // 资产项目-资产项目详情-资产概况
     queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
+  },
+  // 权属登记
+  ownershipRegistration: {
+    // 权属登记删除
+    shipDelete: '/ams/ownerShip/ship/delete',
+    // 权属登记单查询
+    shipList: '/ams/ownerShip/ship/list',
+    // 权属登记详情查询
+    shipDetail: '/ams/ownerShip/ship/detail',
+    // 权属登记删除
+    saveOrUpdate: '/ams/ownerShip/attr/saveOrUpdate',
   }
 }
 // 楼盘字典

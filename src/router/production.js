@@ -173,6 +173,14 @@ let proRouter = [
     }
   },
   {
+    path: '/ownershipRegistration/registrationNew',
+    name: '新建登记申请',
+    component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationNew.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/assetEntry',
     name: '资产入账',
     component: () => import('@/views/financialManagement/assetEntry/index.vue'),

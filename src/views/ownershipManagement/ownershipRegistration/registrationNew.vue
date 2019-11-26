@@ -9,12 +9,12 @@
       <a-row class="playground-row">
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="8">
-            <a-form-item label="标题" v-bind="formItemLayout">
-              <a-input placeholder="请输入标题"
+            <a-form-item label="登记单名称" v-bind="formItemLayout">
+              <a-input placeholder="请输入登记单名称"
               :style="allWidth"
               :max="10"
               v-decorator="['title',
-                {rules: [{required: true, max: 50, whitespace: true, message: '请输入标题(不超过50字符)'}], initialValue: newEditSingleData.title}
+                {rules: [{required: true, max: 60, whitespace: true, message: '请输入登记单名称(不超过50字符)'}], initialValue: newEditSingleData.title}
               ]"/>
             </a-form-item>
           </a-col>
@@ -100,17 +100,6 @@
                 {rules: [{required: false, max: 50, whitespace: true, message: '请输入交付单位(不超过50字符)'}], initialValue: newEditSingleData.deliveryCompany}
               ]"/>
             </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="8">
-            <a-form-item label="变动日期：" v-bind="formItemLayout">
-              <a-date-picker
-              :style="allWidth"
-              placeholder="请选择变动日期"
-              v-decorator="['changeDate',
-                {rules: [{required: true, message: '请选择变动日期'}]}
-              ]"
-              />
-              </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8" v-if="+changeType === 1 || +changeType === 2">
             <a-form-item label="截止日期：" v-bind="formItemLayout">

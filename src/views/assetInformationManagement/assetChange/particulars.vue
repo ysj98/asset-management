@@ -148,6 +148,7 @@ export default {
           data.forEach((item, index) => {
             item.key = index
             item.newOriginalValue = item.originalValue
+            item.changeProjectId = item.changeProjectName
           })
           this.tableData = data
           this.queryCondition.count = res.data.data.count
