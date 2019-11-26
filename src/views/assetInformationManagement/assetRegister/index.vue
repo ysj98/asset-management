@@ -1,5 +1,5 @@
 <!--
-  资产变动登记
+  资产登记
 -->
 <template>
   <div class="assetRegister">
@@ -10,7 +10,7 @@
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
@@ -183,7 +183,12 @@ export default {
   computed: {
   },
   methods: {
-    // 新建变动单
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
+    },
+    // 新建登记单
     newChangeSheetFn () {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
       this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'new' }})
@@ -387,6 +392,8 @@ export default {
   watch: {
     '$route' () {
       if (this.$route.path === '/assetRegister' && this.$route.query.refresh) {
+        this.queryCondition.pageNum = 1
+        this.queryCondition.pageSize = 10
         this.query()
       }
     }

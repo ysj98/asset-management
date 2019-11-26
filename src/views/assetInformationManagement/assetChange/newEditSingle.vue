@@ -500,7 +500,9 @@ export default {
                 this.$router.push({path: '/assetChange', query: {refresh: true}})
               })
             } else {
-              this.$message.error(res.data.message)
+              this.DE_Loding(loadingName).then(() => {
+                this.$message.error(res.data.message)
+              })
             }
           })
         }

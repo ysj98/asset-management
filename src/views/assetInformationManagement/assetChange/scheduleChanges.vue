@@ -19,7 +19,7 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
             <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
+          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -223,16 +223,16 @@ export default {
         organId: Number(this.queryCondition.organId),         // 组织机构id
         multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
         multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
-        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
+        startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
+        endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
         currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
         // pageNum: this.queryCondition.pageNum,     // 当前页
         // pageSize: this.queryCondition.pageSize,    // 每页显示记录数
         multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
         multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
-        assetName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        changStartDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
-        changEndDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
+        assetCodeName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
+        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
+        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
       }
       this.$api.assets.exportChangeScheduleList(obj).then(res => {
         console.log(res)
@@ -395,6 +395,11 @@ export default {
       this.queryCondition.organId = organId
       this.query()
     },
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
+    },
     // 计算滚动条宽度
     computedHeight () {
       let elem = this.$refs.table_box
@@ -418,16 +423,16 @@ export default {
         organId: Number(this.queryCondition.organId),         // 组织机构id
         multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
         multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
-        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
+        startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
+        endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
         currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
         multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
         multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
-        assetName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        changStartDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
-        changEndDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
+        assetCodeName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
+        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
+        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
       }
       this.$api.assets.getChangeSchedulePage(obj).then(res => {
         if (Number(res.data.code) === 0) {

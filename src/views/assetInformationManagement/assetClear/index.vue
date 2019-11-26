@@ -248,7 +248,7 @@ export default {
   watch: {
     '$route' () {
       if (this.$route.path === '/assetClear' && this.$route.query.refresh) {
-        this.queryList()
+        this.queryClick()
       }
     }
   },

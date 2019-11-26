@@ -137,7 +137,7 @@ export default {
   watch: {
     '$route' () {
       if (this.$route.path === '/assetClassSet' && this.$route.query.refresh) {
-        this.queryList()
+        this.queryClick()
       }
     }
   },
