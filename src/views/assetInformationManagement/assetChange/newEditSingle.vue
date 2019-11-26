@@ -189,12 +189,23 @@
             </template>
             <!-- 资产项目变动 -->
             <template v-if="changeType === '6'" slot="changeProjectId" slot-scope="text, record">
-              <a-select showSearch :defaultValue="record.changeProjectId === '' ? undefined : record.changeProjectId" v-model="record.changeProjectId === '' ? record.changeProjectId = undefined : record.changeProjectId" :allowClear="false"
+              <!-- <a-select showSearch :defaultValue="record.changeProjectId === '' ? undefined : record.changeProjectId" v-model="record.changeProjectId === '' ? record.changeProjectId = undefined : record.changeProjectId" :allowClear="false"
                 :filterOption="filterOption" :placeholder="'请选择资产项目'" style="width: 120px">
                 <a-select-option v-for="(opt) in projectIdData" :key="opt.value" :value='opt.value'>
                   {{opt.name}}
                 </a-select-option>
-              </a-select>
+              </a-select> -->
+              <a-select
+                :placeholder="'请选择资产项目'" style="width: 120px"
+                showSearch
+                :defaultValue="record.changeProjectId === '' ? undefined : record.changeProjectId"
+                v-model="record.changeProjectId === '' ? record.changeProjectId = undefined : record.changeProjectId"
+                optionFilterProp="children"
+                :options="projectIdData"
+                :allowClear="true"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+                />
             </template>
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -387,7 +398,8 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.projectName,
-              value: item.projectId
+              value: item.projectId,
+              label: item.projectName
             })
           })
           this.projectIdData = [...arr]
@@ -466,15 +478,15 @@ export default {
               changeProjectId: Number(item.changeProjectId),
               assetType: item.assetType,                       // 资产类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
               assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
-              address: item.addressName,              // 变动位置
-              transferArea: item.transferArea,    // 交付物业面积-交付物业变动
-              transferOperationArea: item.transferOperationArea,   // 交付运营面积-交付运营变动
-              operationArea: item.operationArea,  // 运营面积-使用方向变动
-              idleArea: item.idleArea,            // 闲置面积
-              selfUserArea: item.selfUserArea,    // 自用面积
-              occupationArea: item.occupationArea, // 占用面积
-              otherArea: item.otherArea,          // 其他面积
-              originalValue: item.newOriginalValue   // 资产原值
+              address: String(this.changeType) === '5' ? item.addressName : '',              // 变动位置
+              transferArea: String(this.changeType) === '2' ? item.transferArea : '',    // 交付物业面积-交付物业变动
+              transferOperationArea: String(this.changeType) === '1' ? item.transferOperationArea : '',   // 交付运营面积-交付运营变动
+              operationArea: String(this.changeType) === '4' ? item.operationArea : '',  // 运营面积-使用方向变动
+              idleArea: String(this.changeType) === '4' ? item.idleArea : '',            // 闲置面积
+              selfUserArea: String(this.changeType) === '4' ? item.selfUserArea : '',    // 自用面积
+              occupationArea: String(this.changeType) === '4' ? item.occupationArea : '', // 占用面积
+              otherArea: String(this.changeType) === '4' ? item.otherArea : '',          // 其他面积
+              originalValue: String(this.changeType) === '4' ? item.newOriginalValue : ''   // 资产原值
             })
           })
           let obj = {
