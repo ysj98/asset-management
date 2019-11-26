@@ -315,7 +315,7 @@ export default {
             form.obligeeId = this.ownerId
           }
           console.log(form)
-          this.$api.assets.saveOrUpdate(form).then(res => {
+          this.$api.assets.saveOrUpdateOwner(form).then(res => {
             if (res.data.code === '0') {
               this.modal.show = false
               this.$message.success('提交成功')

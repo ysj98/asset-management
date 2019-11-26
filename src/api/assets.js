@@ -427,7 +427,7 @@ export function saveOrUpdate (data) {
 
 // 权属人管理
 // 权属人管理-新建或编辑权属人
-export function saveOrUpdate (data) {
+export function saveOrUpdateOwner (data) {
   return axiosPost(assets.propertyOwnerManagement.saveOrUpdate, data, false, false)
 }
 // 权属人管理-权属人下拉列表
