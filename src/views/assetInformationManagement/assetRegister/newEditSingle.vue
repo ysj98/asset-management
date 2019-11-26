@@ -448,6 +448,7 @@ export default {
     // 模板下载
     confirmDownloadTemplate () {
       let obj = {
+        registerOrderId: this.registerOrderId,
         assetType: this.checkboxAssetType,
         buildIds: this.buildIds,
         scope: this.scope.join(','),
