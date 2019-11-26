@@ -317,7 +317,11 @@ export default {
             data.forEach((element, index) => {
               element.key = element.assetId
               element.oldOriginalValue = element.originalValue
-              element.newOriginalValue = ''
+              element.newOriginalValue = ''          // 变动后原值
+              element.transferArea = ''              // 交付物业面积
+              element.transferOperationArea = ''     // 交付运营面积
+              element.addressName = ''               // 变动后位置
+              element.changeProjectId = ''           // 变动后资产项目
               arrData.push(element)
             })
             this.tableData = data
