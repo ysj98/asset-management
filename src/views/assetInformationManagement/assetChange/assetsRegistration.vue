@@ -10,7 +10,7 @@
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
@@ -187,6 +187,11 @@ export default {
   computed: {
   },
   methods: {
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
+    },
     // 新建变动单
     newChangeSheetFn () {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])

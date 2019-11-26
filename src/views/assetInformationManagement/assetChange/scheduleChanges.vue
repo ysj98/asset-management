@@ -19,7 +19,7 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
             <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId">
+          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -394,6 +394,11 @@ export default {
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
       this.query()
+    },
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
     },
     // 计算滚动条宽度
     computedHeight () {
