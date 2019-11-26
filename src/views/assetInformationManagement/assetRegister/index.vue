@@ -396,6 +396,13 @@ export default {
         this.queryCondition.pageSize = 10
         this.query()
       }
+      // 每次进来获取页面高度
+      if (this.$route.path === '/assetRegister') {
+        this.computedHeight()
+        window.addEventListener('resize', () => {
+          this.debounceMothed()
+        })
+      }
     }
   },
   // created () {
