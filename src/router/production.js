@@ -180,5 +180,13 @@ let proRouter = [
       keepAlive: true
     }
   },
+  {
+    path: '/ownershipSurvey',
+    name: '权属概况',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  }
 ]
 export default proRouter
