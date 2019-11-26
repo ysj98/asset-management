@@ -475,7 +475,7 @@ export default {
             arr.push({
               assetId: item.assetId,
               projectId: Number(item.projectId),        // 资产项目Id
-              changeProjectId: Number(item.changeProjectId),
+              changeProjectId: String(this.changeType) === '6' ? Number(item.changeProjectId) : '',
               assetType: item.assetType,                       // 资产类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
               assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
               address: String(this.changeType) === '5' ? item.addressName : '',              // 变动位置
