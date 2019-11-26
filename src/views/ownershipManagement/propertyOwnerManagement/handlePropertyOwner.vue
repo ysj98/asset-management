@@ -248,15 +248,8 @@ export default {
         remark: '',
         attachment: []
       },
-      obligeeTypeOptions: [
-        {label: '个人', value: 1},
-        {label: '企业', value: 2},
-        {label: '政府事业单位', value: 3}
-      ],
-      certificateTypeOptions: [
-        {label: '身份证', value: 1},
-        {label: '统一信用代码', value: 2}
-      ]
+      obligeeTypeOptions: [],
+      certificateTypeOptions: []
     }
   },
   watch: {
@@ -273,14 +266,11 @@ export default {
           this.getDetail()
         }
       } else {
-        this.detail = {
+        this.form.setFieldsValue({
           obligeeName: '',
           currentOrgan: 1,
-          currentOrganName: '',
           obligeeType: undefined,
-          obligeeTypeName: '',
           certificateType: undefined,
-          certificateTypeName: '',
           certificateNo: '',
           mailingAddress: '',
           postalCode: '',
@@ -288,13 +278,61 @@ export default {
           legalAgentTel: '',
           agent: '',
           agentTel: '',
-          remark: '',
-          attachment: []
-        }
+          remark: ''
+        })
+        this.detail.attachment = []
       }
     }
   },
   methods: {
+    // 获取权属人类型下拉列表
+    getObligeeTypeOptions () {
+      let form = {
+        code: 'AMS_OBLIGEE_TYPE'
+      }
+      this.$api.basics.platformDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: +item.value
+            }
+            arr.push(obj)
+          })
+          this.obligeeTypeOptions = arr
+        } else {
+          this.$error({
+            title: '提示',
+            content: res.data.message
+          })
+        }
+      })
+    },
+    // 获取证件类型下拉列表
+    getCertificateTypeOptions () {
+      let form = {
+        code: 'AMS_CERTIFICATE_TYPE'
+      }
+      this.$api.basics.platformDict(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.name,
+              value: +item.value
+            }
+            arr.push(obj)
+          })
+          this.certificateTypeOptions = arr
+        } else {
+          this.$error({
+            title: '提示',
+            content: res.data.message
+          })
+        }
+      })
+    },
     // 提交
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -352,11 +390,35 @@ export default {
             attachment.push(obj)
           })
           this.detail.attachment = attachment
+          if (this.editable) {
+            this.form.setFieldsValue({
+              obligeeName: this.detail.obligeeName,
+              currentOrgan: this.detail.currentOrgan,
+              obligeeType: this.detail.obligeeType,
+              certificateType: this.detail.certificateType,
+              certificateNo: this.detail.certificateNo,
+              mailingAddress: this.detail.mailingAddress,
+              postalCode: this.detail.postalCode,
+              legalAgent: this.detail.legalAgent,
+              legalAgentTel: this.detail.legalAgentTel,
+              agent: this.detail.agent,
+              agentTel: this.detail.agentTel,
+              remark: this.detail.remark
+            })
+          }
+          console.log(this.detail)
         } else {
-          this.$message.error(res.data.message)
+          this.$error({
+            title: '提示',
+            content: res.data.message
+          })
         }
       })
     }
+  },
+  mounted () {
+    this.getObligeeTypeOptions()
+    this.getCertificateTypeOptions()
   }
 }
 </script>

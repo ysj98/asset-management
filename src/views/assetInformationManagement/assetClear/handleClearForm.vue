@@ -353,10 +353,6 @@ export default {
     },
     // 获取资产清理原因下拉列表
     getCleanupTypeOptions() {
-      // let form = {
-      //   dictCode: 'asset_cleanup_type',
-      //   groupId: this.organId
-      // }
       let form = {
         code: 'asset_cleanup_type'
       }
