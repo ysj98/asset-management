@@ -146,9 +146,23 @@
             资产类型：<a-radio v-for="(item, index) in checkboxData" :key="index" disabled :value="item.value">{{item.name}}</a-radio>
           </a-radio-group>
         </div>
-        楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" v-model="buildIds"  @search="handleSearch">
+        <!-- 楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" v-model="buildIds"  @search="handleSearch">
           <a-select-option v-for="(item, index) in buildIdsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
+        </a-select> -->
+        楼栋名称：<a-select
+        style="width: 300px"
+        mode="multiple"
+        :maxTagCount="4"
+        showSearch
+        placeholder="请选择楼栋"
+        v-model="buildIds"
+        @search="handleSearch"
+        optionFilterProp="children"
+        :options="buildIdsData"
+        :allowClear="true"
+        :filterOption="false"
+        notFoundContent="没有查询到数据"
+        />
         <div class="modal-nav">
           <a-checkbox-group v-model="scope" @change="onChange">
             数据范围：<a-checkbox v-for="(item, index) in scopeData" :key="index" :value="item.value">{{item.name}}</a-checkbox>
@@ -524,7 +538,7 @@ export default {
         if (res.data.code === '0') {
           let result = res.data.data || []
           this.buildIdsData = result.map(item => {
-            return {name: item.buildName, value: item.buildId}
+            return {name: item.buildName, value: item.buildId, label: item.buildName}
           })
         }
       })
