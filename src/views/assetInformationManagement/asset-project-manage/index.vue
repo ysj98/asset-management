@@ -412,6 +412,14 @@
         if (val && val.length !== 1 && val.includes('allType')) {
           this.sourceTypeList = ['allType']
         }
+      },
+
+      // 长度不能超过30字符
+      projectName: function (val, pre) {
+        if (val && val.length > 30) {
+          this.$message.warn("资产项目名称不能超30个字符")
+          this.projectName = pre
+        }
       }
     }
   }

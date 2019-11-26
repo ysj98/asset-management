@@ -155,6 +155,22 @@ let proRouter = [
     path: '/houseStandingBook/assetProjectViewDetail',
     name: '资产项目视图详情',
     component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail.vue')
-  }
+  },
+  {
+    path: '/propertyOwnerManagement',
+    name: '权属人管理',
+    component: () => import('@/views/ownershipManagement/propertyOwnerManagement/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetEntry',
+    name: '资产入账',
+    component: () => import('@/views/financialManagement/assetEntry/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
 ]
 export default proRouter
