@@ -57,8 +57,8 @@ export function getChangePage (data) {
   return axiosPost(assets.management.getChangePage, data)
 }
 // 资产变动-删除
-export function deleteChange (data) {
-  return axiosPost(assets.management.deleteChange, data)
+export function shipDhange (data) {
+  return axiosPost(assets.management.shipDhange, data)
 }
 // 资产变动-审批
 export function approveChange (data) {
@@ -99,8 +99,8 @@ export function assetListPage (data) {
 
 // 资产登记
 // 资产登记-删除
-export function deleteByRegisterOrderId (data) {
-  return axiosPost(assets.assetRegister.deleteByRegisterOrderId, data)
+export function shipDyRegisterOrderId (data) {
+  return axiosPost(assets.assetRegister.shipDyRegisterOrderId, data)
 }
 // 资产登记-反审核
 export function registerOrderReAudit (data) {
@@ -150,6 +150,10 @@ export function getRegisterOrderDetailsStatistics (data) {
 export function readExcelModel (data) {
   return axiosPost(assets.assetRegister.readExcelModel, data)
 }
+// 资产登记-导出数据校验
+export function checkBuildsObjectType (data) {
+  return axiosPost(assets.assetRegister.checkBuildsObjectType, data)
+}
 
 // 资产清理
 // 资产清理-分页列表
@@ -157,8 +161,8 @@ export function getCleanupPage (data) {
   return axiosPost(assets.assetClear.getCleanupPage, data, true, false)
 }
 // 资产清理-删除
-export function deleteCleanup (data) {
-  return axiosPost(assets.assetClear.deleteCleanup, data, false, false)
+export function shipDleanup (data) {
+  return axiosPost(assets.assetClear.shipDleanup, data, false, false)
 }
 // 资产清理-审批
 export function approvalCleanup (data) {
@@ -300,8 +304,8 @@ export function queryProjectManageProjectStatistics (data) {
 }
 
 // 资产项目-删除
-export function deleteProjectManageProjectById (data) {
-  return axiosPost(assets.projectManage.deleteProjectById, data)
+export function shipDrojectManageProjectById (data) {
+  return axiosPost(assets.projectManage.shipDrojectById, data)
 }
 // 查询资产项目详情-根据资产项目ID
 export function queryProjectManageDetailById (data) {
@@ -369,8 +373,8 @@ export function getObjectKeyValueByOrganId (data) {
   return axiosGet(assets.assetProject.getObjectKeyValueByOrganId, data)
 }
 // 资产项目-删除
-export function deleteProjectById (data) {
-  return axiosPost(assets.assetProject.deleteProjectById, data, false, false)
+export function shipDrojectById (data) {
+  return axiosPost(assets.assetProject.shipDrojectById, data, false, false)
 }
 // 资产项目-反审核
 export function projectReAudit (data) {
@@ -400,4 +404,75 @@ export function getProjectTransferByProjectId (data) {
 // 资产项目-资产项目详情-资产概况
 export function queryProjectManageGeneralInfo (data) {
   return axiosGet(assets.projectManage.queryGeneralInfo, data)
+}
+
+// 权属管理 - 权属登记
+// 权属登记删除
+export function shipDelete (data) {
+  return axiosGet(assets.ownershipRegistration.shipDelete, data)
+}
+// 权属登记单查询
+export function shipList (data) {
+  return axiosPost(assets.ownershipRegistration.shipList, data)
+}
+// 权属登记详情查询
+export function shipDetail (data) {
+  return axiosGet(assets.ownershipRegistration.shipDetail, data)
+}
+// 资产权属登记单新建或编辑
+export function saveOrUpdate (data) {
+  return axiosPost(assets.ownershipRegistration.saveOrUpdate, data)
+}
+
+
+// 权属人管理
+// 权属人管理-新建或编辑权属人
+export function saveOrUpdateOwner (data) {
+  return axiosPost(assets.propertyOwnerManagement.saveOrUpdate, data, false, false)
+}
+// 权属人管理-权属人下拉列表
+export function select (data) {
+  return axiosGet(assets.propertyOwnerManagement.select, data)
+}
+// 权属人管理-权属人列表查询
+export function list (data) {
+  return axiosPost(assets.propertyOwnerManagement.list, data, true, false)
+}
+// 权属人管理-权属人删除
+export function ownerDelete (data) {
+  return axiosGet(assets.propertyOwnerManagement.ownerDelete, data)
+}
+// 权属人管理-权属人导入
+export function ownerExport (data) {
+  return axiosPost(assets.propertyOwnerManagement.ownerExport, data, false, false)
+}
+// 权属人管理-权属人导入模板下载
+export function download (data) {
+  return axiosGet(assets.propertyOwnerManagement.download, data)
+}
+// 权属人管理-权属人详情查询
+export function detail (data) {
+  return axiosGet(assets.propertyOwnerManagement.detail, data)
+}
+
+// 资产入账
+// 资产入账-新建资产入账
+export function insertCard (data) {
+  return axiosPost(assets.assetEntry.insertCard, data, false, false)
+}
+// 资产入账-更新资产入账
+export function updateCard (data) {
+  return axiosPost(assets.assetEntry.updateCard, data, false, false)
+}
+// 资产入账-资产入账分页查询
+export function queryCardPageList (data) {
+  return axiosPost(assets.assetEntry.queryCardPageList, data, true, false)
+}
+// 资产入账-资产入账状态操作
+export function updateCardStatus (data) {
+  return axiosPost(assets.assetEntry.updateCardStatus, data, false, false)
+}
+// 资产入账-资产入账详情
+export function queryCardDetail (data) {
+  return axiosPost(assets.assetEntry.queryCardDetail, data, false, false)
 }

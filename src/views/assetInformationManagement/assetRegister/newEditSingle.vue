@@ -415,6 +415,19 @@ export default {
     downloadTemplate () {
       this.modalShow = true
     },
+    // 资产登记-导出数据校验
+    checkBuildsObjectTypeFn () {
+      let obj = {
+        buildIds: this.buildIds,
+      }
+      this.$api.assets.checkBuildsObjectType(obj).then(res => {
+        if (res.data.code === '0') {
+          this.confirmDownloadTemplate()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 下载模板确认
     commonFn () {
       if (!this.buildIds || this.buildIds.length < 0) {
@@ -425,7 +438,17 @@ export default {
         this.$message.info('请选择数据范围')
         return
       }
+      console.log(this.scope, '这是什么')
+      if (this.scope.includes('1')) {
+        this.checkBuildsObjectTypeFn()
+      } else {
+        this.confirmDownloadTemplate()
+      }
+    },
+    // 模板下载
+    confirmDownloadTemplate () {
       let obj = {
+        registerOrderId: this.registerOrderId,
         assetType: this.checkboxAssetType,
         buildIds: this.buildIds,
         scope: this.scope.join(','),
@@ -603,7 +626,7 @@ export default {
               data.attachment.forEach(item => {
               files.push({
                 url: item.attachmentPath,
-                name: item.newAttachmentName
+                name: item.attachmentPath.split('/').pop()
               })
             })
           }

@@ -1,0 +1,386 @@
+<!--
+  权属登记
+-->
+<template>
+  <div class="ownershipRegistration">
+    <SearchContainer v-model="toggle" @input="searchContainerFn">
+      <div slot="headerBtns">
+        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</SG-Button>
+      </div>
+      <div slot="headerForm">
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+      </div>
+      <div slot="contentForm">
+        <div class="form-first">
+          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
+            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
+            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
+            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <div class="box box-right">
+            <SG-DatePicker label="创建日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
+          </div>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button @click="eliminateFn">清空</SG-Button>
+        </div>
+        <div class="from-second">
+          <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+        </div>
+      </div>
+    </SearchContainer>
+    <div class="table-layout-fixed" ref="table_box">
+      <a-table
+        :loading="loading"
+        :scroll="scrollHeight"
+        :columns="columns"
+        :dataSource="tableData"
+        class="custom-table td-pd10"
+        :pagination="false"
+        >
+        <!-- <template slot="operation" slot-scope="text, record">
+          <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
+        </template> -->
+      </a-table>
+      <SG-FooterPagination
+        :pageLength="queryCondition.pageSize"
+        :totalCount="count"
+        :location="location"
+        :noPageTools="noPageTools"
+        v-model="queryCondition.pageNum"
+        @change="handleChange"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import SearchContainer from '@/views/common/SearchContainer'
+import TreeSelect from '../../common/treeSelect'
+import moment from 'moment'
+import segiIcon from '@/components/segiIcon.vue'
+import {utils, debounce} from '@/utils/utils.js'
+const columns = [
+  {
+    title: '登记单名称',
+    dataIndex: 'registerName'
+  },
+  {
+    title: '登记类型',
+    dataIndex: 'registerTypeName'
+  },
+  {
+    title: '所属机构',
+    dataIndex: 'organName'
+  },
+  {
+    title: '资产项目名称',
+    dataIndex: 'projectName'
+  },
+  {
+    title: '资产类型',
+    dataIndex: 'assetTypeName'
+  },
+  {
+    title: '资产数量',
+    dataIndex: 'assetCount'
+  },
+  {
+    title: '创建日期',
+    dataIndex: 'createTime'
+  },
+  {
+    title: '创建人',
+    dataIndex: 'createBy'
+  },
+  {
+    title: '当前状态',
+    dataIndex: 'approvalStatusName'
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    width: 170,
+    scopedSlots: { customRender: 'operation' },
+  }
+]
+const operationData = [
+  {iconType: 'form', text: '修改', editType: 'edit'},
+  {iconType: 'delete', text: '删除', editType: 'delete'}
+]
+const approvalStatusData = [
+  {
+    name: '全部状态',
+    value: ''
+  },
+  {
+    name: '草稿',
+    value: '0'
+  },
+  {
+    name: '待审批',
+    value: '2'
+  },
+  {
+    name: '已驳回',
+    value: '3'
+  },
+  {
+    name: '已审批',
+    value: '1'
+  },
+  {
+    name: '已取消',
+    value: '4'
+  }
+]
+const queryCondition =  {
+    organId: '',         // 组织机构id
+    projectId: '',       // 资产项目Id
+    assetType: '',       // 资产类型Id
+    approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+    minDate: '',         // 开始日期
+    maxDate: '',         // 结束日期
+    pageNum: 1,          // 第几页
+    pageSize: 10,        // 每页显示记录数
+    isCurrent: false     // 备注：仅当前机构下资产清理单 0 否 1 是
+  }
+export default {
+  components: {SearchContainer, TreeSelect, segiIcon},
+  props: {},
+  data () {
+    return {
+      scrollHeight: {y: 0},
+      loading: false,
+      noPageTools: false,
+      location: 'absolute',
+      allStyle: 'width: 170px; margin-right: 10px;',
+      toggle: true,
+      columns,
+      organName: '',
+      organId: '',
+      tableData: [],
+      operationData: [...operationData],
+      approvalStatusData: [...approvalStatusData],
+      queryCondition: {...queryCondition},
+      count: '',
+      projectData: [
+        {
+          name: '全部资产项目',
+          value: ''
+        }
+      ],
+      changeTypeData: [],
+      assetTypeData: [],
+      assetClassifyData: [
+        {
+          name: '全部分类',
+          value: ''
+        }
+      ],
+      alterationDate: []
+    }
+  },
+  computed: {
+  },
+  methods: {
+    // 新建变动单
+    newChangeSheetFn () {
+      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
+      this.$router.push({path: '/ownershipRegistration/registrationNew', query: { record: recordData, setType: 'new' }})
+    },
+    // 组织机构树
+    changeTree (value, label) {
+      this.organName = label
+      this.queryCondition.organId = value
+      this.queryCondition.pageNum = 1
+      this.getObjectKeyValueByOrganIdFn()
+      this.query()
+    },
+    // 搜索
+    onSearch () {
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
+    // 选择是否查看当前机构变动单
+    checkboxFn (e) {
+      this.queryCondition.isCurrent = e.target.checked
+    },
+    // 高级搜索控制
+    searchContainerFn (val) {
+      this.toggle = val
+    },
+    // 分页查询
+    handleChange (data) {
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.query()
+    },
+    // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.queryCondition.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectData = [{name: '全部资产项目', value: ''}, ...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 平台字典获取变动类型
+    platformDictFn (str) {
+      let obj = {
+        code: str
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          if (str === 'approval_status_type') {
+            this.approvalStatusData = [...data]
+            let status = []
+            this.approvalStatusData.forEach(item => {
+              status.push(item.value)
+            })
+            this.queryCondition.approvalStatus = status
+          } else if (str === 'asset_type') {
+            this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 资产类型变化
+    assetTypeDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+      })
+    },
+    // 状态发生变化
+    approvalStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+      })
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
+    },
+    // 清空
+    eliminateFn () {
+      let organId = this.queryCondition.organId
+      this.alterationDate = []
+      this.queryCondition = {...queryCondition}
+      this.queryCondition.organId = organId
+      this.query()
+    },
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
+    },
+    // 计算滚动条宽度
+    computedHeight () {
+      let elem = this.$refs.table_box
+      if (!elem) {
+        return
+      }
+      let height = utils.AdjustHeight(elem)
+      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
+      this.scrollHeight = {y: y - 70 - 40}
+      console.log(this.scrollHeight, '-=-=-=')
+    },
+    // 防抖函数
+    debounceMothed: debounce(function () {
+      this.computedHeight()
+    }, 200),
+    // 查询
+    query () {
+      this.loading = true
+      let obj = {
+        projectId: this.queryCondition.projectId,       // 资产项目Id
+        organId: Number(this.queryCondition.organId),         // 组织机构id
+        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
+        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        minDate: moment(this.alterationDate[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
+        maxDate: moment(this.alterationDate[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
+        isCurrent: this.queryCondition.isCurrent,   // 仅当前机构下资产清理单 0 否 1 是
+        pageNum: this.queryCondition.pageNum,     // 当前页
+        pageSize: this.queryCondition.pageSize,    // 每页显示记录数
+      }
+      this.$api.assets.shipList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data
+          if (data && data.length > 0) {
+            data.forEach((item, index) => {
+              item.key = index
+            })
+            this.tableData = data
+            this.count = res.data.data.count
+          } else {
+            this.tableData = []
+            this.count = 0
+          }
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
+    }
+  },
+  created () {
+  },
+  mounted () {
+    this.computedHeight()
+    window.addEventListener('resize', () => {
+      this.debounceMothed()
+    })
+    // 获取状态
+    // this.platformDictFn('approval_status_type')
+    // 资产类型
+    this.platformDictFn('asset_type')
+  }
+}
+</script>
+<style lang="less" scoped>
+.ownershipRegistration {
+  .from-second {
+    padding: 26px 190px 0 0;
+  }
+  .box {
+    display: inline-block;
+  }
+  .box-right {
+    margin-right: 10px;
+  }
+}
+</style>

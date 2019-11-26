@@ -5,12 +5,8 @@
  */
 export default [
   {
-    title: '业务菜单',
+    title: '资产信息管理',
     children: [
-      {
-        title: '楼盘字典',
-        path: '/buildingDict'
-      },
       {
         title: '资产变动',
         path: '/assetChange'
@@ -19,18 +15,6 @@ export default [
         title: '资产清理',
         path: '/assetClear'
       },
-      {
-        title: '资产分类设置',
-        path: '/assetClassSet'
-      },
-      // {
-      //   title: '资产视图',
-      //   path: '/assetView'
-      // },
-      // {
-      //   title: '楼栋视图',
-      //   path: '/buildingView'
-      // },
       {
         title: '资产项目管理',
         path: '/assetProjectManage'
@@ -42,6 +26,41 @@ export default [
       {
         title: '房屋台账',
         path: '/houseStandingBook'
+      }
+    ]
+  },
+  {
+    title: '基础信息管理',
+    children: [
+      {
+        title: '楼盘字典',
+        path: '/buildingDict'
+      },
+      {
+        title: '资产分类设置',
+        path: '/assetClassSet'
+      },
+    ]
+  },
+  {
+    title: '权属管理',
+    children: [
+      {
+        title: '权属人管理',
+        path: '/propertyOwnerManagement'
+      },
+      {
+        title: '权属登记',
+        path: '/ownershipRegistration'
+      }
+    ]
+  },
+  {
+    title: '账务管理',
+    children: [
+      {
+        title: '资产入账',
+        path: '/assetEntry'
       }
     ]
   },
