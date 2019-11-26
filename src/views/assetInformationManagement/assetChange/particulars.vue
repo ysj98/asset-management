@@ -147,6 +147,7 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
+            item.newOriginalValue = item.originalValue
           })
           this.tableData = data
           this.queryCondition.count = res.data.data.count
