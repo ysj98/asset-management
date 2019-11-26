@@ -9,7 +9,7 @@
       </div>
       <div slot="col-r">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-        <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
+        <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -395,6 +395,13 @@ export default {
         this.queryCondition.pageNum = 1
         this.queryCondition.pageSize = 10
         this.query()
+      }
+      // 每次进来获取页面高度
+      if (this.$route.path === '/assetRegister') {
+        this.computedHeight()
+        window.addEventListener('resize', () => {
+          this.debounceMothed()
+        })
       }
     }
   },

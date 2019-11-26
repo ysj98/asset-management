@@ -48,6 +48,10 @@ export default [
       {
         title: '权属人管理',
         path: '/propertyOwnerManagement'
+      },
+      {
+        title: '权属登记',
+        path: '/ownershipRegistration'
       }
     ]
   },

@@ -140,7 +140,7 @@ export default {
               data.attachment.forEach(item => {
               files.push({
                 url: item.attachmentPath,
-                name: item.newAttachmentName
+                name: item.attachmentPath.split('/').pop()
               })
             })
           }

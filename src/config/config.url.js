@@ -137,7 +137,9 @@ export const assets = {
     // 资产登记-详情明细统计
     getRegisterOrderDetailsStatistics: '/ams/registerOrder/getRegisterOrderDetailsStatistics',
     // 资产登记-读取excel模板文件
-    readExcelModel: '/ams/registerOrder/readExcelModel'
+    readExcelModel: '/ams/registerOrder/readExcelModel',
+    // 资产登记-读取excel模板文件
+    checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType'
   },
   // 资产清理
   assetClear: {
@@ -269,6 +271,17 @@ export const assets = {
     queryTransferStatistics: '/ams/project/getTransferByProjectId',
     // 资产项目-资产项目详情-资产概况
     queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
+  },
+  // 权属登记
+  ownershipRegistration: {
+    // 权属登记删除
+    shipDelete: '/ams/ownerShip/ship/delete',
+    // 权属登记单查询
+    shipList: '/ams/ownerShip/ship/list',
+    // 权属登记详情查询
+    shipDetail: '/ams/ownerShip/ship/detail',
+    // 权属登记删除
+    saveOrUpdate: '/ams/ownerShip/attr/saveOrUpdate',
   },
   // 权属人管理
   propertyOwnerManagement: {

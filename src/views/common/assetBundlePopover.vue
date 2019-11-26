@@ -138,7 +138,7 @@ export default {
       selecData: {
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
-        assetNameCodeCode: '',  // 资产名称/编码
+        assetNameCode: '',  // 资产名称/编码
         queryType: this.queryType,   // 查询类型 1 资产变动，2 资产清理 3权属登记
         projectId: '',  // 资产项目ID
         pageSize: 10,
@@ -303,7 +303,7 @@ export default {
       let obj = {
         assetType: this.selecData.assetType,   // 资产类型
         objectType: this.selecData.objectType,  // 资产类别
-        assetNameCodeCode: this.selecData.assetNameCodeCode,  // 资产名称/编码
+        assetNameCode: this.selecData.assetNameCode,  // 资产名称/编码
         queryType: Number(this.queryType),   // 查询类型 1 资产变动，2 资产清理 3权属登记
         projectId: this.selecData.projectId,  // 资产项目ID
         pageSize: this.selecData.pageSize,
@@ -316,6 +316,12 @@ export default {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
               element.key = element.assetId
+              element.oldOriginalValue = element.originalValue
+              element.newOriginalValue = ''          // 变动后原值
+              element.transferArea = ''              // 交付物业面积
+              element.transferOperationArea = ''     // 交付运营面积
+              element.addressName = ''               // 变动后位置
+              element.changeProjectId = ''           // 变动后资产项目
               arrData.push(element)
             })
             this.tableData = data
