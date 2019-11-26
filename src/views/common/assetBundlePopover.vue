@@ -138,7 +138,7 @@ export default {
       selecData: {
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
-        assetNameCodeCode: '',  // 资产名称/编码
+        assetNameCode: '',  // 资产名称/编码
         queryType: this.queryType,   // 查询类型 1 资产变动，2 资产清理 3权属登记
         projectId: '',  // 资产项目ID
         pageSize: 10,
@@ -303,7 +303,7 @@ export default {
       let obj = {
         assetType: this.selecData.assetType,   // 资产类型
         objectType: this.selecData.objectType,  // 资产类别
-        assetNameCodeCode: this.selecData.assetNameCodeCode,  // 资产名称/编码
+        assetNameCode: this.selecData.assetNameCode,  // 资产名称/编码
         queryType: Number(this.queryType),   // 查询类型 1 资产变动，2 资产清理 3权属登记
         projectId: this.selecData.projectId,  // 资产项目ID
         pageSize: this.selecData.pageSize,
