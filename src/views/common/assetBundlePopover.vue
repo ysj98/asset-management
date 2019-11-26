@@ -316,6 +316,8 @@ export default {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
               element.key = element.assetId
+              element.oldOriginalValue = element.originalValue
+              element.newOriginalValue = ''
               arrData.push(element)
             })
             this.tableData = data

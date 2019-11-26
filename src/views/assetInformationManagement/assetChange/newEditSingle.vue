@@ -180,8 +180,8 @@
               <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.otherArea"/>
             </template>
             <!-- 原值变动 -->
-            <template v-if="changeType === '3'" slot="originalValue" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.originalValue"/>
+            <template v-if="changeType === '3'" slot="newOriginalValue" slot-scope="text, record">
+              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.newOriginalValue"/>
             </template>
             <!-- 位置变动 -->
             <template v-if="changeType === '5'" slot="addressName" slot-scope="text, record">
@@ -426,7 +426,7 @@ export default {
                 return
               }
             } else if (String(this.changeType) === '3') {
-              if (!this.tableData[i].originalValue) {
+              if (!this.tableData[i].newOriginalValue) {
                 this.$message.info('请输入变动后原值')
                 return
               }
@@ -474,7 +474,7 @@ export default {
               selfUserArea: item.selfUserArea,    // 自用面积
               occupationArea: item.occupationArea, // 占用面积
               otherArea: item.otherArea,          // 其他面积
-              originalValue: item.originalValue   // 资产原值
+              originalValue: item.newOriginalValue   // 资产原值
             })
           })
           let obj = {
@@ -535,6 +535,7 @@ export default {
           data.assetDetailList.forEach((item, index) => {
             item.key = item.assetId + index
             item.addressName = item.address
+            item.newOriginalValue = item.originalValue
             checkedData.push(item.assetId)
           })
           this.$nextTick(() => {

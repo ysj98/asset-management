@@ -183,13 +183,13 @@ export const variationOriginalValue = [{
   width: '10%'
 }, {
   title: '变动前原值',
-  dataIndex: 'changeProjectId',
+  dataIndex: 'oldOriginalValue',
   width: '10%'
 }, {
   title: '变动后原值',
-  dataIndex: 'originalValue',
+  dataIndex: 'newOriginalValue',
   align: 'center',
-  scopedSlots: { customRender: 'originalValue' }
+  scopedSlots: { customRender: 'newOriginalValue' }
 }, {
   title: '操作',
   dataIndex: 'operation',
