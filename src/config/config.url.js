@@ -19,7 +19,7 @@ export const User = {
   // 获取用户数据
   getUserData: '/uhomecp-sso/v3/propertyUser/profile',
   // 获取菜单数据
-  menus: '/uhomecp-sso//v3/propertyUser/menus',
+  menus: '/uhomecp-sso/v3/propertyUser/menus',
   // 获取权限数据
   popedomCode: '/uhomecp-sso/v3/propertyUser/popedomCode',
 }
@@ -224,7 +224,9 @@ export const assets = {
     // 楼栋视图面积使用统计
     queryFloorArea: '/ams/asset-house/build/area',
     // 查询当前组织机构下所有的楼栋
-    queryBuildingByOrganId: '/ams//asset-house/organ/build'
+    queryBuildingByOrganId: '/ams/asset-house/organ/build',
+    // 查询楼栋下的单元-楼层关系
+    queryUnitByHouseId: '/ams/asset-house/build/unit'
   },
   // 房屋台账 - 资产视图
   assetView: {

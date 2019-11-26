@@ -6,7 +6,7 @@
       <div class="title_div" style="margin-top: 20px">
         <overview-number :numList="numList" style="margin-bottom: 12px"/>
         <!--楼层数据-->
-        <a-row style="padding: 3px 0 15px">
+        <a-row style="padding: 3px 0 15px" v-if="unit">
           <a-col :span="12">
             <span style="line-height: 32px; font-weight: bold; color: #49505E; font-size: 14px">楼栋列表</span>
           </a-col>
@@ -77,10 +77,7 @@
         }, // 房间背景色映射
         buildingList: [], // 楼层列表数据
         unit: undefined, // 单元名下的楼层编码
-        unitOptions: [
-          {title: '单元一', key: '101', floorId: 122},
-          {title: '单元一', key: '102', floorId: 132}
-        ] // 单元选项
+        unitOptions: [] // 单元选项
       }
     },
 
@@ -172,10 +169,29 @@
           this.spinning = false
           this.$message.error(err || '查询楼层信息出错')
         })
+      },
+
+      // 查询楼栋下的单元-楼层关系
+      queryUnit () {
+        this.spinning = true
+        this.$api.assets.queryBuildingViewUnitByHouseId({assetHouseId: this.houseId, organId: this.organId}).then(r => {
+          this.spinning = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.unitOptions = (res.data || []).map(n => {
+              return { title: n.unitName, key: String(n.floorNumList) }
+            })
+          }
+          throw res.message || '查询楼层信息出错'
+        }).catch(err => {
+          this.spinning = false
+          this.$message.error(err || '查询楼层信息出错')
+        })
       }
     },
 
     mounted () {
+      this.queryUnit()
       this.queryFloorInfo()
       this.queryHouseAreaInfo()
     }

@@ -258,6 +258,11 @@ export function queryBuildingByOrganId (data) {
   return axiosGet(assets.buildingView.queryBuildingByOrganId, data)
 }
 
+// 查询楼栋下的单元-楼层关系
+export function queryBuildingViewUnitByHouseId (data) {
+  return axiosGet(assets.buildingView.queryUnitByHouseId, data)
+}
+
 // 房屋台账 - 资产视图
 // 房屋资产基本信息查询
 export function queryAssetViewBaseInfo (data) {
