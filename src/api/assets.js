@@ -150,6 +150,10 @@ export function getRegisterOrderDetailsStatistics (data) {
 export function readExcelModel (data) {
   return axiosPost(assets.assetRegister.readExcelModel, data)
 }
+// 资产登记-导出数据校验
+export function checkBuildsObjectType (data) {
+  return axiosPost(assets.assetRegister.checkBuildsObjectType, data)
+}
 
 // 资产清理
 // 资产清理-分页列表

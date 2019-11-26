@@ -137,7 +137,9 @@ export const assets = {
     // 资产登记-详情明细统计
     getRegisterOrderDetailsStatistics: '/ams/registerOrder/getRegisterOrderDetailsStatistics',
     // 资产登记-读取excel模板文件
-    readExcelModel: '/ams/registerOrder/readExcelModel'
+    readExcelModel: '/ams/registerOrder/readExcelModel',
+    // 资产登记-读取excel模板文件
+    checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType'
   },
   // 资产清理
   assetClear: {
