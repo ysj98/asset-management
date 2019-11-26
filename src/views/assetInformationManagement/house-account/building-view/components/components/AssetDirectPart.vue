@@ -6,8 +6,16 @@
       <div class="title_div" style="margin-top: 20px">
         <overview-number :numList="numList" style="margin-bottom: 12px"/>
         <!--楼层数据-->
-        <div class="building_style" v-if="buildingList.length">
-          <div class="floor_style" v-for="floor in buildingList" :key="floor.floorName">
+        <a-row style="padding: 3px 0 15px">
+          <a-col :span="12">
+            <span style="line-height: 32px; font-weight: bold; color: #49505E; font-size: 14px">楼栋列表</span>
+          </a-col>
+          <a-col :span="12" style="text-align: right">
+            <a-select v-model="unit" style="width: 200px" placeholder="单元选择" :options="unitOptions"/>
+          </a-col>
+        </a-row>
+        <div class="building_style" v-if="unit">
+          <div class="floor_style" v-for="floor in buildingList.filter(m => (unit || '').indexOf(m.floorNum) !== -1)" :key="floor.floorName">
             <div class="floor_num">{{floor.floorName}}</div>
             <div class="floor_rooms">
               <div
@@ -67,7 +75,12 @@
           occupationArea: '#FD7474',
           transferOperationArea: '#4BD288'
         }, // 房间背景色映射
-        buildingList: []
+        buildingList: [], // 楼层列表数据
+        unit: undefined, // 单元名下的楼层编码
+        unitOptions: [
+          {title: '单元一', key: '101', floorId: 122},
+          {title: '单元一', key: '102', floorId: 132}
+        ] // 单元选项
       }
     },
 
