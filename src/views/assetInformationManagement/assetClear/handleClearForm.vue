@@ -529,6 +529,8 @@ export default {
             item.url = item.attachmentPath
             item.name = item.oldAttachmentName
           })
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },
@@ -546,6 +548,8 @@ export default {
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     }

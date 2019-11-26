@@ -401,3 +401,55 @@ export function getProjectTransferByProjectId (data) {
 export function queryProjectManageGeneralInfo (data) {
   return axiosGet(assets.projectManage.queryGeneralInfo, data)
 }
+
+// 权属人管理
+// 权属人管理-新建或编辑权属人
+export function saveOrUpdate (data) {
+  return axiosPost(assets.propertyOwnerManagement.saveOrUpdate, data, false, false)
+}
+// 权属人管理-权属人下拉列表
+export function select (data) {
+  return axiosGet(assets.propertyOwnerManagement.select, data)
+}
+// 权属人管理-权属人列表查询
+export function list (data) {
+  return axiosPost(assets.propertyOwnerManagement.list, data, true, false)
+}
+// 权属人管理-权属人删除
+export function ownerDelete (data) {
+  return axiosGet(assets.propertyOwnerManagement.ownerDelete, data)
+}
+// 权属人管理-权属人导入
+export function ownerExport (data) {
+  return axiosPost(assets.propertyOwnerManagement.ownerExport, data, false, false)
+}
+// 权属人管理-权属人导入模板下载
+export function download (data) {
+  return axiosGet(assets.propertyOwnerManagement.download, data)
+}
+// 权属人管理-权属人详情查询
+export function detail (data) {
+  return axiosGet(assets.propertyOwnerManagement.detail, data)
+}
+
+// 资产入账
+// 资产入账-新建资产入账
+export function insertCard (data) {
+  return axiosPost(assets.assetEntry.insertCard, data, false, false)
+}
+// 资产入账-更新资产入账
+export function updateCard (data) {
+  return axiosPost(assets.assetEntry.updateCard, data, false, false)
+}
+// 资产入账-资产入账分页查询
+export function queryCardPageList (data) {
+  return axiosPost(assets.assetEntry.queryCardPageList, data, true, false)
+}
+// 资产入账-资产入账状态操作
+export function updateCardStatus (data) {
+  return axiosPost(assets.assetEntry.updateCardStatus, data, false, false)
+}
+// 资产入账-资产入账详情
+export function queryCardDetail (data) {
+  return axiosPost(assets.assetEntry.queryCardDetail, data, false, false)
+}

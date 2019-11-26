@@ -5,7 +5,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
-        <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="icon-right"/>新建权属人</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newPropertyOwner">新建权属人</SG-Button>
       </div>
       <div slot="form">
         <topOrganByUser @change="organIdChange" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true"/>
@@ -34,76 +34,77 @@
       v-model="paginator.pageNo"
       @change="handlePageChange"
     />
+    <handle-property-owner ref="handlePropertyOwner" :modalType="modalType" :organId="organId" :organName="organName" :ownerId="ownerId"></handle-property-owner>
   </div>
 </template>
 
 <script>
-import segiIcon from '@/components/segiIcon.vue'
 import topOrganByUser from '@/views/common/topOrganByUser'
+import handlePropertyOwner from './handlePropertyOwner'
 
 const columns = [
   {
-    title: '分类编号',
-    dataIndex: 'professionId',
-    width: 160
-  },
-  {
     title: '所属机构',
     dataIndex: 'organName',
+    width: 160
+  },
+  {
+    title: '权属人名称',
+    dataIndex: 'obligeeName',
     width: 200
   },
   {
-    title: '资产类型',
-    dataIndex: 'assetTypeName',
+    title: '权属人类型',
+    dataIndex: 'obligeeTypeName',
     width: 160
   },
   {
-    title: '分类名称',
-    dataIndex: 'professionName',
+    title: '证件类型',
+    dataIndex: 'certificateTypeName',
     width: 160
   },
   {
-    title: '分类编码',
-    dataIndex: 'professionCode',
+    title: '证件号码',
+    dataIndex: 'certificateNo',
     width: 160
   },
   {
-    title: '计量单位',
-    dataIndex: 'unitName',
+    title: '通讯地址',
+    dataIndex: 'mailingAddress',
     width: 160
   },
   {
-    title: '净残值率(%)',
-    dataIndex: 'netSalvageRate',
+    title: '邮编',
+    dataIndex: 'postalCode',
     width: 160
   },
   {
-    title: '折旧方法',
-    dataIndex: 'depreciationMethodName',
-    width: 200
+    title: '法定代表',
+    dataIndex: 'legalAgent',
+    width: 160
   },
   {
-    title: '状态',
-    dataIndex: 'statusName',
-    width: 180,
-    scopedSlots: { customRender: 'statusName' },
+    title: '代理人（机构）',
+    dataIndex: 'agent',
+    width: 160
   },
   {
     title: '操作',
     dataIndex: 'operation',
-    width: 180,
-    scopedSlots: { customRender: 'operation' },
+    width: 200,
+    scopedSlots: { customRender: 'operation' }
   }
 ]
 
 export default {
   components: {
-    segiIcon, topOrganByUser
+    topOrganByUser, handlePropertyOwner
   },
   data () {
     return {
       allStyle: 'width: 150px; marginLeft: 10px;',
       organId: '',
+      organName: '',
       ownerName: '', // 权属人名称
       columns,
       dataSource: [],
@@ -112,10 +113,14 @@ export default {
         pageLength: 10,
         totalCount: 0
       },
+      modalType: 'new', // 弹窗类型
+      ownerId: '' // 权属人id
     }
   },
   methods: {
     organIdChange (value) {
+      console.log(value)
+      this.organName = value.name
       this.queryClick()
     },
     // 页码发生变化
@@ -128,6 +133,22 @@ export default {
     operationFun (editType, record) {
       console.log(editType)
       console.log(record)
+      switch (editType) {
+        case 'edit': this.modalType = 'edit'
+          this.ownerId = record.obligeeId
+          this.$refs.handlePropertyOwner.modal.show = true
+          break
+        case 'detail': this.modalType = 'detail'
+          this.ownerId = record.obligeeId
+          this.$refs.handlePropertyOwner.modal.show = true
+          break
+        case 'delete': break
+        default: return
+      }
+    },
+    newPropertyOwner () {
+      this.modalType = 'new'
+      this.$refs.handlePropertyOwner.modal.show = true
     },
     // 点击查询
     queryClick () {
@@ -136,6 +157,29 @@ export default {
     },
     // 查询列表
     queryList () {
+      let form = {
+        organId: this.organId,
+        obligeeName: this.ownerName,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
+      }
+      this.$api.assets.list(form).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data.data
+          data.forEach((item, index) => {
+            item.key = index
+            for (let key in item) {
+              if (item[key] === '') {
+                item[key] = '--'
+              }
+            }
+          })
+          this.dataSource = data
+          this.paginator.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     }
   }
 }

@@ -269,6 +269,36 @@ export const assets = {
     queryTransferStatistics: '/ams/project/getTransferByProjectId',
     // 资产项目-资产项目详情-资产概况
     queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
+  },
+  // 权属人管理
+  propertyOwnerManagement: {
+    // 新建或编辑权属人
+    saveOrUpdate: '/ams/ownerShipUser/saveOrUpdate',
+    // 权属人下拉列表
+    select: '/ams/ownerShipUser/select',
+    // 权属人列表查询
+    list: '/ams/ownerShipUser/list',
+    // 权属人删除
+    ownerDelete: '/ams/ownerShipUser/delete',
+    // 权属人导入
+    ownerExport: '/ams/ownerShipUser/export',
+    // 权属人导入模板下载
+    download: '/ams/ownerShipUser/download',
+    // 权属人详情查询
+    detail: '/ams/ownerShipUser/detail'
+  },
+  // 资产入账
+  assetEntry: {
+    // 新建资产入账
+    insertCard: '/ams/assetCard/insertCard',
+    // 更新资产入账
+    updateCard: '/ams/assetCard/updateCard',
+    // 资产入账分页查询
+    queryCardPageList: '/ams/assetCard/queryCardPageList',
+    // 资产入账状态操作
+    updateCardStatus: '/ams/assetCard/updateCardStatus',
+    // 资产入账详情
+    queryCardDetail: '/ams/assetCard/queryCardDetail'
   }
 }
 // 楼盘字典
