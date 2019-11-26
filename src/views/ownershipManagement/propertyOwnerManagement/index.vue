@@ -142,7 +142,25 @@ export default {
           this.ownerId = record.obligeeId
           this.$refs.handlePropertyOwner.modal.show = true
           break
-        case 'delete': break
+        case 'delete': let self = this
+          this.$confirm({
+            title: '提示',
+            content: '确认要删除该权属人吗？',
+            onOk() {
+              let form = {
+                objectId: record.obligeeId
+              }
+              self.$api.assets.ownerDelete(form).then(res => {
+                if (res.data.code === '0') {
+                  self.$message.success('删除成功')
+                  self.queryClick()
+                } else {
+                  self.$message.error(res.data.message)
+                }
+              })
+            }
+          })
+          break
         default: return
       }
     },
