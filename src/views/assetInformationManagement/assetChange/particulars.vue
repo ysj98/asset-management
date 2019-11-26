@@ -14,7 +14,7 @@
           <a-col class="playground-col" :span="8">当前状态：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">变动类型：{{particularsData.changeTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">变动日期：{{particularsData.changeDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">截止日期：{{particularsData.expiryDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="8" v-if="+changeType === 1 || +changeType === 2">截止日期：{{particularsData.expiryDate || '--'}}</a-col>
           <a-col class="playground-col" :span="8">交付单位：{{particularsData.deliveryCompany || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
