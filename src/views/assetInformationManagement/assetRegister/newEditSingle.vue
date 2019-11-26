@@ -542,7 +542,7 @@ export default {
             organId: this.organId,                      // 组织机构id
             createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
             assetHouseList: data,
-            attachment: files.length === 0 ? '' : files
+            attachment: files.length === 0 ? [] : files
           }
           console.log(obj)
           // 编辑
