@@ -41,10 +41,11 @@
         </div>
       </div>
     </SearchContainer>
-    <div class="table-layout-fixed" ref="table_box">
+    <div class="table-layout-fixed">
+      <!--  ref="table_box" -->
+      <!-- :scroll="scrollHeight" -->
       <a-table
         :loading="loading"
-        :scroll="scrollHeight"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
@@ -181,7 +182,7 @@ export default {
   props: {},
   data () {
     return {
-      scrollHeight: {y: 0},
+      // scrollHeight: {y: 0},
       loading: false,
       noPageTools: false,
       location: 'absolute',
@@ -401,20 +402,20 @@ export default {
       )
     },
     // 计算滚动条宽度
-    computedHeight () {
-      let elem = this.$refs.table_box
-      if (!elem) {
-        return
-      }
-      let height = utils.AdjustHeight(elem)
-      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
-      this.scrollHeight = {y: y - 70 - 40}
-      console.log(this.scrollHeight, '-=-=-=')
-    },
-    // 防抖函数
-    debounceMothed: debounce(function () {
-      this.computedHeight()
-    }, 200),
+    // computedHeight () {
+    //   let elem = this.$refs.table_box
+    //   if (!elem) {
+    //     return
+    //   }
+    //   let height = utils.AdjustHeight(elem)
+    //   let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
+    //   this.scrollHeight = {y: y - 70 - 40}
+    //   console.log(this.scrollHeight, '-=-=-=')
+    // },
+    // // 防抖函数
+    // debounceMothed: debounce(function () {
+    //   this.computedHeight()
+    // }, 200),
     // 查询
     query () {
       this.loading = true
@@ -458,10 +459,10 @@ export default {
   created () {
   },
   mounted () {
-    this.computedHeight()
-    window.addEventListener('resize', () => {
-      this.debounceMothed()
-    })
+    // this.computedHeight()
+    // window.addEventListener('resize', () => {
+    //   this.debounceMothed()
+    // })
     // 获取变动类型
     this.platformDictFn('asset_change_type')
     // 获取状态
@@ -481,6 +482,9 @@ export default {
   }
   .box-left {
     margin-left: 10px;
+  }
+  .custom-table {
+    padding-bottom: 60px;
   }
 }
 </style>

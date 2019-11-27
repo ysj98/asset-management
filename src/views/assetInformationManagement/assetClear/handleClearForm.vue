@@ -353,10 +353,6 @@ export default {
     },
     // 获取资产清理原因下拉列表
     getCleanupTypeOptions() {
-      // let form = {
-      //   dictCode: 'asset_cleanup_type',
-      //   groupId: this.organId
-      // }
       let form = {
         code: 'asset_cleanup_type'
       }
@@ -529,6 +525,8 @@ export default {
             item.url = item.attachmentPath
             item.name = item.oldAttachmentName
           })
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },
@@ -546,6 +544,8 @@ export default {
           })
           this.dataSource = data
           this.paginator.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     }

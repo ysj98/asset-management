@@ -349,10 +349,10 @@ export default {
         this.tableData = newData
       }
     },
-    // 平台字典获取变动类型
+    // 资产类型
     platformDictFn () {
       let obj = {
-        code: 'asset_change_type'
+        code: 'AMS_REGISTER_TYPE'
       }
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {

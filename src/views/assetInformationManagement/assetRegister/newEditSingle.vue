@@ -31,6 +31,7 @@
                   }]"
                 :allowClear="false"
                 :filterOption="filterOption"
+                @change="projectIdFn"
                 notFoundContent="没有查询到资产项目"
                 >
                 <a-select-option
@@ -65,7 +66,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col class="playground-col" :span="8">
+          <a-col class="playground-col" :span="8" v-if="+takeOver === 0">
             <a-form-item label="接管日期：" v-bind="formItemLayout">
               <a-date-picker
               :style="allWidth"
@@ -146,9 +147,23 @@
             资产类型：<a-radio v-for="(item, index) in checkboxData" :key="index" disabled :value="item.value">{{item.name}}</a-radio>
           </a-radio-group>
         </div>
-        楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" v-model="buildIds"  @search="handleSearch">
+        <!-- 楼栋名称：<a-select :maxTagCount="4" style="width: 300px" mode="multiple" placeholder="楼栋名称" v-model="buildIds"  @search="handleSearch">
           <a-select-option v-for="(item, index) in buildIdsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
+        </a-select> -->
+        楼栋名称：<a-select
+        style="width: 300px"
+        mode="multiple"
+        :maxTagCount="4"
+        showSearch
+        placeholder="请选择楼栋"
+        v-model="buildIds"
+        @search="handleSearch"
+        optionFilterProp="children"
+        :options="buildIdsData"
+        :allowClear="true"
+        :filterOption="false"
+        notFoundContent="没有查询到数据"
+        />
         <div class="modal-nav">
           <a-checkbox-group v-model="scope" @change="onChange">
             数据范围：<a-checkbox v-for="(item, index) in scopeData" :key="index" :value="item.value">{{item.name}}</a-checkbox>
@@ -232,6 +247,8 @@ export default {
   props: {},
   data () {
     return {
+      jupeProjectId: '',
+      takeOver: '',
       fileType: ['xls', 'xlsx'],
       formData: null,
       spinning: false,
@@ -283,6 +300,15 @@ export default {
   computed: {
   },
   methods: {
+    // 项目监听
+    projectIdFn (val) {
+      this.projectIdData.forEach(item => {
+        if (+val === +item.value) {
+          console.log(this.takeOver, '909090')
+          this.takeOver = item.takeOver
+        }
+      })
+    },
     // 添加资产
     addTheAsset () {
       this.$refs.fileUpload.click()
@@ -524,7 +550,7 @@ export default {
         if (res.data.code === '0') {
           let result = res.data.data || []
           this.buildIdsData = result.map(item => {
-            return {name: item.buildName, value: item.buildId}
+            return {name: item.buildName, value: item.buildId, label: item.buildName}
           })
         }
       })
@@ -556,6 +582,7 @@ export default {
               item.ownershipStatus = 2
             }
           })
+          console.log(values.createTime, '这是什么时间')
           let obj = {
             registerOrderId: this.registerOrderId,                         // 资产变动单Id（新增为空）
             registerOrderCode: values.registerOrderCode, // 登记单编号
@@ -563,7 +590,7 @@ export default {
             assetType: values.assetType,                 // 资产类型Id
             remark: values.remark,                       // 备注
             organId: this.organId,                      // 组织机构id
-            createTime: `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
+            createTime: values.createTime === undefined ? '' : `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
             assetHouseList: data,
             attachment: files.length === 0 ? [] : files
           }
@@ -614,11 +641,12 @@ export default {
       this.$api.assets.getRegisterOrderById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
+          this.jupeProjectId = data.projectId
           this.form.setFieldsValue({
             projectId: data.projectId,
             registerOrderCode: data.registerOrderCode,
             assetType: String(data.assetType),
-            createTime: moment(data.createTime, 'YYYY-MM-DD') || '',
+            createTime: data.createTime === '' ? '' : moment(data.createTime, 'YYYY-MM-DD'),
             remark: data.remark
           })
           let files = []
@@ -631,6 +659,9 @@ export default {
             })
           }
           this.newEditSingleData.files = files
+          this.$nextTick(() => {
+            this.projectIdFn(data.projectId)   // 主动调一下
+          })
         } else {
           this.$message.error(res.data.message)
         }
@@ -668,10 +699,14 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.projectName,
-              value: item.projectId
+              value: item.projectId,
+              takeOver: item.takeOver
             })
           })
           this.projectIdData = [...arr]
+          this.$nextTick(() => {
+            this.projectIdFn(this.jupeProjectId)   // 主动调一下
+          })
         } else {
           this.$message.error(res.data.message)
         }

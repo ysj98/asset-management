@@ -25,34 +25,35 @@
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
-    <div class="table-layout-fixed" ref="table_box">
-     <a-table
-      :loading="loading"
-      :scroll="scrollHeight"
-      :columns="columns"
-      :dataSource="tableData"
-      class="custom-table td-pd10"
-      :pagination="false"
-      >
-      <template slot="operation" slot-scope="text, record">
-        <div class="tab-opt">
-          <span @click="operationFn(record, 'particulars')">详情</span>
-          <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_EDIT">编辑</span>
-          <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_DELETE">删除</span>
-          <span v-if="+record.approvalStatus === 2" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_AUDIT">审核</span>
-          <span @click="operationFn(record, 'theAudit')" v-if="+record.approvalStatus === 1" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_REVERSE_AUDIT">反审核</span>
-        </div>
-      </template>
-    </a-table>
+    <div class="table-layout-fixed">
+      <!-- ref="table_box" -->
+      <!-- :scroll="scrollHeight" -->
+      <a-table
+        :loading="loading"
+        :columns="columns"
+        :dataSource="tableData"
+        class="custom-table td-pd10"
+        :pagination="false"
+        >
+        <template slot="operation" slot-scope="text, record">
+          <div class="tab-opt">
+            <span @click="operationFn(record, 'particulars')">详情</span>
+            <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_EDIT">编辑</span>
+            <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_DELETE">删除</span>
+            <span v-if="+record.approvalStatus === 2" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_AUDIT">审核</span>
+            <span @click="operationFn(record, 'theAudit')" v-if="+record.approvalStatus === 1" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_REVERSE_AUDIT">反审核</span>
+          </div>
+        </template>
+      </a-table>
+    </div>
     <SG-FooterPagination
       :pageLength="queryCondition.pageSize"
       :totalCount="count"
-      :location="location"
+      location="absolute"
       :noPageTools="noPageTools"
       v-model="queryCondition.pageNum"
       @change="handleChange"
     />
-    </div>
     <SG-Modal
       width="400px"
       v-model="commonShow"
@@ -138,7 +139,7 @@ export default {
   props: {},
   data () {
     return {
-      scrollHeight: {y: 0},
+      // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
       commonShow: false,
@@ -146,7 +147,6 @@ export default {
       judge: '',
       loading: false,
       noPageTools: false,
-      location: 'absolute',
       approvalStatusData: [...approvalStatusData],
       allStyle: 'width: 140px; margin-right: 10px;',
       columns,
@@ -345,20 +345,20 @@ export default {
       })
     },
     // 计算滚动条宽度
-    computedHeight () {
-      let elem = this.$refs.table_box
-      if (!elem) {
-        return
-      }
-      let height = utils.AdjustHeight(elem)
-      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
-      this.scrollHeight = {y: y - 70 - 40}
-      console.log(this.scrollHeight, '-=-=-=')
-    },
-    // 防抖函数
-    debounceMothed: debounce(function () {
-      this.computedHeight()
-    }, 200),
+    // computedHeight () {
+    //   let elem = this.$refs.table_box
+    //   if (!elem) {
+    //     return
+    //   }
+    //   let height = utils.AdjustHeight(elem)
+    //   let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
+    //   this.scrollHeight = {y: y - 70 - 40}
+    //   console.log(this.scrollHeight, '-=-=-=')
+    // },
+    // // 防抖函数
+    // debounceMothed: debounce(function () {
+    //   this.computedHeight()
+    // }, 200),
     // 查询
     query () {
       this.loading = true
@@ -396,13 +396,13 @@ export default {
         this.queryCondition.pageSize = 10
         this.query()
       }
-      // 每次进来获取页面高度
-      if (this.$route.path === '/assetRegister') {
-        this.computedHeight()
-        window.addEventListener('resize', () => {
-          this.debounceMothed()
-        })
-      }
+      // // 每次进来获取页面高度
+      // if (this.$route.path === '/assetRegister') {
+      //   this.computedHeight()
+      //   window.addEventListener('resize', () => {
+      //     this.debounceMothed()
+      //   })
+      // }
     }
   },
   // created () {
@@ -438,10 +438,10 @@ export default {
   //   next()
   // },
   mounted () {
-    this.computedHeight()
-    window.addEventListener('resize', () => {
-      this.debounceMothed()
-    })
+    // this.computedHeight()
+    // window.addEventListener('resize', () => {
+    //   this.debounceMothed()
+    // })
     // 获取状态
     // this.platformDictFn('approval_status_type')
     // 资产类型
@@ -461,6 +461,9 @@ export default {
       color: #0084FF;
       cursor: pointer;
     }
+  }
+  .custom-table {
+    padding-bottom: 60px;
   }
 }
 </style>

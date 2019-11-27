@@ -19,7 +19,7 @@ export const User = {
   // 获取用户数据
   getUserData: '/uhomecp-sso/v3/propertyUser/profile',
   // 获取菜单数据
-  menus: '/uhomecp-sso//v3/propertyUser/menus',
+  menus: '/uhomecp-sso/v3/propertyUser/menus',
   // 获取权限数据
   popedomCode: '/uhomecp-sso/v3/propertyUser/popedomCode',
 }
@@ -224,7 +224,9 @@ export const assets = {
     // 楼栋视图面积使用统计
     queryFloorArea: '/ams/asset-house/build/area',
     // 查询当前组织机构下所有的楼栋
-    queryBuildingByOrganId: '/ams//asset-house/organ/build'
+    queryBuildingByOrganId: '/ams/asset-house/organ/build',
+    // 查询楼栋下的单元-楼层关系
+    queryUnitByHouseId: '/ams/asset-house/build/unit'
   },
   // 房屋台账 - 资产视图
   assetView: {
@@ -282,6 +284,36 @@ export const assets = {
     shipDetail: '/ams/ownerShip/ship/detail',
     // 权属登记删除
     saveOrUpdate: '/ams/ownerShip/attr/saveOrUpdate',
+  },
+  // 权属人管理
+  propertyOwnerManagement: {
+    // 新建或编辑权属人
+    saveOrUpdate: '/ams/ownerShipUser/saveOrUpdate',
+    // 权属人下拉列表
+    select: '/ams/ownerShipUser/select',
+    // 权属人列表查询
+    list: '/ams/ownerShipUser/list',
+    // 权属人删除
+    ownerDelete: '/ams/ownerShipUser/delete',
+    // 权属人导入
+    ownerExport: '/ams/ownerShipUser/export',
+    // 权属人导入模板下载
+    download: '/ams/ownerShipUser/download',
+    // 权属人详情查询
+    detail: '/ams/ownerShipUser/detail'
+  },
+  // 资产入账
+  assetEntry: {
+    // 新建资产入账
+    insertCard: '/ams/assetCard/insertCard',
+    // 更新资产入账
+    updateCard: '/ams/assetCard/updateCard',
+    // 资产入账分页查询
+    queryCardPageList: '/ams/assetCard/queryCardPageList',
+    // 资产入账状态操作
+    updateCardStatus: '/ams/assetCard/updateCardStatus',
+    // 资产入账详情
+    queryCardDetail: '/ams/assetCard/queryCardDetail'
   }
 }
 // 楼盘字典

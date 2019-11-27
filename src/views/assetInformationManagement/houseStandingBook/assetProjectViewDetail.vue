@@ -20,11 +20,11 @@
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">来源方式：</span>
-          <span class="label-value">{{detail.sourceType || '--'}}</span>
+          <span class="label-value">{{detail.sourceTypeName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">来源渠道：</span>
-          <span class="label-value">{{detail.sourceChannelType || '--'}}</span>
+          <span class="label-value">{{detail.souceChannelType || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">是否接管：</span>
@@ -169,8 +169,8 @@ export default {
         organName: '',
         projectName: '',
         projectCode: '',
-        sourceType: '',
-        sourceChannelType: '',
+        sourceTypeName: '',
+        souceChannelType: '',
         takeOver: '',
         takeOverDate: '',
         remark: '',
