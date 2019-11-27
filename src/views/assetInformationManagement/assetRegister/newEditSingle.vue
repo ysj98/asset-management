@@ -646,9 +646,13 @@ export default {
             projectId: data.projectId,
             registerOrderCode: data.registerOrderCode,
             assetType: String(data.assetType),
-            takeOverDate: data.takeOverDate === '' ? '' : moment(data.takeOverDate, 'YYYY-MM-DD'),
             remark: data.remark
           })
+          if (data.takeOverDate) {
+            this.form.setFieldsValue({
+              takeOverDate: data.takeOverDate === '' ? '' : moment(data.takeOverDate, 'YYYY-MM-DD'),
+            })
+          }
           let files = []
           if (data.attachment && data.attachment.length > 0) {
               data.attachment.forEach(item => {
