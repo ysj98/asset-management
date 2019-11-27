@@ -260,7 +260,7 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.professionName,
-              value: item.categoryConfId
+              value: item.professionCode
             })
           })
           this.objectTypeData = []
@@ -271,8 +271,6 @@ export default {
             }
           ]
           this.objectTypeData = [...atr, ...arr]
-        } else {
-          this.$message.error(res.data.message)
         }
       })
     },

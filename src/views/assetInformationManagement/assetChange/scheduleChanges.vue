@@ -332,7 +332,7 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.professionName,
-              value: item.categoryConfId
+              value: item.professionCode
             })
           })
           this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]

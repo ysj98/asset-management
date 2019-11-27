@@ -148,7 +148,7 @@ export default {
       loading: false,
       noPageTools: false,
       approvalStatusData: [...approvalStatusData],
-      allStyle: 'width: 140px; margin-right: 10px;',
+      allStyle: 'width: 150px; margin-right: 10px;',
       columns,
       organName: '',
       organId: '',
