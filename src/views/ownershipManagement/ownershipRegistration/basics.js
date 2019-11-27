@@ -12,27 +12,28 @@ export const register = [{
   dataIndex: 'assetTypeName',
   width: '10%'
 }, {
+  title: '资产项目名称',
+  dataIndex: 'projectName',
+  width: '10%'
+}, {
   title: '所在位置',
   dataIndex: 'address',
   width: '10%'
 }, {
-  title: '分类',
-  dataIndex: 'assetCategoryName',
+  title: '面积',
+  dataIndex: 'assetArea',
   width: '10%'
 }, {
-  title: '用途',
-  dataIndex: 'assetUse',
-  width: '10%'
-}, {
-  title: '建筑面积(㎡)',
-  dataIndex: 'communityName',
-  width: '10%'
-}, {
-  title: '交付物业面积(㎡)',
+  title: '原权证号',
   dataIndex: 'transferArea',
   align: 'center',
   scopedSlots: { customRender: 'transferArea' }
-},  {
+}, {
+  title: '权证号',
+  dataIndex: 'warrantNbr',
+  align: 'center',
+  scopedSlots: { customRender: 'warrantNbr' }
+}, {
   title: '操作',
   dataIndex: 'operation',
   align: 'center',
@@ -49,27 +50,27 @@ export const cancellation = [{
   dataIndex: 'assetCode',
   width: '10%'
 }, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
+}, {
+  title: '资产项目名称',
+  dataIndex: 'projectName',
+  width: '10%'
+}, {
   title: '所在位置',
   dataIndex: 'address',
   width: '10%'
 }, {
-  title: '分类',
-  dataIndex: 'assetCategoryName',
+  title: '面积',
+  dataIndex: 'assetArea',
   width: '10%'
 }, {
-  title: '用途',
-  dataIndex: 'assetUse',
-  width: '10%'
-}, {
-  title: '建筑面积(㎡)',
-  dataIndex: 'communityName',
-  width: '10%'
-}, {
-  title: '交付运营面积(㎡)',
-  dataIndex: 'transferOperationArea',
+  title: '原权证号',
+  dataIndex: 'transferArea',
   align: 'center',
-  scopedSlots: { customRender: 'transferOperationArea' }
-},  {
+  scopedSlots: { customRender: 'transferArea' }
+}, {
   title: '操作',
   dataIndex: 'operation',
   align: 'center',

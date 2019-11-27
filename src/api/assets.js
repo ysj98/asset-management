@@ -429,6 +429,35 @@ export function saveOrUpdate (data) {
   return axiosPost(assets.ownershipRegistration.saveOrUpdate, data)
 }
 
+// 权属管理 - 权证管理
+// 权证导入
+export function warrantImport (data) {
+  return axiosGet(assets.authorityCardManagement.warrantImport, data)
+}
+// 权证导入模板下载
+export function warrantDownload (data) {
+  return axiosGet(assets.authorityCardManagement.warrantDownload, data)
+}
+// 权证导出
+export function warrantExport (data) {
+  return axiosGet(assets.authorityCardManagement.warrantExport, data)
+}
+// 权证新增或修改
+export function warrantSaveOrUpdate (data) {
+  return axiosGet(assets.authorityCardManagement.warrantSaveOrUpdate, data)
+}
+// 权证查询
+export function warrantList (data) {
+  return axiosGet(assets.authorityCardManagement.warrantList, data)
+}
+// 权证注销
+export function warrantDelete (data) {
+  return axiosGet(assets.authorityCardManagement.warrantDelete, data)
+}
+// 查询权证详情
+export function warrantDetail (data) {
+  return axiosGet(assets.authorityCardManagement.warrantDetail, data)
+}
 
 // 权属人管理
 // 权属人管理-新建或编辑权属人
