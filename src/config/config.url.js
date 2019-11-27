@@ -283,7 +283,23 @@ export const assets = {
     // 权属登记详情查询
     shipDetail: '/ams/ownerShip/ship/detail',
     // 权属登记删除
-    saveOrUpdate: '/ams/ownerShip/attr/saveOrUpdate',
+    saveOrUpdate: '/ams/ownerShip/ship/saveOrUpdate',
+  },
+  authorityCardManagement: {
+    // 权证导入
+    warrantImport: '/ams/ownerShipUser/warrant/import',
+    // 权证导入模板下载
+    warrantDownload: '/ams/ownerShipUser/warrant/download',
+    // 权证导出
+    warrantExport: '/ams/ownerShipUser/warrant/export',
+    // 权证新增或修改
+    warrantSaveOrUpdate: '/ams/ownerShipUser/warrant/saveOrUpdate',
+    // 权证查询
+    warrantList: '/ams/ownerShipUser/warrant/list',
+    // 权证注销
+    warrantDelete: '/ams/ownerShipUser/warrant/delete',
+    // 查询权证详情
+    warrantDetail: '/ams/ownerShipUser/warrant/detail',
   },
   // 权属人管理
   propertyOwnerManagement: {

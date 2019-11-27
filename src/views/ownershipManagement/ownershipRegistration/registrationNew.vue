@@ -13,8 +13,8 @@
               <a-input placeholder="请输入登记单名称"
               :style="allWidth"
               :max="10"
-              v-decorator="['title',
-                {rules: [{required: true, max: 60, whitespace: true, message: '请输入登记单名称(不超过50字符)'}], initialValue: newEditSingleData.title}
+              v-decorator="['registerName',
+                {rules: [{required: true, max: 60, whitespace: true, message: '请输入登记单名称(不超过50字符)'}], initialValue: newEditSingleData.registerName}
               ]"/>
             </a-form-item>
           </a-col>
@@ -49,9 +49,9 @@
                 showSearch
                 :style="allWidth"
                 placeholder="请选择登记类型"
-                v-decorator="['changeType',{
+                v-decorator="['registerType',{
                     rules: [{required: true, message: '请选择登记类型'}],
-                    initialValue: newEditSingleData.changeType
+                    initialValue: newEditSingleData.registerType
                   }]"
                 @change="changeTypeChange"
                 :allowClear="false"
@@ -147,9 +147,22 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
-            <!-- 交付运营 -->
-            <template v-if="changeType !== '3'" slot="transferOperationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.transferOperationArea"/>
+            <!-- 注销登记 -->
+            <template v-if="changeType !== '3'" slot="warrantNbr" slot-scope="text, record">
+              <a-select
+                style="width: 150px"
+                mode="multiple"
+                :maxTagCount="4"
+                showSearch
+                placeholder="请选择新权证号"
+                v-model="record.warrantNbr"
+                optionFilterProp="children"
+                :options="warrantNbrData"
+                :allowClear="true"
+                :filterOption="false"
+                notFoundContent="没有查询到数据"
+                />
+                <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="chooseWarrantsFn">选择权证</SG-Button></div>
             </template>
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -163,6 +176,8 @@
     </div>
     <!-- 选择资产 -->
     <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <!-- 选择权证 -->
+    <chooseWarrants :organId="organId" ref="chooseWarrants" @status="status"></chooseWarrants>
     <FormFooter>
       <div>
         <a-button type="primary" @click="save('save')">提交</a-button>
@@ -175,27 +190,28 @@
 
 <script>
 import AssetBundlePopover from '../../common/assetBundlePopover'
-import {deliveryProperty, deliveryOperation, changeDirectionUse, variationOriginalValue, positionChange, projectChange} from './basics'
+import chooseWarrants from '../../common/chooseWarrants'
+import {register, cancellation } from './basics'
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
+
 const newEditSingleData = {
-  title: '',   // 验收单名称
-  changeType: undefined,     // 登记类型
-  projectId: undefined,     // 资产项目
-  deliveryCompany: '',    // 交付单位
-  changeDate: {},       // 变动日期
-  expiryDate: {},        // 截止日期
-  remark: '',          // 备注
-  assetType: undefined,
+  registerName: '',          // 登记单名称
+  remark: '',                // 备注
+  ownershipHandleId: '',     // 权属办理任务ID
+  registerType: undefined,   // 登记类型
+  assetType: undefined,      // 资产类型
+  projectId: undefined,      // 资产项目
   files: [],
   organId: ''
 }
 export default {
-  components: {AssetBundlePopover, FormFooter},
+  components: {AssetBundlePopover, chooseWarrants, FormFooter},
   props: {},
   data () {
     return {
-      changeOrderId: '',
+      warrantNbrData: [],
+      registerId: '',
       organId: '',
       enitData: '',
       changeType: '',          // 用来判断对象登记类型
@@ -235,8 +251,10 @@ export default {
     'changeType' (val) {
       this.checkedData = []
       this.tableData = []
-      if (val === '3') {
-        this.columns = deliveryProperty
+      if (val === '3') {    // 注销登记
+        this.columns = cancellation
+      } else {     // // 首次登记 变更登记
+        this.columns = register
       }
     }
   },
@@ -263,6 +281,11 @@ export default {
       } else {
         this.$message.info('请先选择登记类型')
       }
+    },
+    // 选择资产权证
+    chooseWarrantsFn () {
+      this.$refs.chooseWarrants.redactCheckedDataFn(this.checkedData, this.tableData)
+      this.$refs.chooseWarrants.show = true
     },
     // 登记类型
     changeTypeChange (val) {
@@ -307,20 +330,6 @@ export default {
         this.tableData = newData
       }
     },
-    // 登记类型
-    // platformDictFn () {
-    //   let obj = {
-    //     code: 'AMS_REGISTER_TYPE'
-    //   }
-    //   this.$api.assets.platformDict(obj).then(res => {
-    //     if (Number(res.data.code) === 0) {
-    //       let data = res.data.data
-    //       this.changeTypeData = [...data]
-    //     } else {
-    //       this.$message.error(res.data.message)
-    //     }
-    //   })
-    // },
     platformDictFn () {
       Promise.all([this.$api.assets.platformDict({code: 'AMS_REGISTER_TYPE'}), this.$api.assets.platformDict({code: 'asset_type'})]).then(res => {
         // 登记类型
@@ -362,7 +371,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           if (this.tableData.length <= 0) {
-            this.$message.info('请选择变动资产')
+            this.$message.info('请选择权属登记详情')
             return
           }
           let files = []
@@ -376,85 +385,38 @@ export default {
           }
           let arr = []
           for (let i = 0; i < this.tableData.length; i++) {
-            if (String(this.changeType) === '1') {
+            if (String(this.changeType) !== '3') {
               if (!this.tableData[i].transferOperationArea) {
-                this.$message.info('请输入交付运营面积')
-                return
-              }
-            } else if (String(this.changeType) === '2') {
-              if (!this.tableData[i].transferArea) {
-                this.$message.info('请输入交付物业面积')
-                return
-              }
-            } else if (String(this.changeType) === '3') {
-              if (!this.tableData[i].newOriginalValue) {
-                this.$message.info('请输入变动后原值')
-                return
-              }
-            } else if (String(this.changeType) === '4') {
-              if (!this.tableData[i].operationArea) {
-                this.$message.info('请输入运营面积')
-                return
-              } else if (!this.tableData[i].selfUserArea) {
-                this.$message.info('请输入自用面积')
-                return
-              } else if (!this.tableData[i].idleArea) {
-                this.$message.info('请输入闲置面积')
-                return
-              } else if (!this.tableData[i].occupationArea) {
-                this.$message.info('请输入占用面积')
-                return
-              } else if (!this.tableData[i].otherArea) {
-                this.$message.info('请输入其他面积')
-                return
-              }
-            } else if (String(this.changeType) === '5') {
-              if (!this.tableData[i].addressName) {
-                this.$message.info('请输入变动后位置')
-                return
-              }
-            } else if (String(this.changeType) === '6') {
-              if (!this.tableData[i].changeProjectId) {
-                this.$message.info('请选择变动后资产项目')
+                this.$message.info('请选择新权证号')
                 return
               }
             }
           }
           this.tableData.forEach(item => {
             arr.push({
-              assetId: item.assetId,
               projectId: Number(item.projectId),        // 资产项目Id
-              changeProjectId: Number(item.changeProjectId),
-              assetType: item.assetType,                       // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
+              organId: this.organId,
+              assetType: item.assetType,                // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
+              warrantNbr: item.warrantNbr,
               assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
-              address: item.addressName,              // 变动位置
-              transferArea: item.transferArea,    // 交付物业面积-交付物业变动
-              transferOperationArea: item.transferOperationArea,   // 交付运营面积-交付运营变动
-              operationArea: item.operationArea,  // 运营面积-使用方向变动
-              idleArea: item.idleArea,            // 闲置面积
-              selfUserArea: item.selfUserArea,    // 自用面积
-              occupationArea: item.occupationArea, // 占用面积
-              otherArea: item.otherArea,          // 其他面积
-              originalValue: item.newOriginalValue   // 资产原值
             })
           })
           let obj = {
-            saveType: str === 'draft' ? 0 : 1,
-            changeOrderId: this.changeOrderId,                          // 资产变动单Id（新增为空）
-            title: values.title,                                        // 标题
-            projectId: Number(values.projectId),                        // 资产项目Id
-            changeType: values.changeType,                              // 登记类型Id
-            deliveryCompany: values.deliveryCompany,                    // 交付单位
+            registerName: values.registerName,                          // 登记单名称
             remark: values.remark,                                      // 备注
+            ownershipHandleId: '',                                      // 权属办理任务ID
+            registerType: values.registerType,                          // 登记类型Id
+            assetType: values.assetType,                                // 资产类型
+            projectId: Number(values.projectId),                        // 资产项目Id
             organId: Number(values.organId),                            // 组织机构id
-            changeDate: `${values.changeDate.format('YYYY-MM-DD')}`,    // 变动日期
-            expiryDate: values.expiryDate === undefined ? '' : `${values.expiryDate.format('YYYY-MM-DD')}`,    // 截止日期
+            approvalStatus: str === 'draft' ? 0 : 1,                    // 0:草稿 1:已审核
+            registerId: this.registerId,                                // 权属登记Id(空为新增，不为空为编辑)
             attachment: files,                                         // 附件
-            assetDetailList: arr
+            ownershipRegisterDetailList: arr
           }
           console.log(obj)
           let loadingName = this.SG_Loding('保存中...')
-          this.$api.assets.submitChange(obj).then(res => {
+          this.$api.assets.saveOrUpdate(obj).then(res => {
             if (Number(res.data.code) === 0) {
               this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success('提交成功')
@@ -476,7 +438,7 @@ export default {
     // 编辑获取接口
     editFn () {
       let obj = {
-        changeOrderId: this.changeOrderId
+        registerId: this.registerId
       }
       this.$api.assets.getChangeInfo(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -531,7 +493,7 @@ export default {
     this.platformDictFn()
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
-      this.changeOrderId = this.enitData[0].changeOrderId
+      this.registerId = this.enitData[0].registerId
       this.editFn()
     } else {
       this.form.setFieldsValue({

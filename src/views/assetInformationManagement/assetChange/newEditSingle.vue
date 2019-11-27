@@ -235,7 +235,7 @@ import {deliveryProperty, deliveryOperation, changeDirectionUse, variationOrigin
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
 const newEditSingleData = {
-  title: '',   // 验收单名称
+  title: '',   // 登记单名称
   changeType: undefined,     // 变动类型
   projectId: undefined,     // 资产项目
   deliveryCompany: '',    // 交付单位
