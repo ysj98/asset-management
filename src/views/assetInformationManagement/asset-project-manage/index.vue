@@ -139,7 +139,7 @@
         approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
           {key: -1, title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
-          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '待审批'}
+          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
         ], // 查询条件-项目状态选项
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项
