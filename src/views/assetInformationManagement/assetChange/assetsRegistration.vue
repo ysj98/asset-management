@@ -25,9 +25,10 @@
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
-    <div class="table-layout-fixed" ref="table_box">
+    <div class="table-layout-fixed">
+      <!--  ref="table_box" -->
+      <!-- :scroll="scrollHeight" -->
      <a-table
-      :scroll="scrollHeight"
       :loading="loading"
       :columns="columns"
       :dataSource="tableData"
@@ -147,7 +148,7 @@ export default {
   props: {},
   data () {
     return {
-      scrollHeight: {y: 0},
+      // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
       commonShow: false,
@@ -363,21 +364,21 @@ export default {
       this.queryCondition.pageSize = data.pageLength
       this.query()
     },
-    // 计算滚动条宽度
-    computedHeight () {
-      let elem = this.$refs.table_box
-      if (!elem) {
-        return
-      }
-      let height = utils.AdjustHeight(elem)
-      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
-      this.scrollHeight = {y: y - 70 - 40}
-      console.log(this.scrollHeight, '-=-=-=')
-    },
-    // 防抖函数
-    debounceMothed: debounce(function () {
-      this.computedHeight()
-    }, 200),
+    // // 计算滚动条宽度
+    // computedHeight () {
+    //   let elem = this.$refs.table_box
+    //   if (!elem) {
+    //     return
+    //   }
+    //   let height = utils.AdjustHeight(elem)
+    //   let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
+    //   this.scrollHeight = {y: y - 70 - 40}
+    //   console.log(this.scrollHeight, '-=-=-=')
+    // },
+    // // 防抖函数
+    // debounceMothed: debounce(function () {
+    //   this.computedHeight()
+    // }, 200),
     // 查询
     query () {
       this.loading = true
@@ -420,13 +421,13 @@ export default {
       this.queryCondition.pageSize = 10
         this.query()
       }
-      // 每次进来获取页面高度
-      if (this.$route.path === '/assetChange') {
-        this.computedHeight()
-        window.addEventListener('resize', () => {
-          this.debounceMothed()
-        })
-      }
+      // // 每次进来获取页面高度
+      // if (this.$route.path === '/assetChange') {
+      //   this.computedHeight()
+      //   window.addEventListener('resize', () => {
+      //     this.debounceMothed()
+      //   })
+      // }
     }
   },
   // created () {
@@ -446,10 +447,10 @@ export default {
   //   }
   // },
   mounted () {
-    this.computedHeight()
-    window.addEventListener('resize', () => {
-      this.debounceMothed()
-    })
+    // this.computedHeight()
+    // window.addEventListener('resize', () => {
+    //   this.debounceMothed()
+    // })
     // 获取变动类型
     this.platformDictFn('asset_change_type')
     // 获取状态
@@ -469,6 +470,9 @@ export default {
       color: #0084FF;
       cursor: pointer;
     }
+  }
+  .custom-table {
+    padding-bottom: 60px;
   }
 }
 </style>
