@@ -223,7 +223,10 @@ export default {
       this.$api.assets.projectDetailsById(form).then(res => {
         if (res.data.code === '0') {
           this.detail = res.data.data
-          this.detail.attachment = []
+          this.detail.attachment.forEach(item => {
+            item.url = item.attachmentPath
+            item.name = item.oldAttachmentName
+          })
         } else {
           this.$message.error(res.data.message)
         }
