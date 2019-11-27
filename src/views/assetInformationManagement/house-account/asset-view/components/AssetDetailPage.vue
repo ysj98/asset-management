@@ -1,9 +1,9 @@
 <!--资产视图业务-资产视图详情页面-->
 <template>
   <div class="asset_view">
-    <SG-Button icon="rollback" style="position: absolute; top: 10px; right: 30px; z-index: 999" @click="$router.back()">
-      返回
-    </SG-Button>
+    <!--<SG-Button icon="rollback" style="position: absolute; top: 10px; right: 30px; z-index: 999" @click="$router.back()">-->
+      <!--返回-->
+    <!--</SG-Button>-->
     <!--基础信息部分-->
     <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId"/>
     <!--其它信息部分-->

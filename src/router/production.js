@@ -110,26 +110,6 @@ let proRouter = [
     name: '详情',
     component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
   },
-  // {
-  //   path: '/assetView',
-  //   name: '资产视图',
-  //   component: () => import('@/views/assetInformationManagement/house-account/asset-view')
-  // },
-  {
-    path: '/assetViewDetail',
-    name: '资产视图详情',
-    component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
-  },
-  // {
-  //   path: '/buildingView',
-  //   name: '楼栋视图',
-  //   component: () => import('@/views/assetInformationManagement/house-account/building-view')
-  // },
-  {
-    path: '/buildingViewDetail',
-    name: '楼栋视图详情',
-    component: () => import('@/views/assetInformationManagement/house-account/building-view/components/BuildingDetailPage')
-  },
   {
     path: '/assetProjectManage',
     name: '资产项目管理',
@@ -139,7 +119,7 @@ let proRouter = [
     }
   },
   {
-    path: '/assetProjectDetail',
+    path: '/assetProjectManage/assetProjectDetail',
     name: '资产项目管理详情',
     component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
   },
@@ -155,6 +135,26 @@ let proRouter = [
     path: '/houseStandingBook/assetProjectViewDetail',
     name: '资产项目视图详情',
     component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail.vue')
+  },
+  // {
+  //   path: '/assetView',
+  //   name: '资产视图',
+  //   component: () => import('@/views/assetInformationManagement/house-account/asset-view')
+  // },
+  {
+    path: '/houseStandingBook/assetViewDetail',
+    name: '资产视图详情',
+    component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
+  },
+  // {
+  //   path: '/buildingView',
+  //   name: '楼栋视图',
+  //   component: () => import('@/views/assetInformationManagement/house-account/building-view')
+  // },
+  {
+    path: '/houseStandingBook/buildingViewDetail',
+    name: '楼栋视图详情',
+    component: () => import('@/views/assetInformationManagement/house-account/building-view/components/BuildingDetailPage')
   },
   {
     path: '/propertyOwnerManagement',
@@ -185,5 +185,13 @@ let proRouter = [
       keepAlive: true
     }
   },
+  {
+    path: '/ownershipSurvey',
+    name: '权属概况',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  }
 ]
 export default proRouter

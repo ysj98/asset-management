@@ -4,7 +4,7 @@
  * @Description: 
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { basics } from '../config/config.url'
+import { basics, ownershipSurvey } from '../config/config.url'
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -67,4 +67,28 @@ export function platformDict (data) {
 // 机构字典
 export function organDict (data) {
   return axiosGet(basics.organDict, data)
+}
+// 资产项目权属列表查询
+export function ownerShipList (data) {
+  return axiosPost(ownershipSurvey.ownerShipList, data)
+}
+// 资产项目权属详情列表信息
+export function attrList (data) {
+  return axiosPost(ownershipSurvey.attrList, data)
+}
+// 资产项目权属详情基本信息
+export function attrBase (data) {
+  return axiosGet(ownershipSurvey.attrBase, data)
+}
+// 权属登记
+export function attrSet (data) {
+  return axiosPost(ownershipSurvey.attrSet, data)
+}
+// 资产权属列表
+export function assetList (data) {
+  return axiosPost(ownershipSurvey.assetList, data)
+}
+// 资产权属详情
+export function assetDetail (data) {
+  return axiosGet(ownershipSurvey.assetDetail, data)
 }

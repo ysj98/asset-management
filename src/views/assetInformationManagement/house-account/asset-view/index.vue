@@ -68,7 +68,7 @@
         <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
       <!--</span>-->
       <span slot="action" slot-scope="text, record">
-        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
+        <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -141,7 +141,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
             { title: '财务卡片编码', dataIndex: 'financialCode', key: 'financialCode' },
             { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
+            { title: '最新估值(元)', dataIndex: 'marketValue', key: 'marketValue' },
             { title: '资产状态', dataIndex: 'statusName', key: 'statusName' },
             { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]

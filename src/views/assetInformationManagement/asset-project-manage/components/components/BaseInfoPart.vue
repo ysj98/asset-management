@@ -1,9 +1,9 @@
 <!--资产项目管理业务-资产项目管理详情页面-基础信息组件-->
 <template>
   <a-spin :spinning="spinning">
-  <a-form :class="['detail_info', isEdit ? '' : 'disabled_form']" :form="form" layout="horizontal">
+  <a-form :class="['detail_info', isEdit ? '' : 'disabled_form']" :form="form" :layout="layout">
     <SG-Title title="基础信息" noMargin/>
-    <div>
+    <div :class="{'title_div': !type || type == 'approval'}">
       <a-row>
         <a-col :span="colSpan">
           <a-form-item label="管理机构" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -61,8 +61,8 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="colSpan === 12 ? 24 : 21">
-          <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : 3}" :wrapper-col="{span: colSpan === 12 ? 19 : 21}">
+        <a-col :span="24">
+          <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : ''}" :wrapper-col="{span: colSpan === 12 ? 19 : ''}">
             <SG-UploadFile
               v-if="isEdit || attachment.length"
               :show="!isEdit"
@@ -74,7 +74,7 @@
       </a-row>
     </div>
     <SG-Title title="其他信息" noMargin/>
-    <div>
+    <div :class="{'title_div': !type || type == 'approval'}">
       <a-row>
         <a-col :span="colSpan">
           <a-form-item label="划转批复下发时间" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -162,6 +162,7 @@
   data () {
     return {
       colSpan: 8,
+      layout: 'horizontal',
       isEdit: false, // 是否可编辑
       labelCol: {span: 8},
       wrapperCol: {span: 16},
@@ -246,10 +247,10 @@
           })
           // 转换日期格式为moment
           let formData = {
-            ownershipHandleProblems: ownershipHandleProblems || '无',
-            houseTransferHisProblem: houseTransferHisProblem || '无',
+            ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : '',
+            houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : '',
             sourceType: type === 'show' ? sourceTypeName : String(sourceType),
-            projectName, souceChannelType, projectCode, remark: remark || '',
+            projectName, souceChannelType, projectCode, remark: type === 'show' ? (remark || '无') : '',
             agreementSignDate: agreementSignDate ? moment(agreementSignDate, 'YYYY-MM-DD') : null,
             reportBasicInfoDate: reportBasicInfoDate ? moment(reportBasicInfoDate || null, 'YYYY-MM-DD') : null,
             transferApprovalDate: transferApprovalDate ? moment(transferApprovalDate || null, 'YYYY-MM-DD') : null,
@@ -284,8 +285,11 @@
         }
       } else {
         Object.assign(this, {
-          colSpan: 12,
+          colSpan: type == 'approval' ? 12 : 8,
+          labelCol: type == 'approval' ? {span: 8} : {},
+          wrapperCol: type == 'approval' ? {span: 16} : {},
           isEdit: false,
+          layout: type == 'approval' ? 'horizontal' : 'inline',
           initialValue: '无'
         })
         this.queryDetail('show')
@@ -314,6 +318,9 @@
       margin-bottom: 8px !important;
       textarea.ant-input-disabled {
         margin-top: 5px;
+      }
+      .ant-form-item-required:before {
+        content: none;
       }
       .ant-input:disabled {
         border: none;

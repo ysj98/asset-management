@@ -6,16 +6,16 @@
       <div class="title_div" style="margin-top: 20px">
         <overview-number :numList="numList" style="margin-bottom: 12px"/>
         <!--楼层数据-->
-        <a-row style="padding: 3px 0 15px" v-if="unit">
+        <a-row style="padding: 3px 0 15px" v-if="buildingList.length || unitOptions.length">
           <a-col :span="12">
             <span style="line-height: 32px; font-weight: bold; color: #49505E; font-size: 14px">楼栋列表</span>
           </a-col>
-          <a-col :span="12" style="text-align: right">
-            <a-select v-model="unit" style="width: 200px" placeholder="单元选择" :options="unitOptions"/>
+          <a-col :span="12" style="text-align: right" v-if="unitOptions.length">
+            <a-select v-model="unitId" style="width: 200px" placeholder="单元选择" :options="unitOptions"/>
           </a-col>
         </a-row>
-        <div class="building_style" v-if="unit">
-          <div class="floor_style" v-for="floor in buildingList.filter(m => (unit || '').indexOf(m.floorNum) !== -1)" :key="floor.floorName">
+        <div class="building_style" v-if="buildingList.length">
+          <div class="floor_style" v-for="floor in buildingList" :key="floor.floorName">
             <div class="floor_num">{{floor.floorName}}</div>
             <div class="floor_rooms">
               <div
@@ -76,7 +76,7 @@
           transferOperationArea: '#4BD288'
         }, // 房间背景色映射
         buildingList: [], // 楼层列表数据
-        unit: undefined, // 单元名下的楼层编码
+        unitId: undefined, // 单元名下的楼层编码
         unitOptions: [] // 单元选项
       }
     },
@@ -107,7 +107,7 @@
         let _this = this
         clearTimeout(_this.timeoutId)
         if (!bool) {
-          // 鼠标移出立即隐藏
+          // 鼠标移出立即隐藏浮窗
           return _this.isShowFloatView = false
         }
         _this.timeoutId = setTimeout(() => {
@@ -125,7 +125,7 @@
         let _this = this
         clearTimeout(_this.timeoutId)
         if (bool) {
-          // 鼠标移出立即显示
+          // 鼠标移入浮窗立即设置true
           return _this.isShowFloatView = true
         }
         _this.timeoutId = setTimeout(() => {
@@ -157,7 +157,8 @@
       // 楼层信息查询
       queryFloorInfo () {
         this.spinning = true
-        this.$api.assets.queryBuildingViewFloorInfo({assetHouseId: this.houseId, organId: this.organId}).then(r => {
+        const { unitId, houseId: assetHouseId, organId } = this
+        this.$api.assets.queryBuildingViewFloorInfo({assetHouseId, organId, unitId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -178,9 +179,11 @@
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            return this.unitOptions = (res.data || []).map(n => {
-              return { title: n.unitName, key: String(n.floorNumList) }
+            this.unitOptions = (res.data || []).map((n, i) => {
+              i === 0 && (this.unitId = n.unitId) // 默认查询第一条
+              return { title: n.unitName, key: n.unitId }
             })
+            return this.queryFloorInfo()
           }
           throw res.message || '查询楼层信息出错'
         }).catch(err => {
@@ -192,7 +195,6 @@
 
     mounted () {
       this.queryUnit()
-      this.queryFloorInfo()
       this.queryHouseAreaInfo()
     }
   }
