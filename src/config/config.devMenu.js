@@ -54,6 +54,10 @@ export default [
         path: '/ownershipRegistration'
       },
       {
+        title: '权证管理',
+        path: '/authorityCardManagement'
+      },
+      {
         title: '权属概况',
         path: '/ownershipSurvey'
       }
