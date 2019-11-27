@@ -68,7 +68,7 @@
         <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
       <!--</span>-->
       <span slot="action" slot-scope="text, record">
-        <router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
+        <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>

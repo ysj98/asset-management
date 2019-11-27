@@ -92,7 +92,7 @@
       // 查看楼栋视图详情
       handleViewDetail (assetHouseId) {
         const { organProjectBuildingValue: { organId } } = this
-        assetHouseId && this.$router.push({ path: '/buildingViewDetail', query: {organId, assetHouseId }})
+        assetHouseId && this.$router.push({ path: '/houseStandingBook/buildingViewDetail', query: {organId, assetHouseId }})
       },
 
       // 查询列表数据
