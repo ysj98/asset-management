@@ -141,7 +141,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
             { title: '财务卡片编码', dataIndex: 'financialCode', key: 'financialCode' },
             { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
+            { title: '最新估值(元)', dataIndex: 'marketValue', key: 'marketValue' },
             { title: '资产状态', dataIndex: 'statusName', key: 'statusName' },
             { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]

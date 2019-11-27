@@ -80,7 +80,7 @@
             { title: '占用(㎡)', dataIndex: 'occupationArea', key: 'occupationArea' },
             { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
             { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'assetValuation', key: 'assetValuation' },
+            { title: '最新估值(元)', dataIndex: 'marketValue', key: 'marketValue' },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]
         },

@@ -139,7 +139,7 @@ let proRouter = [
     }
   },
   {
-    path: '/assetProjectDetail',
+    path: '/assetProjectManage/assetProjectDetail',
     name: '资产项目管理详情',
     component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
   },
