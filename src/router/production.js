@@ -175,10 +175,7 @@ let proRouter = [
   {
     path: '/ownershipRegistration/registrationNew',
     name: '新建登记申请',
-    component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationNew.vue'),
-    meta: {
-      keepAlive: true
-    }
+    component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationNew.vue')
   },
   {
     path: '/assetEntry',

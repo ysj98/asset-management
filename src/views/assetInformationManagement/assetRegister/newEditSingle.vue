@@ -413,9 +413,9 @@ export default {
               }
             }
             arrData[i].key = i
-            arrData[i].coveredArea = arrData[i].coveredArea ? arrData[i].coveredArea : 0
+            arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
-            this.assetsCount[1].value = calc.add(this.assetsCount[1].value, arrData[i].coveredArea || 0)
+            this.assetsCount[1].value = calc.add(this.assetsCount[1].value, arrData[i].area || 0)
             this.assetsCount[2].value = calc.add(this.assetsCount[2].value, arrData[i].originalValue || 0)
             this.assetsCount[3].value = calc.add(this.assetsCount[3].value, arrData[i].marketValue || 0)
           }

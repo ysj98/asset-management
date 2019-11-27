@@ -28,7 +28,7 @@
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
         <div class="from-second">
-          <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+          <a-checkbox :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
         </div>
       </div>
     </SearchContainer>
@@ -146,7 +146,7 @@ const queryCondition =  {
     maxDate: '',         // 结束日期
     pageNum: 1,          // 第几页
     pageSize: 10,        // 每页显示记录数
-    isCurrent: false     // 备注：仅当前机构下资产清理单 0 否 1 是
+    flag: false     // 备注：仅当前机构下资产清理单 0 否 1 是
   }
 export default {
   components: {SearchContainer, TreeSelect, segiIcon},
@@ -207,7 +207,7 @@ export default {
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
-      this.queryCondition.isCurrent = e.target.checked
+      this.queryCondition.flag = e.target.checked
     },
     // 高级搜索控制
     searchContainerFn (val) {
@@ -332,7 +332,7 @@ export default {
         approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         minDate: moment(this.alterationDate[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
         maxDate: moment(this.alterationDate[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
-        isCurrent: this.queryCondition.isCurrent,   // 仅当前机构下资产清理单 0 否 1 是
+        flag: this.queryCondition.flag ? 1 : 0,   // 仅当前机构下资产清理单 0 否 1 是
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
       }

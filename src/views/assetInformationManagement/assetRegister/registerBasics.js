@@ -22,7 +22,7 @@ export const columnsData = [
   },
   {
     title: '建筑面积',
-    dataIndex: 'coveredArea',
+    dataIndex: 'area',
     width: 100
   },
   {
@@ -145,7 +145,7 @@ export const particulars = [
   },
   {
     title: '建筑面积',
-    dataIndex: 'coveredArea',
+    dataIndex: 'area',
     width: 100
   },
   {
@@ -327,7 +327,7 @@ export const judgmentData = [
   },
   {
     title: '建筑面积',
-    dataIndex: 'coveredArea',
+    dataIndex: 'area',
     required: false,
     type: 'number'
   },

@@ -43,20 +43,20 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="变动类型：" v-bind="formItemLayout">
+            <a-form-item label="登记类型：" v-bind="formItemLayout">
               <a-select
                 :disabled="setType === 'edit'"
                 showSearch
                 :style="allWidth"
-                placeholder="请选择变动类型"
+                placeholder="请选择登记类型"
                 v-decorator="['changeType',{
-                    rules: [{required: true, message: '请选择变动类型'}],
+                    rules: [{required: true, message: '请选择登记类型'}],
                     initialValue: newEditSingleData.changeType
                   }]"
                 @change="changeTypeChange"
                 :allowClear="false"
                 :filterOption="filterOption"
-                notFoundContent="没有查询到变动类型"
+                notFoundContent="没有查询到登记类型"
                 >
                 <a-select-option
                   v-for="(item) in changeTypeData"
@@ -92,24 +92,27 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="交付单位：" v-bind="formItemLayout">
-              <a-input placeholder="请输入交付单位"
-              :style="allWidth"
-              :max="10"
-              v-decorator="['deliveryCompany',
-                {rules: [{required: false, max: 50, whitespace: true, message: '请输入交付单位(不超过50字符)'}], initialValue: newEditSingleData.deliveryCompany}
-              ]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="8" v-if="+changeType === 1 || +changeType === 2">
-            <a-form-item label="截止日期：" v-bind="formItemLayout">
-              <a-date-picker
-              :style="allWidth"
-              placeholder="请选择截止日期："
-              v-decorator="['expiryDate',
-                {rules: [{required: false, message: '请选择截止日期：'}]}
-              ]"
-              />
+            <a-form-item label="资产类型：" v-bind="formItemLayout">
+              <a-select
+                :disabled="setType === 'edit'"
+                showSearch
+                :style="allWidth"
+                placeholder="请选择资产类型"
+                v-decorator="['assetType',{
+                    rules: [{required: true, message: '请选择资产类型'}],
+                    initialValue: newEditSingleData.assetType
+                  }]"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到资产类型"
+                >
+                <a-select-option
+                  v-for="(item) in assetTypeData"
+                  :key="item.value"
+                  :value='item.value'>
+                  {{item.name}}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
@@ -134,7 +137,7 @@
         </a-form>
       </a-row>
       <div class="tab-nav">
-        <span class="section-title blue">资产列表</span>
+        <span class="section-title blue">权属登记详情</span>
         <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
         <div class="table-layout-fixed table-border" v-if="columns.length !== 0">
           <a-table
@@ -145,45 +148,8 @@
             :pagination="false"
             >
             <!-- 交付运营 -->
-            <template v-if="changeType === '1'" slot="transferOperationArea" slot-scope="text, record">
+            <template v-if="changeType !== '3'" slot="transferOperationArea" slot-scope="text, record">
               <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.transferOperationArea"/>
-            </template>
-            <!-- 交付物业 -->
-            <template v-if="changeType === '2'" slot="transferArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.transferArea"/>
-            </template>
-            <!-- 使用方向变动 -->
-            <template v-if="changeType === '4'" slot="operationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.operationArea"/>
-            </template>
-            <template v-if="changeType === '4'" slot="selfUserArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.selfUserArea"/>
-            </template>
-            <template v-if="changeType === '4'" slot="idleArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.idleArea"/>
-            </template>
-            <template v-if="changeType === '4'" slot="occupationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.occupationArea"/>
-            </template>
-            <template v-if="changeType === '4'" slot="otherArea" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.otherArea"/>
-            </template>
-            <!-- 原值变动 -->
-            <template v-if="changeType === '3'" slot="newOriginalValue" slot-scope="text, record">
-              <a-input-number size="small" :min="1" :step="1.00" :precision="2" v-model="record.newOriginalValue"/>
-            </template>
-            <!-- 位置变动 -->
-            <template v-if="changeType === '5'" slot="addressName" slot-scope="text, record">
-              <a-input size="small" maxlength="100" v-model="record.addressName"/>
-            </template>
-            <!-- 资产项目变动 -->
-            <template v-if="changeType === '6'" slot="changeProjectId" slot-scope="text, record">
-              <a-select showSearch :defaultValue="record.changeProjectId === '' ? undefined : record.changeProjectId" v-model="record.changeProjectId === '' ? record.changeProjectId = undefined : record.changeProjectId" :allowClear="false"
-                :filterOption="filterOption" :placeholder="'请选择资产项目'" style="width: 120px">
-                <a-select-option v-for="(opt) in projectIdData" :key="opt.value" :value='opt.value'>
-                  {{opt.name}}
-                </a-select-option>
-              </a-select>
             </template>
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -214,12 +180,13 @@ import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
 const newEditSingleData = {
   title: '',   // 验收单名称
-  changeType: undefined,     // 变动类型
+  changeType: undefined,     // 登记类型
   projectId: undefined,     // 资产项目
   deliveryCompany: '',    // 交付单位
   changeDate: {},       // 变动日期
   expiryDate: {},        // 截止日期
   remark: '',          // 备注
+  assetType: undefined,
   files: [],
   organId: ''
 }
@@ -231,7 +198,7 @@ export default {
       changeOrderId: '',
       organId: '',
       enitData: '',
-      changeType: '',          // 用来判断对象变动类型
+      changeType: '',          // 用来判断对象登记类型
       checkedData: [],
       show: false,
       columns: [],
@@ -239,6 +206,7 @@ export default {
       organIdData: [],
       changeTypeData: [],
       projectIdData: [],
+      assetTypeData: [],
       newEditSingleData: {...newEditSingleData},
       form: this.$form.createForm(this),
       allWidth: 'width: 160px',
@@ -267,18 +235,8 @@ export default {
     'changeType' (val) {
       this.checkedData = []
       this.tableData = []
-      if (val === '2') {
+      if (val === '3') {
         this.columns = deliveryProperty
-      } else if (val === '1') {
-        this.columns = deliveryOperation
-      } else if (val === '4') {
-        this.columns = changeDirectionUse
-      } else if (val === '3') {
-        this.columns = variationOriginalValue
-      } else if (val === '5') {
-        this.columns = positionChange
-      } else if (val === '6') {
-        this.columns = projectChange
       }
     }
   },
@@ -303,10 +261,10 @@ export default {
         this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), '', this.tableData)
         this.$refs.assetBundlePopover.show = true
       } else {
-        this.$message.info('请先选择变动类型')
+        this.$message.info('请先选择登记类型')
       }
     },
-    // 变动类型
+    // 登记类型
     changeTypeChange (val) {
       this.changeType = val
     },
@@ -349,17 +307,31 @@ export default {
         this.tableData = newData
       }
     },
-    // 资产类型
+    // 登记类型
+    // platformDictFn () {
+    //   let obj = {
+    //     code: 'AMS_REGISTER_TYPE'
+    //   }
+    //   this.$api.assets.platformDict(obj).then(res => {
+    //     if (Number(res.data.code) === 0) {
+    //       let data = res.data.data
+    //       this.changeTypeData = [...data]
+    //     } else {
+    //       this.$message.error(res.data.message)
+    //     }
+    //   })
+    // },
     platformDictFn () {
-      let obj = {
-        code: 'AMS_REGISTER_TYPE'
-      }
-      this.$api.assets.platformDict(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
+      Promise.all([this.$api.assets.platformDict({code: 'AMS_REGISTER_TYPE'}), this.$api.assets.platformDict({code: 'asset_type'})]).then(res => {
+        // 登记类型
+        if (+res[0].data.code === 0) {
+          let data = res[0].data.data
           this.changeTypeData = [...data]
-        } else {
-          this.$message.error(res.data.message)
+        }
+        // 资产类型
+        if (+res[1].data.code === 0) {
+          let data = res[1].data.data
+          this.assetTypeData = [...data]
         }
       })
     },
@@ -453,7 +425,7 @@ export default {
               assetId: item.assetId,
               projectId: Number(item.projectId),        // 资产项目Id
               changeProjectId: Number(item.changeProjectId),
-              assetType: item.assetType,                       // 资产类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
+              assetType: item.assetType,                       // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
               assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
               address: item.addressName,              // 变动位置
               transferArea: item.transferArea,    // 交付物业面积-交付物业变动
@@ -471,7 +443,7 @@ export default {
             changeOrderId: this.changeOrderId,                          // 资产变动单Id（新增为空）
             title: values.title,                                        // 标题
             projectId: Number(values.projectId),                        // 资产项目Id
-            changeType: values.changeType,                              // 变动类型Id
+            changeType: values.changeType,                              // 登记类型Id
             deliveryCompany: values.deliveryCompany,                    // 交付单位
             remark: values.remark,                                      // 备注
             organId: Number(values.organId),                            // 组织机构id
@@ -555,6 +527,7 @@ export default {
   },
   mounted () {
     this.getObjectKeyValueByOrganIdFn()
+    // 登记类型
     this.platformDictFn()
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
