@@ -525,7 +525,7 @@ export default {
           let resultArr = result.map(item => {
             return {
               label: item.typeName,
-              value: item.typeId,
+              value: item.typeCode,
               ...item
             }
           })
