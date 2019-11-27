@@ -120,8 +120,8 @@ export default {
       this.gData = [{...topItem}]
       this.expandedKeys = [topItem.key]
       this.dataList = [{...topItem}]
-      this.activeKey = ''
       this.selectItem = {}
+      console.log('hhhhhh', this.expandedKeys)
     },
     hanldeOper (scope) {
       if (this.activeKey === scope.key) {
@@ -166,7 +166,7 @@ export default {
           let result = res.data.data || []
           this.gData[0].children = result.map(item => {
             item.type = 'frist'
-            item.key = getUuid()
+            item.key = item.positionId
             item.id = item.positionId
             item.title = item.positionName
             item.scopedSlots = { title: 'title'}
@@ -174,6 +174,7 @@ export default {
             return {...item}
           })
           this.expandedKeys = [topItem.key]
+          this.treeUuid = getUuid()
         } else {
           this.$message.error(res.data.message)
         }
@@ -186,7 +187,7 @@ export default {
           let result = res.data.data || []
           for (let i = 0; i < result.length; i++) {
             let item = result[i]
-            item.key = getUuid()
+            item.key = item.positionId
             item.type = 'second'
             item.id = item.positionId
             item.title = item.positionName
@@ -196,12 +197,8 @@ export default {
           let _item = fetchItem(this.gData, key, 'key')
           this.expandedKeys.push(key)
           this.expandedKeys = [...new Set(this.expandedKeys)]
-          // this.autoExpandParent = true
           if (_item) {
             this.$set(_item, 'children', result)
-            if (result.length) {
-              // this.treeUuid = getUuid()
-            }
           }
         } else {
           this.$message.error(res.data.message)

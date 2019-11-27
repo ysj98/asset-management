@@ -229,7 +229,8 @@ export default {
             this.$api.building.addFloor(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('新增楼层成功')
-                this.$emit('success')
+                this.resetAll()
+                this.$emit('success', 'create')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -243,7 +244,7 @@ export default {
             this.$api.building.updateFloor(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼层成功')
-                this.$emit('success')
+                this.$emit('success', 'edit')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -264,7 +265,7 @@ export default {
           this.$api.building.deleteFloor(data).then(res => {
             if (res.data.code === '0') {
               this.$SG_Message.success(`删除成功`)
-              this.$emit('success')
+              this.$emit('success', 'delete')
             } else {
               this.$message.error(res.data.message)
             }

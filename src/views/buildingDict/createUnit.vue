@@ -209,7 +209,8 @@ export default {
             this.$api.building.addUnit(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('新增单元成功')
-                this.$emit('success')
+                 this.resetAll()
+                this.$emit('success', 'create')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -223,7 +224,7 @@ export default {
             this.$api.building.updateUnit(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑单元成功')
-                this.$emit('success')
+                this.$emit('success', 'edit')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -244,7 +245,7 @@ export default {
           this.$api.building.deleteUnit(data).then(res => {
             if (res.data.code === '0') {
               this.$SG_Message.success(`删除成功`)
-              this.$emit('success')
+              this.$emit('success', 'delete')
             } else {
               this.$message.error(res.data.message)
             }

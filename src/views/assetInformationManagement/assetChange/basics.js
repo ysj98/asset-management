@@ -21,7 +21,7 @@ export const deliveryProperty = [{
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'communityName',
+  dataIndex: 'assetArea',
   width: '10%'
 }, {
   title: '交付物业面积(㎡)',
@@ -58,7 +58,7 @@ export const deliveryOperation = [{
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'communityName',
+  dataIndex: 'assetArea',
   width: '10%'
 }, {
   title: '交付运营面积(㎡)',
@@ -90,7 +90,7 @@ export const changeDirectionUse = [{
   dataIndex: 'assetUse'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'communityName'
+  dataIndex: 'assetArea'
 }, {
   title: '运营面积(㎡)',
   dataIndex: 'operationArea',
@@ -146,7 +146,7 @@ export const projectChange = [{
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'communityName',
+  dataIndex: 'assetArea',
   width: '10%'
 }, {
   title: '变动后资产项目',
@@ -221,7 +221,7 @@ export const positionChange = [{
   width: '10%'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'communityName',
+  dataIndex: 'assetArea',
   width: '10%'
 }, {
   title: '变动后位置',

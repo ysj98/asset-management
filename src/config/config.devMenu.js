@@ -52,6 +52,10 @@ export default [
       {
         title: '权属登记',
         path: '/ownershipRegistration'
+      },
+      {
+        title: '权属概况',
+        path: '/ownershipSurvey'
       }
     ]
   },
