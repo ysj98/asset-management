@@ -69,6 +69,10 @@ export default [
       {
         title: '资产入账',
         path: '/assetEntry'
+      },
+      {
+        title: '价值登记',
+        path: '/worthRegister'
       }
     ]
   },
