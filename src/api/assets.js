@@ -57,8 +57,8 @@ export function getChangePage (data) {
   return axiosPost(assets.management.getChangePage, data)
 }
 // 资产变动-删除
-export function shipDhange (data) {
-  return axiosPost(assets.management.shipDhange, data)
+export function deleteChange (data) {
+  return axiosPost(assets.management.deleteChange, data)
 }
 // 资产变动-审批
 export function approveChange (data) {

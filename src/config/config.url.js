@@ -283,7 +283,7 @@ export const assets = {
     // 权属登记详情查询
     shipDetail: '/ams/ownerShip/ship/detail',
     // 权属登记删除
-    saveOrUpdate: '/ams/ownerShip/attr/saveOrUpdate',
+    saveOrUpdate: '/ams/ownerShip/ship/saveOrUpdate',
   },
   authorityCardManagement: {
     // 权证导入

@@ -150,7 +150,7 @@
             <!-- 注销登记 -->
             <template v-if="changeType !== '3'" slot="warrantNbr" slot-scope="text, record">
               <a-select
-                style="width: 300px"
+                style="width: 150px"
                 mode="multiple"
                 :maxTagCount="4"
                 showSearch
@@ -162,6 +162,7 @@
                 :filterOption="false"
                 notFoundContent="没有查询到数据"
                 />
+                <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="chooseWarrantsFn">选择权证</SG-Button></div>
             </template>
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -175,6 +176,8 @@
     </div>
     <!-- 选择资产 -->
     <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <!-- 选择权证 -->
+    <chooseWarrants :organId="organId" ref="chooseWarrants" @status="status"></chooseWarrants>
     <FormFooter>
       <div>
         <a-button type="primary" @click="save('save')">提交</a-button>
@@ -187,6 +190,7 @@
 
 <script>
 import AssetBundlePopover from '../../common/assetBundlePopover'
+import chooseWarrants from '../../common/chooseWarrants'
 import {register, cancellation } from './basics'
 import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
@@ -202,7 +206,7 @@ const newEditSingleData = {
   organId: ''
 }
 export default {
-  components: {AssetBundlePopover, FormFooter},
+  components: {AssetBundlePopover, chooseWarrants, FormFooter},
   props: {},
   data () {
     return {
@@ -277,6 +281,11 @@ export default {
       } else {
         this.$message.info('请先选择登记类型')
       }
+    },
+    // 选择资产权证
+    chooseWarrantsFn () {
+      this.$refs.chooseWarrants.redactCheckedDataFn(this.checkedData, this.tableData)
+      this.$refs.chooseWarrants.show = true
     },
     // 登记类型
     changeTypeChange (val) {

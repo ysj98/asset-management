@@ -18,8 +18,8 @@
     <div>
       <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
         <div slot="col-r">
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="selecData.projectId">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="selecData.kindOfRights">
+          <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
@@ -105,23 +105,9 @@ export default {
       noPageTools: true,
       location: 'absolute',
       count: '',
-      projectData: [],
-      assetTypeData: [
-        {
-          name: '全部资产类型',
-          value: ''
-        }
-      ],
-      objectTypeData: [],
-      statusData: [
-        {
-          name: '全部资产状态',
-          value: ''
-        }
-      ],
+      kindOfRightsData: [],
       allStyle: 'width: 140px; margin-right: 10px;',
       show: false,
-      assetTypeDisabled: false,
       selecData: {
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
@@ -146,11 +132,11 @@ export default {
       }
     }
   },
-  // watch: {
-  //   'selectedData.projectId' () {
-  //     this.query()
-  //   }
-  // },
+  watch: {
+    'selectedData.projectId' () {
+      this.query()
+    }
+  },
   methods: {
     // 选中的
     onSelectChange (selectedRowKeys) {
@@ -168,8 +154,8 @@ export default {
       console.log(this.overallData, '总的')
       this.selectedRowKeys.forEach(item => {
         this.overallData.forEach((element, index) => {
-          if (item === element.assetId) {
-            checkedData.push(element.assetId)
+          if (item === element.warrantId) {
+            checkedData.push(element.warrantId)
             rowsData.push(element)
           }
         })
@@ -177,30 +163,22 @@ export default {
       this.$emit('status', checkedData, rowsData)
     },
     // 外面删除了后剩下给回来的数据
-    redactCheckedDataFn (redactChecked, projectId, assetType, overallData) {
+    redactCheckedDataFn (redactChecked, overallData) {
       // overallData 给回来的数据合并在去重
       if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
         let hash = {}
         arrData = arrData.reduce((preVal, curVal) => {
-          hash[curVal.assetId] ? '' : hash[curVal.assetId] = true && preVal.push(curVal)
+          hash[curVal.warrantId] ? '' : hash[curVal.warrantId] = true && preVal.push(curVal)
           return preVal
         }, [])
         // 存着全部数据
         this.overallData = arrData
       }
-      if (this.selecData.projectId !== projectId) {
-        this.selecData.projectId = projectId
-        this.query()
-      }
-      if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
-        this.selecData.assetType = assetType
-        this.assetTypeDisabled = true
-        this.query()
-      }
       this.$nextTick(() => {
         this.selectedRowKeys = redactChecked
       })
+      // 第一次进来调一下接口
       if (this.firstCall) {
         this.query()
         this.firstCall = false
@@ -209,28 +187,6 @@ export default {
     // 关闭弹窗
     handleCancel () {
       this.show = false
-    },
-    // 资产项目
-    getObjectKeyValueByOrganIdFn () {
-      let obj = {
-        organId: this.organId,
-        projectName: ''
-      }
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          let arr = []
-          data.forEach(item => {
-            arr.push({
-              name: item.projectName,
-              value: item.projectId
-            })
-          })
-          this.projectData = [...this.projectData, ...arr]
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
     },
     // 平台字典获取变动类型
     platformDictFn (str) {
@@ -241,7 +197,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'AMS_KIND_OF_RIGHT') {
-            this.assetTypeData = [...this.assetTypeData, ...data]
+            this.kindOfRightsData = [...this.kindOfRightsData, ...data]
           }
         } else {
           this.$message.error(res.data.message)
@@ -251,26 +207,21 @@ export default {
     query () {
       this.loading = true
       let obj = {
-        assetType: this.selecData.assetType,   // 资产类型
-        objectType: this.selecData.objectType,  // 资产类别
-        queryType: Number(this.queryType),   // 查询类型 1 资产变动，2 资产清理 3权属登记
-        projectId: this.selecData.projectId,  // 资产项目ID
+        organId: this.organId,         // 组织机构
+        kindOfRights: '',              // 权利类型(多选)
+        obligeeId: '',                 // 权属人
+        status: '',                    // 权证状态
+        warrantNbr: '',                // 权证号
         pageSize: this.selecData.pageSize,
         pageNum: this.selecData.pageNum
       }
-      this.$api.assets.assetListPage(obj).then(res => {
+      this.$api.assets.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data) {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
-              element.key = element.assetId
-              element.oldOriginalValue = element.originalValue
-              element.newOriginalValue = ''          // 变动后原值
-              element.transferArea = ''              // 交付物业面积
-              element.transferOperationArea = ''     // 交付运营面积
-              element.addressName = ''               // 变动后位置
-              element.changeProjectId = ''           // 变动后资产项目
+              element.key = element.warrantId
               arrData.push(element)
             })
             this.tableData = data
@@ -279,7 +230,7 @@ export default {
             this.$nextTick(() => {
               let hash = {}
               arrData = arrData.reduce((preVal, curVal) => {
-                hash[curVal.assetId] ? '' : hash[curVal.assetId] = true && preVal.push(curVal)
+                hash[curVal.warrantId] ? '' : hash[curVal.warrantId] = true && preVal.push(curVal)
                 return preVal
               }, [])
               // 存着全部数据
@@ -305,7 +256,6 @@ export default {
   created () {
   },
   mounted () {
-    this.getObjectKeyValueByOrganIdFn()
     // 资产类型
     this.platformDictFn('AMS_KIND_OF_RIGHT')
   }

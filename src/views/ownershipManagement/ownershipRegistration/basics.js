@@ -2,15 +2,15 @@
 export const register = [{
   title: '资产名称',
   dataIndex: 'assetName',
-  width: '15%'
+  width: '8%'
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
-  width: '10%'
+  width: '8%'
 }, {
   title: '资产类型',
   dataIndex: 'assetTypeName',
-  width: '10%'
+  width: '8%'
 }, {
   title: '资产项目名称',
   dataIndex: 'projectName',
@@ -22,21 +22,24 @@ export const register = [{
 }, {
   title: '面积',
   dataIndex: 'assetArea',
-  width: '10%'
+  width: '5%'
 }, {
   title: '原权证号',
-  dataIndex: 'transferArea',
+  dataIndex: 'oldWarrantNbr',
   align: 'center',
-  scopedSlots: { customRender: 'transferArea' }
+  width: '10%',
+  scopedSlots: { customRender: 'oldWarrantNbr' }
 }, {
-  title: '权证号',
+  title: '新权证号',
   dataIndex: 'warrantNbr',
   align: 'center',
-  scopedSlots: { customRender: 'warrantNbr' }
+  scopedSlots: { customRender: 'warrantNbr' },
+  width: '30%'
 }, {
   title: '操作',
   dataIndex: 'operation',
   align: 'center',
+  width: '11%',
   scopedSlots: { customRender: 'operation' }
 }]
 
@@ -60,19 +63,21 @@ export const cancellation = [{
 }, {
   title: '所在位置',
   dataIndex: 'address',
-  width: '10%'
+  width: '20%'
 }, {
   title: '面积',
   dataIndex: 'assetArea',
   width: '10%'
 }, {
   title: '原权证号',
-  dataIndex: 'transferArea',
+  dataIndex: 'oldWarrantNbr',
   align: 'center',
-  scopedSlots: { customRender: 'transferArea' }
+  width: '15%',
+  scopedSlots: { customRender: 'oldWarrantNbr' }
 }, {
   title: '操作',
   dataIndex: 'operation',
   align: 'center',
+  width: '10%',
   scopedSlots: { customRender: 'operation' }
 }]

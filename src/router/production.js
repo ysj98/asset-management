@@ -178,6 +178,11 @@ let proRouter = [
     component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationNew.vue')
   },
   {
+    path: '/ownershipRegistration/registrationParticulars',
+    name: '权属登记详情',
+    component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationParticulars.vue')
+  },
+  {
     path: '/assetEntry',
     name: '资产入账',
     component: () => import('@/views/financialManagement/assetEntry/index.vue'),
