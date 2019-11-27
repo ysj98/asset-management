@@ -112,8 +112,10 @@ export default {
       this.activeItem = {}
       this.childNodeType = '' // 0可新建楼栋, 1单元， 2楼层
     },
-    handleBuildSucc () {
-      this.resetInit()
+    handleBuildSucc (type) {
+      if (type === 'delete') {
+        this.resetInit()
+      }
       this.$refs.positionTree.resetLoad()
     },
     // 点击新增按钮

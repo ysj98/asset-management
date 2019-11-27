@@ -333,3 +333,19 @@ export const building = {
   // 房屋导出
   exportHouse: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/exportHouse'
 }
+
+// 权属概况
+export const ownershipSurvey = {
+  // 资产项目权属列表查询
+  ownerShipList: '/ams/ownerShip/list',
+  // 资产项目权属详情列表信息
+  attrList: '/ams/ownerShip/attr/list',
+  // 资产项目权属详情基本信息
+  attrBase: '/ams/ownerShip/attr/base',
+  // 资产权属列表
+  assetList: '/ams/attr/asset/List',
+  // 资产权属详情
+  assetDetail: '/ams/ownerShip/attr/asset/detail',
+  // 权属登记
+  attrSet: '/ams/attr/set'
+}

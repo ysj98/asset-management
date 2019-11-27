@@ -383,7 +383,8 @@ export default {
             this.$api.building.addBuild(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('新增楼栋成功')
-                this.$emit('success')
+                 this.resetAll()
+                this.$emit('success', 'create')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -397,7 +398,7 @@ export default {
             this.$api.building.updateBuild(data).then(res => {
               if (res.data.code === '0') {
                 this.$SG_Message.success('编辑楼栋成功')
-                this.$emit('success')
+                this.$emit('success', 'edit')
               } else {
                 this.$message.error(res.data.message)
               }
@@ -418,7 +419,7 @@ export default {
             this.$api.building.deleteBuild(data).then(res => {
               if (res.data.code === '0') {
                this.$SG_Message.success(`删除成功`)
-               this.$emit('success')
+               this.$emit('success', 'delete')
               } else {
                 this.$message.error(res.data.message)
               }
