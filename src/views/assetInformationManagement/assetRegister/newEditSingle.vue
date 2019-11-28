@@ -131,9 +131,9 @@
         </div>
       </div>
     </div>
-    <FormFooter>
-      <a-button type="primary" @click="save">提交</a-button>
-      <a-button @click="cancel">取消</a-button>
+    <FormFooter style="border:none;">
+      <SG-Button class="mr2" @click="save" type="primary">提交</SG-Button>
+      <SG-Button @click="cancel">取消</SG-Button>
     </FormFooter>
      <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <SG-Modal

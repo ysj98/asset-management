@@ -92,11 +92,11 @@ const columns = [
   {
     title: '资产状态',
     dataIndex: 'assetStatusName'
-  },
-  {
-    title: '配套数量',
-    dataIndex: 'approvalStatusName'
   }
+  // {
+  //   title: '配套数量',
+  //   dataIndex: 'approvalStatusName'
+  // }
 ]
 export default {
   components: {Cephalosome},
