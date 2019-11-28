@@ -3,7 +3,7 @@
 -->
 <template>
   <div class="bread-nav" style="height:40px;min-height:40px;line-height:40px; text-align: left; padding-left:30px;border-bottom:1px solid #ddd;">
-    <router-link :tag="getTags(index)" :to='item.path' class='bread-item' v-for="(item, index) in proBreadNav" :key="index">{{item.name}}
+    <router-link :tag="getTags(index)" :to='item.path' class='bread-item' :class="[index === proBreadNav.length-1&&'chu']" v-for="(item, index) in proBreadNav" :key="index">{{item.name}}
       <a-icon type="right" :style="{ fontSize: '12px', marginRight: '5px', color: '#C0C7D1', display: index === proBreadNav.length-1 ? 'none' : ''}"/>  
     </router-link>
     <SG-Button class="fr click-button" v-if="show" size="small" @click="handleLogout">登出</SG-Button>
@@ -56,6 +56,9 @@ export default {
   a {
     color: #49505E;
     cursor: pointer;
+  }
+  .chu{
+    font-weight: 500;
   }
 }
 .click-button{

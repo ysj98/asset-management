@@ -31,12 +31,14 @@
       <div class="particulars-obj">
         <div class="tab-exhibition">
           <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
-            <p>{{item.name}}</p>
-            <p>{{item.value}}</p>
+            <div class="exhibition-nav">
+              <div>{{item.name}}</div>
+              <div>{{item.value}}</div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="particulars-obj">
+      <div class="particulars-tab">
         <!-- table-layout-fixed -->
         <div class="table-border">
           <a-table
@@ -227,6 +229,9 @@ export default {
         }
       }
     }
+    .particulars-tab {
+      padding: 10px 0 20px 40px;
+    }
     .tab-exhibition {
       margin: 10px 0;
       display: flex;
@@ -236,13 +241,20 @@ export default {
         color: #fff;
         text-align: center;
         border-right: 1px solid #EFF2F7;
-        p:nth-of-type(1) {
-          padding-top: 14px;
-          font-size: 12px;
-        }
-        p:nth-of-type(2) {
-          font-size: 16px;
-          font-weight: bold;
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        .exhibition-nav {
+          align-items:center;
+          justify-content:center;
+          div:nth-of-type(1) {
+            font-size: 12px;
+          }
+          div:nth-of-type(2) {
+            padding-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+          }
         }
       }
       .exhibition:nth-of-type(1){

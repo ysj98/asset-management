@@ -99,8 +99,8 @@ export function assetListPage (data) {
 
 // 资产登记
 // 资产登记-删除
-export function shipDyRegisterOrderId (data) {
-  return axiosPost(assets.assetRegister.shipDyRegisterOrderId, data)
+export function deleteByRegisterOrderId (data) {
+  return axiosPost(assets.assetRegister.deleteByRegisterOrderId, data)
 }
 // 资产登记-反审核
 export function registerOrderReAudit (data) {

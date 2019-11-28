@@ -209,7 +209,7 @@ export default {
 </script>
 <style lang="less" scopes>
 .export-box{
-  padding: 0px 30px;
+  padding: 0px 22px 0 30px;
 }
 .footer{
   margin: 20px;

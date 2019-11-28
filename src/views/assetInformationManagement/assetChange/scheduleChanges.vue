@@ -3,15 +3,15 @@
 -->
 <template>
   <div class="scheduleChanges">
-    <SearchContainer v-model="toggle" @input="searchContainerFn">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
       </div>
       <div slot="headerForm">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>
-      <div slot="contentForm">
+      <div slot="contentForm" class="search-content-box">
         <div class="form-first">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -22,22 +22,22 @@
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
-          <SG-Button @click="eliminateFn">清空</SG-Button>
-        </div>
-        <div class="from-second">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
             <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
             <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <div class="box">
+          <div class="box" :style="dateWidth">
             <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
-          <div class="box box-left">
+          <div class="box box-left" :style="dateWidth">
             <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
+        </div>
+        <div class="two-row-box">
+          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
       </div>
     </SearchContainer>
@@ -73,6 +73,8 @@ import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import {utils, debounce} from '@/utils/utils.js'
+const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
   {
     title: '变动编号',
@@ -167,7 +169,7 @@ const queryCondition =  {
     projectId: '',   // 资产项目Id
     changeType: '',   // 变动类型
     assetType: '',    // 资产类型Id
-    assetClassify: [''], // 资产分类
+    assetClassify: '', // 资产分类
     startDate: '',       // 创建日期开始日期
     endDate: '',    // 创建日期结束日期
     changStartDate: '',  // 变动日期开始
@@ -182,11 +184,12 @@ export default {
   props: {},
   data () {
     return {
+      dateWidth,
       // scrollHeight: {y: 0},
       loading: false,
       noPageTools: false,
       location: 'absolute',
-      allStyle: 'width: 170px; margin-right: 10px;',
+      allStyle: allWidth,
       toggle: true,
       columns,
       organName: '',
@@ -252,6 +255,8 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.queryCondition.assetClassify = ''
       this.getObjectKeyValueByOrganIdFn()
       this.getListFn()
       this.query()
@@ -321,6 +326,9 @@ export default {
     },
     // 资产分类列表
     getListFn () {
+      if (!this.queryCondition.organId) {
+        return
+      }
       let obj = {
         organId: this.queryCondition.organId,
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : ''
@@ -332,17 +340,16 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.professionName,
-              value: item.categoryConfId
+              value: item.professionCode
             })
           })
           this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
-        } else {
-          this.$message.error(res.data.message)
         }
       })
     },
     // 资产类别
     assetTypeFn () {
+      this.queryCondition.assetClassify = ''
       this.getListFn()
     },
     // 资产分类
@@ -485,6 +492,17 @@ export default {
   }
   .custom-table {
     padding-bottom: 60px;
+  }
+}
+.search-content-box{
+  display: flex;
+  justify-content: space-between;
+  .search-from-box{
+    flex: 1;
+  }
+  .two-row-box{
+    padding-top: 14px;
+    flex: 0 0 190px;
   }
 }
 </style>

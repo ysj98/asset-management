@@ -92,11 +92,11 @@ const columns = [
   {
     title: '资产状态',
     dataIndex: 'assetStatusName'
-  },
-  {
-    title: '配套数量',
-    dataIndex: 'approvalStatusName'
   }
+  // {
+  //   title: '配套数量',
+  //   dataIndex: 'approvalStatusName'
+  // }
 ]
 export default {
   components: {Cephalosome},
@@ -260,7 +260,7 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.professionName,
-              value: item.categoryConfId
+              value: item.professionCode
             })
           })
           this.objectTypeData = []
@@ -271,8 +271,6 @@ export default {
             }
           ]
           this.objectTypeData = [...atr, ...arr]
-        } else {
-          this.$message.error(res.data.message)
         }
       })
     },
