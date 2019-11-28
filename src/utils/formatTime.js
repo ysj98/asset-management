@@ -174,6 +174,21 @@
     }
   }
 
+  /* 得到当天的n个月前的具体那天 */
+  export function getMonthsAgoDate (n) {
+    let date = new Date(new Date().getTime() - n * 30 * 24 * 60 * 60 * 1000)
+    let y = date.getFullYear()
+    let m = date.getMonth() + 1
+    let d = date.getDate()
+    if (m < 10) {
+      m = '0' + m
+    }
+    if (d < 10) {
+      d = '0' + d
+    }
+    return y + '-' + m + '-' + d
+  }
+
   /* 得到当天的三个月前的具体那天 */
   export function getThreeMonthsAgoDate () {
     let date = new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000)

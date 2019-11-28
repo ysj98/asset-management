@@ -4,7 +4,7 @@
   rightButtonName: 自定义名称  默认为：取消
 -->
 <template>
-  <div class="form-footer">
+  <div class="form-footer" :class="{'absolute': location === 'absolute', 'fixed': location === 'fixed'}">
     <slot>
       <a-button v-if="showSave" type="primary" :style="buttonStyle" @click="$emit('save')">{{leftButtonName}}</a-button>
       <a-button v-if="showCancel" :type="rightButtonType" :style="buttonStyle" @click="$emit('cancel')">{{rightButtonName}}</a-button>
@@ -43,11 +43,18 @@ export default {
     rightButtonType: {
       type: String,
       default: 'default'
+    },
+    location: {
+      type: String,
+      default: 'absolute'
     }
   },
   data () {
     return {
     }
+  },
+  mounted () {
+    console.log(this.location)
   }
 }
 </script>
@@ -60,14 +67,22 @@ export default {
     border-top: 1px solid #E6EAEF;
     box-shadow:0px -2px 6px 0px rgba(66,155,255,0.08);
     background-color: #fff;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 999;
     button {
       &:not(:first-child) {
         margin-left: 10px;
       }
     }
+  }
+  .absolute {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 999;
+  }
+  .fixed {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 999;
   }
 </style>

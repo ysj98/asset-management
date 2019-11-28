@@ -13,7 +13,6 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" style="margin-right: 10px" @click="queryClick">查询</SG-Button>
-        <SG-Button>清空</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select
@@ -65,9 +64,9 @@
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetSubject"
         ></a-select>
-        <segi-range-picker label="提交日期" style="margin-right: 10px;" :defaultValue="[moment(beginDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
-        <SG-DatePicker label="入账日期"  pickerType="RangePicker"></SG-DatePicker>
-        <!--<segi-range-picker label="入账日期" style="margin-right: 10px;" :canSelectToday="true" @dateChange="onEntryDateChange"></segi-range-picker>-->
+        <!--<segi-range-picker label="提交日期" style="margin-right: 10px;" :defaultValue="[moment(beginDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>-->
+        <SG-DatePicker label="提交日期" pickerType="RangePicker" style="width: 200px;" :defaultValue="[moment(beginDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')]" @change="onDateChange"></SG-DatePicker>
+        <SG-DatePicker label="入账日期" pickerType="RangePicker" style="width: 200px;" @change="onEntryDateChange"></SG-DatePicker>
       </div>
     </SG-SearchContainer>
     <div>
@@ -101,7 +100,7 @@
   import TreeSelect from '../../common/treeSelect'
   import SegiRangePicker from '@/components/SegiRangePicker'
   import noDataTips from '@/components/noDataTips'
-  import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
+  import {getCurrentDate, getMonthsAgoDate} from 'utils/formatTime'
   import moment from 'moment'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
 
@@ -209,7 +208,7 @@
         assetSubjectOptions: [],
         assetClassify: [''],
         assetClassifyOptions: [],
-        beginDate: getThreeMonthsAgoDate(),
+        beginDate: getMonthsAgoDate(6),
         endDate: getCurrentDate(),
         entryBeginDate: '',
         entryEndDate: '',
@@ -295,12 +294,12 @@
         )
       },
       // 提交日期发生变化
-      onDateChange (val) {
+      onDateChange (moment, val) {
         this.beginDate = val[0]
         this.endDate = val[1]
       },
       // 入账日期发生变化
-      onEntryDateChange (val) {
+      onEntryDateChange (moment, val) {
         this.entryBeginDate = val[0]
         this.entryEndDate = val[1]
       },

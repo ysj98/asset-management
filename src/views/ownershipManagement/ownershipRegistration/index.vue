@@ -3,15 +3,16 @@
 -->
 <template>
   <div class="ownershipRegistration">
-    <SearchContainer v-model="toggle" @input="searchContainerFn">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
+        <a-checkbox  style="margin-right: 10px;" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
       </div>
-      <div slot="contentForm">
-        <div class="form-first">
+      <div slot="contentForm" class="search-content-box">
+        <div class="search-from-box">
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -21,21 +22,19 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <div class="box box-right">
+          <div class="box box-right" :style="dateWidth">
             <SG-DatePicker label="创建日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
+        </div>
+        <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
-        <div class="from-second">
-          <a-checkbox :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
-        </div>
       </div>
     </SearchContainer>
-    <div class="table-layout-fixed" ref="table_box">
+    <div class="table-layout-fixed">
       <a-table
         :loading="loading"
-        :scroll="scrollHeight"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
@@ -45,6 +44,7 @@
           <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
         </template> -->
       </a-table>
+      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
@@ -63,6 +63,9 @@ import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import {utils, debounce} from '@/utils/utils.js'
+import noDataTips from '@/components/noDataTips'
+const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
   {
     title: '登记单名称',
@@ -149,15 +152,15 @@ const queryCondition =  {
     flag: false     // 备注：仅当前机构下资产清理单 0 否 1 是
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon},
+  components: {SearchContainer, TreeSelect, segiIcon, noDataTips},
   props: {},
   data () {
     return {
-      scrollHeight: {y: 0},
+      dateWidth,
       loading: false,
       noPageTools: false,
       location: 'absolute',
-      allStyle: 'width: 170px; margin-right: 10px;',
+      allStyle: allWidth,
       toggle: true,
       columns,
       organName: '',
@@ -197,6 +200,7 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
       this.getObjectKeyValueByOrganIdFn()
       this.query()
     },
@@ -307,21 +311,6 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-    // 计算滚动条宽度
-    computedHeight () {
-      let elem = this.$refs.table_box
-      if (!elem) {
-        return
-      }
-      let height = utils.AdjustHeight(elem)
-      let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
-      this.scrollHeight = {y: y - 70 - 40}
-      console.log(this.scrollHeight, '-=-=-=')
-    },
-    // 防抖函数
-    debounceMothed: debounce(function () {
-      this.computedHeight()
-    }, 200),
     // 查询
     query () {
       this.loading = true
@@ -336,7 +325,7 @@ export default {
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
       }
-      this.$api.assets.shipList(obj).then(res => {
+      this.$api.ownership.shipList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
@@ -360,10 +349,6 @@ export default {
   created () {
   },
   mounted () {
-    this.computedHeight()
-    window.addEventListener('resize', () => {
-      this.debounceMothed()
-    })
     // 获取状态
     // this.platformDictFn('approval_status_type')
     // 资产类型
@@ -381,6 +366,17 @@ export default {
   }
   .box-right {
     margin-right: 10px;
+  }
+}
+.search-content-box{
+  display: flex;
+  justify-content: space-between;
+  .search-from-box{
+    flex: 1;
+  }
+  .two-row-box{
+    padding-top: 14px;
+    flex: 0 0 190px;
   }
 }
 </style>

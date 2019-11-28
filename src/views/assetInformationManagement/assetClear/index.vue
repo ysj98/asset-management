@@ -11,8 +11,7 @@
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" style="margin-right: 10px" @click="queryClick">查询</SG-Button>
-        <SG-Button>清空</SG-Button>
+        <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-checkbox style="line-height: 32px" :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅当前机构下资产清理单</a-checkbox>

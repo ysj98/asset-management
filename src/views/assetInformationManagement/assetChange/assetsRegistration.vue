@@ -19,10 +19,9 @@
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <div class="box">
-          <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
-        </div>
-        <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+        <!-- <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker> -->
+        <segi-range-picker label="创建日期" style="margin-right: 10px;" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+        <SG-Button type="primary" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
     <div class="table-layout-fixed">
@@ -46,6 +45,7 @@
         </div>
       </template>
     </a-table>
+    <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
       :pageLength="queryCondition.pageSize"
       :totalCount="count"
@@ -59,11 +59,14 @@
 </template>
 
 <script>
+import SegiRangePicker from '@/components/SegiRangePicker'
 import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
+import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
+import noDataTips from '@/components/noDataTips'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -135,7 +138,7 @@ const columns = [
   }
 ]
 export default {
-  components: {Cephalosome, TreeSelect},
+  components: {Cephalosome, TreeSelect, SegiRangePicker, noDataTips},
   props: {},
   data () {
     return {
@@ -158,11 +161,11 @@ export default {
         projectId: '',              // 资产项目Id
         organId:1,                 // 组织机构id
         changeType: '',            // 备注：变动类型id(多个用，分割)
-        startCreateDate: '',       // 备注：开始创建日期
-        endCreateDate: '',         // 备注：结束创建日期
+        startCreateDate: getThreeMonthsAgoDate(),       // 备注：开始创建日期
+        endCreateDate: getCurrentDate(),         // 备注：结束创建日期
         currentOrgan: false            // 备注：仅当前机构下资产清理单 0 否 1 是
       },
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      // defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
       changeTypeData: [],
       projectData: [
@@ -176,6 +179,12 @@ export default {
   computed: {
   },
   methods: {
+    moment,
+    // 起止日期发生变化
+    onDateChange (val) {
+      this.queryCondition.startCreateDate = val[0]
+      this.queryCondition.endCreateDate = val[1]
+    },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -374,8 +383,8 @@ export default {
         projectId: this.queryCondition.projectId,            // 资产项目Id
         organId: this.queryCondition.organId,                // 组织机构id this.queryCondition.organId,
         multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型id(多个用，分割)
-        startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
+        startCreateDate: this.queryCondition.startCreateDate,         // 开始创建日期
+        endCreateDate: this.queryCondition.endCreateDate,             // 结束创建日期
         currentOrganId: this.queryCondition.currentOrgan ? 1 : 0                // 仅当前机构下资产清理单 0 否 1 是
       }
       this.$api.assets.getChangePage(obj).then(res => {

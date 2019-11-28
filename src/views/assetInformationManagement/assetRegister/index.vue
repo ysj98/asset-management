@@ -22,7 +22,7 @@
         <div class="box">
           <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-        <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+        <SG-Button type="primary" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
     <div class="table-layout-fixed">
@@ -46,6 +46,7 @@
         </template>
       </a-table>
     </div>
+    <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
       :pageLength="queryCondition.pageSize"
       :totalCount="count"
@@ -63,6 +64,7 @@ import TreeSelect from '../../common/treeSelect'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import moment from 'moment'
 import {utils, debounce} from '@/utils/utils.js'
+import noDataTips from '@/components/noDataTips'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -126,7 +128,7 @@ const columns = [
   }
 ]
 export default {
-  components: {Cephalosome, TreeSelect},
+  components: {Cephalosome, TreeSelect, noDataTips},
   props: {},
   data () {
     return {
