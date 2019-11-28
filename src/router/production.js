@@ -3,10 +3,6 @@
  * @Author: chen han
  * @Description:
  */
-/**
- *  生产环境路由
- */
-
 let proRouter = [
   {
     path: '/buildingDict',
