@@ -15,7 +15,7 @@
           :options="assetProjectOptions"
           :filterOption="filterOption"
         ></a-select>
-        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅当前机构下资产清理单</a-checkbox>
+        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
     </SG-SearchContainer>
