@@ -15,6 +15,7 @@
         <SG-Button>清空</SG-Button>
       </div>
       <div slot="form" class="formCon">
+        <a-checkbox style="line-height: 32px" :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅当前机构下资产清理单</a-checkbox>
         <a-select
           showSearch
           placeholder="请选择资产项目"
@@ -45,14 +46,13 @@
           @select="changeAssetType"
         ></a-select>
         <segi-range-picker label="录入时间" style="margin-right: 10px;" :defaultValue="[moment(queryCondition.beginDate, 'YYYY-MM-DD'), moment(queryCondition.endDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
-        <a-checkbox style="line-height: 32px" :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅当前机构下资产清理单</a-checkbox>
       </div>
     </SG-SearchContainer>
     <div>
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table"
+        class="custom-table td-pd10"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -63,6 +63,7 @@
           <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
         </template>
       </a-table>
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
@@ -78,6 +79,7 @@
 import TreeSelect from '../../common/treeSelect'
 import SegiRangePicker from '@/components/SegiRangePicker'
 import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
+import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 
@@ -163,7 +165,7 @@ const approvalStatusData = [
 ]
 export default {
   components: {
-    TreeSelect, SegiRangePicker
+    TreeSelect, SegiRangePicker, noDataTips
   },
   data () {
     return {
@@ -190,6 +192,7 @@ export default {
         pageLength: 10,
         totalCount: 0
       },
+      showNoDataTips: false
     }
   },
   watch: {
@@ -331,6 +334,11 @@ export default {
       this.$api.assets.getCleanupPage(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
           data.forEach((item, index) => {
             item.key = index
             for (let key in item) {

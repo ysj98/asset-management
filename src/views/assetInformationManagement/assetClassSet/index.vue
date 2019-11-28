@@ -22,7 +22,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table"
+        class="custom-table td-pd10"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -37,6 +37,7 @@
           <div v-else><SG-Switch disabled :id="index" style="margin-right: 10px;"></SG-Switch>停用</div>
         </template>
       </a-table>
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
@@ -51,6 +52,7 @@
 <script>
 import segiIcon from '@/components/segiIcon.vue'
 import topOrganByUser from '@/views/common/topOrganByUser'
+import noDataTips from '@/components/noDataTips'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const columns = [
@@ -110,7 +112,7 @@ const columns = [
 
 export default {
   components: {
-    segiIcon, topOrganByUser
+    segiIcon, topOrganByUser, noDataTips
   },
   data () {
     return {
@@ -132,6 +134,7 @@ export default {
         pageLength: 10,
         totalCount: 0
       },
+      showNoDataTips: false
     }
   },
   watch: {
@@ -208,6 +211,11 @@ export default {
       this.$api.assets.getPage(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
           data.forEach((item, index) => {
             item.key = index
             for (let key in item) {

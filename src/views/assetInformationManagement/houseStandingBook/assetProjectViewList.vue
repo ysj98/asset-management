@@ -33,7 +33,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table"
+        class="custom-table td-pd10"
         :pagination="false"
         :scroll="{ x: 1860 }"
       >
@@ -41,6 +41,7 @@
           <a class="operation-btn" @click="toDetail(record)">详情</a>
         </template>
       </a-table>
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
@@ -54,6 +55,7 @@
 
 <script>
 import TreeSelect from '../../common/treeSelect'
+import noDataTips from '@/components/noDataTips'
 
 const columns = [
   {
@@ -149,7 +151,7 @@ const columns = [
 
 export default {
   components: {
-    TreeSelect
+    TreeSelect, noDataTips
   },
   data () {
     return {
@@ -172,7 +174,8 @@ export default {
         pageNo: 1,
         pageLength: 10,
         totalCount: 0
-      }
+      },
+      showNoDataTips: false
     }
   },
   methods: {
@@ -216,6 +219,11 @@ export default {
       this.$api.assets.viewGetAssetHouseList(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
           data.forEach((item, index) => {
             item.key = index
             for (let key in item) {
