@@ -192,6 +192,16 @@ let proRouter = [
     meta: {
       keepAlive: true
     }
-  }
+  },
+  {
+    path: '/ownershipSurvey/projectDetail',
+    name: '资产项目权属详情',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/projectOwnershipDetail.vue')
+  },
+  {
+    path: '/ownershipSurvey/projectSet',
+    name: '资产项目权属设置',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/projectOwnershipSet.vue')
+  },
 ]
 export default proRouter

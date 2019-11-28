@@ -92,3 +92,7 @@ export function assetList (data) {
 export function assetDetail (data) {
   return axiosGet(ownershipSurvey.assetDetail, data)
 }
+// 权属人下拉列表
+export function ownerShipUserSelect (data) {
+  return axiosGet(ownershipSurvey.ownerShipUserSelect, data)
+}
