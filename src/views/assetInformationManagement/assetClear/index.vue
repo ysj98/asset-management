@@ -7,7 +7,7 @@
       <div slot="headBtns">
         <SG-Button icon="plus" type="primary" @click="newClearForm" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_NEW">新建清理单</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree" :showSearch="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         </div>
       </div>
       <div slot="btns">
@@ -48,59 +48,6 @@
         <a-checkbox style="line-height: 32px" :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅当前机构下资产清理单</a-checkbox>
       </div>
     </SG-SearchContainer>
-    <div>
-      <!--<SearchContainer v-model="toggle" @input="searchContainerFn">-->
-      <!--<div slot="headerBtns">-->
-      <!--<a-button type="primary" icon="plus">新建变动单</a-button>-->
-      <!--</div>-->
-      <!--<div slot="headerForm">-->
-      <!--<treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>-->
-      <!--</div>-->
-      <!--<div slot="contentForm">-->
-      <!--<div>-->
-      <!--<a-select-->
-      <!--showSearch-->
-      <!--placeholder="请选择资产项目"-->
-      <!--optionFilterProp="children"-->
-      <!--style="width: 170px; margin-right: 10px;"-->
-      <!--v-model="queryCondition.assetProject"-->
-      <!--:options="assetProjectOptions"-->
-      <!--:filterOption="filterOption"-->
-      <!--&gt;</a-select>-->
-      <!--<a-select-->
-      <!--:maxTagCount="1"-->
-      <!--:style="allStyle"-->
-      <!--mode="multiple"-->
-      <!--:tokenSeparators="[',']"-->
-      <!--placeholder="全部状态"-->
-      <!--:defaultValue="queryCondition.approvalStatus"-->
-      <!--style="width: 170px; margin-right: 10px;"-->
-      <!--&gt;-->
-      <!--<a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>-->
-      <!--</a-select>-->
-      <!--<a-select-->
-      <!--:maxTagCount="1"-->
-      <!--:style="allStyle"-->
-      <!--mode="multiple"-->
-      <!--:tokenSeparators="[',']"-->
-      <!--placeholder="全部资产类型"-->
-      <!--:defaultValue="queryCondition.assetType"-->
-      <!--style="width: 190px; margin-right: 10px;"-->
-      <!--&gt;-->
-      <!--<a-select-option v-for="(item, index) in assetTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>-->
-      <!--</a-select>-->
-      <!--<SG-Button type="primary" style="margin-right: 10px">查询</SG-Button>-->
-      <!--<SG-Button>清空</SG-Button>-->
-      <!--</div>-->
-      <!--<div>-->
-      <!--<SG-DatePicker label="范围选择"  pickerType="RangePicker"></SG-DatePicker>-->
-      <!--<div class="check-box-item" :class="{'active-item': queryCondition.onlyCurrentOrgan}">-->
-      <!--<a-checkbox :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">只显示结果数据</a-checkbox>-->
-      <!--</div>-->
-      <!--</div>-->
-      <!--</div>-->
-      <!--</SearchContainer>-->
-    </div>
     <div>
       <a-table
         :columns="columns"

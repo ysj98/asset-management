@@ -262,6 +262,15 @@ export default {
     },
     'modal.show' (val) {
       if (val) {
+        switch (this.modalType) {
+          case 'new': this.modal.title = '新建权属人'
+            break
+          case 'edit': this.modal.title = '编辑权属人'
+            break
+          case 'detail': this.modal.title = '权属人详情'
+            break
+          default: break
+        }
         if (this.modalType === 'edit' || this.modalType === 'detail') {
           this.getDetail()
         }
