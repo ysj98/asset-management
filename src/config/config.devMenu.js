@@ -54,6 +54,10 @@ export default [
         path: '/ownershipRegistration'
       },
       {
+        title: '权证管理',
+        path: '/authorityCardManagement'
+      },
+      {
         title: '权属概况',
         path: '/ownershipSurvey'
       }
@@ -65,6 +69,10 @@ export default [
       {
         title: '资产入账',
         path: '/assetEntry'
+      },
+      {
+        title: '价值登记',
+        path: '/worthRegister'
       }
     ]
   },

@@ -87,7 +87,7 @@
           v-power="ASSET_MANAGEMENT.ASSET_APM_APPROVAL"
           @click="handleModalOpen('approval', record.projectId)"
         >审核</span>
-        <router-link :to="{ path: '/assetProjectDetail', query: { projectId: record.projectId } }" class="action_text">详情</router-link>
+        <router-link :to="{ path: '/assetProjectManage/assetProjectDetail', query: { projectId: record.projectId } }" class="action_text">详情</router-link>
       </span>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -139,7 +139,7 @@
         approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
           {key: -1, title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
-          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '待审批'}
+          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
         ], // 查询条件-项目状态选项
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项
@@ -178,8 +178,8 @@
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalTextObj: {
-          add: {title: '新建资产项目', okText: '提交审核', cancelText: '取消'},
-          edit: {title: '编辑资产项目', okText: '提交审核', cancelText: '取消'},
+          add: {title: '新建资产项目', okText: '提交', cancelText: '取消'},
+          edit: {title: '编辑资产项目', okText: '提交', cancelText: '取消'},
           approval: {title: '审核资产项目', okText: '审核通过', cancelText: '驳回'}
         }
       }

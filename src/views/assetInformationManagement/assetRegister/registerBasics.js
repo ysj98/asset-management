@@ -231,7 +231,7 @@ export const particulars = [
   {
     title: '已使用期数(月)',
     dataIndex: 'usedDate',
-    width: 100
+    width: 120
   }
 ]
 

@@ -1,8 +1,9 @@
 <!-- 
+  选择权证
   organId: 组织机构id
   projectId: 项目id
   queryType: 查询类型 1 资产变动，2 资产清理 3权属登记
-  redactCheckedDataFn()    // 外层删除后给回来的数据调这个方法 this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData)
+  redactCheckedDataFn()    // 外层删除后给回来的数据调这个方法 this.$refs.chooseWarrants.redactCheckedDataFn(this.checkedData)
   this.$refs.assetBundlePopover.show = true    // 弹窗控制
 -->
 <template>
@@ -10,26 +11,16 @@
     class="assetBundlePopover"
     width="1030px"
     v-model="show"
-    title="选择资产"
+    title="选择权证"
     @ok="statusFn"
     @cancel="handleCancel"
   >
     <div>
       <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
         <div slot="col-r">
-        <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="selecData.kindOfRights">
+          <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类型" v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
-          <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
-          <a-select-option v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
-          <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select> -->
-        <a-input style="width:140px; margin: 0 10px;" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
         <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </Cephalosome>
@@ -62,40 +53,36 @@ import Cephalosome from '@/components/Cephalosome'
 import {utils} from '@/utils/utils.js'
 const columns = [
   {
-    title: '资产编码',
-    dataIndex: 'assetCode'
+    title: '权证号码',
+    dataIndex: 'warrantNbr'
   },
   {
-    title: '资产名称',
-    dataIndex: 'assetName'
+    title: '权利类型',
+    dataIndex: 'kindOfRightName'
   },
   {
-    title: '所属机构',
-    dataIndex: 'organName'
+    title: '权属人',
+    dataIndex: 'obligeeName'
   },
   {
-    title: '资产项目',
-    dataIndex: 'projectName'
+    title: '丘地号/不动产单元号',
+    dataIndex: 'lotNoEstateUnitCode'
   },
   {
-    title: '资产类型',
-    dataIndex: 'assetTypeName'
+    title: '面积',
+    dataIndex: 'buildArea'
   },
   {
-    title: '资产分类',
-    dataIndex: 'assetCategoryName'
+    title: '坐落位置',
+    dataIndex: 'seatingPosition'
   },
   {
-    title: '所在位置',
+    title: '权利性质',
     dataIndex: 'address'
   },
   {
-    title: '资产状态',
-    dataIndex: 'assetStatusName'
-  },
-  {
-    title: '配套数量',
-    dataIndex: 'approvalStatusName'
+    title: '登记日期',
+    dataIndex: 'qualityOfRightName'
   }
 ]
 export default {
@@ -118,27 +105,12 @@ export default {
       noPageTools: true,
       location: 'absolute',
       count: '',
-      projectData: [],
-      assetTypeData: [
-        {
-          name: '全部资产类型',
-          value: ''
-        }
-      ],
-      objectTypeData: [],
-      statusData: [
-        {
-          name: '全部资产状态',
-          value: ''
-        }
-      ],
+      kindOfRightsData: [],
       allStyle: 'width: 140px; margin-right: 10px;',
       show: false,
-      assetTypeDisabled: false,
       selecData: {
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
-        assetNameCode: '',  // 资产名称/编码
         queryType: this.queryType,   // 查询类型 1 资产变动，2 资产清理 3权属登记
         projectId: '',  // 资产项目ID
         pageSize: 10,
@@ -162,7 +134,6 @@ export default {
   },
   watch: {
     'selectedData.projectId' () {
-      console.log('projectId发生变化')
       this.query()
     }
   },
@@ -183,8 +154,8 @@ export default {
       console.log(this.overallData, '总的')
       this.selectedRowKeys.forEach(item => {
         this.overallData.forEach((element, index) => {
-          if (item === element.assetId) {
-            checkedData.push(element.assetId)
+          if (item === element.warrantId) {
+            checkedData.push(element.warrantId)
             rowsData.push(element)
           }
         })
@@ -192,30 +163,22 @@ export default {
       this.$emit('status', checkedData, rowsData)
     },
     // 外面删除了后剩下给回来的数据
-    redactCheckedDataFn (redactChecked, projectId, assetType, overallData) {
+    redactCheckedDataFn (redactChecked, overallData) {
       // overallData 给回来的数据合并在去重
       if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
         let hash = {}
         arrData = arrData.reduce((preVal, curVal) => {
-          hash[curVal.assetId] ? '' : hash[curVal.assetId] = true && preVal.push(curVal)
+          hash[curVal.warrantId] ? '' : hash[curVal.warrantId] = true && preVal.push(curVal)
           return preVal
         }, [])
         // 存着全部数据
         this.overallData = arrData
       }
-      if (this.selecData.projectId !== projectId) {
-        this.selecData.projectId = projectId
-        this.query()
-      }
-      if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
-        this.selecData.assetType = assetType
-        this.assetTypeDisabled = true
-        this.query()
-      }
       this.$nextTick(() => {
         this.selectedRowKeys = redactChecked
       })
+      // 第一次进来调一下接口
       if (this.firstCall) {
         this.query()
         this.firstCall = false
@@ -225,55 +188,6 @@ export default {
     handleCancel () {
       this.show = false
     },
-    // 资产项目
-    getObjectKeyValueByOrganIdFn () {
-      let obj = {
-        organId: this.organId,
-        projectName: ''
-      }
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          let arr = []
-          data.forEach(item => {
-            arr.push({
-              name: item.projectName,
-              value: item.projectId
-            })
-          })
-          this.projectData = [...this.projectData, ...arr]
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
-    // 资产分类列表
-    getListFn () {
-      let obj = {
-        organId: this.organId,
-        assetType: this.selecData.assetType
-      }
-      this.$api.assets.getList(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          let arr = []
-          data.forEach(item => {
-            arr.push({
-              name: item.professionName,
-              value: item.professionCode
-            })
-          })
-          this.objectTypeData = []
-          let atr = [
-            {
-              name: '全部资产类别',
-              value: ''
-            }
-          ]
-          this.objectTypeData = [...atr, ...arr]
-        }
-      })
-    },
     // 平台字典获取变动类型
     platformDictFn (str) {
       let obj = {
@@ -282,44 +196,32 @@ export default {
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (str === 'asset_type') {
-            this.assetTypeData = [...this.assetTypeData, ...data]
+          if (str === 'AMS_KIND_OF_RIGHT') {
+            this.kindOfRightsData = [...this.kindOfRightsData, ...data]
           }
-          this.getListFn()
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    // 资产类型
-    assetTypeFn () {
-      this.selecData.objectType = ''
-      this.getListFn()
-    },
     query () {
       this.loading = true
       let obj = {
-        assetType: this.selecData.assetType,   // 资产类型
-        objectType: this.selecData.objectType,  // 资产类别
-        assetNameCode: this.selecData.assetNameCode,  // 资产名称/编码
-        queryType: Number(this.queryType),   // 查询类型 1 资产变动，2 资产清理 3权属登记
-        projectId: this.selecData.projectId,  // 资产项目ID
+        organId: this.organId,         // 组织机构
+        kindOfRights: '',              // 权利类型(多选)
+        obligeeId: '',                 // 权属人
+        status: '',                    // 权证状态
+        warrantNbr: '',                // 权证号
         pageSize: this.selecData.pageSize,
         pageNum: this.selecData.pageNum
       }
-      this.$api.assets.assetListPage(obj).then(res => {
+      this.$api.assets.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data) {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
-              element.key = element.assetId
-              element.oldOriginalValue = element.originalValue
-              element.newOriginalValue = ''          // 变动后原值
-              element.transferArea = ''              // 交付物业面积
-              element.transferOperationArea = ''     // 交付运营面积
-              element.addressName = ''               // 变动后位置
-              element.changeProjectId = ''           // 变动后资产项目
+              element.key = element.warrantId
               arrData.push(element)
             })
             this.tableData = data
@@ -328,7 +230,7 @@ export default {
             this.$nextTick(() => {
               let hash = {}
               arrData = arrData.reduce((preVal, curVal) => {
-                hash[curVal.assetId] ? '' : hash[curVal.assetId] = true && preVal.push(curVal)
+                hash[curVal.warrantId] ? '' : hash[curVal.warrantId] = true && preVal.push(curVal)
                 return preVal
               }, [])
               // 存着全部数据
@@ -354,9 +256,8 @@ export default {
   created () {
   },
   mounted () {
-    this.getObjectKeyValueByOrganIdFn()
     // 资产类型
-    this.platformDictFn('asset_type')
+    this.platformDictFn('AMS_KIND_OF_RIGHT')
   }
 }
 </script>

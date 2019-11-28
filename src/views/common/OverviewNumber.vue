@@ -9,7 +9,7 @@
       class="view_item"
       :key="item.title"
       v-for="item in numList"
-      :style="{'background-color': item.bgColor || '', 'width': `${(100 / numList.length).toFixed(3)}%`}"
+      :style="{'background-color': item.bgColor || '', 'width': `${Math.floor(100000 / numList.length) / 1000}%`}"
     >
       <p :style="{'font-size': '12px', 'color': item.fontColor || '#fff'}">{{item.title}}</p>
       <p :style="{'font-size': '16px', color: item.fontColor || '#fff', 'font-weight': 'bold'}">{{item.value}}</p>

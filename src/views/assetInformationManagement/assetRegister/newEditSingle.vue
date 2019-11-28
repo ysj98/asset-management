@@ -71,7 +71,7 @@
               <a-date-picker
               :style="allWidth"
               placeholder="请选择接管日期"
-              v-decorator="['createTime',
+              v-decorator="['takeOverDate',
                 {rules: [{required: true, message: '请选择接管日期'}]}
               ]"
               />
@@ -194,7 +194,7 @@ const newEditSingleData = {
   registerOrderCode: '',   // 验收单名称
   assetType: undefined,     // 资产类型
   projectId: undefined,     // 资产项目
-  createTime: {},       // 接管日期
+  takeOverDate: {},       // 接管日期
   remark: '',          // 备注
   files: [],
   organId: ''
@@ -582,7 +582,7 @@ export default {
               item.ownershipStatus = 2
             }
           })
-          console.log(values.createTime, '这是什么时间')
+          console.log(values.takeOverDate, '这是什么时间')
           let obj = {
             registerOrderId: this.registerOrderId,                         // 资产变动单Id（新增为空）
             registerOrderCode: values.registerOrderCode, // 登记单编号
@@ -590,7 +590,7 @@ export default {
             assetType: values.assetType,                 // 资产类型Id
             remark: values.remark,                       // 备注
             organId: this.organId,                      // 组织机构id
-            createTime: values.createTime === undefined ? '' : `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
+            takeOverDate: values.takeOverDate === undefined ? '' : `${values.takeOverDate.format('YYYY-MM-DD')}`,                // 接管日期
             assetHouseList: data,
             attachment: files.length === 0 ? [] : files
           }
@@ -646,9 +646,13 @@ export default {
             projectId: data.projectId,
             registerOrderCode: data.registerOrderCode,
             assetType: String(data.assetType),
-            createTime: data.createTime === '' ? '' : moment(data.createTime, 'YYYY-MM-DD'),
             remark: data.remark
           })
+          if (data.takeOverDate) {
+            this.form.setFieldsValue({
+              takeOverDate: data.takeOverDate === '' ? '' : moment(data.takeOverDate, 'YYYY-MM-DD'),
+            })
+          }
           let files = []
           if (data.attachment && data.attachment.length > 0) {
               data.attachment.forEach(item => {

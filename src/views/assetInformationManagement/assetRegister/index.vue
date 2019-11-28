@@ -148,7 +148,7 @@ export default {
       loading: false,
       noPageTools: false,
       approvalStatusData: [...approvalStatusData],
-      allStyle: 'width: 140px; margin-right: 10px;',
+      allStyle: 'width: 150px; margin-right: 10px;',
       columns,
       organName: '',
       organId: '',
@@ -281,13 +281,17 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
+      this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.query()
       this.getObjectKeyValueByOrganIdFn()
-      if (!this.isChild) {
-        this.queryCondition.pageNum = 1
-        this.query()
-      } else {
-        this.isChild = false
-      }
+      // this.getObjectKeyValueByOrganIdFn()
+      // if (!this.isChild) {
+      //   this.queryCondition.pageNum = 1
+      //   this.query()
+      // } else {
+      //   this.isChild = false
+      // }
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
