@@ -173,15 +173,6 @@
         </div>
       </div>
     </SG-Modal>
-    <SG-Modal
-      width="400px"
-      v-model="commonShow"
-      :title="commonTitle"
-      @ok="commomDelete"
-    >
-      <div v-if="judge === 'delete'">确认要删除该资产吗？</div>
-      <div v-else>确认要清空资产列表？</div>
-    </SG-Modal>
   </div>
 </a-spin>
 </template>
@@ -256,9 +247,6 @@ export default {
       spinning: false,
       setType: '',
       recordKey: '',
-      commonShow: false,
-      commonTitle: '',
-      judge: '',
       registerOrderId: '',
       assetsCount: '',
       organId: '',
@@ -514,28 +502,29 @@ export default {
         this.$message.info('暂无资产清空')
         return
       }
-      this.commonTitle = '清空列表'
-      this.judge = 'empty'
-      this.commonShow = true
+      this.commomDelete('empty')
     },
     // 删除
     deleteFn (record) {
-      this.commonTitle = '删除'
-      this.judge = 'delete'
-      this.commonShow = true
-      this.recordKey = record.key
+      this.commomDelete('delete', record.key)
     },
-    commomDelete () {
-      if (this.judge === 'delete') {
-        this.tableData.forEach((item, index) => {
-          if (item.key === this.recordKey) {
-            this.tableData.splice(index, 1)
+    commomDelete (str, recordKey) {
+      let _this = this
+      _this.$confirm({
+        title: '提示',
+        content: str === 'delete' ? '确认要反审核该资产登记单吗？' : '确认要清空资产列表？',
+        onOk() {
+          if (str === 'delete') {
+            _this.tableData.forEach((item, index) => {
+              if (item.key === recordKey) {
+                _this.tableData.splice(index, 1)
+              }
+            })
+          } else {
+            _this.tableData = []
           }
-        })
-      } else {
-        this.tableData = []
-      }
-      this.commonShow = false
+        }
+      })
     },
     // 楼栋搜索
     handleSearch (value) {
