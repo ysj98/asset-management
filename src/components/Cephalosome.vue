@@ -58,7 +58,7 @@ export default {
 <style lang="less" scoped>
 .wrapper {
   // height: 67px;
-  margin: 0 30px;
+  margin: 0 20px;
   .col-l {
     padding-left: -8px;
   }

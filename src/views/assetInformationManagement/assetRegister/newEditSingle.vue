@@ -102,8 +102,10 @@
         <span class="section-title blue">资产明细</span>
         <div class="tab-exhibition">
           <div class="exhibition" v-for="(item, index) in assetsCount" :key="index">
-            <p>{{item.name}}</p>
-            <p>{{item.value || 0}}</p>
+            <div class="exhibition-nav">
+              <div>{{item.name}}</div>
+              <div>{{item.value}}</div>
+            </div>
           </div>
         </div>
         <div class="button-box">
@@ -114,10 +116,10 @@
           </div>
         </div>
         <!-- table-layout-fixed -->
-        <div class="table-border">
+        <div class="table-borders">
           <a-table
             class="table-box"
-            :scroll="{y: 450, x: 2600}"
+            :scroll="{y: 450, x: 2700}"
             :columns="columns"
             :dataSource="tableData"
             :pagination="false"
@@ -815,8 +817,13 @@ export default {
         }
       }
     }
+    .table-borders {
+      border-top: 1px solid rgba(239,244,249,1);
+      border-left: 1px solid rgba(239,244,249,1);
+      border-right: 1px solid rgba(239,244,249,1);
+    }
     .tab-exhibition {
-      margin: 10px 0;
+      margin: 10px 0 16px 0;
       display: flex;
       height: 83px;
       .exhibition {
@@ -824,13 +831,20 @@ export default {
         color: #fff;
         text-align: center;
         border-right: 1px solid #EFF2F7;
-        p:nth-of-type(1) {
-          padding-top: 14px;
-          font-size: 12px;
-        }
-        p:nth-of-type(2) {
-          font-size: 16px;
-          font-weight: bold;
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        .exhibition-nav {
+          align-items:center;
+          justify-content:center;
+          div:nth-of-type(1) {
+            font-size: 12px;
+          }
+          div:nth-of-type(2) {
+            padding-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+          }
         }
       }
       .exhibition:nth-of-type(1){
@@ -866,8 +880,16 @@ export default {
 
 <style lang="scss">
 .table-box {
-  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
-    padding: 6px 6px;
+  .ant-table-thead {
+    font-size: 14px;
+  }
+  .ant-table-thead tr th {
+    padding: 9px;
+    background-color: #fff;
+    color: #49505E;
+  }
+  .ant-table-tbody > tr > td {
+    padding: 6px 9px;
   }
   .ant-table-tbody {
     tr:nth-child(even){
