@@ -147,7 +147,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产列表</span>
         <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
-        <div class="table-layout-fixed table-border" v-if="columns.length !== 0">
+        <div class="table-layout-fixed" v-if="columns.length !== 0" :class="{'table-border': tableData.length != 0}">
           <a-table
             :scroll="{y: 450}"
             :columns="columns"
@@ -212,9 +212,10 @@
             </template>
           </a-table>
         </div>
-        <div v-else style="text-align: center">
+        <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+        <!-- <div v-else style="text-align: center">
           暂无数据
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- 选择资产 -->
@@ -233,6 +234,7 @@
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import {deliveryProperty, deliveryOperation, changeDirectionUse, variationOriginalValue, positionChange, projectChange} from './basics'
 import FormFooter from '@/components/FormFooter'
+import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 const newEditSingleData = {
   title: '',   // 登记单名称
@@ -246,7 +248,7 @@ const newEditSingleData = {
   organId: ''
 }
 export default {
-  components: {AssetBundlePopover, FormFooter},
+  components: {AssetBundlePopover, FormFooter, noDataTips},
   props: {},
   data () {
     return {

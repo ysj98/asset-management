@@ -45,6 +45,7 @@
         </div>
       </template>
     </a-table>
+    <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
       :pageLength="queryCondition.pageSize"
       :totalCount="count"
@@ -65,6 +66,7 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
+import noDataTips from '@/components/noDataTips'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -136,7 +138,7 @@ const columns = [
   }
 ]
 export default {
-  components: {Cephalosome, TreeSelect, SegiRangePicker},
+  components: {Cephalosome, TreeSelect, SegiRangePicker, noDataTips},
   props: {},
   data () {
     return {

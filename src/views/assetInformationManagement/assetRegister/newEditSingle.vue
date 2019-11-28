@@ -128,6 +128,7 @@
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
             </template>
           </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -183,6 +184,7 @@ import FormFooter from '@/components/FormFooter'
 import moment from 'moment'
 import {columnsData, judgmentData} from './registerBasics'
 import {debounce, utils, calc} from '@/utils/utils'
+import noDataTips from '@/components/noDataTips'
 const newEditSingleData = {
   registerOrderCode: '',   // 验收单名称
   assetType: undefined,     // 资产类型
@@ -236,7 +238,7 @@ const scopeData = [
 //   }
 // ]
 export default {
-  components: {AssetBundlePopover, FormFooter},
+  components: {AssetBundlePopover, FormFooter, noDataTips},
   props: {},
   data () {
     return {
@@ -807,9 +809,10 @@ export default {
       }
     }
     .table-borders {
-      border-top: 1px solid rgba(239,244,249,1);
-      border-left: 1px solid rgba(239,244,249,1);
-      border-right: 1px solid rgba(239,244,249,1);
+      border: 1px solid rgba(239,244,249,1)
+      // border-top: 1px solid rgba(239,244,249,1);
+      // border-left: 1px solid rgba(239,244,249,1);
+      // border-right: 1px solid rgba(239,244,249,1);
     }
     .tab-exhibition {
       margin: 10px 0 16px 0;
@@ -869,6 +872,9 @@ export default {
 
 <style lang="scss">
 .table-box {
+  .ant-table-placeholder {
+    display: none;
+  }
   .ant-table-thead {
     font-size: 14px;
   }

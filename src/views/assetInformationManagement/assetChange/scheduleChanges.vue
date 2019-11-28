@@ -55,6 +55,7 @@
           <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
         </template> -->
       </a-table>
+      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
@@ -72,6 +73,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
+import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
@@ -180,7 +182,7 @@ const queryCondition =  {
     pageSize: 10    // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon},
+  components: {SearchContainer, TreeSelect, segiIcon, noDataTips},
   props: {},
   data () {
     return {
