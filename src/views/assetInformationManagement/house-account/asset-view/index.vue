@@ -69,6 +69,7 @@
         <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
     </a-table>
+    <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
     <SG-Modal
@@ -93,9 +94,10 @@
   import SearchContainer from 'src/views/common/SearchContainer'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTableHeader from './components/EditTableHeader'
+  import NoDataTip from 'src/components/noDataTips'
   export default {
     name: 'index',
-    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding },
+    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip },
     data () {
       return {
         fold: true,

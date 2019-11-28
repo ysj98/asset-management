@@ -37,16 +37,18 @@
         <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.assetHouseId)">详情</span>
       </span>
     </a-table>
+    <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
 </template>
 
 <script>
+  import NoDataTip from 'src/components/noDataTips'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   export default {
     name: 'index',
-    components: { OverviewNumber, OrganProjectBuilding },
+    components: { OverviewNumber, OrganProjectBuilding, NoDataTip },
     data () {
       return {
         overviewNumSpinning: false, // 查询视图面积概览数据loading
