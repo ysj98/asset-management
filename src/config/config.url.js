@@ -391,9 +391,11 @@ export const ownershipSurvey = {
   // 资产项目权属详情基本信息
   attrBase: '/ams/ownerShip/attr/base',
   // 资产权属列表
-  assetList: '/ams/attr/asset/List',
+  assetList: '/ams/ownerShip/attr/asset/list',
   // 资产权属详情
   assetDetail: '/ams/ownerShip/attr/asset/detail',
   // 权属登记
-  attrSet: '/ams/attr/set'
+  attrSet: '/ams/ownerShip/attr/set',
+  // 权属人下拉列表
+  ownerShipUserSelect: '/ams/ownerShipUser/select'
 }

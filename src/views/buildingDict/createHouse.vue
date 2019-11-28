@@ -243,7 +243,10 @@
         </div>
        </a-form>
      </div>
-    <FormFooter @save="handleSave" @cancel="handleCancel" />
+    <FormFooter style="border:none;">
+      <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
+      <SG-Button @click="handleCancel">取消</SG-Button>
+    </FormFooter>
    </div>
  </template>
 <script>
@@ -641,7 +644,15 @@ export default {
   }
   .createHouse-page{
     position: relative;
+    height: calc(100vh - 40px);
+    overflow: hidden;
+  }
+  .create-form{
     padding: 42px 100px 70px 94px;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+    height: 100%;
   }
 </style>
 <style lang="less">

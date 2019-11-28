@@ -5,6 +5,346 @@
  -->
  <template>
    <div>
-     
+     <div class="pb70">
+       <SearchContainer v-model="toggle">
+         <div slot="contentForm" style="text-align:left">
+           <div>
+              <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+              <!-- 资产项目 -->
+              <a-select
+                showSearch
+                placeholder="请选择资产项目"
+                v-model="queryCondition.projectId"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="projectIdOpt"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+              />
+              <!-- 全部权属情况 -->
+              <a-select
+                showSearch
+                placeholder="请选择权属情况"
+                v-model="queryCondition.ownershipStatuss"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="ownershipStatussOpt"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+              />
+               <!-- 全部权属人 -->
+              <a-select
+                showSearch
+                placeholder="请选择权属人"
+                v-model="queryCondition.obligeeId"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="obligeeIdOpt"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+              />
+              <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+              <SG-Button @click="restQuery">清除</SG-Button>
+           </div>
+           <div class="two-row">
+              <!-- 全部权属类型 -->
+              <a-select
+                showSearch
+                placeholder="请选择权力类型"
+                v-model="queryCondition.kindOfRights"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="kindOfRightsOpt"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+              />
+                <!-- 全部资产状态 -->
+                <a-select
+                showSearch
+                placeholder="请选择资产状态"
+                v-model="queryCondition.statuss"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="statussOpt"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+              />
+               <a-input :maxLength="30" v-model="queryCondition.name" placeholder="输入资产名称/权利号" :style="allStyle"/>
+            </div>
+         </div>
+       </SearchContainer>
+       <div>
+        <a-table
+          class="custom-table td-pd10"
+          :loading="table.loading"
+          :pagination="false"
+          :scroll="{ x: 1400}"
+          :columns="table.columns"
+          :dataSource="table.dataSource"
+          :locale="{emptyText: '暂无数据'}"
+          >
+          <template slot="assetName" slot-scope="text, record">
+            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+          </template>
+          <template slot="tranProgress" slot-scope="text, record">
+            <a-progress :percent="Number(record.tranProgress) || 0" />
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <span  @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+          </template>
+        </a-table>
+        <SG-FooterPagination
+          :pageLength="queryCondition.pageSize"
+          :totalCount="table.totalCount"
+          location="absolute"
+          v-model="queryCondition.pageNum"
+          @change="handleChange"
+        />
+      </div>
+     </div>  
    </div>
  </template>
+<script>
+import SearchContainer from '@/views/common/SearchContainer'
+import TreeSelect from '@/views/common/treeSelect'
+import {utils} from '@/utils/utils'
+let getUuid = ((uuid = 1) => () => ++uuid)()
+// 页面跳转
+const operationTypes = {
+  detail: '/ownershipSurvey/projectDetail',
+}
+const allStyle = {width: '170px', marginRight: '10px'}
+const queryCondition = {
+  organId: '',
+  projectId: '',
+  ownershipStatuss: '', // 权属情况(多选)
+  obligeeId: '', // 权属人
+  kindOfRights: '', // 权利类型(多选)
+  statuss: '', // 资产状态(多选)
+  name: '', // 资产名称/权证号
+  pageNum: 1,
+  pageSize: 10,
+}
+const projectIdOpt = [{label: '全部资产项目', value: ''}]
+const ownershipStatussOpt = [
+  {label: '全部权属情况', value: ''},
+  {label: '有证', value: '1'},
+  {label: '无证', value: '0'},
+  {label: '待办', value: '2'},
+]
+const obligeeIdOpt = [{label: '全部权属人', value: ''}]
+const kindOfRightsOpt = [{label: '全部权利类型', value: ''}]
+const statussOpt = [
+  {label: '全部资产状态', value: ''},
+  {label: '未生效', value: '0'},
+  {label: '正常', value: '1'},
+  {label: '资产报废', value: '2'},
+  {label: '资产转让', value: '3'},
+  {label: '资产报损', value: '4'},
+  {label: '已清理', value: '5'},
+]
+ let columns = [{
+  title: '资产名称',
+  dataIndex: 'assetName',
+  scopedSlots: { customRender: 'assetName' },
+  width: 150
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode',
+  width: 120
+}, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: 120
+}, {
+  title: '管理机构',
+  dataIndex: 'organName',
+  width: 120
+}, {
+  title: '资产项目名称',
+  dataIndex: 'projectName',
+  width: 120
+}, {
+  title: '所在位置',
+  dataIndex: 'location',
+  width: 150
+}, {
+  title: '面积(㎡)',
+  dataIndex: 'area',
+  width: 100
+}, {
+  title: '权属情况',
+  dataIndex: 'ownershipStatusName',
+  width: 100
+}, {
+  title: '权属办理方式',
+  dataIndex: 'settingMethodName',
+  width: 120
+}, {
+  title: '权利类型',
+  dataIndex: 'kindOfRightName',
+  width: 120
+}, {
+  title: '权证号',
+  dataIndex: 'warrantNbr',
+  width: 120
+}, {
+  title: '资产状态',
+  dataIndex: 'statusName',
+  width: 120
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  scopedSlots: { customRender: 'operation' },
+  width: 70,
+}]
+export default {
+  components: {
+    SearchContainer,
+    TreeSelect
+  },
+  data () {
+    return {
+      toggle: true,
+      allStyle,
+      queryCondition,
+      projectIdOpt,
+      ownershipStatussOpt,
+      obligeeIdOpt,
+      kindOfRightsOpt,
+      statussOpt,
+      table: {
+        columns,
+        dataSource: [],
+        loading: false,
+        totalCount: 0
+      }
+    }
+  },
+  created () {
+    this.platformDictFn('AMS_KIND_OF_RIGHT')
+  },
+  methods: {
+    query () {
+      let data = {
+         ...this.queryCondition,
+         flag: '0'
+       }
+       this.table.loading = true
+       this.$api.basics.assetList(data).then(res => {
+         this.table.loading = false
+         if (res.data.code === '0') {
+           let result = res.data.data.data || []
+           this.table.dataSource = result.map(item => {
+            return {
+              key: getUuid(),
+              ...item
+            }
+          })
+          this.table.totalCount = res.data.data.count || '' 
+         } else {
+           this.$message.error(res.data.message)
+         }
+       }, () => {
+         this.table.loading = false
+       })
+    },
+     // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.queryCondition.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data || []
+          let result = data.map((item) => {
+            return {
+              label: item.projectName,
+              value: item.projectId
+            }
+          })
+          this.projectIdOpt = [...utils.deepClone(projectIdOpt), ...result]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 权属人
+    ownerShipUserSelect () {
+      let data = {organId: this.queryCondition.organId}
+      this.$api.basics.ownerShipUserSelect(data).then(res => {
+        if (res.data.code === '0') {
+
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+     // 选择组织机构
+    changeTree (value, label) {
+      this.organName = label
+      this.queryCondition.organId = value
+      this.queryCondition.projectId = ''
+      this.queryCondition.obligeeId = ''
+      this.getObjectKeyValueByOrganIdFn()
+      this.ownerShipUserSelect()
+      this.searchQuery()
+    },
+    // 重置分页查询
+    searchQuery () {
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
+    handleChange (data) {
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.query()
+    },
+    // 重置查询条件
+    restQuery () {
+      this.queryCondition.projectId = ''
+      this.queryCondition.ownershipStatuss = ''
+      this.queryCondition.obligeeId = ''
+      this.queryCondition.kindOfRights = ''
+      this.queryCondition.statuss = ''
+      this.queryCondition.name = ''
+    },
+    platformDictFn (code) {
+      this.$api.assets.platformDict({code}).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          let arr = result.map(item => ({label:item.name, ...item}))
+          // 权利类型
+          if (code === 'AMS_KIND_OF_RIGHT') {
+            this.kindOfRightsOpt = [...utils.deepClone(kindOfRightsOpt), ...arr]
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    goPage (type, record) {
+      let query = {
+        type,
+        projectId: record.projectId
+      }
+      this.$router.push({path: operationTypes[type], query})
+    },
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+  }
+}
+</script>
+<style lang="less" scoped>
+.two-row{
+  margin-top: 14px;
+  text-align:left;
+}
+</style>

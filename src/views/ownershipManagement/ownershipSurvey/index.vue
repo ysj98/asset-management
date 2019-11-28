@@ -28,7 +28,7 @@ export default {
   },
   data () {
     return {
-      showKey: 'assetProject',
+      showKey: 'assetProject', // assetProject资产项目 asset 资产
       allWidth,
       organId: ''
     }

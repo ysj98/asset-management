@@ -4,7 +4,7 @@
  * @Description: 资产项目权属
  -->
  <template>
-   <div class="assetProject-page">
+   <div class="assetProject-page pb70">
      <SearchContainer type="line" :value="false">
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -15,7 +15,7 @@
           v-model="queryCondition.projectId"
           optionFilterProp="children"
           :style="allStyle"
-          :options="assetProjectOpt"
+          :options="projectIdOpt"
           :allowClear="false"
           :filterOption="filterOption"
           notFoundContent="没有查询到数据"
@@ -24,12 +24,11 @@
          <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
       </div>
      </SearchContainer>
-     <div class="table-layout-fixed">
+     <div>
       <a-table
         class="custom-table td-pd10"
         :loading="table.loading"
         :pagination="false"
-        :scroll="{ x: 1500}"
         :columns="table.columns"
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
@@ -37,9 +36,12 @@
         <template slot="projectName" slot-scope="text, record">
            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
         </template>
+        <template slot="tranProgress" slot-scope="text, record">
+           <a-progress :percent="Number(record.tranProgress) || 0" />
+        </template>
         <template slot="operation" slot-scope="text, record">
-          <span class="btn_click mr15">详情</span>
-          <span class="btn_click">权属设置</span>
+          <span  @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+          <span @click="goPage('set', record)" class="btn_click">权属设置</span>
         </template>
       </a-table>
       <SG-FooterPagination
@@ -55,6 +57,12 @@
  <script>
  import SearchContainer from '@/views/common/SearchContainer'
  import TreeSelect from '@/views/common/treeSelect'
+ import {utils} from '@/utils/utils'
+ // 页面跳转
+const operationTypes = {
+  detail: '/ownershipSurvey/projectDetail',
+  set: '/ownershipSurvey/projectSet'
+}
  const allStyle = {width: '140px', marginRight: '10px'}
  const allWidth = {width: '170px', 'margin-right': '10px'}
  let getUuid = ((uuid = 1) => () => ++uuid)()
@@ -66,22 +74,22 @@
    pageSize: 10,
    pageNum: 1
  }
- const assetProjectOpt = [{
+ const projectIdOpt = [{
    label: '全部资产项目', value: ''
  }]
  let columns = [{
   title: '管理机构',
   dataIndex: 'organName',
-  width: 140
+  width: 150
 }, {
   title: '资产项目名称',
   dataIndex: 'projectName',
   scopedSlots: { customRender: 'projectName' },
-  width: 140
+  width: 150
 }, {
   title: '资产项目编码',
   dataIndex: 'projectCode',
-  width: 100
+  width: 120
 }, {
   title: '来源方式',
   dataIndex: 'sourceTypeName',
@@ -93,7 +101,7 @@
 }, {
   title: '资产数量',
   dataIndex: 'assetCount',
-  width: 70
+  width: 100
 }, {
   title: '办理进度',
   dataIndex: 'tranProgress',
@@ -115,7 +123,7 @@
   title: '操作',
   dataIndex: 'operation',
   scopedSlots: { customRender: 'operation' },
-  width: 120
+  width: 120,
 }]
  export default {
    components: {
@@ -128,7 +136,7 @@
        allWidth,
        organName: '', // 所选组织机构名称
        queryCondition,
-       assetProjectOpt,
+       projectIdOpt,
        table: {
         columns,
         dataSource: [],
@@ -141,7 +149,7 @@
      query () {
        let data = {
          ...this.queryCondition,
-         flag: this.queryCondition.currentOrgan ? '1' : '0'
+         flag: this.queryCondition.currentOrgan ? 1 : 0
        }
        this.table.loading = true
        this.$api.basics.ownerShipList(data).then(res => {
@@ -149,27 +157,49 @@
          if (res.data.code === '0') {
            let result = res.data.data.data || []
            this.table.dataSource = result.map(item => {
+             item.sourceTypeName = item.sourceTypeName || '-'
+             item.souceChannelType = item.souceChannelType || '-'
             return {
               key: getUuid(),
               ...item
             }
           })
           this.table.totalCount = res.data.data.count || '' 
+         } else {
+           this.$message.error(res.data.message)
          }
        }, () => {
          this.table.loading = false
        })
      },
+     // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.queryCondition.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data || []
+          let result = data.map((item) => {
+            return {
+              label: item.projectName,
+              value: item.projectId
+            }
+          })
+          this.projectIdOpt = [...utils.deepClone(projectIdOpt), ...result]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
      // 选择组织机构
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
-      if (!this.isChild) {
-        this.queryCondition.pageNum = 1
-        this.query()
-      } else {
-        this.isChild = false
-      }
+      this.queryCondition.projectId = ''
+      this.getObjectKeyValueByOrganIdFn()
+      this.searchQuery()
     },
     // 重置分页查询
     searchQuery () {
@@ -187,19 +217,11 @@
     },
     // 页面跳转
     goPage (type, record) {
-      // 存储缓存搜索缓存数据
-      // let o = {
-      //   ...this.queryConditionStore,
-      //   organName: this.organName || '',
-      //   showKey: 'house'
-      // }
-      // this.SET_ROUTE_QUERY(this.$route.path, o)
-      // let query = {type}
-      // if (['edit', 'copy', 'detail'].includes(type)) {
-      //   query.houseId = record.houseId,
-      //   query.organId = this.queryCondition.organId
-      // }
-      // this.$router.push({path: operationTypes[type], query: query || {}})
+      let query = {
+        type,
+        projectId: record.projectId
+      }
+      this.$router.push({path: operationTypes[type], query})
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
