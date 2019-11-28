@@ -1,19 +1,192 @@
 <!--价值登记页面--资产价值登记Tab页面-->
 <template>
-  <div></div>
+  <div class="asset_worth_register">
+    <!--搜索条件-->
+    <search-container v-model="fold">
+      <div slot="headerBtns">
+        <SG-Button
+          icon="plus"
+          type="primary"
+          @click="handleAdd"
+        >新增资产项目</SG-Button>
+        <SG-Button icon="export" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+      </div>
+      <div slot="headerForm">
+        <a-input placeholder="请输入登记名称" v-model="registerName" style="width: 171px; margin-right: 10px"/>
+      </div>
+      <div slot="contentForm">
+        <a-row :gutter="8">
+          <a-col :span="15">
+            <organ-project-type v-model="organProjectType"/>
+          </a-col>
+          <a-col :span="5">
+            <a-select v-model="approvalStatus" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
+          </a-col>
+          <a-col :span="4" style="text-align: left">
+            <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
+          </a-col>
+        </a-row>
+        <a-row style="margin-top: 14px">
+          <a-col :span="24">
+            <date-method-organ v-model="dateMethodOrgan"/>
+          </a-col>
+        </a-row>
+      </div>
+    </search-container>
+    <!--列表部分-->
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <span slot="action" slot-scope="text, record">
+        <a-popconfirm
+          okText="确定"
+          cancelText="取消"
+          title="确定要删除该资产项目吗?"
+          @confirm="confirmDelete(record)"
+        >
+          <span class="action_text">删除</span>
+        </a-popconfirm>
+        <span slot="action" slot-scope="text, record">
+          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.assetHouseId)">详情</span>
+        </span>
+      </span>
+    </a-table>
+    <no-data-tip v-if="!tableObj.dataSource.length"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+  </div>
 </template>
 
 <script>
+  import NoDataTip from 'src/components/noDataTips'
+  import OrganProjectType from '../components/OrganProjectType'
+  import DateMethodOrgan from '../components/DateMethodOrgan'
+  import SearchContainer from 'src/views/common/SearchContainer'
   export default {
     name: 'index',
+    components: { SearchContainer, OrganProjectType, DateMethodOrgan, NoDataTip },
     data () {
-      return {}
+      return {
+        fold: true, // 查询条件折叠按钮
+        registerName: '', // 查询条件-登记名称
+        organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
+        dateMethodOrgan: {}, // { assessOrgan, assessDate, confirmDate, assessMethod }
+        // 查询条件：提交日期--评估基准日-评估方式-评估机构
+        approvalStatus: undefined, // 查询条件-登记状态
+        statusOptions: [
+          { title: '全部', key: -1 }, { title: '草稿', key: '1' }, { title: '待审批', key: '2' },
+          { title: '已驳回', key: '3' }, { title: '已审批', key: '4' }, { title: '已取消', key: '5' }
+        ], // 查询条件-状态选项
+        tableObj: {
+          dataSource: [],
+          loading: false,
+          scroll: { x: true },
+          pagination: false,
+          rowKey: 'assetHouseId',
+          columns: [
+            { title: '登记单ID', dataIndex: 'registerId' }, { title: '所属机构', dataIndex: 'organName' },
+            { title: '价值登记单名称', dataIndex: 'registerName' }, { title: '资产项目', dataIndex: 'projectName' },
+            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '评估方法', dataIndex: 'assessmentMethodName' },
+            { title: '评估机构', dataIndex: 'assessmentOrganName' }, { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
+            { title: '资产数量', dataIndex: 'num', align: 'right' }, { title: '提交人', dataIndex: 'createByName' },
+            { title: '提交时间', dataIndex: 'createTime' }, { title: '状态', dataIndex: 'approvalStatusName' },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
+          ]
+        },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
+      }
     },
 
-    methods: {}
+    methods: {
+      // 新增
+      handleAdd () {},
+
+      // 导出
+      handleExport () {},
+
+      // 删除项目
+      confirmDelete () {
+        this.tableObj.loading = true
+        // this.$api.assets.deleteProjectManageProjectById({projectId}).then(r => {
+        //   this.tableObj.loading = false
+        //   let res = r.data
+        //   if (res && String(res.code) === '0') {
+        //     this.$message.success('删除成功')
+        //     // 更新列表
+        //     const { pageNo, pageLength } = this.paginationObj
+        //     return this.queryTableData({pageNo, pageLength, type: 'search'})
+        //   }
+        //   throw res.message || '删除失败'
+        // }).catch(err => {
+        //   this.tableObj.loading = false
+        //   this.$message.error(err || '删除失败')
+        // })
+      },
+
+      // 查询列表数据
+      queryTableData ({pageNo = 1, pageLength = 10}) {
+        // const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
+        // if (!organId) { return this.$message.info('请选择组织机构') }
+        // this.tableObj.loading = true
+        // this.$api.assets.queryBuildingViewPage({ organId, houseIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
+        //   this.tableObj.loading = false
+        //   let res = r.data
+        //   if (res && String(res.code) === '0') {
+        //     const { count, data } = res.data
+        //     this.tableObj.dataSource = data
+        //     Object.assign(this.paginationObj, {
+        //       totalCount: count,
+        //       pageNo, pageLength
+        //     })
+        //     return false
+        //   }
+        //   throw res.message || '查询资产价值登记接口出错'
+        // }).catch(err => {
+        //   this.tableObj.loading = false
+        //   this.$message.error(err || '查询资产价值登记接口出错')
+        // })
+      },
+    },
+
+    watch: {
+      // 全选与其他选项互斥处理
+      approvalStatus: function (val) {
+        if (val && val.length !== 1 && val.includes(-1)) {
+          this.approvalStatus = [-1]
+        }
+      },
+
+      // 全选与其他选项互斥处理
+      // sourceTypeList: function (val) {
+      //   if (val && val.length !== 1 && val.includes('allType')) {
+      //     this.sourceTypeList = ['allType']
+      //   }
+      // },
+
+      // 长度不能超过30字符
+      registerName: function (val, pre) {
+        if (val && val.length > 40) {
+          this.$message.warn("登记名称不能超40个字符")
+          this.registerName = pre
+        }
+      },
+
+      organProjectType: function (val) {
+        val && val.organId && this.queryTableData({})
+      }
+    }
   }
 </script>
 
 <style lang='less' scoped>
-
+  .asset_worth_register {
+    /*if you want to set scroll: { x: true }*/
+    /*you need to add style .ant-table td { white-space: nowrap; }*/
+    & /deep/ .ant-table-thead th, .ant-table td {
+      white-space: nowrap;
+    }
+    & /deep/ .ant-table-body {
+      &::-webkit-scrollbar {
+        height: 8px !important;
+      }
+    }
+  }
 </style>

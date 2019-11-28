@@ -12,10 +12,10 @@
   <div class="choose_area">
     <a-row :gutter="8">
       <!--组织机构选择控件, 单选-->
-      <a-col :span="8">
+      <a-col :span="isShowBuilding ? 8 : 12">
         <tree-select @changeTree="changeTree" class="organ_style"/>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="isShowBuilding ? 8 : 12">
         <a-select
           v-model="projectId"
           v-bind="properties"
@@ -26,9 +26,8 @@
           :loading="loading && !projectOptions.length"
         ></a-select>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="8" v-if="isShowBuilding">
         <a-select
-          v-if="isShowBuilding"
           v-model="buildingId"
           v-bind="properties"
           class="building_style"
