@@ -9,10 +9,12 @@ import * as global from './global'
 import * as assets from './assets'
 import * as basics from './basics'
 import * as building from './building'
+import * as ownership from './ownership'
 const API = {
   auth,
   global,
   assets,
+  ownership,
   basics,
   building
 }

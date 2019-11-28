@@ -1,17 +1,18 @@
 <!--
-  权属登记
+  权证管理
 -->
 <template>
   <div class="ownershipRegistration">
-    <SearchContainer v-model="toggle" @input="searchContainerFn">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
+        <a-checkbox :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
       </div>
-      <div slot="contentForm">
-        <div class="form-first">
+      <div slot="contentForm" class="search-content-box">
+        <div class="search-from-box">
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -21,14 +22,13 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <div class="box box-right">
+          <div class="box box-right" :style="dateWidth">
             <SG-DatePicker label="创建日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
+        </div>
+        <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
-        </div>
-        <div class="from-second">
-          <a-checkbox :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
         </div>
       </div>
     </SearchContainer>
@@ -62,6 +62,8 @@ import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import {utils, debounce} from '@/utils/utils.js'
+const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
   {
     title: '登记单名称',
@@ -152,10 +154,11 @@ export default {
   props: {},
   data () {
     return {
+      dateWidth,
       loading: false,
       noPageTools: false,
       location: 'absolute',
-      allStyle: 'width: 170px; margin-right: 10px;',
+      allStyle: allWidth,
       toggle: true,
       columns,
       organName: '',
@@ -195,6 +198,7 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
       this.getObjectKeyValueByOrganIdFn()
       this.query()
     },
@@ -323,7 +327,7 @@ export default {
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
       }
-      this.$api.assets.shipList(obj).then(res => {
+      this.$api.ownership.shipList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
@@ -371,6 +375,17 @@ export default {
   }
   .box-right {
     margin-right: 10px;
+  }
+}
+.search-content-box{
+  display: flex;
+  justify-content: space-between;
+  .search-from-box{
+    flex: 1;
+  }
+  .two-row-box{
+    padding-top: 14px;
+    flex: 0 0 190px;
   }
 }
 </style>

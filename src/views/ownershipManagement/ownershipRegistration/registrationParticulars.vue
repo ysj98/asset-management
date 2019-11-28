@@ -95,7 +95,7 @@ export default {
       let obj = {
         registerId: this.registerId
       }
-      this.$api.assets.shipDetail(obj).then(res => {
+      this.$api.ownership.shipDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.particularsData = data.registerInfo

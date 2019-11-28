@@ -274,33 +274,6 @@ export const assets = {
     // 资产项目-资产项目详情-资产概况
     queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
   },
-  // 权属登记
-  ownershipRegistration: {
-    // 权属登记删除
-    shipDelete: '/ams/ownerShip/ship/delete',
-    // 权属登记单查询
-    shipList: '/ams/ownerShip/ship/list',
-    // 权属登记详情查询
-    shipDetail: '/ams/ownerShip/ship/detail',
-    // 权属登记删除
-    saveOrUpdate: '/ams/ownerShip/ship/saveOrUpdate',
-  },
-  authorityCardManagement: {
-    // 权证导入
-    warrantImport: '/ams/ownerShipUser/warrant/import',
-    // 权证导入模板下载
-    warrantDownload: '/ams/ownerShipUser/warrant/download',
-    // 权证导出
-    warrantExport: '/ams/ownerShipUser/warrant/export',
-    // 权证新增或修改
-    warrantSaveOrUpdate: '/ams/ownerShipUser/warrant/saveOrUpdate',
-    // 权证查询
-    warrantList: '/ams/ownerShipUser/warrant/list',
-    // 权证注销
-    warrantDelete: '/ams/ownerShipUser/warrant/delete',
-    // 查询权证详情
-    warrantDetail: '/ams/ownerShipUser/warrant/detail',
-  },
   // 权属人管理
   propertyOwnerManagement: {
     // 新建或编辑权属人
@@ -398,4 +371,36 @@ export const ownershipSurvey = {
   attrSet: '/ams/ownerShip/attr/set',
   // 权属人下拉列表
   ownerShipUserSelect: '/ams/ownerShipUser/select'
+}
+
+
+export const ownership = {
+  // 权属登记
+  ownershipRegistration: {
+    // 权属登记删除
+    shipDelete: '/ams/ownerShip/ship/delete',
+    // 权属登记单查询
+    shipList: '/ams/ownerShip/ship/list',
+    // 权属登记详情查询
+    shipDetail: '/ams/ownerShip/ship/detail',
+    // 权属登记删除
+    saveOrUpdate: '/ams/ownerShip/ship/saveOrUpdate',
+  },
+  // 权证管理
+  authorityCardManagement: {
+    // 权证导入
+    warrantImport: '/ams/ownerShipUser/warrant/import',
+    // 权证导入模板下载
+    warrantDownload: '/ams/ownerShipUser/warrant/download',
+    // 权证导出
+    warrantExport: '/ams/ownerShipUser/warrant/export',
+    // 权证新增或修改
+    warrantSaveOrUpdate: '/ams/ownerShipUser/warrant/saveOrUpdate',
+    // 权证查询
+    warrantList: '/ams/ownerShipUser/warrant/list',
+    // 权证注销
+    warrantDelete: '/ams/ownerShipUser/warrant/delete',
+    // 查询权证详情
+    warrantDetail: '/ams/ownerShipUser/warrant/detail',
+  }
 }

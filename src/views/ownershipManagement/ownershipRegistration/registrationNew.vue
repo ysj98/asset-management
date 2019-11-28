@@ -139,7 +139,7 @@
       <div class="tab-nav">
         <span class="section-title blue">权属登记详情</span>
         <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
-        <div class="table-layout-fixed table-border" v-if="columns.length !== 0">
+        <div class="table-layout-fixed" v-if="columns.length !== 0" :class="{'table-border': tableData.length != 0}">
           <a-table
             :scroll="{y: 450}"
             :columns="columns"
@@ -169,9 +169,10 @@
             </template>
           </a-table>
         </div>
-        <div v-else style="text-align: center">
+        <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+        <!-- <div v-else style="text-align: center">
           暂无数据
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- 选择资产 -->
@@ -193,6 +194,7 @@ import AssetBundlePopover from '../../common/assetBundlePopover'
 import chooseWarrants from '../../common/chooseWarrants'
 import {register, cancellation } from './basics'
 import FormFooter from '@/components/FormFooter'
+import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 
 const newEditSingleData = {
@@ -206,7 +208,7 @@ const newEditSingleData = {
   organId: ''
 }
 export default {
-  components: {AssetBundlePopover, chooseWarrants, FormFooter},
+  components: {AssetBundlePopover, chooseWarrants, FormFooter, noDataTips},
   props: {},
   data () {
     return {
@@ -416,7 +418,7 @@ export default {
           }
           console.log(obj)
           let loadingName = this.SG_Loding('保存中...')
-          this.$api.assets.saveOrUpdate(obj).then(res => {
+          this.$api.ownership.saveOrUpdate(obj).then(res => {
             if (Number(res.data.code) === 0) {
               this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success('提交成功')
@@ -440,7 +442,7 @@ export default {
       let obj = {
         registerId: this.registerId
       }
-      this.$api.assets.getChangeInfo(obj).then(res => {
+      this.$api.ownership.getChangeInfo(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.changeType = String(data.changeType)
