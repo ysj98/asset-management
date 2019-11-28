@@ -55,15 +55,6 @@
       @change="handleChange"
     />
     </div>
-    <SG-Modal
-      width="400px"
-      v-model="commonShow"
-      :title="commonTitle"
-      @ok="commonFn"
-    >
-      <div v-if="judge === 'delete'">确认要删除该资产登记单吗？</div>
-      <div v-else>确认要终止交付该资产交付单吗？</div>
-    </SG-Modal>
   </div>
 </template>
 
@@ -151,9 +142,6 @@ export default {
       // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
-      commonShow: false,
-      commonTitle: '',
-      judge: '',
       loading: false,
       noPageTools: false,
       location: 'absolute',
@@ -206,15 +194,9 @@ export default {
         // this.goPage()
         this.$router.push({path: '/assetChange/particulars', query: { record: particularsData }})
       } else if (str === 'delete') {  // 删除
-        this.commonTitle = '删除'
-        this.changeOrderId = val.changeOrderId
-        this.judge = 'delete'
-        this.commonShow = true
+        this.commonFn('delete', val.changeOrderId)
       } else if (str === 'delivery') {   // 终止交付
-      this.commonTitle = '终止交付'
-        this.judge = 'delivery'
-        this.changeOrderId = val.changeOrderId
-        this.commonShow = true
+        this.commonFn('delivery', val.changeOrderId)
       } else if (str === 'edit') {
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([val])
@@ -261,49 +243,55 @@ export default {
       }
       return data
     },
-    commonFn () {
+    commonFn (str, id) {
+      let _this = this
       // 删除
-      if (this.judge === 'delete') {
+      if (str === 'delete') {
+        this.$confirm({
+        title: '提示',
+        content: '确认要删除该资产登记单吗？',
+        onOk() {
         let obj = {
-          changeOrderId: this.changeOrderId
+          changeOrderId: id
         }
-        this.$api.assets.deleteChange(obj).then(res => {
+        _this.$api.assets.deleteChange(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            this.$message.info('删除成功')
-            this.commonShow = false
-            this.query()
+            _this.$message.info('删除成功')
+            _this.query()
           } else {
-            this.$message.error(res.data.message)
-            this.commonShow = false
+            _this.$message.error(res.data.message)
           }
         })
+        }
+      })
       // 终止交付
-      } else if (this.judge === 'delivery') {
-        let obj = {
-          changeOrderId: this.changeOrderId
-        }
-        this.$api.assets.stopDelivery(obj).then(res => {
-          if (Number(res.data.code) === 0) {
-            this.$message.info('终止交付成功')
-            this.commonShow = false
-            this.query()
-          } else {
-            this.$message.error(res.data.message)
-            this.commonShow = false
+      } else if (str === 'delivery') {
+        this.$confirm({
+        title: '提示',
+        content: '确认要终止交付该资产交付单吗？',
+        onOk() {
+          let obj = {
+            changeOrderId: id
           }
-        })
+          _this.$api.assets.stopDelivery(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('终止交付成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+        }
+      })
       }
     },
     // 选择组织机构
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
-      if (!this.isChild) {
-        this.queryCondition.pageNum = 1
-        this.query()
-      } else {
-        this.isChild = false
-      }
+      this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.query()
       this.getObjectKeyValueByOrganIdFn()
     },
     // 资产项目
@@ -350,9 +338,6 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    },
-    platformDictStatusFn () {
-      // approval_status_type
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {

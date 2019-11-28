@@ -207,7 +207,7 @@
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea v-decorator="['description', {initialValue: ''}]"/>
+                      <a-textarea :maxLength="200" v-decorator="['description', {initialValue: ''}]"/>
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
@@ -225,7 +225,7 @@
         </div>
     </div>
      <FormFooter>
-       <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
+       <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr2']" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_BUILD_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
      <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>

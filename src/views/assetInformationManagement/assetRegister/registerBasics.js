@@ -3,17 +3,17 @@ export const columnsData = [
   {
     title: '楼栋名称',
     dataIndex: 'buildName',
-    width: 100
+    width: 150
   },
   {
     title: '房屋名称',
     dataIndex: 'houseName',
-    width: 100
+    width: 150
   },
   {
     title: '资产名称',
     dataIndex: 'assetName',
-    width: 100
+    width: 150
   },
   {
     title: '资产编码',
@@ -28,7 +28,7 @@ export const columnsData = [
   {
     title: '坐落位置',
     dataIndex: 'pasitionString',
-    width: 100
+    width: 230
   },
   {
     title: '权属情况',
@@ -108,7 +108,7 @@ export const columnsData = [
   {
     title: '已使用期数(月)',
     dataIndex: 'usedDate',
-    width: 100
+    width: 120
   },
   {
     title: '操作',

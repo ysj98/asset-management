@@ -183,6 +183,14 @@ let proRouter = [
     component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationParticulars.vue')
   },
   {
+    path: '/authorityCardManagement',
+    name: '权证管理',
+    component: () => import('@/views/ownershipManagement/authorityCardManagement/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/assetEntry',
     name: '资产入账',
     component: () => import('@/views/financialManagement/assetEntry/index.vue'),
@@ -197,6 +205,16 @@ let proRouter = [
     meta: {
       keepAlive: true
     }
+  },
+  {
+    path: '/ownershipSurvey/projectDetail',
+    name: '资产项目权属详情',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/projectOwnershipDetail.vue')
+  },
+  {
+    path: '/ownershipSurvey/projectSet',
+    name: '资产项目权属设置',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/projectOwnershipSet.vue')
   },
   {
     path: '/worthRegister',

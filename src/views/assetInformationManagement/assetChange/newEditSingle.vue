@@ -219,11 +219,11 @@
     </div>
     <!-- 选择资产 -->
     <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
-    <FormFooter>
+    <FormFooter style="border:none;">
       <div>
-        <a-button type="primary" @click="save('save')">提交</a-button>
-        <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
-        <a-button @click="cancel">取消</a-button>
+        <SG-Button type="primary" @click="save('save')">提交</SG-Button>
+        <SG-Button style="margin-left: 12px" type="primary" @click="save('draft')">保存草稿</SG-Button>
+        <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
   </div>

@@ -71,7 +71,7 @@
               <a-date-picker
               :style="allWidth"
               placeholder="请选择接管日期"
-              v-decorator="['createTime',
+              v-decorator="['takeOverDate',
                 {rules: [{required: true, message: '请选择接管日期'}]}
               ]"
               />
@@ -102,8 +102,10 @@
         <span class="section-title blue">资产明细</span>
         <div class="tab-exhibition">
           <div class="exhibition" v-for="(item, index) in assetsCount" :key="index">
-            <p>{{item.name}}</p>
-            <p>{{item.value || 0}}</p>
+            <div class="exhibition-nav">
+              <div>{{item.name}}</div>
+              <div>{{item.value}}</div>
+            </div>
           </div>
         </div>
         <div class="button-box">
@@ -114,10 +116,10 @@
           </div>
         </div>
         <!-- table-layout-fixed -->
-        <div class="table-border">
+        <div class="table-borders">
           <a-table
             class="table-box"
-            :scroll="{y: 450, x: 2600}"
+            :scroll="{y: 450, x: 2700}"
             :columns="columns"
             :dataSource="tableData"
             :pagination="false"
@@ -129,9 +131,9 @@
         </div>
       </div>
     </div>
-    <FormFooter>
-      <a-button type="primary" @click="save">提交</a-button>
-      <a-button @click="cancel">取消</a-button>
+    <FormFooter style="border:none;">
+      <SG-Button class="mr2" @click="save" type="primary">提交</SG-Button>
+      <SG-Button @click="cancel">取消</SG-Button>
     </FormFooter>
      <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <SG-Modal
@@ -171,15 +173,6 @@
         </div>
       </div>
     </SG-Modal>
-    <SG-Modal
-      width="400px"
-      v-model="commonShow"
-      :title="commonTitle"
-      @ok="commomDelete"
-    >
-      <div v-if="judge === 'delete'">确认要删除该资产吗？</div>
-      <div v-else>确认要清空资产列表？</div>
-    </SG-Modal>
   </div>
 </a-spin>
 </template>
@@ -194,7 +187,7 @@ const newEditSingleData = {
   registerOrderCode: '',   // 验收单名称
   assetType: undefined,     // 资产类型
   projectId: undefined,     // 资产项目
-  createTime: {},       // 接管日期
+  takeOverDate: {},       // 接管日期
   remark: '',          // 备注
   files: [],
   organId: ''
@@ -254,9 +247,6 @@ export default {
       spinning: false,
       setType: '',
       recordKey: '',
-      commonShow: false,
-      commonTitle: '',
-      judge: '',
       registerOrderId: '',
       assetsCount: '',
       organId: '',
@@ -512,28 +502,29 @@ export default {
         this.$message.info('暂无资产清空')
         return
       }
-      this.commonTitle = '清空列表'
-      this.judge = 'empty'
-      this.commonShow = true
+      this.commomDelete('empty')
     },
     // 删除
     deleteFn (record) {
-      this.commonTitle = '删除'
-      this.judge = 'delete'
-      this.commonShow = true
-      this.recordKey = record.key
+      this.commomDelete('delete', record.key)
     },
-    commomDelete () {
-      if (this.judge === 'delete') {
-        this.tableData.forEach((item, index) => {
-          if (item.key === this.recordKey) {
-            this.tableData.splice(index, 1)
+    commomDelete (str, recordKey) {
+      let _this = this
+      _this.$confirm({
+        title: '提示',
+        content: str === 'delete' ? '确认要反审核该资产登记单吗？' : '确认要清空资产列表？',
+        onOk() {
+          if (str === 'delete') {
+            _this.tableData.forEach((item, index) => {
+              if (item.key === recordKey) {
+                _this.tableData.splice(index, 1)
+              }
+            })
+          } else {
+            _this.tableData = []
           }
-        })
-      } else {
-        this.tableData = []
-      }
-      this.commonShow = false
+        }
+      })
     },
     // 楼栋搜索
     handleSearch (value) {
@@ -582,7 +573,7 @@ export default {
               item.ownershipStatus = 2
             }
           })
-          console.log(values.createTime, '这是什么时间')
+          console.log(values.takeOverDate, '这是什么时间')
           let obj = {
             registerOrderId: this.registerOrderId,                         // 资产变动单Id（新增为空）
             registerOrderCode: values.registerOrderCode, // 登记单编号
@@ -590,7 +581,7 @@ export default {
             assetType: values.assetType,                 // 资产类型Id
             remark: values.remark,                       // 备注
             organId: this.organId,                      // 组织机构id
-            createTime: values.createTime === undefined ? '' : `${values.createTime.format('YYYY-MM-DD')}`,                // 接管日期
+            takeOverDate: values.takeOverDate === undefined ? '' : `${values.takeOverDate.format('YYYY-MM-DD')}`,                // 接管日期
             assetHouseList: data,
             attachment: files.length === 0 ? [] : files
           }
@@ -646,9 +637,13 @@ export default {
             projectId: data.projectId,
             registerOrderCode: data.registerOrderCode,
             assetType: String(data.assetType),
-            createTime: data.createTime === '' ? '' : moment(data.createTime, 'YYYY-MM-DD'),
             remark: data.remark
           })
+          if (data.takeOverDate) {
+            this.form.setFieldsValue({
+              takeOverDate: data.takeOverDate === '' ? '' : moment(data.takeOverDate, 'YYYY-MM-DD'),
+            })
+          }
           let files = []
           if (data.attachment && data.attachment.length > 0) {
               data.attachment.forEach(item => {
@@ -811,8 +806,13 @@ export default {
         }
       }
     }
+    .table-borders {
+      border-top: 1px solid rgba(239,244,249,1);
+      border-left: 1px solid rgba(239,244,249,1);
+      border-right: 1px solid rgba(239,244,249,1);
+    }
     .tab-exhibition {
-      margin: 10px 0;
+      margin: 10px 0 16px 0;
       display: flex;
       height: 83px;
       .exhibition {
@@ -820,13 +820,20 @@ export default {
         color: #fff;
         text-align: center;
         border-right: 1px solid #EFF2F7;
-        p:nth-of-type(1) {
-          padding-top: 14px;
-          font-size: 12px;
-        }
-        p:nth-of-type(2) {
-          font-size: 16px;
-          font-weight: bold;
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        .exhibition-nav {
+          align-items:center;
+          justify-content:center;
+          div:nth-of-type(1) {
+            font-size: 12px;
+          }
+          div:nth-of-type(2) {
+            padding-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+          }
         }
       }
       .exhibition:nth-of-type(1){
@@ -862,8 +869,16 @@ export default {
 
 <style lang="scss">
 .table-box {
-  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
-    padding: 6px 6px;
+  .ant-table-thead {
+    font-size: 14px;
+  }
+  .ant-table-thead tr th {
+    padding: 9px;
+    background-color: #fff;
+    color: #49505E;
+  }
+  .ant-table-tbody > tr > td {
+    padding: 6px 9px;
   }
   .ant-table-tbody {
     tr:nth-child(even){

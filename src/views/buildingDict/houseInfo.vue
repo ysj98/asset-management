@@ -5,73 +5,69 @@
  -->
 <template>
   <div class="houseInfo-page pb70">
-    <SearchContainer v-model="toggle">
+    <SearchContainer v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_ADD_HOUSE"  icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSEZL_IN" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSE_OUT" @click="openExportModal"><segiIcon type="#icon-ziyuan10" class="mr10"/>房间导出</SG-Button>
         <SG-Button icon="sync" v-power="ASSET_MANAGEMENT.ASSET_HOUSE_IN" @click="openImportModal">批量更新</SG-Button>
       </div>
-      <div slot="contentForm">
-        <div>
+      <div slot="contentForm" class="search-content-box">
+        <div class="search-from-box">
           <!-- 公司 -->
           <topOrganByUser @change="organIdChange" :formStyle="allWidth" v-model="queryCondition.organId" :hasAll="false" :selectFirst="true"/>
-         <!-- 楼栋 -->
-         <a-select
-          showSearch
-          placeholder="请选择楼栋"
-          v-model="queryCondition.buildId"
-          optionFilterProp="children"
-          @search="handleSearch"
-          @change="watchBuildChange"
-          :style="allWidth"
-          :options="buildOpt"
-          :allowClear="false"
-          :filterOption="false"
-          notFoundContent="没有查询到数据"
-         />
-         <!-- 单元 -->
-         <a-select
-          showSearch
-          placeholder="请选择单元"
-           @change="watchUnitChange"
-          v-model="queryCondition.unitId"
-          optionFilterProp="children"
-          :style="allWidth"
-          :options="unitOpt"
-          :allowClear="false"
-          :filterOption="filterOption"
-          notFoundContent="没有查询到数据"
-         />
-         <!-- 房号 -->
-         <a-select
-          showSearch
-          placeholder="请选择房号"
-          v-model="queryCondition.houseId"
-          optionFilterProp="children"
-          :style="allWidth"
-          :options="houseOpt"
-          :allowClear="false"
-          :filterOption="filterOption"
-          notFoundContent="没有查询到数据"
-         />
-         <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-         <SG-Button @click="restQuery">清除</SG-Button>
-        </div>
-        <div class="two-row">
-          <!-- 房屋建筑形态 -->
+          <!-- 楼栋 -->
           <a-select
             showSearch
-            placeholder="请选择建筑形态"
-            v-model="queryCondition.houseCategory"
+            placeholder="请选择楼栋"
+            v-model="queryCondition.buildId"
+            optionFilterProp="children"
+            @search="handleSearch"
+            @change="watchBuildChange"
+            :style="allWidth"
+            :options="buildOpt"
+            :allowClear="false"
+            :filterOption="false"
+            notFoundContent="没有查询到数据"
+          />
+          <!-- 单元 -->
+          <a-select
+            showSearch
+            placeholder="请选择单元"
+            @change="watchUnitChange"
+            v-model="queryCondition.unitId"
             optionFilterProp="children"
             :style="allWidth"
-            :options="houseCategoryOpt"
-            @change="watchHouseCategory"
+            :options="unitOpt"
             :allowClear="false"
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
+          <!-- 房号 -->
+          <a-select
+            showSearch
+            placeholder="请选择房号"
+            v-model="queryCondition.houseId"
+            optionFilterProp="children"
+            :style="allWidth"
+            :options="houseOpt"
+            :allowClear="false"
+            :filterOption="filterOption"
+            notFoundContent="没有查询到数据"
+          />
+          <!-- 房屋建筑形态 -->
+            <a-select
+              showSearch
+              placeholder="请选择建筑形态"
+              v-model="queryCondition.houseCategory"
+              optionFilterProp="children"
+              :style="allWidth"
+              :options="houseCategoryOpt"
+              @change="watchHouseCategory"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
             <!-- 房屋类型 -->
             <a-select
             showSearch
@@ -108,6 +104,10 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
+        </div>
+        <div class="two-row-box">
+          <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+          <SG-Button @click="restQuery">清除</SG-Button>
         </div>
       </div>
     </SearchContainer>
@@ -161,7 +161,7 @@ import downErrorFile from '@/views/common/downErrorFile'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
-const allWidth = {width: '170px', 'margin-right': '10px'}
+const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 // 页面跳转
 const operationTypes = {
   create: '/buildingDict/createHouse',
@@ -668,10 +668,17 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.two-row{
-  margin-top: 14px;
-  text-align: right;
-  padding-right: 190px;
+.search-content-box{
+  display: flex;
+  justify-content: space-between;
+  .search-from-box{
+    flex: 1;
+  }
+  .two-row-box{
+    padding-top: 14px;
+    flex: 0 0 190px;
+  }
 }
+
 </style>
 

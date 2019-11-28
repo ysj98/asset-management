@@ -459,10 +459,6 @@ export default {
       this.$router.push({path: '/assetClassSet'})
     },
     getUnitOptions () {
-      // let form = {
-      //   dictCode: 'MEASURE_UNIT',
-      //   groupId: this.organId
-      // }
       let form = {
         code: 'MEASURE_UNIT',
         organId: this.organId

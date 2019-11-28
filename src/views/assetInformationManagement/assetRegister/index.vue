@@ -54,15 +54,6 @@
       v-model="queryCondition.pageNum"
       @change="handleChange"
     />
-    <SG-Modal
-      width="400px"
-      v-model="commonShow"
-      :title="commonTitle"
-      @ok="commonFn"
-    >
-      <div v-if="judge === 'delete'">确认要删除该资产登记单吗？</div>
-      <div v-else>确认要反审核该资产登记单吗？</div>
-    </SG-Modal>
   </div>
 </template>
 
@@ -142,13 +133,10 @@ export default {
       // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
-      commonShow: false,
-      commonTitle: '',
-      judge: '',
       loading: false,
       noPageTools: false,
       approvalStatusData: [...approvalStatusData],
-      allStyle: 'width: 140px; margin-right: 10px;',
+      allStyle: 'width: 150px; margin-right: 10px;',
       columns,
       organName: '',
       organId: '',
@@ -200,50 +188,53 @@ export default {
         let particularsData = JSON.stringify([val])
         this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'particulars' }})
       } else if (str === 'delete') {  // 删除
-        this.commonTitle = '删除'
-        this.registerOrderId = val.registerOrderId
-        this.judge = 'delete'
-        this.commonShow = true
+        this.commonFn('delete', val.registerOrderId)
       } else if (str === 'theAudit') {   // 反审核
-        this.commonTitle = '反审核'
-        this.judge = 'theAudit'
-        this.registerOrderId = val.registerOrderId
-        this.commonShow = true
+        this.commonFn('theAudit', val.registerOrderId)
       } else if (str === 'edit') {
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([val])
         this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, enitData: enitData, setType: 'edit' }})
       }
     },
-    commonFn () {
+    commonFn (str, id) {
+      let _this = this
       // 删除
-      if (this.judge === 'delete') {
-        let obj = {
-          registerOrderId: this.registerOrderId
-        }
-        this.$api.assets.deleteByRegisterOrderId(obj).then(res => {
-          if (Number(res.data.code) === 0) {
-            this.$message.info('删除成功')
-            this.commonShow = false
-            this.query()
-          } else {
-            this.$message.error(res.data.message)
-            this.commonShow = false
+      if (str === 'delete') {
+        this.$confirm({
+          title: '提示',
+          content: '确认要删除该资产登记单吗？',
+          onOk() {
+            let obj = {
+              registerOrderId: id
+            }
+            _this.$api.assets.deleteByRegisterOrderId(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                _this.$message.info('删除成功')
+                _this.query()
+              } else {
+                _this.$message.error(res.data.message)
+              }
+            })
           }
         })
       // 反审核
-      } else if (this.judge === 'theAudit') {
-        let obj = {
-          registerOrderId: this.registerOrderId
-        }
-        this.$api.assets.registerOrderReAudit(obj).then(res => {
-          if (Number(res.data.code) === 0) {
-            this.$message.info('反审核成功')
-            this.commonShow = false
-            this.query()
-          } else {
-            this.$message.error(res.data.message)
-            this.commonShow = false
+      } else if (str === 'theAudit') {
+        _this.$confirm({
+          title: '提示',
+          content: '确认要反审核该资产登记单吗？',
+          onOk() {
+            let obj = {
+              registerOrderId: id
+            }
+            _this.$api.assets.registerOrderReAudit(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                _this.$message.info('反审核成功')
+                _this.query()
+              } else {
+                _this.$message.error(res.data.message)
+              }
+            })
           }
         })
       }
@@ -281,13 +272,17 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
+      this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.query()
       this.getObjectKeyValueByOrganIdFn()
-      if (!this.isChild) {
-        this.queryCondition.pageNum = 1
-        this.query()
-      } else {
-        this.isChild = false
-      }
+      // this.getObjectKeyValueByOrganIdFn()
+      // if (!this.isChild) {
+      //   this.queryCondition.pageNum = 1
+      //   this.query()
+      // } else {
+      //   this.isChild = false
+      // }
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {

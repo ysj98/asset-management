@@ -29,7 +29,10 @@
       <!-- 新建楼层 -->
       <createFloor :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem" v-if="showCreateFloor"/>
       <!-- 无页面 -->
-      <div v-if="!pageType" class="no_page"></div>
+      <div v-if="!pageType" class="no_page">
+        <div class="img-box"></div>
+        <div class="mt10">点击左侧位置树，添加楼栋</div>
+      </div>
     </div>
   </div>
 </template>
@@ -202,10 +205,13 @@ export default {
     top: 50%;
     left: 50%;
     width: 214px;
-    height: 154px;
     margin-left: -107px;
     margin-top: -77px;
-    background-image: url('../../assets/image/undertake/init_no.png');
-    background-size: 100% 100%;
+    text-align: center;
+    .img-box{
+      height: 154px;
+      background-image: url('../../assets/image/undertake/init_no.png');
+      background-size: 100% 100%;
+    }
   }
 </style>
