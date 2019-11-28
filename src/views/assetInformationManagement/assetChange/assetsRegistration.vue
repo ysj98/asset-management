@@ -21,7 +21,7 @@
         </a-select>
         <!-- <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker> -->
         <segi-range-picker label="创建日期" style="margin-right: 10px;" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
-        <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+        <SG-Button type="primary" @click="query">查询</SG-Button>
       </div>
     </Cephalosome>
     <div class="table-layout-fixed">
