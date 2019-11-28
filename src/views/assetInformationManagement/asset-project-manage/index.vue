@@ -131,7 +131,7 @@
         projectName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
-          {key: -1, title: '全部接管'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+          {key: -1, title: '全部接管状态'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
         ], // 查询条件-是否接管选项
         isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id

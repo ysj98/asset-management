@@ -4,15 +4,13 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
+        <SG-Button
+          icon="import"
+          type="primary"
+          :loading='exportAssetBtn'
+          @click="handleExport('exportAssetBtn')"
+        >导出资产视图</SG-Button>
         <!--二期开发-->
-        <!--<SG-Button-->
-          <!--icon="import"-->
-          <!--type="primary"-->
-          <!--:loading='exportAssetBtn'-->
-          <!--@click="handleExport('exportAssetBtn')"-->
-          <!--:disabled="!tableObj.dataSource.length"-->
-          <!--:title="tableObj.dataSource.length ? '' : '无可导出数据'"-->
-        <!--&gt;导出资产视图</SG-Button>-->
         <!--<SG-Button-->
           <!--icon="import"-->
           <!--style="margin: 0 10px"-->
@@ -40,7 +38,7 @@
               :options="statusOptions"
             />
           </a-col>
-          <a-col :span="4">
+          <a-col :span="4" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
@@ -235,6 +233,9 @@
 
       // 导出资产视图/房屋卡片
       handleExport (type) {
+        if (!this.tableObj.dataSource.length) {
+          return this.$message.info('无可导出数据')
+        }
         this[type] = true
         let api = { exportHouseBtn: 'exportAssetViewHouseExcel', exportAssetBtn: 'exportAssetViewExcel' }
         const {

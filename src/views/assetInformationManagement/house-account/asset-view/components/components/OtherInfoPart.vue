@@ -1,6 +1,6 @@
 <!--资产视图业务-资产视图详情页面-其它信息组件-->
 <template>
-  <div class="other_info">
+  <div class="other_info" v-if="Object.keys(infoKeys).length">
     <SG-Title title="其他信息"/>
     <a-tabs defaultActiveKey="receive" v-model="tabKey" class="title_div">
       <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" :key="itemKey">
@@ -19,17 +19,17 @@
           :columns="item['table']['columns']"
           :dataSource="tableData"
           :pagination="false"
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 table-border"
         />
         <!--特殊处理：权属信息展示的第两个Table-->
         <div v-if="item['table2']">
-          <div style="color: #49505E; margin: 15px 0; font-weight: bold">{{item['table2']['tableTitle']}}</div>
+          <div style="color: #49505E; margin-top: 35px; font-weight: bold">{{item['table2']['tableTitle']}}</div>
           <a-table
             :rowKey="item['table2']['rowKey']"
             :columns="item['table2']['columns']"
             :dataSource="tableData"
             :pagination="false"
-            class="custom-table td-pd10"
+            class="custom-table td-pd10 table-border"
           >
           <span slot="action" slot-scope="text, record">
             <span class="btn-text">{{text}}</span>
@@ -74,7 +74,7 @@
 <style lang='less' scoped>
   .other_info {
     .custom-table {
-      padding-bottom: 55px;
+      /*padding-bottom: 55px;*/
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {

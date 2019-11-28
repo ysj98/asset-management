@@ -2,7 +2,7 @@
 <template>
   <div class="other_info">
     <SG-Title title="其它信息"/>
-    <a-table v-bind="tableObj" class="custom-table  td-pd10 title_div">
+    <a-table v-bind="tableObj" class="custom-table td-pd10 title_div table-border">
       <span slot="action" slot-scope="text, record">
         <span class="btn-text">下载</span>
       </span>

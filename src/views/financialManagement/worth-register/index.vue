@@ -18,7 +18,7 @@
 <script>
   import AssetWorthList from './asset-worth-list'
   import AssetWorthRegister from './asset-worth-register'
-  import WorthRegisterRecord from './worth-register-record'
+  import WorthRegisterRecord from './components/WorthRegisterRecord'
   export default {
     name: 'index',
     components: { WorthRegisterRecord, AssetWorthList, AssetWorthRegister },

@@ -3,21 +3,19 @@
   <div>
     <!--搜索条件-->
     <div style="padding: 20px 30px">
-      <a-row :gutter="10">
-        <a-col :span="8">
+      <a-row :gutter="8">
+        <a-col :span="6">
           <SG-Button
             icon="import"
             type="primary"
             @click="handleExport"
             :loading="exportBtnLoading"
-            :disabled="!tableObj.dataSource.length"
-            :title="tableObj.dataSource.length ? '' : '无可导出数据'"
           >导出楼栋视图</SG-Button>
         </a-col>
-        <a-col :span="13">
+        <a-col :span="15">
           <organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>
         </a-col>
-        <a-col :span="3" style="text-align: right">
+        <a-col :span="3">
           <SG-Button
             icon="search"
             type="primary"
@@ -142,6 +140,9 @@
 
       // 导出数据
       handleExport () {
+        if (!this.tableObj.dataSource.length) {
+          return this.$message.info('无可导出数据')
+        }
         this.exportBtnLoading = true
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
         this.$api.assets.exportBuildingViewExcel({organId, houseIdList, projectIdList}).then(res => {
