@@ -133,7 +133,7 @@
           <a-table
             :columns="columns"
             :dataSource="dataSource"
-            class="custom-table"
+            class="custom-table td-pd10"
             :pagination="false"
           >
             <template slot="operation" slot-scope="text, record">
@@ -495,6 +495,8 @@ export default {
           console.log(res)
           let data = res.data.data
           this.detail = data
+          this.organId = data.organId
+          this.organName = data.organName
           this.detail.attachment.forEach(item => {
             item.url = item.attachmentPath
             item.name = item.oldAttachmentName
@@ -520,6 +522,7 @@ export default {
         if (res.data.code === '0') {
           console.log(res)
           let data = res.data.data
+          this.organName = data.organName
           this.detail = data
           this.detail.attachment.forEach(item => {
             item.url = item.attachmentPath
@@ -668,6 +671,11 @@ export default {
           position: absolute;
           right: 0;
           top: -44px;
+        }
+        .custom-table {
+          /deep/ .ant-table-placeholder{
+            display: block!important;
+          }
         }
       }
     }

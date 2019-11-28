@@ -35,8 +35,7 @@
         :dataSource="dataSource"
         class="custom-table td-pd10"
         :pagination="false"
-        :scroll="{ x: 1860 }"
-      >
+        :scroll="{ x: 1900 }">
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" @click="toDetail(record)">详情</a>
         </template>
@@ -67,7 +66,7 @@ const columns = [
   {
     title: '资产项目编码',
     dataIndex: 'projectCode',
-    width: 120,
+    width: 140,
     fixed: 'left'
   },
   {
@@ -143,7 +142,7 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
-    width: 80,
+    width: 100,
     scopedSlots: { customRender: 'operation' },
     fixed: 'right'
   }
