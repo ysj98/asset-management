@@ -3,7 +3,7 @@
   <a-spin :spinning="spinning">
   <a-form :class="['detail_info', isEdit ? '' : 'disabled_form']" :form="form" :layout="layout">
     <SG-Title title="基础信息" noMargin/>
-    <div :class="{'title_div': !type || type == 'approval'}">
+    <div :class="{'title_div': !type || type == 'approval'}" style="margin-top: 10px; margin-bottom: 15px">
       <a-row>
         <a-col :span="colSpan">
           <a-form-item label="管理机构" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -61,7 +61,17 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="24">
+        <a-col :span="colSpan" v-if="!type || type == 'approval'">
+          <a-form-item label="是否接管" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <span style="margin-left: 12px">{{isTakeOver}}</span>
+          </a-form-item>
+        </a-col>
+        <a-col :span="colSpan" v-if="!type || type == 'approval'">
+          <a-form-item label="接管日期" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <span style="margin-left: 12px">{{takeOverDate}}</span>
+          </a-form-item>
+        </a-col>
+        <a-col :span="colSpan === 12 ? 24 : 8">
           <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : ''}" :wrapper-col="{span: colSpan === 12 ? 19 : ''}">
             <SG-UploadFile
               v-if="isEdit || attachment.length"
@@ -74,7 +84,7 @@
       </a-row>
     </div>
     <SG-Title title="其他信息" noMargin/>
-    <div :class="{'title_div': !type || type == 'approval'}">
+    <div :class="{'title_div': !type || type == 'approval'}" style="margin-top: 10px; margin-bottom: 15px">
       <a-row>
         <a-col :span="colSpan">
           <a-form-item label="划转批复下发时间" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -162,6 +172,8 @@
   data () {
     return {
       colSpan: 8,
+      isTakeOver: '否', // 是否接管
+      takeOverDate: '--', // 接管日期
       layout: 'horizontal',
       isEdit: false, // 是否可编辑
       labelCol: {span: 8},
@@ -233,15 +245,17 @@
         let res = r.data
         if (res && String(res.code) === '0') {
           const {
-            attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
-            agreementSignDate, reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate,
+            attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,agreementSignDate,
+            reportBasicInfoDate, reportHouseTransferReqDate, houseVerificationDate, takeOverDate, takeOver,
             ownershipHandleProblems, transferApprovalDate, remark, houseTransferHisProblem, sourceTypeName
           } = res.data
           let attachArr = attachment.map(m => {
             return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
           }) // 处理附件格式
           Object.assign(this, {
+            takeOverDate,
             attachment: attachArr,
+            isTakeOver: takeOver ? '是' : '否',
             organKey: organId, // 保存管理机构id
             organName: organName // 展示管理机构名称
           })

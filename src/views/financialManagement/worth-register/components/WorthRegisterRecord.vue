@@ -1,11 +1,11 @@
-<!--价值登记页面--资产价值登记Tab页面-->
+<!--价值登记业务页面Tab--价值登记记录组件-->
 <template>
-  <div></div>
+  <div>价值登记记录组件</div>
 </template>
 
 <script>
   export default {
-    name: 'index',
+    name: 'WorthRegisterRecord',
     data () {
       return {}
     },

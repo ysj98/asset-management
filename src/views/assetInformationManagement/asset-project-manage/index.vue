@@ -90,6 +90,7 @@
         <router-link :to="{ path: '/assetProjectManage/assetProjectDetail', query: { projectId: record.projectId } }" class="action_text">详情</router-link>
       </span>
     </a-table>
+    <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--新增、编辑、审核弹窗-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status">
@@ -115,6 +116,7 @@
 </template>
 
 <script>
+  import NoDataTip from 'src/components/noDataTips'
   import TreeSelect from 'src/views/common/treeSelect'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import BaseInfo from './components/components/BaseInfoPart'
@@ -122,7 +124,7 @@
   import SearchContainer from 'src/views/common/SearchContainer'
   export default {
     name: 'index',
-    components: { BaseInfo, SearchContainer, OverviewNumber, TreeSelect },
+    components: { BaseInfo, SearchContainer, OverviewNumber, TreeSelect, NoDataTip },
     data () {
       return {
         fold: true, // 查询条件折叠
@@ -131,7 +133,7 @@
         projectName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
-          {key: -1, title: '全部接管'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+          {key: -1, title: '全部接管状态'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
         ], // 查询条件-是否接管选项
         isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id

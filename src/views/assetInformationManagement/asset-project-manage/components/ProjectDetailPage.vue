@@ -41,6 +41,7 @@
 <style lang='less' scoped>
   .asset_project_detail {
     position: relative;
+    padding: 42px 70px 0;
     /*抽离子组件的公共样式*/
     & /deep/ .title_div {
       margin-left: 40px;

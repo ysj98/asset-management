@@ -74,7 +74,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table"
+        class="custom-table td-pd10"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -85,6 +85,7 @@
           <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
         </template>
       </a-table>
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
@@ -99,6 +100,7 @@
 <script>
   import TreeSelect from '../../common/treeSelect'
   import SegiRangePicker from '@/components/SegiRangePicker'
+  import noDataTips from '@/components/noDataTips'
   import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
   import moment from 'moment'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
@@ -185,7 +187,7 @@
   ]
   export default {
     components: {
-      TreeSelect, SegiRangePicker
+      TreeSelect, SegiRangePicker, noDataTips
     },
     data () {
       return {
@@ -216,6 +218,7 @@
           pageLength: 10,
           totalCount: 0
         },
+        showNoDataTips: false
       }
     },
     watch: {
@@ -380,6 +383,11 @@
         this.$api.assets.queryCardPageList(form).then(res => {
           if (res.data.code === '0') {
             let data = res.data.data.data
+            if (data.length === 0) {
+              this.showNoDataTips = true
+            } else {
+              this.showNoDataTips = false
+            }
             data.forEach((item, index) => {
               item.key = index
               for (let key in item) {

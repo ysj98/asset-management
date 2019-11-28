@@ -1,11 +1,10 @@
-<!--价值登记页面--资产价值登记Tab页面-->
 <template>
   <div></div>
 </template>
 
 <script>
   export default {
-    name: 'index',
+    name: 'BaseInfoPart',
     data () {
       return {}
     },

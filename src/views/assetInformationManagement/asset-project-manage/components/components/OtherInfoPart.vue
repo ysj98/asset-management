@@ -3,13 +3,13 @@
   <div class="other_info">
     <!--资产概况-->
     <SG-Title title="资产概况" noMargin/>
-    <a-table v-bind="overviewTable" class="custom-table td-pd10 title_div"/>
+    <a-table v-bind="overviewTable" class="custom-table td-pd10 title_div table-border"/>
     <!--转运营(物业)-->
     <SG-Title title="转运营(物业)" noMargin/>
-    <a-table v-bind="operateTable" class="custom-table td-pd10 title_div"/>
+    <a-table v-bind="operateTable" class="custom-table td-pd10 title_div table-border"/>
     <!--权属情况-->
     <SG-Title title="权属情况" noMargin/>
-    <a-table v-bind="ownTable" class="custom-table td-pd10 title_div" style="border: 1px solid #e8e8e8"/>
+    <a-table v-bind="ownTable" class="custom-table td-pd10 title_div table-border"/>
     <!--审批轨迹-->
     <SG-Title title="审批轨迹" noMargin/>
     <SG-TrackStep v-if="stepList.length" :stepList="stepList" class="title_div"/>

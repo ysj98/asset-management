@@ -16,7 +16,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table"
+        class="custom-table td-pd10"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -26,6 +26,7 @@
           <a class="operation-btn" @click="operationFun('delete', record)">删除</a>
         </template>
       </a-table>
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
@@ -41,6 +42,7 @@
 <script>
 import topOrganByUser from '@/views/common/topOrganByUser'
 import handlePropertyOwner from './handlePropertyOwner'
+import noDataTips from '@/components/noDataTips'
 
 const columns = [
   {
@@ -98,7 +100,7 @@ const columns = [
 
 export default {
   components: {
-    topOrganByUser, handlePropertyOwner
+    topOrganByUser, handlePropertyOwner, noDataTips
   },
   data () {
     return {
@@ -114,7 +116,8 @@ export default {
         totalCount: 0
       },
       modalType: 'new', // 弹窗类型
-      ownerId: '' // 权属人id
+      ownerId: '', // 权属人id
+      showNoDataTips: false
     }
   },
   methods: {
@@ -184,6 +187,11 @@ export default {
       this.$api.assets.list(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
           data.forEach((item, index) => {
             item.key = index
             for (let key in item) {
