@@ -14,13 +14,13 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box"><span class="label-name">资产类型<i></i></span><span>：</span></div>
+            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">资产类型<i></i></span><span>：</span></div>
             <a-form-item>
               <span class="label-value">{{detail.assetTypeName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box"><span class="label-name">分类名称<i></i></span><span>：</span></div>
+            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">分类名称<i></i></span><span>：</span></div>
             <a-form-item>
               <span class="label-value">{{detail.professionName || '--'}}</span>
             </a-form-item>
@@ -178,11 +178,11 @@
       </div>
       <div class="edit-box">
         <div class="edit-box-title"><i></i><span>费用科目设置</span></div>
-        <div class="edit-box-content">
+        <div class="edit-box-content table-border">
           <a-table
             :columns="columns"
             :dataSource="dataSource"
-            class="custom-table"
+            class="custom-table td-pd10"
             :pagination="false"
           >
             <template slot="disposalCostSubject">

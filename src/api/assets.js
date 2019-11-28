@@ -161,8 +161,8 @@ export function getCleanupPage (data) {
   return axiosPost(assets.assetClear.getCleanupPage, data, true, false)
 }
 // 资产清理-删除
-export function shipDleanup (data) {
-  return axiosPost(assets.assetClear.shipDleanup, data, false, false)
+export function deleteCleanup (data) {
+  return axiosPost(assets.assetClear.deleteCleanup, data, false, false)
 }
 // 资产清理-审批
 export function approvalCleanup (data) {
