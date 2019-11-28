@@ -298,12 +298,15 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
-      if (!this.isChild) {
-        this.queryCondition.pageNum = 1
-        this.query()
-      } else {
-        this.isChild = false
-      }
+      // if (!this.isChild) {
+      //   this.queryCondition.pageNum = 1
+      //   this.query()
+      // } else {
+      //   this.isChild = false
+      // }
+      this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.query()
       this.getObjectKeyValueByOrganIdFn()
     },
     // 资产项目

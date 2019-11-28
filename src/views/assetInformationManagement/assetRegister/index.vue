@@ -281,13 +281,17 @@ export default {
     changeTree (value, label) {
       this.organName = label
       this.queryCondition.organId = value
+      this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.query()
       this.getObjectKeyValueByOrganIdFn()
-      if (!this.isChild) {
-        this.queryCondition.pageNum = 1
-        this.query()
-      } else {
-        this.isChild = false
-      }
+      // this.getObjectKeyValueByOrganIdFn()
+      // if (!this.isChild) {
+      //   this.queryCondition.pageNum = 1
+      //   this.query()
+      // } else {
+      //   this.isChild = false
+      // }
     },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {

@@ -167,7 +167,7 @@ const queryCondition =  {
     projectId: '',   // 资产项目Id
     changeType: '',   // 变动类型
     assetType: '',    // 资产类型Id
-    assetClassify: [''], // 资产分类
+    assetClassify: '', // 资产分类
     startDate: '',       // 创建日期开始日期
     endDate: '',    // 创建日期结束日期
     changStartDate: '',  // 变动日期开始
@@ -252,6 +252,8 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
+      this.queryCondition.projectId = ''
+      this.queryCondition.assetClassify = ''
       this.getObjectKeyValueByOrganIdFn()
       this.getListFn()
       this.query()
@@ -321,6 +323,9 @@ export default {
     },
     // 资产分类列表
     getListFn () {
+      if (!this.queryCondition.organId) {
+        return
+      }
       let obj = {
         organId: this.queryCondition.organId,
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : ''
@@ -336,13 +341,12 @@ export default {
             })
           })
           this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
-        } else {
-          this.$message.error(res.data.message)
         }
       })
     },
     // 资产类别
     assetTypeFn () {
+      this.queryCondition.assetClassify = ''
       this.getListFn()
     },
     // 资产分类
