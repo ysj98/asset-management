@@ -208,7 +208,7 @@
                 />
             </template>
             <template slot="operation" slot-scope="text, record">
-              <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
+              <span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
             </template>
           </a-table>
         </div>
@@ -220,7 +220,7 @@
     </div>
     <!-- 选择资产 -->
     <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
-    <FormFooter style="border:none;">
+    <FormFooter style="border:none;" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交</SG-Button>
         <SG-Button style="margin-left: 12px" type="primary" @click="save('draft')">保存草稿</SG-Button>

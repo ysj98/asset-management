@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-    <FormFooter style="border:none;">
+    <FormFooter style="border:none;" location="fixed">
       <SG-Button class="mr2" @click="save" type="primary">提交</SG-Button>
       <SG-Button @click="cancel">取消</SG-Button>
     </FormFooter>

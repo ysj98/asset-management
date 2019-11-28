@@ -5,26 +5,25 @@
   <div class="ownershipRegistration">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
+        <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <a-checkbox :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权利类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
+            <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :style="allStyle" :filterOption="filterOption" placeholder="全部权属人" v-model="queryCondition.obligeeId">
+            <a-select-option v-for="(item, index) in obligeeIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="statusFn" v-model="queryCondition.status">
+            <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <div class="box box-right" :style="dateWidth">
-            <SG-DatePicker label="创建日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
-          </div>
+          <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -33,8 +32,8 @@
       </div>
     </SearchContainer>
     <div class="table-layout-fixed" ref="table_box">
+      <!-- :loading="loading" -->
       <a-table
-        :loading="loading"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
@@ -63,48 +62,58 @@ import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import {utils, debounce} from '@/utils/utils.js'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
-const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
-  {
-    title: '登记单名称',
-    dataIndex: 'registerName'
-  },
-  {
-    title: '登记类型',
-    dataIndex: 'registerTypeName'
-  },
   {
     title: '所属机构',
     dataIndex: 'organName'
   },
   {
-    title: '资产项目名称',
-    dataIndex: 'projectName'
+    title: '权证号码',
+    dataIndex: 'warrantNbr'
   },
   {
-    title: '资产类型',
-    dataIndex: 'assetTypeName'
+    title: '权利类型',
+    dataIndex: 'kindOfRightName'
   },
   {
-    title: '资产数量',
-    dataIndex: 'assetCount'
+    title: '权属人',
+    dataIndex: 'obligeeId'
   },
   {
-    title: '创建日期',
+    title: '丘地号/不动产单元号',
+    dataIndex: 'lotNoEstateUnitCode'
+  },
+  {
+    title: '坐落位置',
+    dataIndex: 'seatingPosition'
+  },
+  {
+    title: '用途',
+    dataIndex: 'ownershipUseName'
+  },
+  {
+    title: '建筑面积(㎡)',
+    dataIndex: 'buildArea'
+  },
+  {
+    title: '登记日期',
     dataIndex: 'createTime'
   },
   {
-    title: '创建人',
-    dataIndex: 'createBy'
+    title: '使用期限',
+    dataIndex: 'useLimitDate'
   },
   {
-    title: '当前状态',
-    dataIndex: 'approvalStatusName'
+    title: '交接日期',
+    dataIndex: 'handoverDate'
+  },
+  {
+    title: '状态',
+    dataIndex: 'statusName'
   },
   {
     title: '操作',
     dataIndex: 'operation',
-    width: 170,
     scopedSlots: { customRender: 'operation' },
   }
 ]
@@ -112,49 +121,34 @@ const operationData = [
   {iconType: 'form', text: '修改', editType: 'edit'},
   {iconType: 'delete', text: '删除', editType: 'delete'}
 ]
-const approvalStatusData = [
+const statusData = [
   {
-    name: '全部状态',
+    name: '全部权证状态',
     value: ''
   },
   {
-    name: '草稿',
+    name: '已注销',
     value: '0'
   },
   {
-    name: '待审批',
-    value: '2'
-  },
-  {
-    name: '已驳回',
-    value: '3'
-  },
-  {
-    name: '已审批',
+    name: '正常',
     value: '1'
-  },
-  {
-    name: '已取消',
-    value: '4'
   }
 ]
 const queryCondition =  {
-    organId: '',         // 组织机构id
-    projectId: '',       // 资产项目Id
-    assetType: '',       // 资产类型Id
-    approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-    minDate: '',         // 开始日期
-    maxDate: '',         // 结束日期
-    pageNum: 1,          // 第几页
-    pageSize: 10,        // 每页显示记录数
-    flag: false     // 备注：仅当前机构下资产清理单 0 否 1 是
+    organId: '',        // 组织机构
+    kindOfRights: '',   // 权利类型(多选)
+    obligeeId: '',      // 权属人
+    status: '',         // 权证状态
+    warrantNbr: '',     // 权证号
+    pageNum: 1,         // 第几页
+    pageSize: 10,       // 每页显示记录数
   }
 export default {
   components: {SearchContainer, TreeSelect, segiIcon},
   props: {},
   data () {
     return {
-      dateWidth,
       loading: false,
       noPageTools: false,
       location: 'absolute',
@@ -164,25 +158,12 @@ export default {
       organName: '',
       organId: '',
       tableData: [],
+      kindOfRightsData: [],
       operationData: [...operationData],
-      approvalStatusData: [...approvalStatusData],
+      statusData: [...statusData],
       queryCondition: {...queryCondition},
       count: '',
-      projectData: [
-        {
-          name: '全部资产项目',
-          value: ''
-        }
-      ],
-      changeTypeData: [],
-      assetTypeData: [],
-      assetClassifyData: [
-        {
-          name: '全部分类',
-          value: ''
-        }
-      ],
-      alterationDate: []
+      obligeeIdData: []
     }
   },
   computed: {
@@ -198,8 +179,8 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
-      this.queryCondition.projectId = ''
-      this.getObjectKeyValueByOrganIdFn()
+      this.queryCondition.obligeeId = ''
+      this.selectFn()
       this.query()
     },
     // 搜索
@@ -221,61 +202,51 @@ export default {
       this.queryCondition.pageSize = data.pageLength
       this.query()
     },
-    // 资产项目
-    getObjectKeyValueByOrganIdFn () {
+    // 权属人
+    selectFn () {
       let obj = {
         organId: this.queryCondition.organId,
-        projectName: ''
       }
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+      this.$api.assets.select(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           let arr = []
           data.forEach(item => {
             arr.push({
-              name: item.projectName,
-              value: item.projectId
+              name: item.obligeeName,
+              value: item.obligeeId
             })
           })
-          this.projectData = [{name: '全部资产项目', value: ''}, ...arr]
+          this.obligeeIdData = [{name: '全部权属人', value: ''}, ...arr]
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    // 平台字典获取变动类型
-    platformDictFn (str) {
+    // 权利类型
+    platformDictFn () {
       let obj = {
-        code: str
+        code: 'AMS_KIND_OF_RIGHT'
       }
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (str === 'approval_status_type') {
-            this.approvalStatusData = [...data]
-            let status = []
-            this.approvalStatusData.forEach(item => {
-              status.push(item.value)
-            })
-            this.queryCondition.approvalStatus = status
-          } else if (str === 'asset_type') {
-            this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
-          }
+          this.kindOfRightsData = [{name: '全部权利类型', value: ''}, ...data]
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    // 资产类型变化
-    assetTypeDataFn (value) {
+    // 权利类型变化
+    kindOfRightsDataFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+        this.queryCondition.kindOfRights = this.handleMultipleSelectValue(value, this.queryCondition.kindOfRights, this.kindOfRightsData)
       })
     },
     // 状态发生变化
-    approvalStatusFn (value) {
+    statusFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+        this.queryCondition.status = this.handleMultipleSelectValue(value, this.queryCondition.status, this.statusData)
       })
     },
     // 处理多选下拉框有全选时的数组
@@ -309,25 +280,19 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-    // 防抖函数
-    debounceMothed: debounce(function () {
-      this.computedHeight()
-    }, 200),
     // 查询
     query () {
       this.loading = true
       let obj = {
-        projectId: this.queryCondition.projectId,       // 资产项目Id
-        organId: Number(this.queryCondition.organId),         // 组织机构id
-        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        minDate: moment(this.alterationDate[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
-        maxDate: moment(this.alterationDate[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
-        flag: this.queryCondition.flag ? 1 : 0,   // 仅当前机构下资产清理单 0 否 1 是
+        organId: Number(this.queryCondition.organId),        // 组织机构
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        obligeeId: this.queryCondition.obligeeId,       // 权属人
+        status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
       }
-      this.$api.ownership.shipList(obj).then(res => {
+      this.$api.ownership.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
@@ -360,8 +325,8 @@ export default {
     }
   },
   mounted () {
-    // 资产类型
-    this.platformDictFn('asset_type')
+    // 权利类型
+    this.platformDictFn()
   }
 }
 </script>
