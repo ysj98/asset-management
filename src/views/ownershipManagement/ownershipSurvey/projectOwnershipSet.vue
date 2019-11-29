@@ -3,8 +3,13 @@
  * @Author: chen han
  * @Description: 资产项目权属设置
  -->
- <template>
-   <div>
-     资产项目权属设置
-   </div>
- </template>
+<script>
+import projectOwnershipDetail from './projectOwnershipDetail.vue'
+export default {
+  // 组件名字
+  name: 'projectOwnershipSet',
+  // 继承组件
+  extends: projectOwnershipDetail
+}
+</script>
+

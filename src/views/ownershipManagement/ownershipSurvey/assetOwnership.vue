@@ -6,9 +6,9 @@
  <template>
    <div>
      <div class="pb70">
-       <SearchContainer v-model="toggle">
-         <div slot="contentForm" style="text-align:left">
-           <div>
+       <SearchContainer v-model="toggle" :contentStyle="{paddingTop:'16px'}">
+         <div slot="contentForm" class="search-content-box">
+           <div class="search-from-box">
               <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
               <!-- 资产项目 -->
               <a-select
@@ -46,10 +46,6 @@
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"
               />
-              <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-              <SG-Button @click="restQuery">清除</SG-Button>
-           </div>
-           <div class="two-row">
               <!-- 全部权属类型 -->
               <a-select
                 showSearch
@@ -75,6 +71,10 @@
                 notFoundContent="没有查询到数据"
               />
                <a-input :maxLength="30" v-model="queryCondition.name" placeholder="输入资产名称/权利号" :style="allStyle"/>
+           </div>
+           <div class="two-row-box">
+              <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+              <SG-Button @click="restQuery">清除</SG-Button>
             </div>
          </div>
        </SearchContainer>
@@ -118,7 +118,7 @@ let getUuid = ((uuid = 1) => () => ++uuid)()
 const operationTypes = {
   detail: '/ownershipSurvey/projectDetail',
 }
-const allStyle = {width: '170px', marginRight: '10px'}
+const allStyle = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const queryCondition = {
   organId: '',
   projectId: '',
@@ -246,7 +246,7 @@ export default {
               ...item
             }
           })
-          this.table.totalCount = res.data.data.count || '' 
+          this.table.totalCount = res.data.data.count || 0 
          } else {
            this.$message.error(res.data.message)
          }
@@ -343,8 +343,15 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.two-row{
-  margin-top: 14px;
-  text-align:left;
+.search-content-box{
+  display: flex;
+  justify-content: space-between;
+  .search-from-box{
+    flex: 1;
+  }
+  .two-row-box{
+    padding-top: 14px;
+    flex: 0 0 190px;
+  }
 }
 </style>

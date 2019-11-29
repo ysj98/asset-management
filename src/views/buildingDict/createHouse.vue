@@ -3,7 +3,7 @@
  * @Author: chen han
  * @Description: 新增和编辑和复制房间
  -->
- <<template>
+ <template>
    <div class="createHouse-page">
      <div class="create-form">
        <a-form :form="form" @submit="handleSave" layout="horizontal">

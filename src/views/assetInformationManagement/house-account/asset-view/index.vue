@@ -69,7 +69,7 @@
         <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId } }">详情</router-link>
       </span>
     </a-table>
-    <no-data-tip v-if="!tableObj.dataSource.length"/>
+    <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
     <SG-Modal

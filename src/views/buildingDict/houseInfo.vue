@@ -119,7 +119,6 @@
         :pagination="false"
         :columns="table.columns"
         :dataSource="table.dataSource"
-        :locale="{emptyText: '暂无数据'}"
         >
         <template slot="houseName" slot-scope="text, record">
            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
@@ -128,6 +127,7 @@
             <OperationPopover :operationData="String(record.status) === '1'?operationDataOn:operationDataOff"  @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
       </a-table>
+      <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageLength"
         :totalCount="table.totalCount"
@@ -159,6 +159,7 @@ import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 import houseDataImport from './child/houseDataImport.vue'
 import downErrorFile from '@/views/common/downErrorFile'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import noDataTips from '@/components/noDataTips'
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
@@ -245,7 +246,8 @@ export default {
     houseExport,
     eportAndDownFile,
     houseDataImport,
-    downErrorFile
+    downErrorFile,
+    noDataTips
   },
   data () {
     return {
@@ -339,7 +341,7 @@ export default {
               ...item
             }
           })
-          this.table.totalCount = res.data.paginator.totalCount || '' 
+          this.table.totalCount = res.data.paginator.totalCount || 0 
         }
       }, () => {
         this.table.loading = false
