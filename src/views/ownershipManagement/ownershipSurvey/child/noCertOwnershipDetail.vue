@@ -13,12 +13,25 @@
         :columns="table.columns"
         :dataSource="table.dataSource"
         >
-        <template slot="houseName" slot-scope="text, record">
-           <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+        <template slot="settingMethod" slot-scope="text, record">
+           <span v-if="type==='detail'">{{record.settingMethodName}}</span>
+           <div v-else>
+             <a-select
+              :style="{width: '100%'}"
+              @change="watchSettingMethodChange"
+              optionFilterProp="children"
+              :options="seletOpt"
+              :allowClear="false"
+              v-model="record.settingMethod"
+            />
+           </div>
         </template>
-        <template slot="operation" slot-scope="text, record">
-            <OperationPopover :operationData="String(record.status) === '1'?operationDataOn:operationDataOff"  @operationFun="operationFun($event, record)"></OperationPopover>
-          </template>
+        <template slot="remark" slot-scope="text, record">
+           <span v-if="type==='detail'">{{record.remark}}</span>
+           <div v-else>
+             <a-input :maxLength="200" @input="watchRemarkChange" v-model="record.remark"/>
+           </div>
+        </template>
       </a-table>
       <no-data-tips class="noTipStyle" v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -38,6 +51,10 @@
   pageNum: 1,
   ownershipStatus: 0
 }
+let seletOpt = [
+  {label: '办理新证', value: '1'},
+  {label: '不具备办理条件', value: '2'},
+]
 // 表格数据
 let columns = [{
   title: '资产名称',
@@ -64,29 +81,24 @@ let columns = [{
   dataIndex: 'area',
   width: '10%'
 }, {
-  title: '权证号',
-  dataIndex: 'warrantNbr',
-  width: '10%'
-}, {
-  title: '权利人',
-  dataIndex: 'obligeeName',
-  width: '10%'
-}, {
   title: '权属办理设置',
   dataIndex: 'settingMethod',
   scopedSlots: { customRender: 'settingMethod' },
-  width: '124px'
+  width: '150px'
 }, {
   title: '备注',
   dataIndex: 'remark',
   scopedSlots: { customRender: 'remark' },
-  width: '124px'
+  width: '150px'
 }]
  export default {
    components: {
      noDataTips
    },
    props: {
+     type: {
+       default: 'detail'
+     },
      projectId: {
        default: ''
      },
@@ -96,6 +108,7 @@ let columns = [{
    },
    data () {
      return {
+       seletOpt,
        queryCondition: {...queryCondition},
        table: {
         columns,
@@ -120,6 +133,15 @@ let columns = [{
          if (res.data.code === '0') {
           let result = res.data.data.data || []
            this.table.dataSource = result.map(item => {
+             item.settingMethod = item.settingMethod || '2' // 默认不具备办理条件
+             item.area = item.area || '--'
+             item.assetTypeName = item.assetTypeName || '--'
+             item.assetCode = item.assetCode || '--'
+             item.location = item.location || '--'
+             if (this.type !== 'set') {
+               item.remark = item.remark || '--'
+               item.settingMethodName = item.settingMethodName || '不具备办理条件'
+             }
             return {
               key: getUuid(),
               ...item
@@ -133,6 +155,12 @@ let columns = [{
          this.table.loading = false
        })
      },
+     // 监听选择框变化
+     watchSettingMethodChange (value) {
+
+     },
+     // 监听输入框变化
+     watchRemarkChange () {},
      handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength

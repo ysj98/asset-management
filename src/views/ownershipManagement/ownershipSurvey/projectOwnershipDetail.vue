@@ -13,15 +13,15 @@
       <div class="detail-info-box">
         <div>
           <span class="detail-label">资产名称：</span>
-          <span class="detail-content">泉水A区公租房P1区26号楼108室</span>
+          <span class="detail-content">{{projectName || '--'}}</span>
         </div>
         <div>
           <span class="detail-label">资产数量：</span>
-          <span class="detail-content">265</span>
+          <span class="detail-content">{{assetCount | filterNum}}</span>
         </div>
         <div>
           <span class="detail-label">权属办理进度：</span>
-          <span class="detail-content">10%</span>
+          <span class="detail-content">{{tranProgress | filterNum}}%</span>
         </div>
       </div>
       <!-- 基本信息 -->
@@ -32,18 +32,18 @@
       <div class="detail-table-box" ref="table_box">
         <a-tabs @change="tabChange" v-model="showKey" :animated="false">
           <a-tab-pane :tab="noOwnershipCountText" key="noOwnership">
-            <noCertOwnershipDetail :projectId="projectId" :scrollHeight="scrollHeight"/>
+            <noCertOwnershipDetail :projectId="projectId" :type="type"/>
           </a-tab-pane>
           <a-tab-pane :tab="ownershipCountText" key="ownership">
-            <hasCertOwnershipDetail :projectId="projectId" :scrollHeight="scrollHeight"/>
+            <hasCertOwnershipDetail :projectId="projectId" :type="type"/>
           </a-tab-pane>
           <a-tab-pane :tab="waitOwnershipCountText" key="waitOwnership">
-            <waitCertOwnershipDetail :projectId="projectId" :scrollHeight="scrollHeight"/>
+            <waitCertOwnershipDetail :projectId="projectId" :type="type"/>
           </a-tab-pane>
         </a-tabs>
       </div>
     </div>
-    <FormFooter style="border:none;" location="fixed">
+    <FormFooter v-if="type==='set'" style="border:none;" location="fixed">
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
       <SG-Button @click="handleCancel">取消</SG-Button>
     </FormFooter>
@@ -69,9 +69,12 @@ export default {
       projectId: '',
       scrollHeight: {y: 'auto'},
       showKey: 'noOwnership',
-      noOwnershipCount: '10',
-      ownershipCount: '10',
-      waitOwnershipCount: '10'
+      noOwnershipCount: '',
+      ownershipCount: '',
+      waitOwnershipCount: '',
+      projectName: '',
+      tranProgress: '',
+      assetCount: ''
     }
   },
   computed: {
@@ -85,9 +88,15 @@ export default {
       return '待办(' + (this.waitOwnershipCount || 0) + ')'
     }
   },
+  filters: {
+    filterNum (v) {
+      return (v || v===0) ? v : '--'
+    }
+  },
   created () {
     this.projectId = this.$route.query.projectId || ''
     this.type = this.$route.query.type
+    this.attrBase()
   },
   mounted () {
   },
@@ -96,24 +105,27 @@ export default {
       console.log(v)
       this.showKey = v
     },
+    // 基础信息
+    attrBase () {
+      let data = {
+        projectId: this.projectId,
+      }
+      this.$api.basics.attrBase(data).then(res => {
+        if (res.data.code === '0') {
+          this.noOwnershipCount = res.data.noOwnershipCount
+          this.ownershipCount = res.data.ownershipCount
+          this.waitOwnershipCount = res.data.waitOwnershipCount
+          this.projectName = res.data.projectName || '--'
+          this.tranProgress = res.data.tranProgress
+          this.assetCount = res.data.assetCount
+          
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     handleSave () {},
     handleCancel () {},
-    // 计算滚动条宽度
-    // computedHeight () {
-    //   let elem = this.$refs.table_box
-    //   if (!elem) {
-    //     return
-    //   }
-    //   let height = utils.AdjustHeight(elem)
-    //   let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
-    //   console.log('yyyyy', y)
-    //   this.scrollHeight = {y: (y-45-9-40-132) < 0 ? 200 : (y-45-9-40-132)}
-    //   console.log(this.scrollHeight, '-=-=-=')
-    // },
-    // // 防抖函数
-    // debounceMothed: debounce(function () {
-    //   this.computedHeight()
-    // }, 200)
   }
 }
 </script>
