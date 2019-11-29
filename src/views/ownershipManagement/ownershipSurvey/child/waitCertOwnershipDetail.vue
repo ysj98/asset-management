@@ -14,12 +14,6 @@
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
         >
-        <template slot="houseName" slot-scope="text, record">
-           <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
-        </template>
-        <template slot="operation" slot-scope="text, record">
-            <OperationPopover :operationData="String(record.status) === '1'?operationDataOn:operationDataOff"  @operationFun="operationFun($event, record)"></OperationPopover>
-          </template>
       </a-table>
       <no-data-tips class="noTipStyle" v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -73,14 +67,12 @@ let columns = [{
   dataIndex: 'obligeeName',
   width: '10%'
 }, {
-  title: '权属办理设置',
-  dataIndex: 'settingMethod',
-  scopedSlots: { customRender: 'settingMethod' },
+  title: '权属处理方式',
+  dataIndex: 'settingMethodName',
   width: '124px'
 }, {
   title: '备注',
   dataIndex: 'remark',
-  scopedSlots: { customRender: 'remark' },
   width: '124px'
 }]
  export default {
@@ -121,6 +113,15 @@ let columns = [{
          if (res.data.code === '0') {
           let result = res.data.data.data || []
            this.table.dataSource = result.map(item => {
+             item.settingMethod = item.settingMethod || '3' // 默认无
+             item.area = item.area || '--'
+             item.assetTypeName = item.assetTypeName || '--'
+             item.assetCode = item.assetCode || '--'
+             item.location = item.location || '--'
+             item.warrantNbr = item.warrantNbr || '--'
+             item.obligeeName = item.obligeeName || '--'
+             item.remark = item.remark || '--'
+             item.settingMethodName = item.settingMethodName || '--'
             return {
               key: getUuid(),
               ...item
