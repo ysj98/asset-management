@@ -164,11 +164,81 @@
               <a-input placeholder="请输入使用期限"
               :style="allWidth"
               :max="50"
-              v-decorator="['useLimitDate', {rules: [{required: true, max: 50, whitespace: true, message: '请输入使用期限(不超过50字符)'}], initialValue: newCardData.useLimitDate}]"/>
+              v-decorator="['useLimitDate', {rules: [], initialValue: newCardData.useLimitDate}]"/>
             </a-form-item>
           </a-col>
+          <a-col class="playground-col" :span="12">
+            <a-form-item v-bind="formItemLayout" :colon="false">
+              <label slot="label">登记日期：</label>
+              <a-date-picker
+              :style="allWidth"
+              placeholder="请选择登记日期"
+              v-decorator="['rigisterDate', {rules: [{type: 'object', required: true, message: '请选择登记日期'}]}]"/>
+              </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="12">
+            <a-form-item v-bind="formItemLayout" :colon="false">
+              <label slot="label">交接日期：</label>
+              <a-date-picker
+              :style="allWidth"
+              placeholder="请选择交接日期"
+              v-decorator="['handoverDate']"/>
+              </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="24">
+            <a-form-item v-bind="formItemTextarea" :colon="false">
+              <label slot="label">备注：</label>
+              <a-textarea placeholder="请输入备注"
+                :style="widthBox"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                v-decorator="['remark',
+                {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newCardData.remark}
+                ]"
+                />
+            </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="24">
+              <a-form-item v-bind="formItemTextarea" :colon="false">
+                <label slot="label">上传附件：</label>
+                <SG-UploadFile
+                  v-model="newCardData.files"
+                  type="all"
+                />
+              </a-form-item>
+            </a-col>
         </a-form>
       </a-row>
+    </div>
+    <div class="newCard-nav">
+      <span class="section-title blue">权利人</span>
+      <div class="tab-nav table-border">
+        <a-table
+          :columns="columns"
+          :dataSource="amsOwnershipWarrantObligeeList"
+          class="custom-table td-pd10"
+          :pagination="false"
+          >
+          <template slot="obligeeId" slot-scope="text, record">
+            <a-select
+              :placeholder="'请选择权利人'" style="width: 120px"
+              showSearch
+              :defaultValue="record.obligeeId === '' ? undefined : record.obligeeId"
+              v-model="record.obligeeId === '' ? record.obligeeId = undefined : record.obligeeId"
+              optionFilterProp="children"
+              @change="obligeeNameChange(record)"
+              @search="handleSearch"
+              :options="obligeeIdData"
+              :allowClear="true"
+              :filterOption="false"
+              notFoundContent="没有查询到数据"
+              />
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
+          </template>
+        </a-table>
+        <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>新增周边信息</div>
+      </div>
     </div>
   </div>
   </SG-Modal>
@@ -176,6 +246,34 @@
 
 <script>
 import Cephalosome from '@/components/Cephalosome'
+import moment from 'moment'
+import {debounce, utils, calc} from '@/utils/utils'
+const columns = [
+  {
+    title: '姓名',
+    dataIndex: 'obligeeId',
+    width: 160,
+    scopedSlots: { customRender: 'obligeeId' }
+  }, {
+    title: '证件种类',
+    width: 100,
+    dataIndex: 'certificateTypeName'
+  }, {
+    title: '证件号',
+    width: 100,
+    dataIndex: 'certificateNo'
+  }, {
+    title: '占用比例',
+    width: 100,
+    dataIndex: 'percent'
+  }, {
+    title: '操作',
+    width: 100,
+    dataIndex: 'operation',
+    align: 'center',
+    scopedSlots: { customRender: 'operation' }
+  }
+]
 const newCardData = {
   warrantId: '',                //类型：Number  必有字段  备注：权证id
   warrantNbr: '',                //类型：String  必有字段  备注：权证号
@@ -193,7 +291,7 @@ const newCardData = {
   totalSuite: '',                //类型：Number  必有字段  备注：总套数(产权证所有)
   qualityOfRight: undefined,                //类型：String  必有字段  备注：权利性质(产权证所有)
   useLimitDate: '',                //类型：String  必有字段  备注：使用期限(产权证所有)
-  rigisterDate: '',                //类型：String  必有字段  备注：登记日期
+  rigisterDate: {},                //类型：String  必有字段  备注：登记日期
   organId: '',                //类型：String  必有字段  备注：组织机构
   remark: '',                //类型：String  必有字段  备注：备注
   handoverDate: '',                //类型：String  必有字段  备注：交接日期
@@ -210,6 +308,7 @@ const newCardData = {
   talkTotalPrice: '',                //类型：String  必有字段  备注：议价租金总价(使用权证所有)
   rentPayDate: '',                //类型：String  必有字段  备注：租金缴纳期限(使用权证所有)
   antenatal: '',                //类型：String  必有字段  备注：产别(使用权证所有)
+  files: []                      // 附件
 }
 export default {
   components: {Cephalosome},
@@ -225,13 +324,20 @@ export default {
   },
   data () {
     return {
-      kindOfRightData: [], // 权利类型
-      ownerTypeData: [],  // 权属形式
-      ownershipUseData: [],     // 权属用途
-      structureData: [],      // 结构
-      qualityOfRightData: [],   // 权利性质
+      columns: [...columns],
+      rigisterDate: {},        // 登记日期
+      handoverDate: {},        // 交接日期
+      kindOfRightData: [],     // 权利类型
+      ownerTypeData: [],       // 权属形式
+      ownershipUseData: [],    // 权属用途
+      structureData: [],       // 结构
+      qualityOfRightData: [],  // 权利性质
+      amsOwnershipWarrantObligeeList: [],           // 权属人列表信息
+      obligeeIdData: [],       // 权属人选择
+      obligeeIdDataChange: [], // 用于选择时遍历
       form: this.$form.createForm(this),
       allWidth: 'width: 214px',
+      widthBox: 'width: 80%',
       newCardData: {...newCardData},
       newCard: '',
       kindOfRightsData: [],
@@ -239,7 +345,7 @@ export default {
       formItemTextarea: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 2 }
+          sm: { span: 3 }
         }
       },
       formItemLayout: {
@@ -282,19 +388,127 @@ export default {
     handleCancel () {
       this.show = false
     },
-    // 平台字典获取变动类型
-    platformDictFn (str) {
+    // 平台字典获取数据
+    platformDictFn () {
+      Promise.all([
+        this.$api.assets.platformDict({code: 'AMS_OWNER_TYPE'}),
+        this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}),
+        this.$api.assets.platformDict({code: 'OWNERSHIP_USE'}),
+        this.$api.assets.platformDict({code: 'BUILD_STRUCT'}),
+        this.$api.assets.platformDict({code: 'QUALITY_OF_RIGHT'})
+      ]).then(res => {
+        // 权属形式
+        if (+res[0].data.code === 0) {
+          let data = res[0].data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.ownerTypeData = arr
+        }
+        // 权利类型
+        if (+res[1].data.code === 0) {
+          let data = res[1].data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.kindOfRightData = arr
+        }
+        // 权属用途
+        if (+res[2].data.code === 0) {
+          let data = res[2].data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.ownershipUseData = arr
+        }
+        // 建筑结构
+        if (+res[2].data.code === 0) {
+          let data = res[2].data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.structureData = arr
+        }
+        // 权利性质
+        if (+res[2].data.code === 0) {
+          let data = res[2].data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.qualityOfRightData = arr
+        }
+      })
+    },
+    // 权属人
+    handleSearch (value) {
+      this.obligeeName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求权属人
+    debounceMothed: debounce(function () {
+        this.selectFn(this.obligeeName || '')
+    }, 200),
+    // 权属人
+    selectFn (buildName) {
       let obj = {
-        code: str
+        organId: this.organId,
+        obligeeName: buildName || ''
       }
-      this.$api.assets.platformDict(obj).then(res => {
+      this.$api.assets.select(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (str === 'AMS_KIND_OF_RIGHT') {
-            this.kindOfRightsData = [...this.kindOfRightsData, ...data]
-          }
+          this.obligeeIdDataChange = data  // 用于选择时遍历
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.obligeeName,
+              label: item.obligeeName,
+              value: item.obligeeId
+            })
+          })
+          this.obligeeIdData = arr
         } else {
           this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 添加权属人
+    communityAroundsFn () {
+      let atr = [{ obligeeId: '', certificateTypeName: '', certificateNo: '', percent: '', operation: ''}]
+      let arr = [...this.amsOwnershipWarrantObligeeList, ...atr]
+      console.log(arr)
+      arr.forEach((item, index) => {
+        item.key = index
+      })
+      this.amsOwnershipWarrantObligeeList = arr
+    },
+    // 监听选择权利人
+    obligeeNameChange (record, type) {
+      let obligeeId = record.obligeeId
+      let certificateTypeNames = ''
+      let certificateNos = ''
+      this.obligeeIdDataChange.forEach(item => {
+        if (obligeeId === item.obligeeId) {
+          certificateTypeNames = item.certificateTypeName
+          certificateNos = item.certificateNo
+        }
+      })
+      // 选择权利人带出证件种类证件号
+      this.$set(this.amsOwnershipWarrantObligeeList, record.key, Object.assign(this.amsOwnershipWarrantObligeeList[record.key], {
+        certificateTypeName: certificateTypeNames,
+        certificateNo: certificateNos
+      }))
+    },
+    // 删除
+    deleteFn (record) {
+      this.amsOwnershipWarrantObligeeList.forEach((item, index) => {
+        if (record.key === item.key) {
+          this.amsOwnershipWarrantObligeeList.splice(index, 1)
         }
       })
     },
@@ -304,19 +518,44 @@ export default {
   created () {
   },
   mounted () {
-    // 资产类型
-    this.platformDictFn('AMS_KIND_OF_RIGHT')
+    this.platformDictFn()  // 字段表获取数据
   }
 }
 </script>
 <style lang="less" scoped>
 .newCard {
+  height: 500px;
+  overflow-y: scroll;
   padding-bottom: 70px;
   .newCard-nav {
     padding: 16px 14px 0 14px;
+    .tab-nav {
+      margin: 24px 20px;
+    }
   }
   .playground-row {
     margin: 23px 0 0 26px;
+  }
+  .postAssignment-icon {
+    cursor: pointer;
+    color: #0084FF;
+  }
+  .postAssignment-icon:hover {
+    color: red;
+  }
+  .add-information {
+    cursor: pointer;
+    line-height: 32px;
+    text-align: center;
+    border:1px dashed #EBF2FF;
+    margin-top: 10px;
+    .item-tab-icon {
+      padding-right: 4px;
+    }
+  }
+  .add-information:hover {
+    border:1px dashed #0084FF;
+    color: #0084FF;
   }
 }
 </style>

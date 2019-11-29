@@ -52,7 +52,7 @@
         @change="handleChange"
       />
     </div>
-    <NewCard ref="newCard"></NewCard>
+    <NewCard ref="newCard" :organId="queryCondition.organId"></NewCard>
   </div>
 </template>
 
@@ -174,6 +174,7 @@ export default {
     // 新建权证
     newChangeSheetFn () {
       this.$refs.newCard.show = true
+      this.$refs.newCard.selectFn()
     },
     // 组织机构树
     changeTree (value, label) {
@@ -207,6 +208,7 @@ export default {
     selectFn () {
       let obj = {
         organId: this.queryCondition.organId,
+        obligeeName: ''
       }
       this.$api.assets.select(obj).then(res => {
         if (Number(res.data.code) === 0) {
