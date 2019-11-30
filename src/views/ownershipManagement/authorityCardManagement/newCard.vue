@@ -9,7 +9,7 @@
 <template>
   <SG-Modal
     class="assetBundlePopover"
-    width="860px"
+    width="1036px"
     v-model="show"
     title="选择权证"
     @ok="statusFn"
@@ -22,7 +22,7 @@
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="12">
             <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">权&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;证&nbsp;&nbsp;&nbsp;&nbsp;号：</label>
+              <label slot="label">权证号：</label>
               <a-input placeholder="请输入权证号"
               :style="allWidth"
               :max="60"
@@ -47,143 +47,51 @@
               <a-select :style="allWidth" showSearch placeholder="请选择权利类型"
               optionFilterProp="children"
               :options="kindOfRightData"
+               @change="kindOfRightChange"
               :allowClear="true"
               :filterOption="false"
               notFoundContent="没有查询到数据"
               v-decorator="['kindOfRight',{ rules: [{required: true, message: '请选择权利类型'}], initialValue: newCardData.kindOfRight}]"/>
             </a-form-item>
           </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">丘地号：</label>
-              <a-input placeholder="请输入丘地号"
-              :style="allWidth" :max="30"
-              v-decorator="['lotNo', {rules: [{required: true, max: 30, whitespace: true, message: '请输入丘地号(不超过30字符)'}], initialValue: newCardData.lotNo}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">不动产单元号：</label>
-              <a-input placeholder="请输入不动产单元号"
-              :style="allWidth" :max="30"
-              v-decorator="['estateUnitCode', {rules: [{required: true, max: 30, whitespace: true, message: '请输入不动产单元号(不超过30字符)'}], initialValue: newCardData.estateUnitCode}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">坐落位置：</label>
-              <a-input placeholder="请输入坐落位置"
-              :style="allWidth" :max="100"
-              v-decorator="['seatingPosition', {rules: [{required: true, max: 100, whitespace: true, message: '请输入坐落位置(不超过100字符)'}], initialValue: newCardData.seatingPosition}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">土地面积：</label>
-              <a-input-number placeholder="请输入土地面积"
+          <!-- beat -->
+          <!-- -----------------------------------------------------------21212------------------------------------------------------------->
+          <!-- 基本输入框 -->
+          <a-col class="playground-col" v-for="(item, index) in beat" :key="index" :span="12">
+            <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'input'">
+              <label slot="label">{{item.label}}：</label>
+              <a-input :placeholder="`请输入${item.label}`"
               :style="allWidth"
-              :min="0" :max="9999999.99" :step="1.00" :precision="2"
-              v-decorator="['landArea', {rules: [], initialValue: newCardData.landArea}]"/>
+              :max=item.max
+              v-decorator="[item.attrCode, {rules: [{required: item.required, max: item.max, whitespace: true, message: `请输入${item.label}(不超过${item.max}字符)`}], initialValue: item.attrValue}]"/>
             </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">权属用途：</label>
-              <a-select :style="allWidth" showSearch placeholder="请选择权属用途"
+            <!-- 数字输入框 -->
+            <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'inputNumber'">
+              <label slot="label">{{item.label}}：</label>
+              <a-input-number :placeholder="`请输入${item.label}`"
+                :style="allWidth"
+                :min=item.min :max=item.max :step="1.00" :precision=item.precision
+                v-decorator="[item.attrCode, {rules: [{required: item.required, message: `请输入${item.label}(范围${item.min}-${item.max})`}], initialValue: item.attrValue}]"/>
+            </a-form-item>
+            <!-- 选择框 -->
+            <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'selcet'">
+              <label slot="label">{{item.label}}：</label>
+              <a-select :style="allWidth" showSearch :placeholder="`请选择${item.label}`"
               optionFilterProp="children"
-              :options="ownershipUseData"
+              :options=item.chooseArray
               :allowClear="true"
               :filterOption="false"
               notFoundContent="没有查询到数据"
-              v-decorator="['ownershipUse',{rules: [{required: true, message: '请选择权属用途'}], initialValue: newCardData.ownershipUse}]"/>
+              v-decorator="['qualityOfRight',{ rules: [{required: item.required, message: `请选择${item.label}`}], initialValue: item.attrValue || undefined}]"/>
             </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">结构：</label>
-              <a-select :style="allWidth" showSearch placeholder="请选择结构"
-              optionFilterProp="children"
-              :options="structureData"
-              :allowClear="true"
-              :filterOption="false"
-              notFoundContent="没有查询到数据"
-              v-decorator="['structure',{ rules: [{required: true, message: '请选择结构'}], initialValue: newCardData.structure}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">建筑面积(㎡)：</label>
-              <a-input-number placeholder="请输入建筑面积(㎡)"
-              :style="allWidth"
-              :min="0" :max="9999999.99" :step="1.00" :precision="2"
-              v-decorator="['buildArea', {rules: [{required: true, message: '请输入建筑面积(范围0-9999999.99)'}], initialValue: newCardData.buildArea}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">专属建筑面积：</label>
-              <a-input-number placeholder="请输入专属建筑面积"
-              :style="allWidth"
-              :min="0" :max="9999999.99" :step="1.00" :precision="2"
-              v-decorator="['exclusiveBuildArea', {rules: [{required: true, message: '请输入专属建筑面积(范围0-9999999.99)'}], initialValue: newCardData.exclusiveBuildArea}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">分摊面积：</label>
-              <a-input-number placeholder="请输入分摊面积"
-              :style="allWidth"
-              :min="0" :max="9999999.99" :step="1.00" :precision="2"
-              v-decorator="['apportionArea', {rules: [{required: true, message: '请输入分摊面积(范围0-9999999.99)'}], initialValue: newCardData.apportionArea}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">总套数：</label>
-              <a-input-number placeholder="请输入总套数"
-              :style="allWidth"
-              :min="0" :max="999999" :precision="0" :step="1.00"
-              v-decorator="['totalSuite', {rules: [], initialValue: newCardData.totalSuite}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">权利性质：</label>
-              <a-select :style="allWidth" showSearch placeholder="请选择权利性质"
-              optionFilterProp="children"
-              :options="qualityOfRightData"
-              :allowClear="true"
-              :filterOption="false"
-              notFoundContent="没有查询到数据"
-              v-decorator="['qualityOfRight',{ rules: [{required: true, message: '请选择权利性质'}], initialValue: newCardData.qualityOfRight}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">使用期限：</label>
-              <a-input placeholder="请输入使用期限"
-              :style="allWidth"
-              :max="50"
-              v-decorator="['useLimitDate', {rules: [], initialValue: newCardData.useLimitDate}]"/>
-            </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">登记日期：</label>
+            <!-- 时间选择 -->
+            <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'date'">
+              <label slot="label">{{item.label}}：</label>
               <a-date-picker
               :style="allWidth"
-              placeholder="请选择登记日期"
-              v-decorator="['rigisterDate', {rules: [{type: 'object', required: true, message: '请选择登记日期'}]}]"/>
-              </a-form-item>
-          </a-col>
-          <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">交接日期：</label>
-              <a-date-picker
-              :style="allWidth"
-              placeholder="请选择交接日期"
-              v-decorator="['handoverDate']"/>
-              </a-form-item>
+              :placeholder="`请选择${item.label}`"
+              v-decorator="['rigisterDate', {rules: [{type: 'object', required: item.required, message: `请选择${item.label}`}], initialValue: item.attrValue || undefined}]"/>
+            </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" :colon="false">
@@ -198,18 +106,18 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-              <a-form-item v-bind="formItemTextarea" :colon="false">
-                <label slot="label">上传附件：</label>
-                <SG-UploadFile
-                  v-model="newCardData.files"
-                  type="all"
-                />
-              </a-form-item>
-            </a-col>
+            <a-form-item v-bind="formItemTextarea" :colon="false">
+              <label slot="label">上传附件：</label>
+              <SG-UploadFile
+                v-model="newCardData.files"
+                type="all"
+              />
+            </a-form-item>
+          </a-col>
         </a-form>
       </a-row>
     </div>
-    <div class="newCard-nav">
+    <div class="newCard-nav" v-if=" this.typeJudgment === '1'">
       <span class="section-title blue">权利人</span>
       <div class="tab-nav table-border">
         <a-table
@@ -233,12 +141,53 @@
               notFoundContent="没有查询到数据"
               />
           </template>
+          <template slot="percent" slot-scope="text, record">
+            <a-input-number placeholder="占有比例"
+              :min="1" :max="100" :step="1.00" :precision="0" v-model="record.percent"
+            />
+          </template>
           <template slot="operation" slot-scope="text, record">
             <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
           </template>
         </a-table>
-        <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>新增周边信息</div>
       </div>
+      <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>添加权利人</div>
+    </div>
+    <div class="newCard-nav" v-if=" this.typeJudgment === '1'">
+      <span class="section-title blue">抵押信息</span>
+      <div class="tab-nav table-border">
+        <a-table
+          :columns="mortgageInformation"
+          :dataSource="amsOwnershipWarrantMortgageList"
+          class="custom-table td-pd10"
+          :pagination="false"
+          >
+          <template slot="mortgageAmount" slot-scope="text, record">
+            <a-input-number placeholder="抵押金额(元)"
+              :min="0" :max="999999999.99" :step="1.00" :precision="2" v-model="record.mortgageAmount"
+            />
+          </template>
+          <template slot="pledgee" slot-scope="text, record">
+            <a-input placeholder="抵押权人" maxlength="50" v-model="record.pledgee" />
+          </template>
+          <template slot="mortgageBank" slot-scope="text, record">
+            <a-input placeholder="抵押银行" maxlength="50" v-model="record.mortgageBank" />
+          </template>
+          <template slot="mortgageYear" slot-scope="text, record">
+            <a-input placeholder="抵押年限" maxlength="30" v-model="record.mortgageYear" />
+          </template>
+          <template slot="mortgageName" slot-scope="text, record">
+            <a-input placeholder="抵押物名称" maxlength="50" v-model="record.mortgageName" />
+          </template>
+          <template slot="loanContractName" slot-scope="text, record">
+            <a-input placeholder="借款合同编号" maxlength="30" v-model="record.loanContractName" />
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <span class="postAssignment-icon" @click="mortgageInformationDeleteFn(record)">删除</span>
+          </template>
+        </a-table>
+      </div>
+      <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加权利人</div>
     </div>
   </div>
   </SG-Modal>
@@ -248,68 +197,8 @@
 import Cephalosome from '@/components/Cephalosome'
 import moment from 'moment'
 import {debounce, utils, calc} from '@/utils/utils'
-const columns = [
-  {
-    title: '姓名',
-    dataIndex: 'obligeeId',
-    width: 160,
-    scopedSlots: { customRender: 'obligeeId' }
-  }, {
-    title: '证件种类',
-    width: 100,
-    dataIndex: 'certificateTypeName'
-  }, {
-    title: '证件号',
-    width: 100,
-    dataIndex: 'certificateNo'
-  }, {
-    title: '占用比例',
-    width: 100,
-    dataIndex: 'percent'
-  }, {
-    title: '操作',
-    width: 100,
-    dataIndex: 'operation',
-    align: 'center',
-    scopedSlots: { customRender: 'operation' }
-  }
-]
-const newCardData = {
-  warrantId: '',                //类型：Number  必有字段  备注：权证id
-  warrantNbr: '',                //类型：String  必有字段  备注：权证号
-  ownerType: undefined,                //类型：Number  必有字段  备注：权属形式
-  kindOfRight: undefined,                //类型：Number  必有字段  备注：权利类型
-  lotNo: '',                //类型：String  必有字段  备注：丘地号(产权证所有)
-  estateUnitCode: '',                //类型：String  必有字段  备注：不动产单元号(产权证所有)
-  seatingPosition: '',                //类型：String  必有字段  备注：坐落位置
-  landArea: '',                //类型：Number  必有字段  备注：土地面积(产权证所有)
-  ownershipUse: undefined,                //类型：String  必有字段  备注：权属用途
-  structure: undefined,                //类型：String  必有字段  备注：结构
-  buildArea: '',                //类型：Number  必有字段  备注：建筑面积
-  exclusiveBuildArea: '',                //类型：Number  必有字段  备注：专属建筑面积
-  apportionArea: '',                //类型：Number  必有字段  备注：分摊面积
-  totalSuite: '',                //类型：Number  必有字段  备注：总套数(产权证所有)
-  qualityOfRight: undefined,                //类型：String  必有字段  备注：权利性质(产权证所有)
-  useLimitDate: '',                //类型：String  必有字段  备注：使用期限(产权证所有)
-  rigisterDate: {},                //类型：String  必有字段  备注：登记日期
-  organId: '',                //类型：String  必有字段  备注：组织机构
-  remark: '',                //类型：String  必有字段  备注：备注
-  handoverDate: '',                //类型：String  必有字段  备注：交接日期
-  houseOwner: '',                //类型：String  必有字段  备注：房屋所有权人(使用权证所有)
-  tenant: '',                //类型：String  必有字段  备注：承租人(使用权证所有)
-  entrustOrganization: '',                //类型：String  必有字段  备注：委托管理单位(使用权证所有)
-  totalFloor: '',                //类型：String  必有字段  备注：总层数(使用权证所有)
-  placefloor: '',                //类型：String  必有字段  备注：所在层(使用权证所有)
-  houseNo: '',                //类型：String  必有字段  备注：房屋号(使用权证所有)
-  rentUnitPrice: '',                //类型：Number  必有字段  备注：租金单价(使用权证所有)
-  rentTotalPrice: '',                //类型：Number  必有字段  备注：租金总价(使用权证所有)
-  contractData: '',                //类型：String  必有字段  备注：合同期限(使用权证所有)
-  talkUnitPrice: '',                //类型：String  必有字段  备注：议价单价(使用权证所有)
-  talkTotalPrice: '',                //类型：String  必有字段  备注：议价租金总价(使用权证所有)
-  rentPayDate: '',                //类型：String  必有字段  备注：租金缴纳期限(使用权证所有)
-  antenatal: '',                //类型：String  必有字段  备注：产别(使用权证所有)
-  files: []                      // 附件
-}
+import {accessCard, titleDeed, newCardData, columns, mortgageInformation} from './beat'
+
 export default {
   components: {Cephalosome},
   props: {
@@ -324,6 +213,9 @@ export default {
   },
   data () {
     return {
+      typeJudgment: '1',        // 权利类型判断
+      beat: [],
+      mortgageInformation: [...mortgageInformation],  // 抵押信息
       columns: [...columns],
       rigisterDate: {},        // 登记日期
       handoverDate: {},        // 交接日期
@@ -333,11 +225,12 @@ export default {
       structureData: [],       // 结构
       qualityOfRightData: [],  // 权利性质
       amsOwnershipWarrantObligeeList: [],           // 权属人列表信息
+      amsOwnershipWarrantMortgageList: [],          // 抵押信息
       obligeeIdData: [],       // 权属人选择
       obligeeIdDataChange: [], // 用于选择时遍历
       form: this.$form.createForm(this),
       allWidth: 'width: 214px',
-      widthBox: 'width: 80%',
+      widthBox: 'width: 73.5%',
       newCardData: {...newCardData},
       newCard: '',
       kindOfRightsData: [],
@@ -363,13 +256,22 @@ export default {
   computed: {
   },
   watch: {
-    // 'selectedData.projectId' () {
-    //   this.query()
-    // }
+    'typeJudgment' () {
+      this.typeJudgment === '1' ? this.beat = titleDeed : this.beat = accessCard
+    }
   },
   methods: {
+    // 权利类型
+    kindOfRightChange (val) {
+      this.typeJudgment = val
+    },
+    // 提交
     statusFn () {
-      console.log('tijiao')
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('223')
+        }
+      })
     },
     handleSubmit (e) {
       e.preventDefault()
@@ -425,8 +327,8 @@ export default {
           this.ownershipUseData = arr
         }
         // 建筑结构
-        if (+res[2].data.code === 0) {
-          let data = res[2].data.data
+        if (+res[3].data.code === 0) {
+          let data = res[3].data.data
           let arr = []
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
@@ -434,14 +336,38 @@ export default {
           this.structureData = arr
         }
         // 权利性质
-        if (+res[2].data.code === 0) {
-          let data = res[2].data.data
+        if (+res[4].data.code === 0) {
+          let data = res[4].data.data
           let arr = []
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
           })
           this.qualityOfRightData = arr
         }
+        titleDeed.forEach(item => {
+          // 权属用途
+          if (item.attrCode === 'ownershipUse') {
+            item.chooseArray = this.ownershipUseData
+          }
+          // 结构
+          if (item.attrCode === 'structure') {
+            item.chooseArray = this.structureData
+          }
+          // 权利性质
+          if (item.attrCode === 'qualityOfRight') {
+            item.chooseArray = this.qualityOfRightData
+          }
+        })
+        accessCard.forEach(item => {
+          // 权属用途
+          if (item.attrCode === 'ownershipUse') {
+            item.chooseArray = this.ownershipUseData
+          }
+          // 结构
+          if (item.attrCode === 'structure') {
+            item.chooseArray = this.structureData
+          }
+        })
       })
     },
     // 权属人
@@ -504,11 +430,29 @@ export default {
         certificateNo: certificateNos
       }))
     },
-    // 删除
+    // 权利人删除
     deleteFn (record) {
       this.amsOwnershipWarrantObligeeList.forEach((item, index) => {
         if (record.key === item.key) {
           this.amsOwnershipWarrantObligeeList.splice(index, 1)
+        }
+      })
+    },
+    // 抵押信息添加
+    newMortgageInformation () {
+      let atr = [{ mortgageAmount: '', pledgee: '', mortgageBank: '', mortgageYear: '', mortgageName: '', loanContractName: '', operation: ''}]
+      let arr = [...this.amsOwnershipWarrantMortgageList, ...atr]
+      console.log(arr)
+      arr.forEach((item, index) => {
+        item.key = index
+      })
+      this.amsOwnershipWarrantMortgageList = arr
+    },
+    // 抵押信息删除
+    mortgageInformationDeleteFn (record) {
+      this.amsOwnershipWarrantMortgageList.forEach((item, index) => {
+        if (record.key === item.key) {
+          this.amsOwnershipWarrantMortgageList.splice(index, 1)
         }
       })
     },
@@ -548,7 +492,7 @@ export default {
     line-height: 32px;
     text-align: center;
     border:1px dashed #EBF2FF;
-    margin-top: 10px;
+    margin: 10px 20px 0 20px;
     .item-tab-icon {
       padding-right: 4px;
     }
