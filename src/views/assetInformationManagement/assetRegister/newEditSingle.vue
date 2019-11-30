@@ -13,7 +13,7 @@
             <a-form-item label="登记单编号" v-bind="formItemLayout">
               <a-input placeholder="请输入登记单编号"
               :style="allWidth"
-              :max="10"
+              :max="30"
               v-decorator="['registerOrderCode',
                 {rules: [{required: true, max: 30, whitespace: true, message: '请输入登记单编号(不超过30字符)'}], initialValue: newEditSingleData.title}
               ]"/>

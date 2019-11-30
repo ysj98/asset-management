@@ -14,26 +14,26 @@
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
-            <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
-            <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <div class="box" :style="dateWidth">
-            <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
-          </div>
-          <div class="box box-left" :style="dateWidth">
-            <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
-          </div>
+              <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
+              <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
+              <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
+              <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
+              <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <div class="box" :style="dateWidth">
+              <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+            </div>
+            <div class="box" :style="dateWidth">
+              <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
+            </div>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -75,8 +75,8 @@ import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
-const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
-const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px'}
+const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px'}
 const columns = [
   {
     title: '变动编号',
@@ -501,6 +501,8 @@ export default {
   justify-content: space-between;
   .search-from-box{
     flex: 1;
+    flex-wrap: wrap;
+    text-align: left;
   }
   .two-row-box{
     padding-top: 14px;

@@ -52,6 +52,7 @@
         @change="handleChange"
       />
     </div>
+    <NewCard ref="newCard" :organId="queryCondition.organId"></NewCard>
   </div>
 </template>
 
@@ -60,6 +61,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
+import NewCard from './newCard.vue'
 import {utils, debounce} from '@/utils/utils.js'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
@@ -145,7 +147,7 @@ const queryCondition =  {
     pageSize: 10,       // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard},
   props: {},
   data () {
     return {
@@ -169,10 +171,10 @@ export default {
   computed: {
   },
   methods: {
-    // 新建变动单
+    // 新建权证
     newChangeSheetFn () {
-      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
-      this.$router.push({path: '/ownershipRegistration/registrationNew', query: { record: recordData, setType: 'new' }})
+      this.$refs.newCard.show = true
+      this.$refs.newCard.selectFn()
     },
     // 组织机构树
     changeTree (value, label) {
@@ -206,6 +208,7 @@ export default {
     selectFn () {
       let obj = {
         organId: this.queryCondition.organId,
+        obligeeName: ''
       }
       this.$api.assets.select(obj).then(res => {
         if (Number(res.data.code) === 0) {

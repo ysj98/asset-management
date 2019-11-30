@@ -213,6 +213,11 @@ let proRouter = [
     component: () => import('@/views/ownershipManagement/ownershipSurvey/projectOwnershipSet.vue')
   },
   {
+    path: '/ownershipSurvey/assetOwnershipDetail',
+    name: '资产项目权属详情',
+    component: () => import('@/views/ownershipManagement/ownershipSurvey/assetOwnershipDetail.vue')
+  },
+  {
     path: '/worthRegister',
     name: '价值登记',
     component: () => import('@/views/financialManagement/worth-register'),

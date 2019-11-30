@@ -12,7 +12,7 @@
             <a-form-item label="标题" v-bind="formItemLayout">
               <a-input placeholder="请输入标题"
               :style="allWidth"
-              :max="10"
+              :max="50"
               v-decorator="['title',
                 {rules: [{required: true, max: 50, whitespace: true, message: '请输入标题(不超过50字符)'}], initialValue: newEditSingleData.title}
               ]"/>
@@ -95,7 +95,7 @@
             <a-form-item label="交付单位：" v-bind="formItemLayout">
               <a-input placeholder="请输入交付单位"
               :style="allWidth"
-              :max="10"
+              :max="50"
               v-decorator="['deliveryCompany',
                 {rules: [{required: false, max: 50, whitespace: true, message: '请输入交付单位(不超过50字符)'}], initialValue: newEditSingleData.deliveryCompany}
               ]"/>
