@@ -6,8 +6,8 @@
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
-        <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
-        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
+        <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button>
+        <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
@@ -39,9 +39,10 @@
         class="custom-table td-pd10"
         :pagination="false"
         >
-        <!-- <template slot="operation" slot-scope="text, record">
-          <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
-        </template> -->
+        <template slot="operation" slot-scope="text, record">
+          <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
+          <span @click="operationFn(record, 'particulars')">详情</span>
+        </template>
       </a-table>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -52,7 +53,10 @@
         @change="handleChange"
       />
     </div>
+    <!-- 新增 -->
     <NewCard ref="newCard" :organId="queryCondition.organId"></NewCard>
+    <!-- 详情 -->
+    <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>
 </template>
 
@@ -62,6 +66,7 @@ import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import NewCard from './newCard.vue'
+import CardDetails from './cardDetails.vue'
 import {utils, debounce} from '@/utils/utils.js'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
@@ -147,10 +152,11 @@ const queryCondition =  {
     pageSize: 10,       // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails},
   props: {},
   data () {
     return {
+      warrantId: '',
       loading: false,
       noPageTools: false,
       location: 'absolute',
@@ -175,6 +181,12 @@ export default {
     newChangeSheetFn () {
       this.$refs.newCard.show = true
       this.$refs.newCard.selectFn()
+    },
+    // 操作
+    operationFn (val, type) {
+      if (type === 'particulars') {
+        this.$refs.cardDetails.show = true
+      }
     },
     // 组织机构树
     changeTree (value, label) {

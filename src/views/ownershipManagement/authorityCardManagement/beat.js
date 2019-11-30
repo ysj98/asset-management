@@ -242,7 +242,7 @@ export const titleDeed = [
     required: true
   },
   {
-    label: '专属建筑面积：',
+    label: '专属建筑面积',
     attrCode: 'exclusiveBuildArea',
     formType: 'inputNumber',
     attrValue: '',
@@ -259,14 +259,6 @@ export const titleDeed = [
     min: 0,
     max: 9999999.99,
     precision: 2,
-    required: true
-  },
-  {
-    label: '坐落位置',
-    attrCode: 'seatingPosition',
-    formType: 'input',
-    attrValue: '',
-    max: 100,
     required: true
   },
   {
@@ -410,3 +402,4 @@ export const mortgageInformation = [
     scopedSlots: { customRender: 'operation' }
   }
 ]
+
