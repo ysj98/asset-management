@@ -139,6 +139,7 @@
     }
     .prefix_style {
       float: left;
+      color: #C0C7D1;
       /*width: 69px;*/
       line-height: 30px;
       text-align: center;
