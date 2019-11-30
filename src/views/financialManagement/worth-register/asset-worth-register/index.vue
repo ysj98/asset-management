@@ -72,7 +72,7 @@
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
         statusOptions: [
-          { title: '全部', key: -1 }, { title: '草稿', key: '1' }, { title: '待审批', key: '2' },
+          { title: '全部', key: '-1' }, { title: '草稿', key: '1' }, { title: '待审批', key: '2' },
           { title: '已驳回', key: '3' }, { title: '已审批', key: '4' }, { title: '已取消', key: '5' }
         ], // 查询条件-状态选项
         tableObj: {
@@ -80,7 +80,7 @@
           loading: false,
           scroll: { x: true },
           pagination: false,
-          rowKey: 'assetHouseId',
+          rowKey: 'registerId',
           columns: [
             { title: '登记单ID', dataIndex: 'registerId' }, { title: '所属机构', dataIndex: 'organName' },
             { title: '价值登记单名称', dataIndex: 'registerName' }, { title: '资产项目', dataIndex: 'projectName' },
@@ -149,8 +149,8 @@
     watch: {
       // 全选与其他选项互斥处理
       approvalStatus: function (val) {
-        if (val && val.length !== 1 && val.includes(-1)) {
-          this.approvalStatus = [-1]
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.approvalStatus = ['-1']
         }
       },
 

@@ -404,3 +404,27 @@ export const ownership = {
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
   }
 }
+
+// 价值登记
+export  const worthRegister = {
+  // 价值登记查询(分页)
+  queryValueRegisterPageList: '/ams/assetValueRegister/queryValueRegisterPageList',
+  // 价值登记状态操作
+  updateRegisterStatus: '/ams/assetValueRegister/updateRegisterStatus',
+  // 价值登记记录查询(分页)
+  queryValueRegisterRecordList: '/ams/assetValueRegister/queryValueRegisterRecordList',
+  // 价值登记详情
+  queryValueRegisterDetail: '/ams/assetValueRegister/queryValueRegisterDetail',
+  // 价值登记资产查询
+  queryValueRegisterRelList: '/ams/assetValueRegister/queryValueRegisterRelList',
+  // 价值登记资产查询(分页)
+  queryValueRegisterRelPageList: '/ams/assetValueRegister/queryValueRegisterRelPageList',
+  // 新增价值登记
+  insertValueRegister: '/ams/assetValueRegister/insertValueRegister',
+  // 更新价值登记
+  updateValueRegister: '/ams/assetValueRegister/updateValueRegister',
+  // 资产价值一览表查询(分页)
+  queryAssertValuePageList: '/ams/assetValueRegister/queryAssertValuePageList',
+  // 资产价值趋势图
+  queryAssertValueTrend: '/ams/assetValueRegister/queryAssertValueTrend'
+}

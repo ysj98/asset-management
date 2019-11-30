@@ -7,20 +7,32 @@
         <SG-Button icon="export" @click="handleExport">导出</SG-Button>
       </div>
       <div slot="headerForm">
-        <organ-project-type v-model="organProjectType" style="float: right; width: 60%; margin-right: 10px"/>
+        <a-input placeholder="请输入资产名称或编码" v-model="registerName" style="width: 171px"/>
+        <a-select
+          mode="multiple"
+          :maxTagCount="2"
+          v-model="registerStatus"
+          :options="statusOptions"
+          placeholder="请选择登记状态"
+          style="width: 171px; margin: 0 10px"
+        />
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
-          <a-col :span="6">
-            <a-select v-model="registerStatus" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择登记状态" style="width: 100%;"/>
+          <a-col :span="15">
+            <organ-project-type v-model="organProjectType"/>
           </a-col>
-          <a-col :span="6">
-            <a-select v-model="registerStatus" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择资产分类" style="width: 100%;"/>
+          <a-col :span="5">
+            <a-select
+              mode="multiple"
+              :maxTagCount="2"
+              style="width: 100%"
+              v-model="registerStatus"
+              :options="statusOptions"
+              placeholder="请选择资产分类"
+            />
           </a-col>
-          <a-col :span="6">
-            <a-input placeholder="请输入资产名称或编码" v-model="registerName" style="width: 100%"/>
-          </a-col>
-          <a-col :span="6" style="text-align: left">
+          <a-col :span="4" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
           </a-col>
@@ -56,7 +68,7 @@
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         registerStatus: undefined, // 查询条件-登记状态
         statusOptions: [
-          { title: '全部', key: -1 }, { title: '待审批', key: '2' },
+          { title: '全部', key: '-1' }, { title: '待审批', key: '2' },
           { title: '已驳回', key: '3' }, { title: '已审批', key: '4' }, { title: '已取消', key: '5' }
         ], // 查询条件-状态选项
         tableObj: {
@@ -64,16 +76,19 @@
           loading: false,
           scroll: { x: true },
           pagination: false,
-          rowKey: 'assetHouseId',
+          rowKey: 'relId',
           columns: [
-            { title: '价值编号', dataIndex: 'registerId' }, { title: '资产编号', dataIndex: 'organName' },
-            { title: '资产名称', dataIndex: 'registerName' }, { title: '资产类型', dataIndex: 'projectName' },
-            { title: '所属机构', dataIndex: 'assetTypeName' }, { title: '资产项目', dataIndex: 'assessmentMethodName' },
-            { title: '资源原值(元)', dataIndex: 'assessmentOrganName' }, { title: '评估原值(元)', dataIndex: 'assessmenBaseDate' },
-            { title: '市场值(元)', dataIndex: 'num', align: 'right' }, { title: '原值评估值(元)', dataIndex: 'createByName' },
-            { title: '上次评估方法', dataIndex: 'createTime' }, { title: '本次评估方法', dataIndex: 'approvalStatusName' },
-            { title: '本次估值(元)', key: 'action' }, { title: '评估机构', key: 'action' }, { title: '评估基准日', key: 'action' },
-            { title: '上浮比', key: 'action' },{ title: '提交人', key: 'action' },{ title: '状态', key: 'action' }
+            { title: '价值编号', dataIndex: 'relId' }, { title: '资产编号', dataIndex: 'assetCode' },
+            { title: '资产名称', dataIndex: 'assetName' }, { title: '资产类型', dataIndex: 'assetTypeName' },
+            { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
+            { title: '资源原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
+            { title: '市场值(元)', dataIndex: 'marketValue', align: 'right' },
+            { title: '原值评估值基准日', dataIndex: 'originalAssessmenBaseDate' },
+            { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
+            { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
+            { title: '本次估值(元)', key: 'assessmentValue' }, { title: '评估机构', key: 'assessmentOrganName' },
+            { title: '评估基准日', key: 'assessmenBaseDate' }, { title: '上浮比', key: 'upRate' },
+            { title: '提交人', key: 'createByName' },{ title: '状态', key: 'approvalStatusName' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
@@ -91,8 +106,8 @@
     watch: {
       // 全选与其他选项互斥处理
       registerStatus: function (val) {
-        if (val && val.length !== 1 && val.includes(-1)) {
-          this.registerStatus = [-1]
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.registerStatus = ['-1']
         }
       },
 

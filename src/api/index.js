@@ -10,13 +10,15 @@ import * as assets from './assets'
 import * as basics from './basics'
 import * as building from './building'
 import * as ownership from './ownership'
+import * as worthRegister from './worthRegister'
 const API = {
   auth,
   global,
   assets,
   ownership,
   basics,
-  building
+  building,
+  worthRegister,
 }
 
 export default {

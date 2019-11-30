@@ -148,6 +148,7 @@
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
+          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'},
           {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
           {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},

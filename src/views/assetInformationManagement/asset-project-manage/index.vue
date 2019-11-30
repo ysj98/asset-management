@@ -133,21 +133,21 @@
         projectName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
-          {key: -1, title: '全部接管状态'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+          {key: '-1', title: '全部接管状态'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
         ], // 查询条件-是否接管选项
         isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id
         organName: '', // 查询条件-组织Id
         approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
-          {key: -1, title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
-          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
-        ], // 查询条件-项目状态选项
+          // {key: '-1', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
+          // {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
+        ], // 查询条件-项目状态选项-查字典接口
         sourceTypeList: undefined, // 查询条件-来源方式
-        sourceTypeOptions: [], // 查询条件-来源方式选项
+        sourceTypeOptions: [], // 查询条件-来源方式选项-查字典接口
         transferToOperation: undefined, // 查询条件-是否转运营
         operateOptions: [
-          {key: -1, title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
+          {key: '-1', title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
         ], // 查询条件-是否转运营选项
         numList: [
           {title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057'},
@@ -195,21 +195,28 @@
 
       // 查询数据来源方式字典接口
       querySourceTypeList () {
-        this.sourceTypeOptions = [] // 清空旧数据
-        const { organId } = this
-        if (!organId) { return false }
-        this.$api.assets.organDict({code: 'source_type', organId: this.organId}).then(r => {
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            let temp = (res.data || []).map(item => {
-              return { key: item.value, title: item.name }
-            })
-            this.sourceTypeOptions = [{key: 'allType', title: '全部来源'}].concat(temp)
-            return false
-          }
-          throw res.message || '查询来源方式失败'
-        }).catch(err => {
-          this.$message.error(err || '查询来源方式失败')
+        let codeList = [
+          { code: 'source_type', type: 'sourceTypeOptions', name: '来源' },
+          { code: 'approval_status_type', type: 'statusOptions', name: '状态' }
+        ]
+        codeList.forEach(item => {
+          let { type, code, name } = item
+          this[type] = [] // 清空旧数据
+          const { organId } = this
+          if (!organId) { return false }
+          this.$api.assets.organDict({code, organId: this.organId}).then(r => {
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              let temp = (res.data || []).map(item => {
+                return { key: item.value, title: item.name }
+              })
+              this[type] = [{key: '-1', title: `全部${ name }`}].concat(temp)
+              return false
+            }
+            throw res.message || `查询机构${name}字典失败`
+          }).catch(err => {
+            this.$message.error(err || `查询机构${name}字典失败`)
+          })
         })
       },
 
@@ -351,11 +358,11 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          takeOver: takeOver === -1 ? "" : takeOver,
+          takeOver: takeOver === '-1' ? "" : takeOver,
           organId, isCurrent, pageSize: pageLength, pageNum: pageNo, projectName,
-          transferToOperation: transferToOperation === -1 ? "" : transferToOperation,
-          sourceTypeList: (sourceTypeList && sourceTypeList.includes('allType')) ? [] : sourceTypeList,
-          approvalStatusList: (approvalStatusList && approvalStatusList.includes(-1)) ? [] : approvalStatusList
+          transferToOperation: transferToOperation === '-1' ? "" : transferToOperation,
+          sourceTypeList: (sourceTypeList && sourceTypeList.includes('-1')) ? [] : sourceTypeList,
+          approvalStatusList: (approvalStatusList && approvalStatusList.includes('-1')) ? [] : approvalStatusList
         }
         this.$api.assets.queryProjectManageListPage(form).then(r => {
           this.tableObj.loading = false
@@ -404,15 +411,15 @@
     watch: {
       // 全选与其他选项互斥处理
       approvalStatusList: function (val) {
-        if (val && val.length !== 1 && val.includes(-1)) {
-          this.approvalStatusList = [-1]
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.approvalStatusList = ['-1']
         }
       },
 
       // 全选与其他选项互斥处理
       sourceTypeList: function (val) {
-        if (val && val.length !== 1 && val.includes('allType')) {
-          this.sourceTypeList = ['allType']
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.sourceTypeList = ['-1']
         }
       },
 
