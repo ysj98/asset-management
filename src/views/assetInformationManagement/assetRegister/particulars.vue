@@ -26,7 +26,7 @@
         </a-row>
       </div>
     </div>
-    <div class="particulars-nav">
+    <div class="particulars-nav-c" :class="{'particulars-nav-teb': files.length > 0, 'particulars-box': files.length === 0}">
       <span class="section-title blue">资产明细</span>
       <div class="particulars-obj">
         <div class="tab-exhibition">
@@ -229,8 +229,27 @@ export default {
         }
       }
     }
-    .particulars-tab {
-      padding: 10px 0 20px 40px;
+    .correspondingTask {
+      margin:35px 40px 0 40px;
+      border: 1px solid #F0F2F5;
+    }
+  }
+  .particulars-box {
+    padding: 0 126px 20px 70px;
+  }
+  .particulars-nav-teb {
+    padding: 42px 126px 20px 70px;
+  }
+  .particulars-nav-c {
+    .particulars-obj {
+      padding: 20px 0 20px 40px;
+      .playground-row {
+        .playground-col {
+          height: 40px;
+          line-height: 40px;
+          font-size: 12px;
+        }
+      }
     }
     .tab-exhibition {
       margin: 10px 0;
@@ -270,9 +289,8 @@ export default {
         background-color: rgb(253, 116, 116);
       }
     }
-    .correspondingTask {
-      margin:35px 40px 0 40px;
-      border: 1px solid #F0F2F5;
+    .particulars-tab {
+      padding: 10px 0 20px 40px;
     }
   }
   .nav-box {
