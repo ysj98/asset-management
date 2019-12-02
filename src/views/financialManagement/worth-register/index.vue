@@ -1,6 +1,7 @@
 <!--账务管理业务--价值登记入口页面-->
 <template>
   <div class="custom-tabs">
+    <router-link to="/detailPage">戳我送你去天安门</router-link>
     <a-tabs v-model="key" type="card" :tabBarGutter="10">
       <a-tab-pane tab="资产价值登记" key="1">
         <asset-worth-register/>

@@ -178,14 +178,17 @@
 
 <style lang='less' scoped>
   .asset_worth_register {
-    /*if you want to set scroll: { x: true }*/
-    /*you need to add style .ant-table td { white-space: nowrap; }*/
-    & /deep/ .ant-table-thead th, .ant-table td {
-      white-space: nowrap;
-    }
-    & /deep/ .ant-table-body {
-      &::-webkit-scrollbar {
-        height: 8px !important;
+    .custom-table {
+      padding-bottom: 55px;
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+      & /deep/ .ant-table-body {
+        &::-webkit-scrollbar {
+          height: 8px !important;
+        }
       }
     }
   }

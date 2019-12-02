@@ -224,6 +224,14 @@ let proRouter = [
     meta: {
       keepAlive: true
     }
+  },
+  {
+    path: '/detailPage',
+    name: '资产价值登记详情',
+    component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
+    meta: {
+      keepAlive: true
+    }
   }
 ]
 export default proRouter
