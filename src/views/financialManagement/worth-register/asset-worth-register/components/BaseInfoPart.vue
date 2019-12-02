@@ -6,7 +6,8 @@
     <a-row :gutter="24">
       <a-col :span="8">
         <a-form-item label="所属组织机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input v-decorator="[ 'organName']" disabled/>
+          <a-input v-model="organName" disabled/>
+          <!--<span style="margin-left: 12px">{{organName}}</span>-->
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -20,7 +21,7 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属评估任务">
           <a-select
-            v-decorator="['taskId', { rules: [{ required: true, message: '请选择所属评估任务' }] }]"
+            v-decorator="['assessmentTask', { rules: [{ required: true, message: '请选择所属评估任务' }] }]"
             placeholder="请选择所属评估任务"
             :options="taskOptions"
           />
@@ -40,7 +41,7 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产类型">
           <a-select
-            v-decorator="['typeId', { rules: [{ required: true, message: '请选择资产类型' }] }]"
+            v-decorator="['assetsType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
             placeholder="请选择资产类型"
             :options="typeOptions"
           />
@@ -52,7 +53,7 @@
             :disabled="isEdit"
             style="width: 100%"
             placeholder="请选择评估基准日"
-            v-decorator="['transferApprovalDate', { rules: [{ required: true, message: '请选择评估基准日' }] }]"
+            v-decorator="['assessmenBaseDate', { rules: [{ required: true, message: '请选择评估基准日' }] }]"
           />
         </a-form-item>
       </a-col>
@@ -61,7 +62,7 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估方法">
           <a-select
-            v-decorator="['typeId', { rules: [{ required: true, message: '请选择评估方法' }] }]"
+            v-decorator="['assessmentMethod', { rules: [{ required: true, message: '请选择评估方法' }] }]"
             placeholder="请选择评估方法"
             :options="methodOptions"
           />
@@ -70,7 +71,7 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估机构">
           <a-select
-            v-decorator="['organVal', { rules: [{ required: true, message: '请选择评估机构' }] }]"
+            v-decorator="['assessmentOrgan', { rules: [{ required: true, message: '请选择评估机构' }] }]"
             placeholder="请选择评估机构"
             :options="organOptions"
           />
@@ -107,8 +108,10 @@
 </template>
 
 <script>
+  import moment from 'moment'
   export default {
     name: 'BaseInfoPart',
+    props: ['type', 'details'],
     data () {
       return {
         formItemLayout: {
@@ -116,6 +119,8 @@
           wrapperCol: { span: 18 }
         },
         attachment: [], // 附件
+        organId: '', // 组织机构Id,
+        organName: '', // 组织机构Name,
         isEdit: false, // 是否编辑状态
         typeOptions: [], // 资产类型选项,
         taskOptions: [],  // 评估任务选项
@@ -126,7 +131,58 @@
       }
     },
 
-    methods: {}
+    methods: {
+      // 提交数据
+      handleSubmit (resolve, reject) {
+        this.form.validateFieldsAndScroll((err, values) => {
+          if (!err) {
+            const { attachment, details: { organId } } = this
+            let attachArr = attachment.map(m => {
+              const { url: attachmentPath, suffix, name } = m
+              return { attachmentPath, attachmentSuffix: suffix || name.split('.')[1], oldAttachmentName: name, newAttachmentName: name }
+            }) // 处理附件格式
+            // 转换日期格式为string
+            let date = values.assessmenBaseDate ? moment(values.assessmenBaseDate).format('YYYY-MM-DD') : ''
+            let form = Object.assign({}, values, { attachment: attachArr, organId, assessmenBaseDate: date})
+            return resolve(form)
+          }
+          reject('数据不完整')
+        })
+      },
+      
+      // 渲染数据
+      renderDetail () {
+        const {type, details} = this
+        const {
+          organName, assessmenBaseDate, remark, attachmentList, assessmentTaskName, projectName, assetTypeName,
+          assessmentMethodName, assessmentOrganName, ...others} =details
+        let attachArr = (attachmentList || []).map(m => {
+          return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
+        }) // 处理附件格式
+        Object.assign(this, { attachment: attachArr, organName })
+        let formatDetails = {
+          assessmenBaseDate: assessmenBaseDate ? moment(assessmenBaseDate, 'YYYY-MM-DD') : null
+        }
+        // 转换数据
+        if (type === 'approval' || type === 'detail') {
+          let obj = {
+            remark: remark || '无',
+            projectId: projectName,
+            assetsType: assetTypeName,
+            assessmentTask: assessmentTaskName,
+            assessmentOrgan: assessmentOrganName,
+            assessmentMethod: assessmentMethodName,
+            
+          }
+          formatDetails = Object.assign({}, formatDetails, obj)
+        }
+        return this.form.setFieldsValue({ ...others, ...formatDetails })
+      }
+    },
+    
+    mounted () {
+      this.renderDetail()
+    }
   }
 </script>
 

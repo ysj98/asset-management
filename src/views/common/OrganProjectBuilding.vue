@@ -83,7 +83,6 @@
         loading: false, // 加载状态
         organId: '',
         organName: '',
-        timeoutId: '',
         projectId: undefined, // 多选和单选值类型不同，定义undefined
         projectOptions: [],
         buildingId: undefined,
@@ -111,26 +110,22 @@
         if (!this.isShowBuilding && type === 'buildingOptions') { return false } // 不展示楼栋不执行调接口
         const api = { buildingOptions: 'queryBuildingByOrganId', projectOptions: 'getObjectKeyValueByOrganId' }
         this.loading = true
-        clearTimeout(this.timeoutId)
-        let _this = this
-        _this.timeoutId = setTimeout(() => {
-          _this.$api.assets[api[type]]({organId: this.organId}).then(r => {
-            _this.loading = false
-            let res = r.data
-            if (res && String(res.code) === '0') {
-              _this[type] = (res.data || []).map(item => {
-                return {
-                  key: item.assetHouseId || item.projectId,
-                  title: item.assetName || item.projectName
-                }
-              })
-              return false
-            }
-            throw res.message || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`
-          }).catch(err => {
-            _this.loading = false
-            _this.$message.error(err || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`)
-          })
+        this.$api.assets[api[type]]({organId: this.organId}).then(r => {
+          this.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this[type] = (res.data || []).map(item => {
+              return {
+                key: item.assetHouseId || item.projectId,
+                title: item.assetName || item.projectName
+              }
+            })
+            return false
+          }
+          throw res.message || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`
+        }).catch(err => {
+          this.loading = false
+          this.$message.error(err || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`)
         })
       }
     },
@@ -152,21 +147,21 @@
           buildingId: undefined,
           buildingOptions: [],
         })
-        this.$emit('input', { organId, projectId: undefined, buildingId: undefined })
+        this.$emit('input', { organId, organName: this.organName, projectId: undefined, buildingId: undefined })
         organId && this.queryData('projectOptions')
+        organId && this.queryData('buildingOptions')
       },
 
       projectId: function (projectId) {
-        const { organId } = this
+        const { organId, organName } = this
         this.buildingId = undefined
         this.buildingOptions = []
-        this.$emit('input', { organId, projectId, buildingId: undefined })
-        this.queryData('buildingOptions')
+        this.$emit('input', { organId, organName, projectId, buildingId: undefined })
       },
 
       buildingId: function (buildingId) {
-        const { organId, projectId } = this
-        this.$emit('input', { organId, projectId, buildingId })
+        const { organId, projectId, organName } = this
+        this.$emit('input', { organId, organName, projectId, buildingId })
       }
     }
   }

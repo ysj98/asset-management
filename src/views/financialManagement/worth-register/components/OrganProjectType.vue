@@ -59,7 +59,7 @@
         loading: false, // 加载状态
         assetType: undefined, // 资产类型
         assetTypeOptions: [], // 资产类型选项
-        organProjectBuildingValue: {}, // 组织机构-资产项目-楼栋 对象
+        organProjectBuildingValue: {}, // 组织机构-资产项目-楼栋 对象{organId, projectId, assetType}
       }
     },
 
@@ -83,13 +83,13 @@
 
     watch: {
       organProjectBuildingValue: function (obj) {
-        const { organId, projectId } = obj
-        this.$emit('input', { organId, projectId, assetType: this.assetType })
+        const { organId, projectId, organName } = obj
+        this.$emit('input', { organId, projectId, organName, assetType: this.assetType })
       },
 
       assetType: function (assetType) {
-        const { organId, projectId } = this.organProjectBuildingValue
-        this.$emit('input', { organId, projectId, assetType })
+        const { organId, projectId, organName } = this.organProjectBuildingValue
+        this.$emit('input', { organId, organName, projectId, assetType })
       }
     }
   }

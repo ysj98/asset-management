@@ -6,10 +6,12 @@
     <SG-TrackStep v-if="stepList.length" :stepList="stepList" class="title_div"/>
     <div v-else style="text-align: center">暂无数据</div>
     <!--审批意见-->
-    <SG-Title title="审批意见"/>
-    <span style="float: left">审核意见：</span>
-    <div style="margin-left: 60px">
-      <a-textarea v-model="advice" placeholder="请输入审批意见" :rows="4"/>
+    <div v-if="type == 'approval'">
+      <SG-Title title="审批意见"/>
+      <span style="float: left">审核意见：</span>
+      <div style="margin-left: 60px">
+        <a-textarea v-model="advice" placeholder="请输入审批意见" :rows="4"/>
+      </div>
     </div>
   </div>
 </template>
@@ -17,6 +19,7 @@
 <script>
   export default {
     name: 'ApprovalFlowPart',
+    props: ['type'],
     data () {
       return {
         advice: '', // 审批意见
@@ -32,6 +35,6 @@
 
 <style lang='less' scoped>
   .approval_style {
-  
+    padding-bottom: 25px;
   }
 </style>

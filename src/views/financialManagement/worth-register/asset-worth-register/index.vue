@@ -7,7 +7,8 @@
         <SG-Button
           icon="plus"
           type="primary"
-          @click="handleAdd"
+          @click="handleBtnAction({type: 'add'})"
+          :loading="exportBtnLoading"
         >新增资产项目</SG-Button>
         <SG-Button icon="export" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
       </div>
@@ -45,9 +46,12 @@
         >
           <span class="action_text">删除</span>
         </a-popconfirm>
-        <span slot="action" slot-scope="text, record">
-          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.assetHouseId)">详情</span>
-        </span>
+        <!--<span class="action_text" @click="handleBtnAction({record.registerId, 'detail'})">详情</span>-->
+        <!--<span class="action_text" @click="handleBtnAction({record.registerId, 'approval'})">审批</span>-->
+        <!--<span @click="handleBtnAction({}record.registerId, 'edit'})">编辑</span>-->
+        <router-link class="action_text" :to="{name: '价值登记详情', params: {registerId: record.registerId, type: 'detail'}}">详情</router-link>
+        <router-link class="action_text" :to="{name: '价值登记审批', params: {registerId: record.registerId, type: 'approval'}}">审批</router-link>
+        <router-link class="action_text" :to="{name: '价值登记编辑', params: {registerId: record.registerId, type: 'edit'}}">编辑</router-link>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
@@ -67,7 +71,8 @@
       return {
         fold: true, // 查询条件折叠按钮
         registerName: '', // 查询条件-登记名称
-        organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
+        exportBtnLoading: false, // 导出按钮loading
+        organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, organName, projectId, assetType }
         dateMethodOrgan: {}, // { assessOrgan, assessDate, confirmDate, assessMethod }
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
@@ -96,53 +101,66 @@
     },
 
     methods: {
-      // 新增
-      handleAdd () {},
+      // 处理新增add、编辑edit、详情detail、审批approval操作
+      handleBtnAction ({id, type}) {
+        if (type === 'add') {
+          const { organProjectType: { organId, organName } } = this
+          if (!organId) { return this.$message.info('请选择组织机构') }
+          this.$router.push({ name: '价值登记新增', params: { organId, organName, type: 'add' }})
+        } else {
+          console.log(id)
+        }
+      },
 
       // 导出
-      handleExport () {},
+      handleExport () {
+        return this.$message.info('暂不支持')
+        // if (!this.tableObj.dataSource.length) {
+        //   return this.$message.info('无可导出数据')
+        // }
+      },
 
       // 删除项目
-      confirmDelete () {
+      confirmDelete ({registerId, approvalStatus}) {
         this.tableObj.loading = true
-        // this.$api.assets.deleteProjectManageProjectById({projectId}).then(r => {
-        //   this.tableObj.loading = false
-        //   let res = r.data
-        //   if (res && String(res.code) === '0') {
-        //     this.$message.success('删除成功')
-        //     // 更新列表
-        //     const { pageNo, pageLength } = this.paginationObj
-        //     return this.queryTableData({pageNo, pageLength, type: 'search'})
-        //   }
-        //   throw res.message || '删除失败'
-        // }).catch(err => {
-        //   this.tableObj.loading = false
-        //   this.$message.error(err || '删除失败')
-        // })
+        this.$api.worthRegister.updateStatus({registerId, approvalStatus, status: 0}).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$message.success('删除成功')
+            // 更新列表
+            const { pageNo, pageLength } = this.paginationObj
+            return this.queryTableData({pageNo, pageLength})
+          }
+          throw res.message || '删除失败'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '删除失败')
+        })
       },
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        // const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
-        // if (!organId) { return this.$message.info('请选择组织机构') }
-        // this.tableObj.loading = true
-        // this.$api.assets.queryBuildingViewPage({ organId, houseIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
-        //   this.tableObj.loading = false
-        //   let res = r.data
-        //   if (res && String(res.code) === '0') {
-        //     const { count, data } = res.data
-        //     this.tableObj.dataSource = data
-        //     Object.assign(this.paginationObj, {
-        //       totalCount: count,
-        //       pageNo, pageLength
-        //     })
-        //     return false
-        //   }
-        //   throw res.message || '查询资产价值登记接口出错'
-        // }).catch(err => {
-        //   this.tableObj.loading = false
-        //   this.$message.error(err || '查询资产价值登记接口出错')
-        // })
+        const { organProjectType: { organId, projectId, assetType } } = this
+        if (!organId) { return this.$message.info('请选择组织机构') }
+        this.tableObj.loading = true
+        this.$api.worthRegister.queryPageList({ organId, projectId, assetType, pageSize: pageLength, pageNum: pageNo }).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { count, data } = res.data
+            this.tableObj.dataSource = data
+            Object.assign(this.paginationObj, {
+              totalCount: count,
+              pageNo, pageLength
+            })
+            return false
+          }
+          throw res.message || '查询资产价值登记接口出错'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '查询资产价值登记接口出错')
+        })
       },
     },
 
@@ -190,6 +208,12 @@
           height: 8px !important;
         }
       }
+    }
+    .action_text {
+      color: #0084FF;
+      cursor: pointer;
+      margin-right: 12px;
+      white-space: nowrap;
     }
   }
 </style>

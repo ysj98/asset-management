@@ -76,7 +76,6 @@
         cities: [],
         district: undefined,
         districts: [],
-        timeoutId: 0,
         properties: {} // 属性值
       }
     },
@@ -98,23 +97,19 @@
           districts: 'queryCityAndAreaList'
         }
         let form = type === 'provinces' ? {} : { parentRegionId }
-        clearTimeout(this.timeoutId)
-        let _this = this
-        _this.timeoutId = setTimeout(() => {
-          _this.$api.basics[api[type]](form).then(r => {
-            _this.loading = false
-            let res = r.data
-            if (res && String(res.code) === '0') {
-              _this[type] = (res.data || []).map(item => {
-                return { key: item.regionId, title: item.name }
-              })
-              return false
-            }
-            throw res.message || '区域查询失败'
-          }).catch(err => {
-            _this.loading = false
-            _this.$message.error(err || '区域查询失败')
-          })
+        this.$api.basics[api[type]](form).then(r => {
+          this.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this[type] = (res.data || []).map(item => {
+              return { key: item.regionId, title: item.name }
+            })
+            return false
+          }
+          throw res.message || '区域查询失败'
+        }).catch(err => {
+          this.loading = false
+          this.$message.error(err || '区域查询失败')
         })
       }
     },
