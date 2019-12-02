@@ -290,11 +290,14 @@ export default {
       this.queryCondition.resType = query.resType
       this.queryCondition.status = query.status
       this.organName = query.organName
+      this.searchBuildName = query.searchBuildName
+      console.log('取=>', this.searchBuildName)
       this.formChildPage = true // 用于项目记录一次
     }
     // 楼栋
     if (this.queryCondition.organId) {
-        this.queryBuildList(this.queryCondition.organId)
+      console.log('请求=>', this.searchBuildName)
+        this.queryBuildList(this.queryCondition.organId, this.searchBuildName)
     }
     // 单元
     if (this.queryCondition.buildId) {
@@ -449,7 +452,7 @@ export default {
       if (!organId) {
         return
       }
-      this.queryBuildList(organId)
+      this.queryBuildList(organId, this.searchBuildName)
     },
     // 监听建筑形态变化
     watchHouseCategory (value) {
@@ -645,6 +648,10 @@ export default {
         ...this.queryConditionStore,
         organName: this.organName || '',
         showKey: 'house'
+      }
+      console.log('存=>', this.searchBuildName)
+      if (this.searchBuildName) {
+        o.searchBuildName = this.searchBuildName
       }
       this.SET_ROUTE_QUERY(this.$route.path, o)
       let query = {type}

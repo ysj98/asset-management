@@ -109,7 +109,9 @@ export default {
   methods: {
     // 初始化数据
     resetInit () {
-      this.activeType = '' // -2楼栋列表，0楼栋, 1单元, 2楼层
+      if (this.activeType !== '-2') {
+        this.activeType = '' // -2楼栋列表，0楼栋, 1单元, 2楼层
+      }
       this.pageType = '' // create新增， edit编辑，
       this.createType = '' // unit新建单元，build新建楼栋，floor新建楼层 
       this.activeItem = {}
