@@ -214,7 +214,7 @@ let proRouter = [
   },
   {
     path: '/ownershipSurvey/assetOwnershipDetail',
-    name: '资产项目权属详情',
+    name: '资产权属详情',
     component: () => import('@/views/ownershipManagement/ownershipSurvey/assetOwnershipDetail.vue')
   },
   {
