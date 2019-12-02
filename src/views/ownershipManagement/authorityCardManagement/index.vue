@@ -56,7 +56,7 @@
     <!-- 新增 -->
     <NewCard ref="newCard" :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
-    <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
+    <CardDetails ref="cardDetails" @successQuery="successQuery"  :warrantId="warrantId"></CardDetails>
   </div>
 </template>
 
@@ -294,6 +294,11 @@ export default {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
+    },
+    successQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
     },
     // 查询
     query () {
