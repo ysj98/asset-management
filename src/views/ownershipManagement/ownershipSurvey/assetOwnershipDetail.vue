@@ -41,7 +41,7 @@
         </div>
         <div class="base-info-row">
           <div class="base-info-item">
-            <span class="info-item-label">资产项目：</span>
+            <span @click="showCertDetail" class="info-item-label">资产项目：</span>
             <span class="info-item-content">公建2019</span>
           </div>
           <div class="base-info-item">
@@ -116,10 +116,12 @@
         </div>
       </div>
     </div>
+    <certDetail ref="certDetail"></certDetail>
   </a-spin>
 </template>
 <script>
 import noDataTips from "@/components/noDataTips";
+import certDetail from "./child/certDetail.vue"
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const tableInfoColumns = [
   {
@@ -216,7 +218,8 @@ const tableHandlerColumns = [
   }];
 export default {
   components: {
-    noDataTips
+    noDataTips,
+    certDetail
   },
   data() {
     return {
@@ -237,7 +240,12 @@ export default {
         dataSource: []
       }
     };
-  }
+  },
+  methods: {
+    showCertDetail () {
+      this.$refs.certDetail.visible = true
+    }
+  },
 };
 </script>
  <style lang="less" scoped>

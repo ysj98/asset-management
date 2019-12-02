@@ -128,7 +128,7 @@ import { utils } from "@/utils/utils";
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
-  detail: "/ownershipSurvey/projectDetail"
+  detail: "/ownershipSurvey/assetOwnershipDetail"
 };
 const allStyle = {
   width: "170px",

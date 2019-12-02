@@ -600,8 +600,10 @@ export default {
           console.log('一级组织机构=>', this.organOpt)
           // 默认选中第一个
           if (this.organOpt.length) {
-            this.form.setFieldsValue({organId: this.organOpt[0].value})
-            this.queryBuildList(this.organOpt[0].value)
+            if (this.type !== 'copy') {
+              this.form.setFieldsValue({organId: this.organOpt[0].value})
+              this.queryBuildList(this.organOpt[0].value)
+            }
           }
         }
       })

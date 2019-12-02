@@ -327,7 +327,8 @@ export default {
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
-    this.queryDictDataList()
+    // this.queryDictDataList()
+    this.platformDictFn()
     this.init()
     this.handleBtn()
   },
@@ -535,6 +536,22 @@ export default {
           if (code === '60') {
             this.useTypeOpt = [...resultArr]
           }
+        }
+      })
+    },
+    // 平台字典获取变动类型
+    platformDictFn () {
+      let obj = {
+        code: 'BUILD_STRUCT'
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data || []
+          this.buildStructOpt = data.map(item => {
+            return {...item, label: item.name}
+          })
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },
