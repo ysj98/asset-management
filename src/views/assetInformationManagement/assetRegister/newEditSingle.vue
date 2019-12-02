@@ -248,6 +248,7 @@ export default {
   props: {},
   data () {
     return {
+      organDictData: {},
       jupeProjectId: '',
       takeOver: '',
       fileType: ['xls', 'xlsx'],
@@ -462,7 +463,6 @@ export default {
         this.$message.info('请选择数据范围')
         return
       }
-      console.log(this.scope, '这是什么')
       if (this.scope.includes('1')) {
         this.checkBuildsObjectTypeFn()
       } else {
@@ -573,13 +573,14 @@ export default {
           }
           let data = utils.deepClone(this.tableData)
           data.forEach(item => {
-            if (item.ownershipStatusName === '有证') {
-              item.ownershipStatus = 1
-            } else if (item.ownershipStatusName === '无证') {
-              item.ownershipStatus = 0
-            } else {
-              item.ownershipStatus = 2
-            }
+            item.ownershipStatus = this.organDictData[item.ownershipStatusName]
+            // if (item.ownershipStatusName === '有证') {
+            //   item.ownershipStatus = 1
+            // } else if (item.ownershipStatusName === '无证') {
+            //   item.ownershipStatus = 0
+            // } else {
+            //   item.ownershipStatus = 2
+            // }
           })
           console.log(values.takeOverDate, '这是什么时间')
           let obj = {
@@ -715,7 +716,7 @@ export default {
         }
       })
     },
-    // 平台字典获取变动类型
+    // 平台字典获取资产类型
     platformDictFn () {
       let obj = {
         code: 'asset_type'
@@ -728,6 +729,20 @@ export default {
           this.assetTypeData.forEach(item => {
             asset.push(item.value)
           })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    organDict () {
+      this.$api.assets.platformDict({code: 'AMS_OWNERSHIP_STSTUS_TYPE'}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let organDictData = res.data.data
+          let obj = {}
+          organDictData.forEach(item => {
+            obj[item.name] = item.value
+          })
+          this.organDictData = obj
         } else {
           this.$message.error(res.data.message)
         }
@@ -783,6 +798,7 @@ export default {
     this.getObjectKeyValueByOrganIdFn()
     this.platformDictFn()
     this.queryBuildList(this.organId)
+    this.organDict()
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
       this.registerOrderId = this.enitData[0].registerOrderId

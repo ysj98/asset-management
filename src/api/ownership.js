@@ -49,7 +49,7 @@ export function warrantExport (data) {
 }
 // 权证新增或修改
 export function warrantSaveOrUpdate (data) {
-  return axiosGet(ownership.authorityCardManagement.warrantSaveOrUpdate, data)
+  return axiosPost(ownership.authorityCardManagement.warrantSaveOrUpdate, data)
 }
 // 权证查询
 export function warrantList (data) {
