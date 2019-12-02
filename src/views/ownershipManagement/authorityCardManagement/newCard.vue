@@ -213,6 +213,7 @@ export default {
   },
   data () {
     return {
+      warrantId: '',
       typeJudgment: '1',        // 权利类型判断
       beat: [],
       mortgageInformation: [...mortgageInformation],  // 抵押信息
@@ -456,7 +457,45 @@ export default {
         }
       })
     },
+    // 编辑查询
     query () {
+      this.loading = true
+      this.$api.ownership.warrantList({warrantId: this.warrantId}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data
+          this.ownerType = data.amsOwnershipWarrant.ownerType
+          if (data && data.length > 0) {
+            // this.particularsData = data.amsOwnershipWarrant
+            let files = []
+            if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
+                data.amsAttachmentList.forEach(item => {
+                files.push({
+                  url: item.attachmentPath,
+                  name: item.oldAttachmentName
+                })
+              })
+            }
+            this.newCardData.files = files
+            // 权属人信息
+            data.amsOwnershipWarrantObligeeList.forEach((item, index) => {
+              key: index
+            })
+            this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
+            // 抵押信息
+            data.amsOwnershipWarrantMortgageList.forEach((item, index) => {
+              key: index
+            })
+            this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
+          } else {
+            this.tableData = []
+            this.count = 0
+          }
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
     }
   },
   created () {

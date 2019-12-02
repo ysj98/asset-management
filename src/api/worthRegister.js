@@ -16,7 +16,7 @@ import { worthRegister } from '../config/config.url'
 // }
 // 价值登记查询(分页)
 export function queryPageList (data) {
-  return axiosPost(worthRegister.queryValueRegisterPageList, data)
+  return axiosPost(worthRegister.queryValueRegisterPageList, data, false, false)
 }
 // 价值登记状态操作
 export function updateStatus (data) {

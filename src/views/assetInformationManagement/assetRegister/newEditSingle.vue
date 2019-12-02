@@ -10,7 +10,8 @@
       <a-row class="playground-row">
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="8">
-            <a-form-item label="登记单编号" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">登记单编号：</label>
               <a-input placeholder="请输入登记单编号"
               :style="allWidth"
               :max="30"
@@ -20,7 +21,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="资产项目：" v-bind="formItemLayout">
+            <a-form-item :colon="false"  v-bind="formItemLayout">
+              <label slot="label">资产项目：</label>
               <a-select
                 showSearch
                 :style="allWidth"
@@ -44,7 +46,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="资产类型：" v-bind="formItemLayout">
+            <a-form-item :colon="false" label="资产类型：" v-bind="formItemLayout">
+              <label slot="label">资产类型：</label>
               <a-select
                 showSearch
                 :style="allWidth"
@@ -67,7 +70,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8" v-if="+takeOver === 0">
-            <a-form-item label="接管日期：" v-bind="formItemLayout">
+            <a-form-item v-bind="formItemLayout" :colon="false">
+              <label slot="label">接&nbsp;管&nbsp;日&nbsp;期：</label>
               <a-date-picker
               :style="allWidth"
               placeholder="请选择接管日期"
@@ -78,7 +82,8 @@
               </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-            <a-form-item label="备注" v-bind="formItemTextarea">
+            <a-form-item :colon="false" v-bind="formItemTextarea">
+              <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
                 :autosize="{ minRows: 2, maxRows: 4 }"
@@ -89,7 +94,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-              <a-form-item label="上传附件：" v-bind="formItemTextarea">
+              <a-form-item :colon="false" v-bind="formItemTextarea">
+                <label slot="label">上&nbsp;传&nbsp;附件：</label>
                 <SG-UploadFile
                   v-model="newEditSingleData.files"
                   type="all"
@@ -833,7 +839,7 @@ export default {
             font-size: 12px;
           }
           div:nth-of-type(2) {
-            padding-top: 10px;
+            padding-top: 4px;
             font-size: 16px;
             font-weight: bold;
           }
@@ -884,7 +890,7 @@ export default {
     color: #49505E;
   }
   .ant-table-tbody > tr > td {
-    padding: 6px 9px;
+    padding: 9px 9px;
   }
   .ant-table-tbody {
     tr:nth-child(even){
@@ -905,6 +911,14 @@ export default {
         text-overflow: clip;
       }
     }
+  }
+}
+</style>
+
+<style lang="less">
+.newEditSingle {
+  .ant-form-item-label label:after {
+    margin: 0 0 0 2px;
   }
 }
 </style>

@@ -85,10 +85,11 @@
             { title: '市场值(元)', dataIndex: 'marketValue', align: 'right' },
             { title: '原值评估值基准日', dataIndex: 'originalAssessmenBaseDate' },
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
+            { title: '上次评估值', dataIndex: 'lastAssessmentValue' },
             { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
-            { title: '本次估值(元)', key: 'assessmentValue' }, { title: '评估机构', key: 'assessmentOrganName' },
-            { title: '评估基准日', key: 'assessmenBaseDate' }, { title: '上浮比', key: 'upRate' },
-            { title: '提交人', key: 'createByName' },{ title: '状态', key: 'approvalStatusName' }
+            { title: '本次估值(元)', dataIndex: 'assessmentValue' }, { title: '评估机构', dataIndex: 'assessmentOrganName' },
+            { title: '评估基准日', dataIndex: 'assessmenBaseDate' }, { title: '上浮比', dataIndex: 'upRate' },
+            { title: '提交人', dataIndex: 'createByName' },{ title: '状态', dataIndex: 'approvalStatusName' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
@@ -135,14 +136,17 @@
 
 <style lang='less' scoped>
   .asset_register_record {
-    /*if you want to set scroll: { x: true }*/
-    /*you need to add style .ant-table td { white-space: nowrap; }*/
-    & /deep/ .ant-table-thead th, .ant-table td {
-      white-space: nowrap;
-    }
-    & /deep/ .ant-table-body {
-      &::-webkit-scrollbar {
-        height: 8px !important;
+    .custom-table {
+      padding-bottom: 55px;
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+      & /deep/ .ant-table-body {
+        &::-webkit-scrollbar {
+          height: 8px !important;
+        }
       }
     }
   }

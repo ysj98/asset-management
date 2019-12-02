@@ -406,7 +406,7 @@ export const ownership = {
 }
 
 // 价值登记
-export  const worthRegister = {
+export const worthRegister = {
   // 价值登记查询(分页)
   queryValueRegisterPageList: '/ams/assetValueRegister/queryValueRegisterPageList',
   // 价值登记状态操作

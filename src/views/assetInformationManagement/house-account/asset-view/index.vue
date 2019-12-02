@@ -26,7 +26,7 @@
       <div slot="contentForm">
         <a-row :gutter="8">
           <a-col :span="15">
-            <organ-project-building v-model="organProjectBuildingValue"/>
+            <organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>
           </a-col>
           <a-col :span="5">
             <a-select
@@ -104,8 +104,8 @@
         assetName: '', // 查询条件-资产名称
         status: undefined, // 查询条件-资产状态值
         statusOptions: [
-          { title: '未生效', key: '0' }, { title: '正常', key: '1' }, { title: '报废', key: '2' },
-          { title: '转让', key: '3' }, { title: '报损', key: '4' }, { title: '已清理', key: '5' }
+          { title: '全部状态', key: '-1' }, { title: '未生效', key: '0' }, { title: '正常', key: '1' },
+          { title: '报废', key: '2' }, { title: '转让', key: '3' }, { title: '报损', key: '4' }, { title: '已清理', key: '5' }
         ], // 查询条件-资产状态选项
         provinceCityDistrictValue: {}, // 查询条件-省-市-区值对象
         organProjectBuildingValue: {}, // 查询条件-组织机构-资产项目-楼栋对象
@@ -191,8 +191,9 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo,
-          province, city, region, assetName, status: status || null
+          organId, buildIdList, projectIdList, pageSize: pageLength,
+          province, city, region, assetName, pageNum: pageNo,
+          statusList: status === -1 ? [] : status
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
@@ -212,18 +213,17 @@
           this.$message.error(err || '查询接口出错')
         })
         // 查询楼栋面积统计数据
-        if (type === 'search') { this.queryAssetAreaInfo() }
+        if (type === 'search') { this.queryAssetAreaInfo(form) }
       },
 
       // 查询楼栋视图面积概览数据
-      queryAssetAreaInfo () {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList }, numList } = this
+      queryAssetAreaInfo (form) {
         this.overviewNumSpinning = true
-        this.$api.assets.queryAssetViewArea({ organId, houseIdList, projectIdList }).then(r => {
+        this.$api.assets.queryAssetViewArea(form).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            return this.numList = numList.map(m => {
+            return this.numList = this.numList.map(m => {
               return { ...m, value: res.data[m.key] }
             })
           }
@@ -289,7 +289,14 @@
     watch: {
       organProjectBuildingValue: function (val) {
         val && val.organId && this.queryTableData({type: 'search'})
-      }
+      },
+
+      // 全选与其他选项互斥处理
+      status: function (val) {
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.status = ['-1']
+        }
+      },
     }
   }
 </script>

@@ -28,10 +28,10 @@
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
               <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
-            <div class="box" :style="dateWidth">
+            <div class="box sg-datePicker" :style="dateWidth">
               <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
-            <div class="box" :style="dateWidth">
+            <div class="box sg-datePicker" :style="dateWidth">
               <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
         </div>
@@ -75,8 +75,8 @@ import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
-const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px'}
-const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px'}
+const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
+const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
     title: '变动编号',

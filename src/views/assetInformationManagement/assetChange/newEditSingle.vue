@@ -9,7 +9,8 @@
       <a-row class="playground-row">
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="8">
-            <a-form-item label="标题" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题：</label>
               <a-input placeholder="请输入标题"
               :style="allWidth"
               :max="50"
@@ -19,7 +20,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="所属机构：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">所属机构：</label>
               <a-select
                 :disabled="true"
                 showSearch
@@ -43,7 +45,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="变动类型：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">变动类型：</label>
               <a-select
                 :disabled="setType === 'edit'"
                 showSearch
@@ -68,7 +71,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="资产项目：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">资产项目：</label>
               <a-select
                 showSearch
                 :style="allWidth"
@@ -92,7 +96,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="交付单位：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">交付单位：</label>
               <a-input placeholder="请输入交付单位"
               :style="allWidth"
               :max="50"
@@ -102,7 +107,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="变动日期：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">变动日期：</label>
               <a-date-picker
               :style="allWidth"
               placeholder="请选择变动日期"
@@ -113,7 +119,8 @@
               </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8" v-if="+changeType === 1 || +changeType === 2">
-            <a-form-item label="截止日期：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">截止日期：</label>
               <a-date-picker
               :style="allWidth"
               placeholder="请选择截止日期："
@@ -124,7 +131,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-            <a-form-item label="备注" v-bind="formItemTextarea">
+            <a-form-item :colon="false" v-bind="formItemTextarea">
+              <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
                 :autosize="{ minRows: 2, maxRows: 4 }"
@@ -135,7 +143,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-              <a-form-item label="上传附件：" v-bind="formItemTextarea">
+              <a-form-item :colon="false" v-bind="formItemTextarea">
+                <label slot="label">上传附件：</label>
                 <SG-UploadFile
                   v-model="newEditSingleData.files"
                   type="all"
@@ -223,7 +232,7 @@
     <FormFooter style="border:none;" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交</SG-Button>
-        <SG-Button style="margin-left: 12px" type="primary" @click="save('draft')">保存草稿</SG-Button>
+        <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
@@ -619,6 +628,14 @@ export default {
   }
   .postAssignment-icon:hover {
     color: red;
+  }
+}
+</style>
+
+<style lang="less">
+.newEditSingle {
+  .ant-form-item-label label:after {
+    margin: 0 0 0 2px;
   }
 }
 </style>
