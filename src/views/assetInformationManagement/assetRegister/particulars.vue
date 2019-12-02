@@ -251,7 +251,7 @@ export default {
             font-size: 12px;
           }
           div:nth-of-type(2) {
-            padding-top: 10px;
+            padding-top: 4px;
             font-size: 16px;
             font-weight: bold;
           }
