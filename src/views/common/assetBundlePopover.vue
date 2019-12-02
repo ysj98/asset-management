@@ -15,7 +15,7 @@
     @cancel="handleCancel"
   >
     <div>
-      <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
+      <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
         <div slot="col-r">
         <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -29,7 +29,7 @@
         <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
           <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select> -->
-        <a-input style="width:140px; margin: 0 10px;" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
+        <a-input :style="allStyle" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
         <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </Cephalosome>
@@ -364,6 +364,9 @@ export default {
 .assetBundlePopover {
   .tab-nav {
     margin-top: 10px;
+  }
+  .cephalosome {
+    margin: 0;
   }
 }
 </style>

@@ -8,21 +8,25 @@
         <a-button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
       </div>
       <div slot="col-r">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-        <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
-          <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
-          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
+        <div class="nav">
+          <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
+            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
+            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+        </div>
         <div class="box">
           <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+        <div class="nav">
+          <SG-Button type="primary" @click="query">查询</SG-Button>
+        </div>
       </div>
     </Cephalosome>
     <div class="table-layout-fixed">
@@ -450,7 +454,12 @@ export default {
 .assetRegister {
   .box {
     display: inline-block;
+    vertical-align: middle;
     margin-right: 10px;
+  }
+  .nav {
+    display: inline-block;
+    vertical-align: middle;
   }
   .tab-opt {
     span {
