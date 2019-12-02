@@ -391,7 +391,7 @@ export default {
           if (Number(res.data.code) === 0) {
             this.DE_Loding(loadingName).then(() => {
               this.$SG_Message.success('提交成功')
-              this.$router.push({path: '/assetChange', query: {refresh: true}})
+              this.handleCancel('success')
             })
           } else {
             this.DE_Loding(loadingName).then(() => {
@@ -416,7 +416,10 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
     // 关闭弹窗
-    handleCancel () {
+    handleCancel (str) {
+      if (str === 'success') {
+        this.$emit('successQuery')
+      }
       this.show = false
     },
     // 平台字典获取数据

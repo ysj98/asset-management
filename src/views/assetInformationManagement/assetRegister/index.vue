@@ -69,32 +69,32 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import moment from 'moment'
 import {utils, debounce} from '@/utils/utils.js'
 import noDataTips from '@/components/noDataTips'
-const approvalStatusData = [
-  {
-    name: '全部状态',
-    value: ''
-  },
-  {
-    name: '草稿',
-    value: '0'
-  },
-  {
-    name: '待审批',
-    value: '2'
-  },
-  {
-    name: '已驳回',
-    value: '3'
-  },
-  {
-    name: '已审批',
-    value: '1'
-  },
-  {
-    name: '已取消',
-    value: '4'
-  }
-]
+// const approvalStatusData = [
+//   {
+//     name: '全部状态',
+//     value: ''
+//   },
+//   {
+//     name: '草稿',
+//     value: '0'
+//   },
+//   {
+//     name: '待审批',
+//     value: '2'
+//   },
+//   {
+//     name: '已驳回',
+//     value: '3'
+//   },
+//   {
+//     name: '已审批',
+//     value: '1'
+//   },
+//   {
+//     name: '已取消',
+//     value: '4'
+//   }
+// ]
 const columns = [
   {
     title: '登记单编号',
@@ -141,7 +141,7 @@ export default {
       isChild: false,
       loading: false,
       noPageTools: false,
-      approvalStatusData: [...approvalStatusData],
+      approvalStatusData: [],
       allStyle: 'width: 150px; margin-right: 10px;',
       columns,
       organName: '',
@@ -330,16 +330,19 @@ export default {
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (str === 'approval_status_type') {
-            this.approvalStatusData = [...data]
-            let status = []
-            this.approvalStatusData.forEach(item => {
-              status.push(item.value)
-            })
-            this.queryCondition.approvalStatus = status
-          } else if (str === 'asset_type') {
+          if (str === 'asset_type') {
             this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
           }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    organDict () {
+      this.$api.assets.organDict({code: 'approval_status_type'}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.approvalStatusData = [{name: '全部状态', value: ''}, ...data]
         } else {
           this.$message.error(res.data.message)
         }
@@ -444,7 +447,7 @@ export default {
     //   this.debounceMothed()
     // })
     // 获取状态
-    // this.platformDictFn('approval_status_type')
+    this.organDict('approval_status_type')
     // 资产类型
     this.platformDictFn('asset_type')
   }
