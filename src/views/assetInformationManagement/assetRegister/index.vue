@@ -42,10 +42,10 @@
         <template slot="operation" slot-scope="text, record">
           <div class="tab-opt">
             <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_EDIT">编辑</span>
-            <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_DELETE">删除</span>
-            <span v-if="+record.approvalStatus === 2" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_AUDIT">审核</span>
-            <span @click="operationFn(record, 'theAudit')" v-if="+record.approvalStatus === 1" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_REVERSE_AUDIT">反审核</span>
+            <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_EDIT">编辑</span>
+            <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_DELETE">删除</span>
+            <span v-show="+record.approvalStatus === 2" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_AUDIT">审核</span>
+            <span @click="operationFn(record, 'theAudit')" v-show="+record.approvalStatus === 1" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_REVERSE_AUDIT">反审核</span>
           </div>
         </template>
       </a-table>

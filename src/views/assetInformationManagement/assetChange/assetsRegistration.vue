@@ -44,10 +44,10 @@
         <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
         <div class="tab-opt">
           <span @click="operationFn(record, 'particulars')">详情</span>
-          <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_EDIT">编辑</span>
-          <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_DELETE">删除</span>
+          <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_EDIT">编辑</span>
+          <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_DELETE">删除</span>
           <span v-if="record.approvalStatus === '2'" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_AUDIT">审核</span>
-          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_END_DELIVERY">终止交付</span>
+          <span @click="operationFn(record, 'delivery')" v-show="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_END_DELIVERY">终止交付</span>
         </div>
       </template>
     </a-table>
