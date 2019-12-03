@@ -329,7 +329,7 @@ export const judgmentData = [
     title: '建筑面积',
     dataIndex: 'area',
     required: false,
-    type: 'number'
+    type: 'float'
   },
   {
     title: '坐落位置',

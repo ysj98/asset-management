@@ -53,7 +53,7 @@ export function warrantSaveOrUpdate (data) {
 }
 // 权证查询
 export function warrantList (data) {
-  return axiosGet(ownership.authorityCardManagement.warrantList, data)
+  return axiosPost(ownership.authorityCardManagement.warrantList, data)
 }
 // 权证注销
 export function warrantDelete (data) {

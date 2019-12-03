@@ -213,6 +213,8 @@ export default {
   },
   data () {
     return {
+      titleDeed: [...titleDeed],
+      accessCard: [...accessCard],
       warrantId: '',
       typeJudgment: '',        // 权利类型判断
       beat: [],
@@ -258,7 +260,7 @@ export default {
   },
   watch: {
     'typeJudgment' () {
-      this.typeJudgment === '1' ? this.beat = titleDeed : this.beat = accessCard
+      this.typeJudgment === '1' ? this.beat = this.titleDeed : this.beat = this.accessCard
     }
   },
   methods: {
@@ -389,9 +391,10 @@ export default {
           let loadingName = this.SG_Loding('保存中...')
           this.$api.ownership.warrantSaveOrUpdate(obj).then(res => {
           if (Number(res.data.code) === 0) {
+            let _this = this
             this.DE_Loding(loadingName).then(() => {
               this.$SG_Message.success('提交成功')
-              this.handleCancel('success')
+              _this.handleCancel('success')
             })
           } else {
             this.DE_Loding(loadingName).then(() => {
@@ -476,7 +479,7 @@ export default {
           })
           this.qualityOfRightData = arr
         }
-        titleDeed.forEach(item => {
+        this.titleDeed.forEach(item => {
           // 权属用途
           if (item.attrCode === 'ownershipUse') {
             item.chooseArray = this.ownershipUseData
@@ -490,7 +493,7 @@ export default {
             item.chooseArray = this.qualityOfRightData
           }
         })
-        accessCard.forEach(item => {
+        this.accessCard.forEach(item => {
           // 权属用途
           if (item.attrCode === 'ownershipUse') {
             item.chooseArray = this.ownershipUseData
@@ -589,42 +592,48 @@ export default {
       })
     },
     // 编辑查询
-    query () {
-      this.loading = true
-      this.$api.ownership.warrantList({warrantId: this.warrantId}).then(res => {
+    query (warrantId) {
+      this.warrantId = warrantId
+      this.$api.ownership.warrantDetail({warrantId: this.warrantId}).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
-          this.ownerType = data.amsOwnershipWarrant.ownerType
-          if (data && data.length > 0) {
-            // this.particularsData = data.amsOwnershipWarrant
-            let files = []
-            if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
-                data.amsAttachmentList.forEach(item => {
-                files.push({
-                  url: item.attachmentPath,
-                  name: item.oldAttachmentName
-                })
-              })
+          this.show = true
+          let data = res.data.data
+          this.typeJudgment = data.amsOwnershipWarrant.ownerType  // 判断类型
+          // this.particularsData = data.amsOwnershipWarrant
+          this.accessCard.forEach(item => {
+            if (item.formType === 'date') {
+              item.attrValue = moment(data.amsOwnershipWarrant[item.attrCode], 'YYYY-MM-DD')
+            } else {
+              item.attrValue = data.amsOwnershipWarrant[item.attrCode]
             }
-            this.newCardData.files = files
-            // 权属人信息
-            data.amsOwnershipWarrantObligeeList.forEach((item, index) => {
-              key: index
+          })
+          this.form.setFieldsValue({
+            warrantNbr: data.amsOwnershipWarrant.warrantNbr
+          })
+          console.log(this.accessCard, '-=-=-')
+          let files = []
+          if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
+              data.amsAttachmentList.forEach(item => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.oldAttachmentName
+              })
             })
-            this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
-            // 抵押信息
-            data.amsOwnershipWarrantMortgageList.forEach((item, index) => {
-              key: index
-            })
-            this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
-          } else {
-            this.tableData = []
-            this.count = 0
           }
-          this.loading = false
+          this.newCardData.files = files
+          // 权属人信息
+          data.amsOwnershipWarrantObligeeList.forEach((item, index) => {
+            key: index
+          })
+          this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
+          // 抵押信息
+          data.amsOwnershipWarrantMortgageList.forEach((item, index) => {
+            key: index
+          })
+          this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
         } else {
+          this.show = false
           this.$message.error(res.data.message)
-          this.loading = false
         }
       })
     }

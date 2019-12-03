@@ -32,8 +32,8 @@
       </div>
     </SearchContainer>
     <div class="table-layout-fixed" ref="table_box">
-      <!-- :loading="loading" -->
       <a-table
+        :loading="loading"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
@@ -41,7 +41,11 @@
         >
         <template slot="operation" slot-scope="text, record">
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
-          <span @click="operationFn(record, 'particulars')">详情</span>
+          <div class="tab-opt">
+            <span @click="operationFn(record, 'particulars')">详情</span>
+            <span @click="operationFn(record, 'edit')">编辑</span>
+            <span @click="operationFn(record, 'particulars')">注销</span>
+          </div>
         </template>
       </a-table>
       <SG-FooterPagination
@@ -54,9 +58,9 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard ref="newCard" :organId="queryCondition.organId"></NewCard>
+    <NewCard ref="newCard" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
-    <CardDetails ref="cardDetails" @successQuery="successQuery"  :warrantId="warrantId"></CardDetails>
+    <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>
 </template>
 
@@ -121,6 +125,7 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
+    width: 150,
     scopedSlots: { customRender: 'operation' },
   }
 ]
@@ -185,7 +190,10 @@ export default {
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
+        // this.$refs.cardDetails.query()
         this.$refs.cardDetails.show = true
+      } else if (type === 'edit') {
+        this.$refs.newCard.query(val.warrantId)
       }
     },
     // 组织机构树
@@ -295,7 +303,8 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-    successQuery () {
+    successQueryFn () {
+      console.log('lai')
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
@@ -361,16 +370,26 @@ export default {
   .box-right {
     margin-right: 10px;
   }
-}
-.search-content-box{
-  display: flex;
-  justify-content: space-between;
-  .search-from-box{
-    flex: 1;
+  .search-content-box{
+    display: flex;
+    justify-content: space-between;
+    .search-from-box{
+      flex: 1;
+    }
+    .two-row-box{
+      padding-top: 14px;
+      flex: 0 0 190px;
+    }
   }
-  .two-row-box{
-    padding-top: 14px;
-    flex: 0 0 190px;
+  .tab-opt {
+    span {
+      padding-right: 10px;
+      color: #0084FF;
+      cursor: pointer;
+    }
+  }
+  .custom-table {
+    padding-bottom: 60px;
   }
 }
 </style>
