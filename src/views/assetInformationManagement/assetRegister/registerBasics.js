@@ -418,7 +418,7 @@ export const judgmentData = [
   {
     title: '使用期限(月)',
     dataIndex: 'validPeriod',
-    required: false,
+    required: true,
     type: 'number'
   },
   {
