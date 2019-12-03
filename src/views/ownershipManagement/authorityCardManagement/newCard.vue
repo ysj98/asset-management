@@ -45,6 +45,7 @@
             <a-form-item v-bind="formItemLayout" :colon="false">
               <label slot="label">权利类型：</label>
               <a-select :style="allWidth" showSearch placeholder="请选择权利类型"
+              :disabled="setType === 'edit'"
               optionFilterProp="children"
               :options="kindOfRightData"
                @change="kindOfRightChange"
@@ -117,7 +118,7 @@
         </a-form>
       </a-row>
     </div>
-    <div class="newCard-nav" v-if=" this.typeJudgment === '1'">
+    <div class="newCard-nav" v-if="this.typeJudgment === '1'">
       <span class="section-title blue">权属人</span>
       <div class="tab-nav table-border">
         <a-table
@@ -153,7 +154,7 @@
       </div>
       <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>添加权属人</div>
     </div>
-    <div class="newCard-nav" v-if=" this.typeJudgment === '1'">
+    <div class="newCard-nav" v-if="this.typeJudgment === '1'">
       <span class="section-title blue">抵押信息</span>
       <div class="tab-nav table-border">
         <a-table
@@ -213,8 +214,9 @@ export default {
   },
   data () {
     return {
-      titleDeed: [...titleDeed],
-      accessCard: [...accessCard],
+      setType: '',
+      titleDeed: utils.deepClone(titleDeed),
+      accessCard: utils.deepClone(accessCard),
       warrantId: '',
       typeJudgment: '',        // 权利类型判断
       beat: [],
@@ -234,7 +236,7 @@ export default {
       form: this.$form.createForm(this),
       allWidth: 'width: 214px',
       widthBox: 'width: 73.5%',
-      newCardData: {...newCardData},
+      newCardData: utils.deepClone(newCardData),
       newCard: '',
       kindOfRightsData: [],
       show: false,
@@ -260,10 +262,40 @@ export default {
   },
   watch: {
     'typeJudgment' () {
-      this.typeJudgment === '1' ? this.beat = this.titleDeed : this.beat = this.accessCard
+      if (this.newData === 'new') {
+        if (this.typeJudgment === '1') {
+          this.beat = utils.deepClone(titleDeed)
+        } else if (this.typeJudgment === '2') {
+          this.beat = utils.deepClone(accessCard)
+        } else {
+          // 新增进来全面清空数据
+          this.beat = []
+          this.form.setFieldsValue({
+            warrantNbr: '',  // 权证号
+            ownerType: '',      // 权属形式
+            kindOfRight: '', // 权利类型
+            remark: ''  // 备注
+          })
+          this.newCardData = utils.deepClone(newCardData)
+          this.amsOwnershipWarrantObligeeList = []
+          this.amsOwnershipWarrantMortgageList = []
+        }
+      } else {
+        if (this.typeJudgment === '1') {
+          this.beat = this.titleDeed
+        } else if (this.typeJudgment === '2') {
+          this.beat = this.accessCard
+        }
+      }
     }
   },
   methods: {
+    // 新增进来清空数据
+    newFn (val) {
+      this.setType = ''
+      this.newData = val
+      this.typeJudgment = ''
+    },
     // 权利类型
     kindOfRightChange (val) {
       this.typeJudgment = val
@@ -423,6 +455,7 @@ export default {
       if (str === 'success') {
         this.$emit('successQuery')
       }
+      this.$emit('handleCancel')
       this.show = false
     },
     // 平台字典获取数据
@@ -593,24 +626,38 @@ export default {
     },
     // 编辑查询
     query (warrantId) {
+      this.show = true
+      this.setType = 'edit'
       this.warrantId = warrantId
       this.$api.ownership.warrantDetail({warrantId: this.warrantId}).then(res => {
         if (Number(res.data.code) === 0) {
-          this.show = true
           let data = res.data.data
-          this.typeJudgment = data.amsOwnershipWarrant.ownerType  // 判断类型
+          this.typeJudgment = String(data.amsOwnershipWarrant.kindOfRight)  // 判断类型
           // this.particularsData = data.amsOwnershipWarrant
-          this.accessCard.forEach(item => {
-            if (item.formType === 'date') {
-              item.attrValue = moment(data.amsOwnershipWarrant[item.attrCode], 'YYYY-MM-DD')
-            } else {
-              item.attrValue = data.amsOwnershipWarrant[item.attrCode]
-            }
-          })
+          if (+this.typeJudgment === 1) {
+            this.accessCard.forEach(item => {
+              if (item.formType === 'date') {
+                item.attrValue = moment(data.amsOwnershipWarrant[item.attrCode], 'YYYY-MM-DD')
+              } else {
+                item.attrValue = data.amsOwnershipWarrant[item.attrCode]
+              }
+            })
+          } else if (+this.typeJudgment === 2) {
+            this.titleDeed.forEach(item => {
+              if (item.formType === 'date') {
+                item.attrValue = moment(data.amsOwnershipWarrant[item.attrCode], 'YYYY-MM-DD')
+              } else {
+                item.attrValue = data.amsOwnershipWarrant[item.attrCode]
+              }
+            })
+          }
+          // 几个单独的字段
           this.form.setFieldsValue({
-            warrantNbr: data.amsOwnershipWarrant.warrantNbr
+            warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
+            ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
+            kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
+            remark: data.amsOwnershipWarrant.remark  // 备注
           })
-          console.log(this.accessCard, '-=-=-')
           let files = []
           if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
               data.amsAttachmentList.forEach(item => {
@@ -622,13 +669,13 @@ export default {
           }
           this.newCardData.files = files
           // 权属人信息
-          data.amsOwnershipWarrantObligeeList.forEach((item, index) => {
-            key: index
+          data.amsOwnershipWarrantObligeeList.forEach((list, index) => {
+            list.key = index
           })
           this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
           // 抵押信息
-          data.amsOwnershipWarrantMortgageList.forEach((item, index) => {
-            key: index
+          data.amsOwnershipWarrantMortgageList.forEach((elv, index) => {
+            elv.key = index
           })
           this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
         } else {

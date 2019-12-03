@@ -6,7 +6,7 @@
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
-        <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button>
+        <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
@@ -44,7 +44,7 @@
           <div class="tab-opt">
             <span @click="operationFn(record, 'particulars')">详情</span>
             <span @click="operationFn(record, 'edit')">编辑</span>
-            <span @click="operationFn(record, 'particulars')">注销</span>
+            <span @click="operationFn(record, 'logout')" v-if="+record.status === 1">注销</span>
           </div>
         </template>
       </a-table>
@@ -58,7 +58,7 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard ref="newCard" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
+    <NewCard ref="newCard" @handleCancel="handleCancel" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>
@@ -161,6 +161,7 @@ export default {
   props: {},
   data () {
     return {
+      show: false,
       warrantId: '',
       loading: false,
       noPageTools: false,
@@ -184,16 +185,39 @@ export default {
   methods: {
     // 新建权证
     newChangeSheetFn () {
+      this.show = true
       this.$refs.newCard.show = true
+      this.$refs.newCard.newFn('new')
       this.$refs.newCard.selectFn()
     },
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
-        // this.$refs.cardDetails.query()
-        this.$refs.cardDetails.show = true
+        this.$refs.cardDetails.query(val.warrantId)
+        // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
+        this.show = true
+        // this.$refs.newCard.show = true
         this.$refs.newCard.query(val.warrantId)
+      } else if (type === 'logout') {
+        let _this = this
+        this.$confirm({
+          title: '提示',
+          content: '确认要注销该权证吗？',
+          onOk() {
+          let obj = {
+            warrantId: val.warrantId
+          }
+          _this.$api.ownership.warrantDelete(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('销该成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+          }
+        })
       }
     },
     // 组织机构树
@@ -304,10 +328,12 @@ export default {
       )
     },
     successQueryFn () {
-      console.log('lai')
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
+    },
+    handleCancel () {
+      this.show = false
     },
     // 查询
     query () {

@@ -11,7 +11,7 @@
     <div class="newCard-nav">
       <span class="section-title blue">基础信息</span>
       <a-row class="playground-row">
-        <div v-if="this.ownerType === '1'">
+        <div v-if="this.kindOfRight === '1'">
           <a-col class="playground-col" :span="12">权证号&nbsp;：{{particularsData.warrantNbr || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
@@ -29,7 +29,7 @@
           <a-col class="playground-col" :span="12">登记日期：{{particularsData.rigisterDate || '--'}}</a-col>
           <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
         </div>
-        <div v-if="this.ownerType === '2'">
+        <div v-if="this.kindOfRight === '2'">
           <a-col class="playground-col" :span="12">权证号&nbsp;：{{particularsData.warrantNbr || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
@@ -56,7 +56,7 @@
           <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
         </div>
         <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
-        <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
+        <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
               <SG-UploadFile
                 v-model="files"
@@ -67,7 +67,7 @@
           </a-col>
       </a-row>
     </div>
-    <div class="newCard-nav" v-if="this.ownerType === '1'">
+    <div class="newCard-nav" v-if="this.kindOfRight === '1'">
       <span class="section-title blue">权利人</span>
       <div class="tab-nav table-border">
         <a-table
@@ -79,7 +79,7 @@
         </a-table>
       </div>
     </div>
-    <div class="newCard-nav" v-if="this.ownerType === '1'">
+    <div class="newCard-nav" v-if="this.kindOfRight === '1'">
       <span class="section-title blue">抵押信息</span>
       <div class="tab-nav table-border">
         <a-table
@@ -104,16 +104,16 @@ import {accessCard, titleDeed, columns, mortgageInformation} from './beat'
 export default {
   components: {Cephalosome},
   props: {
-    warrantId: {
-      type: [String, Number],
-      default: ''
-    }
+    // warrantId: {
+    //   type: [String, Number],
+    //   default: ''
+    // }
   },
   data () {
     return {
       particularsData: {},
       files: [],
-      ownerType: '',        // 权利类型判断
+      kindOfRight: '',        // 权利类型判断
       beat: [],
       columns: [],
       mortgageInformation: [],
@@ -144,7 +144,7 @@ export default {
   computed: {
   },
   watch: {
-    'ownerType' (val) {
+    'kindOfRight' (val) {
       if (val === '1') {
         let arr = utils.deepClone(columns)
         this.columns = arr.splice(0, arr.length - 1)
@@ -162,42 +162,37 @@ export default {
       this.show = false
     },
     // 详情查询
-    query () {
-      this.loading = true
-      this.$api.ownership.warrantList({warrantId: this.warrantId}).then(res => {
+    query (warrantId) {
+      this.show = true
+      this.warrantId = warrantId
+      this.$api.ownership.warrantDetail({warrantId: this.warrantId}).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
-          this.ownerType = data.amsOwnershipWarrant.ownerType
-          if (data && data.length > 0) {
-            this.particularsData = data.amsOwnershipWarrant
-            let files = []
-            if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
-                data.amsAttachmentList.forEach(item => {
-                files.push({
-                  url: item.attachmentPath,
-                  name: item.oldAttachmentName
-                })
-              })
-            }
-            this.files = files
-            // 权属人信息
-            data.amsOwnershipWarrantObligeeList.forEach((item, index) => {
-              key: index
+        let data = res.data.data
+        this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
+        this.particularsData = data.amsOwnershipWarrant
+        console.log(this.particularsData, '-=-=')
+        let files = []
+        if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
+            data.amsAttachmentList.forEach(item => {
+            files.push({
+              url: item.attachmentPath,
+              name: item.oldAttachmentName
             })
-            this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
-            // 抵押信息
-            data.amsOwnershipWarrantMortgageList.forEach((item, index) => {
-              key: index
-            })
-            this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
-          } else {
-            this.tableData = []
-            this.count = 0
-          }
-          this.loading = false
+          })
+        }
+        this.files = files
+        // 权属人信息
+        data.amsOwnershipWarrantObligeeList.forEach((list, index) => {
+          list.key = index
+        })
+        this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
+        // 抵押信息
+        data.amsOwnershipWarrantMortgageList.forEach((evl, index) => {
+          evl.key = index
+        })
+        this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
         } else {
           this.$message.error(res.data.message)
-          this.loading = false
         }
       })
     }
@@ -225,6 +220,9 @@ export default {
       height: 40px;
       line-height: 40px;
       font-size: 12px;
+    }
+    .files-style {
+      margin-bottom: 70px;
     }
   }
 }
