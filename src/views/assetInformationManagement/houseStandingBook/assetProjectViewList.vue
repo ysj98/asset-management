@@ -136,7 +136,7 @@ const columns = [
   },
   {
     title: '最新估值',
-    dataIndex: 'assetValuation',
+    dataIndex: 'marketValue',
     width: 120
   },
   {

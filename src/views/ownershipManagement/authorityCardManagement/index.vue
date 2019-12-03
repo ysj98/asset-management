@@ -6,7 +6,7 @@
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
-        <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button>
+        <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
@@ -32,8 +32,8 @@
       </div>
     </SearchContainer>
     <div class="table-layout-fixed" ref="table_box">
-      <!-- :loading="loading" -->
       <a-table
+        :loading="loading"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
@@ -41,7 +41,11 @@
         >
         <template slot="operation" slot-scope="text, record">
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
-          <span @click="operationFn(record, 'particulars')">详情</span>
+          <div class="tab-opt">
+            <span @click="operationFn(record, 'particulars')">详情</span>
+            <span @click="operationFn(record, 'edit')">编辑</span>
+            <span @click="operationFn(record, 'logout')" v-if="+record.status === 1">注销</span>
+          </div>
         </template>
       </a-table>
       <SG-FooterPagination
@@ -54,9 +58,9 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard ref="newCard" :organId="queryCondition.organId"></NewCard>
+    <NewCard ref="newCard" @handleCancel="handleCancel" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
-    <CardDetails ref="cardDetails" @successQuery="successQuery"  :warrantId="warrantId"></CardDetails>
+    <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>
 </template>
 
@@ -121,6 +125,7 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
+    width: 150,
     scopedSlots: { customRender: 'operation' },
   }
 ]
@@ -156,6 +161,7 @@ export default {
   props: {},
   data () {
     return {
+      show: false,
       warrantId: '',
       loading: false,
       noPageTools: false,
@@ -179,13 +185,39 @@ export default {
   methods: {
     // 新建权证
     newChangeSheetFn () {
+      this.show = true
       this.$refs.newCard.show = true
+      this.$refs.newCard.newFn('new')
       this.$refs.newCard.selectFn()
     },
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
-        this.$refs.cardDetails.show = true
+        this.$refs.cardDetails.query(val.warrantId)
+        // this.$refs.cardDetails.show = true
+      } else if (type === 'edit') {
+        this.show = true
+        // this.$refs.newCard.show = true
+        this.$refs.newCard.query(val.warrantId)
+      } else if (type === 'logout') {
+        let _this = this
+        this.$confirm({
+          title: '提示',
+          content: '确认要注销该权证吗？',
+          onOk() {
+          let obj = {
+            warrantId: val.warrantId
+          }
+          _this.$api.ownership.warrantDelete(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('销该成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+          }
+        })
       }
     },
     // 组织机构树
@@ -295,10 +327,13 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-    successQuery () {
+    successQueryFn () {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
+    },
+    handleCancel () {
+      this.show = false
     },
     // 查询
     query () {
@@ -361,16 +396,26 @@ export default {
   .box-right {
     margin-right: 10px;
   }
-}
-.search-content-box{
-  display: flex;
-  justify-content: space-between;
-  .search-from-box{
-    flex: 1;
+  .search-content-box{
+    display: flex;
+    justify-content: space-between;
+    .search-from-box{
+      flex: 1;
+    }
+    .two-row-box{
+      padding-top: 14px;
+      flex: 0 0 190px;
+    }
   }
-  .two-row-box{
-    padding-top: 14px;
-    flex: 0 0 190px;
+  .tab-opt {
+    span {
+      padding-right: 10px;
+      color: #0084FF;
+      cursor: pointer;
+    }
+  }
+  .custom-table {
+    padding-bottom: 60px;
   }
 }
 </style>
