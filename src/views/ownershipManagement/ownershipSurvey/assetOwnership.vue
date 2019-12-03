@@ -33,7 +33,10 @@
               placeholder="请选择权属情况"
               v-model="queryCondition.ownershipStatuss"
               optionFilterProp="children"
-              :style="allStyle"
+              @change="ownershipStatussSelect"
+              mode="multiple"
+              :maxTagCount="1"
+              :style="allWidth"
               :options="ownershipStatussOpt"
               :allowClear="false"
               :filterOption="filterOption"
@@ -54,10 +57,13 @@
             <!-- 全部权属类型 -->
             <a-select
               showSearch
-              placeholder="请选择权力类型"
+              placeholder="请选择权利类型"
               v-model="queryCondition.kindOfRights"
               optionFilterProp="children"
-              :style="allStyle"
+              @change="kindOfRightsSelect"
+              mode="multiple"
+              :maxTagCount="1"
+              :style="allWidth"
               :options="kindOfRightsOpt"
               :allowClear="false"
               :filterOption="filterOption"
@@ -68,8 +74,11 @@
               showSearch
               placeholder="请选择资产状态"
               v-model="queryCondition.statuss"
+              @change="statussSelect"
               optionFilterProp="children"
-              :style="allStyle"
+              mode="multiple"
+              :maxTagCount="1"
+              :style="allWidth"
               :options="statussOpt"
               :allowClear="false"
               :filterOption="filterOption"
@@ -133,16 +142,22 @@ const operationTypes = {
 const allStyle = {
   width: "170px",
   "margin-right": "10px",
-  float: "left",
   "margin-top": "14px"
+};
+const allWidth = {
+  width: "170px",
+  "margin-right": "10px",
+  "margin-top": "14px",
+  height: '32px',
+  overflow: 'hidden'
 };
 const queryCondition = {
   organId: "",
   projectId: "",
-  ownershipStatuss: "", // 权属情况(多选)
+  ownershipStatuss: [''], // 权属情况(多选)
   obligeeId: "", // 权属人
-  kindOfRights: "", // 权利类型(多选)
-  statuss: "", // 资产状态(多选)
+  kindOfRights: [''], // 权利类型(多选)
+  statuss: [''], // 资产状态(多选)
   name: "", // 资产名称/权证号
   pageNum: 1,
   pageSize: 10
@@ -244,7 +259,8 @@ export default {
     return {
       toggle: true,
       allStyle,
-      queryCondition,
+      allWidth,
+      queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       ownershipStatussOpt,
       obligeeIdOpt,
@@ -267,6 +283,10 @@ export default {
         ...this.queryCondition,
         flag: "0"
       };
+      console.log('this.queryCondition', this.queryCondition)
+      data.ownershipStatuss = data.ownershipStatuss.join(',')
+      data.kindOfRights = data.kindOfRights.join(',')
+      data.statuss = data.statuss.join(',')
       this.table.loading = true;
       this.$api.basics.assetList(data).then(
         res => {
@@ -315,10 +335,30 @@ export default {
       let data = { organId: this.queryCondition.organId };
       this.$api.basics.ownerShipUserSelect(data).then(res => {
         if (res.data.code === "0") {
+          let result = res.data.data || []
+          result = result.map(item => {
+            return {...item, value: item.obligeeId, label: item.obligeeName}
+          })
+          this.obligeeIdOpt = [...utils.deepClone(obligeeIdOpt), ...result]
         } else {
           this.$message.error(res.data.message);
         }
       });
+    },
+    ownershipStatussSelect (value) {
+      this.$nextTick(function () {
+        this.queryCondition.ownershipStatuss = this.handleMultipleSelectValue(value, this.queryCondition.ownershipStatuss, this.ownershipStatussOpt)
+      })
+    },
+    kindOfRightsSelect (value) {
+      this.$nextTick(function () {
+        this.queryCondition.kindOfRights = this.handleMultipleSelectValue(value, this.queryCondition.kindOfRights, this.kindOfRightsOpt)
+      })
+    },
+    statussSelect (value) {
+      this.$nextTick(function () {
+        this.queryCondition.statuss = this.handleMultipleSelectValue(value, this.queryCondition.statuss, this.statussOpt)
+      })
     },
     // 选择组织机构
     changeTree(value, label) {
@@ -329,6 +369,24 @@ export default {
       this.getObjectKeyValueByOrganIdFn();
       this.ownerShipUserSelect();
       this.searchQuery();
+    },
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      let hasAll = data.indexOf('') !== -1
+      let len = data.length
+      // 如果点击全选或者取消全选
+      if (data[len-1] === '' || len === 0) {
+        return data = ['']
+      }
+      // 如果不包含全选，但其他选项都选中
+      if (!hasAll && len === (dataOptions.length-1)) {
+        return data = ['']
+      }
+      // 包含全选，并且其他选项只选一部分
+      if (hasAll && len !== dataOptions.length) {
+        data.splice(data.indexOf(''), 1)
+      }
+      return data
     },
     // 重置分页查询
     searchQuery() {
@@ -343,10 +401,10 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition.projectId = "";
-      this.queryCondition.ownershipStatuss = "";
+      this.queryCondition.ownershipStatuss = [''];
       this.queryCondition.obligeeId = "";
-      this.queryCondition.kindOfRights = "";
-      this.queryCondition.statuss = "";
+      this.queryCondition.kindOfRights = [''];
+      this.queryCondition.statuss = [''];
       this.queryCondition.name = "";
     },
     platformDictFn(code) {
@@ -389,6 +447,8 @@ export default {
   justify-content: space-between;
   .search-from-box {
     flex: 1;
+    display: flex;
+    flex-wrap: wrap;
   }
   .two-row-box {
     padding-top: 14px;

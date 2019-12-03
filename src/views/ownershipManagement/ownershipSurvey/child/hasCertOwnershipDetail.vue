@@ -19,7 +19,7 @@
         <div v-else>
           <a-select
             :style="{width: '100%'}"
-            @change="watchSettingMethodChange"
+            @change="watchSettingMethodChange($event,record)"
             optionFilterProp="children"
             :options="seletOpt"
             :allowClear="false"
@@ -30,7 +30,7 @@
       <template slot="remark" slot-scope="text, record">
         <span v-if="type==='detail'">{{record.remark}}</span>
         <div v-else>
-          <a-input :maxLength="200" @input="watchRemarkChange" v-model="record.remark" />
+          <a-input :maxLength="200" @input="watchRemarkChange($event,record)" v-model="record.remark" />
         </div>
       </template>
     </a-table>
@@ -58,7 +58,7 @@ let columns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: "15%"
+    width: "20%"
   },
   {
     title: "资产编码",
@@ -68,7 +68,7 @@ let columns = [
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
-    width: "15%"
+    width: "10%"
   },
   {
     title: "资产项目名称",
@@ -78,7 +78,7 @@ let columns = [
   {
     title: "所在位置",
     dataIndex: "location",
-    width: "15%"
+    width: "20%"
   },
   {
     title: "面积(㎡)",
@@ -178,9 +178,27 @@ export default {
       );
     },
     // 监听选择框变化
-    watchSettingMethodChange(value) {},
-    // 监听输入框变化
-    watchRemarkChange() {},
+     watchSettingMethodChange (e, row) {
+      console.log('记录select=>', e, row)
+      let o = {
+        settingMethod: Number(e),
+        remark: row.remark || '',
+        assetType: row.assetType,
+        assetObjectId: row.assetHouseId
+      }
+      this.$emit('change', o)
+     },
+     // 监听输入框变化
+     watchRemarkChange (e, row) {
+       console.log('记录input=>', e, row)
+       let o = {
+          settingMethod: Number(row.settingMethod),
+          remark: row.remark || '',
+          assetType: row.assetType,
+          assetObjectId: row.assetHouseId
+        }
+        this.$emit('change', o)
+     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
