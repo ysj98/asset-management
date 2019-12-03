@@ -1,7 +1,7 @@
 <!--props参数释义：
 1.height: String || Number, 设置Table及已选人员框高度，默认450px
 2.allAttrs: Boolean，是否获取全部属性，默认false获取userId字符串构成的数组
-3.value: Array，直接用v-model绑定组件即可,默认格式['UID001', 'UID001']，若 allAttrs 为true, 输入格式[{userId: 'UID001'}]
+3.value: Array，直接用v-model绑定组件即可,默认格式['UID001', 'UID001']，若 allAttrs 为true, 输入格式[{assetId: 'UID001'}]
 -->
 <template>
   <div class="select-detail">
@@ -11,7 +11,7 @@
       </a-col>
       <a-col :span="4">
         <a-input-search
-          v-model.trim="assetName"
+          v-model.trim="assetNameCode"
           style="width: 100%"
           @search="fetchData"
           @pressEnter="fetchData"
@@ -20,30 +20,29 @@
       </a-col>
       <a-col :span="4">
         <a-select
-          mode="multiple"
-          :maxTagCount="2"
           style="width: 100%"
-          v-model="project"
+          v-model="projectId"
+          @change="fetchData"
           :options="projectOptions"
           placeholder="请选择资产项目"
         />
       </a-col>
       <a-col :span="4">
         <a-select
-          mode="multiple"
-          :maxTagCount="2"
           style="width: 100%"
-          v-model="status"
-          :options="statusOptions"
+          v-model="objectType"
+          @change="fetchData"
+          :options="objectTypeOptions"
           placeholder="请选择资产类别"
         />
       </a-col>
       <a-col :span="4">
+        <!--mode="multiple"-->
+        <!--:maxTagCount="2"-->
         <a-select
-          mode="multiple"
-          :maxTagCount="2"
           style="width: 100%"
           v-model="assetType"
+          @change="fetchData"
           :options="assetTypeOptions"
           placeholder="请选择资产类型"
         />
@@ -92,18 +91,20 @@
       // 设置table高度
       height: { type: [Number, String], default: () => 450 },
       // 初始选中的值，以v-model方式传入
-      // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{userId: 'UID001'}],
-      value: { type: Array, default: () => [] }
+      // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{assetId: 'UID001'}],
+      value: { type: Array, default: () => [] },
+      // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
+      queryType: { type: [Number, String], default: () => 1 },
     },
     data () {
       return {
-        assetName: '', // 资产名
+        assetNameCode: '', // 资产名
         assetType: undefined, // 类型
         assetTypeOptions: [], // 类型选项
-        project: undefined, // 资产项目
+        projectId: undefined, // 资产项目
         projectOptions: [], // 资产项目选项
-        status: undefined, // 资产类别
-        statusOptions: [], // 类别选项
+        objectType: undefined, // 资产类别
+        objectTypeOptions: [], // 类别选项
         dataSource: [], // Table数据源
         loading: false, // Table loading
         selectedList: [], // 选中人员list
@@ -126,14 +127,20 @@
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
         this.loading = true
-        const {assetName, project, organId, assetType} = this
-        Promise.reject({assetType, organId, pageSize: pageLength, pageNum: pageNo, assetName, project}).then(res => {
+        const {objectType, assetNameCode, assetType, projectId, organId, queryType} = this
+        let form = {
+          organId, queryType, assetNameCode,
+          projectId: projectId === '-1' ? '' : projectId,
+          assetType: assetType === '-1' ? '' : assetType,
+          objectType: objectType === '-1' ? '' : objectType
+        }
+        this.$api.assets.assetListPage(form).then(res => {
           if (res && res.code.toString() === '0') {
             this.loading = false
-            const {paginator: {pageLimit, pageNo, totalCount}, resultList} = res.data
+            const {count, data} = res.data
             Object.assign(this, {
-              dataSource: resultList || [],
-              pagination: {pageSize: Number(pageLimit), current: Number(pageNo), total: Number(totalCount)}
+              dataSource: data || [],
+              pagination: {pageLength, pageNo: Number(pageNo), totalCount: Number(count)}
             })
             return false
           }
@@ -152,12 +159,72 @@
       // 移除选中的人员
       removeItem (id) {
         this.selectedRowKeys = this.selectedRowKeys.filter(i => i !== id)
-      }
+      },
+
+      // 平台字典获取资产类型
+      queryAssetTypeDict () {
+        this.$api.assets.platformDict({code: 'asset_type'}).then(res => {
+          if (Number(res.data.code) === 0) {
+            let { data } = res.data
+            let list = data.map( m => ({
+              title: m.name,
+              key: m.value
+            }))
+            list.unshift({ title: '全部资产类型', key: '-1' })
+            this.assetTypeOptions = list
+            return this.queryObjectType()
+          }
+          throw res.message || '查询资产类型失败'
+        }).catch(err => {
+          this.$message.error(err || '查询资产类型失败')
+        })
+      },
+
+      // 资产项目
+      queryProjectByOrganId () {
+        this.$api.assets.getObjectKeyValueByOrganId({organId: this.organId, projectName: ''}).then(res => {
+          if (Number(res.data.code) === 0) {
+            let { data } = res.data
+            let arr = data.map(m => ({
+              title: m.projectName,
+              key: m.projectId
+            }))
+            arr.unshift({title: '全部项目', key: '-1'})
+            this.projectOptions = arr
+            return false
+          }
+          throw res.message || '查询资产项目失败'
+        }).catch(err => {
+          this.$message.error(err || '查询资产项目失败')
+        })
+      },
+
+      // 根据资产类型查资产分类列表
+      queryObjectType () {
+        const { assetType, organId } = this
+        this.$api.assets.getList({ assetType, organId }).then(res => {
+          if (Number(res.data.code) === 0) {
+            let { data } = res.data
+            let list = data.map( m => ({
+              title: m.professionName,
+              key: m.professionCode
+            }))
+            list.unshift({ title: '全部资产类别', key: '-1' })
+            this.objectTypeOptions = list
+            return false
+          }
+          throw res.message || '查询资产类别失败'
+        }).catch(err => {
+          this.$message.error(err || '查询资产类别失败')
+        })
+      },
     },
     mounted () {
       const {allAttrs, value} = this
       this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value
       this.fetchData({})
+      this.queryProjectByOrganId()
+      this.queryAssetTypeDict()
     },
     watch: {
       selectedRowKeys: function (keys) {
@@ -171,6 +238,10 @@
         let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
         this.selectedList = primaryList.concat(newList)
         this.$emit('input', allAttrs ? selectedList : keys)
+      },
+
+      assetType: function (val) {
+        val && this.queryObjectType()
       }
     }
   }

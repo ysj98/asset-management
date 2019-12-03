@@ -5,14 +5,14 @@
   <div class="assets-entry">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button icon="plus" type="primary" @click="newClearForm">新建卡片</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newAssetEntry">新建卡片</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree" :showSearch="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search placeholder="卡片名称/编码" :style="allStyle" v-model="cardName" @search="queryClick" />
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" style="margin-right: 10px" @click="queryClick">查询</SG-Button>
+        <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select
@@ -106,17 +106,22 @@
 
   const columns = [
     {
-      title: '清理单编号',
-      dataIndex: 'cleaningOrderCode',
-      width: 160
-    },
-    {
-      title: '管理机构',
+      title: '所属机构',
       dataIndex: 'organName',
       width: 160
     },
     {
-      title: '资产项目名称',
+      title: '卡片编码',
+      dataIndex: 'cardCode',
+      width: 160
+    },
+    {
+      title: '卡片名称',
+      dataIndex: 'cardName',
+      width: 160
+    },
+    {
+      title: '资产项目',
       dataIndex: 'projectName',
       width: 160
     },
@@ -126,27 +131,57 @@
       width: 160
     },
     {
-      title: '资产数量',
-      dataIndex: 'assetCount',
-      width: 120
-    },
-    {
-      title: '清理原因',
-      dataIndex: 'cleanupTypeName',
+      title: '资产分类',
+      dataIndex: 'assetCategoryName',
       width: 160
     },
     {
-      title: '创建日期',
-      dataIndex: 'createTime',
+      title: '入账日期',
+      dataIndex: 'accountEntryTime',
       width: 160
     },
     {
-      title: '创建人',
-      dataIndex: 'createByName',
+      title: '存放地点',
+      dataIndex: 'storagePathName',
+      width: 160
+    },
+    {
+      title: '入账原值(元)',
+      dataIndex: 'purchaseValue',
       width: 120
     },
     {
-      title: '当前状态',
+      title: '累计折旧(元)',
+      dataIndex: 'cumulativeDepreciation',
+      width: 120
+    },
+    {
+      title: '净值(元)',
+      dataIndex: 'netValue',
+      width: 120
+    },
+    {
+      title: '折旧方式',
+      dataIndex: 'depreciationMethodName',
+      width: 120
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitOfMeasurementName',
+      width: 120
+    },
+    {
+      title: '数量',
+      dataIndex: 'num',
+      width: 120
+    },
+    {
+      title: '减值准备(元)',
+      dataIndex: 'impairmentReady',
+      width: 120
+    },
+    {
+      title: '状态',
       dataIndex: 'approvalStatusName',
       width: 120
     },
@@ -154,7 +189,7 @@
       title: '操作',
       width: 160,
       dataIndex: 'operation',
-      scopedSlots: { customRender: 'operation' },
+      scopedSlots: { customRender: 'operation' }
     }
   ]
 
@@ -240,7 +275,7 @@
         this.organName = label
         this.organId = value
         this.getAssetProjectOptions()
-        this.getFeeTypeList()
+        this.getAssetSubjectList()
         this.getAssetClassifyOptions()
         this.queryClick()
       },
@@ -309,9 +344,9 @@
         this.paginator.pageLength = page.pageLength
         this.queryList()
       },
-      // 新增清理单
-      newClearForm () {
-        this.$router.push({path: '/assetClear/new', query: {pageType: 'new', organId: this.organId, organName: this.organName}})
+      // 新建卡片
+      newAssetEntry () {
+        this.$router.push({path: '/assetEntry/new', query: {pageType: 'new', organId: this.organId, organName: this.organName}})
       },
       // 删除清理单
       deleteClearForm (record) {
@@ -356,7 +391,7 @@
         })
       },
       handleOperation (pageType, record) {
-        this.$router.push({path: '/assetClear/' + pageType, query: {pageType: pageType, cleaningOrderId: record.cleaningOrderId, organId: this.organId, organName: this.organName}})
+        this.$router.push({path: '/assetEntry/' + pageType, query: {pageType: pageType, cleaningOrderId: record.cleaningOrderId, organId: this.organId, organName: this.organName}})
       },
       // 点击查询
       queryClick () {
@@ -445,7 +480,7 @@
         })
       },
       // 获取资产科目下拉列表
-      getFeeTypeList () {
+      getAssetSubjectList () {
         let form = {
           organId: this.organId
         }

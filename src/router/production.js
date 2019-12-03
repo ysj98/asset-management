@@ -195,6 +195,21 @@ let proRouter = [
     }
   },
   {
+    path: '/assetEntry/new',
+    name: '新建',
+    component: () => import('@/views/financialManagement/assetEntry/newAssetEntry.vue')
+  },
+  {
+    path: '/assetEntry/edit',
+    name: '编辑',
+    component: () => import('@/views/financialManagement/assetEntry/editAssetEntry.vue')
+  },
+  {
+    path: '/assetEntry/detail',
+    name: '详情',
+    component: () => import('@/views/financialManagement/assetEntry/checkAssetEntry.vue')
+  },
+  {
     path: '/ownershipSurvey',
     name: '权属概况',
     component: () => import('@/views/ownershipManagement/ownershipSurvey/index.vue'),

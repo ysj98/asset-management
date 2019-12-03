@@ -5,7 +5,7 @@
       <!--基础信息-->
       <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details"/>
       <!--资产价值清单-->
-      <worth-list-part v-if="type" :type="type" :assetList="initAssetList" @backAssetList="getAssetList"/>
+      <worth-list-part v-if="type" :type="type" :assetList="initAssetList" :registerId="registerId" @backAssetList="getAssetList"/>
       <!--审批轨迹及审批意见-->
       <approval-flow-part v-if="type" :type="type" :stepList="stepList"/>
     </div>
