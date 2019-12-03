@@ -27,8 +27,6 @@
         spinning: false, // 加载状态
         assetList: [], // 关联资产对象提交数据
         initAssetList: [], // 关联资产对象渲染数据
-        organId: '', // 组件机构Id
-        organName: '', // 组件机构name
         type: '' // 页面状态 edit编辑 approval审批 detail详情 add新增，控制页面是否可编辑
       }
     },
@@ -81,13 +79,13 @@
       // 查询详情
       queryDetailById (registerId) {
         this.spinning = true
-        const { organId, organName } = this
+        const { details } = this
         this.$api.worthRegister.queryDetail({registerId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { assetList, stepList, ...others } = res.data
-            return Object.assign(this, { initAssetList: assetList, stepList, details: { organId, organName, ...others} })
+            return Object.assign(this, { initAssetList: assetList, stepList, details: { ...details, ...others} })
           }
           throw res.message || '查询价值登记详情出错'
         }).catch(err => {
@@ -99,7 +97,7 @@
 
     created () {
       const { params : { type, organId, organName, registerId } } = this.$route
-      Object.assign(this, { type, organId, organName, registerId })
+      Object.assign(this, { type, registerId }, { details: { organId, organName }})
       registerId && this.queryDetailById(registerId)
     }
   }

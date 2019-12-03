@@ -155,7 +155,7 @@
         const {type, details} = this
         const {
           organName, assessmenBaseDate, remark, attachmentList, assessmentTaskName, projectName, assetTypeName,
-          assessmentMethodName, assessmentOrganName, ...others} =details
+          assessmentMethodName, assessmentOrganName, ...others} = details
         let attachArr = (attachmentList || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
         }) // 处理附件格式
