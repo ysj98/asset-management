@@ -13,9 +13,9 @@
 </template>
 
 <script>
-  import BaseInfoPart from './BaseInfoPart'
-  import WorthListPart from './WorthListPart'
-  import ApprovalFlowPart from './ApprovalFlowPart'
+  import BaseInfoPart from './components/BaseInfoPart'
+  import WorthListPart from './components/WorthListPart'
+  import ApprovalFlowPart from './components/ApprovalFlowPart'
   export default {
     name: 'DetailPage',
     components: { ApprovalFlowPart, WorthListPart, BaseInfoPart },
@@ -73,7 +73,6 @@
         } else if (type === 'approval') {
           // 审核提交
           this.spinning = true
-          debugger
         } else {
           this.$message.error('操作不存在')
         }
@@ -99,7 +98,6 @@
     },
 
     created () {
-      debugger
       const { params : { type, organId, organName, registerId } } = this.$route
       Object.assign(this, { type, organId, organName, registerId })
       registerId && this.queryDetailById(registerId)
