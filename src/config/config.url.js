@@ -421,10 +421,14 @@ export const worthRegister = {
   queryValueRegisterRelPageList: '/ams/assetValueRegister/queryValueRegisterRelPageList',
   // 新增价值登记
   insertValueRegister: '/ams/assetValueRegister/insertValueRegister',
+  // 价值登记资产查询汇总
+  queryListSum: '/ams/assetValueRegister/queryValueRegisterRelListSum',
   // 更新价值登记
   updateValueRegister: '/ams/assetValueRegister/updateValueRegister',
   // 资产价值一览表查询(分页)
   queryAssertValuePageList: '/ams/assetValueRegister/queryAssertValuePageList',
   // 资产价值趋势图
-  queryAssertValueTrend: '/ams/assetValueRegister/queryAssertValueTrend'
+  queryAssertValueTrend: '/ams/assetValueRegister/queryAssertValueTrend',
+  // 资产价值一览表查询汇总
+  queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
 }

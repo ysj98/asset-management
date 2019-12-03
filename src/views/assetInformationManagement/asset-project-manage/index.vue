@@ -308,7 +308,7 @@
       // 删除资产项目
       confirmDelete (projectId) {
         this.tableObj.loading = true
-        this.$api.assets.deleteProjectManageProjectById({projectId}).then(r => {
+        this.$api.assets.deleteProjectManageById({projectId}).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {

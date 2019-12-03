@@ -8,9 +8,8 @@
           icon="plus"
           type="primary"
           @click="handleBtnAction({type: 'add'})"
-          :loading="exportBtnLoading"
         >新增资产项目</SG-Button>
-        <SG-Button icon="export" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <a-input placeholder="请输入登记名称" v-model="registerName" style="width: 171px; margin-right: 10px"/>
@@ -105,7 +104,7 @@
       handleBtnAction ({id, type}) {
         if (type === 'add') {
           const { organProjectType: { organId, organName } } = this
-          if (!organId) { return this.$message.info('请选择组织机构') }
+          // if (!organId) { return this.$message.info('请选择组织机构') }
           this.$router.push({ name: '价值登记新增', params: { organId, organName, type: 'add' }})
         } else {
           console.log(id)

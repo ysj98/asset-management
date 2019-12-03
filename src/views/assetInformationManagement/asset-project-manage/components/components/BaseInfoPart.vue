@@ -74,6 +74,7 @@
         <a-col :span="colSpan === 12 ? 24 : 8">
           <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : ''}" :wrapper-col="{span: colSpan === 12 ? 19 : ''}">
             <SG-UploadFile
+              type="all"
               v-if="isEdit || attachment.length"
               :show="!isEdit"
               v-model="attachment"

@@ -46,7 +46,7 @@
             { title: '转运营日期', dataIndex: 'transferOperationTime', key: 'transferOperationTime' },
             { title: '转运营面积(㎡)', dataIndex: 'transferOperationArea', key: 'transferOperationArea' },
             { title: '转物业日期', dataIndex: 'transferTime', key: 'transferTime' },
-            { title: '处置收入费用科目', key: 'transferArea', dataIndex: 'transferArea' }
+            { title: '转物业面积(㎡)', key: 'transferArea', dataIndex: 'transferArea' }
           ]
         }, // 转运营(物业)Table
         ownTable: {
