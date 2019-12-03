@@ -452,7 +452,7 @@ export default {
       if (!organId) {
         return
       }
-      this.queryBuildList(organId, this.searchBuildName)
+      this.queryBuildList(organId)
     },
     // 监听建筑形态变化
     watchHouseCategory (value) {
@@ -658,6 +658,7 @@ export default {
       if (['edit', 'copy', 'detail'].includes(type)) {
         query.houseId = record.houseId,
         query.organId = this.queryCondition.organId
+        query.searchBuildName = this.searchBuildName || ''
       }
       this.$router.push({path: operationTypes[type], query: query || {}})
     },

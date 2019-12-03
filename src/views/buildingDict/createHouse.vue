@@ -317,6 +317,7 @@ export default {
     if (this.type === 'copy') {
       this.organId = this.$route.query.organId || ''
       this.houseId = this.$route.query.houseId || ''
+      this.searchBuildName = this.$route.query.searchBuildName || ''
       this.queryHouseDetailById()
     }
   },
@@ -436,7 +437,7 @@ export default {
       // 处理请求
       if (this.type === 'copy') {
         this.queryAllTopOrganByUser() // 项目
-        this.queryBuildList(this.organId) // 请求楼栋
+        this.queryBuildList(this.organId, this.searchBuildName) // 请求楼栋
         this.getOptions('getUnitByBuildId', data.buildId) // 请求单元
       }
       // 如果有单元
