@@ -195,7 +195,7 @@ export default {
       ],
       assetList: [],
       imgPrx: basics.common.imgStr,
-      defaultImg: require('./../../../assets/image/default_house.png'),
+      defaultImg: require('../../../assets/image/default_house.png'),
       paginator: {
         pageNo: 1,
         pageLength: 10,

@@ -8,9 +8,8 @@
           icon="plus"
           type="primary"
           @click="handleBtnAction({type: 'add'})"
-          :loading="exportBtnLoading"
         >新增资产项目</SG-Button>
-        <SG-Button icon="export" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <a-input placeholder="请输入登记名称" v-model="registerName" style="width: 171px; margin-right: 10px"/>
