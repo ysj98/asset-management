@@ -160,8 +160,8 @@
                 :options="warrantNbrData"
                 :open="false"
                 :allowClear="true"
-                @change="change(item.key, item.Jobchecked)"
-                @dropdownVisibleChange="handleChange(item.key, item.Jobchecked, item.alarmInformPost)"
+                @change="change(record.key, record.Jobchecked)"
+                @dropdownVisibleChange="handleChange(record.key, record.Jobchecked, record.alarmInformPost)"
                 :filterOption="false"
                 notFoundContent="没有查询到数据"
                 />
@@ -269,6 +269,8 @@ export default {
       this.checkedData = [...val]
       data.forEach((item, index) => {
         item.key = item.assetId
+        item.oldWarrantNbr = item.warrantNbr
+        item.warrantNbr = undefined
       })
       this.tableData = data
       this.$refs.assetBundlePopover.show = false
@@ -286,11 +288,6 @@ export default {
       } else {
         this.$message.info('请先选择登记类型')
       }
-    },
-    // 选择资产权证
-    chooseWarrantsFn () {
-      this.$refs.chooseWarrants.redactCheckedDataFn(this.checkedData, this.tableData)
-      this.$refs.chooseWarrants.show = true
     },
     // 登记类型
     changeTypeChange (val) {
@@ -329,12 +326,9 @@ export default {
     change () {},
     // 选择新权证号
     handleChange(value, event, str) {
-      // const newData = [...this.tableData]
-      // const target = newData.filter(item => value.key === item.key)[0]
-      // if (target) {
-      //   target[str] = event
-      //   this.tableData = newData
-      // }
+      console.log(value, )
+      // this.$refs.chooseWarrants.redactCheckedDataFn(this.checkedData, this.tableData)
+      // this.$refs.chooseWarrants.show = true
     },
     platformDictFn () {
       Promise.all([this.$api.assets.platformDict({code: 'AMS_REGISTER_TYPE'}), this.$api.assets.platformDict({code: 'asset_type'})]).then(res => {
