@@ -158,11 +158,14 @@
                 v-model="record.warrantNbr"
                 optionFilterProp="children"
                 :options="warrantNbrData"
+                :open="false"
                 :allowClear="true"
+                @change="change(item.key, item.Jobchecked)"
+                @dropdownVisibleChange="handleChange(item.key, item.Jobchecked, item.alarmInformPost)"
                 :filterOption="false"
                 notFoundContent="没有查询到数据"
                 />
-                <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="chooseWarrantsFn">选择权证</SG-Button></div>
+                <!-- <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="chooseWarrantsFn">选择权证</SG-Button></div> -->
             </template>
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -323,14 +326,15 @@ export default {
         }
       })
     },
-    // 交付物业
+    change () {},
+    // 选择新权证号
     handleChange(value, event, str) {
-      const newData = [...this.tableData]
-      const target = newData.filter(item => value.key === item.key)[0]
-      if (target) {
-        target[str] = event
-        this.tableData = newData
-      }
+      // const newData = [...this.tableData]
+      // const target = newData.filter(item => value.key === item.key)[0]
+      // if (target) {
+      //   target[str] = event
+      //   this.tableData = newData
+      // }
     },
     platformDictFn () {
       Promise.all([this.$api.assets.platformDict({code: 'AMS_REGISTER_TYPE'}), this.$api.assets.platformDict({code: 'asset_type'})]).then(res => {

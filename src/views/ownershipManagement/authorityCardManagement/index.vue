@@ -88,7 +88,7 @@ const columns = [
   },
   {
     title: '权属人',
-    dataIndex: 'obligeeId'
+    dataIndex: 'obligeeName'
   },
   {
     title: '丘地号/不动产单元号',
@@ -161,7 +161,6 @@ export default {
   props: {},
   data () {
     return {
-      show: false,
       warrantId: '',
       loading: false,
       noPageTools: false,
@@ -185,7 +184,6 @@ export default {
   methods: {
     // 新建权证
     newChangeSheetFn () {
-      this.show = true
       this.$refs.newCard.show = true
       this.$refs.newCard.newFn('new')
       this.$refs.newCard.selectFn()
@@ -196,8 +194,7 @@ export default {
         this.$refs.cardDetails.query(val.warrantId)
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
-        this.show = true
-        // this.$refs.newCard.show = true
+        this.$refs.newCard.selectFn()
         this.$refs.newCard.query(val.warrantId)
       } else if (type === 'logout') {
         let _this = this
@@ -332,9 +329,6 @@ export default {
       this.queryCondition.pageSize = 10
       this.query()
     },
-    handleCancel () {
-      this.show = false
-    },
     // 查询
     query () {
       this.loading = true
@@ -353,6 +347,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.lotNoEstateUnitCode = `${item.lotNo}/${item.estateUnitCode}`
             })
             this.tableData = data
             this.count = res.data.data.count
