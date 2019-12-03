@@ -309,8 +309,8 @@ export function queryProjectManageProjectStatistics (data) {
 }
 
 // 资产项目-删除
-export function shipDrojectManageProjectById (data) {
-  return axiosPost(assets.projectManage.shipDrojectById, data)
+export function deleteProjectManageById (data) {
+  return axiosPost(assets.projectManage.deleteProjectById, data)
 }
 // 查询资产项目详情-根据资产项目ID
 export function queryProjectManageDetailById (data) {

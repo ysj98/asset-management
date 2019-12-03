@@ -104,7 +104,7 @@
       handleBtnAction ({id, type}) {
         if (type === 'add') {
           const { organProjectType: { organId, organName } } = this
-          if (!organId) { return this.$message.info('请选择组织机构') }
+          // if (!organId) { return this.$message.info('请选择组织机构') }
           this.$router.push({ name: '价值登记新增', params: { organId, organName, type: 'add' }})
         } else {
           console.log(id)
