@@ -80,11 +80,6 @@
       & /deep/ .ant-table-thead th, .ant-table td {
         white-space: nowrap;
       }
-      & /deep/ .ant-table-body {
-        &::-webkit-scrollbar {
-          height: 8px !important;
-        }
-      }
     }
   }
 </style>

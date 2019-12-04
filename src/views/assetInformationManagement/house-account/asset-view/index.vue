@@ -116,34 +116,34 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: true },
+          scroll: { x: 2500 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', key: 'assetName' },
-            { title: '资产编码', dataIndex: 'assetCode', key: 'assetCode' },
-            { title: '接管机构', dataIndex: 'ownerOrganName', key: 'ownerOrganName' },
-            { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
-            { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
-            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName', scopedSlots: { customRender: 'projectName' } },
-            { title: '楼栋名称', dataIndex: 'buildName', key: 'buildName', scopedSlots: { customRender: 'buildName' } },
-            { title: '单元', dataIndex: 'unitName', key: 'unitName' },
-            { title: '楼层', dataIndex: 'floorNum', key: 'floorNum' },
-            { title: '层高', dataIndex: 'floorHeight', key: 'floorHeight' },
-            { title: '分类', dataIndex: 'objectTypeName', key: 'objectTypeName' },
-            { title: '用途', dataIndex: 'useType', key: 'useType' },
-            { title: '资产形态', dataIndex: 'typeName', key: 'typeName' },
-            { title: '权属状态', dataIndex: 'ownershipStatusName', key: 'ownershipStatusName' },
-            { title: '权证号', dataIndex: 'warrantNbr', key: 'warrantNbr' },
-            { title: '接管时间', dataIndex: 'startDate', key: 'startDate' },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea', key: 'transferOperationArea' },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea', key: 'selfUserArea' },
-            { title: '闲置(㎡)', dataIndex: 'idleArea', key: 'idleArea' },
-            { title: '占用(㎡)', dataIndex: 'occupationArea', key: 'occupationArea' },
-            { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
-            { title: '财务卡片编码', dataIndex: 'financialCode', key: 'financialCode' },
-            { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'marketValue', key: 'marketValue' },
-            { title: '资产状态', dataIndex: 'statusName', key: 'statusName' },
-            { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
+            { title: '资产名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
+            { title: '资产编码', dataIndex: 'assetCode', width: 150, fixed: 'left' },
+            { title: '接管机构', dataIndex: 'ownerOrganName' },
+            { title: '丘地号', dataIndex: 'addressNo' },
+            { title: '建筑面积(㎡)', dataIndex: 'area' },
+            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' } },
+            { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' } },
+            { title: '单元', dataIndex: 'unitName' },
+            { title: '楼层', dataIndex: 'floorNum' },
+            { title: '层高', dataIndex: 'floorHeight' },
+            { title: '分类', dataIndex: 'objectTypeName' },
+            { title: '用途', dataIndex: 'useType' },
+            { title: '资产形态', dataIndex: 'typeName' },
+            { title: '权属状态', dataIndex: 'ownershipStatusName' },
+            { title: '权证号', dataIndex: 'warrantNbr' },
+            { title: '接管时间', dataIndex: 'startDate' },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea' },
+            { title: '闲置(㎡)', dataIndex: 'idleArea' },
+            { title: '占用(㎡)', dataIndex: 'occupationArea' },
+            { title: '其它(㎡)', dataIndex: 'otherArea' },
+            { title: '财务卡片编码', dataIndex: 'financialCode' },
+            { title: '资产原值(元)', dataIndex: 'originalValue' },
+            { title: '最新估值(元)', dataIndex: 'marketValue' },
+            { title: '资产状态', dataIndex: 'statusName' },
+            { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]
         },
         key: 0, // 更新Modal包裹的子组件
@@ -308,11 +308,6 @@
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {
       white-space: nowrap;
-    }
-    & /deep/ .ant-table-body {
-      &::-webkit-scrollbar {
-        height: 8px !important;
-      }
     }
   }
 </style>

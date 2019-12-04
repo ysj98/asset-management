@@ -62,26 +62,29 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: true },
+          scroll: { x: 2500 },
           pagination: false,
           rowKey: 'assetHouseId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName' },
-            { title: '楼栋编号', dataIndex: 'assetCode', key: 'assetCode' },
-            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName' }, { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
-            { title: '建筑年代', dataIndex: 'years', key: 'years' },
-            { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
-            { title: '楼高', dataIndex: 'buildHeight', key: 'buildHeight' }, { title: '层数', dataIndex: 'floorNum', key: 'floorNum' },
-            { title: '地上层数', dataIndex: 'upFloorNum', key: 'upFloorNum' }, { title: '地下层数', dataIndex: 'downFloorNum', key: 'downFloorNum' },
-            { title: '资产数量', dataIndex: 'assetNum', key: 'assetNum', scopedSlots: { customRender: 'assetNum' } },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea', key: 'transferOperationArea' },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea', key: 'selfUserArea' },
-            { title: '闲置(㎡)', dataIndex: 'idleArea', key: 'idleArea' },
-            { title: '占用(㎡)', dataIndex: 'occupationArea', key: 'occupationArea' },
-            { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
-            { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'marketValue', key: 'marketValue' },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
+            { title: '楼栋名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
+            { title: '楼栋编号', dataIndex: 'assetCode', width: 150, fixed: 'left' },
+            { title: '资产项目名称', dataIndex: 'projectName' },
+            { title: '丘地号', dataIndex: 'addressNo' },
+            { title: '建筑年代', dataIndex: 'years' },
+            { title: '建筑面积(㎡)', dataIndex: 'area' },
+            { title: '楼高', dataIndex: 'buildHeight' },
+            { title: '层数', dataIndex: 'floorNum' },
+            { title: '地上层数', dataIndex: 'upFloorNum' },
+            { title: '地下层数', dataIndex: 'downFloorNum' },
+            { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' } },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea' },
+            { title: '闲置(㎡)', dataIndex: 'idleArea' },
+            { title: '占用(㎡)', dataIndex: 'occupationArea' },
+            { title: '其它(㎡)', dataIndex: 'otherArea' },
+            { title: '资产原值(元)', dataIndex: 'originalValue' },
+            { title: '最新估值(元)', dataIndex: 'marketValue' },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
@@ -181,11 +184,6 @@
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {
       white-space: nowrap;
-    }
-    & /deep/ .ant-table-body {
-      &::-webkit-scrollbar {
-        height: 8px !important;
-      }
     }
   }
 </style>

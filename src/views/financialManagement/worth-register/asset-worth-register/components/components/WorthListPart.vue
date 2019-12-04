@@ -246,7 +246,7 @@
         {assetObjectId: 111, assetName: '老王', assessmentValue: 51, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
         {assetObjectId: 120, assetName: '老王', assessmentValue: 0, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
         {assetObjectId: 1119, assetName: '老王', assessmentValue: 121, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: '合计', assetName: '--', originalValue: 123456, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30}
+        {assetObjectId: '合计', assetName: '--', assessmentValue: 121, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30}
       ]
     }
   }
