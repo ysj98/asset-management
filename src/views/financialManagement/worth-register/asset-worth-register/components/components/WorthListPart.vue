@@ -41,6 +41,7 @@
       v-if="type == 'approval' || type == 'detail'"
       @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
     />
+    <form-footer/>
     <!-- 选择资产 -->
     <select-asset-modal
       :organId="organId"
@@ -53,10 +54,11 @@
 </template>
 
 <script>
+  import FormFooter from 'src/components/FormFooter'
   import SelectAssetModal from './SelectAssetModal'
   export default {
     name: 'WorthListPart',
-    components: { SelectAssetModal },
+    components: { SelectAssetModal, FormFooter },
     props: ['type', 'initAssetList', 'registerId'],
     data () {
       return {
@@ -65,11 +67,11 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: true },
+          scroll: { x: 2000 },
           rowKey: 'assetObjectId',
           columns: [
-            { title: '编号', dataIndex: 'assetObjectId', fixed: true },
-            { title: '资产名称', dataIndex: 'assetName', fixed: true },
+            { title: '编号', dataIndex: 'assetObjectId', fixed: 'left', width: 120 },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 150 },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '所属机构', dataIndex: 'organName' },
             { title: '所属资产项目', dataIndex: 'projectName' },
@@ -81,10 +83,10 @@
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
             { title: '上次评估值', dataIndex: 'lastAssessmentValue' },
             { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
-            { title: '本次估值(元)', dataIndex: 'assessmentValue', scopedSlots: { customRender: 'assessmentValue' } },
             { title: '评估机构', dataIndex: 'assessmentOrganName' },
             { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
-            { title: '上浮比', dataIndex: 'upRate' }
+            { title: '本次估值(元)', dataIndex: 'assessmentValue', scopedSlots: { customRender: 'assessmentValue' }, fixed: 'right', width: 120 },
+            { title: '上浮比', dataIndex: 'upRate', fixed: 'right', width: 120 }
           ]
         },
         selectedRowKeys: [], // Table选中的key数据
@@ -111,7 +113,13 @@
           // 上浮比例=本次评估/上次估值*100%-100%
           m.upRate = lastAssessmentValue ? `${(assessmentValue / lastAssessmentValue -1).toFixed(2) *100 }%` : '--'
         })
-        data.splice(-1, 1, { assetObjectId: '合计', assessmentValue, originalValue, assetValuation, lastAssessmentValue })
+        data.splice(-1, 1, {
+          assetObjectId: '合计',
+          assessmentValue: assessmentValue.toFixed(2),
+          originalValue: originalValue.toFixed(2),
+          assetValuation: assetValuation.toFixed(2),
+          lastAssessmentValue: lastAssessmentValue.toFixed(2)
+        })
         this.tableObj.dataSource = data
       },
 
@@ -246,7 +254,7 @@
         {assetObjectId: 111, assetName: '老王', assessmentValue: 51, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
         {assetObjectId: 120, assetName: '老王', assessmentValue: 0, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
         {assetObjectId: 1119, assetName: '老王', assessmentValue: 121, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: '合计', assetName: '--', originalValue: 123456, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30}
+        {assetObjectId: '合计', assetName: '--', assessmentValue: 121, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30}
       ]
     }
   }
@@ -259,11 +267,6 @@
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {
         white-space: nowrap;
-      }
-      & /deep/ .ant-table-body {
-        &::-webkit-scrollbar {
-          height: 8px !important;
-        }
       }
     }
   }

@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
-        <a-col :span="6">
+        <a-col :span="10">
           <SG-Button
             icon="import"
             type="primary"
@@ -12,10 +12,34 @@
             :loading="exportBtnLoading"
           >导出楼栋视图</SG-Button>
         </a-col>
-        <a-col :span="15">
-          <organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>
+        <!--<a-col :span="15">-->
+          <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
+        <!--</a-col>-->
+        <a-col :span="6">
+          <a-select
+            showSearch
+            style="width: 100%"
+            :options="organOptions"
+            @change="queryBuildingList"
+            :filterOption="filterOption"
+            placeholder="请选择组织机构"
+            v-model="organProjectBuildingValue.organId"
+          ></a-select>
         </a-col>
-        <a-col :span="3">
+        <a-col :span="6">
+          <a-select
+            allowClear
+            showSearch
+            mode="multiple"
+            :maxTagCount="1"
+            style="width: 100%"
+            placeholder="请选择楼栋"
+            :options="buildingOptions"
+            :filterOption="filterOption"
+            v-model="organProjectBuildingValue.buildingId"
+          ></a-select>
+        </a-col>
+        <a-col :span="2">
           <SG-Button
             icon="search"
             type="primary"
@@ -45,15 +69,21 @@
 <script>
   import NoDataTip from 'src/components/noDataTips'
   import OverviewNumber from 'src/views/common/OverviewNumber'
-  import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
+  // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   export default {
     name: 'index',
-    components: { OverviewNumber, OrganProjectBuilding, NoDataTip },
+    components: { OverviewNumber, NoDataTip },
     data () {
       return {
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         exportBtnLoading: false, // 导出按钮loading
-        organProjectBuildingValue: {}, // 查询条件-组织机构-资产项目-楼栋对象
+        organOptions: [], // 组织机构选项
+        buildingOptions: [], // 楼栋选项
+        organProjectBuildingValue: {
+          organId: undefined,
+          projectId: undefined, // 用不到，暂存，临时需求隐藏处理
+          buildingId: undefined
+        }, // 查询条件-组织机构-资产项目-楼栋对象
         numList: [
           {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
@@ -62,26 +92,29 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: true },
+          scroll: { x: 2500 },
           pagination: false,
           rowKey: 'assetHouseId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'assetName', key: 'assetName' },
-            { title: '楼栋编号', dataIndex: 'assetCode', key: 'assetCode' },
-            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName' }, { title: '丘地号', dataIndex: 'addressNo', key: 'addressNo' },
-            { title: '建筑年代', dataIndex: 'years', key: 'years' },
-            { title: '建筑面积(㎡)', dataIndex: 'area', key: 'area', align: 'right' },
-            { title: '楼高', dataIndex: 'buildHeight', key: 'buildHeight' }, { title: '层数', dataIndex: 'floorNum', key: 'floorNum' },
-            { title: '地上层数', dataIndex: 'upFloorNum', key: 'upFloorNum' }, { title: '地下层数', dataIndex: 'downFloorNum', key: 'downFloorNum' },
-            { title: '资产数量', dataIndex: 'assetNum', key: 'assetNum', scopedSlots: { customRender: 'assetNum' } },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea', key: 'transferOperationArea' },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea', key: 'selfUserArea' },
-            { title: '闲置(㎡)', dataIndex: 'idleArea', key: 'idleArea' },
-            { title: '占用(㎡)', dataIndex: 'occupationArea', key: 'occupationArea' },
-            { title: '其它(㎡)', dataIndex: 'otherArea', key: 'otherArea' },
-            { title: '资产原值(元)', dataIndex: 'originalValue', key: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'marketValue', key: 'marketValue' },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
+            { title: '楼栋名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
+            { title: '楼栋编号', dataIndex: 'assetCode', width: 150, fixed: 'left' },
+            { title: '资产项目名称', dataIndex: 'projectName' },
+            { title: '丘地号', dataIndex: 'addressNo' },
+            { title: '建筑年代', dataIndex: 'years' },
+            { title: '建筑面积(㎡)', dataIndex: 'area' },
+            { title: '楼高', dataIndex: 'buildHeight' },
+            { title: '层数', dataIndex: 'floorNum' },
+            { title: '地上层数', dataIndex: 'upFloorNum' },
+            { title: '地下层数', dataIndex: 'downFloorNum' },
+            { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' } },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea' },
+            { title: '闲置(㎡)', dataIndex: 'idleArea' },
+            { title: '占用(㎡)', dataIndex: 'occupationArea' },
+            { title: '其它(㎡)', dataIndex: 'otherArea' },
+            { title: '资产原值(元)', dataIndex: 'originalValue' },
+            { title: '最新估值(元)', dataIndex: 'marketValue' },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
@@ -163,12 +196,72 @@
           this.exportBtnLoading = false
           this.$message.error(err || '导出楼栋视图失败')
         })
+      },
+
+      // 搜索过滤选项
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
+
+      // 查询组织机构对应的楼栋数据
+      queryBuildingList () {
+        const { organProjectBuildingValue: { organId } } = this
+        // 清空组织机构，重置楼栋选项
+        if (!organId) { return this.$message.warn('组织机构不存在') }
+        this.buildingOptions = []
+        this.organProjectBuildingValue.buildingId = undefined
+        this.$api.assets.queryBuildingByOrganId({organId}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.buildingOptions = (res.data || []).map(item => {
+              return {
+                key: item.assetHouseId,
+                title: item.assetName
+              }
+            })
+            return false
+          }
+          throw res.message || '查询楼栋失败'
+        }).catch(err => {
+          this.$message.error(err || '查询楼栋失败')
+        })
+      },
+      
+      // 查询一级组织机构
+      queryOrganList () {
+        this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: ''}).then(res => {
+          if (Number(res.data.code) === 0) {
+            let list = res.data.data || []
+            let id = list[0] ? list[0].organId : undefined
+            this.organProjectBuildingValue.organId = id
+            id && this.queryBuildingList()
+            this.organOptions = list.map(item => {
+              return {
+                key: item.organId,
+                title: item.name
+              }
+            })
+            return false
+          }
+          throw res.message || '查询组织机构失败'
+        }).catch(err => {
+          this.$message.error(err || '查询组织机构失败')
+        })
       }
+    },
+    
+    created () {
+      this.queryOrganList()
     },
 
     watch: {
-      organProjectBuildingValue: function (val) {
-        val && val.organId && this.queryTableData({type: 'search'})
+      organProjectBuildingValue: {
+        handler: function (val) {
+          val && val.organId && this.queryTableData({type: 'search'})
+        },
+        deep: true
       }
     }
   }
@@ -181,11 +274,6 @@
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table-thead th, .ant-table td {
       white-space: nowrap;
-    }
-    & /deep/ .ant-table-body {
-      &::-webkit-scrollbar {
-        height: 8px !important;
-      }
     }
   }
 </style>

@@ -74,7 +74,7 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: true },
+          scroll: { x: 1800 },
           pagination: false,
           rowKey: 'relId',
           columns: [
@@ -142,11 +142,6 @@
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {
         white-space: nowrap;
-      }
-      & /deep/ .ant-table-body {
-        &::-webkit-scrollbar {
-          height: 8px !important;
-        }
       }
     }
   }

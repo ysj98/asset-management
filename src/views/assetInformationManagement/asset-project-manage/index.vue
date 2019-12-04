@@ -140,8 +140,8 @@
         organName: '', // 查询条件-组织Id
         approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
-          // {key: '-1', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
-          // {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
+          {key: '-1', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
+          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
         ], // 查询条件-项目状态选项-查字典接口
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项-查字典接口
@@ -162,20 +162,20 @@
           loading: false,
           pagination: false,
           rowKey: 'projectId',
-          scroll: { x: true },
+          scroll: { x: 1800 },
           columns: [
-            { title: '管理机构', dataIndex: 'organName', key: 'organName' },
-            { title: '资产项目名称', dataIndex: 'projectName', key: 'projectName' },
-            { title: '资产项目编码', dataIndex: 'projectCode', key: 'projectCode' },
-            { title: '来源方式', key: 'sourceTypeName', dataIndex: 'sourceTypeName' },
-            { title: '来源渠道', dataIndex: 'souceChannelType', key: 'souceChannelType' },
-            { title: '资产数量', dataIndex: 'assetsNum', key: 'assetsNum' },
-            { title: '资产项目状态', dataIndex: 'approvalStatusName', key: 'approvalStatusName' },
-            { title: '审核日期', dataIndex: 'auditDate', key: 'auditDate' },
-            { title: '是否接管', dataIndex: 'takeOver', key: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
-            { title: '接管日期', dataIndex: 'takeOverDate', key: 'takeOverDate' },
+            { title: '管理机构', dataIndex: 'organName', width: 150, fixed: 'left' },
+            { title: '资产项目名称', dataIndex: 'projectName',width: 150, fixed: 'left' },
+            { title: '资产项目编码', dataIndex: 'projectCode' },
+            { title: '来源方式', dataIndex: 'sourceTypeName' },
+            { title: '来源渠道', dataIndex: 'souceChannelType' },
+            { title: '资产数量', dataIndex: 'assetsNum' },
+            { title: '资产项目状态', dataIndex: 'approvalStatusName' },
+            { title: '审核日期', dataIndex: 'auditDate' },
+            { title: '是否接管', dataIndex: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
+            { title: '接管日期', dataIndex: 'takeOverDate' },
             // { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
+            { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -193,11 +193,11 @@
         this.isCurrent = e.target.checked
       },
 
-      // 查询数据来源方式字典接口
+      // 查询数据来源方式、审批状态字典接口
       querySourceTypeList () {
         let codeList = [
-          { code: 'source_type', type: 'sourceTypeOptions', name: '来源' },
-          { code: 'approval_status_type', type: 'statusOptions', name: '状态' }
+          { code: 'source_type', type: 'sourceTypeOptions', name: '来源' }
+          // { code: 'approval_status_type', type: 'statusOptions', name: '状态' } // 暂不查字典
         ]
         codeList.forEach(item => {
           let { type, code, name } = item
