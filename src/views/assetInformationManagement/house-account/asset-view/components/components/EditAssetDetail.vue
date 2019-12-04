@@ -44,9 +44,12 @@
       label="使用人"
     >
       <a-select
-        v-decorator="[ 'ownerUser' ]"
-        placeholder="请选择使用人"
+        allowClear
+        showSearch
         :options="userOptions"
+        placeholder="请选择使用人"
+        v-decorator="['ownerUser']"
+        :filterOption="filterOption"
       />
     </a-form-item>
   </a-form>
@@ -65,7 +68,7 @@
           wrapperCol: { span: 19 }
         },
         form: this.$form.createForm(this),
-        // organId: '', // 保管部门
+        ownerOrgan: '', // 保管部门
         // assetName: '', // 资产名
         // assetCode: '', // 资产编码
         // decorateOptions: '', // 装修情况选项
@@ -74,16 +77,43 @@
     },
 
     methods: {
+      // 员工搜索过滤选项
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
+
+      // 获取组织机构下的员工
+      queryUser (organId) {
+        if (organId) { return this.$message.warn('组织Id不存在') }
+        this.$api.assets.queryUserListByOrganId({organId}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.userOptions = (res.data || []).map(m => ({
+              key: m.userId,
+              title: m.userName
+            }))
+            return false
+          }
+          throw res.message || '查询组织机构下的员工出错'
+        }).catch(err => {
+          this.$message.error(err || '查询组织机构下的员工出错')
+        })
+      },
+
       // 获取选择的组织机构
       changeTree (organId) {
-        this.organId = organId
+        this.ownerOrgan = organId
+        this.queryUser(organId)
       },
       
       // 提交数据
       handleSubmit (resolve, reject) {
+        const { ownerOrgan, details: {assetHouseId} } = this
         this.form.validateFields((err, values) => {
           if (!err) {
-            this.$api.assets.saveAssetViewHouseInfo({...values, assetHouseId: this.details.assetHouseId}).then(r =>{
+            this.$api.assets.saveAssetViewHouseInfo({...values, assetHouseId, ownerOrgan}).then(r =>{
               let res = r.data
               if (res && String(res.code) === '0') {
                 this.$message.success('保存成功')
@@ -102,8 +132,10 @@
     },
 
     mounted () {
-      // 初始化数据
-      this.form.setFieldsValue(this.details)
+      const { assetName, assetCode, decorationSituation, ownerUser, ownerOrgan } = this.details
+      this.ownerOrgan = ownerOrgan
+      this.queryUser(ownerOrgan)
+      this.form.setFieldsValue({ assetName, assetCode, decorationSituation, ownerUser })
     }
   }
 </script>

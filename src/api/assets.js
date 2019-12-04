@@ -296,6 +296,10 @@ export function exportAssetViewExcel (data) {
 export function saveAssetViewHouseInfo (data) {
   return axiosPost(assets.assetView.saveHouseInfo, data)
 }
+// 查询组织机构下的员工
+export function queryUserListByOrganId (data) {
+  return axiosGet(assets.assetView.userList, data)
+}
 
 // 资产项目管理
 // 分页查询资产项目列表-根据组织ID
