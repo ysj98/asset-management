@@ -58,7 +58,7 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard ref="newCard" @handleCancel="handleCancel" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
+    <NewCard ref="newCard" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>

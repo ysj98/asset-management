@@ -99,6 +99,7 @@ export default {
   },
   data () {
     return {
+      selectKey: '',
       firstCall: true,
       columns,
       loading: false,
@@ -150,6 +151,7 @@ export default {
       }
       let checkedData = []
       let rowsData = []
+      let roeNameData = []
       console.log(this.selectedRowKeys, '选中的')
       console.log(this.overallData, '总的')
       this.selectedRowKeys.forEach(item => {
@@ -157,13 +159,16 @@ export default {
           if (item === element.warrantId) {
             checkedData.push(element.warrantId)
             rowsData.push(element)
+            roeNameData.push(element.warrantNbr)
           }
         })
       })
-      this.$emit('status', checkedData, rowsData)
+      this.$emit('status', checkedData, rowsData, roeNameData, this.selectKey)
     },
     // 外面删除了后剩下给回来的数据
-    redactCheckedDataFn (redactChecked, overallData) {
+    redactCheckedDataFn (redactChecked, overallData, selectKey) {
+      console.log(redactChecked, '外面给回来拿到的数据')
+      this.selectKey = selectKey   // 外面列表选择的第几个
       // overallData 给回来的数据合并在去重
       if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
@@ -210,12 +215,12 @@ export default {
         organId: this.organId,         // 组织机构
         kindOfRights: '',              // 权利类型(多选)
         obligeeId: '',                 // 权属人
-        status: '',                    // 权证状态
+        status: '1',                    // 权证状态
         warrantNbr: '',                // 权证号
         pageSize: this.selecData.pageSize,
         pageNum: this.selecData.pageNum
       }
-      this.$api.assets.warrantList(obj).then(res => {
+      this.$api.ownership.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data) {

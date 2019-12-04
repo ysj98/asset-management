@@ -24,6 +24,7 @@
             <a-form-item v-bind="formItemLayout" :colon="false">
               <label slot="label">权证号：</label>
               <a-input placeholder="请输入权证号"
+              :disabled="setType === 'edit'"
               :style="allWidth"
               :max="60"
               v-decorator="['warrantNbr', {rules: [{required: true, max: 60, whitespace: true, message: '请输入权证号(不超过60字符)'}], initialValue: newCardData.warrantNbr}]"/>
@@ -470,7 +471,6 @@ export default {
       if (str === 'success') {
         this.$emit('successQuery')
       }
-      this.$emit('handleCancel')
       this.show = false
     },
     // 平台字典获取数据
