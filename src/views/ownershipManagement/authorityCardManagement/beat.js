@@ -89,7 +89,7 @@ export const accessCard = [
   },
   {
     label: '所在层',
-    attrCode: 'placefloor',
+    attrCode: 'placeFloor',
     formType: 'input',
     max: 30,
     attrValue: '',
@@ -105,10 +105,12 @@ export const accessCard = [
   },
   {
     label: '租金单价',
-    attrCode: 'rentUnitPrice',
-    formType: 'input',
+    attrCode: 'rentUnitPice',
+    formType: 'inputNumber',
     attrValue: '',
-    max: 30,
+    min: 0,
+    max: 9999999.99,
+    precision: 2,
     required: false
   },
   {
@@ -132,9 +134,11 @@ export const accessCard = [
   {
     label: '议价租金单价',
     attrCode: 'talkUnitPrice',
-    formType: 'input',
+    formType: 'inputNumber',
     attrValue: '',
-    max: 30,
+    min: 0,
+    max: 9999999.99,
+    precision: 2,
     required: false
   },
   {
@@ -328,9 +332,9 @@ export const newCardData = {
   tenant: '',                      // 类型：String  必有字段  备注：承租人(使用权证所有)
   entrustOrganization: '',         // 类型：String  必有字段  备注：委托管理单位(使用权证所有)
   totalFloor: '',                  // 类型：String  必有字段  备注：总层数(使用权证所有)
-  placefloor: '',                  // 类型：String  必有字段  备注：所在层(使用权证所有)
+  placeFloor: '',                  // 类型：String  必有字段  备注：所在层(使用权证所有)
   houseNo: '',                     // 类型：String  必有字段  备注：房屋号(使用权证所有)
-  rentUnitPrice: '',               // 类型：Number  必有字段  备注：租金单价(使用权证所有)
+  rentUnitPice: '',               // 类型：Number  必有字段  备注：租金单价(使用权证所有)
   rentTotalPrice: '',              // 类型：Number  必有字段  备注：租金总价(使用权证所有)
   contractData: '',                // 类型：String  必有字段  备注：合同期限(使用权证所有)
   talkUnitPrice: '',               // 类型：String  必有字段  备注：议价单价(使用权证所有)
@@ -392,7 +396,7 @@ export const mortgageInformation = [
   {
     title: '借款合同编号',
     dataIndex: 'loanContractName',
-    width: 110,
+    width: 130,
     scopedSlots: { customRender: 'loanContractName' }
   }, {
     title: '操作',

@@ -19,7 +19,7 @@
           <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
           <a-col class="playground-col" :span="12">土地面积(㎡)：{{particularsData.landArea || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权属用途：{{particularsData.ownershipUseName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">结构：{{particularsData.structure || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">结构：{{particularsData.structureName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">建筑面积(㎡)：{{particularsData.buildArea || '--'}}</a-col>
           <a-col class="playground-col" :span="12">专属建筑面积：{{particularsData.exclusiveBuildArea || '--'}}</a-col>
           <a-col class="playground-col" :span="12">分摊面积(㎡)：{{particularsData.apportionArea || '--'}}</a-col>
@@ -41,11 +41,11 @@
           <a-col class="playground-col" :span="12">分摊面积(㎡)：{{particularsData.apportionArea || '--'}}</a-col>
           <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
           <a-col class="playground-col" :span="12">用途：{{particularsData.ownershipUseName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">结构：{{particularsData.structure || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">结构：{{particularsData.structureName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">总层数：{{particularsData.totalFloor || '--'}}</a-col>
           <a-col class="playground-col" :span="12">所在层：{{particularsData.placeFloor || '--'}}</a-col>
           <a-col class="playground-col" :span="12">房屋号：{{particularsData.houseNo || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">租金单价：{{particularsData.rentUnitPrice || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">租金单价：{{particularsData.rentUnitPice || '--'}}</a-col>
           <a-col class="playground-col" :span="12">租金总价：{{particularsData.rentTotalPrice || '--'}}</a-col>
           <a-col class="playground-col" :span="12">合同期限：{{particularsData.contractData || '--'}}</a-col>
           <a-col class="playground-col" :span="12">议价租金单价：{{particularsData.talkUnitPrice || '--'}}</a-col>
@@ -68,7 +68,7 @@
       </a-row>
     </div>
     <div class="newCard-nav" v-if="this.kindOfRight === '1'">
-      <span class="section-title blue">权利人</span>
+      <span class="section-title blue">权属人</span>
       <div class="tab-nav table-border">
         <a-table
           :columns="columns"
@@ -184,6 +184,7 @@ export default {
         // 权属人信息
         data.amsOwnershipWarrantObligeeList.forEach((list, index) => {
           list.key = index
+          list.obligeeId = list.obligeeName
         })
         this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
         // 抵押信息
