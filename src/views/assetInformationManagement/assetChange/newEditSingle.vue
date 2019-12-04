@@ -498,7 +498,7 @@ export default {
               selfUserArea: String(this.changeType) === '4' ? item.selfUserArea : '',    // 自用面积
               occupationArea: String(this.changeType) === '4' ? item.occupationArea : '', // 占用面积
               otherArea: String(this.changeType) === '4' ? item.otherArea : '',          // 其他面积
-              originalValue: String(this.changeType) === '4' ? item.newOriginalValue : ''   // 资产原值
+              originalValue: String(this.changeType) === '3' ? item.newOriginalValue : ''   // 资产原值
             })
           })
           let obj = {
