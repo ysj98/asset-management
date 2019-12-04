@@ -209,10 +209,9 @@
       queryBuildingList () {
         const { organProjectBuildingValue: { organId } } = this
         // 清空组织机构，重置楼栋选项
-        if (!organId) {
-          return this.organProjectBuildingValue.buildingId = undefined
-        }
+        if (!organId) { return this.$message.warn('组织机构不存在') }
         this.buildingOptions = []
+        this.organProjectBuildingValue.buildingId = undefined
         this.$api.assets.queryBuildingByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
