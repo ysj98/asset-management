@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import {deliveryProperty, deliveryOperation, changeDirectionUse, variationOriginalValue, positionChange, projectChange} from './basics'
+import {register} from './basics'
 import {utils} from '@/utils/utils.js'
 export default {
   components: {},
@@ -110,7 +110,9 @@ export default {
           }
           this.files = files
           data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            key: index
+            item.key = index
+            item.address = item.location
+            item.assetArea = item.area
           })
           this.tableData = data.amsOwnershipRegisterDetailList
         } else {

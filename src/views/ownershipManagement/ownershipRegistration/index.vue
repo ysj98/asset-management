@@ -40,9 +40,14 @@
         class="custom-table td-pd10"
         :pagination="false"
         >
-        <!-- <template slot="operation" slot-scope="text, record">
-          <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
-        </template> -->
+        <template slot="operation" slot-scope="text, record">
+          <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
+          <div class="tab-opt">
+            <span @click="operationFn(record, 'particulars')">详情</span>
+            <span @click="operationFn(record, 'edit')">编辑</span>
+            <span @click="operationFn(record, 'delete')">删除</span>
+          </div>
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -190,7 +195,17 @@ export default {
   computed: {
   },
   methods: {
-    // 新建变动单
+    operationFn (record, type) {
+      if (type === 'particulars') {
+        let recordData = JSON.stringify([record])
+        this.$router.push({path: '/ownershipRegistration/registrationParticulars', query: { record: recordData }})
+      } else if (type === 'edit') {
+        let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
+        let enitData = JSON.stringify([record])
+        this.$router.push({path: '/ownershipRegistration/registrationNew', query: { record: recordData, enitData: enitData, setType: 'edit' }})
+      }
+    },
+    // 新建权属登记
     newChangeSheetFn () {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
       this.$router.push({path: '/ownershipRegistration/registrationNew', query: { record: recordData, setType: 'new' }})
@@ -209,7 +224,7 @@ export default {
       this.queryCondition.pageNum = 1
       this.query()
     },
-    // 选择是否查看当前机构变动单
+    // 选择是否查看当前机构权属登记
     checkboxFn (e) {
       this.queryCondition.flag = e.target.checked
     },
@@ -367,16 +382,23 @@ export default {
   .box-right {
     margin-right: 10px;
   }
-}
-.search-content-box{
-  display: flex;
-  justify-content: space-between;
-  .search-from-box{
-    flex: 1;
+  .search-content-box{
+    display: flex;
+    justify-content: space-between;
+    .search-from-box{
+      flex: 1;
+    }
+    .two-row-box{
+      padding-top: 14px;
+      flex: 0 0 190px;
+    }
   }
-  .two-row-box{
-    padding-top: 14px;
-    flex: 0 0 190px;
+  .tab-opt {
+    span {
+      padding-right: 10px;
+      color: #0084FF;
+      cursor: pointer;
+    }
   }
 }
 </style>
