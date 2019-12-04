@@ -82,11 +82,12 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: true },
+          scroll: { x: 1800 },
           pagination: false,
           rowKey: 'registerId',
           columns: [
-            { title: '登记单ID', dataIndex: 'registerId' }, { title: '所属机构', dataIndex: 'organName' },
+            { title: '登记单ID', dataIndex: 'registerId', fixed: 'left', width: 150  },
+            { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 150  },
             { title: '价值登记单名称', dataIndex: 'registerName' }, { title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '评估方法', dataIndex: 'assessmentMethodName' },
             { title: '评估机构', dataIndex: 'assessmentOrganName' }, { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
@@ -201,11 +202,6 @@
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {
         white-space: nowrap;
-      }
-      & /deep/ .ant-table-body {
-        &::-webkit-scrollbar {
-          height: 8px !important;
-        }
       }
     }
     .action_text {
