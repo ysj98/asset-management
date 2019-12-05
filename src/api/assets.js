@@ -242,17 +242,14 @@ export function queryBuildingViewFloorArea (data) {
 export function queryBuildingViewPage (data) {
   return axiosPost(assets.buildingView.queryViewPage, data, false, false)
 }
-
 // 导出楼栋视图excel
 export function exportBuildingViewExcel (data) {
   return axiosPost(assets.buildingView.exportExcel, data, false, false, {responseType: 'blob'})
 }
-
 // 楼层信息查询
 export function queryBuildingViewFloorInfo (data) {
   return axiosGet(assets.buildingView.queryFloorInfo, data)
 }
-
 // 查询当前组织机构下所有的楼栋
 export function queryBuildingByOrganId (data) {
   return axiosGet(assets.buildingView.queryBuildingByOrganId, data)
@@ -261,6 +258,14 @@ export function queryBuildingByOrganId (data) {
 // 查询楼栋下的单元-楼层关系
 export function queryBuildingViewUnitByHouseId (data) {
   return axiosGet(assets.buildingView.queryUnitByHouseId, data)
+}
+// 查询楼栋详情
+export function queryBuildingViewBuildInfo (data) {
+  return axiosGet(assets.buildingView.queryBuildInfo, data)
+}
+// 楼层信息查询
+export function queryBuildingViewDetailArea (data) {
+  return axiosGet(assets.buildingView.queryDetailArea, data)
 }
 
 // 房屋台账 - 资产视图

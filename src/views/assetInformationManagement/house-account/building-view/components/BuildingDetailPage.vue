@@ -5,11 +5,11 @@
       <!--返回-->
     <!--</SG-Button>-->
     <!--基本信息-->
-    <base-info-part v-if="assetHouseId" :houseId="assetHouseId"/>
+    <base-info-part v-if="buildId" :buildId="buildId"/>
     <!--资产使用方向-->
-    <asset-direct-part v-if="assetHouseId" :houseId="assetHouseId" :organId="organId"/>
+    <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId"/>
     <!--其它信息-->
-    <other-info-part/>
+    <other-info-part style="margin-bottom: 35px"/>
   </div>
 </template>
 
@@ -23,16 +23,16 @@
     data () {
       return {
         organId: '', // 组织机构id
-        assetHouseId: '' // 房间id
+        buildId: '' // 房间id
       }
     },
 
     methods: {},
 
     created () {
-      const { organId, assetHouseId } = this.$route.query
+      const { organId, buildId } = this.$route.query
       Object.assign(this, {
-        organId, assetHouseId
+        organId, buildId
       })
     }
   }
