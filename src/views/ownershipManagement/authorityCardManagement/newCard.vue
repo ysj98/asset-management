@@ -604,6 +604,18 @@ export default {
     },
     // 监听选择权利人
     obligeeNameChange (record, type) {
+      for (let i = 0; i < this.amsOwnershipWarrantObligeeList.length; i++) {
+        if (this.amsOwnershipWarrantObligeeList[i].obligeeId === record.obligeeId && record.key !== this.amsOwnershipWarrantObligeeList[i].key) {
+          this.$set(this.amsOwnershipWarrantObligeeList, record.key, Object.assign(this.amsOwnershipWarrantObligeeList[record.key], {
+            obligeeId: '',
+            certificateTypeName: '',
+            certificateNo: '',
+            percent: ''
+          }))
+          this.$message.info('权属人不能重复选择')
+          return
+        }
+      }
       let obligeeId = record.obligeeId
       let certificateTypeNames = ''
       let certificateNos = ''
