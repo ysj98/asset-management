@@ -45,6 +45,7 @@
           <a-col class="playground-col" :span="8">
             <a-form-item label="登记类型：" v-bind="formItemLayout">
               <a-select
+                :disabled="setType === 'edit'"
                 showSearch
                 :style="allWidth"
                 placeholder="请选择登记类型"
@@ -258,10 +259,10 @@ export default {
       this.checkedData = [...val]
       data.forEach((item, index) => {
         item.key = item.assetId
-        item.oldWarrantNbr = item.warrantNbr
-        item.warrantNbr = undefined
-        item.warrantNbrData = []      // 用于存储单个下拉框数据
-        item.warrantGeneralData = []  // 用于存权证号总是数据
+        // item.oldWarrantNbr = item.warrantNbr
+        // item.warrantNbr = undefined
+        // item.warrantNbrData = []      // 用于存储单个下拉框数据
+        // item.warrantGeneralData = []  // 用于存权证号总是数据
       })
       this.tableData = data
       this.$refs.assetBundlePopover.show = false
@@ -269,7 +270,7 @@ export default {
     // 选择权证给回来的数据
     chooseWarrantsStatus (val, data, roeNameData, selectKey) {
       let warrantNbrDataIs = [{label: roeNameData.join(','), value: val.join(',')}]
-      console.log(val, data, '这边拿到的数据')
+      console.log(data, '这边拿到的数据')
       this.tableData.forEach(item => {
         if (item.key === selectKey) {
           item.warrantGeneralData = data
@@ -282,6 +283,21 @@ export default {
     change () {},
     // 选择新权证号
     handleChange(value) {
+      let warrantGeneralData = []   // 各种遍历给回去总的数据
+      if (value.warrantNbrData.length > 0) {
+        let ctr = value.warrantNbrData[0].label.split(',')
+        let ctl = value.warrantNbrData[0].value.split(',')
+        ctr.forEach((item, index) => {
+          ctl.forEach((list, indexs) => {
+            if (index === indexs) {
+              warrantGeneralData.push({
+                warrantNbr: item,
+                warrantId: Number(list)
+              })
+            }
+          })
+        })
+      }
       let warrantNbr = []
       if (value.warrantNbr) {
         value.warrantNbr.split(',').forEach(item => {
@@ -290,7 +306,7 @@ export default {
       } else {
         warrantNbr === []
       }
-      this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, value.warrantGeneralData, value.key)
+      this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, warrantGeneralData, value.key)
       this.$refs.chooseWarrants.show = true
     },
     // 添加资产
@@ -403,13 +419,12 @@ export default {
               }
             }
           }
-          console.log(this.tableData, '---==-=')
           this.tableData.forEach(item => {
             arr.push({
               projectId: Number(item.projectId),        // 资产项目Id
               organId: this.organId,
               assetType: item.assetType,                // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
-              warrantNbr: item.warrantNbrData[0].label,
+              warrantNbr: item.warrantNbrData.length > 0 ? item.warrantNbrData[0].label : '',
               assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
             })
           })
@@ -468,19 +483,21 @@ export default {
           this.newEditSingleData.files = files
           let checkedData = []
           data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            // item.key = item.assetId
-            item.key = item.index
-            // item.addressName = item.address
-            // item.newOriginalValue = item.originalValue
+            item.key = item.assetId
+            item.address = item.location
+            item.assetArea = item.area
             checkedData.push(item.assetId)
+            item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
+            item.warrantNbr = item.warrantIds.join(',')
+            // item.warrantGeneralData = []  // 用于存权证号总是数据
           })
           this.$nextTick(() => {
             this.form.setFieldsValue({
               organId: this.organIdData[0].value,
               projectId: data.registerInfo.projectId,
               registerName: data.registerInfo.registerName,
-              registerType: data.registerInfo.registerType,
-              assetType: data.registerInfo.assetType,
+              registerType: String(data.registerInfo.registerType),
+              assetType: String(data.registerInfo.assetType),
               remark: data.registerInfo.remark
             })
             this.checkedData = [...checkedData]

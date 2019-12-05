@@ -141,7 +141,11 @@ export default {
   methods: {
     // 选中的
     onSelectChange (selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+      if (selectedRowKeys.length > 5) {
+        this.$message.info('权证号最多只能选择5个！')
+      } else {
+        this.selectedRowKeys = selectedRowKeys
+      }
     },
     // 提交返回数据
     statusFn () {
