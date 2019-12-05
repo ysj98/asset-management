@@ -24,6 +24,7 @@
             <a-form-item v-bind="formItemLayout" :colon="false">
               <label slot="label">权证号：</label>
               <a-input placeholder="请输入权证号"
+              :disabled="setType === 'edit'"
               :style="allWidth"
               :max="60"
               v-decorator="['warrantNbr', {rules: [{required: true, max: 60, whitespace: true, message: '请输入权证号(不超过60字符)'}], initialValue: newCardData.warrantNbr}]"/>
@@ -264,16 +265,30 @@ export default {
     'typeJudgment' () {
       if (this.newData === 'new') {
         if (this.typeJudgment === '1') {
-          this.beat = utils.deepClone(titleDeed)
+          this.titleDeed.forEach(item => {
+            if (item.formType === 'input' || item.formType === 'inputNumber') {
+              item.attrValue = ''
+            } else if (item.formType === 'selcet' || item.formType === 'date') {
+              item.attrValue = undefined
+            }
+          })
+          this.beat = this.titleDeed
         } else if (this.typeJudgment === '2') {
-          this.beat = utils.deepClone(accessCard)
+          this.accessCard.forEach(item => {
+            if (item.formType === 'input' || item.formType === 'inputNumber') {
+              item.attrValue = ''
+            } else if (item.formType === 'selcet' || item.formType === 'date') {
+              item.attrValue = undefined
+            }
+          })
+          this.beat = this.accessCard
         } else {
           // 新增进来全面清空数据
           this.beat = []
           this.form.setFieldsValue({
             warrantNbr: '',  // 权证号
-            ownerType: '',      // 权属形式
-            kindOfRight: '', // 权利类型
+            ownerType: undefined,      // 权属形式
+            kindOfRight: undefined, // 权利类型
             remark: ''  // 备注
           })
           this.newCardData = utils.deepClone(newCardData)
@@ -292,6 +307,7 @@ export default {
   methods: {
     // 新增进来清空数据
     newFn (val) {
+      this.warrantId = ''
       this.setType = ''
       this.newData = val
       this.typeJudgment = ''
@@ -406,9 +422,9 @@ export default {
             tenant: values.tenant ? values.tenant : '',                            // 类型：String  必有字段  备注：承租人(使用权证所有)
             entrustOrganization: values.entrustOrganization ? values.entrustOrganization : '',        // 类型：String  必有字段  备注：委托管理单位(使用权证所有)
             totalFloor: values.totalFloor ? values.totalFloor : '',                 // 类型：String  必有字段  备注：总层数(使用权证所有)
-            placefloor: values.placefloor ? values.placefloor : '',                 // 类型：String  必有字段  备注：所在层(使用权证所有)
+            placeFloor: values.placeFloor ? values.placeFloor : '',                 // 类型：String  必有字段  备注：所在层(使用权证所有)
             houseNo: values.houseNo ? values.houseNo : '',                          // 类型：String  必有字段  备注：房屋号(使用权证所有)
-            rentUnitPrice: values.rentUnitPrice ? values.rentUnitPrice : '',        // 类型：Number  必有字段  备注：租金单价(使用权证所有)
+            rentUnitPice: values.rentUnitPice ? values.rentUnitPice : '',        // 类型：Number  必有字段  备注：租金单价(使用权证所有)
             rentTotalPrice: values.rentTotalPrice ? values.rentTotalPrice : '',     // 类型：Number  必有字段  备注：租金总价(使用权证所有)
             contractData: values.contractData ? values.contractData : '',           // 类型：String  必有字段  备注：合同期限(使用权证所有)
             talkUnitPrice: values.talkUnitPrice ? values.talkUnitPrice : '',        // 类型：String  必有字段  备注：议价单价(使用权证所有)
@@ -455,7 +471,6 @@ export default {
       if (str === 'success') {
         this.$emit('successQuery')
       }
-      this.$emit('handleCancel')
       this.show = false
     },
     // 平台字典获取数据
@@ -633,31 +648,65 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.typeJudgment = String(data.amsOwnershipWarrant.kindOfRight)  // 判断类型
-          // this.particularsData = data.amsOwnershipWarrant
-          if (+this.typeJudgment === 1) {
-            this.accessCard.forEach(item => {
-              if (item.formType === 'date') {
-                item.attrValue = moment(data.amsOwnershipWarrant[item.attrCode], 'YYYY-MM-DD')
-              } else {
-                item.attrValue = data.amsOwnershipWarrant[item.attrCode]
-              }
-            })
-          } else if (+this.typeJudgment === 2) {
-            this.titleDeed.forEach(item => {
-              if (item.formType === 'date') {
-                item.attrValue = moment(data.amsOwnershipWarrant[item.attrCode], 'YYYY-MM-DD')
-              } else {
-                item.attrValue = data.amsOwnershipWarrant[item.attrCode]
-              }
-            })
-          }
-          // 几个单独的字段
-          this.form.setFieldsValue({
-            warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
-            ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
-            kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
-            remark: data.amsOwnershipWarrant.remark  // 备注
+          this.$nextTick(() => {
+            if (this.typeJudgment === '1') {
+              this.form.setFieldsValue({
+                warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
+                ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
+                kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
+                remark: data.amsOwnershipWarrant.remark,  // 备注
+                lotNo: data.amsOwnershipWarrant.lotNo,
+                estateUnitCode: data.amsOwnershipWarrant.estateUnitCode,
+                seatingPosition: data.amsOwnershipWarrant.seatingPosition,
+                landArea: data.amsOwnershipWarrant.landArea,
+                ownershipUse: String(data.amsOwnershipWarrant.ownershipUse),
+                structure: String(data.amsOwnershipWarrant.structure),
+                buildArea: data.amsOwnershipWarrant.buildArea,
+                exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,
+                apportionArea: data.amsOwnershipWarrant.apportionArea,
+                totalSuite: data.amsOwnershipWarrant.totalSuite,
+                qualityOfRight: data.amsOwnershipWarrant.qualityOfRight,
+                useLimitDate: data.amsOwnershipWarrant.useLimitDate,
+                rigisterDate: moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
+                handoverDate: moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')
+              })
+            } else if (this.typeJudgment === '2') {
+              this.form.setFieldsValue({
+                warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
+                ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
+                kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
+                remark: data.amsOwnershipWarrant.remark,  // 备注
+                houseOwner: data.amsOwnershipWarrant.houseOwner,
+                tenant: data.amsOwnershipWarrant.tenant,
+                entrustOrganization: data.amsOwnershipWarrant.entrustOrganization,
+                buildArea: data.amsOwnershipWarrant.buildArea,
+                exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,
+                apportionArea: data.amsOwnershipWarrant.apportionArea,
+                seatingPosition: data.amsOwnershipWarrant.seatingPosition,
+                ownershipUse: String(data.amsOwnershipWarrant.ownershipUse),
+                structure: String(data.amsOwnershipWarrant.structure),
+                totalFloor: data.amsOwnershipWarrant.totalFloor,
+                placeFloor: data.amsOwnershipWarrant.placeFloor,
+                houseNo: data.amsOwnershipWarrant.houseNo,
+                rentUnitPice: data.amsOwnershipWarrant.rentUnitPice,
+                rentTotalPrice: data.amsOwnershipWarrant.rentTotalPrice,
+                contractData: data.amsOwnershipWarrant.contractData,
+                talkUnitPrice: data.amsOwnershipWarrant.talkUnitPrice,
+                talkTotalPrice: data.amsOwnershipWarrant.talkTotalPrice,
+                rentPayDate: data.amsOwnershipWarrant.rentPayDate,
+                antenatal: data.amsOwnershipWarrant.antenatal,
+                rigisterDate: moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
+                handoverDate: moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')
+              })
+            }
           })
+          // 几个单独的字段
+          // this.form.setFieldsValue({
+          //   warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
+          //   ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
+          //   kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
+          //   remark: data.amsOwnershipWarrant.remark  // 备注
+          // })
           let files = []
           if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
               data.amsAttachmentList.forEach(item => {

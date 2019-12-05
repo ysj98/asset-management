@@ -45,7 +45,6 @@
           <a-col class="playground-col" :span="8">
             <a-form-item label="登记类型：" v-bind="formItemLayout">
               <a-select
-                :disabled="setType === 'edit'"
                 showSearch
                 :style="allWidth"
                 placeholder="请选择登记类型"
@@ -94,7 +93,6 @@
           <a-col class="playground-col" :span="8">
             <a-form-item label="资产类型：" v-bind="formItemLayout">
               <a-select
-                :disabled="setType === 'edit'"
                 showSearch
                 :style="allWidth"
                 placeholder="请选择资产类型"
@@ -151,18 +149,15 @@
             <template v-if="changeType !== '3'" slot="warrantNbr" slot-scope="text, record">
               <a-select
                 style="width: 150px"
-                mode="multiple"
-                :maxTagCount="4"
-                showSearch
-                placeholder="请选择新权证号"
+                placeholder="请选择关联资产"
+                :open="false"
+                :options="record.warrantNbrData"
+                @dropdownVisibleChange="handleChange(record)"
                 v-model="record.warrantNbr"
-                optionFilterProp="children"
-                :options="warrantNbrData"
-                :allowClear="true"
-                :filterOption="false"
-                notFoundContent="没有查询到数据"
-                />
-                <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="chooseWarrantsFn">选择权证</SG-Button></div>
+              >
+                <div slot="dropdownRender" slot-scope="menu"></div>
+                <a-icon slot="suffixIcon" type="plus-circle" />
+              </a-select>
             </template>
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -170,15 +165,12 @@
           </a-table>
         </div>
         <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-        <!-- <div v-else style="text-align: center">
-          暂无数据
-        </div> -->
       </div>
     </div>
     <!-- 选择资产 -->
     <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
     <!-- 选择权证 -->
-    <chooseWarrants :organId="organId" ref="chooseWarrants" @status="status"></chooseWarrants>
+    <chooseWarrants :organId="organId" ref="chooseWarrants" @status="chooseWarrantsStatus"></chooseWarrants>
     <FormFooter>
       <div>
         <a-button type="primary" @click="save('save')">提交</a-button>
@@ -266,9 +258,40 @@ export default {
       this.checkedData = [...val]
       data.forEach((item, index) => {
         item.key = item.assetId
+        item.oldWarrantNbr = item.warrantNbr
+        item.warrantNbr = undefined
+        item.warrantNbrData = []      // 用于存储单个下拉框数据
+        item.warrantGeneralData = []  // 用于存权证号总是数据
       })
       this.tableData = data
       this.$refs.assetBundlePopover.show = false
+    },
+    // 选择权证给回来的数据
+    chooseWarrantsStatus (val, data, roeNameData, selectKey) {
+      let warrantNbrDataIs = [{label: roeNameData.join(','), value: val.join(',')}]
+      console.log(val, data, '这边拿到的数据')
+      this.tableData.forEach(item => {
+        if (item.key === selectKey) {
+          item.warrantGeneralData = data
+          item.warrantNbrData = warrantNbrDataIs
+          item.warrantNbr = val.join(',')
+        }
+      })
+      this.$refs.chooseWarrants.show = false
+    },
+    change () {},
+    // 选择新权证号
+    handleChange(value) {
+      let warrantNbr = []
+      if (value.warrantNbr) {
+        value.warrantNbr.split(',').forEach(item => {
+          warrantNbr.push(Number(item))
+        })
+      } else {
+        warrantNbr === []
+      }
+      this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, value.warrantGeneralData, value.key)
+      this.$refs.chooseWarrants.show = true
     },
     // 添加资产
     addTheAsset () {
@@ -283,11 +306,6 @@ export default {
       } else {
         this.$message.info('请先选择登记类型')
       }
-    },
-    // 选择资产权证
-    chooseWarrantsFn () {
-      this.$refs.chooseWarrants.redactCheckedDataFn(this.checkedData, this.tableData)
-      this.$refs.chooseWarrants.show = true
     },
     // 登记类型
     changeTypeChange (val) {
@@ -322,15 +340,6 @@ export default {
           this.checkedData.splice(index, 1)
         }
       })
-    },
-    // 交付物业
-    handleChange(value, event, str) {
-      const newData = [...this.tableData]
-      const target = newData.filter(item => value.key === item.key)[0]
-      if (target) {
-        target[str] = event
-        this.tableData = newData
-      }
     },
     platformDictFn () {
       Promise.all([this.$api.assets.platformDict({code: 'AMS_REGISTER_TYPE'}), this.$api.assets.platformDict({code: 'asset_type'})]).then(res => {
@@ -388,18 +397,19 @@ export default {
           let arr = []
           for (let i = 0; i < this.tableData.length; i++) {
             if (String(this.changeType) !== '3') {
-              if (!this.tableData[i].transferOperationArea) {
+              if (!this.tableData[i].warrantNbr) {
                 this.$message.info('请选择新权证号')
                 return
               }
             }
           }
+          console.log(this.tableData, '---==-=')
           this.tableData.forEach(item => {
             arr.push({
               projectId: Number(item.projectId),        // 资产项目Id
               organId: this.organId,
               assetType: item.assetType,                // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
-              warrantNbr: item.warrantNbr,
+              warrantNbr: item.warrantNbrData[0].label,
               assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
             })
           })
@@ -413,7 +423,7 @@ export default {
             organId: Number(values.organId),                            // 组织机构id
             approvalStatus: str === 'draft' ? 0 : 1,                    // 0:草稿 1:已审核
             registerId: this.registerId,                                // 权属登记Id(空为新增，不为空为编辑)
-            attachment: files,                                         // 附件
+            attachmentList: files,                                          // 附件
             ownershipRegisterDetailList: arr
           }
           console.log(obj)
@@ -422,7 +432,7 @@ export default {
             if (Number(res.data.code) === 0) {
               this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success('提交成功')
-                this.$router.push({path: '/assetChange', query: {refresh: true}})
+                this.$router.push({path: '/ownershipRegistration', query: {refresh: true}})
               })
             } else {
               this.DE_Loding(loadingName).then(() => {
@@ -442,13 +452,13 @@ export default {
       let obj = {
         registerId: this.registerId
       }
-      this.$api.ownership.getChangeInfo(obj).then(res => {
+      this.$api.ownership.shipDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.changeType = String(data.changeType)
           let files = []
-          if (data.attachment && data.attachment.length > 0) {
-              data.attachment.forEach(item => {
+          if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
+              data.amsAttachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
                 name: item.newAttachmentName
@@ -457,27 +467,26 @@ export default {
           }
           this.newEditSingleData.files = files
           let checkedData = []
-          data.assetDetailList.forEach((item, index) => {
-            item.key = item.assetId + index
-            item.addressName = item.address
-            item.newOriginalValue = item.originalValue
+          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
+            // item.key = item.assetId
+            item.key = item.index
+            // item.addressName = item.address
+            // item.newOriginalValue = item.originalValue
             checkedData.push(item.assetId)
           })
           this.$nextTick(() => {
             this.form.setFieldsValue({
               organId: this.organIdData[0].value,
-              projectId: data.projectId,
-              title: data.title,
-              changeType: String(data.changeType),
-              deliveryCompany: data.deliveryCompany,
-              changeDate: moment(data.changeDate, 'YYYY-MM-DD'),
-              expiryDate: data.expiryDate ? moment(data.expiryDate, 'YYYY-MM-DD') : undefined,
-              remark: data.remark
+              projectId: data.registerInfo.projectId,
+              registerName: data.registerInfo.registerName,
+              registerType: data.registerInfo.registerType,
+              assetType: data.registerInfo.assetType,
+              remark: data.registerInfo.remark
             })
             this.checkedData = [...checkedData]
-            this.tableData = data.assetDetailList
+            this.tableData = data.amsOwnershipRegisterDetailList
+            console.log(this.tableData, '拿到的数据')
           })
-          console.log(this.tableData, '拿到的数据')
         } else {
           this.$message.error(res.data.message)
         }

@@ -44,10 +44,10 @@
         <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
         <div class="tab-opt">
           <span @click="operationFn(record, 'particulars')">详情</span>
-          <span @click="operationFn(record, 'edit')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_EDIT">编辑</span>
-          <span @click="operationFn(record, 'delete')" v-if="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_DELETE">删除</span>
+          <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_EDIT">编辑</span>
+          <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_DELETE">删除</span>
           <span v-if="record.approvalStatus === '2'" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_AUDIT">审核</span>
-          <span @click="operationFn(record, 'delivery')" v-if="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_END_DELIVERY">终止交付</span>
+          <span @click="operationFn(record, 'delivery')" v-show="+record.changeType === 1 && !record.expiryDate || +record.changeType === 2 && !record.expiryDate" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_END_DELIVERY">终止交付</span>
         </div>
       </template>
     </a-table>
@@ -73,32 +73,32 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
 import noDataTips from '@/components/noDataTips'
-// const approvalStatusData = [
-//   {
-//     name: '全部状态',
-//     value: ''
-//   },
-//   {
-//     name: '草稿',
-//     value: '0'
-//   },
-//   {
-//     name: '待审批',
-//     value: '2'
-//   },
-//   {
-//     name: '已驳回',
-//     value: '3'
-//   },
-//   {
-//     name: '已审批',
-//     value: '1'
-//   },
-//   {
-//     name: '已取消',
-//     value: '4'
-//   }
-// ]
+const approvalStatusData = [
+  {
+    name: '全部状态',
+    value: ''
+  },
+  {
+    name: '草稿',
+    value: '0'
+  },
+  {
+    name: '待审批',
+    value: '2'
+  },
+  {
+    name: '已驳回',
+    value: '3'
+  },
+  {
+    name: '已审批',
+    value: '1'
+  },
+  {
+    name: '已取消',
+    value: '4'
+  }
+]
 const columns = [
   {
     title: '标题',
@@ -154,7 +154,7 @@ export default {
       loading: false,
       noPageTools: false,
       location: 'absolute',
-      approvalStatusData: [],
+      approvalStatusData: [...approvalStatusData],
       allStyle: 'width: 140px; margin-right: 10px;',
       columns,
       organName: '',
@@ -234,6 +234,12 @@ export default {
         this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData)
       })
     },
+    // 状态发生变化
+    // approvalStatusFn (value) {
+    //   this.$nextTick(function () {
+    //     this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+    //   })
+    // },
     // 状态发生变化
     approvalStatusFn (value) {
       this.$nextTick(function () {
@@ -347,16 +353,16 @@ export default {
         }
       })
     },
-    organDict () {
-      this.$api.assets.organDict({code: 'approval_status_type'}).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.approvalStatusData = [{name: '全部状态', value: ''}, ...data]
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
+    // organDict () {
+    //   this.$api.assets.organDict({code: 'approval_status_type'}).then(res => {
+    //     if (Number(res.data.code) === 0) {
+    //       let data = res.data.data
+    //       this.approvalStatusData = [{name: '全部状态', value: ''}, ...data]
+    //     } else {
+    //       this.$message.error(res.data.message)
+    //     }
+    //   })
+    // },
     // 选择是否查看当前机构变动单
     checkboxFn (e) {
       this.queryCondition.currentOrgan = e.target.checked
@@ -399,6 +405,7 @@ export default {
       this.$api.assets.getChangePage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
+          this.loading = false
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
@@ -409,7 +416,6 @@ export default {
             this.tableData = []
             this.count = 0
           }
-          this.loading = false
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -457,7 +463,7 @@ export default {
     // 获取变动类型
     this.platformDictFn('asset_change_type')
     // 获取状态
-    this.organDict('approval_status_type')
+    // this.organDict('approval_status_type')
   }
 }
 </script>

@@ -243,7 +243,9 @@ export const assets = {
     // 导出房屋卡片
     exportAssetExcel: '/ams/asset-house/house/excel',
     // 资产编辑保存
-    saveHouseInfo: '/ams/asset-house'
+    saveHouseInfo: '/ams/asset-house',
+    // 查询组织机构下的员工
+    userList: '/ams/asset-house/organ/user'
   },
   // 资产项目管理
   projectManage: {

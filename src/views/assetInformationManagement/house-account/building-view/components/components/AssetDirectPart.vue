@@ -11,7 +11,7 @@
             <span style="line-height: 32px; font-weight: bold; color: #49505E; font-size: 14px">楼栋列表</span>
           </a-col>
           <a-col :span="12" style="text-align: right" v-if="unitOptions.length">
-            <a-select v-model="unitId" style="width: 200px" placeholder="单元选择" :options="unitOptions"/>
+            <a-select v-model="unitId" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择" :options="unitOptions"/>
           </a-col>
         </a-row>
         <div class="building_style" v-if="buildingList.length">
@@ -87,7 +87,7 @@
         const { bgColorObj, maxTotalArea } = this
         let colorArr = Object.keys(areaInfo).filter(n => areaInfo[n])
         let bagColor = colorArr.length === 1 ? bgColorObj[colorArr[0]] : ''
-        let fontColor = colorArr.length > 1 ? '#687485' : '#fff'
+        let fontColor = colorArr.length === 1 ? '#fff' : '#687485'
         let width = Math.floor(Number(totalArea || 0) * 100000 / maxTotalArea) / 1000
         return `background-color: ${bagColor}; width: ${width}%; color: ${fontColor}`
       },
@@ -155,9 +155,10 @@
       },
 
       // 楼层信息查询
-      queryFloorInfo () {
-        this.spinning = true
+      queryFloorInfo (sign) {
         const { unitId, houseId: assetHouseId, organId } = this
+        if (!unitId) { return sign === 'init' ? false : this.$message.warn('单元Id不存在') }
+        this.spinning = true
         this.$api.assets.queryBuildingViewFloorInfo({assetHouseId, organId, unitId}).then(r => {
           this.spinning = false
           let res = r.data
@@ -183,7 +184,7 @@
               i === 0 && (this.unitId = n.unitId) // 默认查询第一条
               return { title: n.unitName, key: n.unitId }
             })
-            return this.queryFloorInfo()
+            return this.queryFloorInfo('init')
           }
           throw res.message || '查询楼层信息出错'
         }).catch(err => {
