@@ -210,7 +210,7 @@ let columns = [
   {
     title: "所在位置",
     dataIndex: "location",
-    width: 150
+    width: 200
   },
   {
     title: "面积(㎡)",
@@ -240,13 +240,13 @@ let columns = [
   {
     title: "资产状态",
     dataIndex: "statusName",
-    width: 120
+    width: 100
   },
   {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 70
+    width: 100
   }
 ];
 export default {
@@ -294,6 +294,8 @@ export default {
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
+              item.settingMethodName = item.settingMethodName || '-'
+              item.kindOfRightName = item.kindOfRightName || '-'
               return {
                 key: getUuid(),
                 ...item
@@ -427,7 +429,7 @@ export default {
     goPage(type, record) {
       let query = {
         type,
-        projectId: record.projectId
+        assetHouseId: record.assetHouseId
       };
       this.$router.push({ path: operationTypes[type], query });
     },
