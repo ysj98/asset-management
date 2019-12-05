@@ -31,20 +31,20 @@
       <!-- 表格 -->
       <div class="detail-table-box" ref="table_box">
         <a-tabs @change="tabChange" v-model="showKey" :animated="false">
-          <a-tab-pane :tab="noOwnershipCountText" key="noOwnership">
-            <noCertOwnershipDetail :projectId="projectId" :type="type"/>
+          <a-tab-pane :tab="'无证(' + (this.noOwnershipCount || 0) + ')'" key="noOwnership">
+            <noCertOwnershipDetail @change="handleChange" :projectId="projectId" :type="type"/>
           </a-tab-pane>
-          <a-tab-pane :tab="ownershipCountText" key="ownership">
-            <hasCertOwnershipDetail :projectId="projectId" :type="type"/>
+          <a-tab-pane :tab="'有证(' + (this.ownershipCount || 0) + ')'" key="ownership">
+            <hasCertOwnershipDetail @change="handleChange" :projectId="projectId" :type="type"/>
           </a-tab-pane>
-          <a-tab-pane :tab="waitOwnershipCountText" key="waitOwnership">
+          <a-tab-pane :tab="'待办(' + (this.waitOwnershipCount || 0) + ')'" key="waitOwnership">
             <waitCertOwnershipDetail :projectId="projectId" :type="type"/>
           </a-tab-pane>
         </a-tabs>
       </div>
     </div>
     <FormFooter v-if="type==='set'" style="border:none;" location="fixed">
-      <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
+      <SG-Button class="mr2" @click="handleSave" type="primary">保存设置</SG-Button>
       <SG-Button @click="handleCancel">取消</SG-Button>
     </FormFooter>
   </div>
@@ -56,6 +56,10 @@ import hasCertOwnershipDetail from './child/hasCertOwnershipDetail.vue'
 import noCertOwnershipDetail from './child/noCertOwnershipDetail.vue'
 import waitCertOwnershipDetail from './child/waitCertOwnershipDetail.vue'
 let getUuid = ((uuid = 1) => () => ++uuid)()
+// 页面跳转
+const operationTypes = {
+  index: "/ownershipSurvey"
+};
 export default {
   components: {
     FormFooter,
@@ -74,18 +78,8 @@ export default {
       waitOwnershipCount: '',
       projectName: '',
       tranProgress: '',
-      assetCount: ''
-    }
-  },
-  computed: {
-    noOwnershipCountText () {
-      return '无证(' + (this.noOwnershipCount || 0) + ')'
-    },
-    ownershipCountText () {
-      return '有证(' + (this.ownershipCount || 0) + ')'
-    },
-    waitOwnershipCountText () {
-      return '待办(' + (this.waitOwnershipCount || 0) + ')'
+      assetCount: '',
+      changeData: {},
     }
   },
   filters: {
@@ -112,20 +106,45 @@ export default {
       }
       this.$api.basics.attrBase(data).then(res => {
         if (res.data.code === '0') {
-          this.noOwnershipCount = res.data.noOwnershipCount
-          this.ownershipCount = res.data.ownershipCount
-          this.waitOwnershipCount = res.data.waitOwnershipCount
-          this.projectName = res.data.projectName || '--'
-          this.tranProgress = res.data.tranProgress
-          this.assetCount = res.data.assetCount
-          
+          let data = res.data.data
+          this.noOwnershipCount = data.noOwnershipCount
+          this.ownershipCount = data.ownershipCount
+          this.waitOwnershipCount = data.waitOwnershipCount
+          this.projectName = data.projectName || '--'
+          this.tranProgress = data.tranProgress
+          this.assetCount = data.assetCount
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    handleSave () {},
-    handleCancel () {},
+    // 监听输入改变
+    handleChange (o) {
+      this.changeData[o.assetObjectId] = {...o}
+      console.log('你好世界=>', o, this.changeData)
+    },
+    handleSave () {
+      let data = Object.values(this.changeData)
+      if (data.length === 0) {
+        this.$message.error('未改变改变权属办理设置或备注')
+        return
+      }
+      this.$api.basics.attrSet(data).then(res => {
+        if (res.data.code === '0') {
+          this.$SG_Message.success('保存设置成功')
+          this.goPage('index')
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    handleCancel () {
+      this.goPage('index')
+    },
+    goPage(type, record) {
+      let query = {}
+      this.$router.push({ path: operationTypes[type], query });
+    },
   }
 }
 </script>

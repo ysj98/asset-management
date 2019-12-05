@@ -37,7 +37,7 @@
 let columns = [{
   title: '资产名称',
   dataIndex: 'assetName',
-  width: '15%'
+  width: '20%'
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
@@ -45,7 +45,7 @@ let columns = [{
 }, {
   title: '资产类型',
   dataIndex: 'assetTypeName',
-  width: '15%'
+  width: '10%'
 }, {
   title: '资产项目名称',
   dataIndex: 'projectName',
@@ -53,7 +53,7 @@ let columns = [{
 }, {
   title: '所在位置',
   dataIndex: 'location',
-  width: '15%'
+  width: '20%'
 }, {
   title: '面积(㎡)',
   dataIndex: 'area',

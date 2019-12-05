@@ -58,7 +58,7 @@
         <span style="color: #0084FF; cursor: pointer">{{text}}</span>
       </span>
       <span slot="action" slot-scope="text, record">
-        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.assetHouseId)">详情</span>
+        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.buildId)">详情</span>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
@@ -94,10 +94,10 @@
           loading: false,
           scroll: { x: 2500 },
           pagination: false,
-          rowKey: 'assetHouseId',
+          rowKey: 'buildId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
-            { title: '楼栋编号', dataIndex: 'assetCode', width: 150, fixed: 'left' },
+            { title: '楼栋名称', dataIndex: 'buildName', width: 150, fixed: 'left' },
+            { title: '楼栋编号', dataIndex: 'buildCode', width: 150, fixed: 'left' },
             { title: '资产项目名称', dataIndex: 'projectName' },
             { title: '丘地号', dataIndex: 'addressNo' },
             { title: '建筑年代', dataIndex: 'years' },
@@ -123,17 +123,17 @@
 
     methods: {
       // 查看楼栋视图详情
-      handleViewDetail (assetHouseId) {
+      handleViewDetail (buildId) {
         const { organProjectBuildingValue: { organId } } = this
-        assetHouseId && this.$router.push({ path: '/houseStandingBook/buildingViewDetail', query: {organId, assetHouseId }})
+        buildId && this.$router.push({ path: '/houseStandingBook/buildingViewDetail', query: {organId, buildId }})
       },
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList } } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.assets.queryBuildingViewPage({ organId, houseIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
+        this.$api.assets.queryBuildingViewPage({ organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -156,9 +156,9 @@
 
       // 查询楼栋视图面积概览数据
       queryAreaInfo () {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList }, numList } = this
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, numList } = this
         this.overviewNumSpinning = true
-        this.$api.assets.queryBuildingViewFloorArea({ organId, houseIdList, projectIdList }).then(r => {
+        this.$api.assets.queryBuildingViewFloorArea({ organId, buildIdList, projectIdList }).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -179,8 +179,8 @@
           return this.$message.info('无可导出数据')
         }
         this.exportBtnLoading = true
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: houseIdList } } = this
-        this.$api.assets.exportBuildingViewExcel({organId, houseIdList, projectIdList}).then(res => {
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList } } = this
+        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList}).then(res => {
           this.exportBtnLoading = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
@@ -217,8 +217,8 @@
           if (res && String(res.code) === '0') {
             this.buildingOptions = (res.data || []).map(item => {
               return {
-                key: item.assetHouseId,
-                title: item.assetName
+                key: item.buildId,
+                title: item.buildName
               }
             })
             return false

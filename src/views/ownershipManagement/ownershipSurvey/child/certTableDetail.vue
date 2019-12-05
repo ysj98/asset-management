@@ -6,7 +6,7 @@
  <template>
    <SG-Modal
     @cancel="hiddeModal"
-    title="导入数据"
+    title="权证详情"
     v-model="visible"
     :width="881"
     @ok="handleSave"

@@ -5,7 +5,7 @@
  -->
 <template>
   <div class="houseInfo-page pb70">
-    <SearchContainer v-model="toggle" :contentStyle="{paddingTop:'16px'}">
+    <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
       <div slot="headerBtns">
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_ADD_HOUSE"  icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSEZL_IN" @click="showHouseDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button>

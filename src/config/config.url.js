@@ -226,7 +226,11 @@ export const assets = {
     // 查询当前组织机构下所有的楼栋
     queryBuildingByOrganId: '/ams/asset-house/organ/build',
     // 查询楼栋下的单元-楼层关系
-    queryUnitByHouseId: '/ams/asset-house/build/unit'
+    queryUnitByHouseId: '/ams/asset-house/build/unit',
+    // 楼栋信息查询
+    queryBuildInfo: '/ams/asset-house/build',
+    // 查询楼栋详情面积占比--详情页里
+    queryDetailArea: '/ams/asset-house/area/build',
   },
   // 房屋台账 - 资产视图
   assetView: {
@@ -243,7 +247,9 @@ export const assets = {
     // 导出房屋卡片
     exportAssetExcel: '/ams/asset-house/house/excel',
     // 资产编辑保存
-    saveHouseInfo: '/ams/asset-house'
+    saveHouseInfo: '/ams/asset-house',
+    // 查询组织机构下的员工
+    userList: '/ams/asset-house/organ/user'
   },
   // 资产项目管理
   projectManage: {

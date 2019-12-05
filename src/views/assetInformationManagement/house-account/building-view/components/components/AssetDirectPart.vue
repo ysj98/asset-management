@@ -51,7 +51,7 @@
   export default {
     name: 'AssetDirectPart',
     components: { OverviewNumber, FloatView },
-    props: ['organId', 'houseId'],
+    props: ['organId', 'buildId'],
     data () {
       return {
         spinning: false, // 加载状态
@@ -135,8 +135,10 @@
 
       // 查询楼栋视图面积概览数据
       queryHouseAreaInfo (args) {
-        const { houseId, numList } = this
-        return this.$api.assets.queryAssetViewHouseArea({ assetHouseId: args ? args.id : houseId }).then(r => {
+        const { buildId, numList } = this
+        let api = args ? 'queryAssetViewHouseArea' : 'queryBuildingViewDetailArea'
+        let param = args ? { assetHouseId: args.id } : { buildId }
+        return this.$api.assets[api](param).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             // 查楼栋视图详情的面积数据
@@ -156,10 +158,10 @@
 
       // 楼层信息查询
       queryFloorInfo (sign) {
-        const { unitId, houseId: assetHouseId, organId } = this
+        const { unitId, buildId, organId } = this
         if (!unitId) { return sign === 'init' ? false : this.$message.warn('单元Id不存在') }
         this.spinning = true
-        this.$api.assets.queryBuildingViewFloorInfo({assetHouseId, organId, unitId}).then(r => {
+        this.$api.assets.queryBuildingViewFloorInfo({buildId, organId, unitId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -176,7 +178,7 @@
       // 查询楼栋下的单元-楼层关系
       queryUnit () {
         this.spinning = true
-        this.$api.assets.queryBuildingViewUnitByHouseId({assetHouseId: this.houseId, organId: this.organId}).then(r => {
+        this.$api.assets.queryBuildingViewUnitByHouseId({buildId: this.buildId, organId: this.organId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
