@@ -1,15 +1,42 @@
 <template>
-  <div></div>
+  <a-spin :spinning="spinning">
+    <div>dasaoov</div>
+  </a-spin>
 </template>
 
 <script>
   export default {
     name: 'TrendChartPart',
+    props: ['assetId'],
     data () {
-      return {}
+      return {
+        spinning: false, //加载状态
+        trendInfo: [] // 趋势图数据
+      }
     },
 
-    methods: {}
+    methods: {
+      // 查询趋势图数据
+      queryTrendInfo () {
+        this.spinning = true
+        this.$api.worthRegister.queryAssetValueTrend({assetId: this.assetId}).then(r => {
+          this.spinning = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.trendInfo = res.data.data || []
+            return false
+          }
+          throw res.message || '资产价值一览表接口出错'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '资产价值一览表接口出错')
+        })
+      }
+    },
+    
+    created () {
+      this.queryTrendInfo()
+    }
   }
 </script>
 

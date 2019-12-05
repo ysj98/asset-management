@@ -39,36 +39,42 @@
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="action" slot-scope="text, record">
-        <span class="action_text" @click="viewTrendAction">趋势图</span>
+        <span class="action_text" @click="viewTrendAction(true, record.assetId)">趋势图</span>
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--查看趋势图-->
+    <SG-Modal title="资产估值趋势图" :footer="null" v-model="isShowTrend" @cancel="viewTrendAction(false, record.assetId)">
+      <trend-chart-part :key="assetId" :assetId="assetId"/>
+    </SG-Modal>
   </div>
 </template>
 
 <script>
+  import TrendChartPart from './component/TrendChartPart'
   import NoDataTip from 'src/components/noDataTips'
   import OrganProjectType from '../components/OrganProjectType'
   import SearchContainer from 'src/views/common/SearchContainer'
   export default {
     name: 'index',
-    components: { SearchContainer, OrganProjectType, NoDataTip },
+    components: { SearchContainer, OrganProjectType, NoDataTip, TrendChartPart },
     data () {
       return {
+        assetId: '', // 资产ID
         fold: true, // 查询条件折叠按钮
+        isShowTrend: true, // 显示趋势图Modal
         assetNameCode: '', // 查询条件-登记名称
+        assessmentBaseDate: null, // 查询条件-日期
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
         organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
-        assessmentBaseDate: null, // 查询条件-日期
         tableObj: {
           dataSource: [],
           loading: false,
           scroll: { x: 1800 },
           pagination: false,
-          rowKey: 'assetCode',
+          rowKey: 'assetId',
           columns: [
             { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: 120 },
             { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 120 },
@@ -108,8 +114,9 @@
         let form = {
           assetNameCode, pageSize: pageLength, pageNum: pageNo, assessmentBaseDate,
           organProjectType: organProjectType === '-1' ? '' : organProjectType,
-          assetCategoryId, ...organProjectType,
+          assetCategoryId, ...organProjectType
         }
+        this.querySumInfo(form)
         this.$api.worthRegister.queryAssetValuePageList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -135,8 +142,28 @@
       },
 
       // 查看趋势图
-      viewTrendAction () {
-        // debugger
+      viewTrendAction (bool, assetId) {
+        this.isShowTrend = bool
+        if (bool) {
+          this.assetId = assetId
+        }
+      },
+      
+      // 查询Table汇总
+      querySumInfo (form) {
+        const { tableObj: { dataSource } } = this
+        this.$api.worthRegister.queryPageListSum(form).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.tableObj.dataSource = dataSource.concat({
+              projectName: '合计：', ...(res.data || {})
+            })
+            return false
+          }
+          throw res.message || '查询汇总接口出错'
+        }).catch(err => {
+          this.$message.error(err || '查询汇总接口出错')
+        })
       }
     },
 
