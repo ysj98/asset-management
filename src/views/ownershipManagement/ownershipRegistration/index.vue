@@ -44,8 +44,8 @@
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
           <div class="tab-opt">
             <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')">编辑</span>
-            <span @click="operationFn(record, 'delete')">删除</span>
+            <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
+            <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
           </div>
         </template>
       </a-table>
@@ -203,6 +203,25 @@ export default {
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([record])
         this.$router.push({path: '/ownershipRegistration/registrationNew', query: { record: recordData, enitData: enitData, setType: 'edit' }})
+      } else if (type === 'delete') {
+        let _this = this
+        this.$confirm({
+          title: '提示',
+          content: '确认要删除该资产权属登记单吗？',
+          onOk() {
+          let obj = {
+            registerId: record.registerId
+          }
+          _this.$api.ownership.shipDelete(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('删除成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+          }
+        })
       }
     },
     // 新建权属登记
@@ -332,10 +351,10 @@ export default {
       let obj = {
         projectId: this.queryCondition.projectId,       // 资产项目Id
         organId: Number(this.queryCondition.organId),         // 组织机构id
-        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        minDate: moment(this.alterationDate[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
-        maxDate: moment(this.alterationDate[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
+        assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
+        approvalStatuss: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        minDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',       // 创建日期开始日期
+        maxDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',    // 创建日期结束日期
         flag: this.queryCondition.flag ? 1 : 0,   // 仅当前机构下资产清理单 0 否 1 是
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
@@ -359,6 +378,15 @@ export default {
           this.loading = false
         }
       })
+    }
+  },
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/ownershipRegistration' && this.$route.query.refresh) {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+        this.query()
+      }
     }
   },
   created () {
