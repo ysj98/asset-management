@@ -58,7 +58,7 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard ref="newCard" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
+    <NewCard v-if="newShow" ref="newCard" @showFn="showFn" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>
@@ -161,6 +161,7 @@ export default {
   props: {},
   data () {
     return {
+      newShow: false,
       warrantId: '',
       loading: false,
       noPageTools: false,
@@ -184,18 +185,25 @@ export default {
   methods: {
     // 新建权证
     newChangeSheetFn () {
-      this.$refs.newCard.show = true
-      this.$refs.newCard.newFn('new')
-      this.$refs.newCard.selectFn()
+      this.newShow = true
+      this.$nextTick(() => {
+        this.$refs.newCard.show = true
+        this.$refs.newCard.newFn('new')
+        this.$refs.newCard.selectFn()
+      })
     },
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
-        this.$refs.cardDetails.query(val.warrantId)
+        this.$refs.cardDetails.query(val.warrantNbr)
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
-        this.$refs.newCard.selectFn()
-        this.$refs.newCard.query(val.warrantId, val.warrantNbr)
+        this.newShow = true
+        this.$nextTick(() => {
+          this.$refs.newCard.show = true
+          this.$refs.newCard.selectFn()
+          this.$refs.newCard.query(val.warrantId, val.warrantNbr)
+        })
       } else if (type === 'logout') {
         let _this = this
         this.$confirm({
@@ -323,6 +331,9 @@ export default {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
+    },
+    showFn (val) {
+      this.newShow = val
     },
     successQueryFn () {
       this.queryCondition.pageNum = 1

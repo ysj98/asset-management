@@ -262,6 +262,11 @@ export default {
   computed: {
   },
   watch: {
+    'show' (val) {
+      if (val === false) {
+        this.handleCancel()  
+      }
+    },
     'typeJudgment' () {
       if (this.newData === 'new') {
         if (this.typeJudgment === '1') {
@@ -472,6 +477,7 @@ export default {
         this.$emit('successQuery')
       }
       this.show = false
+      this.$emit('showFn', this.show)
     },
     // 平台字典获取数据
     platformDictFn () {
