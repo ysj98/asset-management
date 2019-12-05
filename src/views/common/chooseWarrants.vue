@@ -18,9 +18,10 @@
     <div>
       <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
         <div slot="col-r">
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="selecData.kindOfRights">
+        <a-select :style="allStyle" placeholder="全部权利类型" v-model="selecData.kindOfRights">
           <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
+        <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码"/>
         <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </Cephalosome>
@@ -133,11 +134,13 @@ export default {
       }
     }
   },
-  watch: {
-    'selectedData.projectId' () {
-      this.query()
-    }
-  },
+  // watch: {
+  //   'selectedData.projectId' () {
+  //     this.selecData.warrantNbr = ''
+  //     this.selecData.kindOfRights = ''
+  //     this.query()
+  //   }
+  // },
   methods: {
     // 选中的
     onSelectChange (selectedRowKeys) {
@@ -188,10 +191,16 @@ export default {
         this.selectedRowKeys = redactChecked
       })
       // 第一次进来调一下接口
-      if (this.firstCall) {
-        this.query()
-        this.firstCall = false
-      }
+      // if (this.firstCall) {
+      //   this.query()
+      //   this.firstCall = false
+      // }
+      // 因为有权证新增每次进来都调一次
+      this.selecData.pageSize = 10
+      this.selecData.pageNum = 1
+      this.selecData.warrantNbr = ''
+      this.selecData.kindOfRights = ''
+      this.query()
     },
     // 关闭弹窗
     handleCancel () {
@@ -206,7 +215,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'AMS_KIND_OF_RIGHT') {
-            this.kindOfRightsData = [...this.kindOfRightsData, ...data]
+            this.kindOfRightsData = [{name: '全部权利类型', value: ''}, ...data]
           }
         } else {
           this.$message.error(res.data.message)
@@ -217,10 +226,10 @@ export default {
       this.loading = true
       let obj = {
         organId: this.organId,         // 组织机构
-        kindOfRights: '',              // 权利类型(多选)
+        kindOfRights: this.selecData.kindOfRights,              // 权利类型(多选)
         obligeeId: '',                 // 权属人
         status: '1',                    // 权证状态
-        warrantNbr: '',                // 权证号
+        warrantNbr: this.selecData.warrantNbr,                // 权证号
         pageSize: this.selecData.pageSize,
         pageNum: this.selecData.pageNum
       }

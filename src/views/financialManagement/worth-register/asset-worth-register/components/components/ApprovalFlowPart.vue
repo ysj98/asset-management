@@ -35,6 +35,6 @@
 
 <style lang='less' scoped>
   .approval_style {
-    padding-bottom: 25px;
+    padding-bottom: 75px;
   }
 </style>
