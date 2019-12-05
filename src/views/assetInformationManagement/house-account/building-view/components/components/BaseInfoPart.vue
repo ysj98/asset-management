@@ -34,7 +34,7 @@
         baseInfoKeys: [
           [
             {title: '主图', key: 'picturePath'}, {title: '地理位置', key: 'totalAddress'}, {title: '地上层数', key: 'upFloorNum'},
-            {title: '权属状态', key: 'ownershipStatusName'}, {title: '最新估值', key: 'marketValue'}
+            {title: '权属状态', key: 'ownerShipStatusName'}, {title: '最新估值', key: 'marketValue'}
           ], // 列1
           [
             {title: '楼栋名称', key: 'buildName'}, {title: '楼栋编码', key: 'buildCode'}, {title: '建筑面积', key: 'area'},
