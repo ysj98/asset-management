@@ -205,6 +205,11 @@ let proRouter = [
     component: () => import('@/views/financialManagement/assetEntry/editAssetEntry.vue')
   },
   {
+    path: '/assetEntry/audit',
+    name: '审核',
+    component: () => import('@/views/financialManagement/assetEntry/auditAssetEntry.vue')
+  },
+  {
     path: '/assetEntry/detail',
     name: '详情',
     component: () => import('@/views/financialManagement/assetEntry/checkAssetEntry.vue')

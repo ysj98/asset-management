@@ -1,18 +1,23 @@
 <template>
-  <a-tree-select
-    :multiple="multiple"
-    :showSearch="showSearch"
-    :dropdownStyle="dropdownStyle"
-    :treeData="treeData"
-    :placeholder="placeholder"
-    :allowClear="allowClear"
-    :loadData="onLoadData"
-    v-model="organId"
-    :disabled="disabled"
-    :treeCheckable="treeCheckable"
-    :treeDefaultExpandAll="treeDefaultExpandAll"
-    @change="changeTree"
-  />
+  <div class="select-organ-container">
+    <a-tree-select
+      class="tree-select"
+      :class="{'have-default-name': showDefaultOrganName}"
+      :multiple="multiple"
+      :showSearch="showSearch"
+      :dropdownStyle="dropdownStyle"
+      :treeData="treeData"
+      :placeholder="placeholder"
+      :allowClear="allowClear"
+      :loadData="onLoadData"
+      v-model="organId"
+      :disabled="disabled"
+      :treeCheckable="treeCheckable"
+      :treeDefaultExpandAll="treeDefaultExpandAll"
+      @change="changeTree">
+    </a-tree-select>
+    <div class="default-organ-name" v-show="showDefaultOrganName">{{defaultOrganName}}</div>
+  </div>
 </template>
 
 <script>
@@ -23,6 +28,10 @@ export default {
     default: {
       type: Boolean,
       default: true
+    },
+    defaultOrganName: {
+      type: String,
+      default: ''
     },
     // 默认支持清空
     allowClear: {
@@ -80,11 +89,22 @@ export default {
   },
   data () {
     return {
+      showDefaultOrganName: false,
       organId: '',
       treeData: []
     }
   },
   computed: {
+  },
+  watch: {
+    value (val) {
+      this.organId = val
+    },
+    defaultOrganName (val) {
+      if (val) {
+        this.showDefaultOrganName = true
+      }
+    }
   },
   methods: {
     // 第一次进来获取组织机构
@@ -137,6 +157,7 @@ export default {
     },
     // 选择树
     changeTree (value, label, extra) {
+      this.showDefaultOrganName = false
       if (!this.multiple) { // 单选
         this.$emit('changeTree', value, label[0])
         this.organName = label[0]
@@ -157,4 +178,31 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+  .select-organ-container {
+    position: relative;
+    display: inline-block;
+    .tree-select {
+      width: 100%;
+    }
+    .have-default-name {
+      z-index: 100;
+      /deep/ .ant-select-selection-selected-value {
+        opacity: 0;
+      }
+      /deep/ .ant-select-selection {
+        background: transparent;
+      }
+    }
+    .default-organ-name {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0 30px 0 11px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      z-index: 1;
+    }
+  }
 </style>

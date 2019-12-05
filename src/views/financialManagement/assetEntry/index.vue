@@ -74,13 +74,14 @@
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
+        :scroll="{ x: 2160 }"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_AUDIT">审核</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="antiAudit(record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_REVERSE_AUDIT">反审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="handleStatus(record, 0)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_REVERSE_AUDIT">反审核</a>
           <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)"  v-power="ASSET_MANAGEMENT.ASSET_CLEAR_EDIT">编辑</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="deleteClearForm(record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_DELETE">删除</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleStatus(record, 4)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_DELETE">删除</a>
           <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
         </template>
       </a-table>
@@ -108,42 +109,44 @@
     {
       title: '所属机构',
       dataIndex: 'organName',
-      width: 160
+      width: 160,
+      fixed: 'left'
     },
     {
       title: '卡片编码',
       dataIndex: 'cardCode',
-      width: 160
+      width: 120,
+      fixed: 'left'
     },
     {
       title: '卡片名称',
       dataIndex: 'cardName',
-      width: 160
+      width: 120
     },
     {
       title: '资产项目',
       dataIndex: 'projectName',
-      width: 160
+      width: 120
     },
     {
       title: '资产类型',
       dataIndex: 'assetTypeName',
-      width: 160
+      width: 120
     },
     {
       title: '资产分类',
       dataIndex: 'assetCategoryName',
-      width: 160
+      width: 120
     },
     {
       title: '入账日期',
       dataIndex: 'accountEntryTime',
-      width: 160
+      width: 120
     },
     {
       title: '存放地点',
       dataIndex: 'storagePathName',
-      width: 160
+      width: 120
     },
     {
       title: '入账原值(元)',
@@ -163,7 +166,7 @@
     {
       title: '折旧方式',
       dataIndex: 'depreciationMethodName',
-      width: 120
+      width: 180
     },
     {
       title: '计量单位',
@@ -183,12 +186,13 @@
     {
       title: '状态',
       dataIndex: 'approvalStatusName',
-      width: 120
+      width: 80
     },
     {
       title: '操作',
-      width: 160,
+      width: 180,
       dataIndex: 'operation',
+      fixed: 'right',
       scopedSlots: { customRender: 'operation' }
     }
   ]
@@ -211,7 +215,7 @@
       value: '3'
     },
     {
-      label: '已审批',
+      label: '在役',
       value: '1'
     },
     {
@@ -348,50 +352,49 @@
       newAssetEntry () {
         this.$router.push({path: '/assetEntry/new', query: {pageType: 'new', organId: this.organId, organName: this.organName}})
       },
-      // 删除清理单
-      deleteClearForm (record) {
+      handleStatus (record, status) {
         let self = this
-        this.$confirm({
-          title: '提示',
-          content: '确认要删除该资产清理单吗？',
-          onOk() {
-            let form = {
-              cleaningOrderId: record.cleaningOrderId
-            }
-            self.$api.assets.deleteCleanup(form).then(res => {
-              if (res.data.code === '0') {
-                self.$message.success('删除成功')
-                self.queryList()
-              } else {
-                self.$message.error(res.data.message)
+        switch (status) {
+          // 反审核-变成草稿状态
+          case 0:
+            this.$confirm({
+              title: '提示',
+              content: '确认要对此清理单反审核吗？',
+              onOk() {
+                self.updateCardStatus(status, record.cardId)
               }
             })
-          }
-        })
+            break
+          // 删除-变成已取消状态
+          case 4:
+            this.$confirm({
+              title: '提示',
+              content: '确认要删除该资产卡片吗？',
+              onOk() {
+                self.updateCardStatus(status, record.cardId)
+              }
+            })
+            break
+          default: break
+        }
       },
-      antiAudit (record) {
-        let self = this
-        this.$confirm({
-          title: '提示',
-          content: '确认要对此清理单反审核吗？',
-          onOk() {
-            let form = {
-              cleaningOrderId: record.cleaningOrderId
-            }
-            console.log(form)
-            self.$api.assets.reverseApproveCleanup(form).then(res => {
-              if (res.data.code === '0') {
-                self.$message.success('操作成功')
-                self.queryList()
-              } else {
-                self.$message.error(res.data.message)
-              }
-            })
+      // 改变卡片状态
+      updateCardStatus (status, cardId) {
+        let form = {
+          approvalStatus: status,
+          cardId: cardId
+        }
+        this.$api.assets.updateCardStatus(form).then(res => {
+          if (res.data.code === '0') {
+            this.$message.success('操作成功')
+            this.queryList()
+          } else {
+            this.$message.error(res.data.message)
           }
         })
       },
       handleOperation (pageType, record) {
-        this.$router.push({path: '/assetEntry/' + pageType, query: {pageType: pageType, cleaningOrderId: record.cleaningOrderId, organId: this.organId, organName: this.organName}})
+        this.$router.push({path: '/assetEntry/' + pageType, query: {pageType: pageType, cardId: record.cardId, organId: this.organId, organName: this.organName}})
       },
       // 点击查询
       queryClick () {

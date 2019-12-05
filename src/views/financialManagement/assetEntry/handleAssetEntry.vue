@@ -147,8 +147,9 @@
                 :default="false"
                 @changeTree="changeTree"
                 placeholder='请选择保管部门'
-                :allowClear="false"
+                :defaultOrganName="detail.safekeepingOrganName"
                 :style="allStyle"
+                v-model="detail.safekeepingOrganId"
                 v-if="editable"
               >
               </treeSelect>
@@ -368,7 +369,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.purchaseValue || '--'}}</span>
+              <span class="label-value" v-else>{{detail.purchaseValue}}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -385,7 +386,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.purchaseCumulativeDepreciation || '--'}}</span>
+              <span class="label-value" v-else>{{detail.purchaseCumulativeDepreciation}}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -415,7 +416,7 @@
                   <div style="color: #C4CBD4">月</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.estimateUseTerm || '--'}}</span>
+              <span class="label-value" v-else>{{detail.estimateUseTerm}}个月</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -432,7 +433,7 @@
                   <div style="color: #C4CBD4">月</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.alreadyUseTerm || '--'}}</span>
+              <span class="label-value" v-else>{{detail.alreadyUseTerm}}个月</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -450,7 +451,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.cumulativeDepreciation || '--'}}</span>
+              <span class="label-value" v-else>{{detail.cumulativeDepreciation }}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -467,7 +468,7 @@
                   <div style="color: #C4CBD4">%</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.netSalvageValueRate || '--'}}</span>
+              <span class="label-value" v-else>{{detail.netSalvageValueRate}}%</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -484,7 +485,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.estimateNetSalvageValue || '--'}}</span>
+              <span class="label-value" v-else>{{detail.estimateNetSalvageValue}}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -501,7 +502,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.netValue || '--'}}</span>
+              <span class="label-value" v-else>{{detail.netValue}}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -519,7 +520,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.impairmentReady || '--'}}</span>
+              <span class="label-value" v-else>{{detail.impairmentReady}}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -536,7 +537,7 @@
                   <div style="color: #C4CBD4">元</div>
                 </template>
               </a-input>
-              <span class="label-value" v-else>{{detail.netForehead || '--'}}</span>
+              <span class="label-value" v-else>{{detail.netForehead}}元</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -589,7 +590,7 @@
     </a-form>
     <form-footer v-show="pageType === 'new' || pageType === 'edit'">
       <slot>
-        <SG-Button type="primary" @click="handleSubmit(1)">提交</SG-Button>
+        <SG-Button type="primary" @click="handleSubmit(2)">提交</SG-Button>
         <SG-Button type="primary" weaken @click="handleSubmit(0)">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </slot>
@@ -646,7 +647,7 @@ const columns = [
   },
   {
     title: '资产状态',
-    dataIndex: 'statusName',
+    dataIndex: 'assetStatusName',
     width: '160px'
   },
   {
@@ -673,6 +674,7 @@ export default {
       allStyle: 'width: 160px;',
       organId: '',
       organName: '',
+      cardId: '',
       detail: {
         cardName: '',
         cardCode: '',
@@ -680,8 +682,7 @@ export default {
         projectName: '',
         financeCode: '',
         accountEntryTime: undefined,
-        assetIds: '',
-        assetIdArr: [],
+        assetIds: undefined,
         assetNames: [],
         assetType: undefined,
         assetTypeName: '',
@@ -755,12 +756,12 @@ export default {
   },
   watch: {
     'detail.purchaseValue' () {
-      if (this.detail.purchaseValue && this.detail.netSalvageValueRate) {
+      if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
         this.form.setFieldsValue({
           estimateNetSalvageValue: utils.accDiv(parseFloat(this.detail.purchaseValue * this.detail.netSalvageValueRate).toFixed(2), parseFloat(100).toFixed(2), 2)
         })
       }
-      if (this.detail.purchaseValue && this.detail.cumulativeDepreciation !== '') {
+      if (this.editable && this.detail.purchaseValue && this.detail.cumulativeDepreciation !== '') {
         this.form.setFieldsValue({
           netValue: utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
         })
@@ -768,14 +769,14 @@ export default {
       }
     },
     'detail.netSalvageValueRate' () {
-      if (this.detail.purchaseValue && this.detail.netSalvageValueRate) {
+      if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
         this.form.setFieldsValue({
           estimateNetSalvageValue: utils.accDiv(parseFloat(this.detail.purchaseValue * this.detail.netSalvageValueRate).toFixed(2), parseFloat(100).toFixed(2), 2)
         })
       }
     },
     'detail.netValue' () {
-      if (this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
+      if (this.editable && this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
         this.form.setFieldsValue({
           netForehead: utils.accSub(parseFloat(this.detail.netValue).toFixed(2), parseFloat(this.detail.impairmentReady).toFixed(2))
         })
@@ -804,11 +805,16 @@ export default {
     // 展示关联资产弹窗
     toggleAssociateAsset () {
       this.$refs.associateAssetModal.show = true
-      this.$refs.associateAssetModal.redactCheckedDataFn(this.detail.assetIdArr, this.dataSource)
+      console.log(this.checkedData)
+      console.log(this.dataSource)
+      this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.dataSource)
     },
     // 关联资产发生变动
     assetChange (checkedData, checkedNames, originalValueSum, rowsData) {
-      this.detail.assetIdArr = checkedData
+      console.log(checkedData)
+      console.log(checkedNames)
+      console.log(rowsData)
+      this.checkedData = checkedData
       this.detail.assetIds = checkedData.join(',')
       this.detail.assetNames = checkedNames.join(',')
       this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
@@ -816,6 +822,7 @@ export default {
       this.form.setFieldsValue({
         purchaseValue: originalValueSum
       })
+      this.dataSource = rowsData
       this.$refs.associateAssetModal.show = false
     },
     changeTree (value, label) {
@@ -860,7 +867,18 @@ export default {
         } else {
           callback()
         }
+      } else {
+        callback()
       }
+    },
+    // 校验备注
+    validateRemark (rule, value, callback) {
+      if (value) {
+        if (value.length > 200) {
+          callback('备注长度不能超过200个字')
+        }
+      }
+      callback()
     },
     // 资产项目发生变化
     changeProjectId (value, options) {
@@ -1088,7 +1106,7 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.feeTypeName,
-              value: item.feeTypeId
+              value: item.feeTypeId.toString()
             }
             arr.push(obj)
           })
@@ -1119,60 +1137,52 @@ export default {
         }
       })
     },
-    // 校验备注
-    validateRemark (rule, value, callback) {
-      if (value.length > 200) {
-        callback('备注长度不能超过200个字')
-      } else {
-        callback()
-      }
-    },
     // 新增编辑提交
-    handleSubmit (saveType) {
+    handleSubmit (approvalStatus) {
+      console.log(approvalStatus)
       this.form.validateFields((err, values) => {
+        console.log(err)
+        console.log(values)
         if (!err) {
           console.log(values)
-          // let form = {
-          //   organId: this.organId,
-          //   cleaningOrderCode: values.cleaningOrderCode,
-          //   projectId: values.projectId,
-          //   assetType: values.assetType,
-          //   cleanupType: values.cleanupType,
-          //   remark: values.remark,
-          //   saveType: saveType
-          // }
-          // let attachment = []
-          // this.detail.attachment.forEach(item => {
-          //   let obj = {
-          //     attachmentPath: item.url,
-          //     oldAttachmentName: item.name
-          //   }
-          //   attachment.push(obj)
-          // })
-          // form.attachment = attachment
-          // let arr = []
-          // this.dataSource.forEach(item => {
-          //   let obj = {
-          //     assetId: item.assetId,
-          //     projectId: item.projectId,
-          //     assetType: values.assetType,
-          //     assetObjectId: item.assetObjectId
-          //   }
-          //   arr.push(obj)
-          // })
-          // form.assetDetailList = arr
-          // console.log(form)
-          // if (this.pageType === 'edit') {
-          //   form.cleaningOrderId = this.cleaningOrderId
-          // }
-          // this.$api.assets.submitCleanup(form).then(res => {
-          //   if (res.data.code === '0') {
-          //     this.$message.success('提交成功')
-          //     this.$router.push({path: '/assetClear', query: {refresh: true}})
-          //   } else {
-          //     this.$message.error(res.data.message)
-          //   }
-          // })
+          let form = values
+          form.organId = this.organId
+          form.accountEntryTime = form.accountEntryTime.format('YYYY-MM-DD')
+          form.startUseTime = form.startUseTime.format('YYYY-MM-DD')
+          form.getTime = form.getTime ? form.getTime.format('YYYY-MM-DD') : ''
+          form.safekeepingOrganId = this.detail.safekeepingOrganId || ''
+          form.approvalStatus = approvalStatus
+          let attachment = []
+          this.detail.attachment.forEach(item => {
+            let obj = {
+              attachmentPath: item.url,
+              oldAttachmentName: item.name
+            }
+            attachment.push(obj)
+          })
+          form.attachmentList = attachment
+          console.log(form)
+          if (this.pageType === 'new') {
+            this.$api.assets.insertCard(form).then(res => {
+              if (res.data.code === '0') {
+                this.$message.success('提交成功')
+                this.$router.push({path: '/assetEntry', query: {refresh: true}})
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+          if (this.pageType === 'edit') {
+            form.cardId = this.cardId
+            this.$api.assets.updateCard(form).then(res => {
+              if (res.data.code === '0') {
+                this.$message.success('提交成功')
+                this.$router.push({path: '/assetEntry', query: {refresh: true}})
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
         }
       })
     },
@@ -1181,7 +1191,7 @@ export default {
     },
     // 取消
     cancel () {
-      this.$router.push({path: '/assetClear'})
+      this.$router.push({path: '/assetEntry'})
     },
     // 审核通过
     approveAudit () {},
@@ -1222,18 +1232,49 @@ export default {
     },
     getDetail () {
       let form = {
-        cleaningOrderId: this.cleaningOrderId
+        cardId: this.cardId
       }
-      this.$api.assets.getCleanupDetail(form).then(res => {
+      this.$api.assets.queryCardDetail(form).then(res => {
         if (res.data.code === '0') {
           console.log(res)
           let data = res.data.data
+          this.organId = data.organId
           this.organName = data.organName
           this.detail = data
-          this.detail.attachment.forEach(item => {
-            item.url = item.attachmentPath
-            item.name = item.oldAttachmentName
+          this.detail.projectId = +this.detail.projectId
+          this.detail.assetCategoryId = +this.detail.assetCategoryId
+          if (this.editable) {
+            this.detail.accountEntryTime = moment(this.detail.accountEntryTime, 'YYYY-MM-DD')
+            this.detail.startUseTime = moment(this.detail.startUseTime, 'YYYY-MM-DD')
+            this.detail.getTime = this.detail.getTime ? moment(this.detail.getTime, 'YYYY-MM-DD') : undefined
+          }
+          // this.detail.remark = this.detail.remark || ''
+          this.detail.assetSource = this.detail.assetSource === null ? undefined : this.detail.assetSource
+          this.detail.storagePath = this.detail.storagePath === null ? undefined : this.detail.storagePath
+          let attachment = []
+          this.detail.attachmentList.forEach(item => {
+            let obj = {
+              url: item.attachmentPath,
+              name: item.oldAttachmentName
+            }
+            attachment.push(obj)
           })
+          this.detail.attachment = attachment
+          let checkedData = []
+          let checkedNames = []
+          this.detail.assetList.forEach((item, index) => {
+            item.key = +item.assetId
+            checkedData.push(+item.assetId)
+            checkedNames.push(item.assetName)
+          })
+          this.checkedData = checkedData
+          this.detail.assetIds = checkedData.join(',')
+          this.detail.assetNames = checkedNames.join(',')
+          this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
+          console.log(this.detail)
+          if (!this.editable) {
+            this.dataSource = this.detail.assetList
+          }
         } else {
           this.$message.error(res.data.message)
         }
@@ -1276,13 +1317,8 @@ export default {
       this.getDepreciationMethodOptions()
     }
     if (this.pageType !== 'new') {
-      this.cleaningOrderId = this.$route.query.cleaningOrderId
-      // if (this.pageType === 'edit') {
-      //   this.getEditDetail()
-      // } else {
-      //   this.getDetail()
-      //   this.getAssetDetailList()
-      // }
+      this.cardId = this.$route.query.cardId
+      this.getDetail()
     }
   }
 }
@@ -1367,52 +1403,6 @@ export default {
           }
           /deep/ .ant-form-item-with-help {
             margin-bottom: 6px;
-          }
-          .select-asset {
-            position: relative;
-            cursor: pointer;
-            display: inline-block;
-            line-height: 1.5;
-            margin: 0;
-            padding: 0;
-            .select-asset-content {
-              display: block;
-              position: relative;
-              border: 1px solid #d9d9d9;
-              border-radius: 4px;
-              -webkit-transition: all 0.3s;
-              transition: all 0.3s;
-              &:hover {
-                border-color: #299fff;
-                border-right-width: 1px !important;
-              }
-              .select-asset-item {
-                position: relative;
-                display: inline-block;
-                height: 32px;
-                line-height: 32px;
-                font-size: 12px;
-                margin: 0 30px 0 11px;
-                width: calc(100% - 41px);
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-              .select-asset-item.place-holder {
-                color: #bfbfbf;
-              }
-              i {
-                display: inline-block;
-                position: absolute;
-                top: 50%;
-                right: 11px;
-                line-height: 1;
-                width: 14px;
-                height: 14px;
-                margin-top: -6px;
-                color: rgba(0, 0, 0, 0.25);
-              }
-            }
           }
         }
         .edit-box-content-item.total-width {

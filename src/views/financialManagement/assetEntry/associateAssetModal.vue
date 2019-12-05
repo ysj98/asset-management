@@ -6,42 +6,67 @@
     width="1030px"
     v-model="show"
     title="选择资产"
+    class="associate-asset-modal"
     @ok="submitAsset"
     @cancel="handleCancel"
   >
     <div>
-      <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
-        <div slot="col-r">
-          <a-select :style="allStyle" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :style="allStyle" placeholder="全部资产类别" v-model="objectType">
-            <a-select-option v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-input style="width:140px; margin: 0 10px;" v-model="assetNameCode" placeholder="资产名称/编码"/>
-          <SG-Button type="primary" @click="queryClick">查询</SG-Button>
-        </div>
-      </Cephalosome>
-      <div class="tab-nav">
-        <div class="table-border table-layout-fixed">
-          <a-table
-            :rowSelection="rowSelection"
-            :loading="loading"
-            :columns="columns"
-            :dataSource="dataSource"
-            class="custom-table td-pd10"
-            :pagination="false"
-          >
-          </a-table>
-          <SG-FooterPagination
-            :pageLength="paginator.pageLength"
-            :totalCount="paginator.totalCount"
-            :noPageTools="noPageTools"
-            v-model="paginator.pageNo"
-            @change="handleChange"
-          />
-        </div>
-      </div>
+      <a-tabs @change="changeTab" type="card" :tabBarGutter="10">
+        <a-tab-pane tab="待选资产" key="1">
+          <div class="tab-container">
+            <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="70px">
+              <div slot="col-r">
+                <a-select :style="allStyle" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
+                  <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+                </a-select>
+                <a-select :style="allStyle" placeholder="全部资产类别" v-model="objectType">
+                  <a-select-option v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+                </a-select>
+                <a-input style="width:140px; margin: 0 10px;" v-model="assetNameCode" placeholder="资产名称/编码"/>
+                <SG-Button type="primary" @click="queryClick">查询</SG-Button>
+              </div>
+            </Cephalosome>
+            <div class="tab-nav">
+              <div class="table-border table-layout-fixed">
+                <a-table
+                  :rowSelection="rowSelection"
+                  :loading="loading"
+                  :columns="columns"
+                  :dataSource="dataSource"
+                  class="custom-table td-pd10"
+                  :pagination="false"
+                >
+                </a-table>
+                <SG-FooterPagination
+                  :pageLength="paginator.pageLength"
+                  :totalCount="paginator.totalCount"
+                  :noPageTools="noPageTools"
+                  v-model="paginator.pageNo"
+                  @change="handleChange"
+                />
+              </div>
+            </div>
+          </div>
+        </a-tab-pane>
+        <a-tab-pane tab="已选资产" key="2">
+          <div class="tab-container" style="margin-top: 20px">
+            <div class="tab-nav">
+              <div class="table-border table-layout-fixed">
+                <a-table
+                  :columns="chosenColumns"
+                  :dataSource="chosenDataSource"
+                  class="custom-table td-pd10"
+                  :pagination="false"
+                >
+                  <template slot="operation" slot-scope="text, record">
+                    <a class="operation-btn" @click="deleteRecord(record)">删除</a>
+                  </template>
+                </a-table>
+              </div>
+            </div>
+          </div>
+        </a-tab-pane>
+      </a-tabs>
     </div>
   </SG-Modal>
 </template>
@@ -115,6 +140,8 @@
         allStyle: 'width: 140px; margin-right: 10px;',
         columns,
         dataSource: [],
+        chosenColumns: [],
+        chosenDataSource: [],
         paginator: {
           pageNo: 1,
           pageLength: 10,
@@ -138,6 +165,23 @@
       }
     },
     methods: {
+      changeTab (value) {
+        console.log(value)
+        console.log(typeof value)
+        if (+value === 2) {
+          let rowsData = []
+          console.log(this.selectedRowKeys)
+          console.log(this.overallData)
+          this.selectedRowKeys.forEach(item => {
+            this.overallData.forEach((element, index) => {
+              if (item === element.assetId) {
+                rowsData.push(element)
+              }
+            })
+          })
+          this.chosenDataSource = rowsData
+        }
+      },
       // 选中的
       onSelectChange(selectedRowKeys) {
         this.selectedRowKeys = selectedRowKeys
@@ -145,6 +189,19 @@
       // 关闭弹窗
       handleCancel() {
         this.show = false
+      },
+      // 删除选中的资产
+      deleteRecord (record) {
+        this.chosenDataSource.forEach((item, index) => {
+          if (item.assetId === record.assetId) {
+            this.chosenDataSource.splice(index, 1)
+          }
+        })
+        this.selectedRowKeys.forEach((item, index) => {
+          if (record.assetId === item) {
+            this.selectedRowKeys.splice(index, 1)
+          }
+        })
       },
       // 提交
       submitAsset () {
@@ -300,12 +357,34 @@
       },
     },
     mounted () {
+      this.chosenColumns = utils.deepClone(columns)
+      this.chosenColumns.push({
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' }
+      })
       // 资产类型
       this.platformDictFn('asset_type')
     }
   }
 </script>
 
-<style lang="less" scoped>
-
+<style lang="less">
+  .associate-asset-modal {
+    /deep/ .ant-modal-body {
+      padding: 14px 0;
+    }
+    /deep/ .ant-tabs-bar {
+      margin: 0;
+    }
+    /deep/ .ant-tabs-nav {
+      margin-left: 30px;
+    }
+    .wrapper {
+      margin: 0;
+    }
+    .tab-container {
+      padding: 0 30px;
+    }
+  }
 </style>
