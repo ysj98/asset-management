@@ -70,7 +70,10 @@
           </div>
         </div>
         <!-- 表格 -->
-        <div class="table-layout-fixed detail-table">
+        <div
+          class="table-layout-fixed detail-table"
+          :class="[tableInfo.dataSource.length === 0&&'borderBottom']"
+        >
           <a-table
             class="custom-table td-pd10"
             :pagination="false"
@@ -79,7 +82,17 @@
             :locale="{emptyText: '暂无数据'}"
           >
             <template slot="warrantNbr" slot-scope="text, record">
-              <span class="nav_name" @click="showCertDetail(record)">{{text}}</span>
+              <template v-if="text">
+                <span
+                  class="nav_name"
+                  @click="showCertDetail(item)"
+                  v-for="(item, i) in text.split(',')"
+                  :key="i"
+                >{{item}},</span>
+              </template>
+              <template v-else>
+                <span>-</span>
+              </template>
             </template>
           </a-table>
           <no-data-tips class="noTipStyle" v-show="tableInfo.dataSource.length === 0"></no-data-tips>
@@ -91,7 +104,10 @@
       <!-- 同权证资产内容 -->
       <div class="page-detail-item">
         <!-- 表格 -->
-        <div class="table-layout-fixed detail-table">
+        <div
+          class="table-layout-fixed detail-table"
+          :class="[tableCert.dataSource.length === 0&&'borderBottom']"
+        >
           <a-table
             class="custom-table td-pd10"
             :pagination="false"
@@ -108,7 +124,10 @@
       <!-- 权属办理记录内容 -->
       <div class="page-detail-item">
         <!-- 表格 -->
-        <div class="table-layout-fixed detail-table">
+        <div
+          class="table-layout-fixed detail-table"
+          :class="[tableHandler.dataSource.length === 0&&'borderBottom']"
+        >
           <a-table
             class="custom-table td-pd10"
             :pagination="false"
@@ -116,11 +135,33 @@
             :dataSource="tableHandler.dataSource"
             :locale="{emptyText: '暂无数据'}"
           >
+            <!-- 旧产权证 -->
             <template slot="oldWarrantNbr" slot-scope="text, record">
-              <span class="nav_name" @click="showCertDetail(record)">{{text}}</span>
+              <template v-if="text">
+                <span
+                  class="nav_name"
+                  @click="showCertDetail(item)"
+                  v-for="(item, i) in text.split(',')"
+                  :key="i"
+                >{{item}},</span>
+              </template>
+              <template v-else>
+                <span>-</span>
+              </template>
             </template>
+            <!-- 新产权证 -->
             <template slot="warrantNbr" slot-scope="text, record">
-              <span class="nav_name" @click="showCertDetail(record)">{{text}}</span>
+              <template v-if="text">
+                <span
+                  class="nav_name"
+                  @click="showCertDetail(item)"
+                  v-for="(item, i) in text.split(',')"
+                  :key="i"
+                >{{item}},</span>
+              </template>
+              <template v-else>
+                <span>-</span>
+              </template>
             </template>
           </a-table>
           <no-data-tips class="noTipStyle" v-show="tableHandler.dataSource.length === 0"></no-data-tips>
@@ -132,7 +173,8 @@
 </template>
 <script>
 import noDataTips from "@/components/noDataTips";
-import certDetail from "./child/certDetail.vue";
+// import certDetail from "./child/certDetail.vue";
+import certDetail from "@/views/ownershipManagement/authorityCardManagement/cardDetails";
 import { utils } from "@/utils/utils";
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const tableInfoColumns = [
@@ -204,34 +246,34 @@ const tableHandlerColumns = [
   {
     title: "业务类型",
     dataIndex: "registerTypeName",
-    width: "30%"
+    width: "10%"
   },
   {
     title: "原权证号",
     dataIndex: "oldWarrantNbr",
     scopedSlots: { customRender: "oldWarrantNbr" },
-    width: "15%"
+    width: "30%"
   },
   {
     title: "新权证号",
     dataIndex: "warrantNbr",
     scopedSlots: { customRender: "warrantNbr" },
-    width: "15%"
+    width: "30%"
   },
   {
     title: "权属登记单名称",
     dataIndex: "registerName",
-    width: "20%"
+    width: "10%"
   },
   {
     title: "申请人",
     dataIndex: "creatByName",
-    width: "20%"
+    width: "10%"
   },
   {
     title: "申请日期",
     dataIndex: "createTime",
-    width: "15%"
+    width: "10%"
   }
 ];
 export default {
@@ -281,9 +323,9 @@ export default {
           let transactionList = res.data.data.transactionList || [];
           utils.each(baseInfo, (item, key) => {
             if (!item && item !== 0) {
-              baseInfo[key] = '-'
+              baseInfo[key] = "-";
             }
-          })
+          });
           this.baseInfo = { ...baseInfo };
           // 权属信息
           this.tableInfo.dataSource = ownershipInfo.map((item, i) => {
@@ -313,8 +355,12 @@ export default {
         }
       });
     },
-    showCertDetail() {
-      this.$refs.certDetail.visible = true;
+    showCertDetail(warrantNbr) {
+      console.log('拿到产权好', warrantNbr)
+      if (!warrantNbr) {
+        return
+      }
+      this.$refs.certDetail.query(warrantNbr)
     }
   }
 };
@@ -339,6 +385,9 @@ export default {
   position: relative;
   border-left: 1px solid rgba(238, 242, 245, 1);
   border-right: 1px solid rgba(238, 242, 245, 1);
+  &.borderBottom {
+    border-bottom: 1px solid rgba(238, 242, 245, 1);
+  }
 }
 .noTipStyle {
   padding: 20px 0;

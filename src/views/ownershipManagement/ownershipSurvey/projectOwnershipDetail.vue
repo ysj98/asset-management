@@ -142,7 +142,9 @@ export default {
       this.goPage('index')
     },
     goPage(type, record) {
-      let query = {}
+      let query = {
+        refresh: true
+      }
       this.$router.push({ path: operationTypes[type], query });
     },
   }

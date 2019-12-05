@@ -104,7 +104,7 @@ import {accessCard, titleDeed, columns, mortgageInformation} from './beat'
 export default {
   components: {Cephalosome},
   props: {
-    // warrantId: {
+    // warrantNbr: {
     //   type: [String, Number],
     //   default: ''
     // }
@@ -162,10 +162,10 @@ export default {
       this.show = false
     },
     // 详情查询
-    query (warrantId) {
+    query (warrantNbr) {
       this.show = true
-      this.warrantId = warrantId
-      this.$api.ownership.warrantDetail({warrantId: this.warrantId}).then(res => {
+      this.warrantNbr = warrantNbr
+      this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr}).then(res => {
         if (Number(res.data.code) === 0) {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
