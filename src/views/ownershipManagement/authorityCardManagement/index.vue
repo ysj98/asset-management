@@ -195,7 +195,7 @@ export default {
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
         this.$refs.newCard.selectFn()
-        this.$refs.newCard.query(val.warrantId)
+        this.$refs.newCard.query(val.warrantId, val.warrantNbr)
       } else if (type === 'logout') {
         let _this = this
         this.$confirm({
