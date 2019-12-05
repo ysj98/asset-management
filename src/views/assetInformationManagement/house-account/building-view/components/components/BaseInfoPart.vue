@@ -25,7 +25,7 @@
   import { basics } from '@/config/config.url'
   export default {
     name: 'BaseInfoPart',
-    props: ['houseId'],
+    props: ['buildId'],
     data () {
       return {
         imgPrx: basics.common.imgStr,
@@ -53,7 +53,7 @@
       // 查询基本信息
       queryHouseInfo () {
         this.spinning = true
-        this.$api.assets.queryAssetViewBaseInfo({assetHouseId: this.houseId}).then(r => {
+        this.$api.assets.queryBuildingViewBuildInfo({buildId: this.buildId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -61,10 +61,10 @@
             temp.ownText = Number(temp.type) === 1 ? '房屋' : '楼栋'
             return this.baseInfoData = temp
           }
-          throw res.message || '查询资产基本信息出错'
+          throw res.message || '查询楼栋信息出错'
         }).catch(err => {
           this.spinning = false
-          this.$message.error(err || '查询资产基本信息出错')
+          this.$message.error(err || '查询楼栋信息出错')
         })
       }
     },

@@ -116,8 +116,8 @@
           if (res && String(res.code) === '0') {
             this[type] = (res.data || []).map(item => {
               return {
-                key: item.assetHouseId || item.projectId,
-                title: item.assetName || item.projectName
+                key: item.buildId || item.projectId,
+                title: item.buildName || item.projectName
               }
             })
             return false
