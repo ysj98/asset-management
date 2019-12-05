@@ -120,9 +120,9 @@
         if (type === 'location') {
           return false
         }
-        const { infoData: { assetName, assetCode, decorationSituation, assetHouseId, ownerUser } } = this
+        const { infoData: { assetName, assetCode, decorationSituation, assetHouseId, ownerUser, ownerOrgan, ownerOrganName } } = this
         this.modalObj.status = true
-        this.details = { assetName, assetCode, decorationSituation, assetHouseId, ownerUser }
+        this.details = { assetName, assetCode, decorationSituation, assetHouseId, ownerUser, ownerOrgan, ownerOrganName }
       },
 
       // Modal关闭

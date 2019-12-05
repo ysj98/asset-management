@@ -141,10 +141,18 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const { organProjectType: { organId, projectId, assetType } } = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
+        const {
+          registerName, approvalStatus,
+          organProjectType, dateMethodOrgan,
+        } = this
+        if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.worthRegister.queryPageList({ organId, projectId, assetType, pageSize: pageLength, pageNum: pageNo }).then(r => {
+        let form = {
+          registerName, pageSize: pageLength, pageNum: pageNo,
+          approvalStatus: approvalStatus === '-1' ? '' : approvalStatus,
+          ...organProjectType, ...dateMethodOrgan
+        }
+        this.$api.worthRegister.queryRegisterList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
