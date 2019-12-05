@@ -41,7 +41,6 @@
       v-if="type == 'approval' || type == 'detail'"
       @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
     />
-    <form-footer/>
     <!-- 选择资产 -->
     <select-asset-modal
       :organId="organId"
@@ -54,11 +53,10 @@
 </template>
 
 <script>
-  import FormFooter from 'src/components/FormFooter'
   import SelectAssetModal from './SelectAssetModal'
   export default {
     name: 'WorthListPart',
-    components: { SelectAssetModal, FormFooter },
+    components: { SelectAssetModal },
     props: ['type', 'initAssetList', 'registerId'],
     data () {
       return {

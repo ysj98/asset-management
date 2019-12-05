@@ -61,7 +61,7 @@
         spaceInfoKeys: [
           {title: '项目名称', key: 'projectName'}, {title: '所在楼栋', key: 'buildName'}, {title: '所在单元', key: 'unitName'},
           {title: '所在楼层', key: 'floor'}, {title: '层高', key: 'groundHigh'}, {title: '省市区', key: 'proCity'},
-          {title: '地理位置', key: 'address', span: 24},
+          {title: '地理位置', key: 'totalAddress', span: 24},
         ], // 空间位置字段
         infoData: {}, // 信息数据
         details: {}, // 编辑基本信息数据

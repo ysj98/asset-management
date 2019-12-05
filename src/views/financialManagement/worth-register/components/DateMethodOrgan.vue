@@ -38,7 +38,7 @@
 </template>
 
 <script>
-  import moment from 'moment'
+  // import moment from 'moment'
   export default {
     name: 'SearchContainerII',
     props: {
@@ -90,19 +90,27 @@
       },
 
       // 获取日期
-      changeConfirmDate (date) {
+      changeConfirmDate (date, dateStrings) {
         const { assessmentOrgan, assessDate, assessmentMethod } = this
+        // let confirmDate = date.length ? {
+        //   beginDate: moment(date[0]).format('YYYY-MM-DD'),
+        //   endDate: moment(date[1]).format('YYYY-MM-DD')
+        // } : {}
         let confirmDate = date.length ? {
-          beginDate: moment(date[0]).format('YYYY-MM-DD'),
-          endDate: moment(date[1]).format('YYYY-MM-DD')
+          beginDate: dateStrings[0],
+          endDate: dateStrings[1]
         } : {}
         this.$emit('input', { assessmentOrgan, ...(assessDate || {}), assessmentMethod, ...confirmDate})
       },
-      changeAssessDate (date) {
+      changeAssessDate (date, dateStrings) {
         const { assessmentOrgan, confirmDate, assessmentMethod } = this
-        let assessDate = date.length ? {
-          beginAssessmentBaseDate: moment(date[0]).format('YYYY-MM-DD'),
-          endAssessmentBaseDate: moment(date[1]).format('YYYY-MM-DD')
+        // let assessDate = date.length ? {
+        //   beginAssessmentBaseDate: moment(date[0]).format('YYYY-MM-DD'),
+        //   endAssessmentBaseDate: moment(date[1]).format('YYYY-MM-DD')
+        // } : {}
+        let assessDate = dateStrings.length ? {
+          beginAssessmentBaseDate: dateStrings[0],
+          endAssessmentBaseDate: dateStrings[1]
         } : {}
         this.$emit('input', { assessmentOrgan, ...(confirmDate || {}), assessmentMethod, ...assessDate})
       }

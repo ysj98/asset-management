@@ -7,12 +7,13 @@
         <SG-Button icon="export" @click="handleExport">导出</SG-Button>
       </div>
       <div slot="headerForm">
-        <a-input placeholder="请输入资产名称或编码" v-model="assetNameCode" style="width: 171px"/>
+        <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 171px"/>
         <a-select
           mode="multiple"
           :maxTagCount="2"
           v-model="approvalStatus"
           :options="statusOptions"
+          @change="queryTableData"
           placeholder="请选择登记状态"
           style="width: 171px; margin: 0 10px"
         />
@@ -27,6 +28,7 @@
               mode="multiple"
               :maxTagCount="2"
               style="width: 100%"
+              @change="queryTableData"
               v-model="assetCategoryId"
               :options="categoryOptions"
               placeholder="请选择资产分类"
@@ -86,13 +88,13 @@
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
             { title: '资源原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
-            { title: '市场值(元)', dataIndex: 'marketValue', align: 'right' },
+            { title: '市场值(元)', dataIndex: 'marketValue' },
             { title: '原值评估值基准日', dataIndex: 'originalAssessmentBaseDate' },
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
             { title: '上次评估值', dataIndex: 'lastAssessmentValue' },
             { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
             { title: '本次估值(元)', dataIndex: 'assessmentValue' }, { title: '评估机构', dataIndex: 'assessmentOrganName' },
-            { title: '评估基准日', dataIndex: 'assessmenBaseDate' }, { title: '上浮比', dataIndex: 'upRate' },
+            { title: '评估基准日', dataIndex: 'assessmentBaseDate' }, { title: '上浮比', dataIndex: 'upRate' },
             { title: '提交人', dataIndex: 'createByName' },
             { title: '状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 120 }
           ]
@@ -130,8 +132,7 @@
             const { count, data } = res.data
             this.tableObj.dataSource = data
             Object.assign(this.paginationObj, {
-              totalCount: count,
-              pageNo, pageLength
+              totalCount: count, pageNo, pageLength
             })
             return false
           }
@@ -161,6 +162,10 @@
 
       organProjectType: function (val) {
         val && val.organId && this.queryTableData({})
+      },
+
+      dateMethodOrgan: function () {
+        this.queryTableData({})
       }
     }
   }

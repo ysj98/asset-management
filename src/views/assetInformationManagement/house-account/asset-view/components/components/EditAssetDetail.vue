@@ -84,17 +84,15 @@
       },
       // 员工搜索过滤选项
       filterOption(input, option) {
-        return (
-          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        )
+        let item = option.componentOptions.children[0]
+        return item && item.text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
 
       // 获取组织机构下的员工
       queryUser (organId) {
-        if (!organId) {
-          this.ownerUser = undefined
-          return false
-        }
+        this.userOptions = []
+        this.form.setFieldsValue({ownerUser: undefined})
+        if (!organId) { return false }
         this.$api.assets.queryUserListByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {

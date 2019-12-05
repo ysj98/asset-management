@@ -1,18 +1,183 @@
 <template>
-  <div></div>
+  <div class="asset_worth_list">
+    <!--搜索条件-->
+    <search-container v-model="fold">
+      <div slot="headerBtns">
+        <SG-Button icon="export" @click="handleExport">导出</SG-Button>
+      </div>
+      <div slot="contentForm">
+        <a-row :gutter="8">
+          <a-col :span="21">
+            <organ-project-type v-model="organProjectType"/>
+          </a-col>
+          <a-col :span="3" style="text-align: left">
+            <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
+          </a-col>
+        </a-row>
+        <a-row :gutter="8" style="margin-top: 14px">
+          <a-col :span="7">
+            <a-select
+              mode="multiple"
+              :maxTagCount="2"
+              style="width: 100%"
+              @change="queryTableData"
+              v-model="assetCategoryId"
+              :options="categoryOptions"
+              placeholder="请选择资产分类"
+            />
+          </a-col>
+          <a-col :span="7">
+            <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode"/>
+          </a-col>
+          <a-col :span="7">
+            <a-date-picker @change="changeDate" style="width: 100%" placeholder="请选择登记日期"/>
+          </a-col>
+        </a-row>
+      </div>
+    </search-container>
+    <!--列表部分-->
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <template slot="action" slot-scope="text, record">
+        <span class="action_text" @click="viewTrendAction">趋势图</span>
+      </template>
+    </a-table>
+    <no-data-tip v-if="!tableObj.dataSource.length"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <!--查看趋势图-->
+  </div>
 </template>
 
 <script>
+  import NoDataTip from 'src/components/noDataTips'
+  import OrganProjectType from '../components/OrganProjectType'
+  import SearchContainer from 'src/views/common/SearchContainer'
   export default {
     name: 'index',
+    components: { SearchContainer, OrganProjectType, NoDataTip },
     data () {
-      return {}
+      return {
+        fold: true, // 查询条件折叠按钮
+        assetNameCode: '', // 查询条件-登记名称
+        categoryOptions: [], // 查询条件-资产分类选项
+        assetCategoryId: undefined, // 查询条件-资产分类id
+        organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
+        assessmentBaseDate: null, // 查询条件-日期
+        tableObj: {
+          dataSource: [],
+          loading: false,
+          scroll: { x: 1800 },
+          pagination: false,
+          rowKey: 'assetCode',
+          columns: [
+            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: 120 },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 120 },
+            { title: '资产类型', dataIndex: 'assetTypeName' },
+            { title: '资产分类', dataIndex: 'assetCategoryName' },
+            { title: '所属机构', dataIndex: 'organName' },
+            { title: '资产项目', dataIndex: 'projectName' },
+            { title: '资源原值(元)', dataIndex: 'originalValue' },
+            { title: '评估原值(元)', dataIndex: 'assetValuation' },
+            { title: '市场值(元)', dataIndex: 'marketValue' },
+            { title: '原值评估值基准日', dataIndex: 'originalAssessmentBaseDate' },
+            { title: '最新估值(元)', dataIndex: 'assessmentValue' },
+            { title: '评估方法', dataIndex: 'assessmentMethodName' },
+            { title: '评估机构', dataIndex: 'assessmentOrganName' },
+            { title: '评估基准日', dataIndex: 'assessmentBaseDate' },
+            { title: '操作', dataIndex: 'action', fixed: 'right', scopedSlots: { customRender: 'action' }, width: 120 }
+          ]
+        },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
+      }
     },
 
-    methods: {}
+    methods: {
+      // 导出
+      handleExport () {
+        return this.$message.info('暂不支持')
+        // if (!this.tableObj.dataSource.length) {
+        //   return this.$message.info('无可导出数据')
+        // }
+      },
+
+      // 查询列表数据
+      queryTableData ({pageNo = 1, pageLength = 10}) {
+        const { assetNameCode, assetCategoryId, organProjectType, assessmentBaseDate } = this
+        if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
+        this.tableObj.loading = true
+        let form = {
+          assetNameCode, pageSize: pageLength, pageNum: pageNo, assessmentBaseDate,
+          organProjectType: organProjectType === '-1' ? '' : organProjectType,
+          assetCategoryId, ...organProjectType,
+        }
+        this.$api.worthRegister.queryAssetValuePageList(form).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { count, data } = res.data
+            this.tableObj.dataSource = data
+            Object.assign(this.paginationObj, {
+              totalCount: count,  pageNo, pageLength
+            })
+            return false
+          }
+          throw res.message || '资产价值一览表接口出错'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '资产价值一览表接口出错')
+        })
+      },
+
+      // 处理登记日期
+      changeDate (date, dateString) {
+        this.assessmentBaseDate = dateString
+        this.queryTableData({})
+      },
+
+      // 查看趋势图
+      viewTrendAction () {
+        // debugger
+      }
+    },
+
+    watch: {
+      // 全选与其他选项互斥处理
+      assetCategoryId: function (val) {
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.assetCategoryId = ['-1']
+        }
+      },
+
+      // 长度不能超过30字符
+      assetNameCode: function (val, pre) {
+        if (val && val.length > 40) {
+          this.$message.warn("登记名称不能超40个字符")
+          this.assetNameCode = pre
+        }
+      },
+
+      organProjectType: function (val) {
+        val && val.organId && this.queryTableData({})
+      }
+    }
   }
 </script>
 
 <style lang='less' scoped>
-
+  .asset_worth_list {
+    .custom-table {
+      padding-bottom: 55px;
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+    }
+    .action_text {
+      color: #0084FF;
+      cursor: pointer;
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+  }
 </style>

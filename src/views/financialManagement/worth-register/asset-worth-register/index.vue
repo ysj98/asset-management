@@ -12,7 +12,7 @@
         <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
       </div>
       <div slot="headerForm">
-        <a-input placeholder="请输入登记名称" v-model="registerName" style="width: 171px; margin-right: 10px"/>
+        <a-input placeholder="请输入登记名称" @pressEnter="queryTableData" v-model.trim="registerName" style="width: 171px; margin-right: 10px"/>
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
@@ -20,7 +20,15 @@
             <organ-project-type v-model="organProjectType"/>
           </a-col>
           <a-col :span="5">
-            <a-select v-model="approvalStatus" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
+            <a-select
+              mode="multiple"
+              :maxTagCount="2"
+              style="width: 100%;"
+              @change="queryTableData"
+              v-model="approvalStatus"
+              :options="statusOptions"
+              placeholder="请选择项目状态"
+            />
           </a-col>
           <a-col :span="4" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
@@ -141,10 +149,7 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const {
-          registerName, approvalStatus,
-          organProjectType, dateMethodOrgan,
-        } = this
+        const { registerName, approvalStatus, organProjectType, dateMethodOrgan } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
@@ -172,6 +177,16 @@
       },
     },
 
+    // 路由卫士，用于审批及提交成功后刷新列表
+    beforeRouteEnter (to, from, next) {
+      // debugger
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        // debugger
+        console.log(to, from, next, vm)
+      })
+    },
+
     watch: {
       // 全选与其他选项互斥处理
       approvalStatus: function (val) {
@@ -197,6 +212,10 @@
 
       organProjectType: function (val) {
         val && val.organId && this.queryTableData({})
+      },
+
+      dateMethodOrgan: function () {
+        this.queryTableData({})
       }
     }
   }
