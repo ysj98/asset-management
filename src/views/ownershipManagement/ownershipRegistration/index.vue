@@ -8,8 +8,8 @@
         <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-checkbox  style="margin-right: 10px;" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">

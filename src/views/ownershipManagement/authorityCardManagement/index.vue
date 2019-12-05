@@ -195,7 +195,7 @@ export default {
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
         this.$refs.newCard.selectFn()
-        this.$refs.newCard.query(val.warrantId)
+        this.$refs.newCard.query(val.warrantId, val.warrantNbr)
       } else if (type === 'logout') {
         let _this = this
         this.$confirm({
@@ -334,7 +334,7 @@ export default {
       this.loading = true
       let obj = {
         organId: Number(this.queryCondition.organId),        // 组织机构
-        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        kindOfRightss: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号

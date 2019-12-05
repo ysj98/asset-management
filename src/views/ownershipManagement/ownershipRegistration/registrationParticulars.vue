@@ -10,14 +10,14 @@
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 题：{{particularsData.registerName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">登记类型：{{particularsData.registerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">登记单状态：{{particularsData.approvalStatusName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">登&nbsp;&nbsp;&nbsp;记&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;状&nbsp;&nbsp;&nbsp;态：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目：{{particularsData.projectName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">关联权属办理任务：{{particularsData.ownershipHandleName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创&nbsp;&nbsp;建&nbsp;&nbsp;人：{{particularsData.createByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
-          <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
-          <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
+          <a-col class="playground-col" :span="24">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：{{particularsData.remark || '--'}}</a-col>
+          <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
               <SG-UploadFile
                 v-model="files"

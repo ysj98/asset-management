@@ -15,6 +15,7 @@
           <a-col class="playground-col" :span="12">权证号&nbsp;：{{particularsData.warrantNbr || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">不动产单元号：{{particularsData.estateUnitCode || '--'}}</a-col>
           <a-col class="playground-col" :span="12">丘地号：{{particularsData.lotNo || '--'}}</a-col>
           <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
           <a-col class="playground-col" :span="12">土地面积(㎡)：{{particularsData.landArea || '--'}}</a-col>
@@ -104,7 +105,7 @@ import {accessCard, titleDeed, columns, mortgageInformation} from './beat'
 export default {
   components: {Cephalosome},
   props: {
-    // warrantId: {
+    // warrantNbr: {
     //   type: [String, Number],
     //   default: ''
     // }
@@ -162,10 +163,10 @@ export default {
       this.show = false
     },
     // 详情查询
-    query (warrantId) {
+    query (warrantNbr) {
       this.show = true
-      this.warrantId = warrantId
-      this.$api.ownership.warrantDetail({warrantId: this.warrantId}).then(res => {
+      this.warrantNbr = warrantNbr
+      this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr}).then(res => {
         if (Number(res.data.code) === 0) {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
