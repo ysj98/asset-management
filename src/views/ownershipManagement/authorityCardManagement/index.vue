@@ -5,7 +5,7 @@
   <div class="ownershipRegistration">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button>
+        <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn">新建权证</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
@@ -43,8 +43,8 @@
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
           <div class="tab-opt">
             <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')">编辑</span>
-            <span @click="operationFn(record, 'logout')" v-if="+record.status === 1">注销</span>
+            <span @click="operationFn(record, 'edit')" v-power="ASSET_MANAGEMENT.ASSET_ACM_EDIT">编辑</span>
+            <span @click="operationFn(record, 'logout')" v-show="+record.status === 1" v-power="ASSET_MANAGEMENT.ASSET_ACM_DELETE">注销</span>
           </div>
         </template>
       </a-table>
@@ -58,7 +58,7 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard ref="newCard" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
+    <NewCard v-if="newShow" ref="newCard" @showFn="showFn" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
   </div>
@@ -70,6 +70,7 @@ import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import NewCard from './newCard.vue'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import CardDetails from './cardDetails.vue'
 import {utils, debounce} from '@/utils/utils.js'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
@@ -161,6 +162,8 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
+      newShow: false,
       warrantId: '',
       loading: false,
       noPageTools: false,
@@ -184,18 +187,25 @@ export default {
   methods: {
     // 新建权证
     newChangeSheetFn () {
-      this.$refs.newCard.show = true
-      this.$refs.newCard.newFn('new')
-      this.$refs.newCard.selectFn()
+      this.newShow = true
+      this.$nextTick(() => {
+        this.$refs.newCard.show = true
+        this.$refs.newCard.newFn('new')
+        this.$refs.newCard.selectFn()
+      })
     },
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
-        this.$refs.cardDetails.query(val.warrantId)
+        this.$refs.cardDetails.query(val.warrantNbr)
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
-        this.$refs.newCard.selectFn()
-        this.$refs.newCard.query(val.warrantId, val.warrantNbr)
+        this.newShow = true
+        this.$nextTick(() => {
+          this.$refs.newCard.show = true
+          this.$refs.newCard.selectFn()
+          this.$refs.newCard.query(val.warrantId, val.warrantNbr)
+        })
       } else if (type === 'logout') {
         let _this = this
         this.$confirm({
@@ -323,6 +333,9 @@ export default {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
+    },
+    showFn (val) {
+      this.newShow = val
     },
     successQueryFn () {
       this.queryCondition.pageNum = 1

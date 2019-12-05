@@ -1,4 +1,4 @@
-路由配置如下
+﻿路由配置如下
 不需要加 /web/前缀
 V1.0
 /asset-management/#/buildingDict        楼盘字典
@@ -47,3 +47,20 @@ zcgl_apm_edit                 资产项目管理-编辑
 zcgl_apm_approval             资产项目管理-审核
 zcgl_apm_delete               资产项目管理-删除
 zcgl_apm_reApproval           资产项目管理-反审核
+
+资产变动
+zcgl_asset_change_new            资产变动-新增变动单
+zcgl_asset_change_edit           资产变动-编辑变动单
+zcgl_asset_change_audit          资产变动-审核
+zcgl_asset_change_reverse_audit  资产变动-反审核
+zcgl_asset_change_delete         资产变动-删除
+zcgl_asset_change_end_delivery   资产变动- 结束交付
+
+
+资产登记
+zcgl_asset_register_new          资产登记-新增登记单
+zcgl_asset_register_edit           资产登记-编辑登记单
+zcgl_asset_register_audit        资产登记-审核
+zcgl_asset_register_reverse_audit 资产登记-反审核
+zcgl_asset_register_delete       资产登记-删除
+

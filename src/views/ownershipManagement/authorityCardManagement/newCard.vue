@@ -262,6 +262,11 @@ export default {
   computed: {
   },
   watch: {
+    'show' (val) {
+      if (val === false) {
+        this.handleCancel()  
+      }
+    },
     'typeJudgment' () {
       if (this.newData === 'new') {
         if (this.typeJudgment === '1') {
@@ -472,6 +477,7 @@ export default {
         this.$emit('successQuery')
       }
       this.show = false
+      this.$emit('showFn', this.show)
     },
     // 平台字典获取数据
     platformDictFn () {
@@ -598,6 +604,18 @@ export default {
     },
     // 监听选择权利人
     obligeeNameChange (record, type) {
+      for (let i = 0; i < this.amsOwnershipWarrantObligeeList.length; i++) {
+        if (this.amsOwnershipWarrantObligeeList[i].obligeeId === record.obligeeId && record.key !== this.amsOwnershipWarrantObligeeList[i].key) {
+          this.$set(this.amsOwnershipWarrantObligeeList, record.key, Object.assign(this.amsOwnershipWarrantObligeeList[record.key], {
+            obligeeId: '',
+            certificateTypeName: '',
+            certificateNo: '',
+            percent: ''
+          }))
+          this.$message.info('权属人不能重复选择')
+          return
+        }
+      }
       let obligeeId = record.obligeeId
       let certificateTypeNames = ''
       let certificateNos = ''

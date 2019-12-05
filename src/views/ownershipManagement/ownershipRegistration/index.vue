@@ -5,7 +5,7 @@
   <div class="ownershipRegistration">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建登记单</SG-Button>
+        <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
         <a-checkbox  style="margin-right: 10px;" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
@@ -44,8 +44,8 @@
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
           <div class="tab-opt">
             <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
-            <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
+            <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_EDIT">编辑</span>
+            <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_DELETE">删除</span>
           </div>
         </template>
       </a-table>
@@ -67,6 +67,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import noDataTips from '@/components/noDataTips'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
@@ -161,6 +162,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       dateWidth,
       loading: false,
       noPageTools: false,
