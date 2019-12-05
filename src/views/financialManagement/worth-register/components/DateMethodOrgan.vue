@@ -6,7 +6,7 @@
       <a-col :span="5">
         <a-select
           v-bind="properties"
-          v-model="assessMethod"
+          v-model="assessmentMethod"
           :options="methodOptions"
           class="assess_method_style"
           placeholder="请选择评估方法"
@@ -17,7 +17,7 @@
       <a-col :span="5">
         <a-select
           v-bind="properties"
-          v-model="assessOrgan"
+          v-model="assessmentOrgan"
           :options="organOptions"
           class="assess_organ_style"
           placeholder="请选择评估机构"
@@ -42,7 +42,7 @@
   export default {
     name: 'SearchContainerII',
     props: {
-      // 支持v-model,向外传递一个对象 { assessMethod, assessOrgan, assessDate, confirmDate }
+      // 支持v-model,向外传递一个对象 { assessmentMethod, assessmentOrgan, assessDate, confirmDate }
       value: {
         type: Object,
         default: () => ({})
@@ -73,11 +73,11 @@
         properties: {}, // 属性值
         // loading: false, // 加载状态
         assessDate: null, // 评估基准日
-        confirmDate: null, // 提价日期
+        confirmDate: null, // 提交日期
         organOptions: [], // 评估机构选项,
         methodOptions: [], // 评估方法选项
-        assessOrgan: undefined, // 评估机构,
-        assessMethod: undefined, // 评估方法
+        assessmentOrgan: undefined, // 评估机构,
+        assessmentMethod: undefined, // 评估方法
       }
     },
 
@@ -91,20 +91,20 @@
 
       // 获取日期
       changeConfirmDate (date) {
-        const { assessOrgan, assessDate, assessMethod } = this
+        const { assessmentOrgan, assessDate, assessmentMethod } = this
         let confirmDate = date.length ? {
-          start: moment(date[0]).format('YYYY-MM-DD'),
-          end: moment(date[1]).format('YYYY-MM-DD')
-        } : null
-        this.$emit('input', { assessOrgan, assessDate, assessMethod, confirmDate})
+          beginDate: moment(date[0]).format('YYYY-MM-DD'),
+          endDate: moment(date[1]).format('YYYY-MM-DD')
+        } : {}
+        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), assessmentMethod, ...confirmDate})
       },
       changeAssessDate (date) {
-        const { assessOrgan, confirmDate, assessMethod } = this
+        const { assessmentOrgan, confirmDate, assessmentMethod } = this
         let assessDate = date.length ? {
-          start: moment(date[0]).format('YYYY-MM-DD'),
-          end: moment(date[1]).format('YYYY-MM-DD')
-        } : null
-        this.$emit('input', { assessOrgan, confirmDate, assessMethod, assessDate})
+          beginAssessmentBaseDate: moment(date[0]).format('YYYY-MM-DD'),
+          endAssessmentBaseDate: moment(date[1]).format('YYYY-MM-DD')
+        } : {}
+        this.$emit('input', { assessmentOrgan, ...(confirmDate || {}), assessmentMethod, ...assessDate})
       }
       
     },
@@ -119,14 +119,14 @@
     },
 
     watch: {
-      assessOrgan: function (assessOrgan) {
-        const { assessDate, confirmDate, assessMethod } = this
-        this.$emit('input', { assessOrgan, assessDate, confirmDate, assessMethod })
+      assessmentOrgan: function (assessmentOrgan) {
+        const { assessDate, confirmDate, assessmentMethod } = this
+        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod })
       },
 
-      assessMethod: function (assessMethod) {
-        const { assessOrgan, assessDate, confirmDate } = this
-        this.$emit('input', { assessOrgan, assessDate, confirmDate, assessMethod })
+      assessmentMethod: function (assessmentMethod) {
+        const { assessmentOrgan, assessDate, confirmDate } = this
+        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod })
       }
     }
   }

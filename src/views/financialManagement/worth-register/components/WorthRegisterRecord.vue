@@ -27,8 +27,8 @@
               mode="multiple"
               :maxTagCount="2"
               style="width: 100%"
-              v-model="approvalStatus"
-              :options="statusOptions"
+              v-model="assetCategoryId"
+              :options="categoryOptions"
               placeholder="请选择资产分类"
             />
           </a-col>
@@ -63,6 +63,8 @@
       return {
         fold: true, // 查询条件折叠按钮
         assetNameCode: '', // 查询条件-登记名称
+        categoryOptions: [], // 查询条件-资产分类选项
+        assetCategoryId: undefined, // 查询条件-资产分类id
         organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
         dateMethodOrgan: {}, // { assessOrgan, assessDate, confirmDate, assessMethod }
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
@@ -111,17 +113,17 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
         const {
-          assetNameCode, approvalStatus,
-          organProjectType: { organId, projectId, assetType },
-          dateMethodOrgan: {  }
+          assetNameCode, approvalStatus, assetCategoryId,
+          organProjectType, dateMethodOrgan,
         } = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
+        if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           assetNameCode, approvalStatus: approvalStatus === '-1' ? '' : approvalStatus,
-          organId, projectId, assetType, pageSize: pageLength, pageNum: pageNo
+          pageSize: pageLength, pageNum: pageNo, assetCategoryId,
+          ...organProjectType, ...dateMethodOrgan
         }
-        this.$api.worthRegister.queryPageList(form).then(r => {
+        this.$api.worthRegister.queryRecordList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -133,10 +135,10 @@
             })
             return false
           }
-          throw res.message || '查询资产价值登记接口出错'
+          throw res.message || '查询价值登记记录接口出错'
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(err || '查询资产价值登记接口出错')
+          this.$message.error(err || '查询价值登记记录接口出错')
         })
       }
     },
@@ -148,13 +150,6 @@
           this.approvalStatus = ['-1']
         }
       },
-
-      // 全选与其他选项互斥处理
-      // sourceTypeList: function (val) {
-      //   if (val && val.length !== 1 && val.includes('allType')) {
-      //     this.sourceTypeList = ['allType']
-      //   }
-      // },
 
       // 长度不能超过30字符
       assetNameCode: function (val, pre) {

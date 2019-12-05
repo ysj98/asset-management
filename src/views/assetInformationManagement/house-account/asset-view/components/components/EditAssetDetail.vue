@@ -36,7 +36,8 @@
       :wrapper-col="formItemLayout.wrapperCol"
       label="保管部门"
     >
-      <tree-select @changeTree="changeTree" placeholder="请选择保管部门"/>
+      <a-input v-if="!isShowTreeSelect" @click="showTreeSelect" v-decorator="[ 'ownerOrganName']"/>
+      <tree-select v-else @changeTree="changeTree" placeholder="请选择保管部门"/>
     </a-form-item>
     <a-form-item
       :label-col="formItemLayout.labelCol"
@@ -73,10 +74,14 @@
         // assetCode: '', // 资产编码
         // decorateOptions: '', // 装修情况选项
         userOptions: [], // 使用人选项
+        isShowTreeSelect: false
       }
     },
 
     methods: {
+      showTreeSelect () {
+        this.isShowTreeSelect = true
+      },
       // 员工搜索过滤选项
       filterOption(input, option) {
         return (
@@ -86,7 +91,10 @@
 
       // 获取组织机构下的员工
       queryUser (organId) {
-        if (organId) { return this.$message.warn('组织Id不存在') }
+        if (!organId) {
+          this.ownerUser = undefined
+          return false
+        }
         this.$api.assets.queryUserListByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -132,10 +140,10 @@
     },
 
     mounted () {
-      const { assetName, assetCode, decorationSituation, ownerUser, ownerOrgan } = this.details
+      const { assetName, assetCode, decorationSituation, ownerUser, ownerOrgan, ownerOrganName } = this.details
       this.ownerOrgan = ownerOrgan
       this.queryUser(ownerOrgan)
-      this.form.setFieldsValue({ assetName, assetCode, decorationSituation, ownerUser })
+      this.form.setFieldsValue({ assetName, assetCode, decorationSituation, ownerUser, ownerOrganName })
     }
   }
 </script>
