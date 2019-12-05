@@ -105,7 +105,7 @@ export const GLOBAL = {
   // 资产登记-反审核
   ASSET_REGISTER_REVERSE_AUDIT: 'zcgl_asset_register_reverse_audit',
   // 资产登记-删除
-   ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete',
+  ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete',
 
    /**
     * 资产项目管理APM （asset-project-manage）
@@ -119,7 +119,33 @@ export const GLOBAL = {
    // 资产项目管理-编辑
    ASSET_APM_EDIT: 'zcgl_apm_edit',
    // 资产项目管理-新建
-   ASSET_APM_NEW: 'zcgl_apm_new'
+   ASSET_APM_NEW: 'zcgl_apm_new',
+
+  /**
+   * 权属登记
+   **/
+  // 权属登记-新增权属登记单
+  ASSET_OWNERR_NEW: 'zcgl_asset_ownerr_new',
+  // 权属登记-编辑权属登记单
+  ASSET_OWNERR_EDIT: 'zcgl_asset_ownerr_edit',
+  // 权属登记-审核
+  ASSET_OWNERR_AUDIT: 'zcgl_asset_ownerr_audit',
+  // 权属登记-反审核
+  ASSET_OWNERR_REVERSE_AUDIT: 'zcgl_asset_ownerr_reverse_audit',
+  // 权属登记-删除
+  ASSET_OWNERR_DELETE: 'zcgl_asset_ownerr_delete',
+
+  /**
+   * 权证管理
+   **/
+  // 权证管理-新增权证管理单
+  ASSET_ACM_NEW: 'zcgl_asset_acm_new',
+  // 权证管理-编辑权证管理单
+  ASSET_ACM_EDIT: 'zcgl_asset_acm_edit',
+  // 权证管理-注销
+  ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
+   
+   
 }
 
 
