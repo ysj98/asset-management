@@ -15,6 +15,7 @@
           <a-col class="playground-col" :span="12">权证号&nbsp;：{{particularsData.warrantNbr || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">不动产单元号：{{particularsData.estateUnitCode || '--'}}</a-col>
           <a-col class="playground-col" :span="12">丘地号：{{particularsData.lotNo || '--'}}</a-col>
           <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
           <a-col class="playground-col" :span="12">土地面积(㎡)：{{particularsData.landArea || '--'}}</a-col>

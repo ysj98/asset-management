@@ -9,7 +9,8 @@
       <a-row class="playground-row">
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="8">
-            <a-form-item label="登记单名称" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">登记单名称：</label>
               <a-input placeholder="请输入登记单名称"
               :style="allWidth"
               :max="10"
@@ -19,7 +20,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="所属机构：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">所属机构：</label>
               <a-select
                 :disabled="true"
                 showSearch
@@ -43,7 +45,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="登记类型：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">登记类型：</label>
               <a-select
                 :disabled="setType === 'edit'"
                 showSearch
@@ -68,7 +71,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="资产项目：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">资&nbsp;产&nbsp;项&nbsp;目：</label>
               <a-select
                 showSearch
                 :style="allWidth"
@@ -92,7 +96,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item label="资产类型：" v-bind="formItemLayout">
+            <a-form-item :colon="false" v-bind="formItemLayout">
+              <label slot="label">资产类型：</label>
               <a-select
                 showSearch
                 :style="allWidth"
@@ -115,7 +120,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-            <a-form-item label="备注" v-bind="formItemTextarea">
+            <a-form-item :colon="false" v-bind="formItemTextarea">
+              <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
                 :autosize="{ minRows: 2, maxRows: 4 }"
@@ -126,7 +132,8 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
-              <a-form-item label="上传附件：" v-bind="formItemTextarea">
+              <a-form-item :colon="false" v-bind="formItemTextarea">
+                <label slot="label">上&nbsp;传&nbsp;附&nbsp;件：</label>
                 <SG-UploadFile
                   v-model="newEditSingleData.files"
                   type="all"
@@ -137,7 +144,12 @@
       </a-row>
       <div class="tab-nav">
         <span class="section-title blue">权属登记详情</span>
-        <div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
+        <div class="button-box">
+          <div class="buytton-nav">
+            <SG-Button class="buytton-nav-r" type="primary" weaken @click="newFn">新增权证</SG-Button>
+            <SG-Button type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
+          </div>
+        </div>
         <div class="table-layout-fixed" v-if="columns.length !== 0" :class="{'table-border': tableData.length != 0}">
           <a-table
             :scroll="{y: 450}"
@@ -172,6 +184,8 @@
     <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
     <!-- 选择权证 -->
     <chooseWarrants :organId="organId" ref="chooseWarrants" @status="chooseWarrantsStatus"></chooseWarrants>
+    <!-- 新增权证 -->
+    <NewCard ref="newCard" :organId="organId"></NewCard>
     <FormFooter>
       <div>
         <a-button type="primary" @click="save('save')">提交</a-button>
@@ -185,6 +199,7 @@
 <script>
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import chooseWarrants from '../../common/chooseWarrants'
+import NewCard from '../authorityCardManagement/newCard'
 import {register, cancellation } from './basics'
 import FormFooter from '@/components/FormFooter'
 import noDataTips from '@/components/noDataTips'
@@ -201,7 +216,7 @@ const newEditSingleData = {
   organId: ''
 }
 export default {
-  components: {AssetBundlePopover, chooseWarrants, FormFooter, noDataTips},
+  components: {AssetBundlePopover, chooseWarrants, NewCard, FormFooter, noDataTips},
   props: {},
   data () {
     return {
@@ -343,6 +358,12 @@ export default {
           // console.log('Received values of form: ', values)
         }
       })
+    },
+    // 新增权证
+    newFn () {
+      this.$refs.newCard.show = true
+      this.$refs.newCard.newFn('new')
+      this.$refs.newCard.selectFn()
     },
     // 删除
     deleteFn (record) {
@@ -547,6 +568,9 @@ export default {
       margin-bottom: 10px;
       .buytton-nav {
         float: right;
+        .buytton-nav-r {
+          margin-right: 10px;
+        }
       }
     }
   }
@@ -557,6 +581,11 @@ export default {
   }
   .postAssignment-icon:hover {
     color: red;
+  }
+  .new-icon {
+    padding-right: 10px;
+    cursor: pointer;
+    color: #0084FF;
   }
 }
 </style>
