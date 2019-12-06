@@ -52,7 +52,7 @@ let queryCondition = {
   pageNum: 1,
   ownershipStatus: 1
 };
-let seletOpt = [{ label: "无", value: "3" }, { label: "换证", value: "4" }];
+let seletOpt = [{ label: "无", value: 3 }, { label: "换证", value: 4 }];
 // 表格数据
 let columns = [
   {
@@ -151,7 +151,7 @@ export default {
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.settingMethod = item.settingMethod || "3"; // 默认无
+              item.settingMethod = item.settingMethod || 3; // 默认无
               item.area = item.area || "--";
               item.assetTypeName = item.assetTypeName || "--";
               item.assetCode = item.assetCode || "--";
