@@ -70,6 +70,23 @@
           option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
         )
       },
+
+      // 查询资产类型--平台字典
+      queryAssetType () {
+        this.$api.basics.platformDict({code: 'asset_type'}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            let list = res.data.map(item => ({
+              title: item.name, key: item.value
+            }))
+            return this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}].concat(list)
+          }
+          throw res.message || '查询资产类型失败'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '查询资产类型失败')
+        })
+      }
     },
 
     mounted () {
@@ -79,6 +96,7 @@
       mode === 'multiple' ? properties.maxTagCount = 1 : '' // 多选模式防止换行
       this.properties = properties
       Object.assign(this, { ...value })
+      this.queryAssetType()
     },
 
     watch: {
