@@ -166,12 +166,8 @@
     },
     methods: {
       changeTab (value) {
-        console.log(value)
-        console.log(typeof value)
         if (+value === 2) {
           let rowsData = []
-          console.log(this.selectedRowKeys)
-          console.log(this.overallData)
           this.selectedRowKeys.forEach(item => {
             this.overallData.forEach((element, index) => {
               if (item === element.assetId) {
@@ -221,7 +217,7 @@
               checkedData.push(element.assetId)
               checkedNames.push(element.assetName)
               rowsData.push(element)
-              originalValueSum += element.originalValue
+              originalValueSum = utils.accAdd(parseFloat(originalValueSum).toFixed(2), parseFloat(element.originalValue).toFixed(2))
             }
           })
         })
