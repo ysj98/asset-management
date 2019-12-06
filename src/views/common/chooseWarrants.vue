@@ -8,7 +8,7 @@
 -->
 <template>
   <SG-Modal
-    class="assetBundlePopover"
+    class="assetBundlePopover assetBundlePopover-nav"
     width="1030px"
     v-model="show"
     title="选择权证"
@@ -16,35 +16,59 @@
     @cancel="handleCancel"
   >
     <div>
-      <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
-        <div slot="col-r">
-        <a-select :style="allStyle" placeholder="全部权利类型" v-model="selecData.kindOfRights">
-          <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码"/>
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+      <a-tabs @change="changeTab" type="card" :tabBarGutter="10">
+        <a-tab-pane tab="待选权证" key="1">
+          <div class="tab-container">
+          <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
+            <div slot="col-r">
+            <a-select :style="allStyle" placeholder="全部权利类型" v-model="selecData.kindOfRights">
+              <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码"/>
+            <SG-Button type="primary" @click="query">查询</SG-Button>
+            </div>
+          </Cephalosome>
+          <div class="tab-nav">
+            <div class="table-border table-layout-fixed">
+              <a-table
+                :rowSelection="rowSelection"
+                :loading="loading"
+                :columns="columns"
+                :dataSource="tableData"
+                class="custom-table td-pd10"
+                :pagination="false"
+                >
+              </a-table>
+              <SG-FooterPagination
+                :pageLength="selecData.pageSize"
+                :totalCount="count"
+                :noPageTools="noPageTools"
+                v-model="selecData.pageNum"
+                @change="handleChange"
+              />
+            </div>
+          </div>
         </div>
-      </Cephalosome>
-      <div class="tab-nav">
-        <div class="table-border table-layout-fixed">
-          <a-table
-            :rowSelection="rowSelection"
-            :loading="loading"
-            :columns="columns"
-            :dataSource="tableData"
-            class="custom-table td-pd10"
-            :pagination="false"
-            >
-          </a-table>
-          <SG-FooterPagination
-            :pageLength="selecData.pageSize"
-            :totalCount="count"
-            :noPageTools="noPageTools"
-            v-model="selecData.pageNum"
-            @change="handleChange"
-          />
-        </div>
-      </div>
+      </a-tab-pane>
+        <a-tab-pane tab="已选权证" key="2">
+          <div class="tab-container" style="margin-top: 20px">
+            <div class="tab-nav">
+              <div class="table-border table-layout-fixed">
+                <a-table
+                  :columns="chosenColumns"
+                  :dataSource="chosenDataSource"
+                  class="custom-table td-pd10"
+                  :pagination="false"
+                >
+                  <template slot="operation" slot-scope="text, record">
+                    <a class="operation-btn" @click="deleteRecord(record)">删除</a>
+                  </template>
+                </a-table>
+              </div>
+            </div>
+          </div>
+        </a-tab-pane>
+      </a-tabs>
     </div>
   </SG-Modal>
 </template>
@@ -111,6 +135,7 @@ export default {
       allStyle: 'width: 140px; margin-right: 10px;',
       show: false,
       selecData: {
+        warrantNbr: '',
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
         queryType: this.queryType,   // 查询类型 1 资产变动，2 资产清理 3权属登记
@@ -119,6 +144,8 @@ export default {
         pageNum: 1
       },
       tableData: [],
+      chosenColumns: [],
+      chosenDataSource: [],
       selectedRowKeys: [],
       overallData: []
     }
@@ -142,6 +169,35 @@ export default {
   //   }
   // },
   methods: {
+    changeTab (value) {
+      if (+value === 2) {
+        let rowsData = []
+        this.selectedRowKeys.forEach(item => {
+          this.overallData.forEach((element, index) => {
+            if (item === element.warrantId) {
+              rowsData.push(element)
+            }
+          })
+        })
+        rowsData.forEach((list, index) => {
+          list.key = index
+        })
+        this.chosenDataSource = rowsData
+      }
+    },
+    // 删除选中的权证
+    deleteRecord (record) {
+      this.chosenDataSource.forEach((item, index) => {
+        if (item.warrantId === record.warrantId) {
+          this.chosenDataSource.splice(index, 1)
+        }
+      })
+      this.selectedRowKeys.forEach((item, index) => {
+        if (record.warrantId === item) {
+          this.selectedRowKeys.splice(index, 1)
+        }
+      })
+    },
     // 选中的
     onSelectChange (selectedRowKeys) {
       if (selectedRowKeys.length > 5) {
@@ -239,7 +295,7 @@ export default {
           if (data) {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
-              element.lotNoEstateUnitCode = `${element.lotNo}/${element.estateUnitCode}`
+              element.lotNoEstateUnitCode = `${element.lotNo || '--'}/${element.estateUnitCode || '--'}`
               element.key = element.warrantId
               arrData.push(element)
             })
@@ -275,6 +331,12 @@ export default {
   created () {
   },
   mounted () {
+    this.chosenColumns = utils.deepClone(columns)
+    this.chosenColumns.push({
+      title: '操作',
+      dataIndex: 'operation',
+      scopedSlots: { customRender: 'operation' }
+    })
     // 资产类型
     this.platformDictFn('AMS_KIND_OF_RIGHT')
   }
@@ -284,6 +346,26 @@ export default {
 .assetBundlePopover {
   .tab-nav {
     margin-top: 10px;
+  }
+}
+</style>
+
+<style lang="less">
+.assetBundlePopover-nav {
+  /deep/ .ant-modal-body {
+    padding: 14px 0;
+  }
+  /deep/ .ant-tabs-bar {
+    margin: 0;
+  }
+  /deep/ .ant-tabs-nav {
+    margin-left: 30px;
+  }
+  .wrapper {
+    margin: 0;
+  }
+  .tab-container {
+    padding: 0 30px;
   }
 }
 </style>

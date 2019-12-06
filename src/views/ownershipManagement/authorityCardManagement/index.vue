@@ -360,7 +360,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
-              item.lotNoEstateUnitCode = `${item.lotNo}/${item.estateUnitCode}`
+              item.lotNoEstateUnitCode = `${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
             })
             this.tableData = data
             this.count = res.data.data.count
