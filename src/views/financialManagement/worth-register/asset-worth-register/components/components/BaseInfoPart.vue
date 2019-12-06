@@ -119,7 +119,7 @@
           wrapperCol: { span: 18 }
         },
         attachment: [], // 附件
-        organId: '', // 组织机构Id,
+        // organId: '', // 组织机构Id,
         organName: '', // 组织机构Name,
         isEdit: false, // 是否编辑状态
         typeOptions: [], // 资产类型选项,
@@ -171,17 +171,58 @@
             assetsType: assetTypeName,
             assessmentTask: assessmentTaskName,
             assessmentOrgan: assessmentOrganName,
-            assessmentMethod: assessmentMethodName,
-            
+            assessmentMethod: assessmentMethodName
           }
           formatDetails = Object.assign({}, formatDetails, obj)
         }
         return this.form.setFieldsValue({ ...others, ...formatDetails })
+      },
+
+      // 查询平台字典
+      queryDict () {
+        const list = [
+          { code: 'asset_type', tip: '资产类型', optionName: 'typeOptions' },
+          { code: 'ASSESSMENT_METHOD', tip: '评估方法', optionName: 'methodOptions' }
+        ]
+        list.forEach(m => {
+          const { code, tip, optionName } = m
+          this.$api.basics.platformDict({code}).then(r => {
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              return this[optionName] = res.data.map(item => ({
+                title: item.name, key: item.value
+              }))
+            }
+            throw res.message || `查询${tip}失败`
+          }).catch(err => {
+            this.$message.error(err || `查询${tip}失败`)
+          })
+        })
+      },
+
+      // 查询评估机构-机构字典
+      queryOrganOptions () {
+        const { organId } = this.details
+        this.$api.basics.platformDict({ code: 'ASSESSMENT_ORGAN', organId }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.organOptions = res.data.map(item => ({
+              title: item.name, key: item.value
+            }))
+          }
+          throw res.message || '查询评估机构失败'
+        }).catch(err => {
+          this.$message.error(err || '查询评估机构失败')
+        })
       }
     },
     
     mounted () {
       this.renderDetail()
+      if (this.type == 'add' || this.type == 'edit') {
+        this.queryDict()
+        this.queryOrganOptions()
+      }
     }
   }
 </script>
