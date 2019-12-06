@@ -371,9 +371,18 @@ export default {
               }
               // 判断只能为数字小数
               if (judgmentData[j].type === 'float') {
+                if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][judgmentData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {
+                    this.$message.info(`请输入正确${judgmentData[j].title}(只支持2位小数)`)
+                  })
+                  return
+                }
+              }
+              // 判断只能为数字小数
+              if (judgmentData[j].type === 'float2') {
                 if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][judgmentData[j].dataIndex])) {
                   this.DE_Loding(loadingName).then(() => {
-                    this.$message.info(`请输入正确${judgmentData[j].title}`)
+                    this.$message.info(`请输入正确${judgmentData[j].title}(只支持4位小数)`)
                   })
                   return
                 }

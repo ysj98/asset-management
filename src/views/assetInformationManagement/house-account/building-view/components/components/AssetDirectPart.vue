@@ -157,9 +157,9 @@
       },
 
       // 楼层信息查询
-      queryFloorInfo (sign) {
+      queryFloorInfo () {
         const { unitId, buildId, organId } = this
-        if (!unitId) { return sign === 'init' ? false : this.$message.warn('单元Id不存在') }
+        // if (!unitId) { return sign === 'init' ? false : this.$message.warn('单元Id不存在') }
         this.spinning = true
         this.$api.assets.queryBuildingViewFloorInfo({buildId, organId, unitId}).then(r => {
           this.spinning = false
@@ -186,7 +186,7 @@
               i === 0 && (this.unitId = n.unitId) // 默认查询第一条
               return { title: n.unitName, key: n.unitId }
             })
-            return this.queryFloorInfo('init')
+            return this.queryFloorInfo()
           }
           throw res.message || '查询楼层信息出错'
         }).catch(err => {
