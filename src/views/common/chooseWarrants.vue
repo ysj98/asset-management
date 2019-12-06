@@ -16,7 +16,7 @@
     @cancel="handleCancel"
   >
     <div>
-      <a-tabs @change="changeTab" type="card" :tabBarGutter="10">
+      <a-tabs @change="changeTab" type="card" v-model="defaultActiveKey" :tabBarGutter="10">
         <a-tab-pane tab="待选权证" key="1">
           <div class="tab-container">
           <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
@@ -147,7 +147,8 @@ export default {
       chosenColumns: [],
       chosenDataSource: [],
       selectedRowKeys: [],
-      overallData: []
+      overallData: [],
+      defaultActiveKey: '1',
     }
   },
   computed: {
@@ -231,7 +232,6 @@ export default {
     // 外面删除了后剩下给回来的数据
     redactCheckedDataFn (redactChecked, overallData, selectKey) {
       console.log(redactChecked, '外面给回来拿到的数据')
-      this.selectKey = selectKey   // 外面列表选择的第几个
       // overallData 给回来的数据合并在去重
       if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
@@ -246,6 +246,10 @@ export default {
       this.$nextTick(() => {
         this.selectedRowKeys = redactChecked
       })
+      if (selectKey !== this.selectKey) {
+        this.defaultActiveKey = '1'
+      }
+      this.selectKey = selectKey   // 外面列表选择的第几个
       // 第一次进来调一下接口
       // if (this.firstCall) {
       //   this.query()
