@@ -12,52 +12,52 @@
       <span class="section-title blue">基础信息</span>
       <a-row class="playground-row">
         <div v-if="this.kindOfRight === '1'">
-          <a-col class="playground-col" :span="12">权证号&nbsp;：{{particularsData.warrantNbr || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：{{particularsData.warrantNbr || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;属&nbsp;&nbsp;形&nbsp;&nbsp;式：{{particularsData.ownerTypeName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;利&nbsp;&nbsp;类&nbsp;&nbsp;型：{{particularsData.kindOfRightName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">不动产单元号：{{particularsData.estateUnitCode || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">丘地号：{{particularsData.lotNo || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">土地面积(㎡)：{{particularsData.landArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权属用途：{{particularsData.ownershipUseName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">结构：{{particularsData.structureName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">建筑面积(㎡)：{{particularsData.buildArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">丘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：{{particularsData.lotNo || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">坐&nbsp;&nbsp;&nbsp;落&nbsp;&nbsp;位&nbsp;&nbsp;置：{{particularsData.seatingPosition || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">土地面积 (㎡)&nbsp;：{{particularsData.landArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;属&nbsp;&nbsp;用&nbsp;&nbsp;途：{{particularsData.ownershipUseName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">结&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构：{{particularsData.structureName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">建筑面积(㎡) ：{{particularsData.buildArea || '--'}}</a-col>
           <a-col class="playground-col" :span="12">专属建筑面积：{{particularsData.exclusiveBuildArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积(㎡)：{{particularsData.apportionArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">总套数：{{particularsData.totalSuite || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权利性质：{{particularsData.qualityOfRightName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">使用期限：{{particularsData.useLimitDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">登记日期：{{particularsData.rigisterDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">分摊面积(㎡) ：{{particularsData.apportionArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;套&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：{{particularsData.totalSuite || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;利&nbsp;&nbsp;性&nbsp;&nbsp;质：{{particularsData.qualityOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">使&nbsp;&nbsp;&nbsp;用&nbsp;&nbsp;期&nbsp;&nbsp;限：{{particularsData.useLimitDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">登&nbsp;&nbsp;&nbsp;记&nbsp;&nbsp;日&nbsp;&nbsp;期：{{particularsData.rigisterDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">交&nbsp;&nbsp;&nbsp;接&nbsp;&nbsp;日&nbsp;&nbsp;期：{{particularsData.handoverDate || '--'}}</a-col>
         </div>
         <div v-if="this.kindOfRight === '2'">
-          <a-col class="playground-col" :span="12">权证号&nbsp;：{{particularsData.warrantNbr || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">房屋所有权人：{{particularsData.houseOwner || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">承租人：{{particularsData.tenant || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">委托管理单位：{{particularsData.entrustOrganization || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">建筑面积(㎡)：{{particularsData.buildArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：{{particularsData.warrantNbr || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;属&nbsp;&nbsp;&nbsp;&nbsp;形&nbsp;&nbsp;&nbsp;&nbsp;式：{{particularsData.ownerTypeName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;利&nbsp;&nbsp;类&nbsp;&nbsp;型：{{particularsData.kindOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">房&nbsp;屋&nbsp;所&nbsp;有&nbsp;权&nbsp;人&nbsp;：{{particularsData.houseOwner || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">承&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;人：{{particularsData.tenant || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">委&nbsp;托&nbsp;管&nbsp;理&nbsp;单&nbsp;位&nbsp;：{{particularsData.entrustOrganization || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">建筑面积&nbsp;(㎡)&nbsp;：{{particularsData.buildArea || '--'}}</a-col>
           <a-col class="playground-col" :span="12">专有建筑面积(㎡)：{{particularsData.exclusiveBuildArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积(㎡)：{{particularsData.apportionArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">用途：{{particularsData.ownershipUseName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">结构：{{particularsData.structureName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">总层数：{{particularsData.totalFloor || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">所在层：{{particularsData.placeFloor || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">房屋号：{{particularsData.houseNo || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">租金单价：{{particularsData.rentUnitPice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">租金总价：{{particularsData.rentTotalPrice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">合同期限：{{particularsData.contractData || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">分摊面积&nbsp;(㎡)&nbsp;：{{particularsData.apportionArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">坐&nbsp;&nbsp;&nbsp;&nbsp;落&nbsp;&nbsp;&nbsp;&nbsp;位&nbsp;&nbsp;&nbsp;&nbsp;置&nbsp;：{{particularsData.seatingPosition || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">用&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 途：{{particularsData.ownershipUseName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">结&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  构：{{particularsData.structureName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;层&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：{{particularsData.totalFloor || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">所&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;层：{{particularsData.placeFloor || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">房&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;屋&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：{{particularsData.houseNo || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;&nbsp;价：{{particularsData.rentUnitPice || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">租&nbsp;&nbsp;&nbsp;金&nbsp;&nbsp;总&nbsp;&nbsp;价：{{particularsData.rentTotalPrice || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">合&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;同&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期&nbsp;&nbsp;&nbsp;&nbsp;限：{{particularsData.contractData || '--'}}</a-col>
           <a-col class="playground-col" :span="12">议价租金单价：{{particularsData.talkUnitPrice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">议价租金总价：{{particularsData.talkTotalPrice || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">议&nbsp;价&nbsp;租&nbsp;金&nbsp;&nbsp;总&nbsp;价：{{particularsData.talkTotalPrice || '--'}}</a-col>
           <a-col class="playground-col" :span="12">租金缴纳期限：{{particularsData.rentPayDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">产别：{{particularsData.antenatal || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">登记日期：{{particularsData.rigisterDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">产&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：{{particularsData.antenatal || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">登&nbsp;&nbsp;&nbsp;记&nbsp;&nbsp;日&nbsp;&nbsp;期：{{particularsData.rigisterDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;接&nbsp;&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期：{{particularsData.handoverDate || '--'}}</a-col>
         </div>
-        <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
-        <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
+        <a-col class="playground-col" :span="24">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：{{particularsData.remark || '--'}}</a-col>
+        <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
               <SG-UploadFile
                 v-model="files"

@@ -83,7 +83,7 @@ const columns = [
   },
   {
     title: '登记日期',
-    dataIndex: 'qualityOfRightName'
+    dataIndex: 'createTime'
   }
 ]
 export default {
@@ -239,7 +239,7 @@ export default {
           if (data) {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
-              item.lotNoEstateUnitCode = `${item.lotNo}/${item.estateUnitCode}`
+              element.lotNoEstateUnitCode = `${element.lotNo}/${element.estateUnitCode}`
               element.key = element.warrantId
               arrData.push(element)
             })

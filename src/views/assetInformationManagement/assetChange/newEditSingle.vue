@@ -166,31 +166,31 @@
             >
             <!-- 交付运营 -->
             <template v-if="changeType === '1'" slot="transferOperationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0.01" :step="1.00" :precision="4" v-model="record.transferOperationArea"/>
+              <a-input-number size="small" :min="0.01" :step="1.00" :precision="2" v-model="record.transferOperationArea"/>
             </template>
             <!-- 交付物业 -->
             <template v-if="changeType === '2'" slot="transferArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0.01" :step="1.00" :precision="4" v-model="record.transferArea"/>
+              <a-input-number size="small" :min="0.01" :step="1.00" :precision="2" v-model="record.transferArea"/>
             </template>
             <!-- 使用方向变动 -->
             <template v-if="changeType === '4'" slot="operationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0" :step="1.00" :precision="4" v-model="record.operationArea"/>
+              <a-input-number size="small" :min="0" :step="1.00" :precision="2" v-model="record.operationArea"/>
             </template>
             <template v-if="changeType === '4'" slot="selfUserArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0" :step="1.00" :precision="4" v-model="record.selfUserArea"/>
+              <a-input-number size="small" :min="0" :step="1.00" :precision="2" v-model="record.selfUserArea"/>
             </template>
             <template v-if="changeType === '4'" slot="idleArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0" :step="1.00" :precision="4" v-model="record.idleArea"/>
+              <a-input-number size="small" :min="0" :step="1.00" :precision="2" v-model="record.idleArea"/>
             </template>
             <template v-if="changeType === '4'" slot="occupationArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0" :step="1.00" :precision="4" v-model="record.occupationArea"/>
+              <a-input-number size="small" :min="0" :step="1.00" :precision="2" v-model="record.occupationArea"/>
             </template>
             <template v-if="changeType === '4'" slot="otherArea" slot-scope="text, record">
-              <a-input-number size="small" :min="0" :step="1.00" :precision="4" v-model="record.otherArea"/>
+              <a-input-number size="small" :min="0" :step="1.00" :precision="2" v-model="record.otherArea"/>
             </template>
             <!-- 原值变动 -->
             <template v-if="changeType === '3'" slot="newOriginalValue" slot-scope="text, record">
-              <a-input-number size="small" :min="0" :step="1.00" :precision="4" v-model="record.newOriginalValue"/>
+              <a-input-number size="small" :min="0" :step="1.00" :precision="2" v-model="record.newOriginalValue"/>
             </template>
             <!-- 位置变动 -->
             <template v-if="changeType === '5'" slot="addressName" slot-scope="text, record">

@@ -103,7 +103,7 @@ const columns = [
   },
   {
     title: '创建人',
-    dataIndex: 'createBy'
+    dataIndex: 'createByName'
   },
   {
     title: '当前状态',

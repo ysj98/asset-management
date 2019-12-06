@@ -491,7 +491,7 @@ export default {
       this.$api.ownership.shipDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          this.changeType = String(data.changeType)
+          this.changeType = String(data.registerInfo.registerType)
           let files = []
           if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
               data.amsAttachmentList.forEach(item => {
@@ -503,15 +503,26 @@ export default {
           }
           this.newEditSingleData.files = files
           let checkedData = []
-          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            item.key = item.assetId
-            item.address = item.location
-            item.assetArea = item.area
-            checkedData.push(item.assetId)
-            item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
-            item.warrantNbr = item.warrantIds.join(',')
-            // item.warrantGeneralData = []  // 用于存权证号总是数据
-          })
+          if (this.changeType !== '3') {
+            data.amsOwnershipRegisterDetailList.forEach((item, index) => {
+              item.key = item.assetId
+              item.address = item.location
+              item.assetArea = item.area
+              checkedData.push(item.assetId)
+              item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
+              item.warrantNbr = item.warrantIds.join(',')
+              // item.warrantGeneralData = []  // 用于存权证号总是数据
+            })
+          } else if (this.changeType === '3') {
+              data.amsOwnershipRegisterDetailList.forEach((item, index) => {
+                item.key = item.assetId
+                item.address = item.location
+                item.assetArea = item.area
+                checkedData.push(item.assetId)
+                item.warrantNbrData = []      // 用于存储单个下拉框数据
+                item.warrantNbr = ''
+              })
+          }
           this.$nextTick(() => {
             this.form.setFieldsValue({
               organId: this.organIdData[0].value,
