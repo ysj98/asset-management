@@ -6,7 +6,10 @@
  <template>
   <div>
     <div class="pb70">
-      <SearchContainer v-model="toggle" :contentStyle="{paddingTop:'16px'}">
+      <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
+        <div slot="headerBtns">
+        <SG-Button type="primary" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+      </div>
         <div slot="contentForm" class="search-content-box">
           <div class="search-from-box">
             <treeSelect
@@ -133,6 +136,7 @@
 import noDataTips from "@/components/noDataTips";
 import SearchContainer from "@/views/common/SearchContainer";
 import TreeSelect from "@/views/common/treeSelect";
+import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
@@ -253,7 +257,8 @@ export default {
   components: {
     SearchContainer,
     TreeSelect,
-    noDataTips
+    noDataTips,
+    segiIcon
   },
   data() {
     return {
@@ -390,6 +395,8 @@ export default {
       }
       return data
     },
+    // 导出
+    openExport () {},
     // 重置分页查询
     searchQuery() {
       this.queryCondition.pageNum = 1;

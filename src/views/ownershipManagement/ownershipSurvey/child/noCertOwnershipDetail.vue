@@ -52,8 +52,8 @@
   ownershipStatus: 0
 }
 let seletOpt = [
-  {label: '办理新证', value: '1'},
-  {label: '不具备办理条件', value: '2'},
+  {label: '办理新证', value: 1},
+  {label: '不具备办理条件', value: 2},
 ]
 // 表格数据
 let columns = [{
@@ -133,7 +133,7 @@ let columns = [{
          if (res.data.code === '0') {
           let result = res.data.data.data || []
            this.table.dataSource = result.map(item => {
-             item.settingMethod = item.settingMethod || '2' // 默认不具备办理条件
+             item.settingMethod = item.settingMethod || 2 // 默认不具备办理条件
              item.area = item.area || '--'
              item.assetTypeName = item.assetTypeName || '--'
              item.assetCode = item.assetCode || '--'

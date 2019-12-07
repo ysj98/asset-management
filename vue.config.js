@@ -17,9 +17,10 @@ const getIPAdress = () => {
 }
 
 const localhost = getIPAdress()
+console.log('IP', localhost)
 const target = 'http://192.168.1.11:10080'
 // const target = 'http://120.24.82.71:8080'
-// const mock = 'http://192.168.1.10:9090/mock/5dbfda7704a31c60dc1862a1'
+const mock = 'http://192.168.21.211:8080'
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
