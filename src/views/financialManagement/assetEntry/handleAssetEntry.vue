@@ -1263,8 +1263,9 @@ export default {
           let checkedData = []
           let checkedNames = []
           this.detail.assetList.forEach((item, index) => {
-            item.key = +item.assetId
-            checkedData.push(+item.assetId)
+            item.assetId = +item.assetId
+            item.key = item.assetId
+            checkedData.push(item.assetId)
             checkedNames.push(item.assetName)
           })
           this.checkedData = checkedData
@@ -1272,9 +1273,9 @@ export default {
           this.detail.assetNames = checkedNames.join(',')
           this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
           console.log(this.detail)
-          if (!this.editable) {
+          // if (!this.editable) {
             this.dataSource = this.detail.assetList
-          }
+          // }
         } else {
           this.$message.error(res.data.message)
         }
