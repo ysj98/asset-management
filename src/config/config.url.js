@@ -35,8 +35,12 @@ export const basics = {
     // 图片预览地址
     imgStr: host.hostImg,
   },
+  // 文件上传
+  fileUpload: '/basic-data-batch-api/rest-api/v1/fileApi/fileUpload',
   // 文件下载
-  fileDownLoad: '/uis/fileApi/fileDownLoad',
+  fileDownLoad: '/basic-data-batch-api/rest-api/v1/fileApi/fileDownLoad',
+  // 文件下载
+  // fileDownLoad: '/uis/fileApi/fileDownLoad',
   // 查询所有一级物业
   queryAllTopOrganByUser: '/basic-data-api/rest-api/v1/organInfo/queryAllTopOrganByUser',
   // 请求楼栋单元

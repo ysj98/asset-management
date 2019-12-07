@@ -25,6 +25,10 @@ export function fileDownLoad (data) {
     responseType: 'blob'
   })
 }
+// 文件上传
+export function fileUpload (data) {
+  return axiosPost(basics.fileUpload, data)
+}
 export function queryAllTopOrganByUser (data) {
   return axiosGet(basics.queryAllTopOrganByUser, data)
 }
