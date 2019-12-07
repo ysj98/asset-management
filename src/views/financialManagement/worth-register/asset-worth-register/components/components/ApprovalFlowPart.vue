@@ -34,7 +34,5 @@
 </script>
 
 <style lang='less' scoped>
-  .approval_style {
-    padding-bottom: 75px;
-  }
+  .approval_style {}
 </style>

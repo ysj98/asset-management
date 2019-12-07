@@ -106,8 +106,11 @@
       },
 
       assetType: function (assetType) {
+        if (assetType && assetType.length !== 1 && assetType.includes('-1')) {
+          this.assetType = ['-1']
+        }
         const { organId, projectId, organName } = this.organProjectBuildingValue
-        this.$emit('input', { organId, organName, projectId, assetType })
+        this.$emit('input', { organId, organName, projectId, assetType: this.assetType })
       }
     }
   }
