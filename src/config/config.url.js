@@ -380,7 +380,9 @@ export const ownershipSurvey = {
   // 权属登记
   attrSet: '/ams/ownerShip/attr/set',
   // 权属人下拉列表
-  ownerShipUserSelect: '/ams/ownerShipUser/select'
+  ownerShipUserSelect: '/ams/ownerShipUser/select',
+  // 根据项目id查询权属情况
+  queryByProjectId: '/ams/ownerShip/queryByProjectId'
 }
 
 

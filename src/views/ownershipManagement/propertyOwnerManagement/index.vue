@@ -5,7 +5,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
-        <SG-Button icon="plus" type="primary" @click="newPropertyOwner">新建权属人</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newPropertyOwner" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_NEW">新建权属人</SG-Button>
       </div>
       <div slot="form">
         <topOrganByUser @change="organIdChange" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true"/>
@@ -21,9 +21,9 @@
       >
         <template slot="operation" slot-scope="text, record">
           <!--<OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>-->
-          <a class="operation-btn" @click="operationFun('edit', record)">编辑</a>
+          <a class="operation-btn" @click="operationFun('edit', record)" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_EDIT">编辑</a>
           <a class="operation-btn" @click="operationFun('detail', record)">详情</a>
-          <a class="operation-btn" @click="operationFun('delete', record)">删除</a>
+          <a class="operation-btn" @click="operationFun('delete', record)" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_DELETE">删除</a>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
@@ -43,6 +43,7 @@
 import topOrganByUser from '@/views/common/topOrganByUser'
 import handlePropertyOwner from './handlePropertyOwner'
 import noDataTips from '@/components/noDataTips'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const columns = [
   {
@@ -104,6 +105,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       allStyle: 'width: 150px; marginLeft: 10px;',
       organId: '',
       organName: '',
@@ -129,7 +131,6 @@ export default {
     // 页码发生变化
     handlePageChange (page) {
       this.paginator.pageNo = page.pageNo
-      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 操作回调

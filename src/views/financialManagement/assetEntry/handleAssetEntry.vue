@@ -1248,7 +1248,6 @@ export default {
             this.detail.startUseTime = moment(this.detail.startUseTime, 'YYYY-MM-DD')
             this.detail.getTime = this.detail.getTime ? moment(this.detail.getTime, 'YYYY-MM-DD') : undefined
           }
-          // this.detail.remark = this.detail.remark || ''
           this.detail.assetSource = this.detail.assetSource === null ? undefined : this.detail.assetSource
           this.detail.storagePath = this.detail.storagePath === null ? undefined : this.detail.storagePath
           let attachment = []
@@ -1272,10 +1271,7 @@ export default {
           this.detail.assetIds = checkedData.join(',')
           this.detail.assetNames = checkedNames.join(',')
           this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
-          console.log(this.detail)
-          // if (!this.editable) {
-            this.dataSource = this.detail.assetList
-          // }
+          this.dataSource = this.detail.assetList
         } else {
           this.$message.error(res.data.message)
         }

@@ -126,7 +126,7 @@
       </div>
       <div class="edit-box">
         <div class="edit-box-title"><i></i><span>资产明细</span></div>
-        <div class="edit-box-content" style="padding-bottom: 50px">
+        <div class="edit-box-content table-border" style="padding-bottom: 50px">
           <div class="table-header-btn" v-show="editable">
             <SG-Button type="primary" weaken @click="addAsset">添加资产</SG-Button>
           </div>

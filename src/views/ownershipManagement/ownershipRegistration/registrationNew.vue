@@ -186,7 +186,7 @@
     <chooseWarrants :organId="organId" ref="chooseWarrants" @status="chooseWarrantsStatus"></chooseWarrants>
     <!-- 新增权证 -->
     <NewCard ref="newCard" :organId="organId"></NewCard>
-    <FormFooter>
+    <FormFooter location="fixed">
       <div>
         <a-button type="primary" @click="save('save')">提交</a-button>
         <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
