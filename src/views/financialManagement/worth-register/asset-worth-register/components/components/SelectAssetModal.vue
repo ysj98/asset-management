@@ -13,17 +13,17 @@ handleOk 保存数据,传出选中的数据数组
 -->
 <template>
   <div>
-    <a-modal
+    <SG-Modal
       :width="width"
       :title="title"
       okText="确定选择"
       cancelText="取消"
-      :visible="visible"
+      v-model="isShow"
       @cancel="handleAction('')"
       @ok="handleAction('ok')"
     >
-      <select-asset-list v-model="selectedList" :height="height" :organId="organId" :queryType="queryType"/>
-    </a-modal>
+      <select-asset-list v-model="selectedList" :height="height" :organId="organId" :queryType="queryType" :allAttrs="allAttrs"/>
+    </SG-Modal>
   </div>
 </template>
 <script>
@@ -76,7 +76,14 @@ handleOk 保存数据,传出选中的数据数组
     },
     data () {
       return {
-        selectedList: this.initValue
+        selectedList: this.initValue,
+        isShow: this.visible
+      }
+    },
+    
+    watch: {
+      visible: function (visible) {
+        this.isShow = visible
       }
     },
 

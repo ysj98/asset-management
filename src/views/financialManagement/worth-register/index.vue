@@ -31,9 +31,10 @@
     // 路由卫士，用于审批及提交成功后刷新列表
     beforeRouteEnter (to, from, next) {
       const { name } = from
+      const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if (name === '价值登记新增' || name === '价值登记审批' || name === '价值登记编辑') {
+        if ((name === '价值登记新增' || name === '价值登记审批' || name === '价值登记编辑') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
       })

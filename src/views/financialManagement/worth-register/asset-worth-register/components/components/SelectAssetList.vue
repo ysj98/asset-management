@@ -62,7 +62,7 @@
             :pagination="false"
             :dataSource="dataSource"
             class="custom-table td-pd10"
-            :scroll="{y: Number(height) - 100, x: 1200}"
+            :scroll="{x: 1200}"
             :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
           />
           <SG-FooterPagination v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
@@ -109,9 +109,9 @@
         loading: false, // Table loading
         selectedList: [], // 选中人员list
         selectedRowKeys: [], // Table选中项
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: true },
         columns: [
-          { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 150 },
+          { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 120 },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '所属机构', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },

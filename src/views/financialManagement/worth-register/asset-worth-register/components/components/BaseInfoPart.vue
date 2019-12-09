@@ -2,7 +2,12 @@
 <template>
   <div class="base_info_form">
     <SG-Title title="基础信息"/>
-    <a-form :form="form" layout="horizontal" :class="{'disabled_form': type == 'approval' || type == 'detail'}">
+    <a-form
+      :form="form"
+      :class="{'disabled_form': type == 'approval' || type == 'detail'}"
+      :layout="type == 'approval' || type == 'detail' ? 'inline' : 'horizontal'"
+      :style="`margin-left: ${(type == 'approval' || type == 'detail') ? '40px' : '20px'}`"
+    >
     <a-row :gutter="24">
       <a-col :span="8">
         <a-form-item label="所属组织机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
@@ -57,6 +62,7 @@
           <a-date-picker
             style="width: 100%"
             placeholder="请选择评估基准日"
+            @change="(date, dateString) => setData(dateString, 'assessmenBaseDate')"
             :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['assessmenBaseDate', { rules: [{ required: true, message: '请选择评估基准日' }] }]"
           />
@@ -69,6 +75,7 @@
           <a-select
             v-decorator="['assessmentMethod', { rules: [{ required: true, message: '请选择评估方法' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
+            @change="setData($event, 'assessmentMethodName')"
             placeholder="请选择评估方法"
             :options="methodOptions"
           />
@@ -81,6 +88,7 @@
           <a-select
             v-decorator="['assessmentOrgan', { rules: [{ required: true, message: '请选择评估机构' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
+            @change="setData($event, 'assessmentOrganName')"
             placeholder="请选择评估机构"
             :options="organOptions"
           />
@@ -105,7 +113,11 @@
     </a-row>
     <a-row>
       <a-col :span="24">
-        <a-form-item label="附件" :label-col="{span: 2}" :wrapper-col="{span: 21}">
+        <a-form-item
+          label="附件"
+          :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
+          :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
+        >
           <SG-UploadFile
             type="all"
             v-model="attachment"
@@ -118,7 +130,11 @@
     </a-row>
     <a-row>
       <a-col :span="24">
-        <a-form-item label="备注" :label-col="{span: 2}" :wrapper-col="{span: 21}">
+        <a-form-item
+          label="备注"
+          :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
+          :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
+        >
           <a-textarea
             :rows="type == 'approval' || type == 'detail' ? '' : 4"
             style="resize: none"
@@ -187,10 +203,7 @@
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = {
-          registerName,
-          assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD')
-        }
+        let formatDetails = { registerName, assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD') }
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
           formatDetails = Object.assign({}, formatDetails, {
@@ -235,6 +248,7 @@
       // 查询评估机构-机构字典
       queryOrganOptions () {
         const { organId } = this.details
+        if (!organId) { return false }
         this.$api.basics.organDict({ code: 'ASSESSMENT_ORGAN', organId }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -251,6 +265,7 @@
       // 查询资产项目接口
       queryProjectOptions () {
         const { organId } = this.details
+        if (!organId) { return false }
         this.$api.assets.getObjectKeyValueByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -266,6 +281,21 @@
           this.loading = false
           this.$message.error(err || '查询资产项目失败')
         })
+      },
+      
+      // 通过父组件，设置联动项到资产价值清单组件
+      setData (val, type) {
+        let value = ''
+        if (type === 'assessmenBaseDate') {
+          value = val
+        } else if (type === 'assessmentOrganName') {
+          const { organOptions } = this
+          value = organOptions.filter(m => m.key === val)[0]['title']
+        } else {
+          const { methodOptions } = this
+          value = methodOptions.filter(m => m.key === val)[0]['title']
+        }
+        this.$emit('setData', { type, value})
       }
     },
     
@@ -275,6 +305,19 @@
         this.queryDict()
         this.queryOrganOptions()
         this.queryProjectOptions()
+      } else {
+        // 修改布局
+        this.formItemLayout = { labelCol: {}, wrapperCol: {} }
+      }
+    },
+    
+    watch: {
+      'details': function () {
+        this.renderDetail()
+        if (this.type == 'add' || this.type == 'edit') {
+          this.queryOrganOptions()
+          this.queryProjectOptions()
+        }
       }
     }
   }

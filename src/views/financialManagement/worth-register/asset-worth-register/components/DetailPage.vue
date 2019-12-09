@@ -3,11 +3,12 @@
     <div class="detail_page">
       <a-spin :spinning="spinning" style="padding-bottom: 75px;">
         <!--基础信息-->
-        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" :key="Object.keys(details).length"/>
+        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData"/>
         <!--资产价值清单-->
         <worth-list-part
           v-if="type"
           :type="type"
+          :dynamicData="dynamicData"
           :organId="details.organId"
           :registerId="registerId"
           @backAssetList="getAssetList"
@@ -45,7 +46,8 @@
           add: { leftButtonName: '提交审批', rightButtonName: '取消' },
           edit: { leftButtonName: '提交审批', rightButtonName: '取消' },
           approval: { leftButtonName: '审批通过', rightButtonName: '驳回' }
-        }
+        }, // 页面底部操作按钮
+        dynamicData: {} // 资产价值清单联动数据
       }
     },
 
@@ -65,18 +67,17 @@
           // 校验关联资产
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
+          } else if(this.validateAssetList(assetList)) {
+            return this.$message.warn('资产价值清单本次估值数据为必填')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
           this.spinning = true
           let registerValueRelList = []
           assetList.forEach(m => {
-            if (m.assetObjectId !== '合计') {
+            if (m.assetName !== '合计') {
               const { assetId, assessmentValue, upRate } = m
-              registerValueRelList.push({
-                assetId, assessmentValue,
-                upRate: upRate === '--' ? 0 : upRate
-              })
+              registerValueRelList.push({ assetId, assessmentValue, upRate: upRate === '--' ? 0 : upRate })
             }
           })
           let form = type === 'edit' ? { ...data, registerValueRelList, registerId } : { ...data, registerValueRelList }
@@ -86,7 +87,7 @@
             if (res && String(res.code) === '0') {
               this.$message.success(`${tip}成功`)
               // 跳回列表路由
-              return this.$router.go(-1)
+              return this.$router.push({ name: '价值登记', params: { refresh: true } })
             }
             throw res.message || `${tip}失败`
           }).catch(err => {
@@ -107,7 +108,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
-            return Object.assign(this, { stepList, details: { ...details, ...others} })
+            return Object.assign(this, { stepList, details: { ...details, ...others } })
           }
           throw res.message || '查询价值登记详情出错'
         }).catch(err => {
@@ -138,13 +139,24 @@
           if (res && String(res.code) === '0') {
             this.$message.success(`${tip}成功`)
             // 跳回列表路由
-            return this.$router.go(-1)
+            return this.$router.push({ name: '价值登记', params: { refresh: true } })
           }
           throw res.message || `${tip}失败`
         }).catch(err => {
           this.spinning = false
           this.$message.error(err || `${tip}失败`)
         })
+      },
+      
+      // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
+      setListTableData (obj) {
+        this.dynamicData = obj
+      },
+      
+      // 校验资产价值清单本次估值项非空
+      validateAssetList (list) {
+        let arr = list.filter(m => m.assessmentValue === '' || m.assessmentValue === null)
+        return arr.length
       }
     },
 
