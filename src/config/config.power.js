@@ -19,51 +19,10 @@ export const GLOBAL = {
  /**
  * 以下是具体业务的权限常量
  **/
- export const ASSET_MANAGEMENT = {
-   // 资产清理-新建清理单
-   ASSET_CLEAR_NEW: 'zcgl_asset_clear_new',
-   // 资产清理-编辑清理单
-   ASSET_CLEAR_EDIT: 'zcgl_asset_clear_edit',
-   // 资产清理-审核清理单
-   ASSET_CLEAR_AUDIT: 'zcgl_asset_clear_audit',
-   // 资产清理-反审核清理单
-   ASSET_CLEAR_REVERSE_AUDIT: 'zcgl_asset_clear_reverse_audit',
-   // 资产清理-删除清理单
-   ASSET_CLEAR_DELETE: 'zcgl_asset_clear_delete',
-   // 资产分类-编辑资产分类信息
-   ASSET_CLASS_SET_EDIT: 'zcgl_asset_class_set_edit',
-   // 资产分类-启用/停用资产分类信息(状态)
-   ASSET_CLASS_SET_CHANGE_STATUS: 'zcgl_asset_class_set_change_status',
-   // 楼盘字典-新增房间
-   ASSET_ADD_HOUSE: 'zcgl_add_house',
-   // 楼盘字典-编辑房间
-   ASSET_EDIT_HOUSE: 'zcgl_edit_house',
-   // 楼盘字典-房间资料导入
-   ASSET_HOUSEZL_IN: 'zcgl_housezl_in',
-   // 楼盘字典-房间导入批量更新
-   ASSET_HOUSE_IN: 'zcgl_house_in',
-   // 楼盘字典-房间导出
-   ASSET_HOUSE_OUT: 'zcgl_house_out',
-   // 楼盘字典-房间状态
-   ASSET_HOUSE_STATE: 'zcgl_house_state',
-   // 楼盘字典-新建楼栋
-   ASSET_BUILD_ADD: 'zcgl_build_add',
-   // 楼盘字典-编辑楼栋
-   ASSET_BUILD_EDIT: 'zcgl_build_edit',
-   // 楼盘字典-删除楼栋
-   ASSET_BUILD_DELETE: 'zcgl_build_delete',
-   // 楼盘字典-新建楼层
-   ASSET_FLOOR_ADD: 'zcgl_floor_add',
-   // 楼盘字典-编辑楼层
-   ASSET_FLOOR_EDIT: 'zcgl_floor_edit',
-   // 楼盘字典-删除楼层
-   ASSET_FLOOR_DELETE: 'zcgl_floor_delete',
-   // 楼盘字典-新建单元
-   ASSET_UNIT_ADD: 'zcgl_unit_add',
-   // 楼盘字典-编辑单元
-   ASSET_UNIT_EDIT: 'zcgl_unit_edit',
-   // 楼盘字典-删除单元
-   ASSET_UNIT_DELETE: 'zcgl_unit_delete',
+export const ASSET_MANAGEMENT = {
+  /**
+  * 资产清理
+  **/
   // 资产清理-新建清理单
   ASSET_CLEAR_NEW: 'zcgl_asset_clear_new',
   // 资产清理-编辑清理单
@@ -74,13 +33,46 @@ export const GLOBAL = {
   ASSET_CLEAR_REVERSE_AUDIT: 'zcgl_asset_clear_reverse_audit',
   // 资产清理-删除清理单
   ASSET_CLEAR_DELETE: 'zcgl_asset_clear_delete',
+  /**
+  * 资产分类
+  **/
   // 资产分类-编辑资产分类信息
   ASSET_CLASS_SET_EDIT: 'zcgl_asset_class_set_edit',
   // 资产分类-启用/停用资产分类信息(状态)
   ASSET_CLASS_SET_CHANGE_STATUS: 'zcgl_asset_class_set_change_status',
+  // 楼盘字典-新增房间
+  ASSET_ADD_HOUSE: 'zcgl_add_house',
+  // 楼盘字典-编辑房间
+  ASSET_EDIT_HOUSE: 'zcgl_edit_house',
+  // 楼盘字典-房间资料导入
+  ASSET_HOUSEZL_IN: 'zcgl_housezl_in',
+  // 楼盘字典-房间导入批量更新
+  ASSET_HOUSE_IN: 'zcgl_house_in',
+  // 楼盘字典-房间导出
+  ASSET_HOUSE_OUT: 'zcgl_house_out',
+  // 楼盘字典-房间状态
+  ASSET_HOUSE_STATE: 'zcgl_house_state',
+  // 楼盘字典-新建楼栋
+  ASSET_BUILD_ADD: 'zcgl_build_add',
+  // 楼盘字典-编辑楼栋
+  ASSET_BUILD_EDIT: 'zcgl_build_edit',
+  // 楼盘字典-删除楼栋
+  ASSET_BUILD_DELETE: 'zcgl_build_delete',
+  // 楼盘字典-新建楼层
+  ASSET_FLOOR_ADD: 'zcgl_floor_add',
+  // 楼盘字典-编辑楼层
+  ASSET_FLOOR_EDIT: 'zcgl_floor_edit',
+  // 楼盘字典-删除楼层
+  ASSET_FLOOR_DELETE: 'zcgl_floor_delete',
+  // 楼盘字典-新建单元
+  ASSET_UNIT_ADD: 'zcgl_unit_add',
+  // 楼盘字典-编辑单元
+  ASSET_UNIT_EDIT: 'zcgl_unit_edit',
+  // 楼盘字典-删除单元
+  ASSET_UNIT_DELETE: 'zcgl_unit_delete',
   /**
-   * 资产变动
-   **/
+  * 资产变动
+  **/
   // 资产变动-新增变动单
   ASSET_CHANGE_NEW: 'zcgl_asset_change_new',
   // 资产变动-编辑变动单
@@ -107,19 +99,19 @@ export const GLOBAL = {
   // 资产登记-删除
   ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete',
 
-   /**
-    * 资产项目管理APM （asset-project-manage）
-    **/
-   // 资产项目管理-删除
-   ASSET_APM_DELETE: 'zcgl_apm_delete',
-   // 资产项目管理-反审核
-   ASSET_APM_REAPPROVAL: 'zcgl_apm_reApproval',
-   // 资产项目管理-审核
+  /**
+  * 资产项目管理APM （asset-project-manage）
+  **/
+  // 资产项目管理-删除
+  ASSET_APM_DELETE: 'zcgl_apm_delete',
+  // 资产项目管理-反审核
+  ASSET_APM_REAPPROVAL: 'zcgl_apm_reApproval',
+  // 资产项目管理-审核
   ASSET_APM_APPROVAL: 'zcgl_apm_approval',
-   // 资产项目管理-编辑
-   ASSET_APM_EDIT: 'zcgl_apm_edit',
-   // 资产项目管理-新建
-   ASSET_APM_NEW: 'zcgl_apm_new',
+  // 资产项目管理-编辑
+  ASSET_APM_EDIT: 'zcgl_apm_edit',
+  // 资产项目管理-新建
+  ASSET_APM_NEW: 'zcgl_apm_new',
 
   /**
    * 权属登记
@@ -144,8 +136,30 @@ export const GLOBAL = {
   ASSET_ACM_EDIT: 'zcgl_asset_acm_edit',
   // 权证管理-注销
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
-   
-   
+
+  /**
+  * 权属人管理
+  **/
+  // 权属人管理-新增
+  PROPERTY_OWNER_NEW: 'zcgl_property_owner_new',
+  // 权属人管理-编辑
+  PROPERTY_OWNER_EDIT: 'zcgl_property_owner_edit',
+  // 权属人管理-删除
+  PROPERTY_OWNER_DELETE: 'zcgl_property_owner_delete',
+
+  /**
+  * 资产入账
+  **/
+  // 资产入账-新增
+  ASSET_ENTRY_NEW: 'zcgl_asset_entry_new',
+  // 资产入账-编辑
+  ASSET_ENTRY_EDIT: 'zcgl_asset_entry_edit',
+  // 资产入账-审核
+  ASSET_ENTRY_AUDIT: 'zcgl_asset_entry_audit',
+  // 资产入账-反审核
+  ASSET_ENTRY_REVERSE_AUDIT: 'zcgl_asset_entry_reverse_audit',
+  // 资产入账-删除
+  ASSET_ENTRY_DELETE: 'zcgl_asset_entry_delete',
 }
 
 

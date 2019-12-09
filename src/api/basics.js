@@ -96,3 +96,7 @@ export function assetDetail (data) {
 export function ownerShipUserSelect (data) {
   return axiosGet(ownershipSurvey.ownerShipUserSelect, data)
 }
+// 根据项目id查询权属情况
+export function queryByProjectId (data) {
+  return axiosGet(ownershipSurvey.queryByProjectId, data)
+}
