@@ -1,13 +1,17 @@
 <template>
   <a-spin :spinning="spinning">
-    <div>dasaoov</div>
+    <div>
+      {{originalValue}}
+      <br>
+      {{trendInfo}}
+    </div>
   </a-spin>
 </template>
 
 <script>
   export default {
     name: 'TrendChartPart',
-    props: ['assetId'],
+    props: ['assetId', 'originalValue'],
     data () {
       return {
         spinning: false, //加载状态
@@ -28,7 +32,7 @@
           }
           throw res.message || '资产价值一览表接口出错'
         }).catch(err => {
-          this.tableObj.loading = false
+          this.spinning = false
           this.$message.error(err || '资产价值一览表接口出错')
         })
       }

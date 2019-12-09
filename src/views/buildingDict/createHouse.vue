@@ -228,14 +228,14 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="平面图" v-bind="formItemLayout2">
-                  <SG-UploadFile :max="1" v-model="planeFigurePath"/>
+                  <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" :max="1" v-model="planeFigurePath"/>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile type="all" v-model="filepaths"/>
+                  <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" type="all" v-model="filepaths"/>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -252,6 +252,7 @@
 <script>
 import FormFooter from '@/components/FormFooter.vue'
 import {utils, debounce} from '@/utils/utils'
+import dictMixin from './dictMixin.js'
 import moment from 'moment'
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allWidth = {width: '100%'}
@@ -263,8 +264,10 @@ export default {
   components: {
     FormFooter
   },
+  mixins: [dictMixin],
   data () {
     return {
+      bussType: 'houseMct',
       type: '',
       allWidth,
       organOpt: [],

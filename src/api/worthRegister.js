@@ -52,7 +52,7 @@ export function queryAssetValuePageList (data) {
 }
 // 资产价值趋势图
 export function queryAssetValueTrend (data) {
-  return axiosGet(worthRegister.queryAssertValueTrend, data)
+  return axiosPost(worthRegister.queryAssertValueTrend, data)
 }
 // 价值登记资产查询汇总
 export function queryListSum (data) {

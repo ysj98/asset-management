@@ -212,12 +212,12 @@
                 </a-col>
                 <a-col :span="24">
                     <a-form-item label="平面图" v-bind="formItemLayout2">
-                      <SG-UploadFile v-model="picPath" :max="1"/>
+                      <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
                     </a-form-item>
                   </a-col>
                   <a-col :span="24">
                     <a-form-item label="附件" v-bind="formItemLayout2">
-                      <SG-UploadFile type="all" v-model="filepaths"/>
+                      <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" type="all" v-model="filepaths"/>
                     </a-form-item>
                   </a-col>
             </a-row>  
@@ -237,6 +237,7 @@ import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
 import utils from '@/utils/utils'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import dictMixin from './dictMixin.js'
 const allWidth = {width: '100%'}
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
@@ -245,6 +246,7 @@ export default {
     FormFooter,
     selectLngAndLat
   },
+  mixins: [dictMixin],
   props: {
     type: {
       default: 'create'
@@ -268,6 +270,7 @@ export default {
   },
   data () {
     return {
+      bussType: 'buildDir',
       ASSET_MANAGEMENT,
       hasUpdatePower: false,
       allWidth,
