@@ -186,7 +186,7 @@
     <chooseWarrants :organId="organId" ref="chooseWarrants" @status="chooseWarrantsStatus"></chooseWarrants>
     <!-- 新增权证 -->
     <NewCard ref="newCard" :organId="organId"></NewCard>
-    <FormFooter>
+    <FormFooter location="fixed">
       <div>
         <a-button type="primary" @click="save('save')">提交</a-button>
         <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
@@ -285,7 +285,6 @@ export default {
     // 选择权证给回来的数据
     chooseWarrantsStatus (val, data, roeNameData, selectKey) {
       let warrantNbrDataIs = [{label: roeNameData.join(','), value: val.join(',')}]
-      console.log(data, '这边拿到的数据')
       this.tableData.forEach(item => {
         if (item.key === selectKey) {
           item.warrantGeneralData = data
@@ -298,21 +297,24 @@ export default {
     change () {},
     // 选择新权证号
     handleChange(value) {
-      let warrantGeneralData = []   // 各种遍历给回去总的数据
-      if (value.warrantNbrData.length > 0) {
-        let ctr = value.warrantNbrData[0].label.split(',')
-        let ctl = value.warrantNbrData[0].value.split(',')
-        ctr.forEach((item, index) => {
-          ctl.forEach((list, indexs) => {
-            if (index === indexs) {
-              warrantGeneralData.push({
-                warrantNbr: item,
-                warrantId: Number(list)
-              })
-            }
-          })
-        })
-      }
+      // let warrantGeneralData = []   // 各种遍历给回去总的数据
+      // if (value.warrantNbrData.length > 0) {
+      //   let ctr = value.warrantNbrData[0].label.split(',')
+      //   let ctl = value.warrantNbrData[0].value.split(',')
+      //   ctr.forEach((item, index) => {
+      //     ctl.forEach((list, indexs) => {
+      //       if (index === indexs) {
+      //         warrantGeneralData.push({
+      //           warrantNbr: item,
+      //           warrantId: Number(list)
+      //         })
+      //       }
+      //     })
+      //   })
+      // }
+      value.warrantGeneralData.forEach(list => {
+        list.lotNoEstateUnitCode = `${list.lotNo || '--'}/${list.estateUnitCode || '--'}`
+      })
       let warrantNbr = []
       if (value.warrantNbr) {
         value.warrantNbr.split(',').forEach(item => {
@@ -321,7 +323,7 @@ export default {
       } else {
         warrantNbr === []
       }
-      this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, warrantGeneralData, value.key)
+      this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, value.warrantGeneralData, value.key)
       this.$refs.chooseWarrants.show = true
     },
     // 添加资产
@@ -511,7 +513,7 @@ export default {
               checkedData.push(item.assetId)
               item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
               item.warrantNbr = item.warrantIds.join(',')
-              // item.warrantGeneralData = []  // 用于存权证号总是数据
+              item.warrantGeneralData = item.warrants  // 用于存权证号总是数据
             })
           } else if (this.changeType === '3') {
               data.amsOwnershipRegisterDetailList.forEach((item, index) => {

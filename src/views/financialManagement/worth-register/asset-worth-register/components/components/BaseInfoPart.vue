@@ -2,7 +2,7 @@
 <template>
   <div class="base_info_form">
     <SG-Title title="基础信息"/>
-    <a-form :form="form" layout="horizontal">
+    <a-form :form="form" layout="horizontal" :class="{'disabled_form': type == 'approval' || type == 'detail'}">
     <a-row :gutter="24">
       <a-col :span="8">
         <a-form-item label="所属组织机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
@@ -14,34 +14,39 @@
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="价值登记名称">
           <a-input
             placeholder="请填写价值登记名称"
+            :disabled="type == 'approval' || type == 'detail'"
             v-decorator="[ 'registerName', { rules: [{ required: true, message: '请填写价值登记名称' }, {max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
+      <!--<a-col :span="8">-->
+        <!--<a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属评估任务">-->
+          <!--<a-select-->
+            <!--v-decorator="['assessmentTask', { rules: [{ required: true, message: '请选择所属评估任务' }] }]"-->
+            <!--placeholder="请选择所属评估任务"-->
+            <!--:options="taskOptions"-->
+          <!--/>-->
+        <!--</a-form-item>-->
+      <!--</a-col>-->
+    <!--</a-row>-->
+    <!--<a-row :gutter="24">-->
       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属评估任务">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产项目">
           <a-select
-            v-decorator="['assessmentTask', { rules: [{ required: true, message: '请选择所属评估任务' }] }]"
-            placeholder="请选择所属评估任务"
-            :options="taskOptions"
+            v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
+            :disabled="type == 'approval' || type == 'detail'"
+            placeholder="请选择资产项目"
+            :options="projectOptions"
           />
         </a-form-item>
       </a-col>
     </a-row>
     <a-row :gutter="24">
       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产项目">
-          <a-select
-            v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
-            placeholder="请选择资产项目"
-            :options="projectOptions"
-          />
-        </a-form-item>
-      </a-col>
-      <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产类型">
           <a-select
-            v-decorator="['assetsType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
+            v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
+            :disabled="type == 'approval' || type == 'detail'"
             placeholder="请选择资产类型"
             :options="typeOptions"
           />
@@ -50,31 +55,51 @@
       <a-col :span="8">
         <a-form-item label="评估基准日" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-date-picker
-            :disabled="isEdit"
             style="width: 100%"
             placeholder="请选择评估基准日"
+            :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['assessmenBaseDate', { rules: [{ required: true, message: '请选择评估基准日' }] }]"
+          />
+        </a-form-item>
+      </a-col>
+    <!--</a-row>-->
+    <!--<a-row :gutter="24">-->
+      <a-col :span="8">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估方法">
+          <a-select
+            v-decorator="['assessmentMethod', { rules: [{ required: true, message: '请选择评估方法' }] }]"
+            :disabled="type == 'approval' || type == 'detail'"
+            placeholder="请选择评估方法"
+            :options="methodOptions"
           />
         </a-form-item>
       </a-col>
     </a-row>
     <a-row :gutter="24">
       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估方法">
-          <a-select
-            v-decorator="['assessmentMethod', { rules: [{ required: true, message: '请选择评估方法' }] }]"
-            placeholder="请选择评估方法"
-            :options="methodOptions"
-          />
-        </a-form-item>
-      </a-col>
-      <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估机构">
           <a-select
             v-decorator="['assessmentOrgan', { rules: [{ required: true, message: '请选择评估机构' }] }]"
+            :disabled="type == 'approval' || type == 'detail'"
             placeholder="请选择评估机构"
             :options="organOptions"
           />
+        </a-form-item>
+      </a-col>
+      <!--当type === detail || type === approval时展示审批人、提交时间、审批状态-->
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="状态">
+          <a-input v-decorator="['approvalStatusName']" :disabled="true"/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="审批人">
+          <a-input v-decorator="['createByName']" :disabled="true"/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间">
+          <a-input v-decorator="['createTime']" :disabled="true"/>
         </a-form-item>
       </a-col>
     </a-row>
@@ -82,9 +107,10 @@
       <a-col :span="24">
         <a-form-item label="附件" :label-col="{span: 2}" :wrapper-col="{span: 21}">
           <SG-UploadFile
-            :show="!isEdit"
-            v-if="isEdit || attachment.length"
+            type="all"
             v-model="attachment"
+            :show="type == 'approval' || type == 'detail'"
+            v-if="type == 'edit' || type == 'add' || attachment.length"
           />
           <span v-else style="margin-left: 12px">无</span>
         </a-form-item>
@@ -94,10 +120,10 @@
       <a-col :span="24">
         <a-form-item label="备注" :label-col="{span: 2}" :wrapper-col="{span: 21}">
           <a-textarea
-            :rows="4"
-            :disabled="isEdit"
+            :rows="type == 'approval' || type == 'detail' ? '' : 4"
             style="resize: none"
             placeholder="请输入备注"
+            :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['remark', { rules: [{max: 200, message: '最多200个字符'}] }]"
           />
         </a-form-item>
@@ -121,7 +147,6 @@
         attachment: [], // 附件
         // organId: '', // 组织机构Id,
         organName: '', // 组织机构Name,
-        isEdit: false, // 是否编辑状态
         typeOptions: [], // 资产类型选项,
         taskOptions: [],  // 评估任务选项
         organOptions: [], // 评估机构选项
@@ -138,12 +163,12 @@
           if (!err) {
             const { attachment, details: { organId } } = this
             let attachArr = attachment.map(m => {
-              const { url: attachmentPath, suffix, name } = m
-              return { attachmentPath, attachmentSuffix: suffix || name.split('.')[1], oldAttachmentName: name, newAttachmentName: name }
+              const { url: attachmentPath, name: oldAttachmentName } = m
+              return { attachmentPath, oldAttachmentName }
             }) // 处理附件格式
             // 转换日期格式为string
             let date = values.assessmenBaseDate ? moment(values.assessmenBaseDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachment: attachArr, organId, assessmenBaseDate: date})
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId, assessmenBaseDate: date})
             return resolve(form)
           }
           reject('数据不完整')
@@ -154,28 +179,35 @@
       renderDetail () {
         const {type, details} = this
         const {
-          organName, assessmenBaseDate, remark, attachmentList, assessmentTaskName, projectName, assetTypeName,
-          assessmentMethodName, assessmentOrganName, ...others} = details
+          approvalStatusName, createByName, registerName, createTime,
+          organName, assessmenBaseDate, remark, attachmentList, assetTypeName, assessmentMethod,
+          assessmentMethodName, assessmentOrganName, projectId, assetType, assessmentOrgan, projectName
+        } = details
         let attachArr = (attachmentList || []).map(m => {
-          return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
+          return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
         let formatDetails = {
-          assessmenBaseDate: assessmenBaseDate ? moment(assessmenBaseDate, 'YYYY-MM-DD') : null
+          registerName,
+          assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD')
         }
-        // 转换数据
+        // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
-          let obj = {
+          formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
             projectId: projectName,
-            assetsType: assetTypeName,
-            assessmentTask: assessmentTaskName,
+            assetType: assetTypeName,
+            // assessmentTask: assessmentTaskName,
             assessmentOrgan: assessmentOrganName,
-            assessmentMethod: assessmentMethodName
-          }
-          formatDetails = Object.assign({}, formatDetails, obj)
+            assessmentMethod: assessmentMethodName,
+            createByName, approvalStatusName, createTime
+          })
+        } else {
+          formatDetails = Object.assign({}, formatDetails, {
+            remark: remark || '', projectId, assetType, assessmentOrgan, assessmentMethod
+          })
         }
-        return this.form.setFieldsValue({ ...others, ...formatDetails })
+        return this.form.setFieldsValue({ ...formatDetails })
       },
 
       // 查询平台字典
@@ -190,7 +222,7 @@
             let res = r.data
             if (res && String(res.code) === '0') {
               return this[optionName] = res.data.map(item => ({
-                title: item.name, key: item.value
+                title: item.name, key: String(item.value)
               }))
             }
             throw res.message || `查询${tip}失败`
@@ -203,16 +235,36 @@
       // 查询评估机构-机构字典
       queryOrganOptions () {
         const { organId } = this.details
-        this.$api.basics.platformDict({ code: 'ASSESSMENT_ORGAN', organId }).then(r => {
+        this.$api.basics.organDict({ code: 'ASSESSMENT_ORGAN', organId }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.organOptions = res.data.map(item => ({
-              title: item.name, key: item.value
+              title: item.name, key: String(item.value)
             }))
           }
           throw res.message || '查询评估机构失败'
         }).catch(err => {
           this.$message.error(err || '查询评估机构失败')
+        })
+      },
+
+      // 查询资产项目接口
+      queryProjectOptions () {
+        const { organId } = this.details
+        this.$api.assets.getObjectKeyValueByOrganId({organId}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.projectOptions = (res.data || []).map(item => {
+              return {
+                key: String(item.projectId), title: item.projectName
+              }
+            })
+            return false
+          }
+          throw res.message || '查询资产项目失败'
+        }).catch(err => {
+          this.loading = false
+          this.$message.error(err || '查询资产项目失败')
         })
       }
     },
@@ -222,6 +274,7 @@
       if (this.type == 'add' || this.type == 'edit') {
         this.queryDict()
         this.queryOrganOptions()
+        this.queryProjectOptions()
       }
     }
   }
@@ -232,5 +285,39 @@
     /*& /deep/ .ant-form-item-label label{*/
       /*text-align: justify;*/
     /*}*/
+    .disabled_form {
+      /*不可以编辑时覆盖表单组件的默认样式*/
+      & /deep/ .ant-form-item {
+        margin-bottom: 8px !important;
+        textarea.ant-input-disabled {
+          margin-top: 7px;
+        }
+        .ant-form-item-required:before {
+          content: none;
+        }
+        .ant-calendar-picker-icon {
+          display: none;
+        }
+        .ant-input:disabled {
+          border: none;
+          color: #49505E;
+          cursor: default;
+          background-color: #fff;
+        }
+        .ant-select-disabled {
+          .ant-select-selection {
+            border: none;
+            background-color: #fff;
+            .ant-select-arrow {
+              display: none;
+            }
+            .ant-select-selection-selected-value {
+              color: #49505E;
+              cursor: default;
+            }
+          }
+        }
+      }
+    }
   }
 </style>

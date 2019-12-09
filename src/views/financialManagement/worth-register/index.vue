@@ -3,7 +3,7 @@
   <div class="custom-tabs">
     <a-tabs v-model="key" type="card" :tabBarGutter="10">
       <a-tab-pane tab="资产价值登记" key="1">
-        <asset-worth-register/>
+        <asset-worth-register :refreshKey="refreshKey"/>
       </a-tab-pane>
       <a-tab-pane tab="价值登记记录" key="2">
         <worth-register-record/>
@@ -24,8 +24,19 @@
     components: { WorthRegisterRecord, AssetWorthList, AssetWorthRegister },
     data () {
       return {
-        key: '1'
+        key: '1', // Tab key
+        refreshKey: 0 // 更新记录key
       }
+    },
+    // 路由卫士，用于审批及提交成功后刷新列表
+    beforeRouteEnter (to, from, next) {
+      const { name } = from
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        if (name === '价值登记新增' || name === '价值登记审批' || name === '价值登记编辑') {
+          vm.refreshKey = new Date().getTime()
+        }
+      })
     }
   }
 </script>

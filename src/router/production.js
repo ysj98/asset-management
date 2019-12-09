@@ -241,9 +241,7 @@ let proRouter = [
     path: '/worthRegister',
     name: '价值登记',
     component: () => import('@/views/financialManagement/worth-register'),
-    meta: {
-      keepAlive: true
-    }
+    meta: { keepAlive: true }
   },
   {
     path: '/worthRegister/detailRegister',

@@ -9,7 +9,7 @@
           type="primary"
           @click="handleBtnAction({type: 'add'})"
         >新增资产项目</SG-Button>
-        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+        <!--<SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>-->
       </div>
       <div slot="headerForm">
         <a-input placeholder="请输入登记名称" @pressEnter="queryTableData" v-model.trim="registerName" style="width: 171px; margin-right: 10px"/>
@@ -37,7 +37,7 @@
         </a-row>
         <a-row style="margin-top: 14px">
           <a-col :span="24">
-            <date-method-organ v-model="dateMethodOrgan"/>
+            <date-method-organ v-model="dateMethodOrgan" :organId="organProjectType.organId"/>
           </a-col>
         </a-row>
       </div>
@@ -49,7 +49,7 @@
           okText="确定"
           cancelText="取消"
           title="确定要删除该资产项目吗?"
-          @confirm="confirmDelete(record)"
+          @confirm="confirmDelete(record.registerId)"
         >
           <span class="action_text">删除</span>
         </a-popconfirm>
@@ -73,6 +73,7 @@
   import SearchContainer from 'src/views/common/SearchContainer'
   export default {
     name: 'index',
+    props: ['refreshKey'],
     components: { SearchContainer, OrganProjectType, DateMethodOrgan, NoDataTip },
     data () {
       return {
@@ -90,18 +91,18 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 1800 },
+          scroll: { x: 1600 },
           pagination: false,
           rowKey: 'registerId',
           columns: [
             { title: '登记单ID', dataIndex: 'registerId', fixed: 'left', width: 150  },
-            { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 150  },
+            { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 180  },
             { title: '价值登记单名称', dataIndex: 'registerName' }, { title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '评估方法', dataIndex: 'assessmentMethodName' },
             { title: '评估机构', dataIndex: 'assessmentOrganName' }, { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
-            { title: '资产数量', dataIndex: 'num', align: 'right' }, { title: '提交人', dataIndex: 'createByName' },
+            { title: '资产数量', dataIndex: 'num' }, { title: '提交人', dataIndex: 'createByName' },
             { title: '提交时间', dataIndex: 'createTime' }, { title: '状态', dataIndex: 'approvalStatusName' },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 220 }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
@@ -129,9 +130,9 @@
       },
 
       // 删除项目
-      confirmDelete ({registerId, approvalStatus}) {
+      confirmDelete (registerId) {
         this.tableObj.loading = true
-        this.$api.worthRegister.updateStatus({registerId, approvalStatus, status: 0}).then(r => {
+        this.$api.worthRegister.updateStatus({registerId, approvalStatus: 4}).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -149,13 +150,19 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const { registerName, approvalStatus, organProjectType, dateMethodOrgan } = this
+        const {
+          registerName, approvalStatus, organProjectType, organProjectType: { assetType },
+          dateMethodOrgan, dateMethodOrgan: { assessmentMethod, assessmentOrgan}
+        } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
+          ...organProjectType, ...dateMethodOrgan,
           registerName, pageSize: pageLength, pageNum: pageNo,
-          approvalStatus: approvalStatus === '-1' ? '' : approvalStatus,
-          ...organProjectType, ...dateMethodOrgan
+          assetType: (!assetType || assetType.includes('-1')) ? undefined : assetType.join(','),
+          approvalStatus: (!approvalStatus || approvalStatus.includes('-1')) ? undefined : approvalStatus.join(','),
+          assessmentOrgan: (!assessmentOrgan || assessmentOrgan.includes('-1')) ? undefined : assessmentOrgan.join(','),
+          assessmentMethod: (!assessmentMethod || assessmentMethod.includes('-1')) ? undefined : assessmentMethod.join(',')
         }
         this.$api.worthRegister.queryRegisterList(form).then(r => {
           this.tableObj.loading = false
@@ -175,16 +182,6 @@
           this.$message.error(err || '查询资产价值登记接口出错')
         })
       },
-    },
-
-    // 路由卫士，用于审批及提交成功后刷新列表
-    beforeRouteEnter (to, from, next) {
-      // debugger
-      next(vm => {
-        // 通过 `vm` 访问组件实例
-        // debugger
-        console.log(to, from, next, vm)
-      })
     },
 
     watch: {
@@ -216,6 +213,12 @@
 
       dateMethodOrgan: function () {
         this.queryTableData({})
+      },
+
+      // 刷新页面
+      refreshKey: function (key, preKey) {
+        const { paginationObj: { pageNo, pageLength }} = this
+        key !== preKey && this.queryTableData ({pageNo, pageLength})
       }
     }
   }
@@ -234,7 +237,7 @@
     .action_text {
       color: #0084FF;
       cursor: pointer;
-      margin-right: 12px;
+      margin-left: 12px;
       white-space: nowrap;
     }
   }

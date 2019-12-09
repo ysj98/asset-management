@@ -14,7 +14,7 @@
           :loading="!methodOptions.length"
         ></a-select>
       </a-col>
-      <a-col :span="5">
+      <a-col :span="7">
         <a-select
           v-bind="properties"
           v-model="assessmentOrgan"
@@ -25,11 +25,11 @@
           :loading="!organOptions.length"
         ></a-select>
       </a-col>
-      <a-col :span="7">
+      <a-col :span="6">
         <span class="prefix_style" style="width: 69px">提交日期</span>
         <a-range-picker @change="changeConfirmDate" class="date_picker_style" format="YYYY-MM-DD" style="margin-left: 69px"/>
       </a-col>
-      <a-col :span="7">
+      <a-col :span="6">
         <span class="prefix_style" style="width: 78px">评估基准日</span>
         <a-range-picker @change="changeAssessDate" class="date_picker_style" format="YYYY-MM-DD" style="margin-left: 78px"/>
       </a-col>
@@ -66,6 +66,11 @@
       mode: {
         type: String,
         default: () => 'multiple'
+      },
+      // 查询评估机构需要organId
+      organId: {
+        type: String,
+        default: () => ''
       }
     },
     data () {
@@ -92,29 +97,60 @@
       // 获取日期
       changeConfirmDate (date, dateStrings) {
         const { assessmentOrgan, assessDate, assessmentMethod } = this
-        // let confirmDate = date.length ? {
-        //   beginDate: moment(date[0]).format('YYYY-MM-DD'),
-        //   endDate: moment(date[1]).format('YYYY-MM-DD')
-        // } : {}
         let confirmDate = date.length ? {
-          beginDate: dateStrings[0],
-          endDate: dateStrings[1]
+          beginDate: dateStrings[0], endDate: dateStrings[1]
         } : {}
         this.$emit('input', { assessmentOrgan, ...(assessDate || {}), assessmentMethod, ...confirmDate})
       },
       changeAssessDate (date, dateStrings) {
         const { assessmentOrgan, confirmDate, assessmentMethod } = this
-        // let assessDate = date.length ? {
-        //   beginAssessmentBaseDate: moment(date[0]).format('YYYY-MM-DD'),
-        //   endAssessmentBaseDate: moment(date[1]).format('YYYY-MM-DD')
-        // } : {}
         let assessDate = dateStrings.length ? {
-          beginAssessmentBaseDate: dateStrings[0],
-          endAssessmentBaseDate: dateStrings[1]
+          beginAssessmenBaseDate: dateStrings[0], endAssessmenBaseDate: dateStrings[1]
         } : {}
         this.$emit('input', { assessmentOrgan, ...(confirmDate || {}), assessmentMethod, ...assessDate})
-      }
-      
+      },
+
+      // 查询平台字典
+      queryDict () {
+        const list = [
+          // { code: 'asset_type', tip: '资产类型', optionName: 'typeOptions' },
+          { code: 'ASSESSMENT_METHOD', tip: '评估方法', optionName: 'methodOptions' }
+        ]
+        list.forEach(m => {
+          const { code, tip, optionName } = m
+          this.$api.basics.platformDict({code}).then(r => {
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              let list = res.data.map(item => ({
+                title: item.name, key: String(item.value)
+              }))
+              return this[optionName] =[{title: `全部${tip}`, key: '-1'}].concat(list)
+            }
+            throw res.message || `查询${tip}失败`
+          }).catch(err => {
+            this.$message.error(err || `查询${tip}失败`)
+          })
+        })
+      },
+
+      // 查询评估机构-机构字典
+      queryOrganOptions (organId) {
+        this.organOptions = []
+        this.assessmentOrgan = undefined
+        if (!organId) { return false}
+        this.$api.basics.organDict({ code: 'ASSESSMENT_ORGAN', organId }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            let list = res.data.map(item => ({
+              title: item.name, key: String(item.value)
+            }))
+            return this.organOptions = [{title: '全部评估机构', key: '-1'}].concat(list)
+          }
+          throw res.message || '查询评估机构失败'
+        }).catch(err => {
+          this.$message.error(err || '查询评估机构失败')
+        })
+      },
     },
 
     mounted () {
@@ -124,17 +160,27 @@
       mode === 'multiple' ? properties.maxTagCount = 1 : '' // 多选模式防止换行
       this.properties = properties
       Object.assign(this, { ...value })
+      this.queryDict()
     },
 
     watch: {
+      organId: function (organId) {
+        this.queryOrganOptions(organId)
+      },
       assessmentOrgan: function (assessmentOrgan) {
+        if (assessmentOrgan && assessmentOrgan.length !== 1 && assessmentOrgan.includes('-1')) {
+          this.assessmentOrgan = ['-1']
+        }
         const { assessDate, confirmDate, assessmentMethod } = this
-        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod })
+        this.$emit('input', { assessmentOrgan: this.assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod })
       },
 
       assessmentMethod: function (assessmentMethod) {
+        if (assessmentMethod && assessmentMethod.length !== 1 && assessmentMethod.includes('-1')) {
+          this.assessmentMethod = ['-1']
+        }
         const { assessmentOrgan, assessDate, confirmDate } = this
-        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod })
+        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod: this.assessmentMethod })
       }
     }
   }

@@ -3,7 +3,7 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="export" @click="handleExport">导出</SG-Button>
+        <!--<SG-Button icon="export" @click="handleExport">导出</SG-Button>-->
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
@@ -39,14 +39,14 @@
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="action" slot-scope="text, record">
-        <span class="action_text" @click="viewTrendAction(true, record.assetId)">趋势图</span>
+        <span v-if="record.projectName !== '合计：'" class="action_text" @click="viewTrendAction(true, record)">趋势图</span>
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--查看趋势图-->
-    <SG-Modal title="资产估值趋势图" :footer="null" v-model="isShowTrend" @cancel="viewTrendAction(false, record.assetId)">
-      <trend-chart-part :key="assetId" :assetId="assetId"/>
+    <SG-Modal title="资产估值趋势图" :footer="null" v-model="isShowTrend" @cancel="viewTrendAction(false)">
+      <trend-chart-part :key="assetId" :assetId="assetId" :originalValue="originalValue"/>
     </SG-Modal>
   </div>
 </template>
@@ -63,21 +63,22 @@
       return {
         assetId: '', // 资产ID
         fold: true, // 查询条件折叠按钮
-        isShowTrend: true, // 显示趋势图Modal
+        isShowTrend: false, // 显示趋势图Modal
         assetNameCode: '', // 查询条件-登记名称
-        assessmentBaseDate: null, // 查询条件-日期
+        assessmenBaseDate: null, // 查询条件-日期
+        originalValue: 0, // 资产原值,趋势图中展示
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
         organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 1800 },
+          scroll: { x: 2000 },
           pagination: false,
           rowKey: 'assetId',
           columns: [
-            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: 120 },
-            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 120 },
+            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: 180 },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 200 },
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '资产分类', dataIndex: 'assetCategoryName' },
             { title: '所属机构', dataIndex: 'organName' },
@@ -85,11 +86,11 @@
             { title: '资源原值(元)', dataIndex: 'originalValue' },
             { title: '评估原值(元)', dataIndex: 'assetValuation' },
             { title: '市场值(元)', dataIndex: 'marketValue' },
-            { title: '原值评估值基准日', dataIndex: 'originalAssessmentBaseDate' },
+            { title: '原值评估值基准日', dataIndex: 'originalAssessmenBaseDate' },
             { title: '最新估值(元)', dataIndex: 'assessmentValue' },
             { title: '评估方法', dataIndex: 'assessmentMethodName' },
             { title: '评估机构', dataIndex: 'assessmentOrganName' },
-            { title: '评估基准日', dataIndex: 'assessmentBaseDate' },
+            { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
             { title: '操作', dataIndex: 'action', fixed: 'right', scopedSlots: { customRender: 'action' }, width: 120 }
           ]
         },
@@ -108,15 +109,14 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const { assetNameCode, assetCategoryId, organProjectType, assessmentBaseDate } = this
+        const { assetNameCode, assetCategoryId, organProjectType, organProjectType: { assetType }, assessmenBaseDate } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          assetNameCode, pageSize: pageLength, pageNum: pageNo, assessmentBaseDate,
-          organProjectType: organProjectType === '-1' ? '' : organProjectType,
-          assetCategoryId, ...organProjectType
+          assetNameCode, pageSize: pageLength, pageNum: pageNo, assessmenBaseDate, ...organProjectType,
+          assetType: (!assetType || assetType.includes('-1')) ? undefined : assetType.join(','),
+          assetCategoryId: (!assetCategoryId || assetCategoryId.includes('-1')) ? undefined : assetCategoryId.join(','),
         }
-        this.querySumInfo(form)
         this.$api.worthRegister.queryAssetValuePageList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -126,7 +126,7 @@
             Object.assign(this.paginationObj, {
               totalCount: count,  pageNo, pageLength
             })
-            return false
+            return this.querySumInfo(form)
           }
           throw res.message || '资产价值一览表接口出错'
         }).catch(err => {
@@ -137,15 +137,16 @@
 
       // 处理登记日期
       changeDate (date, dateString) {
-        this.assessmentBaseDate = dateString
+        this.assessmenBaseDate = dateString
         this.queryTableData({})
       },
 
       // 查看趋势图
-      viewTrendAction (bool, assetId) {
+      viewTrendAction (bool, record) {
         this.isShowTrend = bool
         if (bool) {
-          this.assetId = assetId
+          this.assetId = record.assetId
+          this.originalValue = record.originalValue
         }
       },
       
@@ -155,14 +156,38 @@
         this.$api.worthRegister.queryPageListSum(form).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.tableObj.dataSource = dataSource.concat({
-              projectName: '合计：', ...(res.data || {})
-            })
+            this.tableObj.dataSource = dataSource.length ? dataSource.concat({
+              assetId: '-1111', projectName: '合计：', ...(res.data || {})
+            }) : []
             return false
           }
           throw res.message || '查询汇总接口出错'
         }).catch(err => {
           this.$message.error(err || '查询汇总接口出错')
+        })
+      },
+
+      // 根据资产类型查资产分类列表
+      queryCategoryOptions (organProjectType) {
+        this.objectType = undefined
+        this.categoryOptions = []
+        const { organId, assetType } = organProjectType
+        if (!organId || !assetType || !assetType.length) { return false }
+        let assetVal = assetType.includes('-1') ? '' : assetType.join(',')
+        this.$api.assets.getList({ assetType: assetVal, organId }).then(res => {
+          if (Number(res.data.code) === 0) {
+            let { data } = res.data
+            let list = data.map( m => ({
+              title: m.professionName,
+              key: m.professionCode
+            }))
+            list.unshift({ title: '全部资产', key: '-1' })
+            this.categoryOptions = list
+            return false
+          }
+          throw res.message || '查询资产分类失败'
+        }).catch(err => {
+          this.$message.error(err || '查询资产分类失败')
         })
       }
     },
@@ -185,6 +210,7 @@
 
       organProjectType: function (val) {
         val && val.organId && this.queryTableData({})
+        this.queryCategoryOptions(val)
       }
     }
   }

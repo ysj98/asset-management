@@ -51,7 +51,7 @@
                 </a-col>
                 <a-col :span="24">
                   <a-form-item label="图片" v-bind="formItemLayout2">
-                    <SG-UploadFile v-model="picPath" :max="1"/>
+                    <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
                   </a-form-item>
                 </a-col>
             </a-row>    
@@ -68,6 +68,7 @@
 import FormFooter from '@/components/FormFooter.vue'
 import utils from '@/utils/utils'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import dictMixin from './dictMixin.js'
 const allWidth = {width: '100%'}
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
@@ -75,6 +76,7 @@ export default {
   components: {
     FormFooter
   },
+  mixins: [dictMixin],
   props: {
     type: {
       default: 'create'
@@ -88,6 +90,7 @@ export default {
   },
   data () {
     return {
+      bussType: 'unitDir',
       ASSET_MANAGEMENT,
       hasUpdatePower: false,
       allWidth,

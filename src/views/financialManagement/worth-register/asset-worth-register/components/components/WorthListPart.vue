@@ -6,10 +6,10 @@
       <div style="float: right">
         <span v-if="type == 'add' || type == 'edit'">
           <SG-Button icon="plus" type="primary" ghost @click="handleAdd" style="margin-right: 10px">添加资产</SG-Button>
-          <SG-Button icon="import" type="primary" ghost @click="handleExport" :loading="exportBtnLoading">批量导入</SG-Button>
-          <SG-Button icon="delete" type="primary" ghost @click="handleDelete" style="margin: 0 10px">删除</SG-Button>
+          <!--<SG-Button icon="import" type="primary" ghost @click="handleExport" :loading="exportBtnLoading">批量导入</SG-Button>-->
+          <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
         </span>
-        <SG-Button icon="export" type="primary" ghost @click="handleExport" :loading="exportBtnLoading" >导出</SG-Button>
+        <!--<SG-Button icon="export" type="primary" ghost @click="handleExport" :loading="exportBtnLoading" >导出</SG-Button>-->
       </div>
       <div style="line-height: 32px">
         <span>{{`${type == 'add' || type == 'edit' ? "已选" : ""}资产总数:`}}</span>
@@ -27,10 +27,10 @@
           :defaultValue="0"
           :max="999999999.99"
           style="width: 120px"
-          v-model="record.assessmentValue"
-          @change="calcSum(tableObj.dataSource)"
+          :value="record.assessmentValue"
+          @change="handleInputChange($event, record.assetId)"
           :formatter="value => Number(value).toFixed(2)"
-          v-if="(type == 'add' || type == 'edit') && record.assetObjectId !== '合计'"
+          v-if="(type == 'add' || type == 'edit') && record.assetName !== '合计'"
         />
         <span v-else>{{text}}</span>
       </template>
@@ -43,6 +43,7 @@
     />
     <!-- 选择资产 -->
     <select-asset-modal
+      :width="1000"
       :organId="organId"
       @handleOk="getAssetList"
       @handleCancel="handleAdd"
@@ -57,24 +58,23 @@
   export default {
     name: 'WorthListPart',
     components: { SelectAssetModal },
-    props: ['type', 'initAssetList', 'registerId'],
+    props: ['type', 'registerId', 'organId'],
     data () {
       return {
-        organId: '',
         tableObj: {
           dataSource: [],
           loading: false,
           pagination: false,
           scroll: { x: 2000 },
-          rowKey: 'assetObjectId',
+          rowKey: 'assetId',
           columns: [
-            { title: '编号', dataIndex: 'assetObjectId', fixed: 'left', width: 120 },
-            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 150 },
+            { title: '编号', dataIndex: 'index', fixed: 'left', width: 70 },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 180 },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '所属机构', dataIndex: 'organName' },
             { title: '所属资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' },
-            { title: '资产分类', dataIndex: 'assetObjectTypeName' },
+            { title: '资产分类', dataIndex: 'assetCategoryName' },
             { title: '资源原值(元)', dataIndex: 'originalValue' },
             { title: '评估原值(元)', dataIndex: 'assetValuation' },
             { title: '原值评估基准日', dataIndex: 'originalAssessmenBaseDate' },
@@ -90,35 +90,78 @@
         selectedRowKeys: [], // Table选中的key数据
         exportBtnLoading: false, // 导出按钮loading
         isShowAssetSelect: false, // 显示选择资产弹窗
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
+        initSumValueObj: {
+          upRate: '--',
+          assetCode: '--',
+          organName: '--',
+          projectName: '--',
+          assetName: '合计',
+          assetTypeName: '--',
+          // originalValue: '--',
+          // assetValuation: '--',
+          // assessmentValue: '--',
+          assessmenBaseDate: '--',
+          assessmentOrganName: '--',
+          assetObjectTypeName: '--',
+          // lastAssessmentValue: '--',
+          assessmentMethodName: '--',
+          lastAssessmentMethodName: '--',
+          originalAssessmenBaseDate: '--'
+        }
       }
     },
 
     methods: {
+      // 保存table input
+      handleInputChange (value, id) {
+        let newData = this.tableObj.dataSource.map(m => {
+          if (m.assetId === id) {
+            m.assessmentValue = value
+          }
+          return m
+        })
+        this.calcSum (newData)
+      },
+
       // 计算最后一行求和数据及上浮比例
-      calcSum (data) {
+      calcSum (data = []) {
+        const { initSumValueObj } = this
+        let flag = false
         let assessmentValue = 0
         let originalValue = 0
         let assetValuation = 0
         let lastAssessmentValue = 0
         data.forEach(m => {
-          if (m.assetObjectId !== '合计') {
-            assessmentValue += Number(m.assessmentValue)
-            originalValue += Number(m.originalValue)
-            assetValuation += Number(m.assetValuation)
-            lastAssessmentValue += Number(m.lastAssessmentValue)
+          if (m.assetName !== '合计') {
+            assessmentValue += m.assessmentValue ? Number(m.assessmentValue) : 0
+            originalValue += m.originalValue ? Number(m.originalValue) : 0
+            assetValuation += m.assetValuation ? Number(m.assetValuation) : 0
+            lastAssessmentValue += m.lastAssessmentValue ? Number(m.lastAssessmentValue) : 0
+          } else {
+            flag = true
           }
+          m.assessmentValue = m.assessmentValue || 0
           // 上浮比例=本次评估/上次估值*100%-100%
           m.upRate = lastAssessmentValue ? `${(assessmentValue / lastAssessmentValue -1).toFixed(2) *100 }%` : '--'
         })
-        data.splice(-1, 1, {
-          assetObjectId: '合计',
-          assessmentValue: assessmentValue.toFixed(2),
+        // let i = flag ? 1 : 0
+        let temp = {
+          ...initSumValueObj,
+          assetId: '-10',
           originalValue: originalValue.toFixed(2),
           assetValuation: assetValuation.toFixed(2),
+          assessmentValue: assessmentValue.toFixed(2),
           lastAssessmentValue: lastAssessmentValue.toFixed(2)
-        })
+        }
+        if (flag) {
+          data.splice(-1, 1, temp)
+        } else {
+          data.push(temp)
+        }
         this.tableObj.dataSource = data
+        // 返回给上层组件
+        this.$emit('backAssetList', data)
       },
 
       // 批量删除资产
@@ -127,7 +170,7 @@
         if (!selectedRowKeys.length) {
           return this.$message.warn('请选择数据')
         }
-        let data = dataSource.filter(m => m.assetObjectId !== '合计' && !selectedRowKeys.includes(m.assetObjectId))
+        let data = dataSource.filter(m => m.assetName !== '合计' && !selectedRowKeys.includes(m.assetId))
         this.calcSum(data)
       },
 
@@ -150,7 +193,7 @@
           getCheckboxProps: record => {
             return {
               style: {
-                display: record.assetObjectId === '合计' ? 'none' : 'block',
+                display: record.assetName === '合计' ? 'none' : 'block',
               }
             }
           }
@@ -159,14 +202,14 @@
       
       // 获取选中的资产数据
       getAssetList (arr) {
-        this.isShowAssetSelect = false
-        this.queryAssetListByAssetId(arr)
+        this.isShowAssetSelect = !arr.length
+        arr.length && this.queryAssetListByAssetId(arr)
       },
 
       // 查询汇总数据
       queryTotalData () {
         // type === 'approval' || type === 'detail'时后端计算求和数据
-        const { registerId, tableObj: { dataSource } } = this
+        const { initSumValueObj, registerId, tableObj: { dataSource } } = this
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
         this.$api.worthRegister.queryListSum({ registerId }).then(r => {
@@ -174,8 +217,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             this.tableObj.dataSource = dataSource.concat({
-              assetObjectId: '合计',
-              assetName: '--',
+              ...initSumValueObj,
               ...res.data
             })
             return false
@@ -197,12 +239,12 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
             })
-            return false
+            return this.queryTotalData()
           }
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
@@ -212,18 +254,26 @@
       },
       
       // 根据资产id查询资产详情的列表数据--不分页
-      queryAssetListByAssetId (selectedRows = []) {
-        const { initAssetList, registerId } = this
-        let assetId = initAssetList.map(m => m.assetObjectId).concat(selectedRows).join(',')
-        if (!assetId) { return this.$message.info('资产Id不存在') }
+      queryAssetListByAssetId (selectedRows = [], status) {
+        let form = {}
+        const { registerId, tableObj: { dataSource } } = this
+        if (status === 'init') {
+          form.registerId = registerId
+        } else {
+          if (!selectedRows.length) { return false }
+          form.assetId = selectedRows.join(',')
+        }
         this.tableObj.loading = true
-        this.$api.worthRegister.queryRelList({ registerId, assetId }).then(r => {
+        this.$api.worthRegister.queryRelList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             // const { data } =res.data
             // this.tableObj.dataSource = data
-            return this.calcSum(res.data.data)
+            // 关闭选择资源Modal
+            let list = (res.data.data || []).map((m, i) => ({...m, index: i + 1}))
+            this.isShowAssetSelect = false
+            return this.calcSum(dataSource.concat(list))
           }
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
@@ -239,21 +289,11 @@
         // 列表查询结果不分页，且前端计算求和数据
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
-        type === 'edit' && this.queryAssetListByAssetId()
+        type === 'edit' && this.queryAssetListByAssetId([], 'init')
       } else {
         // type === 'approval' || type === 'detail'时查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({})
-        this.queryTotalData()
       }
-      // this.tableObj.dataSource = this.initAssetList
-      this.tableObj.dataSource = [
-        {assetObjectId: 10, assetName: '老王', assessmentValue: 11, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: 15, assetName: '老王', assessmentValue: 1, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: 111, assetName: '老王', assessmentValue: 51, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: 120, assetName: '老王', assessmentValue: 0, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: 1119, assetName: '老王', assessmentValue: 121, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30},
-        {assetObjectId: '合计', assetName: '--', assessmentValue: 121, originalValue: 10, assetValuation: 20, lastAssessmentValue: 30}
-      ]
     }
   }
 </script>

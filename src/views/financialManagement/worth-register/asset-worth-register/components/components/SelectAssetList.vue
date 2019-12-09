@@ -28,15 +28,6 @@
         />
       </a-col>
       <a-col :span="4">
-        <a-select
-          style="width: 100%"
-          v-model="objectType"
-          @change="fetchData"
-          :options="objectTypeOptions"
-          placeholder="请选择资产类别"
-        />
-      </a-col>
-      <a-col :span="4">
         <!--mode="multiple"-->
         <!--:maxTagCount="2"-->
         <a-select
@@ -45,6 +36,15 @@
           @change="fetchData"
           :options="assetTypeOptions"
           placeholder="请选择资产类型"
+        />
+      </a-col>
+      <a-col :span="4">
+        <a-select
+          style="width: 100%"
+          v-model="objectType"
+          @change="fetchData"
+          :options="objectTypeOptions"
+          placeholder="请选择资产类别"
         />
       </a-col>
       <a-col :span="6">
@@ -62,7 +62,7 @@
             :pagination="false"
             :dataSource="dataSource"
             class="custom-table td-pd10"
-            :scroll="{y: Number(height) - 100, x: true}"
+            :scroll="{y: Number(height) - 100, x: 1200}"
             :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
           />
           <SG-FooterPagination v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
@@ -111,7 +111,7 @@
         selectedRowKeys: [], // Table选中项
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         columns: [
-          { title: '资产编码', dataIndex: 'assetCode' },
+          { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 150 },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '所属机构', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },
@@ -132,15 +132,20 @@
           organId, queryType, assetNameCode,
           projectId: projectId === '-1' ? '' : projectId,
           assetType: assetType === '-1' ? '' : assetType,
-          objectType: objectType === '-1' ? '' : objectType
+          objectType: objectType === '-1' ? '' : objectType,
+          pageSize: pageLength, pageNum: pageNo
         }
-        this.$api.assets.assetListPage(form).then(res => {
+        this.$api.assets.assetListPage(form).then(r => {
+          let res = r.data
           if (res && res.code.toString() === '0') {
             this.loading = false
             const {count, data} = res.data
-            Object.assign(this, {
-              dataSource: data || [],
-              pagination: {pageLength, pageNo: Number(pageNo), totalCount: Number(count)}
+            this.dataSource = data
+            Object.assign(this.paginationObj, {
+              pageLength,
+              location: 'absolute',
+              pageNo: Number(pageNo),
+              totalCount: Number(count)
             })
             return false
           }
@@ -172,7 +177,7 @@
             }))
             list.unshift({ title: '全部资产类型', key: '-1' })
             this.assetTypeOptions = list
-            return this.queryObjectType()
+            return false
           }
           throw res.message || '查询资产类型失败'
         }).catch(err => {
@@ -200,8 +205,11 @@
       },
 
       // 根据资产类型查资产分类列表
-      queryObjectType () {
-        const { assetType, organId } = this
+      queryObjectType (assetType) {
+        this.objectType = undefined
+        this.objectTypeOptions = []
+        if (!assetType) { return false }
+        const { organId } = this
         this.$api.assets.getList({ assetType, organId }).then(res => {
           if (Number(res.data.code) === 0) {
             let { data } = res.data
@@ -209,7 +217,7 @@
               title: m.professionName,
               key: m.professionCode
             }))
-            list.unshift({ title: '全部资产类别', key: '-1' })
+            list.unshift({ title: '全部资产分类', key: '-1' })
             this.objectTypeOptions = list
             return false
           }
@@ -217,7 +225,7 @@
         }).catch(err => {
           this.$message.error(err || '查询资产类别失败')
         })
-      },
+      }
     },
     mounted () {
       const {allAttrs, value} = this
@@ -240,8 +248,8 @@
         this.$emit('input', allAttrs ? selectedList : keys)
       },
 
-      assetType: function (val) {
-        val && this.queryObjectType()
+      assetType: function (assetType) {
+        this.queryObjectType(assetType)
       }
     }
   }
