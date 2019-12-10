@@ -810,17 +810,31 @@ export default {
       this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.dataSource)
     },
     // 关联资产发生变动
-    assetChange (checkedData, checkedNames, originalValueSum, rowsData) {
+    assetChange (checkedData, checkedNames, rowsData, extraData) {
       console.log(checkedData)
       console.log(checkedNames)
       console.log(rowsData)
+      console.log(extraData)
       this.checkedData = checkedData
       this.detail.assetIds = checkedData.join(',')
       this.detail.assetNames = checkedNames.join(',')
       this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
-      this.detail.purchaseValue = originalValueSum
+      this.detail.purchaseValue = extraData.originalValueSum
       this.form.setFieldsValue({
-        purchaseValue: originalValueSum
+        purchaseValue: extraData.originalValueSum
+      })
+      this.form.setFieldsValue({
+        num: this.checkedData.length
+      })
+      this.form.setFieldsValue({
+        assetType: extraData.assetType.toString()
+      })
+      this.form.setFieldsValue({
+        assetCategoryId: extraData.assetCategory.toString()
+      })
+      this.handleChangeAssetCategory(extraData.assetCategory.toString())
+      this.form.setFieldsValue({
+        assetPurpose: extraData.useType.toString()
       })
       this.dataSource = rowsData
       this.$refs.associateAssetModal.show = false
@@ -882,15 +896,14 @@ export default {
     },
     // 资产项目发生变化
     changeProjectId (value, options) {
-      if (options) {
-        this.form.setFieldsValue({
-          getTime: options.data.props.date ? moment(options.data.props.date) : undefined
-        })
-      } else {
-        this.form.setFieldsValue({
-          getTime: undefined
-        })
-      }
+      console.log(options)
+      console.log(options.data.props)
+      this.form.setFieldsValue({
+        getTime: options.data.props.date ? moment(options.data.props.date) : undefined
+      })
+      this.form.setFieldsValue({
+        assetSource: options.data.props.sourceType.toString() || undefined
+      })
     },
     // 资产类型发生变化
     changeAssetType (value) {
@@ -901,18 +914,20 @@ export default {
       })
     },
     // 资产分类发生变化
-    changeAssetCategory (value, options) {
-      if (options) {
-        this.form.setFieldsValue({
-          netSalvageValueRate: options.data.props.netSalvageRate || ''
-        })
-        this.detail.netSalvageValueRate = options.data.props.netSalvageRate || ''
-      } else {
-        this.form.setFieldsValue({
-          netSalvageValueRate: ''
-        })
-        this.detail.netSalvageValueRate = ''
-      }
+    changeAssetCategory (value) {
+      this.handleChangeAssetCategory(value)
+    },
+    handleChangeAssetCategory (value) {
+      this.assetCategoryOptions.forEach(item => {
+        if (item.value === value) {
+          console.log(item)
+          this.form.setFieldsValue({
+            netSalvageValueRate: item.netSalvageRate || '',
+            unitOfMeasurement: item.unit || undefined
+          })
+          this.detail.netSalvageValueRate = item.netSalvageRate || ''
+        }
+      })
     },
     // 累计折旧发生变化
     changeCumulativeDepreciation (event) {
@@ -953,7 +968,8 @@ export default {
             let obj = {
               label: item.projectName,
               value: item.projectId,
-              date: item.takeOverDate
+              date: item.takeOverDate,
+              sourceType: item.sourceType
             }
             arr.push(obj)
           })
@@ -996,8 +1012,9 @@ export default {
           res.data.data.forEach(item => {
             let obj = {
               label: item.professionName,
-              value: item.categoryConfId,
-              netSalvageRate: item.netSalvageRate
+              value: item.professionCode,
+              netSalvageRate: item.netSalvageRate,
+              unit: item.unit
             }
             arr.push(obj)
           })
@@ -1032,16 +1049,15 @@ export default {
     // 获取资产用途下拉列表
     getAssetPurposeOptions () {
       let form = {
-        code: 'ASSET_PURPOSE',
-        organId: this.organId
+        categoryCode: 60
       }
-      this.$api.basics.organDict(form).then(res => {
+      this.$api.basics.queryNodesByRootCode(form).then(res => {
         if (res.data.code === '0') {
           let arr = []
           res.data.data.forEach(item => {
             let obj = {
-              label: item.name,
-              value: item.value
+              label: item.typeName,
+              value: item.typeCode
             }
             arr.push(obj)
           })
@@ -1054,7 +1070,7 @@ export default {
     // 获取资产来源下拉列表
     getAssetSourceOptions () {
       let form = {
-        code: 'ASSET_SOURCE',
+        code: 'source_type',
         organId: this.organId
       }
       this.$api.basics.organDict(form).then(res => {
@@ -1202,34 +1218,6 @@ export default {
         return
       }
     },
-    getEditDetail () {
-      // let form = {
-      //   cleaningOrderId: this.cleaningOrderId
-      // }
-      // this.$api.assets.getCleanupInfo(form).then(res => {
-      //   if (res.data.code === '0') {
-      //     console.log(res)
-      //     let data = res.data.data
-      //     this.detail = data
-      //     this.organId = data.organId
-      //     this.organName = data.organName
-      //     this.detail.attachment.forEach(item => {
-      //       item.url = item.attachmentPath
-      //       item.name = item.oldAttachmentName
-      //     })
-      //     this.detail.assetType = this.detail.assetType.toString()
-      //     this.detail.cleanupType = this.detail.cleanupType.toString()
-      //     let checkedData = []
-      //     this.detail.assetDetailList.forEach((item, index) => {
-      //       item.key = index.toString()
-      //       checkedData.push(item.assetId)
-      //     })
-      //     this.checkedData = checkedData
-      //     console.log(this.detail)
-      //     this.dataSource = this.detail.assetDetailList
-      //   }
-      // })
-    },
     getDetail () {
       let form = {
         cardId: this.cardId
@@ -1242,7 +1230,6 @@ export default {
           this.organName = data.organName
           this.detail = data
           this.detail.projectId = +this.detail.projectId
-          this.detail.assetCategoryId = +this.detail.assetCategoryId
           if (this.editable) {
             this.detail.accountEntryTime = moment(this.detail.accountEntryTime, 'YYYY-MM-DD')
             this.detail.startUseTime = moment(this.detail.startUseTime, 'YYYY-MM-DD')

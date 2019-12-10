@@ -207,21 +207,31 @@
         }
         let checkedData = []
         let checkedNames = []
-        let originalValueSum = 0
         let rowsData = []
+        let extraData = {
+          originalValueSum: 0,
+          assetType: '',
+          assetCategory: '',
+          useType: ''
+        }
         console.log(this.selectedRowKeys, '选中的')
         console.log(this.overallData, '总的')
-        this.selectedRowKeys.forEach(item => {
-          this.overallData.forEach((element, index) => {
+        this.selectedRowKeys.forEach((item, index) => {
+          this.overallData.forEach((element) => {
             if (item === element.assetId) {
               checkedData.push(element.assetId)
               checkedNames.push(element.assetName)
               rowsData.push(element)
-              originalValueSum = utils.accAdd(parseFloat(originalValueSum).toFixed(2), parseFloat(element.originalValue).toFixed(2))
+              extraData.originalValueSum = utils.accAdd(parseFloat(extraData.originalValueSum).toFixed(2), parseFloat(element.originalValue).toFixed(2))
+              if (index === 0) {
+                extraData.assetType = element.assetType
+                extraData.assetCategory = element.objectType
+                extraData.useType = element.useType
+              }
             }
           })
         })
-        this.$emit('assetChange', checkedData, checkedNames, originalValueSum, rowsData)
+        this.$emit('assetChange', checkedData, checkedNames, rowsData, extraData)
       },
       // 资产分类列表
       getListFn () {
