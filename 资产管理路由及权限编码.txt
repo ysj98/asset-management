@@ -8,6 +8,8 @@ V1.0
 /asset-management/#/assetProjectManage  资产项目管理
 /asset-management/#/assetChange         资产变动
 /asset-management/#/assetRegister       资产登记
+/asset-management/#/ownershipRegistration     权属登记
+/asset-management/#/authorityCardManagement   权证管理
 
 
 
@@ -64,3 +66,14 @@ zcgl_asset_register_audit        资产登记-审核
 zcgl_asset_register_reverse_audit 资产登记-反审核
 zcgl_asset_register_delete       资产登记-删除
 
+权属登记
+zcgl_asset_ownerr_new           权属登记-新增权属登记单
+zcgl_asset_ownerr_edit          权属登记-编辑权属登记单
+zcgl_asset_ownerr_audit         权属登记-审核
+zcgl_asset_ownerr_reverse_audit 权属登记-反审核
+zcgl_asset_ownerr_delete        权属登记-删除
+
+权证管理
+zcgl_asset_acm_new              权证管理-新增权证管理单
+zcgl_asset_acm_edit             权证管理-编辑权证管理单
+zcgl_asset_acm_delete           权证管理-注销
