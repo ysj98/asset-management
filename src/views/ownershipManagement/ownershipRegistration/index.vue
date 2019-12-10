@@ -430,5 +430,8 @@ export default {
       cursor: pointer;
     }
   }
+  .custom-table {
+    padding-bottom: 60px;
+  }
 }
 </style>
