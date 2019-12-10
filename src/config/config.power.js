@@ -161,12 +161,24 @@ export const ASSET_MANAGEMENT = {
   // 资产入账-删除
   ASSET_ENTRY_DELETE: 'zcgl_asset_entry_delete',
   /**
-   * 权属概况 
+   * 权属概况
    */
   // 资产项目权属设置
   ASSET_PROOWNERSHIP_SET: 'zcgl_proownership_set',
   // 资产权属详情
   ASSET_OWNERSHIP_SET: 'zcgl_ownership_detail',
+
+  /**
+  * 资产价值登记AWR（asset_worth_register）
+  **/
+  // 资产价值登记-新增
+  ASSET_AWR_ADD: 'zcgl_awr_add',
+  // 资产价值登记-编辑
+  ASSET_AWR_EDIT: 'zcgl_awr_edit ',
+  // 资产价值登记-审核
+  ASSET_AWR_APPROVAL: 'zcgl_awr_approval',
+  // 资产价值登记-删除
+  ASSET_AWR_DELETE: 'zcgl_awr_delete'
 }
 
 

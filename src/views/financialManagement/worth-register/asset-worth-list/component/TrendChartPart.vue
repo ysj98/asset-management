@@ -16,6 +16,8 @@
   import echarts from 'echarts/lib/echarts'
   // 按需引入柱状图，减少打包体积
   import 'echarts/lib/chart/bar'
+  // 引入提示框和标题组件
+  import 'echarts/lib/component/tooltip'
   export default {
     name: 'TrendChartPart',
     props: ['assetId', 'originalValue'],
@@ -28,22 +30,42 @@
 
     methods: {
       // 渲染图表
-      renderChart (data) {
-        if (!data || !data.length) { return false }
-        // 基于准备好的dom，初始化echarts实例
+      renderChart (dataSource) {
+        if (!dataSource || !dataSource.length) { return false }
+        let categoryList = []
+        let data = dataSource.map(m => {
+          const { assessmenBaseDate, assessmentOrganName, assessmentValue, assessmentMethod } = m
+          categoryList.push(assessmenBaseDate)
+          let key = String(assessmentMethod) === '1' ? '评估原值：' : '评估市值：'
+          return {
+            value: assessmentValue,
+            itemStyle: { color: String(assessmentMethod) === '1' ? '#F49000' : '#45A2FF' },
+            tooltip: {
+              padding: [10, 15],
+              formatter: `${key}${assessmentValue}元<br/>评估机构：${assessmentOrganName}<br/>评估时间：${assessmenBaseDate}`
+            }
+          }
+        })
+        // 初始化echarts实例
         let myChart = echarts.init(document.getElementById('chart_zone'))
         // 绘制图表
         myChart.setOption({
-          color: ['#F49000', '#45A2FF'],
-          tooltip: {},
-          xAxis: {
-            axisTick: { alignWithLabel: true }, // X 标签居中
-            data: []
-            // data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+          yAxis: {
+            axisLabel: { formatter: '{value} 元' }
           },
-          yAxis: {},
-          series: []
-          // series: [{  name: '销量', type: 'bar', data: [5, 20, 36, 10, 10, 20] }]
+          tooltip: {
+            trigger: 'item',
+            axisPointer : { type : 'none' } // 鼠标放到柱状图的效果
+          },
+          xAxis: {
+            data: categoryList, // X轴标签,
+            axisTick: { alignWithLabel: true }, // X轴标签居中
+          },
+          series: [{
+            data, // 展示数据,
+            type: 'bar',  // 图表类型
+            barWidth: '35%' // 柱状图宽度
+          }]
         })
       },
 

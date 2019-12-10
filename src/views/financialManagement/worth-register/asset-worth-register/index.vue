@@ -7,6 +7,7 @@
         <SG-Button
           icon="plus"
           type="primary"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_ADD"
           @click="handleBtnAction({type: 'add'})"
         >新增资产项目</SG-Button>
         <!--<SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>-->
@@ -27,7 +28,7 @@
               @change="queryTableData"
               v-model="approvalStatus"
               :options="statusOptions"
-              placeholder="请选择项目状态"
+              placeholder="请选择资产状态"
             />
           </a-col>
           <a-col :span="4" style="text-align: left">
@@ -49,16 +50,28 @@
           okText="确定"
           cancelText="取消"
           title="确定要删除该资产项目吗?"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
           @confirm="confirmDelete(record.registerId)"
+          v-if="Number(record.approvalStatus) === 1 || Number(record.approvalStatus) === 3"
         >
           <span class="action_text">删除</span>
         </a-popconfirm>
-        <!--<span class="action_text" @click="handleBtnAction({record.registerId, 'detail'})">详情</span>-->
-        <!--<span class="action_text" @click="handleBtnAction({record.registerId, 'approval'})">审批</span>-->
-        <!--<span @click="handleBtnAction({}record.registerId, 'edit'})">编辑</span>-->
-        <router-link class="action_text" :to="{name: '价值登记详情', params: {registerId: record.registerId, type: 'detail'}}">详情</router-link>
-        <router-link class="action_text" :to="{name: '价值登记审批', params: {registerId: record.registerId, type: 'approval'}}">审批</router-link>
-        <router-link class="action_text" :to="{name: '价值登记编辑', params: {registerId: record.registerId, type: 'edit'}}">编辑</router-link>
+        <router-link
+          class="action_text"
+          :to="{name: '价值登记详情', params: {registerId: record.registerId, type: 'detail'}}"
+        >详情</router-link>
+        <router-link
+          class="action_text"
+          v-if="Number(record.approvalStatus) === 2"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
+          :to="{name: '价值登记审批', params: {registerId: record.registerId, type: 'approval'}}"
+        >审批</router-link>
+        <router-link
+          class="action_text"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
+          v-if="Number(record.approvalStatus) === 1 || Number(record.approvalStatus) === 3"
+          :to="{name: '价值登记编辑', params: {registerId: record.registerId, type: 'edit'}}"
+        >编辑</router-link>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
@@ -68,6 +81,7 @@
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OrganProjectType from '../components/OrganProjectType'
   import DateMethodOrgan from '../components/DateMethodOrgan'
   import SearchContainer from 'src/views/common/SearchContainer'
@@ -77,6 +91,7 @@
     components: { SearchContainer, OrganProjectType, DateMethodOrgan, NoDataTip },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         registerName: '', // 查询条件-登记名称
         exportBtnLoading: false, // 导出按钮loading
@@ -85,7 +100,7 @@
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
         statusOptions: [
-          { title: '全部', key: '-1' }, { title: '草稿', key: '1' }, { title: '待审批', key: '2' },
+          { title: '全部状态', key: '-1' }, { title: '草稿', key: '1' }, { title: '待审批', key: '2' },
           { title: '已驳回', key: '3' }, { title: '已审批', key: '4' }, { title: '已取消', key: '5' }
         ], // 查询条件-状态选项
         tableObj: {
