@@ -515,7 +515,7 @@
             res.data.data.forEach(item => {
               let obj = {
                 label: item.professionName,
-                value: item.categoryConfId
+                value: item.professionCode
               }
               arr.push(obj)
             })
