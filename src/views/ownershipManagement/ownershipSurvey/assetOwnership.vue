@@ -7,9 +7,9 @@
   <div>
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
-        <div slot="headerBtns">
+        <!-- <div slot="headerBtns">
         <SG-Button type="primary" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
-      </div>
+      </div> -->
         <div slot="contentForm" class="search-content-box">
           <div class="search-from-box">
             <treeSelect
@@ -117,7 +117,7 @@
             <a-progress :percent="Number(record.tranProgress) || 0" />
           </template>
           <template slot="operation" slot-scope="text, record">
-            <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+            <span v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_SET" @click="goPage('detail', record)" class="btn_click mr15">详情</span>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -138,6 +138,7 @@ import SearchContainer from "@/views/common/SearchContainer";
 import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -262,6 +263,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       toggle: true,
       allStyle,
       allWidth,

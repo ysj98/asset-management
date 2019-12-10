@@ -81,3 +81,6 @@ zcgl_asset_entry_edit            资产入账-编辑
 zcgl_asset_entry_reverse_audit   资产入账-反审核
 zcgl_asset_entry_delete          资产入账-删除
 
+权属概况
+zcgl_proownership_set            资产项目权属设置
+zcgl_ownership_detail            资产权属详情
