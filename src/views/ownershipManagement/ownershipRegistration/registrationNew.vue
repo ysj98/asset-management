@@ -483,7 +483,7 @@ export default {
     },
     // 取消
     cancel () {
-      this.$router.push({path: '/assetChange'})
+      this.$router.push({path: '/ownershipRegistration'})
     },
     // 编辑获取接口
     editFn () {
