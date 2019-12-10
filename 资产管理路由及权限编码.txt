@@ -12,7 +12,7 @@ V1.0
 V1.1
 /asset-management/#/propertyOwnerManagement     权属人管理
 /asset-management/#/assetEntry                  资产入账
-
+/asset-management/#//worthRegister              价值登记
 
 新增权限编码如下:
 V1.0
@@ -79,3 +79,9 @@ zcgl_asset_entry_new             资产入账-新增
 zcgl_asset_entry_edit            资产入账-编辑
 zcgl_asset_entry_reverse_audit   资产入账-反审核
 zcgl_asset_entry_delete          资产入账-删除
+
+资产价值登记（asset_worth_register）
+zcgl_asset_worth_register_add     资产价值登记新增
+zcgl_asset_worth_register_edit    资产价值登记编辑
+zcgl_asset_worth_register_approval资产价值登记审核
+zcgl_asset_worth_register_delete  资产价值登记删除
