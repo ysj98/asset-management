@@ -1,3 +1,4 @@
+<!--价值登记页面--资产价值一览表Tab页面-->
 <template>
   <div class="asset_worth_list">
     <!--搜索条件-->

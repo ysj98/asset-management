@@ -1,7 +1,10 @@
+<!--价值登记页面--资产价值一览表趋势图组件-->
 <template>
   <a-spin :spinning="spinning">
     <div class="trend_chart">
-      <div id="chart_zone" style="width: 100%; height:300px"></div>
+      <div id="chart_zone" style="width: 100%; height:300px">
+        <img v-if="!trendInfo.length" :src="defaultImg" class="default_img">
+      </div>
       <div class="tip_style">
         <span>资产原值：<span style="font-weight: bold">{{originalValue || '--'}}</span>元</span>
         <span><i style="background-color: #F49000"></i>评估原值</span>
@@ -14,15 +17,17 @@
 <script>
   // 引入 ECharts 主模块
   import echarts from 'echarts/lib/echarts'
-  // 按需引入柱状图，减少打包体积
-  import 'echarts/lib/chart/bar'
+  // 按需引入折线图，减少打包体积
+  import 'echarts/lib/chart/line'
   // 引入提示框和标题组件
   import 'echarts/lib/component/tooltip'
+  import defaultImg from 'src/assets/image/no_data_tips_img.png'
   export default {
     name: 'TrendChartPart',
     props: ['assetId', 'originalValue'],
     data () {
       return {
+        defaultImg,
         spinning: false, //加载状态
         trendInfo: [] // 趋势图数据
       }
@@ -50,21 +55,24 @@
         let myChart = echarts.init(document.getElementById('chart_zone'))
         // 绘制图表
         myChart.setOption({
+          grid: { top: 30, right: 20 },  // 距父元素边框距离
           yAxis: {
             axisLabel: { formatter: '{value} 元' }
           },
-          tooltip: {
-            trigger: 'item',
-            axisPointer : { type : 'none' } // 鼠标放到柱状图的效果
+          lineStyle: {
+            width: 4, // 折线宽度,
+            color: '#45A2FF' // 折线颜色
           },
+          tooltip: { trigger: 'item' },
           xAxis: {
             data: categoryList, // X轴标签,
             axisTick: { alignWithLabel: true }, // X轴标签居中
           },
           series: [{
             data, // 展示数据,
-            type: 'bar',  // 图表类型
-            barWidth: '35%' // 柱状图宽度
+            type: 'line',  // 图表类型
+            symbol: 'circle', // 节点形状
+            symbolSize: 14 // 节点大小
           }]
         })
       },
@@ -105,6 +113,9 @@
         border-radius: 50%;
         display: inline-block;
       }
+    }
+    .default_img {
+      transform: translate(340px, 50px);
     }
   }
 </style>
