@@ -8,13 +8,13 @@ V1.0
 /asset-management/#/assetProjectManage  资产项目管理
 /asset-management/#/assetChange         资产变动
 /asset-management/#/assetRegister       资产登记
-/asset-management/#/ownershipRegistration     权属登记
-/asset-management/#/authorityCardManagement   权证管理
 
 V1.1
 /asset-management/#/propertyOwnerManagement     权属人管理
 /asset-management/#/assetEntry                  资产入账
 /asset-management/#/ownershipSurvey             权属概况
+/asset-management/#/ownershipRegistration     权属登记
+/asset-management/#/authorityCardManagement   权证管理
 
 
 新增权限编码如下:
@@ -71,19 +71,7 @@ zcgl_asset_register_audit        资产登记-审核
 zcgl_asset_register_reverse_audit 资产登记-反审核
 zcgl_asset_register_delete       资产登记-删除
 
-<<<<<<< HEAD
-权属登记
-zcgl_asset_ownerr_new           权属登记-新增权属登记单
-zcgl_asset_ownerr_edit          权属登记-编辑权属登记单
-zcgl_asset_ownerr_audit         权属登记-审核
-zcgl_asset_ownerr_reverse_audit 权属登记-反审核
-zcgl_asset_ownerr_delete        权属登记-删除
 
-权证管理
-zcgl_asset_acm_new              权证管理-新增权证管理单
-zcgl_asset_acm_edit             权证管理-编辑权证管理单
-zcgl_asset_acm_delete           权证管理-注销
-=======
 V1.1
 权属人管理
 zcgl_property_owner_new          权属人管理-新增
@@ -96,4 +84,15 @@ zcgl_asset_entry_edit            资产入账-编辑
 zcgl_asset_entry_reverse_audit   资产入账-反审核
 zcgl_asset_entry_delete          资产入账-删除
 
->>>>>>> e63f4adb57aa7056be6c2f0a6b61257b4e5eccf2
+
+权属登记
+zcgl_asset_ownerr_new           权属登记-新增权属登记单
+zcgl_asset_ownerr_edit          权属登记-编辑权属登记单
+zcgl_asset_ownerr_audit         权属登记-审核
+zcgl_asset_ownerr_reverse_audit 权属登记-反审核
+zcgl_asset_ownerr_delete        权属登记-删除
+
+权证管理
+zcgl_asset_acm_new              权证管理-新增权证管理单
+zcgl_asset_acm_edit             权证管理-编辑权证管理单
+zcgl_asset_acm_delete           权证管理-注销
