@@ -138,7 +138,6 @@
               @change="obligeeNameChange(record)"
               @search="handleSearch"
               :options="obligeeIdData"
-              :allowClear="true"
               :filterOption="false"
               notFoundContent="没有查询到数据"
               />
