@@ -5,7 +5,7 @@
   <div class="assets-entry">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button icon="plus" type="primary" @click="newAssetEntry">新建卡片</SG-Button>
+        <SG-Button icon="plus" type="primary" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search placeholder="卡片名称/编码" :style="allStyle" v-model="cardName" @search="queryClick" />
@@ -78,10 +78,10 @@
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
-          <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_AUDIT">审核</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="handleStatus(record, 0)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_REVERSE_AUDIT">反审核</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)"  v-power="ASSET_MANAGEMENT.ASSET_CLEAR_EDIT">编辑</a>
-          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleStatus(record, 4)" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_DELETE">删除</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_AUDIT">审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="handleStatus(record, 0)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_REVERSE_AUDIT">反审核</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)"  v-power="ASSET_MANAGEMENT.ASSET_ENTRY_EDIT">编辑</a>
+          <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleStatus(record, 4)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_DELETE">删除</a>
           <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
         </template>
       </a-table>

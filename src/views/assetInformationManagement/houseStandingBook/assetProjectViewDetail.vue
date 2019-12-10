@@ -92,7 +92,20 @@
         <a-table
           :columns="columns"
           :dataSource="dataSource"
-          class="custom-table"
+          class="custom-table td-pd10 table-border"
+          :pagination="false"
+        >
+        </a-table>
+      </div>
+    </div>
+    <div class="edit-box">
+      <div class="edit-box-title"><i></i><span>权属概况</span></div>
+      <div class="edit-box-content">
+        <a-table
+          bordered
+          :columns="ownershipColumns"
+          :dataSource="ownershipDataSource"
+          class="custom-table th-td-padding-10-20"
           :pagination="false"
         >
         </a-table>
@@ -161,6 +174,49 @@ const columns = [
     dataIndex: 'transferArea',
     width: '160'
   }]
+
+const ownershipColumns = [
+  {
+    title: '有证',
+    children: [
+      {
+        title: '产权',
+        dataIndex: 'ownerTitleDeed',
+        width: 120
+      },
+      {
+        title: '使用权',
+        dataIndex: 'ownerUserDeed',
+        width: 120
+      }
+    ]
+  },
+  {
+    title: '待办',
+    children: [
+      {
+        title: '产权',
+        dataIndex: 'waitOwnerTitleDeed',
+        width: 120
+      },
+      {
+        title: '使用权',
+        dataIndex: 'waitOwnerUserDeed',
+        width: 120
+      }
+    ]
+  },
+  {
+    title: '无证',
+    dataIndex: 'noOwner',
+    width: 120
+  },
+  {
+    title: '权属办理进度',
+    dataIndex: 'progress',
+    width: 120
+  }]
+
 export default {
   data () {
     return {
@@ -185,6 +241,8 @@ export default {
       },
       columns,
       dataSource: [],
+      ownershipColumns,
+      ownershipDataSource: [],
       assetStatistics: [
         {title: '所有资产(㎡)', area: '', percent: ''},
         {title: '运营(㎡)', area: '', percent: ''},
@@ -249,6 +307,26 @@ export default {
         }
       })
     },
+    // 获取权属概况
+    getOwnershipData () {
+      let form = {
+        projectId: this.projectId
+      }
+      this.$api.basics.queryByProjectId(form).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data
+          data.key = 0
+          data.ownerTitleDeed = data.owner.titleDeed
+          data.ownerUserDeed = data.owner.userDeed
+          data.waitOwnerTitleDeed = data.waitOwner.titleDeed
+          data.waitOwnerUserDeed = data.waitOwner.userDeed
+          data.progress = data.progress + '%'
+          this.ownershipDataSource = [data]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 获取资产状况总数
     getAssetStatistics () {
       let form = {
@@ -305,6 +383,7 @@ export default {
     this.projectId = this.$route.query.projectId
     this.getDetail()
     this.getTransferInfo()
+    this.getOwnershipData()
     this.getAssetStatistics()
     this.getAssetList()
   }
