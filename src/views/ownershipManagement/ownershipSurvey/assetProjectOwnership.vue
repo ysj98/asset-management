@@ -47,7 +47,7 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          <span @click="goPage('set', record)" class="btn_click">权属设置</span>
+          <span v-power="ASSET_MANAGEMENT.ASSET_PROOWNERSHIP_SET" @click="goPage('set', record)" class="btn_click">权属设置</span>
         </template>
       </a-table>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -65,6 +65,7 @@
 import SearchContainer from "@/views/common/SearchContainer";
 import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "@/utils/utils";
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import noDataTips from "@/components/noDataTips";
 // 页面跳转
 const operationTypes = {
@@ -158,6 +159,7 @@ export default {
     return {
       allStyle,
       allWidth,
+      ASSET_MANAGEMENT,
       organName: "", // 所选组织机构名称
       queryCondition,
       projectIdOpt,

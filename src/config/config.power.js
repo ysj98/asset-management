@@ -160,6 +160,13 @@ export const ASSET_MANAGEMENT = {
   ASSET_ENTRY_REVERSE_AUDIT: 'zcgl_asset_entry_reverse_audit',
   // 资产入账-删除
   ASSET_ENTRY_DELETE: 'zcgl_asset_entry_delete',
+  /**
+   * 权属概况 
+   */
+  // 资产项目权属设置
+  ASSET_PROOWNERSHIP_SET: 'zcgl_proownership_set',
+  // 资产权属详情
+  ASSET_OWNERSHIP_SET: 'zcgl_ownership_detail',
 }
 
 
