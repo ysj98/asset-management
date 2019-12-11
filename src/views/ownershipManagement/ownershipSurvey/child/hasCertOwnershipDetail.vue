@@ -180,6 +180,9 @@ export default {
     // 监听选择框变化
      watchSettingMethodChange (e, row) {
       console.log('记录select=>', e, row)
+      if (Number(e) === 3) {
+         return
+       }
       let o = {
         settingMethod: Number(e),
         remark: row.remark || '',

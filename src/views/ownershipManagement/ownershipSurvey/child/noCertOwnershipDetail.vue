@@ -169,6 +169,9 @@ let columns = [{
      // 监听输入框变化
      watchRemarkChange (e, row) {
        console.log('记录input=>', e, row)
+       if (Number(e) === 2) {
+         return
+       }
        let o = {
           settingMethod: Number(row.settingMethod),
           remark: row.remark || '',
