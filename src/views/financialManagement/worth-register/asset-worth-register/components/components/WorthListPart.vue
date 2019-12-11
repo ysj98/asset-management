@@ -6,7 +6,8 @@
       <div style="margin-bottom: 16px; overflow: hidden">
         <div style="float: right">
           <span v-if="type == 'add' || type == 'edit'">
-            <SG-Button icon="plus" type="primary" ghost @click="handleAdd(true)" style="margin-right: 10px">添加资产</SG-Button>
+            <SG-Button icon="edit" type="primary" ghost @click="handleEditTableAll(true)">批量修改</SG-Button>
+            <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin: 10px">添加资产</SG-Button>
             <!--<SG-Button icon="import" type="primary" ghost @click="handleExport" :loading="exportBtnLoading">批量导入</SG-Button>-->
             <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
           </span>
@@ -14,7 +15,7 @@
         </div>
         <div style="line-height: 32px">
           <span>{{`${type == 'add' || type == 'edit' ? "已选" : ""}资产总数:`}}</span>
-          <span style="font-weight: bold">{{selectedRowKeys.length}}</span>
+          <span style="font-weight: bold">{{tableObj.dataSource.length ? tableObj.dataSource.length - 1 : 0}}</span>
         </div>
       </div>
       <a-table
@@ -42,24 +43,40 @@
         @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
       />
     </div>
-    <!-- 选择资产 -->
-    <select-asset-modal
-      :width="1000"
-      :organId="organId"
-      :initValue="initList"
-      @handleOk="getAssetList"
-      @handleCancel="handleAdd(false)"
-      :visible="isShowAssetSelect"
+    <SG-Modal
+      v-bind="modalObj"
+      v-model="modalObj.isShow"
+      @cancel="handleAction('')"
+      @ok="handleAction('ok')"
       v-if="type == 'add' || type == 'edit'"
-    />
+    >
+      <!-- 选择资产 -->
+      <select-asset-list
+        v-if="!isEditAll"
+        :organId="organId"
+        :queryType="queryType"
+        v-model="selectedList"
+        :height="modalObj.height"
+      />
+      <!--批量修改本次估值-->
+      <a-input-number
+        v-else
+        :min="0"
+        step="0.01"
+        :precision="2"
+        :max="999999999.99"
+        v-model="assetValueAll"
+        style="width: 250px; margin: 10px 0"
+      />
+    </SG-Modal>
   </div>
 </template>
 
 <script>
-  import SelectAssetModal from './SelectAssetModal'
+  import SelectAssetList from './SelectAssetList'
   export default {
     name: 'WorthListPart',
-    components: { SelectAssetModal },
+    components: { SelectAssetList },
     props: ['type', 'registerId', 'organId', 'dynamicData'],
     data () {
       return {
@@ -67,8 +84,9 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: 2000 },
+          scroll: { x: 2200 },
           rowKey: 'assetId',
+          selectedRowKeys: [], // Table选中的key数据
           columns: [
             { title: '编号', dataIndex: 'index', fixed: 'left', width: 70 },
             { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 180 },
@@ -89,11 +107,10 @@
             { title: '上浮比', dataIndex: 'upRate', fixed: 'right', width: 120 }
           ]
         },
-        selectedRowKeys: [], // Table选中的key数据
         exportBtnLoading: false, // 导出按钮loading
-        isShowAssetSelect: false, // 显示选择资产弹窗
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         initSumValueObj: {
+          assetId: '-10',
           upRate: '--',
           assetCode: '--',
           organName: '--',
@@ -111,7 +128,19 @@
           lastAssessmentMethodName: '--',
           originalAssessmenBaseDate: '--'
         }, // Table最后一列求和的默认值
-        initList: [] // 选择资产Modal初始选中值
+        initList: [], // 选择资产Modal初始选中值
+        selectedList: [], // 选择资产Modal选中值
+        queryType: 1, // 1 资产变动，2 资产清理 3 权属登记,
+        modalObj: {
+          width: 1000, // Modal宽度
+          height: 450, // Modal高度
+          title: '选择资产',
+          okText: '确定选择',
+          cancelText: '取消',
+          isShow: false
+        },
+        isEditAll: false, // 批量修改本次估值列
+        assetValueAll: '' // 批量本次估值值
       }
     },
 
@@ -134,7 +163,7 @@
             flag = true
           }
           // 上浮比例=本次评估/上次估值*100%-100%
-          m.upRate = m.lastAssessmentValue ? `${((Number(m.assessmentValue || 0) / Number(m.lastAssessmentValue) -1) * 100).toFixed(2) }%` : '--'
+          m.upRate = (m.lastAssessmentValue && m.lastAssessmentValue!== '0.00') ? `${((Number(m.assessmentValue || 0) / Number(m.lastAssessmentValue) -1) * 100).toFixed(2) }%` : '--'
         })
         // let i = flag ? 1 : 0
         let temp = {
@@ -153,7 +182,7 @@
 
       // 批量删除资产
       handleDelete () {
-        const {selectedRowKeys, tableObj: {dataSource}} = this
+        const {tableObj: {selectedRowKeys, dataSource}} = this
         if (!selectedRowKeys.length) {
           return this.$message.warn('请选择数据')
         }
@@ -162,16 +191,24 @@
       },
 
       // 添加资产
-      handleAdd (bool) {
+      handleAddModal (bool) {
         if (bool) {
           const { tableObj: { dataSource } } = this
           let list = []
           dataSource.forEach(m => {
             m.assetName !== '合计' && list.push(Number(m.assetId))
           })
-          this.initList = list
+          Object.assign(this, {
+            modalObj: { width: 1000, height: 450, title: '选择资产', okText: '确定选择', cancelText: '取消', isShow: false },
+            isEditAll: false,
+            initList: list,
+            selectedList: list
+          })
+        } else {
+          // 取消时selectedList恢复初始值
+          this.selectedList = this.initList
         }
-        this.isShowAssetSelect = bool
+        this.modalObj.isShow = bool
       },
       
       // 导出
@@ -182,7 +219,7 @@
         return {
           selections: true,
           onChange: (selectedRowKeys) => {
-            this.selectedRowKeys = selectedRowKeys
+            this.tableObj.selectedRowKeys = selectedRowKeys
           },
           getCheckboxProps: record => {
             return {
@@ -193,13 +230,15 @@
       },
       
       // 获取选中的资产数据
-      getAssetList (arr) {
-        this.isShowAssetSelect = !arr.length
+      getAssetList () {
+        let {selectedList} = this
+        if (!selectedList.length) { return this.$message.warn('请选择资产数据') }
+        this.modalObj.isShow = !selectedList.length
         // 去重处理，比较arr 与 tableObj.dataSource
-        if (arr.length) {
+        if (selectedList.length) {
           const { tableObj: { dataSource } } = this
-          let newList = arr.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
-          newList.length && this.queryAssetListByAssetId(arr)
+          let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
+          newList.length && this.queryAssetListByAssetId(newList)
         }
       },
 
@@ -250,7 +289,7 @@
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
         let form = {}
-        let { registerId, tableObj: { dataSource } } = this
+        let { registerId, tableObj: { dataSource }, dynamicData } = this
         if (status === 'init') {
           form.registerId = registerId
         } else {
@@ -270,9 +309,9 @@
               // 新增：删除旧dataSource最后一行求和数据
               dataSource.splice(-1, 1, ...addData)
               // 关闭选择资源Modal
-              this.isShowAssetSelect = false
+              this.modalObj.isShow = false
             }
-            let list = dataSource.map((m, i) => ({...m, index: i + 1}))
+            let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData}))
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
@@ -280,6 +319,41 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询登记资产接口出错')
         })
+      },
+
+      // 处理Modal关闭/保存
+      handleAction (type) {
+        let { isEditAll } = this
+        if (type) {
+          isEditAll ? this.handleAssetValueAll() : this.getAssetList()
+        } else {
+          isEditAll ? this.handleEditTableAll(false) : this.handleAddModal(false)
+        }
+      },
+      
+      // 批量修改Table本次估值列
+      handleEditTableAll (bool) {
+        if (!this.tableObj.dataSource.length) { return this.$message.warn('请先选择资产') }
+        if (bool) {
+          Object.assign(this, {
+            assetValueAll: '',
+            isEditAll: true,
+            modalObj: { width: 450, isShow: true, okText: '确定', cancelText: '取消', title: '批量修改本次估值' }
+          })
+        } else {
+          this.isEditAll = false
+          this.modalObj.isShow = false
+        }
+      },
+
+      handleAssetValueAll () {
+        const { assetValueAll, tableObj: { dataSource } } = this
+        if (!(assetValueAll === 0 || assetValueAll)) { return this.$message.warn('请输入本次估值') }
+        let list = dataSource.map(m => {
+          return m.assetName !== '合计' ? {...m, assessmentValue: assetValueAll} : m
+        })
+        this.calcSum(list)
+        this.handleEditTableAll(false)
       }
     },
     
@@ -300,11 +374,9 @@
     watch: {
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
-        const { type, value } = data
-        const { tableObj: { dataSource } } = this
+        const {tableObj: {dataSource}} = this
         this.tableObj.dataSource = dataSource.map(m => {
-          m.assetName !== '合计' ? m[type] = value : ''
-          return m
+          return m.assetName !== '合计' ? Object.assign(m, data) : m
         })
       }
     }

@@ -108,6 +108,11 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
+            this.dynamicData = {
+              assessmenBaseDate: others.assessmenBaseDate,
+              assessmentOrganName: others.assessmentOrganName,
+              assessmentMethodName: others.assessmentMethodName
+            }
             return Object.assign(this, { stepList, details: { ...details, ...others } })
           }
           throw res.message || '查询价值登记详情出错'
@@ -150,7 +155,7 @@
       
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
-        this.dynamicData = obj
+        this.dynamicData = Object.assign({}, this.dynamicData, obj)
       },
       
       // 校验资产价值清单本次估值项非空

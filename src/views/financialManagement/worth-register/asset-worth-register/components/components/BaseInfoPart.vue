@@ -204,6 +204,7 @@
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
         let formatDetails = { registerName, assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD') }
+        !assessmenBaseDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'assessmenBaseDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
           formatDetails = Object.assign({}, formatDetails, {
@@ -295,7 +296,7 @@
           const { methodOptions } = this
           value = methodOptions.filter(m => m.key === val)[0]['title']
         }
-        this.$emit('setData', { type, value})
+        this.$emit('setData', { [type]: value})
       }
     },
     
