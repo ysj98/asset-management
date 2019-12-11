@@ -16,6 +16,9 @@
           <div class="tab-container">
             <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="70px">
               <div slot="col-r">
+                <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="projectId">
+                  <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+                </a-select>
                 <a-select :style="allStyle" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
                   <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
@@ -135,6 +138,8 @@
         assetType: '',   // 资产类型
         objectType: '',  // 资产类别
         assetNameCode: '',  // 资产名称/编码
+        projectId: '',  // 资产项目ID
+        projectData: [],
         assetTypeData: [],
         objectTypeData: [],
         allStyle: 'width: 140px; margin-right: 10px;',
@@ -162,6 +167,12 @@
           hideDefaultSelections: true,
           onSelection: this.onSelection
         }
+      }
+    },
+    watch: {
+      projectId () {
+        console.log('projectId发生变化')
+        this.query()
       }
     },
     methods: {
@@ -233,6 +244,28 @@
         })
         this.$emit('assetChange', checkedData, checkedNames, rowsData, extraData)
       },
+      // 资产项目
+      getObjectKeyValueByOrganIdFn () {
+        let obj = {
+          organId: this.organId,
+          projectName: ''
+        }
+        this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+          if (Number(res.data.code) === 0) {
+            let data = res.data.data
+            let arr = []
+            data.forEach(item => {
+              arr.push({
+                name: item.projectName,
+                value: item.projectId
+              })
+            })
+            this.projectData = [...this.projectData, ...arr]
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      },
       // 资产分类列表
       getListFn () {
         let obj = {
@@ -302,6 +335,7 @@
         this.loading = true
         let obj = {
           organId: this.organId,
+          projectId: this.projectId, // 资产项目
           assetType: this.assetType,   // 资产类型
           objectType: this.objectType,  // 资产类别
           assetNameCode: this.assetNameCode,  // 资产名称/编码
@@ -341,7 +375,7 @@
         })
       },
       // 外面给回来的数据
-      redactCheckedDataFn (redactChecked, overallData) {
+      redactCheckedDataFn (redactChecked, projectId, overallData) {
         // overallData 给回来的数据合并在去重
         if (overallData && overallData.length !== 0) {
           let arrData = [...this.overallData, ...overallData]
@@ -352,6 +386,10 @@
           }, [])
           // 存着全部数据
           this.overallData = arrData
+        }
+        if (this.projectId !== projectId) {
+          this.projectId = projectId
+          this.query()
         }
         this.$nextTick(() => {
           this.selectedRowKeys = redactChecked
@@ -369,6 +407,7 @@
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' }
       })
+      this.getObjectKeyValueByOrganIdFn()
       // 资产类型
       this.platformDictFn('asset_type')
     }
