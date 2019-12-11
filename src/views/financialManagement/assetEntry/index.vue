@@ -8,7 +8,7 @@
         <SG-Button icon="plus" type="primary" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search placeholder="卡片名称/编码" :style="allStyle" v-model="cardName" @search="queryClick" />
+          <a-input-search placeholder="卡片名称/编码" :style="allStyle" :value="cardName" @change="cardNameChange" @search="queryClick" />
         </div>
       </div>
       <div slot="btns">
@@ -282,6 +282,12 @@
         this.getAssetSubjectList()
         this.getAssetClassifyOptions()
         this.queryClick()
+      },
+      // 卡片名称发生变化
+      cardNameChange (event) {
+        if (event.target.value.length <= 40) {
+          this.cardName = event.target.value
+        }
       },
       // 状态发生变化
       changeStatus (value) {
