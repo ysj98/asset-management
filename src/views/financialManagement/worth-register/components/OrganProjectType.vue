@@ -24,7 +24,7 @@
 <script>
   import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   export default {
-    name: 'SearchCondition',
+    name: 'OrganProjectType',
     components: { OrganProjectBuilding },
     props: {
       // 支持v-model,向外传递一个对象 { organId, projectId, assetType }

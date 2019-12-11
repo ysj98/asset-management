@@ -27,7 +27,12 @@
       </a-col>
       <a-col :span="6">
         <span class="prefix_style" style="width: 69px">提交日期</span>
-        <a-range-picker @change="changeConfirmDate" class="date_picker_style" format="YYYY-MM-DD" style="margin-left: 69px"/>
+        <a-range-picker
+          @change="changeConfirmDate"
+          class="date_picker_style"
+          format="YYYY-MM-DD" style="margin-left: 69px"
+          :defaultValue="[beginDate ? moment(beginDate, 'YYYY-MM-DD') : null, endDate ? moment(endDate, 'YYYY-MM-DD') : null]"
+        />
       </a-col>
       <a-col :span="6">
         <span class="prefix_style" style="width: 78px">评估基准日</span>
@@ -38,11 +43,12 @@
 </template>
 
 <script>
-  // import moment from 'moment'
+  import moment from 'moment'
   export default {
-    name: 'SearchContainerII',
+    name: 'DateMethodOrgan',
     props: {
-      // 支持v-model,向外传递一个对象 { assessmentMethod, assessmentOrgan, assessDate, confirmDate }
+      // 支持v-model,向外传递一个对象
+      // { assessmentMethod, assessmentOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate }
       value: {
         type: Object,
         default: () => ({})
@@ -76,17 +82,20 @@
     data () {
       return {
         properties: {}, // 属性值
-        // loading: false, // 加载状态
-        assessDate: null, // 评估基准日
-        confirmDate: null, // 提交日期
         organOptions: [], // 评估机构选项,
         methodOptions: [], // 评估方法选项
+        beginDate: null, // 提交日期开始日期
+        endDate: null, // 提交日期结束日期
         assessmentOrgan: undefined, // 评估机构,
         assessmentMethod: undefined, // 评估方法
+        beginAssessmenBaseDate: null, // 评估基准日开始日期
+        endAssessmenBaseDate: null // 评估基准日结束日期
       }
     },
 
     methods: {
+      moment,
+
       // 搜索过滤选项
       filterOption(input, option) {
         return (
@@ -96,18 +105,20 @@
 
       // 获取日期
       changeConfirmDate (date, dateStrings) {
-        const { assessmentOrgan, assessDate, assessmentMethod } = this
+        const { assessmentOrgan, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod } = this
         let confirmDate = date.length ? {
           beginDate: dateStrings[0], endDate: dateStrings[1]
         } : {}
-        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), assessmentMethod, ...confirmDate})
+        Object.assign(this, confirmDate)
+        this.$emit('input', { assessmentOrgan, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod, ...confirmDate})
       },
       changeAssessDate (date, dateStrings) {
-        const { assessmentOrgan, confirmDate, assessmentMethod } = this
+        const { assessmentOrgan, beginDate, endDate, assessmentMethod } = this
         let assessDate = dateStrings.length ? {
           beginAssessmenBaseDate: dateStrings[0], endAssessmenBaseDate: dateStrings[1]
         } : {}
-        this.$emit('input', { assessmentOrgan, ...(confirmDate || {}), assessmentMethod, ...assessDate})
+        Object.assign(this, assessDate)
+        this.$emit('input', { assessmentOrgan, beginDate, endDate, assessmentMethod, ...assessDate})
       },
 
       // 查询平台字典
@@ -153,7 +164,7 @@
       },
     },
 
-    mounted () {
+    created () {
       // 初始化属性和值
       const { allowClear, size, showSearch, value, mode } = this
       let properties = { allowClear, size, showSearch, mode }
@@ -171,16 +182,16 @@
         if (assessmentOrgan && assessmentOrgan.length !== 1 && assessmentOrgan.includes('-1')) {
           this.assessmentOrgan = ['-1']
         }
-        const { assessDate, confirmDate, assessmentMethod } = this
-        this.$emit('input', { assessmentOrgan: this.assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod })
+        const { beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod } = this
+        this.$emit('input', { assessmentOrgan: this.assessmentOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod })
       },
 
       assessmentMethod: function (assessmentMethod) {
         if (assessmentMethod && assessmentMethod.length !== 1 && assessmentMethod.includes('-1')) {
           this.assessmentMethod = ['-1']
         }
-        const { assessmentOrgan, assessDate, confirmDate } = this
-        this.$emit('input', { assessmentOrgan, ...(assessDate || {}), ...(confirmDate || {}), assessmentMethod: this.assessmentMethod })
+        const { assessmentOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate } = this
+        this.$emit('input', { assessmentOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod: this.assessmentMethod })
       }
     }
   }

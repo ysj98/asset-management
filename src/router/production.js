@@ -246,8 +246,7 @@ let proRouter = [
   {
     path: '/worthRegister/detailRegister',
     name: '价值登记详情',
-    component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
-    meta: { keepAlive: true }
+    component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage')
   },
   {
     path: '/worthRegister/editRegister',
@@ -262,8 +261,7 @@ let proRouter = [
   {
     path: '/worthRegister/approvalRegister',
     name: '价值登记审批',
-    component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
-    meta: { keepAlive: true }
+    component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage')
   }
 ]
 export default proRouter

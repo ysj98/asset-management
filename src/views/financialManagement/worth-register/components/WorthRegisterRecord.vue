@@ -54,6 +54,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import NoDataTip from 'src/components/noDataTips'
   import OrganProjectType from '../components/OrganProjectType'
   import DateMethodOrgan from '../components/DateMethodOrgan'
@@ -68,7 +69,10 @@
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
         organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
-        dateMethodOrgan: {}, // { assessOrgan, assessDate, confirmDate, assessMethod }
+        dateMethodOrgan: {
+          beginDate: moment().add(-180, 'days').format('YYYY-MM-DD'),
+          endDate: moment().format('YYYY-MM-DD') // 默认查询最近半年的提交数据
+        }, // { assessOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate, assessMethod }
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
         statusOptions: [

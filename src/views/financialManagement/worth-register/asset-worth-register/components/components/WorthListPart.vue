@@ -134,7 +134,7 @@
             flag = true
           }
           // 上浮比例=本次评估/上次估值*100%-100%
-          m.upRate = m.lastAssessmentValue ? `${((Number(m.assessmentValue) / Number(m.lastAssessmentValue) -1) * 100).toFixed(2) }%` : '--'
+          m.upRate = m.lastAssessmentValue ? `${((Number(m.assessmentValue || 0) / Number(m.lastAssessmentValue) -1) * 100).toFixed(2) }%` : '--'
         })
         // let i = flag ? 1 : 0
         let temp = {

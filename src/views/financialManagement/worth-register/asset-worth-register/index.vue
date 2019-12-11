@@ -80,6 +80,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import NoDataTip from 'src/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OrganProjectType from '../components/OrganProjectType'
@@ -96,7 +97,10 @@
         registerName: '', // 查询条件-登记名称
         exportBtnLoading: false, // 导出按钮loading
         organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, organName, projectId, assetType }
-        dateMethodOrgan: {}, // { assessOrgan, assessDate, confirmDate, assessMethod }
+        dateMethodOrgan: {
+          beginDate: moment().add(-180, 'days').format('YYYY-MM-DD'),
+          endDate: moment().format('YYYY-MM-DD') // 默认查询最近半年的提交数据
+        }, // { assessOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate, assessMethod }
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
         statusOptions: [

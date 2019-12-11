@@ -155,7 +155,7 @@
       
       // 校验资产价值清单本次估值项非空
       validateAssetList (list) {
-        let arr = list.filter(m => m.assessmentValue === '' || m.assessmentValue === null)
+        let arr = list.filter(m => m.assessmentValue === '' || m.assessmentValue === null || m.assessmentValue === undefined)
         return arr.length
       }
     },
