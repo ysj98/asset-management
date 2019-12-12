@@ -40,6 +40,7 @@
           <a-select
             v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
+            @change="setData($event, 'projectObj')"
             placeholder="请选择资产项目"
             :options="projectOptions"
           />
@@ -292,11 +293,22 @@
         } else if (type === 'assessmentOrganName') {
           const { organOptions } = this
           value = organOptions.filter(m => m.key === val)[0]['title']
+        } else if (type === 'projectObj') {
+          const { projectOptions } = this
+          let obj = projectOptions.filter(m => m.key === val)[0]
+          value = obj ? { projectId: obj.key, projectName: obj.title } : null
         } else {
           const { methodOptions } = this
           value = methodOptions.filter(m => m.key === val)[0]['title']
         }
         this.$emit('setData', { [type]: value})
+      },
+      
+      // 单独校验资产项目是否选择
+      validateProject () {
+        this.form.validateFieldsAndScroll(['projectId'], () => {
+          this.$message.warn('请选择资产项目')
+        })
       }
     },
     

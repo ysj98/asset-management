@@ -12,6 +12,7 @@
           :organId="details.organId"
           :registerId="registerId"
           @backAssetList="getAssetList"
+          @validateProject="validateProject"
         />
         <!--审批轨迹及审批意见-->
         <approval-flow-part v-if="type === 'approval' || type === 'detail'" :type="type" :stepList="stepList"/>
@@ -52,6 +53,11 @@
     },
 
     methods: {
+      // 校验基础信息组件资产项目数据
+      validateProject () {
+        this.$refs['baseInfo'].validateProject()
+      },
+
       // 获取资产关联对象数据
       getAssetList (list) {
         this.assetList = list
@@ -108,10 +114,12 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
+            // 初始化，用于资产价值清单组件
             this.dynamicData = {
               assessmenBaseDate: others.assessmenBaseDate,
               assessmentOrganName: others.assessmentOrganName,
-              assessmentMethodName: others.assessmentMethodName
+              assessmentMethodName: others.assessmentMethodName,
+              projectObj: { projectId: others.projectId, projectName: others.projectName }
             }
             return Object.assign(this, { stepList, details: { ...details, ...others } })
           }
