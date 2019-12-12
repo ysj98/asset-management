@@ -129,6 +129,7 @@
           :pagination="false"
           >
           <template slot="obligeeId" slot-scope="text, record">
+            <!-- @search="handleSearch" -->
             <a-select
               :placeholder="'请选择权属人'" style="width: 120px"
               showSearch
@@ -136,9 +137,8 @@
               v-model="record.obligeeId === '' ? record.obligeeId = undefined : record.obligeeId"
               optionFilterProp="children"
               @change="obligeeNameChange(record)"
-              @search="handleSearch"
               :options="obligeeIdData"
-              :filterOption="false"
+              :filterOption="filterOption"
               notFoundContent="没有查询到数据"
               />
           </template>
