@@ -17,7 +17,7 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权利类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
             <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :style="allStyle" :filterOption="filterOption" placeholder="全部权属人" v-model="queryCondition.obligeeId">
+          <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部权属人" v-model="queryCondition.obligeeId">
             <a-select-option v-for="(item, index) in obligeeIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="statusFn" v-model="queryCondition.status">
@@ -347,7 +347,7 @@ export default {
       this.loading = true
       let obj = {
         organId: Number(this.queryCondition.organId),        // 组织机构
-        kindOfRightss: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
