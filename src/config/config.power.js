@@ -174,7 +174,7 @@ export const ASSET_MANAGEMENT = {
   // 资产价值登记-新增
   ASSET_AWR_ADD: 'zcgl_awr_add',
   // 资产价值登记-编辑
-  ASSET_AWR_EDIT: 'zcgl_awr_edit ',
+  ASSET_AWR_EDIT: 'zcgl_awr_edit',
   // 资产价值登记-审核
   ASSET_AWR_APPROVAL: 'zcgl_awr_approval',
   // 资产价值登记-删除

@@ -6,28 +6,19 @@
 <template>
   <div class="select-detail">
     <a-row :gutter="8" style="margin-bottom: 10px">
-      <a-col :span="2">
+      <a-col :span="3">
         <div style="line-height: 32px; font-weight: bold">待选资产</div>
       </a-col>
-      <a-col :span="4">
-        <a-input-search
-          v-model.trim="assetNameCode"
-          style="width: 100%"
-          @search="fetchData"
-          @pressEnter="fetchData"
-          placeholder="请输入资产名称"
-        />
-      </a-col>
-      <a-col :span="4">
-        <a-select
-          style="width: 100%"
-          v-model="projectId"
-          @change="fetchData"
-          :options="projectOptions"
-          placeholder="请选择资产项目"
-        />
-      </a-col>
-      <a-col :span="4">
+      <!--<a-col :span="4">-->
+        <!--<a-select-->
+          <!--style="width: 100%"-->
+          <!--v-model="projectId"-->
+          <!--@change="fetchData"-->
+          <!--:options="projectOptions"-->
+          <!--placeholder="请选择资产项目"-->
+        <!--/>-->
+      <!--</a-col>-->
+      <a-col :span="5">
         <!--mode="multiple"-->
         <!--:maxTagCount="2"-->
         <a-select
@@ -38,7 +29,7 @@
           placeholder="请选择资产类型"
         />
       </a-col>
-      <a-col :span="4">
+      <a-col :span="5">
         <a-select
           style="width: 100%"
           v-model="objectType"
@@ -47,29 +38,40 @@
           placeholder="请选择资产类别"
         />
       </a-col>
+      <a-col :span="5">
+        <a-input-search
+          v-model.trim="assetNameCode"
+          style="width: 100%"
+          @search="fetchData"
+          @pressEnter="fetchData"
+          placeholder="请输入资产名称"
+        />
+      </a-col>
       <a-col :span="6">
         <div style="line-height: 32px">已选：<span style="color: #49505E; font-weight: bold">{{selectedList.length}}</span></div>
       </a-col>
     </a-row>
     <a-row :gutter="8">
       <a-col :span="18">
-        <div class="col_div" :style="`height: ${height}px; max-height: ${height}px`">
-          <a-table
-            size="small"
-            rowKey="assetId"
-            :columns="columns"
-            :loading="loading"
-            :pagination="false"
-            :dataSource="dataSource"
-            class="custom-table td-pd10"
-            :scroll="{x: 1200}"
-            :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
-          />
+        <div class="col_div" :style="`height: ${height}px`">
+          <div :style="`overflow-y: auto; height: ${height - 51}px; max-height: ${height - 51}px`">
+            <a-table
+              size="small"
+              rowKey="assetId"
+              :columns="columns"
+              :loading="loading"
+              :pagination="false"
+              :dataSource="dataSource"
+              class="custom-table td-pd10"
+              :scroll="{x: 1200}"
+              :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
+            />
+          </div>
           <SG-FooterPagination v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
         </div>
       </a-col>
       <a-col :span="6">
-        <div class="col_div" :style="`height: ${height}px; max-height: ${height}px`">
+        <div class="col_div" :style="`overflow-y: auto; height: ${height}px; max-height: ${height}px`">
           <div class="item_div" v-for="item in selectedList" :key="item.assetId">
             {{item.assetName}}
             <a-icon type="close" class="remove_icon" @click="removeItem(item.assetId)"/>
@@ -95,6 +97,8 @@
       value: { type: Array, default: () => [] },
       // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
       queryType: { type: [Number, String], default: () => 1 },
+      // 资产项目projectId, projectName
+      projectObj: { type: Object, default: () => {} }
     },
     data () {
       return {
@@ -126,11 +130,12 @@
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
+        const {objectType, assetNameCode, assetType, projectObj: { projectId }, queryType} = this
+        if (!projectId) { return this.$message.warn('资产项目Id不存在')}
         this.loading = true
-        const {objectType, assetNameCode, assetType, projectId, queryType} = this
         let form = {
-          queryType, assetNameCode,
-          projectId: projectId === '-1' ? '' : projectId,
+          queryType, assetNameCode, projectId,
+          // projectId: projectId === '-1' ? '' : projectId, 改前
           assetType: assetType === '-1' ? '' : assetType,
           objectType: objectType === '-1' ? '' : objectType,
           pageSize: pageLength, pageNum: pageNo
@@ -194,9 +199,10 @@
               title: m.projectName,
               key: m.projectId
             }))
-            arr.unshift({title: '全部项目', key: '-1'})
+            // arr.unshift({title: '全部项目', key: '-1'}) 改前
+            this.projectId = arr.length ? arr[0].key : undefined
             this.projectOptions = arr
-            return false
+            return this.fetchData({})
           }
           throw res.message || '查询资产项目失败'
         }).catch(err => {
@@ -230,9 +236,9 @@
     mounted () {
       const {allAttrs, value} = this
       this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value
-      this.fetchData({})
-      this.queryProjectByOrganId()
+      // this.queryProjectByOrganId() 外层props传入，改前
       this.queryAssetTypeDict()
+      this.fetchData({}) // 改后
     },
     watch: {
       value: function (value) {
@@ -266,7 +272,6 @@
       /*height: 450px;*/
       /*max-height: 450px;*/
       position: relative;
-      overflow-y: auto;
       border-radius: 3px;
       border: 1px solid #DCE1E6;
       & /deep/ .sg-FooterPagination {

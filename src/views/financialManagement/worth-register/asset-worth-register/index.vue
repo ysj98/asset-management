@@ -104,8 +104,8 @@
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
         statusOptions: [
-          { title: '全部状态', key: '-1' }, { title: '草稿', key: '1' }, { title: '待审批', key: '2' },
-          { title: '已驳回', key: '3' }, { title: '已审批', key: '4' }, { title: '已取消', key: '5' }
+          { title: '全部状态', key: '-1' }, { title: '草稿', key: '0' }, { title: '待审批', key: '2' },
+          { title: '已驳回', key: '3' }, { title: '已审批', key: '1' }, { title: '已取消', key: '4' }
         ], // 查询条件-状态选项
         tableObj: {
           dataSource: [],

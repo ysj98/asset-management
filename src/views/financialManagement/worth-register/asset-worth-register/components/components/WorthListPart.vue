@@ -57,6 +57,8 @@
         :queryType="queryType"
         v-model="selectedList"
         :height="modalObj.height"
+        :projectObj="dynamicData.projectObj"
+        :key="dynamicData.projectObj && dynamicData.projectObj.projectId"
       />
       <!--批量修改本次估值-->
       <a-input-number
@@ -193,7 +195,11 @@
       // 添加资产
       handleAddModal (bool) {
         if (bool) {
-          const { tableObj: { dataSource } } = this
+          const { tableObj: { dataSource }, dynamicData: { projectObj } } = this
+          // 校验是否已选择资产项目
+          if (!projectObj || !projectObj.projectId || !projectObj.projectName) {
+            return this.$emit('validateProject')
+          }
           let list = []
           dataSource.forEach(m => {
             m.assetName !== '合计' && list.push(Number(m.assetId))
@@ -341,7 +347,6 @@
             modalObj: { width: 450, isShow: true, okText: '确定', cancelText: '取消', title: '批量修改本次估值' }
           })
         } else {
-          this.isEditAll = false
           this.modalObj.isShow = false
         }
       },
@@ -374,10 +379,19 @@
     watch: {
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
+        const { projectObj } = data
         const {tableObj: {dataSource}} = this
-        this.tableObj.dataSource = dataSource.map(m => {
-          return m.assetName !== '合计' ? Object.assign(m, data) : m
-        })
+        if (dataSource.length) {
+          // 如果切换资产项目，则清空Table dataSource
+          if (projectObj && String(projectObj.projectId) !== String(dataSource[0].projectId)) {
+            // 重置selectedRowKeys
+            this.tableObj.selectedRowKeys = []
+            return this.tableObj.dataSource = []
+          }
+          this.tableObj.dataSource = dataSource.map(m => {
+            return m.assetName !== '合计' ? Object.assign(m, data) : m
+          })
+        }
       }
     }
   }
