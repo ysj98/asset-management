@@ -127,9 +127,9 @@
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
         this.loading = true
-        const {objectType, assetNameCode, assetType, projectId, organId, queryType} = this
+        const {objectType, assetNameCode, assetType, projectId, queryType} = this
         let form = {
-          organId, queryType, assetNameCode,
+          queryType, assetNameCode,
           projectId: projectId === '-1' ? '' : projectId,
           assetType: assetType === '-1' ? '' : assetType,
           objectType: objectType === '-1' ? '' : objectType,
@@ -235,6 +235,10 @@
       this.queryAssetTypeDict()
     },
     watch: {
+      value: function (value) {
+        this.selectedRowKeys = this.allAttrs ? value.map(i => i.assetId) : value
+      },
+ 
       selectedRowKeys: function (keys) {
         let {dataSource, allAttrs, selectedList} = this
         let primaryKeys = []

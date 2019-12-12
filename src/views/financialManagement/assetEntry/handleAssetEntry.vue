@@ -590,14 +590,14 @@
     </a-form>
     <form-footer v-show="pageType === 'new' || pageType === 'edit'">
       <slot>
-        <SG-Button type="primary" @click="handleSubmit(2)">提交</SG-Button>
+        <SG-Button type="primary" @click="handleSubmit(1)">提交</SG-Button>
         <SG-Button type="primary" weaken @click="handleSubmit(0)">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </slot>
     </form-footer>
     <form-footer v-show="pageType === 'audit'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="approveAudit" @cancel="rejectAudit">
     </form-footer>
-    <associate-asset-modal ref="associateAssetModal" :organId="organId" queryType="1" @assetChange="assetChange"></associate-asset-modal>
+    <associate-asset-modal ref="associateAssetModal" :organId="organId" queryType="1" @assetChange="assetChange" v-if="editable"></associate-asset-modal>
   </div>
 </template>
 
@@ -804,10 +804,12 @@ export default {
     },
     // 展示关联资产弹窗
     toggleAssociateAsset () {
+      if (!this.form.getFieldValue('projectId')) {
+        this.$message.info('请先选择资产项目')
+        return
+      }
       this.$refs.associateAssetModal.show = true
-      console.log(this.checkedData)
-      console.log(this.dataSource)
-      this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.dataSource)
+      this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.dataSource)
     },
     // 关联资产发生变动
     assetChange (checkedData, checkedNames, rowsData, extraData) {
@@ -898,6 +900,11 @@ export default {
     changeProjectId (value, options) {
       console.log(options)
       console.log(options.data.props)
+      this.dataSource = []
+      this.checkedData = []
+      this.detail.assetIds = undefined
+      this.detail.assetNames = ''
+      this.associateAssetsOptions = []
       this.form.setFieldsValue({
         getTime: options.data.props.date ? moment(options.data.props.date) : undefined
       })

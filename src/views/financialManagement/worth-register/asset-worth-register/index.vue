@@ -9,7 +9,7 @@
           type="primary"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_ADD"
           @click="handleBtnAction({type: 'add'})"
-        >新增资产项目</SG-Button>
+        >新增资产价值登记</SG-Button>
         <!--<SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>-->
       </div>
       <div slot="headerForm">
