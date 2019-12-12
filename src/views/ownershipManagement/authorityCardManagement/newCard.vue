@@ -26,8 +26,8 @@
               <a-input placeholder="请输入权证号"
               :disabled="setType === 'edit'"
               :style="allWidth"
-              :max="60"
-              v-decorator="['warrantNbr', {rules: [{required: true, max: 60, whitespace: true, message: '请输入权证号(不超过60字符)'}], initialValue: newCardData.warrantNbr}]"/>
+              :maxLength="30"
+              v-decorator="['warrantNbr', {rules: [{required: true, max: 30, whitespace: true, message: '请输入权证号(不超过30字符)'}], initialValue: newCardData.warrantNbr}]"/>
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="12">
@@ -65,6 +65,7 @@
               <a-input :placeholder="`请输入${item.label}`"
               :style="allWidth"
               :max=item.max
+              :maxLength="item.max"
               v-decorator="[item.attrCode, {rules: [{required: item.required, max: item.max, whitespace: true, message: `请输入${item.label}(不超过${item.max}字符)`}], initialValue: item.attrValue}]"/>
             </a-form-item>
             <!-- 数字输入框 -->
