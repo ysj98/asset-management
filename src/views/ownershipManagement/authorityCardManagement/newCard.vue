@@ -26,8 +26,8 @@
               <a-input placeholder="请输入权证号"
               :disabled="setType === 'edit'"
               :style="allWidth"
-              :max="60"
-              v-decorator="['warrantNbr', {rules: [{required: true, max: 60, whitespace: true, message: '请输入权证号(不超过60字符)'}], initialValue: newCardData.warrantNbr}]"/>
+              :maxLength="30"
+              v-decorator="['warrantNbr', {rules: [{required: true, max: 30, whitespace: true, message: '请输入权证号(不超过30字符)'}], initialValue: newCardData.warrantNbr}]"/>
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="12">
@@ -65,6 +65,7 @@
               <a-input :placeholder="`请输入${item.label}`"
               :style="allWidth"
               :max=item.max
+              :maxLength="item.max"
               v-decorator="[item.attrCode, {rules: [{required: item.required, max: item.max, whitespace: true, message: `请输入${item.label}(不超过${item.max}字符)`}], initialValue: item.attrValue}]"/>
             </a-form-item>
             <!-- 数字输入框 -->
@@ -199,7 +200,7 @@ import Cephalosome from '@/components/Cephalosome'
 import moment from 'moment'
 import {debounce, utils, calc} from '@/utils/utils'
 import {accessCard, titleDeed, newCardData, columns, mortgageInformation} from './beat'
-
+const conditionalJudgment = [undefined, null, '']
 export default {
   components: {Cephalosome},
   props: {
@@ -403,38 +404,38 @@ export default {
           }
           let obj = {
             warrantId: this.warrantId,                                            // 类型：Number  必有字段  备注：权证id
-            warrantNbr: values.warrantNbr,                                        // 类型：String  必有字段  备注：权证号
-            ownerType: values.ownerType,                                          // 类型：Number  必有字段  备注：权属形式
-            kindOfRight: values.kindOfRight,                                      // 类型：Number  必有字段  备注：权利类型
-            lotNo: values.lotNo ? values.lotNo : '',                              // 类型：String  必有字段  备注：丘地号(产权证所有)
-            estateUnitCode: values.estateUnitCode ? values.estateUnitCode : '',                // 类型：String  必有字段  备注：不动产单元号(产权证所有)
-            seatingPosition: values.seatingPosition ? values.seatingPosition : '',             // 类型：String  必有字段  备注：坐落位置
-            landArea: values.landArea ? values.landArea : '',                     // 类型：Number  必有字段  备注：土地面积(产权证所有)
-            ownershipUse: values.ownershipUse ? values.ownershipUse : '',         // 类型：String  必有字段  备注：权属用途
-            structure: values.structure ? values.structure : '',                  // 类型：String  必有字段  备注：结构
-            buildArea: values.buildArea ? values.buildArea : '',                  // 类型：Number  必有字段  备注：建筑面积
-            exclusiveBuildArea: values.exclusiveBuildArea ? values.exclusiveBuildArea : '',        // 类型：Number  必有字段  备注：专属建筑面积
-            apportionArea: values.apportionArea ? values.apportionArea : '',       // 类型：Number  必有字段  备注：分摊面积
-            totalSuite: values.totalSuite ? values.totalSuite : '',                // 类型：Number  必有字段  备注：总套数(产权证所有)
-            qualityOfRight: values.qualityOfRight ? values.qualityOfRight : '',    // 类型：String  必有字段  备注：权利性质(产权证所有)
-            useLimitDate: values.useLimitDate ? values.useLimitDate : '',          // 类型：String  必有字段  备注：使用期限(产权证所有)
-            rigisterDate: values.rigisterDate ? `${values.rigisterDate.format('YYYY-MM-DD')}` : '',                // 类型：String  必有字段  备注：登记日期
+            warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,                                        // 类型：String  必有字段  备注：权证号
+            ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                                          // 类型：Number  必有字段  备注：权属形式
+            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,                                      // 类型：Number  必有字段  备注：权利类型
+            lotNo: conditionalJudgment.includes(values.lotNo) ? '' : values.lotNo,                              // 类型：String  必有字段  备注：丘地号(产权证所有)
+            estateUnitCode: conditionalJudgment.includes(values.estateUnitCode) ? '' : values.estateUnitCode,                // 类型：String  必有字段  备注：不动产单元号(产权证所有)
+            seatingPosition: conditionalJudgment.includes(values.seatingPosition) ? '' : values.seatingPosition,             // 类型：String  必有字段  备注：坐落位置
+            landArea: conditionalJudgment.includes(values.landArea) ? '' : values.landArea,                     // 类型：Number  必有字段  备注：土地面积(产权证所有)
+            ownershipUse: conditionalJudgment.includes(values.ownershipUse) ? '' : values.ownershipUse,         // 类型：String  必有字段  备注：权属用途
+            structure: conditionalJudgment.includes(values.structure) ? '' : values.structure,                  // 类型：String  必有字段  备注：结构
+            buildArea: conditionalJudgment.includes(values.buildArea) ? '' : values.buildArea,                  // 类型：Number  必有字段  备注：建筑面积
+            exclusiveBuildArea: conditionalJudgment.includes(values.exclusiveBuildArea) ? '' : values.exclusiveBuildArea,        // 类型：Number  必有字段  备注：专属建筑面积
+            apportionArea: conditionalJudgment.includes(values.apportionArea) ? '' : values.apportionArea,       // 类型：Number  必有字段  备注：分摊面积
+            totalSuite: conditionalJudgment.includes(values.totalSuite) ? '' : values.totalSuite,                // 类型：Number  必有字段  备注：总套数(产权证所有)
+            qualityOfRight: conditionalJudgment.includes(values.qualityOfRight) ? '' : values.qualityOfRight,    // 类型：String  必有字段  备注：权利性质(产权证所有)
+            useLimitDate: conditionalJudgment.includes(values.useLimitDate) ? '' : values.useLimitDate,          // 类型：String  必有字段  备注：使用期限(产权证所有)
+            rigisterDate: conditionalJudgment.includes(values.rigisterDate) ? '' : `${values.rigisterDate.format('YYYY-MM-DD')}`,                // 类型：String  必有字段  备注：登记日期
             organId: this.organId,                                                 // 类型：String  必有字段  备注：组织机构
-            remark: values.remark ? values.remark : '',                            // 类型：String  必有字段  备注：备注
-            handoverDate: values.handoverDate ? `${values.handoverDate.format('YYYY-MM-DD')}` : '',  // 类型：String  必有字段  备注：交接日期
-            houseOwner: values.houseOwner ? values.houseOwner : '',                // 类型：String  必有字段  备注：房屋所有权人(使用权证所有)
-            tenant: values.tenant ? values.tenant : '',                            // 类型：String  必有字段  备注：承租人(使用权证所有)
-            entrustOrganization: values.entrustOrganization ? values.entrustOrganization : '',        // 类型：String  必有字段  备注：委托管理单位(使用权证所有)
-            totalFloor: values.totalFloor ? values.totalFloor : '',                 // 类型：String  必有字段  备注：总层数(使用权证所有)
-            placeFloor: values.placeFloor ? values.placeFloor : '',                 // 类型：String  必有字段  备注：所在层(使用权证所有)
-            houseNo: values.houseNo ? values.houseNo : '',                          // 类型：String  必有字段  备注：房屋号(使用权证所有)
-            rentUnitPice: values.rentUnitPice ? values.rentUnitPice : '',        // 类型：Number  必有字段  备注：租金单价(使用权证所有)
-            rentTotalPrice: values.rentTotalPrice ? values.rentTotalPrice : '',     // 类型：Number  必有字段  备注：租金总价(使用权证所有)
-            contractData: values.contractData ? values.contractData : '',           // 类型：String  必有字段  备注：合同期限(使用权证所有)
-            talkUnitPrice: values.talkUnitPrice ? values.talkUnitPrice : '',        // 类型：String  必有字段  备注：议价单价(使用权证所有)
-            talkTotalPrice: values.talkTotalPrice ? values.talkTotalPrice : '',     // 类型：String  必有字段  备注：议价租金总价(使用权证所有)
-            rentPayDate: values.rentPayDate ? values.rentPayDate : '',              // 类型：String  必有字段  备注：租金缴纳期限(使用权证所有)
-            antenatal: values.antenatal ? values.antenatal : '',                    // 类型：String  必有字段  备注：产别(使用权证所有)
+            remark: conditionalJudgment.includes(values.remark) ? '' : values.remark,                            // 类型：String  必有字段  备注：备注
+            handoverDate: conditionalJudgment.includes(values.handoverDate) ? '' : `${values.handoverDate.format('YYYY-MM-DD')}`,  // 类型：String  必有字段  备注：交接日期
+            houseOwner: conditionalJudgment.includes(values.houseOwner) ? '' : values.houseOwner,                // 类型：String  必有字段  备注：房屋所有权人(使用权证所有)
+            tenant: conditionalJudgment.includes(values.tenant) ? '' : values.tenant,                            // 类型：String  必有字段  备注：承租人(使用权证所有)
+            entrustOrganization: conditionalJudgment.includes(values.entrustOrganization) ? '' : values.entrustOrganization,        // 类型：String  必有字段  备注：委托管理单位(使用权证所有)
+            totalFloor: conditionalJudgment.includes(values.totalFloor) ? '' : values.totalFloor,                 // 类型：String  必有字段  备注：总层数(使用权证所有)
+            placeFloor: conditionalJudgment.includes(values.placeFloor) ? '' : values.placeFloor,                 // 类型：String  必有字段  备注：所在层(使用权证所有)
+            houseNo: conditionalJudgment.includes(values.houseNo) ? '' : values.houseNo,                          // 类型：String  必有字段  备注：房屋号(使用权证所有)
+            rentUnitPice: conditionalJudgment.includes(values.rentUnitPice) ? '' : values.rentUnitPice,        // 类型：Number  必有字段  备注：租金单价(使用权证所有)
+            rentTotalPrice: conditionalJudgment.includes(values.rentTotalPrice) ? '' : values.rentTotalPrice,     // 类型：Number  必有字段  备注：租金总价(使用权证所有)
+            contractData: conditionalJudgment.includes(values.contractData) ? '' : values.contractData,           // 类型：String  必有字段  备注：合同期限(使用权证所有)
+            talkUnitPrice: conditionalJudgment.includes(values.talkUnitPrice) ? '' : values.talkUnitPrice,        // 类型：String  必有字段  备注：议价单价(使用权证所有)
+            talkTotalPrice: conditionalJudgment.includes(values.talkTotalPrice) ? '' : values.talkTotalPrice,     // 类型：String  必有字段  备注：议价租金总价(使用权证所有)
+            rentPayDate: conditionalJudgment.includes(values.rentPayDate) ? '' : values.rentPayDate,              // 类型：String  必有字段  备注：租金缴纳期限(使用权证所有)
+            antenatal: conditionalJudgment.includes(values.antenatal) ? '' : values.antenatal,                    // 类型：String  必有字段  备注：产别(使用权证所有)
             amsAttachmentList: files,                        // 附件
             amsOwnershipWarrantObligeeList: amsOwnershipWarrantObligeeList,
             amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList
@@ -684,8 +685,8 @@ export default {
                 totalSuite: data.amsOwnershipWarrant.totalSuite,
                 qualityOfRight: data.amsOwnershipWarrant.qualityOfRight,
                 useLimitDate: data.amsOwnershipWarrant.useLimitDate,
-                rigisterDate: moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
-                handoverDate: moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')
+                rigisterDate: conditionalJudgment.includes(data.amsOwnershipWarrant.rigisterDate) ? undefined : moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
+                handoverDate: conditionalJudgment.includes(data.amsOwnershipWarrant.handoverDate) ? undefined : moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')
               })
             } else if (this.typeJudgment === '2') {
               this.form.setFieldsValue({
@@ -712,8 +713,8 @@ export default {
                 talkTotalPrice: data.amsOwnershipWarrant.talkTotalPrice,
                 rentPayDate: data.amsOwnershipWarrant.rentPayDate,
                 antenatal: data.amsOwnershipWarrant.antenatal,
-                rigisterDate: moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
-                handoverDate: moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')
+                rigisterDate: conditionalJudgment.includes(data.amsOwnershipWarrant.rigisterDate) ? undefined : moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
+                handoverDate: conditionalJudgment.includes(data.amsOwnershipWarrant.handoverDate) ? undefined : moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')
               })
             }
           })

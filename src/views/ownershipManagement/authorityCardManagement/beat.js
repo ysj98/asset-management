@@ -179,7 +179,7 @@ export const accessCard = [
     attrCode: 'handoverDate',
     formType: 'date',
     attrValue: '',
-    required: true
+    required: false
   }
 ]
 
@@ -271,7 +271,7 @@ export const titleDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
+    max: 999999,
     precision: 0,
     required: false
   },
@@ -303,7 +303,7 @@ export const titleDeed = [
     attrCode: 'handoverDate',
     formType: 'date',
     attrValue: '',
-    required: true
+    required: false
   }
 ]
 
