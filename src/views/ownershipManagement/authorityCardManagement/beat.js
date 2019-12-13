@@ -106,11 +106,9 @@ export const accessCard = [
   {
     label: '租金单价',
     attrCode: 'rentUnitPice',
-    formType: 'inputNumber',
+    formType: 'input',
     attrValue: '',
-    min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 30,
     required: false
   },
   {
@@ -134,11 +132,9 @@ export const accessCard = [
   {
     label: '议价租金单价',
     attrCode: 'talkUnitPrice',
-    formType: 'inputNumber',
+    formType: 'input',
     attrValue: '',
-    min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 30,
     required: false
   },
   {
