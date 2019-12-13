@@ -23,11 +23,11 @@
         />
         <!--特殊处理：权属信息展示的第两个Table-->
         <div v-if="item['table2']">
-          <div style="color: #49505E; margin-top: 35px; font-weight: bold">{{item['table2']['tableTitle']}}</div>
+          <div style="color: #49505E; margin: 35px 0 15px; font-weight: bold">{{item['table2']['tableTitle']}}</div>
           <a-table
             :rowKey="item['table2']['rowKey']"
             :columns="item['table2']['columns']"
-            :dataSource="tableData"
+            :dataSource="table2Data"
             :pagination="false"
             class="custom-table td-pd10 table-border"
           >
@@ -49,22 +49,62 @@
     data () {
       return {
         infoKeys, // 所以Tab的展示字段
-        tabKey: 'receive', // 默认展示第一个Tab-接管信息
+        tabKey: 'ownInfo', // 默认展示第一个Tab-接管信息
         detailData: {}, // 散列信息
-        tableData: [] // table信息
+        tableData: [], // table信息
+        table2Data: [], // table2信息
+        cacheDataObj: {}, // 缓存信息
+        apiObj: {
+          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息' } // 权属信息
+        } // 接口API相关
       }
     },
 
-    methods: {},
+    methods: {
+      queryDetail (type) {
+        let { api, tip } = this.apiObj[type]
+        if (!api) { return false }
+        this.$api.assets[api]({assetId: this.assetHouseId}).then(r => {
+          debugger
+          let res = r.data
+          let detailData = {}
+          let tableData = []
+          let table2Data = []
+          if (res && String(res.code) === '0') {
+            const info = res.data
+            switch (type) {
+              case 'ownInfo':
+                // let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = res.data
+                detailData = { ownerTypeName: info.ownerTypeName, ownershipStatusName: info.ownershipStatusName }
+                tableData = info.ownershipInfo
+                table2Data = info.transactionList
+            }
+            // 缓存数据
+            this.cacheDataObj[type] = { detailData, tableData, table2Data }
+            return Object.assign(this, {
+              detailData, tableData, table2Data
+            })
+          }
+          throw res.message || `查询${tip}错误`
+        }).catch(err => {
+          this.$message.error(err || `查询${tip}错误`)
+        })
+      }
+    },
     
+    created () {
+      this.queryDetail('ownInfo')
+    },
+
     watch: {
       tabKey (key) {
-        // 如果Tab被激活过，不处理数据-------
-        if (key) {
-          Object.assign(this, {
-            detailData: {},
-            tableData: []
-          })
+        debugger
+        // 如果Tab被激活过，不再请求接口数据
+        const {cacheDataObj} = this
+        if (cacheDataObj[key]) {
+          Object.assign(this, cacheDataObj[key])
+        } else {
+          this.queryDetail(key)
         }
       }
     }
@@ -81,5 +121,6 @@
         white-space: nowrap;
       }
     }
+    margin-bottom: 35px;
   }
 </style>

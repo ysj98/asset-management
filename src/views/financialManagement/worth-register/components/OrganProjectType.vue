@@ -83,7 +83,6 @@
           }
           throw res.message || '查询资产类型失败'
         }).catch(err => {
-          this.tableObj.loading = false
           this.$message.error(err || '查询资产类型失败')
         })
       }

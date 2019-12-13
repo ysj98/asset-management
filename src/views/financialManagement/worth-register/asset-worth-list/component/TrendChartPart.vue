@@ -55,7 +55,7 @@
         let myChart = echarts.init(document.getElementById('chart_zone'))
         // 绘制图表
         myChart.setOption({
-          grid: { top: 30, right: 20 },  // 距父元素边框距离
+          grid: { containLabel: true, top: 30, right: 20, left: 20, bottom: 30 },  // 距父元素边框距离
           yAxis: {
             axisLabel: { formatter: '{value} 元' }
           },

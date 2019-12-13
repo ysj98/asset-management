@@ -32,7 +32,7 @@
             <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode"/>
           </a-col>
           <a-col :span="7">
-            <a-date-picker @change="changeDate" style="width: 100%" placeholder="请选择登记日期"/>
+            <a-date-picker @change="changeDate" style="width: 100%" placeholder="请选择评估基准日期"/>
           </a-col>
         </a-row>
       </div>
