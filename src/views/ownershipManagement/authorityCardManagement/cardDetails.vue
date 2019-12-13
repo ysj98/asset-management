@@ -219,7 +219,7 @@ export default {
   .playground-row {
     margin: 23px 0 0 26px;
     .playground-col {
-      height: 40px;
+      // height: 40px;
       line-height: 40px;
       font-size: 12px;
     }

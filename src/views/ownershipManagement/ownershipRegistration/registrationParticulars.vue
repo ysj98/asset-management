@@ -145,7 +145,7 @@ export default {
         padding: 20px 0 20px 40px;
         .playground-row {
           .playground-col {
-            height: 40px;
+            // height: 40px;
             line-height: 40px;
             font-size: 12px;
           }
