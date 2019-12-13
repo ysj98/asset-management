@@ -8,6 +8,7 @@
 -->
 <template>
   <SG-Modal
+    :maskClosable="false"
     class="assetBundlePopover"
     width="1036px"
     v-model="show"
