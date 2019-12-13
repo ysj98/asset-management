@@ -109,7 +109,7 @@ const columns = [
   },
   {
     title: '登记日期',
-    dataIndex: 'createTime'
+    dataIndex: 'rigisterDate'
   },
   {
     title: '使用期限',
