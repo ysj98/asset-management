@@ -7,7 +7,7 @@
     <!--基础信息部分-->
     <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId"/>
     <!--其它信息部分-->
-    <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId"/>
+    <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId"/>
   </div>
 </template>
 
@@ -19,15 +19,17 @@
     components: { OtherInfoPart, BaseInfoPart },
     data () {
       return {
-        assetHouseId: '' // 房屋Id
+        assetHouseId: '', // 房屋Id
+        assetId: '' // 资产Id
       }
     },
 
     methods: {},
     
     created () {
-      const { query: { houseId } } = this.$route
+      const { query: { houseId, assetId } } = this.$route
       this.assetHouseId = houseId
+      this.assetId = assetId
     }
   }
 </script>
