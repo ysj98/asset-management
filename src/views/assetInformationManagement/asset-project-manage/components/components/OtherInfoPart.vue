@@ -50,21 +50,22 @@
           ]
         }, // 转运营(物业)Table
         ownTable: {
+          loading: false,
           dataSource: [],
           bordered: true,
-          rowKey: 'assetCode',
+          rowKey: 'index',
           pagination: false,
           columns: [
             { title: '有证', children: [
-              { title: '产权', dataIndex: 'a1', key: 'a1' },
-              { title: '使用权', dataIndex: 'a12', key: 'a11' }
+              { title: '产权', dataIndex: 'done_titleDeed' },
+              { title: '使用权', dataIndex: 'done_userDeed' }
             ] },
             { title: '待办', children: [
-              { title: '产权', dataIndex: 'a2', key: 'a2' },
-              { title: '使用权', dataIndex: 'a21', key: 'a22' }
+              { title: '产权', dataIndex: 'pending_titleDeed' },
+              { title: '使用权', dataIndex: 'pending_userDeed' }
             ] },
-            { title: '无证', dataIndex: 'a3', key: 'a3' },
-            { title: '权属办理进度', key: 'a31', dataIndex: 'a31' }
+            { title: '无证', dataIndex: 'noOwner' },
+            { title: '权属办理进度', dataIndex: 'progress' }
           ]
         }, // 权属概况Table
         stepList: [
@@ -106,12 +107,37 @@
           this.operateTable.loading = false
           this.$message.error(err || '查询转运营信息接口出错')
         })
+      },
+      
+      // 查询权属概况
+      queryOwnInfo () {
+        this.ownTable.loading = true
+        this.$api.assets.queryProjectManageOwnInfo({projectId: this.projectId}).then(r => {
+          this.ownTable.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const {owner, waitOwner, noOwner, progress} = res.data
+            return this.ownTable.dataSource = [{
+              index: 1,
+              progress, noOwner,
+              done_userDeed: owner.userDeed,
+              done_titleDeed: owner.titleDeed,
+              pending_userDeed: waitOwner.userDeed,
+              pending_titleDeed: waitOwner.titleDeed,
+            }]
+          }
+          throw res.message || '查询权属概况接口出错'
+        }).catch(err => {
+          this.ownTable.loading = false
+          this.$message.error(err || '查询权属概况接口出错')
+        })
       }
     },
 
     mounted () {
       this.queryGeneralInfo()
       this.queryOperateInfo()
+      this.queryOwnInfo()
     }
   }
 </script>

@@ -301,9 +301,21 @@ export function exportAssetViewExcel (data) {
 export function saveAssetViewHouseInfo (data) {
   return axiosPost(assets.assetView.saveHouseInfo, data)
 }
-// 资产视图查询权属信息
+// 资产视图-其他信息Tab-查询权属信息
 export function queryAssetViewOwnDetail (data) {
   return axiosGet(assets.assetView.queryOwnDetail, data)
+}
+// 资产视图-其他信息Tab-查询接管信息
+export function queryAssetViewTakeOverDetail (data) {
+  return axiosGet(assets.assetView.queryTakeOverDetail, data)
+}
+// 资产视图-其他信息Tab-查询账面信息
+export function queryAssetViewBillDetail (data) {
+  return axiosPost(assets.assetView.queryBillDetail, data)
+}
+// 资产视图-其他信息Tab-查询变动信息
+export function queryAssetViewChangeDetail (data) {
+  return axiosGet(assets.assetView.queryChangeDetail, data)
 }
 // 查询组织机构下的员工
 export function queryUserListByOrganId (data) {
@@ -422,6 +434,11 @@ export function getProjectTransferByProjectId (data) {
 // 资产项目-资产项目详情-资产概况
 export function queryProjectManageGeneralInfo (data) {
   return axiosGet(assets.projectManage.queryGeneralInfo, data)
+}
+
+// 资产项目-资产项目详情-权属概况
+export function queryProjectManageOwnInfo (data) {
+  return axiosGet(assets.projectManage.queryOwnInfo, data)
 }
 
 // 权属人管理

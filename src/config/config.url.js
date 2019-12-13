@@ -254,8 +254,14 @@ export const assets = {
     saveHouseInfo: '/ams/asset-house',
     // 查询组织机构下的员工
     userList: '/ams/asset-house/organ/user',
-    // 资产视图查询权属信息
-    queryOwnDetail: '/ams/ownerShip/asset/owner/detail'
+    // 资产详情-其他信息Tab-查询权属信息
+    queryOwnDetail: '/ams/ownerShip/asset/owner/detail',
+    // 资产详情-其他信息Tab-接管信息
+    queryTakeOverDetail: '/ams/assetChange/assetTakeOverInfo',
+    // 资产详情-其他信息Tab-变动信息
+    queryChangeDetail: '/ams/assetChange/assetChangeInfo',
+    // 资产详情-其他信息Tab-账面信息
+    queryBillDetail: '/ams/assetValueRegister/queryAssertValueListById'
   },
   // 资产项目管理
   projectManage: {
@@ -284,7 +290,9 @@ export const assets = {
     // 资产项目-转运营信息统计
     queryTransferStatistics: '/ams/project/getTransferByProjectId',
     // 资产项目-资产项目详情-资产概况
-    queryGeneralInfo: '/ams/project/getProjectGeneralSituation'
+    queryGeneralInfo: '/ams/project/getProjectGeneralSituation',
+    // 详情查权属情况
+    queryOwnInfo: '/ams/ownerShip/queryByProjectId'
   },
   // 权属人管理
   propertyOwnerManagement: {
