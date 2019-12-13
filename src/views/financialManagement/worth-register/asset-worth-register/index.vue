@@ -52,7 +52,7 @@
           title="确定要删除该资产项目吗?"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
           @confirm="confirmDelete(record.registerId)"
-          v-if="Number(record.approvalStatus) === 1 || Number(record.approvalStatus) === 3"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
         >
           <span class="action_text">删除</span>
         </a-popconfirm>
@@ -69,7 +69,7 @@
         <router-link
           class="action_text"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
-          v-if="Number(record.approvalStatus) === 1 || Number(record.approvalStatus) === 3"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
           :to="{name: '价值登记编辑', params: {registerId: record.registerId, type: 'edit'}}"
         >编辑</router-link>
       </span>

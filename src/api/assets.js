@@ -301,6 +301,10 @@ export function exportAssetViewExcel (data) {
 export function saveAssetViewHouseInfo (data) {
   return axiosPost(assets.assetView.saveHouseInfo, data)
 }
+// 资产视图查询权属信息
+export function queryAssetViewOwnDetail (data) {
+  return axiosGet(assets.assetView.queryOwnDetail, data)
+}
 // 查询组织机构下的员工
 export function queryUserListByOrganId (data) {
   return axiosGet(assets.assetView.userList, data)

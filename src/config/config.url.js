@@ -253,7 +253,9 @@ export const assets = {
     // 资产编辑保存
     saveHouseInfo: '/ams/asset-house',
     // 查询组织机构下的员工
-    userList: '/ams/asset-house/organ/user'
+    userList: '/ams/asset-house/organ/user',
+    // 资产视图查询权属信息
+    queryOwnDetail: '/ams/ownerShip/asset/owner/detail'
   },
   // 资产项目管理
   projectManage: {

@@ -2,32 +2,57 @@
 // detail: 细节信息；columns：列表列头
 const keys = {
   // 接管信息
-  // receive: {
-  //   title: '接管信息',
-  //   details: {
-  //     project: '资产项目',
-  //     resource: '来源方式',
-  //     way: '来源渠道'
-  //   },
-  //   table: {
-  //     tableTitle: '当前权证信息', // 非必须
-  //     rowKey: 'ssdfs',
-  //     columns: [
-  //       { title: '编号', key: 'num' },
-  //       { title: '交付类型', key: 'payType' },
-  //       { title: '交付时间', key: 'payDate', scopedSlots: { customRender: 'action' } }
-  //     ]
-  //   },
-  //   table2: {
-  //     title: '权属办理记录',
-  //     rowKey: 'ssdfs',
-  //     columns: [
-  //       { title: '编号', key: 'num' },
-  //       { title: '交付类型', key: 'payType' },
-  //       { title: '交付时间', key: 'payDate', scopedSlots: { customRender: 'action' } }
-  //     ]
-  //   }
-  // }
+  receiveInfo: {
+    title: '接管信息',
+    details: {},
+    table: {
+      rowKey: 'warrantNbr',
+      columns: [
+        { title: '权属类型', dataIndex: 'kindOfRightName' },
+        { title: '权证号', dataIndex: 'warrantNbr' },
+        { title: '权属人', dataIndex: 'obligeeNames' },
+        { title: '证件号码', dataIndex: 'certificateNos' },
+        { title: '所有权来源', dataIndex: 'wu' },
+        { title: '丘地号', dataIndex: 'lotNo' },
+        { title: '不动产单元号', dataIndex: 'estateUnitCode' },
+        { title: '坐落位置', dataIndex: 'seatingPosition' },
+        { title: '用途', dataIndex: 'ownershipUseName' }
+      ]
+    }
+  },
+  // 权属信息
+  ownInfo: {
+    title: '权属信息',
+    details: {
+      ownerTypeName: '权属形式',
+      ownershipStatusName: '权属状态'
+    },
+    table: {
+      tableTitle: '当前权证信息', // 非必须
+      rowKey: 'warrantNbr',
+      columns: [
+        { title: '权属类型', dataIndex: 'kindOfRightName' },
+        { title: '权证号', dataIndex: 'warrantNbr' },
+        { title: '权属人', dataIndex: 'obligeeNames' },
+        { title: '证件号码', dataIndex: 'certificateNos' },
+        { title: '丘地号', dataIndex: 'lotNo' },
+        { title: '不动产单元号', dataIndex: 'estateUnitCode' },
+        { title: '坐落位置', dataIndex: 'seatingPosition' },
+        { title: '用途', dataIndex: 'ownershipUseName' }
+      ]
+    },
+    table2: {
+      tableTitle: '权属办理记录',
+      rowKey: 'warrantNbr',
+      columns: [
+        { title: '业务类型', dataIndex: 'registerTypeName' },
+        { title: '原权证号', dataIndex: 'oldWarrantNbr' },
+        { title: '新权证号', dataIndex: 'warrantNbr' },
+        { title: '申请人', dataIndex: 'createByName' },
+        { title: '申请日期', dataIndex: 'createTime' }
+      ]
+    }
+  }
 }
 
 export default keys
