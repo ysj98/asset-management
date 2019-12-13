@@ -18,13 +18,13 @@
           <a-col class="playground-col" :span="12">不动产单元号：{{particularsData.estateUnitCode || '--'}}</a-col>
           <a-col class="playground-col" :span="12">丘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：{{particularsData.lotNo || '--'}}</a-col>
           <a-col class="playground-col" :span="12">坐&nbsp;&nbsp;&nbsp;落&nbsp;&nbsp;位&nbsp;&nbsp;置：{{particularsData.seatingPosition || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">土地面积 (㎡)&nbsp;：{{particularsData.landArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">土地面积 (㎡)&nbsp;：{{conditionalJudgment.includes(particularsData.landArea) ? '--' : particularsData.landArea}}</a-col>
           <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;属&nbsp;&nbsp;用&nbsp;&nbsp;途：{{particularsData.ownershipUseName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">结&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构：{{particularsData.structureName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">建筑面积(㎡) ：{{particularsData.buildArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">专属建筑面积：{{particularsData.exclusiveBuildArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积(㎡) ：{{particularsData.apportionArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;套&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：{{particularsData.totalSuite || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">建筑面积(㎡) ：{{conditionalJudgment.includes(particularsData.buildArea) ? '--' : particularsData.buildArea}}</a-col>
+          <a-col class="playground-col" :span="12">专属建筑面积：{{conditionalJudgment.includes(particularsData.exclusiveBuildArea) ? '--' : particularsData.exclusiveBuildArea}}</a-col>
+          <a-col class="playground-col" :span="12">分摊面积(㎡) ：{{conditionalJudgment.includes(particularsData.apportionArea) ? '--' : particularsData.apportionArea}}</a-col>
+          <a-col class="playground-col" :span="12">总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;套&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：{{conditionalJudgment.includes(particularsData.totalSuite) ? '--' : particularsData.totalSuite}}</a-col>
           <a-col class="playground-col" :span="12">权&nbsp;&nbsp;&nbsp;利&nbsp;&nbsp;性&nbsp;&nbsp;质：{{particularsData.qualityOfRightName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">使&nbsp;&nbsp;&nbsp;用&nbsp;&nbsp;期&nbsp;&nbsp;限：{{particularsData.useLimitDate || '--'}}</a-col>
           <a-col class="playground-col" :span="12">登&nbsp;&nbsp;&nbsp;记&nbsp;&nbsp;日&nbsp;&nbsp;期：{{particularsData.rigisterDate || '--'}}</a-col>
@@ -37,20 +37,20 @@
           <a-col class="playground-col" :span="12">房&nbsp;屋&nbsp;所&nbsp;有&nbsp;权&nbsp;人&nbsp;：{{particularsData.houseOwner || '--'}}</a-col>
           <a-col class="playground-col" :span="12">承&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;人：{{particularsData.tenant || '--'}}</a-col>
           <a-col class="playground-col" :span="12">委&nbsp;托&nbsp;管&nbsp;理&nbsp;单&nbsp;位&nbsp;：{{particularsData.entrustOrganization || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">建筑面积&nbsp;(㎡)&nbsp;：{{particularsData.buildArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">专有建筑面积(㎡)：{{particularsData.exclusiveBuildArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积&nbsp;(㎡)&nbsp;：{{particularsData.apportionArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">建筑面积&nbsp;(㎡)&nbsp;：{{conditionalJudgment.includes(particularsData.buildArea) ? '--' : particularsData.buildArea}}</a-col>
+          <a-col class="playground-col" :span="12">专有建筑面积(㎡)：{{conditionalJudgment.includes(particularsData.exclusiveBuildArea) ? '--' : particularsData.exclusiveBuildArea}}</a-col>
+          <a-col class="playground-col" :span="12">分摊面积&nbsp;(㎡)&nbsp;：{{conditionalJudgment.includes(particularsData.apportionArea) ? '--' : particularsData.apportionArea}}</a-col>
           <a-col class="playground-col" :span="12">坐&nbsp;&nbsp;&nbsp;&nbsp;落&nbsp;&nbsp;&nbsp;&nbsp;位&nbsp;&nbsp;&nbsp;&nbsp;置&nbsp;：{{particularsData.seatingPosition || '--'}}</a-col>
           <a-col class="playground-col" :span="12">用&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 途：{{particularsData.ownershipUseName || '--'}}</a-col>
           <a-col class="playground-col" :span="12">结&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  构：{{particularsData.structureName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;层&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：{{particularsData.totalFloor || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">所&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;层：{{particularsData.placeFloor || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">总&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;层&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：{{conditionalJudgment.includes(particularsData.totalFloor) ? '--' : particularsData.totalFloor}}</a-col>
+          <a-col class="playground-col" :span="12">所&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;层：{{conditionalJudgment.includes(particularsData.placeFloor) ? '--' : particularsData.placeFloor}}</a-col>
           <a-col class="playground-col" :span="12">房&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;屋&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：{{particularsData.houseNo || '--'}}</a-col>
           <a-col class="playground-col" :span="12">租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;&nbsp;价：{{particularsData.rentUnitPice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">租&nbsp;&nbsp;&nbsp;金&nbsp;&nbsp;总&nbsp;&nbsp;价：{{particularsData.rentTotalPrice || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">租&nbsp;&nbsp;&nbsp;金&nbsp;&nbsp;总&nbsp;&nbsp;价：{{conditionalJudgment.includes(particularsData.rentTotalPrice) ? '--' : particularsData.rentTotalPrice}}</a-col>
           <a-col class="playground-col" :span="12">合&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;同&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期&nbsp;&nbsp;&nbsp;&nbsp;限：{{particularsData.contractData || '--'}}</a-col>
           <a-col class="playground-col" :span="12">议价租金单价：{{particularsData.talkUnitPrice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">议&nbsp;价&nbsp;租&nbsp;金&nbsp;&nbsp;总&nbsp;价：{{particularsData.talkTotalPrice || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">议&nbsp;价&nbsp;租&nbsp;金&nbsp;&nbsp;总&nbsp;价：{{conditionalJudgment.includes(particularsData.talkTotalPrice) ? '--' : particularsData.talkTotalPrice}}</a-col>
           <a-col class="playground-col" :span="12">租金缴纳期限：{{particularsData.rentPayDate || '--'}}</a-col>
           <a-col class="playground-col" :span="12">产&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：{{particularsData.antenatal || '--'}}</a-col>
           <a-col class="playground-col" :span="12">登&nbsp;&nbsp;&nbsp;记&nbsp;&nbsp;日&nbsp;&nbsp;期：{{particularsData.rigisterDate || '--'}}</a-col>
@@ -101,7 +101,7 @@ import Cephalosome from '@/components/Cephalosome'
 import moment from 'moment'
 import {debounce, utils} from '@/utils/utils'
 import {accessCard, titleDeed, columns, mortgageInformation} from './beat'
-
+const conditionalJudgment = [undefined, null, '']
 export default {
   components: {Cephalosome},
   props: {
@@ -112,6 +112,7 @@ export default {
   },
   data () {
     return {
+      conditionalJudgment,
       particularsData: {},
       files: [],
       kindOfRight: '',        // 权利类型判断
