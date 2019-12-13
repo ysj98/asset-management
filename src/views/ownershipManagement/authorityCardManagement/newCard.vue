@@ -359,7 +359,7 @@ export default {
             // 抵押信息
             if (this.amsOwnershipWarrantMortgageList.length > 0) {
               for (let i = 0; i < this.amsOwnershipWarrantMortgageList.length; i++) {
-                if (!this.amsOwnershipWarrantMortgageList[i].mortgageAmount) {
+                if (conditionalJudgment.includes(this.amsOwnershipWarrantMortgageList[i].mortgageAmount)) {
                   this.$message.info('请输入抵押金额')
                   return
                 }
