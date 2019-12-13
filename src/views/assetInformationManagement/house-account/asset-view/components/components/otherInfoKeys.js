@@ -81,8 +81,8 @@ const keys = {
     title: '账面信息',
     details: {
       cardCode: '财务卡片编号',
-      originalValue: '划转时原值',
-      netValue: '资产净值'
+      originalValue: '划转时原值(元)',
+      netValue: '资产净值(元)'
     },
     table: {
       rowKey: 'index',
