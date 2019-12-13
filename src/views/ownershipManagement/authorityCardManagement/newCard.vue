@@ -8,6 +8,7 @@
 -->
 <template>
   <SG-Modal
+    :maskClosable="false"
     class="assetBundlePopover"
     width="1036px"
     v-model="show"
@@ -102,6 +103,7 @@
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
                 :autosize="{ minRows: 2, maxRows: 4 }"
+                :maxLength="200"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newCardData.remark}
                 ]"
@@ -358,7 +360,7 @@ export default {
             // 抵押信息
             if (this.amsOwnershipWarrantMortgageList.length > 0) {
               for (let i = 0; i < this.amsOwnershipWarrantMortgageList.length; i++) {
-                if (!this.amsOwnershipWarrantMortgageList[i].mortgageAmount) {
+                if (conditionalJudgment.includes(this.amsOwnershipWarrantMortgageList[i].mortgageAmount)) {
                   this.$message.info('请输入抵押金额')
                   return
                 }

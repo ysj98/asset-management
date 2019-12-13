@@ -107,7 +107,7 @@ const columns = [
   },
   {
     title: '登记日期',
-    dataIndex: 'createTime'
+    dataIndex: 'rigisterDate'
   }
 ]
 export default {
@@ -210,7 +210,7 @@ export default {
     // 提交返回数据
     statusFn () {
       if (this.selectedRowKeys.length <= 0) {
-        this.$message.info('请先选择资产')
+        this.$message.info('请选择权证')
         return
       }
       let checkedData = []

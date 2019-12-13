@@ -191,7 +191,7 @@ export default {
           value: ''
         }
       ],
-      alterationDate: []
+      alterationDate: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
     }
   },
   computed: {
