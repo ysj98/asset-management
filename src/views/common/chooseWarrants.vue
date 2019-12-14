@@ -38,8 +38,16 @@
                 class="custom-table td-pd10"
                 :pagination="false"
                 >
+                <template slot="obligeeName" slot-scope="text, record">
+                  <span>{{record.obligeeName || '--'}}</span>
+                </template>
+                <template slot="qualityOfRightName" slot-scope="text, record">
+                  <span>{{record.qualityOfRightName || '--'}}</span>
+                </template>
               </a-table>
+              <no-data-tips v-show="tableData.length === 0"></no-data-tips>
               <SG-FooterPagination
+                class="sg-footer"
                 :pageLength="selecData.pageSize"
                 :totalCount="count"
                 :noPageTools="noPageTools"
@@ -60,10 +68,17 @@
                   class="custom-table td-pd10"
                   :pagination="false"
                 >
+                  <template slot="obligeeName" slot-scope="text, record">
+                    <span>{{record.obligeeName || '--'}}</span>
+                  </template>
+                  <template slot="qualityOfRightName" slot-scope="text, record">
+                    <span>{{record.qualityOfRightName || '--'}}</span>
+                  </template>
                   <template slot="operation" slot-scope="text, record">
                     <a class="operation-btn" @click="deleteRecord(record)">删除</a>
                   </template>
                 </a-table>
+                <no-data-tips v-show="chosenDataSource.length === 0"></no-data-tips>
               </div>
             </div>
           </div>
@@ -76,6 +91,7 @@
 <script>
 import Cephalosome from '@/components/Cephalosome'
 import {utils} from '@/utils/utils.js'
+import noDataTips from '@/components/noDataTips'
 const columns = [
   {
     title: '权证号码',
@@ -87,7 +103,8 @@ const columns = [
   },
   {
     title: '权属人',
-    dataIndex: 'obligeeName'
+    dataIndex: 'obligeeName',
+    scopedSlots: { customRender: 'obligeeName' },
   },
   {
     title: '丘地号/不动产单元号',
@@ -103,7 +120,8 @@ const columns = [
   },
   {
     title: '权利性质',
-    dataIndex: 'qualityOfRightName'
+    dataIndex: 'qualityOfRightName',
+    scopedSlots: { customRender: 'qualityOfRightName' },
   },
   {
     title: '登记日期',
@@ -111,7 +129,7 @@ const columns = [
   }
 ]
 export default {
-  components: {Cephalosome},
+  components: {Cephalosome, noDataTips},
   props: {
     organId: {
       type: [String, Number],
@@ -349,7 +367,7 @@ export default {
 <style lang="less" scoped>
 .assetBundlePopover {
   .tab-nav {
-    margin-top: 10px;
+    // margin-top: 10px;
   }
 }
 </style>
@@ -370,6 +388,9 @@ export default {
   }
   .tab-container {
     padding: 0 30px;
+  }
+  .sg-footer {
+    border-top: none;
   }
 }
 </style>

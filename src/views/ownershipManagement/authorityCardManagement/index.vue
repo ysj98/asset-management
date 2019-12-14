@@ -10,10 +10,10 @@
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
+          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权利类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
             <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -39,6 +39,15 @@
         class="custom-table td-pd10"
         :pagination="false"
         >
+        <template slot="obligeeName" slot-scope="text, record">
+          <span>{{record.obligeeName || '--'}}</span>
+        </template>
+        <template slot="useLimitDate" slot-scope="text, record">
+          <span>{{record.useLimitDate || '--'}}</span>
+        </template>
+        <template slot="handoverDate" slot-scope="text, record">
+          <span>{{record.handoverDate || '--'}}</span>
+        </template>
         <template slot="operation" slot-scope="text, record">
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
           <div class="tab-opt">
@@ -48,6 +57,7 @@
           </div>
         </template>
       </a-table>
+      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
@@ -72,6 +82,7 @@ import segiIcon from '@/components/segiIcon.vue'
 import NewCard from './newCard.vue'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import CardDetails from './cardDetails.vue'
+import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
@@ -89,7 +100,8 @@ const columns = [
   },
   {
     title: '权属人',
-    dataIndex: 'obligeeName'
+    dataIndex: 'obligeeName',
+    scopedSlots: { customRender: 'obligeeName' },
   },
   {
     title: '丘地号/不动产单元号',
@@ -113,11 +125,13 @@ const columns = [
   },
   {
     title: '使用期限',
-    dataIndex: 'useLimitDate'
+    dataIndex: 'useLimitDate',
+    scopedSlots: { customRender: 'useLimitDate' },
   },
   {
     title: '交接日期',
-    dataIndex: 'handoverDate'
+    dataIndex: 'handoverDate',
+    scopedSlots: { customRender: 'handoverDate' },
   },
   {
     title: '状态',
@@ -158,7 +172,7 @@ const queryCondition =  {
     pageSize: 10,       // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips},
   props: {},
   data () {
     return {

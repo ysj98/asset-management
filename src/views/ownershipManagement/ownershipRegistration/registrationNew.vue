@@ -125,7 +125,7 @@
               <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
-                :autosize="{ minRows: 2, maxRows: 4 }"
+                :autosize="{ minRows: 3, maxRows: 4 }"
                 :maxLength="200"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newEditSingleData.remark}
@@ -190,9 +190,9 @@
     <NewCard ref="newCard" :organId="organId"></NewCard>
     <FormFooter location="fixed">
       <div>
-        <a-button type="primary" @click="save('save')">提交</a-button>
-        <a-button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</a-button>
-        <a-button @click="cancel">取消</a-button>
+        <SG-Button type="primary" @click="save('save')">提交</SG-Button>
+        <SG-Button style="margin-left: 10px" type="primary" @click="save('draft')">保存草稿</SG-Button>
+        <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
   </div>
