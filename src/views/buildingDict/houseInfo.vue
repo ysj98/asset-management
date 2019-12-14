@@ -292,7 +292,7 @@ export default {
       this.organName = query.organName
       this.searchBuildName = query.searchBuildName
       console.log('取=>', this.searchBuildName)
-      this.formChildPage = true // 用于项目记录一次
+      this.formChildPage = true // 用于公司记录一次
     }
     // 楼栋
     if (this.queryCondition.organId) {
@@ -440,7 +440,7 @@ export default {
       }
       this.getOptions('getHouseByUnitId', value)
     },
-    // 监听项目改变
+    // 监听公司改变
     watchOrganChange (organId) {
       this.buildOpt = utils.deepClone(buildOpt)
       this.unitOpt = utils.deepClone(unitOpt)
@@ -448,7 +448,7 @@ export default {
       this.queryCondition.houseId = ''
       this.queryCondition.unitId = ''
       this.queryCondition.buildId = ''
-      console.log('监听项目改变')
+      console.log('监听公司改变')
       if (!organId) {
         return
       }
@@ -479,7 +479,7 @@ export default {
         }
       })
     },
-    // 获取项目楼栋单元房号
+    // 获取公司楼栋单元房号
     getOptions (type, value = '') {
       if (!type) {
         return

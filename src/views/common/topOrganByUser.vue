@@ -13,7 +13,7 @@
       :filterOption="filterOption"
       @change="handleChange"
       notFoundContent="没有查询到数据"
-      :placeholder="hasAll?'全部项目': '所选项目'"
+      :placeholder="hasAll?'全部公司': '所选公司'"
       >
         <a-select-option
           v-for="(item) in options"
@@ -85,7 +85,7 @@ export default {
           let arr = []
           // 如果可以选择全部项目
           if (this.hasAll) {
-            arr.push({name: '全部一级物业', value: ''})
+            arr.push({name: '全部公司', value: ''})
           }
           res.data.data.forEach(item => {
             let o = {name: item.organName, value: item.organId}
