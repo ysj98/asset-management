@@ -41,14 +41,14 @@
             :pagination="false"
             >
           </a-table>
-          <SG-FooterPagination
+          <!-- <SG-FooterPagination
             :pageLength="queryCondition.pageSize"
             :totalCount="queryCondition.count"
             :location="location"
             :noPageTools="noPageTools"
             v-model="queryCondition.pageNum"
             @change="handleChange"
-          />
+          /> -->
         </div>
       </div>
     </div>
