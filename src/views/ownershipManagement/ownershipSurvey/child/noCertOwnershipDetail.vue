@@ -169,9 +169,6 @@ let columns = [{
      // 监听输入框变化
      watchRemarkChange (e, row) {
        console.log('记录input=>', e, row)
-       if (Number(e) === 2) {
-         return
-       }
        let o = {
           settingMethod: Number(row.settingMethod),
           remark: row.remark || '',
@@ -191,7 +188,6 @@ let columns = [{
  <style lang="less" scoped>
    .detail-table{
      position: relative;
-     margin: 0 14px;
      border: 1px solid rgba(238,242,245,1);
      border-top: none;
      min-height: 140px;
