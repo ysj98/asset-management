@@ -301,8 +301,9 @@ export default {
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.settingMethodName = item.settingMethodName || '-'
-              item.kindOfRightName = item.kindOfRightName || '-'
+              item.settingMethodName = item.settingMethodName || '--'
+              item.kindOfRightName = item.kindOfRightName || '--'
+              item.warrantNbr = item.warrantNbr || '--'
               return {
                 key: getUuid(),
                 ...item

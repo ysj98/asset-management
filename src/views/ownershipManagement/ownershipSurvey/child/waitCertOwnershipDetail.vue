@@ -146,7 +146,6 @@ let columns = [{
  <style lang="less" scoped>
    .detail-table{
      position: relative;
-     margin: 0 14px;
      border: 1px solid rgba(238,242,245,1);
      border-top: none;
      min-height: 140px;
