@@ -12,6 +12,7 @@
     class="assetBundlePopover"
     width="1036px"
     v-model="show"
+    :noPadding="true"
     title="选择权证"
     @ok="statusFn"
     @cancel="handleCancel"
@@ -767,7 +768,7 @@ export default {
   overflow-y: scroll;
   padding-bottom: 70px;
   .newCard-nav {
-    padding: 16px 14px 0 14px;
+    padding: 40px 70px 0 70px;
     .tab-nav {
       margin: 24px 20px;
     }

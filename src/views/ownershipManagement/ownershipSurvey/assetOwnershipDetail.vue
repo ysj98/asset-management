@@ -315,7 +315,9 @@ export default {
       let data = {
         assetHouseId: this.assetHouseId
       };
+      this.spinning = true
       this.$api.basics.assetDetail(data).then(res => {
+        this.spinning = false
         if (res.data.code === "0") {
           let baseInfo = res.data.data.baseInfo || {};
           let ownershipInfo = res.data.data.ownershipInfo || [];
@@ -323,7 +325,7 @@ export default {
           let transactionList = res.data.data.transactionList || [];
           utils.each(baseInfo, (item, key) => {
             if (!item && item !== 0) {
-              baseInfo[key] = "-";
+              baseInfo[key] = "--";
             }
           });
           this.baseInfo = { ...baseInfo };
@@ -337,7 +339,8 @@ export default {
           });
           // 同权证资产
           this.tableCert.dataSource = sameNo.map(item => {
-            item.location = item.location || "-";
+            item.location = item.location || "--";
+            item.area = item.area || "--";
             return {
               key: getUuid(),
               ...item
@@ -353,6 +356,8 @@ export default {
         } else {
           this.$message.error(res.data.message);
         }
+      }, () => {
+        this.spinning = false
       });
     },
     showCertDetail(warrantNbr) {

@@ -8,11 +8,11 @@
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
-        <a-checkbox  style="margin-right: 10px;" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
+          <a-checkbox :style="checkboxAllStyle" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -70,8 +70,9 @@ import segiIcon from '@/components/segiIcon.vue'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import noDataTips from '@/components/noDataTips'
-const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
-const dateWidth = {width: '300px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+const checkboxAllStyle = {'margin-right': '10px', flex: 1, 'margin-top': '20px', 'display': 'inline-block', 'vertical-align': 'middle'}
+const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
+const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
     title: '登记单名称',
@@ -162,6 +163,7 @@ export default {
   props: {},
   data () {
     return {
+      checkboxAllStyle,
       ASSET_MANAGEMENT,
       dateWidth,
       loading: false,
@@ -417,6 +419,8 @@ export default {
     justify-content: space-between;
     .search-from-box{
       flex: 1;
+      flex-wrap: wrap;
+      text-align: left;
     }
     .two-row-box{
       padding-top: 14px;

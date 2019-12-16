@@ -7,6 +7,7 @@
   <div class="assetProject-page pb70">
     <SearchContainer type="line" :value="false">
       <div slot="headerForm">
+        <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产项目</a-checkbox>
         <treeSelect
           @changeTree="changeTree"
           placeholder="请选择组织机构"
@@ -25,7 +26,6 @@
           :filterOption="filterOption"
           notFoundContent="没有查询到数据"
         />
-        <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产项目</a-checkbox>
         <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
       </div>
     </SearchContainer>
@@ -193,8 +193,8 @@ export default {
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.sourceTypeName = item.sourceTypeName || "-";
-              item.souceChannelType = item.souceChannelType || "-";
+              item.sourceTypeName = item.sourceTypeName || "--";
+              item.souceChannelType = item.souceChannelType || "--";
               return {
                 key: getUuid(),
                 ...item

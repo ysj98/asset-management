@@ -173,7 +173,7 @@ export default {
     // 下载文件
     downHouseSource () {
       if (!this.organId) {
-        return this.$message.error('请选择项目!')
+        return this.$message.error('请选择公司!')
       }
       let loadingName = this.$SG_Message.loading({content: '下载中...'})
       this.$api.building.downLoadExcel({organId: this.organId}).then(res => {

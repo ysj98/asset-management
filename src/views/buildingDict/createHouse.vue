@@ -15,10 +15,10 @@
           <div class="form-content">
             <a-row>
               <a-col :span="8">
-                <a-form-item label="项目名称" v-bind="formItemLayout">
+                <a-form-item label="公司名称" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
-                    placeholder="请选择项目"
+                    placeholder="请选择公司"
                     :disabled="type==='edit'"
                     showSearch
                     @change="watchOrganChange"
@@ -28,7 +28,7 @@
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
                     v-decorator="['organId',
-                      { rules: [{required: true, message: '请选择所属项目'}]}
+                      { rules: [{required: true, message: '请选择所属公司'}]}
                     ]"
                   />
                 </a-form-item>
@@ -439,7 +439,7 @@ export default {
       }
       // 处理请求
       if (this.type === 'copy') {
-        this.queryAllTopOrganByUser() // 项目
+        this.queryAllTopOrganByUser() // 公司
         this.queryBuildList(this.organId, this.searchBuildName) // 请求楼栋
         this.getOptions('getUnitByBuildId', data.buildId) // 请求单元
       }

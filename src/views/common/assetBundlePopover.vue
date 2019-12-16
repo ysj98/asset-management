@@ -44,7 +44,9 @@
             :pagination="false"
             >
           </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
           <SG-FooterPagination
+            class="sg-footer"
             :pageLength="selecData.pageSize"
             :totalCount="count"
             :noPageTools="noPageTools"
@@ -60,6 +62,7 @@
 <script>
 import Cephalosome from '@/components/Cephalosome'
 import {utils} from '@/utils/utils.js'
+import noDataTips from '@/components/noDataTips'
 const columns = [
   {
     title: '资产编码',
@@ -99,7 +102,7 @@ const columns = [
   // }
 ]
 export default {
-  components: {Cephalosome},
+  components: {Cephalosome, noDataTips},
   props: {
     organId: {
       type: [String, Number],
@@ -371,6 +374,9 @@ export default {
   }
   .cephalosome {
     margin: 0;
+  }
+  .sg-footer {
+    border-top: none;
   }
 }
 </style>

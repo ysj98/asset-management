@@ -120,8 +120,13 @@ export default {
     },
     // 监听输入改变
     handleChange (o) {
-      this.changeData[o.assetObjectId] = {...o}
-      console.log('你好世界=>', o, this.changeData)
+      let {assetObjectId, settingMethod} = o
+      // console.log('你好世界1=>', o, this.changeData)
+      if (['2', '3'].includes(String(settingMethod))) {
+        delete this.changeData[assetObjectId]
+        return
+      }
+      this.changeData[String(assetObjectId)] = {...o}
     },
     handleSave () {
       let data = Object.values(this.changeData)
@@ -151,6 +156,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.detail-table-box{
+  margin-left: 44px;
+}
   .ownership-detail{
     padding: 42px 94px 61px 88px;
     min-height: 140px;
