@@ -11,8 +11,8 @@
       v-for="item in numList"
       :style="{'background-color': item.bgColor || '', 'width': `${Math.floor(100000 / numList.length) / 1000}%`}"
     >
-      <p :style="{'font-size': '12px', 'color': item.fontColor || '#fff'}">{{item.title}}</p>
-      <p :style="{'font-size': '16px', color: item.fontColor || '#fff', 'font-weight': 'bold'}">{{item.value}}</p>
+      <div :style="{'font-size': '12px', 'color': item.fontColor || '#fff', 'margin-bottom': '3px'}">{{item.title}}</div>
+      <div :style="{'font-size': '16px', color: item.fontColor || '#fff', 'font-weight': 'bold'}">{{item.value}}</div>
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@
     border-right: none;
     .view_item {
       height: 100%;
-      padding-top: 14px;
+      padding-top: 18px;
       text-align: center;
       display: inline-block;
       border-right: 1px solid #EFF2F7;
