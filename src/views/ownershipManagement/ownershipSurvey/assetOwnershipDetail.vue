@@ -267,7 +267,7 @@ const tableHandlerColumns = [
   },
   {
     title: "申请人",
-    dataIndex: "creatByName",
+    dataIndex: "createByName",
     width: "10%"
   },
   {
@@ -348,6 +348,7 @@ export default {
           });
           // 权属办理记录
           this.tableHandler.dataSource = transactionList.map(item => {
+            item.createByName = item.createByName || '--'
             return {
               key: getUuid(),
               ...item
