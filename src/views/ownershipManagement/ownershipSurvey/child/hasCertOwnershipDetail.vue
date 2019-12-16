@@ -151,7 +151,8 @@ export default {
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.settingMethod = item.settingMethod || 3; // 默认无
+              // item.settingMethod = item.settingMethod || 3; // 默认无
+              item.settingMethod = 3
               item.area = item.area || "--";
               item.assetTypeName = item.assetTypeName || "--";
               item.assetCode = item.assetCode || "--";
@@ -160,7 +161,8 @@ export default {
               item.obligeeName = item.obligeeName || "--";
               if (this.type !== "set") {
                 item.remark = item.remark || "--";
-                item.settingMethodName = item.settingMethodName || "无";
+                // item.settingMethodName = item.settingMethodName || "无";
+                item.settingMethodName = "无";
               }
               return {
                 key: getUuid(),

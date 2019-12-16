@@ -1,3 +1,7 @@
+/*
+ * @Date: 2019-11-01 09:42:51
+ * @Description: 
+ */
 import host from '@/config/config.base.js'
 import Cookies from 'js-cookie'
 import Utils from '@/utils/utils.js'
@@ -42,7 +46,7 @@ export default {
     },
     DE_Loding (loadingName) {
       return new Promise((resolve, reject) => {
-        let time = 2000
+        let time = 1500
         // 可以销毁
         if (this.loadingNameS[loadingName]) {
           let v =  time - this.loadingNameS[loadingName]['value']
