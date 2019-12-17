@@ -119,14 +119,14 @@
           scroll: { x: 2500 },
           columns: [
             { title: '资产名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
-            { title: '资产编码', dataIndex: 'assetCode', width: 150, fixed: 'left' },
+            { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName' },
             { title: '丘地号', dataIndex: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area' },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' } },
             { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' } },
             { title: '单元', dataIndex: 'unitName' },
-            { title: '楼层', dataIndex: 'floorNum' },
+            { title: '楼层', dataIndex: 'floor' },
             { title: '层高', dataIndex: 'floorHeight' },
             { title: '分类', dataIndex: 'objectTypeName' },
             { title: '用途', dataIndex: 'useType' },
@@ -173,7 +173,9 @@
         this.modalObj.status = false
         let{ initColumns } = this.tableObj
         this.checkedHeaderArr = arr
-        this.tableObj.columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
+        let columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
+        this.tableObj.scroll = { x: columns.length * 100 } // 防止较少列时出现滚动
+        this.tableObj.columns = columns
       },
 
       // 打开/关闭列表列头编辑Modal

@@ -235,6 +235,8 @@ export const assets = {
     queryBuildInfo: '/ams/asset-house/build',
     // 查询楼栋详情面积占比--详情页里
     queryDetailArea: '/ams/asset-house/area/build',
+    // 查询楼栋楼层下房间面积
+    queryRoomArea: '/ams/asset-house/area/house'
   },
   // 房屋台账 - 资产视图
   assetView: {

@@ -44,7 +44,7 @@
     props: ['assetHouseId', 'assetId'],
     data () {
       return {
-        infoKeys, // 所以Tab的展示字段
+        infoKeys, // 所有Tab的展示字段
         tabKey: 'receiveInfo', // 默认展示第一个Tab-接管信息
         detailData: {}, // 散列信息
         tableData: [], // table信息
@@ -77,8 +77,23 @@
               table2Data = transactionList
             } else if (type === 'receiveInfo') {
               let { deliverList, ...others } = info
-                detailData = others
-                tableData = deliverList
+              let { infoKeys: { receiveInfo: { details } } } = this
+              // 是否转运营
+              if (!others.transferTime) {
+                others.isTransfer = '否'
+              } else {
+                others.isTransfer = '是'
+                this.infoKeys.receiveInfo.details = { ...details, transferTime: '转物业日期' }
+              }
+              // 是否转物业
+              if (!others.transferOperationTime) {
+                others.isTransferOperation = '否'
+              } else {
+                others.isTransferOperation = '是'
+                this.infoKeys.receiveInfo.details = { ...details, transferOperationTime: '转运营日期' }
+              }
+              detailData = others
+              tableData = deliverList
             } else if (type === 'changeInfo') {
               tableData = info
             } else if (type === 'billInfo') {

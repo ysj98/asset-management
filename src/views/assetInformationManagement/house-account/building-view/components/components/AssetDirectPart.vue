@@ -136,8 +136,8 @@
       // 查询楼栋视图面积概览数据
       queryHouseAreaInfo (args) {
         const { buildId, numList } = this
-        let api = args ? 'queryAssetViewHouseArea' : 'queryBuildingViewDetailArea'
-        let param = args ? { assetHouseId: args.id } : { buildId }
+        let api = args ? 'queryBuildingViewRoomArea' : 'queryBuildingViewDetailArea'
+        let param = args ? { houseId: args.id, buildId } : { buildId }
         return this.$api.assets[api](param).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {

@@ -10,10 +10,10 @@ const keys = {
       sourceChannelType: '来源渠道',
       organName: '管理机构',
       takeOverDate: '接管日期',
-      // a: '是否转运营',
-      transferOperationTime: '转运营日期',
-      // a: '是否转物业',
-      transferTime: '转物业日期',
+      isTransferOperation: '是否转运营',
+      // transferOperationTime: '转运营日期',
+      isTransfer: '是否转物业'
+      // transferTime: '转物业日期',
     },
     table: {
       rowKey: 'changeOrderDetailId',

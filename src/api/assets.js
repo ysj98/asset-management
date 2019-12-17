@@ -267,6 +267,10 @@ export function queryBuildingViewBuildInfo (data) {
 export function queryBuildingViewDetailArea (data) {
   return axiosGet(assets.buildingView.queryDetailArea, data)
 }
+// 查询楼层下房间的面积
+export function queryBuildingViewRoomArea (data) {
+  return axiosGet(assets.buildingView.queryRoomArea, data)
+}
 
 // 房屋台账 - 资产视图
 // 房屋资产基本信息查询

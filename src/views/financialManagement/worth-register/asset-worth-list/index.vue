@@ -32,7 +32,12 @@
             <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode"/>
           </a-col>
           <a-col :span="7">
-            <a-date-picker @change="changeDate" style="width: 100%" placeholder="请选择评估基准日期"/>
+            <a-date-picker
+              @change="changeDate"
+              style="width: 100%"
+              placeholder="请选择评估基准日期"
+              :defaultValue="moment()"
+            />
           </a-col>
         </a-row>
       </div>
@@ -53,6 +58,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import TrendChartPart from './component/TrendChartPart'
   import NoDataTip from 'src/components/noDataTips'
   import OrganProjectType from '../components/OrganProjectType'
@@ -62,11 +68,12 @@
     components: { SearchContainer, OrganProjectType, NoDataTip, TrendChartPart },
     data () {
       return {
+        moment,
         assetId: '', // 资产ID
         fold: true, // 查询条件折叠按钮
         isShowTrend: false, // 显示趋势图Modal
         assetNameCode: '', // 查询条件-登记名称
-        assessmenBaseDate: null, // 查询条件-日期
+        assessmenBaseDate: moment().format('YYYY-MM-DD'), // 查询条件-日期,默认当天
         originalValue: 0, // 资产原值,趋势图中展示
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id

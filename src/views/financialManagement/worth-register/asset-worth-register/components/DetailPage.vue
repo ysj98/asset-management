@@ -86,7 +86,7 @@
               registerValueRelList.push({ assetId, assessmentValue, upRate: upRate === '--' ? 0 : upRate })
             }
           })
-          let form = type === 'edit' ? { ...data, registerValueRelList, registerId } : { ...data, registerValueRelList }
+          let form = type === 'edit' ? { ...data, registerValueRelList, registerId, approvalStatus: 2 } : { ...data, registerValueRelList }
           this.$api.worthRegister[api[type]](form).then(r => {
             this.spinning = false
             let res = r.data
