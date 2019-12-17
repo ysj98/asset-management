@@ -16,7 +16,7 @@
             <a-row>
               <a-col :span="8">
                 <div class="detail-item">
-                  <div class="item-label">项目名称：</div>
+                  <div class="item-label">公司名称：</div>
                   <div class="item-content">{{houseInfo.organName || '-'}}</div>
                 </div>
               </a-col>

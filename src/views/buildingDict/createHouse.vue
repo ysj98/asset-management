@@ -15,10 +15,10 @@
           <div class="form-content">
             <a-row>
               <a-col :span="8">
-                <a-form-item label="项目名称" v-bind="formItemLayout">
+                <a-form-item label="公司名称" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
-                    placeholder="请选择项目"
+                    placeholder="请选择公司"
                     :disabled="type==='edit'"
                     showSearch
                     @change="watchOrganChange"
@@ -28,7 +28,7 @@
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
                     v-decorator="['organId',
-                      { rules: [{required: true, message: '请选择所属项目'}]}
+                      { rules: [{required: true, message: '请选择所属公司'}]}
                     ]"
                   />
                 </a-form-item>
@@ -353,25 +353,39 @@ export default {
           }
           // 新增房间
           if (this.type === 'create' || this.type === 'copy') {
+            let loadingName = this.SG_Loding('新增中...')
             this.$api.building.addHouse(data).then(res => {
-              if (res.data.code === '0') {
-                this.$SG_Message.success(`新增房间成功`)
-                this.goPage('index')
-              } else {
-                this.$message.error(res.data.message)
-              }
-            })
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success(`新增房间成功`)
+                  this.goPage('index')
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            }, () => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error('新增失败！')
+              })
+              })
           }
           // 编辑房间
           if (this.type === 'edit') {
             data.houseId = this.houseId
+            let loadingName = this.SG_Loding('编辑中...')
             this.$api.building.updateHouse(data).then(res => {
-              if (res.data.code === '0') {
-                this.$SG_Message.success('编辑楼房间成功')
-                this.goPage('index')
-              } else {
-                this.$message.error(res.data.message)
-              }
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success('编辑房间成功')
+                  this.goPage('index')
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            },() => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error('编辑失败！')
+              })
             })
           }
         }
@@ -439,7 +453,7 @@ export default {
       }
       // 处理请求
       if (this.type === 'copy') {
-        this.queryAllTopOrganByUser() // 项目
+        this.queryAllTopOrganByUser() // 公司
         this.queryBuildList(this.organId, this.searchBuildName) // 请求楼栋
         this.getOptions('getUnitByBuildId', data.buildId) // 请求单元
       }

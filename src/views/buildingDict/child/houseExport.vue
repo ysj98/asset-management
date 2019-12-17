@@ -19,7 +19,7 @@
      <div class="export-item">
      <a-select
         showSearch
-        placeholder="请选择项目"
+        placeholder="请选择公司"
         v-model="organId"
         optionFilterProp="children"
         :defaultActiveFirstOption="false"

@@ -133,14 +133,16 @@ let columns = [{
          if (res.data.code === '0') {
           let result = res.data.data.data || []
            this.table.dataSource = result.map(item => {
-             item.settingMethod = item.settingMethod || 2 // 默认不具备办理条件
+            //  item.settingMethod = item.settingMethod || 2 // 默认不具备办理条件
+             item.settingMethod = 2 // 默认不具备办理条件
              item.area = item.area || '--'
              item.assetTypeName = item.assetTypeName || '--'
              item.assetCode = item.assetCode || '--'
              item.location = item.location || '--'
              if (this.type !== 'set') {
                item.remark = item.remark || '--'
-               item.settingMethodName = item.settingMethodName || '不具备办理条件'
+              //  item.settingMethodName = item.settingMethodName || '不具备办理条件'
+              item.settingMethodName = '不具备办理条件'
              }
             return {
               key: getUuid(),
