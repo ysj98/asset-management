@@ -13,7 +13,7 @@
     width="1036px"
     v-model="show"
     :noPadding="true"
-    title="选择权证"
+    :title="newData === 'new' ? '权证新增' : '权证编辑'"
     @ok="statusFn"
     @cancel="handleCancel"
   >
@@ -192,7 +192,7 @@
           </template>
         </a-table>
       </div>
-      <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加权利人</div>
+      <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加抵押信息</div>
     </div>
   </div>
   </SG-Modal>

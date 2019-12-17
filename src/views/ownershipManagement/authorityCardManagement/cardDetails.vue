@@ -5,7 +5,7 @@
     width="836px"
     v-model="show"
     :noPadding="true"
-    title="选择权证"
+    title="权证详情"
     :footer="null"
   >
   <div class="newCard">
