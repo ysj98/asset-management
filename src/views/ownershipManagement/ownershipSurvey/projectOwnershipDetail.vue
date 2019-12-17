@@ -134,13 +134,21 @@ export default {
         this.$message.error('未改变改变权属办理设置或备注')
         return
       }
+      let loadingName = this.SG_Loding('保存中...')
       this.$api.basics.attrSet(data).then(res => {
-        if (res.data.code === '0') {
-          this.$SG_Message.success('保存设置成功')
-          this.goPage('index')
-        } else {
-          this.$message.error(res.data.message)
-        }
+        this.DE_Loding(loadingName).then(() => {
+          if (res.data.code === '0') {
+            this.$SG_Message.success('保存设置成功')
+            this.goPage('index')
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+        
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('保存失败！')
+        })
       })
     },
     handleCancel () {

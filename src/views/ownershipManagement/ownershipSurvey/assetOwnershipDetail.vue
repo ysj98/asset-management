@@ -340,7 +340,7 @@ export default {
           // 同权证资产
           this.tableCert.dataSource = sameNo.map(item => {
             item.location = item.location || "--";
-            item.area = item.area || "--";
+            item.area = item.area || item.area===0? item.area : "--";
             return {
               key: getUuid(),
               ...item
