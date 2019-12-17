@@ -173,8 +173,9 @@
           </div>
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">备注<i></i></span><span>：</span></div>
-            <a-form-item class="label-value">
+            <a-form-item>
               <a-textarea
+                class="label-value"
                 placeholder="请输入描述（最多200字）"
                 :rows="3"
                 :max="200"
@@ -187,7 +188,7 @@
           </div>
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span><span>：</span></div>
-            <a-form-item class="label-value">
+            <a-form-item>
               <SG-UploadFile
                 type="all"
                 :show="!editable"
@@ -555,9 +556,13 @@ export default {
         display: inline-block;
         width: 100%;
         .edit-box-content-item {
-          width: 50%;
+          /*width: 50%;*/
+          width: 312px;
           float: left;
           font-size: 12px;
+          &:nth-child(2n + 1) {
+            margin-right: 116px;
+          }
           .label-name-box {
             float: left;
             line-height: 34px;
@@ -597,7 +602,7 @@ export default {
             line-height: 34px;
           }
           /deep/ .ant-form-explain {
-            margin-left: 90px;
+            margin-left: 98px;
           }
           /deep/ .ant-form-item-with-help {
             margin-bottom: 6px;
