@@ -74,7 +74,7 @@
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
-        :scroll="{ x: 2160 }"
+        :scroll="{ x: 2150 }"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -190,7 +190,7 @@
     },
     {
       title: '操作',
-      width: 180,
+      width: 170,
       dataIndex: 'operation',
       fixed: 'right',
       scopedSlots: { customRender: 'operation' }
@@ -365,7 +365,7 @@
           case 0:
             this.$confirm({
               title: '提示',
-              content: '确认要对此清理单反审核吗？',
+              content: '确认要对此资产卡片反审核吗？',
               onOk() {
                 self.updateCardStatus(status, record.cardId)
               }
@@ -434,7 +434,7 @@
             data.forEach((item, index) => {
               item.key = index
               for (let key in item) {
-                if (item[key] === '') {
+                if (item[key] === '' || item[key] === null) {
                   item[key] = '--'
                 }
               }

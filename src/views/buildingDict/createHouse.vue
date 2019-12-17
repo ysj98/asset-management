@@ -353,25 +353,39 @@ export default {
           }
           // 新增房间
           if (this.type === 'create' || this.type === 'copy') {
+            let loadingName = this.SG_Loding('新增中...')
             this.$api.building.addHouse(data).then(res => {
-              if (res.data.code === '0') {
-                this.$SG_Message.success(`新增房间成功`)
-                this.goPage('index')
-              } else {
-                this.$message.error(res.data.message)
-              }
-            })
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success(`新增房间成功`)
+                  this.goPage('index')
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            }, () => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error('新增失败！')
+              })
+              })
           }
           // 编辑房间
           if (this.type === 'edit') {
             data.houseId = this.houseId
+            let loadingName = this.SG_Loding('编辑中...')
             this.$api.building.updateHouse(data).then(res => {
-              if (res.data.code === '0') {
-                this.$SG_Message.success('编辑楼房间成功')
-                this.goPage('index')
-              } else {
-                this.$message.error(res.data.message)
-              }
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success('编辑房间成功')
+                  this.goPage('index')
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            },() => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error('编辑失败！')
+              })
             })
           }
         }

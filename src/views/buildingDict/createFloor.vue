@@ -229,14 +229,21 @@ export default {
           if (this.type === 'create') {
             data.organId = this.organId
             data.upPositionId = this.objectData.positionId
+            let loadingName = this.SG_Loding('新增中...')
             this.$api.building.addFloor(data).then(res => {
-              if (res.data.code === '0') {
-                this.$SG_Message.success('新增楼层成功')
-                this.resetAll()
-                this.$emit('success', 'create')
-              } else {
-                this.$message.error(res.data.message)
-              }
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success('新增楼层成功')
+                  this.resetAll()
+                  this.$emit('success', 'create')
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            }, () => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error('新增失败！')
+              })
             })
           }
           // 编辑楼栋
@@ -244,13 +251,20 @@ export default {
             data.organId = this.organId
             data.floorId = this.objectData.positionId
             data.upPositionId = this.objectData.upPositionId
+            let loadingName = this.SG_Loding('编辑中...')
             this.$api.building.updateFloor(data).then(res => {
-              if (res.data.code === '0') {
-                this.$SG_Message.success('编辑楼层成功')
-                this.$emit('success', 'edit')
-              } else {
-                this.$message.error(res.data.message)
-              }
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success('编辑楼层成功')
+                  this.$emit('success', 'edit')
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            }, () => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error('编辑失败！')
+              })
             })
           }
         }
