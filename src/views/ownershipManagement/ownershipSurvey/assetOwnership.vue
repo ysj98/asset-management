@@ -114,7 +114,9 @@
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
           </template>
           <template slot="tranProgress" slot-scope="text, record">
-            <a-progress :percent="Number(record.tranProgress) || 0" />
+            <div style="padding-right: 20px;">
+              <a-progress :percent="Number(record.tranProgress) || 0" />
+            </div>
           </template>
           <template slot="operation" slot-scope="text, record">
             <span v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_SET" @click="goPage('detail', record)" class="btn_click mr15">详情</span>

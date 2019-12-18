@@ -441,6 +441,25 @@ class Units {
   getFileName (str) {
     return str.substring(str.lastIndexOf('/')+1)
   }
+  // 把扁平结构处理成树结构
+  buildTree(list, child = 'id', parent = 'parentId'){
+    let temp = {}
+    let tree = []
+    for(let i in list){
+        temp[list[i][child]] = list[i]
+    }
+    for(let i in temp){
+        if(temp[i][parent]) {
+            if(!temp[temp[i][parent]].children) {
+                temp[temp[i][parent]].children = []
+            }
+            temp[temp[i][parent]].children.push(temp[i])
+        } else {
+            tree.push(temp[i])
+        }
+    }
+    return tree
+  }
 }
 /**
  * 节流函数，对多次触发的函数，单位时间内只执行一次
