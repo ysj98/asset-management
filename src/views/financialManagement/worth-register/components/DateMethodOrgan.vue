@@ -3,17 +3,17 @@
 <template>
   <div class="container_style">
     <a-row :gutter="8">
-      <a-col :span="5">
-        <a-select
-          v-bind="properties"
-          v-model="assessmentMethod"
-          :options="methodOptions"
-          class="assess_method_style"
-          placeholder="请选择评估方法"
-          :filterOption="filterOption"
-          :loading="!methodOptions.length"
-        ></a-select>
-      </a-col>
+      <!--<a-col :span="5">-->
+        <!--<a-select-->
+          <!--v-bind="properties"-->
+          <!--v-model="assessmentMethod"-->
+          <!--:options="methodOptions"-->
+          <!--class="assess_method_style"-->
+          <!--placeholder="请选择评估方法"-->
+          <!--:filterOption="filterOption"-->
+          <!--:loading="!methodOptions.length"-->
+        <!--&gt;</a-select>-->
+      <!--</a-col>-->
       <a-col :span="7">
         <a-select
           v-bind="properties"
@@ -22,10 +22,9 @@
           class="assess_organ_style"
           placeholder="请选择评估机构"
           :filterOption="filterOption"
-          :loading="!organOptions.length"
         ></a-select>
       </a-col>
-      <a-col :span="6">
+      <a-col :span="8">
         <span class="prefix_style" style="width: 69px">提交日期</span>
         <a-range-picker
           @change="changeConfirmDate"
@@ -34,7 +33,7 @@
           :defaultValue="[beginDate ? moment(beginDate, 'YYYY-MM-DD') : null, endDate ? moment(endDate, 'YYYY-MM-DD') : null]"
         />
       </a-col>
-      <a-col :span="6">
+      <a-col :span="8">
         <span class="prefix_style" style="width: 78px">评估基准日</span>
         <a-range-picker @change="changeAssessDate" class="date_picker_style" format="YYYY-MM-DD" style="margin-left: 78px"/>
       </a-col>
@@ -83,7 +82,7 @@
       return {
         properties: {}, // 属性值
         organOptions: [], // 评估机构选项,
-        methodOptions: [], // 评估方法选项
+        // methodOptions: [], // 评估方法选项
         beginDate: null, // 提交日期开始日期
         endDate: null, // 提交日期结束日期
         assessmentOrgan: undefined, // 评估机构,
@@ -171,7 +170,7 @@
       mode === 'multiple' ? properties.maxTagCount = 1 : '' // 多选模式防止换行
       this.properties = properties
       Object.assign(this, { ...value })
-      this.queryDict()
+      // this.queryDict()
     },
 
     watch: {

@@ -6,38 +6,52 @@
       <div slot="headerBtns">
         <!--<SG-Button icon="export" @click="handleExport">导出</SG-Button>-->
       </div>
+      <div slot="headerForm">
+        <tree-select @changeTree="changeTree" style="width: 180px"/>
+        <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 180px; margin: 0 10px"/>
+      </div>
       <div slot="contentForm">
         <a-row :gutter="8">
-          <a-col :span="21">
-            <organ-project-type v-model="organProjectType"/>
+          <a-col :span="6">
+            <a-select
+              v-bind="properties"
+              :options="projectOptions"
+              placeholder="请选择资产项目"
+              :filterOption="filterOption"
+              v-model="organProjectType.projectId"
+            />
           </a-col>
-          <a-col :span="3" style="text-align: left">
-            <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
-            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
-          </a-col>
-        </a-row>
-        <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="7">
+          <a-col :span="5">
             <a-select
               mode="multiple"
-              :maxTagCount="2"
-              style="width: 100%"
+              v-bind="properties"
+              placeholder="请选择资产类型"
+              :options="assetTypeOptions"
+              :filterOption="filterOption"
+              v-model="organProjectType.assetType"
+            />
+          </a-col>
+          <a-col :span="5">
+            <a-select
+              mode="multiple"
+              v-bind="properties"
               @change="queryTableData"
               v-model="assetCategoryId"
               :options="categoryOptions"
               placeholder="请选择资产分类"
             />
           </a-col>
-          <a-col :span="7">
-            <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode"/>
-          </a-col>
-          <a-col :span="7">
+          <a-col :span="5">
             <a-date-picker
               @change="changeDate"
               style="width: 100%"
               placeholder="请选择评估基准日期"
               :defaultValue="moment()"
             />
+          </a-col>
+          <a-col :span="3" style="text-align: left">
+            <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
           </a-col>
         </a-row>
       </div>
@@ -61,11 +75,12 @@
   import moment from 'moment'
   import TrendChartPart from './component/TrendChartPart'
   import NoDataTip from 'src/components/noDataTips'
-  import OrganProjectType from '../components/OrganProjectType'
+  import TreeSelect from 'src/views/common/treeSelect'
   import SearchContainer from 'src/views/common/SearchContainer'
+  import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList} from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
-    components: { SearchContainer, OrganProjectType, NoDataTip, TrendChartPart },
+    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart },
     data () {
       return {
         moment,
@@ -77,7 +92,14 @@
         originalValue: 0, // 资产原值,趋势图中展示
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
-        organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
+        organProjectType: {
+          organId: '',
+          organName: '',
+          projectId: undefined,
+          assetType: undefined
+        }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
+        projectOptions: [], // 资产项目选项
+        assetTypeOptions: [], // 资产类型选项
         tableObj: {
           dataSource: [],
           loading: false,
@@ -102,11 +124,41 @@
             { title: '操作', dataIndex: 'action', fixed: 'right', scopedSlots: { customRender: 'action' }, width: 120 }
           ]
         },
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+        properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
       }
     },
 
     methods: {
+      // 下拉搜索筛选
+      filterOption,
+
+      // 获取选择的组织机构
+      changeTree (organId, organName) {
+        Object.assign(this.organProjectType, {
+          projectId: undefined,
+          organName, organId
+        })
+        this.projectOptions = [] // 清空
+        this.queryProjectByOrganId(organId)
+        organId && this.queryTableData({})
+        this.queryCategoryOptions()
+      },
+
+      // 根据organId查询资产项目
+      queryProjectByOrganId (organId) {
+        organId && queryProjectListByOrganId(organId).then(list =>
+          list ? this.projectOptions = list : this.$message.error('查询资产项目失败')
+        )
+      },
+
+      // 查询资产类型--平台字典
+      queryAssetType () {
+        queryAssetTypeList().then(list => {
+          list ? this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}].concat(list) : this.$message.error('查询楼栋失败')
+        })
+      },
+
       // 导出
       handleExport () {
         return this.$message.info('暂不支持')
@@ -176,28 +228,19 @@
       },
 
       // 根据资产类型查资产分类列表
-      queryCategoryOptions (organProjectType) {
-        this.objectType = undefined
+      queryCategoryOptions () {
         this.categoryOptions = []
-        const { organId, assetType } = organProjectType
+        const { organId, assetType } = this.organProjectType
         if (!organId || !assetType || !assetType.length) { return false }
         let assetVal = assetType.includes('-1') ? '' : assetType.join(',')
-        this.$api.assets.getList({ assetType: assetVal, organId }).then(res => {
-          if (Number(res.data.code) === 0) {
-            let { data } = res.data
-            let list = data.map( m => ({
-              title: m.professionName,
-              key: m.professionCode
-            }))
-            list.unshift({ title: '全部资产', key: '-1' })
-            this.categoryOptions = list
-            return false
-          }
-          throw res.message || '查询资产分类失败'
-        }).catch(err => {
-          this.$message.error(err || '查询资产分类失败')
+        queryCategoryList({ assetType: assetVal, organId }).then(list => {
+          list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
       }
+    },
+
+    created () {
+      this.queryAssetType()
     },
 
     watch: {
@@ -216,9 +259,16 @@
         }
       },
 
-      organProjectType: function (val) {
-        val && val.organId && this.queryTableData({})
-        this.queryCategoryOptions(val)
+      'organProjectType.projectId': function () {
+        this.queryTableData({})
+      },
+
+      'organProjectType.assetType': function (assetType) {
+        if (assetType && assetType.length !== 1 && assetType.includes('-1')) {
+          this.organProjectType.assetType = ['-1']
+        }
+        this.queryTableData({})
+        this.queryCategoryOptions()
       }
     }
   }

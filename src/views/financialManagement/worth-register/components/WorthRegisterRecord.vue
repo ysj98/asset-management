@@ -7,31 +7,59 @@
         <!--<SG-Button icon="export" @click="handleExport">导出</SG-Button>-->
       </div>
       <div slot="headerForm">
-        <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 171px"/>
-        <a-select
-          mode="multiple"
-          :maxTagCount="2"
-          v-model="approvalStatus"
-          :options="statusOptions"
-          @change="queryTableData"
-          placeholder="请选择登记状态"
-          style="width: 171px; margin: 0 10px"
-        />
+        <tree-select @changeTree="changeTree" style="width: 180px"/>
+        <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 180px; margin: 0 10px"/>
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
-          <a-col :span="15">
-            <organ-project-type v-model="organProjectType"/>
+          <a-col :span="4">
+            <a-select
+              v-bind="properties"
+              :options="projectOptions"
+              placeholder="请选择资产项目"
+              :filterOption="filterOption"
+              v-model="organProjectType.projectId"
+            />
           </a-col>
-          <a-col :span="5">
+          <a-col :span="4">
             <a-select
               mode="multiple"
-              :maxTagCount="2"
-              style="width: 100%"
+              v-bind="properties"
+              placeholder="请选择资产类型"
+              :options="assetTypeOptions"
+              :filterOption="filterOption"
+              v-model="organProjectType.assetType"
+            />
+          </a-col>
+          <a-col :span="4">
+            <a-select
+              mode="multiple"
+              v-bind="properties"
               @change="queryTableData"
               v-model="assetCategoryId"
               :options="categoryOptions"
               placeholder="请选择资产分类"
+            />
+          </a-col>
+          <a-col :span="4">
+            <a-select
+              mode="multiple"
+              v-bind="properties"
+              v-model="approvalStatus"
+              :options="statusOptions"
+              @change="queryTableData"
+              placeholder="请选择登记状态"
+            />
+          </a-col>
+          <a-col :span="4">
+            <a-select
+              mode="multiple"
+              v-bind="properties"
+              :options="methodOptions"
+              class="assess_method_style"
+              placeholder="请选择评估方法"
+              :filterOption="filterOption"
+              v-model="assessmentMethod"
             />
           </a-col>
           <a-col :span="4" style="text-align: left">
@@ -56,25 +84,35 @@
 <script>
   import moment from 'moment'
   import NoDataTip from 'src/components/noDataTips'
-  import OrganProjectType from '../components/OrganProjectType'
+  import TreeSelect from 'src/views/common/treeSelect'
   import DateMethodOrgan from '../components/DateMethodOrgan'
   import SearchContainer from 'src/views/common/SearchContainer'
+  import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList} from 'src/views/common/commonQueryApi'
   export default {
     name: 'WorthRegisterRecord',
-    components: { SearchContainer, OrganProjectType, DateMethodOrgan, NoDataTip },
+    components: { SearchContainer, TreeSelect, DateMethodOrgan, NoDataTip },
     data () {
       return {
         fold: true, // 查询条件折叠按钮
         assetNameCode: '', // 查询条件-登记名称
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
-        organProjectType: {}, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
+        organProjectType: {
+          organId: '',
+          organName: '',
+          projectId: undefined,
+          assetType: undefined
+        }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
         dateMethodOrgan: {
           beginDate: moment().add(-180, 'days').format('YYYY-MM-DD'),
           endDate: moment().format('YYYY-MM-DD') // 默认查询最近半年的提交数据
         }, // { assessOrgan, beginDate, endDate, beginAssessmenBaseDate, endAssessmenBaseDate, assessMethod }
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
         approvalStatus: undefined, // 查询条件-登记状态
+        projectOptions: [], // 资产项目选项
+        assetTypeOptions: [], // 资产类型选项
+        assessmentMethod: undefined, // 评估方法
+        methodOptions: [], // 评估方法选项
         statusOptions: [
           { title: '全部', key: '-1' }, { title: '待审批', key: '2' },
           { title: '已驳回', key: '3' }, { title: '已审批', key: '1' }, { title: '已取消', key: '4' }
@@ -103,11 +141,48 @@
             { title: '状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 120 }
           ]
         },
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+        properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
       }
     },
 
     methods: {
+      // 下拉搜索筛选
+      filterOption,
+
+      // 获取选择的组织机构
+      changeTree (organId, organName) {
+        Object.assign(this.organProjectType, {
+          projectId: undefined,
+          organName, organId
+        })
+        this.projectOptions = [] // 清空
+        this.queryProjectByOrganId(organId)
+        organId && this.queryTableData({})
+        this.queryCategoryOptions()
+      },
+
+      // 根据organId查询资产项目
+      queryProjectByOrganId (organId) {
+        organId && queryProjectListByOrganId(organId).then(list =>
+          list ? this.projectOptions = list : this.$message.error('查询资产项目失败')
+        )
+      },
+
+      // 查询资产类型--平台字典
+      queryAssetType () {
+        queryAssetTypeList().then(list => {
+          list ? this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}].concat(list) : this.$message.error('查询楼栋失败')
+        })
+      },
+
+      // 查询评估方法--平台字典
+      queryAssetMethod () {
+        queryAssetMethodList().then(list => {
+          list ? this.methodOptions = [{title: '全部评估方法', key: '-1'}].concat(list) : this.$message.error('查询评估方法失败')
+        })
+      },
+
       // 导出
       handleExport () {
         return this.$message.info('暂不支持')
@@ -121,7 +196,7 @@
         const {
           assetNameCode, approvalStatus, assetCategoryId,
           organProjectType, organProjectType: { assetType },
-          dateMethodOrgan, dateMethodOrgan: { assessmentMethod, assessmentOrgan}
+          dateMethodOrgan, assessmentMethod, dateMethodOrgan: { assessmentOrgan}
         } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -153,28 +228,20 @@
       },
 
       // 根据资产类型查资产分类列表
-      queryCategoryOptions (organProjectType) {
-        this.objectType = undefined
+      queryCategoryOptions () {
         this.categoryOptions = []
-        const { organId, assetType } = organProjectType
+        const { organId, assetType } = this.organProjectType
         if (!organId || !assetType || !assetType.length) { return false }
         let assetVal = assetType.includes('-1') ? '' : assetType.join(',')
-        this.$api.assets.getList({ assetType: assetVal, organId }).then(res => {
-          if (Number(res.data.code) === 0) {
-            let { data } = res.data
-            let list = data.map( m => ({
-              title: m.professionName,
-              key: m.professionCode
-            }))
-            list.unshift({ title: '全部资产', key: '-1' })
-            this.categoryOptions = list
-            return false
-          }
-          throw res.message || '查询资产分类失败'
-        }).catch(err => {
-          this.$message.error(err || '查询资产分类失败')
+        queryCategoryList({ assetType: assetVal, organId }).then(list => {
+          list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
       }
+    },
+
+    created () {
+      this.queryAssetType()
+      this.queryAssetMethod()
     },
 
     watch: {
@@ -193,12 +260,26 @@
         }
       },
 
-      organProjectType: function (val) {
-        val && val.organId && this.queryTableData({})
-        this.queryCategoryOptions(val)
+      dateMethodOrgan: function () {
+        this.queryTableData({})
       },
 
-      dateMethodOrgan: function () {
+      'organProjectType.projectId': function () {
+        this.queryTableData({})
+      },
+
+      'organProjectType.assetType': function (assetType) {
+        if (assetType && assetType.length !== 1 && assetType.includes('-1')) {
+          this.organProjectType.assetType = ['-1']
+        }
+        this.queryTableData({})
+        this.queryCategoryOptions()
+      },
+
+      assessmentMethod: function (val) {
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.assessmentMethod = ['-1']
+        }
         this.queryTableData({})
       }
     }
