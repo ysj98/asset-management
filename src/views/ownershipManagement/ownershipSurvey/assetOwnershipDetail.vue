@@ -88,7 +88,7 @@
                   @click="showCertDetail(item)"
                   v-for="(item, i) in text.split(',')"
                   :key="i"
-                >{{item}},</span>
+                >{{item}}{{text.split(',').length==(i+1)? '': ','}}</span>
               </template>
               <template v-else>
                 <span>-</span>
@@ -143,7 +143,7 @@
                   @click="showCertDetail(item)"
                   v-for="(item, i) in text.split(',')"
                   :key="i"
-                >{{item}},</span>
+                >{{item}}{{text.split(',').length==(i+1)? '': ','}}</span>
               </template>
               <template v-else>
                 <span>-</span>
@@ -157,7 +157,7 @@
                   @click="showCertDetail(item)"
                   v-for="(item, i) in text.split(',')"
                   :key="i"
-                >{{item}},</span>
+                >{{item}}{{text.split(',').length==(i+1)? '': ','}}</span>
               </template>
               <template v-else>
                 <span>-</span>

@@ -11,7 +11,7 @@
       </a-input>
     </div>
     <div class="tree-main" :key="treeUuid + ''">
-      <div class="table-no-data" v-if="gData.length===0">暂无数据</div>
+      <div class="table-no-data" v-if="gData.length===0">暂无分类</div>
       <a-tree
         @expand="onExpand"
         :loadData="onLoadData"
@@ -32,7 +32,6 @@
   </div>
 </template>
 <script>
-import {utils} from '@/utils/utils'
 // 位置类型，1：建筑类，2：公共区域，3：停车场 4 土地
 // 位置子类型	subPositionType	int		当位置类型为1时，0：表示楼栋，1：表示单元，2：表示楼层,3：表示小区,4：建筑位置,5：电梯
 // 当位置类型为2时，0：表示公共区域，1：公共区域位置
@@ -53,6 +52,21 @@ function fetchItem(data = [], id, type){
     }
   }
   return false
+}
+// 搜索获取
+const getParentKey = (key, tree) => {
+  let parentKey
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i]
+    if (node.children) {
+      if (node.children.some(item => item.key === key)) {
+        parentKey = node.key
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children)
+      }
+    }
+  }
+  return parentKey
 }
 // 写死顶层项
 const topItem = {
@@ -93,40 +107,21 @@ export default {
     return {
       activeKey: '', // 当前点击项
       expandedKeys: [topItem.key],
-      copyExpandedKeys: [topItem.key],
       autoExpandParent: false,
       gData: [{...topItem}],
-      copyGdata: [{...topItem}],
       dataList: [{...topItem}], // 缓存每一项请求
-      store: {},
       selectItem: {}, // 当前添加项
       treeUuid: getUuid(),
       searchValueInput: '', // 搜索框的值
     }
   },
-  computed: {
-    // 向上包含的节点树
-    containTreeNodes () {
-      if (this.searchValueInput) {
-        const collect = []
-        const filterList = Object.values(this.store).filter(v => v.title.includes(this.searchValueInput)).map(v => v.key)
-        this.upwardCollectOrgan(filterList, collect)
-        return collect
-      } else {
-        return Object.keys(this.store)
-      }
-    },
-  },  
   methods: {
     emptyTreeData () {
       this.gData = [{...topItem}]
       this.expandedKeys = [topItem.key]
       this.dataList = [{...topItem}]
       this.selectItem = {}
-      this.store = {[topItem.key]: topItem}
-      this.copyGdata = utils.deepClone(this.gData)
-      this.copyExpandedKeys = [topItem.key]
-      this.searchValueInput = ''
+      console.log('hhhhhh', this.expandedKeys)
     },
     hanldeOper (scope) {
       if (this.activeKey === scope.key) {
@@ -136,62 +131,6 @@ export default {
       this.activeKey = scope.key
       this.$emit('change', {...scope})
     },
-    // 根据id返回对象
-    mapStoreOrganIdItem (organId) {
-      return this.store[organId]
-    },
-    // 向上收集节点树
-    upwardCollectOrgan (list, store) {
-      console.log('vvvv', list)
-      if (list.length) {
-        const upwardList = list.map(v => {
-          if (!store.includes(v)) {
-            store.push(v)
-          }
-          return this.mapStoreOrganIdItem(v).parentKey
-        }).filter(v => v).map(v => this.mapStoreOrganIdItem(v).key)
-        this.upwardCollectOrgan(upwardList, store)
-      }
-    },
-    // 向上重组树
-    upCreateTree () {
-      // 重组树列表
-      let treeList = this.dataList.filter((item) => {
-        return this.containTreeNodes.includes(item.key)
-      }).map(item => {
-        let o = {...item}
-        // o.children = []
-        return o
-      })
-      // 重组树树结构
-      let treeData = utils.buildTree(treeList, 'key', 'parentKey')
-      return treeData
-    },
-    onChange (e) {
-      let value = this.searchValueInput
-      if (!value || !value.trim()) {
-        this.expandedKeys = [...this.copyExpandedKeys]
-        this.gData = this.copyGdata
-        return
-      }
-      let treeData = this.upCreateTree()
-      // 匹配到树结构的key
-      let filterList = Object.values(this.store).filter(v => v.title.includes(this.searchValueInput)).map(v => v.key)
-      // 匹配到key 但未展开
-      let filterKeys = filterList.filter(item => {
-        return !this.copyExpandedKeys.includes(item)
-      })
-      let expandedKeys = this.containTreeNodes.filter(item => {
-        return !filterKeys.includes(item)
-      })
-      this.gData = treeData
-      console.log('展开', expandedKeys)
-      Object.assign(this, {
-        expandedKeys,
-        // searchValue: value,
-        autoExpandParent: true
-      })
-    },
     // 重新加载
     resetLoad () {
       this.positionSelectAsyn(this.organId)
@@ -200,9 +139,6 @@ export default {
     },
     onExpand  (expandedKeys) {
       this.expandedKeys = expandedKeys
-      if (!this.searchValueInput) {
-        this.copyExpandedKeys = [...expandedKeys]
-      }
       this.autoExpandParent = false
     },
     // 异步加载数据
@@ -234,12 +170,9 @@ export default {
             item.id = item.positionId
             item.title = item.positionName
             item.scopedSlots = { title: 'title'}
-            item.parentKey = topItem.key
-            this.store[item.key] = this.store[item.key] || item
             this.dataList.push({...item})
             return {...item}
           })
-          this.copyGdata = utils.deepClone(this.gData)
           this.expandedKeys = [topItem.key]
           this.treeUuid = getUuid()
         } else {
@@ -259,17 +192,13 @@ export default {
             item.id = item.positionId
             item.title = item.positionName
             item.scopedSlots = { title: 'title' }
-            item.parentKey = key
-            this.store[item.key] = this.store[item.key] || item
             this.dataList.push({...item})
           }
           let _item = fetchItem(this.gData, key, 'key')
-          let _copyItem = fetchItem(this.copyGdata, key, 'key')
           this.expandedKeys.push(key)
           this.expandedKeys = [...new Set(this.expandedKeys)]
           if (_item) {
             this.$set(_item, 'children', result)
-            this.$set(_copyItem, 'children', result)
           }
         } else {
           this.$message.error(res.data.message)
@@ -277,7 +206,24 @@ export default {
       }, () => {
       })
     },
-    
+    onChange (e) {
+      let value = this.searchValueInput
+      // 找到需要的节点
+      let expandedKeys = this.dataList.map((item) => {
+        if (item.title.indexOf(value) > -1 && value.trim()) {
+          return getParentKey(item.key, this.gData)
+        }
+        return null
+      }).filter((item, i, self) => item && self.indexOf(item) === i)
+      if (!expandedKeys.length) {
+        expandedKeys = [topItem.key]
+      }
+      Object.assign(this, {
+        expandedKeys,
+        // searchValue: value,
+        autoExpandParent: true
+      })
+    }
   },
 }
 </script>
@@ -326,9 +272,6 @@ export default {
 }
 .tree-main{
   padding-left: 13px;
-}
-.table-no-data{
-  text-align: center;
 }
 </style>
 <style lang="less">

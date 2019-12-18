@@ -43,7 +43,10 @@
           <span>{{text}}</span>
         </template>
         <template slot="tranProgress" slot-scope="text, record">
-          <a-progress :percent="Number(record.tranProgress) || 0" />
+          <div style="padding-right: 10px;">
+              <a-progress :percent="Number(record.tranProgress) || 0" />
+            </div>
+          <!-- <a-progress :percent="Number(record.tranProgress) || 0" /> -->
         </template>
         <template slot="operation" slot-scope="text, record">
           <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
