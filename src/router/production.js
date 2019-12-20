@@ -262,6 +262,21 @@ let proRouter = [
     path: '/worthRegister/approvalRegister',
     name: '价值登记审批',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage')
+  },
+  {
+    path: '/disposalManagement/listDisposal',
+    name: '资产处置一览表',
+    component: () => import('@/views/disposalManagement/listDisposal/index')
+  },
+  {
+    path: '/inventoryManagement/countingTask',
+    name: '盘点任务',
+    component: () => import('@/views/inventoryManagement/countingTask/index')
+  },
+  {
+    path: '/inventoryManagement/inventoryPerform',
+    name: '盘点执行',
+    component: () => import('@/views/inventoryManagement/inventoryPerform/index')
   }
 ]
 export default proRouter

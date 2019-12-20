@@ -77,6 +77,28 @@ export default [
     ]
   },
   {
+    title: '盘点管理',
+    children: [
+      {
+        title: '盘点任务',
+        path: '/inventoryManagement/countingTask'
+      },
+      {
+        title: '盘点执行',
+        path: '/inventoryManagement/inventoryPerform'
+      }
+    ]
+  },
+  {
+    title: '处置管理',
+    children: [
+      {
+        title: '资产处置一览表',
+        path: '/disposalManagement/listDisposal'
+      }
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {
