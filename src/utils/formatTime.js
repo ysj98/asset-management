@@ -242,6 +242,24 @@
     return date.getFullYear() + '-' + month + '-' + day
   }
 
+  /* 得到本月最后一天日期 */
+  export function getNowMonthDate() {
+    let date = new Date();
+    let year = date.getFullYear() + ''
+    let month = (date.getMonth() + 1) + ''
+    let lastDateOfCurrentMonth = new Date(year, month, 0)
+    let end = year + '-' + month + '-' + lastDateOfCurrentMonth.getDate()
+    return end
+  }
+  // 获取当前月份n个月前1号
+  export function getNMonthsAgoFirst (n) {
+    let date1 = new Date()
+    date1.setMonth(date1.getMonth() - n)
+    date1.setDate(1)
+    let sDate = date1.getFullYear() + '-' + (date1.getMonth() + 1) + '-' + date1.getDate()
+    return sDate
+  }
+
   /* 得到今天并格式化日期 */
   export function getCurrentDate () {
     let date = new Date() // 前一天
