@@ -277,6 +277,26 @@ let proRouter = [
     path: '/inventoryManagement/inventoryPerform',
     name: '盘点执行',
     component: () => import('@/views/inventoryManagement/inventoryPerform/index')
-  }
+  },
+  {
+    path: '/inventoryPlan',
+    name: '盘点计划',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/index')
+  },
+  {
+    path: '/inventoryPlan/create',
+    name: '新建盘点计划',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/createPlan')
+  },
+  {
+    path: '/inventoryPlan/edit',
+    name: '编辑盘点计划',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/editPlan')
+  },
+  {
+    path: '/inventoryPlan/detail',
+    name: '详情盘点计划',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/detailPlan')
+  },
 ]
 export default proRouter

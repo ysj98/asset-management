@@ -86,7 +86,11 @@ export default [
       {
         title: '盘点执行',
         path: '/inventoryManagement/inventoryPerform'
-      }
+      },
+      {
+        title: '盘点计划',
+        path: '/inventoryPlan',
+      },
     ]
   },
   {
