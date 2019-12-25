@@ -218,6 +218,7 @@ export default {
   },
   data () {
     return {
+      newData: '',
       setType: '',
       titleDeed: utils.deepClone(titleDeed),
       accessCard: utils.deepClone(accessCard),
@@ -686,7 +687,7 @@ export default {
                 exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,
                 apportionArea: data.amsOwnershipWarrant.apportionArea,
                 totalSuite: data.amsOwnershipWarrant.totalSuite,
-                qualityOfRight: data.amsOwnershipWarrant.qualityOfRight,
+                qualityOfRight: String(data.amsOwnershipWarrant.qualityOfRight),
                 useLimitDate: data.amsOwnershipWarrant.useLimitDate,
                 rigisterDate: conditionalJudgment.includes(data.amsOwnershipWarrant.rigisterDate) ? undefined : moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
                 handoverDate: conditionalJudgment.includes(data.amsOwnershipWarrant.handoverDate) ? undefined : moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD')

@@ -456,3 +456,15 @@ export const worthRegister = {
   // 资产价值一览表查询汇总
   queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
 }
+
+
+// 处置管理
+export const dispose = {
+  // 资产处置一览表-主列表查询(分页)
+  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage'
+}
+
+
+// 盘点管理
+export const inventoryManagement = {
+}
