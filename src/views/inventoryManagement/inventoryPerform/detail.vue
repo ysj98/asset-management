@@ -1,34 +1,260 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2019-12-25 15:13:15
+ * @LastEditTime : 2019-12-25 18:22:09
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
  -->
+
 <template>
-  <div class="wrapper">
-    登记详情
+  <div class="particulars">
+    <div class="particulars-nav">
+      <span class="section-title blue">基本信息</span>
+      <div class="particulars-obj">
+        <a-row class="playground-row">
+          <a-col class="playground-col" :span="8">盘点单号：{{particularsData.checkId || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">盘点单名称：{{particularsData.checkName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">所属任务：{{particularsData.taskName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">盘点人：{{particularsData.userNames || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划执行时间：{{particularsData.endDate ? `${particularsData.beginDate} - ${particularsData.endDate}` : '--'}}</a-col>
+          <a-col class="playground-col" :span="8">状态：{{particularsData.checkStatusName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">实际执行时间：{{particularsData.completeDate || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
+          <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
+        </a-row>
+      </div>
+    </div>
+    <div class="particulars-nav">
+      <span class="section-title blue">盘点资产清单（资产总数:{{inventoryAssetCount || 0}}；已盘点:{{inventoryCheckCount || 0}}; 未盘点:{{inventoryNoCheckCount || 0}})</span>
+      <div class="particulars-obj">
+      <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
+        <div slot="col-l">
+          <SG-Button type="primary" style="margin-right: 10px" weaken >导出资产清单</SG-Button>
+          <SG-Button type="primary" weaken>导入盘点结果</SG-Button>
+        </div>
+        <div slot="col-r">
+          <div class="nav">
+            <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" @change="checkStatusChange" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
+              <a-select-option v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-input-search style="width: 170px;" v-model="queryCondition.name" placeholder="资产名称/编码" maxlength="30" @search="onSearch" />
+          </div>
+        </div>
+      </Cephalosome>
+        <div class="table-layout-fixed table-border">
+          <a-table
+            :loading="loading"
+            :columns="columns"
+            :dataSource="tableData"
+            class="custom-table td-pd10"
+            :pagination="false"
+            >
+            <template slot="operation" slot-scope="text, record">
+              <span v-if="+record.checkStatus === 0" @click="operationFn('detail', record)" class="btn_click">登记结果</span>
+              <span v-if="+record.checkStatus === 1" @click="operationFn('set', record)" class="btn_click">编辑</span>
+            </template>
+          </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+          <SG-FooterPagination
+            :pageLength="queryCondition.pageSize"
+            :totalCount="inventoryTotalCount"
+            v-model="queryCondition.pageNum"
+            @change="handleChange"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="particulars-nav">
+      <span class="section-title blue">盘点异常列表（资产总数:{{inventoryAssetCount || 0}}；已盘点:{{inventoryCheckCount || 0}}; 未盘点:{{inventoryNoCheckCount || 0}})</span>
+      <div class="particulars-obj">
+      <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
+        <div slot="col-l">
+          <SG-Button type="primary" style="margin-right: 10px" weaken >登记盘盈资产</SG-Button>
+          <SG-Button type="primary" weaken>导出异常信息</SG-Button>
+        </div>
+        <div slot="col-r">
+          <div class="nav">
+            <a-select style="width: 160px; margin-right: 10px;" placeholder="全部异常状态" @change="checkResultsChange" v-model="queryCondition.checkResults">
+              <a-select-option v-for="(item, index) in checkResultsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+          </div>
+        </div>
+      </Cephalosome>
+        <div class="table-layout-fixed table-border">
+          <a-table
+            :loading="loading"
+            :columns="exceptionListColumns"
+            :dataSource="tableData"
+            class="custom-table td-pd10"
+            :pagination="false"
+            >
+            <template slot="operation" slot-scope="text, record">
+              <span v-if="+record.checkResult === 3" @click="operationFn('detail', record)" class="btn_click">删除</span>
+              <span @click="operationFn('set', record)" class="btn_click">编辑</span>
+            </template>
+          </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+          <SG-FooterPagination
+            :pageLength="queryCondition.pageSize"
+            :totalCount="inventoryTotalCount"
+            v-model="queryCondition.pageNum"
+            @change="handleChange"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import {register, exceptionList, checkStatusData, checkResultsData} from './basics'
+import {utils} from '@/utils/utils.js'
+import Cephalosome from '@/components/Cephalosome'
+import noDataTips from "@/components/noDataTips"
+
 export default {
-  components: {},
+  components: {Cephalosome, noDataTips},
   props: {},
   data () {
     return {
+      inventoryAssetCount: '',     // 资产总数
+      inventoryCheckCount: '',     // 已盘点
+      inventoryNoCheckCount: '',   // 未盘点
+      inventoryTotalCount: '',     // 资产列表分页
+      checkStatusData: [...checkStatusData],
+      checkResultsData: [...checkResultsData],
+      changeType: '',
+      checkId: '',
+      particularsData: {},
+      columns: [],                 // 资产清单列表表头
+      exceptionListColumns: [],    // 异常列表表头
+      loading: false,
+      tableData: [],
+      location: '',
+      queryCondition: {
+        checkStatus: '',
+        name: '',
+        pageSize: 10,
+        pageNum: 1,
+        count: ''
+      }
     }
   },
   computed: {
   },
+  watch: {
+    'changeType' (value) {
+      if (value === 'set') {
+        this.columns = register        // 资产清单列表
+        this.exceptionListColumns = exceptionList  // 异常列表
+      } else {
+        let arr = []
+        arr = utils.deepClone(register)
+        this.columns = arr.splice(0, arr.length - 1)
+        let exceptionListData = []
+        exceptionListData = utils.deepClone(exceptionList)
+        this.exceptionListColumns = exceptionListData.splice(0, exceptionListData.length - 1)
+      }
+    }
+  },
   methods: {
+    // 查询基本信息详情
+    query () {
+      let obj = {
+        checkId: this.checkId  // 盘点单id
+      }
+      this.$api.inventoryManagementApi.assetCheckInstDetail(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.particularsData = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 盘点资产清单列表
+    assetCheckInstAsseDetail () {
+      let obj = {
+        checkId: this.checkId,            // 盘点id
+        name: this.queryCondition.name,                  // 资源名称/编码
+        checkResults: '',                                // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
+        checkStatus: this.queryCondition.checkStatus,    // 盘点状态(0-未盘点 1-已盘点)
+        pageSize: this.queryCondition.pageSize,
+        pageNum: this.queryCondition.pageNum
+      }
+      this.$api.inventoryManagementApi.assetCheckInstAsseDetail(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data
+          this.inventoryAssetCount = res.data.data.assetCount      // 资产总数
+          this.inventoryCheckCount = res.data.data.checkCount      // 已盘点
+          this.inventoryNoCheckCount = res.data.data.noCheckCount  // 未盘点
+          this.inventoryTotalCount = res.data.data.count           // 分页总数
+          this.tableData = data.map((item, index) => {
+            item.key = index
+            return item
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 监听选择状态调资产清单列表
+    checkStatusChange () {
+      this.queryCondition.pageNum = 1
+      this.assetCheckInstAsseDetail()
+    },
+    // 监听异常选择状态调异常类别
+    checkResultsChange () {
+    },
+    // 盘点资产清单搜索
+    onSearch () {
+      this.queryCondition.pageNum = 1
+      this.assetCheckInstAsseDetail()
+    },
+    // 分页查询
+    handleChange (data) {
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.query()
+    },
   },
   created () {
   },
   mounted () {
+    // this.particularsData = JSON.parse(this.$route.query.record)
+    // this.checkId = this.particularsData[0].checkId
+    // this.changeType = this.particularsData[0].changeType
+    this.changeType = 'set'
+    this.query()
+    this.assetCheckInstAsseDetail()   // 资产清单
   }
 }
 </script>
 <style lang="less" scoped>
+.particulars {
+  .particulars-nav{
+      padding: 42px 126px 20px 70px;
+      .particulars-obj {
+        padding: 20px 0 20px 40px;
+        .playground-row {
+          .playground-col {
+            line-height: 40px;
+            font-size: 12px;
+          }
+        }
+      }
+      .correspondingTask {
+        margin:35px 40px 0 40px;
+        border: 1px solid #F0F2F5;
+      }
+  }
+  .nav-box {
+    padding-bottom: 100px;
+  }
+  .file {
+    margin: 20px 0 0 40px;
+  }
+}
 </style>
