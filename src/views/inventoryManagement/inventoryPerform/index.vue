@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2019-12-20 14:54:58
+ * @LastEditTime : 2019-12-25 15:14:57
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -14,10 +14,10 @@
           <SG-DatePicker label="盘点日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="nav">
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
+          <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" :tokenSeparators="[',']" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.assetName" placeholder="盘点单名称/编号" maxlength="60" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.checkName" placeholder="盘点单名称/编号" maxlength="60" @search="onSearch" />
         </div>
       </div>
     </Cephalosome>
@@ -30,14 +30,14 @@
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
       >
-        <template slot="tranProgress" slot-scope="text, record">
+        <template slot="progress" slot-scope="text, record">
           <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
+              <a-progress :percent="Number(record.progress) || 0" />
             </div>
         </template>
         <template slot="operation" slot-scope="text, record">
           <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          <span v-power="ASSET_MANAGEMENT.ASSET_PROOWNERSHIP_SET" @click="goPage('set', record)" class="btn_click">权属设置</span>
+          <span v-show="+record.checkStatus === 0" @click="goPage('set', record)" class="btn_click">登记盘点结果</span>
         </template>
       </a-table>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -60,12 +60,12 @@ import noDataTips from "@/components/noDataTips"
 import {getNMonthsAgoFirst, getNowMonthDate} from 'utils/formatTime'
 // 页面跳转
 const operationTypes = {
-  detail: "/ownershipSurvey/projectDetail",
-  set: "/ownershipSurvey/projectSet"
+  detail: "/inventoryManagement/inventoryPerform/detail",
+  set: "/inventoryManagement/inventoryPerform/register"
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
-  assetName: '',
+  checkName: '',
   approvalStatus: '',
   pageSize: 10,
   pageNum: 1
@@ -87,60 +87,60 @@ const approvalStatusData = [
 let columns = [
   {
     title: "盘点单号",
-    dataIndex: "organName",
+    dataIndex: "checkId",
     width: 150
   },
   {
     title: "盘点单名称",
-    dataIndex: "projectCode",
+    dataIndex: "checkName",
     width: 120
   },
   {
     title: "盘点人",
-    dataIndex: "sourceTypeName",
+    dataIndex: "userNames",
     width: 100
   },
   {
     title: "盘点进度",
-    dataIndex: "tranProgress",
-    scopedSlots: { customRender: "tranProgress" },
+    dataIndex: "progress",
+    scopedSlots: { customRender: "progress" },
     width: 200
   },
   {
     title: "计划执行时间",
-    dataIndex: "ownershipCount",
-    width: 100
+    dataIndex: "beginDateEndDate",
+    width: 150
   },
   {
     title: "实际完成时间",
-    dataIndex: "noOwnershipCount",
+    dataIndex: "completeDate",
     width: 100
   },
     {
     title: "状态",
-    dataIndex: "waitOwnershipCount",
+    dataIndex: "checkStatusName",
     width: 100
   },
   {
     title: "盘点资产总数",
-    dataIndex: "waitOwnershipCount",
+    dataIndex: "checkCount",
     width: 100
   },
     {
     title: "盘盈",
-    dataIndex: "waitOwnershipCount",
+    dataIndex: "successCount",
     width: 100
   },
   {
     title: "盘亏",
-    dataIndex: "waitOwnershipCount",
+    dataIndex: "failCount",
     width: 100
   },
   {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 120
+    width: 150
   }
 ];
 export default {
@@ -172,33 +172,9 @@ export default {
     }
   },
   mounted () {
-    console.log(getNMonthsAgoFirst(2), getNowMonthDate())
+    this.query()
   },
   methods: {
-    // 状态发生变化
-    approvalStatusFn (value) {
-      this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
-      })
-    },
-    // 处理多选下拉框有全选时的数组
-    handleMultipleSelectValue (value, data, dataOptions) {
-      // 如果选的是全部
-      if (value === '') {
-        data = ['']
-      } else {
-        let totalIndex = data.indexOf('')
-        if (totalIndex > -1) {
-          data.splice(totalIndex, 1)
-        } else {
-          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
-          if (data.length === dataOptions.length - 1) {
-            data = ['']
-          }
-        }
-      }
-      return data
-    },
     // 搜索
     onSearch () {
       this.queryCondition.pageNum = 1
@@ -207,16 +183,17 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
+        beginDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
+        endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
       }
       this.table.loading = true;
-      this.$api.basics.ownerShipList(data).then(
+      this.$api.inventoryManagementApi.assetCheckInstList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.sourceTypeName = item.sourceTypeName || "--";
-              item.souceChannelType = item.souceChannelType || "--";
+              item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
               return {
                 key: getUuid(),
                 ...item
