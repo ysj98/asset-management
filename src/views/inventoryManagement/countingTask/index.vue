@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2019-12-20 14:45:36
+ * @LastEditTime : 2019-12-25 14:21:37
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -14,10 +14,10 @@
           <SG-DatePicker label="开始时间" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="nav">
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="taskStatusFn"  v-model="queryCondition.taskStatus">
+            <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.assetName" placeholder="任务名称" maxlength="50" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="任务名称" maxlength="50" @search="onSearch" />
         </div>
       </div>
     </Cephalosome>
@@ -65,72 +65,70 @@ const operationTypes = {
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
-  assetName: '',
-  approvalStatus: '',
+  taskName: '',
+  taskStatus: '',
   pageSize: 10,
   pageNum: 1
 }
-const approvalStatusData = [
+const taskStatusData = [
   {
     name: '全部状态',
     value: ''
   },
   {
-    name: '草稿',
+    name: '已取消',
     value: '0'
   },
   {
-    name: '待审批',
-    value: '2'
-  },
-  {
-    name: '已驳回',
-    value: '3'
-  },
-  {
-    name: '已审批',
+    name: '已完成',
     value: '1'
   },
   {
-    name: '已取消',
-    value: '4'
+    name: '待启动',
+    value: '2'
+  },
+  {
+    name: '进行中',
+    value: '3'
   }
 ]
+
+
 let columns = [
   {
     title: "任务编号",
-    dataIndex: "organName",
+    dataIndex: "taskId",
     width: 150
   },
   {
     title: "任务名称",
-    dataIndex: "projectCode",
+    dataIndex: "taskName",
     width: 120
   },
   {
     title: "负责人",
-    dataIndex: "sourceTypeName",
+    dataIndex: "userName",
     width: 100
   },
   {
     title: "盘点进度",
-    dataIndex: "tranProgress",
-    scopedSlots: { customRender: "tranProgress" },
+    dataIndex: "checkRate",
+    scopedSlots: { customRender: "checkRate" },
     width: 200
   },
   {
     title: "计划执行时间",
-    dataIndex: "ownershipCount",
+    dataIndex: "beginDate",
     width: 100
   },
   {
     title: "实际完成时间",
-    dataIndex: "noOwnershipCount",
+    dataIndex: "completeDate",
     width: 100
   },
   {
     title: "任务状态",
-    dataIndex: "waitOwnershipCount",
+    dataIndex: "taskStatusName",
     width: 100
   },
   {
@@ -149,7 +147,7 @@ export default {
     return {
       ASSET_MANAGEMENT,
       queryCondition: {...queryCondition},
-      approvalStatusData,
+      taskStatusData,
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       table: {
         columns,
@@ -173,9 +171,9 @@ export default {
   },
   methods: {
     // 状态发生变化
-    approvalStatusFn (value) {
+    taskStatusFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+        this.queryCondition.taskStatus = this.handleMultipleSelectValue(value, this.queryCondition.taskStatus, this.taskStatusData)
       })
     },
     // 处理多选下拉框有全选时的数组
@@ -204,6 +202,8 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
+        beginDate: '',           // 开始时间
+        endDate: '',             // 结束时间
       }
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(

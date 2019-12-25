@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:00:20
- * @LastEditTime : 2019-12-20 10:52:00
+ * @LastEditTime : 2019-12-25 14:18:22
  * @LastEditors  : Please set LastEditors
  * @Description: 资产处置一览表
  * @FilePath: \asset-management\src\views\disposalManagement\listDisposal\index.vue
@@ -14,15 +14,15 @@
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
+        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
               <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
-              <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部处置类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.disposeType">
+              <a-select-option v-for="(item, index) in disposeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
               <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -32,6 +32,9 @@
             </a-select>
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
               <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部处置方式" :tokenSeparators="[',']"  @select="disposeModeDataFn" v-model="queryCondition.disposeMode">
+              <a-select-option v-for="(item, index) in disposeModeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <div class="box sg-datePicker" :style="dateWidth">
               <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
@@ -47,8 +50,6 @@
       </div>
     </SearchContainer>
     <div class="table-layout-fixed">
-      <!--  ref="table_box" -->
-      <!-- :scroll="scrollHeight" -->
       <a-table
         :loading="loading"
         :columns="columns"
@@ -56,9 +57,6 @@
         class="custom-table td-pd10"
         :pagination="false"
         >
-        <!-- <template slot="operation" slot-scope="text, record">
-          <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
-        </template> -->
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -85,7 +83,7 @@ const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top'
 const columns = [
   {
     title: '处置编号',
-    dataIndex: 'changeOrderDetailId'
+    dataIndex: 'disposeRegisterDetailId'
   },
   {
     title: '资产编号',
@@ -108,48 +106,48 @@ const columns = [
     dataIndex: 'assetTypeName'
   },
   {
-    title: '资产分类',
-    dataIndex: 'projectName'
+    title: '资产分类11',
+    dataIndex: 'projectName11'
   },
   {
     title: '登记单号',
-    dataIndex: 'changeOrderId'
+    dataIndex: 'disposeRegisterOrderId'
   },
   {
     title: '处置类型',
-    dataIndex: 'changeTypeName'
+    dataIndex: 'disposeTypeName'
   },
   {
     title: '处置方式',
-    dataIndex: 'oldChangeInfo'
+    dataIndex: 'disposeMode'
   },
   {
     title: '处置日期',
-    dataIndex: 'changeInfo'
+    dataIndex: 'disposeDate'
   },
   {
     title: '处置原因',
-    dataIndex: 'changeDate'
+    dataIndex: 'disposeReason'
   },
   {
     title: '处置成本(元)',
-    dataIndex: 'createByName'
+    dataIndex: 'disposeCost'
   },
   {
     title: '处置收入(元)',
-    dataIndex: 'createTime'
+    dataIndex: 'disposeReceive'
   },
   {
     title: '接收方',
-    dataIndex: 'approvalStatusName'
+    dataIndex: 'assetReceiver'
   },
   {
     title: '提交人',
-    dataIndex: 'approvalStatusName'
+    dataIndex: 'createByName'
   },
   {
     title: '提交时间',
-    dataIndex: 'approvalStatusName'
+    dataIndex: 'createTime'
   },
   {
     title: '状态',
@@ -190,9 +188,10 @@ const queryCondition =  {
     organId: '',   // 组织机构id
     approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
     projectId: '',   // 资产项目Id
-    changeType: '',   // 变动类型
+    disposeType: '',   // 变动类型
     assetType: '',    // 资产类型Id
     assetClassify: '', // 资产分类
+    disposeMode: '',    // 处置方式
     startDate: '',       // 创建日期开始日期
     endDate: '',    // 创建日期结束日期
     changStartDate: '',  // 变动日期开始
@@ -228,7 +227,7 @@ export default {
           value: ''
         }
       ],
-      changeTypeData: [],
+      disposeTypeData: [],
       assetTypeData: [],
       assetClassifyData: [
         {
@@ -236,6 +235,7 @@ export default {
           value: ''
         }
       ],
+      disposeModeData: [],
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       alterationDate: []
     }
@@ -246,27 +246,13 @@ export default {
     // 导出
     downloadFn () {
       let obj = {
-        projectId: this.queryCondition.projectId,       // 资产项目Id
-        organId: Number(this.queryCondition.organId),         // 组织机构id
-        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
-        endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
-        currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
-        // pageNum: this.queryCondition.pageNum,     // 当前页
-        // pageSize: this.queryCondition.pageSize,    // 每页显示记录数
-        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
-        multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
-        assetCodeName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
-        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
       }
       this.$api.assets.exportChangeScheduleList(obj).then(res => {
         console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = '资产变动一览表.xls'
+        a.download = '资产处置一览表.xls'
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()
@@ -329,8 +315,8 @@ export default {
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (str === 'asset_change_type') {
-            this.changeTypeData = [{name: '全部变动类型', value: ''}, ...data]
+          if (str === '') {
+            this.disposeTypeData = [{name: '全部处置类型', value: ''}, ...data]
           } else if (str === 'asset_type') {
             this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
             this.getListFn()
@@ -340,16 +326,6 @@ export default {
         }
       })
     },
-    // organDict () {
-    //   this.$api.assets.organDict({code: 'approval_status_type'}).then(res => {
-    //     if (Number(res.data.code) === 0) {
-    //       let data = res.data.data
-    //       this.approvalStatusData = [{name: '全部状态', value: ''}, ...data]
-    //     } else {
-    //       this.$message.error(res.data.message)
-    //     }
-    //   })
-    // },
     // 资产分类列表
     getListFn () {
       if (!this.queryCondition.organId) {
@@ -384,6 +360,12 @@ export default {
         this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyData)
       })
     },
+    // 处置方式
+    disposeModeDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.disposeMode = this.handleMultipleSelectValue(value, this.queryCondition.disposeMode, this.disposeModeData)
+      })
+    },
     // 资产类型变化
     assetTypeDataFn (value) {
       this.$nextTick(function () {
@@ -393,7 +375,7 @@ export default {
     // 状态发生变化
     changeStatus (value) {
       this.$nextTick(function () {
-        this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData)
+        this.queryCondition.disposeType = this.handleMultipleSelectValue(value, this.queryCondition.disposeType, this.disposeTypeData)
       })
     },
     // 状态发生变化
@@ -434,39 +416,22 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-    // 计算滚动条宽度
-    // computedHeight () {
-    //   let elem = this.$refs.table_box
-    //   if (!elem) {
-    //     return
-    //   }
-    //   let height = utils.AdjustHeight(elem)
-    //   let y = parseFloat(height) < 200 || !height ? 200 : parseFloat(height)
-    //   this.scrollHeight = {y: y - 70 - 40}
-    //   console.log(this.scrollHeight, '-=-=-=')
-    // },
-    // // 防抖函数
-    // debounceMothed: debounce(function () {
-    //   this.computedHeight()
-    // }, 200),
     // 查询
     query () {
       this.loading = true
       let obj = {
-        projectId: this.queryCondition.projectId,       // 资产项目Id
-        organId: Number(this.queryCondition.organId),         // 组织机构id
-        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startCreateDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),       // 创建日期开始日期
-        endCreateDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 创建日期结束日期
-        currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
-        pageNum: this.queryCondition.pageNum,     // 当前页
-        pageSize: this.queryCondition.pageSize,    // 每页显示记录数
-        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变动类型
-        multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
-        assetCodeName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变动日期开始
-        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变动日期结束
+        pageNum: this.queryCondition.pageNum,              // 当前页
+        pageSize: this.queryCondition.pageSize,            // 每页显示记录数
+        organId: Number(this.queryCondition.organId),      // 组织机构id
+        submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),      //类型：String  可有字段  备注：提交时间,开始
+        submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),        //类型：String  可有字段  备注：提交时间,结束
+        approvalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        assetNameOrCode: this.queryCondition.assetName,       // 资产名称/编码
+        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',        //类型：String  可有字段  备注：处置日期,开始
+        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',          //类型：String  可有字段  备注：处置日期,结束
+        projectId: this.queryCondition.projectId,            // 资产项目Id
+        objectType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',                //类型：String  可有字段  资产类型Id
+        disposeMode: ''                //类型：String  可有字段  备注：处置方式
       }
       this.$api.assets.getChangeSchedulePage(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -492,16 +457,11 @@ export default {
   created () {
   },
   mounted () {
-    // this.computedHeight()
-    // window.addEventListener('resize', () => {
-    //   this.debounceMothed()
-    // })
-    // 获取变动类型
-    this.platformDictFn('asset_change_type')
-    // 获取状态
-    // this.organDict('approval_status_type')
+    // 获取处置类型
+    this.platformDictFn()
     // 资产类型
     this.platformDictFn('asset_type')
+    // 处置方式 机构字典表
   }
 }
 </script>

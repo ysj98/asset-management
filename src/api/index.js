@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2019-12-19 14:44:17
+ * @LastEditTime : 2019-12-25 14:50:01
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \asset-management\src\api\index.js
+ */
 /**
  * 描述：API服务入口
  * 作者：猪不乐意
@@ -11,6 +19,8 @@ import * as basics from './basics'
 import * as building from './building'
 import * as ownership from './ownership'
 import * as worthRegister from './worthRegister'
+import * as inventoryManagementApi from './inventoryManagementApi'
+import * as disposalManagement from './disposalManagement'
 const API = {
   auth,
   global,
@@ -19,6 +29,8 @@ const API = {
   basics,
   building,
   worthRegister,
+  inventoryManagementApi,
+  disposalManagement
 }
 
 export default {
