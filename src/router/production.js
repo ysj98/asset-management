@@ -281,7 +281,10 @@ let proRouter = [
   {
     path: '/inventoryPlan',
     name: '盘点计划',
-    component: () => import('@/views/inventoryManagement/inventoryPlan/index')
+    component: () => import('@/views/inventoryManagement/inventoryPlan/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/inventoryPlan/create',
