@@ -480,7 +480,7 @@ export const inventoryManagement = {
     assetCheckInstAsseDetail: '/ams/assetCheckInst/asseDetail',
     // 盘盈资产删除
     assetCheckInstDeleteByCheckResult: '/ams/assetCheckInst/deleteByCheckResult',
-    // 资产信息查询
-    assetCheckInstAsset: '/ams/assetCheckInst/asset',
+    // 资产盘点提交
+    assetCheckInstCheckExe: '/ams/assetCheckInst/checkExe'
   }
 }

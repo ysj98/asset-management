@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2019-12-25 15:14:57
+ * @LastEditTime : 2019-12-26 18:02:23
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -217,9 +217,8 @@ export default {
     // 页面跳转
     goPage(type, record) {
       let query = {
-        type,
-        projectId: record.projectId
-      };
+        type
+      }
       this.$router.push({ path: operationTypes[type], query });
     }
   }

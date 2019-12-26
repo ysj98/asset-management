@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2019-12-25 09:48:20
- * @LastEditTime : 2019-12-25 14:44:23
+ * @LastEditTime : 2019-12-26 17:51:39
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点管理
  * @FilePath: \asset-management\src\api\disposalManagement.js
@@ -50,7 +50,7 @@ export function assetCheckInstAsseDetail (data) {
 export function assetCheckInstDeleteByCheckResult (data) {
   return axiosGet(inventoryManagement.inventoryPerform.assetCheckInstDeleteByCheckResult, data)
 }
-// 资产信息查询
-export function assetCheckInstAsset (data) {
-  return axiosGet(inventoryManagement.inventoryPerform.assetCheckInstAsset, data)
+// 资产盘点提交
+export function assetCheckInstCheckExe (data) {
+  return axiosPost(inventoryManagement.inventoryPerform.assetCheckInstCheckExe, data)
 }
