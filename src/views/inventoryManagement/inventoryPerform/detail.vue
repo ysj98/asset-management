@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2019-12-25 18:22:09
+ * @LastEditTime : 2019-12-26 15:34:12
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -52,7 +52,7 @@
             :pagination="false"
             >
             <template slot="operation" slot-scope="text, record">
-              <span v-if="+record.checkStatus === 0" @click="operationFn('detail', record)" class="btn_click">登记结果</span>
+              <span v-if="+record.checkStatus === 0" @click="operationFn('new', record)" class="btn_click">登记结果</span>
               <span v-if="+record.checkStatus === 1" @click="operationFn('set', record)" class="btn_click">编辑</span>
             </template>
           </a-table>
@@ -67,7 +67,7 @@
       </div>
     </div>
     <div class="particulars-nav">
-      <span class="section-title blue">盘点异常列表（资产总数:{{inventoryAssetCount || 0}}；已盘点:{{inventoryCheckCount || 0}}; 未盘点:{{inventoryNoCheckCount || 0}})</span>
+      <span class="section-title blue">盘点异常列表（异常总数:{{exceptionCount || 0}}；盘亏:{{successCount || 0}}; 盘盈:{{failCount || 0}}; 信息有误:{{errorCount || 0}})</span>
       <div class="particulars-obj">
       <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
         <div slot="col-l">
@@ -76,7 +76,7 @@
         </div>
         <div slot="col-r">
           <div class="nav">
-            <a-select style="width: 160px; margin-right: 10px;" placeholder="全部异常状态" @change="checkResultsChange" v-model="queryCondition.checkResults">
+            <a-select style="width: 160px;" placeholder="全部异常状态" @change="checkResultsChange" v-model="condition.checkResults">
               <a-select-option v-for="(item, index) in checkResultsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
           </div>
@@ -91,20 +91,38 @@
             :pagination="false"
             >
             <template slot="operation" slot-scope="text, record">
-              <span v-if="+record.checkResult === 3" @click="operationFn('detail', record)" class="btn_click">删除</span>
+              <span v-if="+record.checkResult === 3" @click="operationFn('detail', record)" class="btn_click mr15">删除</span>
               <span @click="operationFn('set', record)" class="btn_click">编辑</span>
             </template>
           </a-table>
           <no-data-tips v-show="tableData.length === 0"></no-data-tips>
           <SG-FooterPagination
-            :pageLength="queryCondition.pageSize"
-            :totalCount="inventoryTotalCount"
-            v-model="queryCondition.pageNum"
-            @change="handleChange"
+            :pageLength="condition.pageSize"
+            :totalCount="iexceptionCount"
+            v-model="condition.pageNum"
+            @change="exceptionHandleChange"
           />
         </div>
       </div>
     </div>
+    <div class="particulars-nav">
+      <span class="section-title blue">盘点结果说明</span>
+      <div class="particulars-obj" style="line-height: 64px;">
+        盘点结果：<a-textarea placeholder="请输入盘点结果说明"
+            :autosize="{ minRows: 3, maxRows: 3 }"
+            style="width: 94%;"
+            maxlength="200"
+            v-model="remark"
+            />
+      </div>
+    </div>
+    <FormFooter style="border:none;" location="fixed">
+      <div>
+        <SG-Button type="primary" @click="save">提交盘点单</SG-Button>
+      </div>
+    </FormFooter>
+    <!-- 登记结果 -->
+    <inventoryResultRegistration v-if="newShow" ref="irr" @showFn="showFn" @successQuery="successQueryFn"></inventoryResultRegistration>
   </div>
 </template>
 
@@ -113,16 +131,26 @@ import {register, exceptionList, checkStatusData, checkResultsData} from './basi
 import {utils} from '@/utils/utils.js'
 import Cephalosome from '@/components/Cephalosome'
 import noDataTips from "@/components/noDataTips"
+import FormFooter from '@/components/FormFooter'
+import inventoryResultRegistration from './inventoryResultRegistration'
 
 export default {
-  components: {Cephalosome, noDataTips},
+  components: {Cephalosome, noDataTips, FormFooter, inventoryResultRegistration},
   props: {},
   data () {
     return {
+      newShow: false,
+      taskId: '',                  // 任务id
+      remark: '',                  // 盘点结果说明
       inventoryAssetCount: '',     // 资产总数
       inventoryCheckCount: '',     // 已盘点
       inventoryNoCheckCount: '',   // 未盘点
       inventoryTotalCount: '',     // 资产列表分页
+      exceptionCount: '',          // 异常总数
+      errorCount: '',              // 信息错误总数
+      failCount: '',               // 盈亏总数
+      successCount: '',            // 盘盈总数
+      iexceptionCount: '',         // 异常分页分页总数
       checkStatusData: [...checkStatusData],
       checkResultsData: [...checkResultsData],
       changeType: '',
@@ -133,12 +161,16 @@ export default {
       loading: false,
       tableData: [],
       location: '',
-      queryCondition: {
-        checkStatus: '',
-        name: '',
+      queryCondition: {     // 资产清单搜索条件
+        checkStatus: '',    // 盘点状态
+        name: '',           // 名称
         pageSize: 10,
-        pageNum: 1,
-        count: ''
+        pageNum: 1
+      },
+      condition: {          // 异常列表搜索条件
+        checkResults: '',   // 状态
+        pageSize: 10,
+        pageNum: 1
       }
     }
   },
@@ -160,6 +192,15 @@ export default {
     }
   },
   methods: {
+    // 资产清单编辑或新增
+    successQueryFn () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.assetCheckInstAsseDetail()
+    },
+    showFn (val) {
+      this.newShow = val
+    },
     // 查询基本信息详情
     query () {
       let obj = {
@@ -169,6 +210,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.particularsData = data
+          this.taskId = this.particularsData.taskId
         } else {
           this.$message.error(res.data.message)
         }
@@ -205,20 +247,73 @@ export default {
       this.queryCondition.pageNum = 1
       this.assetCheckInstAsseDetail()
     },
-    // 监听异常选择状态调异常类别
-    checkResultsChange () {
-    },
     // 盘点资产清单搜索
     onSearch () {
       this.queryCondition.pageNum = 1
       this.assetCheckInstAsseDetail()
     },
-    // 分页查询
+    // 资产清单分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.query()
+      this.assetCheckInstAsseDetail()
     },
+    // 监听异常选择状态调异常类别
+    checkResultsChange () {
+      this.condition.pageNum = 1
+      this.exceptionTypes()
+    },
+    exceptionHandleChange () {
+      this.condition.pageNum = data.pageNo
+      this.condition.pageSize = data.pageLength
+      this.exceptionTypes()
+    },
+    // 异常列表
+    exceptionTypes () {
+      let obj = {
+        checkId: this.checkId, // 盘点id
+        name: '',              // 资源名称/编码
+        checkResults: this.condition.checkResult,  // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
+        checkStatus: '',       // 盘点状态(0-未盘点 1-已盘点)
+        pageSize: this.condition.pageSize,
+        pageNum: this.condition.pageNum
+      }
+      this.$api.inventoryManagementApi.assetCheckInstAsseDetail(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data
+          this.exceptionCount = res.data.data.exceptionCount  // 异常总数
+          this.errorCount = res.data.data.errorCount          // 信息错误总数
+          this.failCount = res.data.data.failCount            // 盈亏总数
+          this.successCount = res.data.data.successCount      // 盘盈总数
+          this.iexceptionCount = res.data.data.count          // 分页总数
+          this.tableData = data.map((item, index) => {
+            item.key = index
+            return item
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 提交盘点单
+    save () {
+      let _this = this
+      _this.$confirm({
+        title: '提示',
+        content: +this.inventoryNoCheckCount !== 0 ? `存在${this.inventoryNoCheckCount}个未盘点的资产，提交后将不能再修改了，确认要提交该盘点单吗？` : '提交后将不能再修改了，确认要提交该盘点单吗？',
+        onOk() {
+          console.log(9090)
+        }
+      })
+    },
+    // 资产清单盘点结果登记/编辑
+    operationFn (str, record) {
+      this.newShow = true
+      this.$nextTick(() => {
+        this.$refs.irr.show = true
+        this.$refs.irr.query(str, record.resultId, this.checkId, this.taskId)
+      })
+    }
   },
   created () {
   },
@@ -229,21 +324,26 @@ export default {
     this.changeType = 'set'
     this.query()
     this.assetCheckInstAsseDetail()   // 资产清单
+    this.exceptionTypes()  // 异常列表
   }
 }
 </script>
 <style lang="less" scoped>
 .particulars {
+  padding-bottom: 70px;
   .particulars-nav{
-      padding: 42px 126px 20px 70px;
+      padding: 42px 126px 0 70px;
       .particulars-obj {
-        padding: 20px 0 20px 40px;
+        padding: 0 0 10px 40px;
         .playground-row {
           .playground-col {
             line-height: 40px;
             font-size: 12px;
           }
         }
+      }
+      .particulars-obj:nth-of-type(1) {
+        padding-top: 10px;
       }
       .correspondingTask {
         margin:35px 40px 0 40px;
