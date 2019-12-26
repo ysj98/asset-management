@@ -5,7 +5,7 @@
  */
 
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { building } from '../config/config.url'
+import { building, inventory} from '../config/config.url'
 /**
  * 楼盘字典
  * 
@@ -105,4 +105,24 @@ export function exportHouse (data) {
   return axiosPost(building.exportHouse, data, false, true, {
     responseType: 'blob'
   })
+}
+// 盘点计划列表
+export function getPlanList (data) {
+  return axiosPost(inventory.getPlanList, data)
+}
+// 新建盘点计划
+export function createInventoryPlan (data) {
+  return axiosPost(inventory.createInventoryPlan, data)
+}
+// 编辑盘点计划
+export function editInventoryPlan (data) {
+  return axiosPost(inventory.editInventoryPlan, data)
+}
+// 执行记录
+export function getImplementRecord (data) {
+  return axiosPost(inventory.getImplementRecord, data)
+}
+// 盘点计划详情
+export function inventoryDetail (data) {
+  return axiosPost(inventory.inventoryDetail, data)
 }

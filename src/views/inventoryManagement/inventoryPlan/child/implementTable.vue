@@ -31,33 +31,33 @@ let columns = [
     width: "7%"
   },
   {
-    title: "盘点任务名称",
+    title: "任务编号",
     dataIndex: "taskName",
-    scopedSlots: { customRender: "taskName" },
     width: "15%"
   },
   {
-    title: "盘点范围描述",
+    title: "任务名称",
     dataIndex: "checkRange",
-    scopedSlots: { customRender: "checkRange" },
     width: "20%"
   },
   {
-    title: "盘点负责人",
+    title: "负责人",
     dataIndex: "chargePersonList",
-    scopedSlots: { customRender: "chargePersonList" },
     width: "30%"
   },
   {
-    title: "任务期限(天)",
+    title: "计划执行时间",
     dataIndex: "deadline",
-    scopedSlots: { customRender: "deadline" },
     width: "20%"
   },
   {
-    title: "操作",
+    title: "实际执行时间",
+    dataIndex: "deadlinee",
+    width: "20%"
+  },
+  {
+    title: "任务状态",
     dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
     width: "8%"
   }
 ]

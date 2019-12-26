@@ -1,9 +1,3 @@
-/*
- * @fileName: Do not edit
- * @Author: han
- * @createTime: Do not edit
- * @desc: Do not Edit
- */
 /**
  * 描述：URL 接口地址配置
  * 作者：猪不乐意
@@ -483,4 +477,12 @@ export const inventoryManagement = {
     // 资产信息查询
     assetCheckInstAsset: '/ams/assetCheckInst/asset',
   }
+}
+// 盘点计划
+export const inventory = {
+  getPlanList: '/zhoubaipu/plan/10.json',
+  getImplementRecord: '/zhoubaipu/plan/4.json',
+  createInventoryPlan: '/zhoubaipu/plan/1.json',
+  editInventoryPlan: '/zhoubaipu/plan/9.json',
+  inventoryDetail: '/zhoubaipu/plan/3.json',
 }
