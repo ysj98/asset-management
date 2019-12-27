@@ -296,7 +296,16 @@
             record.chargePersonList
           }}</span>
           <div v-else>
-            <a-input placeholder="请选择负责人" :maxLength="200" v-model="record.chargePersonList" />
+            <a-select
+                placeholder="请选择关联资产"
+                :open="false"
+                :options="record.chargePersonOpt"
+                @dropdownVisibleChange="selectPerson(record)"
+                v-model="record.chargePerson"
+              >
+                <div slot="dropdownRender" slot-scope="menu"></div>
+                <a-icon slot="suffixIcon" type="plus-circle" />
+              </a-select>
           </div>
         </template>
         <template slot="deadline" slot-scope="text, record">
@@ -343,12 +352,16 @@
       >
       <SG-Button @click="handleApp">提交审批</SG-Button>
     </FormFooter>
+    <div>
+       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
+    </div>
   </div>
 </template>
 <script>
 import moment from "moment"
 import implementTable from "./child/implementTable.vue"
 import FormFooter from "@/components/FormFooter.vue"
+import selectStaffOrPost from '@/views/common/selectStaffOrPost'
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allStyle = { width: "200px" }
 const oneInputStyle = { width: "95px", marginRight: "10px" }
@@ -400,13 +413,16 @@ let columns = [
 export default {
   components: {
     implementTable,
-    FormFooter
+    FormFooter,
+    selectStaffOrPost
   },
   data() {
     return {
       allStyle,
       oneInputStyle,
       twoInputStyle,
+      selectType: 'staff', // staff选人 post选岗位
+      selectOptList: [],
       organIdopt: [],
       filepaths: [],
       form: this.$form.createForm(this),
@@ -449,7 +465,9 @@ export default {
         checkRange: "",
         chargePersonList: "",
         deadline: "",
-        operation: ""
+        operation: "",
+        chargePerson: [],
+        chargePersonOpt: [],
       }
       this.table.dataSource.push(o)
     },
@@ -460,6 +478,29 @@ export default {
         return
       }
       this.table.dataSource.splice(index, 1)
+    },
+    // 监听选人弹窗改变事件
+    changeSelectStaffOrPost (selectOptList = []) {
+      console.log('选择人物=>', selectOptList)
+      // this.selectOptList = _.cloneDeep(selectOptList)
+      // this.storeSelectList[this.selectState] = _.cloneDeep(selectOptList)
+    },
+    // 选人
+    selectPerson (value) {
+      console.log('进入单项=>', value)
+      this.$refs.selectStaffOrPost.visible = true
+      // value.warrantGeneralData.forEach(list => {
+      //   list.lotNoEstateUnitCode = `${list.lotNo || '--'}/${list.estateUnitCode || '--'}`
+      // })
+      // let warrantNbr = []
+      // if (value.warrantNbr) {
+      //   value.warrantNbr.split(',').forEach(item => {
+      //     warrantNbr.push(Number(item))
+      //   })
+      // } else {
+      //   warrantNbr === []
+      // }
+      // this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, value.warrantGeneralData, value.key)
     },
     handleSubmit() {},
     handleSaveDraft() {},

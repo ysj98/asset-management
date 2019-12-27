@@ -56,7 +56,11 @@ export const basics = {
   // 平台字典
   platformDict: '/ams/assetDict/platformDict',
   // 机构字典
-  organDict: '/ams/assetDict/organDict'
+  organDict: '/ams/assetDict/organDict',
+  // 根据组织机构查询人
+  queryUserPageList: '/basic-data-api/rest-api/v1/userApi/queryUserPageList',
+  // 根据组织机构查询岗位
+  queryPostNewPageList: '/basic-data-api/rest-api/v1/postmanageApi/queryPostNewPageList',
 }
 
 // 资产管理

@@ -24,9 +24,13 @@ selectOptList Aarry 编辑时已选种的岗或人
 
           <div class="query-condition">
             <!-- 选择组织机构 -->
-            <select-drop-tree :showSearch="false" @select="selectOrgan" v-model="organId"></select-drop-tree>
+            <TreeSelect  
+            @changeTree="changeTree"
+          placeholder="请选择组织机构"
+          :allowClear="false"
+          :style="allStyle"/>
             <!-- 选择人员姓氏首字母 -->
-            <letter-list v-if="selectType==='staff'" v-model="queryCondition.staff.initial" class="letter-select"></letter-list>
+            <letter-list v-if="selectType==='staff'" v-model="queryCondition.staff.firstLetter" class="letter-select"></letter-list>
             <!-- 姓名搜索 -->
             <a-input-search
               class="name-search"
@@ -105,9 +109,10 @@ selectOptList Aarry 编辑时已选种的岗或人
 </template>
 <script>
 import letterList from './letterList.vue'
-import selectDropTree from './selectDropTree.vue'
+import TreeSelect from "@/views/common/treeSelect"
 import _ from 'lodash'
-import { queryUsersByOrgan, queryPostByOrgan } from '@/api/global'
+// import { queryUsersByOrgan, queryPostByOrgan } from '@/api/global'
+import { queryUserPageList, queryPostNewPageList } from '@/api/basics.js'
 // 选岗位与选人类型
 let selectType = {
   staff: 'staff',
@@ -116,8 +121,8 @@ let selectType = {
 // 查询条件
 let queryCondition = {
   staff: {
-    name: '',
-    initial: '' // 人名首字母
+    name: null,
+    firstLetter: null // 人名首字母
   }
 }
 let paginator = {
@@ -125,11 +130,13 @@ let paginator = {
   pageNo: 1,
   totalCount: 0
   }
+const allStyle = { width: "148px" }  
 export default {
   name: 'selectStaffOrPost',
   components: {
     letterList,
-    selectDropTree
+    // selectDropTree,
+    TreeSelect,
   },
   props: {
     selectType: {
@@ -143,6 +150,7 @@ export default {
   },
   data () {
     return {
+      allStyle,
       visible: false,
       organId: {}, // 组织机构id
       checkAll: false,
@@ -180,12 +188,6 @@ export default {
         this.getDataList()
       }
     },
-    organId (val) {
-      if (val.value) {
-        this.paginator.pageNo = 1
-        this.getDataList()
-      }
-    },
     selectOptList: {
       handler (nv) {
         const list = _.cloneDeep(nv)
@@ -198,7 +200,7 @@ export default {
       deep: true,
       immediate: true
     },
-    'queryCondition.staff.initial' (nv) {
+    'queryCondition.staff.firstLetter' (nv) {
       if (this.organId.value) {
         this.paginator.pageNo = 1
         this.getDataList()
@@ -213,33 +215,7 @@ export default {
       immediate: true
     }
   },
-  created () {
-    let userinfo = this.$store.state.auth.userinfo
-    if (!userinfo) {
-      this.$api.auth.getUserData().then(res => {
-        if (res.code === '0') {
-          this.$store.commit('auth/setUserInfo', res.data)
-          this.defaultOranId()
-          this.getDataList()
-        }
-      })
-    } else {
-      this.defaultOranId()
-      this.getDataList()
-    }
-    // document.onkeydown = (e) => {
-    //   if (event.keyCode === 13 && this.visible){
-    //     this.submitSelectAll()
-    //   }
-    // }
-  },
   methods: {
-    defaultOranId () {
-      console.log('this.$store.state.auth.userinfo', this.$store.state.auth.userinfo)
-      let organId = this.$store.state.auth.userinfo.organId
-      let organName = this.$store.state.auth.userinfo.organName
-      this.organId = {label: organName, value: organId}
-    },
     selectTipText (options) {
       if (this.selectType === 'staff') {
         const { organName, tel, name,  } = options
@@ -251,7 +227,6 @@ export default {
     },
     // 重置数据
     resetData () {
-      this.defaultOranId() // 组织机构id
       this.dataList = [] // 列表数据
       this.queryCondition = _.cloneDeep(queryCondition)
       this.paginator = {...paginator}
@@ -261,29 +236,29 @@ export default {
       // this.resetData()
       this.visible = false
     },
-    // 选择组织机构
-    selectOrgan (obj) {
-      obj = {...obj}
-      this.organId = obj
+    changeTree(value, label) {
+      this.organId = {label, value}
+      this.paginator.pageNo = 1
+      this.getDataList()
     },
     // 查询人员列表
     getStaffListData () {
       const organId = this.organId.value
-      const { staff: { initial, name } } = this.queryCondition
+      const { staff: { firstLetter, name } } = this.queryCondition
       const { pageNo, pageLength } = this.paginator
-      const params = { organId, initial, name, pageNo, pageLength }
+      const params = { organId, firstLetter, name, pageNo, pageLength, contractOrganId: organId }
       this.spinning = true
-      queryUsersByOrgan(params).then(res => {
-        const { code, data, msg } = res
+      queryUserPageList(params).then(res => {
+        const { code, data, message, paginator } = res.data
         if (code === '0') {
-          this.paginator.totalCount = + data.paginator.totalCount
-          this.dataList = data.resultList.map(v => {
+          this.paginator.totalCount = + paginator.totalCount
+          this.dataList = data.map(v => {
             v.id = v.userId
-            v.name = v.userName
+            v.name = v.name
             return v
           })
         } else {
-          this.$message.error(msg)
+          this.$message.error(message)
         }
       }).catch(err => {
         console.log(err)
@@ -297,17 +272,17 @@ export default {
       const { pageNo, pageLength } = this.paginator
       const params = { organId, pageLength, pageNo }
       this.spinning = true
-      queryPostByOrgan(params).then(res => {
-        const { code, data, msg } = res
+      queryPostNewPageList(params).then(res => {
+        const { code, data, message ,paginator} = res.data
         if (code === '0') {
-          this.paginator.totalCount = + data.paginator.totalCount
+          this.paginator.totalCount = + paginator.totalCount
           this.dataList = data.resultList.map(v => {
             v.name = v.postName
             v.id = v.postId
             return v
           })
         } else {
-          this.$message.error(msg)
+          this.$message.error(message)
         }
       }).catch(err => {
         console.log(err)
