@@ -86,6 +86,14 @@ export default [
       {
         title: '盘点执行',
         path: '/inventoryManagement/inventoryPerform'
+      },
+      {
+        title: '盘点报告',
+        path: '/inventoryManagement/inventoryReport'
+      },
+      {
+        title: '异常管理',
+        path: '/inventoryManagement/exceptionManagement'
       }
     ]
   },

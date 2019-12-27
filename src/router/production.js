@@ -274,6 +274,16 @@ let proRouter = [
     component: () => import('@/views/inventoryManagement/countingTask/index')
   },
   {
+    path: '/inventoryManagement/inventoryReport',
+    name: '盘点报告',
+    component: () => import('@/views/inventoryManagement/inventoryReport/index')
+  },
+  {
+    path: '/inventoryManagement/exceptionManagement',
+    name: '异常管理',
+    component: () => import('@/views/inventoryManagement/exceptionManagement/index')
+  },
+  {
     path: '/inventoryManagement/inventoryPerform',
     name: '盘点执行',
     component: () => import('@/views/inventoryManagement/inventoryPerform/index')

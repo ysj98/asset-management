@@ -397,7 +397,6 @@ export const ownershipSurvey = {
   queryByProjectId: '/ams/ownerShip/queryByProjectId'
 }
 
-
 export const ownership = {
   // 权属登记
   ownershipRegistration: {
@@ -455,4 +454,26 @@ export const worthRegister = {
   queryAssertValueTrend: '/ams/assetValueRegister/queryAssertValueTrend',
   // 资产价值一览表查询汇总
   queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
+}
+
+// 盘点管理
+export const inventoryManagement = {
+  // 盘点报告
+  inventoryReport: {
+    // 新建或编辑盘点报告
+    saveOrUpdate: '/ams/assetCheckReport/saveOrUpdate',
+    // 查询盘点报告列表(选择组织机构下的所有机构)
+    checkReportList: '/ams/assetCheckReport/checkReportList',
+    // 查询盘点报告详情
+    detail: '/ams/assetCheckReport/detail',
+    // 盘点报告删除
+    deleteReport: '/ams/assetCheckReport/delete'
+  },
+  // 盘点异常
+  exceptionManagement: {
+    // 异常处理
+    handleException: '/ams/assetCheckInst/handleException',
+    // 异常管理列表查询
+    exceptionList: '/ams/assetCheckInst/exceptionList'
+  }
 }
