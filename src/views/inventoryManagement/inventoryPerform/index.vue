@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2019-12-26 18:02:23
+ * @LastEditTime : 2019-12-27 11:12:29
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -18,6 +18,7 @@
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.checkName" placeholder="盘点单名称/编号" maxlength="60" @search="onSearch" />
+          <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </div>
     </Cephalosome>
@@ -197,8 +198,8 @@ export default {
               return {
                 key: getUuid(),
                 ...item
-              };
-            });
+              }
+            })
             this.table.totalCount = res.data.data.count || "";
           } else {
             this.$message.error(res.data.message);

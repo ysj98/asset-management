@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2019-12-26 18:14:28
+ * @LastEditTime : 2019-12-26 18:26:43
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -186,7 +186,7 @@ export default {
         pageNum: 1
       },
       condition: {          // 异常列表搜索条件
-        checkResults: '',   // 状态
+        checkResults: '0,2,3',   // 状态
         pageSize: 10,
         pageNum: 1
       }
@@ -233,6 +233,7 @@ export default {
     // 盘点资产清单列表
     assetCheckInstAsseDetail () {
       let obj = {
+        taskId: '',
         checkId: this.checkId,            // 盘点id
         name: this.queryCondition.name,                  // 资源名称/编码
         checkResults: '',                                // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
@@ -285,6 +286,7 @@ export default {
     // 异常列表
     exceptionTypes () {
       let obj = {
+        taskId: '',
         checkId: this.checkId, // 盘点id
         name: '',              // 资源名称/编码
         checkResults: this.condition.checkResult,  // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)

@@ -559,7 +559,7 @@
       </div>
       <div class="edit-box" v-show="!editable">
         <div class="edit-box-title"><i></i><span>关联资产清单</span><span style="font-size: 12px;margin-left: 5px">(资产总数：{{dataSource.length}})</span></div>
-        <div class="edit-box-content" style="padding-bottom: 50px">
+        <div class="edit-box-content table-border">
           <!--<div class="table-header-btn" v-show="editable">-->
             <!--<SG-Button type="primary" weaken>导出</SG-Button>-->
           <!--</div>-->
