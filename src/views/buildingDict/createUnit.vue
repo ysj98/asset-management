@@ -254,7 +254,7 @@ export default {
       this.$SG_Modal.confirm({
         title: `确定删除该单元吗?`,
         okText: '确定',
-        cancelText: '在想想',
+        cancelText: '再想想',
         onOk: () => {
           let data = {
             sid: this.objectData.positionId

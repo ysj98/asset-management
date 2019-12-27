@@ -20,15 +20,15 @@
               <span>：</span>
             </div>
             <a-form-item>
-              <a-select
-                showSearch
+              <a-input
                 :disabled="true"
-                placeholder="请选择组织机构"
-                v-decorator="['organId', { initialValue: '' }]"
-                optionFilterProp="children"
                 :style="allStyle"
-                :options="organIdopt"
-                notFoundContent="没有查询到数据"
+                v-decorator="[
+                  'organName',
+                  {
+                    initialValue: organName
+                  }
+                ]"
               />
             </a-form-item>
           </div>
@@ -83,7 +83,7 @@
                         message: '请选择实施频次'
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
                 optionFilterProp="children"
@@ -104,6 +104,7 @@
             <a-form-item>
               <a-date-picker
                 :style="allStyle"
+                
                 v-decorator="[
                   'effDate',
                   {
@@ -156,6 +157,7 @@
             <a-form-item>
               <a-select
                 showSearch
+                placeholder="请选择数值"
                 v-decorator="[
                   'beginMonth',
                   {
@@ -164,7 +166,7 @@
                         required: true
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
                 optionFilterProp="children"
@@ -175,6 +177,7 @@
               />
               <a-select
                 showSearch
+                placeholder="请选择单位"
                 v-decorator="[
                   'beginDay',
                   {
@@ -183,7 +186,7 @@
                         required: true
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
                 optionFilterProp="children"
@@ -202,35 +205,36 @@
               <span>：</span>
             </div>
             <a-form-item>
-              <a-select
-                showSearch
+              <a-input-number
+                :style="oneInputStyle"
+                placeholder="数值"
                 v-decorator="[
-                  'beginDay',
+                  'preNum',
                   {
                     rules: [
                       {
-                        required: true
+                        required: true,
+                        max: 30,
+                        whitespace: true,
+                        message: '请输入'
                       }
                     ],
-                    initialValue: ''
+                    initialValue: null
                   }
                 ]"
-                optionFilterProp="children"
-                :style="oneInputStyle"
-                :options="organIdopt"
-                notFoundContent="没有查询到数据"
               />
               <a-select
                 showSearch
+                placeholder="单位"
                 v-decorator="[
-                  'beginDay',
+                  'preUnit',
                   {
                     rules: [
                       {
                         required: true
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
                 optionFilterProp="children"
@@ -278,13 +282,13 @@
         <template slot="taskName" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.taskName }}</span>
           <div v-else>
-            <a-input :maxLength="200" v-model="record.taskName" />
+            <a-input placeholder="请输入任务名称" :maxLength="200" v-model="record.taskName" />
           </div>
         </template>
         <template slot="checkRange" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.checkRange }}</span>
           <div v-else>
-            <a-input :maxLength="200" v-model="record.checkRange" />
+            <a-input placeholder="请输入范围描述" :maxLength="200" v-model="record.checkRange" />
           </div>
         </template>
         <template slot="chargePersonList" slot-scope="text, record">
@@ -292,13 +296,22 @@
             record.chargePersonList
           }}</span>
           <div v-else>
-            <a-input :maxLength="200" v-model="record.chargePersonList" />
+            <a-select
+                placeholder="请选择关联资产"
+                :open="false"
+                :options="record.chargePersonOpt"
+                @dropdownVisibleChange="selectPerson(record)"
+                v-model="record.chargePerson"
+              >
+                <div slot="dropdownRender" slot-scope="menu"></div>
+                <a-icon slot="suffixIcon" type="plus-circle" />
+              </a-select>
           </div>
         </template>
         <template slot="deadline" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.deadline }}</span>
           <div v-else>
-            <a-input :maxLength="200" v-model="record.deadline" />
+            <a-input-number placeholder="请输入任务期限" :maxLength="200" v-model="record.deadline" />
           </div>
         </template>
         <template slot="operation" slot-scope="text, record, index">
@@ -339,12 +352,16 @@
       >
       <SG-Button @click="handleApp">提交审批</SG-Button>
     </FormFooter>
+    <div>
+       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
+    </div>
   </div>
 </template>
 <script>
 import moment from "moment"
 import implementTable from "./child/implementTable.vue"
 import FormFooter from "@/components/FormFooter.vue"
+import selectStaffOrPost from '@/views/common/selectStaffOrPost'
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allStyle = { width: "200px" }
 const oneInputStyle = { width: "95px", marginRight: "10px" }
@@ -396,13 +413,16 @@ let columns = [
 export default {
   components: {
     implementTable,
-    FormFooter
+    FormFooter,
+    selectStaffOrPost
   },
   data() {
     return {
       allStyle,
       oneInputStyle,
       twoInputStyle,
+      selectType: 'staff', // staff选人 post选岗位
+      selectOptList: [],
       organIdopt: [],
       filepaths: [],
       form: this.$form.createForm(this),
@@ -412,19 +432,29 @@ export default {
         loading: false,
         totalCount: 0
       },
-      pageType: ""
+      pageType: "",
+      organId: '',
+      organName: '',
     }
   },
   created() {
     this.pageType = this.$route.query.type || ""
+    this.organId = this.$route.query.organId || ''
+    this.organName = this.$route.query.organName || ''
     if (this.pageType === "create") {
       this.createInit()
+    } else {
+      this.popTableColumn()
     }
   },
   methods: {
     // 新建初始化
     createInit() {
       this.pushTableLine()
+    },
+    // 去除表格操作列
+    popTableColumn () {
+      this.table.columns.pop()
     },
     // 在表格压入一条数据
     pushTableLine() {
@@ -435,7 +465,9 @@ export default {
         checkRange: "",
         chargePersonList: "",
         deadline: "",
-        operation: ""
+        operation: "",
+        chargePerson: [],
+        chargePersonOpt: [],
       }
       this.table.dataSource.push(o)
     },
@@ -446,6 +478,29 @@ export default {
         return
       }
       this.table.dataSource.splice(index, 1)
+    },
+    // 监听选人弹窗改变事件
+    changeSelectStaffOrPost (selectOptList = []) {
+      console.log('选择人物=>', selectOptList)
+      // this.selectOptList = _.cloneDeep(selectOptList)
+      // this.storeSelectList[this.selectState] = _.cloneDeep(selectOptList)
+    },
+    // 选人
+    selectPerson (value) {
+      console.log('进入单项=>', value)
+      this.$refs.selectStaffOrPost.visible = true
+      // value.warrantGeneralData.forEach(list => {
+      //   list.lotNoEstateUnitCode = `${list.lotNo || '--'}/${list.estateUnitCode || '--'}`
+      // })
+      // let warrantNbr = []
+      // if (value.warrantNbr) {
+      //   value.warrantNbr.split(',').forEach(item => {
+      //     warrantNbr.push(Number(item))
+      //   })
+      // } else {
+      //   warrantNbr === []
+      // }
+      // this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, value.warrantGeneralData, value.key)
     },
     handleSubmit() {},
     handleSaveDraft() {},

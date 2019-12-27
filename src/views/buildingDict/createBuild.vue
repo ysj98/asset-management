@@ -430,7 +430,7 @@ export default {
       this.$SG_Modal.confirm({
           title: `确定删除该楼栋吗?`,
           okText: '确定',
-          cancelText: '在想想',
+          cancelText: '再想想',
           onOk: () => {
             let data = {
               buildId: this.objectData.positionId

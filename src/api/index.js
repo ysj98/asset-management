@@ -32,7 +32,6 @@ const API = {
   inventoryManagementApi,
   disposalManagement
 }
-
 export default {
   install (Vue) {
     Vue.prototype.$api = API

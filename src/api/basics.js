@@ -104,3 +104,12 @@ export function ownerShipUserSelect (data) {
 export function queryByProjectId (data) {
   return axiosGet(ownershipSurvey.queryByProjectId, data)
 }
+// 根据组织机构查询人
+export function queryUserPageList (data) {
+  return axiosPost(basics.queryUserPageList, data)
+}
+// 根据组织机构查询岗位
+export function queryPostNewPageList (data) {
+  return axiosPost(basics.queryPostNewPageList, data)
+}
+
