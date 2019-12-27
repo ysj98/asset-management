@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-25 15:27:17
- * @LastEditTime : 2019-12-26 18:20:26
+ * @LastEditTime : 2019-12-27 11:06:59
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\basics.js
@@ -113,7 +113,7 @@ export const checkStatusData = [
 export const checkResultsData = [
   {
     value: '0,2,3',
-    name: '全部盘点状态'
+    name: '全部异常类型'
   },
   {
     value: '0',

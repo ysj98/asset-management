@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2019-12-25 14:21:37
+ * @LastEditTime : 2019-12-27 11:16:06
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -18,6 +18,7 @@
             <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="任务名称" maxlength="50" @search="onSearch" />
+          <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </div>
     </Cephalosome>
@@ -93,7 +94,6 @@ const taskStatusData = [
   }
 ]
 
-
 let columns = [
   {
     title: "任务编号",
@@ -107,7 +107,7 @@ let columns = [
   },
   {
     title: "负责人",
-    dataIndex: "userName",
+    dataIndex: "chargePersonName",
     width: 100
   },
   {
@@ -118,7 +118,7 @@ let columns = [
   },
   {
     title: "计划执行时间",
-    dataIndex: "beginDate",
+    dataIndex: "beginDateEndDate",
     width: 100
   },
   {
@@ -202,8 +202,8 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        beginDate: '',           // 开始时间
-        endDate: '',             // 结束时间
+        beginDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
+        endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
       }
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(
@@ -212,8 +212,7 @@ export default {
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.sourceTypeName = item.sourceTypeName || "--";
-              item.souceChannelType = item.souceChannelType || "--";
+              item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
               return {
                 key: getUuid(),
                 ...item
