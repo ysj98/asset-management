@@ -300,7 +300,10 @@ let proRouter = [
   {
     path: '/inventoryManagement/inventoryPerform',
     name: '盘点执行',
-    component: () => import('@/views/inventoryManagement/inventoryPerform/index')
+    component: () => import('@/views/inventoryManagement/inventoryPerform/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/inventoryManagement/inventoryPerform/detail',

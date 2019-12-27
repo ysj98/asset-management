@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2019-12-26 18:26:43
+ * @LastEditTime : 2019-12-27 16:45:17
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -332,7 +332,7 @@ export default {
         if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('提交成功')
-            this.$router.push({path: '/inventoryManagement/inventoryPerform'})
+            this.$router.push({path: '/inventoryManagement/inventoryPerform', query: {refresh: true}})
           })
         } else {
           this.DE_Loding(loadingName).then(() => {

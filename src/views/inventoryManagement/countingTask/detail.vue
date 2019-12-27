@@ -1,9 +1,9 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2019-12-27 14:29:15
+ * @LastEditTime : 2019-12-27 17:54:38
  * @LastEditors  : Please set LastEditors
- * @Description: 任务管理详情
+ * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
  -->
 <template>
