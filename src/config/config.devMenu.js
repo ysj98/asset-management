@@ -94,7 +94,11 @@ export default [
       {
         title: '异常管理',
         path: '/inventoryManagement/exceptionManagement'
-      }
+      },
+      {
+        title: '盘点计划',
+        path: '/inventoryPlan',
+      },
     ]
   },
   {

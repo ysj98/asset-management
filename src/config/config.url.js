@@ -456,8 +456,32 @@ export const worthRegister = {
   queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
 }
 
+
+// 处置管理
+export const dispose = {
+  // 资产处置一览表-主列表查询(分页)
+  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage'
+}
+
+
 // 盘点管理
 export const inventoryManagement = {
+  inventoryPerform: {
+    // 查询盘点列表（查询执行人为当前用户的数据）
+    assetCheckInstList: '/ams/assetCheckInst/list',
+    // 盘点单详情查询
+    assetCheckInstDetail: '/ams/assetCheckInst/detail',
+    // 盘点异常详情查询
+    assetCheckInstFailDetail: '/ams/assetCheckInst/failDetail',
+    // 盘点结果登记或编辑
+    assetCheckInstCheckResult: '/ams/assetCheckInst/checkResult',
+    // 盘点资产清单列表
+    assetCheckInstAsseDetail: '/ams/assetCheckInst/asseDetail',
+    // 盘盈资产删除
+    assetCheckInstDeleteByCheckResult: '/ams/assetCheckInst/deleteByCheckResult',
+    // 资产盘点提交
+    assetCheckInstCheckExe: '/ams/assetCheckInst/checkExe'
+  },
   // 盘点报告
   inventoryReport: {
     // 新建或编辑盘点报告
