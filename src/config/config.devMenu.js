@@ -88,6 +88,14 @@ export default [
         path: '/inventoryManagement/inventoryPerform'
       },
       {
+        title: '盘点报告',
+        path: '/inventoryManagement/inventoryReport'
+      },
+      {
+        title: '异常管理',
+        path: '/inventoryManagement/exceptionManagement'
+      },
+      {
         title: '盘点计划',
         path: '/inventoryPlan',
       },
