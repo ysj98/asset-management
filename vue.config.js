@@ -68,6 +68,7 @@ proxy.addUrls(['/ams/checkplan/'], localhost, mock)
 proxy.addUrls(proxyURL, localhost, target)
 proxy.addUrls(['/zhoubaipu/'], localhost, mock)
 
+// proxy.addUrls(['/ams/'], localhost, mock)
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

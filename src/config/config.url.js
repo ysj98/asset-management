@@ -464,6 +464,19 @@ export const dispose = {
 
 // 盘点管理
 export const inventoryManagement = {
+  // 盘点任务
+  countingTask: {
+    // 已选资产明细
+    queryAssetByChcekId: '/ams/checktask/queryAssetByChcekId',
+    // 新建/编辑盘点单
+    updateCheckInst: '/ams/checktask/updateCheckInst',
+    // 盘点任务查询(分页)
+    queryCheckTaskPageList: '/ams/checktask/queryCheckTaskPageList',
+    // 盘点任务详情
+    queryCheckTaskDetail: '/ams/checktask/queryCheckTaskDetail',
+    // 编辑盘点任务
+    updateCheckTask: '/ams/checktask/updateCheckTask'
+  },
   inventoryPerform: {
     // 查询盘点列表（查询执行人为当前用户的数据）
     assetCheckInstList: '/ams/assetCheckInst/list',
@@ -478,7 +491,9 @@ export const inventoryManagement = {
     // 盘盈资产删除
     assetCheckInstDeleteByCheckResult: '/ams/assetCheckInst/deleteByCheckResult',
     // 资产盘点提交
-    assetCheckInstCheckExe: '/ams/assetCheckInst/checkExe'
+    assetCheckInstCheckExe: '/ams/assetCheckInst/checkExe',
+    // 根据任务id查询盘点单
+    queryListByTaskId: '/ams/assetCheckInst/queryListByTaskId'
   },
   // 盘点报告
   inventoryReport: {
@@ -488,6 +503,8 @@ export const inventoryManagement = {
     checkReportList: '/ams/assetCheckReport/checkReportList',
     // 查询盘点报告详情
     detail: '/ams/assetCheckReport/detail',
+    // 根据任务id查询盘点报告
+    queryByTaskId: '/ams/assetCheckReport/queryByTaskId',
     // 盘点报告删除
     deleteReport: '/ams/assetCheckReport/delete'
   },
