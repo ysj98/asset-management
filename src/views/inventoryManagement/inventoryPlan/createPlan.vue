@@ -179,7 +179,7 @@
                   }
                 ]"
                 optionFilterProp="children"
-                :style="oneInputStyle"
+                :style="{ width: '120px', marginRight: '10px' }"
                 class="mr10"
                 :options="beginMonthOpt"
                 notFoundContent="没有查询到数据"
@@ -195,11 +195,11 @@
                         required: true
                       }
                     ],
-                    initialValue: undefined
+                    initialValue: '1'
                   }
                 ]"
                 optionFilterProp="children"
-                :style="twoInputStyle"
+                :style="{ width: '70px'}"
                 :options="beginDayOpt"
                 notFoundContent="没有查询到数据"
               />
@@ -292,13 +292,13 @@
         <template slot="taskName" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.taskName }}</span>
           <div v-else>
-            <a-input placeholder="请输入任务名称" :maxLength="200" v-model="record.taskName" />
+            <a-input placeholder="请输入任务名称" :maxLength="30" v-model="record.taskName" />
           </div>
         </template>
         <template slot="checkRange" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.checkRange }}</span>
           <div v-else>
-            <a-input placeholder="请输入范围描述" :maxLength="200" v-model="record.checkRange" />
+            <a-input placeholder="请输入范围描述" :maxLength="100" v-model="record.checkRange" />
           </div>
         </template>
         <template slot="chargePersonList" slot-scope="text, record, index">
@@ -322,7 +322,7 @@
         <template slot="deadline" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.deadline }}</span>
           <div v-else>
-            <a-input-number :style="{width: '100%'}" placeholder="请输入任务期限" :maxLength="200" v-model="record.deadline" />
+            <a-input-number :style="{width: '100%'}" :precision="0" placeholder="请输入任务期限" :max="99" :min="1" v-model="record.deadline" />
           </div>
         </template>
         <template slot="operation" slot-scope="text, record, index">
@@ -493,7 +493,7 @@ export default {
       organIdopt: [],
       exePreOpt: [],
       filepaths: [],
-      beginDayOpt: [],
+      beginDayOpt: Array.from({length:31}).map((v,i) => ({label: `${i+1}日`, value: `${i+1}`})),
       beginMonthOpt: [],
       oneMonth,
       oneQuarter,
@@ -549,7 +549,7 @@ export default {
         chargePersonList: "",
         deadline: "",
         operation: "",
-        chargePerson: '',
+        chargePerson: undefined,
         chargePersonOpt: [],
         chargePersonArr: []
       }
@@ -561,7 +561,14 @@ export default {
         this.$message.error("请至少保留一行数据!")
         return
       }
-      this.table.dataSource.splice(index, 1)
+      this.$SG_Modal.confirm({
+        title: `确认要删除吗？?`,
+        okText: '确定',
+        cancelText: '再想想',
+        onOk: () => {
+          this.table.dataSource.splice(index, 1)
+        }
+      })
     },
     // 监听选人弹窗改变事件
     changeSelectStaffOrPost (selectOptList = []) {
@@ -618,14 +625,41 @@ export default {
       }
       return result;
     },
-    validateFrom () {
+    validateFrom (values ) {
+      // 验证表单数据
       if (values.effDate.valueOf > values.expDate.valueOf) {
         this.$message.error('提示-失效时间必须大于生效时间!')
         return false
       }
+      // 验证表格数据
+      let flag = true
+      utils.each(this.table.dataSource, (item, i) => {
+        if (!item.taskName) {
+          this.$message.error(`请填写计划明细第${item.order}行，任务名称!`)
+          flag = false
+          return false
+        }
+        if (!item.checkRange) {
+          this.$message.error(`请填写计划明细第${item.order}, 范围描述!`)
+          flag = false
+          return false
+        }
+        if (!item.chargePerson) {
+          this.$message.error(`请选择计划明细第${item.order}, 负责人!`)
+          flag = false
+          return false
+        }
+        if (!item.deadline) {
+          this.$message.error(`请填写计划明细第${item.order}, 任务期限!`)
+          flag = false
+          return false
+        }
+      })
+      return flag
     },
     getSaveparam(values) {
       let data = {}
+      let taskTempList = []
       // 处理时间
       utils.each(values, (value, key) => {
         if (['effDate', 'expDate'].includes(key)) {
@@ -638,16 +672,22 @@ export default {
       // 处理附件
       data = {...values}
       data.filepaths = this.filepaths.map(item => item.url).join(',')
+      // 拿到表格数据
+      utils.each(this.table.dataSource, (item) => {
+        let {taskName, checkRange, deadline, chargePersonId} = item
+        taskTempList.push({taskName, checkRange, deadline, chargePersonId: chargePerson})
+      })
+      data.taskTempList = taskTempList
       return data
     },
     // 保存草稿
     handleSaveDraft() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          if (!this.validateFrom()) {
+          if (!this.validateFrom(values )) {
             return
           }
-          let data = this.getSaveparam()
+          let data = this.getSaveparam(values )
           data.approvalStatus = '0'
           console.log('获得参数草稿', data)
         }
@@ -657,10 +697,10 @@ export default {
     handleSaveApp() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          if (!this.validateFrom()) {
+          if (!this.validateFrom(values )) {
             return
           }
-          let data = this.getSaveparam()
+          let data = this.getSaveparam(values )
           data.approvalStatus = '1'
           console.log('获得参数审批', data)
         }
