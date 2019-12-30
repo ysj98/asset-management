@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2019-12-25 09:48:20
- * @LastEditTime : 2019-12-26 17:51:39
+ * @LastEditTime : 2019-12-30 10:04:06
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点管理
  * @FilePath: \asset-management\src\api\disposalManagement.js
@@ -24,6 +24,27 @@ import { inventoryManagement } from '../config/config.url'
 //   })
 // }
 
+// 盘点任务
+// 已选资产明细
+export function queryAssetByChcekId (data) {
+  return axiosPost(inventoryManagement.countingTask.queryAssetByChcekId, data)
+}
+// 新建/编辑盘点单
+export function updateCheckInst (data) {
+  return axiosPost(inventoryManagement.countingTask.updateCheckInst, data)
+}
+// 盘点任务查询(分页)
+export function queryCheckTaskPageList (data) {
+  return axiosPost(inventoryManagement.countingTask.queryCheckTaskPageList, data)
+}
+// 盘点任务详情
+export function queryCheckTaskDetail (data) {
+  return axiosGet(inventoryManagement.countingTask.queryCheckTaskDetail, data)
+}
+// 编辑盘点任务
+export function updateCheckTask (data) {
+  return axiosPost(inventoryManagement.countingTask.updateCheckTask, data)
+}
 
 // 盘点执行
 // 查询盘点列表（查询执行人为当前用户的数据）
