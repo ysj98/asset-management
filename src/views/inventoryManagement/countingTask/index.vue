@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2019-12-27 11:16:06
+ * @LastEditTime : 2019-12-30 11:29:36
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -31,14 +31,16 @@
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
       >
-        <template slot="tranProgress" slot-scope="text, record">
+        <template slot="checkRate" slot-scope="text, record">
           <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
+              <a-progress :percent="Number(record.checkRate) || 0" />
             </div>
         </template>
         <template slot="operation" slot-scope="text, record">
           <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          <span v-power="ASSET_MANAGEMENT.ASSET_PROOWNERSHIP_SET" @click="goPage('set', record)" class="btn_click">权属设置</span>
+          <span v-show="+record.taskStatus === 2" @click="goPage('set', record)" class="btn_click mr15">生成盘点单</span>
+          <span v-show="+record.taskStatus === 2" @click="goPage('cancel', record)" class="btn_click mr15">取消任务</span>
+          <span v-show="+record.taskStatus === 3" @click="goPage('edit', record)" class="btn_click">编辑</span>
         </template>
       </a-table>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -61,8 +63,9 @@ import noDataTips from "@/components/noDataTips"
 import {getNMonthsAgoFirst, getNowMonthDate} from 'utils/formatTime'
 // 页面跳转
 const operationTypes = {
-  detail: "/ownershipSurvey/projectDetail",
-  set: "/ownershipSurvey/projectSet"
+  detail: '/inventoryManagement/countingTask/detail',
+  set: '/inventoryManagement/countingTask/newEditor',
+  edit: '/inventoryManagement/countingTask/newEditor'
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
@@ -135,7 +138,7 @@ let columns = [
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 120
+    width: 180
   }
 ];
 export default {
@@ -167,7 +170,7 @@ export default {
     }
   },
   mounted () {
-    console.log(getNMonthsAgoFirst(2), getNowMonthDate())
+    this.query()
   },
   methods: {
     // 状态发生变化
@@ -206,7 +209,7 @@ export default {
         endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
       }
       this.table.loading = true;
-      this.$api.basics.ownerShipList(data).then(
+      this.$api.inventoryManagementApi.queryCheckTaskPageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {

@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2019-12-25 09:48:20
- * @LastEditTime : 2019-12-30 10:04:06
+ * @LastEditTime : 2019-12-30 10:52:23
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点管理
  * @FilePath: \asset-management\src\api\disposalManagement.js
@@ -74,6 +74,10 @@ export function assetCheckInstDeleteByCheckResult (data) {
 // 资产盘点提交
 export function assetCheckInstCheckExe (data) {
   return axiosPost(inventoryManagement.inventoryPerform.assetCheckInstCheckExe, data)
+}
+// 根据任务id查询盘点单
+export function queryListByTaskId (data) {
+  return axiosGet(inventoryManagement.inventoryPerform.queryListByTaskId, data)
 }
 
 
