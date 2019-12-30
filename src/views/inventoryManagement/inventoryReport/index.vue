@@ -60,47 +60,37 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const columns = [
   {
-    title: '清理单编号',
-    dataIndex: 'cleaningOrderCode',
+    title: '报告编号',
+    dataIndex: 'reportId',
     width: 160
   },
   {
-    title: '管理机构',
+    title: '所属机构',
     dataIndex: 'organName',
     width: 160
   },
   {
-    title: '资产项目名称',
-    dataIndex: 'projectName',
-    width: 160
+    title: '报告名称',
+    dataIndex: 'reportName',
+    width: 200
   },
   {
-    title: '资产类型',
-    dataIndex: 'assetTypeName',
-    width: 160
+    title: '所属盘点任务',
+    dataIndex: 'taskName',
+    width: 200
   },
   {
-    title: '资产数量',
-    dataIndex: 'assetCount',
-    width: 120
-  },
-  {
-    title: '清理原因',
-    dataIndex: 'cleanupTypeName',
-    width: 160
-  },
-  {
-    title: '创建日期',
-    dataIndex: 'createTime',
-    width: 160
-  },
-  {
-    title: '创建人',
+    title: '提交人',
     dataIndex: 'createByName',
     width: 120
   },
   {
-    title: '当前状态',
+    title: '提交时间',
+    dataIndex: 'createTime',
+    width: 160
+  },
+  {
+    title: '状态',
     dataIndex: 'approvalStatusName',
     width: 120
   },
@@ -169,7 +159,7 @@ export default {
   },
   watch: {
     '$route' () {
-      if (this.$route.path === '/inventoryReport' && this.$route.query.refresh) {
+      if (this.$route.path === '/inventoryManagement/inventoryReport' && this.$route.query.refresh) {
         this.queryClick()
       }
     }
@@ -280,43 +270,37 @@ export default {
       this.queryList()
     },
     queryList () {
-      // let form = {
-      //   organId: this.organId,
-      //   projectId: this.assetProject,
-      //   beginDate: this.beginDate,
-      //   endDate: this.endDate,
-      //   beginAccountEntryTime: this.entryBeginDate,
-      //   endAccountEntryTime: this.entryEndDate,
-      //   approvalStatus: this.approvalStatus.join(','),
-      //   cardName: this.cardName,
-      //   assetSubject: this.assetSubject.join(','),
-      //   assetType: this.assetType.join(','),
-      //   assetCategoryId: this.assetClassify.join(','),
-      //   pageNum: this.paginator.pageNo,
-      //   pageSize: this.paginator.pageLength
-      // }
-      // this.$api.assets.queryCardPageList(form).then(res => {
-      //   if (res.data.code === '0') {
-      //     let data = res.data.data.data
-      //     if (data.length === 0) {
-      //       this.showNoDataTips = true
-      //     } else {
-      //       this.showNoDataTips = false
-      //     }
-      //     data.forEach((item, index) => {
-      //       item.key = index
-      //       for (let key in item) {
-      //         if (item[key] === '' || item[key] === null) {
-      //           item[key] = '--'
-      //         }
-      //       }
-      //     })
-      //     this.dataSource = data
-      //     this.paginator.totalCount = res.data.data.count
-      //   } else {
-      //     this.$message.error(res.data.message)
-      //   }
-      // })
+      let form = {
+        organId: this.organId,
+        startDate: this.queryCondition.beginDate,
+        endDate: this.queryCondition.endDate,
+        approvalStatus: this.queryCondition.approvalStatus.join(','),
+        reportName: this.queryCondition.reportName,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength
+      }
+      this.$api.inventoryManagementApi.checkReportList(form).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
+          data.forEach((item, index) => {
+            item.key = index
+            for (let key in item) {
+              if (item[key] === '' || item[key] === null) {
+                item[key] = '--'
+              }
+            }
+          })
+          this.dataSource = data
+          this.paginator.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
   }
 }

@@ -290,7 +290,30 @@ let proRouter = [
   }, {
     path: '/inventoryManagement/inventoryReport',
     name: '盘点报告',
-    component: () => import('@/views/inventoryManagement/inventoryReport/index')
+    component: () => import('@/views/inventoryManagement/inventoryReport/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/inventoryManagement/inventoryReport/new',
+    name: '新建',
+    component: () => import('@/views/inventoryManagement/inventoryReport/newInventoryReport')
+  },
+  {
+    path: '/inventoryManagement/inventoryReport/edit',
+    name: '编辑',
+    component: () => import('@/views/inventoryManagement/inventoryReport/editInventoryReport')
+  },
+  {
+    path: '/inventoryManagement/inventoryReport/audit',
+    name: '审核',
+    component: () => import('@/views/inventoryManagement/inventoryReport/auditInventoryReport')
+  },
+  {
+    path: '/inventoryManagement/inventoryReport/detail',
+    name: '详情',
+    component: () => import('@/views/inventoryManagement/inventoryReport/checkInventoryReport')
   },
   {
     path: '/inventoryManagement/exceptionManagement',
