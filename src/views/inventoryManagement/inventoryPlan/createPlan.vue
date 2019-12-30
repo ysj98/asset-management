@@ -5,7 +5,7 @@
 <template>
   <div class="inventoryPlan-create">
     <!-- 表单部分 -->
-    <a-form :form="form" @submit="handleSubmit">
+    <a-form :form="form">
       <div class="edit-box">
         <div>
           <SG-Title noMargin title="基本信息" />
@@ -44,7 +44,7 @@
               <a-input
                 placeholder="请输入计划名称"
                 :style="allStyle"
-                :max="30"
+                :maxLength="30"
                 v-decorator="[
                   'planName',
                   {
@@ -74,6 +74,7 @@
               <a-select
                 showSearch
                 placeholder="请选择实施频次"
+                @change="exePreSelectChange"
                 v-decorator="[
                   'exePre',
                   {
@@ -88,7 +89,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="organIdopt"
+                :options="exePreOpt"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -104,7 +105,10 @@
             <a-form-item>
               <a-date-picker
                 :style="allStyle"
-                
+                format="YYYY-MM-DD HH:mm:ss"
+                :disabledDate="disabledStartDate"
+                showTime
+                @change="effDateChange"
                 v-decorator="[
                   'effDate',
                   {
@@ -131,6 +135,10 @@
             <a-form-item>
               <a-date-picker
                 :style="allStyle"
+                format="YYYY-MM-DD HH:mm:ss"
+                @change="expDateChange"
+                :disabledDate="disabledEndDate"
+                showTime
                 v-decorator="[
                   'expDate',
                   {
@@ -146,7 +154,7 @@
               />
             </a-form-item>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item" v-if="showBeginMonth">
             <div class="label-name-box required">
               <span class="label-name label-space-between">
                 任务开始时间
@@ -157,13 +165,14 @@
             <a-form-item>
               <a-select
                 showSearch
-                placeholder="请选择数值"
+                placeholder="月"
                 v-decorator="[
                   'beginMonth',
                   {
                     rules: [
                       {
-                        required: true
+                        required: true,
+                        message: '请选择任务开始时间'
                       }
                     ],
                     initialValue: undefined
@@ -172,12 +181,12 @@
                 optionFilterProp="children"
                 :style="oneInputStyle"
                 class="mr10"
-                :options="organIdopt"
+                :options="beginMonthOpt"
                 notFoundContent="没有查询到数据"
               />
               <a-select
                 showSearch
-                placeholder="请选择单位"
+                placeholder="日"
                 v-decorator="[
                   'beginDay',
                   {
@@ -191,7 +200,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="twoInputStyle"
-                :options="organIdopt"
+                :options="beginDayOpt"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -206,6 +215,7 @@
             </div>
             <a-form-item>
               <a-input-number
+               :max="99"
                 :style="oneInputStyle"
                 placeholder="数值"
                 v-decorator="[
@@ -214,12 +224,10 @@
                     rules: [
                       {
                         required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入'
+                        message: '请输入提前生成任务时间'
                       }
                     ],
-                    initialValue: null
+                    initialValue: '3'
                   }
                 ]"
               />
@@ -231,15 +239,16 @@
                   {
                     rules: [
                       {
-                        required: true
+                        required: true,
+                        message: '请输入提前生成任务时间'
                       }
                     ],
-                    initialValue: undefined
+                    initialValue: '1'
                   }
                 ]"
                 optionFilterProp="children"
                 :style="twoInputStyle"
-                :options="organIdopt"
+                :options="preUnitOpt"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -253,6 +262,7 @@
               <a-textarea
                 placeholder="请输入备注（最多200字）"
                 :rows="3"
+                :maxLength="200"
                 v-decorator="['remark', { initialValue: '' }]"
               ></a-textarea>
             </a-form-item>
@@ -263,7 +273,7 @@
               ><span>：</span>
             </div>
             <a-form-item class="label-value">
-              <SG-UploadFile type="all" v-model="filepaths" />
+              <SG-UploadFile type="all" :maxSize="5120" v-model="filepaths" />
             </a-form-item>
           </div>
         </div>
@@ -291,16 +301,17 @@
             <a-input placeholder="请输入范围描述" :maxLength="200" v-model="record.checkRange" />
           </div>
         </template>
-        <template slot="chargePersonList" slot-scope="text, record">
+        <template slot="chargePersonList" slot-scope="text, record, index">
           <span v-if="pageType === 'detail'">{{
             record.chargePersonList
           }}</span>
           <div v-else>
             <a-select
-                placeholder="请选择关联资产"
+                placeholder="请选择负责人"
                 :open="false"
+                :style="{width: '100%'}"
                 :options="record.chargePersonOpt"
-                @dropdownVisibleChange="selectPerson(record)"
+                @dropdownVisibleChange="selectPerson(record,index)"
                 v-model="record.chargePerson"
               >
                 <div slot="dropdownRender" slot-scope="menu"></div>
@@ -311,7 +322,7 @@
         <template slot="deadline" slot-scope="text, record">
           <span v-if="pageType === 'detail'">{{ record.deadline }}</span>
           <div v-else>
-            <a-input-number placeholder="请输入任务期限" :maxLength="200" v-model="record.deadline" />
+            <a-input-number :style="{width: '100%'}" placeholder="请输入任务期限" :maxLength="200" v-model="record.deadline" />
           </div>
         </template>
         <template slot="operation" slot-scope="text, record, index">
@@ -327,16 +338,16 @@
       >
     </div>
     <!-- 执行记录 -->
-    <div>
+    <div v-if="['detail'].includes(pageType)">
       <div class="mb30 mt30"><SG-Title noMargin title="执行记录" /></div>
       <div class="ml40"><implementTable /></div>
     </div>
     <!-- 审批轨迹 -->
-    <div>
+    <div v-if="['detail', 'approval'].includes(pageType)">
       <div class="mb30 mt30"><SG-Title noMargin title="审批轨迹" /></div>
     </div>
     <!--审批意见-->
-    <div>
+    <div v-if="['approval'].includes(pageType)">
       <div class="mb30 mt30"><SG-Title noMargin title="审批意见" /></div>
       <div class="ml40">
         <a-textarea placeholder="请输入审批意见"></a-textarea>
@@ -350,7 +361,17 @@
       <SG-Button class="mr2" @click="handleSaveDraft" type="primary"
         >保存草稿</SG-Button
       >
-      <SG-Button @click="handleApp">提交审批</SG-Button>
+      <SG-Button @click="handleSaveApp">提交审批</SG-Button>
+    </FormFooter>
+    <FormFooter
+      v-else
+      style="border:none;"
+      location="fixed"
+    >
+      <SG-Button class="mr2" @click="handleAdopt" type="primary"
+        >审批通过</SG-Button
+      >
+      <SG-Button type="danger" @click="handleReject">驳回</SG-Button>
     </FormFooter>
     <div>
        <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
@@ -362,6 +383,7 @@ import moment from "moment"
 import implementTable from "./child/implementTable.vue"
 import FormFooter from "@/components/FormFooter.vue"
 import selectStaffOrPost from '@/views/common/selectStaffOrPost'
+import {utils} from '@/utils/utils'
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allStyle = { width: "200px" }
 const oneInputStyle = { width: "95px", marginRight: "10px" }
@@ -371,6 +393,51 @@ const operationTypes = {
   create: "/inventoryPlan/create",
   edit: "/inventoryPlan/edit"
 }
+let exePreOptTest = [
+  {label: '单次', key: 'cccc1'},
+  {label: '每月', key: 'cccc2'},
+  {label: '每季度', key: 'cccc3'},
+  {label: '每半年', key: 'cccc4'},
+  {label: '每年', key: 'cccc5'},
+]
+let preUnitOpt = [
+  {label: '天', key: '1'},
+  {label: '时', key: '2'}
+]
+// 每月
+let oneMonth = [
+  {label: '每月', key: '1'},
+]
+// 每季度
+let oneQuarter = [
+  {label: '每季度第1个月', key: '1'},
+  {label: '每季度第2个月', key: '2'},
+  {label: '每季度第3个月', key: '3'},
+]
+// 每半年
+let halfYear = [
+  {label: '每半年第1个月', key: '1'},
+  {label: '每半年第2个月', key: '2'},
+  {label: '每半年第3个月', key: '3'},
+  {label: '每半年第4个月', key: '4'},
+  {label: '每半年第5个月', key: '5'},
+  {label: '每半年第6个月', key: '6'},
+]
+// 每年
+let oneHasYear = [
+  {label: '每年第1个月', key: '1'},
+  {label: '每年第2个月', key: '2'},
+  {label: '每年第3个月', key: '3'},
+  {label: '每年第4个月', key: '4'},
+  {label: '每年第5个月', key: '5'},
+  {label: '每年第6个月', key: '6'},
+  {label: '每年第7个月', key: '7'},
+  {label: '每年第8个月', key: '8'},
+  {label: '每年第9个月', key: '9'},
+  {label: '每年第10个月', key: '10'},
+  {label: '每年第11个月', key: '11'},
+  {label: '每年第12个月', key: '12'},
+]
 // 表格数据
 let columns = [
   {
@@ -424,17 +491,29 @@ export default {
       selectType: 'staff', // staff选人 post选岗位
       selectOptList: [],
       organIdopt: [],
+      exePreOpt: [],
       filepaths: [],
+      beginDayOpt: [],
+      beginMonthOpt: [],
+      oneMonth,
+      oneQuarter,
+      preUnitOpt,
+      halfYear,
+      oneHasYear,
       form: this.$form.createForm(this),
       table: {
         columns,
         dataSource: [],
         loading: false,
-        totalCount: 0
+        totalCount: 0,
+        activeRowIndex: ''
       },
       pageType: "",
       organId: '',
       organName: '',
+      startTimeValue: '',
+      endTimeValue: '',
+      showBeginMonth: true
     }
   },
   created() {
@@ -451,6 +530,10 @@ export default {
     // 新建初始化
     createInit() {
       this.pushTableLine()
+      this.platformDictFn('AMS_EXE_PRE')
+    },
+    // 编辑初始化
+    editInit () {
     },
     // 去除表格操作列
     popTableColumn () {
@@ -466,8 +549,9 @@ export default {
         chargePersonList: "",
         deadline: "",
         operation: "",
-        chargePerson: [],
+        chargePerson: '',
         chargePersonOpt: [],
+        chargePersonArr: []
       }
       this.table.dataSource.push(o)
     },
@@ -481,30 +565,157 @@ export default {
     },
     // 监听选人弹窗改变事件
     changeSelectStaffOrPost (selectOptList = []) {
-      console.log('选择人物=>', selectOptList)
-      // this.selectOptList = _.cloneDeep(selectOptList)
-      // this.storeSelectList[this.selectState] = _.cloneDeep(selectOptList)
+      let opt = selectOptList.map(item => {
+        return {...item, key: item.userId, label: item.name}
+      })
+      let row = this.table.dataSource[this.table.activeRowIndex]
+      let obj = opt.reduce((pre, next) => {
+         pre.label = pre.label + (pre.label ?',' : '') + next.label
+         pre.key = pre.key + (pre.key ?',' : '') + next.key
+         return pre
+      }, {label: '', key: ''})
+      console.log('选择人物=>', selectOptList, opt, obj)
+      this.$set(row, 'chargePerson', obj.key)
+      this.$set(row, 'chargePersonArr', opt)
+      this.$set(row, 'chargePersonOpt', [obj])
     },
     // 选人
-    selectPerson (value) {
-      console.log('进入单项=>', value)
+    selectPerson (record, index) {
+      console.log('进入单项=>', record)
+      this.table.activeRowIndex = index
       this.$refs.selectStaffOrPost.visible = true
-      // value.warrantGeneralData.forEach(list => {
-      //   list.lotNoEstateUnitCode = `${list.lotNo || '--'}/${list.estateUnitCode || '--'}`
-      // })
-      // let warrantNbr = []
-      // if (value.warrantNbr) {
-      //   value.warrantNbr.split(',').forEach(item => {
-      //     warrantNbr.push(Number(item))
-      //   })
-      // } else {
-      //   warrantNbr === []
-      // }
-      // this.$refs.chooseWarrants.redactCheckedDataFn(warrantNbr, value.warrantGeneralData, value.key)
+      this.selectOptList = this.table.dataSource[index]['chargePersonArr']
     },
-    handleSubmit() {},
-    handleSaveDraft() {},
-    handleApp() {}
+    disabledStartDate(startTimeValue) {
+      const endTimeValue = this.endTimeValue;
+      if (!startTimeValue || !endTimeValue) {
+        return false;
+      }
+      console.log('oooo', startTimeValue.valueOf())
+      return startTimeValue.valueOf() > endTimeValue.valueOf();
+    },
+    disabledEndDate(endTimeValue) {
+      const startTimeValue = this.startTimeValue;
+      if (!endTimeValue || !startTimeValue) {
+        return false;
+      }
+      return startTimeValue.valueOf() >= endTimeValue.valueOf();
+    },
+    // 生效时间改变
+    effDateChange (date, str) {
+      console.log('生效时间=>', date, str)
+      this.startTimeValue = date
+    },
+    // 失效效时间改变
+    expDateChange (date, str) {
+      console.log('失效效时间改变=>', date, str)
+      this.endTimeValue = date
+    },
+    range(start, end) {
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
+    },
+    validateFrom () {
+      if (values.effDate.valueOf > values.expDate.valueOf) {
+        this.$message.error('提示-失效时间必须大于生效时间!')
+        return false
+      }
+    },
+    getSaveparam(values) {
+      let data = {}
+      // 处理时间
+      utils.each(values, (value, key) => {
+        if (['effDate', 'expDate'].includes(key)) {
+          values[key] = values[key].format('YYYY-MM-DD HH:mm:ss')
+        }
+        if ([null, undefined].includes(values[key])) {
+          values[key] = ''
+        }
+      })
+      // 处理附件
+      data = {...values}
+      data.filepaths = this.filepaths.map(item => item.url).join(',')
+      return data
+    },
+    // 保存草稿
+    handleSaveDraft() {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          if (!this.validateFrom()) {
+            return
+          }
+          let data = this.getSaveparam()
+          data.approvalStatus = '0'
+          console.log('获得参数草稿', data)
+        }
+      })
+    },
+    // 提交审批
+    handleSaveApp() {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          if (!this.validateFrom()) {
+            return
+          }
+          let data = this.getSaveparam()
+          data.approvalStatus = '1'
+          console.log('获得参数审批', data)
+        }
+      })
+    },
+    // 审批通过
+    handleAdopt () {},
+    // 驳回
+    handleReject () {},
+    // 频次变化 () 
+    exePreSelectChange (e) {
+      console.log('2222222', e)
+      this.showBeginMonth = e === 'cccc1'? false : true
+      switch (e){
+        case 'cccc1':
+          this.beginMonthOpt = []
+          break;
+        case 'cccc2':
+          this.beginMonthOpt = oneMonth
+          break;
+        case 'cccc3':
+          this.beginMonthOpt = oneQuarter
+          break;
+        case 'cccc4':
+          this.beginMonthOpt = halfYear
+          break;
+        case 'cccc5':
+          this.beginMonthOpt = oneHasYear
+          break;      
+      }
+    },
+    // 取平台字典表
+    platformDictFn (str) {
+      // AMS_EXE_PRE 实施频次
+      let obj = {
+        code: str
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let result = data.map(item => {
+            return {...item, label: item.name, key: item.value}
+          })
+          // 测试数据
+          if (!result.length) {
+            result = result.concat(exePreOptTest)
+          }
+          if (str === 'AMS_EXE_PRE') {
+            this.exePreOpt = result
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
   }
 }
 </script>

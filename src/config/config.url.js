@@ -501,9 +501,10 @@ export const inventoryManagement = {
 }
 // 盘点计划
 export const inventory = {
-  getPlanList: '/zhoubaipu/plan/10.json',
-  getImplementRecord: '/zhoubaipu/plan/4.json',
-  createInventoryPlan: '/zhoubaipu/plan/1.json',
-  editInventoryPlan: '/zhoubaipu/plan/9.json',
-  inventoryDetail: '/zhoubaipu/plan/3.json',
+  getPlanList: '/ams/checkplan/queryCheckPlanPageList',
+  // 执行记录
+  getImplementRecord: '/ams/checktask/queryCheckTaskPageList',
+  createInventoryPlan: '/ams/checkplan/insertCheckPlan',
+  editInventoryPlan: '/ams/checkplan/updateCheckPlan',
+  inventoryDetail: '/ams/checkplan/queryCheckPlanDetail',
 }

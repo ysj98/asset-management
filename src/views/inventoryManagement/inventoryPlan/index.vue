@@ -287,6 +287,7 @@ export default {
         organId: this.queryCondition.organId,
         organName: this.organName
       };
+      type !== 'create' && (query.planId = record.planId) 
       this.$router.push({ path: operationTypes[type], query });
     },
     // 搜索
