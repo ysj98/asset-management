@@ -90,6 +90,10 @@ export function checkReportList (data) {
 export function detail (data) {
   return axiosGet(inventoryManagement.inventoryReport.detail, data)
 }
+// 根据任务id查询盘点报告
+export function queryByTaskId (data) {
+  return axiosGet(inventoryManagement.inventoryReport.queryByTaskId, data)
+}
 // 盘点报告删除
 export function deleteReport (data) {
   return axiosPost(inventoryManagement.inventoryReport.deleteReport, data)

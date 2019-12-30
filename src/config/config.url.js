@@ -503,6 +503,8 @@ export const inventoryManagement = {
     checkReportList: '/ams/assetCheckReport/checkReportList',
     // 查询盘点报告详情
     detail: '/ams/assetCheckReport/detail',
+    // 根据任务id查询盘点报告
+    queryByTaskId: '/ams/assetCheckReport/queryByTaskId',
     // 盘点报告删除
     deleteReport: '/ams/assetCheckReport/delete'
   },

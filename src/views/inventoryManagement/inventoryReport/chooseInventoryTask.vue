@@ -190,28 +190,28 @@ export default {
         beginDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
         endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
       }
-      this.table.loading = true;
-      this.$api.basics.ownerShipList(data).then(
+      this.table.loading = true
+      this.$api.inventoryManagementApi.queryCheckTaskPageList(data).then(
         res => {
-          this.table.loading = false;
-          if (res.data.code === "0") {
-            let result = res.data.data.data || [];
+          this.table.loading = false
+          if (res.data.code === '0') {
+            let result = res.data.data.data || []
             this.table.dataSource = result.map(item => {
-              item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
+              // item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
               return {
                 key: getUuid(),
                 ...item
-              };
-            });
-            this.table.totalCount = res.data.data.count || "";
+              }
+            })
+            this.table.totalCount = res.data.data.count || ''
           } else {
-            this.$message.error(res.data.message);
+            this.$message.error(res.data.message)
           }
         },
         () => {
-          this.table.loading = false;
+          this.table.loading = false
         }
-      );
+      )
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
