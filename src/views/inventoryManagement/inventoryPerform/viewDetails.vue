@@ -1,9 +1,9 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 18:08:25
- * @LastEditTime : 2019-12-26 18:18:08
+ * @LastEditTime : 2019-12-30 13:55:06
  * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
+ * @Description: 盘点结果
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\viewDetails.vue
  -->
 <template>

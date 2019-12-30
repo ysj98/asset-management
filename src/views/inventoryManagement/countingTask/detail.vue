@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2019-12-30 11:19:47
+ * @LastEditTime : 2019-12-30 14:09:50
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -234,7 +234,6 @@ export default {
         padding: 20px 0 20px 40px;
         .playground-row {
           .playground-col {
-            height: 40px;
             line-height: 40px;
             font-size: 12px;
           }
