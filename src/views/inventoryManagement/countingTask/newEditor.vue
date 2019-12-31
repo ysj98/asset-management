@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2019-12-30 18:31:17
+ * @LastEditTime : 2019-12-31 11:18:44
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -144,7 +144,12 @@
       </div>
     </FormFooter>
     <div>
+      <!-- 选人 -->
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
+    </div>
+    <div>
+      <!-- 选资产 -->
+      <associateAssetModal ref="associateAssetModal" organId="" queryType="1" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
     </div>
   </div>
 </template>
@@ -153,6 +158,7 @@
 import {utils} from '@/utils/utils.js'
 import selectStaffOrPost from '@/views/common/selectStaffOrPost'
 import FormFooter from '@/components/FormFooter'
+import associateAssetModal from '../../financialManagement/assetEntry/associateAssetModal'
 import moment from 'moment'
 const columns = [
   {
@@ -191,10 +197,11 @@ const columns = [
   }
 ]
 export default {
-  components: {selectStaffOrPost, FormFooter},
+  components: {selectStaffOrPost, FormFooter, associateAssetModal},
   props: {},
   data () {
     return {
+      assetIdIndex: '',         // 选择表格那个资产
       tabType: '',              // 判断是详情上面选人还是表格下面选人 详情：details  表格：tab
       chargePersonArrOpt: [],   // 详情上面选人每次存一份数据作为编辑给回去
       selectOptList: [],
@@ -239,7 +246,8 @@ export default {
         dataSource: [],         // 资产列表表格数据
         loading: false,
         activeRowIndex: ''
-      }
+      },
+      checkedData: []
     }
   },
   computed: {
@@ -325,6 +333,32 @@ export default {
             this.$message.error(res.data.message)
           }
         })
+      }
+      // 资产明细
+      if (str === 'particulars') {
+        console.log(record, index, '拿到的数据')
+        this.assetIdIndex = index
+        this.$refs.associateAssetModal.show = true
+        // 资产为空且盘点单不为空时调取接口数据 反之 直接拿数组的数据
+        if (record.rowsData.length === 0 && record.checkId) {
+            let obj = {
+              checkId: record.checkId
+            }
+            this.$api.inventoryManagementApi.warrantDelete(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                let data = res.data.data || []
+                let arr = []
+                data.forEach(item => {
+                  arr.push(item.assetId)
+                })
+                this.$refs.associateAssetModal.redactCheckedDataFn(arr, '', data)
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+        } else {
+          this.$refs.associateAssetModal.redactCheckedDataFn(record.assetId, '', record.rowsData)
+        }
       }
     },
     deleteFn (record, index) {
@@ -457,7 +491,7 @@ export default {
     },
     // 新建盘点单
     newMortgageInformation () {
-      let atr = [{ checkId: '', checkName: '', chargePerson: undefined, IsEdit: false, beginDate: undefined, endDate: undefined, checkCount: '', chargePersonArr: []}]
+      let atr = [{ checkId: '', checkName: '', chargePerson: undefined, IsEdit: false, beginDate: undefined, endDate: undefined, checkCount: '', chargePersonArr: [], rowsData: [], assetId: []}]
       let arr = [...this.table.dataSource, ...atr]
       console.log(arr)
       arr.forEach((item, index) => {
@@ -465,7 +499,13 @@ export default {
         item.indexKey = index + 1
       })
       this.table.dataSource = arr
-    }
+    },
+    // 资产选择变动
+    assetChange (checkedData, checkedNames, rowsData, extraData) {
+      this.table.dataSource[this.assetIdIndex].assetId = checkedData  // 选择的id
+      this.table.dataSource[this.assetIdIndex].rowsData = rowsData  // 选的总的
+      this.$refs.associateAssetModal.show = false
+    },
   },
   created () {
   },

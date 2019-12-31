@@ -1,5 +1,6 @@
 <!--
   关联资产弹窗
+  judgeInstitutions: 用于判断是否展示组织机构树
 -->
 <template>
   <SG-Modal
@@ -16,7 +17,8 @@
           <div class="tab-container">
             <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="70px">
               <div slot="col-r">
-                <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="projectId">
+                <treeSelect v-if="!judgeInstitutions" @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+                <a-select :style="allStyle" :disabled="judgeInstitutions" placeholder="全部资产项目" v-model="projectId">
                   <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
                 <a-select :style="allStyle" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
@@ -77,6 +79,7 @@
 <script>
   import Cephalosome from '@/components/Cephalosome'
   import {utils} from '@/utils/utils.js'
+  import TreeSelect from '../../common/treeSelect'
 
   const columns = [
     {
@@ -119,9 +122,14 @@
 
   export default {
     components: {
-      Cephalosome
+      Cephalosome,
+      TreeSelect
     },
     props: {
+      judgeInstitutions: {
+        type: Boolean,
+        default: true
+      },
       organId: {
         type: [String, Number],
         default: ''
@@ -150,7 +158,8 @@
         paginator: {
           pageNo: 1,
           pageLength: 10,
-          totalCount: 0
+          totalCount: 0,
+          organId: ''
         },
         loading: false,
         noPageTools: true,
@@ -176,6 +185,15 @@
       }
     },
     methods: {
+      // 选择组织机构
+      changeTree (value, label) {
+        this.organName = label
+        this.paginator.organId = value
+        this.paginator.pageNum = 1
+        this.projectId = ''
+        this.query()
+        this.getObjectKeyValueByOrganIdFn()
+      },
       changeTab (value) {
         if (+value === 2) {
           let rowsData = []
@@ -247,7 +265,7 @@
       // 资产项目
       getObjectKeyValueByOrganIdFn () {
         let obj = {
-          organId: this.organId,
+          organId: this.judgeInstitutions ? this.organId : this.paginator.organId,
           projectName: ''
         }
         this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
@@ -260,7 +278,8 @@
                 value: item.projectId
               })
             })
-            this.projectData = [...this.projectData, ...arr]
+            // this.projectData = [...this.projectData, ...arr]
+            this.projectData = [{name: '全部资产项目', value: ''}, ...arr]
           } else {
             this.$message.error(res.data.message)
           }
@@ -269,7 +288,7 @@
       // 资产分类列表
       getListFn () {
         let obj = {
-          organId: this.organId,
+          organId: this.judgeInstitutions ? this.organId : this.paginator.organId,
           assetType: this.assetType
         }
         this.$api.assets.getList(obj).then(res => {
@@ -407,7 +426,10 @@
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' }
       })
-      this.getObjectKeyValueByOrganIdFn()
+      // 选择项目
+      if (this.judgeInstitutions) {
+        this.getObjectKeyValueByOrganIdFn()
+      }
       // 资产类型
       this.platformDictFn('asset_type')
     }
