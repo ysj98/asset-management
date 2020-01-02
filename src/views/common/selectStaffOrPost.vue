@@ -2,6 +2,7 @@
 选岗位或选人组件
 selectType  String 区分选人staff  选岗post
 selectOptList Aarry 编辑时已选种的岗或人
+selectionNumber Number 默认最多选择5个 传0不做选择控制且显示全选按钮
 -->
 <template>
   <div class="select-staffs-components">
@@ -65,6 +66,7 @@ selectOptList Aarry 编辑时已选种的岗或人
                   </a-checkbox>
                   <!-- 全选框 -->
                   <a-checkbox
+                    v-if="selectionNumber === 0"
                     class="item all"
                     @change="onCheckAllChange"
                     :checked="checkAll">
@@ -146,6 +148,10 @@ export default {
     selectOptList: {
       type: Array,
       default: () => []
+    },
+    selectionNumber: {  // 控制选择数量
+      type: Number,
+      default: 5
     }
   },
   data () {
@@ -331,6 +337,12 @@ export default {
     oneCheck (e, item) {
       const { id } = item
       const { checked } = e.target
+      if (this.selectionNumber !== 0) {
+        if (Object.values(this.storeData).length > this.selectionNumber - 1) {
+          this.$message.info(`最多只能选择${this.selectionNumber}人`)
+          return
+        }
+      }
       checked ? this.$set(this.storeData, id, item) : this.$delete(this.storeData, id)
     },
     // 批量提交
