@@ -292,7 +292,6 @@ export default {
         ...this.queryCondition,
         flag: "0"
       };
-      console.log('this.queryCondition', this.queryCondition)
       data.ownershipStatuss = data.ownershipStatuss.join(',')
       data.kindOfRights = data.kindOfRights.join(',')
       data.statuss = data.statuss.join(',')

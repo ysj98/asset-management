@@ -107,7 +107,12 @@ export default [
       {
         title: '资产处置一览表',
         path: '/disposalManagement/listDisposal'
-      }
+      },
+      {
+        title: '处置登记',
+        path: '/disposalRegister',
+        
+      },
     ]
   },
   {

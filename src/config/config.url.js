@@ -529,3 +529,22 @@ export const inventory = {
   editInventoryPlan: '/ams/checkplan/updateCheckPlan',
   inventoryDetail: '/ams/checkplan/queryCheckPlanDetail',
 }
+// 处置登记
+export const disposeRegister = {
+  // 处置登记列表-分页查询 post
+  getDisposeRegisterList: '/ams/disposeRegister/getListPage',
+  // 处置登记-修改保存 post
+  modifySave: '/ams/disposeRegister/modifySave',
+  // 处置登记-分页查询处置清单列表 post
+  getRegisterDetailListPage: '/ams/disposeRegister/getDetailListPage',
+  // 处置登记-新增保存
+  addRegisterSave: '/ams/registerOrder/addSave',
+  // 处置登记-查询处置清单列表
+  getDisposeRegisterDetailList: '/ams/disposeRegister/getDetailList',
+  // 处置登记-查询收付款计划列表
+  getreceivecostPlanList: '/ams/disposeRegister/getreceivecostPlanList',
+  // 处置登记-状态操作
+  updateDisposeRegisterStatus: '/ams/disposeRegister/updateStatus',
+  // 处置登记查询-根据处置登记单ID
+  getDisposeRegisterById: '/ams/disposeRegister/getDisposeRegister'
+}
