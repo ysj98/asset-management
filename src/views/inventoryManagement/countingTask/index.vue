@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2019-12-30 11:29:36
+ * @LastEditTime : 2020-01-02 11:46:31
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -162,7 +162,7 @@ export default {
   },
   watch: {
     '$route' () {
-      if (this.$route.path === '/countingTask' && this.$route.query.refresh) {
+      if (this.$route.path === '/inventoryManagement/countingTask' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
         this.query()
@@ -238,11 +238,12 @@ export default {
     },
     // 页面跳转
     goPage(type, record) {
-      let query = {
+      let querys = JSON.stringify([{
         type,
-        projectId: record.projectId
-      };
-      this.$router.push({ path: operationTypes[type], query });
+        projectId: record.projectId,
+        taskId: record.taskId
+      }])
+      this.$router.push({ path: operationTypes[type], query: {quersData: querys}});
     }
   }
 };

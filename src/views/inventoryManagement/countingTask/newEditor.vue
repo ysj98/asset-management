@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2019-12-31 11:18:44
+ * @LastEditTime : 2020-01-02 17:43:23
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -84,7 +84,7 @@
       </div>
     </div>
     <div class="newEditor-nav">
-      <span class="section-title blue">盘点单列表</span>
+      <span class="section-title blue">盘点单列表 (资产总数：{{inventoryAssetCount || 0}})</span>
       <div class="newEditor-obj">
         <div class="table-layout-fixed table-border">
           <a-table
@@ -117,19 +117,20 @@
           </template>
           <!-- 开始时间 -->
           <template slot="beginDate" slot-scope="text, record">
-            <span v-if="record.IsEdit">{{moment(record.beginDate).format('YYYY-MM-DD')}}</span>
+            <span v-if="record.IsEdit">{{ record.beginDate === undefined ? '' : moment(record.beginDate).format('YYYY-MM-DD')}}</span>
             <a-date-picker v-else v-model="record.beginDate"/>
           </template>
           <!-- 结束时间 -->
           <template slot="endDate" slot-scope="text, record">
-            <span v-if="record.IsEdit">{{moment(record.endDate).format('YYYY-MM-DD')}}</span>
+            <span v-if="record.IsEdit">{{ record.endDate === undefined ? '' : moment(record.endDate).format('YYYY-MM-DD')}}</span>
             <a-date-picker v-else v-model="record.endDate"/>
           </template>
           <template slot="operation" slot-scope="text, record, index">
             <span class="btn_click mr15" v-if="record.IsEdit" @click="operationFn(record, 'edit', index)">编辑</span>
             <span class="btn_click mr15" v-if="!record.IsEdit"  @click="operationFn(record, 'set', index)">保存</span>
+            <span class="btn_click mr15" v-if="!record.IsEdit"  @click="operationFn(record, 'cancel', index)">取消</span>
             <span class="btn_click mr15" @click="operationFn(record, 'delete', index)">删除</span>
-            <span class="btn_click" @click="operationFn(record, 'particulars', index)">资产明细</span>
+            <span class="btn_click" v-if="!record.IsEdit" @click="operationFn(record, 'particulars', index)">资产明细</span>
           </template>
           </a-table>
         </div>
@@ -139,7 +140,7 @@
     <FormFooter style="border:none;" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交</SG-Button>
-        <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button>
+        <!-- <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button> -->
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
@@ -193,7 +194,7 @@ const columns = [
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: '15%'
+    width: '20%'
   }
 ]
 export default {
@@ -201,6 +202,9 @@ export default {
   props: {},
   data () {
     return {
+      cancelData: [],          // 取消还原数据
+      inventoryAssetCount: 0,  // 资产总数
+      type: '',                 // 判断是新增还是编辑
       assetIdIndex: '',         // 选择表格那个资产
       tabType: '',              // 判断是详情上面选人还是表格下面选人 详情：details  表格：tab
       chargePersonArrOpt: [],   // 详情上面选人每次存一份数据作为编辑给回去
@@ -258,7 +262,15 @@ export default {
     save (str) {
       this.form.validateFields((err, values) => {
         if (!err) {
+          let tableArr = this.table.dataSource
+          for (let i = 0; i < tableArr.length; i++) {
+            if (!tableArr[i].IsEdit) {
+              this.$message.info('请选保存盘点表列表')
+              return
+            }
+          }
           let obj = {
+            taskStatus: '3',             // 进行中
             taskId: this.taskId,         // 主键
             taskName: values.taskName,                // 任务名称
             chargePersonId: values.chargePerson,          // 负责人ID 多个逗号隔开
@@ -292,6 +304,23 @@ export default {
       if (str === 'delete') {
         this.deleteFn(record, index)
       }
+      // 取消
+      if (str === 'cancel') {
+        console.log(this.table.dataSource[index])
+        console.log(this.cancelData[index])
+        this.table.dataSource[index].IsEdit = this.cancelData[index].IsEdit
+        this.table.dataSource[index].assetId = this.cancelData[index].assetId
+        this.table.dataSource[index].beginDate = this.cancelData[index].beginDate
+        this.table.dataSource[index].endDate = this.cancelData[index].endDate
+        this.table.dataSource[index].chargePerson = this.cancelData[index].chargePerson
+        this.table.dataSource[index].chargePersonArr = this.cancelData[index].chargePersonArr
+        this.table.dataSource[index].chargePersonOpt = this.cancelData[index].chargePersonOpt
+        this.table.dataSource[index].checkCount = this.cancelData[index].checkCount
+        this.table.dataSource[index].checkName = this.cancelData[index].checkName
+        this.table.dataSource[index].userIds = this.cancelData[index].userIds
+        this.table.dataSource[index].userNames = this.cancelData[index].userNames
+        this.table.dataSource[index].IsEdit = true
+      }
       // 编辑
       if (str === 'edit') {
         this.table.dataSource[index].IsEdit = false
@@ -314,23 +343,36 @@ export default {
           this.$message.info('请选择结束时间')
           return
         }
+        if (record.assetId.length === 0 && !record.checkId) {
+          this.$message.info('请选择资产明细')
+          return
+        }
         let obj = {
+          taskId: this.taskId,
           checkId: record.checkId,                // 盘点单ID
           checkName: record.checkName,            // 盘点单名称
           organId: record.organId,                // 组织机构ID
           chargePersonId: record.chargePerson,    // 负责人 多个逗号隔开
           beginDate: moment(record.beginDate).format('YYYY-MM-DD'),            // 开始时间
           endDate:moment(record.endDate).format('YYYY-MM-DD'),                // 结束时间
-          assetId: record.assetId                 // 资产ID 多个逗号隔开
+          assetId: record.assetId.length > 0 ? record.assetId.join(',') : ''               // 资产ID 多个逗号隔开
         }
-        
+        let loadingName = this.SG_Loding('保存中...')
         this.$api.inventoryManagementApi.updateCheckInst(obj).then(res => {
           if (Number(res.data.code) === 0) {
             console.log(this.table.dataSource, index)
-            this.table.dataSource[index].checkId = 1
-            this.table.dataSource[index].IsEdit = true
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.success('提交成功')
+              this.table.dataSource[index].checkId = res.data.data
+              this.table.dataSource[index].checkCount = record.assetId.length
+              this.table.dataSource[index].IsEdit = true
+              this.inventoryAssetCountFn()   // 计算资产总和
+              this.cancelData = utils.deepClone(this.table.dataSource)           // 用于取消回显
+            })
           } else {
-            this.$message.error(res.data.message)
+            this.DE_Loding(loadingName).then(() => {
+              this.$message.error(res.data.message)
+            })
           }
         })
       }
@@ -340,15 +382,16 @@ export default {
         this.assetIdIndex = index
         this.$refs.associateAssetModal.show = true
         // 资产为空且盘点单不为空时调取接口数据 反之 直接拿数组的数据
-        if (record.rowsData.length === 0 && record.checkId) {
+        if (record.checkId) {
             let obj = {
               checkId: record.checkId
             }
-            this.$api.inventoryManagementApi.warrantDelete(obj).then(res => {
+            this.$api.inventoryManagementApi.queryAssetByChcekId(obj).then(res => {
               if (Number(res.data.code) === 0) {
                 let data = res.data.data || []
                 let arr = []
-                data.forEach(item => {
+                data.forEach((item, index) => {
+                  key: index
                   arr.push(item.assetId)
                 })
                 this.$refs.associateAssetModal.redactCheckedDataFn(arr, '', data)
@@ -369,21 +412,26 @@ export default {
         onOk() {
           if (record.checkId) {
             // 有盘点id
-            // let obj = {
-            //   warrantId: val.warrantId
-            // }
-            // _this.$api.ownership.warrantDelete(obj).then(res => {
-            //   if (Number(res.data.code) === 0) {
-            //     _this.$message.info('删除成功')
-            //     _this.query()
-            //   } else {
-            //     _this.$message.error(res.data.message)
-            //   }
-            // })
+            let obj = {
+              checkId: record.checkId
+            }
+            let loadingName = _this.SG_Loding('删除中...')
+            _this.$api.inventoryManagementApi.deleteCheckInst(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                _this.DE_Loding(loadingName).then(() => {
+                  _this.$SG_Message.success('删除成功')
+                  _this.table.dataSource.splice(index, 1)
+                  _this.inventoryAssetCountFn()   // 计算资产总和
+                })
+              } else {
+                _this.$message.error(res.data.message)
+              }
+            })
           } else {
             // 没有盘点id
             _this.table.dataSource.splice(index, 1)
           }
+          _this.cancelData = utils.deepClone(_this.table.dataSource)           // 用于取消回显
         }
       })
     },
@@ -392,6 +440,7 @@ export default {
       this.tabType = 'details'
       this.$refs.selectStaffOrPost.visible = true
       // 编辑给回去的数据
+      console.log(this.chargePersonArrOpt, '给回去的')
       this.selectOptList = this.chargePersonArrOpt
     },
     handleSubmit (e) {
@@ -442,15 +491,44 @@ export default {
         console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          let arr = []
+          let labelData = []
+          let keyData = []
           // 获取名称
           if (data.chargePersonList.length > 0) {
             data.chargePersonList.forEach(item => {
-              arr.push(item.userName)
-            }) 
+              item.name = item.userName
+              item.label = item.userName
+              item.key = item.userId
+              item.id = item.userId
+              labelData.push(item.userName)
+              keyData.push(item.userId)
+            })
           }
-          data.userName = arr.length > 0 ? arr.join(',') : ''
-          this.particularsData = data
+          // 编辑回填
+          this.chargePersonOpt = [{label: labelData.length > 0 ? labelData.join(',') : '', key: keyData.length > 0 ? keyData.join(',') : ''}]
+          this.chargePersonArrOpt = data.chargePersonList
+          // 新增回填
+          if (this.type === 'set') {
+            this.form.setFieldsValue({
+              taskId: this.taskId,
+              taskName: data.taskName,
+              planName: data.planName,
+              chargePerson: keyData.length > 0 ? keyData.join(',') : '',
+              checkRange: data.checkRange,
+              defaultValue: [moment(data.beginDate), moment(data.endDate)]
+            })
+          } else {
+            this.form.setFieldsValue({
+              taskId: this.taskId,
+              taskName: data.taskName,
+              planName: data.planName,
+              chargePerson: keyData.length > 0 ? keyData.join(',') : '',
+              checkRange: data.checkRange,
+              remark: data.remark,
+              defaultValue: [moment(data.beginDate), moment(data.endDate)]
+            })
+          }
+          // this.particularsData = data
         } else {
           this.$message.error(res.data.message)
         }
@@ -471,9 +549,33 @@ export default {
             item.indexKey = index + 1
             item.beginDate = moment(item.beginDate, 'YYYY-MM-DD')
             item.endDate = moment(item.endDate, 'YYYY-MM-DD')
-            item.chargePerson = item.userIds
+            item.chargePerson = item.userIds,
+            item.chargePersonOpt = [{label: item.userNames, key: item.userIds}]
+            item.assetId = item.assetId ? item.assetId.split(',') : ''
+            this.inventoryAssetCount = this.inventoryAssetCount + Number(item.checkCount)               // 资产总数
+            let chargePersonArrData = []
+            // 遍历回去负责人
+            if (item.userIds) {
+              let ctr = item.userNames.split(',')
+              let ctl = item.userIds.split(',')
+              ctr.forEach((items, index) => {
+                ctl.forEach((list, indexs) => {
+                  if (index === indexs) {
+                    chargePersonArrData.push({
+                      name: items,
+                      userId: list,
+                      key: list,
+                      id: list,
+                      label: list
+                    })
+                  }
+                })
+              })
+            }
+            item.chargePersonArr = chargePersonArrData
           })
           this.table.dataSource = data
+          this.cancelData = utils.deepClone(this.table.dataSource)           // 用于取消回显
           this.table.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -499,6 +601,7 @@ export default {
         item.indexKey = index + 1
       })
       this.table.dataSource = arr
+      this.cancelData = utils.deepClone(this.table.dataSource)           // 用于取消回显
     },
     // 资产选择变动
     assetChange (checkedData, checkedNames, rowsData, extraData) {
@@ -506,13 +609,21 @@ export default {
       this.table.dataSource[this.assetIdIndex].rowsData = rowsData  // 选的总的
       this.$refs.associateAssetModal.show = false
     },
+    // 计算资产总数
+    inventoryAssetCountFn () {
+      let num = 0
+      this.table.dataSource.forEach(item => {
+        num = num + Number(item.checkCount)
+      })
+      this.inventoryAssetCount = num
+    }
   },
   created () {
   },
   mounted () {
-    // this.particularsData = JSON.parse(this.$route.query.record)
-    // this.changeOrderId = this.particularsData[0].changeOrderId
-    // this.changeType = this.particularsData[0].changeType
+    this.particularsData = JSON.parse(this.$route.query.quersData)
+    this.taskId = this.particularsData[0].taskId
+    this.type = this.particularsData[0].type
     this.query()
     this.queryListByTaskIdFn()
   }

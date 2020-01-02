@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:00:20
- * @LastEditTime : 2019-12-31 15:53:42
+ * @LastEditTime : 2019-12-31 16:25:07
  * @LastEditors  : Please set LastEditors
  * @Description: 资产处置一览表
  * @FilePath: \asset-management\src\views\disposalManagement\listDisposal\index.vue
@@ -434,17 +434,17 @@ export default {
         pageNum: this.queryCondition.pageNum,              // 当前页
         pageSize: this.queryCondition.pageSize,            // 每页显示记录数
         organId: Number(this.queryCondition.organId),      // 组织机构id
-        submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),      //类型：String  可有字段  备注：提交时间,开始
-        submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),        //类型：String  可有字段  备注：提交时间,结束
-        approvalStatusList: this.queryCondition.approvalStatus || [],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        assetNameOrCode: this.queryCondition.assetName,       // 资产名称/编码
-        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',        //类型：String  可有字段  备注：处置日期,开始
-        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',          //类型：String  可有字段  备注：处置日期,结束
-        projectId: this.queryCondition.projectId,            // 资产项目Id
-        assetTypeList: this.queryCondition.assetType || [],                //类型：String  可有字段  资产类型Id
-        disposeModeList: this.queryCondition.disposeMode || [],               //类型：String  可有字段  备注：处置方式
-        objectTypeList: this.queryCondition.assetClassify || [],            // 资产分类
-        disposeTypeList: this.queryCondition.disposeType || []              // 处置类型(多选)
+        submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),  // 提交时间,开始
+        submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 提交时间,结束
+        approvalStatusList: this.queryCondition.approvalStatus || [],        // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        assetNameOrCode: this.queryCondition.assetName,    // 资产名称/编码
+        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',   // 处置日期,开始
+        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',     // 处置日期,结束
+        projectId: this.queryCondition.projectId,          // 资产项目Id
+        assetTypeList: this.queryCondition.assetType || [],                  //类型：String  可有字段  资产类型Id
+        disposeModeList: this.queryCondition.disposeMode || [],              // 处置方式
+        objectTypeList: this.queryCondition.assetClassify || [],             // 资产分类
+        disposeTypeList: this.queryCondition.disposeType || []               // 处置类型(多选)
       }
       this.$api.disposalManagement.getDetailAndDisposeListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {

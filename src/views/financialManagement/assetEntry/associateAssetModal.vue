@@ -287,6 +287,10 @@
       },
       // 资产分类列表
       getListFn () {
+        // 没有organId都不给查分类
+        if (!this.organId || !this.paginator.organId) {
+          return
+        }
         let obj = {
           organId: this.judgeInstitutions ? this.organId : this.paginator.organId,
           assetType: this.assetType
@@ -304,7 +308,7 @@
             this.objectTypeData = []
             let atr = [
               {
-                name: '全部资产类别',
+                name: '全部资产分类',
                 value: ''
               }
             ]
@@ -429,7 +433,7 @@
       // 选择项目
       if (this.judgeInstitutions) {
         this.getObjectKeyValueByOrganIdFn()
-      }
+      } 
       // 资产类型
       this.platformDictFn('asset_type')
     }

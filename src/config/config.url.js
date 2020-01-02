@@ -467,15 +467,19 @@ export const inventoryManagement = {
   // 盘点任务
   countingTask: {
     // 已选资产明细
-    queryAssetByChcekId: '/ams/checktask/queryAssetByChcekId',
+    queryAssetByChcekId: '/ams/assetCheckInst/queryAssetByChcekId',
     // 新建/编辑盘点单
-    updateCheckInst: '/ams/checktask/updateCheckInst',
+    updateCheckInst: '/ams/assetCheckInst/updateCheckInst',
     // 盘点任务查询(分页)
     queryCheckTaskPageList: '/ams/checktask/queryCheckTaskPageList',
     // 盘点任务详情
     queryCheckTaskDetail: '/ams/checktask/queryCheckTaskDetail',
     // 编辑盘点任务
-    updateCheckTask: '/ams/checktask/updateCheckTask'
+    updateCheckTask: '/ams/checktask/updateCheckTask',
+    // 盘点任务状态操作
+    updateCheckTaskStatus: 'ams/checktask/updateCheckTaskStatus',
+    // 删除盘点单
+    deleteCheckInst: '/ams/assetCheckInst/deleteCheckInst'
   },
   inventoryPerform: {
     // 查询盘点列表（查询执行人为当前用户的数据）
