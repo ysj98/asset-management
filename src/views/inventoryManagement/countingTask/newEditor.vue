@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-02 17:43:23
+ * @LastEditTime : 2020-01-02 17:49:34
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -202,6 +202,7 @@ export default {
   props: {},
   data () {
     return {
+      taskId: '',
       cancelData: [],          // 取消还原数据
       inventoryAssetCount: 0,  // 资产总数
       type: '',                 // 判断是新增还是编辑

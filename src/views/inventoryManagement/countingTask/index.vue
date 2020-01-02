@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-02 11:46:31
+ * @LastEditTime : 2020-01-02 18:02:05
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -23,26 +23,28 @@
       </div>
     </Cephalosome>
     <div>
-      <a-table
-        class="custom-table td-pd10"
-        :loading="table.loading"
-        :pagination="false"
-        :columns="table.columns"
-        :dataSource="table.dataSource"
-        :locale="{emptyText: '暂无数据'}"
-      >
-        <template slot="checkRate" slot-scope="text, record">
-          <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.checkRate) || 0" />
-            </div>
-        </template>
-        <template slot="operation" slot-scope="text, record">
-          <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          <span v-show="+record.taskStatus === 2" @click="goPage('set', record)" class="btn_click mr15">生成盘点单</span>
-          <span v-show="+record.taskStatus === 2" @click="goPage('cancel', record)" class="btn_click mr15">取消任务</span>
-          <span v-show="+record.taskStatus === 3" @click="goPage('edit', record)" class="btn_click">编辑</span>
-        </template>
-      </a-table>
+      <div class="table-layout-fixed table-border">
+        <a-table
+          class="custom-table td-pd10"
+          :loading="table.loading"
+          :pagination="false"
+          :columns="table.columns"
+          :dataSource="table.dataSource"
+          :locale="{emptyText: '暂无数据'}"
+        >
+          <template slot="checkRate" slot-scope="text, record">
+            <div style="padding-right: 10px;">
+                <a-progress :percent="Number(record.checkRate) || 0" />
+              </div>
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+            <span v-show="+record.taskStatus === 2" @click="goPage('set', record)" class="btn_click mr15">生成盘点单</span>
+            <span v-show="+record.taskStatus === 2" @click="goPage('cancel', record)" class="btn_click mr15">取消任务</span>
+            <span v-show="+record.taskStatus === 3" @click="goPage('edit', record)" class="btn_click">编辑</span>
+          </template>
+        </a-table>
+      </div>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -101,7 +103,7 @@ let columns = [
   {
     title: "任务编号",
     dataIndex: "taskId",
-    width: 150
+    width: 100
   },
   {
     title: "任务名称",
@@ -138,7 +140,7 @@ let columns = [
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 180
+    width: 160
   }
 ];
 export default {
@@ -216,6 +218,11 @@ export default {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
               item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
+              let arr = []
+              item.chargePersonList.forEach(item => {
+                arr.push(item.userName)
+              })
+              item.chargePersonName = arr
               return {
                 key: getUuid(),
                 ...item

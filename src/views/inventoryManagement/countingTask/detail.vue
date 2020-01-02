@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2019-12-30 14:09:50
+ * @LastEditTime : 2020-01-02 18:05:34
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="countingTaskDetail-nav">
-      <span class="section-title blue">资产列表</span>
+      <span class="section-title blue">资产列表 (资产总数：{{inventoryAssetCount || 0}})</span>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
           <a-table
@@ -44,6 +44,7 @@
             <span class="btn_click mr15">详情</span>
           </template>
           </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -59,6 +60,7 @@
             :pagination="false"
             >
           </a-table>
+          <no-data-tips v-show="inventoryReportData.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -66,6 +68,7 @@
 </template>
 
 <script>
+import noDataTips from "@/components/noDataTips"
 import {utils} from '@/utils/utils.js'
 const columns = [
   {
@@ -124,10 +127,12 @@ const InventoryReportColumns = [
   }
 ]
 export default {
-  components: {},
+  components: {noDataTips},
   props: {},
   data () {
     return {
+      inventoryAssetCount: 0,
+      taskId: '',
       changeType: '',
       changeOrderId: '',
       particularsData: {},
@@ -184,6 +189,7 @@ export default {
           data.forEach((item, index) => {
             item.key = index
             item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
+            this.inventoryAssetCount = this.inventoryAssetCount + Number(item.checkCount)               // 资产总数
           })
           this.tableData = data
           this.loading = false
@@ -199,7 +205,7 @@ export default {
       let obj = {
         taskId: this.taskId
       }
-      this.$api.inventoryManagementApi.queryListByTaskId(obj).then(res => {
+      this.$api.inventoryManagementApi.queryByTaskId(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           data.forEach((item, index) => {
@@ -217,9 +223,8 @@ export default {
   created () {
   },
   mounted () {
-    // this.particularsData = JSON.parse(this.$route.query.record)
-    // this.changeOrderId = this.particularsData[0].changeOrderId
-    // this.changeType = this.particularsData[0].changeType
+    this.particularsData = JSON.parse(this.$route.query.quersData)
+    this.taskId = this.particularsData[0].taskId
     this.query()
     this.queryListByTaskIdFn()
     this.queryByTaskIdFn()
