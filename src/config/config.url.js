@@ -477,7 +477,7 @@ export const inventoryManagement = {
     // 编辑盘点任务
     updateCheckTask: '/ams/checktask/updateCheckTask',
     // 盘点任务状态操作
-    updateCheckTaskStatus: 'ams/checktask/updateCheckTaskStatus',
+    updateCheckTaskStatus: '/ams/checktask/updateCheckTaskStatus',
     // 删除盘点单
     deleteCheckInst: '/ams/assetCheckInst/deleteCheckInst'
   },

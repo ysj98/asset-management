@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-02 18:02:05
+ * @LastEditTime : 2020-01-02 18:26:59
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -222,7 +222,7 @@ export default {
               item.chargePersonList.forEach(item => {
                 arr.push(item.userName)
               })
-              item.chargePersonName = arr
+              item.chargePersonName = arr.length === 0 ? '' : arr.join(',')
               return {
                 key: getUuid(),
                 ...item
@@ -241,16 +241,45 @@ export default {
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
-      this.query();
+      this.query()
+    },
+    updateCheckTaskStatusFn (record) {
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要取消任务吗？',
+        onOk() {
+          let obj = {
+            taskId: record.taskId,
+            taskStatus: '0'
+          }
+          let loadingName = _this.SG_Loding('取消中...')
+          _this.$api.inventoryManagementApi.updateCheckTaskStatus(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.DE_Loding(loadingName).then(() => {
+                _this.$SG_Message.success('取消成功')
+                _this.query()
+              })
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+        }
+      })
     },
     // 页面跳转
     goPage(type, record) {
-      let querys = JSON.stringify([{
-        type,
-        projectId: record.projectId,
-        taskId: record.taskId
-      }])
-      this.$router.push({ path: operationTypes[type], query: {quersData: querys}});
+      let _this = this
+      if (type === 'cancel') {
+        this.updateCheckTaskStatusFn(record)
+      } else {
+        let querys = JSON.stringify([{
+          type,
+          projectId: record.projectId,
+          taskId: record.taskId
+        }])
+        this.$router.push({ path: operationTypes[type], query: {quersData: querys}})
+      }
     }
   }
 };
