@@ -4,7 +4,7 @@
  * @Description: 
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { basics, ownershipSurvey } from '../config/config.url'
+import { basics, ownershipSurvey, disposeRegister } from '../config/config.url'
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -112,4 +112,35 @@ export function queryUserPageList (data) {
 export function queryPostNewPageList (data) {
   return axiosPost(basics.queryPostNewPageList, data)
 }
-
+// 处置登记列表-分页查询
+export function getDisposeRegisterList (data) {
+  return axiosPost(disposeRegister.getDisposeRegisterList, data)
+}
+// -修改保存 post
+export function modifySave (data) {
+  return axiosPost(disposeRegister.modifySave, data)
+}
+// -分页查询处置清单列表
+export function getRegisterDetailListPage (data) {
+  return axiosPost(disposeRegister.getRegisterDetailListPage, data)
+}
+// -新增保存
+export function addRegisterSave (data) {
+  return axiosPost(disposeRegister.addRegisterSave, data)
+}
+// -查询处置清单列表
+export function getDisposeRegisterDetailList (data) {
+  return axiosPost(disposeRegister.getDisposeRegisterDetailList, data)
+}
+// -查询收付款计划列表
+export function getreceivecostPlanList (data) {
+  return axiosPost(disposeRegister.getreceivecostPlanList, data)
+}
+// -处置登记-状态操作
+export function updateDisposeRegisterStatus (data) {
+  return axiosPost(disposeRegister.updateDisposeRegisterStatus, data)
+}
+// 处置登记查询-根据处置登记单ID
+export function getDisposeRegisterById (data) {
+  return axiosPost(disposeRegister.getDisposeRegisterById, data)
+}

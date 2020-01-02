@@ -3,8 +3,8 @@
  * @Description: 处置登记首页
  -->
 <template>
-  <div class="scheduleChanges">
-    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
+  <div class="scheduleChanges pb70">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop: toggle?'16px': 0}">
        <div slot="headerBtns">
         <SG-Button icon="plus" @click="goPage('create')" type="primary">
           新增处置登记
@@ -12,6 +12,18 @@
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
+        <!-- 全部资产项目 -->
+        <a-select
+          showSearch
+          placeholder="请选择资产项目"
+          v-model="queryCondition.projectId"
+          optionFilterProp="children"
+          :style="allWidth"
+          :options="projectIdOpt"
+          :allowClear="false"
+          :filterOption="filterOption"
+          notFoundContent="没有查询到数据"
+        />
         <div class="box sg-datePicker" :style="dateWidth">
           <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
@@ -19,18 +31,7 @@
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          <!-- 全部资产项目 -->
-            <a-select
-              showSearch
-              placeholder="请选择资产项目"
-              v-model="queryCondition.projectId"
-              optionFilterProp="children"
-              :style="allStyle"
-              :options="projectIdOpt"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
+          
             <!-- 全部状态 -->
             <a-select
               showSearch
@@ -104,6 +105,27 @@
       </div>
     </SearchContainer>
     <div class="table-layout-fixed">
+      <a-table
+          class="custom-table td-pd10"
+          :loading="table.loading"
+          :pagination="false"
+          :scroll="{ x: 1400}"
+          :columns="table.columns"
+          :dataSource="table.dataSource"
+          :locale="{emptyText: '暂无数据'}"
+        >
+          <template slot="operation" slot-scope="text, record">
+            <OperationPopover :operationData="record.operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
+          </template>
+        </a-table>
+        <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
+        <SG-FooterPagination
+          :pageLength="queryCondition.pageSize"
+          :totalCount="table.totalCount"
+          location="absolute"
+          v-model="queryCondition.pageNum"
+          @change="handleChange"
+        />
     </div>
   </div>
 </template>
@@ -113,7 +135,9 @@ import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
+import OperationPopover from '@/components/OperationPopover'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes  = {
@@ -130,43 +154,25 @@ const allStyle = {
 const allWidth = {
   width: "170px",
   "margin-right": "10px",
-  "margin-top": "14px",
-  height: '32px',
-  overflow: 'hidden'
+  'vertical-align': 'bottom'
 };
 const dateWidth = {width: '300px', 'margin-right': '10px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
-    title: '处置编号',
-    dataIndex: 'disposeRegisterDetailId'
-  },
-  {
-    title: '资产编号',
-    dataIndex: 'assetCode'
-  },
-  {
-    title: '资产名称',
-    dataIndex: 'assetName'
+    title: '处置单ID',
+    dataIndex: 'disposeRegisterOrderId'
   },
   {
     title: '所属机构',
     dataIndex: 'organName'
   },
   {
+    title: '资产处置名称',
+    dataIndex: 'disposeName'
+  },
+  {
     title: '资产项目',
     dataIndex: 'projectName'
-  },
-  {
-    title: '资产类型',
-    dataIndex: 'assetTypeName'
-  },
-  {
-    title: '资产分类11',
-    dataIndex: 'projectName11'
-  },
-  {
-    title: '登记单号',
-    dataIndex: 'disposeRegisterOrderId'
   },
   {
     title: '处置类型',
@@ -174,15 +180,11 @@ const columns = [
   },
   {
     title: '处置方式',
-    dataIndex: 'disposeMode'
+    dataIndex: 'disposeModeName'
   },
   {
-    title: '处置日期',
+    title: '处置时间',
     dataIndex: 'disposeDate'
-  },
-  {
-    title: '处置原因',
-    dataIndex: 'disposeReason'
   },
   {
     title: '处置成本(元)',
@@ -193,8 +195,8 @@ const columns = [
     dataIndex: 'disposeReceive'
   },
   {
-    title: '接收方',
-    dataIndex: 'assetReceiver'
+    title: '处置原因',
+    dataIndex: 'disposeReason'
   },
   {
     title: '提交人',
@@ -207,6 +209,12 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'approvalStatusName'
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    scopedSlots: { customRender: "operation" },
+    width: 100
   }
 ]
 const approvalStatusOpt = [
@@ -250,7 +258,7 @@ const queryCondition =  {
     disposeMode: [''],    // 处置方式
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips},
+  components: {SearchContainer, OperationPopover, TreeSelect, segiIcon, noDataTips},
   props: {},
   data () {
     return {
@@ -282,13 +290,71 @@ export default {
     this.platformDict('AMS_DISPOSE_TYPE')
   },
   methods: {
-    query () {},
+    query () {
+      let data = {
+        organId: this.organId,
+        ...this.queryCondition,
+        submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),
+        submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
+        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',
+        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',
+      }
+      this.table.loading = true
+      this.$api.basics.getDisposeRegisterList(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data.data || [];
+          this.table.dataSource = result.map(item => {
+            return {
+              key: getUuid(),
+              ...item,
+              operationDataBtn: this.createOperationBtn(item.approvalStatus)
+            };
+          });
+          this.table.totalCount = res.data.data.count || 0;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      }).finally(() => {
+        this.table.loading = false
+      })
+    },
+    // 生成操作按钮
+    createOperationBtn (type) {
+      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4  
+      console.log('生成按钮', type)
+      let arr = []
+      // 草稿 已驳回
+      if (['0', '3'].includes(String(type))) {
+        arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+        arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+      }
+      // 待审批
+      if (['2'].includes(type)) {
+        arr.push({iconType: 'edit', text: '审批', editType: 'approval'})
+      }
+      // 已审批
+      if (['1'].includes(type)) {
+        arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+      }
+      arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
+      return arr
+    },
+    operationFun (type, record) {
+      if (['edit', 'detail', 'approval', 'readApproval'].includes(type)) {
+        this.goPage(type, record)
+      }
+    },
     // 重置查询条件
     restQuery() {
       let projectId = this.queryCondition.projectId
       this.queryCondition = utils.deepClone(queryCondition)
       this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       this.alterationDate = []
+    },
+    handleChange(data) {
+      this.queryCondition.pageNum = data.pageNo;
+      this.queryCondition.pageSize = data.pageLength;
+      this.query();
     },
     // 搜索
     onSearch () {
@@ -431,17 +497,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .scheduleChanges {
-  .from-second {
-    padding-top: 14px;
-  }
+   position: relative;
   .box {
     display: inline-block;
-  }
-  .box-left {
-    margin-left: 10px;
-  }
-  .custom-table {
-    padding-bottom: 60px;
   }
 }
 .search-content-box{
