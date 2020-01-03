@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2019-12-27 16:45:17
+ * @LastEditTime : 2020-01-03 15:52:25
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -91,7 +91,7 @@
           <a-table
             :loading="loading"
             :columns="exceptionListColumns"
-            :dataSource="tableData"
+            :dataSource="tableDataList"
             class="custom-table td-pd10"
             :pagination="false"
             >
@@ -105,7 +105,7 @@
               </div>
             </template>
           </a-table>
-          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+          <no-data-tips v-show="tableDataList.length === 0"></no-data-tips>
           <SG-FooterPagination
             :pageLength="condition.pageSize"
             :totalCount="iexceptionCount"
@@ -118,9 +118,9 @@
     <div class="particulars-nav" v-if="changeType === 'set'">
       <span class="section-title blue">盘点结果说明</span>
       <div class="particulars-obj" style="line-height: 64px;">
-        盘点结果：<a-textarea placeholder="请输入盘点结果说明"
+        <span class="required-color">盘点结果：</span><a-textarea placeholder="请输入盘点结果说明"
             :autosize="{ minRows: 3, maxRows: 3 }"
-            style="width: 94%;"
+            style="width: 93%;"
             maxlength="200"
             v-model="checkDetail"
             />
@@ -156,6 +156,7 @@ export default {
   props: {},
   data () {
     return {
+      routeData: '',
       newShow: false,
       assetsShow: false,
       taskId: '',                  // 任务id
@@ -178,6 +179,7 @@ export default {
       exceptionListColumns: [...exceptionList],    // 异常列表表头
       loading: false,
       tableData: [],
+      tableDataList: [],
       location: '',
       queryCondition: {     // 资产清单搜索条件
         checkStatus: '',    // 盘点状态
@@ -236,7 +238,7 @@ export default {
         taskId: '',
         checkId: this.checkId,            // 盘点id
         name: this.queryCondition.name,                  // 资源名称/编码
-        checkResults: '',                                // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
+        checkResults: '0,1,2',                                // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
         checkStatus: this.queryCondition.checkStatus,    // 盘点状态(0-未盘点 1-已盘点)
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum
@@ -289,7 +291,7 @@ export default {
         taskId: '',
         checkId: this.checkId, // 盘点id
         name: '',              // 资源名称/编码
-        checkResults: this.condition.checkResult,  // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
+        checkResults: this.condition.checkResults,  // 盘点结果可多选(0盘亏 2信息有误 3盘盈)
         checkStatus: '',       // 盘点状态(0-未盘点 1-已盘点)
         pageSize: this.condition.pageSize,
         pageNum: this.condition.pageNum
@@ -302,7 +304,7 @@ export default {
           this.failCount = res.data.data.failCount            // 盈亏总数
           this.successCount = res.data.data.successCount      // 盘盈总数
           this.iexceptionCount = res.data.data.count          // 分页总数
-          this.tableData = data.map((item, index) => {
+          this.tableDataList = data.map((item, index) => {
             item.key = index
             return item
           })
@@ -313,6 +315,10 @@ export default {
     },
     // 提交盘点单
     save () {
+      if (!this.checkDetail) {
+        this.$message.info('请输入盘点结果')
+        return
+      }
       let _this = this
       _this.$confirm({
         title: '提示',
@@ -324,7 +330,7 @@ export default {
     },
     assetCheckInstCheckExe () {
       let obj = {
-        resultId: this.checkId,  // 盘点单id
+        checkId: this.checkId,  // 盘点单id
         checkDetail: this.checkDetail
       }
       let loadingName = this.SG_Loding('保存中...')
@@ -397,11 +403,10 @@ export default {
   created () {
   },
   mounted () {
-    console.log(this.$route.query)
-    // this.particularsData = JSON.parse(this.$route.query.record)
-    // this.checkId = this.particularsData[0].checkId
-    // this.changeType = this.particularsData[0].changeType
-    this.changeType = this.$route.query.type   // set盘点登记
+    this.routeData = JSON.parse(this.$route.query.quersData)
+    console.log(this.routeData, '0909090')
+    this.checkId = this.routeData[0].checkId
+    this.changeType = this.routeData[0].type
     this.query()
     this.assetCheckInstAsseDetail()   // 资产清单
     this.exceptionTypes()  // 异常列表
@@ -435,6 +440,15 @@ export default {
   }
   .file {
     margin: 20px 0 0 40px;
+  }
+  .required-color:before {
+    display: inline-block;
+    margin-right: 4px;
+    content: '*';
+    font-family: SimSun;
+    line-height: 1;
+    font-size: 12px;
+    color: #f5222d;
   }
 }
 </style>

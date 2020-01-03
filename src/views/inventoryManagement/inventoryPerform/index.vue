@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2019-12-27 11:12:29
+ * @LastEditTime : 2020-01-03 15:57:58
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -23,24 +23,26 @@
       </div>
     </Cephalosome>
     <div>
-      <a-table
-        class="custom-table td-pd10"
-        :loading="table.loading"
-        :pagination="false"
-        :columns="table.columns"
-        :dataSource="table.dataSource"
-        :locale="{emptyText: '暂无数据'}"
-      >
-        <template slot="progress" slot-scope="text, record">
-          <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.progress) || 0" />
-            </div>
-        </template>
-        <template slot="operation" slot-scope="text, record">
-          <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          <span v-show="+record.checkStatus === 0" @click="goPage('set', record)" class="btn_click">登记盘点结果</span>
-        </template>
-      </a-table>
+      <div class="table-layout-fixed table-border">
+        <a-table
+          class="custom-table td-pd10"
+          :loading="table.loading"
+          :pagination="false"
+          :columns="table.columns"
+          :dataSource="table.dataSource"
+          :locale="{emptyText: '暂无数据'}"
+        >
+          <template slot="progress" slot-scope="text, record">
+            <div style="padding-right: 10px;">
+                <a-progress :percent="Number(record.progress) || 0" />
+              </div>
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+            <span v-show="+record.checkStatus === 2 || +record.checkStatus === 0" @click="goPage('set', record)" class="btn_click">登记盘点结果</span>
+          </template>
+        </a-table>
+      </div>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -78,7 +80,7 @@ const approvalStatusData = [
   },
   {
     name: '进行中',
-    value: '0'
+    value: '2'
   },
   {
     name: '已完成',
@@ -165,9 +167,9 @@ export default {
   },
   watch: {
     '$route' () {
-      if (this.$route.path === '/countingTask' && this.$route.query.refresh) {
-      this.queryCondition.pageNum = 1
-      this.queryCondition.pageSize = 10
+      if (this.$route.path === '/inventoryManagement/inventoryPerform' && this.$route.query.refresh) {
+        this.queryCondition.pageNum = 1
+        this.queryCondition.pageSize = 10
         this.query()
       }
     }
@@ -217,10 +219,11 @@ export default {
     },
     // 页面跳转
     goPage(type, record) {
-      let query = {
-        type
-      }
-      this.$router.push({ path: operationTypes[type], query });
+      let querys = JSON.stringify([{
+        type,
+        checkId: record.checkId
+      }])
+      this.$router.push({ path: operationTypes[type], query: {quersData: querys} });
     }
   }
 };

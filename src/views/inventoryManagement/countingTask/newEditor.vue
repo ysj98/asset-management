@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-02 17:49:34
+ * @LastEditTime : 2020-01-03 10:37:14
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -202,6 +202,7 @@ export default {
   props: {},
   data () {
     return {
+      organId: '',
       taskId: '',
       cancelData: [],          // 取消还原数据
       inventoryAssetCount: 0,  // 资产总数
@@ -352,7 +353,7 @@ export default {
           taskId: this.taskId,
           checkId: record.checkId,                // 盘点单ID
           checkName: record.checkName,            // 盘点单名称
-          organId: record.organId,                // 组织机构ID
+          organId: this.organId,                // 组织机构ID
           chargePersonId: record.chargePerson,    // 负责人 多个逗号隔开
           beginDate: moment(record.beginDate).format('YYYY-MM-DD'),            // 开始时间
           endDate:moment(record.endDate).format('YYYY-MM-DD'),                // 结束时间
@@ -492,6 +493,7 @@ export default {
         console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
+          this.organId = data.organId
           let labelData = []
           let keyData = []
           // 获取名称
@@ -508,28 +510,16 @@ export default {
           // 编辑回填
           this.chargePersonOpt = [{label: labelData.length > 0 ? labelData.join(',') : '', key: keyData.length > 0 ? keyData.join(',') : ''}]
           this.chargePersonArrOpt = data.chargePersonList
-          // 新增回填
-          if (this.type === 'set') {
-            this.form.setFieldsValue({
-              taskId: this.taskId,
-              taskName: data.taskName,
-              planName: data.planName,
-              chargePerson: keyData.length > 0 ? keyData.join(',') : '',
-              checkRange: data.checkRange,
-              defaultValue: [moment(data.beginDate), moment(data.endDate)]
-            })
-          } else {
-            this.form.setFieldsValue({
-              taskId: this.taskId,
-              taskName: data.taskName,
-              planName: data.planName,
-              chargePerson: keyData.length > 0 ? keyData.join(',') : '',
-              checkRange: data.checkRange,
-              remark: data.remark,
-              defaultValue: [moment(data.beginDate), moment(data.endDate)]
-            })
-          }
-          // this.particularsData = data
+          // 信息回填
+          this.form.setFieldsValue({
+            taskId: this.taskId,
+            taskName: data.taskName,
+            planName: data.planName,
+            chargePerson: keyData.length > 0 ? keyData.join(',') : '',
+            checkRange: data.checkRange,
+            remark: this.type === 'set' ? '' : data.remark,
+            defaultValue: [moment(data.beginDate), moment(data.endDate)]
+          })
         } else {
           this.$message.error(res.data.message)
         }

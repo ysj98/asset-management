@@ -481,6 +481,7 @@ export const inventoryManagement = {
     // 删除盘点单
     deleteCheckInst: '/ams/assetCheckInst/deleteCheckInst'
   },
+  // 盘点执行
   inventoryPerform: {
     // 查询盘点列表（查询执行人为当前用户的数据）
     assetCheckInstList: '/ams/assetCheckInst/list',
@@ -491,7 +492,7 @@ export const inventoryManagement = {
     // 盘点结果登记或编辑
     assetCheckInstCheckResult: '/ams/assetCheckInst/checkResult',
     // 盘点资产清单列表
-    assetCheckInstAsseDetail: '/ams/assetCheckInst/asseDetail',
+    assetCheckInstAsseDetail: '/ams/assetCheckInst/assetDetail',
     // 盘盈资产删除
     assetCheckInstDeleteByCheckResult: '/ams/assetCheckInst/deleteByCheckResult',
     // 资产盘点提交

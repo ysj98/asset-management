@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 15:37:38
- * @LastEditTime : 2019-12-26 17:23:04
+ * @LastEditTime : 2020-01-03 15:23:08
  * @LastEditors  : Please set LastEditors
  * @Description: 登记盘盈资产
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\assetsInventorySurplus.vue
@@ -119,6 +119,8 @@ export default {
       allWidth: 'width: 214px',
       widthBox: 'width: 86%',
       newCardData: {
+        assetType: '',
+        objectType: '',
         assetAddress: '',
         assetName: '',
         remark: '',
@@ -203,17 +205,19 @@ export default {
             })
           }
           let obj = {
+            resultId: this.resultId,  // 盘点id
             checkId: this.checkId,                 // 盘点单id
             taskId: this.taskId,                  // 任务id
             assetId: this.assetId,                 // 资产id
             checkResult: this.newData === 'new' ? '3' : this.checkResult,             // 盘点结果(0盘亏 1正常 2信息有误 3盘盈)
             remark: values.remark,                  // 备注(异常说明)
             assetName: values.assetName,               // 资产名称(非盘盈利为空)
-            assetType: values.assetType,               // 资产类型(非盘盈利为空)
-            objectType: values.objectType,              // 资产分类(非盘盈利为空)
+            assetType: this.newCardData.assetType,               // 资产类型(非盘盈利为空)
+            objectType: this.newCardData.objectType,              // 资产分类(非盘盈利为空)
             assetAddress: values.assetAddress,            // 资产位置(非盘盈利为空)
             attachmentList: files        // 附件
           }
+          console.log(obj, '-=-=-=-=')
           let loadingName = this.SG_Loding('保存中...')
           this.$api.inventoryManagementApi.assetCheckInstCheckResult(obj).then(res => {
             if (Number(res.data.code) === 0) {
@@ -255,14 +259,14 @@ export default {
             this.form.setFieldsValue({
               remark: this.particularsData.remark,
               assetName: this.particularsData.assetName,
-              assetType: this.particularsData.assetType,
-              objectType: this.particularsData.objectType,
-              assetAddress: this.particularsData.assetAddress
+              assetAddress: this.particularsData.location
             })
+            this.newCardData.assetType = String(this.particularsData.assetType) || ''             // 资产类型
+            this.newCardData.objectType = String(this.particularsData.objectType) || ''             // 资产分类
             this.checkResult = this.particularsData.checkResult
             let files = []
-            if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
-              data.amsAttachmentList.forEach(item => {
+            if (data.attachmentList && data.attachmentList.length > 0) {
+              data.attachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
                 name: item.oldAttachmentName
