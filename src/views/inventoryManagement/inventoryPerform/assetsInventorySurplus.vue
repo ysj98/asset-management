@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 15:37:38
- * @LastEditTime : 2020-01-03 15:23:08
+ * @LastEditTime : 2020-01-03 17:19:39
  * @LastEditors  : Please set LastEditors
  * @Description: 登记盘盈资产
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\assetsInventorySurplus.vue
@@ -89,6 +89,7 @@ export default {
   props: {},
   data () {
     return {
+      organId: '',
       resultId: '',
       checkId: '',   // 盘点单id
       taskId: '',     // 任务id
@@ -120,7 +121,7 @@ export default {
       widthBox: 'width: 86%',
       newCardData: {
         assetType: '',
-        objectType: '',
+        assetClassify: '',
         assetAddress: '',
         assetName: '',
         remark: '',
@@ -213,7 +214,7 @@ export default {
             remark: values.remark,                  // 备注(异常说明)
             assetName: values.assetName,               // 资产名称(非盘盈利为空)
             assetType: this.newCardData.assetType,               // 资产类型(非盘盈利为空)
-            objectType: this.newCardData.objectType,              // 资产分类(非盘盈利为空)
+            objectType: this.newCardData.assetClassify,              // 资产分类(非盘盈利为空)
             assetAddress: values.assetAddress,            // 资产位置(非盘盈利为空)
             attachmentList: files        // 附件
           }
@@ -235,19 +236,21 @@ export default {
         }
       })
     },
-    newFn (str, resultId, checkId, taskId) {
+    newFn (str, resultId, checkId, taskId, organId) {
       this.newData = str
       this.resultId = resultId
       this.checkId = checkId   // 盘点单id
       this.taskId = taskId     // 任务id
+      this.organId = organId
     },
     // 查询详情
-    query (str, resultId, checkId, taskId, assetId) {
+    query (str, resultId, checkId, taskId, assetId, organId) {
       this.newData = str
       this.resultId = resultId
       this.checkId = checkId   // 盘点单id
       this.taskId = taskId     // 任务id
       this.assetId = assetId   // 资产id
+      this.organId = organId
       let obj = {
         resultId: this.resultId  // 盘点id
       }
@@ -262,7 +265,7 @@ export default {
               assetAddress: this.particularsData.location
             })
             this.newCardData.assetType = String(this.particularsData.assetType) || ''             // 资产类型
-            this.newCardData.objectType = String(this.particularsData.objectType) || ''             // 资产分类
+            this.newCardData.assetClassify = String(this.particularsData.objectType) || ''             // 资产分类
             this.checkResult = this.particularsData.checkResult
             let files = []
             if (data.attachmentList && data.attachmentList.length > 0) {

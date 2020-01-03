@@ -498,7 +498,11 @@ export const inventoryManagement = {
     // 资产盘点提交
     assetCheckInstCheckExe: '/ams/assetCheckInst/checkExe',
     // 根据任务id查询盘点单
-    queryListByTaskId: '/ams/assetCheckInst/queryListByTaskId'
+    queryListByTaskId: '/ams/assetCheckInst/queryListByTaskId',
+    // 盘点资产清单导出
+    downloadTemplate: '/ams/assetCheckInst/downloadTemplate',
+    // 盘点清单导入
+    importExcel: '/ams/assetCheckInst/importExcel',
   },
   // 盘点报告
   inventoryReport: {

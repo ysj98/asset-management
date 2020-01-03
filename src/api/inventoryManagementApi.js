@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2019-12-25 09:48:20
- * @LastEditTime : 2020-01-02 17:20:11
+ * @LastEditTime : 2020-01-03 17:25:53
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点管理
  * @FilePath: \asset-management\src\api\disposalManagement.js
@@ -87,7 +87,14 @@ export function assetCheckInstCheckExe (data) {
 export function queryListByTaskId (data) {
   return axiosGet(inventoryManagement.inventoryPerform.queryListByTaskId, data)
 }
-
+// 盘点资产清单导出
+export function downloadTemplate (data) {
+  return axiosGet(inventoryManagement.inventoryPerform.downloadTemplate, data, false, {responseType: 'blob'})
+}
+// 盘点清单导入
+export function importExcel (data) {
+  return axiosPost(inventoryManagement.inventoryPerform.importExcel, data)
+}
 
 // 盘点管理 - 盘点报告
 // 新建或编辑盘点报告
