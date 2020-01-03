@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-03 17:24:42
+ * @LastEditTime : 2020-01-03 18:17:41
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -459,12 +459,12 @@ export default {
         return this.$message.error('请先上传文件!')
       }
       let loadingName = this.SG_Loding('导入中...')
-      console.log(this.formData, '-=-=-=')
       this.$api.inventoryManagementApi.importExcel(this.formData).then(res => {
         if (res.data.code === '0') {
+          e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
-            this.query()
+            this.assetCheckInstAsseDetail()
           })
         } else {
           e.target.value = ''
