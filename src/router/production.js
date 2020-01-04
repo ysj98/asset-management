@@ -266,7 +266,10 @@ let proRouter = [
   {
     path: '/disposalRegister',
     name: '处置登记',
-    component: () => import('@/views/disposalManagement/disposalRegister/index')
+    component: () => import('@/views/disposalManagement/disposalRegister/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/disposalRegister/create',
@@ -383,6 +386,11 @@ let proRouter = [
     path: '/inventoryPlan/detail',
     name: '详情盘点计划',
     component: () => import('@/views/inventoryManagement/inventoryPlan/detailPlan')
+  },
+  {
+    path: '/inventoryPlan/approval',
+    name: '审批盘点计划',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/approvalPlan')
   },
 ]
 export default proRouter
