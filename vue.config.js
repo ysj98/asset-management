@@ -63,11 +63,8 @@ class Proxy {
 // 实例化 Proxy 类
 const proxy = new Proxy()
 // 添加代理数据，如需代理多个地址，继续调用实例的 addUrls 方法即可
-proxy.addUrls(['/ams/checktask/'], localhost, mock)
-proxy.addUrls(['/ams/checkplan/'], localhost, mock)
+proxy.addUrls(['/ams/checkplan/', '/ams/checktask/'], localhost, 'http://192.168.3.28:8080')
 proxy.addUrls(proxyURL, localhost, target)
-proxy.addUrls(['/zhoubaipu/'], localhost, mock)
-
 // proxy.addUrls(['/ams/'], localhost, mock)
 // 配置
 module.exports = {

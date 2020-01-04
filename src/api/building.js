@@ -126,3 +126,7 @@ export function getImplementRecord (data) {
 export function inventoryDetail (data) {
   return axiosPost(inventory.inventoryDetail, data)
 }
+// 盘点计划改变
+export function updateCheckPlanStatus (data) {
+  return axiosPost(inventory.updateCheckPlanStatus, data)
+}

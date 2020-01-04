@@ -533,6 +533,7 @@ export const inventory = {
   createInventoryPlan: '/ams/checkplan/insertCheckPlan',
   editInventoryPlan: '/ams/checkplan/updateCheckPlan',
   inventoryDetail: '/ams/checkplan/queryCheckPlanDetail',
+  updateCheckPlanStatus: '/ams/checkplan/updateCheckPlanStatus'
 }
 // 处置登记
 export const disposeRegister = {

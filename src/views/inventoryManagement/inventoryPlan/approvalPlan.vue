@@ -1,14 +1,12 @@
 <!--
- * @Date: 2019-12-23 10:16:18
- * @Description: 详情盘点计划
+ * @Date: 2020-01-04 13:37:56
+ * @Description: 审批盘点计划
  -->
   <script>
 import createPlan from './createPlan.vue'
 export default {
   // 组件名字
-  name: 'detailPlan',
+  name: 'approvalPlan',
   // 继承组件
   extends: createPlan
 }
-</script>
-
