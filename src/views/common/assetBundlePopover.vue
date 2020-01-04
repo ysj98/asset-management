@@ -327,6 +327,9 @@ export default {
               element.warrantNbr = undefined
               element.warrantNbrData = []      // 用于存储单个下拉框数据
               element.warrantGeneralData = []  // 用于存权证号总是数据
+              element.disposeCost = ''         // 处置成本
+              element.disposeReceive = ''      // 处置收入
+              element.remark = ''              // 处置备注
               arrData.push(element)
             })
             this.tableData = data

@@ -543,7 +543,7 @@ export const disposeRegister = {
   // 处置登记-分页查询处置清单列表 post
   getRegisterDetailListPage: '/ams/disposeRegister/getDetailListPage',
   // 处置登记-新增保存
-  addRegisterSave: '/ams/registerOrder/addSave',
+  addRegisterSave: '/ams/disposeRegister/addSave',
   // 处置登记-查询处置清单列表
   getDisposeRegisterDetailList: '/ams/disposeRegister/getDetailList',
   // 处置登记-查询收付款计划列表

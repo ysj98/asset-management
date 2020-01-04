@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-03 10:37:14
+ * @LastEditTime : 2020-01-04 15:29:01
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -267,7 +267,7 @@ export default {
           let tableArr = this.table.dataSource
           for (let i = 0; i < tableArr.length; i++) {
             if (!tableArr[i].IsEdit) {
-              this.$message.info('请选保存盘点表列表')
+              this.$message.info('请先保存盘点表列表')
               return
             }
           }

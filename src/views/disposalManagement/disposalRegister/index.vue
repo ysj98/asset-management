@@ -252,10 +252,10 @@ const queryCondition =  {
     pageNum: 1,     // 当前页
     pageSize: 10,    // 每页显示记录数
     projectId: '',   // 资产项目Id
-    approvalStatus: [''],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-    assetType: [''],    // 资产类型Id
-    disposeType: [''],   // 处置类型
-    disposeMode: [''],    // 处置方式
+    approvalStatus: [],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+    assetType: [],    // 资产类型Id
+    disposeType: [],   // 处置类型
+    disposeMode: [],    // 处置方式
   }
 export default {
   components: {SearchContainer, OperationPopover, TreeSelect, segiIcon, noDataTips},
@@ -387,11 +387,11 @@ export default {
       let len = data.length
       // 如果点击全选或者取消全选
       if (data[len-1] === '' || len === 0) {
-        return data = ['']
+        return data = []
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === (dataOptions.length-1)) {
-        return data = ['']
+        return data = []
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
@@ -477,7 +477,8 @@ export default {
       let query = {
         type,
         organId: this.organId,
-        organName: this.organName
+        organName: this.organName,
+        disposeRegisterOrderId: type === 'create' ? '' : record.disposeRegisterOrderId
       };
       this.$router.push({ path: operationTypes[type], query });
     },
