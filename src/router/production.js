@@ -318,7 +318,20 @@ let proRouter = [
   {
     path: '/inventoryManagement/exceptionManagement',
     name: '异常管理',
-    component: () => import('@/views/inventoryManagement/exceptionManagement/index')
+    component: () => import('@/views/inventoryManagement/exceptionManagement/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/inventoryManagement/exceptionManagement/handle',
+    name: '处理',
+    component: () => import('@/views/inventoryManagement/exceptionManagement/handleException')
+  },
+  {
+    path: '/inventoryManagement/exceptionManagement/detail',
+    name: '详情',
+    component: () => import('@/views/inventoryManagement/exceptionManagement/checkException')
   },
   {
     path: '/inventoryManagement/inventoryPerform',

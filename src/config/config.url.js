@@ -510,10 +510,12 @@ export const inventoryManagement = {
   },
   // 盘点异常
   exceptionManagement: {
-    // 异常处理
-    handleException: '/ams/assetCheckInst/handleException',
+    // 异常处理登记信息查询
+    getCheckResultHandle: '/ams/assetCheckResult/getCheckResultHandle',
+    // 异常处理登记保存
+    handleException: '/ams/assetCheckResult/handleException',
     // 异常管理列表查询
-    exceptionList: '/ams/assetCheckInst/exceptionList'
+    exceptionList: '/ams/assetCheckResult/exceptionList'
   }
 }
 // 盘点计划

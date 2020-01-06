@@ -32,9 +32,14 @@
             :columns="table.columns"
             :dataSource="table.dataSource"
           >
-            <template slot="tranProgress" slot-scope="text, record">
+            <template slot="chosenId" slot-scope="text, record">
               <div style="padding-right: 10px;">
-                <a-progress :percent="Number(record.tranProgress) || 0" />
+                <a-radio :checked="record.taskId === chosenTaskId" @change="changeRadio(record)"></a-radio>
+              </div>
+            </template>
+            <template slot="checkRate" slot-scope="text, record">
+              <div style="padding-right: 10px;">
+                <a-progress :percent="Number(record.checkRate) || 0" />
               </div>
             </template>
           </a-table>
@@ -90,14 +95,20 @@ const taskStatusData = [
 
 let columns = [
   {
+    title: "选择",
+    dataIndex: "chosenId",
+    scopedSlots: { customRender: "chosenId" },
+    width: 60
+  },
+  {
     title: "任务编号",
     dataIndex: "taskId",
-    width: 150
+    width: 100
   },
   {
     title: "任务名称",
     dataIndex: "taskName",
-    width: 120
+    width: 160
   },
   {
     title: "负责人",
@@ -107,13 +118,13 @@ let columns = [
   {
     title: "计划执行时间",
     dataIndex: "beginDateEndDate",
-    width: 100
+    width: 160
   },
   {
     title: "进度",
     dataIndex: "checkRate",
     scopedSlots: { customRender: "checkRate" },
-    width: 200
+    width: 120
   },
   {
     title: "任务状态",
@@ -144,16 +155,27 @@ export default {
         dataSource: [],
         loading: false,
         totalCount: 0
-      }
+      },
+      chosenTaskId: '',
+      chosenTaskName: ''
     }
   },
   methods: {
+    changeRadio (record) {
+      this.chosenTaskId = record.taskId
+      this.chosenTaskName = record.taskName
+    },
     // 关闭弹窗
     handleCancel() {
       this.show = false
     },
     // 提交
     handleSubmit () {
+      if (!this.chosenTaskId) {
+        this.$message.info('请选择所属盘点任务')
+        return
+      }
+      this.$emit('chosenTaskIdFn', this.chosenTaskId, this.chosenTaskName)
     },
     // 状态发生变化
     taskStatusFn (value) {
@@ -178,6 +200,14 @@ export default {
         }
       }
       return data
+    },
+    // 外面给回来选中的数据
+    redactCheckedDataFn (taskId) {
+      console.log(taskId)
+      if (this.firstCall) {
+        this.query()
+        this.firstCall = false
+      }
     },
     // 搜索
     onSearch () {
@@ -214,9 +244,9 @@ export default {
       )
     },
     handleChange(data) {
-      this.queryCondition.pageNum = data.pageNo;
-      this.queryCondition.pageSize = data.pageLength;
-      this.query();
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.query()
     },
   }
 }
