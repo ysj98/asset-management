@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2019-12-27 17:54:38
+ * @LastEditTime : 2020-01-02 18:05:34
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -15,17 +15,17 @@
           <a-col class="playground-col" :span="8">任务单号：{{particularsData.taskId || '--'}}</a-col>
           <a-col class="playground-col" :span="8">任务名称：{{particularsData.taskName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属计划：{{particularsData.planName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">负责人：{{particularsData.chargePersonList || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">计划执行时间：{{particularsData.changeTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">状态：{{particularsData.changeDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">实际执行时间：{{particularsData.deliveryCompany || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">负责人：{{particularsData.userName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划执行时间：{{particularsData.endDate ? `${particularsData.beginDate} - ${particularsData.endDate}` : '--'}}</a-col>
+          <a-col class="playground-col" :span="8">状态：{{particularsData.taskStatusName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">实际执行时间：{{particularsData.realBeginDate || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产盘点范围：{{particularsData.checkRange || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         </a-row>
       </div>
     </div>
     <div class="countingTaskDetail-nav">
-      <span class="section-title blue">资产列表</span>
+      <span class="section-title blue">资产列表 (资产总数：{{inventoryAssetCount || 0}})</span>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
           <a-table
@@ -35,15 +35,16 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
-          <template slot="tranProgress" slot-scope="text, record">
+          <template slot="progress" slot-scope="text, record">
             <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
+              <a-progress :percent="Number(record.progress) || 0" />
             </div>
           </template>
           <template slot="operation" slot-scope="text, record">
             <span class="btn_click mr15">详情</span>
           </template>
           </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -54,11 +55,12 @@
           <a-table
             :loading="loading"
             :columns="InventoryReportColumns"
-            :dataSource="tableData"
+            :dataSource="inventoryReportData"
             class="custom-table td-pd10"
             :pagination="false"
             >
           </a-table>
+          <no-data-tips v-show="inventoryReportData.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -66,6 +68,7 @@
 </template>
 
 <script>
+import noDataTips from "@/components/noDataTips"
 import {utils} from '@/utils/utils.js'
 const columns = [
   {
@@ -87,9 +90,6 @@ const columns = [
     title: "资产总数",
     dataIndex: "checkCount"
   }, {
-    title: "配套资源总数",
-    dataIndex: "taskId"
-  },  {
     title: "盘点进展",
     dataIndex: "progress",
     scopedSlots: { customRender: "progress" },
@@ -127,10 +127,12 @@ const InventoryReportColumns = [
   }
 ]
 export default {
-  components: {},
+  components: {noDataTips},
   props: {},
   data () {
     return {
+      inventoryAssetCount: 0,
+      taskId: '',
       changeType: '',
       changeOrderId: '',
       particularsData: {},
@@ -138,7 +140,8 @@ export default {
       columns: [...columns],
       InventoryReportColumns: [...InventoryReportColumns],
       loading: false,
-      tableData: [],
+      tableData: [],              // 资产列表表格数据
+      inventoryReportData: [],    // 盘点报告表格数据
       location: '',
       noPageTools: false,
       queryCondition: {
@@ -154,12 +157,20 @@ export default {
     // 查询详情
     query () {
       let obj = {
-        changeOrderId: this.changeOrderId
+        taskId: this.taskId
       }
-      this.$api.assets.getChangeDetail(obj).then(res => {
+      this.$api.inventoryManagementApi.queryCheckTaskDetail(obj).then(res => {
         console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
+          let arr = []
+          // 获取名称
+          if (data.chargePersonList.length > 0) {
+            data.chargePersonList.forEach(item => {
+              arr.push(item.userName)
+            }) 
+          }
+          data.userName = arr.length > 0 ? arr.join(',') : ''
           this.particularsData = data
         } else {
           this.$message.error(res.data.message)
@@ -167,23 +178,20 @@ export default {
       })
     },
     // 资产列表
-    getChangeDetailPageFn () {
+    queryListByTaskIdFn () {
       this.loading = true
       let obj = {
-        changeOrderId: this.changeOrderId,
-        pageNum: this.queryCondition.pageNum,
-        pageSize: this.queryCondition.pageSize
+        taskId: this.taskId
       }
-      this.$api.assets.getChangeDetailPage(obj).then(res => {
+      this.$api.inventoryManagementApi.queryListByTaskId(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = res.data.data
           data.forEach((item, index) => {
             item.key = index
-            item.newOriginalValue = item.originalValue
-            item.changeProjectId = item.changeProjectName
+            item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
+            this.inventoryAssetCount = this.inventoryAssetCount + Number(item.checkCount)               // 资产总数
           })
           this.tableData = data
-          this.queryCondition.count = res.data.data.count
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -191,15 +199,35 @@ export default {
         }
       })
     },
+    // 盘点报告
+    queryByTaskIdFn () {
+      this.loading = true
+      let obj = {
+        taskId: this.taskId
+      }
+      this.$api.inventoryManagementApi.queryByTaskId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          data.forEach((item, index) => {
+            item.key = index
+          })
+          this.inventoryReportData = data
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
+    }
   },
   created () {
   },
   mounted () {
-    // this.particularsData = JSON.parse(this.$route.query.record)
-    // this.changeOrderId = this.particularsData[0].changeOrderId
-    // this.changeType = this.particularsData[0].changeType
+    this.particularsData = JSON.parse(this.$route.query.quersData)
+    this.taskId = this.particularsData[0].taskId
     this.query()
-    this.getChangeDetailPageFn()
+    this.queryListByTaskIdFn()
+    this.queryByTaskIdFn()
   }
 }
 </script>
@@ -211,7 +239,6 @@ export default {
         padding: 20px 0 20px 40px;
         .playground-row {
           .playground-col {
-            height: 40px;
             line-height: 40px;
             font-size: 12px;
           }

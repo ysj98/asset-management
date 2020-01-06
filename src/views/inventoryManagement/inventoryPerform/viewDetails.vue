@@ -1,9 +1,9 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 18:08:25
- * @LastEditTime : 2019-12-26 18:18:08
+ * @LastEditTime : 2020-01-03 15:26:17
  * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
+ * @Description: 盘点结果
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\viewDetails.vue
  -->
 <template>
@@ -86,8 +86,8 @@ export default {
           let data = res.data.data
           this.particularsData = data
           let files = []
-          if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
-            data.amsAttachmentList.forEach(item => {
+          if (data.attachmentList && data.attachmentList.length > 0) {
+            data.attachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
                 name: item.oldAttachmentName

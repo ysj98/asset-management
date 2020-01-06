@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 10:40:03
- * @LastEditTime : 2019-12-26 17:22:42
+ * @LastEditTime : 2020-01-03 14:44:49
  * @LastEditors  : Please set LastEditors
  * @Description: 登记盘点结果
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\inventoryResultRegistration.vue
@@ -173,6 +173,7 @@ export default {
             })
           }
           let obj = {
+            resultId: this.resultId,            // 盘点结果id
             checkId: this.checkId,                 // 盘点单id
             taskId: this.taskId,                  // 任务id
             assetId: this.assetId,                 // 资产id
@@ -226,8 +227,8 @@ export default {
               this.requiredShow = true
             }
             let files = []
-            if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
-              data.amsAttachmentList.forEach(item => {
+            if (data.attachmentList && data.attachmentList.length > 0) {
+              data.attachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
                 name: item.oldAttachmentName

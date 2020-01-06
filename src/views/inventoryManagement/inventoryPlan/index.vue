@@ -52,7 +52,7 @@
         <!-- 输入框 -->
         <a-input-search
           :style="allStyle"
-          v-model="queryCondition.ccccccccname"
+          v-model="queryCondition.planName"
           placeholder="盘点单名称/编号"
           maxlength="30"
           @search="onSearch"
@@ -96,12 +96,12 @@ const operationTypes = {
   detail: "/inventoryPlan/detail",
   create: '/inventoryPlan/create',
   edit: '/inventoryPlan/edit',
-  approval: '/inventoryPlan/detail' // 待审核
+  approval: '/inventoryPlan/approval' // 待审核
 };
 const queryCondition = {
   approvalStatus: [''], // 状态
   organId: "",
-  ccccccccname: "",
+  planName: "",
   beginDate: null,
   endDate: null,
   pageNum: 1, // 当前页
@@ -138,7 +138,7 @@ let columns = [
   {
     title: "计划名称",
     dataIndex: "planName",
-    width: 120
+    width: 200
   },
   {
     title: "生效时间",
@@ -153,12 +153,12 @@ let columns = [
   {
     title: "实施频次",
     dataIndex: "exePreName",
-    width: 200
+    width: 120
   },
   {
     title: "创建人",
     dataIndex: "createByName",
-    width: 100
+    width: 120
   },
   {
     title: "创建时间",
@@ -177,6 +177,16 @@ let columns = [
     width: 100
   }
 ];
+let labelTypeMap = {
+  delete: {
+    name: '删除',
+    approvalStatus: '4'
+  },
+  readApproval: {
+    name: '反审核',
+    approvalStatus: '2'
+  }
+}
 export default {
   components: {
     noDataTips,
@@ -198,7 +208,14 @@ export default {
       }
     }
   },
-  created () {
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/inventoryPlan' && this.$route.query.refresh) {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+        this.query()
+      }
+    }
   },
   methods: {
     query() {
@@ -208,11 +225,9 @@ export default {
       let data = {
         ...this.queryCondition
       }
-      console.log('data', data)
       data.approvalStatus = data.approvalStatus.join(',')
-      data.beginDate = data.beginDate ? data.beginDate.format('YYYY-MM-DD hh:mm:ss') : ''
-      data.endDate = data.endDate ? data.endDate.format('YYYY-MM-DD hh:mm:ss') : ''
-      console.log(data)
+      data.beginDate = data.beginDate ? data.beginDate.format('YYYY-MM-DD') : ''
+      data.endDate = data.endDate ? data.endDate.format('YYYY-MM-DD') : ''
       this.table.loading = true
       this.$api.building.getPlanList(data).then(res => {
         if (res.data.code === '0') {
@@ -232,7 +247,6 @@ export default {
     // 生成操作按钮
     createOperationBtn (type) {
       // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4  
-      console.log('生成按钮', type)
       let arr = []
       // 草稿 已驳回
       if (['0', '3'].includes(String(type))) {
@@ -256,21 +270,29 @@ export default {
       if (['edit', 'detail', 'approval', 'readApproval'].includes(type)) {
         this.goPage(type, record)
       }
-      if (['delete'].includes(type)) {
+      if (['delete', 'readApproval'].includes(type)) {
+        let label = labelTypeMap[type]['name']
+        let approvalStatus = labelTypeMap[type]['approvalStatus']
         this.$SG_Modal.confirm({
-          title: `确定删除该计划吗?`,
+          title: `确定${label}该计划吗?`,
           okText: '确定',
           cancelText: '再想想',
           onOk: () => {
-          }
-        })
-      }
-      if (['readApproval'].includes(type)) {
-        this.$SG_Modal.confirm({
-          title: `确定反审核该计划吗?`,
-          okText: '确定',
-          cancelText: '再想想',
-          onOk: () => {
+            let loadingName = this.SG_Loding(label + '中...')
+            this.$api.building.updateCheckPlanStatus({approvalStatus, planId: record.planId}).then(res => {
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success(label + '成功!')
+                  this.query();
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            }).catch(() => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error(label + '失败！')
+              })
+            })
           }
         })
       }
@@ -287,6 +309,10 @@ export default {
         organId: this.queryCondition.organId,
         organName: this.organName
       };
+      if (type !== 'create') {
+        query.approvalStatusName = record.approvalStatusName
+        query.planId = record.planId
+      }
       this.$router.push({ path: operationTypes[type], query });
     },
     // 搜索

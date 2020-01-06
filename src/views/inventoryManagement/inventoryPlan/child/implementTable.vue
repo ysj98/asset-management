@@ -17,6 +17,7 @@
         :pageLength="queryCondition.pageSize"
         :totalCount="table.totalCount"
         location="absolute"
+        :noPageTools="true"
         v-model="queryCondition.pageNum"
         @change="handleChange"
       />
@@ -24,6 +25,7 @@
 </template>
 <script>
  import noDataTips from '@/components/noDataTips'
+ let getUuid = ((uuid = 1) => () => ++uuid)()
 let columns = [
   {
     title: "编号",
@@ -32,33 +34,33 @@ let columns = [
   },
   {
     title: "任务编号",
-    dataIndex: "taskName",
+    dataIndex: "taskId",
     width: "15%"
   },
   {
     title: "任务名称",
-    dataIndex: "checkRange",
+    dataIndex: "taskName",
     width: "20%"
   },
   {
     title: "负责人",
-    dataIndex: "chargePersonList",
-    width: "30%"
+    dataIndex: "chargePersonName",
+    width: "25%"
   },
   {
     title: "计划执行时间",
-    dataIndex: "deadline",
+    dataIndex: "beginDateendDate",
     width: "20%"
   },
   {
     title: "实际执行时间",
-    dataIndex: "deadlinee",
+    dataIndex: "realBeginDaterealEndDate",
     width: "20%"
   },
   {
     title: "任务状态",
-    dataIndex: "operation",
-    width: "8%"
+    dataIndex: "taskStatusName",
+    width: "13%"
   }
 ]
 let queryCondition = {
@@ -72,6 +74,7 @@ export default {
   data () {
     return {
       queryCondition: {...queryCondition},
+      planId: '',
       table: {
         columns,
         dataSource: [],
@@ -80,8 +83,28 @@ export default {
       }
     }
   },
+  created () {
+    this.planId = this.$route.query.planId || ''
+    this.query()
+  },
   methods: {
-    query () {},
+   query () {
+      let data = {
+        ...queryCondition,
+        planId: this.planId
+      }
+      return this.$api.building.getImplementRecord(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data.data || []
+          this.table.dataSource = result.map((item, i) => {
+            item.beginDateendDate = item.beginDate + item.endDate
+            item.realBeginDaterealEndDate = item.realBeginDate + item.realEndDate
+            return {...item, key: getUuid(), order: i + 1}
+          })
+          this.table.totalCount = res.data.data.count
+        }
+      })
+    },
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength

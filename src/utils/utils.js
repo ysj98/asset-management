@@ -407,7 +407,7 @@ class Units {
   // 用于遍历数组和对象元素
   each (o, callback = () => false) {
     // 如果是对象
-    if (this.isObeject(o) || this.isArray(o)) {
+    if (this.isObeject(o)) {
       for (let i in  o) {
         if (callback(o[i], i, o) === false) {
           return

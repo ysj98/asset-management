@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2019-12-25 09:48:20
- * @LastEditTime : 2019-12-30 10:04:06
+ * @LastEditTime : 2020-01-03 17:25:53
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点管理
  * @FilePath: \asset-management\src\api\disposalManagement.js
@@ -39,11 +39,19 @@ export function queryCheckTaskPageList (data) {
 }
 // 盘点任务详情
 export function queryCheckTaskDetail (data) {
-  return axiosGet(inventoryManagement.countingTask.queryCheckTaskDetail, data)
+  return axiosPost(inventoryManagement.countingTask.queryCheckTaskDetail, data)
 }
 // 编辑盘点任务
 export function updateCheckTask (data) {
   return axiosPost(inventoryManagement.countingTask.updateCheckTask, data)
+}
+// 盘点任务状态操作
+export function updateCheckTaskStatus (data) {
+  return axiosPost(inventoryManagement.countingTask.updateCheckTaskStatus, data)
+}
+// 删除盘点单
+export function deleteCheckInst (data) {
+  return axiosPost(inventoryManagement.countingTask.deleteCheckInst, data)
 }
 
 // 盘点执行
@@ -75,7 +83,18 @@ export function assetCheckInstDeleteByCheckResult (data) {
 export function assetCheckInstCheckExe (data) {
   return axiosPost(inventoryManagement.inventoryPerform.assetCheckInstCheckExe, data)
 }
-
+// 根据任务id查询盘点单
+export function queryListByTaskId (data) {
+  return axiosGet(inventoryManagement.inventoryPerform.queryListByTaskId, data)
+}
+// 盘点资产清单导出
+export function downloadTemplate (data) {
+  return axiosGet(inventoryManagement.inventoryPerform.downloadTemplate, data, false, {responseType: 'blob'})
+}
+// 盘点清单导入
+export function importExcel (data) {
+  return axiosPost(inventoryManagement.inventoryPerform.importExcel, data)
+}
 
 // 盘点管理 - 盘点报告
 // 新建或编辑盘点报告

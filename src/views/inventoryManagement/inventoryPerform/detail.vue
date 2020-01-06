@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2019-12-27 16:45:17
+ * @LastEditTime : 2020-01-03 18:17:41
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -31,8 +31,8 @@
       <div class="particulars-obj">
       <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
         <div slot="col-l">
-          <SG-Button type="primary" style="margin-right: 10px" weaken >导出资产清单</SG-Button>
-          <SG-Button v-if="changeType === 'set'" type="primary" weaken>导入盘点结果</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px" weaken @click="downloadTemplateFn('0')">导出资产清单</SG-Button>
+          <SG-Button v-if="changeType === 'set'" type="primary" @click="importExcelFn()" weaken>导入盘点结果</SG-Button>
         </div>
         <div slot="col-r">
           <div class="nav">
@@ -77,7 +77,7 @@
       <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
         <div slot="col-l">
           <SG-Button v-if="changeType === 'set'" type="primary" style="margin-right: 10px" weaken @click="registerAssetsFn">登记盘盈资产</SG-Button>
-          <SG-Button type="primary" weaken>导出异常信息</SG-Button>
+          <SG-Button type="primary" @click="downloadTemplateFn('1')" weaken>导出异常信息</SG-Button>
         </div>
         <div slot="col-r">
           <div class="nav">
@@ -91,7 +91,7 @@
           <a-table
             :loading="loading"
             :columns="exceptionListColumns"
-            :dataSource="tableData"
+            :dataSource="tableDataList"
             class="custom-table td-pd10"
             :pagination="false"
             >
@@ -105,7 +105,7 @@
               </div>
             </template>
           </a-table>
-          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+          <no-data-tips v-show="tableDataList.length === 0"></no-data-tips>
           <SG-FooterPagination
             :pageLength="condition.pageSize"
             :totalCount="iexceptionCount"
@@ -118,9 +118,9 @@
     <div class="particulars-nav" v-if="changeType === 'set'">
       <span class="section-title blue">盘点结果说明</span>
       <div class="particulars-obj" style="line-height: 64px;">
-        盘点结果：<a-textarea placeholder="请输入盘点结果说明"
+        <span class="required-color">盘点结果：</span><a-textarea placeholder="请输入盘点结果说明"
             :autosize="{ minRows: 3, maxRows: 3 }"
-            style="width: 94%;"
+            style="width: 93%;"
             maxlength="200"
             v-model="checkDetail"
             />
@@ -138,6 +138,8 @@
     <assetsInventorySurplus v-if="assetsShow" ref="ats" @showFn="showFn" @successQuery="assetsSuccessQueryFn"></assetsInventorySurplus>
     <!-- 盘点结果详情 -->
     <viewDetails ref="vd" ></viewDetails>
+    <!-- 导入按钮 -->
+    <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
 
@@ -156,6 +158,10 @@ export default {
   props: {},
   data () {
     return {
+      organId: '',
+      fileType: ['xls', 'xlsx'],
+      formData: null,
+      routeData: '',
       newShow: false,
       assetsShow: false,
       taskId: '',                  // 任务id
@@ -178,6 +184,7 @@ export default {
       exceptionListColumns: [...exceptionList],    // 异常列表表头
       loading: false,
       tableData: [],
+      tableDataList: [],
       location: '',
       queryCondition: {     // 资产清单搜索条件
         checkStatus: '',    // 盘点状态
@@ -225,6 +232,7 @@ export default {
           let data = res.data.data
           this.particularsData = data
           this.taskId = this.particularsData.taskId
+          this.organId = this.particularsData.organId
         } else {
           this.$message.error(res.data.message)
         }
@@ -236,7 +244,7 @@ export default {
         taskId: '',
         checkId: this.checkId,            // 盘点id
         name: this.queryCondition.name,                  // 资源名称/编码
-        checkResults: '',                                // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
+        checkResults: '0,1,2',                                // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
         checkStatus: this.queryCondition.checkStatus,    // 盘点状态(0-未盘点 1-已盘点)
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum
@@ -278,7 +286,7 @@ export default {
       this.condition.pageNum = 1
       this.exceptionTypes()
     },
-    exceptionHandleChange () {
+    exceptionHandleChange (data) {
       this.condition.pageNum = data.pageNo
       this.condition.pageSize = data.pageLength
       this.exceptionTypes()
@@ -289,7 +297,7 @@ export default {
         taskId: '',
         checkId: this.checkId, // 盘点id
         name: '',              // 资源名称/编码
-        checkResults: this.condition.checkResult,  // 盘点结果可多选(0盘亏 1正常 2信息有误 3盘盈)
+        checkResults: this.condition.checkResults,  // 盘点结果可多选(0盘亏 2信息有误 3盘盈)
         checkStatus: '',       // 盘点状态(0-未盘点 1-已盘点)
         pageSize: this.condition.pageSize,
         pageNum: this.condition.pageNum
@@ -302,7 +310,7 @@ export default {
           this.failCount = res.data.data.failCount            // 盈亏总数
           this.successCount = res.data.data.successCount      // 盘盈总数
           this.iexceptionCount = res.data.data.count          // 分页总数
-          this.tableData = data.map((item, index) => {
+          this.tableDataList = data.map((item, index) => {
             item.key = index
             return item
           })
@@ -313,6 +321,10 @@ export default {
     },
     // 提交盘点单
     save () {
+      if (!this.checkDetail) {
+        this.$message.info('请输入盘点结果')
+        return
+      }
       let _this = this
       _this.$confirm({
         title: '提示',
@@ -324,7 +336,7 @@ export default {
     },
     assetCheckInstCheckExe () {
       let obj = {
-        resultId: this.checkId,  // 盘点单id
+        checkId: this.checkId,  // 盘点单id
         checkDetail: this.checkDetail
       }
       let loadingName = this.SG_Loding('保存中...')
@@ -356,7 +368,7 @@ export default {
         this.assetsShow = true
         this.$nextTick(() => {
           this.$refs.ats.show = true
-          this.$refs.ats.query(str, record.resultId, this.checkId, this.taskId, record.assetId)
+          this.$refs.ats.query(str, record.resultId, this.checkId, this.taskId, record.assetId, this.organId)
         })
       } else if (str === 'detail') {
         let _this = this
@@ -385,23 +397,96 @@ export default {
       this.assetsShow = true
       this.$nextTick(() => {
         this.$refs.ats.show = true
-        this.$refs.ats.newFn('new', '', this.checkId, this.taskId)
+        this.$refs.ats.newFn('new', '', this.checkId, this.taskId, this.organId)
       })
     },
     // 详情状态下查看盘点详情
     viewDetails (record) {
       this.$refs.vd.show = true
       this.$refs.vd.query(record.resultId, this.checkId, this.taskId, record.assetId)
+    },
+    // 导出
+    downloadTemplateFn (str) {
+      let obj = {
+        checkId: this.checkId,
+        type: str
+      }
+      this.$api.inventoryManagementApi.downloadTemplate(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `${str === '0' ? '盘点资产清单' : '盘点异常清单'}.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+    },
+    // 导入
+    importExcelFn () {
+      this.$refs.fileUpload.click()
+    },
+    checkFile (fileName, fileSize) {
+      // 检查文件类型
+      let myFileType = false
+      if (this.fileType.length) {
+        const FileType = fileName.split('.').pop().toLowerCase()
+        myFileType = this.fileType.some(item => item.toLowerCase() === FileType)
+      }
+      // 检查文件大小
+      let mfileSize = true
+      if (fileSize) {
+        mfileSize = fileSize <= (this.fileMaxSize * 1024)
+      }
+      return {
+        size: mfileSize,
+        type: myFileType
+      }
+    },
+    // 文件上传
+    change (files, e) {
+      if (!files.length) { return }
+      let fileData = new FormData()
+      fileData.append('file', files[0])
+      let validObj = this.checkFile(files[0].name, files[0].size)
+      if (!validObj.type) {
+        this.$message.error('上传文件类型错误!')
+        return
+      }
+      this.fileName = files[0].name
+      this.formData = fileData
+      if (this.formData === null) {
+        return this.$message.error('请先上传文件!')
+      }
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.inventoryManagementApi.importExcel(this.formData).then(res => {
+        if (res.data.code === '0') {
+          e.target.value = ''
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            this.assetCheckInstAsseDetail()
+          })
+        } else {
+          e.target.value = ''
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(res.data.message)
+          })
+        }
+      }, () => {
+        e.target.value = ''
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
     }
   },
   created () {
   },
   mounted () {
-    console.log(this.$route.query)
-    // this.particularsData = JSON.parse(this.$route.query.record)
-    // this.checkId = this.particularsData[0].checkId
-    // this.changeType = this.particularsData[0].changeType
-    this.changeType = this.$route.query.type   // set盘点登记
+    this.routeData = JSON.parse(this.$route.query.quersData)
+    console.log(this.routeData, '0909090')
+    this.checkId = this.routeData[0].checkId
+    this.changeType = this.routeData[0].type
     this.query()
     this.assetCheckInstAsseDetail()   // 资产清单
     this.exceptionTypes()  // 异常列表
@@ -435,6 +520,15 @@ export default {
   }
   .file {
     margin: 20px 0 0 40px;
+  }
+  .required-color:before {
+    display: inline-block;
+    margin-right: 4px;
+    content: '*';
+    font-family: SimSun;
+    line-height: 1;
+    font-size: 12px;
+    color: #f5222d;
   }
 }
 </style>

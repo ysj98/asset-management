@@ -1,0 +1,846 @@
+<!--
+ * @Date: 2019-12-31 10:37:21
+ * @Description: 新增处置登记
+ -->
+<template>
+  <div class="newEditor">
+    <div class="newEditor-nav">
+      <span class="section-title blue">基础信息</span>
+      <div class="newEditor-obj">
+        <a-row class="playground-row">
+          <a-form :form="form" @submit="handleSubmit">
+            <a-col class="playground-col" :span="8">
+              <a-form-item v-bind="formItemLayout" label="资产处置名称：">
+                <a-input placeholder="请输入资产处置名称"
+                :style="allWidth"
+                :maxLength="30"
+                v-decorator="['disposeName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入任务名称(不超过30字符)'}], initialValue: newCardData.disposeName}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item label="资产项目：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择资产项目"
+                  v-decorator="['projectId',{rules: [{required: true, message: '请选择资产项目'}], initialValue: newCardData.projectId}]"
+                  :allowClear="false"
+                  @change="projectFn"
+                  :filterOption="filterOption"
+                  notFoundContent="没有查询到资产项目"
+                  >
+                  <a-select-option v-for="(item) in projectIdData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item label="资产类型：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择资产类型"
+                  v-decorator="['assetType',{rules: [{required: true, message: '请选择资产类型'}], initialValue: newCardData.assetType}]"
+                  :allowClear="false"
+                  @change="assetTypeFn"
+                  :filterOption="filterOption"
+                  notFoundContent="没有查询到资产类型"
+                  >
+                  <a-select-option v-for="(item) in assetTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item label="处置类型：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择处置类型"
+                  v-decorator="['disposeType',{rules: [{required: true, message: '请选择处置类型'}], initialValue: newCardData.disposeType}]"
+                  :allowClear="false"
+                  :filterOption="filterOption"
+                  notFoundContent="没有查询到处置类型"
+                  >
+                  <a-select-option v-for="(item) in disposeTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item label="处置方式：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择处置方式"
+                  v-decorator="['disposeMode',{rules: [{required: true, message: '请选择处置方式'}], initialValue: newCardData.disposeMode}]"
+                  :allowClear="false"
+                  :filterOption="filterOption"
+                  notFoundContent="没有查询到处置方式"
+                  >
+                  <a-select-option v-for="(item) in disposeModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item v-bind="formItemLayout" label="处置成本(元)：">
+                <a-input-number placeholder="请输入处置成本(元)"
+                :style="allWidth"
+                :min="0"
+                :max="999999999.99"
+                step="1.00" :precision="2"
+                v-decorator="['disposeCost', {rules: [{required: true, message: '请输入处置成本(元)(范围0-999999999.99)'}], initialValue: newCardData.disposeCost}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item v-bind="formItemLayout" label="处置收入(元)：">
+                <a-input-number placeholder="请输入处置收入(元)"
+                :style="allWidth"
+                :min="0"
+                :max="999999999.99"
+                step="1.00" :precision="2"
+                v-decorator="['disposeReceive', {rules: [{required: true, message: '请输入处置收入(元)(范围0-999999999.99)'}], initialValue: newCardData.disposeReceive}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item v-bind="formItemLayout" label="处置时间：">
+                <SG-DatePicker :style="allWidth"
+                v-decorator="['disposeDate', {rules: [{required: true, message: '请选择处置时间'}], initialValue: newCardData.disposeDate}]"
+                format="YYYY-MM-DD"></SG-DatePicker>
+                <!-- <a-date-picker
+                :style="allWidth"
+                placeholder="请选择处置时间"
+                v-decorator="['takeOverDate',
+                  {rules: [{required: true, message: '请选择处置时间'}]}
+                ]"
+                /> -->
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item v-bind="formItemLayout" label="资产接收人：">
+                <a-input placeholder="请输入资产接收人"
+                :style="allWidth"
+                :maxLength="40"
+                v-decorator="['assetReceiver', {rules: [{required: true, max: 50, whitespace: true, message: '请输入资产接收人(不超过40字符)'}], initialValue: newCardData.assetReceiver}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
+              <a-form-item label="费用分摊方式：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择费用分摊方式"
+                  v-decorator="['costSharingMode',{rules: [{message: '请选择费用分摊方式'}], initialValue: newCardData.costSharingMode}]"
+                  :allowClear="true"
+                  @change="changeCostSharingMode"
+                  :filterOption="filterOption"
+                  notFoundContent="没有查询到费用分摊方式"
+                  >
+                  <a-select-option v-for="(item) in costSharingModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="24">
+              <a-form-item v-bind="formItemTextarea" :colon="false">
+                <label slot="label">上传附件：</label>
+                <SG-UploadFile
+                  v-model="newCardData.files"
+                  type="all"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="24">
+              <a-form-item v-bind="formItemTextarea" label="处置原因：">
+                <a-textarea placeholder="请输入处置原因"
+                  :style="widthBox"
+                  :autosize="{ minRows: 3, maxRows: 3 }"
+                  :maxLength="200"
+                  v-decorator="['disposeReason',
+                  {rules: [{required: true, max: 200, message: '请输入处置原因(不超过200字符)'}], initialValue: newCardData.disposeReason}
+                  ]"
+                  />
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="24">
+              <a-form-item v-bind="formItemTextarea" label="备注：">
+                <a-textarea placeholder="请输入备注"
+                  :style="widthBox"
+                  :autosize="{ minRows: 3, maxRows: 3 }"
+                  :maxLength="200"
+                  v-decorator="['remark',
+                  {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newCardData.remark}
+                  ]"
+                  />
+              </a-form-item>
+            </a-col>
+          </a-form>
+        </a-row>
+      </div>
+    </div>
+    <div class="newEditor-nav">
+      <span class="section-title blue">资产处置清单（已选择资产总数: {{table.dataSource.length}})</span>
+      <div class="button-box">
+        <div class="buytton-nav">
+          <SG-Button class="choice" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
+        </div>
+      </div>
+      <div class="newEditor-obj">
+        <div class="table-layout-fixed table-border">
+          <a-table
+            :loading="table.loading"
+            :columns="table.columns"
+            :dataSource="table.dataSource"
+            class="custom-table td-pd10"
+            :pagination="false"
+            >
+            <!-- 处置成本 -->
+            <template slot="disposeCost" slot-scope="text, record">
+              <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.disposeCost"/>
+            </template>
+            <!-- 处置收入 -->
+            <template slot="disposeReceive" slot-scope="text, record">
+              <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.disposeReceive"/>
+            </template>
+            <!-- 备注 -->
+            <template slot="remark" slot-scope="text, record">
+              <a-input placeholder="请输入备注" :maxLength="200" v-model="record.remark"/>
+            </template>
+            <!-- 操作 -->
+            <template slot="operation" slot-scope="text, record, index">
+              <span class="postAssignment-icon" weaken @click="deleteFn(record, 'property', index)">删除</span>
+            </template>
+          </a-table>
+        </div>
+      </div>
+    </div>
+    <div class="newEditor-nav">
+      <span class="section-title blue">收付款计划</span>
+      <div class="newEditor-obj">
+        <div class="table-layout-fixed table-border">
+          <a-table
+            :loading="receiving.loading"
+            :columns="receiving.columns"
+            :dataSource="receiving.dataSource"
+            class="custom-table td-pd10"
+            :pagination="false"
+            >
+            <!-- 收付款类型 -->
+            <template slot="receivecostType" slot-scope="text, record">
+              <a-select
+                :placeholder="'请选择收付款类型'" style="width: 150px"
+                :defaultValue="record.receivecostType === '' ? undefined : record.receivecostType"
+                v-model="record.receivecostType === '' ? record.receivecostType = undefined : record.receivecostType"
+                optionFilterProp="children"
+                :options="receiptPayment"
+                :allowClear="true"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+                />
+            </template>
+            <!-- 收款方 -->
+            <template slot="payee" slot-scope="text, record">
+              <span v-if="record.receivecostType === '1'">--</span>
+              <a-input v-else placeholder="请输入收款方" :maxLength="50" v-model="record.payee"/>
+            </template>
+            <!-- 付款方 -->
+            <template slot="payer" slot-scope="text, record">
+              <span v-if="record.receivecostType === '2'">--</span>
+              <a-input v-else placeholder="请输入付款方" :maxLength="50" v-model="record.payer"/>
+            </template>
+            <!-- 费用科目 -->
+            <template slot="feeSubject" slot-scope="text, record">
+              <a-select
+                :placeholder="'请选择费用科目'" style="width: 150px"
+                :defaultValue="record.feeSubject === '' ? undefined : record.feeSubject"
+                v-model="record.feeSubject === '' ? record.feeSubject = undefined : record.feeSubject"
+                optionFilterProp="children"
+                :options="billConfigOptions"
+                :allowClear="true"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+                />
+            </template>
+            <!-- 金额 -->
+            <template slot="amount" slot-scope="text, record">
+              <a-input-number placeholder="请输入金额"  :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.amount"/>
+            </template>
+            <!-- 收付款时间 -->
+            <template slot="receivecostDate" slot-scope="text, record">
+              <a-date-picker v-model="record.receivecostDate"/>
+            </template>
+            <!-- 跟进人 -->
+            <template slot="secondMover" slot-scope="text, record">
+              <a-input placeholder="请输入跟进人" :maxLength="30" v-model="record.secondMover"/>
+            </template>
+            <!-- 备注 -->
+            <template slot="remark" slot-scope="text, record">
+              <a-input placeholder="请输入备注" :maxLength="200" v-model="record.remark"/>
+            </template>
+            <!-- 操作 -->
+            <template slot="operation" slot-scope="text, record, index">
+              <span class="postAssignment-icon" weaken @click="deleteFn(record, 'receiving', index)">删除</span>
+            </template>
+          </a-table>
+          <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加计划</div>
+        </div>
+      </div>
+    </div>
+    <FormFooter style="border:none;" location="fixed">
+      <div>
+        <SG-Button type="primary" @click="save">提交</SG-Button>
+        <!-- <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button> -->
+        <SG-Button @click="cancel">取消</SG-Button>
+      </div>
+    </FormFooter>
+    <div>
+      <!-- 选资产 -->
+      <assetBundlePopover :organId="organId" queryType="4" ref="assetBundlePopover" @status="status"></assetBundlePopover>
+    </div>
+  </div>
+</template>
+
+<script>
+import {utils} from '@/utils/utils.js'
+import FormFooter from '@/components/FormFooter'
+import AssetBundlePopover from '../../common/assetBundlePopover'
+import moment from 'moment'
+import {columns, receivingData, costSharingModeData, receiptPayment, conditionalJudgment} from './beat.js'
+export default {
+  components: {FormFooter, AssetBundlePopover},
+  props: {},
+  data () {
+    return {
+      particularsData: '',
+      disposeRegisterOrderId: '',  // 处置登记单ID
+      projectIdData: [],        // 资产项目
+      assetTypeData: [],        // 资产类型
+      disposeTypeData: [],      // 处置类型
+      disposeModeData: [],      // 处置方式
+      costSharingModeData: [...costSharingModeData],   // 分摊
+      receiptPayment: [...receiptPayment],             // 收付款类型
+      organId: '67',            // 项目id
+      type: '',                 // 判断是新增还是编辑
+      selectOptList: [],
+      widthBox: 'width: 85%',
+      formItemTextarea: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 2 }
+        }
+      },
+      formItemLayout: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 6 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 }
+        }
+      },
+      form: this.$form.createForm(this),
+      allWidth: 'width: 214px',
+      files: [],
+      location: '',
+      noPageTools: false,
+      newCardData: {
+        disposeName: '',
+        projectId: undefined,          // 资产项目
+        assetType: undefined,          // 资产类型
+        disposeType: undefined,        // 处置类型
+        disposeCost: 0,                // 处置成本(元)
+        disposeReceive: 0,             // 处置收入
+        disposeDate: undefined,        // 执行时间
+        assetReceiver: '',             // 资产接收人
+        costSharingMode: undefined,    // 费用分摊方式
+        files: [],                     // 附件
+      },
+      table: {
+        columns: [...columns],
+        dataSource: [],         // 资产列表表格数据
+        loading: false,
+      },
+      receiving: {             // 首付款的数据
+        columns: [...receivingData],
+        dataSource: [],         // 资产列表表格数据
+        loading: false,
+      },
+      checkedData: [],         // 存着资产总的数据
+      billConfigOptions: []    // 科目
+    }
+  },
+  computed: {
+  },
+  methods: {
+    moment,
+    // 取消
+    cancel () {
+      this.$router.push({path: '/disposalRegister'})
+    },
+    // 项目监听
+    projectFn (val) {
+      this.checkedData = []
+      this.table.dataSource = []
+    },
+    assetTypeFn (val) {
+      this.checkedData = []
+      this.table.dataSource = []
+    },
+    // 监听费用分摊方式
+    changeCostSharingMode (val) {
+      console.log(val)
+      // this.overallComputing()
+    },
+    // // 计算总和
+    // overallComputing () {
+    //   let costSharingModeData = this.form.getFieldValue('costSharingMode')   // 分摊方式
+    //   if (table.dataSource.length > 0 && this.form.getFieldValue('disposeCost') !== 0 || table.dataSource.length > 0 && this.form.getFieldValue('disposeCost') !== 0) {
+    //     // 先计算面积总和在算每个占总面积的百分比！在用总额度成百分比算出没个多少钱       说明先写 本期暂时不做
+    //     if (costSharingModeData === '2') {   // 按资产面积平均分摊
+    //       let assetAreaTotal = 0             // 先计算面积总和
+    //       table.dataSource.forEach(item => {
+    //         item.assetArea = conditionalJudgment.includes(this.tableData[i].newOriginalValue) ? 0 : Number(item.assetArea)
+    //         assetAreaTotal = assetAreaTotal + item.assetArea
+    //       })
+    //     }
+    //   }
+    // },
+    // 确定拿到数据
+    status (val, data) {
+      this.checkedData = [...val]
+      data.forEach((item, index) => {
+        item.key = item.assetId
+      })
+      this.table.dataSource = data
+      this.$refs.assetBundlePopover.show = false
+    },
+    // 添加资产
+    addTheAsset () {
+      if (!this.form.getFieldValue('projectId')) {
+        this.$message.info('请先选择资产项目')
+        return
+      } else if (!this.form.getFieldValue('assetType')) {
+        this.$message.info('请先选择资产类型')
+        return
+      }
+      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.form.getFieldValue('assetType'), this.table.dataSource)
+      this.$refs.assetBundlePopover.show = true
+    },
+    // 提交详情
+    save (str) {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          let tableArr = utils.deepClone(this.table.dataSource)
+          if (tableArr.length === 0) {
+            this.$message.info('请选择资产处置清单')
+            return
+          }
+          for (let i = 0; i < tableArr.length; i++) {
+            if (conditionalJudgment.includes(tableArr[i].disposeCost)) {
+              this.$message.info('请输入处置成本(元)')
+              return
+            }
+            if (conditionalJudgment.includes(tableArr[i].disposeReceive)) {
+              this.$message.info('请输入处置收入(元)')
+              return
+            }
+          }
+          let receivingData = utils.deepClone(this.receiving.dataSource)
+          // if (receivingData.length === 0) {
+          //   this.$message.info('请添加收付款计划')
+          //   return
+          // }
+          if (receivingData.length > 0) {
+            for (let i = 0; i < receivingData.length; i++) {
+              if (!receivingData[i].receivecostType) {
+                this.$message.info('请选择收付款类型')
+                return
+              }
+              if (receivingData[i].receivecostType === '2') {
+                if (!receivingData[i].payee) {
+                  this.$message.info('请输入收款方')
+                  return
+                }
+              }
+              if (receivingData[i].receivecostType === '1') {
+                if (!receivingData[i].payer) {
+                  this.$message.info('请输入付款方')
+                  return
+                }
+              }
+              if (conditionalJudgment.includes(receivingData[i].amount)) {
+                this.$message.info('请输入金额')
+                return
+              }
+              if (!receivingData[i].receivecostDate) {
+                this.$message.info('请选择收付款时间')
+                return
+              }
+            }
+          }
+          let files = []
+          if (this.newCardData.files.length > 0) {
+            this.newCardData.files.forEach(list => {
+              files.push({
+                attachmentPath: list.url,
+                oldAttachmentName: list.name
+              })
+            })
+          }
+          let disposeDetailList = []
+          tableArr.forEach(item => {
+            disposeDetailList.push({
+              assetId: item.assetId,                // 资产信息ID
+              assetObjectId: item.assetObjectId,    // 资产对象ID
+              assetType: item.assetType,            // 资产类型
+              organId: this.organId,                // 管理机构ID
+              disposeCost: item.disposeCost,        // 处置成本(元)
+              disposeReceive: item.disposeReceive,  // 处置收入(元)
+              remark: item.remark                   // 备注
+            })
+          })
+          let receivecostPlanList = []
+          console.log(this.receiving.dataSource, '计划的数据')
+          if (receivingData.length > 0) {
+            receivingData.forEach(list => {
+              receivecostPlanList.push({
+                receivecostType: list.receivecostType,                  // 收付款类型 1收款 2付款
+                payee: +list.receivecostType === 2 ? list.payee : '',   // 收款方，收付款类型=1收款时不传， =2付款时必填
+                payer: +list.receivecostType === 1 ? list.payer : '',   // 付款方，收付款类型=1收款时必填， =2付款时不传
+                feeSubject: list.feeSubject,         // 费用科目
+                amount: list.amount,                 //类型：Number  必有字段 金额(元)
+                receivecostDate: moment(list.receivecostDate, 'YYYY-MM-DD'),  // 收付款时间
+                secondMover: list.secondMover,       // 跟进人
+                remark: list.remark                  // 备注
+              })
+            })
+          }
+          console.log(receivecostPlanList, '计划的数据')
+          let obj = {
+            disposeName: values.disposeName,        // 处置名称
+            organId: this.organId,                  // 所属组织机构
+            projectId: values.projectId,            // 资产项目ID
+            assetType: values.assetType,            // 资产类型 平台字典表asset_type 1房屋，2构筑物，3设备
+            disposeType: values.disposeType,        // 处置类型 平台字典 AMS_DISPOSE_TYPE 1 资产报废 2 资产报损 3 资产转让
+            disposeMode: values.disposeMode,        // 处置方式 机构字典 AMS_DISPOSE_MODE 1报废 2销售 3有偿转让 4无偿转让 5拆迁 6报损 7拍卖 8破产清算
+            disposePlanId: '',                      // 处置计划ID，先预留字段，没有值
+            disposeCost: values.disposeCost,        // 处置成本(元)
+            disposeReceive: values.disposeReceive,  // 处置收入(元)
+            disposeDate: values.disposeDate.format('YYYY-MM-DD'), // 处置时间
+            assetReceiver: values.assetReceiver,     // 资产接收人
+            costSharingMode: values.costSharingMode, // 费用分摊方式 1按资产数量平均分摊 2按资产面积平均分摊
+            attachmentList: files,
+            disposeReason: values.disposeReason,     // 处置原因
+            remark: values.remark,                   // 备注
+            disposeDetailList: disposeDetailList,    // 资产清单类别
+            receivecostPlanList: receivecostPlanList, // 计划列表
+            approvalStatus: '1'                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+          }
+          // 新增提交
+          if (this.type === 'create') {
+            let loadingName = this.SG_Loding('保存中...')
+            this.$api.basics.addRegisterSave(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.success('提交成功')
+                  this.$router.push({path: '/disposalRegister', query: {refresh: true}})
+                })
+              } else {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$message.error(res.data.message)
+                })
+              }
+            })
+          } else {
+            // 编辑保存
+            obj.disposeRegisterOrderId = this.disposeRegisterOrderId
+            let loadingName = this.SG_Loding('保存中...')
+            this.$api.basics.modifySave(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.success('提交成功')
+                  this.$router.push({path: '/disposalRegister', query: {refresh: true}})
+                })
+              } else {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$message.error(res.data.message)
+                })
+              }
+            })
+          }
+        }
+      })
+    },
+    // 删除
+    deleteFn (record, str, index) {
+      // 资产处置清单
+      if (str === 'property') {
+        this.table.dataSource.forEach((item, index) => {
+          if (item.assetId === record.assetId) {
+            this.table.dataSource.splice(index, 1)
+          }
+        })
+        this.checkedData.forEach((item, index) => {
+          if (record.assetId === item) {
+            this.checkedData.splice(index, 1)
+          }
+        })
+      } else if (str === 'receiving') {
+        this.receiving.dataSource.splice(index, 1)
+      }
+    },
+    handleSubmit (e) {
+      e.preventDefault()
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values)
+        } else {
+          // console.log('Received values of form: ', values)
+        }
+      })
+    },
+    // 查询详情
+    query () {
+      let obj = {
+        disposeRegisterOrderId: this.disposeRegisterOrderId
+      }
+      this.$api.basics.getDisposeRegisterById(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.$nextTick(() => {
+            let files = []
+            if (data.attachment && data.attachment.length > 0) {
+                data.attachment.forEach(item => {
+                files.push({
+                  url: item.attachmentPath,
+                  name: item.oldAttachmentName
+                })
+              })
+            }
+            this.newCardData.files = files
+            // 信息回填
+            this.form.setFieldsValue({
+              disposeName: data.disposeName,
+              projectId: data.projectId,
+              assetType: String(data.assetType),
+              disposeType: String(data.disposeType),
+              disposeMode: String(data.disposeMode),
+              disposeCost: data.disposeCost,
+              disposeReceive: data.disposeReceive,
+              disposeDate: moment(data.disposeDate),
+              assetReceiver: data.assetReceiver,
+              costSharingMode: String(data.costSharingMode),
+              disposeReason: data.disposeReason,
+              remark: data.remark
+            })
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 处置清单列表
+    getDetailList () {
+      let obj = {
+        disposeRegisterOrderId: this.disposeRegisterOrderId
+      }
+      this.$api.basics.getDisposeRegisterDetailList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          console.log(data)
+          this.checkedData = []
+          data.forEach((item, index) => {
+            item.key = index
+            this.checkedData.push(item.assetId)
+          })
+          this.table.dataSource = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 查询收付款计划列表
+    getreceivecostPlanList () {
+      let obj = {
+        disposeRegisterOrderId: this.disposeRegisterOrderId
+      }
+      this.$api.basics.getreceivecostPlanList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          console.log(data)
+          data.forEach((item, index) => {
+            item.key = index
+            item.receivecostType = String(item.receivecostType)
+            item.feeSubject = Number(item.feeSubject)
+            item.receivecostDate = moment(data.receivecostDate)
+          })
+          this.receiving.dataSource = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 新建收付款计划
+    newMortgageInformation () {
+      let atr = [{indexKey: '', receivecostType: undefined, payee: '', payer: '', feeSubject: '', amount: '', receivecostDate: undefined, secondMover: '', remark: ''}]
+      let arr = [...this.receiving.dataSource, ...atr]
+      console.log(arr)
+      arr.forEach((item, index) => {
+        item.key = index
+        item.indexKey = index + 1
+      })
+      this.receiving.dataSource = arr
+    },
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    // 资产项目
+    getObjectKeyValueByOrganIdFn () {
+      let obj = {
+        organId: this.organId,
+        projectName: ''
+      }
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.projectName,
+              value: item.projectId
+            })
+          })
+          this.projectIdData = [...arr]
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 平台字典获取资产类型
+    platformDictFn (str) {
+      let obj = {
+        code: str
+      }
+      this.$api.assets.platformDict(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          if (str === 'asset_type') {
+            this.assetTypeData = data
+          } if (str === 'AMS_DISPOSE_TYPE') {
+            this.disposeTypeData = data
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 机构字典表
+    organDict () {
+      this.$api.assets.organDict({code: 'AMS_DISPOSE_MODE'}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.disposeModeData = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 费用科目
+    getFeeTypeList () {
+      let form = {
+        organId: this.organId
+      }
+      this.$api.assets.getFeeTypeList(form).then(res => {
+        if (res.data.code === '0') {
+          let arr = []
+          res.data.data.forEach(item => {
+            let obj = {
+              label: item.feeTypeName,
+              value: item.feeTypeId
+            }
+            arr.push(obj)
+          })
+          this.billConfigOptions = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
+  },
+  created () {
+    console.log(this.$route.query, 'opopopopopo')
+    this.particularsData = this.$route.query
+    this.organId = this.particularsData.organId
+    this.type = this.particularsData.type
+    this.getObjectKeyValueByOrganIdFn()      // 资产项目
+    this.platformDictFn('asset_type')        // 资产类型
+    this.platformDictFn('AMS_DISPOSE_TYPE')  // 处置类型
+    this.organDict()                         // 处置方式
+    this.getFeeTypeList()                    // 费用科目
+  },
+  mounted () {
+    if (this.type === 'edit') {
+      this.disposeRegisterOrderId = this.particularsData.disposeRegisterOrderId
+      this.query()
+      this.getDetailList()                  // 处置登记-查询处置清单列表
+      this.getreceivecostPlanList()         // 查询收付款计划列表
+    }
+  }
+}
+</script>
+<style lang="less" scoped>
+.newEditor {
+  padding-bottom: 70px;
+  .newEditor-nav{
+    padding: 42px 126px 20px 70px;
+    .newEditor-obj {
+      padding: 20px 0 20px 40px;
+      .playground-row {
+        .playground-col {
+          line-height: 40px;
+          font-size: 12px;
+        }
+      }
+    }
+    .correspondingTask {
+      margin:35px 40px 0 40px;
+      border: 1px solid #F0F2F5;
+    }
+    .button-box {
+      overflow: hidden;
+      margin-bottom: 10px;
+      .buytton-nav {
+        float: right;
+        .choice {
+          margin: 0 10px;
+        }
+      }
+    }
+  }
+  .nav-box {
+    padding-bottom: 100px;
+  }
+  .file {
+    margin: 20px 0 0 40px;
+  }
+  .postAssignment-icon {
+    cursor: pointer;
+    color: #0084FF;
+    // font-size: 18px;
+  }
+  .postAssignment-icon:hover {
+    color: red;
+  }
+  .add-information {
+    cursor: pointer;
+    line-height: 32px;
+    text-align: center;
+    border:1px dashed #EBF2FF;
+    margin-top: 10px;
+    .item-tab-icon {
+      padding-right: 4px;
+    }
+  }
+  .add-information:hover {
+    border:1px dashed #0084FF;
+    color: #0084FF;
+  }
+}
+</style>

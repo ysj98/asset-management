@@ -467,16 +467,21 @@ export const inventoryManagement = {
   // 盘点任务
   countingTask: {
     // 已选资产明细
-    queryAssetByChcekId: '/ams/checktask/queryAssetByChcekId',
+    queryAssetByChcekId: '/ams/assetCheckInst/queryAssetByChcekId',
     // 新建/编辑盘点单
-    updateCheckInst: '/ams/checktask/updateCheckInst',
+    updateCheckInst: '/ams/assetCheckInst/updateCheckInst',
     // 盘点任务查询(分页)
     queryCheckTaskPageList: '/ams/checktask/queryCheckTaskPageList',
     // 盘点任务详情
     queryCheckTaskDetail: '/ams/checktask/queryCheckTaskDetail',
     // 编辑盘点任务
-    updateCheckTask: '/ams/checktask/updateCheckTask'
+    updateCheckTask: '/ams/checktask/updateCheckTask',
+    // 盘点任务状态操作
+    updateCheckTaskStatus: '/ams/checktask/updateCheckTaskStatus',
+    // 删除盘点单
+    deleteCheckInst: '/ams/assetCheckInst/deleteCheckInst'
   },
+  // 盘点执行
   inventoryPerform: {
     // 查询盘点列表（查询执行人为当前用户的数据）
     assetCheckInstList: '/ams/assetCheckInst/list',
@@ -487,13 +492,17 @@ export const inventoryManagement = {
     // 盘点结果登记或编辑
     assetCheckInstCheckResult: '/ams/assetCheckInst/checkResult',
     // 盘点资产清单列表
-    assetCheckInstAsseDetail: '/ams/assetCheckInst/asseDetail',
+    assetCheckInstAsseDetail: '/ams/assetCheckInst/assetDetail',
     // 盘盈资产删除
     assetCheckInstDeleteByCheckResult: '/ams/assetCheckInst/deleteByCheckResult',
     // 资产盘点提交
     assetCheckInstCheckExe: '/ams/assetCheckInst/checkExe',
     // 根据任务id查询盘点单
-    queryListByTaskId: '/ams/assetCheckInst/queryListByTaskId'
+    queryListByTaskId: '/ams/assetCheckInst/queryListByTaskId',
+    // 盘点资产清单导出
+    downloadTemplate: '/ams/assetCheckInst/downloadTemplate',
+    // 盘点清单导入
+    importExcel: '/ams/assetCheckInst/importExcel',
   },
   // 盘点报告
   inventoryReport: {
@@ -520,9 +529,30 @@ export const inventoryManagement = {
 }
 // 盘点计划
 export const inventory = {
-  getPlanList: '/zhoubaipu/plan/10.json',
-  getImplementRecord: '/zhoubaipu/plan/4.json',
-  createInventoryPlan: '/zhoubaipu/plan/1.json',
-  editInventoryPlan: '/zhoubaipu/plan/9.json',
-  inventoryDetail: '/zhoubaipu/plan/3.json',
+  getPlanList: '/ams/checkplan/queryCheckPlanPageList',
+  // 执行记录
+  getImplementRecord: '/ams/checktask/queryCheckTaskPageList',
+  createInventoryPlan: '/ams/checkplan/insertCheckPlan',
+  editInventoryPlan: '/ams/checkplan/updateCheckPlan',
+  inventoryDetail: '/ams/checkplan/queryCheckPlanDetail',
+  updateCheckPlanStatus: '/ams/checkplan/updateCheckPlanStatus'
+}
+// 处置登记
+export const disposeRegister = {
+  // 处置登记列表-分页查询 post
+  getDisposeRegisterList: '/ams/disposeRegister/getListPage',
+  // 处置登记-修改保存 post
+  modifySave: '/ams/disposeRegister/modifySave',
+  // 处置登记-分页查询处置清单列表 post
+  getRegisterDetailListPage: '/ams/disposeRegister/getDetailListPage',
+  // 处置登记-新增保存
+  addRegisterSave: '/ams/disposeRegister/addSave',
+  // 处置登记-查询处置清单列表
+  getDisposeRegisterDetailList: '/ams/disposeRegister/getDetailList',
+  // 处置登记-查询收付款计划列表
+  getreceivecostPlanList: '/ams/disposeRegister/getreceivecostPlanList',
+  // 处置登记-状态操作
+  updateDisposeRegisterStatus: '/ams/disposeRegister/updateStatus',
+  // 处置登记查询-根据处置登记单ID
+  getDisposeRegisterById: '/ams/disposeRegister/getDisposeRegister'
 }

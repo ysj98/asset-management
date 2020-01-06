@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2019-12-27 11:16:06
+ * @LastEditTime : 2020-01-03 10:34:26
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -23,24 +23,28 @@
       </div>
     </Cephalosome>
     <div>
-      <a-table
-        class="custom-table td-pd10"
-        :loading="table.loading"
-        :pagination="false"
-        :columns="table.columns"
-        :dataSource="table.dataSource"
-        :locale="{emptyText: '暂无数据'}"
-      >
-        <template slot="tranProgress" slot-scope="text, record">
-          <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
-            </div>
-        </template>
-        <template slot="operation" slot-scope="text, record">
-          <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          <span v-power="ASSET_MANAGEMENT.ASSET_PROOWNERSHIP_SET" @click="goPage('set', record)" class="btn_click">权属设置</span>
-        </template>
-      </a-table>
+      <div class="table-layout-fixed table-border">
+        <a-table
+          class="custom-table td-pd10"
+          :loading="table.loading"
+          :pagination="false"
+          :columns="table.columns"
+          :dataSource="table.dataSource"
+          :locale="{emptyText: '暂无数据'}"
+        >
+          <template slot="checkRate" slot-scope="text, record">
+            <div style="padding-right: 10px;">
+                <a-progress :percent="Number(record.checkRate) || 0" />
+              </div>
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+            <span v-show="+record.taskStatus === 2" @click="goPage('set', record)" class="btn_click mr15">生成盘点单</span>
+            <span v-show="+record.taskStatus === 2" @click="goPage('cancel', record)" class="btn_click mr15">取消任务</span>
+            <span v-show="+record.taskStatus === 3" @click="goPage('edit', record)" class="btn_click">编辑</span>
+          </template>
+        </a-table>
+      </div>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -61,8 +65,9 @@ import noDataTips from "@/components/noDataTips"
 import {getNMonthsAgoFirst, getNowMonthDate} from 'utils/formatTime'
 // 页面跳转
 const operationTypes = {
-  detail: "/ownershipSurvey/projectDetail",
-  set: "/ownershipSurvey/projectSet"
+  detail: '/inventoryManagement/countingTask/detail',
+  set: '/inventoryManagement/countingTask/newEditor',
+  edit: '/inventoryManagement/countingTask/newEditor'
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
@@ -98,7 +103,7 @@ let columns = [
   {
     title: "任务编号",
     dataIndex: "taskId",
-    width: 150
+    width: 100
   },
   {
     title: "任务名称",
@@ -135,7 +140,7 @@ let columns = [
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 120
+    width: 160
   }
 ];
 export default {
@@ -159,7 +164,7 @@ export default {
   },
   watch: {
     '$route' () {
-      if (this.$route.path === '/countingTask' && this.$route.query.refresh) {
+      if (this.$route.path === '/inventoryManagement/countingTask' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
         this.query()
@@ -167,7 +172,7 @@ export default {
     }
   },
   mounted () {
-    console.log(getNMonthsAgoFirst(2), getNowMonthDate())
+    this.query()
   },
   methods: {
     // 状态发生变化
@@ -206,13 +211,18 @@ export default {
         endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
       }
       this.table.loading = true;
-      this.$api.basics.ownerShipList(data).then(
+      this.$api.inventoryManagementApi.queryCheckTaskPageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
               item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
+              let arr = []
+              item.chargePersonList.forEach(item => {
+                arr.push(item.userName)
+              })
+              item.chargePersonName = arr.length === 0 ? '' : arr.join(',')
               return {
                 key: getUuid(),
                 ...item
@@ -231,15 +241,45 @@ export default {
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
-      this.query();
+      this.query()
+    },
+    updateCheckTaskStatusFn (record) {
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要取消任务吗？',
+        onOk() {
+          let obj = {
+            taskId: record.taskId,
+            taskStatus: '0'
+          }
+          let loadingName = _this.SG_Loding('取消中...')
+          _this.$api.inventoryManagementApi.updateCheckTaskStatus(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.DE_Loding(loadingName).then(() => {
+                _this.$SG_Message.success('取消成功')
+                _this.query()
+              })
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+        }
+      })
     },
     // 页面跳转
     goPage(type, record) {
-      let query = {
-        type,
-        projectId: record.projectId
-      };
-      this.$router.push({ path: operationTypes[type], query });
+      let _this = this
+      if (type === 'cancel') {
+        this.updateCheckTaskStatusFn(record)
+      } else {
+        let querys = JSON.stringify([{
+          type,
+          projectId: record.projectId,
+          taskId: record.taskId
+        }])
+        this.$router.push({ path: operationTypes[type], query: {quersData: querys}})
+      }
     }
   }
 };

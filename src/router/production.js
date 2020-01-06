@@ -264,6 +264,34 @@ let proRouter = [
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage')
   },
   {
+    path: '/disposalRegister',
+    name: '处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/disposalRegister/create',
+    name: '新增处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/createRegister')
+  },
+  {
+    path: '/disposalRegister/edit',
+    name: '编辑处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/editRegister')
+  },
+  {
+    path: '/disposalRegister/detail',
+    name: '详情处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/detailRegister')
+  },
+  {
+    path: '/disposalRegister/approval',
+    name: '审批处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/approvalRegister')
+  },
+  {
     path: '/disposalManagement/listDisposal',
     name: '资产处置一览表',
     component: () => import('@/views/disposalManagement/listDisposal/index')
@@ -271,12 +299,10 @@ let proRouter = [
   {
     path: '/inventoryManagement/countingTask',
     name: '盘点任务',
-    component: () => import('@/views/inventoryManagement/countingTask/index')
-  },
-  {
-    path: '/inventoryManagement/countingTask',
-    name: '盘点任务',
-    component: () => import('@/views/inventoryManagement/countingTask/index')
+    component: () => import('@/views/inventoryManagement/countingTask/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/inventoryManagement/countingTask/newEditor',
@@ -373,6 +399,11 @@ let proRouter = [
     path: '/inventoryPlan/detail',
     name: '详情盘点计划',
     component: () => import('@/views/inventoryManagement/inventoryPlan/detailPlan')
+  },
+  {
+    path: '/inventoryPlan/approval',
+    name: '审批盘点计划',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/approvalPlan')
   },
 ]
 export default proRouter
