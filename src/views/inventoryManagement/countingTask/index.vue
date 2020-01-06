@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-06 11:29:50
+ * @LastEditTime : 2020-01-06 14:32:00
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -39,9 +39,9 @@
           </template>
           <template slot="operation" slot-scope="text, record">
             <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-            <span v-show="+record.taskStatus === 2" @click="goPage('set', record)" class="btn_click mr15">生成盘点单</span>
-            <span v-show="+record.taskStatus === 2" @click="goPage('cancel', record)" class="btn_click mr15">取消任务</span>
-            <span v-show="+record.taskStatus === 3" @click="goPage('edit', record)" class="btn_click">编辑</span>
+            <span v-power="ASSET_MANAGEMENT.ASSET_TASK_NEW" v-show="+record.taskStatus === 2" @click="goPage('set', record)" class="btn_click mr15">生成盘点单</span>
+            <span v-power="ASSET_MANAGEMENT.ASSET_TASK_DELETE" v-show="+record.taskStatus === 2" @click="goPage('cancel', record)" class="btn_click mr15">取消任务</span>
+            <span v-power="ASSET_MANAGEMENT.ASSET_TASK_EDIT" v-show="+record.taskStatus === 3" @click="goPage('edit', record)" class="btn_click">编辑</span>
           </template>
         </a-table>
       </div>

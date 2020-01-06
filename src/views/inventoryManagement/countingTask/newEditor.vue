@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-06 11:49:19
+ * @LastEditTime : 2020-01-06 13:42:17
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -308,8 +308,8 @@ export default {
       }
       // 取消
       if (str === 'cancel') {
-        console.log(this.table.dataSource[index])
-        console.log(this.cancelData[index])
+        // console.log(this.table.dataSource[index])
+        // console.log(this.cancelData[index])
         this.table.dataSource[index].IsEdit = this.cancelData[index].IsEdit
         this.table.dataSource[index].assetId = this.cancelData[index].assetId
         this.table.dataSource[index].beginDate = this.cancelData[index].beginDate
@@ -366,7 +366,7 @@ export default {
         let loadingName = this.SG_Loding('保存中...')
         this.$api.inventoryManagementApi.updateCheckInst(obj).then(res => {
           if (Number(res.data.code) === 0) {
-            console.log(this.table.dataSource, index)
+            // console.log(this.table.dataSource, index)
             this.DE_Loding(loadingName).then(() => {
               this.$SG_Message.success('提交成功')
               this.table.dataSource[index].checkId = res.data.data
@@ -384,7 +384,7 @@ export default {
       }
       // 资产明细
       if (str === 'particulars') {
-        console.log(record, index, '拿到的数据')
+        // console.log(record, index, '拿到的数据')
         this.assetIdIndex = index
         this.$refs.associateAssetModal.show = true
         // 资产为空且盘点单不为空时调取接口数据 反之 直接拿数组的数据
@@ -446,7 +446,7 @@ export default {
       this.tabType = 'details'
       this.$refs.selectStaffOrPost.visible = true
       // 编辑给回去的数据
-      console.log(this.chargePersonArrOpt, '给回去的')
+      // console.log(this.chargePersonArrOpt, '给回去的')
       this.selectOptList = this.chargePersonArrOpt
     },
     handleSubmit (e) {
@@ -494,7 +494,6 @@ export default {
         taskId: this.taskId
       }
       this.$api.inventoryManagementApi.queryCheckTaskDetail(obj).then(res => {
-        console.log(res)
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.organId = data.organId
@@ -581,7 +580,7 @@ export default {
     // 表格选人
     tabSelectPerson (record, index) {
       this.tabType = 'tab'
-      console.log('进入单项=>', record)
+      // console.log('进入单项=>', record)
       this.table.activeRowIndex = index
       this.$refs.selectStaffOrPost.visible = true
       this.selectOptList = this.table.dataSource[index]['chargePersonArr']
@@ -590,7 +589,7 @@ export default {
     newMortgageInformation () {
       let atr = [{ checkId: '', checkName: '', chargePerson: undefined, IsEdit: false, beginDate: undefined, endDate: undefined, checkCount: '', chargePersonArr: [], rowsData: [], assetId: []}]
       let arr = [...this.table.dataSource, ...atr]
-      console.log(arr)
+      // console.log(arr)
       arr.forEach((item, index) => {
         item.key = index
         item.indexKey = index + 1

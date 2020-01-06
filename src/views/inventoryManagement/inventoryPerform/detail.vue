@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-03 18:17:41
+ * @LastEditTime : 2020-01-06 13:42:42
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -484,7 +484,7 @@ export default {
   },
   mounted () {
     this.routeData = JSON.parse(this.$route.query.quersData)
-    console.log(this.routeData, '0909090')
+    // console.log(this.routeData, '0909090')
     this.checkId = this.routeData[0].checkId
     this.changeType = this.routeData[0].type
     this.query()

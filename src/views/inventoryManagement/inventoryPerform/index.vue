@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2020-01-03 15:57:58
+ * @LastEditTime : 2020-01-06 14:30:30
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -39,7 +39,7 @@
           </template>
           <template slot="operation" slot-scope="text, record">
             <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-            <span v-show="+record.checkStatus === 2 || +record.checkStatus === 0" @click="goPage('set', record)" class="btn_click">登记盘点结果</span>
+            <span v-power="ASSET_MANAGEMENT.ASSET_EXECUTE_NEW" v-show="+record.checkStatus === 2 || +record.checkStatus === 0" @click="goPage('set', record)" class="btn_click">登记盘点结果</span>
           </template>
         </a-table>
       </div>

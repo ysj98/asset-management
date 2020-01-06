@@ -178,7 +178,23 @@ export const ASSET_MANAGEMENT = {
   // 资产价值登记-审核
   ASSET_AWR_APPROVAL: 'zcgl_awr_approval',
   // 资产价值登记-删除
-  ASSET_AWR_DELETE: 'zcgl_awr_delete'
+  ASSET_AWR_DELETE: 'zcgl_awr_delete',
+
+  /**
+  * 盘点任务
+  **/
+  // 盘点任务-生成盘点单
+  ASSET_TASK_NEW: 'zcgl_task_new',
+  // 盘点任务-盘点任务编辑
+  ASSET_TASK_EDIT: 'zcgl_task_edit',
+  // 盘点任务-盘点任务取消
+  ASSET_TASK_DELETE: 'zcgl_task_delete',
+
+  /**
+  * 盘点执行
+  **/
+  // 盘点执行-登记盘点结果
+  ASSET_EXECUTE_NEW: 'zcgl_execute_new',
 }
 
 

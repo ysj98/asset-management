@@ -497,7 +497,7 @@ export default {
             })
           })
           let receivecostPlanList = []
-          console.log(this.receiving.dataSource, '计划的数据')
+          // console.log(this.receiving.dataSource, '计划的数据')
           if (receivingData.length > 0) {
             receivingData.forEach(list => {
               receivecostPlanList.push({
@@ -512,7 +512,7 @@ export default {
               })
             })
           }
-          console.log(receivecostPlanList, '计划的数据')
+          // console.log(receivecostPlanList, '计划的数据')
           let obj = {
             disposeName: values.disposeName,        // 处置名称
             organId: this.organId,                  // 所属组织机构
@@ -644,7 +644,7 @@ export default {
       this.$api.basics.getDisposeRegisterDetailList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data)
+          // console.log(data)
           this.checkedData = []
           data.forEach((item, index) => {
             item.key = index
@@ -664,7 +664,7 @@ export default {
       this.$api.basics.getreceivecostPlanList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data)
+          // console.log(data)
           data.forEach((item, index) => {
             item.key = index
             item.receivecostType = String(item.receivecostType)
@@ -681,7 +681,7 @@ export default {
     newMortgageInformation () {
       let atr = [{indexKey: '', receivecostType: undefined, payee: '', payer: '', feeSubject: '', amount: '', receivecostDate: undefined, secondMover: '', remark: ''}]
       let arr = [...this.receiving.dataSource, ...atr]
-      console.log(arr)
+      // console.log(arr)
       arr.forEach((item, index) => {
         item.key = index
         item.indexKey = index + 1
@@ -765,7 +765,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.query, 'opopopopopo')
+    // console.log(this.$route.query, 'opopopopopo')
     this.particularsData = this.$route.query
     this.organId = this.particularsData.organId
     this.type = this.particularsData.type
