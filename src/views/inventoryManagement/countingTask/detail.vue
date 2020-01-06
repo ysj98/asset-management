@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2020-01-02 18:05:34
+ * @LastEditTime : 2020-01-06 11:37:16
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -41,7 +41,7 @@
             </div>
           </template>
           <template slot="operation" slot-scope="text, record">
-            <span class="btn_click mr15">详情</span>
+            <span class="btn_click mr15" @click="inventoryDetailsFn(record)">详情</span>
           </template>
           </a-table>
           <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -154,6 +154,14 @@ export default {
   computed: {
   },
   methods: {
+    // 详情
+    inventoryDetailsFn (record) {
+      let querys = JSON.stringify([{
+        type: 'detail',
+        checkId: record.checkId
+      }])
+      this.$router.push({ path: '/inventoryManagement/countingTask/detail/inventoryDetails', query: {quersData: querys} });
+    },
     // 查询详情
     query () {
       let obj = {
@@ -218,6 +226,18 @@ export default {
           this.loading = false
         }
       })
+    }
+  },
+  watch: {
+    '$route' () {
+      console.log(this.$route.query.quersData)
+      let route = this.$route.query.quersData ? JSON.parse(this.$route.query.quersData) : []
+      let detail = route.length === 0 ? false : route[0].detail
+      if (this.$route.path === '/inventoryManagement/countingTask/detail' && detail) {
+        this.query()
+        this.queryListByTaskIdFn()
+        this.queryByTaskIdFn()
+      }
     }
   },
   created () {

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-03 10:34:26
+ * @LastEditTime : 2020-01-06 11:29:50
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -276,7 +276,8 @@ export default {
         let querys = JSON.stringify([{
           type,
           projectId: record.projectId,
-          taskId: record.taskId
+          taskId: record.taskId,
+          detail: true
         }])
         this.$router.push({ path: operationTypes[type], query: {quersData: querys}})
       }

@@ -312,8 +312,17 @@ let proRouter = [
   {
     path: '/inventoryManagement/countingTask/detail',
     name: '详情',
+    meta: {
+      keepAlive: true
+    },
     component: () => import('@/views/inventoryManagement/countingTask/detail')
-  }, {
+  },
+  {
+    path: '/inventoryManagement/countingTask/detail/inventoryDetails',
+    name: '盘点单详情',
+    component: () => import('@/views/inventoryManagement/countingTask/inventoryDetails')
+  },
+  {
     path: '/inventoryManagement/inventoryReport',
     name: '盘点报告',
     component: () => import('@/views/inventoryManagement/inventoryReport/index'),

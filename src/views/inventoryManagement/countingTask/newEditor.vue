@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-04 15:29:01
+ * @LastEditTime : 2020-01-06 11:49:19
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -343,6 +343,10 @@ export default {
         }
         if (!record.endDate) {
           this.$message.info('请选择结束时间')
+          return
+        }
+        if (record.beginDate > record.endDate) {
+          this.$message.info('结束时间不能大于开始时间')
           return
         }
         if (record.assetId.length === 0 && !record.checkId) {
