@@ -25,6 +25,7 @@
                   placeholder="请选择资产项目"
                   v-decorator="['projectId',{rules: [{required: true, message: '请选择资产项目'}], initialValue: newCardData.projectId}]"
                   :allowClear="false"
+                  @change="projectFn"
                   :filterOption="filterOption"
                   notFoundContent="没有查询到资产项目"
                   >
@@ -40,6 +41,7 @@
                   placeholder="请选择资产类型"
                   v-decorator="['assetType',{rules: [{required: true, message: '请选择资产类型'}], initialValue: newCardData.assetType}]"
                   :allowClear="false"
+                  @change="assetTypeFn"
                   :filterOption="filterOption"
                   notFoundContent="没有查询到资产类型"
                   >
@@ -444,6 +446,7 @@ export default {
   props: {},
   data () {
     return {
+      particularsData: '',
       disposeRegisterOrderId: '',  // 处置登记单ID
       projectIdData: [],        // 资产项目
       assetTypeData: [],        // 资产类型
@@ -506,7 +509,19 @@ export default {
   },
   methods: {
     moment,
-    cancel () {},
+    // 取消
+    cancel () {
+      this.$router.push({path: '/disposalRegister'})
+    },
+    // 项目监听
+    projectFn (val) {
+      this.checkedData = []
+      this.table.dataSource = []
+    },
+    assetTypeFn (val) {
+      this.checkedData = []
+      this.table.dataSource = []
+    },
     // 监听费用分摊方式
     changeCostSharingMode (val) {
       console.log(val)
@@ -612,12 +627,12 @@ export default {
           tableArr.forEach(item => {
             disposeDetailList.push({
               assetId: item.assetId,                // 资产信息ID
-              assetObjectId: item.assetObjectId,          // 资产对象ID
-              assetType: item.assetType,              // 资产类型
+              assetObjectId: item.assetObjectId,    // 资产对象ID
+              assetType: item.assetType,            // 资产类型
               organId: this.organId,                // 管理机构ID
-              disposeCost: item.disposeCost,                 // 处置成本(元)
-              disposeReceive: item.disposeReceive,         // 处置收入(元)
-              remark: item.remark                 // 备注
+              disposeCost: item.disposeCost,        // 处置成本(元)
+              disposeReceive: item.disposeReceive,  // 处置收入(元)
+              remark: item.remark                   // 备注
             })
           })
           let receivecostPlanList = []
@@ -625,37 +640,37 @@ export default {
           if (receivingData.length > 0) {
             receivingData.forEach(list => {
               receivecostPlanList.push({
-                receivecostType: list.receivecostType,                // 收付款类型 1收款 2付款
-                payee: +list.receivecostType === 2 ? list.payee : '',                // 收款方，收付款类型=1收款时不传， =2付款时必填
-                payer: +list.receivecostType === 1 ? list.payer : '',                // 付款方，收付款类型=1收款时必填， =2付款时不传
-                feeSubject: list.feeSubject,                // 费用科目
-                amount: list.amount,                //类型：Number  必有字段 金额(元)
-                receivecostDate: moment(list.receivecostDate, 'YYYY-MM-DD'),                // 收付款时间
-                secondMover: list.secondMover,                // 跟进人
-                remark: list.remark                // 备注
+                receivecostType: list.receivecostType,                  // 收付款类型 1收款 2付款
+                payee: +list.receivecostType === 2 ? list.payee : '',   // 收款方，收付款类型=1收款时不传， =2付款时必填
+                payer: +list.receivecostType === 1 ? list.payer : '',   // 付款方，收付款类型=1收款时必填， =2付款时不传
+                feeSubject: list.feeSubject,         // 费用科目
+                amount: list.amount,                 //类型：Number  必有字段 金额(元)
+                receivecostDate: moment(list.receivecostDate, 'YYYY-MM-DD'),  // 收付款时间
+                secondMover: list.secondMover,       // 跟进人
+                remark: list.remark                  // 备注
               })
             })
           }
           console.log(receivecostPlanList, '计划的数据')
           let obj = {
-            disposeName: values.disposeName,      // 处置名称
-            organId: this.organId,                // 所属组织机构
-            projectId: values.projectId,                // 资产项目ID
-            assetType: values.assetType,                // 资产类型 平台字典表asset_type 1房屋，2构筑物，3设备
-            disposeType: values.disposeType,                // 处置类型 平台字典 AMS_DISPOSE_TYPE 1 资产报废 2 资产报损 3 资产转让
-            disposeMode: values.disposeMode,                // 处置方式 机构字典 AMS_DISPOSE_MODE 1报废 2销售 3有偿转让 4无偿转让 5拆迁 6报损 7拍卖 8破产清算
-            disposePlanId: '',                // 处置计划ID，先预留字段，没有值
-            disposeCost: values.disposeCost,                // 处置成本(元)
-            disposeReceive: values.disposeReceive,                // 处置收入(元)
-            disposeDate: values.disposeDate.format('YYYY-MM-DD'),                // 处置时间
-            assetReceiver: values.assetReceiver,                // 资产接收人
-            costSharingMode: values.costSharingMode,                // 费用分摊方式 1按资产数量平均分摊 2按资产面积平均分摊
+            disposeName: values.disposeName,        // 处置名称
+            organId: this.organId,                  // 所属组织机构
+            projectId: values.projectId,            // 资产项目ID
+            assetType: values.assetType,            // 资产类型 平台字典表asset_type 1房屋，2构筑物，3设备
+            disposeType: values.disposeType,        // 处置类型 平台字典 AMS_DISPOSE_TYPE 1 资产报废 2 资产报损 3 资产转让
+            disposeMode: values.disposeMode,        // 处置方式 机构字典 AMS_DISPOSE_MODE 1报废 2销售 3有偿转让 4无偿转让 5拆迁 6报损 7拍卖 8破产清算
+            disposePlanId: '',                      // 处置计划ID，先预留字段，没有值
+            disposeCost: values.disposeCost,        // 处置成本(元)
+            disposeReceive: values.disposeReceive,  // 处置收入(元)
+            disposeDate: values.disposeDate.format('YYYY-MM-DD'), // 处置时间
+            assetReceiver: values.assetReceiver,     // 资产接收人
+            costSharingMode: values.costSharingMode, // 费用分摊方式 1按资产数量平均分摊 2按资产面积平均分摊
             attachmentList: files,
-            disposeReason: values.disposeReason,                // 处置原因
-            remark: values.remark,                // 备注
-            disposeDetailList: disposeDetailList,
-            receivecostPlanList: receivecostPlanList,
-            approvalStatus: '1'                // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+            disposeReason: values.disposeReason,     // 处置原因
+            remark: values.remark,                   // 备注
+            disposeDetailList: disposeDetailList,    // 资产清单类别
+            receivecostPlanList: receivecostPlanList, // 计划列表
+            approvalStatus: '1'                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
           }
           // 新增提交
           if (this.type === 'create') {
@@ -730,8 +745,8 @@ export default {
           let data = res.data.data
           this.$nextTick(() => {
             let files = []
-            if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
-                data.amsAttachmentList.forEach(item => {
+            if (data.attachment && data.attachment.length > 0) {
+                data.attachment.forEach(item => {
                 files.push({
                   url: item.attachmentPath,
                   name: item.oldAttachmentName
@@ -752,8 +767,7 @@ export default {
               assetReceiver: data.assetReceiver,
               costSharingMode: String(data.costSharingMode),
               disposeReason: data.disposeReason,
-              remark: data.remark,
-              defaultValue: [moment(data.beginDate), moment(data.endDate)]
+              remark: data.remark
             })
           })
         } else {
@@ -890,8 +904,6 @@ export default {
     }
   },
   created () {
-  },
-  mounted () {
     console.log(this.$route.query, 'opopopopopo')
     this.particularsData = this.$route.query
     this.organId = this.particularsData.organId
@@ -901,6 +913,8 @@ export default {
     this.platformDictFn('AMS_DISPOSE_TYPE')  // 处置类型
     this.organDict()                         // 处置方式
     this.getFeeTypeList()                    // 费用科目
+  },
+  mounted () {
     if (this.type === 'edit') {
       this.disposeRegisterOrderId = this.particularsData.disposeRegisterOrderId
       this.query()
