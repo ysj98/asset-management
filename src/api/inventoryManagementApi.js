@@ -119,7 +119,11 @@ export function deleteReport (data) {
 }
 
 // 盘点管理 - 盘点异常
-// 异常处理
+// 异常处理登记信息查询
+export function getCheckResultHandle (data) {
+  return axiosPost(inventoryManagement.exceptionManagement.getCheckResultHandle, data, false, false)
+}
+// 异常处理登记保存
 export function handleException (data) {
   return axiosPost(inventoryManagement.exceptionManagement.handleException, data, false, false)
 }

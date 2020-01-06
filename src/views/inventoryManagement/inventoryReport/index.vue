@@ -262,7 +262,7 @@ export default {
       })
     },
     handleOperation (pageType, record) {
-      this.$router.push({path: '/assetEntry/' + pageType, query: {pageType: pageType, cardId: record.cardId, organId: this.organId, organName: this.organName}})
+      this.$router.push({path: '/inventoryManagement/inventoryReport/' + pageType, query: {pageType: pageType, reportId: record.reportId, organId: this.organId, organName: this.organName}})
     },
     // 点击查询
     queryClick () {
