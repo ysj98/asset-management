@@ -6,7 +6,7 @@
   <div class="scheduleChanges pb70">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop: toggle?'16px': 0}">
        <div slot="headerBtns">
-        <SG-Button icon="plus" @click="goPage('create')" type="primary">
+        <SG-Button v-power="ASSET_MANAGEMENT.zcgl_dengji_create" icon="plus" @click="goPage('create')" type="primary">
           新增处置登记
         </SG-Button>
       </div>
@@ -262,6 +262,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       organId: '',   // 组织机构id
       organName: '', // 组织机构名称
       toggle: true, // 开关
@@ -352,8 +353,12 @@ export default {
       let arr = []
       // 草稿 已驳回
       if (['0', '3'].includes(String(type))) {
-        arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
-        arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+        if (this.$power.has(ASSET_MANAGEMENT.zcgl_dengji_edit)) {
+          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.zcgl_dengji_delete)) {
+          arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+        }
       }
       // 待审批
       if (['2'].includes(type)) {
@@ -361,7 +366,9 @@ export default {
       }
       // 已审批
       if (['1'].includes(type)) {
-        arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+        if (this.$power.has(ASSET_MANAGEMENT.zcgl_dengji_reverseapply)) {
+          arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+        }
       }
       arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
       return arr

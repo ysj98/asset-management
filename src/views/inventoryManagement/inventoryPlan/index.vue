@@ -7,7 +7,7 @@
     <!-- 搜索框start -->
     <div class="search-box">
       <div class="search-left">
-        <SG-Button icon="plus" @click="goPage('create')" type="primary"
+        <SG-Button v-power="ASSET_MANAGEMENT.zcgl_plan_create" icon="plus" @click="goPage('create')" type="primary"
           >新增盘点计划</SG-Button
         >
       </div>
@@ -90,6 +90,7 @@ import TreeSelect from "@/views/common/treeSelect"
 import moment from "moment"
 import {utils} from '@/utils/utils'
 import OperationPopover from '@/components/OperationPopover'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -195,6 +196,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       queryCondition: utils.deepClone(queryCondition),
       approvalStatusOpt,
       organName: "",
@@ -211,10 +213,10 @@ export default {
   watch: {
     '$route' () {
       if (this.$route.path === '/inventoryPlan' && this.$route.query.refresh) {
-      this.queryCondition.pageNum = 1
-      this.queryCondition.pageSize = 10
-        this.query()
-      }
+        this.queryCondition.pageNum = 1
+        this.queryCondition.pageSize = 10
+          this.query()
+        }
     }
   },
   methods: {
@@ -250,8 +252,12 @@ export default {
       let arr = []
       // 草稿 已驳回
       if (['0', '3'].includes(String(type))) {
-        arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
-        arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+        if (this.$power.has(ASSET_MANAGEMENT.zcgl_plan_edit)) {
+          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.zcgl_plan_delete)) {
+          arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+        }
       }
       // 待审批
       if (['2'].includes(type)) {
@@ -259,7 +265,9 @@ export default {
       }
       // 已审批
       if (['1'].includes(type)) {
-        arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+        if (this.$power.has(ASSET_MANAGEMENT.zcgl_plan_reverseapply)) {
+          arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+        }
       }
       arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
       return arr

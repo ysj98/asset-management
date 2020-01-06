@@ -36,7 +36,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+            <div class="label-name-box" :class="[editable&&'required']">
               <span class="label-name label-space-between">
                 计划名称
                 <i></i>
@@ -68,7 +68,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+            <div class="label-name-box" :class="[editable&&'required']">
               <span class="label-name label-space-between">
                 实施频次
                 <i></i>
@@ -102,7 +102,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+            <div class="label-name-box" :class="[editable&&'required']">
               <span class="label-name label-space-between">
                 计划生效时间
                 <i></i>
@@ -133,7 +133,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+            <div class="label-name-box" :class="[editable&&'required']">
               <span class="label-name label-space-between">
                 计划失效时间
                 <i></i>
@@ -164,7 +164,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-if="showBeginMonth">
-            <div class="label-name-box required">
+            <div class="label-name-box" :class="[editable&&'required']">
               <span class="label-name label-space-between">
                 任务开始时间
                 <i></i>
@@ -218,7 +218,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-if="!editable">
-            <div class="label-name-box required">
+            <div class="label-name-box">
               <span class="label-name label-space-between">
                 创建人
                 <i></i>
@@ -230,7 +230,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-if="!editable">
-            <div class="label-name-box required">
+            <div class="label-name-box">
               <span class="label-name label-space-between">
                 创建人
                 <i></i>
@@ -242,7 +242,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-if="!editable">
-            <div class="label-name-box required">
+            <div class="label-name-box">
               <span class="label-name label-space-between">
                 创建时间
                 <i></i>
@@ -254,7 +254,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-if="!editable">
-            <div class="label-name-box required">
+            <div class="label-name-box">
               <span class="label-name label-space-between">
                 计划状态
                 <i></i>
@@ -266,7 +266,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+            <div class="label-name-box" :class="[editable&&'required']">
               <span class="label-name label-space-between">
                 提前生成任务时间
                 <i></i>
@@ -430,14 +430,14 @@
       <SG-Button @click="handleSaveApp('1')">提交审批</SG-Button>
     </FormFooter>
     <FormFooter
-      v-else
+      v-if="['approval'].includes(pageType)"
       style="border:none;"
       location="fixed"
     >
-      <SG-Button class="mr2" @click="handleAdopt" type="primary"
+      <SG-Button class="mr2" @click="handleAdopt('1')" type="primary"
         >审批通过</SG-Button
       >
-      <SG-Button type="danger" @click="handleReject">驳回</SG-Button>
+      <SG-Button type="danger" @click="handleAdopt('3')">驳回</SG-Button>
     </FormFooter>
     <div>
        <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
@@ -571,7 +571,7 @@ export default {
       oneHasYear,
       form: this.$form.createForm(this),
       table: {
-        columns,
+        columns: _.cloneDeep(columns),
         dataSource: [],
         loading: false,
         totalCount: 0,
@@ -607,6 +607,10 @@ export default {
       this.inventoryDetail()
     }
     if (this.pageType === 'detail') {
+      this.popTableColumn()
+      this.inventoryDetail()
+    }
+    if (this.pageType === 'approval') {
       this.popTableColumn()
       this.inventoryDetail()
     }
@@ -685,7 +689,7 @@ export default {
        beginDayName = beginDayName ? beginDayName.label : ''
        this.detail = obj
        this.detail.beginMonthbeginDay = beginMonthName + beginDayName
-       this.detail.preNumpreUnit = obj.preNum + obj.preUnit === '1' ? '天' : '时'
+       this.detail.preNumpreUnit = obj.preNum + (obj.preUnit === '1' ? '天' : '时')
        this.detail.planStatusName = this.approvalStatusName
       }
     },
@@ -870,10 +874,25 @@ export default {
         }
       })
     },
-    // 审批通过
-    handleAdopt () {},
-    // 驳回
-    handleReject () {},
+    // 审批通过与驳回
+    handleAdopt (approvalStatus) {
+      let label = approvalStatus === '1' ? '通过' : '驳回'
+      let loadingName = this.SG_Loding(label + '中...')
+      this.$api.building.updateCheckPlanStatus({approvalStatus, planId: this.planId}).then(res => {
+        this.DE_Loding(loadingName).then(() => {
+          if (res.data.code === '0') {
+            this.$SG_Message.success(label + '成功!')
+            this.$router.push({ path: '/inventoryPlan', query: {refresh: true} });
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      }).catch(() => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error(label + '失败！')
+        })
+      })
+    },
     // 频次变化 () 
     exePreSelectChange (e) {
       console.log('2222222', e)

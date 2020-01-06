@@ -195,6 +195,20 @@ export const ASSET_MANAGEMENT = {
   **/
   // 盘点执行-登记盘点结果
   ASSET_EXECUTE_NEW: 'zcgl_execute_new',
+  /**
+   * 盘点计划
+  */
+  zcgl_plan_create: 'zcgl_plan_create',
+  zcgl_plan_edit: 'zcgl_plan_edit',
+  zcgl_plan_delete: 'zcgl_plan_delete',
+  zcgl_plan_reverseapply: 'zcgl_plan_reverseapply',
+  /**
+   * 处置登记
+  */
+ zcgl_dengji_create: 'zcgl_dengji_create',
+ zcgl_dengji_edit: 'zcgl_dengji_edit',
+ zcgl_dengji_delete: 'zcgl_dengji_delete',
+ zcgl_dengji_reverseapply: 'zcgl_dengji_reverseapply',
 }
 
 

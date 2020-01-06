@@ -44,7 +44,7 @@ let columns = [
   },
   {
     title: "负责人",
-    dataIndex: "chargePersonName",
+    dataIndex: "chargePersonNameList",
     width: "25%"
   },
   {
@@ -97,8 +97,17 @@ export default {
         if (res.data.code === '0') {
           let result = res.data.data.data || []
           this.table.dataSource = result.map((item, i) => {
-            item.beginDateendDate = item.beginDate + item.endDate
-            item.realBeginDaterealEndDate = item.realBeginDate + item.realEndDate
+            if (item.beginDate && item.endDate) {
+              item.beginDateendDate = item.beginDate + '/' + item.endDate
+            } else {
+              item.beginDateendDate = '--'
+            }
+            if (item.realBeginDate && item.realEndDate) {
+              item.realBeginDaterealEndDate = item.realBeginDate + '/' + item.realEndDate
+            } else {
+              item.realBeginDaterealEndDate = '--'
+            }
+            item.chargePersonNameList = item.chargePersonList.map(v => v.userName).join(',')
             return {...item, key: getUuid(), order: i + 1}
           })
           this.table.totalCount = res.data.data.count
