@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2020-01-06 14:30:30
+ * @LastEditTime : 2020-01-06 15:32:24
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -14,10 +14,10 @@
           <SG-DatePicker label="盘点日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="nav">
-          <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" :tokenSeparators="[',']" v-model="queryCondition.approvalStatus">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
+            <a-select-option v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.checkName" placeholder="盘点单名称/编号" maxlength="60" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.checkName" placeholder="盘点单名称" maxlength="60" @search="onSearch" />
           <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </div>
@@ -69,11 +69,11 @@ const operationTypes = {
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
   checkName: '',
-  approvalStatus: '',
+  checkStatus: '',
   pageSize: 10,
   pageNum: 1
 }
-const approvalStatusData = [
+const checkStatusData = [
   {
     name: '全部状态',
     value: ''
@@ -155,7 +155,7 @@ export default {
     return {
       ASSET_MANAGEMENT,
       queryCondition: {...queryCondition},
-      approvalStatusData,
+      checkStatusData,
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       table: {
         columns,

@@ -252,10 +252,10 @@ const queryCondition =  {
     pageNum: 1,     // 当前页
     pageSize: 10,    // 每页显示记录数
     projectId: '',   // 资产项目Id
-    approvalStatus: [],  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-    assetType: [],    // 资产类型Id
-    disposeType: [],   // 处置类型
-    disposeMode: [],    // 处置方式
+    approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+    assetType: '',    // 资产类型Id
+    disposeType: '',   // 处置类型
+    disposeMode: '',    // 处置方式
   }
 export default {
   components: {SearchContainer, OperationPopover, TreeSelect, segiIcon, noDataTips},
@@ -289,11 +289,38 @@ export default {
     this.platformDict('asset_type')
     this.platformDict('AMS_DISPOSE_TYPE')
   },
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/disposalRegister' && this.$route.query.refresh) {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+        this.query()
+      }
+    }
+  },
   methods: {
+    judgmentMethodFn (val) {
+      if (val === '') {
+        return []
+      } else if (val.length > 0 && val[0] !== '') {
+        return val
+      } else if (val.length === 1 && val[0] === '') {
+        return []
+      } else {
+        return val
+      }
+    },
     query () {
       let data = {
         organId: this.organId,
-        ...this.queryCondition,
+        disposeName: this.queryCondition.disposeName,
+        pageNum: this.queryCondition.pageNum,
+        pageSize: this.queryCondition.pageSize,
+        projectId: this.queryCondition.projectId,
+        approvalStatusList: this.judgmentMethodFn(this.queryCondition.approvalStatus),
+        assetTypeList: this.judgmentMethodFn(this.queryCondition.assetType),
+        disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType),
+        disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode),
         submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),
         submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',
@@ -340,8 +367,10 @@ export default {
       return arr
     },
     operationFun (type, record) {
-      if (['edit', 'detail', 'approval', 'readApproval'].includes(type)) {
+      if (['edit', 'detail', 'approval',].includes(type)) {
         this.goPage(type, record)
+      } else if (['delete', 'readApproval'].includes(type)) {
+        this.readApprovalFn(type, record)
       }
     },
     // 重置查询条件
@@ -387,11 +416,11 @@ export default {
       let len = data.length
       // 如果点击全选或者取消全选
       if (data[len-1] === '' || len === 0) {
-        return data = []
+        return data = ['']
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === (dataOptions.length-1)) {
-        return data = []
+        return data = ['']
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
@@ -471,16 +500,42 @@ export default {
         } else {
           this.$message.error(res.data.message);
         }
-      });
+      })
+    },
+    // 反审核/删除
+    readApprovalFn (type, record) {
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: `${type === 'readApproval' ? '确认要反审核该资产处置单吗？' : '确认要删除该资产处置登记单吗？'}`,
+        onOk() {
+          let obj = {
+            disposeRegisterOrderId: record.disposeRegisterOrderId,
+            approvalStatus: type === 'readApproval' ? '0' : '4',
+            status: type === 'delete' ? '0' : ''
+          }
+          let loadingName = _this.SG_Loding('提交中...')
+          _this.$api.basics.updateDisposeRegisterStatus(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.DE_Loding(loadingName).then(() => {
+                _this.$SG_Message.success('提交成功')
+                _this.query()
+              })
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+        }
+      })
     },
     goPage(type, record) {
       let query = {
-        type,
-        organId: this.organId,
-        organName: this.organName,
-        disposeRegisterOrderId: type === 'create' ? '' : record.disposeRegisterOrderId
-      };
-      this.$router.push({ path: operationTypes[type], query });
+          type,
+          organId: this.organId,
+          organName: this.organName,
+          disposeRegisterOrderId: type === 'create' ? '' : record.disposeRegisterOrderId
+        }
+      this.$router.push({ path: operationTypes[type], query })
     },
     // 高级搜索控制
     searchContainerFn (val) {

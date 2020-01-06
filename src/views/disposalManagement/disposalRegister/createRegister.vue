@@ -18,6 +18,14 @@
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="8">
+              <a-form-item v-bind="formItemLayout" label="所属机构：">
+                <a-input placeholder="请输入所属机构"
+                :style="allWidth"
+                :disabled="true"
+                v-decorator="['organName', {rules: [{message: '请输入所属机构'}], initialValue: newCardData.organName}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8">
               <a-form-item label="资产项目：" v-bind="formItemLayout">
                 <a-select
                   showSearch
@@ -341,6 +349,7 @@ export default {
       location: '',
       noPageTools: false,
       newCardData: {
+        organName: '',                 // 所属机构名称
         disposeName: '',
         projectId: undefined,          // 资产项目
         assetType: undefined,          // 资产类型
@@ -765,9 +774,9 @@ export default {
     }
   },
   created () {
-    // console.log(this.$route.query, 'opopopopopo')
     this.particularsData = this.$route.query
     this.organId = this.particularsData.organId
+    this.newCardData.organName = this.particularsData.organName
     this.type = this.particularsData.type
     this.getObjectKeyValueByOrganIdFn()      // 资产项目
     this.platformDictFn('asset_type')        // 资产类型

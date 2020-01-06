@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-06 14:32:00
+ * @LastEditTime : 2020-01-06 15:10:22
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -206,7 +206,10 @@ export default {
     },
     query() {
       let data = {
-        ...this.queryCondition,
+        taskName: this.queryCondition.taskName,
+        taskStatus: this.queryCondition.taskStatus.length > 0 ? this.queryCondition.taskStatus.join(',') : '',
+        pageSize: this.queryCondition.pageSize,
+        pageNum: this.queryCondition.pageNum,
         beginDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
         endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
       }
