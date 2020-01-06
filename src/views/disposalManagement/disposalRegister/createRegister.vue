@@ -3,10 +3,10 @@
  * @Description: 新增处置登记
  -->
 <template>
-  <div class="newEditor">
-    <div class="newEditor-nav">
+  <div class="createRegister">
+    <div class="createRegister-nav">
       <span class="section-title blue">基础信息</span>
-      <div class="newEditor-obj">
+      <div class="createRegister-obj">
         <a-row class="playground-row">
           <a-form :form="form" @submit="handleSubmit">
             <a-col class="playground-col" :span="8">
@@ -182,14 +182,14 @@
         </a-row>
       </div>
     </div>
-    <div class="newEditor-nav">
+    <div class="createRegister-nav">
       <span class="section-title blue">资产处置清单（已选择资产总数: {{table.dataSource.length}})</span>
       <div class="button-box">
         <div class="buytton-nav">
           <SG-Button class="choice" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
         </div>
       </div>
-      <div class="newEditor-obj">
+      <div class="createRegister-obj">
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="table.loading"
@@ -218,9 +218,9 @@
         </div>
       </div>
     </div>
-    <div class="newEditor-nav">
+    <div class="createRegister-nav">
       <span class="section-title blue">收付款计划</span>
-      <div class="newEditor-obj">
+      <div class="createRegister-obj">
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="receiving.loading"
@@ -795,11 +795,11 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.newEditor {
+.createRegister {
   padding-bottom: 70px;
-  .newEditor-nav{
+  .createRegister-nav{
     padding: 42px 126px 20px 70px;
-    .newEditor-obj {
+    .createRegister-obj {
       padding: 20px 0 20px 40px;
       .playground-row {
         .playground-col {

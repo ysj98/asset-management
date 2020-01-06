@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-06 13:42:42
+ * @LastEditTime : 2020-01-06 18:00:54
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -89,7 +89,7 @@
       </Cephalosome>
         <div class="table-layout-fixed table-border">
           <a-table
-            :loading="loading"
+            :loading="tableLoading"
             :columns="exceptionListColumns"
             :dataSource="tableDataList"
             class="custom-table td-pd10"
@@ -183,6 +183,7 @@ export default {
       columns: [...register],                 // 资产清单列表表头
       exceptionListColumns: [...exceptionList],    // 异常列表表头
       loading: false,
+      tableLoading: false,
       tableData: [],
       tableDataList: [],
       location: '',
@@ -249,6 +250,7 @@ export default {
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum
       }
+      this.loading = true
       this.$api.inventoryManagementApi.assetCheckInstAsseDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -260,7 +262,9 @@ export default {
             item.key = index
             return item
           })
+          this.loading = false
         } else {
+          this.loading = false
           this.$message.error(res.data.message)
         }
       })
@@ -302,6 +306,7 @@ export default {
         pageSize: this.condition.pageSize,
         pageNum: this.condition.pageNum
       }
+      this.tableLoading = true
       this.$api.inventoryManagementApi.assetCheckInstAsseDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -314,7 +319,9 @@ export default {
             item.key = index
             return item
           })
+          this.tableLoading = false
         } else {
+          this.tableLoading = false
           this.$message.error(res.data.message)
         }
       })
