@@ -154,7 +154,7 @@ const columns = [
   },
   {
     title: '处理建议',
-    dataIndex: 'handleWayName',
+    dataIndex: 'handleTip',
     width: 120
   },
   {
