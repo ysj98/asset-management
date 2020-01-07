@@ -37,9 +37,9 @@
                 <a-radio :checked="record.taskId == chosenTaskId" @change="changeRadio(record)"></a-radio>
               </div>
             </template>
-            <template slot="checkRate" slot-scope="text, record">
+            <template slot="progress" slot-scope="text, record">
               <div style="padding-right: 10px;">
-                <a-progress :percent="Number(record.checkRate) || 0" />
+                <a-progress :percent="Number(record.progress) || 0" />
               </div>
             </template>
           </a-table>
@@ -122,8 +122,8 @@ let columns = [
   },
   {
     title: "进度",
-    dataIndex: "checkRate",
-    scopedSlots: { customRender: "checkRate" },
+    dataIndex: "progress",
+    scopedSlots: { customRender: "progress" },
     width: 120
   },
   {
@@ -162,6 +162,10 @@ export default {
   },
   methods: {
     changeRadio (record) {
+      if (!(Number(record.progress) === 100 && Number(record.taskStatus) === 3)) {
+        this.$message.info('只能选择进行中且进度为100%的任务！')
+        return
+      }
       this.chosenTaskId = record.taskId
       this.chosenTaskName = record.taskName
     },
@@ -222,6 +226,9 @@ export default {
         ...this.queryCondition,
         beginDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
         endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
+      }
+      if (data.taskStatus.length > 0) {
+        data.taskStatus = data.taskStatus.join(',')
       }
       this.table.loading = true
       this.$api.inventoryManagementApi.queryCheckTaskPageList(data).then(
