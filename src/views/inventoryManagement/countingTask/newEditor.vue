@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-06 13:42:17
+ * @LastEditTime : 2020-01-07 15:43:25
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -587,7 +587,9 @@ export default {
     },
     // 新建盘点单
     newMortgageInformation () {
-      let atr = [{ checkId: '', checkName: '', chargePerson: undefined, IsEdit: false, beginDate: undefined, endDate: undefined, checkCount: '', chargePersonArr: [], rowsData: [], assetId: []}]
+      let beginDateNew = this.form.getFieldValue('defaultValue')[0] || undefined
+      let endDateNew = this.form.getFieldValue('defaultValue')[1] || undefined
+      let atr = [{ checkId: '', checkName: '', chargePerson: undefined, IsEdit: false, beginDate: beginDateNew, endDate: endDateNew, checkCount: '', chargePersonArr: [], rowsData: [], assetId: []}]
       let arr = [...this.table.dataSource, ...atr]
       // console.log(arr)
       arr.forEach((item, index) => {
@@ -601,6 +603,7 @@ export default {
     assetChange (checkedData, checkedNames, rowsData, extraData) {
       this.table.dataSource[this.assetIdIndex].assetId = checkedData  // 选择的id
       this.table.dataSource[this.assetIdIndex].rowsData = rowsData  // 选的总的
+      this.table.dataSource[this.assetIdIndex].checkCount = checkedData.length
       this.$refs.associateAssetModal.show = false
     },
     // 计算资产总数

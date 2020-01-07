@@ -20,7 +20,7 @@ const localhost = getIPAdress()
 console.log('IP', localhost)
 const target = 'http://192.168.1.11:10080'
 // const target = 'http://120.24.82.71:8080'
-const mock = 'http://192.168.1.10:9090/mock/5dbfda7704a31c60dc1862a1'
+// const mock = 'http://192.168.1.10:9090/mock/5dbfda7704a31c60dc1862a1'
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
@@ -63,7 +63,7 @@ class Proxy {
 // 实例化 Proxy 类
 const proxy = new Proxy()
 // 添加代理数据，如需代理多个地址，继续调用实例的 addUrls 方法即可
-proxy.addUrls(['/ams/checkplan/', '/ams/checktask/'], localhost, 'http://192.168.3.28:8080')
+// proxy.addUrls(['/ams/checkplan/', '/ams/checktask/'], localhost, 'http://192.168.3.28:8080')
 proxy.addUrls(proxyURL, localhost, target)
 // proxy.addUrls(['/ams/'], localhost, mock)
 // 配置
