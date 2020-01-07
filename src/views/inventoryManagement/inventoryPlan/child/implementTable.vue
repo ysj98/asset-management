@@ -98,15 +98,16 @@ export default {
           let result = res.data.data.data || []
           this.table.dataSource = result.map((item, i) => {
             if (item.beginDate && item.endDate) {
-              item.beginDateendDate = item.beginDate + '/' + item.endDate
+              item.beginDateendDate = item.beginDate + '至' + item.endDate
             } else {
               item.beginDateendDate = '--'
             }
-            if (item.realBeginDate && item.realEndDate) {
-              item.realBeginDaterealEndDate = item.realBeginDate + '/' + item.realEndDate
-            } else {
-              item.realBeginDaterealEndDate = '--'
+            item.realBeginDate = item.realBeginDate || '--'
+            item.realEndDate = item.realEndDate ? ('至' + item.realEndDate) : ''
+            if (item.realBeginDate && !item.realEndDate) {
+              item.realEndDate = '至--'
             }
+            item.realBeginDaterealEndDate = item.realBeginDate + item.realEndDate
             item.chargePersonNameList = item.chargePersonList.map(v => v.userName).join(',')
             return {...item, key: getUuid(), order: i + 1}
           })

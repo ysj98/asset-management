@@ -53,7 +53,7 @@
         <a-input-search
           :style="allStyle"
           v-model="queryCondition.planName"
-          placeholder="盘点单名称/编号"
+          placeholder="计划名称"
           maxlength="30"
           @search="onSearch"
         />
