@@ -635,7 +635,7 @@ export default {
               disposeReceive: data.disposeReceive,
               disposeDate: moment(data.disposeDate),
               assetReceiver: data.assetReceiver,
-              costSharingMode: String(data.costSharingMode),
+              costSharingMode: data.costSharingMode ? String(data.costSharingMode) : undefined,
               disposeReason: data.disposeReason,
               remark: data.remark
             })
@@ -657,6 +657,7 @@ export default {
           this.checkedData = []
           data.forEach((item, index) => {
             item.key = index
+            item.assetCategoryName = item.objectTypeName
             this.checkedData.push(item.assetId)
           })
           this.table.dataSource = data
