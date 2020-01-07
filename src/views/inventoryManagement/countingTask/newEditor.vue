@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-07 17:49:45
+ * @LastEditTime : 2020-01-07 18:08:31
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -288,9 +288,10 @@ export default {
       let max = moment(val[1]).format('YYYY-MM-DD')
       let dataMin = moment(data[0].beginDate).format('YYYY-MM-DD')
       let dataMax = moment(datas[0].endDate).format('YYYY-MM-DD')
-      // 执行时间必须在资产列表最小开始时间和最大开始时间内
-      if (dataMin > min || min > dataMax && dataMin > max || max > dataMax) {
-        this.$message.info('执行时间应为盘点单列表最小开始时间和最大结束日期范围内')
+      console.log(min, max, dataMin, dataMax)
+      // 执行时间必须在资产列表最小开始时间和最大开始时间外
+      if (min > dataMin && max < dataMax) {
+        this.$message.info('执行时间应为盘点单列表最小开始时间和最大结束日期范围外')
         this.$nextTick(() => {
           this.form.setFieldsValue({
             defaultValue: [data[0].beginDate, datas[0].endDate]
