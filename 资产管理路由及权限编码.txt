@@ -21,7 +21,8 @@ V1.2
 /asset-management/#/inventoryManagement/countingTask      盘点任务
 /asset-management/#/inventoryManagement/inventoryPerform  盘点执行
 /asset-management/#/disposalManagement/listDisposal       资产处置一览表
-
+/asset-management/#/inventoryPlan                         盘点计划
+/asset-management/#/disposalRegister                      资产处置登记
 
 新增权限编码如下:
 V1.0
