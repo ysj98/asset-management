@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-07 15:49:07
+ * @LastEditTime : 2020-01-07 17:49:45
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -55,6 +55,8 @@
             <a-col class="playground-col" :span="8">
               <a-form-item v-bind="formItemLayout" label="执行时间：">
                 <SG-DatePicker style="width: 200px;"  pickerType="RangePicker"
+                @change="defaultValueFn"
+                :allowClear="false"
                  v-decorator="['defaultValue', {rules: [{type: 'array', required: true, whitespace: true, message: '请选择执行时间'}], initialValue: newCardData.defaultValue}]"
                  format="YYYY-MM-DD"></SG-DatePicker>
               </a-form-item>
@@ -116,14 +118,14 @@
             </a-select>
           </template>
           <!-- 开始时间 -->
-          <template slot="beginDate" slot-scope="text, record">
+          <template slot="beginDate" slot-scope="text, record, index">
             <span v-if="record.IsEdit">{{ record.beginDate === undefined ? '' : moment(record.beginDate).format('YYYY-MM-DD')}}</span>
-            <a-date-picker v-else v-model="record.beginDate"/>
+            <a-date-picker :allowClear="false" @change="chanheFn(record.beginDate, index, 'beginDate')" v-else v-model="record.beginDate"/>
           </template>
           <!-- 结束时间 -->
-          <template slot="endDate" slot-scope="text, record">
+          <template slot="endDate" slot-scope="text, record, index">
             <span v-if="record.IsEdit">{{ record.endDate === undefined ? '' : moment(record.endDate).format('YYYY-MM-DD')}}</span>
-            <a-date-picker v-else v-model="record.endDate"/>
+            <a-date-picker :allowClear="false" @change="chanheFn(record.endDate, index, 'endDate')" v-else v-model="record.endDate"/>
           </template>
           <template slot="operation" slot-scope="text, record, index">
             <span class="btn_click mr15" v-if="record.IsEdit" @click="operationFn(record, 'edit', index)">编辑</span>
@@ -260,6 +262,42 @@ export default {
   },
   methods: {
     moment,
+    // 盘点单列表开始时间监听
+    chanheFn (val, index, str) {
+      let beginDateNew = moment(this.form.getFieldValue('defaultValue')[0]).format('YYYY-MM-DD')
+      let endDateNew = moment(this.form.getFieldValue('defaultValue')[1]).format('YYYY-MM-DD')
+      let valDate = valDate = moment(val).format('YYYY-MM-DD')
+      if (beginDateNew > valDate || valDate > endDateNew) {
+        str === 'beginDate' ? this.table.dataSource[index].beginDate = this.form.getFieldValue('defaultValue')[0] : this.table.dataSource[index].endDate = this.form.getFieldValue('defaultValue')[1] 
+        this.$message.info(`${str === 'beginDate' ? '开始' : '结束'}时间在执行时间范围内`)
+      }
+    },
+    // 执行时间监听
+    defaultValueFn (val) {
+      let data = utils.deepClone(this.table.dataSource)
+      let datas = utils.deepClone(this.table.dataSource)
+      // 开始时间最小的
+      data.sort((a, b) => {
+        return new Date(a.beginDate).getTime() - new Date(b.beginDate).getTime()
+      })
+      // 结束时间最大的
+      datas.sort((a, b) => {
+        return new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
+      })
+      let min = moment(val[0]).format('YYYY-MM-DD')
+      let max = moment(val[1]).format('YYYY-MM-DD')
+      let dataMin = moment(data[0].beginDate).format('YYYY-MM-DD')
+      let dataMax = moment(datas[0].endDate).format('YYYY-MM-DD')
+      // 执行时间必须在资产列表最小开始时间和最大开始时间内
+      if (dataMin > min || min > dataMax && dataMin > max || max > dataMax) {
+        this.$message.info('执行时间应为盘点单列表最小开始时间和最大结束日期范围内')
+        this.$nextTick(() => {
+          this.form.setFieldsValue({
+            defaultValue: [data[0].beginDate, datas[0].endDate]
+          })
+        })
+      }
+    },
     // 提交详情
     save (str) {
       this.form.validateFields((err, values) => {
