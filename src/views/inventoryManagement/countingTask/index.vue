@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-06 15:10:22
+ * @LastEditTime : 2020-01-07 15:55:51
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -32,9 +32,9 @@
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
         >
-          <template slot="checkRate" slot-scope="text, record">
+          <template slot="progress" slot-scope="text, record">
             <div style="padding-right: 10px;">
-                <a-progress :percent="Number(record.checkRate) || 0" />
+                <a-progress :percent="Number(record.progress) || 0" />
               </div>
           </template>
           <template slot="operation" slot-scope="text, record">
@@ -117,8 +117,8 @@ let columns = [
   },
   {
     title: "盘点进度",
-    dataIndex: "checkRate",
-    scopedSlots: { customRender: "checkRate" },
+    dataIndex: "progress",
+    scopedSlots: { customRender: "progress" },
     width: 200
   },
   {
