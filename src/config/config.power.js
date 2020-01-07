@@ -195,6 +195,19 @@ export const ASSET_MANAGEMENT = {
   **/
   // 盘点执行-登记盘点结果
   ASSET_EXECUTE_NEW: 'zcgl_execute_new',
+ /**
+  * 盘点报告
+  */
+  // 盘点报告-新建
+  ASSET_INVENTORY_REPORT_NEW: 'zcgl_inventory_report_new',
+  // 盘点报告-编辑
+  ASSET_INVENTORY_REPORT_EDIT: 'zcgl_inventory_report_edit',
+  // 盘点报告-删除
+  ASSET_INVENTORY_REPORT_DELETE: 'zcgl_inventory_report_delete',
+  // 盘点报告-审核
+  ASSET_INVENTORY__REPORT_AUDIT: 'zcgl_inventory_report_audit',
+  // 盘点报告-反审核
+  ASSET_INVENTORY_REPORT_REVERSE_AUDIT: 'zcgl_inventory_report_reverse_audit',
   /**
    * 盘点计划
   */
