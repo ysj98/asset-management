@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-07 15:43:25
+ * @LastEditTime : 2020-01-07 15:49:07
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -610,7 +610,9 @@ export default {
     inventoryAssetCountFn () {
       let num = 0
       this.table.dataSource.forEach(item => {
-        num = num + Number(item.checkCount)
+        if (item.checkId) {
+          num = num + Number(item.checkCount)
+        }
       })
       this.inventoryAssetCount = num
     }
