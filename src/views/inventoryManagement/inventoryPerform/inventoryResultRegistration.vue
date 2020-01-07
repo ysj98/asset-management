@@ -59,6 +59,18 @@
                   />
               </a-form-item>
             </a-col>
+            <a-col class="playground-col" :span="24" v-show="showHandleTip">
+              <a-form-item v-bind="formItemTextarea" label="处理建议：">
+                <a-textarea placeholder="请输入处理建议"
+                            :style="widthBox"
+                            :autosize="{ minRows: 3, maxRows: 3 }"
+                            :maxLength="200"
+                            v-decorator="['handleTip',
+                  {rules: [{required: false, max: 200, message: '请输入异常说明(不超过200字符)'}], initialValue: newCardData.handleTip}
+                  ]"
+                />
+              </a-form-item>
+            </a-col>
             <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" label="上传图片：">
               <SG-UploadFile
@@ -85,6 +97,7 @@ export default {
       taskId: '',     // 任务id
       assetId: '',   // 资产id
       requiredShow: false,
+      showHandleTip: false, // 是否展示处理建议
       radioData:[
         {
           value: '1',
@@ -185,6 +198,9 @@ export default {
             assetAddress: '',            // 资产位置(非盘盈利为空)
             attachmentList: files        // 附件
           }
+          if (this.showHandleTip) {
+            obj.handleTip = values.handleTip
+          }
           let loadingName = this.SG_Loding('保存中...')
           this.$api.inventoryManagementApi.assetCheckInstCheckResult(obj).then(res => {
             if (Number(res.data.code) === 0) {
@@ -203,12 +219,17 @@ export default {
       })
     },
     // 查询详情
-    query (str, resultId, checkId, taskId, assetId) {
+    query (str, resultId, checkId, taskId, assetId, showHandleTip) {
       this.newData = str
       this.resultId = resultId
       this.checkId = checkId   // 盘点单id
       this.taskId = taskId     // 任务id
       this.assetId = assetId   // 资产id
+      if (showHandleTip) {
+        this.showHandleTip = true
+      } else {
+        this.showHandleTip = false
+      }
       let obj = {
         resultId: this.resultId  // 盘点id
       }
@@ -221,6 +242,11 @@ export default {
               remark: this.particularsData.remark,
               checkResult: String(this.particularsData.checkResult)
             })
+            if (this.showHandleTip) {
+              this.form.setFieldsValue({
+                handleTip: this.particularsData.handleTip,
+              })
+            }
             if (+this.particularsData.checkResult === 1) {
               this.requiredShow = false
             } else {

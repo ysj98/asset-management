@@ -210,6 +210,8 @@
     <choose-inventory-task ref="chooseInventoryTask" @chosenTaskIdFn="chosenTaskIdFn"></choose-inventory-task>
     <!-- 编辑异常盘点结果 -->
     <inventoryResultRegistration v-if="newShow" ref="irr" @showFn="showFn" @successQuery="successQueryFn"></inventoryResultRegistration>
+    <!-- 登记盘盈资产 -->
+    <assetsInventorySurplus v-if="assetsShow" ref="ats" @showFn="showFn" @successQuery="successQueryFn"></assetsInventorySurplus>
     <!-- 盘点结果详情 -->
     <viewDetails ref="vd" ></viewDetails>
   </div>
@@ -219,6 +221,7 @@
 import FormFooter from '@/components/FormFooter'
 import chooseInventoryTask from './chooseInventoryTask'
 import inventoryResultRegistration from './../inventoryPerform/inventoryResultRegistration'
+import assetsInventorySurplus from './../inventoryPerform/assetsInventorySurplus'
 import viewDetails from './../inventoryPerform/viewDetails'
 
 const abnormalColumns = [
@@ -264,7 +267,7 @@ const abnormalColumns = [
   },
   {
     title: '异常类型',
-    dataIndex: 'checkStatusName'
+    dataIndex: 'checkResultName'
   },
   {
     title: '异常说明',
@@ -366,7 +369,7 @@ const normalColumns = [
 
 export default {
   components: {
-    FormFooter, chooseInventoryTask, inventoryResultRegistration, viewDetails
+    FormFooter, chooseInventoryTask, inventoryResultRegistration, assetsInventorySurplus, viewDetails
   },
   data () {
     return {
@@ -434,6 +437,7 @@ export default {
         }
       },
       newShow: false,
+      assetsShow: false,
     }
   },
   methods: {
@@ -441,7 +445,7 @@ export default {
       this.showInventoryTaskModal = open
       if (open) {
         this.$refs.chooseInventoryTask.show = true
-        this.$refs.chooseInventoryTask.redactCheckedDataFn(this.detail.taskId)
+        this.$refs.chooseInventoryTask.redactCheckedDataFn(this.detail.taskId, this.detail.taskName)
       }
     },
     // 选择了所属任务
@@ -456,23 +460,23 @@ export default {
       this.abnormalAsset.paginator.pageNo = 1
       this.unCountAsset.paginator.pageNo = 1
       this.normalAsset.paginator.pageNo = 1
-      this.getAbnormalAssetList()
+      this.getAbnormalAssetList(1)
       this.getUnCountAssetList()
       this.getNormalAssetList()
     },
     // 获取异常资产列表
-    getAbnormalAssetList () {
-      this.getAssetList('1', this.abnormalAsset.abnormalType.join(','), this.abnormalAsset.paginator)
+    getAbnormalAssetList (init) {
+      this.getAssetList('1', this.abnormalAsset.abnormalType.join(','), this.abnormalAsset.paginator, init)
     },
     // 获取未盘点资产列表
     getUnCountAssetList () {
-      this.getAssetList('0', '1', this.unCountAsset.paginator)
+      this.getAssetList('0', '', this.unCountAsset.paginator)
     },
     // 获取正常资产列表
     getNormalAssetList () {
       this.getAssetList('1', '1', this.normalAsset.paginator)
     },
-    getAssetList (checkStatus, checkResults, paginator) {
+    getAssetList (checkStatus, checkResults, paginator, init) {
       let form = {
         taskId: this.detail.taskId,
         checkStatus: checkStatus,
@@ -484,7 +488,7 @@ export default {
         if (Number(res.data.code) === 0) {
           // 如果是初次调用默认异常资产，给数量赋值
           let data = res.data.data
-          if (checkStatus === '1' && checkResults === '0,2,3') {
+          if (init) {
             this.assetListCount = {
               total: data.assetCount, // 资产总数
               normal: data.normalCount, // 正常资产数
@@ -494,6 +498,7 @@ export default {
               success: data.successCount, // 盘盈数
               error: data.errorCount // 信息有误数
             }
+            console.log(this.assetListCount)
           }
           let dataArr = res.data.data.data
           dataArr.forEach((item, index) => {
@@ -554,21 +559,50 @@ export default {
       console.log(type)
       console.log(record)
       if (type === 'edit') {
-        this.newShow = true
-        this.$nextTick(() => {
-          this.$refs.irr.show = true
-          this.$refs.irr.query('set', record.resultId, '', this.detail.taskId, record.assetId)
+        // 盘盈编辑
+        if (+record.checkResult === 3) {
+          this.assetsShow = true
+          this.$nextTick(() => {
+            this.$refs.ats.show = true
+            this.$refs.ats.query('set', record.resultId, '', this.detail.taskId, record.assetId, this.organId)
+          })
+        } else {
+          this.newShow = true
+          this.$nextTick(() => {
+            this.$refs.irr.show = true
+            this.$refs.irr.query('set', record.resultId, '', this.detail.taskId, record.assetId, true)
+          })
+        }
+      } else {
+        let _this = this
+        _this.$confirm({
+          title: '提示',
+          content: '确认要删除该盘盈资产吗',
+          onOk() {
+            let obj = {
+              resultId: record.resultId,  // 盘点单id
+              checkResult: '3'
+            }
+            _this.$api.inventoryManagementApi.assetCheckInstDeleteByCheckResult(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                _this.$message.info(res.data.message)
+                _this.successQueryFn()
+              } else {
+                _this.$message.error(res.data.message)
+              }
+            })
+          }
         })
       }
     },
     // 异常资产清单编辑
     successQueryFn () {
       this.abnormalAsset.paginator.pageNo = 1
-      // this.queryCondition.pageSize = 10
       this.getAbnormalAssetList()
     },
     showFn (val) {
       this.newShow = val
+      this.assetsShow = val
     },
     // 查看资产详情
     viewDetails (record) {
@@ -653,7 +687,7 @@ export default {
           })
           this.detail.attachment = attachment
           this.inventoryTaskOptions = [{label: this.detail.taskName, value: this.detail.taskId}]
-          this.getAbnormalAssetList()
+          this.getAbnormalAssetList(1)
           this.getUnCountAssetList()
           this.getNormalAssetList()
         } else {

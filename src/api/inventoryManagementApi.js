@@ -115,7 +115,7 @@ export function queryByTaskId (data) {
 }
 // 盘点报告删除
 export function deleteReport (data) {
-  return axiosPost(inventoryManagement.inventoryReport.deleteReport, data)
+  return axiosGet(inventoryManagement.inventoryReport.deleteReport, data)
 }
 
 // 盘点管理 - 盘点异常

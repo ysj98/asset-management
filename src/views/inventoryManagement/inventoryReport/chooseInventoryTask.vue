@@ -14,7 +14,7 @@
       <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
         <div slot="col-r">
           <div style="display: inline-block; margin-right: 10px">
-            <SG-DatePicker label="开始时间" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker label="开始时间" style="width: 200px;" pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="taskStatusFn" v-model="queryCondition.taskStatus">
             <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -34,7 +34,7 @@
           >
             <template slot="chosenId" slot-scope="text, record">
               <div style="padding-right: 10px;">
-                <a-radio :checked="record.taskId === chosenTaskId" @change="changeRadio(record)"></a-radio>
+                <a-radio :checked="record.taskId == chosenTaskId" @change="changeRadio(record)"></a-radio>
               </div>
             </template>
             <template slot="checkRate" slot-scope="text, record">
@@ -202,8 +202,11 @@ export default {
       return data
     },
     // 外面给回来选中的数据
-    redactCheckedDataFn (taskId) {
+    redactCheckedDataFn (taskId, taskName) {
       console.log(taskId)
+      console.log(taskName)
+      this.chosenTaskId = taskId
+      this.chosenTaskName = taskName
       if (this.firstCall) {
         this.query()
         this.firstCall = false

@@ -44,7 +44,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
-            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">总结说明<i></i></span><span>：</span></div>
+            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">处理说明<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
               <a-textarea
                 placeholder="请输入处理说明（最多200字）"
@@ -101,9 +101,9 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box"><span class="label-name">资源分类<i></i></span><span>：</span></div>
+            <div class="label-name-box"><span class="label-name">资产分类<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{exceptionInfo.assetName || '--'}}</span>
+              <span class="label-value">{{exceptionInfo.objectTypeName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -157,7 +157,7 @@
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name">处理建议<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value">{{exceptionInfo.handleRemark || '--'}}</span>
+              <span class="label-value">{{exceptionInfo.handleTip || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
@@ -212,6 +212,7 @@ export default {
         organName: '',
         projectName: '',
         assetTypeName: '',
+        objectTypeName: '',
         statusName: '',
         location: '',
         resultId: '',
@@ -220,7 +221,7 @@ export default {
         userNames: '',
         checkTime: '',
         remark: '',
-        handleRemark: '',
+        handleTip: '',
         attachment: []
       }
     }
@@ -243,6 +244,26 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log(values)
+          let form = values
+          form.resultId = this.resultId
+          form.handleStatus = 1
+          let attachment = []
+          this.detail.attachment.forEach(item => {
+            let obj = {
+              attachmentPath: item.url,
+              oldAttachmentName: item.name
+            }
+            attachment.push(obj)
+          })
+          form.attachment = attachment
+          this.$api.inventoryManagementApi.handleException(form).then(res => {
+            if (res.data.code === '0') {
+              this.$message.success('保存成功')
+              this.$router.push({path: '/inventoryManagement/exceptionManagement', query: {refresh: true}})
+            } else {
+              this.$message.error(res.data.message)
+            }
+          })
         }
       })
     },
@@ -275,11 +296,43 @@ export default {
       let form = {
         resultId: this.resultId
       }
-      this.$api.inventoryManagementApi.getCheckResultHandle(form).then(res => {
-        console.log(res)
-      })
+      if (this.pageType === 'detail') {
+        this.$api.inventoryManagementApi.getCheckResultHandle(form).then(res => {
+          console.log(res)
+          if (res.data.code === '0') {
+            let data = res.data.data
+            this.detail = data
+            let attachment = []
+            this.detail.attachmentList.forEach(item => {
+              let obj = {
+                url: item.attachmentPath,
+                name: item.oldAttachmentName
+              }
+              attachment.push(obj)
+            })
+            this.detail.attachment = attachment
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      }
       this.$api.inventoryManagementApi.assetCheckInstFailDetail(form).then(res => {
         console.log(res)
+        if (res.data.code === '0') {
+          let data = res.data.data
+          this.exceptionInfo = data
+          let attachment = []
+          this.exceptionInfo.attachmentList.forEach(item => {
+            let obj = {
+              url: item.attachmentPath,
+              name: item.oldAttachmentName
+            }
+            attachment.push(obj)
+          })
+          this.exceptionInfo.attachment = attachment
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     }
   },

@@ -21,6 +21,7 @@
           @select="changeStatus"
         ></a-select>
         <a-input-search placeholder="报告名称" :style="allStyle" v-model="queryCondition.reportName" @search="queryClick" />
+        <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
     </SG-SearchContainer>
     <div>
@@ -227,9 +228,9 @@ export default {
         case 0:
           this.$confirm({
             title: '提示',
-            content: '确认要对此资产卡片反审核吗？',
+            content: '确认要反审核该盘点报告吗？',
             onOk() {
-              self.updateCardStatus(status, record.cardId)
+              self.updateReportStatus(status, record.reportId)
             }
           })
           break
@@ -237,24 +238,38 @@ export default {
         case 4:
           this.$confirm({
             title: '提示',
-            content: '确认要删除该资产卡片吗？',
+            content: '确认要删除该盘点报告吗？',
             onOk() {
-              self.updateCardStatus(status, record.cardId)
+              self.deleteReport(record.reportId)
             }
           })
           break
         default: break
       }
     },
-    // 改变卡片状态
-    updateCardStatus (status, cardId) {
+    // 改变报告状态
+    updateReportStatus (status, reportId) {
       let form = {
         approvalStatus: status,
-        cardId: cardId
+        reportId: reportId
       }
-      this.$api.assets.updateCardStatus(form).then(res => {
+      this.$api.inventoryManagementApi.saveOrUpdate(form).then(res => {
         if (res.data.code === '0') {
           this.$message.success('操作成功')
+          this.queryList()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 删除盘点报告
+    deleteReport (reportId) {
+      let form = {
+        reportId: reportId
+      }
+      this.$api.inventoryManagementApi.deleteReport(form).then(res => {
+        if (res.data.code === '0') {
+          this.$message.success('删除成功')
           this.queryList()
         } else {
           this.$message.error(res.data.message)

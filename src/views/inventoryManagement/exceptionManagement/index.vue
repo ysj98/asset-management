@@ -67,7 +67,7 @@
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
-        :scroll="{ x: 1860 }"
+        :scroll="{ x: 1900 }"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -104,7 +104,7 @@ const columns = [
   {
     title: '资产编号',
     dataIndex: 'assetCode',
-    width: 120,
+    width: 160,
     fixed: 'left'
   },
   {

@@ -37,7 +37,7 @@
           <a-col class="playground-col" :span="12">盘点时间：{{particularsData.checkTime || '--'}}</a-col>
           <a-col class="playground-col" :span="12">盘点结果：{{particularsData.checkResultName || '--'}}</a-col>
           <a-col class="playground-col" :span="24">异常说明：{{particularsData.remark || '--'}}</a-col>
-          <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
+          <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">图片： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
               <SG-UploadFile
                 v-model="files"
