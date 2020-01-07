@@ -27,7 +27,7 @@
         <div class="box sg-datePicker" :style="dateWidth">
           <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
+        <a-input-search v-model="queryCondition.disposeName" placeholder="资产处置名称" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">

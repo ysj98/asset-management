@@ -158,6 +158,7 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
+            item.assetCategoryName = item.objectTypeName
           })
           this.tableData = data
           this.queryCondition.count = res.data.data.count
@@ -179,7 +180,9 @@ export default {
           let data = res.data.data
           data.forEach((item, index) => {
             item.key = index,
-            item.indexKey = index
+            item.indexKey = index + 1
+            item.feeSubject = item.feeSubjectName
+            item.receivecostType = item.receivecostTypeName
             item.payee = item.payee ? item.payee : '--'
             item.payer = item.payer ? item.payer : '--'
           })
