@@ -126,7 +126,7 @@
                 <a-input placeholder="请输入资产接收人"
                 :style="allWidth"
                 :maxLength="40"
-                v-decorator="['assetReceiver', {rules: [{required: true, max: 50, whitespace: true, message: '请输入资产接收人(不超过40字符)'}], initialValue: newCardData.assetReceiver}]"/>
+                v-decorator="['assetReceiver', {rules: [{required: false, max: 50, whitespace: true, message: '请输入资产接收人(不超过40字符)'}], initialValue: newCardData.assetReceiver}]"/>
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="8">
@@ -199,10 +199,16 @@
             :pagination="false"
             >
             <!-- 处置成本 -->
+            <template slot="disposeCost">
+              <a class="icon-red" @click="openSubjectModal('cost')">处置成本(元)</a>
+            </template>
             <template slot="disposeCost" slot-scope="text, record">
               <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.disposeCost"/>
             </template>
             <!-- 处置收入 -->
+            <template slot="disposeReceive">
+              <a class="icon-red" @click="openSubjectModal('income')">处置收入(元)</a>
+            </template>
             <template slot="disposeReceive" slot-scope="text, record">
               <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.disposeReceive"/>
             </template>
@@ -301,6 +307,16 @@
       <!-- 选资产 -->
       <assetBundlePopover :organId="organId" queryType="4" ref="assetBundlePopover" @status="status"></assetBundlePopover>
     </div>
+    <!-- 批量设置 -->
+     <SG-Modal
+        v-model="show"
+        width="400px"
+        title="批量设置"
+        okText="确定"
+        @ok="modalFn"
+      >
+      <span>{{modelTitle}}：</span><a-input-number style="width: 200px" :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="modelData"/>
+      </SG-Modal>
   </div>
 </template>
 
@@ -315,6 +331,9 @@ export default {
   props: {},
   data () {
     return {
+      modelTitle: '',
+      modelData: 0,
+      show: false,                // 批量设置弹窗显示
       particularsData: '',
       disposeRegisterOrderId: '',  // 处置登记单ID
       projectIdData: [],        // 资产项目
@@ -356,7 +375,7 @@ export default {
         disposeType: undefined,        // 处置类型
         disposeCost: 0,                // 处置成本(元)
         disposeReceive: 0,             // 处置收入
-        disposeDate: undefined,        // 执行时间
+        disposeDate: moment(new Date()),  // 处置时间
         assetReceiver: '',             // 资产接收人
         costSharingMode: undefined,    // 费用分摊方式
         files: [],                     // 附件
@@ -379,6 +398,30 @@ export default {
   },
   methods: {
     moment,
+    // 弹窗批量设置
+    modalFn () {
+      this.table.dataSource.forEach(item => {
+        this.modelType === 'cost' ? item.disposeCost = this.modelData : item.disposeReceive = this.modelData
+      })
+      this.show = false
+    },
+    // 批量设置
+    openSubjectModal (str) {
+      if (this.table.dataSource.length === 0) {
+        this.$message.info('请先选择资产处置清单')
+        return
+      }
+      // 处置成本
+      if (str === 'cost') {
+        this.modelTitle = '处置成本(元)'
+        this.modelType = 'cost'
+      } else if (str === 'income') {
+        this.modelTitle = '处置收入(元)'
+        this.modelType = 'income'
+      }
+      this.modelData = 0
+      this.show = true
+    },
     // 取消
     cancel () {
       this.$router.push({path: '/disposalRegister'})

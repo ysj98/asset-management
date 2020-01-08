@@ -12,7 +12,7 @@
           <a-col class="playground-col" :span="8">资产处置名称：{{particularsData.disposeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">状态：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属组织机构：{{particularsData.organName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">所属处置计划：{{particularsData.disposePlanName || '--'}}</a-col>
+          <!-- <a-col class="playground-col" :span="8">所属处置计划：{{particularsData.disposePlanName || '--'}}</a-col> -->
           <a-col class="playground-col" :span="8">资产项目：{{particularsData.projectName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">处置类型：{{particularsData.disposeTypeName || '--'}}</a-col>
@@ -48,6 +48,20 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
+            <!-- 处置成本 -->
+            <template slot="disposeCost">
+              <span>处置成本(元)</span>
+            </template>
+            <template slot="disposeCost" slot-scope="text, record">
+              <span>{{record.disposeCost}}</span>
+            </template>
+            <!-- 处置收入 -->
+            <template slot="disposeReceive">
+              <span>处置收入(元)</span>
+            </template>
+            <template slot="disposeReceive" slot-scope="text, record">
+              <span>{{record.disposeReceive}}</span>
+            </template>
           </a-table>
           <SG-FooterPagination
             :pageLength="queryCondition.pageSize"

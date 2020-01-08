@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-08 13:56:15
+ * @LastEditTime : 2020-01-08 16:47:00
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -212,6 +212,7 @@ export default {
       this.queryCondition.pageNum = 1
       // this.queryCondition.pageSize = 10
       this.assetCheckInstAsseDetail()
+      this.exceptionTypes()  // 异常列表
     },
     // 登记盘盈资产新增编辑
     assetsSuccessQueryFn () {
@@ -372,11 +373,19 @@ export default {
     assetsFn (str, record) {
       this.newShow = true
       if (str === 'set') {
-        this.assetsShow = true
-        this.$nextTick(() => {
-          this.$refs.ats.show = true
-          this.$refs.ats.query(str, record.resultId, this.checkId, this.taskId, record.assetId, this.organId)
-        })
+        if (+record.checkResult === 3) {
+          this.assetsShow = true
+          this.$nextTick(() => {
+            this.$refs.ats.show = true
+            this.$refs.ats.query(str, record.resultId, this.checkId, this.taskId, record.assetId, this.organId)
+          })
+        } else {
+          this.newShow = true
+          this.$nextTick(() => {
+            this.$refs.irr.show = true
+            this.$refs.irr.query(str, record.resultId, this.checkId, this.taskId, record.assetId)
+          })
+        }
       } else if (str === 'detail') {
         let _this = this
         _this.$confirm({

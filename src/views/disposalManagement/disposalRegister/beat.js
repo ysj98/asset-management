@@ -25,13 +25,15 @@ export const columns = [
     width: '10%'
   },
   {
-    title: "处置成本(元)",
+    // title: "处置成本(元)",
+    slots: {title: 'disposeCost'},
     dataIndex: "disposeCost",
     scopedSlots: { customRender: "disposeCost" },
     width: '10%'
   },
   {
-    title: "处置收入(元)",
+    // title: "处置收入(元)",
+    slots: {title: 'disposeReceive'},
     dataIndex: "disposeReceive",
     scopedSlots: { customRender: "disposeReceive" },
     width: '10%'
