@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-06 18:00:54
+ * @LastEditTime : 2020-01-08 13:56:15
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -72,7 +72,7 @@
       </div>
     </div>
     <div class="particulars-nav">
-      <span class="section-title blue">盘点异常列表（异常总数:{{exceptionCount || 0}}；盘亏:{{successCount || 0}}; 盘盈:{{failCount || 0}}; 信息有误:{{errorCount || 0}})</span>
+      <span class="section-title blue">盘点异常列表（异常总数:{{exceptionCount || 0}}；盘亏:{{failCount || 0}}; 盘盈:{{successCount || 0}}; 信息有误:{{errorCount || 0}})</span>
       <div class="particulars-obj">
       <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
         <div slot="col-l">
