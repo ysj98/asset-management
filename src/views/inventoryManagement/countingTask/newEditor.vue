@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-07 18:24:16
+ * @LastEditTime : 2020-01-08 17:02:55
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -97,11 +97,17 @@
             :pagination="false"
             >
           <!-- 盘点单名称 -->
+          <template slot="checkName">
+            <span class="icon-red">盘点单名称</span>
+          </template>
           <template slot="checkName" slot-scope="text, record">
             <span v-if="record.IsEdit">{{record.checkName}}</span>
             <a-input v-else placeholder="请输入盘点单名称" :maxLength="60" v-model="record.checkName"/>
           </template>
           <!-- 盘点人 -->
+          <template slot="chargePerson">
+            <span class="icon-red">盘点人</span>
+          </template>
           <template slot="chargePerson" slot-scope="text, record, index">
             <span v-if="record.IsEdit">{{record.userNames}}</span>
             <a-select
@@ -118,11 +124,17 @@
             </a-select>
           </template>
           <!-- 开始时间 -->
+          <template slot="beginDate">
+            <span class="icon-red">开始时间</span>
+          </template>
           <template slot="beginDate" slot-scope="text, record, index">
             <span v-if="record.IsEdit">{{ record.beginDate === undefined ? '' : moment(record.beginDate).format('YYYY-MM-DD')}}</span>
             <a-date-picker :allowClear="false" @change="chanheFn(record.beginDate, index, 'beginDate')" v-else v-model="record.beginDate"/>
           </template>
           <!-- 结束时间 -->
+          <template slot="endDate">
+            <span class="icon-red">结束时间</span>
+          </template>
           <template slot="endDate" slot-scope="text, record, index">
             <span v-if="record.IsEdit">{{ record.endDate === undefined ? '' : moment(record.endDate).format('YYYY-MM-DD')}}</span>
             <a-date-picker :allowClear="false" @change="chanheFn(record.endDate, index, 'endDate')" v-else v-model="record.endDate"/>
@@ -169,22 +181,26 @@ const columns = [
     dataIndex: "indexKey",
     width: '10%'
   }, {
-    title: "盘点单名称",
+    // title: "盘点单名称",
+    slots: {title: 'checkName'},
     dataIndex: "checkName",
     scopedSlots: { customRender: "checkName" },
     width: '15%'
   }, {
-    title: "盘点人",
+    // title: "盘点人",
+    slots: {title: 'chargePerson'},
     dataIndex: "chargePerson",
     scopedSlots: { customRender: "chargePerson" },
     width: '20%'
   }, {
-    title: "开始时间",
+    // title: "开始时间",
+    slots: {title: 'beginDate'},
     dataIndex: "beginDate",
     scopedSlots: { customRender: "beginDate" },
     width: '15%'
   }, {
-    title: "结束时间",
+    // title: "结束时间",
+    slots: {title: 'endDate'},
     dataIndex: "endDate",
     scopedSlots: { customRender: "endDate" },
     width: '15%'
