@@ -307,7 +307,7 @@ export default {
       this.$router.push({path: '/inventoryManagement/exceptionManagement/' + pageType, query: {pageType: pageType, organId: this.organId, resultId: record.resultId}})
     },
     formatFormArr (arr, type) {
-      if (arr[0] === '') {
+      if (arr.length === 0 || arr[0] === '') {
         arr = []
         if (type === 1) {
           let objArr = this.exceptionTypeOptions.slice(1, this.exceptionTypeOptions.length)
