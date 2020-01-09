@@ -232,18 +232,6 @@
           <div class="edit-box-content-item" v-if="!editable">
             <div class="label-name-box">
               <span class="label-name label-space-between">
-                创建人
-                <i></i>
-              </span>
-              <span>：</span>
-            </div>
-            <a-form-item>
-              <span class="label-value">{{detail.createByName || '--'}}</span>
-            </a-form-item>
-          </div>
-          <div class="edit-box-content-item" v-if="!editable">
-            <div class="label-name-box">
-              <span class="label-name label-space-between">
                 创建时间
                 <i></i>
               </span>
@@ -277,6 +265,7 @@
               <a-input-number
               v-if="editable"
                :max="99"
+               :min="0"
                 :style="oneInputStyle"
                 placeholder="数值"
                 v-decorator="[
@@ -387,7 +376,7 @@
         </template>
         <template slot="deadline" slot-scope="text, record">
           <div v-if="editable">
-            <a-input-number :style="{width: '100%'}" :precision="0" placeholder="请输入任务期限" :max="99" :min="1" v-model="record.deadline" />
+            <a-input-number :min="1" :style="{width: '100%'}" :precision="0" placeholder="请输入任务期限" :max="99"  v-model="record.deadline" />
           </div>
           <span v-else>{{ record.deadline }}</span>
         </template>
@@ -705,7 +694,7 @@ export default {
         taskName: "",
         checkRange: "",
         chargePersonNameList: "",
-        deadline: "",
+        deadline: "7",
         operation: "",
         chargePerson: undefined,
         chargePersonOpt: [],
