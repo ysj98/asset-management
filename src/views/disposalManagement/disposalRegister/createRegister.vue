@@ -129,7 +129,7 @@
                 v-decorator="['assetReceiver', {rules: [{required: false, max: 50, whitespace: true, message: '请输入资产接收人(不超过40字符)'}], initialValue: newCardData.assetReceiver}]"/>
               </a-form-item>
             </a-col>
-            <a-col class="playground-col" :span="8">
+            <!-- <a-col class="playground-col" :span="8">
               <a-form-item label="费用分摊方式：" v-bind="formItemLayout">
                 <a-select
                   showSearch
@@ -144,7 +144,7 @@
                   <a-select-option v-for="(item) in costSharingModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
-            </a-col>
+            </a-col> -->
             <a-col class="playground-col" :span="24">
               <a-form-item v-bind="formItemTextarea" :colon="false">
                 <label slot="label">上传附件：</label>
@@ -577,7 +577,8 @@ export default {
             disposeReceive: values.disposeReceive,  // 处置收入(元)
             disposeDate: values.disposeDate.format('YYYY-MM-DD'), // 处置时间
             assetReceiver: values.assetReceiver,     // 资产接收人
-            costSharingMode: values.costSharingMode, // 费用分摊方式 1按资产数量平均分摊 2按资产面积平均分摊
+            // costSharingMode: values.costSharingMode, // 费用分摊方式 1按资产数量平均分摊 2按资产面积平均分摊
+            costSharingMode: '', // 费用分摊方式 1按资产数量平均分摊 2按资产面积平均分摊
             attachmentList: files,
             disposeReason: values.disposeReason,     // 处置原因
             remark: values.remark,                   // 备注
@@ -678,7 +679,7 @@ export default {
               disposeReceive: data.disposeReceive,
               disposeDate: moment(data.disposeDate),
               assetReceiver: data.assetReceiver,
-              costSharingMode: data.costSharingMode ? String(data.costSharingMode) : undefined,
+              // costSharingMode: data.costSharingMode ? String(data.costSharingMode) : undefined,    // 费用分摊方式
               disposeReason: data.disposeReason,
               remark: data.remark
             })

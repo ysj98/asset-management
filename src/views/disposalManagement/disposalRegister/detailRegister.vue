@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="countingTaskDetail-nav">
-      <span class="section-title blue">资产处置清单 (资产总数：{{tableData.length || 0}})</span>
+      <span class="section-title blue">资产处置清单 (资产总数：{{queryCondition.count || 0}})</span>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
           <a-table
