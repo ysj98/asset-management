@@ -14,7 +14,7 @@
         <SG-Button type="primary" @click="query">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
+        <a-checkbox style="line-height: 32px" :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -148,6 +148,7 @@ export default {
   props: {},
   data () {
     return {
+      toggle: false,
       // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
@@ -186,6 +187,10 @@ export default {
   },
   methods: {
     moment,
+    // 高级搜索控制
+    searchContainerFn (val) {
+      this.toggle = val
+    },
     // 起止日期发生变化
     onDateChange (val) {
       this.queryCondition.startCreateDate = val[0]
