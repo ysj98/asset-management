@@ -322,8 +322,8 @@ export default {
         assetTypeList: this.judgmentMethodFn(this.queryCondition.assetType),
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType),
         disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode),
-        submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),
-        submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
+        submitDateStart: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
+        submitDateEnd: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',
         disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',
       }

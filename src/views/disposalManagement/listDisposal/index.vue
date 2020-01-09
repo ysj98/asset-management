@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:00:20
- * @LastEditTime : 2020-01-06 17:52:03
+ * @LastEditTime : 2020-01-09 13:43:10
  * @LastEditors  : Please set LastEditors
  * @Description: 资产处置一览表
  * @FilePath: \asset-management\src\views\disposalManagement\listDisposal\index.vue
@@ -445,8 +445,8 @@ export default {
         pageNum: this.queryCondition.pageNum,              // 当前页
         pageSize: this.queryCondition.pageSize,            // 每页显示记录数
         organId: Number(this.queryCondition.organId),      // 组织机构id
-        submitDateStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),  // 提交时间,开始
-        submitDateEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),    // 提交时间,结束
+        submitDateStart: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',  // 提交时间,开始
+        submitDateEnd: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',    // 提交时间,结束
         approvalStatusList: this.judgmentMethodFn(this.queryCondition.approvalStatus),        // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         assetNameOrCode: this.queryCondition.assetName,    // 资产名称/编码
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',   // 处置日期,开始

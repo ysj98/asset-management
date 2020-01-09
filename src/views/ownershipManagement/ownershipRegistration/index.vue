@@ -23,7 +23,7 @@
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <div class="box box-right" :style="dateWidth">
-            <SG-DatePicker label="创建日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="创建日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
         </div>
         <div class="two-row-box">
