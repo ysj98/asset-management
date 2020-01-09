@@ -229,6 +229,8 @@ export default {
       }
       if (data.taskStatus.length > 0) {
         data.taskStatus = data.taskStatus.join(',')
+      } else {
+        data.taskStatus = ''
       }
       this.table.loading = true
       this.$api.inventoryManagementApi.queryCheckTaskPageList(data).then(
