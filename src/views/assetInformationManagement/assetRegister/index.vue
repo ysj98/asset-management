@@ -3,32 +3,32 @@
 -->
 <template>
   <div class="assetRegister">
-    <Cephalosome :rightCol="22" :leftCol="2">
-      <div slot="col-l">
+    <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
+      <div slot="headBtns">
         <a-button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
-      </div>
-      <div slot="col-r">
-        <div class="nav">
-          <a-checkbox :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+        <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
         </div>
+      </div>
+      <div slot="btns">
+        <SG-Button type="primary" @click="query">查询</SG-Button>
+      </div>
+      <div slot="form" class="formCon">
+        <a-checkbox style="line-height: 32px" :checked="queryCondition.isCurrent" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
+          <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
+          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
         <div class="box">
           <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-        <div class="nav">
-          <SG-Button type="primary" @click="query">查询</SG-Button>
-        </div>
       </div>
-    </Cephalosome>
+    </SG-SearchContainer>
     <div class="table-layout-fixed">
       <!-- ref="table_box" -->
       <!-- :scroll="scrollHeight" -->
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import Cephalosome from '@/components/Cephalosome'
+// import rom '@/components/
 import TreeSelect from '../../common/treeSelect'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import moment from 'moment'
@@ -132,10 +132,11 @@ const columns = [
   }
 ]
 export default {
-  components: {Cephalosome, TreeSelect, noDataTips},
+  components: {TreeSelect, noDataTips},
   props: {},
   data () {
     return {
+      toggle: false,
       // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
       isChild: false,
@@ -177,6 +178,10 @@ export default {
   computed: {
   },
   methods: {
+    // 高级搜索控制
+    searchContainerFn (val) {
+      this.toggle = val
+    },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -457,7 +462,7 @@ export default {
 .assetRegister {
   .box {
     display: inline-block;
-    vertical-align: middle;
+    // vertical-align: middle;
     margin-right: 10px;
   }
   .nav {
@@ -473,6 +478,18 @@ export default {
   }
   .custom-table {
     padding-bottom: 60px;
+  }
+  .formCon {
+    display: flex;
+    width: 100%;
+    justify-content:flex-end;
+    flex-wrap: wrap;
+    > * {
+      margin-right:10px;
+      margin-bottom: 10px;
+      position: relative;
+      height: 32px;
+    }
   }
 }
 </style>

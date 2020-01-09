@@ -3,33 +3,33 @@
 -->
 <template>
   <div class="assetsRegistration">
-    <Cephalosome :rightCol="22" :leftCol="2">
-      <div slot="col-l">
+    <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
+      <div slot="headBtns">
         <a-button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_NEW" @click="newChangeSheetFn">新建变动单</a-button>
-      </div>
-      <div slot="col-r">
-        <div class="nav">
-          <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
+        <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
-            <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select>
         </div>
+      </div>
+      <div slot="btns">
+        <SG-Button type="primary" @click="query">查询</SG-Button>
+      </div>
+      <div slot="form" class="formCon">
+        <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变动单</a-checkbox>
+        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变动类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
+          <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
+          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
         <!-- <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker> -->
         <div class="box">
           <segi-range-picker label="创建日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
         </div>
-        <div class="nav">
-          <SG-Button type="primary" @click="query">查询</SG-Button>
-        </div>
       </div>
-    </Cephalosome>
+    </SG-SearchContainer>
     <div class="table-layout-fixed">
       <!--  ref="table_box" -->
       <!-- :scroll="scrollHeight" -->
@@ -66,7 +66,7 @@
 
 <script>
 import SegiRangePicker from '@/components/SegiRangePicker'
-import Cephalosome from '@/components/Cephalosome'
+// import Cephalosome from '@/components/Cephalosome'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
@@ -144,7 +144,7 @@ const columns = [
   }
 ]
 export default {
-  components: {Cephalosome, TreeSelect, SegiRangePicker, noDataTips},
+  components: {TreeSelect, SegiRangePicker, noDataTips},
   props: {},
   data () {
     return {
@@ -487,6 +487,18 @@ export default {
   }
   .custom-table {
     padding-bottom: 60px;
+  }
+  .formCon {
+    display: flex;
+    width: 100%;
+    justify-content:flex-end;
+    flex-wrap: wrap;
+    > * {
+      margin-right:10px;
+      margin-bottom: 10px;
+      position: relative;
+      height: 32px;
+    }
   }
 }
 </style>
