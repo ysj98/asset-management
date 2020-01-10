@@ -31,7 +31,7 @@ selectionNumber Number 默认最多选择5个 传0不做选择控制且显示全
           :allowClear="false"
           :style="allStyle"/>
             <!-- 选择人员姓氏首字母 -->
-            <letter-list v-if="selectType==='staff'" v-model="queryCondition.staff.firstLetter" class="letter-select"></letter-list>
+            <!-- <letter-list v-if="selectType==='staff'" v-model="queryCondition.staff.firstLetter" class="letter-select"></letter-list> -->
             <!-- 姓名搜索 -->
             <a-input-search
               class="name-search"

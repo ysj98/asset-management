@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-10 14:54:44
+ * @LastEditTime : 2020-01-10 17:49:41
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -292,6 +292,9 @@ export default {
     },
     // 执行时间监听
     defaultValueFn (val) {
+      if (this.table.dataSource.length === 0) {
+        return
+      }
       let data = utils.deepClone(this.table.dataSource)
       let datas = utils.deepClone(this.table.dataSource)
       // 开始时间最小的
