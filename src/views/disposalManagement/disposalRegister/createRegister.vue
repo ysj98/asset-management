@@ -190,7 +190,7 @@
         </div>
       </div>
       <div class="createRegister-obj">
-        <div class="table-layout-fixed table-border">
+        <div class="table-layout-fixed table-border-lr">
           <a-table
             :loading="table.loading"
             :columns="table.columns"
@@ -227,7 +227,7 @@
     <div class="createRegister-nav">
       <span class="section-title blue">收付款计划</span>
       <div class="createRegister-obj">
-        <div class="table-layout-fixed table-border">
+        <div class="table-layout-fixed table-border-lr">
           <a-table
             :loading="receiving.loading"
             :columns="receiving.columns"
@@ -292,8 +292,8 @@
               <span class="postAssignment-icon" weaken @click="deleteFn(record, 'receiving', index)">删除</span>
             </template>
           </a-table>
-          <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加计划</div>
         </div>
+        <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加计划</div>
       </div>
     </div>
     <FormFooter style="border:none;" location="fixed">
@@ -315,7 +315,9 @@
         okText="确定"
         @ok="modalFn"
       >
-      <span>{{modelTitle}}：</span><a-input-number style="width: 200px" :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="modelData"/>
+      <div style="margin: 26px 0">
+        <span>{{modelTitle}}：</span><a-input-number style="width: 200px" :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="modelData"/>
+      </div>
       </SG-Modal>
   </div>
 </template>
@@ -843,9 +845,9 @@ export default {
 .createRegister {
   padding-bottom: 70px;
   .createRegister-nav{
-    padding: 42px 126px 20px 70px;
+    padding: 42px 126px 0 70px;
     .createRegister-obj {
-      padding: 20px 0 20px 40px;
+      padding: 20px 0 0 40px;
       .playground-row {
         .playground-col {
           line-height: 40px;

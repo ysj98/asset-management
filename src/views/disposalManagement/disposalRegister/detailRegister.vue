@@ -229,9 +229,9 @@ export default {
 <style lang="less" scoped>
 .countingTaskDetail {
   .countingTaskDetail-nav{
-      padding: 42px 126px 20px 70px;
+      padding: 42px 126px 0px 70px;
       .countingTaskDetail-obj {
-        padding: 20px 0 20px 40px;
+        padding: 20px 0 0px 40px;
         .playground-row {
           .playground-col {
             line-height: 40px;

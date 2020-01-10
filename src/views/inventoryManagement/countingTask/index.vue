@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-07 15:55:51
+ * @LastEditTime : 2020-01-10 14:13:17
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -226,6 +226,7 @@ export default {
                 arr.push(item.userName)
               })
               item.chargePersonName = arr.length === 0 ? '' : arr.join(',')
+              item.completeDate = item.completeDate ? item.completeDate : '--'
               return {
                 key: getUuid(),
                 ...item

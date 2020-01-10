@@ -12,26 +12,22 @@
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <!-- 全部资产项目 -->
-        <a-select
-          showSearch
-          placeholder="请选择资产项目"
-          v-model="queryCondition.projectId"
-          optionFilterProp="children"
-          :style="allWidth"
-          :options="projectIdOpt"
-          :allowClear="false"
-          :filterOption="filterOption"
-          notFoundContent="没有查询到数据"
-        />
-        <div class="box sg-datePicker" :style="dateWidth">
-          <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
-        </div>
         <a-input-search v-model="queryCondition.disposeName" placeholder="资产处置名称" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          
+            <!-- 全部资产项目 -->
+            <a-select
+              showSearch
+              placeholder="请选择资产项目"
+              v-model="queryCondition.projectId"
+              optionFilterProp="children"
+              :style="allStyle"
+              :options="projectIdOpt"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
             <!-- 全部状态 -->
             <a-select
               showSearch
@@ -47,10 +43,6 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 处置日期 -->
-            <div class="box sg-datePicker" :style="dateWidth">
-              <SG-DatePicker label="处置日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
-            </div>
             <!-- 全部资产类型 -->
             <a-select
               showSearch
@@ -96,7 +88,13 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            
+            <!-- 处置日期 -->
+            <div class="box sg-datePicker" :style="dateWidth">
+              <SG-DatePicker label="处置日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
+            </div>
+            <div class="box sg-datePicker" :style="dateWidth">
+              <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+            </div>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -151,12 +149,7 @@ const allStyle = {
   "margin-right": "10px",
   "margin-top": "14px"
 };
-const allWidth = {
-  width: "170px",
-  "margin-right": "10px",
-  'vertical-align': 'bottom'
-};
-const dateWidth = {width: '300px', 'margin-right': '10px', 'display': 'inline-block', 'vertical-align': 'middle'}
+const dateWidth = {width: '300px', 'margin-right': '10px', "margin-top": "14px", 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
     title: '处置单ID',
@@ -269,7 +262,6 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       operationTypes,
       allStyle,
-      allWidth,
       dateWidth,
       approvalStatusOpt,
       projectIdOpt,

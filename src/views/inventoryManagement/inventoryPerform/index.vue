@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2020-01-06 15:32:24
+ * @LastEditTime : 2020-01-10 15:14:43
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
@@ -197,6 +197,7 @@ export default {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
               item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
+              item.completeDate = item.completeDate ? item.completeDate : '--'
               return {
                 key: getUuid(),
                 ...item

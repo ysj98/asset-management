@@ -1,7 +1,7 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-08 16:47:00
+ * @LastEditTime : 2020-01-10 15:16:56
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
@@ -34,13 +34,11 @@
           <SG-Button type="primary" style="margin-right: 10px" weaken @click="downloadTemplateFn('0')">导出资产清单</SG-Button>
           <SG-Button v-if="changeType === 'set'" type="primary" @click="importExcelFn()" weaken>导入盘点结果</SG-Button>
         </div>
-        <div slot="col-r">
-          <div class="nav">
-            <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" @change="checkStatusChange" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
-              <a-select-option v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-input-search style="width: 170px;" v-model="queryCondition.name" placeholder="资产名称/编码" maxlength="30" @search="onSearch" />
-          </div>
+        <div slot="col-r" class="nav">
+          <a-select style="width: 170px; margin-right: 10px;" placeholder="全部状态" @change="checkStatusChange" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
+            <a-select-option v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-input-search style="width: 170px;" v-model="queryCondition.name" placeholder="资产名称/编码" maxlength="30" @search="onSearch" />
         </div>
       </Cephalosome>
         <div class="table-layout-fixed table-border">
@@ -117,7 +115,7 @@
     </div>
     <div class="particulars-nav" v-if="changeType === 'set'">
       <span class="section-title blue">盘点结果说明</span>
-      <div class="particulars-obj" style="line-height: 64px;">
+      <div class="particulars-obj" style="line-height: 64px; padding: 20px 0 30px 0">
         <span class="required-color">盘点结果：</span><a-textarea placeholder="请输入盘点结果说明"
             :autosize="{ minRows: 3, maxRows: 3 }"
             style="width: 93%;"
@@ -545,6 +543,9 @@ export default {
     line-height: 1;
     font-size: 12px;
     color: #f5222d;
+  }
+  .nav{
+    line-height: 67px;
   }
 }
 </style>

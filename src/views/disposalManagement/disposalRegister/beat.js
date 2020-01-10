@@ -56,65 +56,56 @@ export const columns = [
 export const receivingData = [{
     title: "编号",
     dataIndex: "indexKey",
-    align: 'center',
     width: '6%'
   }, {
     title: "收付款类型",
     dataIndex: "receivecostType",
-    align: 'center',
     scopedSlots: { customRender: "receivecostType" },
     width: '14%'
   }, {
     title: "收款方",
     dataIndex: "payee",
-    align: 'center',
     scopedSlots: { customRender: "payee" },
     width: '10%'
   }, {
     title: "付款方",
     dataIndex: "payer",
-    align: 'center',
     scopedSlots: { customRender: "payer" },
     width: '10%'
   }, {
     title: "费用科目",
     dataIndex: "feeSubject",
-    align: 'center',
     scopedSlots: { customRender: "feeSubject" },
     wwidth: '14%'
   }, {
     title: "金额(元)",
     dataIndex: "amount",
-    align: 'center',
     scopedSlots: { customRender: "amount" },
     width: '10%'
   },
   {
     title: "收付款时间",
     dataIndex: "receivecostDate",
-    align: 'center',
     scopedSlots: { customRender: "receivecostDate" },
     width: '10%'
   },
   {
     title: "跟进人",
     dataIndex: "secondMover",
-    align: 'center',
     scopedSlots: { customRender: "secondMover" },
     width: '10%'
   },
   {
     title: "备注",
     dataIndex: "remark",
-    align: 'center',
     scopedSlots: { customRender: "remark" },
     width: '10%'
   },
   {
     title: "操作",
     dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
     align: 'center',
+    scopedSlots: { customRender: "operation" },
     width: '6%'
   }]
 

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-08 17:02:55
+ * @LastEditTime : 2020-01-10 14:54:44
  * @LastEditors  : Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -54,7 +54,7 @@
             </a-col>
             <a-col class="playground-col" :span="8">
               <a-form-item v-bind="formItemLayout" label="执行时间：">
-                <SG-DatePicker style="width: 200px;"  pickerType="RangePicker"
+                <SG-DatePicker :style="allWidth"  pickerType="RangePicker"
                 @change="defaultValueFn"
                 :allowClear="false"
                  v-decorator="['defaultValue', {rules: [{type: 'array', required: true, whitespace: true, message: '请选择执行时间'}], initialValue: newCardData.defaultValue}]"
@@ -63,9 +63,11 @@
             </a-col>
             <a-col class="playground-col" :span="24">
               <a-form-item v-bind="formItemTextarea" label="资产盘点范围：">
-                <a-input placeholder="请输入资产盘点范围"
+                <a-textarea placeholder="请输入资产盘点范围"
                 :disabled="true"
-                :style="allWidth"
+                :style="widthBox"
+                :autosize="{ minRows: 3, maxRows: 3 }"
+                :maxLength="200"
                 v-decorator="['checkRange', {rules: [], initialValue: newCardData.checkRange}]"/>
               </a-form-item>
             </a-col>
@@ -88,7 +90,7 @@
     <div class="newEditor-nav">
       <span class="section-title blue">盘点单列表 (资产总数：{{inventoryAssetCount || 0}})</span>
       <div class="newEditor-obj">
-        <div class="table-layout-fixed table-border">
+        <div class="table-layout-fixed table-border-lr">
           <a-table
             :loading="table.loading"
             :columns="table.columns"
@@ -365,6 +367,11 @@ export default {
       if (str === 'cancel') {
         // console.log(this.table.dataSource[index])
         // console.log(this.cancelData[index])
+        if (!this.cancelData[index].IsEdit) {
+          this.table.dataSource.splice(index, 1)
+          this.cancelData = utils.deepClone(this.table.dataSource)           // 用于取消回显
+          return
+        }
         this.table.dataSource[index].IsEdit = this.cancelData[index].IsEdit
         this.table.dataSource[index].assetId = this.cancelData[index].assetId
         this.table.dataSource[index].beginDate = this.cancelData[index].beginDate
