@@ -13,7 +13,7 @@
     @cancel="handleCancel"
   >
     <div>
-      <a-tabs @change="changeTab" type="card" :tabBarGutter="10">
+      <a-tabs @change="changeTab" type="card" v-model="defaultActiveKey" :tabBarGutter="10">
         <a-tab-pane tab="待选资产" key="1">
           <div class="tab-container">
             <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="70px">
@@ -146,6 +146,7 @@
     },
     data () {
       return {
+        defaultActiveKey: '1',
         firstCall: true,
         show: false,
         assetType: '',   // 资产类型
@@ -408,6 +409,12 @@
       },
       // 外面给回来的数据
       redactCheckedDataFn (redactChecked, projectId, overallData) {
+        // 有组织机构树的时候每次进来都调第一页！为了适应表格选择
+        if (!this.judgeInstitutions) {
+          this.paginator.pageNo = 1
+          this.query()
+          this.defaultActiveKey = '1'
+        }
         // overallData 给回来的数据合并在去重
         if (overallData && overallData.length !== 0) {
           let arrData = [...this.overallData, ...overallData]
