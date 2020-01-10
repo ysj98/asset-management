@@ -185,7 +185,7 @@ let labelTypeMap = {
   },
   readApproval: {
     name: '反审核',
-    approvalStatus: '2'
+    approvalStatus: '0'
   }
 }
 export default {

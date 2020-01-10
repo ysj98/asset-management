@@ -11,6 +11,9 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
     >
+    <template slot="taskId" slot-scope="text, record">
+           <span class="nav_name" @click="goToTask(record)">{{text}}</span>
+        </template>
     </a-table>
     <no-data-tips class="noTipStyle" v-show="table.dataSource.length === 0"></no-data-tips>
     <SG-FooterPagination
@@ -35,7 +38,8 @@ let columns = [
   {
     title: "任务编号",
     dataIndex: "taskId",
-    width: "15%"
+    width: "15%",
+    scopedSlots: { customRender: "taskId" },
   },
   {
     title: "任务名称",
@@ -114,6 +118,10 @@ export default {
           this.table.totalCount = res.data.data.count
         }
       })
+    },
+    goToTask (record) {
+      let o = {taskId: record.taskId, detail: true}
+      this.$router.push({ path: '/inventoryManagement/countingTask/detail', query: {quersData: JSON.stringify([o])}});
     },
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
