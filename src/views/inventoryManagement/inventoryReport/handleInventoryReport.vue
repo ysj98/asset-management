@@ -711,7 +711,7 @@ export default {
 
 <style lang="less" scoped>
   .handle-inventory-report {
-    padding: 40px 105px 40px 95px;
+    padding: 40px 105px 70px 95px;
     .edit-box {
       text-align: left;
       color: #49505E;
@@ -795,6 +795,9 @@ export default {
           .label-value {
             float: left;
             width: calc(100% - 97px);
+          }
+          /deep/ .ant-form-explain {
+            margin-left: 0;
           }
         }
         .table-header-btn {
