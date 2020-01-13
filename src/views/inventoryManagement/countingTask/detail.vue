@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2020-01-06 11:37:16
+ * @LastEditTime : 2020-01-13 10:18:51
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -230,10 +230,10 @@ export default {
   },
   watch: {
     '$route' () {
-      console.log(this.$route.query.quersData)
       let route = this.$route.query.quersData ? JSON.parse(this.$route.query.quersData) : []
       let detail = route.length === 0 ? false : route[0].detail
       if (this.$route.path === '/inventoryManagement/countingTask/detail' && detail) {
+        this.taskId = route.length === 0 ? '' : route[0].taskId
         this.query()
         this.queryListByTaskIdFn()
         this.queryByTaskIdFn()
