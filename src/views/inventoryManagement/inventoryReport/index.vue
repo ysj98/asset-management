@@ -289,7 +289,7 @@ export default {
         organId: this.organId,
         startDate: this.queryCondition.beginDate,
         endDate: this.queryCondition.endDate,
-        approvalStatus: this.queryCondition.approvalStatus.join(','),
+        approvalStatuss: this.queryCondition.approvalStatus.join(','),
         reportName: this.queryCondition.reportName,
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength

@@ -256,12 +256,17 @@ export default {
             attachment.push(obj)
           })
           form.attachment = attachment
+          let loadingName = this.SG_Loding('保存中...')
           this.$api.inventoryManagementApi.handleException(form).then(res => {
             if (res.data.code === '0') {
-              this.$message.success('保存成功')
-              this.$router.push({path: '/inventoryManagement/exceptionManagement', query: {refresh: true}})
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.success('保存成功')
+                this.$router.push({path: '/inventoryManagement/exceptionManagement', query: {refresh: true}})
+              })
             } else {
-              this.$message.error(res.data.message)
+              this.DE_Loding(loadingName).then(() => {
+                this.$message.error(res.data.message)
+              })
             }
           })
         }

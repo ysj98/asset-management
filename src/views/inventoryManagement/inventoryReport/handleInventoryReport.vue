@@ -639,12 +639,17 @@ export default {
           if (this.pageType === 'edit') {
             form.reportId = this.reportId
           }
+          let loadingName = this.SG_Loding('保存中...')
           this.$api.inventoryManagementApi.saveOrUpdate(form).then(res => {
             if (res.data.code === '0') {
-              this.$message.success('提交成功')
-              this.$router.push({path: '/inventoryManagement/inventoryReport', query: {refresh: true}})
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.success('提交成功')
+                this.$router.push({path: '/inventoryManagement/inventoryReport', query: {refresh: true}})
+              })
             } else {
-              this.$message.error(res.data.message)
+              this.DE_Loding(loadingName).then(() => {
+                this.$message.error(res.data.message)
+              })
             }
           })
         }
@@ -711,7 +716,7 @@ export default {
 
 <style lang="less" scoped>
   .handle-inventory-report {
-    padding: 40px 105px 40px 95px;
+    padding: 40px 105px 70px 95px;
     .edit-box {
       text-align: left;
       color: #49505E;
@@ -795,6 +800,9 @@ export default {
           .label-value {
             float: left;
             width: calc(100% - 97px);
+          }
+          /deep/ .ant-form-explain {
+            margin-left: 0;
           }
         }
         .table-header-btn {
