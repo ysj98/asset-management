@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2020-01-13 10:18:51
+ * @LastEditTime : 2020-01-13 17:44:23
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -59,6 +59,12 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
+            <template slot="reportName" slot-scope="text, record">
+              <span class="btn_click mr15" @click="InventoryReport(record)">{{record.reportName}}</span>
+            </template>
+            <template slot="operation" slot-scope="text, record">
+              <span class="btn_click mr15" @click="InventoryReport(record)">详情</span>
+            </template>
           </a-table>
           <no-data-tips v-show="inventoryReportData.length === 0"></no-data-tips>
         </div>
@@ -111,10 +117,11 @@ const InventoryReportColumns = [
   }, {
     title: "报告名称",
     dataIndex: "reportName",
-    width: '40%'
+    width: '30%',
+    scopedSlots: { customRender: "reportName" }
   }, {
     title: "提交人",
-    dataIndex: "createBy",
+    dataIndex: "createByName",
     width: '15%'
   }, {
     title: "提交时间",
@@ -124,6 +131,11 @@ const InventoryReportColumns = [
     title: "状态",
     dataIndex: "approvalStatusName",
     width: '15%'
+  }, {
+    title: "操作",
+    dataIndex: "operation",
+    width: '15%',
+    scopedSlots: { customRender: "operation" }
   }
 ]
 export default {
@@ -154,6 +166,10 @@ export default {
   computed: {
   },
   methods: {
+    // 盘点报告详情
+    InventoryReport (record) {
+      this.$router.push({path: '/inventoryManagement/countingTask/detail/report', query: {pageType: 'detail', reportId: record.reportId}})
+    },
     // 详情
     inventoryDetailsFn (record) {
       let querys = JSON.stringify([{
