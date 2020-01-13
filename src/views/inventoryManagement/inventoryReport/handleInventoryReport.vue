@@ -639,12 +639,17 @@ export default {
           if (this.pageType === 'edit') {
             form.reportId = this.reportId
           }
+          let loadingName = this.SG_Loding('保存中...')
           this.$api.inventoryManagementApi.saveOrUpdate(form).then(res => {
             if (res.data.code === '0') {
-              this.$message.success('提交成功')
-              this.$router.push({path: '/inventoryManagement/inventoryReport', query: {refresh: true}})
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.success('提交成功')
+                this.$router.push({path: '/inventoryManagement/inventoryReport', query: {refresh: true}})
+              })
             } else {
-              this.$message.error(res.data.message)
+              this.DE_Loding(loadingName).then(() => {
+                this.$message.error(res.data.message)
+              })
             }
           })
         }
