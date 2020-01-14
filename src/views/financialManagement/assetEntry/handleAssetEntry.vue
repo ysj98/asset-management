@@ -362,6 +362,7 @@
                 placeholder="请输入购入原值"
                 :style="allStyle"
                 v-if="editable"
+                @change="onPurchaseValueChange"
                 v-decorator="['purchaseValue',
                 {rules: [{required: true, message: '请输入购入原值'}, {validator: validateValue}], initialValue: detail.purchaseValue}
               ]">
@@ -813,10 +814,6 @@ export default {
     },
     // 关联资产发生变动
     assetChange (checkedData, checkedNames, rowsData, extraData) {
-      console.log(checkedData)
-      console.log(checkedNames)
-      console.log(rowsData)
-      console.log(extraData)
       this.checkedData = checkedData
       this.detail.assetIds = checkedData.join(',')
       this.detail.assetNames = checkedNames.join(',')
@@ -898,8 +895,6 @@ export default {
     },
     // 资产项目发生变化
     changeProjectId (value, options) {
-      console.log(options)
-      console.log(options.data.props)
       this.dataSource = []
       this.checkedData = []
       this.detail.assetIds = undefined
@@ -935,6 +930,14 @@ export default {
           this.detail.netSalvageValueRate = item.netSalvageRate || ''
         }
       })
+    },
+    // 购入原值发生变化
+    onPurchaseValueChange (event) {
+      let value = event.target.value
+      let reg =  /^\d+(\.\d+)?$/
+      if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
+        this.detail.purchaseValue = event.target.value
+      }
     },
     // 累计折旧发生变化
     changeCumulativeDepreciation (event) {
