@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2020-01-14 10:32:56
+ * @LastEditTime : 2020-01-14 10:46:53
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -170,7 +170,7 @@ export default {
     // 盘点报告详情
     InventoryReport (record) {
       if (this.page === 'plan') {
-        this.$router.push({path: '/inventoryPlan/detail/reportDetail', query: {pageType: 'detail', reportId: record.reportId}})
+        this.$router.push({path: '/inventoryPlan/detail/taskDetail/reportDetail', query: {pageType: 'detail', reportId: record.reportId}})
       } else {
         this.$router.push({path: '/inventoryManagement/countingTask/detail/report', query: {pageType: 'detail', reportId: record.reportId}})
       }
@@ -182,7 +182,7 @@ export default {
         checkId: record.checkId
       }])
       if (this.page === 'plan') {
-        this.$router.push({ path: '/inventoryPlan/detail/implementDetail', query: {quersData: querys} })
+        this.$router.push({ path: '/inventoryPlan/detail/taskDetail/implementDetail', query: {quersData: querys} })
       } else {
         this.$router.push({ path: '/inventoryManagement/countingTask/detail/inventoryDetails', query: {quersData: querys} })
       }

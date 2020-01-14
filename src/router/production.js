@@ -423,14 +423,17 @@ let proRouter = [
     component: () => import('@/views/inventoryManagement/inventoryPlan/approvalPlan')
   },
   {
+    path: '/inventoryPlan/detail/taskDetail',
+    name: '盘点任务详情',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/taskDetail'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/inventoryPlan/detail/taskDetail/implementDetail',
     name: '盘点单详情',
     component: () => import('@/views/inventoryManagement/inventoryPlan/implementDetail')
-  },
-  {
-    path: '/inventoryPlan/detail/taskDetail',
-    name: '盘点任务详情',
-    component: () => import('@/views/inventoryManagement/inventoryPlan/taskDetail')
   },
   {
     path: '/inventoryPlan/detail/taskDetail/reportDetail',
