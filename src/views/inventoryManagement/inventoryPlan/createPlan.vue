@@ -646,6 +646,7 @@ export default {
         o.beginDay = obj.beginDay
       }
       // 处理表格数据
+      this.table.dataSource = []
       if (obj.taskTempList && obj.taskTempList.length) {
         obj.taskTempList.forEach(item => {
           let chargePersonNameList = item.chargePersonList.map(v => v.userName).join(',')
