@@ -764,7 +764,7 @@ export default {
               }
             }
             .label-space-between {
-              width: 72px;
+              width: 96px;
               text-align: justify;
               margin-left: 10px;
               i {
@@ -789,7 +789,7 @@ export default {
             line-height: 34px;
           }
           /deep/ .ant-form-explain {
-            margin-left: 90px;
+            margin-left: 120px;
           }
           /deep/ .ant-form-item-with-help {
             margin-bottom: 6px;
@@ -799,7 +799,7 @@ export default {
           width: 100%;
           .label-value {
             float: left;
-            width: calc(100% - 97px);
+            width: calc(100% - 121px);
           }
           /deep/ .ant-form-explain {
             margin-left: 0;
