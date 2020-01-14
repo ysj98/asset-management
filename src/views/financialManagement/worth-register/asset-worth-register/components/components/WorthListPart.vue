@@ -97,7 +97,7 @@
             { title: '所属资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '资产分类', dataIndex: 'assetCategoryName' },
-            { title: '资源原值(元)', dataIndex: 'originalValue' },
+            { title: '资产原值(元)', dataIndex: 'originalValue' },
             { title: '评估原值(元)', dataIndex: 'assetValuation' },
             { title: '原值评估基准日', dataIndex: 'originalAssessmenBaseDate' },
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
@@ -314,7 +314,7 @@
             } else {
               // 新增：删除旧dataSource最后一行求和数据
               dataSource.splice(-1, 1, ...addData)
-              // 关闭选择资源Modal
+              // 关闭选择资产Modal
               this.modalObj.isShow = false
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData}))

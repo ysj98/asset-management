@@ -129,7 +129,7 @@
             { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 200 },
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
-            { title: '资源原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
+            { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
             { title: '市场值(元)', dataIndex: 'marketValue' },
             { title: '原值评估值基准日', dataIndex: 'originalAssessmenBaseDate' },
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
