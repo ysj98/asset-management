@@ -419,5 +419,20 @@ let proRouter = [
     name: '审批盘点计划',
     component: () => import('@/views/inventoryManagement/inventoryPlan/approvalPlan')
   },
+  {
+    path: '/inventoryPlan/detail/implementDetail',
+    name: '盘点单详情',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/implementDetail')
+  },
+  {
+    path: '/inventoryPlan/detail/taskDetail',
+    name: '盘点任务详情',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/taskDetail')
+  },
+  {
+    path: '/inventoryPlan/detail/reportDetail',
+    name: '盘点报告详情',
+    component: () => import('@/views/inventoryManagement/inventoryPlan/reportDetail')
+  }
 ]
 export default proRouter

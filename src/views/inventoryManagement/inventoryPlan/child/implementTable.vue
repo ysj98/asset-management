@@ -120,8 +120,8 @@ export default {
       })
     },
     goToTask (record) {
-      let o = {taskId: record.taskId, detail: true}
-      this.$router.push({ path: '/inventoryManagement/countingTask/detail', query: {quersData: JSON.stringify([o])}});
+      let o = {taskId: record.taskId, detail: true, page: 'plan'}
+      this.$router.push({ path: '/inventoryPlan/detail/taskDetail', query: {quersData: JSON.stringify([o])}});
     },
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
