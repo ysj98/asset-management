@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2020-01-14 10:46:53
+ * @LastEditTime : 2020-01-14 14:19:39
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -212,6 +212,7 @@ export default {
     },
     // 资产列表
     queryListByTaskIdFn () {
+      this.inventoryAssetCount = 0
       this.loading = true
       let obj = {
         taskId: this.taskId
