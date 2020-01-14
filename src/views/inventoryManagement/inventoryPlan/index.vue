@@ -315,7 +315,8 @@ export default {
       let query = {
         type,
         organId: this.queryCondition.organId,
-        organName: this.organName
+        organName: this.organName,
+        refresh: true
       };
       if (type !== 'create') {
         query.approvalStatusName = record.approvalStatusName

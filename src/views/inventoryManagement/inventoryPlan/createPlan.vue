@@ -395,7 +395,7 @@
     <!-- 执行记录 -->
     <div v-if="['detail'].includes(pageType)">
       <div class="mb30 mt30"><SG-Title noMargin title="执行记录" /></div>
-      <div class="ml40"><implementTable /></div>
+      <div class="ml40"><implementTable ref="implementTable"/></div>
     </div>
     <!-- 审批轨迹 -->
     <div v-if="['detail', 'approval'].includes(pageType)">
@@ -578,33 +578,44 @@ export default {
       detail: {}
     }
   },
-  created() {
-    this.pageType = this.$route.query.type || ""
-    this.organId = this.$route.query.organId || ''
-    this.organName = this.$route.query.organName || ''
-    this.planId = this.$route.query.planId || ''
-    this.approvalStatusName = this.$route.query.approvalStatusName || ''
-    if (!['create', 'edit'].includes(this.pageType)) {
-      this.editable = false
-    }
-    if (this.pageType === "create") {
-      this.pushTableLine()
-      this.platformDictFn('AMS_EXE_PRE')
-    }
-    if (this.pageType === 'edit') {
-      this.platformDictFn('AMS_EXE_PRE')
-      this.inventoryDetail()
-    }
-    if (this.pageType === 'detail') {
-      this.popTableColumn()
-      this.inventoryDetail()
-    }
-    if (this.pageType === 'approval') {
-      this.popTableColumn()
-      this.inventoryDetail()
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/inventoryPlan/detail' && this.$route.query.refresh) {
+        this.init()
+        this.$refs.implementTable.init()
+      }
     }
   },
+  created() {
+    this.init()
+  },
   methods: {
+    init () {
+      this.pageType = this.$route.query.type || ""
+      this.organId = this.$route.query.organId || ''
+      this.organName = this.$route.query.organName || ''
+      this.planId = this.$route.query.planId || ''
+      this.approvalStatusName = this.$route.query.approvalStatusName || ''
+      if (!['create', 'edit'].includes(this.pageType)) {
+        this.editable = false
+      }
+      if (this.pageType === "create") {
+        this.pushTableLine()
+        this.platformDictFn('AMS_EXE_PRE')
+      }
+      if (this.pageType === 'edit') {
+        this.platformDictFn('AMS_EXE_PRE')
+        this.inventoryDetail()
+      }
+      if (this.pageType === 'detail') {
+        this.popTableColumn()
+        this.inventoryDetail()
+      }
+      if (this.pageType === 'approval') {
+        this.popTableColumn()
+        this.inventoryDetail()
+      }
+    },
     // 获取详情
     inventoryDetail () {
       this.spinning = true
@@ -664,6 +675,8 @@ export default {
         this.filepaths = obj.attachmentList.map(item => {
           return {url: item.attachmentPath, name: item.oldAttachmentName}
         })
+      } else {
+        this.filepaths = []
       }
       if (this.pageType === 'edit') {
         this.form.setFieldsValue(o)

@@ -88,10 +88,13 @@ export default {
     }
   },
   created () {
-    this.planId = this.$route.query.planId || ''
-    this.query()
+    this.init()
   },
   methods: {
+   init () {
+     this.planId = this.$route.query.planId || ''
+     this.query()
+   },
    query () {
       let data = {
         ...queryCondition,
