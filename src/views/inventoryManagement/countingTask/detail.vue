@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:28:17
- * @LastEditTime : 2020-01-13 17:44:23
+ * @LastEditTime : 2020-01-14 10:32:56
  * @LastEditors  : Please set LastEditors
  * @Description: 盘点任务详情
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\detail.vue
@@ -143,6 +143,7 @@ export default {
   props: {},
   data () {
     return {
+      page: '',      // 用来判断盘点计划调转过来的
       inventoryAssetCount: 0,
       taskId: '',
       changeType: '',
@@ -168,7 +169,11 @@ export default {
   methods: {
     // 盘点报告详情
     InventoryReport (record) {
-      this.$router.push({path: '/inventoryManagement/countingTask/detail/report', query: {pageType: 'detail', reportId: record.reportId}})
+      if (this.page === 'plan') {
+        this.$router.push({path: '/inventoryPlan/detail/reportDetail', query: {pageType: 'detail', reportId: record.reportId}})
+      } else {
+        this.$router.push({path: '/inventoryManagement/countingTask/detail/report', query: {pageType: 'detail', reportId: record.reportId}})
+      }
     },
     // 详情
     inventoryDetailsFn (record) {
@@ -176,7 +181,11 @@ export default {
         type: 'detail',
         checkId: record.checkId
       }])
-      this.$router.push({ path: '/inventoryManagement/countingTask/detail/inventoryDetails', query: {quersData: querys} });
+      if (this.page === 'plan') {
+        this.$router.push({ path: '/inventoryPlan/detail/implementDetail', query: {quersData: querys} })
+      } else {
+        this.$router.push({ path: '/inventoryManagement/countingTask/detail/inventoryDetails', query: {quersData: querys} })
+      }
     },
     // 查询详情
     query () {
@@ -250,6 +259,7 @@ export default {
       let detail = route.length === 0 ? false : route[0].detail
       if (this.$route.path === '/inventoryManagement/countingTask/detail' && detail) {
         this.taskId = route.length === 0 ? '' : route[0].taskId
+        this.page = route.length === 0 ? '' : route[0].page
         this.query()
         this.queryListByTaskIdFn()
         this.queryByTaskIdFn()
@@ -261,6 +271,7 @@ export default {
   mounted () {
     this.particularsData = JSON.parse(this.$route.query.quersData)
     this.taskId = this.particularsData[0].taskId
+    this.page = this.particularsData.length === 0 ? '' : this.particularsData[0].page
     this.query()
     this.queryListByTaskIdFn()
     this.queryByTaskIdFn()
