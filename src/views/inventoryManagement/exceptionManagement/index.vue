@@ -189,6 +189,7 @@ export default {
     return {
       ASSET_MANAGEMENT,
       allStyle: 'width: 170px; margin-right: 10px;',
+      firstLoad: true,
       toggle: false,
       organName: '',
       organId: '',
@@ -242,7 +243,12 @@ export default {
       this.organId = value
       this.getAssetProjectOptions()
       this.getAssetClassifyOptions()
-      this.queryClick()
+      if (this.firstLoad) {
+        this.firstLoad = false
+        this.getExceptionTypeOptions()
+      } else {
+        this.queryClick()
+      }
     },
     // 资产名称发生变化
     assetNameChange (event) {
@@ -307,6 +313,8 @@ export default {
       this.$router.push({path: '/inventoryManagement/exceptionManagement/' + pageType, query: {pageType: pageType, organId: this.organId, resultId: record.resultId}})
     },
     formatFormArr (arr, type) {
+      console.log(arr)
+      console.log(type)
       if (arr.length === 0 || arr[0] === '') {
         arr = []
         if (type === 1) {
@@ -400,6 +408,7 @@ export default {
         } else {
           this.$message.error(res.data.message)
         }
+        this.queryClick()
       })
     },
     // 获取资产类型下拉列表
@@ -449,7 +458,6 @@ export default {
   created () {
   },
   mounted () {
-    this.getExceptionTypeOptions()
     this.getAssetTypeOptions()
   }
 }
