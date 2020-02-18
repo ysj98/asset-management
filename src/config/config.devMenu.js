@@ -116,6 +116,20 @@ export default [
     ]
   },
   {
+    title: '呈报管理',
+    children: [
+      {
+        title: '呈报表单',
+        path: '/reportingManagement/submitForm'
+      },
+      {
+        title: '呈报计划',
+        path: '/reportingManagement/submitPlans',
+        
+      },
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {
