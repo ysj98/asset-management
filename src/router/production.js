@@ -454,6 +454,21 @@ let proRouter = [
     path: '/reportingManagement/submitPlans',
     name: '呈报计划',
     component: () => import('@/views/reportingManagement/submitPlans/index.vue')
+  },
+  {
+    path: '/reportingManagement/submitPlans/newPlan',
+    name: '新建',
+    component: () => import('@/views/reportingManagement/submitPlans/newPlan.vue')
+  },
+  {
+    path: '/reportingManagement/submitPlans/editPlan',
+    name: '编辑',
+    component: () => import('@/views/reportingManagement/submitPlans/editPlan.vue')
+  },
+  {
+    path: '/reportingManagement/submitPlans/details',
+    name: '详情',
+    component: () => import('@/views/reportingManagement/submitPlans/details.vue')
   }
 ]
 export default proRouter
