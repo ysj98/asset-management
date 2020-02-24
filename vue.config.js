@@ -1,6 +1,7 @@
 const path = require('path')
 const os = require('os');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 // 获取本机ip
 const getIPAdress = () => {
@@ -110,17 +111,20 @@ module.exports = {
         'moment': 'moment'
       }
       // 压缩文件，去除调试信息
+      // config.plugins.push(
+      //   new UglifyJsPlugin({
+      //     uglifyOptions: {
+      //       compress: {
+      //         drop_debugger: true, // 去除debugger
+      //         drop_console: true // 去除console
+      //       }
+      //     },
+      //     sourceMap: false,
+      //     parallel: true
+      //   })
+      // )
       config.plugins.push(
-        new UglifyJsPlugin({
-          uglifyOptions: {
-            compress: {
-              drop_debugger: true, // 去除debugger
-              drop_console: true // 去除console
-            }
-          },
-          sourceMap: false,
-          parallel: true
-        })
+        new TerserPlugin({ terserOptions: { compress: { drop_console: true } } })
       )
     }
   },

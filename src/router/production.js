@@ -439,6 +439,24 @@ let proRouter = [
     path: '/inventoryPlan/detail/taskDetail/reportDetail',
     name: '盘点报告详情',
     component: () => import('@/views/inventoryManagement/inventoryPlan/reportDetail')
+  },
+  {
+    path: '/subsidiary',
+    name: '附属配套管理',
+    component: () => import('@/views/assetInformationManagement/assetSubsidiary/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/subsidiary/create',
+    name: '新建附属配套',
+    component: () => import('@/views/assetInformationManagement/assetSubsidiary/createSubsidiary')
+  },
+  {
+    path: '/subsidiary/detail',
+    name: '附属配套详情',
+    component: () => import('@/views/assetInformationManagement/assetSubsidiary/detailSubsidiay')
   }
 ]
 export default proRouter

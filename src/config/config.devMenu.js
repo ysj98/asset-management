@@ -26,6 +26,10 @@ export default [
       {
         title: '房屋台账',
         path: '/houseStandingBook'
+      },
+      {
+        title: '附属配套管理',
+        path: '/subsidiary'
       }
     ]
   },
