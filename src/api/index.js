@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-12-19 14:44:17
- * @LastEditTime : 2019-12-25 14:50:01
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-02-24 15:23:42
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \asset-management\src\api\index.js
  */
@@ -21,6 +21,7 @@ import * as ownership from './ownership'
 import * as worthRegister from './worthRegister'
 import * as inventoryManagementApi from './inventoryManagementApi'
 import * as disposalManagement from './disposalManagement'
+import * as subsidiary from './subsidiary'
 const API = {
   auth,
   global,
@@ -30,7 +31,8 @@ const API = {
   building,
   worthRegister,
   inventoryManagementApi,
-  disposalManagement
+  disposalManagement,
+  subsidiary
 }
 export default {
   install (Vue) {

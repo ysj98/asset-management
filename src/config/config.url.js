@@ -556,3 +556,16 @@ export const disposeRegister = {
   // 处置登记查询-根据处置登记单ID
   getDisposeRegisterById: '/ams/disposeRegister/getDisposeRegister'
 }
+// 资产附属配套
+export const subsidiary = {
+  // 附属配套-列表查询
+  getListPage: '/ams/subsidiaryMatching/getListPage',
+  // 附属配套-新增/修改保存
+  modifySave: '/ams/subsidiaryMatching/modifySave',
+  // 附属配套-状态操作或删除
+  updateStatusOrDelete: '/ams/subsidiaryMatching/updateStatusOrDelete',
+  // 附属配套查询-根据附属配套ID
+  getMatchingById: '/ams/subsidiaryMatching/getMatchingById',
+  // 附属配套-根据资产信息ID查询列表
+  getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId'
+}

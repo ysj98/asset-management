@@ -454,10 +454,16 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/assetSubsidiary/createSubsidiary')
   },
   {
+    path: '/subsidiary/edit',
+    name: '编辑附属配套',
+    component: () => import('@/views/assetInformationManagement/assetSubsidiary/editSubsidiary')
+  },
+  {
     path: '/subsidiary/detail',
     name: '附属配套详情',
     component: () => import('@/views/assetInformationManagement/assetSubsidiary/detailSubsidiay')
-  }, {  
+  },
+  {  
     path: '/reportingManagement/submitForm',
     name: '呈报表单',
     component: () => import('@/views/reportingManagement/submitForm/index.vue')
