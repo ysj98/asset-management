@@ -572,10 +572,16 @@ export const subsidiary = {
 
 // 呈报管理
 export const reportManage = {
-  // 附属配套-列表查询
+  // 呈报计划
+  // 呈报计划查询(分页)
   queryReportPlanPageList: '/ams/reportManage/queryReportPlanPageList',
   // 呈报计划详情
   queryReportPlanDetail: '/ams/reportManege/queryReportPlanDetail',
   // 新建/修改呈报计划
-  saveReportPlan: '/ams/reportManage/saveReportPlan'
+  saveReportPlan: '/ams/reportManage/saveReportPlan',
+  // 呈报表单
+  // 查询全部呈报表单列表
+  queryAllReportBill: '/ams/reportBill/queryAllReportBill',
+  // 查询表单字段
+  queryReportBillColumn: '/ams/reportBill/queryReportBillColumn'
 }

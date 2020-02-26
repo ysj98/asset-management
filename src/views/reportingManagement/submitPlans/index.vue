@@ -18,8 +18,8 @@
       <div slot="col-r">
         <div class="nav">
 					<treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-					<a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部呈报表单" :tokenSeparators="[',']"  @select="taskStatusFn"  v-model="queryCondition.taskStatus">
-            <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+					<a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部呈报表单" :tokenSeparators="[',']"  @select="reportBillIdFn"  v-model="queryCondition.reportBillId">
+            <a-select-option v-for="(item, index) in reportBillData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
 					<a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="taskStatusFn"  v-model="queryCondition.taskStatus">
             <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -76,6 +76,7 @@ let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
   planName: '',
   taskStatus: '',
+  reportBillId: '',
   pageSize: 10,
   pageNum: 1
 }
@@ -170,6 +171,7 @@ export default {
 			allStyle: 'width: 160px; margin-right: 10px;',
       queryCondition: {...queryCondition},
       taskStatusData,
+      reportBillData: [],
       table: {
         columns,
         dataSource: [],
@@ -189,12 +191,18 @@ export default {
   },
   mounted () {
     this.query()
+    this.queryAllReportBill()
   },
   methods: {
 		// 状态发生变化
     taskStatusFn (value) {
       this.$nextTick(function () {
         this.queryCondition.taskStatus = this.handleMultipleSelectValue(value, this.queryCondition.taskStatus, this.taskStatusData)
+      })
+    },
+    reportBillIdFn () {
+      this.$nextTick(function () {
+        this.queryCondition.reportBillId = this.handleMultipleSelectValue(value, this.queryCondition.reportBillId, this.reportBillData)
       })
     },
     // 处理多选下拉框有全选时的数组
@@ -231,7 +239,24 @@ export default {
       this.queryCondition.pageNum = 1
       this.query()
     },
-    query() {
+    queryAllReportBill () {
+      this.$api.reportManage.queryAllReportBill({}).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || []
+            let arr = []
+            result.forEach(item => {
+              arr.push({
+                value: item.reportBillId,
+                name: item.billName
+              })
+            })
+            this.reportBillData = [{ name: '全部呈报表单', value: ''}, ...arr]
+          } else {
+            this.$message.error(res.data.message);
+          }
+      })
+    },
+    query () {
       let data = {
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum,
