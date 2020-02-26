@@ -22,6 +22,7 @@ import * as worthRegister from './worthRegister'
 import * as inventoryManagementApi from './inventoryManagementApi'
 import * as disposalManagement from './disposalManagement'
 import * as subsidiary from './subsidiary'
+import * as reportManage from './reportManage'
 const API = {
   auth,
   global,
@@ -32,7 +33,8 @@ const API = {
   worthRegister,
   inventoryManagementApi,
   disposalManagement,
-  subsidiary
+  subsidiary,
+  reportManage
 }
 export default {
   install (Vue) {

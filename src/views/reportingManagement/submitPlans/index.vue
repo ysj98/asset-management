@@ -24,7 +24,7 @@
 					<a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="taskStatusFn"  v-model="queryCondition.taskStatus">
             <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search :style="allStyle" v-model="queryCondition.taskName" placeholder="呈报计划名称/编码" maxlength="30" @search="onSearch" />
+          <a-input-search :style="allStyle" v-model="queryCondition.planName" placeholder="呈报计划名称/编码" maxlength="30" @search="onSearch" />
           <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </div>
@@ -42,12 +42,6 @@
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
         >
-          <template slot="progress" slot-scope="text, record">
-            <div style="padding-right: 10px;">
-                <!-- <a-progress :percent="Number(record.progress) || 0" /> -->
-                <a-switch :disabled="true" checkedChildren="启用" unCheckedChildren="停用" v-model="defaultChecked" />
-              </div>
-          </template>
           <template slot="operation" slot-scope="text, record">
             <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
           </template>
@@ -80,7 +74,7 @@ const operationTypes = {
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
-  taskName: '',
+  planName: '',
   taskStatus: '',
   pageSize: 10,
   pageNum: 1
@@ -115,39 +109,39 @@ const taskStatusData = [
 let columns = [
   {
     title: "计划编号",
-    dataIndex: "taskId"
+    dataIndex: "reportPlanId"
   },
   {
     title: "所属机构",
-    dataIndex: "taskName"
+    dataIndex: "organName"
   },
   {
     title: "计划名称",
-    dataIndex: "chargePersonName"
+    dataIndex: "planName"
   },
   {
     title: "计划编码",
-    dataIndex: "progress"
+    dataIndex: "planCode"
   },
   {
-    title: "呈报表单",
-    dataIndex: "beginDateEndDate1"
+    title: "呈报表单111",
+    dataIndex: "reportBill"
 	},
 	{
     title: "生效时间",
-    dataIndex: "taskName1"
+    dataIndex: "effDate"
   },
   {
     title: "失效时间",
-    dataIndex: "chargePersonName1"
+    dataIndex: "expDate"
   },
   {
     title: "执行频次",
-    dataIndex: "progress1"
+    dataIndex: "exePreName"
   },
   {
     title: "状态",
-    dataIndex: "beginDateEndDate"
+    dataIndex: "approvalStatusName"
   },
   {
     title: "操作",
@@ -239,27 +233,20 @@ export default {
     },
     query() {
       let data = {
-        taskName: this.queryCondition.taskName,
-        taskStatus: '',
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum,
-        beginDate:  '',
-        endDate: ''
+        organId: this.queryCondition.organId,
+        approvalStatus: this.queryCondition.taskStatus,   // 状态
+        planName: this.queryCondition.planName,
+        reportBillId: this.queryCondition.reportBillId
       }
-      this.table.loading = true;
-      this.$api.inventoryManagementApi.queryCheckTaskPageList(data).then(
+      this.table.loading = true
+      this.$api.reportManage.queryReportPlanPageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
-            let result = res.data.data.data || [];
+            let result = res.data.data.data || []
             this.table.dataSource = result.map(item => {
-              item.beginDateEndDate = `${item.beginDate} - ${item.endDate}`
-              let arr = []
-              item.chargePersonList.forEach(item => {
-                arr.push(item.userName)
-              })
-              item.chargePersonName = arr.length === 0 ? '' : arr.join(',')
-              item.completeDate = item.completeDate ? item.completeDate : '--'
               return {
                 key: getUuid(),
                 ...item
@@ -284,8 +271,7 @@ export default {
     goPage(type, record) {
       let querys = JSON.stringify([{
         type,
-        projectId: record.projectId,
-        taskId: record.taskId,
+        reportPlanId: record.reportPlanId,
         detail: true
       }])
       this.$router.push({ path: operationTypes[type], query: {quersData: querys}})

@@ -569,3 +569,13 @@ export const subsidiary = {
   // 附属配套-根据资产信息ID查询列表
   getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId'
 }
+
+// 呈报管理
+export const reportManage = {
+  // 附属配套-列表查询
+  queryReportPlanPageList: '/ams/reportManage/queryReportPlanPageList',
+  // 呈报计划详情
+  queryReportPlanDetail: '/ams/reportManege/queryReportPlanDetail',
+  // 新建/修改呈报计划
+  saveReportPlan: '/ams/reportManage/saveReportPlan'
+}

@@ -7,12 +7,12 @@
       <span class="section-title blue">基本信息</span>
       <div class="particulars-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8">计划名称：{{particularsData.registerName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划名称：{{particularsData.planName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">计划编码：{{particularsData.registerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">所属机构：{{particularsData.approvalStatusName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">状态：{{particularsData.createTime || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">创建人：{{particularsData.createTime || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.effDate ? `${particularsData.effDate} - ${particularsData.expDate}` : '--'}}</a-col>
+          <a-col class="playground-col" :span="8">状态：{{particularsData.approvalStatusName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附件： <span v-if="files.length === 0">无</span>
@@ -196,12 +196,13 @@ export default {
     // 查询详情
     query () {
       let obj = {
-        registerId: this.registerId
+        reportPlanId: this.reportPlanId
       }
-      this.$api.ownership.shipDetail(obj).then(res => {
+      this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
+          console.log(res)
           let data = res.data.data
-          this.particularsData = data.registerInfo
+          this.particularsData = data
           data.amsOwnershipRegisterDetailList.forEach((item, index) => {
             item.key = index
             item.address = item.location
@@ -217,9 +218,9 @@ export default {
   created () {
   },
   mounted () {
-    // this.particularsData = JSON.parse(this.$route.query.record)
-    // this.registerId = this.particularsData[0].registerId
-    // this.query()
+    let arr = JSON.parse(this.$route.query.quersData)
+    this.reportPlanId = arr[0].reportPlanId
+    this.query()
   }
 }
 </script>
