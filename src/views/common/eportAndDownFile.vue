@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="upLoad-right" v-if="showDown">
-          <div class="left-title">选择待导入文件：</div>
+          <div class="left-title">下载模板文件：</div>
           <div>
             <i class="file-background"></i>
             <span @click="handleDown" class="down_btn" style="margin-left: 17px;">下载</span>

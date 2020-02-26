@@ -1,7 +1,7 @@
 <!--
  * @Description: 新建资产信息 配套附属资源
  * @Date: 2020-02-17 19:01:00
- * @LastEditTime: 2020-02-26 12:40:58
+ * @LastEditTime: 2020-02-26 18:06:49
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -170,24 +170,25 @@
               <span>：</span>
             </div>
             <a-form-item>
-              <a-input
-                placeholder="请输入类型"
-                :style="allStyle"
-                :maxLength="30"
+              <a-select
+                showSearch
+                placeholder="请选择类型"
                 v-decorator="[
-                  'planNsame',
+                  'exePre',
                   {
                     rules: [
                       {
                         required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请选择类型'
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="exePreOpt"
+                notFoundContent="没有查询到数据"
               />
             </a-form-item>
           </div>
@@ -230,22 +231,20 @@
               <span>：</span>
             </div>
             <a-form-item>
-              <a-input
-                placeholder="请输入名称"
+              <a-input-number
+               :max="99"
+               :min="0"
                 :style="allStyle"
-                :maxLength="30"
+                placeholder="请输入价值"
                 v-decorator="[
-                  'planNa87me',
+                  'preNu7m',
                   {
                     rules: [
                       {
                         required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请输入价值'
                       }
-                    ],
-                    initialValue: ''
+                    ]
                   }
                 ]"
               />
@@ -260,22 +259,20 @@
               <span>：</span>
             </div>
             <a-form-item>
-              <a-input
-                placeholder="请输入名称"
+              <a-input-number
+               :max="99"
+               :min="0"
                 :style="allStyle"
-                :maxLength="30"
+                placeholder="请输入数量"
                 v-decorator="[
-                  'plan3Name',
+                  'preNum',
                   {
                     rules: [
                       {
                         required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请输入数量'
                       }
-                    ],
-                    initialValue: ''
+                    ]
                   }
                 ]"
               />
@@ -290,24 +287,25 @@
               <span>：</span>
             </div>
             <a-form-item>
-              <a-input
-                placeholder="请输入名称"
-                :style="allStyle"
-                :maxLength="30"
+              <a-select
+                showSearch
+                placeholder="请选择计量单位"
                 v-decorator="[
-                  'plasnName',
+                  'exeP4re',
                   {
                     rules: [
                       {
                         required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请选择计量单位'
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="exePreOpt"
+                notFoundContent="没有查询到数据"
               />
             </a-form-item>
           </div>
@@ -368,7 +366,8 @@ export default {
       allStyle,
       filepaths: [],
       type: 'create',
-      checkNick: false
+      checkNick: false,
+      exePreOpt: []
     }
   },
   methods: {

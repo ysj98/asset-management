@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-02-25 16:54:24
+ * @LastEditTime: 2020-02-26 19:15:58
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -12,8 +12,8 @@
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
           <SG-Button @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
-          <SG-Button class="mr10"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
-          <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+          <SG-Button class="mr10"  @click="openImportModal"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
+          <SG-Button type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
         <div slot="headerForm">
             <treeSelect
@@ -146,12 +146,15 @@
         />
       </div>
     </div>
+    <!-- 批量更新 -->
+    <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" title="附属配套导入"/>
   </div>
 </template>
 <script>
 import noDataTips from "@/components/noDataTips";
 import SearchContainer from "@/views/common/SearchContainer";
 import TreeSelect from "@/views/common/treeSelect";
+import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
@@ -288,7 +291,8 @@ export default {
     SearchContainer,
     TreeSelect,
     noDataTips,
-    segiIcon
+    segiIcon,
+    eportAndDownFile
   },
   data() {
     return {
@@ -452,6 +456,82 @@ export default {
           this.$message.error(res.data.message);
         }
       });
+    },
+    // 导出列表
+    exportData () {
+      let data = {
+        ...this.queryCondition,
+        flag: "0"
+      };
+      // 资产类型参数改变
+      data.assetTypeList = utils.deepClone(data.assetType).filter(item => item !== '')
+      data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
+      data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
+     
+      this.$api.subsidiary.exportData(data).then(res => {
+        this.$SG_Message.destroy(loadingName)
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        // ${this.organName}
+        a.download = `附属配套.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      }, () => {
+        this.$SG_Message.destroy(loadingName)
+        this.$SG_Message.error('附属配套导出失败!')
+      })
+    },
+    // 下载模板文件
+    downModeFile () {
+      this.$api.subsidiary.downBatchModle().then(res => {
+            this.$SG_Message.destroy(loadingName)
+            let blob = new Blob([res.data])
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(blob)
+            // ${this.organName}
+            a.download = `附属配套模板.xls`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+      }, () => {
+        this.$SG_Message.destroy(loadingName)
+        this.$SG_Message.error('附属配套模板!')
+      })
+    },
+    // 上传文件
+    uploadModeFile (file) {
+      // this.$refs.eportAndDownFile.hideModal()
+      console.log('批量更新', file)
+      let fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('organId', this.queryCondition.organId)
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.subsidiary.batchImport(fileData).then(res => {
+        if (res.data.code === '0') {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            this.query()
+          }) 
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            // this.$refs.downErrorFile.visible = true
+            // this.upErrorInfo = res.data.message
+            this.$SG_Message.error(res.data.message || '导入失败！')
+          })
+        }
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
+    },
+    // 显示导入弹窗
+    openImportModal () {
+      this.$refs.eportAndDownFile.visible = true
     },
     // 机构字典
     organDict (code) {

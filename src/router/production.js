@@ -492,6 +492,19 @@ let proRouter = [
     path: '/reportingManagement/submitPlans/details',
     name: '详情',
     component: () => import('@/views/reportingManagement/submitPlans/details.vue')
-  }
+  },
+  {
+    path: '/reportingRecord',
+    name: '资产呈报记录',
+    component: () => import('@/views/reportingManagement/reportingRecord/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/reportingRecord/details',
+    name: '详情',
+    component: () => import('@/views/reportingManagement/reportingRecord/details.vue')
+  },
 ]
 export default proRouter

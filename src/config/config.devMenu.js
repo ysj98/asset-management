@@ -131,6 +131,10 @@ export default [
         path: '/reportingManagement/submitPlans',
         
       },
+      {
+        title: '资产呈报记录',
+        path: '/reportingRecord'
+      }
     ]
   },
   {

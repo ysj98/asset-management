@@ -567,7 +567,13 @@ export const subsidiary = {
   // 附属配套查询-根据附属配套ID
   getMatchingById: '/ams/subsidiaryMatching/getMatchingById',
   // 附属配套-根据资产信息ID查询列表
-  getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId'
+  getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+  // 附属配套-下载批量导入模板
+  downBatchModle: '/ams/subsidiaryMatching/downBatchModle',
+  // 附属配套-列表导出
+  exportData: '/ams/subsidiaryMatching/exportData',
+  // 附属配套-导入
+  batchImport: '/ams/subsidiaryMatching/batchImport'
 }
 
 // 呈报管理

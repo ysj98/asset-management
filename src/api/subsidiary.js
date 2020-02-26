@@ -1,7 +1,7 @@
 /*
  * @Description: 
  * @Date: 2020-02-24 15:17:22
- * @LastEditTime: 2020-02-24 15:23:17
+ * @LastEditTime: 2020-02-26 19:13:48
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { subsidiary } from '../config/config.url'
@@ -25,3 +25,20 @@ export function getMatchingById (data) {
 export function getMatchingListByAssetId (data) {
   return axiosPost(subsidiary.getMatchingListByAssetId, data)
 }
+// 附属配套-下载批量导入模板
+export function downBatchModle (data) {
+  return axiosGet(subsidiary.downBatchModle, data, false, {
+    responseType: 'blob'
+  })
+}
+// 附属配套-列表导出
+export function exportData (data) {
+  return axiosPost(subsidiary.exportData, data, false, false, {
+    responseType: 'blob'
+  })
+}
+// 附属配套-导入
+export function batchImport (data) {
+  return axiosPost(subsidiary.batchImport, data)
+}
+
