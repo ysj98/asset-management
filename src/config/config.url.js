@@ -261,7 +261,11 @@ export const assets = {
     // 资产详情-其他信息Tab-变动信息
     queryChangeDetail: '/ams/assetChange/assetChangeInfo',
     // 资产详情-其他信息Tab-账面信息
-    queryBillDetail: '/ams/assetValueRegister/queryAssertValueListById'
+    queryBillDetail: '/ams/assetValueRegister/queryAssertValueListById',
+    // 资产详情-其他信息Tab-资产处置
+    queryDisposeDetail: '/ams/disposeRegister/getListByAssetId',
+    // 资产详情-其他信息Tab-附属&配套
+    queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId'
   },
   // 资产项目管理
   projectManage: {

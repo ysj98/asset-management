@@ -94,6 +94,51 @@ const keys = {
         { title: '评估价值', dataIndex: 'assessmentValue' }
       ]
     }
+  },
+  // 附属&配套
+  accessoryInfo: {
+    title: '附属&配套',
+    details: {},
+    table: {
+      rowKey: 'matchingName',
+      columns: [
+        { title: '名称', dataIndex: 'matchingName' },
+        { title: '编号', dataIndex: 'matchingCode' },
+        { title: '类型', dataIndex: 'matchingTypeName' },
+        { title: '规格型号', dataIndex: 'specificationType' },
+        { title: '登记日期', dataIndex: 'createTime' },
+        { title: '价值(元)', dataIndex: 'value' },
+        { title: '数量', dataIndex: 'number' },
+        { title: '计量单位', dataIndex: 'unitOfMeasurementName' },
+        { title: '使用情况', dataIndex: 'statusName' },
+        { title: '是否接管前配套&配套', dataIndex: 'isBeforeName' },
+        { title: '备注', dataIndex: 'remark' }
+      ]
+    }
+  },
+  // 资产处置
+  disposeInfo: {
+    title: '资产处置',
+    details: {
+      cleaningOrderId: '清理单编号',
+      createTime: '清理时间',
+      cleanupTypeName: '清理原因'
+    },
+    table: {
+      rowKey: 'disposeRegisterOrderId',
+      columns: [
+        { title: '处理单编号', dataIndex: 'disposeRegisterOrderId' },
+        { title: '处置名称', dataIndex: 'disposeName' },
+        { title: '处置类型', dataIndex: 'disposeTypeName' },
+        { title: '处置方式', dataIndex: 'disposeModeName' },
+        { title: '处置日期', dataIndex: 'disposeDate' },
+        { title: '负责人', dataIndex: 'assetReceiver' },
+        { title: '相关人(机构)', dataIndex: 'organName' },
+        { title: '处置成本(元)', dataIndex: 'disposeCost' },
+        { title: '处置收入(元)', dataIndex: 'disposeReceive' },
+        { title: '备注', dataIndex: 'remark' }
+      ]
+    }
   }
 }
 

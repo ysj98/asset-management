@@ -55,6 +55,8 @@
           receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetObjectId', data: 'assetHouseId' }, // 接管信息
           changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetObjectId', data: 'assetHouseId' }, // 变动记录
           billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId' }, // 账面信息
+          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId' }, // 附属&配套
+          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId' }, // 资产处置
         } // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
       }
     },
@@ -94,12 +96,16 @@
               }
               detailData = others
               tableData = deliverList
-            } else if (type === 'changeInfo') {
+            } else if (type === 'changeInfo' || type === 'accessoryInfo') {
               tableData = info
             } else if (type === 'billInfo') {
               let { data, ...others } = info
               detailData = others
               tableData = data.map((m, i) => ({ ...m, index: i + 1 }))
+            } else if (type === 'disposeInfo') {
+              let { list, ...others } = info
+              detailData = others
+              tableData = list
             }
             // 缓存数据
             let obj = type === 'ownInfo' ? { detailData, tableData, table2Data } : { detailData, tableData }
