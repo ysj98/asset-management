@@ -383,6 +383,8 @@
               let arrData = utils.deepClone(this.overallData)
               data.forEach((element, index) => {
                 element.key = element.assetId
+                element.informant = undefined,
+                element.informantOpt = []
                 arrData.push(element)
               })
               this.dataSource = data

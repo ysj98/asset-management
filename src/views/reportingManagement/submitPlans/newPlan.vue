@@ -3,11 +3,11 @@
 -->
 <template>
   <div class="newPlan">
+		<a-form :form="form" @submit="handleSubmit">
     <div class="newPlan-nav">
       <span class="section-title blue">基本信息</span>
       <div class="newPlan-obj">
         <a-row class="playground-row">
-					<a-form :form="form" @submit="handleSubmit">
             <a-col class="playground-col" :span="8">
               <a-form-item v-bind="formItemLayout" label="计划名称：">
                 <a-input placeholder="请输入计划名称"
@@ -75,7 +75,6 @@
                 />
               </a-form-item>
             </a-col>
-					</a-form>
         </a-row>
       </div>
     </div>
@@ -174,33 +173,36 @@
 				</a-row>
         <div class="table-layout-fixed table-border">
 					<div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
-          <a-table
-            :loading="table.loading"
-            :columns="table.previewColumns"
-            :dataSource="table.tableData"
-            class="custom-table td-pd10"
-            :pagination="false"
-            >
-						<template slot="informant" slot-scope="text, record, index">
-							<a-select
-								placeholder="请选择填报人"
-								:open="false"
-								:style="{width: '100%'}"
-								:options="record.informantOpt"
-								@dropdownVisibleChange="tabSelectPerson(record, index, 'informant')"
-								v-model="record.informant"
+					<div class="table-layout-fixed table-border-lr">
+						<a-table
+							:loading="table.loading"
+							:columns="table.previewColumns"
+							:dataSource="table.tableData"
+							class="custom-table td-pd10"
+							:pagination="false"
 							>
-								<div slot="dropdownRender" slot-scope="menu"></div>
-								<a-icon slot="suffixIcon" type="plus-circle" />
-							</a-select>
-						</template>
-						<template slot="operation" slot-scope="text, record">
-              <span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
-            </template>
-          </a-table>
+							<template slot="informant" slot-scope="text, record, index">
+								<a-select
+									placeholder="请选择填报人"
+									:open="false"
+									:style="{width: '100%'}"
+									:options="record.informantOpt"
+									@dropdownVisibleChange="tabSelectPerson(record, index, 'informant')"
+									v-model="record.informant"
+								>
+									<div slot="dropdownRender" slot-scope="menu"></div>
+									<a-icon slot="suffixIcon" type="plus-circle" />
+								</a-select>
+							</template>
+							<template slot="operation" slot-scope="text, record">
+								<span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
+							</template>
+						</a-table>
+					</div>
         </div>
       </div>
     </div>
+		</a-form>
 		<div>
       <!-- 选人 -->
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
@@ -467,8 +469,6 @@ export default {
 			console.log(checkedNames)
 			console.log(rowsData)
 			rowsData.forEach((item, index) => {
-				item.informant = undefined,
-				item.informantOpt = []
 				item.informantOptArr = []
 				item.auditor = ''
 				item.indexs = index + 1
@@ -492,6 +492,7 @@ export default {
 		},
 		// 表格选人
     tabSelectPerson (record, index, type) {
+			console.log(record, index, type)
 			this.$refs.selectStaffOrPost.visible = true
 			this.tabType = type
 			this.table.activeRowIndex = index
