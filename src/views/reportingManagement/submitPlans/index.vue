@@ -11,7 +11,7 @@
     <Cephalosome :rightCol="18" :leftCol="6">
 			<div slot="col-l">
 				<div class="nav">
-					<SG-Button icon="plus" type="primary" style="margin-right: 10px;" @click="newChangeSheetFn">新建呈报计划</SG-Button>			  
+					<SG-Button icon="plus" type="primary" style="margin-right: 10px;" @click="goPage('new')">新建呈报计划</SG-Button>			  
 					<SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
 				</div>
 			</div>
@@ -69,7 +69,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 // 页面跳转
 const operationTypes = {
   detail: '/reportingManagement/submitPlans/details',
-  set: '/inventoryManagement/countingTask/newEditor',
+  new: '/reportingManagement/submitPlans/newPlan',
   edit: '/inventoryManagement/countingTask/newEditor'
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
@@ -294,12 +294,21 @@ export default {
     },
     // 页面跳转
     goPage(type, record) {
-      let querys = JSON.stringify([{
-        type,
-        reportPlanId: record.reportPlanId,
-        detail: true
-      }])
-      this.$router.push({ path: operationTypes[type], query: {quersData: querys}})
+      let querys = []
+      if (type === 'new') {
+        querys = [{
+          type,
+          organId: this.queryCondition.organId,
+          organName: this.organName
+        }]
+      } else {
+        querys = [{
+          type,
+          reportPlanId: record.reportPlanId,
+          detail: true
+        }]
+      }
+      this.$router.push({ path: operationTypes[type], query: {quersData: JSON.stringify(querys)}})
     }
   }
 };
