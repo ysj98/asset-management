@@ -321,6 +321,14 @@ export function queryAssetViewBillDetail (data) {
 export function queryAssetViewChangeDetail (data) {
   return axiosGet(assets.assetView.queryChangeDetail, data)
 }
+// 资产视图-其他信息Tab-查询资产处置信息
+export function queryAssetViewDisposeDetail (data) {
+  return axiosPost(assets.assetView.queryDisposeDetail, data)
+}
+// 资产视图-其他信息Tab-查询附属&配套信息
+export function queryAssetViewAccessoryDetail (data) {
+  return axiosPost(assets.assetView.queryAccessoryDetail, data)
+}
 // 查询组织机构下的员工
 export function queryUserListByOrganId (data) {
   return axiosGet(assets.assetView.userList, data)
