@@ -145,10 +145,10 @@
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="任务执行期限">
               <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
-                v-decorator="[ 'deadline',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: '3'}]"
+                v-decorator="[ 'deadline',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: deadline}]"
               />
               <a-select showSearch placeholder="单位"
-                v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入任务执行期限'}],initialValue: '1'}]"
+                v-decorator="[ 'dayData',{ rules: [{required: true, message: '请输入任务执行期限'}], initialValue: dayData}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
                 :options="dayOpt"
@@ -159,10 +159,10 @@
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="提前生成任务时间">
               <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
-                v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: '1'}]"
+                v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: preNum}]"
               />
               <a-select showSearch placeholder="单位"
-                v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入提前生成任务时间'}],initialValue: '1'}]"
+                v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入提前生成任务时间'}],initialValue: preUnit}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
                 :options="preUnitOpt"
@@ -239,6 +239,7 @@ import noDataTips from "@/components/noDataTips"
 import associateAssetModal from '../../financialManagement/assetEntry/associateAssetModal'
 import FormFooter from '@/components/FormFooter'
 import {utils} from '@/utils/utils.js'
+import moment from 'moment'
 const colu = [
   {
     title: "编号",
@@ -369,9 +370,13 @@ export default {
   props: {},
   data () {
     return {
-      reportPlanId: '',       // 计划id
+      deadline: '3',           // 任务执行期限
+      dayData: '1',            // 任务执行期限单位
+      preNum: '1',             // 提前生成任务时间
+      preUnit: '1',            // 提前生成任务时间单位
+      reportPlanId: '',        // 计划id
 			tabType: '',
-			selectType: 'staff', // staff选人 post选岗位
+			selectType: 'staff',     // staff选人 post选岗位
 			selectOptList: [],
 			checkedData: [],         // 资产id
 			showBeginMonth: true,
@@ -423,7 +428,6 @@ export default {
 			exePreData: exePreData,    // 实施频次
       changeType: '',
       registerId: '',
-      newPlanData: {},
 			columns: colu,
 			loading: false,
 			table: {
@@ -444,6 +448,7 @@ export default {
   computed: {
   },
   methods: {
+    moment,
 		// 频次变化
     exePreSelectChange (e) {
 			if (e === '1' || e === '2') {
@@ -566,7 +571,19 @@ export default {
         if (Number(res.data.code) === 0) {
           console.log(res)
           let data = res.data.data
-          this.newPlanData = data
+          // 插入编辑数据
+          this.form.setFieldsValue({
+            remark: data.remark,                                   // 备注
+            planName: data.planName,                               // 计划名称
+            // organId: this.newCardData.organId,                  // 组织机构
+            exePre: data.exePre,                                   // 实施频次
+            beginDay: data.beginDay,                               // 任务开始天数
+            beginMonth: data.beginMonth,                           // 任务开始月份
+            preUnit: data.preUnit,                                 // 提前生成单位1-天 2-时
+            preNum: data.preNum,                                   // 提前生成单位数量
+            deadline: data.deadline,                               // 任务执行期限
+            defaultValue: [moment(data.effDate), moment(data.expDate)]
+          })
           data.amsOwnershipRegisterDetailList.forEach((item, index) => {
             item.key = index
             item.address = item.location
@@ -583,7 +600,7 @@ export default {
       this.$router.push({path: '/reportingManagement/submitPlans'})
     },
     // 提交详情
-    save (str) {
+    save () {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log(values, 'tijiao')
@@ -608,20 +625,20 @@ export default {
             }
           }
           let taskTempList = []
-          let data = utils.deepClone(this.table.dataSource)
+          let data = utils.deepClone(this.table.tableData)
           data.forEach(item => {
             let userList = []
             item.informantOptArr.forEach(v => {
               userList.push({
                 userId: v.userId,
-                userName: v.userName,
+                userName: v.name,
                 type: '1'
               })
             })
             item.auditorOptArr.forEach(t => {
               userList.push({
                 userId: t.userId,
-                userName: t.userName,
+                userName: t.name,
                 type: '2'
               })
             })
@@ -630,7 +647,6 @@ export default {
               userList: userList
             })
           })
-          console.log(this.table.tableData, '-=-=-=-=-=-=')
           let obj = {
             remark: values.remark,                                   // 备注
             reportPlanId: this.reportPlanId,                         // 无是新增 有是更新
@@ -646,7 +662,7 @@ export default {
             approvalStatus: '',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
             deadline: values.deadline,                               // 任务执行期限
             taskTempList: taskTempList,    // 计划明细
-          attachmentList: files             // 附件
+            attachmentList: files             // 附件
         }
         console.log(obj, '0-0-0-')
       }

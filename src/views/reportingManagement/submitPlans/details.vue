@@ -8,7 +8,7 @@
       <div class="particulars-obj">
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">计划名称：{{particularsData.planName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">计划编码：{{particularsData.registerTypeName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划编码：{{particularsData.planCode || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.effDate ? `${particularsData.effDate} - ${particularsData.expDate}` : '--'}}</a-col>
           <a-col class="playground-col" :span="8">状态：{{particularsData.approvalStatusName || '--'}}</a-col>
