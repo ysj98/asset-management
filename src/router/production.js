@@ -506,5 +506,10 @@ let proRouter = [
     name: '详情',
     component: () => import('@/views/reportingManagement/reportingRecord/details.vue')
   },
+  {
+    path: '/taskQuery',
+    name: '任务查询',
+    component: () => import('@/views/reportingManagement/taskQuery/index.vue')
+  },
 ]
 export default proRouter

@@ -134,6 +134,10 @@ export default [
       {
         title: '资产呈报记录',
         path: '/reportingRecord'
+      },
+      {
+        title: '任务查询',
+        path: '/taskQuery'
       }
     ]
   },
