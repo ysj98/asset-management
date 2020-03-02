@@ -117,11 +117,11 @@ const columns = [
   },
   {
     title: '填报人',
-    dataIndex: 'changeDate'
+    dataIndex: 'reportByName'
   },
   {
     title: '审核人',
-    dataIndex: 'approvalStatusName'
+    dataIndex: 'auditByName'
   },
   {
     title: '实际填报日期',
@@ -129,7 +129,7 @@ const columns = [
   },
     {
     title: '数据量',
-    dataIndex: 'approvalStatusName2'
+    dataIndex: 'reportNum'
   },
     {
     title: '任务状态',
@@ -163,7 +163,8 @@ export default {
         organId:1,                 // 组织机构id
         reportBillId: '',            // 备注：变动类型id(多个用，分割)
         startCreateDate: getThreeMonthsAgoDate(),       // 备注：开始创建日期
-        endCreateDate: getCurrentDate()         // 备注：结束创建日期
+        endCreateDate: getCurrentDate(),         // 备注：结束创建日期
+        taskType: ''
       },
       // defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
