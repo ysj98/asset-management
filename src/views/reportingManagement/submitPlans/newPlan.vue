@@ -106,7 +106,7 @@
         </div>
       </div>
     </div>
-		<div class="newPlan-nav">
+		<div class="newPlan-nav tab-mar">
       <span class="section-title blue">任务执行设置</span>
       <div class="newPlan-obj">
 				<a-row class="playground-row">
@@ -145,13 +145,13 @@
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="任务执行期限">
               <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
-                v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: '3'}]"
+                v-decorator="[ 'deadline',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: '3'}]"
               />
               <a-select showSearch placeholder="单位"
                 v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入任务执行期限'}],initialValue: '1'}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
-                :options="preUnitOpt"
+                :options="dayOpt"
                 notFoundContent="没有查询到数据"
               />
 						</a-form-item>
@@ -194,15 +194,36 @@
 									<a-icon slot="suffixIcon" type="plus-circle" />
 								</a-select>
 							</template>
+							<template slot="auditor" slot-scope="text, record, index">
+								<a-select
+									placeholder="请选择审核人"
+									:open="false"
+									:style="{width: '100%'}"
+									:options="record.auditorOpt"
+									@dropdownVisibleChange="tabSelectPerson(record, index, 'auditor')"
+									v-model="record.auditor"
+								>
+									<div slot="dropdownRender" slot-scope="menu"></div>
+									<a-icon slot="suffixIcon" type="plus-circle" />
+								</a-select>
+							</template>
 							<template slot="operation" slot-scope="text, record">
 								<span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
 							</template>
 						</a-table>
+            <no-data-tips v-show="table.tableData.length === 0"></no-data-tips>
 					</div>
         </div>
       </div>
     </div>
 		</a-form>
+    <FormFooter style="border:none;" location="fixed">
+      <div>
+        <SG-Button type="primary" @click="save('save')">提交</SG-Button>
+        <!-- <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button> -->
+        <SG-Button @click="cancel">取消</SG-Button>
+      </div>
+    </FormFooter>
 		<div>
       <!-- 选人 -->
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
@@ -214,7 +235,10 @@
 
 <script>
 import selectStaffOrPost from '@/views/common/selectStaffOrPost'
+import noDataTips from "@/components/noDataTips"
 import associateAssetModal from '../../financialManagement/assetEntry/associateAssetModal'
+import FormFooter from '@/components/FormFooter'
+import {utils} from '@/utils/utils.js'
 const colu = [
   {
     title: "编号",
@@ -268,7 +292,8 @@ const previewColumns = [
   },
   {
     title: "审核人",
-		dataIndex: "auditor",
+    dataIndex: "auditor",
+    scopedSlots: { customRender: "auditor" },
 		width: '30%'
   },
   {
@@ -281,6 +306,9 @@ const previewColumns = [
 let preUnitOpt = [
   {label: '天', key: '1'},
   {label: '时', key: '2'}
+]
+let dayOpt = [
+  {label: '天', key: '1'}
 ]
 let exePreData = [
   {label: '单次', key: '1'},
@@ -337,10 +365,11 @@ let oneHasYear = [
   {label: '每年第12个月', key: '12'},
 ]
 export default {
-  components: {associateAssetModal, selectStaffOrPost},
+  components: {associateAssetModal, selectStaffOrPost, FormFooter, noDataTips},
   props: {},
   data () {
     return {
+      reportPlanId: '',       // 计划id
 			tabType: '',
 			selectType: 'staff', // staff选人 post选岗位
 			selectOptList: [],
@@ -352,7 +381,8 @@ export default {
 			oneQuarter,
 			halfYear,
 			oneHasYear,
-			preUnitOpt,
+      preUnitOpt,
+      dayOpt,
 			organIdData: [],    // 所属机构
 			form: this.$form.createForm(this),
 			allWidth: 'width: 214px',
@@ -394,7 +424,6 @@ export default {
       changeType: '',
       registerId: '',
       newPlanData: {},
-      files: [],
 			columns: colu,
 			loading: false,
 			table: {
@@ -469,8 +498,6 @@ export default {
 			console.log(checkedNames)
 			console.log(rowsData)
 			rowsData.forEach((item, index) => {
-				item.informantOptArr = []
-				item.auditor = ''
 				item.indexs = index + 1
 			})
 			this.table.tableData = rowsData
@@ -498,8 +525,9 @@ export default {
 			this.table.activeRowIndex = index
 			if (this.tabType === 'informant') {
 				this.selectOptList = this.table.tableData[index]['informantOptArr']
-				
-			}
+			} else if (this.tabType === 'auditor') {
+        this.selectOptList = this.table.tableData[index]['auditorOptArr']
+      }
 		},
 		// 监听选人弹窗改变事件
     changeSelectStaffOrPost (selectOptList = []) {
@@ -517,15 +545,12 @@ export default {
 				this.$set(row, 'informant', obj.key)
 				this.$set(row, 'informantOpt', [obj])
 				this.$set(row, 'informantOptArr', opt)
-				// this.table.tableData[this.table.activeRowIndex].informant = obj.key  // 选择的id
-        // this.table.tableData[this.table.activeRowIndex].informantOpt = [obj]  // 选的总的
-				console.log(this.table.tableData)
       }
       // 审核人的
       if (this.tabType === 'auditor') {
-        this.$set(row, 'chargePerson', obj.key)
-        this.$set(row, 'chargePersonArr', opt)
-        this.$set(row, 'chargePersonOpt', [obj])
+        this.$set(row, 'auditor', obj.key)
+        this.$set(row, 'auditorOpt', [obj])
+        this.$set(row, 'auditorOptArr', opt)
 			}
 			this.$refs.selectStaffOrPost.visible = false
     },
@@ -552,8 +577,82 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    }
-  },
+    },
+    // 取消
+    cancel () {
+      this.$router.push({path: '/reportingManagement/submitPlans'})
+    },
+    // 提交详情
+    save (str) {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log(values, 'tijiao')
+          let files = []
+          if (this.newCardData.files.length > 0) {
+            this.newCardData.files.forEach(list => {
+              files.push({
+                attachmentPath: list.url,
+                oldAttachmentName: list.name
+              })
+            })
+          }
+          if (this.table.tableData.length === 0) {
+            this.$message.info('请填写任务执行设置')
+          } else {
+            for (let i = 0; i < this.table.tableData.length; i++) {
+              if (!this.table.tableData[i].informant) {
+                this.$message.info('请选择填报人')
+              } else if (!this.table.tableData[i].auditor) {
+                this.$message.info('请选择审核人')
+              }
+            }
+          }
+          let taskTempList = []
+          let data = utils.deepClone(this.table.dataSource)
+          data.forEach(item => {
+            let userList = []
+            item.informantOptArr.forEach(v => {
+              userList.push({
+                userId: v.userId,
+                userName: v.userName,
+                type: '1'
+              })
+            })
+            item.auditorOptArr.forEach(t => {
+              userList.push({
+                userId: t.userId,
+                userName: t.userName,
+                type: '2'
+              })
+            })
+            taskTempList.push({
+              projectId: item.projectId,     // 项目id
+              userList: userList
+            })
+          })
+          console.log(this.table.tableData, '-=-=-=-=-=-=')
+          let obj = {
+            remark: values.remark,                                   // 备注
+            reportPlanId: this.reportPlanId,                         // 无是新增 有是更新
+            planName: values.planName,                               // 计划名称
+            organId: this.newCardData.organId,                       // 组织机构
+            exePre: values.exePre,                                   // 实施频次
+            effDate: values.defaultValue[0].format('YYYY-MM-DD'),    // 计划生效时间
+            expDate: values.defaultValue[1].format('YYYY-MM-DD'),    // 计划失效时间
+            beginDay: values.beginDay,                               // 任务开始天数
+            beginMonth: values.beginMonth,                           // 任务开始月份
+            preUnit: values.preUnit,                                 // 提前生成单位1-天 2-时
+            preNum: values.preNum,                                   // 提前生成单位数量
+            approvalStatus: '',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+            deadline: values.deadline,                               // 任务执行期限
+            taskTempList: taskTempList,    // 计划明细
+          attachmentList: files             // 附件
+        }
+        console.log(obj, '0-0-0-')
+      }
+    })
+  }
+},
   created () {
   },
   mounted () {
@@ -613,6 +712,9 @@ export default {
   }
   .postAssignment-icon:hover {
     color: red;
+  }
+  .tab-mar {
+    padding-bottom: 90px
   }
 }
 </style>
