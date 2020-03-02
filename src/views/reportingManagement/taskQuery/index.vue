@@ -31,6 +31,9 @@
         </div>
       </div>
     </SG-SearchContainer>
+    <a-spin :spinning="loading">
+      <overview-number :numList="numList"/>
+    </a-spin>
     <div class="table-layout-fixed">
      <a-table
       :loading="loading"
@@ -60,6 +63,7 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
 import noDataTips from '@/components/noDataTips'
+import OverviewNumber from 'src/views/common/OverviewNumber'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -137,10 +141,15 @@ const columns = [
   }
 ]
 export default {
-  components: {TreeSelect, SegiRangePicker, noDataTips},
+  components: {TreeSelect, SegiRangePicker, noDataTips, OverviewNumber},
   props: {},
   data () {
     return {
+      numList: [
+				{title: '全部', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '草稿', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
+				{title: '待审批', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '已驳回', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+				{title: '已审批', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}, {title: '已取消', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+			], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       toggle: false,
       // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,

@@ -8,8 +8,8 @@
       <div class="particulars-obj">
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">任务名称：{{particularsData.planName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">所属机构：{{particularsData.planCode || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产项目：{{particularsData.organName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产项目：{{particularsData.projectName || '--'}}</a-col>
 					<a-col class="playground-col" :span="8">
 						表单名称：
 						<a-select
@@ -24,12 +24,12 @@
 					</a-col>
           <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.effDate ? `${particularsData.effDate} - ${particularsData.expDate}` : '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属计划：{{particularsData.approvalStatusName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">填报人：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">审核人：{{particularsData.createTime || '--'}}</a-col>
-					<a-col class="playground-col" :span="8">任务状态：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">发布人：{{particularsData.createTime || '--'}}</a-col>
-					<a-col class="playground-col" :span="8">发布时间：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">任务类型：{{particularsData.createTime || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">填报人：{{particularsData.reportByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">审核人：{{particularsData.auditByName || '--'}}</a-col>
+					<a-col class="playground-col" :span="8">任务状态：{{particularsData.taskStatus || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">发布人：{{particularsData.createBy || '--'}}</a-col>
+					<a-col class="playground-col" :span="8">发布时间：{{particularsData.realBeginDate ? `${particularsData.realBeginDate} - ${particularsData.realEndDate}` : '--'}}</a-col>
+          <a-col class="playground-col" :span="8">任务类型：{{particularsData.taskType || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
