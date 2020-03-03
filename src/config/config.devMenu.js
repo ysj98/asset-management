@@ -138,6 +138,10 @@ export default [
       {
         title: '呈报任务',
         path: '/reportTask'
+      },
+      {
+        title: '任务查询',
+        path: '/taskQuery'
       }
     ]
   },
