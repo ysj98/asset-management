@@ -87,8 +87,8 @@
 										showSearch
 										placeholder="请选择呈报表单"
 										style="width: 200px"
-										:defaultValue="undefined"
-										:options="chargePersonOpt"
+										:defaultValue="reportBillId"
+										:options="reportBillData"
 										:filterOption="filterOption"
 									>
 									</a-select>
@@ -370,6 +370,7 @@ export default {
   props: {},
   data () {
     return {
+      reportBillId: '',        // 呈报表单id
       deadline: '3',           // 任务执行期限
       dayData: '1',            // 任务执行期限单位
       preNum: '1',             // 提前生成任务时间
@@ -390,13 +391,8 @@ export default {
       dayOpt,
 			organIdData: [],    // 所属机构
 			form: this.$form.createForm(this),
-			allWidth: 'width: 214px',
-			chargePersonOpt: [
-				{
-					value: '',
-					label: '测试'
-				}
-			],
+      allWidth: 'width: 214px',
+      reportBillData: [],
 			widthBox: 'width: 85%',
       formItemTextarea: {
         labelCol: {
@@ -449,6 +445,24 @@ export default {
   },
   methods: {
     moment,
+    // 查询全部呈报表单列表
+    queryAllReportBill () {
+      this.$api.reportManage.queryAllReportBill({}).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || []
+            let arr = []
+            result.forEach(item => {
+              arr.push({
+                value: item.reportBillId,
+                name: item.billName
+              })
+            })
+            this.reportBillData = [...arr]
+          } else {
+            this.$message.error(res.data.message);
+          }
+      })
+    },
 		// 频次变化
     exePreSelectChange (e) {
 			if (e === '1' || e === '2') {
@@ -569,7 +583,7 @@ export default {
       }
       this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          console.log(res)
+          console.log(res, '-=-=-')
           let data = res.data.data
           // 插入编辑数据
           this.form.setFieldsValue({
@@ -584,12 +598,56 @@ export default {
             deadline: data.deadline,                               // 任务执行期限
             defaultValue: [moment(data.effDate), moment(data.expDate)]
           })
-          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 查询任务列表
+    queryReportTaskTempPageListFn () {
+      let obj = {
+        reportPlanId: this.reportPlanId,
+        pageNum: '',
+        pageSize: ''
+      }
+      this.$api.reportManage.queryReportTaskTempPageList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          data.forEach((item, index) => {
             item.key = index
-            item.address = item.location
-            item.assetArea = item.area
+            item.indexs = index
+            item.informant = []          // 提交人
+            item.informantOpt = []
+            item.informantOptArr = []
+            item.auditor = []             // 审核人
+            item.auditorOpt = []
+            item.auditorOptArr = []
+            item.userList.forEach(v => {
+              // 1 填报人  2 审核人
+              if (+v.type === 1) {
+                item.informantOptArr.push({
+                  userId: v.userId,
+                  name: v.userName,
+                  id: v.userId
+                })
+                item.informantSet.push(v.userId)
+                item.informantName.push(v.userName)
+              } else if (+v.type === 2) {
+                item.auditorOptArr.push({
+                  userId: v.userId,
+                  name: v.userName,
+                  id: v.userId
+                })
+                item.auditorSet.push(v.userId)
+                item.auditorName.push(v.userName)
+              }
+            })
+            item.informant = item.informantSet.join(',')
+            item.auditor = item.auditorSet.join(',')
+            item.informantOpt = [{label: item.informantName.join(','), key: item.informant}]
+            item.auditorOpt = [{label: item.auditorName.join(','), key: item.auditor}]
           })
-          this.tableData = data.amsOwnershipRegisterDetailList
+          this.table.tableData = data
         } else {
           this.$message.error(res.data.message)
         }
@@ -677,9 +735,18 @@ export default {
 		this.organIdData = [{
 			name: arr[0].organName,
 			value: arr[0].organId
-		}]
-		this.newCardData.organId = arr[0].organId
-    // this.query()
+    }]
+    this.reportPlanId = arr[0].reportPlanId
+    // this.newCardData.organId = arr[0].organId
+    this.form.setFieldsValue({
+      organId: this.newCardData.organId,                  // 组织机构
+    })
+    // 编辑
+    if (this.type === 'edit') {
+      this.query()
+      this.queryReportTaskTempPageListFn()
+    }
+    this.queryAllReportBill()
   }
 }
 </script>

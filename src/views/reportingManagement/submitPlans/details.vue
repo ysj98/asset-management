@@ -68,11 +68,18 @@
           <a-table
             :loading="loading"
             :columns="previewColumns"
-            :dataSource="tableData"
+            :dataSource="taskExecution"
             class="custom-table td-pd10"
             :pagination="false"
             >
           </a-table>
+          <no-data-tips v-show="taskExecution.length === 0"></no-data-tips>
+          <SG-FooterPagination
+            :pageLength="task.pageSize"
+            :totalCount="task.totalCount"
+            v-model="task.pageNum"
+            @change="taskChange"
+          />
         </div>
       </div>
     </div>
@@ -82,12 +89,19 @@
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"
-            :columns="previewColumns"
-            :dataSource="tableData"
+            :columns="executiveColumns"
+            :dataSource="executiveLogging "
             class="custom-table td-pd10"
             :pagination="false"
             >
           </a-table>
+          <no-data-tips v-show="executiveLogging.length === 0"></no-data-tips>
+          <SG-FooterPagination
+            :pageLength="queryCondition.pageSize"
+            :totalCount="queryCondition.totalCount"
+            v-model="queryCondition.pageNum"
+            @change="handleChange"
+          />
         </div>
       </div>
     </div>
@@ -131,36 +145,64 @@ const colu = [
 ]
 const previewColumns = [
   {
-    title: "所属机构",
-    dataIndex: "index"
+    title: "编号",
+    dataIndex: "projectId"
   },
   {
-    title: "资产项目名称",
-    dataIndex: "index1"
+    title: "资产项目",
+    dataIndex: "projectName"
   },
   {
-    title: "资产卡片名称",
-    dataIndex: "index2"
+    title: "填报人",
+    dataIndex: "informant"
   },
   {
-    title: "资产卡片编码",
-    dataIndex: "index3"
-  },
-  {
-    title: "折旧月份",
-    dataIndex: "index4"
-  },
-  {
-    title: "本次折旧金额(月份)",
-    dataIndex: "index5"
-  },
-  {
-    title: "外部ID",
-    dataIndex: "index6"
+    title: "审核人",
+    dataIndex: "auditor"
   }
 ]
+const executiveColumns = [
+  {
+    title: "任务编号",
+    dataIndex: "planCode"
+  },
+  {
+    title: "任务名称",
+    dataIndex: "taskName"
+  },
+  {
+    title: "资产项目",
+    dataIndex: "projectName"
+  },
+  {
+    title: "填报人",
+    dataIndex: "reportByName"
+  },
+  {
+    title: "审核人",
+    dataIndex: "auditByName"
+  },
+  {
+    title: "任务生成时间",
+    dataIndex: "updateTime"
+  },
+   {
+    title: "任务执行期限",
+    dataIndex: "beginDateCompleteDate"
+  },
+  {
+    title: "实际执行时间",
+    dataIndex: "realBeginDateRealEndDate"
+  },
+  {
+    title: "任务状态",
+    dataIndex: "taskStatusName"
+  },
+
+]
+import noDataTips from "@/components/noDataTips"
 export default {
-  components: {},
+  components: {noDataTips},
   props: {},
   data () {
     return {
@@ -175,11 +217,19 @@ export default {
       particularsData: {},
       files: [],
 			columns: colu,
-			previewColumns: previewColumns,
+      previewColumns: previewColumns,
+      executiveColumns: executiveColumns,
       loading: false,
       tableData: [],
+      taskExecution: [],
+      executiveLogging: [],
       location: '',
       noPageTools: false,
+      task: {
+        pageSize: 10,
+        pageNum: 1,
+        count: ''
+      },
       queryCondition: {
         pageSize: 10,
         pageNum: 1,
@@ -193,6 +243,80 @@ export default {
 		filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
+    taskChange (data) {
+      this.task.pageNum = data.pageNo
+      this.task.pageSize = data.pageLength
+      this.queryReportTaskTempPageListFn()
+    },
+    handleChange(data) {
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.taskList()
+    },
+    // 执行纪录页表
+    taskList () {
+      let obj = {
+        action: 'jg',
+        beginDate: '',                                      // 开始时间
+        endDate: '',                                        // 结束时间
+        organId: this.queryCondition.organId,
+        pageNum: this.queryCondition.pageNum,                // 当前页
+        pageSize: this.queryCondition.pageSize,              // 每页显示记录数
+        projectId: '',                                       // 资产项目Id
+        reportBillId: '',                                    // 表单id
+        reportPlanId: this.reportPlanId,                                    // 计划id
+        reportTaskId: '',                                    // 任务id
+        searchText: '',                                      // 编码
+        taskStatus: '',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        taskType: ''
+      }
+      this.$api.reportManage.taskPage(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          data.forEach((item, index) => {
+            item.key = index
+            item.beginDateCompleteDate = `${item.beginDate} - ${item.completeDate}`
+            item.realBeginDateRealEndDate = `${item.realBeginDate} - ${item.realEndDate}`
+          })
+          this.executiveLogging = data
+          this.queryCondition.totalCount = res.data.data.count || ''
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 查询任务列表
+    queryReportTaskTempPageListFn () {
+      let obj = {
+        reportPlanId: this.reportPlanId,
+        pageNum: this.task.pageNum,
+        pageSize: this.task.pageSize
+      }
+      this.$api.reportManage.queryReportTaskTempPageList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          data.forEach((item, index) => {
+            item.key = index
+            item.indexs = index
+            item.informant = ''          // 填报人
+            item.auditor = ''             // 审核人
+            item.userList.forEach(v => {
+              // 1 填报人  2 审核人
+              if (+v.type === 1) {
+                item.informantName.push(v.userName)
+              } else if (+v.type === 2) {
+                item.auditorName.push(v.userName)
+              }
+            })
+            item.informant = item.informantName.join(',')
+            item.auditor = item.auditorName.join(',')
+          })
+          this.taskExecution = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 查询详情
     query () {
       let obj = {
@@ -203,12 +327,12 @@ export default {
           console.log(res)
           let data = res.data.data
           this.particularsData = data
-          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            item.key = index
-            item.address = item.location
-            item.assetArea = item.area
-          })
-          this.tableData = data.amsOwnershipRegisterDetailList
+          // data.amsOwnershipRegisterDetailList.forEach((item, index) => {
+          //   item.key = index
+          //   item.address = item.location
+          //   item.assetArea = item.area
+          // })
+          // this.tableData = data.amsOwnershipRegisterDetailList
         } else {
           this.$message.error(res.data.message)
         }
@@ -221,6 +345,8 @@ export default {
     let arr = JSON.parse(this.$route.query.quersData)
     this.reportPlanId = arr[0].reportPlanId
     this.query()
+    this.queryReportTaskTempPageListFn()
+    this.taskList()
   }
 }
 </script>
