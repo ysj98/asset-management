@@ -613,4 +613,8 @@ export const reportManage = {
   taskList: '/ams/reportTask/taskList',
   // [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
   taskPage: '/ams/reportTask/taskPage',
+  // [呈报任务]任务信息
+  getTask: '/ams/reportTask/getTask',
+  // [呈报任务]任务统计
+  getTaskStat: '/ams/reportTask/getTaskStat'
 }
