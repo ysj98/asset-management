@@ -115,7 +115,7 @@ export default [
       {
         title: '处置登记',
         path: '/disposalRegister',
-        
+
       },
     ]
   },
@@ -129,11 +129,15 @@ export default [
       {
         title: '呈报计划',
         path: '/reportingManagement/submitPlans',
-        
+
       },
       {
         title: '资产呈报记录',
         path: '/reportingRecord'
+      },
+      {
+        title: '呈报任务',
+        path: '/reportTask'
       },
       {
         title: '任务查询',
