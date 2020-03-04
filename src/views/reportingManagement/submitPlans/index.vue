@@ -42,8 +42,16 @@
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
         >
-          <template slot="operation" slot-scope="text, record">
+          <!-- <template slot="operation" slot-scope="text, record">
             <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+          </template> -->
+          <template slot="operation" slot-scope="text, record">
+            <div class="tab-opt">
+              <span @click="goPage('detail', record)">详情</span>
+              <span @click="goPage('edit', record)" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
+              <span @click="goPage('delete', record)" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
+              <!-- <span v-if="+record.approvalStatus === 2">审核</span> -->
+            </div>
           </template>
         </a-table>
       </div>
@@ -70,7 +78,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 const operationTypes = {
   detail: '/reportingManagement/submitPlans/details',
   new: '/reportingManagement/submitPlans/newPlan',
-  edit: '/inventoryManagement/countingTask/newEditor'
+  edit: '/reportingManagement/submitPlans/editPlan'
 }
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const queryCondition = {
@@ -162,9 +170,9 @@ export default {
   data() {
     return {
 			numList: [
-				{title: '全部', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '草稿', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-				{title: '待审批', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '已驳回', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-				{title: '已审批', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}, {title: '已取消', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+				{title: '全部', key: 'all', value: 0, fontColor: '#324057'}, {title: '草稿', key: 'draft', value: 0, bgColor: '#4BD288'},
+				{title: '待审批', key: 'await', value: 0, bgColor: '#1890FF'}, {title: '已驳回', key: 'reject', value: 0, bgColor: '#DD81E6'},
+				{title: '已审批', key: 'complete', value: 0, bgColor: '#FD7474'}, {title: '已取消', key: 'cancel', value: 0, bgColor: '#BBC8D6'}
 			], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       defaultChecked: false,
 			ASSET_MANAGEMENT,
@@ -239,6 +247,7 @@ export default {
       this.queryCondition.pageNum = 1
       this.query()
     },
+    // 查询全部呈报表单列表
     queryAllReportBill () {
       this.$api.reportManage.queryAllReportBill({}).then(res => {
           if (res.data.code === "0") {
@@ -277,23 +286,68 @@ export default {
                 ...item
               };
             });
-            this.table.totalCount = res.data.data.count || "";
+            this.table.totalCount = res.data.data.count || ""
           } else {
-            this.$message.error(res.data.message);
+            this.$message.error(res.data.message)
           }
         },
         () => {
-          this.table.loading = false;
+          this.table.loading = false
         }
-      );
+      )
+      this.queryReportPlanNum()
+    },
+    // 统计查询
+    queryReportPlanNum () {
+      let data = {
+        organId: this.queryCondition.organId,
+        approvalStatus: this.queryCondition.taskStatus,   // 状态
+        planName: this.queryCondition.planName,
+        reportBillId: this.queryCondition.reportBillId
+      }
+      this.$api.reportManage.queryReportPlanNum(data).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || []
+          this.numList = this.numList.map(m => {
+            return { ...m, value: result[m.key] }
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
       this.query()
     },
+    deleteFn (id) {
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要删除该呈报计划吗',
+        onOk() {
+          let obj = {
+            reportPlanId: id,
+            approvalStatus: '4'
+          }
+          _this.$api.reportManage.updateReportPlanStatus(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('删除成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+        }
+      })
+    },
     // 页面跳转
     goPage(type, record) {
+      if (type === 'delete') {
+        this.deleteFn(record.reportPlanId)
+        return
+      }
       let querys = []
       if (type === 'new') {
         querys = [{
@@ -323,6 +377,13 @@ export default {
     .nav {
       display: inline-block;
       vertical-align: middle;
+    }
+    .tab-opt {
+      span {
+        padding-right: 10px;
+        color: #0084FF;
+        cursor: pointer;
+      }
     }
   }
 </style>

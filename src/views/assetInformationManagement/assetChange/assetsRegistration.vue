@@ -351,7 +351,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'asset_change_type') {
-            this.changeTypeData = [{name: '全部资产项目', value: ''}, ...data]
+            this.changeTypeData = [{name: '全部变动类型', value: ''}, ...data]
           }
         } else {
           this.$message.error(res.data.message)

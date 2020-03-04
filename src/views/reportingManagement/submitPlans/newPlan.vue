@@ -87,8 +87,8 @@
 										showSearch
 										placeholder="请选择呈报表单"
 										style="width: 200px"
-										:defaultValue="undefined"
-										:options="chargePersonOpt"
+										:defaultValue="reportBillId"
+										:options="reportBillData"
 										:filterOption="filterOption"
 									>
 									</a-select>
@@ -106,7 +106,7 @@
         </div>
       </div>
     </div>
-		<div class="newPlan-nav">
+		<div class="newPlan-nav tab-mar">
       <span class="section-title blue">任务执行设置</span>
       <div class="newPlan-obj">
 				<a-row class="playground-row">
@@ -145,13 +145,13 @@
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="任务执行期限">
               <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
-                v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: '3'}]"
+                v-decorator="[ 'deadline',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: deadline}]"
               />
               <a-select showSearch placeholder="单位"
-                v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入任务执行期限'}],initialValue: '1'}]"
+                v-decorator="[ 'dayData',{ rules: [{required: true, message: '请输入任务执行期限'}], initialValue: dayData}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
-                :options="preUnitOpt"
+                :options="dayOpt"
                 notFoundContent="没有查询到数据"
               />
 						</a-form-item>
@@ -159,10 +159,10 @@
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="提前生成任务时间">
               <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
-                v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: '1'}]"
+                v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: preNum}]"
               />
               <a-select showSearch placeholder="单位"
-                v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入提前生成任务时间'}],initialValue: '1'}]"
+                v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入提前生成任务时间'}],initialValue: preUnit}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
                 :options="preUnitOpt"
@@ -194,15 +194,36 @@
 									<a-icon slot="suffixIcon" type="plus-circle" />
 								</a-select>
 							</template>
+							<template slot="auditor" slot-scope="text, record, index">
+								<a-select
+									placeholder="请选择审核人"
+									:open="false"
+									:style="{width: '100%'}"
+									:options="record.auditorOpt"
+									@dropdownVisibleChange="tabSelectPerson(record, index, 'auditor')"
+									v-model="record.auditor"
+								>
+									<div slot="dropdownRender" slot-scope="menu"></div>
+									<a-icon slot="suffixIcon" type="plus-circle" />
+								</a-select>
+							</template>
 							<template slot="operation" slot-scope="text, record">
 								<span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
 							</template>
 						</a-table>
+            <no-data-tips v-show="table.tableData.length === 0"></no-data-tips>
 					</div>
         </div>
       </div>
     </div>
 		</a-form>
+    <FormFooter style="border:none;" location="fixed">
+      <div>
+        <SG-Button type="primary" @click="save('save')">提交</SG-Button>
+        <!-- <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button> -->
+        <SG-Button @click="cancel">取消</SG-Button>
+      </div>
+    </FormFooter>
 		<div>
       <!-- 选人 -->
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
@@ -214,7 +235,11 @@
 
 <script>
 import selectStaffOrPost from '@/views/common/selectStaffOrPost'
+import noDataTips from "@/components/noDataTips"
 import associateAssetModal from '../../financialManagement/assetEntry/associateAssetModal'
+import FormFooter from '@/components/FormFooter'
+import {utils} from '@/utils/utils.js'
+import moment from 'moment'
 const colu = [
   {
     title: "编号",
@@ -268,7 +293,8 @@ const previewColumns = [
   },
   {
     title: "审核人",
-		dataIndex: "auditor",
+    dataIndex: "auditor",
+    scopedSlots: { customRender: "auditor" },
 		width: '30%'
   },
   {
@@ -281,6 +307,9 @@ const previewColumns = [
 let preUnitOpt = [
   {label: '天', key: '1'},
   {label: '时', key: '2'}
+]
+let dayOpt = [
+  {label: '天', key: '1'}
 ]
 let exePreData = [
   {label: '单次', key: '1'},
@@ -337,12 +366,18 @@ let oneHasYear = [
   {label: '每年第12个月', key: '12'},
 ]
 export default {
-  components: {associateAssetModal, selectStaffOrPost},
+  components: {associateAssetModal, selectStaffOrPost, FormFooter, noDataTips},
   props: {},
   data () {
     return {
+      reportBillId: '',        // 呈报表单id
+      deadline: '3',           // 任务执行期限
+      dayData: '1',            // 任务执行期限单位
+      preNum: '1',             // 提前生成任务时间
+      preUnit: '1',            // 提前生成任务时间单位
+      reportPlanId: '',        // 计划id
 			tabType: '',
-			selectType: 'staff', // staff选人 post选岗位
+			selectType: 'staff',     // staff选人 post选岗位
 			selectOptList: [],
 			checkedData: [],         // 资产id
 			showBeginMonth: true,
@@ -352,16 +387,12 @@ export default {
 			oneQuarter,
 			halfYear,
 			oneHasYear,
-			preUnitOpt,
+      preUnitOpt,
+      dayOpt,
 			organIdData: [],    // 所属机构
 			form: this.$form.createForm(this),
-			allWidth: 'width: 214px',
-			chargePersonOpt: [
-				{
-					value: '',
-					label: '测试'
-				}
-			],
+      allWidth: 'width: 214px',
+      reportBillData: [],
 			widthBox: 'width: 85%',
       formItemTextarea: {
         labelCol: {
@@ -393,8 +424,6 @@ export default {
 			exePreData: exePreData,    // 实施频次
       changeType: '',
       registerId: '',
-      newPlanData: {},
-      files: [],
 			columns: colu,
 			loading: false,
 			table: {
@@ -415,6 +444,25 @@ export default {
   computed: {
   },
   methods: {
+    moment,
+    // 查询全部呈报表单列表
+    queryAllReportBill () {
+      this.$api.reportManage.queryAllReportBill({}).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || []
+            let arr = []
+            result.forEach(item => {
+              arr.push({
+                value: item.reportBillId,
+                name: item.billName
+              })
+            })
+            this.reportBillData = [...arr]
+          } else {
+            this.$message.error(res.data.message);
+          }
+      })
+    },
 		// 频次变化
     exePreSelectChange (e) {
 			if (e === '1' || e === '2') {
@@ -469,8 +517,6 @@ export default {
 			console.log(checkedNames)
 			console.log(rowsData)
 			rowsData.forEach((item, index) => {
-				item.informantOptArr = []
-				item.auditor = ''
 				item.indexs = index + 1
 			})
 			this.table.tableData = rowsData
@@ -498,8 +544,9 @@ export default {
 			this.table.activeRowIndex = index
 			if (this.tabType === 'informant') {
 				this.selectOptList = this.table.tableData[index]['informantOptArr']
-				
-			}
+			} else if (this.tabType === 'auditor') {
+        this.selectOptList = this.table.tableData[index]['auditorOptArr']
+      }
 		},
 		// 监听选人弹窗改变事件
     changeSelectStaffOrPost (selectOptList = []) {
@@ -517,15 +564,12 @@ export default {
 				this.$set(row, 'informant', obj.key)
 				this.$set(row, 'informantOpt', [obj])
 				this.$set(row, 'informantOptArr', opt)
-				// this.table.tableData[this.table.activeRowIndex].informant = obj.key  // 选择的id
-        // this.table.tableData[this.table.activeRowIndex].informantOpt = [obj]  // 选的总的
-				console.log(this.table.tableData)
       }
       // 审核人的
       if (this.tabType === 'auditor') {
-        this.$set(row, 'chargePerson', obj.key)
-        this.$set(row, 'chargePersonArr', opt)
-        this.$set(row, 'chargePersonOpt', [obj])
+        this.$set(row, 'auditor', obj.key)
+        this.$set(row, 'auditorOpt', [obj])
+        this.$set(row, 'auditorOptArr', opt)
 			}
 			this.$refs.selectStaffOrPost.visible = false
     },
@@ -539,21 +583,150 @@ export default {
       }
       this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          console.log(res)
+          console.log(res, '-=-=-')
           let data = res.data.data
-          this.newPlanData = data
-          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            item.key = index
-            item.address = item.location
-            item.assetArea = item.area
+          // 插入编辑数据
+          this.form.setFieldsValue({
+            remark: data.remark,                                   // 备注
+            planName: data.planName,                               // 计划名称
+            // organId: this.newCardData.organId,                  // 组织机构
+            exePre: data.exePre,                                   // 实施频次
+            beginDay: data.beginDay,                               // 任务开始天数
+            beginMonth: data.beginMonth,                           // 任务开始月份
+            preUnit: data.preUnit,                                 // 提前生成单位1-天 2-时
+            preNum: data.preNum,                                   // 提前生成单位数量
+            deadline: data.deadline,                               // 任务执行期限
+            defaultValue: [moment(data.effDate), moment(data.expDate)]
           })
-          this.tableData = data.amsOwnershipRegisterDetailList
         } else {
           this.$message.error(res.data.message)
         }
       })
-    }
-  },
+    },
+    // 查询任务列表
+    queryReportTaskTempPageListFn () {
+      let obj = {
+        reportPlanId: this.reportPlanId,
+        pageNum: '',
+        pageSize: ''
+      }
+      this.$api.reportManage.queryReportTaskTempPageList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          data.forEach((item, index) => {
+            item.key = index
+            item.indexs = index
+            item.informant = []          // 提交人
+            item.informantOpt = []
+            item.informantOptArr = []
+            item.auditor = []             // 审核人
+            item.auditorOpt = []
+            item.auditorOptArr = []
+            item.userList.forEach(v => {
+              // 1 填报人  2 审核人
+              if (+v.type === 1) {
+                item.informantOptArr.push({
+                  userId: v.userId,
+                  name: v.userName,
+                  id: v.userId
+                })
+                item.informantSet.push(v.userId)
+                item.informantName.push(v.userName)
+              } else if (+v.type === 2) {
+                item.auditorOptArr.push({
+                  userId: v.userId,
+                  name: v.userName,
+                  id: v.userId
+                })
+                item.auditorSet.push(v.userId)
+                item.auditorName.push(v.userName)
+              }
+            })
+            item.informant = item.informantSet.join(',')
+            item.auditor = item.auditorSet.join(',')
+            item.informantOpt = [{label: item.informantName.join(','), key: item.informant}]
+            item.auditorOpt = [{label: item.auditorName.join(','), key: item.auditor}]
+          })
+          this.table.tableData = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 取消
+    cancel () {
+      this.$router.push({path: '/reportingManagement/submitPlans'})
+    },
+    // 提交详情
+    save () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log(values, 'tijiao')
+          let files = []
+          if (this.newCardData.files.length > 0) {
+            this.newCardData.files.forEach(list => {
+              files.push({
+                attachmentPath: list.url,
+                oldAttachmentName: list.name
+              })
+            })
+          }
+          if (this.table.tableData.length === 0) {
+            this.$message.info('请填写任务执行设置')
+          } else {
+            for (let i = 0; i < this.table.tableData.length; i++) {
+              if (!this.table.tableData[i].informant) {
+                this.$message.info('请选择填报人')
+              } else if (!this.table.tableData[i].auditor) {
+                this.$message.info('请选择审核人')
+              }
+            }
+          }
+          let taskTempList = []
+          let data = utils.deepClone(this.table.tableData)
+          data.forEach(item => {
+            let userList = []
+            item.informantOptArr.forEach(v => {
+              userList.push({
+                userId: v.userId,
+                userName: v.name,
+                type: '1'
+              })
+            })
+            item.auditorOptArr.forEach(t => {
+              userList.push({
+                userId: t.userId,
+                userName: t.name,
+                type: '2'
+              })
+            })
+            taskTempList.push({
+              projectId: item.projectId,     // 项目id
+              userList: userList
+            })
+          })
+          let obj = {
+            remark: values.remark,                                   // 备注
+            reportPlanId: this.reportPlanId,                         // 无是新增 有是更新
+            planName: values.planName,                               // 计划名称
+            organId: this.newCardData.organId,                       // 组织机构
+            exePre: values.exePre,                                   // 实施频次
+            effDate: values.defaultValue[0].format('YYYY-MM-DD'),    // 计划生效时间
+            expDate: values.defaultValue[1].format('YYYY-MM-DD'),    // 计划失效时间
+            beginDay: values.beginDay,                               // 任务开始天数
+            beginMonth: values.beginMonth,                           // 任务开始月份
+            preUnit: values.preUnit,                                 // 提前生成单位1-天 2-时
+            preNum: values.preNum,                                   // 提前生成单位数量
+            approvalStatus: '',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+            deadline: values.deadline,                               // 任务执行期限
+            taskTempList: taskTempList,    // 计划明细
+            attachmentList: files             // 附件
+        }
+        console.log(obj, '0-0-0-')
+      }
+    })
+  }
+},
   created () {
   },
   mounted () {
@@ -562,9 +735,18 @@ export default {
 		this.organIdData = [{
 			name: arr[0].organName,
 			value: arr[0].organId
-		}]
-		this.newCardData.organId = arr[0].organId
-    // this.query()
+    }]
+    this.reportPlanId = arr[0].reportPlanId
+    // this.newCardData.organId = arr[0].organId
+    this.form.setFieldsValue({
+      organId: this.newCardData.organId,                  // 组织机构
+    })
+    // 编辑
+    if (this.type === 'edit') {
+      this.query()
+      this.queryReportTaskTempPageListFn()
+    }
+    this.queryAllReportBill()
   }
 }
 </script>
@@ -613,6 +795,9 @@ export default {
   }
   .postAssignment-icon:hover {
     color: red;
+  }
+  .tab-mar {
+    padding-bottom: 90px
   }
 }
 </style>

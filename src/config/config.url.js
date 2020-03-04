@@ -585,15 +585,26 @@ export const subsidiary = {
 // 呈报管理
 export const reportManage = {
   // 呈报计划
+  //呈报任务模板查询
+  queryReportTaskTempPageList: '/ams/reportplan/queryReportTaskTempPageList',
+  // 呈报计划报表查询
+  queryReportPlanNum: '/ams/reportplan/queryReportPlanNum',
+  // 呈报计划状态操作
+  updateReportPlanStatus: '/ams/reportplan/updateReportPlanStatus',
   // 呈报计划查询(分页)
-  queryReportPlanPageList: '/ams/reportManage/queryReportPlanPageList',
+  queryReportPlanPageList: '/ams/reportplan/queryReportPlanPageList',
   // 呈报计划详情
-  queryReportPlanDetail: '/ams/reportManege/queryReportPlanDetail',
+  queryReportPlanDetail: '/ams/reportplan/queryReportPlanDetail',
   // 新建/修改呈报计划
-  saveReportPlan: '/ams/reportManage/saveReportPlan',
+  saveReportPlan: '/ams/reportplan/saveReportPlan',
   // 呈报表单
   // 查询全部呈报表单列表
   queryAllReportBill: '/ams/reportBill/queryAllReportBill',
   // 查询表单字段
-  queryReportBillColumn: '/ams/reportBill/queryReportBillColumn'
+  queryReportBillColumn: '/ams/reportBill/queryReportBillColumn',
+  // 呈报任务
+  // [呈报任务]列表查询
+  taskList: '/ams/reportTask/taskList',
+  // [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
+  taskPage: '/ams/reportTask/taskPage',
 }

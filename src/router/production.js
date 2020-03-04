@@ -463,7 +463,7 @@ let proRouter = [
     name: '附属配套详情',
     component: () => import('@/views/assetInformationManagement/assetSubsidiary/detailSubsidiay')
   },
-  {  
+  {
     path: '/reportingManagement/submitForm',
     name: '呈报表单',
     component: () => import('@/views/reportingManagement/submitForm/index.vue')
@@ -506,5 +506,41 @@ let proRouter = [
     name: '详情',
     component: () => import('@/views/reportingManagement/reportingRecord/details.vue')
   },
+  {
+    path: '/reportTask',
+    name: '呈报任务',
+    component: () => import('@/views/reportingManagement/reportTask'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/reportTask/editTask',
+    name: '填报数据',
+    component: () => import('@/views/reportingManagement/reportTask/editTask/EditTask')
+  },
+  {
+    path: '/reportTask/newTask',
+    name: '新建任务',
+    component: () => import('@/views/reportingManagement/reportTask/editTask/NewTask')
+  },
+  {
+    path: '/reportTask/approveTask',
+    name: '审核任务',
+    component: () => import('@/views/reportingManagement/reportTask/approveTask/ApproveTask')
+  },
+  {
+    path: '/reportTask/taskDetail',
+    name: '任务详情',
+    component: () => import('@/views/reportingManagement/reportTask/components/TaskDetail')
+  },
+  {
+    path: '/taskQuery',
+    name: '任务查询',
+    component: () => import('@/views/reportingManagement/taskQuery/index.vue')
+  },
+  {
+    path: '/taskQuery/details',
+    name: '详情',
+    component: () => import('@/views/reportingManagement/taskQuery/details.vue')
+  }
 ]
 export default proRouter

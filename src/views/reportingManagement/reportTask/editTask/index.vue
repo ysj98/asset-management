@@ -1,0 +1,283 @@
+<!--呈报任务-我填报的任务列表页面-->
+<template>
+  <div class="edit_task">
+    <!--搜索条件-->
+    <a-row :gutter="8" style="margin: 10px 0 10px 26px">
+      <a-col :span="5">
+        <SG-Button
+          icon="plus"
+          type="primary"
+          @click="handleAdd"
+        >新建呈报任务</SG-Button>
+        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+      </a-col>
+      <a-col :span="5" class="custom_date">
+        <span class="prefix_style" style="width: 69px">执行日期</span>
+        <a-range-picker
+          @change="getExecuteDate"
+          class="date_picker_style"
+          format="YYYY-MM-DD"
+          :defaultValue="[moment().add(-60, 'days'), moment()]"
+        />
+      </a-col>
+      <a-col :span="3">
+        <a-select
+          v-bind="properties"
+          v-model="reportBillId"
+          :options="billOptions"
+          placeholder="呈报表单"
+          @change="queryTableData"
+          :filterOption="filterOption"
+        />
+      </a-col>
+      <a-col :span="3">
+        <a-select
+          v-bind="properties"
+          v-model="taskStatus"
+          :options="typeOptions"
+          placeholder="任务类型"
+          @change="queryTableData"
+          :filterOption="filterOption"
+        />
+      </a-col>
+      <a-col :span="3">
+        <a-select
+          v-bind="properties"
+          v-model="taskType"
+          :options="statusOptions"
+          placeholder="任务状态"
+          @change="queryTableData"
+          :filterOption="filterOption"
+        />
+      </a-col>
+      <a-col :span="3">
+        <a-input placeholder="呈报任务名称/编号" @pressEnter="queryTableData" v-model.trim="searchText"/>
+      </a-col>
+      <a-col :span="2" style="text-align: left">
+        <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+      </a-col>
+    </a-row>
+    <!--数据总览-->
+    <overview-number :numList="numList" style="margin-bottom: 8px"/>
+    <!--列表部分-->
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <span slot="action" slot-scope="text, record">
+        <router-link
+          class="action_text"
+          :to="{path: '/reportTask/taskDetail', query: {id: record.reportTaskId}}"
+        >详情</router-link>
+        <router-link
+          class="action_text"
+          :to="{path: '/reportTask/editTask', query: {id: record.reportTaskId}}"
+        >填报数据</router-link>
+        <router-link
+          class="action_text"
+          :to="{path: '/reportTask/editTask', query: {id: record.reportTaskId}}"
+        >重新填报</router-link>
+      </span>
+    </a-table>
+    <no-data-tip v-if="!tableObj.dataSource.length"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+  </div>
+</template>
+
+<script>
+  import moment from 'moment'
+  import NoDataTip from 'src/components/noDataTips'
+  import OverviewNumber from 'src/views/common/OverviewNumber'
+  export default {
+    name: 'index',
+    props: ['refreshKey'],
+    components: { NoDataTip, OverviewNumber },
+    data () {
+      return {
+        fold: true, // 查询条件折叠按钮
+        beginDate: '', // 查询条件-执行开始日期
+        endDate: '', // 查询条件-执行结束日期
+        taskType: 'all', // 查询条件-任务类型
+        taskStatus: 'all', // 查询条件-任务状态
+        reportBillId: 'all', // 查询条件-表单id
+        billOptions: [
+          { title: '全部表单', key: 'all' }
+        ], // 查询条件-表单选项
+        typeOptions: [
+          { title: '全部任务类型', key: 'all' }
+        ], // 查询条件-任务类型选项
+        statusOptions: [
+          { title: '全部任务状态', key: 'all' }
+        ], // 查询条件-任务状态选项
+        searchText: '', // 查询条件-任务名称或编码
+        exportBtnLoading: false, // 导出按钮loading
+        numList: [
+          {title: '全部', key: 'totalArea', value: 0, fontColor: '#324057'},
+          {title: '未完成', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
+          {title: '待审批', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
+          {title: '已驳回', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '已完成', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}
+        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        tableObj: {
+          dataSource: [
+            { reportTaskId: 123,organName: '隔离区1' },
+            { reportTaskId: 23,organName: '隔离区2' }
+          ],
+          loading: false,
+          scroll: { x: 1600 },
+          pagination: false,
+          rowKey: 'reportTaskId',
+          columns: [
+            { title: '任务编号', dataIndex: 'reportTaskId', fixed: 'left', width: 150  },
+            { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 180  },
+            { title: '资产项目', dataIndex: 'projectName' }, { title: '任务名称', dataIndex: 'taskName' },
+            { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
+            { title: '计划执行日期', dataIndex: 'beginDate' }, { title: '填报人', dataIndex: 'reportByName' },
+            { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
+            { title: '数据量', dataIndex: 'reportNum' }, { title: '任务状态', dataIndex: 'taskStatusName', fixed: 'right', width: 150 },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 220 }
+          ]
+        },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+        properties: { mode: 'multiple', allowClear: true, showSearch: true, maxTagCount: 1, style: 'width: 100%' } // 查询表单控件公共属性
+      }
+    },
+    
+    created () {
+      // const { id } = this.$route.query
+    },
+
+    methods: {
+      moment,
+
+      // 查询列表数据
+      queryTableData ({pageNo = 1, pageLength = 10}) {
+        const { beginDate, endDate, taskType, taskStatus, reportBillId, searchText } = this
+        let form = {
+          action: 'tb', // 默认值
+          searchText, pageSize: pageLength, pageNum: pageNo,
+          beginDate: beginDate || moment().add(-60, 'days').format('YYYY-MM-DD'),
+          endDate: endDate || moment().format('YYYY-MM-DD'), // 默认最近60天数据
+          taskType: (!taskType || taskType.includes('all')) ? undefined : taskType.join(','),
+          taskStatus: (!taskStatus || taskStatus.includes('all')) ? undefined : taskStatus.join(','),
+          reportBillId: (!reportBillId || reportBillId.includes('all')) ? undefined : reportBillId.join(',')
+        }
+        this.tableObj.loading = true
+        Promise.reject(form).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { count, data } = res.data
+            this.tableObj.dataSource = data
+            return Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength })
+          }
+          throw res.message || '查询资产价值登记接口出错'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '查询资产价值登记接口出错')
+        })
+      },
+
+      // 获取日期
+      getExecuteDate (date, dateStrings) {
+        let confirmDate = dateStrings.length ? {
+          beginDate: dateStrings[0], endDate: dateStrings[1]
+        } : {}
+        Object.assign(this, confirmDate)
+        this.queryTableData({})
+      },
+
+      // Select 组件查询过滤
+      filterOption (input, option) {
+        return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      },
+
+      // 导出
+      handleExport () {
+        return this.$message.info('暂不支持')
+        // if (!this.tableObj.dataSource.length) {
+        //   return this.$message.info('无可导出数据')
+        // }
+      },
+
+      // 新增操作
+      handleAdd () {
+        this.$router.push({path: '/reportTask/newTask'})
+      },
+    },
+
+    watch: {
+      // 全选与其他选项互斥处理
+      taskStatus: function (val) {
+        if (val && val.length !== 1 && val.includes('all')) {
+          this.taskStatus = ['all']
+          this.queryTableData({})
+        }
+      },
+      
+      reportBillId: function (val) {
+        if (val && val.length !== 1 && val.includes('all')) {
+          this.reportBillId = ['all']
+          this.queryTableData({})
+        }
+      },
+
+      taskType: function (val) {
+        if (val && val.length !== 1 && val.includes('all')) {
+          this.taskType = ['all']
+          this.queryTableData({})
+        }
+      },
+
+      // 长度不能超过30字符
+      searchText: function (val, pre) {
+        if (val && val.length > 30) {
+          this.$message.warn("不能超30个字符")
+          this.searchText = pre
+        }
+      },
+
+      // 刷新页面
+      refreshKey: function (key, preKey) {
+        const { paginationObj: { pageNo, pageLength }} = this
+        key !== preKey && this.queryTableData ({pageNo, pageLength})
+      }
+    }
+  }
+</script>
+
+<style lang='less' scoped>
+  .edit_task {
+    .custom_date {
+      .prefix_style {
+        float: left;
+        color: #C0C7D1;
+        line-height: 30px;
+        text-align: center;
+        border: 1px solid #d9d9d9;
+        border-right: none;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      .date_picker_style {
+        display: block;
+        margin-left: 69px;
+        & /deep/ .ant-calendar-picker-input {
+          border-top-left-radius: 0 !important;
+          border-bottom-left-radius: 0 !important;
+        }
+      }
+    }
+    .custom-table {
+      padding-bottom: 55px;
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+      .action_text {
+        color: #0084FF;
+        cursor: pointer;
+        margin-right: 12px;
+        white-space: nowrap;
+      }
+    }
+  }
+</style>
