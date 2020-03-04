@@ -21,7 +21,8 @@ const localhost = getIPAdress()
 console.log('IP', localhost)
 const target = 'http://192.168.1.11:10080'
 // const target = 'http://120.24.82.71:8080'
-const mock = 'http://192.168.1.11:9090/mock/5dbfda7704a31c60dc1862a1'
+// const mock = 'http://192.168.1.10:9090/mock/5dbfda7704a31c60dc1862a1'
+
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
@@ -65,7 +66,7 @@ class Proxy {
 const proxy = new Proxy()
 // proxy.addUrls(['/ams/checkplan/', '/ams/checktask/'], localhost, 'http://192.168.3.28:8080')
 proxy.addUrls(proxyURL, localhost, target)
-proxy.addUrls(['/ams/'], localhost, mock)
+// proxy.addUrls(['/ams/'], localhost, mock)
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

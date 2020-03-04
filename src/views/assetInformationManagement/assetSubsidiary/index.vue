@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-02-26 19:15:58
+ * @LastEditTime: 2020-03-03 10:26:19
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -38,13 +38,13 @@
             <a-select
               showSearch
               placeholder="请选择资产类型"
-              v-model="queryCondition.assetType"
+              v-model="queryCondition.assetTypeList"
               optionFilterProp="children"
-              @change="assetTypeSelect"
+              @change="assetTypeListSelect"
               mode="multiple"
               :maxTagCount="1"
               :style="allStyle"
-              :options="assetTypeOpt"
+              :options="assetTypeListOpt"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -180,7 +180,7 @@ const allWidth = {
 const queryCondition = {
   organId: "",
   projectId: "",
-  assetType: [''], // 资产类型
+  assetTypeList: [''], // 资产类型
   nameOrCode: '', // 资产名称或编码，模糊查询
   matchingTypeList: [''], // 附属配套类型
   status: '', // 附属配套状态
@@ -191,7 +191,7 @@ const queryCondition = {
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
 const matchingTypeListOpt = [{ label: "全部附属配套类型", value: "" }];
-const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
+const assetTypeListOpt = [{ label: "全部资产类型", value: "" }]
 const assetStatusListOpt = [
   { label: "全部资产状态", value: "" },
   { label: "未生效", value: "0" },
@@ -303,7 +303,7 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       matchingTypeListOpt,
-      assetTypeOpt,
+      assetTypeListOpt,
       assetStatusListOpt,
       statusOpt,
       table: {
@@ -314,6 +314,15 @@ export default {
       }
     };
   },
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/subsidiary' && this.$route.query.refresh) {
+        this.queryCondition.pageNum = 1
+        this.queryCondition.pageSize = 10
+          this.query()
+        }
+    }
+  },
   created() {
     this.platformDictFn("asset_type")
   },
@@ -323,9 +332,8 @@ export default {
         ...this.queryCondition,
         flag: "0"
       };
-      // data.assetType = data.assetType.join(',')
       // 资产类型参数改变
-      data.assetTypeList = utils.deepClone(data.assetType).filter(item => item !== '')
+      data.assetTypeList = utils.deepClone(data.assetTypeList).filter(item => item !== '')
       data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
       data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
       
@@ -375,9 +383,9 @@ export default {
         }
       });
     },
-    assetTypeSelect (value) {
+    assetTypeListSelect (value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeOpt)
+        this.queryCondition.assetTypeList = this.handleMultipleSelectValue(value, this.queryCondition.assetTypeList, this.assetTypeListOpt)
       })
     },
     assetStatusListSelect (value) {
@@ -433,7 +441,7 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition.projectId = "";
-      this.queryCondition.assetType = [''];
+      this.queryCondition.assetTypeList = [''];
       this.queryCondition.nameOrCode = '';
       this.queryCondition.matchingTypeList = [''];
       this.queryCondition.status = '';
@@ -447,8 +455,8 @@ export default {
           let arr = result.map(item => ({ label: item.name, ...item }));
           // 资产类型
           if (code === "asset_type") {
-            this.assetTypeOpt = [
-              ...utils.deepClone(assetTypeOpt),
+            this.assetTypeListOpt = [
+              ...utils.deepClone(assetTypeListOpt),
               ...arr
             ];
           }
@@ -464,7 +472,7 @@ export default {
         flag: "0"
       };
       // 资产类型参数改变
-      data.assetTypeList = utils.deepClone(data.assetType).filter(item => item !== '')
+      data.assetTypeList = utils.deepClone(data.assetTypeList).filter(item => item !== '')
       data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
       data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
      
@@ -541,8 +549,8 @@ export default {
           let arr = result.map(item => ({ label: item.name, ...item, key: item.value }));
           // 附属信息类型
           if (code === "SUBSIDIARY_MATCHING_ TYPE") {
-            this.disposeModeOpt = [
-              ...utils.deepClone(disposeModeOpt),
+            this.matchingTypeListOpt = [
+              ...utils.deepClone(matchingTypeListOpt),
               ...arr
             ];
           }
@@ -553,10 +561,13 @@ export default {
     },
     goPage(type, record) {
       let query = {
-        type
+        type,
+        organName: this.organName,
+        organId: this.queryCondition.organId
       };
       if (['detail', 'edit'].includes(type)) {
         query.subsidiaryMatchingId = record.subsidiaryMatchingId
+        query.assetId = record.assetId
       }
       this.$router.push({ path: operationTypes[type], query });
     },

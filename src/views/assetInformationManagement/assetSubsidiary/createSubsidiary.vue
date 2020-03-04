@@ -1,7 +1,7 @@
 <!--
  * @Description: 新建资产信息 配套附属资源
  * @Date: 2020-02-17 19:01:00
- * @LastEditTime: 2020-02-26 18:06:49
+ * @LastEditTime: 2020-03-03 10:27:30
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -30,7 +30,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{''}}<SG-Button type="primary" icon="plus" size="small" weaken>选择</SG-Button></span>
+              <span class="label-value">{{''}}<SG-Button @click="showRadioAssetModal" type="primary" icon="plus" size="small" weaken>选择</SG-Button></span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -115,14 +115,14 @@
                 :style="allStyle"
                 :maxLength="30"
                 v-decorator="[
-                  'planName',
+                  'matchingName',
                   {
                     rules: [
                       {
                         required: true,
                         max: 30,
                         whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请输入名称(不超过30字符)'
                       }
                     ],
                     initialValue: ''
@@ -145,14 +145,14 @@
                 :style="allStyle"
                 :maxLength="30"
                 v-decorator="[
-                  'planNamed',
+                  'matchingCode',
                   {
                     rules: [
                       {
                         required: true,
                         max: 30,
                         whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请输入编码名称(不超过30字符)'
                       }
                     ],
                     initialValue: ''
@@ -174,7 +174,7 @@
                 showSearch
                 placeholder="请选择类型"
                 v-decorator="[
-                  'exePre',
+                  'matchingType',
                   {
                     rules: [
                       {
@@ -187,7 +187,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="exePreOpt"
+                :options="matchingTypeOpt"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -202,21 +202,20 @@
             </div>
             <a-form-item>
               <a-input
-                placeholder="请输入名称"
+                placeholder="请输入规格型号"
                 :style="allStyle"
                 :maxLength="30"
                 v-decorator="[
-                  'planNa4me',
+                  'specificationType',
                   {
                     rules: [
                       {
-                        required: true,
                         max: 30,
                         whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
+                        message: '请输入计划名称不超过30字符'
                       }
                     ],
-                    initialValue: ''
+                    initialValue: undefined
                   }
                 ]"
               />
@@ -232,12 +231,13 @@
             </div>
             <a-form-item>
               <a-input-number
-               :max="99"
+               :max="999999999.99"
                :min="0"
+               :precision="2"
                 :style="allStyle"
                 placeholder="请输入价值"
                 v-decorator="[
-                  'preNu7m',
+                  'value',
                   {
                     rules: [
                       {
@@ -260,20 +260,13 @@
             </div>
             <a-form-item>
               <a-input-number
-               :max="99"
+               :max="999999999.99"
                :min="0"
+               :precision="2"
                 :style="allStyle"
                 placeholder="请输入数量"
                 v-decorator="[
-                  'preNum',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入数量'
-                      }
-                    ]
-                  }
+                  'number'
                 ]"
               />
             </a-form-item>
@@ -291,11 +284,10 @@
                 showSearch
                 placeholder="请选择计量单位"
                 v-decorator="[
-                  'exeP4re',
+                  'unitOfMeasurement',
                   {
                     rules: [
                       {
-                        required: true,
                         message: '请选择计量单位'
                       }
                     ],
@@ -304,7 +296,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="exePreOpt"
+                :options="unitOfMeasurementOpt"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -352,27 +344,176 @@
          </a-form>
         </div>
       </div>
+      <FormFooter
+      v-if="['create', 'edit'].includes(type)"
+      style="border:none;"
+      location="fixed"
+    >
+      <SG-Button @click="handleSave" type="primary">提交</SG-Button>
+    </FormFooter>
     </div>
+    <!-- 选资产 -->
+		<radioAssetModal ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @assetChange="assetChange"></radioAssetModal>
   </a-spin>
 </template>
 <script>
+import radioAssetModal from './child/radioAssetModal'
+import FormFooter from "@/components/FormFooter.vue"
 let getUuid = ((uuid = 1) => () => ++uuid)()
 const allStyle = { width: "200px" }
 export default {
+  components: {
+    radioAssetModal,
+    FormFooter
+  },
   data () {
     return {
       spinning: false,
       form: this.$form.createForm(this),
       allStyle,
       filepaths: [],
-      type: 'create',
       checkNick: false,
-      exePreOpt: []
+      exePreOpt: [],
+      type: 'create',
+      organId: '',
+      organName: '',
+      subsidiaryMatchingId: '',
+      assetId: '',
+      matchingTypeOpt: [],
+      unitOfMeasurementOpt: []
+    }
+  },
+  created () {
+    this.organId = this.$route.query.organId || ''
+    this.organName = this.$route.query.organName || ''
+    this.type = this.$route.query.type || ''
+    this.subsidiaryMatchingId = this.$route.query.subsidiaryMatchingId || ''
+    this.assetId = this.$route.query.assetId || ''
+    if (this.subsidiaryMatchingId && this.type !== 'create') {
+      this.getMatchingById()
     }
   },
   methods: {
+    getMatchingById () {
+      let data = {
+        subsidiaryMatchingId: this.subsidiaryMatchingId
+      }
+      this.$api.subsidiary.getMatchingById(data).then(res => {
+        if (res.data.code === "0") {
+          let obj = res.data.data || {}
+          // 处理表单数据
+          let o = {
+            matchingName: obj.matchingName,
+            matchingCode: obj.matchingCode,
+            matchingType: obj.matchingType,
+            specificationType: obj.specificationType,
+            value: obj.value,
+            number: obj.number,
+            unitOfMeasurement: obj.unitOfMeasurement,
+            remark: obj.remark,
+          }
+          // 处理复选框
+          this.checkNick = String(obj.isBefore) === '1' ? true : false
+          // 处理附件
+          if (obj.attachmentList && obj.attachmentList.length) {
+            this.filepaths = obj.attachmentList.map(item => {
+              return {url: item.attachmentPath, name: item.oldAttachmentName}
+            })
+          } else {
+            this.filepaths = []
+          }
+          this.form.setFieldsValue(o)
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
+    handleSave () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          if (!this.validateFrom(values )) {
+            return
+          }
+          let data = {}
+          data.organId = this.organId
+          data.status = '1'
+          let keys = ['matchingName', 'matchingCode', 'matchingType', 'specificationType', 'value', 'number', 'unitOfMeasurement', 'remark']
+          keys.forEach(item => {
+            data[item] = values[item] === undefined ? values[item] : ''
+          })
+          data.isBefore = this.checkNick ? '1' : '0'
+          data.attachmentList = this.filepaths.map(item => {
+            return {attachmentPath: item.url, oldAttachmentName: item.name}
+          })
+          // 如果不是新增
+          if (this.type !== 'create') {
+            data.subsidiaryMatchingId = this.subsidiaryMatchingId
+          }
+          let loadingName = this.SG_Loding('提交中...')
+          this.$api.subsidiary.modifySave(data).then(res => {
+            this.DE_Loding(loadingName).then(() => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success('提交成功!')
+                this.$router.push({ path: '/subsidiary', query: {refresh: true} });
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }).catch(() => {
+            this.DE_Loding(loadingName).then(res => {
+              this.$SG_Message.error('提交失败！')
+            })
+          })
+        }
+      })
+    },
+    // 验证项目
+    validateFrom () {
+      return true
+    },
     handleChange (e) {
      this.checkNick = e.target.checked;
+    },
+    showRadioAssetModal () {
+       this.$refs.radioAssetModal.show = true
+    },
+    // 资产选择变动
+    assetChange (checkedData, checkedNames, rowsData, extraData) {
+			this.checkedData = checkedData
+			console.log(checkedData)
+			console.log(checkedNames)
+			console.log(rowsData)
+			rowsData.forEach((item, index) => {
+				item.informantOptArr = []
+				item.auditor = ''
+				item.indexs = index + 1
+			})
+			this.table.tableData = rowsData
+			console.log(extraData)
+      
+    },
+    // 机构字典
+    organDict (code) {
+      this.$api.assets.organDict({ organId: this.organId, code }).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || [];
+          let arr = result.map(item => ({ label: item.name, ...item, key: item.value }));
+          // 附属信息类型
+          if (code === "SUBSIDIARY_MATCHING_ TYPE") {
+            this.matchingTypeOpt = [
+              ...arr
+            ];
+          }
+          // 计量单位
+          if (code === "MEASURE_UNT") {
+            this.unitOfMeasurementOpt  = [
+              ...arr
+            ];
+          }
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
     },
   }
 }

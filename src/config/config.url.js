@@ -577,7 +577,9 @@ export const subsidiary = {
   // 附属配套-列表导出
   exportData: '/ams/subsidiaryMatching/exportData',
   // 附属配套-导入
-  batchImport: '/ams/subsidiaryMatching/batchImport'
+  batchImport: '/ams/subsidiaryMatching/batchImport',
+  // 根据资产id 查询资产信息
+  getAssetById: '/ams/asset/getAssetById'
 }
 
 // 呈报管理
