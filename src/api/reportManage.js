@@ -39,7 +39,7 @@ export function queryReportBillColumn (data) {
 }
 
 
-// 呈报管理- 任务
+// 呈报管理---- 任务
 // [呈报任务]列表查询
 export function taskList (data) {
   return axiosGet(reportManage.taskList, data)
@@ -49,5 +49,11 @@ export function taskList (data) {
 export function taskPage (data) {
 	return axiosPost(reportManage.taskPage, data)
 }
-
-
+// [呈报任务]任务信息
+export function getTask (data) {
+	return axiosGet(reportManage.getTask, data)
+}
+// [呈报任务]任务统计
+export function getTaskStat (data) {
+	return axiosPost(reportManage.getTaskStat, data)
+}
