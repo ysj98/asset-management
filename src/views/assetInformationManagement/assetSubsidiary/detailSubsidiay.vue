@@ -1,7 +1,7 @@
 <!--
  * @Description: 资源信息 附属配套 资源
  * @Date: 2020-02-17 19:08:55
- * @LastEditTime: 2020-03-03 10:27:40
+ * @LastEditTime: 2020-03-04 18:37:30
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -13,84 +13,84 @@
         <!-- 由资产项目带出数据 -->
         <div class="edit-box-content">
           <!-- 一项数据 -->
-           <div class="edit-box-content-item mr24">
+           <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 所属组织机构
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.organName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box required">
               <span class="label-name label-space-between">
                 资产名称
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{''}}</span>
+              <span class="label-value">{{assetInfo.assetName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产编码
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.assetCode || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box required">
               <span class="label-name label-space-between">
                 资产项目
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.projectName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产类型
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.assetTypeName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产分类
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.objectTypeName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产状态
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.statusName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产位置
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{assetInfo.address || '-'}}</span>
             </div>
           </div>
         </div>
@@ -100,91 +100,77 @@
         <!-- 表单填写数据 -->
         <div>
            <div class="edit-box-content">
-           <div class="edit-box-content-item">
+           <div class="edit-box-content-item mb24">
             <div class="label-name-box required">
               <span class="label-name label-space-between">
                 名称
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value">{{'--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.matchingName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box required">
               <span class="label-name label-space-between">
                 编码
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{'--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.matchingCode || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box required">
               <span class="label-name label-space-between">
                 类型
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{organName || '--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.matchingTypeName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">
                 规格型号
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{organName || '--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.specificationType || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box required">
               <span class="label-name label-space-between">
                 价值
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{organName || '--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.value || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box required">
               <span class="label-name label-space-between">
                 数量
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{organName || '--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.number || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">
                 计量单位
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{organName || '--'}}</span>
+              <span class="label-value" >{{subsidiayInfo.unitOfMeasurementName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <!-- <div class="label-name-box">
               <span class="label-name label-space-between">
                 <i></i>
@@ -197,25 +183,54 @@
               </a-checkbox>
             </div>
           </div>
-          <div class="edit-box-content-item total-width">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box">
+              <span class="label-name label-space-between">
+                状态
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{subsidiayInfo.statusName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box">
+              <span class="label-name label-space-between">
+                创建人
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{subsidiayInfo.createByName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box">
+              <span class="label-name label-space-between">
+                创建时间
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{subsidiayInfo.createTime || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item total-width mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">
                 备注
                 <i></i>
               </span>
               <span>：</span>
-            </div>
-            <div>
-              <span class="label-value" >{{organName || '--'}}</span>
+              <span>{{subsidiayInfo.remark || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item total-width">
+          <div class="edit-box-content-item total-width mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">附件<i></i></span
               ><span>：</span>
+              <span v-if="filepaths.length === 0" >{{'-'}}</span>
             </div>
-            <div class="label-value">
-              <SG-UploadFile :show="false" type="all" :maxSize="5120" v-model="filepaths" />
+            <div class="label-value" v-if="filepaths.length !== 0">
+              <SG-UploadFile :show="true" type="all" :maxSize="5120" v-model="filepaths" />
             </div>
           </div>
          </div>
@@ -236,7 +251,8 @@ export default {
       filepaths: [],
       type: 'create',
       checkNick: false,
-      subsidiayInfo: {}
+      subsidiayInfo: {},
+      assetInfo: {}
     }
   },
   created () {
@@ -247,9 +263,23 @@ export default {
     this.assetId = this.$route.query.assetId || ''
     if (this.subsidiaryMatchingId) {
       this.getMatchingById()
+      this.getAssetById()
     }
   },
   methods: {
+    getAssetById () {
+      let data = {
+        assetId: this.assetId
+      }
+      this.$api.subsidiary.getAssetById(data).then(res => {
+        if (res.data.code === "0") {
+          let obj = res.data.data || {}
+          this.assetInfo = {...obj}
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
     getMatchingById () {
       let data = {
         subsidiaryMatchingId: this.subsidiaryMatchingId
@@ -259,6 +289,7 @@ export default {
           let obj = res.data.data || {}
           // 处理表单数据
           let o = {
+            ...obj,
             matchingName: obj.matchingName,
             matchingCode: obj.matchingCode,
             matchingType: obj.matchingType,
@@ -307,7 +338,7 @@ export default {
         width: 33%;
         float: left;
         font-size: 12px;
-        &.mr24{
+        &.mb24{
           margin-bottom:24px;
         }
         &.total-width {

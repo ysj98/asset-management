@@ -1,7 +1,7 @@
 <!--
  * @Description: 新建资产信息 配套附属资源
  * @Date: 2020-02-17 19:01:00
- * @LastEditTime: 2020-03-03 10:27:30
+ * @LastEditTime: 2020-03-04 15:49:40
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -20,7 +20,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{organName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -30,7 +30,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{''}}<SG-Button @click="showRadioAssetModal" type="primary" icon="plus" size="small" weaken>选择</SG-Button></span>
+              <span class="label-value">{{selectObj.assetName || '-'}}<SG-Button @click="showRadioAssetModal" type="primary" icon="plus" size="small" class="ml10" weaken>选择</SG-Button></span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -40,7 +40,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{selectObj.assetCode || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -50,7 +50,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{selectObj.projectName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -60,7 +60,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{selectObj.assetTypeName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -70,7 +70,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{selectObj.assetCategoryName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -80,7 +80,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{selectObj.assetStatusName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -90,7 +90,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{selectObj.address || '-'}}</span>
             </div>
           </div>
         </div>
@@ -251,7 +251,7 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+            <div class="label-name-box">
               <span class="label-name label-space-between">
                 数量
                 <i></i>
@@ -262,7 +262,7 @@
               <a-input-number
                :max="999999999.99"
                :min="0"
-               :precision="2"
+               :precision="0"
                 :style="allStyle"
                 placeholder="请输入数量"
                 v-decorator="[
@@ -353,7 +353,7 @@
     </FormFooter>
     </div>
     <!-- 选资产 -->
-		<radioAssetModal ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @assetChange="assetChange"></radioAssetModal>
+		<radioAssetModal :selectObj="selectObj" ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @select="assetChange"></radioAssetModal>
   </a-spin>
 </template>
 <script>
@@ -380,7 +380,9 @@ export default {
       subsidiaryMatchingId: '',
       assetId: '',
       matchingTypeOpt: [],
-      unitOfMeasurementOpt: []
+      unitOfMeasurementOpt: [],
+      selectObj: {},
+      oldDetailData: {}
     }
   },
   created () {
@@ -392,6 +394,8 @@ export default {
     if (this.subsidiaryMatchingId && this.type !== 'create') {
       this.getMatchingById()
     }
+    this.organDict('SUBSIDIARY_MATCHING_TYPE')
+    this.organDict('MEASURE_UNT')
   },
   methods: {
     getMatchingById () {
@@ -422,6 +426,7 @@ export default {
           } else {
             this.filepaths = []
           }
+          this.oldDetailData = {...obj}
           this.form.setFieldsValue(o)
         } else {
           this.$message.error(res.data.message);
@@ -436,10 +441,9 @@ export default {
           }
           let data = {}
           data.organId = this.organId
-          data.status = '1'
           let keys = ['matchingName', 'matchingCode', 'matchingType', 'specificationType', 'value', 'number', 'unitOfMeasurement', 'remark']
           keys.forEach(item => {
-            data[item] = values[item] === undefined ? values[item] : ''
+            data[item] = values[item] !== undefined ? values[item] : ''
           })
           data.isBefore = this.checkNick ? '1' : '0'
           data.attachmentList = this.filepaths.map(item => {
@@ -448,6 +452,12 @@ export default {
           // 如果不是新增
           if (this.type !== 'create') {
             data.subsidiaryMatchingId = this.subsidiaryMatchingId
+            data.status = this.oldDetailData.status
+          }
+          // 新增
+          if (this.type === 'create') {
+            data.assetId = this.selectObj.assetId
+            data.status = '1'
           }
           let loadingName = this.SG_Loding('提交中...')
           this.$api.subsidiary.modifySave(data).then(res => {
@@ -469,6 +479,10 @@ export default {
     },
     // 验证项目
     validateFrom () {
+      if (!this.selectObj.assetId) {
+        this.$message.error('请选择资产名称!')
+        return false
+      }
       return true
     },
     handleChange (e) {
@@ -478,19 +492,9 @@ export default {
        this.$refs.radioAssetModal.show = true
     },
     // 资产选择变动
-    assetChange (checkedData, checkedNames, rowsData, extraData) {
-			this.checkedData = checkedData
-			console.log(checkedData)
-			console.log(checkedNames)
-			console.log(rowsData)
-			rowsData.forEach((item, index) => {
-				item.informantOptArr = []
-				item.auditor = ''
-				item.indexs = index + 1
-			})
-			this.table.tableData = rowsData
-			console.log(extraData)
-      
+    assetChange (row) {
+      console.log('你好世界=>', row)
+      this.selectObj = row
     },
     // 机构字典
     organDict (code) {
@@ -499,7 +503,7 @@ export default {
           let result = res.data.data || [];
           let arr = result.map(item => ({ label: item.name, ...item, key: item.value }));
           // 附属信息类型
-          if (code === "SUBSIDIARY_MATCHING_ TYPE") {
+          if (code === "SUBSIDIARY_MATCHING_TYPE") {
             this.matchingTypeOpt = [
               ...arr
             ];

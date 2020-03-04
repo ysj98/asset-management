@@ -1,7 +1,7 @@
 <!--
  * @Description: 单选资产
  * @Date: 2020-03-02 10:17:06
- * @LastEditTime: 2020-03-02 20:57:23
+ * @LastEditTime: 2020-03-04 15:57:59
  -->
 <template>
   <SG-Modal
@@ -107,14 +107,18 @@ export default {
   props: {
     organId: {
       type: [String, Number],
-      default: '67'
+      default: ''
     },
     queryType: {
       type: [String, Number],
       default: ''
     },
     organName: {
-      default: '四格运营'
+      default: ''
+    },
+    selectObj: {
+      type: [Object],
+      default: {}
     }
   },
   data () {
@@ -138,18 +142,28 @@ export default {
       },
       loading: false,
       noPageTools: true,
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      selectedRowData: {},
     }
   },
   watch: {
+    organId () {
+      console.log('监听变化')
+      this.query()
+    },
     projectId () {
       this.query()
+    },
+    selectObj (obj) {
+      this.selectedRowData = {...obj}
+      this.selectRowKeys = [obj.assetId]
     }
   },
   computed: {
     rowSelection () {
       const { selectedRowKeys } = this
       return {
+        type: 'radio',
         selectedRowKeys,
         onChange: this.onSelectChange,
         hideDefaultSelections: true,
@@ -299,7 +313,17 @@ export default {
         }
       })
     },
-    submitAsset () {},
+    submitAsset () {
+      if (!this.selectedRowKeys.length) {
+        return this.$message.error('请选择一项资产!')
+      }
+      let flag = this.dataSource.some(item => item.assetId === this.selectedRowKeys[0])
+      if (flag) {
+        this.selectedRowData = this.dataSource.filter(item => item.assetId === this.selectedRowKeys[0])[0]
+      }
+      this.$emit('select', {...this.selectedRowData})
+      this.handleCancel()
+    },
     // 关闭弹窗
     handleCancel() {
       this.show = false
