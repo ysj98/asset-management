@@ -1,7 +1,7 @@
 <!--
  * @Description: 新建资产信息 配套附属资源
  * @Date: 2020-02-17 19:01:00
- * @LastEditTime: 2020-03-04 15:49:40
+ * @LastEditTime: 2020-03-05 14:22:38
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -70,7 +70,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{selectObj.assetCategoryName || '-'}}</span>
+              <span class="label-value">{{selectObj.assetCategoryName || selectObj.objectTypeName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -80,7 +80,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{selectObj.assetStatusName || '-'}}</span>
+              <span class="label-value">{{selectObj.assetStatusName || selectObj.statusName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mr24">
@@ -393,9 +393,10 @@ export default {
     this.assetId = this.$route.query.assetId || ''
     if (this.subsidiaryMatchingId && this.type !== 'create') {
       this.getMatchingById()
+      this.getAssetById()
     }
     this.organDict('SUBSIDIARY_MATCHING_TYPE')
-    this.organDict('MEASURE_UNT')
+    this.organDict('MEASURE_UNIT')
   },
   methods: {
     getMatchingById () {
@@ -409,7 +410,7 @@ export default {
           let o = {
             matchingName: obj.matchingName,
             matchingCode: obj.matchingCode,
-            matchingType: obj.matchingType,
+            matchingType: String(obj.matchingType),
             specificationType: obj.specificationType,
             value: obj.value,
             number: obj.number,
@@ -428,6 +429,20 @@ export default {
           }
           this.oldDetailData = {...obj}
           this.form.setFieldsValue(o)
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
+    // 请求资产项目信息
+    getAssetById () {
+      let data = {
+        assetId: this.assetId
+      }
+      this.$api.subsidiary.getAssetById(data).then(res => {
+        if (res.data.code === "0") {
+          let obj = res.data.data || {}
+          this.selectObj = {...obj}
         } else {
           this.$message.error(res.data.message);
         }
@@ -509,7 +524,7 @@ export default {
             ];
           }
           // 计量单位
-          if (code === "MEASURE_UNT") {
+          if (code === "MEASURE_UNIT") {
             this.unitOfMeasurementOpt  = [
               ...arr
             ];

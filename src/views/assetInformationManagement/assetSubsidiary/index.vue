@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-04 18:10:57
+ * @LastEditTime: 2020-03-05 14:23:55
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -143,6 +143,9 @@
     </div>
     <!-- 批量更新 -->
     <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" title="附属配套导入"/>
+    <downErrorFile ref="downErrorFile">
+      <div>{{upErrorInfo}}</div>
+    </downErrorFile>
   </div>
 </template>
 <script>
@@ -154,6 +157,7 @@ import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OperationPopover from '@/components/OperationPopover'
+import downErrorFile from '@/views/common/downErrorFile'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -168,9 +172,9 @@ let operationInfo = {
   },
   off: {
     msg: '禁用',
-    status: '2'
+    status: '0'
   },
-  on: {
+  delete: {
     msg: '删除',
     status: '-1'
   }
@@ -303,7 +307,8 @@ export default {
     noDataTips,
     segiIcon,
     eportAndDownFile,
-    OperationPopover
+    OperationPopover,
+    downErrorFile
   },
   data() {
     return {
@@ -322,7 +327,8 @@ export default {
         dataSource: [],
         loading: false,
         totalCount: 0
-      }
+      },
+      upErrorInfo: ''
     };
   },
   watch: {
@@ -382,7 +388,7 @@ export default {
       if (true) {
         arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
       }
-      if (String(record.status) === '2') {
+      if (String(record.status) === '0') {
         arr.push({iconType: 'play-circle', text: '启用', editType: 'on'})
       }
       if (String(record.status) === '1') {
@@ -536,7 +542,7 @@ export default {
       data.assetTypeList = utils.deepClone(data.assetTypeList).filter(item => item !== '')
       data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
       data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
-     
+      let loadingName = this.SG_Loding('导出中...')
       this.$api.subsidiary.exportData(data).then(res => {
         this.$SG_Message.destroy(loadingName)
         let blob = new Blob([res.data])
@@ -555,6 +561,7 @@ export default {
     },
     // 下载模板文件
     downModeFile () {
+      let loadingName = this.SG_Loding('下载中...')
       this.$api.subsidiary.downBatchModle().then(res => {
             this.$SG_Message.destroy(loadingName)
             let blob = new Blob([res.data])
@@ -587,9 +594,9 @@ export default {
           }) 
         } else {
           this.DE_Loding(loadingName).then(() => {
-            // this.$refs.downErrorFile.visible = true
-            // this.upErrorInfo = res.data.message
-            this.$SG_Message.error(res.data.message || '导入失败！')
+            this.$refs.downErrorFile.visible = true
+            this.upErrorInfo = res.data.message
+            // this.$SG_Message.error(res.data.message || '导入失败！')
           })
         }
       }, () => {
