@@ -609,14 +609,26 @@ export const reportManage = {
   // 查询表单字段
   queryReportBillColumn: '/ams/reportBill/queryReportBillColumn',
   // 呈报任务
-  // [呈报任务]列表查询
-  taskList: '/ams/reportTask/taskList',
-  // [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
+  //  [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
   taskPage: '/ams/reportTask/taskPage',
+  //  [呈报任务]列表查询
+  taskList: '/ams/reportTask/taskList',
+  // [呈报任务]填报数据分页查询
+  detailPage: '/ams/reportTask/detailPage',
+  // [呈报任务]填报数据列表查询
+  detailList: '/ams/reportTask/detailList',
   // [呈报任务]任务信息
   getTask: '/ams/reportTask/getTask',
   // [呈报任务]任务统计
   getTaskStat: '/ams/reportTask/getTaskStat',
+  // [呈报任务]保存任务信息、填报数据
+  saveTaskOrDetail: '/ams/reportTask/saveTaskOrDetail',
+  // [呈报任务]填报数据批量导入
+  detailDataImport: '/ams/reportTask/detailDataImport',
+  // [呈报任务]填报模板导出
+  detailTempExport: '/ams/reportTask/detailTempExport',
+  // [呈报任务]审核任务
+  auditTask: '/ams/reportTask/auditTask',
   // 呈报记录
   // 呈报记录查询(分页)
   queryReportRecordPageList: '/ams/reportdata/queryReportRecordPageList',

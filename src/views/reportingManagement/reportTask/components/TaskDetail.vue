@@ -2,12 +2,12 @@
 <template>
   <div class="task_detail">
     <!--任务信息-->
-    <task-info-view/>
+    <task-info-view :taskId="taskId"/>
     <!--填报数据-->
-    <task-table-view/>
+    <task-table-view :taskId="taskId"/>
     <!--审批记录-->
     <SG-Title title="审批记录"/>
-    <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 40px;"/>
+    <SG-TrackStep :stepList="stepList" style="margin-left: 40px;"/>
   </div>
 </template>
 
@@ -20,13 +20,19 @@
     components: { TaskInfoView, TaskTableView },
     data () {
       return {
+        taskId: '', // 任务Id
         stepList: [
           { date: moment(), title: '修改', desc: '待修改', isDone: true, operation: [] }
         ] // 审批轨迹
       }
     },
 
-    methods: {}
+    methods: {},
+    
+    created () {
+      const { query: { taskId } } = this.$route
+      this.taskId = taskId
+    }
   }
 </script>
 
