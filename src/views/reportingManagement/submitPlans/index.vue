@@ -133,8 +133,8 @@ let columns = [
     dataIndex: "planCode"
   },
   {
-    title: "呈报表单111",
-    dataIndex: "reportBill"
+    title: "呈报表单",
+    dataIndex: "billName"
 	},
 	{
     title: "生效时间",
@@ -208,7 +208,8 @@ export default {
         this.queryCondition.taskStatus = this.handleMultipleSelectValue(value, this.queryCondition.taskStatus, this.taskStatusData)
       })
     },
-    reportBillIdFn () {
+    // 呈报表单
+    reportBillIdFn (value) {
       this.$nextTick(function () {
         this.queryCondition.reportBillId = this.handleMultipleSelectValue(value, this.queryCondition.reportBillId, this.reportBillData)
       })
@@ -272,7 +273,7 @@ export default {
         organId: this.queryCondition.organId,
         approvalStatus: this.queryCondition.taskStatus,   // 状态
         planName: this.queryCondition.planName,
-        reportBillId: this.queryCondition.reportBillId
+        billType: this.queryCondition.reportBillId
       }
       this.table.loading = true
       this.$api.reportManage.queryReportPlanPageList(data).then(
@@ -303,7 +304,7 @@ export default {
         organId: this.queryCondition.organId,
         approvalStatus: this.queryCondition.taskStatus,   // 状态
         planName: this.queryCondition.planName,
-        reportBillId: this.queryCondition.reportBillId
+        billType: this.queryCondition.reportBillId
       }
       this.$api.reportManage.queryReportPlanNum(data).then(res => {
         if (res.data.code === "0") {
@@ -359,6 +360,8 @@ export default {
         querys = [{
           type,
           reportPlanId: record.reportPlanId,
+          organId: record.organId,
+          organName: record.organName,
           detail: true
         }]
       }

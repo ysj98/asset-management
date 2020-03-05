@@ -87,9 +87,10 @@
 										showSearch
 										placeholder="请选择呈报表单"
 										style="width: 200px"
-										:defaultValue="reportBillId"
+										v-model="reportBillId"
 										:options="reportBillData"
 										:filterOption="filterOption"
+                    @change="reportBillChange"
 									>
 									</a-select>
 						</div>
@@ -98,10 +99,14 @@
           <a-table
             :loading="loading"
             :columns="columns"
-            :dataSource="[]"
+            :dataSource="dataSourceReportBill"
             class="custom-table td-pd10"
             :pagination="false"
             >
+            <template v-for="(item, index) in columns" :slot="item.dataIndex" slot-scope="text, record, index">
+              <div v-if="item.dataIndex === 'ieldNames'"></div>
+              <a-checkbox v-else :checked="record[item.dataIndex]" @change="checkboxFn(record, index, item.dataIndex)"></a-checkbox>
+            </template>
           </a-table>
         </div>
       </div>
@@ -220,7 +225,7 @@
     <FormFooter style="border:none;" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交</SG-Button>
-        <!-- <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button> -->
+        <SG-Button style="margin-left: 12px" type="primary" weaken @click="save('draft')">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
@@ -240,40 +245,6 @@ import associateAssetModal from '../../financialManagement/assetEntry/associateA
 import FormFooter from '@/components/FormFooter'
 import {utils} from '@/utils/utils.js'
 import moment from 'moment'
-const colu = [
-  {
-    title: "编号",
-    dataIndex: "index"
-  },
-  {
-    title: "字段名称",
-    dataIndex: "index1"
-  },
-  {
-    title: "字段编码",
-    dataIndex: "index2"
-  },
-  {
-    title: "字段类型",
-    dataIndex: "index3"
-  },
-  {
-    title: "字段格式",
-    dataIndex: "index4"
-  },
-  {
-    title: "字段长度",
-    dataIndex: "index5"
-  },
-  {
-    title: "字段值",
-    dataIndex: "index6"
-  },
-  {
-    title: "必填字段",
-    dataIndex: "index7"
-  }
-]
 const previewColumns = [
   {
     title: "编号",
@@ -370,7 +341,7 @@ export default {
   props: {},
   data () {
     return {
-      reportBillId: '',        // 呈报表单id
+      reportBillId: undefined,        // 呈报表单id
       deadline: '3',           // 任务执行期限
       dayData: '1',            // 任务执行期限单位
       preNum: '1',             // 提前生成任务时间
@@ -424,7 +395,8 @@ export default {
 			exePreData: exePreData,    // 实施频次
       changeType: '',
       registerId: '',
-			columns: colu,
+      columns: [],
+      dataSourceReportBill: [],
 			loading: false,
 			table: {
 				tableData: [],
@@ -445,6 +417,45 @@ export default {
   },
   methods: {
     moment,
+    // 选择是否查看当前机构变动单
+    checkboxFn (record, index, dataIndex) {
+      this.dataSourceReportBill[index][dataIndex] = !this.dataSourceReportBill[index][dataIndex]
+    },
+    // 呈报表单监听
+    reportBillChange (value) {
+      this.reportBillId = value
+      this.queryReportBillColumn(value)
+    },
+    // 查询呈报表单字段
+    queryReportBillColumn (value) {
+      let obj = {
+        reportBillId: value,
+        reportPlanId: this.reportPlanId
+      }
+      this.$api.reportManage.queryReportBillColumn(obj).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || []
+          let arr = []
+          let columnNeed = {}  // 是否必填 0-非必填 1-必填
+          let columnDisplay = {}  // Number  必有字段  备注：是否展示 0-非展示 1-展示
+          result.forEach(item => {
+            arr.push({
+              title: item.columnDesc,
+              dataIndex: item.columnName,
+              scopedSlots: { customRender: item.columnName }
+            })
+            columnNeed[item.columnName] = !!item.columnNeed
+            columnDisplay[item.columnName] = !!item.columnDisplay
+          })
+          this.columns = [{title: '字段名称', dataIndex: 'ieldNames'}, ...arr]
+          this.dataSourceReportBill = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+          console.log(this.dataSourceReportBill, '-=-=-==')
+          this.reportBillColumnList = result    // 总的数据
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 查询全部呈报表单列表
     queryAllReportBill () {
       this.$api.reportManage.queryAllReportBill({}).then(res => {
@@ -454,7 +465,7 @@ export default {
             result.forEach(item => {
               arr.push({
                 value: item.reportBillId,
-                name: item.billName
+                label: item.billName
               })
             })
             this.reportBillData = [...arr]
@@ -583,12 +594,15 @@ export default {
       }
       this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          console.log(res, '-=-=-')
           let data = res.data.data
+          console.log(data, '-=-=-')
+          this.reportBillId = data.reportBillId || 1
+          this.queryReportBillColumn(this.reportBillId)
           // 插入编辑数据
           this.form.setFieldsValue({
             remark: data.remark,                                   // 备注
-            planName: data.planName,                               // 计划名称
+            planName: data.planName,                              // 计划名称
+            planCode: data.planCode,
             // organId: this.newCardData.organId,                  // 组织机构
             exePre: data.exePre,                                   // 实施频次
             beginDay: data.beginDay,                               // 任务开始天数
@@ -598,6 +612,16 @@ export default {
             deadline: data.deadline,                               // 任务执行期限
             defaultValue: [moment(data.effDate), moment(data.expDate)]
           })
+          let files = []
+          if (data.attachmentList && data.attachmentList.length > 0) {
+              data.attachmentList.forEach(item => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName
+              })
+            })
+          }
+          this.newCardData.files = files
         } else {
           this.$message.error(res.data.message)
         }
@@ -612,13 +636,20 @@ export default {
       }
       this.$api.reportManage.queryReportTaskTempPageList(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data.data
+          console.log(data, '00000000000000000000000000')
+          let checkedData = []
           data.forEach((item, index) => {
+            checkedData.push(item.projectId)
             item.key = index
             item.indexs = index
             item.informant = []          // 提交人
             item.informantOpt = []
+            item.informantSet = []
+            item.informantName = []
             item.informantOptArr = []
+            item.auditorSet = []
+            item.auditorName = []
             item.auditor = []             // 审核人
             item.auditorOpt = []
             item.auditorOptArr = []
@@ -648,6 +679,7 @@ export default {
             item.auditorOpt = [{label: item.auditorName.join(','), key: item.auditor}]
           })
           this.table.tableData = data
+          this.checkedData = checkedData
         } else {
           this.$message.error(res.data.message)
         }
@@ -658,7 +690,7 @@ export default {
       this.$router.push({path: '/reportingManagement/submitPlans'})
     },
     // 提交详情
-    save () {
+    save (str) {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log(values, 'tijiao')
@@ -682,6 +714,14 @@ export default {
               }
             }
           }
+          // 呈报表单数据
+          console.log(this.reportBillColumnList, '旧的')
+          let report = utils.deepClone(this.reportBillColumnList)
+          report.forEach(opt => {
+            opt.columnNeed = Number(this.dataSourceReportBill[0][opt.columnName])
+            opt.columnDisplay = Number(this.dataSourceReportBill[1][opt.columnName])
+          })
+          console.log(report, '新的')
           let taskTempList = []
           let data = utils.deepClone(this.table.tableData)
           data.forEach(item => {
@@ -706,6 +746,7 @@ export default {
             })
           })
           let obj = {
+            reportBillId: this.reportBillId,
             remark: values.remark,                                   // 备注
             reportPlanId: this.reportPlanId,                         // 无是新增 有是更新
             planName: values.planName,                               // 计划名称
@@ -717,12 +758,26 @@ export default {
             beginMonth: values.beginMonth,                           // 任务开始月份
             preUnit: values.preUnit,                                 // 提前生成单位1-天 2-时
             preNum: values.preNum,                                   // 提前生成单位数量
-            approvalStatus: '',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+            approvalStatus: str === 'save' ? '1' : '0',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
             deadline: values.deadline,                               // 任务执行期限
             taskTempList: taskTempList,    // 计划明细
-            attachmentList: files             // 附件
+            attachmentList: files,             // 附件
+            reportBillColumnList: report
         }
         console.log(obj, '0-0-0-')
+        let loadingName = this.SG_Loding('保存中...')
+        this.$api.reportManage.saveReportPlan(obj).then(res => {
+          if (res.data.code === "0") {
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.success('提交成功')
+              this.$router.push({path: '/reportingManagement/submitPlans', query: {refresh: true}})
+            })
+          } else {
+            this.DE_Loding(loadingName).then(() => {
+              this.$message.error(res.data.message)
+            })
+          }
+      })
       }
     })
   }
@@ -730,23 +785,20 @@ export default {
   created () {
   },
   mounted () {
+    this.queryAllReportBill()
 		let arr = JSON.parse(this.$route.query.quersData)
 		this.type = arr[0].type
 		this.organIdData = [{
 			name: arr[0].organName,
 			value: arr[0].organId
     }]
-    this.reportPlanId = arr[0].reportPlanId
-    // this.newCardData.organId = arr[0].organId
-    this.form.setFieldsValue({
-      organId: this.newCardData.organId,                  // 组织机构
-    })
+    this.reportPlanId = arr[0].reportPlanId || ''
+    this.newCardData.organId = arr[0].organId
     // 编辑
     if (this.type === 'edit') {
       this.query()
       this.queryReportTaskTempPageListFn()
     }
-    this.queryAllReportBill()
   }
 }
 </script>
