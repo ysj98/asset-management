@@ -19,10 +19,12 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-item label="运营项目" :disabled="communityIdDisabled" v-bind="formItemLayout">
+                  <a-form-item label="运营项目"  v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
-                      :getCalendarContainer="getPopupContainer"
+                      :disabled="communityIdDisabled"
+                      :getPopupContainer="getPopupContainer"
+                      @change="communityIdChange"
                         placeholder="请选择项目"
                         showSearch
                         optionFilterProp="children"
@@ -73,7 +75,7 @@
                   <a-form-item label="楼栋类型" v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
-                      :getCalendarContainer="getPopupContainer"
+                      :getPopupContainer="getPopupContainer"
                         placeholder="请选择楼栋类型"
                         showSearch
                         optionFilterProp="children"
@@ -377,7 +379,16 @@ export default {
         this.hasUpdatePower = true
       }
     },
-    // 请求项目
+    // 选择项目变化
+    communityIdChange (e) {
+      let o = this.communityIdOpt.filter(item => item.value === e)[0]
+      let communityName = o.name
+      let name = this.form.getFieldValue('name')
+      if (name) {
+        this.form.setFieldsValue({aliasName: `${name}_${communityName}`})
+      }
+      console.log('得到值', name, '2',communityName)
+    },
     // 请求项目
     queryCommunityListByOrganId () {
        let data = {
@@ -540,6 +551,7 @@ export default {
       this.region = data.region
       this.address = data.address
       // 处理项目是否可以选择
+      console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId ? true : false
       this.queryCityAndAreaList(data.province, 'province')
       this.queryCityAndAreaList(data.city, 'city')

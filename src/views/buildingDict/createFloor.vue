@@ -229,22 +229,32 @@ export default {
           if (this.type === 'create') {
             data.organId = this.organId
             data.upPositionId = this.objectData.positionId
-            let loadingName = this.SG_Loding('新增中...')
-            this.$api.building.addFloor(data).then(res => {
-              this.DE_Loding(loadingName).then(() => {
-                if (res.data.code === '0') {
-                  this.$SG_Message.success('新增楼层成功')
-                  this.resetAll()
-                  this.$emit('success', 'create')
-                } else {
-                  this.$message.error(res.data.message)
-                }
+            // 新增时需用楼栋id 请求楼栋详情是否有项目id
+            this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
+              return resData.data.data.communityId
+            }).then(communityId => {
+              if (communityId && communityId !== '-1') {
+                data.communityId = communityId
+              }
+              let loadingName = this.SG_Loding('新增中...')
+              this.$api.building.addFloor(data).then(res => {
+                this.DE_Loding(loadingName).then(() => {
+                  if (res.data.code === '0') {
+                    this.$SG_Message.success('新增楼层成功')
+                    this.resetAll()
+                    this.$emit('success', 'create')
+                  } else {
+                    this.$message.error(res.data.message)
+                  }
+                })
+              }, () => {
+                this.DE_Loding(loadingName).then(res => {
+                  this.$SG_Message.error('新增失败！')
+                })
               })
-            }, () => {
-              this.DE_Loding(loadingName).then(res => {
-                this.$SG_Message.error('新增失败！')
-              })
+              
             })
+            
           }
           // 编辑楼栋
           if (this.type === 'edit') {

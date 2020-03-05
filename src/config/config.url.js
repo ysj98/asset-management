@@ -62,7 +62,7 @@ export const basics = {
   // 根据组织机构查询岗位
   queryPostNewPageList: '/basic-data-api/rest-api/v1/postmanageApi/queryPostNewPageList',
   // 组织机构请求项目
-  queryCommunityListByOrganId: 'basic-data-api/rest-api/v1/community/queryCommunityListByOrganId'
+  queryCommunityListByOrganId: '/basic-data-api/rest-api/v1/community/queryCommunityListByOrganId'
 }
 
 // 资产管理
@@ -616,5 +616,19 @@ export const reportManage = {
   // [呈报任务]任务信息
   getTask: '/ams/reportTask/getTask',
   // [呈报任务]任务统计
-  getTaskStat: '/ams/reportTask/getTaskStat'
+  getTaskStat: '/ams/reportTask/getTaskStat',
+  // 呈报记录
+  // 呈报记录查询(分页)
+  queryReportRecordPageList: '/ams/reportdata/queryReportRecordPageList',
+  // 呈报记录详情
+  queryReportRecordDetail: '/ams/reportdata/queryReportRecordDetail',
+  // 查询资产折旧(分页)
+  queryAssetDeprecitionPageList: '/ams/reportdata/queryAssetDeprecitionPageList',
+  // 查询资产收入(分页)
+  queryAssetIncomePageList: '/ams/reportdata/queryAssetIncomePageList',
+  // 查询资产费用(分页)
+  queryAssetExpensePageList: '/ams/reportdata/queryAssetExpensePageList',
+  // 查询资产运营(分页)
+  queryAssetOperationPageList: '/ams/reportdata/queryAssetOperationPageList'
 }
+

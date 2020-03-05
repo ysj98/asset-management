@@ -37,6 +37,10 @@
     </div>
     <!-- 批量更新 -->
     <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" title="批量导入楼栋"/>
+    <!-- 导入错误信息 -->
+    <downErrorFile ref="downErrorFile">
+      <div>{{upErrorInfo}}</div>
+    </downErrorFile>
   </div>
 </template>
 <script>
@@ -45,6 +49,7 @@ import {utils, debounce} from '@/utils/utils'
 import createBuild from './createBuild'
 import createFloor from './createFloor'
 import createUnit from './createUnit'
+import downErrorFile from '@/views/common/downErrorFile'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 export default {
@@ -53,7 +58,8 @@ export default {
     createBuild,
     createFloor,
     createUnit,
-    eportAndDownFile
+    eportAndDownFile,
+    downErrorFile
   },
   props: {
     organId: {
@@ -68,6 +74,7 @@ export default {
       createType: '', // unit新建单元，build新建楼栋，floor新建楼层 
       activeItem: {},
       childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
+      upErrorInfo: '',
     }
   },
   watch: {
@@ -186,9 +193,9 @@ export default {
           }) 
         } else {
           this.DE_Loding(loadingName).then(() => {
-            // this.$refs.downErrorFile.visible = true
-            // this.upErrorInfo = res.data.message
-            this.$SG_Message.error(res.data.message || '导入失败！')
+            this.$refs.downErrorFile.visible = true
+            this.upErrorInfo = res.data.message
+            // this.$SG_Message.error(res.data.message || '导入失败！')
           })
         }
       }, () => {
