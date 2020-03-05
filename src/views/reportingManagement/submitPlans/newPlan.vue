@@ -108,6 +108,7 @@
               <a-checkbox v-else :checked="record[item.dataIndex]" @change="checkboxFn(record, index, item.dataIndex)"></a-checkbox>
             </template>
           </a-table>
+          <no-data-tips v-show="dataSourceReportBill.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -177,7 +178,7 @@
 					</a-col>
 				</a-row>
         <div class="table-layout-fixed table-border">
-					<div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产</SG-Button></div>
+					<div class="button-box"><SG-Button class="buytton-nav" type="primary" weaken @click="addTheAsset">添加资产项目</SG-Button></div>
 					<div class="table-layout-fixed table-border-lr">
 						<a-table
 							:loading="table.loading"
