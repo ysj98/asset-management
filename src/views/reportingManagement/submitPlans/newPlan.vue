@@ -234,14 +234,14 @@
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
 		<!-- 选资产 -->
-		<associateAssetModal ref="associateAssetModal" organId="" queryType="1" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+		<associateAssetModal ref="associateAssetModal" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
   </div>
 </template>
 
 <script>
 import selectStaffOrPost from '@/views/common/selectStaffOrPost'
 import noDataTips from "@/components/noDataTips"
-import associateAssetModal from '../../financialManagement/assetEntry/associateAssetModal'
+import associateAssetModal from '../../common/projectModal'
 import FormFooter from '@/components/FormFooter'
 import {utils} from '@/utils/utils.js'
 import moment from 'moment'
@@ -253,7 +253,7 @@ const previewColumns = [
   },
   {
     title: "资产项目",
-		dataIndex: "assetName",
+		dataIndex: "projectName",
 		width: '10%'
   },
   {
@@ -449,7 +449,6 @@ export default {
           })
           this.columns = [{title: '字段名称', dataIndex: 'ieldNames'}, ...arr]
           this.dataSourceReportBill = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
-          console.log(this.dataSourceReportBill, '-=-=-==')
           this.reportBillColumnList = result    // 总的数据
         } else {
           this.$message.error(res.data.message)
@@ -519,10 +518,10 @@ export default {
 		// 添加资产
     addTheAsset () {
 			this.$refs.associateAssetModal.show = true
-			this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, '', this.table.tableData)
+			this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.table.tableData)
 		},
 		// 资产选择变动
-    assetChange (checkedData, checkedNames, rowsData, extraData) {
+    assetChange (checkedData, checkedNames, rowsData) {
 			this.checkedData = checkedData
 			console.log(checkedData)
 			console.log(checkedNames)
@@ -531,18 +530,17 @@ export default {
 				item.indexs = index + 1
 			})
 			this.table.tableData = rowsData
-			console.log(extraData)
       this.$refs.associateAssetModal.show = false
 		},
 		// 删除
     deleteFn (record) {
       this.table.tableData.forEach((item, index) => {
-        if (item.assetId === record.assetId) {
+        if (item.projectId === record.projectId) {
           this.table.tableData.splice(index, 1)
         }
       })
       this.checkedData.forEach((item, index) => {
-        if (record.assetId === item) {
+        if (record.projectId === item) {
           this.checkedData.splice(index, 1)
         }
       })
@@ -595,7 +593,7 @@ export default {
       this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          console.log(data, '-=-=-')
+          this.exePreSelectChange(data.exePre)
           this.reportBillId = data.reportBillId || 1
           this.queryReportBillColumn(this.reportBillId)
           // 插入编辑数据
@@ -637,12 +635,12 @@ export default {
       this.$api.reportManage.queryReportTaskTempPageList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
-          console.log(data, '00000000000000000000000000')
           let checkedData = []
           data.forEach((item, index) => {
-            checkedData.push(item.projectId)
+            item.projectId = Number(item.projectId)
+            checkedData.push(Number(item.projectId))
             item.key = index
-            item.indexs = index
+            item.indexs = index + 1
             item.informant = []          // 提交人
             item.informantOpt = []
             item.informantSet = []
@@ -709,10 +707,15 @@ export default {
             for (let i = 0; i < this.table.tableData.length; i++) {
               if (!this.table.tableData[i].informant) {
                 this.$message.info('请选择填报人')
+                return
               } else if (!this.table.tableData[i].auditor) {
                 this.$message.info('请选择审核人')
+                return
               }
             }
+          }
+          if (!this.reportBillId) {
+            this.$message.info('请选择呈报表单设置')
           }
           // 呈报表单数据
           console.log(this.reportBillColumnList, '旧的')
@@ -746,6 +749,7 @@ export default {
             })
           })
           let obj = {
+            planCode: values.planCode,
             reportBillId: this.reportBillId,
             remark: values.remark,                                   // 备注
             reportPlanId: this.reportPlanId,                         // 无是新增 有是更新
@@ -764,7 +768,6 @@ export default {
             attachmentList: files,             // 附件
             reportBillColumnList: report
         }
-        console.log(obj, '0-0-0-')
         let loadingName = this.SG_Loding('保存中...')
         this.$api.reportManage.saveReportPlan(obj).then(res => {
           if (res.data.code === "0") {
