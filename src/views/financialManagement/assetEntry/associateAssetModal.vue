@@ -304,7 +304,6 @@
           organId: this.judgeInstitutions ? this.organId : this.paginator.organId,
           assetType: this.assetType
         }
-        console.log('909090')
         this.$api.assets.getList(obj).then(res => {
           if (Number(res.data.code) === 0) {
             let data = res.data.data

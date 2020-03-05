@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-02-26 19:15:58
+ * @LastEditTime: 2020-03-04 18:10:57
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -11,7 +11,7 @@
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <SG-Button @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
+          <SG-Button  @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
           <SG-Button class="mr10"  @click="openImportModal"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
           <SG-Button type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
@@ -38,13 +38,13 @@
             <a-select
               showSearch
               placeholder="请选择资产类型"
-              v-model="queryCondition.assetType"
+              v-model="queryCondition.assetTypeList"
               optionFilterProp="children"
-              @change="assetTypeSelect"
+              @change="assetTypeListSelect"
               mode="multiple"
               :maxTagCount="1"
               :style="allStyle"
-              :options="assetTypeOpt"
+              :options="assetTypeListOpt"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -124,16 +124,11 @@
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
         >
-          <template slot="name" slot-scope="text, record">
+          <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
           </template>
-          <template slot="tranProgress" slot-scope="text, record">
-            <div style="padding-right: 20px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
-            </div>
-          </template>
           <template slot="operation" slot-scope="text, record">
-            <span v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_SET" @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+            <OperationPopover :operationData="record.operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -158,6 +153,7 @@ import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import OperationPopover from '@/components/OperationPopover'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -165,6 +161,20 @@ const operationTypes = {
   detail: "/subsidiary/detail",
   edit: '/subsidiary/edit'
 };
+let operationInfo = {
+  on: {
+    msg: '启用',
+    status: '1'
+  },
+  off: {
+    msg: '禁用',
+    status: '2'
+  },
+  on: {
+    msg: '删除',
+    status: '-1'
+  }
+}
 const allStyle = {
   width: "170px",
   "margin-right": "10px",
@@ -180,7 +190,7 @@ const allWidth = {
 const queryCondition = {
   organId: "",
   projectId: "",
-  assetType: [''], // 资产类型
+  assetTypeList: [''], // 资产类型
   nameOrCode: '', // 资产名称或编码，模糊查询
   matchingTypeList: [''], // 附属配套类型
   status: '', // 附属配套状态
@@ -191,7 +201,7 @@ const queryCondition = {
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
 const matchingTypeListOpt = [{ label: "全部附属配套类型", value: "" }];
-const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
+const assetTypeListOpt = [{ label: "全部资产类型", value: "" }]
 const assetStatusListOpt = [
   { label: "全部资产状态", value: "" },
   { label: "未生效", value: "0" },
@@ -235,23 +245,23 @@ let columns = [
   },
   {
     title: "附属配套名称",
-    dataIndex: "name",
-    scopedSlots: { customRender: "name" },
+    dataIndex: "matchingName",
+    scopedSlots: { customRender: "matchingName" },
     width: 100
   },
   {
     title: "附属配套编码",
-    dataIndex: "code",
+    dataIndex: "matchingCode",
     width: 100
   },
   {
     title: "类型",
-    dataIndex: "typeName",
+    dataIndex: "matchingTypeName",
     width: 100
   },
   {
     title: "规格型号",
-    dataIndex: "specificationTypeName",
+    dataIndex: "specificationType",
     width: 120
   },
   {
@@ -261,7 +271,7 @@ let columns = [
   },
   {
     title: "数量",
-    dataIndex: "warrantNbr",
+    dataIndex: "number",
     width: 120
   },
   {
@@ -271,7 +281,7 @@ let columns = [
   },
   {
     title: "是否接管前附属配套",
-    dataIndex: "statusNamert",
+    dataIndex: "isBeforeName",
     width: 150
   },
   {
@@ -292,7 +302,8 @@ export default {
     TreeSelect,
     noDataTips,
     segiIcon,
-    eportAndDownFile
+    eportAndDownFile,
+    OperationPopover
   },
   data() {
     return {
@@ -303,7 +314,7 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       matchingTypeListOpt,
-      assetTypeOpt,
+      assetTypeListOpt,
       assetStatusListOpt,
       statusOpt,
       table: {
@@ -314,6 +325,15 @@ export default {
       }
     };
   },
+  watch: {
+    '$route' () {
+      if (this.$route.path === '/subsidiary' && this.$route.query.refresh) {
+        this.queryCondition.pageNum = 1
+        this.queryCondition.pageSize = 10
+          this.query()
+        }
+    }
+  },
   created() {
     this.platformDictFn("asset_type")
   },
@@ -323,9 +343,8 @@ export default {
         ...this.queryCondition,
         flag: "0"
       };
-      // data.assetType = data.assetType.join(',')
       // 资产类型参数改变
-      data.assetTypeList = utils.deepClone(data.assetType).filter(item => item !== '')
+      data.assetTypeList = utils.deepClone(data.assetTypeList).filter(item => item !== '')
       data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
       data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
       
@@ -339,9 +358,11 @@ export default {
               item.settingMethodName = item.settingMethodName || '--'
               item.kindOfRightName = item.kindOfRightName || '--'
               item.warrantNbr = item.warrantNbr || '--'
+              item.statusName = item.statusName || '--'
               return {
                 key: getUuid(),
-                ...item
+                ...item,
+                operationDataBtn: this.createOperationBtn(item)
               };
             });
             this.table.totalCount = res.data.data.count || 0;
@@ -353,6 +374,54 @@ export default {
           this.table.loading = false;
         }
       );
+    },
+    // 生成操作按钮
+    createOperationBtn (record) {
+      // 审批状态   
+      let arr = []
+      if (true) {
+        arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+      }
+      if (String(record.status) === '2') {
+        arr.push({iconType: 'play-circle', text: '启用', editType: 'on'})
+      }
+      if (String(record.status) === '1') {
+        arr.push({iconType: 'close-circle', text: '禁用', editType: 'off'})
+      }
+      if (true) {
+        arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+      }
+      arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
+      return arr
+    },
+    // 操作事件函数
+    operationFun (type, record) {
+      console.log('操作事件', type, record)
+      if (['edit', 'detail'].includes(type)) {
+        this.goPage(type, record)
+      }
+      if (['on', 'off', 'delete'].includes(type)) {
+        let info = operationInfo[type]
+        this.$SG_Modal.confirm({
+          title: `确定${info['msg']}该附属配套吗?`,
+          okText: '确定',
+          cancelText: '关闭',
+          onOk: () => {
+            let data = {
+              subsidiaryMatchingId: record.subsidiaryMatchingId,
+              status: info['status']
+            }
+            this.$api.subsidiary.updateStatusOrDelete(data).then(res => {
+              if (res.data.code === '0') {
+               this.$SG_Message.success(`${info['msg']}成功！`)
+               this.query()
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          }
+        })
+      }
     },
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
@@ -375,9 +444,9 @@ export default {
         }
       });
     },
-    assetTypeSelect (value) {
+    assetTypeListSelect (value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeOpt)
+        this.queryCondition.assetTypeList = this.handleMultipleSelectValue(value, this.queryCondition.assetTypeList, this.assetTypeListOpt)
       })
     },
     assetStatusListSelect (value) {
@@ -397,7 +466,7 @@ export default {
       this.queryCondition.projectId = "";
       this.queryCondition.matchingTypeList = [''];
       this.getObjectKeyValueByOrganIdFn();
-      this.organDict('SUBSIDIARY_MATCHING_');
+      this.organDict('SUBSIDIARY_MATCHING_TYPE');
       this.searchQuery();
     },
     handleMultipleSelectValue (value, data, dataOptions) {
@@ -433,7 +502,7 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition.projectId = "";
-      this.queryCondition.assetType = [''];
+      this.queryCondition.assetTypeList = [''];
       this.queryCondition.nameOrCode = '';
       this.queryCondition.matchingTypeList = [''];
       this.queryCondition.status = '';
@@ -447,8 +516,8 @@ export default {
           let arr = result.map(item => ({ label: item.name, ...item }));
           // 资产类型
           if (code === "asset_type") {
-            this.assetTypeOpt = [
-              ...utils.deepClone(assetTypeOpt),
+            this.assetTypeListOpt = [
+              ...utils.deepClone(assetTypeListOpt),
               ...arr
             ];
           }
@@ -464,7 +533,7 @@ export default {
         flag: "0"
       };
       // 资产类型参数改变
-      data.assetTypeList = utils.deepClone(data.assetType).filter(item => item !== '')
+      data.assetTypeList = utils.deepClone(data.assetTypeList).filter(item => item !== '')
       data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
       data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
      
@@ -540,9 +609,9 @@ export default {
           let result = res.data.data || [];
           let arr = result.map(item => ({ label: item.name, ...item, key: item.value }));
           // 附属信息类型
-          if (code === "SUBSIDIARY_MATCHING_ TYPE") {
-            this.disposeModeOpt = [
-              ...utils.deepClone(disposeModeOpt),
+          if (code === "SUBSIDIARY_MATCHING_TYPE") {
+            this.matchingTypeListOpt = [
+              ...utils.deepClone(matchingTypeListOpt),
               ...arr
             ];
           }
@@ -553,10 +622,13 @@ export default {
     },
     goPage(type, record) {
       let query = {
-        type
+        type,
+        organName: this.organName,
+        organId: this.queryCondition.organId
       };
       if (['detail', 'edit'].includes(type)) {
         query.subsidiaryMatchingId = record.subsidiaryMatchingId
+        query.assetId = record.assetId
       }
       this.$router.push({ path: operationTypes[type], query });
     },
