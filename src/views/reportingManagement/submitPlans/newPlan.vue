@@ -594,7 +594,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.exePreSelectChange(data.exePre)
-          this.reportBillId = data.reportBillId || 1
+          this.reportBillId = Number(data.reportBillId)
           this.queryReportBillColumn(this.reportBillId)
           // 插入编辑数据
           this.form.setFieldsValue({
