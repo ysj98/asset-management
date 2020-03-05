@@ -19,6 +19,29 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
+                  <a-form-item label="运营项目"  v-bind="formItemLayout">
+                    <a-select
+                      :style="allWidth"
+                      :disabled="communityIdDisabled"
+                      :getPopupContainer="getPopupContainer"
+                      @change="communityIdChange"
+                        placeholder="请选择项目"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="communityIdOpt"
+                        :allowClear="false"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                        v-decorator="['communityId']"
+                      />
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
+                  <a-form-item label="楼栋别名" v-bind="formItemLayout">
+                    <a-input :style="allWidth" v-decorator="['aliasName', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请输入楼栋名称'}]}]"/>
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋编码" v-bind="formItemLayout">
                     <a-input :style="allWidth" v-decorator="['code', {initialValue: '' || undefined}]"/>
                   </a-form-item>
@@ -52,7 +75,7 @@
                   <a-form-item label="楼栋类型" v-bind="formItemLayout">
                     <a-select
                       :style="allWidth"
-                      :getCalendarContainer="getPopupContainer"
+                      :getPopupContainer="getPopupContainer"
                         placeholder="请选择楼栋类型"
                         showSearch
                         optionFilterProp="children"
@@ -263,6 +286,9 @@ export default {
     type () {
       this.init()
     },
+    organId () {
+      this.queryCommunityListByOrganId()
+    },
     // 监听id变化
     objectData () {
       this.init()
@@ -296,6 +322,8 @@ export default {
       buildTypeOpt: [], // 楼栋类型
       useTypeOpt: [], // 楼栋用途
       buildStructOpt: [], // 建筑结构
+      communityIdOpt: [], // 项目列表
+      communityIdDisabled: false, // 是否禁止选择项目
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -334,6 +362,7 @@ export default {
     this.platformDictFn()
     this.init()
     this.handleBtn()
+    this.queryCommunityListByOrganId()
   },
   methods: {
     init () {
@@ -349,6 +378,35 @@ export default {
       if (this.type==='edit' && this.$power.has(ASSET_MANAGEMENT.ASSET_BUILD_EDIT)) {
         this.hasUpdatePower = true
       }
+    },
+    // 选择项目变化
+    communityIdChange (e) {
+      let o = this.communityIdOpt.filter(item => item.value === e)[0]
+      let communityName = o.name
+      let name = this.form.getFieldValue('name')
+      if (name) {
+        this.form.setFieldsValue({aliasName: `${name}_${communityName}`})
+      }
+      console.log('得到值', name, '2',communityName)
+    },
+    // 请求项目
+    queryCommunityListByOrganId () {
+       let data = {
+        organId: this.organId
+      }
+      this.$api.basics.queryCommunityListByOrganId(data).then(res => {
+        if (res.data.code === '0') {
+          let result = res.data.data || []
+          let resultArr = result.map(item => {
+            return {
+              label: item.name,
+              value: item.communityId,
+              ...item
+            }
+          })
+          this.communityIdOpt = resultArr
+        }
+      })
     },
     handleSave () {
       this.form.validateFields((err, values) => {
@@ -492,6 +550,9 @@ export default {
       this.city = data.city
       this.region = data.region
       this.address = data.address
+      // 处理项目是否可以选择
+      console.log('楼栋数据=>', data)
+      this.communityIdDisabled = data.communityId ? true : false
       this.queryCityAndAreaList(data.province, 'province')
       this.queryCityAndAreaList(data.city, 'city')
       // end

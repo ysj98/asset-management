@@ -178,7 +178,7 @@ export default {
         this.picPath = [{url: data.picPath, name: ''}]
       }
       let o = this.form.getFieldsValue()
-      console.log('表单数据=>', o)
+      console.log('表单数据=>', o, data)
       let values = {}
       utils.each(o, (value, key) => {
         if (data[key] && data[key] !== 0) {
@@ -209,20 +209,28 @@ export default {
           if (this.type === 'create') {
             data.organId = this.organId
             data.upPositionId = this.objectData.positionId
-            let loadingName = this.SG_Loding('新增中...')
-            this.$api.building.addUnit(data).then(res => {
-              this.DE_Loding(loadingName).then(() => {
-                if (res.data.code === '0') {
-                  this.$SG_Message.success('新增单元成功')
-                  this.resetAll()
-                  this.$emit('success', 'create')
-                } else {
-                  this.$message.error(res.data.message)
-                }
-              }) 
-            }, () => {
-              this.DE_Loding(loadingName).then(res => {
-                this.$SG_Message.error('新增失败！')
+            // 新增时需用楼栋id 请求楼栋详情是否有项目id
+            this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
+              return resData.data.data.communityId
+            }).then(communityId => {
+              let loadingName = this.SG_Loding('新增中...')
+              if (communityId && communityId !== '-1') {
+                data.communityId = communityId
+              }
+              this.$api.building.addUnit(data).then(res => {
+                this.DE_Loding(loadingName).then(() => {
+                  if (res.data.code === '0') {
+                    this.$SG_Message.success('新增单元成功')
+                    this.resetAll()
+                    this.$emit('success', 'create')
+                  } else {
+                    this.$message.error(res.data.message)
+                  }
+                }) 
+              }, () => {
+                this.DE_Loding(loadingName).then(res => {
+                  this.$SG_Message.error('新增失败！')
+                })
               })
             })
           }

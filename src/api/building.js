@@ -130,3 +130,13 @@ export function inventoryDetail (data) {
 export function updateCheckPlanStatus (data) {
   return axiosPost(inventory.updateCheckPlanStatus, data)
 }
+// 下载楼栋模板
+export function buildingDownLoadExcel (data) {
+  return axiosGet(building.buildingDownLoadExcel, {}, false, {
+    responseType: 'blob'
+  })
+}
+// 楼栋批量导入
+export function buildImportExcel (organId, data) {
+  return axiosPost(building.buildImportExcel + '/' + organId, data)
+}

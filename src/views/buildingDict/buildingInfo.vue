@@ -14,6 +14,7 @@
          <SG-Button v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
          <SG-Button v-if="showCreateUnitBtn" :class="[childNodeType==='0'&&'mr5']" @click="createPage('unit')" type="primary" class="fr tree-btn" weaken>新增单元</SG-Button>
          <SG-Button v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
+         <SG-Button v-if="showCreateBuildBtn" @click="openImportModal('build')" type="primary" class="fr tree-btn mr5" weaken>批量导入楼栋</SG-Button>
        </div>
      </div>
      <div class="tree-content">
@@ -34,6 +35,12 @@
         <div class="mt10">点击左侧位置树，添加楼栋</div>
       </div>
     </div>
+    <!-- 批量更新 -->
+    <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" title="批量导入楼栋"/>
+    <!-- 导入错误信息 -->
+    <downErrorFile ref="downErrorFile">
+      <div>{{upErrorInfo}}</div>
+    </downErrorFile>
   </div>
 </template>
 <script>
@@ -42,13 +49,17 @@ import {utils, debounce} from '@/utils/utils'
 import createBuild from './createBuild'
 import createFloor from './createFloor'
 import createUnit from './createUnit'
+import downErrorFile from '@/views/common/downErrorFile'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import eportAndDownFile from '@/views/common/eportAndDownFile.vue'
 export default {
   components: {
     positionTree,
     createBuild,
     createFloor,
-    createUnit
+    createUnit,
+    eportAndDownFile,
+    downErrorFile
   },
   props: {
     organId: {
@@ -63,6 +74,7 @@ export default {
       createType: '', // unit新建单元，build新建楼栋，floor新建楼层 
       activeItem: {},
       childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
+      upErrorInfo: '',
     }
   },
   watch: {
@@ -146,6 +158,55 @@ export default {
         this.childNodeType = ''
       }
       console.log('点击树节点改变=>', item, this.activeType, this.pageType)
+    },
+    // 下载模板文件
+    downModeFile () {
+      let loadingName = this.SG_Loding('下载中...')
+      this.$api.building.buildingDownLoadExcel().then(res => {
+          this.$SG_Message.destroy(loadingName)
+          let blob = new Blob([res.data])
+          let a = document.createElement('a')
+          a.href = URL.createObjectURL(blob)
+          // ${this.organName}
+          a.download = `导入楼栋模板.xls`
+          a.style.display = 'none'
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+      }, () => {
+        this.$SG_Message.destroy(loadingName)
+        this.$SG_Message.error('附属配套模板!')
+      })
+    },
+    // 上传文件
+    uploadModeFile (file) {
+      // this.$refs.eportAndDownFile.hideModal()
+      console.log('批量更新', file)
+      let fileData = new FormData()
+      fileData.append('file', file)
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.building.buildImportExcel(this.organId, fileData).then(res => {
+        if (res.data.code === '0') {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            this.$refs.positionTree.resetLoad()
+          }) 
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$refs.downErrorFile.visible = true
+            this.upErrorInfo = res.data.message
+            // this.$SG_Message.error(res.data.message || '导入失败！')
+          })
+        }
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
+    },
+    // 显示导入弹窗
+    openImportModal () {
+      this.$refs.eportAndDownFile.visible = true
     },
     computedHeight () {
       let elem = this.$refs.buildingInfo

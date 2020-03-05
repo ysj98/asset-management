@@ -144,3 +144,7 @@ export function updateDisposeRegisterStatus (data) {
 export function getDisposeRegisterById (data) {
   return axiosPost(disposeRegister.getDisposeRegisterById, data)
 }
+// 组织机构请求项目
+export function queryCommunityListByOrganId (data) {
+  return axiosGet(basics.queryCommunityListByOrganId, data)
+}

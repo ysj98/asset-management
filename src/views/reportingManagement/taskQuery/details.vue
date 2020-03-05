@@ -7,7 +7,7 @@
       <span class="section-title blue">任务信息</span>
       <div class="particulars-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8">任务名称：{{particularsData.planName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">任务名称：{{particularsData.taskName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目：{{particularsData.projectName || '--'}}</a-col>
 					<a-col class="playground-col" :span="8">
@@ -16,20 +16,20 @@
 							showSearch
 							placeholder="请选择呈报表单"
 							style="width: 200px"
-							:defaultValue="undefined"
+							:defaultValue="particularsData.reportBillId"
 							:options="chargePersonOpt"
 							:filterOption="filterOption"
 						>
 						</a-select>
 					</a-col>
-          <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.effDate ? `${particularsData.effDate} - ${particularsData.expDate}` : '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.beginDate ? `${particularsData.beginDate} - ${particularsData.endDate}` : '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属计划：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">填报人：{{particularsData.reportByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">审核人：{{particularsData.auditByName || '--'}}</a-col>
 					<a-col class="playground-col" :span="8">任务状态：{{particularsData.taskStatus || '--'}}</a-col>
           <a-col class="playground-col" :span="8">发布人：{{particularsData.createBy || '--'}}</a-col>
 					<a-col class="playground-col" :span="8">发布时间：{{particularsData.realBeginDate ? `${particularsData.realBeginDate} - ${particularsData.realEndDate}` : '--'}}</a-col>
-          <a-col class="playground-col" :span="8">任务类型：{{particularsData.taskType || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">任务类型：{{particularsData.taskTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
@@ -49,14 +49,14 @@
 				<div class="form-choice">
 					<div style="line-height: 40px;">
 						填报结果：
-						<a-radio-group name="填报结果" :defaultValue="1">
-							<a-radio :value="1">填报</a-radio>
-							<a-radio :value="2">不填报</a-radio>
+						<a-radio-group name="填报结果" :disabled="true" v-model="particularsData.result">
+							<a-radio :value="0">填报</a-radio>
+							<a-radio :value="1">不填报</a-radio>
 						</a-radio-group>
 						<SG-Button style="float: right;" type="primary" @click="downloadFn">导出</SG-Button>
 					</div>
 					<div style="line-height: 40px;">
-						填报说明：  12月份资产呈报数据
+						填报说明：{{particularsData.resultRemark}}
 					</div>
 				</div>
         <div class="table-layout-fixed table-border">
@@ -180,17 +180,21 @@ export default {
       let obj = {
         reportPlanId: this.reportPlanId
       }
-      this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
+      this.$api.reportManage.getTask(obj).then(res => {
         if (Number(res.data.code) === 0) {
           console.log(res)
           let data = res.data.data
           this.particularsData = data
-          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            item.key = index
-            item.address = item.location
-            item.assetArea = item.area
-          })
-          this.tableData = data.amsOwnershipRegisterDetailList
+          let files = []
+          if (data.attachment && data.attachment.length > 0) {
+              data.attachment.forEach(item => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName
+              })
+            })
+          }
+          this.files = files
         } else {
           this.$message.error(res.data.message)
         }
@@ -200,9 +204,10 @@ export default {
   created () {
   },
   mounted () {
-    // let arr = JSON.parse(this.$route.query.quersData)
-    // this.reportPlanId = arr[0].reportPlanId
-    // this.query()
+    let arr = JSON.parse(this.$route.query.quersData)
+    console.log(arr, '-=-=-=')
+    this.reportPlanId = arr[0].reportPlanId
+    this.query()
   }
 }
 </script>

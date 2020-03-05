@@ -27,7 +27,8 @@
           <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
-          <segi-range-picker label="执行日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+          <!-- <segi-range-picker label="执行日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" @dateChange="onDateChange"></segi-range-picker> -->
+          <SG-DatePicker :allowClear="false" label="执行日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -42,6 +43,9 @@
       class="custom-table td-pd10"
       :pagination="false"
       >
+      <template slot="reportTaskId" slot-scope="text, record">
+        <span class="tab-opt" @click="goPage(record)">{{record.reportTaskId}}</span>
+      </template>
     </a-table>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
@@ -61,7 +65,7 @@ import SegiRangePicker from '@/components/SegiRangePicker'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
-import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
+import {getNowMonthDate, getNMonthsAgoFirst} from 'utils/formatTime'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 const approvalStatusData = [
@@ -93,7 +97,8 @@ const approvalStatusData = [
 const columns = [
   {
     title: '任务编号',
-    dataIndex: 'planCode'
+    dataIndex: 'reportTaskId',
+    scopedSlots: { customRender: "reportTaskId" },
   },
   {
     title: '所属机构',
@@ -117,7 +122,7 @@ const columns = [
   },
   {
     title: '计划执行日期',
-    dataIndex: 'realBeginDate-realEndDate'
+    dataIndex: 'createTimeEndDate'
   },
   {
     title: '填报人',
@@ -129,7 +134,7 @@ const columns = [
   },
   {
     title: '实际填报日期',
-    dataIndex: 'approvalStatusName1'
+    dataIndex: 'realBeginDate'
   },
     {
     title: '数据量',
@@ -137,7 +142,7 @@ const columns = [
   },
     {
     title: '任务状态',
-    dataIndex: 'taskStatus'
+    dataIndex: 'taskStatusName'
   }
 ]
 export default {
@@ -146,9 +151,9 @@ export default {
   data () {
     return {
       numList: [
-				{title: '全部', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '草稿', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-				{title: '待审批', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '已驳回', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-				{title: '已审批', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}, {title: '已取消', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+				{title: '全部', key: 'total', value: 0, fontColor: '#324057'}, {title: '未完成', key: 'undone', value: 0, bgColor: '#4BD288'},
+				{title: '待审批', key: 'pendingApproval', value: 0, bgColor: '#1890FF'}, {title: '已驳回', key: 'rejected', value: 0, bgColor: '#DD81E6'},
+				{title: '已完成', key: 'done', value: 0, bgColor: '#FD7474'}
 			], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       toggle: false,
       // scrollHeight: {y: 0},
@@ -171,11 +176,11 @@ export default {
         projectId: '',              // 资产项目Id
         organId:1,                 // 组织机构id
         reportBillId: '',            // 备注：变动类型id(多个用，分割)
-        startCreateDate: getThreeMonthsAgoDate(),       // 备注：开始创建日期
-        endCreateDate: getCurrentDate(),         // 备注：结束创建日期
+        startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
+        endCreateDate: getNowMonthDate(),         // 备注：结束创建日期
         taskType: ''
       },
-      // defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       count: '',
       reportBillIdData: [
         {
@@ -187,6 +192,14 @@ export default {
         {
           name: '全部任务类型',
           value: '' 
+        },
+        {
+          name: '固定任务',
+          value: '1' 
+        },
+        {
+          name: '临时任务',
+          value: '2' 
         }
       ],
       projectData: [
@@ -201,6 +214,38 @@ export default {
   },
   methods: {
     moment,
+    // 统计查询
+    getTaskStat () {
+      let data = {
+        action: 'jg',            // 
+        beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),  // 开始时间
+        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),      // 结束时间
+        organId: this.queryCondition.organId,
+        pageNum: this.queryCondition.pageNum,                // 当前页
+        pageSize: this.queryCondition.pageSize,              // 每页显示记录数
+        projectId: this.queryCondition.projectId,            // 资产项目Id
+        reportBillId: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : '',                                    // 表单id
+        reportPlanId: '',                                    // 计划id
+        reportTaskId: '',                                    // 任务id
+        searchText: '',                                      // 编码
+        taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
+      }
+      this.$api.reportManage.getTaskStat(data).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || []
+          this.numList = this.numList.map(m => {
+            return { ...m, value: result[m.key] }
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 详情
+    goPage (record) {
+      this.$router.push({ path: '/taskQuery/details', query: {quersData: JSON.stringify([record])}})
+    },
     // 搜索
     onSearch () {
       this.queryCondition.pageNum = 1
@@ -211,10 +256,10 @@ export default {
       this.toggle = val
     },
     // 起止日期发生变化
-    onDateChange (val) {
-      this.queryCondition.startCreateDate = val[0]
-      this.queryCondition.endCreateDate = val[1]
-    },
+    // onDateChange (val) {
+    //   this.queryCondition.startCreateDate = val[0]
+    //   this.queryCondition.endCreateDate = val[1]
+    // },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -302,8 +347,8 @@ export default {
       this.loading = true
       let obj = {
         action: 'jg',            // 
-        beginDate: this.queryCondition.startCreateDate,  // 开始时间
-        endDate: this.queryCondition.endCreateDate,      // 结束时间
+        beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),  // 开始时间
+        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),      // 结束时间
         organId: this.queryCondition.organId,
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
@@ -315,13 +360,15 @@ export default {
         taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
       }
-      this.$api.assets.getChangePage(obj).then(res => {
+      this.$api.reportManage.taskPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           this.loading = false
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.createTimeEndDate = `${item.createTime} - ${item.endDate}`
+              // item.realBeginDateRealEndDate = `${item.realBeginDate} - ${item.realEndDate}`
             })
             this.tableData = data
             this.count = res.data.data.count
@@ -334,6 +381,7 @@ export default {
           this.loading = false
         }
       })
+      this.getTaskStat()
     }
   },
   watch: {
@@ -360,13 +408,6 @@ export default {
     display: inline-block;
     vertical-align: middle;
   }
-  .tab-opt {
-    span {
-      padding-right: 10px;
-      color: #0084FF;
-      cursor: pointer;
-    }
-  }
   .custom-table {
     padding-bottom: 60px;
   }
@@ -381,6 +422,11 @@ export default {
       position: relative;
       height: 32px;
     }
+  }
+  .tab-opt {
+    padding-right: 10px;
+    color: #0084FF;
+    cursor: pointer;
   }
 }
 </style>

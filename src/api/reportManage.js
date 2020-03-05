@@ -1,3 +1,8 @@
+/*
+ * @Description: 
+ * @Date: 2020-03-04 18:38:38
+ * @LastEditTime: 2020-03-05 14:39:48
+ */
 
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { reportManage } from '../config/config.url'
@@ -39,7 +44,7 @@ export function queryReportBillColumn (data) {
 }
 
 
-// 呈报管理- 任务
+// 呈报管理---- 任务
 // [呈报任务]列表查询
 export function taskList (data) {
   return axiosGet(reportManage.taskList, data)
@@ -49,5 +54,39 @@ export function taskList (data) {
 export function taskPage (data) {
 	return axiosPost(reportManage.taskPage, data)
 }
+// [呈报任务]任务信息
+export function getTask (data) {
+	return axiosGet(reportManage.getTask, data)
+}
+// [呈报任务]任务统计
+export function getTaskStat (data) {
+	return axiosPost(reportManage.getTaskStat, data)
+}
 
-
+/**
+ * 呈报记录
+ */
+// 呈报记录查询(分页)
+export function queryReportRecordPageList (data) {
+	return axiosPost(reportManage.queryReportRecordPageList, data)
+}
+// 呈报记录详情
+export function queryReportRecordDetail (data) {
+	return axiosPost(reportManage.queryReportRecordDetail, data)
+}
+// 查询资产折旧(分页)
+export function queryAssetDeprecitionPageList (data) {
+	return axiosPost(reportManage.queryAssetDeprecitionPageList, data)
+}
+// 查询资产收入(分页)
+export function queryAssetIncomePageList (data) {
+	return axiosPost(reportManage.queryAssetIncomePageList, data)
+}
+// 查询资产费用(分页)
+export function queryAssetExpensePageList (data) {
+	return axiosPost(reportManage.queryAssetExpensePageList, data)
+}
+// 查询资产运营(分页)
+export function queryAssetOperationPageList (data) {
+	return axiosPost(reportManage.queryAssetOperationPageList, data)
+}

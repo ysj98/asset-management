@@ -232,6 +232,7 @@ export default {
             item.type = 'frist'
             item.key = item.positionId
             item.id = item.positionId
+            item.buildingId = item.positionId
             item.title = item.positionName
             item.scopedSlots = { title: 'title'}
             item.parentKey = topItem.key
@@ -242,6 +243,7 @@ export default {
           this.copyGdata = utils.deepClone(this.gData)
           this.expandedKeys = [topItem.key]
           this.treeUuid = getUuid()
+          this.hanldeOper(this.gData[0])
         } else {
           this.$message.error(res.data.message)
         }
@@ -252,18 +254,19 @@ export default {
       return this.$api.building.positionSelectAsyn(data).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
+          let _item = fetchItem(this.gData, key, 'key')
           for (let i = 0; i < result.length; i++) {
             let item = result[i]
             item.key = item.positionId
             item.type = 'second'
             item.id = item.positionId
             item.title = item.positionName
+            item.buildingId = _item.buildingId
             item.scopedSlots = { title: 'title' }
             item.parentKey = key
             this.store[item.key] = this.store[item.key] || item
             this.dataList.push({...item})
           }
-          let _item = fetchItem(this.gData, key, 'key')
           let _copyItem = fetchItem(this.copyGdata, key, 'key')
           this.expandedKeys.push(key)
           this.expandedKeys = [...new Set(this.expandedKeys)]

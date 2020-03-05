@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:45:49
- * @LastEditTime: 2020-02-26 12:46:22
+ * @LastEditTime: 2020-03-05 16:07:32
  -->
 <!--
 呈报记录页面
@@ -11,8 +11,6 @@
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <SG-Button @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
-          <SG-Button class="mr10"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
           <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
         <div slot="headerForm">
@@ -34,6 +32,31 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
+            <!-- 全部呈报表单 -->
+            <a-select
+              showSearch
+              placeholder="请选择呈报表单"
+              v-model="queryCondition.billType"
+              optionFilterProp="children"
+              @change="billTypeSelect"
+              mode="multiple"
+              :maxTagCount="1"
+              :style="allStyle"
+              :options="billTypeOpt"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
+            <!-- 资产名称或编码 -->
+            <a-input
+              :maxLength="30"
+              placeholder="资产(卡片)名称/编码"
+              v-model="queryCondition.objName"
+              :style="allStyle"
+            />
+          </div>
+        <div slot="contentForm" class="search-content-box">
+          <div class="search-from-box">
             <!-- 全部资产类型 -->
             <a-select
               showSearch
@@ -43,69 +66,38 @@
               @change="assetTypeSelect"
               mode="multiple"
               :maxTagCount="1"
-              :style="allStyle"
+              :style="allWidth"
               :options="assetTypeOpt"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 资产名称或编码 -->
-            <a-input
-              :maxLength="30"
-              placeholder="输入资产名称/编码"
-              v-model="queryCondition.nameOrCode"
-              :style="allStyle"
-            />
-          </div>
-        <div slot="contentForm" class="search-content-box">
-          <div class="search-from-box">
-            <!-- 全部资产状态 -->
+            <!-- 全部呈报方式-->
             <a-select
               showSearch
-              placeholder="请选择资产状态"
-              v-model="queryCondition.assetStatusList"
-              @change="assetStatusListSelect"
+              placeholder="请选择呈报方式"
+              v-model="queryCondition.taskType"
+              @change="taskTypeSelect"
               optionFilterProp="children"
               mode="multiple"
               :maxTagCount="1"
               :style="allWidth"
-              :options="assetStatusListOpt"
+              :options="taskTypeOpt"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 全部附属配套类型-->
-            <a-select
-              showSearch
-              placeholder="请选择附属配套类型"
-              v-model="queryCondition.matchingTypeList"
-              @change="matchingTypeListSelect"
-              optionFilterProp="children"
-              mode="multiple"
-              :maxTagCount="1"
-              :style="allWidth"
-              :options="matchingTypeListOpt"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
-            <!-- 全部附属配套状态 -->
+            <!-- 全部数据状态 -->
             <a-select
               showSearch
               placeholder="请选择附属配套状态"
-              v-model="queryCondition.status"
+              v-model="queryCondition.taskStatus"
               optionFilterProp="children"
               :style="allWidth"
-              :options="statusOpt"
+              :options="taskStatusOpt"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
-            />
-            <a-input
-              :maxLength="30"
-              v-model="queryCondition.matchingNameOrCode"
-              placeholder="请输入附属配套名称"
-              :style="allWidth"
             />
             </div>
             <div class="two-row-box">
@@ -124,16 +116,8 @@
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
         >
-          <template slot="name" slot-scope="text, record">
+          <template slot="reportRecordId" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
-          </template>
-          <template slot="tranProgress" slot-scope="text, record">
-            <div style="padding-right: 20px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
-            </div>
-          </template>
-          <template slot="operation" slot-scope="text, record">
-            <span v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_SET" @click="goPage('detail', record)" class="btn_click mr15">详情</span>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -177,47 +161,49 @@ const allWidth = {
 const queryCondition = {
   organId: "",
   projectId: "",
-  assetType: [''], // 资产类型
-  nameOrCode: '', // 资产名称或编码，模糊查询
-  matchingTypeList: [''], // 附属配套类型
-  status: '', // 附属配套状态
-  assetStatusList: [''], // 资产状态(多选)
-  matchingNameOrCode: "", // 附属配套名称
+  billType: [''], // 呈报表单类型
+  objName: '', // 资产名称或编码
+  taskType: [''], // 类型
+  taskStatus: '', // 状态
+  assetType: [''], // 资产类型(多选)
   pageNum: 1,
   pageSize: 10
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
-const matchingTypeListOpt = [{ label: "全部附属配套类型", value: "" }];
-const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
-const assetStatusListOpt = [
-  { label: "全部资产状态", value: "" },
-  { label: "未生效", value: "0" },
-  { label: "正常", value: "1" },
-  { label: "资产报废", value: "2" },
-  { label: "资产转让", value: "3" },
-  { label: "资产报损", value: "4" },
-  { label: "已清理", value: "5" },
-  // { label: "已取消", value: "6" }
+const taskTypeOpt = [
+  { label: "全部呈报方式", value: "" },
+  { label: "临时任务", value: "1" },
+  { label: "固定任务", value: "2" },
+  { label: "数据接口", value: "3" },
 ];
-const statusOpt = [
-  { label: "全部附属配套状态", value: "" },
-  { label: "启用", value: "1" },
-  { label: "停用", value: "2" },
+const billTypeOpt = [
+  { label: "全部呈报表单", value: "" },
+  { label: "资产运营信息", value: "1" },
+  { label: "资产收入信息", value: "2" },
+  { label: "资产费用信息", value: "3" },
+  { label: "资产折旧信息", value: "4" },
+]
+const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
+const taskStatusOpt = [
+  { label: "全部数据状态", value: "" },
+  { label: "待审批", value: "2" },
+  { label: "已经审批", value: "4" },
 ]
 let columns = [
-  // {
-  //   title: "附属配套编号",
-  //   dataIndex: "code",
-  //   width: 100
-  // },
   {
-    title: "所属机构",
-    dataIndex: "organName",
+    title: "呈报编号",
+    dataIndex: "reportRecordId",
+    scopedSlots: { customRender: "reportRecordId" },
+    width: 100
+  },
+  {
+    title: "资产/卡片名称",
+    dataIndex: "objName",
     width: 120
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
+    title: "资产/卡片编码",
+    dataIndex: "objCode",
     width: 120
   },
   {
@@ -226,61 +212,45 @@ let columns = [
     width: 120
   },
   {
-    title: "资产名称",
-    dataIndex: "assetName",
-    width: 120
-  },
-  {
-    title: "附属配套名称",
-    dataIndex: "name",
-    scopedSlots: { customRender: "name" },
+    title: "所属机构",
+    dataIndex: "organName",
+    
     width: 100
   },
   {
-    title: "附属配套编码",
-    dataIndex: "code",
+    title: "资产项目",
+    dataIndex: "projectName",
     width: 100
   },
   {
-    title: "类型",
-    dataIndex: "typeName",
+    title: "呈报表单",
+    dataIndex: "reportBillName",
     width: 100
   },
   {
-    title: "规格型号",
-    dataIndex: "specificationTypeName",
+    title: "呈报方式",
+    dataIndex: "taskTypeName",
     width: 120
   },
   {
-    title: "价值(元)",
-    dataIndex: "value",
+    title: "填报日期",
+    dataIndex: "realBeginDate",
     width: 120
   },
   {
-    title: "数量",
-    dataIndex: "warrantNbr",
+    title: "填报人",
+    dataIndex: "reportByName",
     width: 120
   },
   {
-    title: "计量单位",
-    dataIndex: "unitOfMeasurementName",
+    title: "审核人",
+    dataIndex: "auditByName",
     width: 100
   },
   {
-    title: "是否接管前附属配套",
-    dataIndex: "statusNamert",
+    title: "数据状态",
+    dataIndex: "taskStatusName",
     width: 150
-  },
-  {
-    title: "状态",
-    dataIndex: "statusName",
-    width: 100
-  },
-  {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    width: 100
   }
 ];
 export default {
@@ -298,10 +268,10 @@ export default {
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
-      matchingTypeListOpt,
+      taskTypeOpt,
+      billTypeOpt,
       assetTypeOpt,
-      assetStatusListOpt,
-      statusOpt,
+      taskStatusOpt,
       table: {
         columns,
         dataSource: [],
@@ -311,7 +281,7 @@ export default {
     };
   },
   created() {
-    this.platformDictFn("asset_type")
+    this.platformDictFn('asset_type')
   },
   methods: {
     query() {
@@ -319,22 +289,18 @@ export default {
         ...this.queryCondition,
         flag: "0"
       };
-      // data.assetType = data.assetType.join(',')
-      // 资产类型参数改变
-      data.assetTypeList = utils.deepClone(data.assetType).filter(item => item !== '')
-      data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
-      data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
+      // 呈报表单参数改变
+      data.billType = utils.deepClone(data.billType).join(',')
+      data.assetType = utils.deepClone(data.assetType).join(',')
+      data.taskType = utils.deepClone(data.taskType).join(',')
       
       this.table.loading = true;
-      this.$api.subsidiary.getListPage(data).then(
+      this.$api.reportManage.queryReportRecordPageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
-              item.settingMethodName = item.settingMethodName || '--'
-              item.kindOfRightName = item.kindOfRightName || '--'
-              item.warrantNbr = item.warrantNbr || '--'
               return {
                 key: getUuid(),
                 ...item
@@ -371,19 +337,19 @@ export default {
         }
       });
     },
+    billTypeSelect (value) {
+      this.$nextTick(function () {
+        this.queryCondition.billType = this.handleMultipleSelectValue(value, this.queryCondition.billType, this.billTypeOpt)
+      })
+    },
     assetTypeSelect (value) {
       this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeOpt)
       })
     },
-    assetStatusListSelect (value) {
+    taskTypeSelect (value) {
       this.$nextTick(function () {
-        this.queryCondition.assetStatusList = this.handleMultipleSelectValue(value, this.queryCondition.assetStatusList, this.assetStatusListOpt)
-      })
-    },
-    matchingTypeListSelect (value) {
-      this.$nextTick(function () {
-        this.queryCondition.matchingTypeList = this.handleMultipleSelectValue(value, this.queryCondition.matchingTypeList, this.matchingTypeListOpt)
+        this.queryCondition.taskType = this.handleMultipleSelectValue(value, this.queryCondition.taskType, this.taskTypeOpt)
       })
     },
     // 选择组织机构
@@ -391,9 +357,7 @@ export default {
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.projectId = "";
-      this.queryCondition.matchingTypeList = [''];
       this.getObjectKeyValueByOrganIdFn();
-      this.organDict('SUBSIDIARY_MATCHING_');
       this.searchQuery();
     },
     handleMultipleSelectValue (value, data, dataOptions) {
@@ -429,12 +393,11 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition.projectId = "";
+      this.queryCondition.billType = [''];
+      this.queryCondition.objName = '';
+      this.queryCondition.taskType = [''];
+      this.queryCondition.taskStatus = '';
       this.queryCondition.assetType = [''];
-      this.queryCondition.nameOrCode = '';
-      this.queryCondition.matchingTypeList = [''];
-      this.queryCondition.status = '';
-      this.queryCondition.assetStatusList = [''];
-      this.queryCondition.matchingNameOrCode = "";
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
@@ -452,24 +415,6 @@ export default {
           this.$message.error(res.data.message);
         }
       });
-    },
-    // 机构字典
-    organDict (code) {
-      this.$api.assets.organDict({ organId: this.queryCondition.organId, code }).then(res => {
-        if (res.data.code === "0") {
-          let result = res.data.data || [];
-          let arr = result.map(item => ({ label: item.name, ...item, key: item.value }));
-          // 附属信息类型
-          if (code === "SUBSIDIARY_MATCHING_ TYPE") {
-            this.disposeModeOpt = [
-              ...utils.deepClone(disposeModeOpt),
-              ...arr
-            ];
-          }
-        } else {
-          this.$message.error(res.data.message);
-        }
-      })
     },
     goPage(type, record) {
       let query = {

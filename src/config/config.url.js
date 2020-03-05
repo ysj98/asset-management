@@ -61,6 +61,8 @@ export const basics = {
   queryUserPageList: '/basic-data-api/rest-api/v1/userApi/queryUserPageList',
   // 根据组织机构查询岗位
   queryPostNewPageList: '/basic-data-api/rest-api/v1/postmanageApi/queryPostNewPageList',
+  // 组织机构请求项目
+  queryCommunityListByOrganId: '/basic-data-api/rest-api/v1/community/queryCommunityListByOrganId'
 }
 
 // 资产管理
@@ -376,7 +378,11 @@ export const building = {
   // 房间批量更新
   acctHouseCodeImport: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/acctHouseCodeImport',
   // 房屋导出
-  exportHouse: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/exportHouse'
+  exportHouse: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/exportHouse',
+  // 下载楼栋导入模板
+  buildingDownLoadExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/downLoadExcel',
+  // 楼栋批量导入
+  buildImportExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcel/'
 }
 
 // 权属概况
@@ -565,7 +571,7 @@ export const subsidiary = {
   // 附属配套-列表查询
   getListPage: '/ams/subsidiaryMatching/getListPage',
   // 附属配套-新增/修改保存
-  modifySave: '/ams/subsidiaryMatching/modifySave',
+  modifySave: '/ams/subsidiaryMatching/addModifySave',
   // 附属配套-状态操作或删除
   updateStatusOrDelete: '/ams/subsidiaryMatching/updateStatusOrDelete',
   // 附属配套查询-根据附属配套ID
@@ -577,7 +583,9 @@ export const subsidiary = {
   // 附属配套-列表导出
   exportData: '/ams/subsidiaryMatching/exportData',
   // 附属配套-导入
-  batchImport: '/ams/subsidiaryMatching/batchImport'
+  batchImport: '/ams/subsidiaryMatching/batchImport',
+  // 根据资产id 查询资产信息
+  getAssetById: '/ams/asset/getAssetById'
 }
 
 // 呈报管理
@@ -605,4 +613,22 @@ export const reportManage = {
   taskList: '/ams/reportTask/taskList',
   // [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
   taskPage: '/ams/reportTask/taskPage',
+  // [呈报任务]任务信息
+  getTask: '/ams/reportTask/getTask',
+  // [呈报任务]任务统计
+  getTaskStat: '/ams/reportTask/getTaskStat',
+  // 呈报记录
+  // 呈报记录查询(分页)
+  queryReportRecordPageList: '/ams/reportdata/queryReportRecordPageList',
+  // 呈报记录详情
+  queryReportRecordDetail: '/ams/reportdata/queryReportRecordDetail',
+  // 查询资产折旧(分页)
+  queryAssetDeprecitionPageList: '/ams/reportdata/queryAssetDeprecitionPageList',
+  // 查询资产收入(分页)
+  queryAssetIncomePageList: '/ams/reportdata/queryAssetIncomePageList',
+  // 查询资产费用(分页)
+  queryAssetExpensePageList: '/ams/reportdata/queryAssetExpensePageList',
+  // 查询资产运营(分页)
+  queryAssetOperationPageList: '/ams/reportdata/queryAssetOperationPageList'
 }
+

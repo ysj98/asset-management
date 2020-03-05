@@ -1,7 +1,7 @@
 /*
  * @Description: 
  * @Date: 2020-02-24 15:17:22
- * @LastEditTime: 2020-02-26 19:13:48
+ * @LastEditTime: 2020-03-03 10:30:22
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { subsidiary } from '../config/config.url'
@@ -41,4 +41,7 @@ export function exportData (data) {
 export function batchImport (data) {
   return axiosPost(subsidiary.batchImport, data)
 }
-
+// 根据资产id 查询资产信息
+export function getAssetById (data) {
+  return axiosPost(subsidiary.getAssetById, data)
+}

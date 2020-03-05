@@ -353,21 +353,29 @@ export default {
           }
           // 新增房间
           if (this.type === 'create' || this.type === 'copy') {
-            let loadingName = this.SG_Loding('新增中...')
-            this.$api.building.addHouse(data).then(res => {
-              this.DE_Loding(loadingName).then(() => {
-                if (res.data.code === '0') {
-                  this.$SG_Message.success(`新增房间成功`)
-                  this.goPage('index')
-                } else {
-                  this.$message.error(res.data.message)
-                }
+            // 新增时需用楼栋id 请求楼栋详情是否有项目id
+            this.$api.building.queryBuildDetail({buildId: value.buildId}).then(resData => {
+              return resData.data.data.communityId
+            }).then(communityId => {
+              if (communityId && communityId !== '-1') {
+                data.communityId = communityId
+              }
+              let loadingName = this.SG_Loding('新增中...')
+              this.$api.building.addHouse(data).then(res => {
+                this.DE_Loding(loadingName).then(() => {
+                  if (res.data.code === '0') {
+                    this.$SG_Message.success(`新增房间成功`)
+                    this.goPage('index')
+                  } else {
+                    this.$message.error(res.data.message)
+                  }
+                })
+              }, () => {
+                this.DE_Loding(loadingName).then(res => {
+                  this.$SG_Message.error('新增失败！')
+                })
               })
-            }, () => {
-              this.DE_Loding(loadingName).then(res => {
-                this.$SG_Message.error('新增失败！')
-              })
-              })
+            })
           }
           // 编辑房间
           if (this.type === 'edit') {
