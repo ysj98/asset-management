@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-05 14:23:55
+ * @LastEditTime: 2020-03-06 15:58:10
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -365,6 +365,8 @@ export default {
               item.kindOfRightName = item.kindOfRightName || '--'
               item.warrantNbr = item.warrantNbr || '--'
               item.statusName = item.statusName || '--'
+              item.unitOfMeasurementName = item.unitOfMeasurementName || '--'
+              item.number = item.number && item.number !== 0 ? item.number : '--'
               return {
                 key: getUuid(),
                 ...item,

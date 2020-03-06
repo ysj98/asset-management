@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:45:49
- * @LastEditTime: 2020-03-05 16:07:32
+ * @LastEditTime: 2020-03-06 17:39:30
  -->
 <!--
 呈报记录页面
@@ -11,7 +11,7 @@
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+          <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button> -->
         </div>
         <div slot="headerForm">
             <treeSelect
@@ -87,6 +87,9 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
+            <div class="box">
+              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+            </div>
             <!-- 全部数据状态 -->
             <a-select
               showSearch
@@ -139,12 +142,13 @@ import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {getNowMonthDate, getNMonthsAgoFirst} from 'utils/formatTime'
+import SegiRangePicker from '@/components/SegiRangePicker'
+import moment from 'moment'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
-  create: "/subsidiary/create",
-  detail: "/subsidiary/detail",
-  edit: '/subsidiary/edit'
+  detail: "/reportingRecord/details",
 };
 const allStyle = {
   width: "170px",
@@ -166,6 +170,8 @@ const queryCondition = {
   taskType: [''], // 类型
   taskStatus: '', // 状态
   assetType: [''], // 资产类型(多选)
+  startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
+  endCreateDate: getNowMonthDate(),        // 备注：结束创建日期
   pageNum: 1,
   pageSize: 10
 };
@@ -258,11 +264,13 @@ export default {
     SearchContainer,
     TreeSelect,
     noDataTips,
-    segiIcon
+    segiIcon,
+    SegiRangePicker
   },
   data() {
     return {
       ASSET_MANAGEMENT,
+      moment,
       toggle: true,
       allStyle,
       allWidth,
@@ -293,7 +301,10 @@ export default {
       data.billType = utils.deepClone(data.billType).join(',')
       data.assetType = utils.deepClone(data.assetType).join(',')
       data.taskType = utils.deepClone(data.taskType).join(',')
-      
+      data.beginDate = data.startCreateDate
+      data.endDate = data.endCreateDate
+      delete data.startCreateDate
+      delete data.endCreateDate
       this.table.loading = true;
       this.$api.reportManage.queryReportRecordPageList(data).then(
         res => {
@@ -336,6 +347,11 @@ export default {
           this.$message.error(res.data.message);
         }
       });
+    },
+    // 起止日期发生变化
+    onDateChange (val) {
+      this.queryCondition.startCreateDate = val[0]
+      this.queryCondition.endCreateDate = val[1]
     },
     billTypeSelect (value) {
       this.$nextTick(function () {
@@ -398,6 +414,8 @@ export default {
       this.queryCondition.taskType = [''];
       this.queryCondition.taskStatus = '';
       this.queryCondition.assetType = [''];
+      this.queryCondition.startCreateDate = getNMonthsAgoFirst(2)
+      this.queryCondition.endCreateDate = getNowMonthDate()
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
@@ -421,7 +439,9 @@ export default {
         type
       };
       if (['detail', 'edit'].includes(type)) {
-        query.subsidiaryMatchingId = record.subsidiaryMatchingId
+        query.reportRecordId = record.reportRecordId
+        query.reportBillId = record.reportBillId
+        query.reportTaskId = record.reportTaskId
       }
       this.$router.push({ path: operationTypes[type], query });
     },
@@ -436,6 +456,12 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.box {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  margin-top: 14px;
+}
 .search-content-box {
   display: flex;
   justify-content: space-between;
