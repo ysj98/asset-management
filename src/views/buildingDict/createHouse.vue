@@ -354,7 +354,7 @@ export default {
           // 新增房间
           if (this.type === 'create' || this.type === 'copy') {
             // 新增时需用楼栋id 请求楼栋详情是否有项目id
-            this.$api.building.queryBuildDetail({buildId: value.buildId}).then(resData => {
+            this.$api.building.queryBuildDetail({buildId: values.buildId}).then(resData => {
               return resData.data.data.communityId
             }).then(communityId => {
               if (communityId && communityId !== '-1') {

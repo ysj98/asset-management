@@ -552,7 +552,7 @@ export default {
       this.address = data.address
       // 处理项目是否可以选择
       console.log('楼栋数据=>', data)
-      this.communityIdDisabled = data.communityId ? true : false
+      this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false
       this.queryCityAndAreaList(data.province, 'province')
       this.queryCityAndAreaList(data.city, 'city')
       // end
