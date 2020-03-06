@@ -271,9 +271,9 @@ export default {
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum,
         organId: this.queryCondition.organId,
-        approvalStatus: this.queryCondition.taskStatus,   // 状态
+        approvalStatus: this.queryCondition.taskStatus.length > 0 ? this.queryCondition.taskStatus.join(',') : '',   // 状态
         planName: this.queryCondition.planName,
-        billType: this.queryCondition.reportBillId
+        billType: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : ''
       }
       this.table.loading = true
       this.$api.reportManage.queryReportPlanPageList(data).then(
@@ -302,9 +302,9 @@ export default {
     queryReportPlanNum () {
       let data = {
         organId: this.queryCondition.organId,
-        approvalStatus: this.queryCondition.taskStatus,   // 状态
+        approvalStatus: this.queryCondition.taskStatus.length > 0 ? this.queryCondition.taskStatus.join(',') : '',   // 状态
         planName: this.queryCondition.planName,
-        billType: this.queryCondition.reportBillId
+        billType: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : ''
       }
       this.$api.reportManage.queryReportPlanNum(data).then(res => {
         if (res.data.code === "0") {
