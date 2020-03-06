@@ -1,37 +1,43 @@
 <!--
  * @Description: 呈报记录一览表
  * @Date: 2020-03-05 16:50:14
- * @LastEditTime: 2020-03-05 17:24:04
+ * @LastEditTime: 2020-03-06 11:35:54
  -->
 <template>
   <div class="buildingDict-page">
     <div class="custom-tabs">
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
-        <a-tab-pane tab="楼栋信息" key="building">
-          <buildingInfo :organId="organId"/>
+        <a-tab-pane tab="资产运营信息" key="operate">
+          <operateInfo/>
         </a-tab-pane>
-        <a-tab-pane tab="房间信息" key="house">
-          <houseInfo />
+        <a-tab-pane tab="资产收入信息" key="income">
+          <incomeInfo />
+        </a-tab-pane>
+        <a-tab-pane tab="资产费用信息" key="cost">
+          <costInfo />
+        </a-tab-pane>
+        <a-tab-pane tab="资产折旧信息" key="depreciation">
+          <depreciationInfo />
         </a-tab-pane>
       </a-tabs>
     </div>
   </div>
 </template>
 <script>
-import buildingInfo from './buildingInfo'
-import houseInfo from './houseInfo'
-const allWidth = {width: '185px'}
+import operateInfo from './operateInfo'
+import incomeInfo from './incomeInfo'
+import costInfo from './costInfo'
+import depreciationInfo from './depreciationInfo'
 export default {
   components: {
-    buildingInfo,
-    houseInfo,
-    topOrganByUser
+    operateInfo,
+    incomeInfo,
+    costInfo,
+    depreciationInfo
   },
   data () {
     return {
-      showKey: 'building',
-      allWidth,
-      organId: ''
+      showKey: 'operate',
     }
   },
   created () {

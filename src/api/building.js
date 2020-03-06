@@ -138,5 +138,5 @@ export function buildingDownLoadExcel (data) {
 }
 // 楼栋批量导入
 export function buildImportExcel (organId, data) {
-  return axiosPost(building.buildImportExcel + '/' + organId, data)
+  return axiosPost(building.buildImportExcel + organId, data)
 }

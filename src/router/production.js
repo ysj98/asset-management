@@ -541,6 +541,12 @@ let proRouter = [
     path: '/taskQuery/details',
     name: '详情',
     component: () => import('@/views/reportingManagement/taskQuery/details.vue')
-  }
+  },
+  {
+    path: '/reportingList',
+    name: '呈报记录一览表',
+    component: () => import('@/views/reportingManagement/reportingRecordList'),
+    meta: { keepAlive: true }
+  },
 ]
 export default proRouter
