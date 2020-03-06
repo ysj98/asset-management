@@ -142,6 +142,10 @@ export default [
       {
         title: '任务查询',
         path: '/taskQuery'
+      },
+      {
+        title: '呈报记录一览表',
+        path: '/reportingList',
       }
     ]
   },

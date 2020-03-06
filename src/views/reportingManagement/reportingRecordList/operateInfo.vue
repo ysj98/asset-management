@@ -1,17 +1,14 @@
 <!--
- * @Description: 
- * @Date: 2020-02-26 12:45:49
- * @LastEditTime: 2020-03-06 17:39:30
+ * @Description: 资产运营信息
+ * @Date: 2020-03-06 11:25:35
+ * @LastEditTime: 2020-03-06 17:12:05
  -->
-<!--
-呈报记录页面
--->
 <template>
   <div>
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button> -->
+          <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
         <div slot="headerForm">
             <treeSelect
@@ -32,21 +29,9 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 全部呈报表单 -->
-            <a-select
-              showSearch
-              placeholder="请选择呈报表单"
-              v-model="queryCondition.billType"
-              optionFilterProp="children"
-              @change="billTypeSelect"
-              mode="multiple"
-              :maxTagCount="1"
-              :style="allStyle"
-              :options="billTypeOpt"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
+            <div class="box">
+              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+            </div>
             <!-- 资产名称或编码 -->
             <a-input
               :maxLength="30"
@@ -87,9 +72,6 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <div class="box">
-              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
-            </div>
             <!-- 全部数据状态 -->
             <a-select
               showSearch
@@ -148,7 +130,9 @@ import moment from 'moment'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
-  detail: "/reportingRecord/details",
+  create: "/subsidiary/create",
+  detail: "/subsidiary/detail",
+  edit: '/subsidiary/edit'
 };
 const allStyle = {
   width: "170px",
@@ -165,7 +149,6 @@ const allWidth = {
 const queryCondition = {
   organId: "",
   projectId: "",
-  billType: [''], // 呈报表单类型
   objName: '', // 资产名称或编码
   taskType: [''], // 类型
   taskStatus: '', // 状态
@@ -182,13 +165,7 @@ const taskTypeOpt = [
   { label: "固定任务", value: "2" },
   { label: "数据接口", value: "3" },
 ];
-const billTypeOpt = [
-  { label: "全部呈报表单", value: "" },
-  { label: "资产运营信息", value: "1" },
-  { label: "资产收入信息", value: "2" },
-  { label: "资产费用信息", value: "3" },
-  { label: "资产折旧信息", value: "4" },
-]
+
 const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
 const taskStatusOpt = [
   { label: "全部数据状态", value: "" },
@@ -277,7 +254,6 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       taskTypeOpt,
-      billTypeOpt,
       assetTypeOpt,
       taskStatusOpt,
       table: {
@@ -298,13 +274,9 @@ export default {
         flag: "0"
       };
       // 呈报表单参数改变
-      data.billType = utils.deepClone(data.billType).join(',')
       data.assetType = utils.deepClone(data.assetType).join(',')
       data.taskType = utils.deepClone(data.taskType).join(',')
-      data.beginDate = data.startCreateDate
-      data.endDate = data.endCreateDate
-      delete data.startCreateDate
-      delete data.endCreateDate
+      
       this.table.loading = true;
       this.$api.reportManage.queryReportRecordPageList(data).then(
         res => {
@@ -352,11 +324,6 @@ export default {
     onDateChange (val) {
       this.queryCondition.startCreateDate = val[0]
       this.queryCondition.endCreateDate = val[1]
-    },
-    billTypeSelect (value) {
-      this.$nextTick(function () {
-        this.queryCondition.billType = this.handleMultipleSelectValue(value, this.queryCondition.billType, this.billTypeOpt)
-      })
     },
     assetTypeSelect (value) {
       this.$nextTick(function () {
@@ -409,13 +376,12 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition.projectId = "";
-      this.queryCondition.billType = [''];
       this.queryCondition.objName = '';
       this.queryCondition.taskType = [''];
       this.queryCondition.taskStatus = '';
       this.queryCondition.assetType = [''];
       this.queryCondition.startCreateDate = getNMonthsAgoFirst(2)
-      this.queryCondition.endCreateDate = getNowMonthDate()
+      this.queryCondition.endCreateDate = getNowMonthDate()  
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
@@ -440,8 +406,6 @@ export default {
       };
       if (['detail', 'edit'].includes(type)) {
         query.reportRecordId = record.reportRecordId
-        query.reportBillId = record.reportBillId
-        query.reportTaskId = record.reportTaskId
       }
       this.$router.push({ path: operationTypes[type], query });
     },
@@ -460,7 +424,6 @@ export default {
   display: inline-block;
   vertical-align: middle;
   margin-right: 10px;
-  margin-top: 14px;
 }
 .search-content-box {
   display: flex;

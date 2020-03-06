@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-02-26 12:47:26
+ * @LastEditTime: 2020-03-06 19:26:03
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -13,345 +13,674 @@
         <!-- 由资产项目带出数据 -->
         <div class="edit-box-content">
           <!-- 一项数据 -->
-           <div class="edit-box-content-item mr24">
+           <div class="edit-box-content-item mb24">
              <div class="label-name-box">
-              <span class="label-name label-space-between">
-                所属组织机构
+              <span class="label-name label-space-between long">
+                资产/卡片名称
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{reportInfo.assetName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
-             <div class="label-name-box required">
-              <span class="label-name label-space-between">
-                资产名称
-                <i></i>
-              </span>
-              <span>：</span>
-              <span class="label-value">{{''}}<SG-Button type="primary" icon="plus" size="small" weaken>选择</SG-Button></span>
-            </div>
-          </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
-              <span class="label-name label-space-between">
-                资产编码
+              <span class="label-name label-space-between long">
+                资产/卡片编码
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{reportInfo.assetCode || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
-             <div class="label-name-box required">
-              <span class="label-name label-space-between">
-                资产项目
-                <i></i>
-              </span>
-              <span>：</span>
-              <span class="label-value">{{'-'}}</span>
-            </div>
-          </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产类型
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{reportInfo.assetTypeName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
+             <div class="label-name-box">
+              <span class="label-name label-space-between">
+                所属机构
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value">{{reportInfo.organName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+             <div class="label-name-box">
+              <span class="label-name label-space-between">
+                资产项目
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value">{{reportInfo.projectName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产分类
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{reportInfo.assetCategoryName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产状态
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{reportInfo.assetStatusName || '-'}}</span>
             </div>
           </div>
-          <div class="edit-box-content-item mr24">
+          <div class="edit-box-content-item mb24">
              <div class="label-name-box">
               <span class="label-name label-space-between">
                 资产位置
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{'-'}}</span>
+              <span class="label-value">{{reportInfo.address || '-'}}</span>
             </div>
           </div>
         </div>
         <div>
-          <SG-Title noMargin title="附属配套信息" />
+          <SG-Title noMargin title="任务信息" />
         </div>
-        <!-- 表单填写数据 -->
+        <!-- 任务信息数据 -->
         <div>
-         <a-form :form="form">
            <div class="edit-box-content">
-           <div class="edit-box-content-item">
-            <div class="label-name-box required">
+           <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
               <span class="label-name label-space-between">
-                名称
+                任务编号
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.reportTaskId || '-'}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入名称"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'planName',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
-            <div class="label-name-box required">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
               <span class="label-name label-space-between">
-                编码
+                任务名称
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.taskName || '-'}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入编码"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'planNamed',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
-            <div class="label-name-box required">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
               <span class="label-name label-space-between">
-                类型
+                任务状态
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.taskStatusName || '-'}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入类型"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'planNsame',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">
-                规格型号
+                表单名称
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.reportBillName || '-'}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入名称"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'planNa4me',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
-            <div class="label-name-box required">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
               <span class="label-name label-space-between">
-                价值
+                填报人
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.reportBy || '-'}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入名称"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'planNa87me',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
-            <div class="label-name-box required">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
               <span class="label-name label-space-between">
-                数量
+                任务执行日期
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{`${taskInfo.realBeginDate || ''}~${taskInfo.realEndDate || ''}`}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入名称"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'plan3Name',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">
-                计量单位
+                审核人
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.auditBy || '-'}}</span>
             </div>
-            <a-form-item>
-              <a-input
-                placeholder="请输入名称"
-                :style="allStyle"
-                :maxLength="30"
-                v-decorator="[
-                  'plasnName',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        max: 30,
-                        whitespace: true,
-                        message: '请输入计划名称(不超过30字符)'
-                      }
-                    ],
-                    initialValue: ''
-                  }
-                ]"
-              />
-            </a-form-item>
           </div>
-          <div class="edit-box-content-item">
-            <!-- <div class="label-name-box">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box">
               <span class="label-name label-space-between">
+                所属计划
                 <i></i>
               </span>
-              <span></span>
-            </div> -->
-            <a-form-item>
-              <a-checkbox :checked="checkNick" @change="handleChange">
-                接管前附属配套
-              </a-checkbox>
-            </a-form-item>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.reportPlanName || '-'}}</span>
+            </div>
           </div>
-          <div class="edit-box-content-item total-width">
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box">
+              <span class="label-name label-space-between">
+                任务类型
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.taskTypeName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
             <div class="label-name-box">
               <span class="label-name label-space-between">
                 备注
                 <i></i>
               </span>
               <span>：</span>
+              <span class="label-value" >{{taskInfo.remark || '-'}}</span>
             </div>
-            <a-form-item class="label-value">
-              <a-textarea
-                placeholder="请输入备注（最多200字）"
-                :rows="3"
-                :maxLength="200"
-                v-decorator="['remark', { initialValue: '' }]"
-              ></a-textarea>
-            </a-form-item>
-          </div>
-          <div class="edit-box-content-item total-width">
-            <div class="label-name-box">
-              <span class="label-name label-space-between">附件<i></i></span
-              ><span>：</span>
-            </div>
-            <a-form-item class="label-value">
-              <SG-UploadFile  type="all" :maxSize="5120" v-model="filepaths" />
-            </a-form-item>
           </div>
          </div>
-         </a-form>
+        </div>
+        <div>
+          <SG-Title noMargin title="填报详情" />
+        </div>
+        <!-- 填报详情数据 -->
+        <div>
+           <div class="edit-box-content">
+           <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
+              <span class="label-name label-space-between">
+                呈报编号
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.reportBillId || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
+              <span class="label-name label-space-between">
+                填报人
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.reportByName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
+              <span class="label-name label-space-between">
+                填报日期
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.createTime || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box">
+              <span class="label-name label-space-between">
+                审核人
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.auditByName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
+              <span class="label-name label-space-between">
+                呈报方式
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.taskTypeName || '-'}}</span>
+            </div>
+          </div>
+          <div class="edit-box-content-item mb24">
+            <div class="label-name-box ">
+              <span class="label-name label-space-between">
+                数据状态
+                <i></i>
+              </span>
+              <span>：</span>
+              <span class="label-value" >{{taskInfo.taskStatusName || '-'}}</span>
+            </div>
+          </div>
+          <!-- 资产运营 -->
+          <template v-if="Number(taskInfo.reportBillId) === 1">
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  合同编号
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.contractCode || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  客户名称
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.customerName || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  资源名称
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.resourceName || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  租赁面积(㎡)
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.leaseArea || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  合同开始日期
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.contractBeginDate || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  合同截止日期
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.contractEndDate || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  起始租金单价
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.originRentUnitPriceAmount || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  平均租金单价
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.avgRentUnitPriceAmount || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  押金(元)
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.deposit || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between biglong">
+                  合同租金总额(元)
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.contractRentTotalAmount || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  外部ID
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  备注
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{taskInfo.remark || '-'}}</span>
+              </div>
+            </div>
+          </template>
+          <!-- 资产收入 -->
+          <template v-if="Number(taskInfo.reportBillId) === 2">
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  收入类型
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.incomeType || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  收入名称
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.incomeName || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  客户名称
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.customerName || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  所属月份
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.month || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  金额(元)
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.amount || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  单价
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.unitPrice || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  读数
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.readNumber || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  用量
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.useLevel || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  是否结清
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{Number(reportInfo.settleUp) === 0? '否':'是'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between long">
+                  是否接管前收入
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{Number(reportInfo.incomeBeforeTakeover) === 0? '否':'是'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  外部ID
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  备注
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.remark || '-'}}</span>
+              </div>
+            </div>
+          </template>
+          <!-- 资产费用 -->
+          <template v-if="Number(taskInfo.reportBillId) === 3">
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  费用类型
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.expenseType || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  费用名称
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.expenseName || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  客户名称
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.customerName || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  所属月份
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.month || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  金额(元)
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.amount || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  单价
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.unitPrice || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  读数
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.readNumber || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  用量
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.useLevel || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  是否结清
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{Number(reportInfo.settleUp) === 0? '否':'是'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between long">
+                  是否接管前收入
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{Number(reportInfo.incomeBeforeTakeover) === 0? '否':'是'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  外部ID
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  备注
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.remark || '-'}}</span>
+              </div>
+            </div>
+          </template>
+          <!-- 资产折旧 -->
+          <template v-if="Number(taskInfo.reportBillId) === 4">
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  折旧月份
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.deprecitionMonth || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between biglong">
+                  本次折旧金额(元)
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.deprecitionAmount || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  外部ID
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  备注
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.remark || '-'}}</span>
+              </div>
+            </div>
+          </template>
+         </div>
         </div>
       </div>
     </div>
@@ -364,14 +693,55 @@ export default {
   data () {
     return {
       spinning: false,
-      form: this.$form.createForm(this),
       allStyle,
-      filepaths: [],
       type: 'create',
-      checkNick: false
+      checkNick: false,
+      reportBillId: '', // 填报类型
+      reportTaskId: '', // 任务类型
+      reportRecordId: '', // 呈报记录id
+      taskInfo: {},
+      reportInfo: {}
+    }
+  },
+  created () {
+    this.type = this.$route.query.type || ''
+    this.reportRecordId = this.$route.query.reportRecordId || ''
+    this.reportBillId = this.$route.query.reportBillId || ''
+    this.reportTaskId = this.$route.query.reportTaskId || ''
+    if (this.reportRecordId) {
+      this.spinning = true
+      Promise.all([this.queryReportRecordDetail(), this.queryTaskInfo()]).then(res => {
+        this.spinning = false
+      })    
     }
   },
   methods: {
+    queryTaskInfo () {
+      let data = {
+        reportTaskId: this.reportTaskId
+      }
+      return this.$api.reportManage.queryTaskInfo(data).then(res => {
+        if (res.data.code === "0") {
+          let obj = res.data.data || {}
+          this.taskInfo = {...obj}
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
+    queryReportRecordDetail () {
+      let data = {
+        reportRecordId: this.reportRecordId
+      }
+      return this.$api.reportManage.queryReportRecordDetail(data).then(res => {
+        if (res.data.code === "0") {
+          let obj = res.data.data || {}
+          this.reportInfo =  {...obj}
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
     handleChange (e) {
      this.checkNick = e.target.checked;
     },
@@ -395,7 +765,7 @@ export default {
         width: 33%;
         float: left;
         font-size: 12px;
-        &.mr24{
+        &.mb24{
           margin-bottom:24px;
         }
         &.total-width {
@@ -420,24 +790,18 @@ export default {
           }
           .label-space-between {
             width: 74px;
+            &.long{
+              width: 84px;
+            }
+            &.biglong{
+              width: 100px;
+            }
             text-align: justify;
             margin-left: 10px;
             i {
               display: inline-block;
               width: 100%;
             }
-          }
-        }
-        .label-name-box.required {
-          position: relative;
-          &:before {
-            position: absolute;
-            left: 0px;
-            width: 6px;
-            content: "*";
-            color: #f5222d;
-            line-height: 36px;
-            font-family: SimSun;
           }
         }
       }
