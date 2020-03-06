@@ -78,19 +78,19 @@ const approvalStatusData = [
   },
   {
     name: '未完成',
-    value: '0'
-  },
-  {
-    name: '待审批',
     value: '1'
   },
   {
-    name: '已驳回',
+    name: '待审批',
     value: '2'
   },
   {
-    name: '已完成',
+    name: '已驳回',
     value: '3'
+  },
+  {
+    name: '已完成',
+    value: '4'
   }
 ]
 const columns = [
