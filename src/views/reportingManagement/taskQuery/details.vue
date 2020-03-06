@@ -10,25 +10,28 @@
           <a-col class="playground-col" :span="8">任务名称：{{particularsData.taskName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目：{{particularsData.projectName || '--'}}</a-col>
-					<a-col class="playground-col" :span="8">
+          <a-col class="playground-col" :span="8">资产项目：{{particularsData.reportBillName || '--'}}</a-col>
+					<!-- <a-col class="playground-col" :span="8">
 						表单名称：
 						<a-select
+              :disabled="true"
 							showSearch
 							placeholder="请选择呈报表单"
 							style="width: 200px"
-							:defaultValue="particularsData.reportBillId"
+							v-model="reportBillId"
 							:options="chargePersonOpt"
 							:filterOption="filterOption"
 						>
 						</a-select>
-					</a-col>
+					</a-col> -->
           <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.beginDate ? `${particularsData.beginDate} - ${particularsData.endDate}` : '--'}}</a-col>
-          <a-col class="playground-col" :span="8">所属计划：{{particularsData.approvalStatusName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">所属计划：{{particularsData.reportPlanName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">填报人：{{particularsData.reportByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">审核人：{{particularsData.auditByName || '--'}}</a-col>
-					<a-col class="playground-col" :span="8">任务状态：{{particularsData.taskStatus || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">发布人：{{particularsData.createBy || '--'}}</a-col>
-					<a-col class="playground-col" :span="8">发布时间：{{particularsData.realBeginDate ? `${particularsData.realBeginDate} - ${particularsData.realEndDate}` : '--'}}</a-col>
+					<a-col class="playground-col" :span="8">任务状态：{{particularsData.taskStatusName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">发布人：{{particularsData.createByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">发布人：{{particularsData.createTime || '--'}}</a-col>
+					<!-- <a-col class="playground-col" :span="8">发布时间：{{particularsData.realBeginDate ? `${particularsData.realBeginDate} - ${particularsData.realEndDate}` : '--'}}</a-col> -->
           <a-col class="playground-col" :span="8">任务类型：{{particularsData.taskTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :span="24">附件： <span v-if="files.length === 0">无</span>
@@ -53,7 +56,7 @@
 							<a-radio :value="0">填报</a-radio>
 							<a-radio :value="1">不填报</a-radio>
 						</a-radio-group>
-						<SG-Button style="float: right;" type="primary" @click="downloadFn">导出</SG-Button>
+						<!-- <SG-Button style="float: right;" type="primary" @click="downloadFn">导出</SG-Button> -->
 					</div>
 					<div style="line-height: 40px;">
 						填报说明：{{particularsData.resultRemark}}
@@ -68,6 +71,13 @@
             :pagination="false"
             >
           </a-table>
+          <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+          <SG-FooterPagination
+            :pageLength="queryCondition.pageSize"
+            :totalCount="queryCondition.totalCount"
+            v-model="queryCondition.pageNum"
+            @change="taskChange"
+          />
         </div>
       </div>
     </div>
@@ -75,87 +85,20 @@
 </template>
 
 <script>
-const colu = [
-  {
-    title: "编号",
-    dataIndex: "index"
-  },
-  {
-    title: "字段名称",
-    dataIndex: "index1"
-  },
-  {
-    title: "字段编码",
-    dataIndex: "index2"
-  },
-  {
-    title: "字段类型",
-    dataIndex: "index3"
-  },
-  {
-    title: "字段格式",
-    dataIndex: "index4"
-  },
-  {
-    title: "字段长度",
-    dataIndex: "index5"
-  },
-  {
-    title: "字段值",
-    dataIndex: "index6"
-  },
-  {
-    title: "必填字段",
-    dataIndex: "index7"
-  }
-]
-const previewColumns = [
-  {
-    title: "所属机构",
-    dataIndex: "index"
-  },
-  {
-    title: "资产项目名称",
-    dataIndex: "index1"
-  },
-  {
-    title: "资产卡片名称",
-    dataIndex: "index2"
-  },
-  {
-    title: "资产卡片编码",
-    dataIndex: "index3"
-  },
-  {
-    title: "折旧月份",
-    dataIndex: "index4"
-  },
-  {
-    title: "本次折旧金额(月份)",
-    dataIndex: "index5"
-  },
-  {
-    title: "外部ID",
-    dataIndex: "index6"
-  }
-]
+import noDataTips from "@/components/noDataTips"
 export default {
-  components: {},
+  components: {noDataTips},
   props: {},
   data () {
     return {
-			chargePersonOpt: [
-				{
-					value: '',
-					label: '测试'
-				}
-			],
+      reportBillId: undefined,
+      reportTaskId: '',
+			chargePersonOpt: [],
       changeType: '',
       registerId: '',
       particularsData: {},
       files: [],
-			columns: colu,
-			previewColumns: previewColumns,
+			columns: [],
       loading: false,
       tableData: [],
       location: '',
@@ -175,19 +118,89 @@ export default {
 		filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
+    // 查询全部呈报表单列表
+    queryAllReportBill () {
+      this.$api.reportManage.queryAllReportBill({}).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || []
+            let arr = []
+            result.forEach(item => {
+              arr.push({
+                value: item.reportBillId,
+                label: item.billName
+              })
+            })
+            this.chargePersonOpt = arr
+          } else {
+            this.$message.error(res.data.message)
+          }
+      })
+    },
+    taskChange (data) {
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.queryTaskDetailPage()
+    },
+    // 填报数据信息
+    queryTaskDetailPage () {
+      let obj = {
+        reportTaskId: this.reportTaskId,
+        pageNum: this.queryCondition.pageNum,
+        pageSize: this.queryCondition.pageSize
+      }
+      this.$api.reportManage.queryTaskDetailPage(obj).then(res => {
+        if (res.data.code === "0") {
+          let data = res.data.data.data
+          data.forEach((item, index) => {
+            item.key = index
+          })
+          this.tableData = data
+          this.queryCondition.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 查询呈报表单字段
+    queryReportBillColumn (value) {
+      let obj = {
+        reportBillId: value,
+        reportPlanId: this.reportPlanId
+      }
+      this.$api.reportManage.queryReportBillColumn(obj).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || []
+          let arr = []
+          result.forEach(item => {
+            arr.push({
+              title: item.columnDesc,
+              dataIndex: item.columnName,
+              scopedSlots: { customRender: item.columnName }
+            })
+          })
+          this.columns = arr
+          this.dataSourceReportBill = []
+          this.reportBillColumnList = result    // 总的数据
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 查询详情
     query () {
       let obj = {
-        reportPlanId: this.reportPlanId
+        reportTaskId: this.reportTaskId
       }
-      this.$api.reportManage.getTask(obj).then(res => {
+      this.$api.reportManage.queryTaskInfo(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          console.log(res)
           let data = res.data.data
           this.particularsData = data
+          this.reportBillId = Number(data.reportBillId)
+          this.queryReportBillColumn(this.reportBillId)
+          this.queryTaskDetailPage()
           let files = []
-          if (data.attachment && data.attachment.length > 0) {
-              data.attachment.forEach(item => {
+          if (data.attachmentList && data.attachmentList.length > 0) {
+              data.attachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
                 name: item.newAttachmentName
@@ -204,9 +217,10 @@ export default {
   created () {
   },
   mounted () {
+    this.queryAllReportBill()
     let arr = JSON.parse(this.$route.query.quersData)
     console.log(arr, '-=-=-=')
-    this.reportPlanId = arr[0].reportPlanId
+    this.reportTaskId = arr[0].reportTaskId
     this.query()
   }
 }

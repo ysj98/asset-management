@@ -20,7 +20,10 @@
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部呈报表单" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.reportBillId">
           <a-select-option v-for="(item, index) in reportBillIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部任务类型" :tokenSeparators="[',']"  @select="taskTypeStatus" v-model="queryCondition.taskType">
+        <!-- <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部任务类型" :tokenSeparators="[',']"  @select="taskTypeStatus" v-model="queryCondition.taskType">
+          <a-select-option v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select> -->
+        <a-select :style="allStyle" placeholder="全部任务类型" v-model="queryCondition.taskType">
           <a-select-option v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
@@ -74,24 +77,20 @@ const approvalStatusData = [
     value: ''
   },
   {
-    name: '草稿',
+    name: '未完成',
     value: '0'
   },
   {
     name: '待审批',
-    value: '2'
-  },
-  {
-    name: '已驳回',
-    value: '3'
-  },
-  {
-    name: '已审批',
     value: '1'
   },
   {
-    name: '已取消',
-    value: '4'
+    name: '已驳回',
+    value: '2'
+  },
+  {
+    name: '已完成',
+    value: '3'
   }
 ]
 const columns = [
@@ -106,19 +105,19 @@ const columns = [
   },
   {
     title: '资产项目',
-    dataIndex: 'projectIdName'
+    dataIndex: 'projectName'
   },
   {
     title: '任务名称',
     dataIndex: 'taskName'
   },
   {
-    title: '呈报表单1111',
-    dataIndex: 'assetChangeCount'
+    title: '呈报表单',
+    dataIndex: 'reportBillName'
   },
   {
     title: '任务类型',
-    dataIndex: 'taskType'
+    dataIndex: 'taskTypeName'
   },
   {
     title: '计划执行日期',
@@ -182,25 +181,20 @@ export default {
       },
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       count: '',
-      reportBillIdData: [
-        {
-          name: '全部呈报表单',
-          value: ''
-        }
-      ],
+      reportBillIdData: [],
       taskTypeData: [
         {
           name: '全部任务类型',
           value: '' 
         },
         {
-          name: '固定任务',
+          name: '临时任务',
           value: '1' 
         },
         {
-          name: '临时任务',
+          name: '固定任务',
           value: '2' 
-        }
+        },
       ],
       projectData: [
         {
@@ -224,14 +218,15 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         projectId: this.queryCondition.projectId,            // 资产项目Id
-        reportBillId: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : '',                                    // 表单id
+        reportBillIdSplice: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : '',                                    // 表单id
         reportPlanId: '',                                    // 计划id
         reportTaskId: '',                                    // 任务id
         searchText: '',                                      // 编码
-        taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
+        taskStatusSplice: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        // taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
+        taskType: this.queryCondition.taskType
       }
-      this.$api.reportManage.getTaskStat(data).then(res => {
+      this.$api.reportManage.queryTaskStatistics(data).then(res => {
         if (res.data.code === "0") {
           let result = res.data.data || []
           this.numList = this.numList.map(m => {
@@ -342,6 +337,24 @@ export default {
       this.queryCondition.pageSize = data.pageLength
       this.query()
     },
+    // 查询全部呈报表单列表
+    queryAllReportBill () {
+      this.$api.reportManage.queryAllReportBill({}).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || []
+            let arr = []
+            result.forEach(item => {
+              arr.push({
+                value: item.reportBillId,
+                name: item.billName
+              })
+            })
+            this.reportBillIdData = [{ name: '全部呈报表单', value: ''}, ...arr]
+          } else {
+            this.$message.error(res.data.message);
+          }
+      })
+    },
     // 查询
     query () {
       this.loading = true
@@ -353,14 +366,15 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         projectId: this.queryCondition.projectId,            // 资产项目Id
-        reportBillId: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : '',                                    // 表单id
+        reportBillIdSplice: this.queryCondition.reportBillId.length > 0 ? this.queryCondition.reportBillId.join(',') : '',                                    // 表单id
         reportPlanId: '',                                    // 计划id
         reportTaskId: '',                                    // 任务id
         searchText: '',                                      // 编码
-        taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
+        taskStatusSplice: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        // taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
+        taskType: this.queryCondition.taskType
       }
-      this.$api.reportManage.taskPage(obj).then(res => {
+      this.$api.reportManage.queryTaskPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           this.loading = false
@@ -394,6 +408,7 @@ export default {
     }
   },
   mounted () {
+    this.queryAllReportBill()
   }
 }
 </script>
