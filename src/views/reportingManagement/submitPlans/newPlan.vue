@@ -187,6 +187,10 @@
 							class="custom-table td-pd10"
 							:pagination="false"
 							>
+              <!-- 填报人表头 -->
+            <template slot="informant">
+              <a class="icon-red" @click="openSubjectModal('informant')">填报人</a>
+            </template>
 							<template slot="informant" slot-scope="text, record, index">
 								<a-select
 									placeholder="请选择填报人"
@@ -200,6 +204,10 @@
 									<a-icon slot="suffixIcon" type="plus-circle" />
 								</a-select>
 							</template>
+              <!-- 审核人表头 -->
+              <template slot="auditor">
+                <a class="icon-red" @click="openSubjectModal('auditor')">审核人</a>
+              </template>
 							<template slot="auditor" slot-scope="text, record, index">
 								<a-select
 									placeholder="请选择审核人"
@@ -258,13 +266,13 @@ const previewColumns = [
 		width: '10%'
   },
   {
-    title: "填报人",
+    slots: {title: 'informant'},
 		dataIndex: "informant",
 		scopedSlots: { customRender: "informant" },
 		width: '30%'
   },
   {
-    title: "审核人",
+    slots: {title: 'auditor'},
     dataIndex: "auditor",
     scopedSlots: { customRender: "auditor" },
 		width: '30%'
@@ -342,6 +350,7 @@ export default {
   props: {},
   data () {
     return {
+      batch: '',               // 批量设置
       reportBillId: undefined,        // 呈报表单id
       deadline: '3',           // 任务执行期限
       dayData: '1',            // 任务执行期限单位
@@ -418,6 +427,16 @@ export default {
   },
   methods: {
     moment,
+    // 表头选择
+    openSubjectModal (val) {
+      if (this.table.tableData.length === 0) {
+        this.$message.info('请先选择资产项目')
+        return
+      }
+      this.batch = val            // 用于判断批量设置
+      this.$refs.selectStaffOrPost.visible = true
+      this.selectOptList = []
+    },
     // 选择是否查看当前机构变动单
     checkboxFn (record, index, dataIndex) {
       this.dataSourceReportBill[index][dataIndex] = !this.dataSourceReportBill[index][dataIndex]
@@ -551,7 +570,8 @@ export default {
 			console.log(record, index, type)
 			this.$refs.selectStaffOrPost.visible = true
 			this.tabType = type
-			this.table.activeRowIndex = index
+      this.table.activeRowIndex = index
+      this.batch = ''
 			if (this.tabType === 'informant') {
 				this.selectOptList = this.table.tableData[index]['informantOptArr']
 			} else if (this.tabType === 'auditor') {
@@ -569,18 +589,36 @@ export default {
          pre.key = pre.key + (pre.key ?',' : '') + next.key
          return pre
       }, {label: '', key: ''})
-      // 填报人
-      if (this.tabType === 'informant') {
-				this.$set(row, 'informant', obj.key)
-				this.$set(row, 'informantOpt', [obj])
-				this.$set(row, 'informantOptArr', opt)
+      // 批量设置
+      if (this.batch) {
+        if (this.batch === 'informant') {
+          this.table.tableData.forEach(list => {
+            list.informant = obj.key
+            list.informantOpt = [obj]
+            list.informantOptArr = opt
+          })
+        } else if (this.batch === 'auditor') {
+          this.table.tableData.forEach(list => {
+            list.auditor = obj.key
+            list.auditorOpt = [obj]
+            list.auditorOptArr = opt
+          })
+        }
+      } else {
+        // 单个设置
+        // 填报人
+        if (this.tabType === 'informant') {
+          this.$set(row, 'informant', obj.key)
+          this.$set(row, 'informantOpt', [obj])
+          this.$set(row, 'informantOptArr', opt)
+        }
+        // 审核人的
+        if (this.tabType === 'auditor') {
+          this.$set(row, 'auditor', obj.key)
+          this.$set(row, 'auditorOpt', [obj])
+          this.$set(row, 'auditorOptArr', opt)
+        }
       }
-      // 审核人的
-      if (this.tabType === 'auditor') {
-        this.$set(row, 'auditor', obj.key)
-        this.$set(row, 'auditorOpt', [obj])
-        this.$set(row, 'auditorOptArr', opt)
-			}
 			this.$refs.selectStaffOrPost.visible = false
     },
 		filterOption (input, option) {
