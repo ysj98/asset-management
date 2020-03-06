@@ -19,7 +19,7 @@
         <a-select
           v-bind="properties"
           v-model="reportBillId"
-          :options="billOptions"
+          :options="billList"
           placeholder="呈报表单"
           @change="queryTableData"
           :filterOption="filterOption"
@@ -40,7 +40,7 @@
           v-bind="properties"
           v-model="taskType"
           :options="statusOptions"
-          placeholder="审核状态"
+          placeholder="任务状态"
           @change="queryTableData"
           :filterOption="filterOption"
         />
@@ -77,7 +77,7 @@
   import NoDataTip from 'src/components/noDataTips'
   export default {
     name: 'index',
-    props: ['refreshKey'],
+    props: ['refreshKey', 'billList'],
     components: { NoDataTip },
     data () {
       return {
@@ -85,19 +85,15 @@
         beginDate: '', // 查询条件-执行开始日期
         endDate: '', // 查询条件-执行结束日期
         taskType: 'all', // 查询条件-任务类型
-        taskStatus: 'all', // 查询条件-审核状态
+        taskStatus: 'all', // 查询条件-任务状态
         reportBillId: 'all', // 查询条件-表单id
-        billOptions: [
-          { title: '全部表单', key: 'all' }, { title: '资产运营信息', key: '' }, { title: '资产收入信息', key: '' },
-          { title: '资产费用信息', key: '' }, { title: '资产折旧信息', key: '' }
-        ], // 查询条件-表单选项
         typeOptions: [
-          { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '' }, { title: '临时任务', key: '' }
+          { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '2' }, { title: '临时任务', key: '1' }
         ], // 查询条件-任务类型选项
         statusOptions: [
-          { title: '全部任务状态', key: 'all' }, { title: '未完成', key: '' }, { title: '待审核', key: '' },
-          { title: '已驳回', key: '' },{ title: '已完成', key: '' }
-        ], // 查询条件-审核状态选项
+          { title: '全部任务状态', key: 'all' }, { title: '未完成', key: '1' }, { title: '待审核', key: '2' },
+          { title: '已驳回', key: '3' },{ title: '已完成', key: '4' }
+        ], // 查询条件-任务状态选项
         searchText: '', // 查询条件-任务名称或编码
         exportBtnLoading: false, // 导出按钮loading
         tableObj: {

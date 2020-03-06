@@ -3,10 +3,10 @@
   <div class="custom-tabs">
     <a-tabs v-model="key" type="card" :tabBarGutter="10">
       <a-tab-pane tab="我填报的任务" key="1">
-        <!--<edit-task/>-->
+        <edit-task :refreshKey="refreshKey" :billList="billList"/>
       </a-tab-pane>
       <a-tab-pane tab="我审核的任务" key="2">
-        <!--<approve-task :refreshKey="refreshKey"/>-->
+        <approve-task :refreshKey="refreshKey" :billList="billList"/>
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -21,7 +21,8 @@
     data () {
       return {
         key: '1', // Tab key
-        refreshKey: 0 // 更新记录key
+        refreshKey: 0, // 更新记录key
+        billList: [{ title: '全部表单', key: 'all' }] // 表单列表
       }
     },
     // 路由卫士，用于审批及提交成功后刷新列表
@@ -34,6 +35,27 @@
           vm.refreshKey = new Date().getTime()
         }
       })
+    },
+
+    methods: {
+      // 查询表单列表
+      queryBillList () {
+        this.$api.reportManage.queryAllReportBill().then(r => {
+          let res = r.data
+          let arr = [{ title: '全部表单', key: 'all' }]
+          if (res && String(res.code) === '0') {
+            (res.data || []).forEach(item => {
+              if (['资产运营信息', '资产收入信息', '资产费用信息', '资产折旧信息'].includes(item.billName)) {
+                arr.push({ key: item.reportBillId, title: item.billName })
+              }
+            })
+            return this.billList = arr
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || "查询表单列表失败")
+        })
+      }
     }
   }
 </script>

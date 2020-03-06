@@ -14,10 +14,10 @@
         <span style="float: left; color: #282D5B">备注:</span>
         <div style="color: #49505E; margin-left: 38px">{{detailData['remark'] || '--'}}</div>
       </div>
-      <div v-if="detailData['attachments'] && detailData['attachments'].length">
+      <div v-if="detailData['attachmentList'] && detailData['attachmentList'].length">
         <span style="float: left; color: #282D5B">附件:</span>
         <div style="color: #49505E; margin-left: 38px">
-          <div v-for="item in detailData['attachments']" :key="item.name" style="color: #49505E">{{ item.name || '--'}}</div>
+          <div v-for="item in detailData['attachmentList']" :key="item.attachmentPath" style="color: #49505E">{{ item.oldAttachmentName || '--'}}</div>
         </div>
       </div>
     </div>
@@ -44,12 +44,7 @@
           createTime: '发布时间',
           taskTypeName: '任务类型'
         },
-        detailData: {
-          remark: '发达国家房东说该交了开发读书根节点三联开关记录卡放得开',
-          attachments: [
-            { name: 'xxxxcooo'}, { name: 'xxxcoooo'}, { name: 'xxcooo'}
-          ]
-        }, // 字段值
+        detailData: {}, // 字段值
       }
     },
 
@@ -63,7 +58,9 @@
         this.$api.reportManage.queryTaskInfo({reportTaskId: this.taskId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            return this.detailData = res.data || {}
+            const {resultRemark, result, reportPlanId, reportBillId, projectId, ...others} = res.data
+            this.detailData = others || {}
+            return this.$emit('transferData', {resultRemark, result, reportPlanId, reportBillId, projectId})
           }
           throw res.message
         }).catch(err => {

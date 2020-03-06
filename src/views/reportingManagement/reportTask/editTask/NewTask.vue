@@ -19,8 +19,8 @@
             label="所属机构"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
-            :help="!validateOrganId ? '' : '请选择所属机构'"
-            :validate-status="!validateOrganId ? '' : 'error'"
+            :help="validateOrganId ? '请选择所属机构' : ''"
+            :validate-status="validateOrganId ? 'error' : ''"
           >
             <tree-select style="width: 100%;" @changeTree="changeTree"/>
           </a-form-item>
@@ -31,6 +31,7 @@
               style="width: 100%;"
               placeholder="请选择资产项目"
               :options="projectOptions"
+              @change="getId($event, 'projectId')"
               v-decorator="['projectId', {rules: [{required: true, message: '请选择资产项目'}]}]"
             />
           </a-form-item>
@@ -43,6 +44,7 @@
               style="width: 100%;"
               placeholder="请选择表单"
               :options="billOptions"
+              @change="getId($event, 'reportBillId')"
               v-decorator="['reportBillId', {rules: [{required: true, message: '请选择表单'}]}]"
             />
           </a-form-item>
@@ -58,17 +60,13 @@
             label="审核人"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
-            :help="!validateAuditUsers ? '' : '请选择审核人'"
-            :validate-status="!validateAuditUsers ? '' : 'error'"
+            :help="validateAuditUsers ? '请选择审核人' : ''"
+            :validate-status="validateAuditUsers ? 'error' : ''"
           >
             <span>
-              <a-tag
-                closable
-                v-for="m in auditUsers"
-                :key="m.id"
-                style="background: #fff;"
-                @close="handleAuditUser(m)"
-              >{{m.name}}</a-tag>
+              <a-tag closable v-for="m in auditUsers" :key="m.id" style="background: #fff;" @close="handleAuditUser(m)">
+                {{m.name}}
+              </a-tag>
               <a-tag color="#108ee9" @click="handleAuditUser('')">
                 <a-icon type="user-add" style="margin-right: 3px"/>选择
               </a-tag>
@@ -97,16 +95,19 @@
       </a-row>
     </a-form>
     <!--填报数据部分-->
-    <task-table-edit/>
+    <task-table-edit :taskInfo="taskInfo"/>
+    <!--选择审核人Modal-->
+    <select-staff ref="selectAuditUser" @change="getAuditUser" :selectOptList="auditUsers"/>
   </div>
 </template>
 
 <script>
   import TreeSelect from 'src/views/common/treeSelect'
   import TaskTableEdit from '../components/TaskTableEdit'
+  import SelectStaff from '@/views/common/selectStaffOrPost'
   export default {
     name: 'NewTask',
-    components: { TaskTableEdit, TreeSelect },
+    components: { TaskTableEdit, TreeSelect, SelectStaff },
     data () {
       return {
         organId: '',
@@ -117,23 +118,51 @@
         attachmentList: [], // 附件数据
         userName: '', // 当前用户名
         userId: '', // 当前用户Id
-        auditUsers: [{name: '隔壁老王', id: '121'}, {name: '老王', id: '11'}], // 审核人，多个，分隔
+        auditUsers: [], // 审核人，多个，分隔
         validateOrganId: false, // 自定义校验organId标志
         validateAuditUsers: false, // 自定义校验auditUsers标志
-        billOptions: [
-          { title: '资产运营信息', key: '' }, { title: '资产收入信息', key: '' },
-          { title: '资产费用信息', key: '' }, { title: '资产折旧信息', key: '' }
-        ], // 查询条件-表单选项
-        projectOptions: [] // 资产项目选项
+        billOptions: [], // 查询条件-表单选项
+        projectOptions: [], // 资产项目选项
+        taskInfo: {
+          projectId: '', // 项目id
+          billId: '', // 表单id
+        }
       }
     },
 
     methods: {
+      // 查询表单列表
+      queryBillList () {
+        this.$api.reportManage.queryAllReportBill().then(r => {
+          let res = r.data
+          let arr = []
+          if (res && String(res.code) === '0') {
+            (res.data || []).forEach(item => {
+              if (['资产运营信息', '资产收入信息', '资产费用信息', '资产折旧信息'].includes(item.billName)) {
+                arr.push({ key: item.reportBillId, title: item.billName })
+              }
+            })
+            return this.billOptions = arr
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || "查询表单列表失败")
+        })
+      },
+
+      // 获取选中的审核人
+      getAuditUser (list = []) {
+        this.auditUsers = list
+      },
+
+      // 获取projectId,reportBillId
+      getId (id, type) {
+        this['taskInfo'][type] = id
+      },
+
       // 获取选择的组织机构
       changeTree (id, name) {
-        Object.assign(this, {
-          organId: id, organName: name, projectOptions: []
-        })
+        Object.assign(this, { organId: id, organName: name, projectOptions: [] })
         id && this.queryProjectList(id)
       },
 
@@ -180,20 +209,33 @@
       // 删除、选择审核人
       handleAuditUser (m) {
         if (m) {
-          // 删除操作
           this.auditUsers = this.auditUsers.filter(v => v.id !== m.id)
         } else {
-          // 新增
-          this.$message.info('暂未开放')
+          this.$refs.selectAuditUser.visible = true
         }
       }
     },
 
     mounted () {
       // 获取当前用户信息
-      let { userId, name} = this.$store.state.auth.userinfo || {}
+      let { userId, name } = this.$store.state.auth.userinfo || {}
       this.userId = userId
       this.userName = name
+    },
+
+    watch: {
+      // 自定义必填项校验
+      auditUsers: function (val) {
+        if (val.length) {
+          this.validateAuditUsers = false
+        }
+      },
+
+      organId: function (val) {
+        if (val.length) {
+          this.validateOrganId = false
+        }
+      }
     }
   }
 </script>
