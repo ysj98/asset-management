@@ -61,23 +61,25 @@
     <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <span slot="reportTaskId" slot-scope="text, record">
+        <router-link
+          class="action_text"
+          :to="{path: '/reportTask/taskDetail', query: {taskId: record.reportTaskId}}"
+        >{{text}}</router-link>
+      </span>
       <span slot="action" slot-scope="text, record">
         <router-link
           class="action_text"
-          :to="{path: '/reportTask/taskDetail', query: {id: record.reportTaskId}}"
-        >详情</router-link>
-        <router-link
-          class="action_text"
-          :to="{path: '/reportTask/editTask', query: {id: record.reportTaskId}}"
+          :to="{path: '/reportTask/editTask', query: {taskId: record.reportTaskId}}"
         >填报数据</router-link>
         <router-link
           class="action_text"
-          :to="{path: '/reportTask/editTask', query: {id: record.reportTaskId}}"
+          :to="{path: '/reportTask/editTask', query: {taskId: record.reportTaskId}}"
         >重新填报</router-link>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, type: 'page' })"/>
   </div>
 </template>
 
@@ -98,22 +100,24 @@
         taskStatus: 'all', // 查询条件-任务状态
         reportBillId: 'all', // 查询条件-表单id
         billOptions: [
-          { title: '全部表单', key: 'all' }
+          { title: '全部表单', key: 'all' }, { title: '资产运营信息', key: '' }, { title: '资产收入信息', key: '' },
+          { title: '资产费用信息', key: '' }, { title: '资产折旧信息', key: '' }
         ], // 查询条件-表单选项
         typeOptions: [
-          { title: '全部任务类型', key: 'all' }
+          { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '' }, { title: '临时任务', key: '' }
         ], // 查询条件-任务类型选项
         statusOptions: [
-          { title: '全部任务状态', key: 'all' }
+          { title: '全部任务状态', key: 'all' }, { title: '未完成', key: '' }, { title: '待审核', key: '' },
+          { title: '已驳回', key: '' },{ title: '已完成', key: '' }
         ], // 查询条件-任务状态选项
         searchText: '', // 查询条件-任务名称或编码
         exportBtnLoading: false, // 导出按钮loading
         numList: [
-          {title: '全部', key: 'totalArea', value: 0, fontColor: '#324057'},
-          {title: '未完成', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '待审批', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
-          {title: '已驳回', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '已完成', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}
+          {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
+          {title: '未完成', key: 'undone', value: 0, bgColor: '#FD7474'},
+          {title: '待审批', key: 'pendingApproval', value: 0, bgColor: '#1890FF'},
+          {title: '已驳回', key: 'rejected', value: 0, bgColor: '#DD81E6'},
+          {title: '已完成', key: 'done', value: 0, bgColor: '#4BD288'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
           dataSource: [
@@ -125,14 +129,13 @@
           pagination: false,
           rowKey: 'reportTaskId',
           columns: [
-            { title: '任务编号', dataIndex: 'reportTaskId', fixed: 'left', width: 150  },
-            { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 180  },
-            { title: '资产项目', dataIndex: 'projectName' }, { title: '任务名称', dataIndex: 'taskName' },
+            { title: '任务编号', dataIndex: 'reportTaskId', fixed: 'left', scopedSlots: { customRender: 'reportTaskId' }, width: 150  },
+            { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' }, { title: '任务名称', dataIndex: 'taskName' },
             { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
             { title: '计划执行日期', dataIndex: 'beginDate' }, { title: '填报人', dataIndex: 'reportByName' },
             { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
-            { title: '数据量', dataIndex: 'reportNum' }, { title: '任务状态', dataIndex: 'taskStatusName', fixed: 'right', width: 150 },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 220 }
+            { title: '数据量', dataIndex: 'reportNum' }, { title: '任务状态', dataIndex: 'taskStatusName', fixed: 'right', width: 120 },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -140,15 +143,31 @@
       }
     },
     
-    created () {
-      // const { id } = this.$route.query
+    mounted () {
+      this.queryTableData({})
     },
 
     methods: {
       moment,
+      
+      // 查询统计信息
+      queryStatistics (form) {
+        this.$api.reportManage.queryTaskStatistics(form).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            let { numList } = this
+            return this.numList = numList.map(m => {
+              return { ...m, value: (res.data || {})[m.key] }
+            })
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || '查询统计信息出错')
+        })
+      },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10}) {
+      queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { beginDate, endDate, taskType, taskStatus, reportBillId, searchText } = this
         let form = {
           action: 'tb', // 默认值
@@ -159,8 +178,9 @@
           taskStatus: (!taskStatus || taskStatus.includes('all')) ? undefined : taskStatus.join(','),
           reportBillId: (!reportBillId || reportBillId.includes('all')) ? undefined : reportBillId.join(',')
         }
+        !type && this.queryStatistics(form)
         this.tableObj.loading = true
-        Promise.reject(form).then(r => {
+        this.$api.reportManage.queryTaskPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -168,10 +188,10 @@
             this.tableObj.dataSource = data
             return Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength })
           }
-          throw res.message || '查询资产价值登记接口出错'
+          throw res.message
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(err || '查询资产价值登记接口出错')
+          this.$message.error(err || '查询列表数据出错')
         })
       },
 
@@ -192,9 +212,6 @@
       // 导出
       handleExport () {
         return this.$message.info('暂不支持')
-        // if (!this.tableObj.dataSource.length) {
-        //   return this.$message.info('无可导出数据')
-        // }
       },
 
       // 新增操作
@@ -245,37 +262,11 @@
 
 <style lang='less' scoped>
   .edit_task {
-    .custom_date {
-      .prefix_style {
-        float: left;
-        color: #C0C7D1;
-        line-height: 30px;
-        text-align: center;
-        border: 1px solid #d9d9d9;
-        border-right: none;
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-      }
-      .date_picker_style {
-        display: block;
-        margin-left: 69px;
-        & /deep/ .ant-calendar-picker-input {
-          border-top-left-radius: 0 !important;
-          border-bottom-left-radius: 0 !important;
-        }
-      }
-    }
     .custom-table {
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {
-        white-space: nowrap;
-      }
-      .action_text {
-        color: #0084FF;
-        cursor: pointer;
-        margin-right: 12px;
         white-space: nowrap;
       }
     }

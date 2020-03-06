@@ -15,7 +15,7 @@
           <span style="margin-right: 12px; color: #282D5B">填报说明:</span>
           <span style="color: #49505E">{{des || '--'}}</span>
         </a-col>
-        <a-col :span="3" style="text-align: right">
+        <a-col :span="3" style="text-align: right" v-if="tableObj.dataSource.length">
           <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
         </a-col>
       </a-row>
@@ -34,6 +34,7 @@
 <script>
   export default {
     name: 'TaskTableView',
+    props: ['taskId', 'reportPlanId'],
     data () {
       return {
         result: '1', // 填报结果
@@ -43,48 +44,60 @@
           loading: false,
           scroll: { x: 2000 },
           pagination: false,
-          rowKey: 'relId',
-          columns: [
-            { title: '价值编号', dataIndex: 'relId', fixed: 'left', width: 120 },
-            { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 180 },
-            { title: '本次估值(元)', dataIndex: 'assessmentValue' }, { title: '评估机构', dataIndex: 'assessmentOrganName' },
-            { title: '评估基准日', dataIndex: 'assessmenBaseDate' }, { title: '上浮比', dataIndex: 'upRate' },
-            { title: '提交人', dataIndex: 'createByName' },
-            { title: '状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 120 }
-          ]
+          columns: []
         },
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 }
       }
     },
 
+    mounted () {
+      this.queryColumns()
+      this.queryTableData({})
+    },
+
     methods: {
       // 导出
       handleExport () {
         return this.$message.info('暂不支持')
-        // if (!this.tableObj.dataSource.length) {
-        //   return this.$message.info('无可导出数据')
-        // }
+      },
+
+      // 查询表单字段,作为Table columns
+      queryColumns () {
+        this.tableObj.loading = true
+        this.$api.reportManage.queryReportBillColumn({reportPlanId: this.reportPlanId}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.tableObj.columns = (res.data || []).map((m, i) => {
+              let item = { title: m.columnName, dataIndex: m.columnCode }
+              return i === 1 ? { ...item, fixed: 'left', width: 120 } : item
+            })
+          }
+          throw res.message
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '查询表单数据出错')
+        })
       },
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const { assetNameCode } = this
-        this.tableObj.loading = true
+        const { taskId } = this
         let form = {
-          pageSize: pageLength, pageNum: pageNo, assetNameCode
+          reportTaskId: taskId, pageSize: pageLength, pageNum: pageNo
         }
+        this.tableObj.loading = true
         this.$api.worthRegister.queryRecordList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = data.map((m, i) => ({...m, key: i}))
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
           }
-          throw res.message || '查询填报数据出错'
+          throw res.message
         }).catch(err => {
           this.tableObj.loading = false
           this.$message.error(err || '查询填报数据出错')

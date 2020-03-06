@@ -139,3 +139,6 @@ zcgl_dengji_create                处置登记-新增盘点计划
 zcgl_dengji_edit                  处置登记-编辑盘点计划
 zcgl_dengji_delete                处置登记-删除盘点计划
 zcgl_dengji_reverseapply          处置登记-反审核盘点计划
+
+呈报任务管理report-manage
+rm_task_new                       新增呈报任务

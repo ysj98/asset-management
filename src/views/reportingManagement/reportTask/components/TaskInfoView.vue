@@ -11,12 +11,14 @@
         </a-col>
       </a-row>
       <div style="margin: 15px 0 30px">
-        <span style="margin-right: 12px; color: #282D5B">备注:</span>
-        <span style="color: #49505E">{{detailData['remark'] || '--'}}</span>
+        <span style="float: left; color: #282D5B">备注:</span>
+        <div style="color: #49505E; margin-left: 38px">{{detailData['remark'] || '--'}}</div>
       </div>
-      <div>
-        <span style="margin-right: 12px; color: #282D5B">附件:</span>
-        <span style="color: #49505E">{{detailData['attachments'] || '--'}}</span>
+      <div v-if="detailData['attachments'] && detailData['attachments'].length">
+        <span style="float: left; color: #282D5B">附件:</span>
+        <div style="color: #49505E; margin-left: 38px">
+          <div v-for="item in detailData['attachments']" :key="item.name" style="color: #49505E">{{ item.name || '--'}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -25,6 +27,7 @@
 <script>
   export default {
     name: 'TaskInfoView',
+    props: ['taskId'],
     data () {
       return {
         keysObj: {
@@ -37,17 +40,37 @@
           reportByName: '填报人',
           auditByName: '审核人',
           taskStatusName: '任务状态',
-          xxx: '发布人',
-          oo: '发布时间',
+          createBy: '发布人',
+          createTime: '发布时间',
           taskTypeName: '任务类型'
         },
         detailData: {
-          remark: 'dfadsgfdsas发达国家房东说该交了开发读书根节点三联开关记录卡放得开'
+          remark: '发达国家房东说该交了开发读书根节点三联开关记录卡放得开',
+          attachments: [
+            { name: 'xxxxcooo'}, { name: 'xxxcoooo'}, { name: 'xxcooo'}
+          ]
         }, // 字段值
       }
     },
 
-    methods: {}
+    mounted () {
+      this.queryTaskInfo()
+    },
+
+    methods: {
+      // 查询任务信息详情
+      queryTaskInfo () {
+        this.$api.reportManage.queryTaskInfo({reportTaskId: this.taskId}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.detailData = res.data || {}
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || '查询任务信息出错')
+        })
+      }
+    }
   }
 </script>
 

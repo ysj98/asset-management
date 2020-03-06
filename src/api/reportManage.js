@@ -1,5 +1,5 @@
 /*
- * @Description: 
+ * @Description:
  * @Date: 2020-03-04 18:38:38
  * @LastEditTime: 2020-03-05 14:39:48
  */
@@ -43,24 +43,46 @@ export function queryReportBillColumn (data) {
 	return axiosPost(reportManage.queryReportBillColumn, data)
 }
 
-
 // 呈报管理---- 任务
-// [呈报任务]列表查询
-export function taskList (data) {
+//  [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
+export function queryTaskPage (data) {
+  return axiosPost(reportManage.taskPage, data)
+}
+//  [呈报任务]列表查询
+export function queryTaskList (data) {
   return axiosGet(reportManage.taskList, data)
 }
-// 查询表单字段
-// [呈报任务]分页查询(我审核的、我填报的、机构下全部任务)
-export function taskPage (data) {
-	return axiosPost(reportManage.taskPage, data)
+//  [呈报任务]填报数据分页查询
+export function queryTaskDetailPage (data) {
+  return axiosGet(reportManage.detailPage, data)
+}
+//  [呈报任务]填报数据列表查询
+export function queryTaskDetailList (data) {
+  return axiosGet(reportManage.detailList, data)
 }
 // [呈报任务]任务信息
-export function getTask (data) {
-	return axiosGet(reportManage.getTask, data)
+export function queryTaskInfo (data) {
+  return axiosGet(reportManage.getTask, data)
 }
 // [呈报任务]任务统计
-export function getTaskStat (data) {
-	return axiosPost(reportManage.getTaskStat, data)
+export function queryTaskStatistics (data) {
+  return axiosPost(reportManage.getTaskStat, data)
+}
+// [呈报任务]保存任务信息、填报数据
+export function saveTaskOrDetail (data) {
+  return axiosPost(reportManage.saveTaskOrDetail, data)
+}
+// [呈报任务]填报数据批量导入
+export function importTaskdetailList (data) {
+  return axiosPost(reportManage.detailDataImport, data)
+}
+// [呈报任务]填报模板导出
+export function exportDetailTemplate (data) {
+  return axiosGet(reportManage.detailTempExport, data)
+}
+// [呈报任务]审核任务
+export function auditTask (data) {
+  return axiosGet(reportManage.auditTask, data)
 }
 
 /**
