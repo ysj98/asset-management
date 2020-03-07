@@ -13,24 +13,31 @@
         </a-col>
         <a-col :span="16">
           <span style="float: left;">填报说明:</span>
-          <div style="margin-left: 65px">
-            <a-input placeholder="请输入填报说明" v-model="des"/>
+          <div style="margin-left: 65px" id="resultRemark">
+            <a-input placeholder="请输入填报说明" v-model="resultRemark"/>
           </div>
         </a-col>
       </a-row>
       <!--列表部分-->
       <div style="margin: 10px 0">
-        <SG-Button icon="export" :loading="exportBtnLoading" @click="exportTemplate">导出填报模板</SG-Button>
-        <SG-Button icon="plus" style="margin-left: 10px" @click="importBatchData">批量导入</SG-Button>
+        <SG-Button icon="export" :loading="exportBtnLoading" @click="exportTemplate" :disabled="!customColumns.length">导出填报模板</SG-Button>
+        <a-upload
+          :fileList="fileList"
+          :action="importBatchData"
+          style="margin-left: 10px; display: inline-block"
+        >
+          <SG-Button icon="plus" :disabled="!customColumns.length">批量导入</SG-Button>
+          <!--<a-button> <a-icon type="upload" /> Click to Upload </a-button>-->
+        </a-upload>
         <span style="color: #e4393c; float: right; line-height: 32px; margin-right: 15px">填报总数: {{tableObj.dataSource.length}}</span>
       </div>
       <a-table v-bind="tableObj" class="custom-table td-pd10">
         <a-table-column
-          v-for="m in tableObj.customColumns"
-          :key="m.dataIndex"
-          :dataIndex="m.dataIndex"
-          :fixed="m.fixed"
-          :width="m.width"
+          v-for="m in customColumns"
+          :key="m.columnCode"
+          :dataIndex="m.columnCode"
+          :fixed="m.fixed || false"
+          :width="m.width || 180"
         >
           <!--自定义表头-->
           <span slot="title" @click="handleSameTableCell(m)">
@@ -40,27 +47,30 @@
           <!--Table Cell slot-->
           <template slot-scope="text, record">
             <!--columnType === 1 文本输入域-->
-            <a-input v-if="m.columnType === 1" v-model.trim="record[m.dataIndex]" :placeholder="`请输入${m.columnName}`"/>
+            <a-input v-if="m.columnType === 1" v-model.trim="record[m.columnCode]" :placeholder="`请输入${m.columnName}`"/>
             <!--columnType === 2 数字输入域-->
             <a-input-number
+              :min="0"
               style="width: 100%"
-              v-model="record[m.dataIndex]"
+              v-model="record[m.columnCode]"
               v-else-if="m.columnType === 2"
               :placeholder="`请输入${m.columnName}`"
             />
             <!--columnType === 3 日期选择域-->
             <a-date-picker
+              allowClear
               format="YYYY-MM-DD"
               style="width: 100%"
-              v-model="record[m.dataIndex]"
+              v-model="record[m.columnCode]"
               v-else-if="m.columnType === 3"
               :placeholder="`请选择${m.columnName}`"
             />
             <!--columnType === 4 下拉选择域-->
             <a-select
-              :options="m.optVal"
+              allowClear
+              :options="m.options"
               style="width: 100%"
-              v-model="record[m.dataIndex]"
+              v-model="record[m.columnCode]"
               v-else-if="m.columnType === 4"
               :placeholder="`请选择${m.columnName}`"
             />
@@ -75,7 +85,7 @@
         </a-table-column>
       </a-table>
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
-      <div v-if="tableObj.customColumns.length" style="margin: 15px 0">
+      <div v-if="customColumns.length" style="margin: 15px 0">
         <SG-Button icon="plus" style="width: 100%; height: 40px;" @click="addTableItem">添加</SG-Button>
       </div>
     </div>
@@ -94,6 +104,7 @@
       <a-input-number v-else-if="columnType === 2" v-model="sameCellValue" :placeholder="`请输入${columnName}`" style="width: 100%"/>
       <!--columnType === 3 日期选择域-->
       <a-date-picker
+        allowClear
         format="YYYY-MM-DD"
         style="width: 100%"
         v-model="sameCellValue"
@@ -102,6 +113,7 @@
       />
       <!--columnType === 4 下拉选择域-->
       <a-select
+        allowClear
         style="width: 100%"
         v-model="sameCellValue"
         :options="selectOptions"
@@ -119,30 +131,20 @@
     props: ['type', 'taskInfo', 'taskId'],
     data () {
       return {
-        result: '1', // 填报结果
-        des: '12月份资产呈报数据',
         tableObj: {
-          dataSource: [
-            {relId: 12, code: 834, createByName: '', assessmentValue: null, key: 1 },
-            {relId: 243, code: 394, createByName: '', assessmentValue: null, key: 13 },
-            {relId: 45, code: 384, createByName: '', assessmentValue: null, key: 56 }
-          ],
+          dataSource: [],
           loading: false,
           bordered: true,
-          scroll: { x: 1600 },
-          pagination: false,
-          customColumns: [
-            { columnName: '价值编号', columnType: 1, dataIndex: 'relId', fixed: 'left', width: 120, columnNeed: 1 },
-            { columnName: '资产编码', columnType: 2, dataIndex: 'code', fixed: 'left', width: 180 },
-            { columnName: '提交人', columnType: 4, dataIndex: 'createByName', optVal: [{title: '隔壁楼', key: 123}, {title: '老王', key: 12453}] },
-            { columnName: '本次估值(元)', columnType: 3, dataIndex: 'assessmentValue' },
-            { columnName: '操作', dataIndex: 'action', fixed: 'right', width: 60, columnNeed: 0 }
-          ]
+          scroll: { x: true },
+          pagination: false
         },
-        exportBtnLoading: false,
+        customColumns: [], // 自定义column
+        result: '1', // 填报结果, 1 填报，0 不填报
+        resultRemark: '', // 填报说明
+        exportBtnLoading: false, // 导出按钮loading
         dateArr: [], // 日期格式的字段
         isShowModal: false, // modal show
-        sameCellValue: '', // 批量修改-值
+        sameCellValue: undefined, // 批量修改-值
         columnType: '', // 批量修改-列头类型
         dataIndex: '', // 批量修改-列头字段值
         columnName: '', // 批量修改-列头字段名
@@ -150,24 +152,29 @@
         assetCardOptions: [], // 资产卡片名称选
         selectOptions: [], // 批量修改-为select时选项数据
         assetType: '', // 查询资产卡片 card 或资产名 name 的标志
+        fileList: [] // 隐藏Upload文件列表
       }
     },
 
     created () {
       this.queryColumns()
+      if (this.type == 'edit') {
+        let { result, resultRemark } = this.taskInfo
+        this.resultRemark = resultRemark
+        this.result = String(result)
+      }
     },
 
     methods: {
       // 批处理Table Cell数据
-      handleSameTableCell ({columnType, dataIndex, sameCellValue, optVal, columnName, type}) {
+      handleSameTableCell ({columnType, dataIndex, sameCellValue, options, columnName, type}) {
         if (type === 'submit') {
           let { tableObj: { dataSource } } = this
           return this.tableObj.dataSource = dataSource.map(item => {
             return { ...item, [dataIndex]: sameCellValue }
           })
         }
-        Object.assign(this, { columnType, dataIndex, isShowModal: true, selectOptions: optVal, columnName })
-        // record[dataIndex] = type === 'input' ? e.target.value.replace(/(^\s*)|(\s*$)/g, "") : e
+        Object.assign(this, { columnType, dataIndex, isShowModal: true, selectOptions: options, columnName })
       },
 
       // 处理Modal关闭/保存
@@ -177,15 +184,15 @@
           this.handleSameTableCell({ columnType, dataIndex, sameCellValue, type: 'submit' })
         }
         Object.assign(this, {
-          columnType: '', dataIndex: '', isShowModal: false, sameCellValue: '', columnName: '', selectOptions: []
+          columnType: '', dataIndex: '', isShowModal: false, sameCellValue: undefined, columnName: '', selectOptions: []
         })
       },
 
       // 添加一条Table记录
       addTableItem () {
-        let temp = {}
-        let { customColumns } = this.tableObj
-        customColumns.forEach(m => temp[m] = Number(m.columnType) === 3 ? null : '')
+        let { customColumns, tableObj: { dataSource } } = this
+        let temp = { key: dataSource.length }
+        customColumns.forEach(m => temp[m.columnCode] = Number(m.columnType) === 3 ? null : '')
         this.tableObj.dataSource.push(temp)
       },
       
@@ -196,18 +203,26 @@
 
       // 查询表单字段,作为Table columns
       queryColumns () {
-        const { taskInfo: { reportBillId }, taskId } = this
-        if (!reportBillId) { return false }
+        const { taskInfo: { reportBillId, reportPlanId }, taskId } = this
+        if (!reportBillId && !reportPlanId) { return false }
         this.tableObj.loading = true
-        this.$api.reportManage.queryReportBillColumn({reportBillId}).then(r => {
+        this.$api.reportManage.queryReportBillColumn({reportBillId, reportPlanId}).then(r => {
+          this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0' && (res.data || []).length) {
             let dateArr = [] // 日期格式的字段
-            let list = res.data.filter(v => Number(v.columnDisplay) !== 0).map((m, i) => {
-              Number(m.columnType) === 3 && dateArr.push(m.columnCode)
-              return i === 1 ? { ...m, fixed: 'left', width: 120 } : m
-            }).push({ columnName: '操作', fixed: 'right', width: 60 })
-            this.dateArr = dateArr
+            let list = res.data
+            this.customColumns = list.filter(v => Number(v.columnDisplay) !== 0).map((m, i) => {
+              if (Number(m.columnType) === 4) {
+                m.options = m.optVal.split(',').map(item => {
+                  let t = item.split('-')
+                  return { key: t[0], title: t[1] }
+                })
+              } else if (Number(m.columnType) === 3) {
+                dateArr.push(m.columnCode)
+              }
+              return (i === 0 || i === 1) ? { ...m, fixed: list.length > 9 ? 'left' : false } : m
+            }).concat({ columnName: '操作', fixed: list.length > 9 ? 'right' : false, width: 60 })
             if (taskId) { this.queryTableData(dateArr) }
             // 加载资产卡片名称或资产名称选项
             let temp = list[0]
@@ -216,7 +231,8 @@
               this.assetType = assetType
               this.queryAssetOptions(assetType)
             }
-            return this.tableObj.customColumns = list
+            list.length > 9 && (this.tableObj.scroll.x = list.length * 180)
+            return this.dateArr = dateArr
           }
           throw res.message
         }).catch(err => {
@@ -228,12 +244,16 @@
       // 查询列表数据
       queryTableData (dateArr) {
         this.tableObj.loading = true
-        this.$api.worthRegister.queryRecordList({reportTaskId: this.taskId}).then(r => {
+        this.$api.reportManage.queryTaskDetailList({reportTaskId: this.taskId}).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.tableObj.dataSource = res.data.map((m, i) => {
-              dateArr.forEach(v => m[v] = m[v] ? moment(m[v], 'YYYY-MM-DD') : null)
+              dateArr.forEach(v => {
+                if (m.hasOwnProperty(v)) {
+                  m[v] = m[v] ? moment(m[v], 'YYYY-MM-DD') : null
+                }
+              })
               return { ...m, key: i }
             })
           }
@@ -251,24 +271,25 @@
         Promise.resolve(assetType).then(() => {
           this.assetNameOptions = [
             { title: '测试资产名1', key: 126, code: 889 },
-            { title: '测试资产名2', key: 2512, code: 166 },
-            { title: '测试资产名121', key: 122, code: 333 },
-            { title: '测试资产名44', key: 123, code: 2222 }
+            { title: '测试资产名2', key: 2512, code: 166 }
           ]
           this.assetCardOptions = [
             { title: '测试资卡片1', key: 126, code: 889 },
-            { title: '测试资卡片2', key: 2512, code: 166 },
-            { title: '测试资卡片121', key: 122, code: 333 },
-            { title: '测试资卡片44', key: 123, code: 2222 }
+            { title: '测试资卡片2', key: 2512, code: 166 }
           ]
         })
       },
       
       // 提交填报数据
-      handleSubmit (resolve) {
+      handleSubmit () {
         // 校验必填项
-        // const {} = this
-        resolve()
+        const { result, resultRemark, tableObj: { dataSource } } = this
+        if (String(result) === '0' && !resultRemark ) {
+          document.getElementById('resultRemark').scrollIntoView({block: "center"})
+          this.$message.warn('请填写填报说明')
+          return false
+        }
+        return { result, resultRemark, detailList: dataSource }
       },
       
       // 导出模板
@@ -292,20 +313,33 @@
       },
       
       // 批量导入数据
-      importBatchData () {
-        this.$message.info('暂不能操作')
-        // this.tableObj.loading = true
-        // this.$api.reportManage.importTaskdetailList({reportBillId: this.taskInfo.reportBillId}).then(r => {
-        //   this.tableObj.loading = false
-        //   let res = r.data
-        //   if (res && String(res.code) === '0') {
-        //     return this.queryTableData(this.dateArr)
-        //   }
-        //   throw res.message
-        // }).catch(err => {
-        //   this.tableObj.loading = false
-        //   this.$message.error(err || '批量导入失败')
-        // })
+      importBatchData (file) {
+        this.tableObj.loading = true
+        let fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('reportBillId', this.taskInfo.reportBillId)
+        this.$api.reportManage.importTaskdetailList(fileData).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$message.success(res.msg)
+            let { dateArr, tableObj: { dataSource } } = this
+            let index = dataSource.length
+            let newList = (res.data || []).map((m, i) => {
+              dateArr.forEach(v => {
+                if (m.hasOwnProperty(v)) {
+                  m[v] = m[v] ? moment(m[v], 'YYYY-MM-DD') : null
+                }
+              })
+              return { ...m, key: i + index }
+            })
+            return this.tableObj.dataSource = dataSource.concat(newList)
+          }
+          throw res.message
+        }).catch(err => {
+          this.tableObj.loading = false
+          return this.$message.error(err || '批量导入失败')
+        })
       }
     },
 
@@ -331,17 +365,17 @@
       & /deep/ .ant-table-thead th, .ant-table td {
         white-space: nowrap;
       }
-      .action_text {
-        color: #0084FF;
-        cursor: pointer;
-        margin-right: 12px;
-        white-space: nowrap;
-      }
-      .custom_table_column {
-        color: #0084FF;
-        cursor: pointer;
-        white-space: nowrap;
-      }
+      /*.action_text {*/
+        /*color: #0084FF;*/
+        /*cursor: pointer;*/
+        /*margin-right: 12px;*/
+        /*white-space: nowrap;*/
+      /*}*/
+      /*.custom_table_column {*/
+        /*color: #0084FF;*/
+        /*cursor: pointer;*/
+        /*white-space: nowrap;*/
+      /*}*/
     }
   }
 </style>

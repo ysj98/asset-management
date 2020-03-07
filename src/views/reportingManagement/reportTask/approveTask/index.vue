@@ -111,8 +111,8 @@
             { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
             { title: '计划执行日期', dataIndex: 'beginDate' }, { title: '填报人', dataIndex: 'reportByName' },
             { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
-            { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 120 },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 120 }
+            { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 100 },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 80 }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -216,5 +216,14 @@
 </script>
 
 <style lang='less' scoped>
-
+  .approve_task {
+    .custom-table {
+      padding-bottom: 55px;
+      /*if you want to set scroll: { x: true }*/
+      /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-thead th, .ant-table td {
+        white-space: nowrap;
+      }
+    }
+  }
 </style>

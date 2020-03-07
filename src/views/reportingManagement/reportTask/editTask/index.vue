@@ -70,11 +70,13 @@
       <span slot="action" slot-scope="text, record">
         <router-link
           class="action_text"
-          :to="{path: '/reportTask/editTask', query: {taskId: record.reportTaskId}}"
+          v-if="String(record.taskStatus) === '1'"
+          :to="{path: '/reportTask/editTask', query: {taskId: record.reportTaskId, action: 'tb'}}"
         >填报数据</router-link>
         <router-link
           class="action_text"
-          :to="{path: '/reportTask/editTask', query: {taskId: record.reportTaskId}}"
+          v-if="String(record.taskStatus) === '3'"
+          :to="{path: '/reportTask/editTask', query: {taskId: record.reportTaskId, action: 'cxtb'}}"
         >重新填报</router-link>
       </span>
     </a-table>

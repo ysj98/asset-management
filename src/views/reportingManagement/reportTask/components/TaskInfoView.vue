@@ -14,11 +14,12 @@
         <span style="float: left; color: #282D5B">备注:</span>
         <div style="color: #49505E; margin-left: 38px">{{detailData['remark'] || '--'}}</div>
       </div>
-      <div v-if="detailData['attachmentList'] && detailData['attachmentList'].length">
+      <div v-if="attachmentList.length">
         <span style="float: left; color: #282D5B">附件:</span>
-        <div style="color: #49505E; margin-left: 38px">
-          <div v-for="item in detailData['attachmentList']" :key="item.attachmentPath" style="color: #49505E">{{ item.oldAttachmentName || '--'}}</div>
-        </div>
+        <!--<div style="color: #49505E; margin-left: 38px">-->
+          <!--<div v-for="item in detailData['attachmentList']" :key="item.attachmentPath" style="color: #49505E">{{ item.oldAttachmentName || '&#45;&#45;'}}</div>-->
+        <!--</div>-->
+        <SG-UploadFile type="all" show v-model="attachmentList"/>
       </div>
     </div>
   </div>
@@ -30,6 +31,7 @@
     props: ['taskId'],
     data () {
       return {
+        attachmentList: [],
         keysObj: {
           taskName: '任务名称',
           organName: '所属机构',
@@ -60,6 +62,9 @@
           if (res && String(res.code) === '0') {
             const {resultRemark, result, reportPlanId, reportBillId, projectId, ...others} = res.data
             this.detailData = others || {}
+            this.attachmentList = (others.attachmentList || []).map(m => {
+              return { url: m.attachmentPath, name: m.oldAttachmentName }
+            })
             return this.$emit('transferData', {resultRemark, result, reportPlanId, reportBillId, projectId})
           }
           throw res.message

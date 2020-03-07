@@ -13,7 +13,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col :span="8" id="needValue">
           <a-form-item
             required
             label="所属机构"
@@ -95,25 +95,32 @@
       </a-row>
     </a-form>
     <!--填报数据部分-->
-    <task-table-edit :taskInfo="taskInfo"/>
+    <task-table-edit ref="taskTable" :taskInfo="taskInfo"/>
+    <!--底部审批操作按钮组-->
+    <form-footer location="fixed">
+      <SG-Button @click="handleSubmit('draft')" :loading="submitBtnLoading" style="margin-right: 8px">暂存草稿</SG-Button>
+      <SG-Button type="primary" @click="handleSubmit('')" :loading="submitBtnLoading">提交审批</SG-Button>
+    </form-footer>
     <!--选择审核人Modal-->
     <select-staff ref="selectAuditUser" @change="getAuditUser" :selectOptList="auditUsers"/>
   </div>
 </template>
 
 <script>
+  import FormFooter from '@/components/FormFooter.vue'
   import TreeSelect from 'src/views/common/treeSelect'
   import TaskTableEdit from '../components/TaskTableEdit'
   import SelectStaff from '@/views/common/selectStaffOrPost'
   export default {
     name: 'NewTask',
-    components: { TaskTableEdit, TreeSelect, SelectStaff },
+    components: { TaskTableEdit, TreeSelect, SelectStaff, FormFooter },
     data () {
       return {
         organId: '',
         organName: '',
         labelCol: {span: 6},
         wrapperCol: {span: 18},
+        submitBtnLoading: false, // 提交按钮loading
         form: this.$form.createForm(this), // 注册form
         attachmentList: [], // 附件数据
         userName: '', // 当前用户名
@@ -125,7 +132,7 @@
         projectOptions: [], // 资产项目选项
         taskInfo: {
           projectId: '', // 项目id
-          billId: '', // 表单id
+          reportBillId: '', // 表单id
         }
       }
     },
@@ -135,8 +142,8 @@
       queryBillList () {
         this.$api.reportManage.queryAllReportBill().then(r => {
           let res = r.data
-          let arr = []
           if (res && String(res.code) === '0') {
+            let arr = [];
             (res.data || []).forEach(item => {
               if (['资产运营信息', '资产收入信息', '资产费用信息', '资产折旧信息'].includes(item.billName)) {
                 arr.push({ key: item.reportBillId, title: item.billName })
@@ -182,24 +189,61 @@
       },
 
       // 提交
-      handleSubmit (resolve) {
+      handleSubmit (type) {
+        let that = this
+        new Promise(resolve => {
+          that.validateFields(resolve)
+        }).then(values => {
+          // 获取填报数据
+          let data = that.$refs['taskTable'].handleSubmit()
+          if (data) {
+            const { attachment, taskInfo } = values
+            const { detailList } = data
+            let form = {
+              reportTask: taskInfo,
+              isSubmit: type ? 'Y' : 'N',
+              attachment, detailList, action: 'xz'
+            }
+            that.submitBtnLoading = true
+            that.$api.reportManage.saveTaskOrDetail(form).then(r => {
+              that.submitBtnLoading = false
+              let res = r.data
+              if (res && String(res.code) === '0') {
+                that.$message.success(`${type ? '暂存草稿' : '提交审批'}成功`)
+                // 跳回列表路由
+                return that.$router.push({ name: '呈报任务', params: { refresh: true } })
+              }
+              throw res.message
+            }).catch(err => {
+              that.submitBtnLoading = false
+              that.$message.error(err || `${type ? '暂存草稿' : '提交审批'}失败`)
+            })
+          }
+        })
+      },
+      
+      // 校验必填项
+      validateFields (resolve) {
         this.form.validateFieldsAndScroll((err, values) => {
           if (!err) {
             const { attachmentList, organId, userId, auditUsers } = this
             let { projectId, reportBillId, taskName, remark } = values
             // 校验必填
-            if (!organId || !auditUsers) {
-              this.validateAuditUsers = !auditUsers
+            if (!organId || !auditUsers.length) {
+              document.getElementById('needValue').scrollIntoView()
+              this.validateAuditUsers = !auditUsers.length
               return this.validateOrganId = !organId
             }
+            // 处理附件格式
             let attachment = attachmentList.map(m => {
               return { attachmentPath: m.url, oldAttachmentName: m.name }
-            }) // 处理附件格式
+            })
             resolve({
               attachment,
-              reportTask: {
+              taskInfo: {
+                reportBy: userId,
                 auditBy: auditUsers.map(v => v.id).join(','),
-                projectId, reportBillId, taskName, remark, reportBy: userId
+                projectId, reportBillId, taskName, remark, organId
               }
             })
           }
@@ -217,6 +261,7 @@
     },
 
     mounted () {
+      this.queryBillList()
       // 获取当前用户信息
       let { userId, name } = this.$store.state.auth.userinfo || {}
       this.userId = userId
@@ -231,8 +276,9 @@
         }
       },
 
+      // 自定义必填项校验
       organId: function (val) {
-        if (val.length) {
+        if (val) {
           this.validateOrganId = false
         }
       }
@@ -243,5 +289,6 @@
 <style lang='less' scoped>
   .new_task {
     padding: 0 40px;
+    margin-bottom: 80px;
   }
 </style>

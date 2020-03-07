@@ -10,7 +10,7 @@
         <a-textarea placeholder="请输入审批意见" v-model="sp" :rows="4" style="resize: none"/>
       </div>
     </div>
-    <div style="border-top: 1px solid #d9d9d9; text-align: center; padding: 20px">
+    <div style="border-top: 1px solid #d9d9d9; text-align: center; padding: 20px; margin-top: 15px">
       <SG-Button type="primary" @click="handleBtnAction(true)" style="margin-right: 20px">审批通过</SG-Button>
       <SG-Button @click="handleBtnAction(false)"><span style="color: #e4393c">驳回</span></SG-Button>
     </div>
