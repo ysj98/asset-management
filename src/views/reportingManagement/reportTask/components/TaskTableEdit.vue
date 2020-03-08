@@ -67,11 +67,13 @@
             />
             <!--columnType === 4 下拉选择域-->
             <a-select
+              showSearch
               allowClear
               :options="m.options"
               style="width: 100%"
               v-model="record[m.columnCode]"
               v-else-if="m.columnType === 4"
+              @change="setCode($event, m, record)"
               :placeholder="`请选择${m.columnName}`"
             />
             <!--默认展示形式-->
@@ -151,7 +153,8 @@
         assetNameOptions: [], // 资产名称选项
         assetCardOptions: [], // 资产卡片名称选
         selectOptions: [], // 批量修改-为select时选项数据
-        assetType: '', // 查询资产卡片 card 或资产名 name 的标志
+        assetType: '', // 查询资产卡片 Card 或资产名 Name 的标志
+        codeIndex: '', // 资产卡片或资产对应的编码字段名
         fileList: [] // 隐藏Upload文件列表
       }
     },
@@ -210,9 +213,12 @@
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0' && (res.data || []).length) {
-            let dateArr = [] // 日期格式的字段
-            let list = res.data
-            this.customColumns = list.filter(v => Number(v.columnDisplay) !== 0).map((m, i) => {
+            let assetType = ''
+              // 日期格式的字段
+            let dateArr = []
+            // 过滤不展示的列
+            let list = (res.data || []).filter(v => Number(v.columnDisplay) !== 0)
+            this.customColumns = list.map((m, i) => {
               if (Number(m.columnType) === 4) {
                 m.options = m.optVal.split(',').map(item => {
                   let t = item.split('-')
@@ -221,18 +227,20 @@
               } else if (Number(m.columnType) === 3) {
                 dateArr.push(m.columnCode)
               }
+              // 保存资产编码或资产卡片编码字段名
+              if (m.columnName === '资产名称' || m.columnName === '资产卡片名称') {
+                assetType = m.columnName === '资产名称' ? 'Name' : 'Card'
+                this.assetType = assetType
+              }
+              if (m.columnName === '资产编码' || m.columnName === '资产卡片编码') {
+                this.codeIndex = m.columnCode
+              }
               return (i === 0 || i === 1) ? { ...m, fixed: list.length > 9 ? 'left' : false } : m
             }).concat({ columnName: '操作', fixed: list.length > 9 ? 'right' : false, width: 60 })
             if (taskId) { this.queryTableData(dateArr) }
-            // 加载资产卡片名称或资产名称选项
-            let temp = list[0]
-            if (temp && (temp.columnName === '资产名称' || temp.columnName === '资产卡片名称')) {
-              let assetType = temp.columnName === '资产名称' ? 'name' : 'card'
-              this.assetType = assetType
-              this.queryAssetOptions(assetType)
-            }
+            this.dateArr = dateArr
             list.length > 9 && (this.tableObj.scroll.x = list.length * 180)
-            return this.dateArr = dateArr
+            return this.queryAssetOptions(assetType)
           }
           throw res.message
         }).catch(err => {
@@ -267,16 +275,18 @@
       // 根据资产项目查询资产名称及资产卡片名称
       queryAssetOptions (assetType = this.assetType) {
         if (!this.taskInfo.projectId || !assetType) { return false }
-        // 区分查询接口
-        Promise.resolve(assetType).then(() => {
-          this.assetNameOptions = [
-            { title: '测试资产名1', key: 126, code: 889 },
-            { title: '测试资产名2', key: 2512, code: 166 }
+        const { customColumns } = this
+        // 区分查询接口，未处理
+        Promise.resolve().then(() => {
+          let n = assetType === 'Name' ? '资产名称' : '资产卡片名称'
+          let options = [
+            { title: '测试资产名1', key: '测试资产名1', code: 889 },
+            { title: '测试资产名2', key: '测试资产名2', code: 166 }
           ]
-          this.assetCardOptions = [
-            { title: '测试资卡片1', key: 126, code: 889 },
-            { title: '测试资卡片2', key: 2512, code: 166 }
-          ]
+          this[`asset${assetType}Options`] = options
+          this.customColumns = customColumns.map(m =>
+            m.columnName === n ? { ...m, options } : m
+          )
         })
       },
       
@@ -340,6 +350,24 @@
           this.tableObj.loading = false
           return this.$message.error(err || '批量导入失败')
         })
+      },
+
+      // 自动补全资产编码或资产卡片编码
+      setCode (value, m, record) {
+        if (m.columnName === '资产名称' || m.columnName === '资产卡片名称') {
+          const { assetType, codeIndex } = this
+          if (value) {
+            let list = this[`asset${assetType}Options`]
+            for (let i = 0; i < list; i++) {
+              if (list[i].key === value) {
+                record[codeIndex] = list[i].code
+                break
+              }
+            }
+          } else {
+            record[codeIndex] = ''
+          }
+        }
       }
     },
 

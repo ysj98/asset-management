@@ -217,11 +217,16 @@ export const ASSET_MANAGEMENT = {
   zcgl_plan_reverseapply: 'zcgl_plan_reverseapply',
   /**
    * 处置登记
-  */
+   */
  zcgl_dengji_create: 'zcgl_dengji_create',
  zcgl_dengji_edit: 'zcgl_dengji_edit',
  zcgl_dengji_delete: 'zcgl_dengji_delete',
  zcgl_dengji_reverseapply: 'zcgl_dengji_reverseapply',
+   /**
+    * 呈报任务管理
+    */
+ // 呈报任务管理-呈报任务-新增
+ RM_TASK_NEW: 'rm_task_new'
 }
 
 

@@ -8,6 +8,7 @@
           icon="plus"
           type="primary"
           @click="handleAdd"
+          v-power="ASSET_MANAGEMENT.RM_TASK_NEW"
         >新建呈报任务</SG-Button>
         <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
       </a-col>
@@ -88,6 +89,7 @@
 <script>
   import moment from 'moment'
   import NoDataTip from 'src/components/noDataTips'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   export default {
     name: 'index',
@@ -95,6 +97,7 @@
     components: { NoDataTip, OverviewNumber },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限集合
         fold: true, // 查询条件折叠按钮
         beginDate: '', // 查询条件-执行开始日期
         endDate: '', // 查询条件-执行结束日期

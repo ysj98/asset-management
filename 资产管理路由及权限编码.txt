@@ -24,6 +24,10 @@ V1.2
 /asset-management/#/inventoryPlan                         盘点计划
 /asset-management/#/disposalRegister                      资产处置登记
 
+呈报任务管理
+/asset-management/#/reportTask                  呈报任务
+
+
 新增权限编码如下:
 V1.0
 资产清理
