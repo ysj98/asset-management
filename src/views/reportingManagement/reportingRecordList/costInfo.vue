@@ -270,7 +270,12 @@ export default {
     moment,
     // 详情
     goPage (record) {
-      this.$router.push({ path: '/taskQuery/details', query: {quersData: JSON.stringify([record])}})
+      let query = {
+        type: 'detail',
+        reportRecordId: record.reportRecordId,
+        reportTaskId: record.reportTaskId
+      }
+      this.$router.push({ path: 'reportingRecord/details', query})
     },
     // 搜索
     onSearch () {

@@ -352,6 +352,7 @@ export default {
     return {
       batch: '',               // 批量设置
       reportBillId: undefined,        // 呈报表单id
+      backupsReportBillId: '',        // 呈报表单备份！用于编辑时选择表单时的判断
       deadline: '3',           // 任务执行期限
       dayData: '1',            // 任务执行期限单位
       preNum: '1',             // 提前生成任务时间
@@ -444,13 +445,19 @@ export default {
     // 呈报表单监听
     reportBillChange (value) {
       this.reportBillId = value
-      this.queryReportBillColumn(value)
+      // 选择之前编辑的就用计划id查！切换别的就不穿计划id 
+      if (this.backupsReportBillId === value) {
+        this.queryReportBillColumn(value)
+      } else {
+        this.queryReportBillColumn(value, 'change')
+      }
     },
     // 查询呈报表单字段
-    queryReportBillColumn (value) {
+    // 查询时有计划id时优先
+    queryReportBillColumn (value, str) {
       let obj = {
         reportBillId: value,
-        reportPlanId: this.reportPlanId
+        reportPlanId: str === 'change' ? '' : this.reportPlanId
       }
       this.$api.reportManage.queryReportBillColumn(obj).then(res => {
         if (res.data.code === "0") {
@@ -634,6 +641,7 @@ export default {
           let data = res.data.data
           this.exePreSelectChange(data.exePre)
           this.reportBillId = Number(data.reportBillId)
+          this.backupsReportBillId = utils.deepClone(this.reportBillId)
           this.queryReportBillColumn(this.reportBillId)
           // 插入编辑数据
           this.form.setFieldsValue({
