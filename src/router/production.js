@@ -548,5 +548,10 @@ let proRouter = [
     component: () => import('@/views/reportingManagement/reportingRecordList'),
     meta: { keepAlive: true }
   },
+  {
+    path: '/reportingList/details',
+    name: '详情',
+    component: () => import('@/views/reportingManagement/reportingRecordList/details.vue')
+  },
 ]
 export default proRouter

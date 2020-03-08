@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:45:49
- * @LastEditTime: 2020-03-06 17:39:30
+ * @LastEditTime: 2020-03-08 20:50:52
  -->
 <!--
 呈报记录页面
@@ -167,7 +167,7 @@ const queryCondition = {
   projectId: "",
   billType: [''], // 呈报表单类型
   objName: '', // 资产名称或编码
-  taskType: [''], // 类型
+  taskType: [''], // 呈报方式
   taskStatus: '', // 状态
   assetType: [''], // 资产类型(多选)
   startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
@@ -193,7 +193,7 @@ const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
 const taskStatusOpt = [
   { label: "全部数据状态", value: "" },
   { label: "待审批", value: "2" },
-  { label: "已经审批", value: "4" },
+  { label: "已审批", value: "4" },
 ]
 let columns = [
   {
@@ -440,7 +440,6 @@ export default {
       };
       if (['detail', 'edit'].includes(type)) {
         query.reportRecordId = record.reportRecordId
-        query.reportBillId = record.reportBillId
         query.reportTaskId = record.reportTaskId
       }
       this.$router.push({ path: operationTypes[type], query });
