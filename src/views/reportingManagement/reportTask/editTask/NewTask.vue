@@ -195,8 +195,9 @@
           that.validateFields(resolve)
         }).then(values => {
           // 获取填报数据
-          let data = that.$refs['taskTable'].handleSubmit()
-          if (data) {
+          new Promise(resolve => {
+            that.$refs['taskTable'].handleSubmit(resolve)
+          }).then(data => {
             const { attachment, taskInfo } = values
             const { detailList } = data
             let form = {
@@ -218,7 +219,7 @@
               that.submitBtnLoading = false
               that.$message.error(err || `${type ? '暂存草稿' : '提交审批'}失败`)
             })
-          }
+          })
         })
       },
       

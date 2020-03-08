@@ -44,11 +44,12 @@
       // 提交
       handleSubmit (type) {
         // 获取填报数据
-        let data = this.$refs['taskTable'].handleSubmit()
-        if (data) {
+        new Promise(resolve => {
+          this.$refs['taskTable'].handleSubmit(resolve)
+        }).then(data => {
           const { taskInfo, taskId, action } = this
           // 获取任务信息数据
-          let { detailData: { attachmentList, ...others } } = this.$refs['taskTable']
+          let { detailData: { attachmentList, ...others } } = this.$refs['taskInfo']
           const { result, resultRemark, detailList } = data
           let form = {
             action,
@@ -71,7 +72,7 @@
             this.submitBtnLoading = false
             this.$message.error(err || `${type ? '暂存草稿' : '提交审批'}失败`)
           })
-        }
+        })
       }
     },
 

@@ -31,7 +31,8 @@
         </a-upload>
         <span style="color: #e4393c; float: right; line-height: 32px; margin-right: 15px">填报总数: {{tableObj.dataSource.length}}</span>
       </div>
-      <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <a-form :form="form">
+        <a-table v-bind="tableObj" class="custom-table td-pd10">
         <a-table-column
           v-for="m in customColumns"
           :key="m.columnCode"
@@ -47,45 +48,73 @@
           <!--Table Cell slot-->
           <template slot-scope="text, record">
             <!--columnType === 1 文本输入域-->
-            <a-input v-if="m.columnType === 1" v-model.trim="record[m.columnCode]" :placeholder="`请输入${m.columnName}`"/>
+            <a-form-item v-if="m.columnType === 1" :key="record.key">
+              <a-input
+                :placeholder="`请输入${m.columnName}`"
+                v-decorator="[`${m.columnCode}_${record.key}`, {
+                  rules: [
+                    {required: !!m.columnNeed, message: `请输入${m.columnName}`},
+                    {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
+                  ]
+                }]"
+              />
             <!--columnType === 2 数字输入域-->
-            <a-input-number
-              :min="0"
-              style="width: 100%"
-              v-model="record[m.columnCode]"
-              v-else-if="m.columnType === 2"
-              :placeholder="`请输入${m.columnName}`"
-            />
+            </a-form-item>
+            <a-form-item v-else-if="m.columnType === 2" :key="record.key">
+              <a-input-number
+                :min="0"
+                :placeholder="`请输入${m.columnName}`"
+                v-decorator="[`${m.columnCode}_${record.key}`, {
+                  rules: [
+                    {required: !!m.columnNeed, message: `请输入${m.columnName}`},
+                    {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
+                  ]
+                }]"
+              />
+            </a-form-item>
             <!--columnType === 3 日期选择域-->
+            <a-form-item v-else-if="m.columnType === 3" :key="record.key">
             <a-date-picker
               allowClear
               format="YYYY-MM-DD"
-              style="width: 100%"
-              v-model="record[m.columnCode]"
-              v-else-if="m.columnType === 3"
               :placeholder="`请选择${m.columnName}`"
+              v-decorator="[`${m.columnCode}_${record.key}`, {
+                rules: [
+                  {required: !!m.columnNeed, message: `请输入${m.columnName}`},
+                  {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
+                ]
+              }]"
             />
+            </a-form-item>
             <!--columnType === 4 下拉选择域-->
+            <a-form-item v-else-if="m.columnType === 4" :key="record.key">
             <a-select
               showSearch
               allowClear
               :options="m.options"
-              style="width: 100%"
-              v-model="record[m.columnCode]"
-              v-else-if="m.columnType === 4"
-              @change="setCode($event, m, record)"
+              @change="setCode($event, m, record.key)"
               :placeholder="`请选择${m.columnName}`"
+              v-decorator="[`${m.columnCode}_${record.key}`, {
+                rules: [
+                  {required: !!m.columnNeed, message: `请输入${m.columnName}`},
+                  {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
+                ]
+              }]"
             />
+            </a-form-item>
             <!--默认展示形式-->
-            <span v-else>
-              <span v-if="m.columnName !== '操作'">{{text}}</span>
-              <a-popconfirm v-else okText="确定" cancelText="取消" title="确认要删除该数据吗?" @confirm="deleteTableItem(record.key)">
-                <span style="cursor: pointer; color: #e4393c">删除</span>
-              </a-popconfirm>
-            </span>
+            <a-form-item v-else>
+              <span>
+                <span v-if="m.columnName !== '操作'">{{text}}</span>
+                <a-popconfirm v-else okText="确定" cancelText="取消" title="确认要删除该数据吗?" @confirm="deleteTableItem(record.key)">
+                  <span style="cursor: pointer; color: #e4393c">删除</span>
+                </a-popconfirm>
+              </span>
+            </a-form-item>
           </template>
         </a-table-column>
       </a-table>
+      </a-form>
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
       <div v-if="customColumns.length" style="margin: 15px 0">
         <SG-Button icon="plus" style="width: 100%; height: 40px;" @click="addTableItem">添加</SG-Button>
@@ -140,6 +169,7 @@
           scroll: { x: true },
           pagination: false
         },
+        form: this.$form.createForm(this), // 注册form
         customColumns: [], // 自定义column
         result: '1', // 填报结果, 1 填报，0 不填报
         resultRemark: '', // 填报说明
@@ -155,7 +185,8 @@
         selectOptions: [], // 批量修改-为select时选项数据
         assetType: '', // 查询资产卡片 Card 或资产名 Name 的标志
         codeIndex: '', // 资产卡片或资产对应的编码字段名
-        fileList: [] // 隐藏Upload文件列表
+        fileList: [], // 隐藏Upload文件列表
+        dataSourceKeys: [], // 存放 Table dataSource 中 key 值
       }
     },
 
@@ -193,15 +224,18 @@
 
       // 添加一条Table记录
       addTableItem () {
-        let { customColumns, tableObj: { dataSource } } = this
-        let temp = { key: dataSource.length }
+        let { customColumns } = this
+        let key = new Date().getTime()
+        let temp = { key}
         customColumns.forEach(m => temp[m.columnCode] = Number(m.columnType) === 3 ? null : '')
         this.tableObj.dataSource.push(temp)
+        this.dataSourceKeys.push(key)
       },
       
       // 删除一条Table记录
       deleteTableItem (key) {
         this.tableObj.dataSource = this.tableObj.dataSource.filter(m => m.key !== key)
+        this.dataSourceKeys = this.dataSourceKeys.filter(v => v !== key)
       },
 
       // 查询表单字段,作为Table columns
@@ -236,7 +270,7 @@
                 this.codeIndex = m.columnCode
               }
               return (i === 0 || i === 1) ? { ...m, fixed: list.length > 9 ? 'left' : false } : m
-            }).concat({ columnName: '操作', fixed: list.length > 9 ? 'right' : false, width: 60 })
+            }).concat({ columnCode: 'action', columnName: '操作', fixed: list.length > 9 ? 'right' : false, width: 60 })
             if (taskId) { this.queryTableData(dateArr) }
             this.dateArr = dateArr
             list.length > 9 && (this.tableObj.scroll.x = list.length * 180)
@@ -262,7 +296,9 @@
                   m[v] = m[v] ? moment(m[v], 'YYYY-MM-DD') : null
                 }
               })
-              return { ...m, key: i }
+              let key = i + new Date().getTime()
+              this.dataSourceKeys.push(key)
+              return { ...m, key }
             })
           }
           throw res.message
@@ -291,15 +327,28 @@
       },
       
       // 提交填报数据
-      handleSubmit () {
+      handleSubmit (resolve) {
         // 校验必填项
-        const { result, resultRemark, tableObj: { dataSource } } = this
+        const { result, resultRemark, dataSourceKeys, customColumns } = this
         if (String(result) === '0' && !resultRemark ) {
           document.getElementById('resultRemark').scrollIntoView({block: "center"})
-          this.$message.warn('请填写填报说明')
-          return false
+          return this.$message.warn('请填写填报说明')
         }
-        return { result, resultRemark, detailList: dataSource }
+        this.form.validateFieldsAndScroll((err, values) => {
+          if (!err) {
+            let detailList = dataSourceKeys.map(key => {
+              let temp = {}
+              customColumns.forEach(c => {
+                const { columnCode } = c
+                temp[columnCode] = values[`${columnCode}_${key}`]
+              })
+              return temp
+            })
+            resolve({ result, resultRemark, detailList })
+          } else {
+            this.$message.warn('请检查填报数据列表')
+          }
+        })
       },
       
       // 导出模板
@@ -334,14 +383,15 @@
           if (res && String(res.code) === '0') {
             this.$message.success(res.msg)
             let { dateArr, tableObj: { dataSource } } = this
-            let index = dataSource.length
             let newList = (res.data || []).map((m, i) => {
               dateArr.forEach(v => {
                 if (m.hasOwnProperty(v)) {
                   m[v] = m[v] ? moment(m[v], 'YYYY-MM-DD') : null
                 }
               })
-              return { ...m, key: i + index }
+              let key = i + new Date().getTime()
+              this.dataSourceKeys.push(key)
+              return { ...m, key }
             })
             return this.tableObj.dataSource = dataSource.concat(newList)
           }
@@ -353,19 +403,23 @@
       },
 
       // 自动补全资产编码或资产卡片编码
-      setCode (value, m, record) {
+      setCode (value, m, key) {
         if (m.columnName === '资产名称' || m.columnName === '资产卡片名称') {
-          const { assetType, codeIndex } = this
+          const { assetType, codeIndex, tableObj: { dataSource } } = this
           if (value) {
             let list = this[`asset${assetType}Options`]
             for (let i = 0; i < list; i++) {
               if (list[i].key === value) {
-                record[codeIndex] = list[i].code
+                this.tableObj.dataSource = dataSource.map(m =>
+                  m.key === key ? { ...m, [codeIndex]: list[i].code } : m
+                )
                 break
               }
             }
           } else {
-            record[codeIndex] = ''
+            this.tableObj.dataSource = dataSource.map(m =>
+              m.key === key ? { ...m, [codeIndex]: '' } : m
+            )
           }
         }
       }

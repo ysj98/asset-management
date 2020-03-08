@@ -8,9 +8,10 @@
           icon="plus"
           type="primary"
           @click="handleAdd"
+          style="margin-right: 10px"
           v-power="ASSET_MANAGEMENT.RM_TASK_NEW"
         >新建呈报任务</SG-Button>
-        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+        <SG-Button icon="export" :loading="exportBtnLoading" @click="handleExport">导出</SG-Button>
       </a-col>
       <a-col :span="5" class="custom_date">
         <span class="prefix_style" style="width: 69px">执行日期</span>
