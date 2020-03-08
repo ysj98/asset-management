@@ -1,14 +1,14 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-03-06 17:12:05
+ * @LastEditTime: 2020-03-08 21:33:35
  -->
 <template>
   <div>
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+          <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button> -->
         </div>
         <div slot="headerForm">
             <treeSelect
@@ -35,28 +35,13 @@
             <!-- 资产名称或编码 -->
             <a-input
               :maxLength="30"
-              placeholder="资产(卡片)名称/编码"
+              placeholder="资产名称/编码"
               v-model="queryCondition.objName"
               :style="allStyle"
             />
           </div>
         <div slot="contentForm" class="search-content-box">
           <div class="search-from-box">
-            <!-- 全部资产类型 -->
-            <a-select
-              showSearch
-              placeholder="请选择资产类型"
-              v-model="queryCondition.assetType"
-              optionFilterProp="children"
-              @change="assetTypeSelect"
-              mode="multiple"
-              :maxTagCount="1"
-              :style="allWidth"
-              :options="assetTypeOpt"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
             <!-- 全部呈报方式-->
             <a-select
               showSearch
@@ -75,7 +60,7 @@
             <!-- 全部数据状态 -->
             <a-select
               showSearch
-              placeholder="请选择附属配套状态"
+              placeholder="请选择数据状态"
               v-model="queryCondition.taskStatus"
               optionFilterProp="children"
               :style="allWidth"
@@ -83,6 +68,27 @@
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
+            />
+            <!-- 合同编号 -->
+            <a-input
+              :maxLength="60"
+              placeholder="请输入合同编号"
+              v-model="queryCondition.contractCode"
+              :style="allWidth"
+            />
+            <!-- 客户名称 -->
+            <a-input
+              :maxLength="60"
+              placeholder="请输入客户名称"
+              v-model="queryCondition.customerName"
+              :style="allWidth"
+            />
+            <!-- 资源名称 -->
+            <a-input
+              :maxLength="60"
+              placeholder="请输入资源名称"
+              v-model="queryCondition.resourceName"
+              :style="allWidth"
             />
             </div>
             <div class="two-row-box">
@@ -130,9 +136,7 @@ import moment from 'moment'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
-  create: "/subsidiary/create",
-  detail: "/subsidiary/detail",
-  edit: '/subsidiary/edit'
+  detail: "/reportingList/details",
 };
 const allStyle = {
   width: "170px",
@@ -152,9 +156,11 @@ const queryCondition = {
   objName: '', // 资产名称或编码
   taskType: [''], // 类型
   taskStatus: '', // 状态
-  assetType: [''], // 资产类型(多选)
   startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
   endCreateDate: getNowMonthDate(),        // 备注：结束创建日期
+  contractCode: '', // 合同编号
+  customerName: '', // 客户名称
+  resourceName: '', // 资源名称
   pageNum: 1,
   pageSize: 10
 };
@@ -166,11 +172,10 @@ const taskTypeOpt = [
   { label: "数据接口", value: "3" },
 ];
 
-const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
 const taskStatusOpt = [
   { label: "全部数据状态", value: "" },
   { label: "待审批", value: "2" },
-  { label: "已经审批", value: "4" },
+  { label: "已审批", value: "4" },
 ]
 let columns = [
   {
@@ -180,13 +185,13 @@ let columns = [
     width: 100
   },
   {
-    title: "资产/卡片名称",
-    dataIndex: "objName",
+    title: "资产名称",
+    dataIndex: "assetName",
     width: 120
   },
   {
-    title: "资产/卡片编码",
-    dataIndex: "objCode",
+    title: "资产编码",
+    dataIndex: "assetCode",
     width: 120
   },
   {
@@ -206,24 +211,74 @@ let columns = [
     width: 100
   },
   {
-    title: "呈报表单",
-    dataIndex: "reportBillName",
+    title: "合同编号",
+    dataIndex: "contractCode",
     width: 100
   },
   {
-    title: "呈报方式",
-    dataIndex: "taskTypeName",
+    title: "客户名称",
+    dataIndex: "customerName",
     width: 120
   },
   {
-    title: "填报日期",
-    dataIndex: "realBeginDate",
+    title: "资源名称",
+    dataIndex: "resourceName",
     width: 120
+  },
+  {
+    title: "租赁面积(元)",
+    dataIndex: "leaseArea",
+    width: 120
+  },
+  {
+    title: "合同开始日期",
+    dataIndex: "contractBeginDate",
+    width: 100
+  },
+  {
+    title: "合同截止日期",
+    dataIndex: "contractEndDate",
+    width: 100
+  },
+  {
+    title: "起始租金单价",
+    dataIndex: "originRentUnitPriceAmount",
+    width: 100
+  },
+  {
+    title: "平均租金单价(元)",
+    dataIndex: "avgRentUnitPriceAmount",
+    width: 100
+  },
+  {
+    title: "押金(元)",
+    dataIndex: "deposit",
+    width: 100
+  },
+  {
+    title: "合同租金总额(元)",
+    dataIndex: "contractRentTotalAmount",
+    width: 100
+  },
+  {
+    title: "外部ID",
+    dataIndex: "objId",
+    width: 100
+  },
+  {
+    title: "备注",
+    dataIndex: "remark",
+    width: 100
   },
   {
     title: "填报人",
     dataIndex: "reportByName",
-    width: 120
+    width: 100
+  },
+  {
+    title: "填报日期",
+    dataIndex: "realBeginDate",
+    width: 100
   },
   {
     title: "审核人",
@@ -231,10 +286,15 @@ let columns = [
     width: 100
   },
   {
+    title: "呈报方式",
+    dataIndex: "taskTypeName",
+    width: 100
+  },
+  {
     title: "数据状态",
     dataIndex: "taskStatusName",
-    width: 150
-  }
+    width: 100
+  },
 ];
 export default {
   components: {
@@ -254,7 +314,6 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       taskTypeOpt,
-      assetTypeOpt,
       taskStatusOpt,
       table: {
         columns,
@@ -265,25 +324,27 @@ export default {
     };
   },
   created() {
-    this.platformDictFn('asset_type')
   },
   methods: {
     query() {
       let data = {
         ...this.queryCondition,
-        flag: "0"
       };
       // 呈报表单参数改变
-      data.assetType = utils.deepClone(data.assetType).join(',')
       data.taskType = utils.deepClone(data.taskType).join(',')
+      data.beginDate = data.startCreateDate
+      data.endDate = data.endCreateDate
+      delete data.startCreateDate
+      delete data.endCreateDate
       
       this.table.loading = true;
-      this.$api.reportManage.queryReportRecordPageList(data).then(
+      this.$api.reportManage.queryAssetIncomePageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
+              item.taskTypeName = item.taskTypeName || '--'
               return {
                 key: getUuid(),
                 ...item
@@ -324,11 +385,6 @@ export default {
     onDateChange (val) {
       this.queryCondition.startCreateDate = val[0]
       this.queryCondition.endCreateDate = val[1]
-    },
-    assetTypeSelect (value) {
-      this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeOpt)
-      })
     },
     taskTypeSelect (value) {
       this.$nextTick(function () {
@@ -379,33 +435,18 @@ export default {
       this.queryCondition.objName = '';
       this.queryCondition.taskType = [''];
       this.queryCondition.taskStatus = '';
-      this.queryCondition.assetType = [''];
-      this.queryCondition.startCreateDate = getNMonthsAgoFirst(2)
+      this.queryCondition.contractCode = ''
+      this.queryCondition.customerName = ''
       this.queryCondition.endCreateDate = getNowMonthDate()  
     },
-    platformDictFn(code) {
-      this.$api.assets.platformDict({ code }).then(res => {
-        if (res.data.code === "0") {
-          let result = res.data.data || [];
-          let arr = result.map(item => ({ label: item.name, ...item }));
-          // 资产类型
-          if (code === "asset_type") {
-            this.assetTypeOpt = [
-              ...utils.deepClone(assetTypeOpt),
-              ...arr
-            ];
-          }
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
-    },
+
     goPage(type, record) {
       let query = {
         type
       };
       if (['detail', 'edit'].includes(type)) {
         query.reportRecordId = record.reportRecordId
+        query.reportTaskId = record.reportTaskId
       }
       this.$router.push({ path: operationTypes[type], query });
     },

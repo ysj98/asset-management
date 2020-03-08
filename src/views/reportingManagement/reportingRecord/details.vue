@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-03-06 19:26:03
+ * @LastEditTime: 2020-03-08 20:28:19
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -20,7 +20,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{reportInfo.assetName || '-'}}</span>
+              <span class="label-value">{{reportInfo.assetName || reportInfo.cardName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">
@@ -30,7 +30,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value">{{reportInfo.assetCode || '-'}}</span>
+              <span class="label-value">{{reportInfo.assetCode || reportInfo.cardCode || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">

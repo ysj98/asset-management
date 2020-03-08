@@ -1,14 +1,14 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-03-06 16:05:50
+ * @LastEditTime: 2020-03-08 21:32:35
  -->
 <template>
   <div>
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+          <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button> -->
         </div>
         <div slot="headerForm">
             <treeSelect
@@ -29,46 +29,19 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 全部呈报表单 -->
-            <a-select
-              showSearch
-              placeholder="请选择呈报表单"
-              v-model="queryCondition.billType"
-              optionFilterProp="children"
-              @change="billTypeSelect"
-              mode="multiple"
-              :maxTagCount="1"
-              :style="allStyle"
-              :options="billTypeOpt"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
+            <div class="box">
+              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+            </div>
             <!-- 资产名称或编码 -->
             <a-input
               :maxLength="30"
-              placeholder="资产(卡片)名称/编码"
+              placeholder="资产名称/编码"
               v-model="queryCondition.objName"
               :style="allStyle"
             />
           </div>
         <div slot="contentForm" class="search-content-box">
           <div class="search-from-box">
-            <!-- 全部资产类型 -->
-            <a-select
-              showSearch
-              placeholder="请选择资产类型"
-              v-model="queryCondition.assetType"
-              optionFilterProp="children"
-              @change="assetTypeSelect"
-              mode="multiple"
-              :maxTagCount="1"
-              :style="allWidth"
-              :options="assetTypeOpt"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
             <!-- 全部呈报方式-->
             <a-select
               showSearch
@@ -87,7 +60,7 @@
             <!-- 全部数据状态 -->
             <a-select
               showSearch
-              placeholder="请选择附属配套状态"
+              placeholder="请选择数据状态"
               v-model="queryCondition.taskStatus"
               optionFilterProp="children"
               :style="allWidth"
@@ -96,6 +69,23 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
+            <!-- 收入类型 -->
+            <a-input
+              :maxLength="60"
+              placeholder="请输入收入类型"
+              v-model="queryCondition.incomeType"
+              :style="allWidth"
+            />
+            <!-- 收入名称 -->
+            <a-input
+              :maxLength="60"
+              placeholder="请输入收入名称"
+              v-model="queryCondition.incomeName"
+              :style="allWidth"
+            />
+            <!-- 所属月份 -->
+            <a-month-picker :style="allWidth" v-model="queryCondition.month"  placeholder="所属月份" />
+
             </div>
             <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
@@ -136,12 +126,13 @@ import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {getNowMonthDate, getNMonthsAgoFirst} from 'utils/formatTime'
+import SegiRangePicker from '@/components/SegiRangePicker'
+import moment from 'moment'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
-  create: "/subsidiary/create",
-  detail: "/subsidiary/detail",
-  edit: '/subsidiary/edit'
+  detail: "/reportingList/details",
 };
 const allStyle = {
   width: "170px",
@@ -158,11 +149,14 @@ const allWidth = {
 const queryCondition = {
   organId: "",
   projectId: "",
-  billType: [''], // 呈报表单类型
   objName: '', // 资产名称或编码
   taskType: [''], // 类型
   taskStatus: '', // 状态
-  assetType: [''], // 资产类型(多选)
+  startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
+  endCreateDate: getNowMonthDate(),        // 备注：结束创建日期
+  month: null,
+  incomeType: '', // 收入类型
+  incomeName: '', // 收入名称
   pageNum: 1,
   pageSize: 10
 };
@@ -173,18 +167,11 @@ const taskTypeOpt = [
   { label: "固定任务", value: "2" },
   { label: "数据接口", value: "3" },
 ];
-const billTypeOpt = [
-  { label: "全部呈报表单", value: "" },
-  { label: "资产运营信息", value: "1" },
-  { label: "资产收入信息", value: "2" },
-  { label: "资产费用信息", value: "3" },
-  { label: "资产折旧信息", value: "4" },
-]
-const assetTypeOpt = [{ label: "全部资产类型", value: "" }]
+
 const taskStatusOpt = [
   { label: "全部数据状态", value: "" },
   { label: "待审批", value: "2" },
-  { label: "已经审批", value: "4" },
+  { label: "已审批", value: "4" },
 ]
 let columns = [
   {
@@ -194,13 +181,13 @@ let columns = [
     width: 100
   },
   {
-    title: "资产/卡片名称",
-    dataIndex: "objName",
+    title: "资产名称",
+    dataIndex: "assetName",
     width: 120
   },
   {
-    title: "资产/卡片编码",
-    dataIndex: "objCode",
+    title: "资产编码",
+    dataIndex: "assetCode",
     width: 120
   },
   {
@@ -215,29 +202,74 @@ let columns = [
     width: 100
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
+    title: "收入类型",
+    dataIndex: "incomeType",
     width: 100
   },
   {
-    title: "呈报表单",
-    dataIndex: "reportBillName",
+    title: "收入名称",
+    dataIndex: "incomeName",
     width: 100
   },
   {
-    title: "呈报方式",
-    dataIndex: "taskTypeName",
+    title: "客户名称",
+    dataIndex: "customerName",
     width: 120
   },
   {
-    title: "填报日期",
-    dataIndex: "realBeginDate",
+    title: "所属月份",
+    dataIndex: "month",
     width: 120
+  },
+  {
+    title: "金额(元)",
+    dataIndex: "amount",
+    width: 120
+  },
+  {
+    title: "单价",
+    dataIndex: "unitPrice",
+    width: 100
+  },
+  {
+    title: "读数",
+    dataIndex: "readNumber",
+    width: 100
+  },
+  {
+    title: "用量",
+    dataIndex: "useLevel",
+    width: 100
+  },
+  {
+    title: "是否结清",
+    dataIndex: "settleUp",
+    width: 100
+  },
+  {
+    title: "是否接管前收入",
+    dataIndex: "incomeBeforeTakeover",
+    width: 100
+  },
+  {
+    title: "外部ID",
+    dataIndex: "objId",
+    width: 100
+  },
+  {
+    title: "备注",
+    dataIndex: "remark",
+    width: 100
   },
   {
     title: "填报人",
     dataIndex: "reportByName",
-    width: 120
+    width: 100
+  },
+  {
+    title: "填报日期",
+    dataIndex: "realBeginDate",
+    width: 100
   },
   {
     title: "审核人",
@@ -245,29 +277,34 @@ let columns = [
     width: 100
   },
   {
+    title: "呈报方式",
+    dataIndex: "taskTypeName",
+    width: 100
+  },
+  {
     title: "数据状态",
     dataIndex: "taskStatusName",
-    width: 150
-  }
+    width: 100
+  },
 ];
 export default {
   components: {
     SearchContainer,
     TreeSelect,
     noDataTips,
-    segiIcon
+    segiIcon,
+    SegiRangePicker
   },
   data() {
     return {
       ASSET_MANAGEMENT,
+      moment,
       toggle: true,
       allStyle,
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       taskTypeOpt,
-      billTypeOpt,
-      assetTypeOpt,
       taskStatusOpt,
       table: {
         columns,
@@ -278,26 +315,28 @@ export default {
     };
   },
   created() {
-    this.platformDictFn('asset_type')
   },
   methods: {
     query() {
       let data = {
         ...this.queryCondition,
-        flag: "0"
       };
       // 呈报表单参数改变
-      data.billType = utils.deepClone(data.billType).join(',')
-      data.assetType = utils.deepClone(data.assetType).join(',')
       data.taskType = utils.deepClone(data.taskType).join(',')
+      data.month = data.month ? moment(data.month).format('YYYY-MM') : ''
+      data.beginDate = data.startCreateDate
+      data.endDate = data.endCreateDate
+      delete data.startCreateDate
+      delete data.endCreateDate
       
       this.table.loading = true;
-      this.$api.reportManage.queryReportRecordPageList(data).then(
+      this.$api.reportManage.queryAssetOperationPageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
+              item.taskTypeName = item.taskTypeName || '--'
               return {
                 key: getUuid(),
                 ...item
@@ -334,15 +373,10 @@ export default {
         }
       });
     },
-    billTypeSelect (value) {
-      this.$nextTick(function () {
-        this.queryCondition.billType = this.handleMultipleSelectValue(value, this.queryCondition.billType, this.billTypeOpt)
-      })
-    },
-    assetTypeSelect (value) {
-      this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeOpt)
-      })
+    // 起止日期发生变化
+    onDateChange (val) {
+      this.queryCondition.startCreateDate = val[0]
+      this.queryCondition.endCreateDate = val[1]
     },
     taskTypeSelect (value) {
       this.$nextTick(function () {
@@ -390,35 +424,22 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition.projectId = "";
-      this.queryCondition.billType = [''];
       this.queryCondition.objName = '';
       this.queryCondition.taskType = [''];
       this.queryCondition.taskStatus = '';
-      this.queryCondition.assetType = [''];
-    },
-    platformDictFn(code) {
-      this.$api.assets.platformDict({ code }).then(res => {
-        if (res.data.code === "0") {
-          let result = res.data.data || [];
-          let arr = result.map(item => ({ label: item.name, ...item }));
-          // 资产类型
-          if (code === "asset_type") {
-            this.assetTypeOpt = [
-              ...utils.deepClone(assetTypeOpt),
-              ...arr
-            ];
-          }
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+      this.queryCondition.incomeType = ''
+      this.queryCondition.incomeName = ''
+      this.queryCondition.startCreateDate = getNMonthsAgoFirst(2)       // 备注：开始创建日期
+      this.queryCondition.endCreateDate = getNowMonthDate()        // 备注：结束创建日期
+      this.queryCondition.month = null
     },
     goPage(type, record) {
       let query = {
         type
       };
       if (['detail', 'edit'].includes(type)) {
-        query.subsidiaryMatchingId = record.subsidiaryMatchingId
+        query.reportRecordId = record.reportRecordId
+        query.reportTaskId = record.reportTaskId
       }
       this.$router.push({ path: operationTypes[type], query });
     },
@@ -433,6 +454,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.box {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
 .search-content-box {
   display: flex;
   justify-content: space-between;
