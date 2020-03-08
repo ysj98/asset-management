@@ -213,7 +213,12 @@ export default {
     moment,
     // 详情
     goPage (record) {
-      this.$router.push({ path: '/taskQuery/details', query: {quersData: JSON.stringify([record])}})
+      let query = {
+        type: 'detail',
+        reportRecordId: record.reportRecordId,
+        reportTaskId: record.reportTaskId
+      }
+      this.$router.push({ path: 'reportingRecord/details', query})
     },
     // 搜索
     onSearch () {
@@ -333,8 +338,8 @@ export default {
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
         taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',                // 审批状态 1未完成 2待审批 3已驳回 4已完成
         taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : '',                  // 1临时 2固定 3数据
-        month: moment(this.month).format('YYYY-MM'),                     // 月份
-        // month: '',
+        // month: moment(this.month).format('YYYY-MM'),                     // 月份
+        month: '',
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
