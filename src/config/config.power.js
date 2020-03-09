@@ -227,6 +227,20 @@ export const ASSET_MANAGEMENT = {
     */
  // 呈报任务管理-呈报任务-新增
  RM_TASK_NEW: 'rm_task_new',
+ /**
+  * 附属配套管理
+  */
+ ASSET_CREATE_SUBSI: 'asset_create_subsi', // 新建附属配套
+ ASSET_EDIT_SUBSI: 'asset_edit_subsi', // 编辑附属配套
+ ASSET_STATUS_SUBSI: 'asset_status_subsi', // 附属配套状态改变
+ ASSET_DELETE_SUBSI: 'asset_delete_subsi', // 删除附属配套
+ /**
+  * 呈报记录一览表
+ */
+ASSET_REPORT_OPERATE: 'asset_report_operate', // 呈报记录运营
+ASSET_REPORT_INCOME: 'asset_report_income', // 呈报记录收入
+ASSET_REPORT_DEPRECIA: 'asset_report_deprecia', // 呈报记录折旧
+ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
   /**
  * 呈报计划
  */
