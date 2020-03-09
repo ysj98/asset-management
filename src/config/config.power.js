@@ -231,7 +231,7 @@ export const ASSET_MANAGEMENT = {
  * 呈报计划
  */
   // 呈报计划-新建
-  zcgl_submit_plans_new: 'zcgl_dengji_new',
+  zcgl_submit_plans_new: 'zcgl_submit_plans_new',
   // 呈报计划-编辑
   zcgl_submit_plans_edit: 'zcgl_submit_plans_edit',
   // 呈报计划-删除
