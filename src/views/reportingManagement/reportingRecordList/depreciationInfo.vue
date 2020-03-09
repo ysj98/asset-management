@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-03-06 11:28:45
+ * @LastEditTime: 2020-03-09 10:08:12
  -->
 <template>
   <div class="assetsRegistration">
@@ -218,7 +218,7 @@ export default {
         reportRecordId: record.reportRecordId,
         reportTaskId: record.reportTaskId
       }
-      this.$router.push({ path: 'reportingRecord/details', query})
+      this.$router.push({ path: '/reportingList/details', query})
     },
     // 搜索
     onSearch () {

@@ -26,7 +26,8 @@ V1.2
 
 呈报任务管理
 /asset-management/#/reportTask                  呈报任务
-
+/asset-management/#/reportingManagement/submitPlans   呈报计划
+/asset-management/#/reportTask                  呈报任务查询
 
 新增权限编码如下:
 V1.0
