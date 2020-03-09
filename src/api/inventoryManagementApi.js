@@ -1,8 +1,8 @@
 /*
  * @Author: LW
  * @Date: 2019-12-25 09:48:20
- * @LastEditTime : 2020-01-03 17:25:53
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-09 14:13:59
+ * @LastEditors: Please set LastEditors
  * @Description: 盘点管理
  * @FilePath: \asset-management\src\api\disposalManagement.js
  */
@@ -52,6 +52,10 @@ export function updateCheckTaskStatus (data) {
 // 删除盘点单
 export function deleteCheckInst (data) {
   return axiosPost(inventoryManagement.countingTask.deleteCheckInst, data)
+}
+// 盘点任务查询(统计)
+export function queryCheckTaskStat (data) {
+  return axiosPost(inventoryManagement.countingTask.queryCheckTaskStat, data)
 }
 
 // 盘点执行

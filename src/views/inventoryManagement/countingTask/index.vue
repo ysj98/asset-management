@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-10 14:13:17
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-09 14:43:37
+ * @LastEditors: Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
  -->
@@ -22,6 +22,9 @@
         </div>
       </div>
     </Cephalosome>
+    <a-spin :spinning="table.loading">
+      <overview-number :numList="numList"/>
+    </a-spin>
     <div>
       <div class="table-layout-fixed table-border">
         <a-table
@@ -63,6 +66,7 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import noDataTips from "@/components/noDataTips"
 import {getNMonthsAgoFirst, getNowMonthDate} from 'utils/formatTime'
+import OverviewNumber from 'src/views/common/OverviewNumber'
 // 页面跳转
 const operationTypes = {
   detail: '/inventoryManagement/countingTask/detail',
@@ -146,11 +150,17 @@ let columns = [
 export default {
   components: {
     Cephalosome,
-    noDataTips
+    noDataTips,
+    OverviewNumber
   },
   data() {
     return {
       ASSET_MANAGEMENT,
+      numList: [
+				{title: '全部状态', key: 'total', value: 0, fontColor: '#324057'}, {title: '待启动', key: 'activated', value: 0, bgColor: '#4BD288'},
+				{title: '进行中', key: 'ongoing', value: 0, bgColor: '#1890FF'}, {title: '已完成', key: 'complete', value: 0, bgColor: '#DD81E6'},
+				{title: '已取消', key: 'cancel', value: 0, bgColor: '#BBC8D6'}
+			],
       queryCondition: {...queryCondition},
       taskStatusData,
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
@@ -175,6 +185,27 @@ export default {
     this.query()
   },
   methods: {
+    // 统计查询
+    queryCheckTaskStat () {
+      let data = {
+        taskName: this.queryCondition.taskName,
+        taskStatus: this.queryCondition.taskStatus.length > 0 ? this.queryCondition.taskStatus.join(',') : '',
+        pageSize: this.queryCondition.pageSize,
+        pageNum: this.queryCondition.pageNum,
+        beginDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
+        endDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : ''
+      }
+      this.$api.inventoryManagementApi.queryCheckTaskStat(data).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || []
+          this.numList = this.numList.map(m => {
+            return { ...m, value: result[m.key] }
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 状态发生变化
     taskStatusFn (value) {
       this.$nextTick(function () {
@@ -236,6 +267,7 @@ export default {
           } else {
             this.$message.error(res.data.message);
           }
+          this.queryCheckTaskStat()
         },
         () => {
           this.table.loading = false;
