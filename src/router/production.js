@@ -476,7 +476,10 @@ let proRouter = [
   {
     path: '/reportingManagement/submitPlans',
     name: '呈报计划',
-    component: () => import('@/views/reportingManagement/submitPlans/index.vue')
+    component: () => import('@/views/reportingManagement/submitPlans/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/reportingManagement/submitPlans/newPlan',
@@ -535,7 +538,10 @@ let proRouter = [
   {
     path: '/taskQuery',
     name: '任务查询',
-    component: () => import('@/views/reportingManagement/taskQuery/index.vue')
+    component: () => import('@/views/reportingManagement/taskQuery/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/taskQuery/details',

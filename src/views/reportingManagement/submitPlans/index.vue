@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime: 2020-03-09 10:24:21
+ * @LastEditTime: 2020-03-09 14:02:56
  * @LastEditors: Please set LastEditors
  * @Description: 呈报计划
  * @FilePath: \asset-management\src\views\reportingManagement\submitForm\index.vue
@@ -187,7 +187,7 @@ export default {
   },
   watch: {
     '$route' () {
-      if (this.$route.path === '/inventoryManagement/countingTask' && this.$route.query.refresh) {
+      if (this.$route.path === '/reportingManagement/submitPlans' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
         this.query()
