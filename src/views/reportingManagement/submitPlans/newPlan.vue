@@ -243,7 +243,7 @@
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
 		<!-- 选资产 -->
-		<associateAssetModal ref="associateAssetModal" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+		<associateAssetModal ref="associateAssetModal" selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
   </div>
 </template>
 
