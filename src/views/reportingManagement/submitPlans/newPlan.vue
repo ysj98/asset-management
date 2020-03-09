@@ -774,6 +774,7 @@ export default {
           }
           if (this.table.tableData.length === 0) {
             this.$message.info('请填写任务执行设置')
+            return
           } else {
             for (let i = 0; i < this.table.tableData.length; i++) {
               if (!this.table.tableData[i].informant) {
@@ -787,6 +788,7 @@ export default {
           }
           if (!this.reportBillId) {
             this.$message.info('请选择呈报表单设置')
+            return
           }
           // 呈报表单数据
           console.log(this.reportBillColumnList, '旧的')
