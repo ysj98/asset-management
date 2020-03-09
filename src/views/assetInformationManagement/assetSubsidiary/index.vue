@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-06 15:58:10
+ * @LastEditTime: 2020-03-09 10:34:16
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -11,7 +11,7 @@
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <SG-Button  @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.ASSET_CREATE_SUBSI"  @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
           <SG-Button class="mr10"  @click="openImportModal"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
           <SG-Button type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
@@ -387,16 +387,16 @@ export default {
     createOperationBtn (record) {
       // 审批状态   
       let arr = []
-      if (true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_EDIT_SUBSI)) {
         arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
       }
-      if (String(record.status) === '0') {
+      if (String(record.status) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_STATUS_SUBSI)) {
         arr.push({iconType: 'play-circle', text: '启用', editType: 'on'})
       }
-      if (String(record.status) === '1') {
+      if (String(record.status) === '1' && this.$power.has(ASSET_MANAGEMENT.ASSET_STATUS_SUBSI)) {
         arr.push({iconType: 'close-circle', text: '禁用', editType: 'off'})
       }
-      if (true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELETE_SUBSI)) {
         arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
       }
       arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
