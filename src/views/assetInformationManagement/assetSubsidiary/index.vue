@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-09 10:34:16
+ * @LastEditTime: 2020-03-09 15:42:04
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -53,7 +53,7 @@
             <a-input
               :maxLength="30"
               placeholder="输入资产名称/编码"
-              v-model="queryCondition.nameOrCode"
+              v-model="queryCondition.assetNameOrCode"
               :style="allStyle"
             />
           </div>
@@ -195,7 +195,7 @@ const queryCondition = {
   organId: "",
   projectId: "",
   assetTypeList: [''], // 资产类型
-  nameOrCode: '', // 资产名称或编码，模糊查询
+  assetNameOrCode: '', // 资产名称或编码，模糊查询
   matchingTypeList: [''], // 附属配套类型
   status: '', // 附属配套状态
   assetStatusList: [''], // 资产状态(多选)
@@ -511,7 +511,7 @@ export default {
     restQuery() {
       this.queryCondition.projectId = "";
       this.queryCondition.assetTypeList = [''];
-      this.queryCondition.nameOrCode = '';
+      this.queryCondition.assetNameOrCode = '';
       this.queryCondition.matchingTypeList = [''];
       this.queryCondition.status = '';
       this.queryCondition.assetStatusList = [''];

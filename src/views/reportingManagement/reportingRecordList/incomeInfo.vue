@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-03-09 14:07:12
+ * @LastEditTime: 2020-03-09 16:12:02
  -->
 <template>
   <div>
@@ -330,7 +330,7 @@ export default {
       delete data.endCreateDate
       
       this.table.loading = true;
-      this.$api.reportManage.queryAssetOperationPageList(data).then(
+      this.$api.reportManage.queryAssetIncomePageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
