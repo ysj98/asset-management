@@ -17,7 +17,7 @@ const getIPAdress = () => {
   }
 }
 
-const localhost = '192.168.20.125' // getIPAdress()
+const localhost = getIPAdress()
 console.log('IP', localhost)
 const target = 'http://192.168.1.11:10080'
 // const target = 'http://120.24.82.71:8080'

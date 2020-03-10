@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-09 15:42:04
+ * @LastEditTime: 2020-03-10 17:23:45
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -222,11 +222,11 @@ const statusOpt = [
   { label: "停用", value: "2" },
 ]
 let columns = [
-  // {
-  //   title: "附属配套编号",
-  //   dataIndex: "code",
-  //   width: 100
-  // },
+  {
+    title: "附属配套编号",
+    dataIndex: "subsidiaryMatchingId",
+    width: 150
+  },
   {
     title: "所属机构",
     dataIndex: "organName",
@@ -251,12 +251,12 @@ let columns = [
     title: "附属配套名称",
     dataIndex: "matchingName",
     scopedSlots: { customRender: "matchingName" },
-    width: 100
+    width: 150
   },
   {
     title: "附属配套编码",
     dataIndex: "matchingCode",
-    width: 100
+    width: 150
   },
   {
     title: "类型",

@@ -302,6 +302,7 @@ export default {
     query () {
       this.loading = true
       let obj = {
+        organId: this.organId,
         assetType: this.selecData.assetType,   // 资产类型
         objectType: this.selecData.objectType,  // 资产类别
         assetNameCode: this.selecData.assetNameCode,  // 资产名称/编码

@@ -366,7 +366,7 @@
       query () {
         this.loading = true
         let obj = {
-          // organId: this.organId,
+          organId: this.judgeInstitutions ? this.organId : this.paginator.organId,
           projectId: this.projectId, // 资产项目
           assetType: this.assetType,   // 资产类型
           objectType: this.objectType,  // 资产类别
