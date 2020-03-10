@@ -11,7 +11,8 @@
           style="margin-right: 10px"
           v-power="ASSET_MANAGEMENT.RM_TASK_NEW"
         >新建呈报任务</SG-Button>
-        <SG-Button icon="export" :loading="exportBtnLoading" @click="handleExport">导出</SG-Button>
+        <!--二期开发-->
+        <!--<SG-Button icon="export" :loading="exportBtnLoading" @click="handleExport">导出</SG-Button>-->
       </a-col>
       <a-col :span="5" class="custom_date">
         <span class="prefix_style" style="width: 69px">执行日期</span>
@@ -63,6 +64,9 @@
     <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <span slot="executeDate" slot-scope="text, record">
+        {{`${record.beginDate}-${record.endDate}`}}
+      </span>
       <span slot="reportTaskId" slot-scope="text, record">
         <router-link
           class="action_text"
@@ -122,10 +126,7 @@
           {title: '已完成', key: 'done', value: 0, bgColor: '#4BD288'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
-          dataSource: [
-            { reportTaskId: 123,organName: '隔离区1' },
-            { reportTaskId: 23,organName: '隔离区2' }
-          ],
+          dataSource: [],
           loading: false,
           scroll: { x: 1600 },
           pagination: false,
@@ -134,7 +135,7 @@
             { title: '任务编号', dataIndex: 'reportTaskId', fixed: 'left', scopedSlots: { customRender: 'reportTaskId' }, width: 150  },
             { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' }, { title: '任务名称', dataIndex: 'taskName' },
             { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
-            { title: '计划执行日期', dataIndex: 'beginDate' }, { title: '填报人', dataIndex: 'reportByName' },
+            { title: '计划执行日期', dataIndex: 'executeDate', scopedSlots: { customRender: 'executeDate' } }, { title: '填报人', dataIndex: 'reportByName' },
             { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
             { title: '数据量', dataIndex: 'reportNum' }, { title: '任务状态', dataIndex: 'taskStatusName', fixed: 'right', width: 120 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
@@ -146,6 +147,11 @@
     },
     
     mounted () {
+      // 初始化计划开始及结束日期值, 默认最近60天数据
+      Object.assign(this, {
+        beginDate: moment().add(-60, 'days').format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD')
+      })
       this.queryTableData({})
     },
 
@@ -173,9 +179,7 @@
         const { beginDate, endDate, taskType, taskStatus, reportBillId, searchText } = this
         let form = {
           action: 'tb', // 默认值
-          searchText, pageSize: pageLength, pageNum: pageNo,
-          beginDate: beginDate || moment().add(-60, 'days').format('YYYY-MM-DD'),
-          endDate: endDate || moment().format('YYYY-MM-DD'), // 默认最近60天数据
+          searchText, pageSize: pageLength, pageNum: pageNo, beginDate, endDate,
           taskType: (!taskType || taskType.includes('all')) ? undefined : taskType.join(','),
           taskStatus: (!taskStatus || taskStatus.includes('all')) ? undefined : taskStatus.join(','),
           reportBillId: (!reportBillId || reportBillId.includes('all')) ? undefined : reportBillId.join(',')
@@ -187,7 +191,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = data || []
             return Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength })
           }
           throw res.message
@@ -201,7 +205,7 @@
       getExecuteDate (date, dateStrings) {
         let confirmDate = dateStrings.length ? {
           beginDate: dateStrings[0], endDate: dateStrings[1]
-        } : {}
+        } : { beginDate: null, endDate: null }
         Object.assign(this, confirmDate)
         this.queryTableData({})
       },

@@ -30,6 +30,7 @@
           resultRemark: '', // 填报说明
           reportPlanId: '', // 计划ID，用于填报数据列表查询
           reportBillId: '', // 表单Id,用于填报数据模板导出
+          organId: '', // 用于填报数据中资产名或资产卡片查询
           projectId: '', // 项目Id,用于填报数据中资产名或资产卡片查询
         }
       }
