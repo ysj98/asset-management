@@ -12,9 +12,12 @@
           </a-radio-group>
         </a-col>
         <a-col :span="16">
-          <span style="float: left;">填报说明:</span>
+          <span style="float: left;">
+            <span v-if="result === '0'" style="color: #e4393c">*</span>
+            填报说明:
+          </span>
           <div style="margin-left: 65px" id="resultRemark">
-            <a-input placeholder="请输入填报说明" v-model="resultRemark"/>
+            <a-input placeholder="请输入填报说明" v-model.trim="resultRemark"/>
           </div>
         </a-col>
       </a-row>
@@ -33,114 +36,124 @@
       </div>
       <a-form :form="form">
         <a-table v-bind="tableObj" class="custom-table td-pd10">
-        <a-table-column
-          v-for="m in customColumns"
-          :key="m.columnName"
-          :dataIndex="m.columnName"
-          :fixed="m.fixed || false"
-          :width="m.width || 180"
-        >
-          <!--自定义表头-->
-          <span slot="title" @click="handleSameTableCell(m)">
-            <span style="color: #e4393c; vertical-align: middle">{{m.columnNeed ? '*' : ''}}</span>
-            <span
-              :style="`${(m.columnName === 'cardCode' || m.columnName === 'assetCode') ? '' : 'color: #0084FF; cursor: pointer;'}`"
-            >{{m.columnDesc}}</span>
-          </span>
-          <!--Table Cell slot-->
-          <template slot-scope="text, record">
-            <!--特别处理的表单域-->
-            <a-form-item v-if="specialArr.includes(m.columnName)" :key="record.key">
-              <a-input
-                disabled
-                style="width: 100%"
-                :placeholder="`请选择${m.columnDesc}`"
-                v-decorator="[`${m.columnName}_${record.key}`, {
-                  rules: [{required: !!m.columnNeed, message: `请选择${m.columnDesc}`}]
-                }]"
-              />
+          <a-table-column
+            v-for="m in customColumns"
+            :key="m.columnName"
+            :dataIndex="m.columnName"
+            :fixed="m.fixed || false"
+            :width="m.width || 180"
+          >
+            <!--自定义表头-->
+            <span slot="title" @click="handleSameTableCell(m)">
+              <span style="color: #e4393c; vertical-align: middle">{{m.columnNeed ? '*' : ''}}</span>
               <span
-                class="select_mask"
-                @click="handleSelectAsset(m.columnName, record.key)"
-                v-if="['cardName', 'assetName'].includes(m.columnName)"
-              ></span>
-            </a-form-item>
-            <!--columnType === 1 文本输入域-->
-            <a-form-item v-else-if="m.columnType === 1" :key="record.key">
-              <a-input
-                style="width: 100%"
-                :placeholder="`请输入${m.columnDesc}`"
-                v-decorator="[`${m.columnName}_${record.key}`, {
-                  rules: [
-                    {required: !!m.columnNeed, message: `请输入${m.columnDesc}`},
-                    {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
-                  ]
-                }]"
-              />
-            </a-form-item>
-            <!--columnType === 2 数字输入域-->
-            <a-form-item v-else-if="m.columnType === 2" :key="record.key">
-              <a-input-number
-                :min="0"
-                style="width: 100%"
-                :placeholder="`请输入${m.columnDesc}`"
-                v-decorator="[`${m.columnName}_${record.key}`, {
-                  rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
-                }]"
-              />
-            </a-form-item>
-            <!--columnType === 3 日期选择域-->
-            <a-form-item v-else-if="m.columnType === 3" :key="record.key">
-              <a-date-picker
-                allowClear
-                style="width: 100%"
-                :placeholder="`请选择${m.columnDesc}`"
-                v-decorator="[`${m.columnName}_${record.key}`, {
-                  rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
-                }]"
-              />
-            </a-form-item>
-            <!--columnType === 5 年月日期选择域-->
-            <a-form-item v-else-if="m.columnType === 5" :key="record.key">
-              <a-month-picker
-                allowClear
-                style="width: 100%"
-                :placeholder="`请选择${m.columnDesc}`"
-                v-decorator="[`${m.columnName}_${record.key}`, {
-                  rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
-                }]"
-              />
-            </a-form-item>
-            <!--columnType === 4 下拉选择域-->
-            <a-form-item v-else-if="m.columnType === 4" :key="record.key">
-              <a-select
-                showSearch
-                allowClear
-                :options="m.options"
-                style="width: 100%"
-                :placeholder="`请选择${m.columnDesc}`"
-                v-decorator="[`${m.columnName}_${record.key}`, {
-                  rules: [
-                    {required: !!m.columnNeed, message: `请输入${m.columnDesc}`},
-                    {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
-                  ]
-                }]"
-              />
-            </a-form-item>
-            <!--默认展示形式-->
-            <a-form-item v-else>
-              <!--隐藏域，用于保存资产id或资产卡片id-->
-              <a-input type="hidden" v-decorator="[`${assetType === 'Card' ? 'cardId' : 'assetId'}_${record.key}`]"/>
-              <span>
-                <span v-if="m.columnDesc !== '操作'">{{text}}</span>
-                <a-popconfirm v-else okText="确定" cancelText="取消" title="确认要删除该数据吗?" @confirm="deleteTableItem(record.key)">
-                  <span style="cursor: pointer; color: #e4393c">删除</span>
-                </a-popconfirm>
-              </span>
-            </a-form-item>
-          </template>
-        </a-table-column>
-      </a-table>
+                :style="`${(m.columnName === 'cardCode' || m.columnName === 'assetCode') ? '' : 'color: #0084FF; cursor: pointer;'}`"
+              >{{m.columnDesc}}</span>
+            </span>
+            <!--Table Cell slot-->
+            <template slot-scope="text, record">
+              <!--特别处理的表单域-->
+              <a-form-item v-if="specialArr.includes(m.columnName)" :key="record.key">
+                <a-input
+                  disabled
+                  style="width: 100%"
+                  :placeholder="`请选择${m.columnDesc}`"
+                  v-decorator="[`${m.columnName}_${record.key}`, {
+                    initialValue: text,
+                    rules: [{required: !!m.columnNeed, message: `请选择${m.columnDesc}`}]
+                  }]"
+                />
+                <span
+                  class="select_mask"
+                  @click="handleSelectAsset(record.key)"
+                  v-if="['cardName', 'assetName'].includes(m.columnName)"
+                ></span>
+              </a-form-item>
+              <!--columnType === 1 文本输入域-->
+              <a-form-item v-else-if="m.columnType === 1" :key="record.key">
+                <a-input
+                  style="width: 100%"
+                  :placeholder="`请输入${m.columnDesc}`"
+                  v-decorator="[`${m.columnName}_${record.key}`, {
+                    initialValue: text,
+                    rules: [
+                      {required: !!m.columnNeed, message: `请输入${m.columnDesc}`},
+                      {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
+                    ]
+                  }]"
+                />
+              </a-form-item>
+              <!--columnType === 2 数字输入域-->
+              <a-form-item v-else-if="m.columnType === 2" :key="record.key">
+                <a-input-number
+                  :min="0"
+                  style="width: 100%"
+                  :placeholder="`请输入${m.columnDesc}`"
+                  v-decorator="[`${m.columnName}_${record.key}`, {
+                    initialValue: text,
+                    rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
+                  }]"
+                />
+              </a-form-item>
+              <!--columnType === 3 日期选择域-->
+              <a-form-item v-else-if="m.columnType === 3" :key="record.key">
+                <a-date-picker
+                  allowClear
+                  style="width: 100%"
+                  :placeholder="`请选择${m.columnDesc}`"
+                  v-decorator="[`${m.columnName}_${record.key}`, {
+                    initialValue: text,
+                    rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
+                  }]"
+                />
+              </a-form-item>
+              <!--columnType === 5 年月日期选择域-->
+              <a-form-item v-else-if="m.columnType === 5" :key="record.key">
+                <a-month-picker
+                  allowClear
+                  style="width: 100%"
+                  :placeholder="`请选择${m.columnDesc}`"
+                  v-decorator="[`${m.columnName}_${record.key}`, {
+                    initialValue: text,
+                    rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
+                  }]"
+                />
+              </a-form-item>
+              <!--columnType === 4 下拉选择域-->
+              <a-form-item v-else-if="m.columnType === 4" :key="record.key">
+                <a-select
+                  showSearch
+                  allowClear
+                  :options="m.options"
+                  style="width: 100%"
+                  :placeholder="`请选择${m.columnDesc}`"
+                  v-decorator="[`${m.columnName}_${record.key}`, {
+                    initialValue: text,
+                    rules: [
+                      {required: !!m.columnNeed, message: `请输入${m.columnDesc}`},
+                      {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
+                    ]
+                  }]"
+                />
+              </a-form-item>
+              <!--默认展示形式-->
+              <a-form-item v-else>
+                <!--隐藏域，用于保存资产id或资产卡片id-->
+                <a-input
+                  type="hidden"
+                  v-decorator="[`${assetType === 'Card' ? 'cardId' : 'assetId'}_${record.key}`,
+                    {initialValue: record[`${assetType === 'Card' ? 'cardId' : 'assetId'}`]}]"
+                />
+                <span>
+                  <span v-if="m.columnDesc !== '操作'">{{text}}</span>
+                  <a-popconfirm v-else okText="确定" cancelText="取消" title="确认要删除该数据吗?" @confirm="deleteTableItem(record.key)">
+                    <span style="cursor: pointer; color: #e4393c">删除</span>
+                  </a-popconfirm>
+                </span>
+              </a-form-item>
+            </template>
+          </a-table-column>
+        </a-table>
       </a-form>
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
       <div v-if="customColumns.length" style="margin: 15px 0">
@@ -186,7 +199,7 @@
         :placeholder="`请选择${columnName}`"
       />
     </SG-Modal>
-    <select-asset :type="assetType" ref="selectAsset" @getValue="setAssetValue" v-bind="taskInfo"/>
+    <select-asset :type="assetType" :isBatch="indexKey" ref="selectAsset" @getValue="setAssetValue" v-bind="taskInfo"/>
   </div>
 </template>
 
@@ -220,7 +233,7 @@
         selectOptions: [], // 批量修改-为select时选项数据
         assetType: '', // 查询资产卡片 Card 或资产名 Name 的标志
         dataSourceKeys: [], // 存放 Table dataSource 中 key 值
-        indexKey: '', // 记录选中的 Table dataSource key
+        indexKey: '', // 记录选中的 Table dataSource key,用于修改某一行资产（卡片）名称
         specialArr: ['cardName', 'cardCode', 'assetName', 'assetCode'], // 特殊处理的显示字段
       }
     },
@@ -238,13 +251,25 @@
       // 批处理Table Cell数据
       handleSameTableCell ({columnType, columnName, sameCellValue, options, columnDesc, type}) {
         // 点击资产编码或资产卡片编码不执行操作
-        if (columnName === 'cardCode' || columnName === 'assetCode') { return false }
+        if (columnName === 'cardCode' || columnName === 'assetCode') {
+          return false
+        }
+        // Table为空时提示添加
         let { tableObj: { dataSource } } = this
-        if (!dataSource.length) { return this.$message.warn('请先添加一行数据')}
+        if (!dataSource.length) {
+          return this.$message.warn('请先添加一行数据')
+        }
+        // 批量修改资产（卡片）名称
+        if (columnName === 'cardName' || columnName === 'assetName') {
+          return this.handleSelectAsset('')
+        }
+        // 批量修改其他类型值
         if (type === 'submit') {
-          return this.tableObj.dataSource = dataSource.map(item => {
-            return { ...item, [columnName]: sameCellValue }
+          let obj = {}
+          this.dataSourceKeys.forEach(key => {
+            obj[`${columnName}_${key}`] = sameCellValue
           })
+          return this.form.setFieldsValue(obj)
         }
         Object.assign(this, { columnType, dataIndex: columnName, isShowModal: true, selectOptions: options, columnName: columnDesc })
       },
@@ -265,7 +290,7 @@
         let { customColumns } = this
         let key = new Date().getTime()
         let temp = { key}
-        customColumns.forEach(m => temp[m.columnName] = m.columnType === 3 ? null : '')
+        customColumns.forEach(m => temp[m.columnName] = (m.columnType === 3 || m.columnType === 5) ? null : '')
         this.tableObj.dataSource.push(temp)
         this.dataSourceKeys.push(key)
       },
@@ -281,8 +306,10 @@
         const { taskInfo: { reportBillId, reportPlanId }, taskId } = this
         if (!reportBillId && !reportPlanId) { return false }
         // 清空旧数据
+        this.dateArr = []
         this.assetType = ''
         this.customColumns = []
+        this.dataSourceKeys = []
         this.tableObj.dataSource = []
         this.tableObj.loading = true
         this.$api.reportManage.queryReportBillColumn({reportBillId, reportPlanId}).then(r => {
@@ -353,7 +380,7 @@
       handleSubmit (resolve) {
         // 校验必填项
         const { result, resultRemark, dataSourceKeys, customColumns, dateArr, assetType } = this
-        if (String(result) === '0' && !resultRemark ) {
+        if (result === '0' && !resultRemark ) {
           document.getElementById('resultRemark').scrollIntoView({block: "center"})
           return this.$message.warn('请填写填报说明')
         }
@@ -368,7 +395,7 @@
                 const { columnName } = c
                 let val = values[`${columnName}_${key}`]
                 let flag = false
-                for (let i = 0; i < dateArr; i++) {
+                for (let i = 0; i < dateArr.length; i++) {
                   const { name, format } = dateArr[i]
                   if (name === columnName) {
                     temp[columnName] = val ? moment(val).format(format) : val
@@ -392,12 +419,13 @@
       // 导出模板
       exportTemplate () {
         this.exportBtnLoading = true
-        this.$api.reportManage.exportDetailTemplate({reportBillId: this.taskInfo.reportBillId}).then(res => {
+        const { reportBillId } = this.taskInfo
+        this.$api.reportManage.exportDetailTemplate({reportBillId}).then(res => {
           this.exportBtnLoading = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
             a.href = URL.createObjectURL(new Blob([res.data]))
-            a.download = '任务填报模板.xls'
+            a.download = `任务填报模板_${reportBillId}.xls`
             document.body.appendChild(a)
             a.click()
             return a.remove()
@@ -411,10 +439,15 @@
       
       // 批量导入数据
       importBatchData (file) {
+        const { taskInfo: { reportBillId, reportPlanId, organId, projectId } } = this
+        if (!projectId) { return this.$message.warn('请选择资产项目') }
         this.tableObj.loading = true
         let fileData = new FormData()
         fileData.append('file', file)
-        fileData.append('reportBillId', this.taskInfo.reportBillId)
+        fileData.append('organId', organId)
+        fileData.append('projectId', projectId)
+        fileData.append('reportBillId', reportBillId)
+        fileData.append('reportPlanId', reportPlanId)
         this.$api.reportManage.importTaskdetailList(fileData).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -442,7 +475,7 @@
       },
       
       // 选择资产或卡片Modal
-      handleSelectAsset (type, key) {
+      handleSelectAsset (key) {
         const {projectId} = this.taskInfo
         if (!projectId) {
           return this.$message.warn('请选择资产项目')
@@ -454,17 +487,20 @@
       // 赋值名称、编码字段及id隐藏域
       setAssetValue (values) {
         if (values) {
-          const { indexKey, assetType } = this
-          const { assetId, assetName, assetCode, cardId, cardName, cardCode } = values
+          const { indexKey, assetType, dataSourceKeys } = this
           let obj = {}
-          if (assetType === 'Card') {
-            obj[`cardId_${indexKey}`] = cardId
-            obj[`cardName_${indexKey}`] = cardName
-            obj[`cardCode_${indexKey}`] = cardCode
+          let prefix = assetType === 'Card' ? 'card' : 'asset'
+          // indexKey区分批量修改或单条修改
+          if (indexKey) {
+            obj[`${prefix}Id_${indexKey}`] = values[`${prefix}Id`]
+            obj[`${prefix}Name_${indexKey}`] = values[`${prefix}Name`]
+            obj[`${prefix}Code_${indexKey}`] = values[`${prefix}Code`]
           } else {
-            obj[`assetId_${indexKey}`] = assetId,
-            obj[`assetName_${indexKey}`] = assetName
-            obj[`assetCode_${indexKey}`] = assetCode
+            dataSourceKeys.forEach(key => {
+              obj[`${prefix}Id_${key}`] = values[`${prefix}Id`]
+              obj[`${prefix}Name_${key}`] = values[`${prefix}Name`]
+              obj[`${prefix}Code_${key}`] = values[`${prefix}Code`]
+            })
           }
           this.form.setFieldsValue(obj)
         }

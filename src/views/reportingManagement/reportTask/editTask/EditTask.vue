@@ -55,9 +55,9 @@
           let form = {
             action,
             reportTaskId: taskId,
-            isSubmit: type ? 'Y' : 'N',
+            isSubmit: type ? 'N' : 'Y',
             attachment: attachmentList, detailList,
-            reportTask: { result, resultRemark, ...taskInfo, ...others }
+            reportTask: { ...taskInfo, ...others, result, resultRemark }
           }
           this.submitBtnLoading = true
           this.$api.reportManage.saveTaskOrDetail(form).then(r => {

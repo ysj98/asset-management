@@ -4,7 +4,7 @@
     <!--任务信息-->
     <task-info-view :taskId="taskId" @transferData="transferData"/>
     <!--填报数据-->
-    <task-table-view v-if="taskInfo.reportPlanId" :taskId="taskId" :taskInfo="taskInfo"/>
+    <task-table-view v-if="taskInfo.reportPlanId || taskInfo.reportBillId" :taskId="taskId" :taskInfo="taskInfo"/>
     <!--审批记录,后期开发-->
     <div v-if="stepList.length">
       <SG-Title title="审批记录"/>

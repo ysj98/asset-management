@@ -3,10 +3,10 @@
   <div class="custom-tabs">
     <a-tabs v-model="key" type="card" :tabBarGutter="10">
       <a-tab-pane tab="我填报的任务" key="1">
-        <edit-task :refreshKey="refreshKey" :billList="billList"/>
+        <edit-task :refreshKey="refreshMine" :billList="billList"/>
       </a-tab-pane>
       <a-tab-pane tab="我审核的任务" key="2">
-        <approve-task :refreshKey="refreshKey" :billList="billList"/>
+        <approve-task :refreshKey="refreshApprove" :billList="billList"/>
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -21,7 +21,8 @@
     data () {
       return {
         key: '1', // Tab key
-        refreshKey: 0, // 更新记录key
+        refreshMine: 0, // 更新我填报的任务key
+        refreshApprove: 0, // 更新我审核的任务key
         billList: [{ title: '全部表单', key: 'all' }] // 表单列表
       }
     },
@@ -31,8 +32,10 @@
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if ((name === '审核任务' || name === '新建任务' || name === '填报数据') && refresh) {
-          vm.refreshKey = new Date().getTime()
+        if (name === '审核任务' && refresh) {
+          vm.refreshApprove = new Date().getTime()
+        } else if ((name === '新建任务' || name === '填报数据') && refresh) {
+          vm.refreshMine = new Date().getTime()
         }
       })
     },

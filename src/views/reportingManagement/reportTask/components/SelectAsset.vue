@@ -4,7 +4,7 @@
     :width="950"
     okText="确定"
     v-model="isShow"
-    :title="`选择${type == 'Card' ? '资产卡片' : '资产'}`"
+    :title="`${isBatch ? '选择' : '批量修改'}${type == 'Card' ? '资产卡片' : '资产'}`"
     @cancel="handleModalAction('')"
     @ok="handleModalAction('ok')"
   >
@@ -62,7 +62,7 @@
 <script>
   export default {
     name: 'SelectAsset',
-    props: ['type', 'organId', 'projectId'],
+    props: ['type', 'organId', 'projectId', 'isBatch'],
     data () {
       return {
         selectedRows: [], // 选中的行

@@ -223,7 +223,7 @@
             let beginDate = moment().format('YYYY-MM-DD')
             let form = {
               reportTask: { ...taskInfo, beginDate, endDate: beginDate },
-              isSubmit: type ? 'Y' : 'N',
+              isSubmit: type ? 'N' : 'Y',
               attachment, detailList, action: 'xz'
             }
             that.submitBtnLoading = true

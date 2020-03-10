@@ -63,10 +63,10 @@
 
       // 查询表单字段,作为Table columns
       queryColumns () {
+        const {reportPlanId, reportBillId} = this.taskInfo
+        if (!reportPlanId && !reportBillId) { return false }
         this.tableObj.loading = true
-        const {reportPlanId} = this.taskInfo
-        if (!reportPlanId) { return false }
-        this.$api.reportManage.queryReportBillColumn({reportPlanId}).then(r => {
+        this.$api.reportManage.queryReportBillColumn({reportPlanId, reportBillId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             let optionsObj = {}
@@ -79,7 +79,7 @@
                 })
               }
               let item = { title: columnDesc, dataIndex: columnName }
-              return i === 1 ? { ...item, fixed: 'left', width: 120 } : item
+              return i === 0 ? { ...item, fixed: 'left', width: 180 } : item
             })
             this.optionsObj = optionsObj
             return this.queryTableData({})

@@ -1,7 +1,7 @@
 <!--呈报任务-填报/详情页面-展示任务信息part-->
 <template>
   <div class="info_view">
-    <SG-Title title="任务信息"/>
+    <SG-Title title="任务信息" style="margin-bottom: 10px"/>
     <!--散列信息-->
     <div style="margin-left: 40px">
       <a-row>

@@ -78,7 +78,7 @@ export function importTaskdetailList (data) {
 }
 // [呈报任务]填报模板导出
 export function exportDetailTemplate (data) {
-  return axiosGet(reportManage.detailTempExport, data)
+  return axiosGet(reportManage.detailTempExport, data, false, {responseType: 'blob'})
 }
 // [呈报任务]审核任务
 export function auditTask (data) {
