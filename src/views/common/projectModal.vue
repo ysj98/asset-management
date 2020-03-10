@@ -117,6 +117,10 @@
       organId: {
         type: [String, Number],
         default: ''
+      },
+      selectNumber: {
+        type: Number,
+        default: 100000
       }
     },
     data () {
@@ -185,7 +189,11 @@
       },
       // 选中的
       onSelectChange(selectedRowKeys) {
-        this.selectedRowKeys = selectedRowKeys
+        if (selectedRowKeys.length <= this.selectNumber) {
+          this.selectedRowKeys = selectedRowKeys
+        } else {
+          this.$message.info(`资产项目选择不能超过${this.selectNumber}个`)
+        }
       },
       // 关闭弹窗
       handleCancel() {
@@ -207,7 +215,7 @@
       // 提交
       submitAsset () {
         if (this.selectedRowKeys.length <= 0) {
-          this.$message.info('请先选择资产')
+          this.$message.info('请先选择资产项目')
           return
         }
         let checkedData = []

@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-03-06 11:28:45
+ * @LastEditTime: 2020-03-09 11:17:32
  -->
 <template>
   <div class="assetsRegistration">
@@ -218,7 +218,7 @@ export default {
         reportRecordId: record.reportRecordId,
         reportTaskId: record.reportTaskId
       }
-      this.$router.push({ path: 'reportingRecord/details', query})
+      this.$router.push({ path: '/reportingList/details', query})
     },
     // 搜索
     onSearch () {
@@ -338,8 +338,8 @@ export default {
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
         taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',                // 审批状态 1未完成 2待审批 3已驳回 4已完成
         taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : '',                  // 1临时 2固定 3数据
-        // month: moment(this.month).format('YYYY-MM'),                     // 月份
-        month: '',
+        month: `${moment(this.month).format('YYYY-MM')}-01`,                     // 月份
+        // month: '',
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
@@ -347,7 +347,7 @@ export default {
       console.log(obj, '-=-=-=-=')
       this.$api.reportManage.queryAssetDeprecitionPageList(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = res.data.data.data || []
           this.loading = false
           if (data && data.length > 0) {
             data.forEach((item, index) => {

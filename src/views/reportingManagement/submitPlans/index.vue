@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime : 2020-01-10 14:13:17
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-09 14:02:56
+ * @LastEditors: Please set LastEditors
  * @Description: 呈报计划
  * @FilePath: \asset-management\src\views\reportingManagement\submitForm\index.vue
  -->
@@ -11,8 +11,8 @@
     <Cephalosome :rightCol="18" :leftCol="6">
 			<div slot="col-l">
 				<div class="nav">
-					<SG-Button icon="plus" type="primary" style="margin-right: 10px;" @click="goPage('new')">新建呈报计划</SG-Button>			  
-					<SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
+					<SG-Button icon="plus" type="primary" style="margin-right: 10px;" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_new" @click="goPage('new')">新建呈报计划</SG-Button>			  
+					<!-- <SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button> -->
 				</div>
 			</div>
       <div slot="col-r">
@@ -42,14 +42,11 @@
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
         >
-          <!-- <template slot="operation" slot-scope="text, record">
-            <span @click="goPage('detail', record)" class="btn_click mr15">详情</span>
-          </template> -->
           <template slot="operation" slot-scope="text, record">
             <div class="tab-opt">
               <span @click="goPage('detail', record)">详情</span>
-              <span @click="goPage('edit', record)" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
-              <span @click="goPage('delete', record)" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
+              <span @click="goPage('edit', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_edit" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
+              <span @click="goPage('delete', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_delete" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
               <!-- <span v-if="+record.approvalStatus === 2">审核</span> -->
             </div>
           </template>
@@ -190,7 +187,7 @@ export default {
   },
   watch: {
     '$route' () {
-      if (this.$route.path === '/inventoryManagement/countingTask' && this.$route.query.refresh) {
+      if (this.$route.path === '/reportingManagement/submitPlans' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
         this.query()

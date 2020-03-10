@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-03-08 21:32:35
+ * @LastEditTime: 2020-03-09 16:12:02
  -->
 <template>
   <div>
@@ -323,14 +323,14 @@ export default {
       };
       // 呈报表单参数改变
       data.taskType = utils.deepClone(data.taskType).join(',')
-      data.month = data.month ? moment(data.month).format('YYYY-MM') : ''
+      data.month = data.month ? moment(data.month).format('YYYY-MM') + '-01' : ''
       data.beginDate = data.startCreateDate
       data.endDate = data.endCreateDate
       delete data.startCreateDate
       delete data.endCreateDate
       
       this.table.loading = true;
-      this.$api.reportManage.queryAssetOperationPageList(data).then(
+      this.$api.reportManage.queryAssetIncomePageList(data).then(
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {

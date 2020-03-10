@@ -489,7 +489,9 @@ export const inventoryManagement = {
     // 盘点任务状态操作
     updateCheckTaskStatus: '/ams/checktask/updateCheckTaskStatus',
     // 删除盘点单
-    deleteCheckInst: '/ams/assetCheckInst/deleteCheckInst'
+    deleteCheckInst: '/ams/assetCheckInst/deleteCheckInst',
+    // 盘点任务查询(统计)
+    queryCheckTaskStat: '/ams/checktask/queryCheckTaskStat'
   },
   // 盘点执行
   inventoryPerform: {

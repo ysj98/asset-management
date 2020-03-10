@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-03-06 11:27:43
+ * @LastEditTime: 2020-03-09 11:14:36
  -->
 <template>
   <div class="assetsRegistration">
@@ -275,7 +275,7 @@ export default {
         reportRecordId: record.reportRecordId,
         reportTaskId: record.reportTaskId
       }
-      this.$router.push({ path: 'reportingRecord/details', query})
+      this.$router.push({ path: '/reportingList/details', query})
     },
     // 搜索
     onSearch () {
@@ -374,7 +374,7 @@ export default {
         taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',                // 审批状态 1未完成 2待审批 3已驳回 4已完成
         taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : '',                  // 1临时 2固定 3数据
         expenseType: this.queryCondition.expenseType,               // 费用类型
-        month: moment(this.month).format('YYYY-MM'),                     // 月份
+        month: `${moment(this.month).format('YYYY-MM')}-01`,                     // 月份
         // month: '',
         expenseName: this.queryCondition.expenseName,               // 费用名称
         pageNum: this.queryCondition.pageNum,                // 当前页
