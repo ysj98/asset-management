@@ -6,7 +6,7 @@
       <a-row>
         <a-col :span="8">
           <span style="margin-right: 12px; color: #282D5B">填报结果:</span>
-          <a-radio-group :value="taskInfo.result" disabled>
+          <a-radio-group :value="String(taskInfo.result)" disabled>
             <a-radio value="1">填报</a-radio>
             <a-radio value="0">不填报</a-radio>
           </a-radio-group>
@@ -15,9 +15,10 @@
           <span style="margin-right: 12px; color: #282D5B">填报说明:</span>
           <span style="color: #49505E">{{taskInfo.resultRemark || '--'}}</span>
         </a-col>
-        <a-col :span="3" style="text-align: right" v-if="tableObj.dataSource.length">
-          <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
-        </a-col>
+        <!--二期开发-->
+        <!--<a-col :span="3" style="text-align: right" v-if="tableObj.dataSource.length">-->
+          <!--<SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>-->
+        <!--</a-col>-->
       </a-row>
       <!--列表部分-->
       <a-table v-bind="tableObj" class="custom-table td-pd10"/>
@@ -40,10 +41,11 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 2000 },
+          scroll: { x: true },
           pagination: false,
           columns: []
         },
+        optionsObj: {}, // 下拉选的集合
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 }
       }
@@ -51,7 +53,6 @@
 
     mounted () {
       this.queryColumns()
-      this.queryTableData({})
     },
 
     methods: {
@@ -68,10 +69,20 @@
         this.$api.reportManage.queryReportBillColumn({reportPlanId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            return this.tableObj.columns = (res.data || []).map((m, i) => {
-              let item = { title: m.columnName, dataIndex: m.columnCode }
+            let optionsObj = {}
+            this.tableObj.columns = (res.data || []).map((m, i) => {
+              const { columnDesc, columnName, optVal, columnType } = m
+              if (columnType === 4) {
+                optionsObj[columnName] = (optVal || '').split(',').map(item => {
+                  let t = item.split('-')
+                  return { key: t[0], title: t[1] }
+                })
+              }
+              let item = { title: columnDesc, dataIndex: columnName }
               return i === 1 ? { ...item, fixed: 'left', width: 120 } : item
             })
+            this.optionsObj = optionsObj
+            return this.queryTableData({})
           }
           throw res.message
         }).catch(err => {
@@ -82,15 +93,25 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const { taskId } = this
+        const { taskId, optionsObj } = this
         let form = { reportTaskId: taskId, pageSize: pageLength, pageNum: pageNo }
         this.tableObj.loading = true
-        this.$api.worthRegister.queryRecordList(form).then(r => {
+        this.$api.reportManage.queryTaskDetailPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data.map((m, i) => ({...m, key: i}))
+            const len = Object.keys(optionsObj).length
+            this.tableObj.dataSource = (data || []).map((m, i) => {
+              // 存在下拉选时
+              if (len) {
+                let list = Object.keys(optionsObj)
+                list.forEach(v => {
+                  m[v] = optionsObj[v].filter(f => f.key === m[v])[0]['title']
+                })
+              }
+              return {...m, key: i}
+            })
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })

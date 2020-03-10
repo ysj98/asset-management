@@ -107,6 +107,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import FormFooter from '@/components/FormFooter.vue'
   import TreeSelect from 'src/views/common/treeSelect'
   import TaskTableEdit from '../components/TaskTableEdit'
@@ -131,8 +132,9 @@
         billOptions: [], // 查询条件-表单选项
         projectOptions: [], // 资产项目选项
         taskInfo: {
+          organId: '', // 组织id
           projectId: '', // 项目id
-          reportBillId: '', // 表单id
+          reportBillId: '' // 表单id
         }
       }
     },
@@ -164,12 +166,30 @@
 
       // 获取projectId,reportBillId
       getId (id, type) {
-        this['taskInfo'][type] = id
+        let _this = this
+        let { projectId, reportBillId } = _this.taskInfo
+        let content = type === 'projectId' ? '中资产名称及其编码数据' : ''
+        if ((type === 'projectId' && reportBillId && projectId) || (type === 'reportBillId' && reportBillId)) {
+          _this.$confirm({
+            title: '确定要继续吗?',
+            content: `此操作会清空已填报数据列表${content}！`,
+            onOk () {
+              _this['taskInfo'][type] = id
+            },
+            onCancel () {
+              _this.form.setFieldsValue({[type]: type === 'projectId' ? projectId : reportBillId})
+            }
+          })
+        } else {
+          _this['taskInfo'][type] = id
+        }
       },
 
       // 获取选择的组织机构
       changeTree (id, name) {
+        this['taskInfo']['organId'] = id
         Object.assign(this, { organId: id, organName: name, projectOptions: [] })
+        this.form.resetFields('projectId')
         id && this.queryProjectList(id)
       },
 
@@ -200,8 +220,9 @@
           }).then(data => {
             const { attachment, taskInfo } = values
             const { detailList } = data
+            let beginDate = moment().format('YYYY-MM-DD')
             let form = {
-              reportTask: taskInfo,
+              reportTask: { ...taskInfo, beginDate, endDate: beginDate },
               isSubmit: type ? 'Y' : 'N',
               attachment, detailList, action: 'xz'
             }

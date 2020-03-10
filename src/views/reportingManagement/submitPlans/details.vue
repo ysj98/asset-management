@@ -237,7 +237,7 @@ export default {
         taskStatus: '',                                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         taskType: ''
       }
-      this.$api.reportManage.taskPage(obj).then(res => {
+      this.$api.reportManage.queryTaskPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || []
           if (data && data.length > 0) {
@@ -330,7 +330,13 @@ export default {
             columnDisplay[item.columnName] = !!item.columnDisplay
           })
           this.columns = [{title: '字段名称', dataIndex: 'ieldNames'}, ...arr]
-          this.dataSourceReportBill = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+          // this.dataSourceReportBill = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+          let arrData = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+            this.formData.forEach(vv => {
+              arrData[0][vv.columnName] = !!vv.columnNeed
+              arrData[1][vv.columnName] = !!vv.columnDisplay
+            })
+            this.dataSourceReportBill = arrData
         } else {
           this.$message.error(res.data.message)
         }
@@ -346,6 +352,7 @@ export default {
           console.log(res)
           let data = res.data.data
           this.particularsData = data
+          this.formData = data.reportBillColumnList   // 编辑给回来的表单
           this.reportBillId = Number(this.particularsData.reportBillId)
           this.queryReportBillColumn(this.particularsData.reportBillId)
           let files = []

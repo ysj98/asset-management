@@ -105,7 +105,7 @@
             >
             <template v-for="(item, index) in columns" :slot="item.dataIndex" slot-scope="text, record, index">
               <div v-if="item.dataIndex === 'ieldNames'"></div>
-              <a-checkbox v-else :checked="record[item.dataIndex]" @change="checkboxFn(record, index, item.dataIndex)"></a-checkbox>
+              <a-checkbox v-else :disabled="record[item.dataIndex + 'disabled']" :checked="record[item.dataIndex]" @change="checkboxFn(record, index, item.dataIndex)"></a-checkbox>
             </template>
           </a-table>
           <no-data-tips v-show="dataSourceReportBill.length === 0"></no-data-tips>
@@ -163,7 +163,7 @@
 						</a-form-item>
 					</a-col>
 					<a-col class="playground-col" :span="8">
-						<a-form-item v-bind="formItemLayout" label="提前生成任务时间">
+						<a-form-item v-bind="formItemLayouts" label="提前生成任务时间">
               <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
                 v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: preNum}]"
               />
@@ -243,7 +243,7 @@
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
 		<!-- 选资产 -->
-		<associateAssetModal ref="associateAssetModal" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+		<associateAssetModal ref="associateAssetModal" selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
   </div>
 </template>
 
@@ -350,6 +350,7 @@ export default {
   props: {},
   data () {
     return {
+      formData: [],
       batch: '',               // 批量设置
       reportBillId: undefined,        // 呈报表单id
       backupsReportBillId: '',        // 呈报表单备份！用于编辑时选择表单时的判断
@@ -390,6 +391,16 @@ export default {
         wrapperCol: {
           xs: { span: 24 },
           sm: { span: 16 }
+        }
+      },
+      formItemLayouts: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 8 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 13 }
         }
 			},
 			beginDayOpt: Array.from({length:31}).map((v,i) => ({label: `${i+1}日`, value: `${i+1}`, key: `${i+1}`})),
@@ -447,17 +458,17 @@ export default {
       this.reportBillId = value
       // 选择之前编辑的就用计划id查！切换别的就不穿计划id 
       if (this.backupsReportBillId === value) {
-        this.queryReportBillColumn(value)
+        this.queryReportBillColumn(value, 'edit')
       } else {
         this.queryReportBillColumn(value, 'change')
       }
     },
     // 查询呈报表单字段
-    // 查询时有计划id时优先
+    // 编辑时接口拿头部 加disabled是用来判断是否可以编辑
     queryReportBillColumn (value, str) {
       let obj = {
         reportBillId: value,
-        reportPlanId: str === 'change' ? '' : this.reportPlanId
+        reportPlanId: ''
       }
       this.$api.reportManage.queryReportBillColumn(obj).then(res => {
         if (res.data.code === "0") {
@@ -472,10 +483,22 @@ export default {
               scopedSlots: { customRender: item.columnName }
             })
             columnNeed[item.columnName] = !!item.columnNeed
+            columnNeed[item.columnName + 'disabled'] = !!item.columnNeed
             columnDisplay[item.columnName] = !!item.columnDisplay
+            columnDisplay[item.columnName + 'disabled'] = !!item.columnDisplay
           })
           this.columns = [{title: '字段名称', dataIndex: 'ieldNames'}, ...arr]
-          this.dataSourceReportBill = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+          // 编辑时候那查询详情的接口回填
+          if (this.type === 'edit' && str === 'edit') {
+            let arrData = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+            this.formData.forEach(vv => {
+              arrData[0][vv.columnName] = !!vv.columnNeed
+              arrData[1][vv.columnName] = !!vv.columnDisplay
+            })
+            this.dataSourceReportBill = arrData
+          } else {
+            this.dataSourceReportBill = [{ieldNames: '必填字段', key: '0',  ...columnNeed}, {ieldNames: '展示字段', key: '1', ... columnDisplay}]
+          }
           this.reportBillColumnList = result    // 总的数据
         } else {
           this.$message.error(res.data.message)
@@ -639,10 +662,11 @@ export default {
       this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
+          this.formData = data.reportBillColumnList   // 编辑给回来的表单
           this.exePreSelectChange(data.exePre)
           this.reportBillId = Number(data.reportBillId)
           this.backupsReportBillId = utils.deepClone(this.reportBillId)
-          this.queryReportBillColumn(this.reportBillId)
+          this.queryReportBillColumn(this.reportBillId, 'edit')
           // 插入编辑数据
           this.form.setFieldsValue({
             remark: data.remark,                                   // 备注
@@ -750,6 +774,7 @@ export default {
           }
           if (this.table.tableData.length === 0) {
             this.$message.info('请填写任务执行设置')
+            return
           } else {
             for (let i = 0; i < this.table.tableData.length; i++) {
               if (!this.table.tableData[i].informant) {
@@ -763,6 +788,7 @@ export default {
           }
           if (!this.reportBillId) {
             this.$message.info('请选择呈报表单设置')
+            return
           }
           // 呈报表单数据
           console.log(this.reportBillColumnList, '旧的')

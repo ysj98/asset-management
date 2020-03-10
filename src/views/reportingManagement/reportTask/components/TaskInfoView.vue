@@ -60,12 +60,12 @@
         this.$api.reportManage.queryTaskInfo({reportTaskId: this.taskId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            const {resultRemark, result, reportPlanId, reportBillId, projectId, ...others} = res.data
+            const {organId, resultRemark, result, reportPlanId, reportBillId, projectId, ...others} = res.data
             this.detailData = others || {}
             this.attachmentList = (others.attachmentList || []).map(m => {
               return { url: m.attachmentPath, name: m.oldAttachmentName }
             })
-            return this.$emit('transferData', {resultRemark, result, reportPlanId, reportBillId, projectId})
+            return this.$emit('transferData', {resultRemark, result, reportPlanId, reportBillId, projectId, organId})
           }
           throw res.message
         }).catch(err => {
