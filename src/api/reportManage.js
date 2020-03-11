@@ -73,8 +73,8 @@ export function saveTaskOrDetail (data) {
   return axiosPost(reportManage.saveTaskOrDetail, data)
 }
 // [呈报任务]填报数据批量导入
-export function importTaskdetailList (data) {
-  return axiosPost(reportManage.detailDataImport, data)
+export function importTaskdetailList (query, data) {
+  return axiosPost(`${reportManage.detailDataImport}${query}`, data)
 }
 // [呈报任务]填报模板导出
 export function exportDetailTemplate (data) {

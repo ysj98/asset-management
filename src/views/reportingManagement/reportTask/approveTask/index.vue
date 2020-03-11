@@ -22,17 +22,6 @@
           v-model="reportBillId"
           :options="billList"
           placeholder="呈报表单"
-          @change="queryTableData"
-          :filterOption="filterOption"
-        />
-      </a-col>
-      <a-col :span="3">
-        <a-select
-          v-bind="properties"
-          v-model="taskStatus"
-          :options="typeOptions"
-          placeholder="任务类型"
-          @change="queryTableData"
           :filterOption="filterOption"
         />
       </a-col>
@@ -40,9 +29,17 @@
         <a-select
           v-bind="properties"
           v-model="taskType"
+          :options="typeOptions"
+          placeholder="任务类型"
+          :filterOption="filterOption"
+        />
+      </a-col>
+      <a-col :span="3">
+        <a-select
+          v-bind="properties"
+          v-model="taskStatus"
           :options="statusOptions"
           placeholder="任务状态"
-          @change="queryTableData"
           :filterOption="filterOption"
         />
       </a-col>
@@ -64,12 +61,13 @@
           :to="{path: '/reportTask/taskDetail', query: {taskId: record.reportTaskId}}"
         >{{text}}</router-link>
       </span>
-      <span slot="action" slot-scope="text, record">
-        <router-link
-          class="action_text"
-          :to="{path: '/reportTask/approveTask', query: {taskId: record.reportTaskId}}"
-        >审核</router-link>
-      </span>
+      <!--二期开发-->
+      <!--<span slot="action" slot-scope="text, record">-->
+        <!--<router-link-->
+          <!--class="action_text"-->
+          <!--:to="{path: '/reportTask/approveTask', query: {taskId: record.reportTaskId}}"-->
+        <!--&gt;审核</router-link>-->
+      <!--</span>-->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, type: 'page' })"/>
@@ -88,9 +86,9 @@
         fold: true, // 查询条件折叠按钮
         beginDate: '', // 查询条件-执行开始日期
         endDate: '', // 查询条件-执行结束日期
-        taskType: 'all', // 查询条件-任务类型
-        taskStatus: 'all', // 查询条件-任务状态
-        reportBillId: 'all', // 查询条件-表单id
+        taskType: ['all'], // 查询条件-任务类型
+        taskStatus: ['all'], // 查询条件-任务状态
+        reportBillId: ['all'], // 查询条件-表单id
         typeOptions: [
           { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '2' }, { title: '临时任务', key: '1' }
         ], // 查询条件-任务类型选项
@@ -112,8 +110,8 @@
             { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
             { title: '计划执行日期', dataIndex: 'beginDate', scopedSlots: { customRender: 'executeDate' } }, { title: '填报人', dataIndex: 'reportByName' },
             { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
-            { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 100 },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 80 }
+            { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 100 }
+            // { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 80 }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -182,23 +180,29 @@
     watch: {
       // 全选与其他选项互斥处理
       taskStatus: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
+        const {statusOptions} = this
+        if (val.length === statusOptions.length || (val.length === statusOptions.length - 1 && !val.includes('all'))) {
           this.taskStatus = ['all']
-          this.queryTableData({})
+        } else if (val.length > 1 && val.includes('all')) {
+          this.taskStatus = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 
       reportBillId: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
+        const {billList} = this
+        if (val.length === billList.length || (val.length === billList.length - 1 && !val.includes('all'))) {
           this.reportBillId = ['all']
-          this.queryTableData({})
+        } else if (val.length > 1 && val.includes('all')) {
+          this.reportBillId = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 
       taskType: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
+        const {typeOptions} = this
+        if (val.length === typeOptions.length || (val.length === typeOptions.length - 1 && !val.includes('all'))) {
           this.taskType = ['all']
-          this.queryTableData({})
+        } else if (val.length > 1 && val.includes('all')) {
+          this.taskType = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 

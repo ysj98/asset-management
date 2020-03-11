@@ -76,7 +76,7 @@
         loading: false, // Table loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         assetColumns: [
-          { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 100 },
+          { title: '资产名称', dataIndex: 'assetName' },
           { title: '资产编码', dataIndex: 'assetCode'},
           { title: '所属机构', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },
@@ -86,22 +86,22 @@
           { title: '状态', dataIndex: 'assetStatusName' }
         ],
         cardColumns: [
-          { title: '卡片名称', dataIndex: 'cardName', fixed: 'left', width: 100 },
-          { title: '卡片编码', dataIndex: 'cardCode', width: 150 },
-          { title: '所属机构', dataIndex: 'organName', width: 100 },
-          { title: '资产项目', dataIndex: 'projectName', width: 100 },
-          { title: '资产类型', dataIndex: 'assetTypeName', width: 100 },
-          { title: '资产分类', dataIndex: 'assetCategoryName', width: 100 },
-          { title: '入账日期', dataIndex: 'accountEntryTime', width: 100 },
-          { title: '存放地点', dataIndex: 'storagePathName', width: 100 },
-          { title: '入账原值(元)', dataIndex: 'purchaseValue', width: 100 },
-          { title: '累计折旧(元)', dataIndex: 'cumulativeDepreciation', width: 100 },
-          { title: '净值(元)', dataIndex: 'netValue', width: 100 },
-          { title: '折旧方式', dataIndex: 'depreciationMethodName', width: 200 },
-          { title: '计量单位', dataIndex: 'unitOfMeasurementName', width: 100 },
-          { title: '数量', dataIndex: 'num', width: 100 },
-          { title: '减值准备(元)', dataIndex: 'impairmentReady', width: 100 },
-          { title: '状态', dataIndex: 'approvalStatusName', width: 150 }
+          { title: '卡片名称', dataIndex: 'cardName' },
+          { title: '卡片编码', dataIndex: 'cardCode' },
+          { title: '所属机构', dataIndex: 'organName' },
+          { title: '资产项目', dataIndex: 'projectName' },
+          { title: '资产类型', dataIndex: 'assetTypeName' },
+          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '入账日期', dataIndex: 'accountEntryTime' },
+          { title: '存放地点', dataIndex: 'storagePathName' },
+          { title: '入账原值(元)', dataIndex: 'purchaseValue' },
+          { title: '累计折旧(元)', dataIndex: 'cumulativeDepreciation' },
+          { title: '净值(元)', dataIndex: 'netValue' },
+          { title: '折旧方式', dataIndex: 'depreciationMethodName' },
+          { title: '计量单位', dataIndex: 'unitOfMeasurementName' },
+          { title: '数量', dataIndex: 'num' },
+          { title: '减值准备(元)', dataIndex: 'impairmentReady' },
+          { title: '状态', dataIndex: 'approvalStatusName' }
         ],
       }
     },
