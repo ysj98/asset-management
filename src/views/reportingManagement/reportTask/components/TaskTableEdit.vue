@@ -3,9 +3,11 @@
   <div class="table_edit">
     <SG-Title title="填报数据"/>
     <div style="margin-left: 40px">
-      <a-row v-if="type == 'edit'" style="line-height: 32px">
+      <a-row v-if="type == 'edit'">
         <a-col :span="8">
-          <span style="margin-right: 12px; color: #282D5B">填报结果:</span>
+          <span style="margin-right: 12px; color: #282D5B">
+            <span style="color: #e4393c">*</span>填报结果:
+          </span>
           <a-radio-group v-model="result">
             <a-radio value="1">填报</a-radio>
             <a-radio value="0">不填报</a-radio>
@@ -13,8 +15,7 @@
         </a-col>
         <a-col :span="16">
           <span style="float: left;">
-            <span v-if="result === '0'" style="color: #e4393c">*</span>
-            填报说明:
+            <span v-if="result === '0'" style="color: #e4393c">*</span>填报说明:
           </span>
           <div style="margin-left: 65px" id="resultRemark">
             <a-input placeholder="请输入填报说明" v-model.trim="resultRemark"/>
@@ -23,14 +24,22 @@
       </a-row>
       <!--列表部分-->
       <div style="margin: 10px 0">
-        <SG-Button icon="export" :loading="exportBtnLoading" @click="exportTemplate" :disabled="!customColumns.length">导出填报模板</SG-Button>
+        <a-tooltip :title="taskInfo.reportBillId ? '' : '请选择表单'">
+          <SG-Button icon="export" @click="exportTemplate" :loading="exportBtnLoading" :disabled="!taskInfo.reportBillId">
+            导出填报模板
+          </SG-Button>
+        </a-tooltip>
         <a-upload
           :showUploadList="false"
           :action="importBatchData"
-          style="margin-left: 10px; display: inline-block"
+          style="margin-left: 10px"
+          :disabled="!customColumns.length || !taskInfo.projectId"
         >
-          <SG-Button icon="plus" :disabled="!customColumns.length">批量导入</SG-Button>
+          <a-tooltip
+            :title="`${(!customColumns.length || !taskInfo.projectId) ? '请选择' : ''}${ !customColumns.length ? '表单 ' : ''}${!taskInfo.projectId ? '资产项目' : ''}`">
+          <SG-Button icon="plus" :disabled="!customColumns.length || !taskInfo.projectId">批量导入</SG-Button>
           <!--<a-button> <a-icon type="upload" /> Click to Upload </a-button>-->
+          </a-tooltip>
         </a-upload>
         <span style="color: #e4393c; float: right; line-height: 32px; margin-right: 15px">填报总数: {{tableObj.dataSource.length}}</span>
       </div>
@@ -243,7 +252,7 @@
       if (this.type == 'edit') {
         let { result, resultRemark } = this.taskInfo
         this.resultRemark = resultRemark
-        this.result = String(result)
+        this.result = result !== null ? String(result) : ''
       }
     },
 
@@ -379,10 +388,14 @@
       // 提交填报数据
       handleSubmit (resolve) {
         // 校验必填项
-        const { result, resultRemark, dataSourceKeys, customColumns, dateArr, assetType } = this
-        if (result === '0' && !resultRemark ) {
+        const { result, resultRemark, dataSourceKeys, customColumns, dateArr, assetType, tableObj: { dataSource } } = this
+        if (!result || (result === '0' && !resultRemark)) {
           document.getElementById('resultRemark').scrollIntoView({block: "center"})
-          return this.$message.warn('请填写填报说明')
+          return this.$message.warn(`${!result ? '请选择填报结果' : '请填写填报说明'}`)
+        }
+        // Table为空时提示添加
+        if (!dataSource.length) {
+          return this.$message.warn('请先添加一行数据')
         }
         this.form.validateFieldsAndScroll((err, values) => {
           if (!err) {
@@ -439,16 +452,13 @@
       
       // 批量导入数据
       importBatchData (file) {
-        const { taskInfo: { reportBillId, reportPlanId, organId, projectId } } = this
+        const { taskInfo: { reportBillId, organId, projectId } } = this
         if (!projectId) { return this.$message.warn('请选择资产项目') }
         this.tableObj.loading = true
         let fileData = new FormData()
         fileData.append('file', file)
-        fileData.append('organId', organId)
-        fileData.append('projectId', projectId)
-        fileData.append('reportBillId', reportBillId)
-        fileData.append('reportPlanId', reportPlanId)
-        this.$api.reportManage.importTaskdetailList(fileData).then(r => {
+        let query = `?organId=${organId}&projectId=${projectId}&reportBillId=${reportBillId}`
+        this.$api.reportManage.importTaskdetailList(query, fileData).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {

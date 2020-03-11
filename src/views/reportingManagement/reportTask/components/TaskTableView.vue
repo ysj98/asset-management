@@ -2,7 +2,7 @@
 <template>
   <div class="table_view">
     <SG-Title title="填报数据"/>
-    <div style="margin-left: 40px">
+    <div style="margin-left: 40px; padding-top: 5px">
       <a-row>
         <a-col :span="8">
           <span style="margin-right: 12px; color: #282D5B">填报结果:</span>

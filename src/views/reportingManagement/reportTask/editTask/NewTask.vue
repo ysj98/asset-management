@@ -22,7 +22,7 @@
             :help="validateOrganId ? '请选择所属机构' : ''"
             :validate-status="validateOrganId ? 'error' : ''"
           >
-            <tree-select style="width: 100%;" @changeTree="changeTree"/>
+            <tree-select style="width: 100%;" @changeTree="changeTree" :allowClear="false"/>
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -167,17 +167,16 @@
       // 获取projectId,reportBillId
       getId (id, type) {
         let _this = this
-        let { projectId, reportBillId } = _this.taskInfo
-        let content = type === 'projectId' ? '中资产名称及其编码数据' : ''
-        if ((type === 'projectId' && reportBillId && projectId) || (type === 'reportBillId' && reportBillId)) {
+        let { reportBillId } = _this.taskInfo
+        if (type === 'reportBillId' && reportBillId) {
           _this.$confirm({
             title: '确定要继续吗?',
-            content: `此操作会清空已填报数据列表${content}！`,
+            content: '此操作会清空已填报数据列表！',
             onOk () {
-              _this['taskInfo'][type] = id
+              _this['taskInfo']['reportBillId'] = id
             },
             onCancel () {
-              _this.form.setFieldsValue({[type]: type === 'projectId' ? projectId : reportBillId})
+              _this.form.setFieldsValue({reportBillId})
             }
           })
         } else {
@@ -190,6 +189,7 @@
         this['taskInfo']['organId'] = id
         Object.assign(this, { organId: id, organName: name, projectOptions: [] })
         this.form.resetFields('projectId')
+        this.getId ('', 'projectId')
         id && this.queryProjectList(id)
       },
 

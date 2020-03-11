@@ -29,17 +29,6 @@
           v-model="reportBillId"
           :options="billList"
           placeholder="呈报表单"
-          @change="queryTableData"
-          :filterOption="filterOption"
-        />
-      </a-col>
-      <a-col :span="3">
-        <a-select
-          v-bind="properties"
-          v-model="taskStatus"
-          :options="typeOptions"
-          placeholder="任务类型"
-          @change="queryTableData"
           :filterOption="filterOption"
         />
       </a-col>
@@ -47,9 +36,17 @@
         <a-select
           v-bind="properties"
           v-model="taskType"
+          :options="typeOptions"
+          placeholder="任务类型"
+          :filterOption="filterOption"
+        />
+      </a-col>
+      <a-col :span="3">
+        <a-select
+          v-bind="properties"
+          v-model="taskStatus"
           :options="statusOptions"
           placeholder="任务状态"
-          @change="queryTableData"
           :filterOption="filterOption"
         />
       </a-col>
@@ -106,9 +103,9 @@
         fold: true, // 查询条件折叠按钮
         beginDate: '', // 查询条件-执行开始日期
         endDate: '', // 查询条件-执行结束日期
-        taskType: 'all', // 查询条件-任务类型
-        taskStatus: 'all', // 查询条件-任务状态
-        reportBillId: 'all', // 查询条件-表单id
+        taskType: ['all'], // 查询条件-任务类型
+        taskStatus: ['all'], // 查询条件-任务状态
+        reportBillId: ['all'], // 查询条件-表单id
         typeOptions: [
           { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '2' }, { title: '临时任务', key: '1' }
         ], // 查询条件-任务类型选项
@@ -229,23 +226,29 @@
     watch: {
       // 全选与其他选项互斥处理
       taskStatus: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
+        const {statusOptions} = this
+        if (val.length === statusOptions.length || (val.length === statusOptions.length - 1 && !val.includes('all'))) {
           this.taskStatus = ['all']
-          this.queryTableData({})
+        } else if (val.length > 1 && val.includes('all')) {
+          this.taskStatus = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
       
       reportBillId: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
+        const {billList} = this
+        if (val.length === billList.length || (val.length === billList.length - 1 && !val.includes('all'))) {
           this.reportBillId = ['all']
-          this.queryTableData({})
+        } else if (val.length > 1 && val.includes('all')) {
+          this.reportBillId = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 
       taskType: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
+        const {typeOptions} = this
+        if (val.length === typeOptions.length || (val.length === typeOptions.length - 1 && !val.includes('all'))) {
           this.taskType = ['all']
-          this.queryTableData({})
+        } else if (val.length > 1 && val.includes('all')) {
+          this.taskType = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 
