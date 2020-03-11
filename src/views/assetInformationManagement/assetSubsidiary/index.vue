@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-10 17:23:45
+ * @LastEditTime: 2020-03-11 09:59:25
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -104,7 +104,7 @@
             <a-input
               :maxLength="30"
               v-model="queryCondition.matchingNameOrCode"
-              placeholder="请输入附属配套名称"
+              placeholder="附属配套名称/编码"
               :style="allWidth"
             />
             </div>
@@ -199,7 +199,7 @@ const queryCondition = {
   matchingTypeList: [''], // 附属配套类型
   status: '', // 附属配套状态
   assetStatusList: [''], // 资产状态(多选)
-  matchingNameOrCode: "", // 附属配套名称
+  matchingNameOrCode: "", // 附属配套名称/编码
   pageNum: 1,
   pageSize: 10
 };
@@ -396,7 +396,7 @@ export default {
       if (String(record.status) === '1' && this.$power.has(ASSET_MANAGEMENT.ASSET_STATUS_SUBSI)) {
         arr.push({iconType: 'close-circle', text: '禁用', editType: 'off'})
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELETE_SUBSI)) {
+      if (String(record.status) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_DELETE_SUBSI)) {
         arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
       }
       arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
