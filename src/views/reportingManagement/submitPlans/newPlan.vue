@@ -525,13 +525,25 @@ export default {
       })
     },
 		// 频次变化
-    exePreSelectChange (e) {
+    exePreSelectChange (e, str) {
 			if (e === '1' || e === '2') {
 				this.showBeginMonth = false
 			} else {
 				this.showBeginMonth = true
 			}
-			this.showBeginDay = e === '3' ? false : true
+      this.showBeginDay = e === '3' ? false : true
+      if (!str) {
+        if (this.showBeginMonth && this.showBeginDay) {
+            this.form.setFieldsValue({
+            beginMonth: '1'
+          })
+        }
+        if (this.showBeginMonth) {
+            this.form.setFieldsValue({
+            beginDay: '1'
+          })
+        }
+      }
       switch (e){
         case '1':
 					this.beginMonthOpt = []
@@ -668,7 +680,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.formData = data.reportBillColumnList   // 编辑给回来的表单
-          this.exePreSelectChange(data.exePre)
+          this.exePreSelectChange(data.exePre, 'edit')
           this.reportBillId = Number(data.reportBillId)
           this.backupsReportBillId = utils.deepClone(this.reportBillId)
           this.queryReportBillColumn(this.reportBillId, 'edit')
