@@ -131,6 +131,7 @@
 					<a-col class="playground-col" :span="8" v-if="showBeginMonth">
 						<a-form-item v-bind="formItemLayout" label="任务开始时间">
               <a-select showSearch placeholder="月"
+                v-if="showBeginDay"
 								v-decorator="[ 'beginMonth',{ rules: [{required: true, message: '请选择任务开始时间'}], initialValue: undefined}]"
 									optionFilterProp="children"
 									:style="{ width: '120px', marginRight: '10px' }"
@@ -139,7 +140,6 @@
 									notFoundContent="没有查询到数据"
 								/>
               <a-select showSearch placeholder="日"
-							  v-if="showBeginDay"
                 v-decorator="['beginDay',{rules: [{required: true}], initialValue: '1'}]"
                 optionFilterProp="children"
                 :style="{ width: '70px'}"
@@ -345,6 +345,7 @@ let oneHasYear = [
   {label: '每年第11个月', key: '11'},
   {label: '每年第12个月', key: '12'},
 ]
+const beginDayOpt = Array.from({length:31}).map((v,i) => ({label: `${i+1}日`, value: `${i+1}`, key: `${i+1}`}))
 export default {
   components: {associateAssetModal, selectStaffOrPost, FormFooter, noDataTips},
   props: {},
@@ -403,7 +404,7 @@ export default {
           sm: { span: 13 }
         }
 			},
-			beginDayOpt: Array.from({length:31}).map((v,i) => ({label: `${i+1}日`, value: `${i+1}`, key: `${i+1}`})),
+			beginDayOpt: beginDayOpt,
 			beginMonthOpt: [],
 			newCardData: {
 				planName: '',      // 计划名称
@@ -539,19 +540,23 @@ export default {
 					this.beginMonthOpt = []
           break;
         case '3':
-          this.beginMonthOpt = onweek
+          this.beginDayOpt = onweek
           break;
         case '4':
           this.beginMonthOpt = oneMonth
+          this.beginDayOpt = beginDayOpt
           break;
         case '5':
           this.beginMonthOpt = oneQuarter
+          this.beginDayOpt = beginDayOpt
 					break; 
 			  case '6':
           this.beginMonthOpt = halfYear
+          this.beginDayOpt = beginDayOpt
 					break;
 				case '7':
           this.beginMonthOpt = oneHasYear
+          this.beginDayOpt = beginDayOpt
           break;     
       }
     },
