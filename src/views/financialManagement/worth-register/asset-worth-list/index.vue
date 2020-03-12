@@ -56,6 +56,8 @@
         </a-row>
       </div>
     </search-container>
+    <!--数据总览-->
+    <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="action" slot-scope="text, record">
@@ -63,7 +65,7 @@
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, type: page })"/>
     <!--查看趋势图-->
     <SG-Modal title="资产估值趋势图" :footer="null" v-model="isShowTrend" @cancel="viewTrendAction(false)">
       <trend-chart-part :key="assetId" :assetId="assetId" :originalValue="originalValue"/>
@@ -73,14 +75,15 @@
 
 <script>
   import moment from 'moment'
-  import TrendChartPart from './component/TrendChartPart'
   import NoDataTip from 'src/components/noDataTips'
   import TreeSelect from 'src/views/common/treeSelect'
+  import TrendChartPart from './component/TrendChartPart'
+  import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
   import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList} from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
-    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart },
+    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber },
     data () {
       return {
         moment,
@@ -125,6 +128,12 @@
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+        numList: [
+          {title: '资产总数', key: 'total', value: 0, fontColor: '#324057'},
+          {title: '资产原值(元)', key: 'originalValue', value: 0, fontColor: '#324057'},
+          {title: '评估原值(元)', key: 'assetValuation', value: 0, fontColor: '#324057'},
+          {title: '最新价值(元)', key: 'marketValue', value: 0, fontColor: '#324057'}
+        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
       }
     },
@@ -168,7 +177,7 @@
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10}) {
+      queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { assetNameCode, assetCategoryId, organProjectType, organProjectType: { assetType }, assessmenBaseDate } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -186,7 +195,11 @@
             Object.assign(this.paginationObj, {
               totalCount: count,  pageNo, pageLength
             })
-            return this.querySumInfo(form)
+            // 查询统计信息
+            if (!type) {
+              this.querySumInfo(form)
+            }
+            return this.calcTotal(form)
           }
           throw res.message || '资产价值一览表接口出错'
         }).catch(err => {
@@ -210,18 +223,17 @@
         }
       },
       
-      // 查询Table汇总
+      // 查询统计信息
       querySumInfo (form) {
-        const { tableObj: { dataSource } } = this
         this.$api.worthRegister.queryPageListSum(form).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.tableObj.dataSource = dataSource.length ? dataSource.concat({
-              assetId: '-1111', projectName: '合计：', ...(res.data || {})
-            }) : []
-            return false
+            let { numList } = this
+            return this.numList = numList.map(m => {
+              return { ...m, value: (res.data || {})[m.key] || 0 }
+            })
           }
-          throw res.message || '查询汇总接口出错'
+          throw res.message
         }).catch(err => {
           this.$message.error(err || '查询汇总接口出错')
         })
@@ -236,6 +248,28 @@
         queryCategoryList({ assetType: assetVal, organId }).then(list => {
           list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
+      },
+      
+      // 汇总当前页数据
+      calcTotal () {
+        const { tableObj: { dataSource } } = this
+        if (dataSource.length) {
+          let market = 0
+          let original = 0
+          let asset = 0
+          let assetNew = 0
+          dataSource.forEach(m => {
+            const { marketValue, originalValue, assetValuation, assessmentValue } = m
+            market += marketValue ? Number(marketValue) : 0
+            original += originalValue ? Number(originalValue) : 0
+            asset += assetValuation ? Number(assetValuation) : 0
+            assetNew += assessmentValue ? Number(assessmentValue) : 0
+          })
+          this.tableObj.dataSource = dataSource.concat({
+            assetId: '-1111', projectName: '合计：',
+            marketValue: market, originalValue: original, assetValuation: asset, assessmentValue: assetNew
+          })
+        }
       }
     },
 
