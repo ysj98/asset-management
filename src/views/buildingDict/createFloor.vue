@@ -261,19 +261,26 @@ export default {
             data.organId = this.organId
             data.floorId = this.objectData.positionId
             data.upPositionId = this.objectData.upPositionId
-            let loadingName = this.SG_Loding('编辑中...')
-            this.$api.building.updateFloor(data).then(res => {
-              this.DE_Loding(loadingName).then(() => {
-                if (res.data.code === '0') {
-                  this.$SG_Message.success('编辑楼层成功')
-                  this.$emit('success', 'edit')
-                } else {
-                  this.$message.error(res.data.message)
-                }
-              })
-            }, () => {
-              this.DE_Loding(loadingName).then(res => {
-                this.$SG_Message.error('编辑失败！')
+            this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
+              return resData.data.data.communityId
+            }).then(communityId => {
+              if (communityId && communityId !== '-1') {
+                data.communityId = communityId
+              }
+              let loadingName = this.SG_Loding('编辑中...')
+              this.$api.building.updateFloor(data).then(res => {
+                this.DE_Loding(loadingName).then(() => {
+                  if (res.data.code === '0') {
+                    this.$SG_Message.success('编辑楼层成功')
+                    this.$emit('success', 'edit')
+                  } else {
+                    this.$message.error(res.data.message)
+                  }
+                })
+              }, () => {
+                this.DE_Loding(loadingName).then(res => {
+                  this.$SG_Message.error('编辑失败！')
+                })
               })
             })
           }

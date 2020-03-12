@@ -28,7 +28,7 @@ V1.3
 呈报任务管理
 /asset-management/#/reportTask                  呈报任务
 /asset-management/#/reportingManagement/submitPlans   呈报计划
-/asset-management/#/reportTask                  呈报任务查询
+/asset-management/#/taskQuery                  呈报任务查询
 /asset-management/#/reportingRecord           资产呈报记录
 /asset-management/#/reportingList             呈报记录一览表
 附属配套管理
