@@ -243,7 +243,7 @@
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
 		<!-- 选资产 -->
-		<associateAssetModal ref="associateAssetModal" selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+		<associateAssetModal ref="associateAssetModal" :selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
   </div>
 </template>
 
@@ -836,7 +836,7 @@ export default {
             exePre: values.exePre,                                   // 实施频次
             effDate: values.defaultValue[0].format('YYYY-MM-DD'),    // 计划生效时间
             expDate: values.defaultValue[1].format('YYYY-MM-DD'),    // 计划失效时间
-            beginDay: values.beginDay,                               // 任务开始天数
+            beginDay: values.beginDay,                               // 任务开始天数或星期几
             beginMonth: values.beginMonth,                           // 任务开始月份
             preUnit: values.preUnit,                                 // 提前生成单位1-天 2-时
             preNum: values.preNum,                                   // 提前生成单位数量
