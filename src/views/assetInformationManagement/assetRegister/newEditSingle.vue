@@ -124,7 +124,7 @@
         <!-- table-layout-fixed -->
         <div class="table-borders">
           <a-table
-            class="table-box"
+            class="table-boxs"
             :scroll="{y: 450, x: 2700}"
             :columns="columns"
             :dataSource="tableData"
@@ -901,8 +901,8 @@ export default {
 }
 </style>
 
-<style lang="scss">
-.table-box {
+<style lang="less">
+.table-boxs {
   .ant-table-placeholder {
     display: none;
   }
