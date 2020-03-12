@@ -3,7 +3,7 @@
   <div class="table_edit">
     <SG-Title title="填报数据"/>
     <div style="margin-left: 40px">
-      <a-row v-if="type == 'edit'">
+      <a-row v-if="type == 'edit'" style="line-height: 32px">
         <a-col :span="8">
           <span style="margin-right: 12px; color: #282D5B">
             <span style="color: #e4393c">*</span>填报结果:
@@ -23,16 +23,18 @@
         </a-col>
       </a-row>
       <!--列表部分-->
-      <div style="margin: 10px 0">
+      <div style="margin: 20px 0">
         <a-tooltip :title="taskInfo.reportBillId ? '' : '请选择表单'">
           <SG-Button icon="export" @click="exportTemplate" :loading="exportBtnLoading" :disabled="!taskInfo.reportBillId">
             导出填报模板
           </SG-Button>
         </a-tooltip>
         <a-upload
+          accept=".xls"
           :showUploadList="false"
-          :action="importBatchData"
           style="margin-left: 10px"
+          :beforeUpload="beforeUpload"
+          :customRequest="importBatchData"
           :disabled="!customColumns.length || !taskInfo.projectId"
         >
           <a-tooltip
@@ -449,9 +451,17 @@
           this.$message.error(err || '模板导出失败')
         })
       },
+
+      // 鉴定批量导入的文件
+      beforeUpload (file) {
+        if (file && file.name.split('.')[1] !== 'xls') {
+          this.$message.warn('只支持导入填报模板')
+          return false
+        }
+      },
       
       // 批量导入数据
-      importBatchData (file) {
+      importBatchData ({file}) {
         const { taskInfo: { reportBillId, organId, projectId } } = this
         if (!projectId) { return this.$message.warn('请选择资产项目') }
         this.tableObj.loading = true
@@ -462,7 +472,7 @@
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.$message.success(res.message)
+            this.$message.success(res.message || '导入成功')
             let { dateArr, tableObj: { dataSource } } = this
             let newList = (res.data || []).map((m, i) => {
               dateArr.forEach(v => {
