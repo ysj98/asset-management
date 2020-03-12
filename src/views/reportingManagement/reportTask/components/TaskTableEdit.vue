@@ -43,8 +43,8 @@
         </a-upload>
         <span style="color: #e4393c; float: right; line-height: 32px; margin-right: 15px">填报总数: {{tableObj.dataSource.length}}</span>
       </div>
-      <a-form :form="form">
-        <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <a-form :form="form" v-if="customColumns.length">
+        <a-table v-bind="tableObj" class="table_box">
           <a-table-column
             v-for="m in customColumns"
             :key="m.columnName"
@@ -164,7 +164,7 @@
           </a-table-column>
         </a-table>
       </a-form>
-      <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
+      <div v-else style="text-align: center; margin-top: 25px; color: #00000073">暂无数据</div>
       <div v-if="customColumns.length" style="margin: 15px 0">
         <SG-Button icon="plus" style="width: 100%; height: 40px;" @click="addTableItem">添加</SG-Button>
       </div>
@@ -298,8 +298,8 @@
       addTableItem () {
         let { customColumns } = this
         let key = new Date().getTime()
-        let temp = { key}
-        customColumns.forEach(m => temp[m.columnName] = (m.columnType === 3 || m.columnType === 5) ? null : '')
+        let temp = { key }
+        customColumns.forEach(m => temp[m.columnName] = m.columnType === 4 ? undefined : null)
         this.tableObj.dataSource.push(temp)
         this.dataSourceKeys.push(key)
       },
@@ -543,26 +543,44 @@
 
 <style lang='less' scoped>
   .table_edit {
-    .custom-table {
+    .table_box {
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table-thead th, .ant-table td {
         white-space: nowrap;
       }
-      & /deep/ .ant-table td {
-        .ant-form-item {
-          margin-bottom: 15px;
+      & /deep/ .ant-table {
+        .ant-table-thead {
+          font-size: 14px;
+          border-top: 1px solid #E6EAEF;
+          border-bottom: 1px solid #E6EAEF;
+          box-shadow: 0 2px 6px 0 rgba(66, 155, 255, 0.2);
+          th {
+            color: #49505E;
+            padding: 9px 15px;
+            background-color: #fff;
+          }
         }
-        padding-bottom: 0 !important;
-        .ant-form-item-with-help {
-          margin-bottom: 0 !important;
-        }
-        .ant-input-disabled {
-          cursor: default;
-          color: #000000a6;
-          background-color: transparent;
+        td {
+          padding-bottom: 0 !important;
+          .ant-form-item {
+            margin-bottom: 15px;
+          }
+          .ant-form-item-with-help {
+            margin-bottom: 0 !important;
+          }
+          /*修改禁用样式*/
+          .ant-input-disabled {
+            cursor: default;
+            color: #000000a6;
+            background-color: transparent;
+          }
+          .ant-calendar-picker-icon {
+            z-index: 0
+          }
         }
       }
+      /*input禁用遮罩层样式*/
       .select_mask {
         position: absolute;
         right: 0;
