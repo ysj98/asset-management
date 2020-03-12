@@ -355,6 +355,9 @@ export default {
           if (this.type === 'create' || this.type === 'copy') {
             // 新增时需用楼栋id 请求楼栋详情是否有项目id
             this.$api.building.queryBuildDetail({buildId: values.buildId}).then(resData => {
+              if (res.data.code !== '0') {
+                this.$message.error(res.data.message)
+              }
               return resData.data.data.communityId
             }).then(communityId => {
               if (communityId && communityId !== '-1') {
@@ -380,7 +383,10 @@ export default {
           // 编辑房间
           if (this.type === 'edit') {
             data.houseId = this.houseId
-            this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
+            this.$api.building.queryBuildDetail({buildId: values.buildId}).then(resData => {
+              if (res.data.code !== '0') {
+                this.$message.error(res.data.message)
+              }
               return resData.data.data.communityId
             }).then(communityId => {
               if (communityId && communityId !== '-1') {

@@ -231,6 +231,9 @@ export default {
             data.upPositionId = this.objectData.positionId
             // 新增时需用楼栋id 请求楼栋详情是否有项目id
             this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
+              if (res.data.code !== '0') {
+                this.$message.error(res.data.message)
+              }
               return resData.data.data.communityId
             }).then(communityId => {
               if (communityId && communityId !== '-1') {
@@ -262,6 +265,9 @@ export default {
             data.floorId = this.objectData.positionId
             data.upPositionId = this.objectData.upPositionId
             this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
+              if (res.data.code !== '0') {
+                this.$message.error(res.data.message)
+              }
               return resData.data.data.communityId
             }).then(communityId => {
               if (communityId && communityId !== '-1') {
