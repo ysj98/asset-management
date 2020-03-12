@@ -428,13 +428,13 @@ export default {
           this.particularsData.taskStartTime = `${this.particularsData.exePreName}${this.particularsData.beginDay}日`
           break;
         case '5':
-           this.particularsData.taskStartTime = `${oneQuarter[e]}${this.particularsData.beginDay}日`
+           this.particularsData.taskStartTime = `${this.oneQuarter[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
 					break; 
 			  case '6':
-          this.particularsData.taskStartTime = `${halfYear[e]}${this.particularsData.beginDay}日`
+          this.particularsData.taskStartTime = `${this.halfYear[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
 					break;
 				case '7':
-          this.particularsData.taskStartTime = `${oneHasYear[e]}${this.particularsData.beginDay}日`
+          this.particularsData.taskStartTime = `${this.oneHasYear[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
           break;     
       }
     },

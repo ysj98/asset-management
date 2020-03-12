@@ -532,19 +532,7 @@ export default {
 				this.showBeginMonth = true
 			}
       this.showBeginDay = e === '3' ? false : true
-      if (!str) {
-        if (this.showBeginMonth && this.showBeginDay) {
-            this.form.setFieldsValue({
-            beginMonth: '1'
-          })
-        }
-        if (this.showBeginMonth) {
-            this.form.setFieldsValue({
-            beginDay: '1'
-          })
-        }
-      }
-      switch (e){
+      switch (e) {
         case '1':
 					this.beginMonthOpt = []
           break;
@@ -571,6 +559,20 @@ export default {
           this.beginDayOpt = beginDayOpt
           break;     
       }
+      this.$nextTick(() => {
+        if (str !== 'edit') {
+          if (this.showBeginMonth && this.showBeginDay) {
+              this.form.setFieldsValue({
+              beginMonth: '1'
+            })
+          }
+          if (this.showBeginMonth) {
+              this.form.setFieldsValue({
+              beginDay: '1'
+            })
+          }
+        }
+      })
     },
 		handleSubmit (e) {
       e.preventDefault()
