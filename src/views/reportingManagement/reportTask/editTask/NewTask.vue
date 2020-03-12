@@ -247,15 +247,15 @@
       // 校验必填项
       validateFields (resolve) {
         this.form.validateFieldsAndScroll((err, values) => {
+          const { attachmentList, organId, userId, auditUsers } = this
+          // 校验自定义必填项
+          if (!organId || !auditUsers.length) {
+            document.getElementById('needValue').scrollIntoView()
+            this.validateAuditUsers = !auditUsers.length
+            return this.validateOrganId = !organId
+          }
           if (!err) {
-            const { attachmentList, organId, userId, auditUsers } = this
             let { projectId, reportBillId, taskName, remark } = values
-            // 校验必填
-            if (!organId || !auditUsers.length) {
-              document.getElementById('needValue').scrollIntoView()
-              this.validateAuditUsers = !auditUsers.length
-              return this.validateOrganId = !organId
-            }
             // 处理附件格式
             let attachment = attachmentList.map(m => {
               return { attachmentPath: m.url, oldAttachmentName: m.name }
