@@ -280,6 +280,7 @@ export default {
           let data = {
             sid: this.objectData.positionId
           }
+          data.organId = this.organId
           this.$api.building.deleteUnit(data).then(res => {
             if (res.data.code === '0') {
               this.$SG_Message.success(`删除成功`)

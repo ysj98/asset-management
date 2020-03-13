@@ -493,6 +493,7 @@ export default {
             let data = {
               buildId: this.objectData.positionId
             }
+            data.organId = this.organId
             this.$api.building.deleteBuild(data).then(res => {
               if (res.data.code === '0') {
                this.$SG_Message.success(`删除成功`)

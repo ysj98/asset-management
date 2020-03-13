@@ -302,6 +302,7 @@ export default {
           let data = {
             floorId: this.objectData.positionId
           }
+          data.organId = this.organId
           this.$api.building.deleteFloor(data).then(res => {
             if (res.data.code === '0') {
               this.$SG_Message.success(`删除成功`)
