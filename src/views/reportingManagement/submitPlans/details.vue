@@ -65,7 +65,7 @@
       <div class="particulars-obj">
 				<a-row class="playground-row">
           <a-col class="playground-col" :span="6">实施频次：{{particularsData.exePreName || '--'}}</a-col>
-					<a-col class="playground-col" :span="6">任务开始时间：{{particularsData.createTime || '--'}}</a-col>
+					<a-col class="playground-col" :span="6">任务开始时间：{{particularsData.taskStartTime || '--'}}</a-col>
 					<a-col class="playground-col" :span="6">任务执行期限：{{`${particularsData.deadline} 天` || '--'}}</a-col>
 					<a-col class="playground-col" :span="6">提前生成任务时间：{{`${particularsData.preNum}  ${+particularsData.preUnit == 1 ? '天' : '小时'}` || '--'}}</a-col>
 				</a-row>
@@ -171,12 +171,82 @@ const executiveColumns = [
   },
 
 ]
+let preUnitOpt = {
+  '1': '天',
+  '2': '时'
+}
+let dayOpt = {
+  '1': '天'
+}
+let exePreData = {
+    '1': '单次',
+    '2': '每天',
+    '3': '每周',
+    '4': '每月',
+    '5': '每季度',
+    '6': '每半年',
+    '7': '每年'
+}
+
+let onweek = {
+    '1': '周一',
+    '2': '周二',
+    '3': '周三',
+    '4': '周四',
+    '5': '周五',
+    '6': '周六',
+    '7': '周日'
+  }
+
+// 每月
+let oneMonth = {
+  '1': '每月'
+}
+
+// 每季度
+let oneQuarter = {
+    '1': '每季度第1个月',
+    '2': '每季度第2个月',
+    '3': '每季度第3个月',
+  }
+// 每半年
+let halfYear = {
+    '1': '每半年第1个月',
+    '2': '每半年第2个月',
+    '3': '每半年第3个月',
+    '4': '每半年第4个月',
+    '5': '每半年第5个月',
+    '6': '每半年第6个月',
+  }
+// 每年
+let oneHasYear = {
+    '1': '每年第1个月',
+    '2': '每年第2个月',
+    '3': '每年第3个月',
+    '4': '每年第4个月',
+    '5': '每年第5个月',
+    '6': '每年第6个月',    
+    '7': '每年第7个月',
+    '8': '每年第8个月',
+    '9': '每年第9个月',
+    '10': '每年第10个月',
+    '11': '每年第11个月',
+    '12': '每年第12个月',
+  }
 import noDataTips from "@/components/noDataTips"
 export default {
   components: {noDataTips},
   props: {},
   data () {
     return {
+      preUnitOpt,
+      oneHasYear,
+      onweek,
+      oneQuarter,
+      halfYear,
+      oneMonth,
+      exePreData,
+      dayOpt,
 			chargePersonOpt: [],
       changeType: '',
       registerId: '',
@@ -342,6 +412,32 @@ export default {
         }
       })
     },
+    // 频次变化
+    exePreSelectChange (e) {
+      switch (e){
+        case '1':
+          this.particularsData.taskStartTime = this.particularsData.exePreName
+          break;
+        case '2':
+					this.particularsData.taskStartTime = this.particularsData.exePreName
+          break;
+        case '3':
+          this.particularsData.taskStartTime = `${this.particularsData.exePreName}${this.onweek[this.particularsData.beginDay]}`
+          break;
+        case '4':
+          this.particularsData.taskStartTime = `${this.particularsData.exePreName}${this.particularsData.beginDay}日`
+          break;
+        case '5':
+           this.particularsData.taskStartTime = `${this.oneQuarter[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
+					break; 
+			  case '6':
+          this.particularsData.taskStartTime = `${this.halfYear[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
+					break;
+				case '7':
+          this.particularsData.taskStartTime = `${this.oneHasYear[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
+          break;     
+      }
+    },
     // 查询详情
     query () {
       let obj = {
@@ -351,7 +447,9 @@ export default {
         if (Number(res.data.code) === 0) {
           console.log(res)
           let data = res.data.data
+          // this.particularsData.taskStartTime = `{}`
           this.particularsData = data
+          this.exePreSelectChange(String(data.exePre))
           this.formData = data.reportBillColumnList   // 编辑给回来的表单
           this.reportBillId = Number(this.particularsData.reportBillId)
           this.queryReportBillColumn(this.particularsData.reportBillId)
