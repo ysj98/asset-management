@@ -1,7 +1,7 @@
 <!--
  * @Description: 新建资产信息 配套附属资源
  * @Date: 2020-02-17 19:01:00
- * @LastEditTime: 2020-03-05 14:22:38
+ * @LastEditTime: 2020-03-13 17:52:33
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -266,7 +266,15 @@
                 :style="allStyle"
                 placeholder="请输入数量"
                 v-decorator="[
-                  'number'
+                  'number',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入数量'
+                      }
+                    ]
+                  }
                 ]"
               />
             </a-form-item>
