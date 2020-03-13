@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime: 2020-03-09 14:02:56
+ * @LastEditTime: 2020-03-13 18:12:46
  * @LastEditors: Please set LastEditors
  * @Description: 呈报计划
  * @FilePath: \asset-management\src\views\reportingManagement\submitForm\index.vue
@@ -47,7 +47,7 @@
               <span @click="goPage('detail', record)">详情</span>
               <span @click="goPage('edit', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_edit" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
               <span @click="goPage('delete', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_delete" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
-              <!-- <span v-if="+record.approvalStatus === 2">审核</span> -->
+              <span @click="goPage('reverseAudit', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_reverse_audit" v-show="+record.approvalStatus === 1">反审核</span>
             </div>
           </template>
         </a-table>
@@ -188,8 +188,8 @@ export default {
   watch: {
     '$route' () {
       if (this.$route.path === '/reportingManagement/submitPlans' && this.$route.query.refresh) {
-      this.queryCondition.pageNum = 1
-      this.queryCondition.pageSize = 10
+        this.queryCondition.pageNum = 1
+        this.queryCondition.pageSize = 10
         this.query()
       }
     }
@@ -264,6 +264,9 @@ export default {
       })
     },
     query () {
+      if (!this.queryCondition.organId) {
+        return
+      }
       let data = {
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum,
@@ -278,12 +281,14 @@ export default {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || []
-            this.table.dataSource = result.map(item => {
-              return {
-                key: getUuid(),
-                ...item
-              };
-            });
+            if (result && result !== 0) {
+              this.table.dataSource = result.map(item => {
+                return {
+                  key: getUuid(),
+                  ...item
+                };
+              });
+            }
             this.table.totalCount = res.data.data.count || ""
           } else {
             this.$message.error(res.data.message)
@@ -340,10 +345,35 @@ export default {
         }
       })
     },
+    reverseAuditFn (id) {
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要反审核该呈报计划吗？',
+        onOk() {
+          let obj = {
+            reportPlanId: id,
+            approvalStatus: '0'
+          }
+          _this.$api.reportManage.updateReportPlanStatus(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('反审核成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
+        }
+      })
+    },
     // 页面跳转
     goPage(type, record) {
       if (type === 'delete') {
         this.deleteFn(record.reportPlanId)
+        return
+      }
+      if (type === 'reverseAudit') {
+        this.reverseAuditFn(record.reportPlanId)
         return
       }
       let querys = []
