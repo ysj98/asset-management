@@ -91,7 +91,7 @@
     },
     {
       title: '来源方式',
-      dataIndex: 'sourceType'
+      dataIndex: 'sourceTypeName'
     },
     {
       title: '来源渠道',

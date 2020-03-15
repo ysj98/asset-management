@@ -253,6 +253,6 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
   // 呈报计划-审核
   zcgl_submit_plans_audit: 'zcgl_submit_plans_audit',
   // 呈报计划-反审核
-  zcgl_submit_reverse_audit: 'zcgl_submit_plans_reverse_audit',
+  zcgl_submit_plans_reverse_audit: 'zcgl_submit_plans_reverse_audit',
 }
 

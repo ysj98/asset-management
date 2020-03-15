@@ -12,6 +12,7 @@
               <a-form-item v-bind="formItemLayout" label="计划名称：">
                 <a-input placeholder="请输入计划名称"
                 :style="allWidth"
+                :maxLength="30"
                 v-decorator="['planName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入计划名称(不超过30字符)'}], initialValue: newCardData.planName}]"/>
               </a-form-item>
             </a-col>
@@ -19,6 +20,7 @@
               <a-form-item v-bind="formItemLayout" label="计划编号：">
                 <a-input placeholder="请输入计划编号"
                 :style="allWidth"
+                :maxLength="30"
                 v-decorator="['planCode', {rules: [{required: false, max: 30}], initialValue: newCardData.planCode}]"/>
               </a-form-item>
             </a-col>
@@ -150,7 +152,7 @@
 					</a-col>
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="任务执行期限">
-              <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
+              <a-input-number :max="99" :min="0" :precision="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
                 v-decorator="[ 'deadline',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: deadline}]"
               />
               <a-select showSearch placeholder="单位"
@@ -164,7 +166,7 @@
 					</a-col>
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayouts" label="提前生成任务时间">
-              <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
+              <a-input-number :max="99" :min="0" :precision="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
                 v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: preNum}]"
               />
               <a-select showSearch placeholder="单位"

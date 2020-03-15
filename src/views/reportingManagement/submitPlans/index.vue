@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime: 2020-03-13 18:12:46
+ * @LastEditTime: 2020-03-15 15:59:19
  * @LastEditors: Please set LastEditors
  * @Description: 呈报计划
  * @FilePath: \asset-management\src\views\reportingManagement\submitForm\index.vue
@@ -47,7 +47,7 @@
               <span @click="goPage('detail', record)">详情</span>
               <span @click="goPage('edit', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_edit" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">编辑</span>
               <span @click="goPage('delete', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_delete" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3">删除</span>
-              <span @click="goPage('reverseAudit', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_reverse_audit" v-show="+record.approvalStatus === 1">反审核</span>
+              <span @click="goPage('reverseAudit', record)" v-power="ASSET_MANAGEMENT.zcgl_submit_plans_reverse_audit" v-show="+record.approvalStatus === 1">反审核</span>
             </div>
           </template>
         </a-table>
