@@ -14,7 +14,7 @@
         <a-select
           style="width: 100%"
           v-model="assetType"
-          @change="queryData"
+          @change="queryData()"
           :options="assetTypeOptions"
           placeholder="请选择资产类型"
         />
@@ -23,7 +23,7 @@
         <a-select
           style="width: 100%"
           v-model="objectType"
-          @change="queryData"
+          @change="queryData()"
           :options="objectTypeOptions"
           placeholder="请选择资产类别"
         />
@@ -32,8 +32,8 @@
         <a-input-search
           v-model.trim="name"
           style="width: 100%"
-          @search="queryData"
-          @pressEnter="queryData"
+          @search="queryData()"
+          @pressEnter="queryData()"
           placeholder="请输入名称"
         />
       </a-col>
@@ -126,7 +126,7 @@
 
       // 获取列表数据
       queryAssetList ({ pageLength = 10, pageNo = 1}) {
-        const {objectType, assetNameCode: name, assetType, projectId, organId} = this
+        const {objectType, name, assetType, projectId, organId} = this
         if (!projectId) { return this.$message.warn('资产项目Id不存在')}
         this.loading = true
         let form = {

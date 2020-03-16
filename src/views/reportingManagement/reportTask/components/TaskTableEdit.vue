@@ -98,6 +98,7 @@
               <a-form-item v-else-if="m.columnType === 2" :key="record.key">
                 <a-input-number
                   :min="0"
+                  :max="9999999999.99"
                   style="width: 100%"
                   :placeholder="`请输入${m.columnDesc}`"
                   v-decorator="[`${m.columnName}_${record.key}`, {
@@ -140,10 +141,7 @@
                   :placeholder="`请选择${m.columnDesc}`"
                   v-decorator="[`${m.columnName}_${record.key}`, {
                     initialValue: text,
-                    rules: [
-                      {required: !!m.columnNeed, message: `请输入${m.columnDesc}`},
-                      {max: m.columnLength || 999, message: `最多${m.columnLength || 999}个字符`}
-                    ]
+                    rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
                   }]"
                 />
               </a-form-item>
@@ -181,9 +179,21 @@
       @ok="handleModalAction('ok')"
     >
       <!--columnType === 1 文本输入域-->
-      <a-input v-if="columnType === 1" v-model.trim="sameCellValue" :placeholder="`请输入${columnName}`"/>
+      <a-input
+        v-if="columnType === 1"
+        v-model.trim="sameCellValue"
+        @change="validateValLength($event)"
+        :placeholder="`请输入${columnName}`"
+      />
       <!--columnType === 2 数字输入域-->
-      <a-input-number v-else-if="columnType === 2" v-model="sameCellValue" :placeholder="`请输入${columnName}`" style="width: 100%"/>
+      <a-input-number
+        v-else-if="columnType === 2"
+        v-model="sameCellValue"
+        :min="0"
+        style="width: 100%"
+        :max="9999999999.99"
+        :placeholder="`请输入${columnName}`"
+      />
       <!--columnType === 3 日期选择域-->
       <a-date-picker
         allowClear
@@ -241,6 +251,7 @@
         columnType: '', // 批量修改-列头类型
         dataIndex: '', // 批量修改-列头字段值
         columnName: '', // 批量修改-列头字段名
+        columnLength: 999, // 批量修改-文本型长度校验
         selectOptions: [], // 批量修改-为select时选项数据
         assetType: '', // 查询资产卡片 Card 或资产名 Name 的标志
         dataSourceKeys: [], // 存放 Table dataSource 中 key 值
@@ -260,7 +271,7 @@
 
     methods: {
       // 批处理Table Cell数据
-      handleSameTableCell ({columnType, columnName, sameCellValue, options, columnDesc, type}) {
+      handleSameTableCell ({columnType, columnName, sameCellValue, options, columnDesc, type, columnLength}) {
         // 点击资产编码或资产卡片编码不执行操作
         if (columnName === 'cardCode' || columnName === 'assetCode') {
           return false
@@ -282,17 +293,17 @@
           })
           return this.form.setFieldsValue(obj)
         }
-        Object.assign(this, { columnType, dataIndex: columnName, isShowModal: true, selectOptions: options, columnName: columnDesc })
+        Object.assign(this, { columnLength, columnType, dataIndex: columnName, isShowModal: true, selectOptions: options, columnName: columnDesc })
       },
 
       // 处理Modal关闭/保存
       handleModalAction (flag) {
         if (flag) {
-          const { columnType, dataIndex, sameCellValue } = this
-          this.handleSameTableCell({ columnType, columnName: dataIndex, sameCellValue, type: 'submit' })
+          const { columnType, dataIndex, sameCellValue, columnLength } = this
+          this.handleSameTableCell({ columnLength, columnType, columnName: dataIndex, sameCellValue, type: 'submit' })
         }
         Object.assign(this, {
-          columnType: '', dataIndex: '', isShowModal: false, sameCellValue: undefined, columnName: '', selectOptions: []
+          columnType: '', dataIndex: '', isShowModal: false, sameCellValue: undefined, columnName: '', selectOptions: [], columnLength: 999
         })
       },
 
@@ -523,6 +534,16 @@
             })
           }
           this.form.setFieldsValue(obj)
+        }
+      },
+
+      // 当字段类型为文本时校验长度
+      validateValLength (e) {
+        const { columnLength } = this
+        let val = e.target.value
+        if (columnLength && val && val.length > Number(columnLength)) {
+          this.sameCellValue = val.slice(0, columnLength)
+          return this.$message.warn(`最多${columnLength}个字符`)
         }
       }
     },

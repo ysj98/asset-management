@@ -630,7 +630,7 @@ export const reportManage = {
   // [呈报任务]填报模板导出
   detailTempExport: '/ams/reportTask/detailTempExport',
   // [呈报任务]审核任务
-  auditTask: '/ams/reportTask/auditTask',
+  auditTask: '/ams/reportTask/saveAuditTask',
   // 呈报记录
   // 呈报记录查询(分页)
   queryReportRecordPageList: '/ams/reportdata/queryReportRecordPageList',
