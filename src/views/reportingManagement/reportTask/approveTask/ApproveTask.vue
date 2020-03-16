@@ -10,22 +10,25 @@
         <a-textarea placeholder="请输入审批意见" v-model="sp" :rows="4" style="resize: none"/>
       </div>
     </div>
-    <div style="border-top: 1px solid #d9d9d9; text-align: center; padding: 20px; margin-top: 15px">
-      <SG-Button type="primary" @click="handleBtnAction(true)" style="margin-right: 20px">审批通过</SG-Button>
-      <SG-Button @click="handleBtnAction(false)"><span style="color: #e4393c">驳回</span></SG-Button>
-    </div>
+    <!--底部审批操作按钮组-->
+    <form-footer location="fixed">
+      <SG-Button type="primary" @click="handleBtnAction(true)" :loading="btnLoading" style="margin-right: 20px">审批通过</SG-Button>
+      <SG-Button @click="handleBtnAction(false)" :loading="btnLoading"><span style="color: #e4393c">驳回</span></SG-Button>
+    </form-footer>
   </div>
 </template>
 
 <script>
+  import FormFooter from '@/components/FormFooter'
   import TaskDetail from '../components/TaskDetail'
   export default {
     name: 'ApproveTask',
-    components: { TaskDetail },
-    props: ['taskId'],
+    components: { TaskDetail, FormFooter },
     data () {
       return {
-        sp: '' // 审批意见
+        sp: '', // 审批意见,
+        taskId: '', // 任务Id
+        btnLoading: false // 按钮loading
       }
     },
 
@@ -33,18 +36,21 @@
       // 处理驳回、通过
       handleBtnAction (bool) {
         let form = {
-          auditResult: 'Y',
-          reportTaskId: this.taskId
+          reportTaskId: this.taskId,
+          auditResult: bool ? 'Y' : 'N'
         }
-        const { sp } = this
-        if (!bool && sp) {
-          form.sp = sp
-          form.auditResult='N'
-        } else if (!bool && !sp) {
-          return this.$message.warn('请输入审批意见')
-        }
+        // 二期开发
+        // const { sp } = this
+        // if (!bool && sp) {
+        //   form.sp = sp
+        //   form.auditResult='N'
+        // } else if (!bool && !sp) {
+        //   return this.$message.warn('请输入审批意见')
+        // }
+        this.btnLoading = true
         this.$api.reportManage.auditTask(form).then(r => {
-          let res = r.data
+          this.btnLoading = false
+            let res = r.data
           if (res && String(res.code) === '0') {
             this.$message.success(`${bool ? '审批' : '驳回'}成功`)
             // 跳回列表路由
@@ -52,9 +58,15 @@
           }
           throw res.message
         }).catch(err => {
+          this.btnLoading = false
           this.$message.error(err || `${bool ? '审批' : '驳回'}失败`)
         })
       }
+    },
+    
+    created () {
+      const { query: { taskId } } = this.$route
+      this.taskId = taskId
     },
 
     watch: {

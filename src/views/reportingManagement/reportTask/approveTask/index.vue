@@ -3,7 +3,7 @@
   <div class="approve_task">
     <!--搜索条件-->
     <a-row :gutter="8" style="margin: 10px 0 10px 26px">
-      <a-col :span="5">
+      <a-col :span="4">
         <!--二期开发-->
         <!--<SG-Button icon="export" :loading="exportBtnLoading" @click="handleExport">导出</SG-Button>-->
       </a-col>
@@ -13,10 +13,10 @@
           @change="getExecuteDate"
           class="date_picker_style"
           format="YYYY-MM-DD"
-          :defaultValue="[moment().add(-60, 'days'), moment()]"
+          :defaultValue="defaultDate"
         />
       </a-col>
-      <a-col :span="3">
+      <a-col :span="4">
         <a-select
           v-bind="properties"
           v-model="reportBillId"
@@ -61,13 +61,13 @@
           :to="{path: '/reportTask/taskDetail', query: {taskId: record.reportTaskId}}"
         >{{text}}</router-link>
       </span>
-      <!--二期开发-->
-      <!--<span slot="action" slot-scope="text, record">-->
-        <!--<router-link-->
-          <!--class="action_text"-->
-          <!--:to="{path: '/reportTask/approveTask', query: {taskId: record.reportTaskId}}"-->
-        <!--&gt;审核</router-link>-->
-      <!--</span>-->
+      <span slot="action" slot-scope="text, record">
+        <router-link
+          class="action_text"
+          v-if="String(record.taskStatus) === '2'"
+          :to="{path: '/reportTask/approveTask', query: {taskId: record.reportTaskId}}"
+        >审核</router-link>
+      </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, type: 'page' })"/>
@@ -77,6 +77,7 @@
 <script>
   import moment from 'moment'
   import NoDataTip from 'src/components/noDataTips'
+  import {getNowMonthDate, getNMonthsAgoFirst} from 'utils/formatTime'
   export default {
     name: 'index',
     props: ['refreshKey', 'billList'],
@@ -89,6 +90,7 @@
         taskType: ['all'], // 查询条件-任务类型
         taskStatus: ['all'], // 查询条件-任务状态
         reportBillId: ['all'], // 查询条件-表单id
+        defaultDate: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())], // 默认查询日期
         typeOptions: [
           { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '2' }, { title: '临时任务', key: '1' }
         ], // 查询条件-任务类型选项
@@ -110,8 +112,8 @@
             { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
             { title: '计划执行日期', dataIndex: 'beginDate', scopedSlots: { customRender: 'executeDate' } }, { title: '填报人', dataIndex: 'reportByName' },
             { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
-            { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 100 }
-            // { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 80 }
+            { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 100 },
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 80 }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -122,8 +124,8 @@
     mounted () {
       // 初始化计划开始及结束日期值, 默认最近60天数据
       Object.assign(this, {
-        beginDate: moment().add(-60, 'days').format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        beginDate: moment(getNMonthsAgoFirst(2)).format('YYYY-MM-DD'),
+        endDate: moment(getNowMonthDate()).format('YYYY-MM-DD')
       })
       this.queryTableData({})
     },

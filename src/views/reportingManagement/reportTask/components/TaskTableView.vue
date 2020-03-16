@@ -21,7 +21,7 @@
         <!--</a-col>-->
       </a-row>
       <!--列表部分-->
-      <a-table v-bind="tableObj" class="custom-table td-pd10"/>
+      <a-table v-if="tableObj.columns.length" v-bind="tableObj" class="custom-table td-pd10"/>
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
       <SG-FooterPagination
         v-bind="paginationObj"
@@ -70,7 +70,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             let optionsObj = {}
-            this.tableObj.columns = (res.data || []).map((m, i) => {
+            this.tableObj.columns = (res.data || []).map(m => {
               const { columnDesc, columnName, optVal, columnType } = m
               if (columnType === 4) {
                 optionsObj[columnName] = (optVal || '').split(',').map(item => {
@@ -79,7 +79,8 @@
                 })
               }
               let item = { title: columnDesc, dataIndex: columnName }
-              return i === 0 ? { ...item, fixed: 'left', width: 180 } : item
+              // return i === 0 ? { ...item, fixed: 'left', width: 200 } : { ...item, width: 200 }
+              return { ...item, width: 200 }
             })
             this.optionsObj = optionsObj
             return this.queryTableData({})

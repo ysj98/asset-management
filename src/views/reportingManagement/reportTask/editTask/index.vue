@@ -3,7 +3,7 @@
   <div class="edit_task">
     <!--搜索条件-->
     <a-row :gutter="8" style="margin: 10px 0 10px 26px">
-      <a-col :span="5">
+      <a-col :span="4">
         <SG-Button
           icon="plus"
           type="primary"
@@ -20,10 +20,10 @@
           @change="getExecuteDate"
           class="date_picker_style"
           format="YYYY-MM-DD"
-          :defaultValue="[moment().add(-60, 'days'), moment()]"
+          :defaultValue="defaultDate"
         />
       </a-col>
-      <a-col :span="3">
+      <a-col :span="4">
         <a-select
           v-bind="properties"
           v-model="reportBillId"
@@ -93,6 +93,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import {getNowMonthDate, getNMonthsAgoFirst} from 'utils/formatTime'
   export default {
     name: 'index',
     props: ['refreshKey', 'billList'],
@@ -106,6 +107,7 @@
         taskType: ['all'], // 查询条件-任务类型
         taskStatus: ['all'], // 查询条件-任务状态
         reportBillId: ['all'], // 查询条件-表单id
+        defaultDate: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())], // 默认查询日期
         typeOptions: [
           { title: '全部任务类型', key: 'all' }, { title: '固定任务', key: '2' }, { title: '临时任务', key: '1' }
         ], // 查询条件-任务类型选项
@@ -146,8 +148,8 @@
     mounted () {
       // 初始化计划开始及结束日期值, 默认最近60天数据
       Object.assign(this, {
-        beginDate: moment().add(-60, 'days').format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        beginDate: moment(getNMonthsAgoFirst(2)).format('YYYY-MM-DD'),
+        endDate: moment(getNowMonthDate()).format('YYYY-MM-DD')
       })
       this.queryTableData({})
     },
