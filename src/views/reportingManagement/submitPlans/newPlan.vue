@@ -12,6 +12,7 @@
               <a-form-item v-bind="formItemLayout" label="计划名称：">
                 <a-input placeholder="请输入计划名称"
                 :style="allWidth"
+                :maxLength="30"
                 v-decorator="['planName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入计划名称(不超过30字符)'}], initialValue: newCardData.planName}]"/>
               </a-form-item>
             </a-col>
@@ -19,6 +20,7 @@
               <a-form-item v-bind="formItemLayout" label="计划编号：">
                 <a-input placeholder="请输入计划编号"
                 :style="allWidth"
+                :maxLength="30"
                 v-decorator="['planCode', {rules: [{required: false, max: 30}], initialValue: newCardData.planCode}]"/>
               </a-form-item>
             </a-col>
@@ -150,7 +152,7 @@
 					</a-col>
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayout" label="任务执行期限">
-              <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
+              <a-input-number :max="99" :min="0" :precision="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
                 v-decorator="[ 'deadline',{ rules: [{ required: true, message: '请输入任务执行期限'}], initialValue: deadline}]"
               />
               <a-select showSearch placeholder="单位"
@@ -164,7 +166,7 @@
 					</a-col>
 					<a-col class="playground-col" :span="8">
 						<a-form-item v-bind="formItemLayouts" label="提前生成任务时间">
-              <a-input-number :max="99" :min="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
+              <a-input-number :max="99" :min="0" :precision="0" :style="{width: '95px', marginRight: '10px'}" placeholder="数值"
                 v-decorator="[ 'preNum',{ rules: [{ required: true, message: '请输入提前生成任务时间'}], initialValue: preNum}]"
               />
               <a-select showSearch placeholder="单位"
@@ -243,7 +245,7 @@
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
 		<!-- 选资产 -->
-		<associateAssetModal ref="associateAssetModal" selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+		<associateAssetModal ref="associateAssetModal" :selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
   </div>
 </template>
 
@@ -525,14 +527,14 @@ export default {
       })
     },
 		// 频次变化
-    exePreSelectChange (e) {
+    exePreSelectChange (e, str) {
 			if (e === '1' || e === '2') {
 				this.showBeginMonth = false
 			} else {
 				this.showBeginMonth = true
 			}
-			this.showBeginDay = e === '3' ? false : true
-      switch (e){
+      this.showBeginDay = e === '3' ? false : true
+      switch (e) {
         case '1':
 					this.beginMonthOpt = []
           break;
@@ -559,6 +561,20 @@ export default {
           this.beginDayOpt = beginDayOpt
           break;     
       }
+      this.$nextTick(() => {
+        if (str !== 'edit') {
+          if (this.showBeginMonth && this.showBeginDay) {
+              this.form.setFieldsValue({
+              beginMonth: '1'
+            })
+          }
+          if (this.showBeginMonth) {
+              this.form.setFieldsValue({
+              beginDay: '1'
+            })
+          }
+        }
+      })
     },
 		handleSubmit (e) {
       e.preventDefault()
@@ -668,7 +684,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.formData = data.reportBillColumnList   // 编辑给回来的表单
-          this.exePreSelectChange(data.exePre)
+          this.exePreSelectChange(data.exePre, 'edit')
           this.reportBillId = Number(data.reportBillId)
           this.backupsReportBillId = utils.deepClone(this.reportBillId)
           this.queryReportBillColumn(this.reportBillId, 'edit')
@@ -836,7 +852,7 @@ export default {
             exePre: values.exePre,                                   // 实施频次
             effDate: values.defaultValue[0].format('YYYY-MM-DD'),    // 计划生效时间
             expDate: values.defaultValue[1].format('YYYY-MM-DD'),    // 计划失效时间
-            beginDay: values.beginDay,                               // 任务开始天数
+            beginDay: values.beginDay,                               // 任务开始天数或星期几
             beginMonth: values.beginMonth,                           // 任务开始月份
             preUnit: values.preUnit,                                 // 提前生成单位1-天 2-时
             preNum: values.preNum,                                   // 提前生成单位数量

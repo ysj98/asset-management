@@ -158,7 +158,7 @@ zcgl_submit_plans_new     呈报计划-新建
 zcgl_submit_plans_edit    呈报计划-编辑
 zcgl_submit_plans_delete  呈报计划-删除
 zcgl_submit_plans_audit   呈报计划-审核
-zcgl_submit_reverse_audit 呈报计划-反审核
+zcgl_submit_plans_reverse_audit 呈报计划-反审核
 附属配套管理
 asset_create_subsi      新建附属配套
 asset_edit_subsi        编辑附属配套
