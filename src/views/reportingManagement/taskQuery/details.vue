@@ -24,13 +24,13 @@
 						>
 						</a-select>
 					</a-col> -->
-          <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.beginDate ? `${particularsData.beginDate} - ${particularsData.endDate}` : '--'}}</a-col>
+          <a-col class="playground-col" :span="8">计划执行日期：{{particularsData.beginDate || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属计划：{{particularsData.reportPlanName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">填报人：{{particularsData.reportByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">审核人：{{particularsData.auditByName || '--'}}</a-col>
 					<a-col class="playground-col" :span="8">任务状态：{{particularsData.taskStatusName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">发布人：{{particularsData.createByName || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">发布人：{{particularsData.createTime || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">发布人：{{particularsData.createBy || '--'}}</a-col>
+          <!-- <a-col class="playground-col" :span="8">发布人：{{particularsData.createTime || '--'}}</a-col> -->
 					<!-- <a-col class="playground-col" :span="8">发布时间：{{particularsData.realBeginDate ? `${particularsData.realBeginDate} - ${particularsData.realEndDate}` : '--'}}</a-col> -->
           <a-col class="playground-col" :span="8">任务类型：{{particularsData.taskTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>

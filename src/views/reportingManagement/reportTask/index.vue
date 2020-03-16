@@ -40,6 +40,10 @@
       })
     },
 
+    created () {
+      this.queryBillList()
+    },
+
     methods: {
       // 查询表单列表
       queryBillList () {
