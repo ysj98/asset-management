@@ -187,16 +187,19 @@
        planeFigurePath: [],
        houseInfo: {},
        houseId: '',
+       organId: ''
      }
    },
    mounted () {
      this.houseId = this.$route.query.houseId || ''
+     this.organId = this.$route.query.organId || ''
      this.queryHouseDetailById()
    },
    methods: {
      queryHouseDetailById () {
       let data = {
-        houseId: this.houseId
+        houseId: this.houseId,
+        organId: this.organId || ''
       }
       this.$api.building.queryHouseDetailById(data).then(res => {
         if (res.data.code === '0') {
