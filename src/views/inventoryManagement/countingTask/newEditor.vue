@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime : 2020-01-13 10:17:15
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-17 11:38:12
+ * @LastEditors: Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
  -->
@@ -164,9 +164,9 @@
       <!-- 选人 -->
       <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
-    <div>
+    <div v-if="IsShow">
       <!-- 选资产 -->
-      <associateAssetModal ref="associateAssetModal" organId="" queryType="1" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+      <associateAssetModal ref="associateAssetModal" queryType="1" :judgeInstitutions="false" @assetChange="assetChange" @handleCancelFn="handleCancelFn"></associateAssetModal>
     </div>
   </div>
 </template>
@@ -222,6 +222,7 @@ export default {
   props: {},
   data () {
     return {
+      IsShow: false,
       organId: '',
       taskId: '',
       cancelData: [],          // 取消还原数据
@@ -450,29 +451,32 @@ export default {
       // 资产明细
       if (str === 'particulars') {
         // console.log(record, index, '拿到的数据')
+        this.IsShow = true
         this.assetIdIndex = index
-        this.$refs.associateAssetModal.show = true
-        // 资产为空且盘点单不为空时调取接口数据 反之 直接拿数组的数据
-        if (record.checkId) {
-            let obj = {
-              checkId: record.checkId
-            }
-            this.$api.inventoryManagementApi.queryAssetByChcekId(obj).then(res => {
-              if (Number(res.data.code) === 0) {
-                let data = res.data.data || []
-                let arr = []
-                data.forEach((item, index) => {
-                  key: index
-                  arr.push(item.assetId)
-                })
-                this.$refs.associateAssetModal.redactCheckedDataFn(arr, '', data)
-              } else {
-                this.$message.error(res.data.message)
+        this.$nextTick(() => {
+          this.$refs.associateAssetModal.show = true
+          // 资产为空且盘点单不为空时调取接口数据 反之 直接拿数组的数据
+          if (record.checkId) {
+              let obj = {
+                checkId: record.checkId
               }
-            })
-        } else {
-          this.$refs.associateAssetModal.redactCheckedDataFn(record.assetId, '', record.rowsData)
-        }
+              this.$api.inventoryManagementApi.queryAssetByChcekId(obj).then(res => {
+                if (Number(res.data.code) === 0) {
+                  let data = res.data.data || []
+                  let arr = []
+                  data.forEach((item, index) => {
+                    key: index
+                    arr.push(item.assetId)
+                  })
+                  this.$refs.associateAssetModal.redactCheckedDataFn(arr, '', data)
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+          } else {
+            this.$refs.associateAssetModal.redactCheckedDataFn(record.assetId, '', record.rowsData)
+          }
+        })
       }
     },
     deleteFn (record, index) {
@@ -670,6 +674,10 @@ export default {
       this.table.dataSource[this.assetIdIndex].rowsData = rowsData  // 选的总的
       this.table.dataSource[this.assetIdIndex].checkCount = checkedData.length
       this.$refs.associateAssetModal.show = false
+      this.IsShow = false
+    },
+    handleCancelFn () {
+      this.IsShow = false
     },
     // 计算资产总数
     inventoryAssetCountFn () {
