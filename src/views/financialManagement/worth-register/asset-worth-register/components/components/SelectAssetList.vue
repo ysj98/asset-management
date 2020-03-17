@@ -130,11 +130,11 @@
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
-        const {objectType, assetNameCode, assetType, projectObj: { projectId }, queryType} = this
+        const {objectType, assetNameCode, assetType, projectObj: { projectId }, queryType, organId} = this
         if (!projectId) { return this.$message.warn('资产项目Id不存在')}
         this.loading = true
         let form = {
-          queryType, assetNameCode, projectId,
+          queryType, assetNameCode, projectId, organId,
           // projectId: projectId === '-1' ? '' : projectId, 改前
           assetType: assetType === '-1' ? '' : assetType,
           objectType: objectType === '-1' ? '' : objectType,
