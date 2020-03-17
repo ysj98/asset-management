@@ -417,7 +417,8 @@ export default {
     },
     queryHouseDetailById () {
       let data = {
-        houseId: this.houseId
+        houseId: this.houseId,
+        organId: this.organId || ''
       }
       this.$api.building.queryHouseDetailById(data).then(res => {
         if (res.data.code === '0') {

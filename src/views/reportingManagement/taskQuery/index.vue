@@ -224,7 +224,8 @@ export default {
         searchText: '',                                      // 编码
         taskStatusSplice: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         // taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
-        taskType: this.queryCondition.taskType
+        taskType: this.queryCondition.taskType,
+        taskName: this.queryCondition.taskName
       }
       this.$api.reportManage.queryTaskStatistics(data).then(res => {
         if (res.data.code === "0") {
@@ -372,7 +373,8 @@ export default {
         searchText: '',                                      // 编码
         taskStatusSplice: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         // taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : ''
-        taskType: this.queryCondition.taskType
+        taskType: this.queryCondition.taskType,
+        taskName: this.queryCondition.taskName
       }
       this.$api.reportManage.queryTaskPage(obj).then(res => {
         if (Number(res.data.code) === 0) {

@@ -288,6 +288,8 @@ export default {
                   ...item
                 };
               });
+            } else {
+              this.table.dataSource = []
             }
             this.table.totalCount = res.data.data.count || ""
           } else {

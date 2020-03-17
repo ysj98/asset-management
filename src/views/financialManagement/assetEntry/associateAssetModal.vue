@@ -9,6 +9,8 @@
     v-model="show"
     title="选择资产"
     class="associate-asset-modal"
+    :footer="null"
+    :maskClosable="false"
     @ok="submitAsset"
     @cancel="handleCancel"
   >
@@ -75,6 +77,11 @@
           </div>
         </a-tab-pane>
       </a-tabs>
+    </div>
+    <!-- 底部按钮 -->
+    <div class="footer">
+      <SG-Button class="footer-button" type="primary" @click="submitAsset">确认选择</SG-Button>
+      <SG-Button class="footer-button" type="cancel" @click="handleCancel">取消</SG-Button>
     </div>
   </SG-Modal>
 </template>
@@ -222,6 +229,7 @@
       // 关闭弹窗
       handleCancel() {
         this.show = false
+        this.$emit('handleCancelFn')
       },
       // 删除选中的资产
       deleteRecord (record) {
@@ -415,11 +423,11 @@
       // 外面给回来的数据
       redactCheckedDataFn (redactChecked, projectId, overallData) {
         // 有组织机构树的时候每次进来都调第一页！为了适应表格选择
-        if (!this.judgeInstitutions) {
-          this.paginator.pageNo = 1
-          this.query()
-          this.defaultActiveKey = '1'
-        }
+        // if (!this.judgeInstitutions) {
+        //   this.paginator.pageNo = 1
+        //   // this.query()
+        //   this.defaultActiveKey = '1'
+        // }
         // overallData 给回来的数据合并在去重
         if (overallData && overallData.length !== 0) {
           let arrData = [...this.overallData, ...overallData]
@@ -431,16 +439,20 @@
           // 存着全部数据
           this.overallData = arrData
         }
-        if (this.projectId !== projectId) {
-          this.projectId = projectId
-          this.query()
+        if (this.judgeInstitutions) {
+          if (this.projectId !== projectId) {
+            this.projectId = projectId
+            this.query()
+          }
         }
         this.$nextTick(() => {
           this.selectedRowKeys = redactChecked
         })
-        if (this.firstCall) {
-          this.query()
-          this.firstCall = false
+        if (this.judgeInstitutions) {
+          if (this.firstCall) {
+            this.query()
+            this.firstCall = false
+          }
         }
       },
     },
@@ -460,6 +472,21 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+  .footer {
+    margin-top: 40px;
+    text-align: center;
+    .footer-button {
+      width: 90px;
+      height: 32px;
+      font-size: 12px;
+    }
+    .footer-button + .footer-button {
+      margin-left: 12px;
+    }
+  }
+</style>
 
 <style lang="less">
   .associate-asset-modal {
