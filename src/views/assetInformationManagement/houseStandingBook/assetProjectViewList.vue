@@ -284,18 +284,19 @@ export default {
   .asset-project-header {
     border-top: 1px solid #EFF2F7;
     .asset-project-item {
-      height: 80px;
+      /*height: 80px;*/
       padding: 18px 0;
       text-align: center;
       color: white;
       border-right: 1px solid #EFF2F7;
       .asset-project-item-title {
-        font-size: 12px;
-        margin-bottom: 3px;
+        font-size: 14px;
+        margin-bottom: 10px;
       }
       .asset-project-item-number {
-        font-size: 16px;
+        font-size: 20px;
         font-weight:bold;
+        color: #324057 !important;
       }
     }
     .ant-col-4 {
