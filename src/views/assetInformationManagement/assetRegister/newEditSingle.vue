@@ -861,11 +861,11 @@ export default {
           align-items:center;
           justify-content:center;
           div:nth-of-type(1) {
-            font-size: 12px;
+            font-size: 14px;
           }
           div:nth-of-type(2) {
             padding-top: 4px;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
           }
         }
