@@ -646,3 +646,56 @@ export const reportManage = {
   queryAssetOperationPageList: '/ams/reportdata/queryAssetOperationPageList'
 }
 
+// v1.0.4需求，报表管理，其中也涉及多模块导出、导入
+export const tableManage = {
+  // 多模块导出
+  // 价值登记列表导出
+  exportRegisterExcel: '/ams/assetValueRegister/exportRegisterExcel',
+  // 价值登记记录导出
+  exportRecordExcel: '/ams/assetValueRegister/exportRecordExcel',
+  // 处置登记列表导出
+  exportDisposeExcel: '/ams/disposeRegister/exportDisposeExcel',
+  // 异常管理导出
+  exportExceptionExcel: '/ams/assetCheckResult/exportExceptionExcel',
+  // 权属人列表导出
+  exportObligeeExcel: '/ams/ownerShipUser/exportObligeeExcel',
+  // 盘点报告列表导出
+  exportReportExcel: '/ams/assetCheckReport/exportReportExcel',
+  // 资产价值一览表导出
+  exportValueExcel: '/ams/assetValueRegister/exportValueExcel',
+  // 资产入账列表导出
+  exportCardExcel: '/ams/assetCard/exportCardExcel',
+  // 资产处置一览表导出
+  exportDetailExcel: '/ams/disposeRegister/exportDetailExcel',
+  // 资产项目数据查询
+  // 资产价值导出
+  exportAssetValue: '/ams/statistics/exportAssetValue',
+  // 资产价值数据报表
+  getAssetValue: '/ams/statistics/getAssetValue',
+  // 资产价值查询统计
+  getAssetValueCount: '/ams/statistics/getValueCount',
+  // 资产项目数据报表
+  projectAsset: '/ams/statistics/projectAsset',
+  // 资产项目数据查询统计
+  getAssetCount: '/ams/statistics/getAssetCount',
+  // 资产项目查询导出
+  exportAssetProject: '/ams/statistics/exportAsset',
+  // 房屋资产统计分析-查询列表
+  queryAssetHouseList: '/ams/statistics/asset-house/pageList',
+// 房屋资产统计分析-查询列表（导出）
+  exportAssetHouseList: '/ams/statistics/asset-house/pageList/export',
+// 房屋资产统计分析-汇总分析
+  queryAssetHouseTotal: '/ams/statistics/asset-house/total',
+// 有证房屋资产统计表
+  queryWarrantHouse: '/ams/statistics/asset/house/warrant',
+// 有证房屋资产统计表（导出）
+  exportWarrantHouse: '/ams/statistics/asset/house/warrant/export',
+// 权属证件一览表
+  queryWarrantList: '/ams/statistics/ownership/warrant',
+// 权属证件一览表（导出）
+  exportOwnershipCardList: '/ams/statistics/ownership/warrant/export',
+// 权证数量统计表
+  queryWarrantStatistics: '/ams/statistics/warrant/number',
+// 权证数量统计表（导出）
+  exportWarrantStatistics: '/ams/statistics/warrant/number/export',
+}

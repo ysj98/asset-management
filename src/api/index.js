@@ -23,6 +23,7 @@ import * as inventoryManagementApi from './inventoryManagementApi'
 import * as disposalManagement from './disposalManagement'
 import * as subsidiary from './subsidiary'
 import * as reportManage from './reportManage'
+import * as tableManage from './tableManage'
 const API = {
   auth,
   global,
@@ -34,7 +35,8 @@ const API = {
   inventoryManagementApi,
   disposalManagement,
   subsidiary,
-  reportManage
+  reportManage,
+  tableManage
 }
 export default {
   install (Vue) {

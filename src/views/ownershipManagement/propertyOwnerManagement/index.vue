@@ -5,6 +5,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px">导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newPropertyOwner" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_NEW">新建权属人</SG-Button>
       </div>
       <div slot="form">
@@ -44,6 +45,7 @@ import topOrganByUser from '@/views/common/topOrganByUser'
 import handlePropertyOwner from './handlePropertyOwner'
 import noDataTips from '@/components/noDataTips'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
 const columns = [
   {
@@ -119,7 +121,8 @@ export default {
       },
       modalType: 'new', // 弹窗类型
       ownerId: '', // 权属人id
-      showNoDataTips: false
+      showNoDataTips: false,
+      exportBtnLoading: false // 导出按钮loading
     }
   },
   methods: {
@@ -178,13 +181,14 @@ export default {
       this.queryList()
     },
     // 查询列表
-    queryList () {
+    queryList (type) {
       let form = {
         organId: this.organId,
         obligeeName: this.ownerName,
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
+      if (type === 'export') { return form }
       this.$api.assets.list(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
@@ -206,6 +210,15 @@ export default {
         } else {
           this.$message.error(res.data.message)
         }
+      })
+    },
+
+    // 导出
+    handleExport () {
+      this.exportBtnLoading = true
+      let data = this.queryList('export')
+      exportDataAsExcel(data, this.$api.tableManage.exportObligeeExcel, '权属人管理列表.xlsx', this).then(() => {
+        this.exportBtnLoading = false
       })
     }
   }

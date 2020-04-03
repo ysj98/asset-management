@@ -5,6 +5,17 @@
  */
 export default [
   {
+    title: '报表管理',
+    children: [
+      { title: '房屋资产统计分析', path: '/tableManagement/houseAssetAnalysis' },
+      { title: '资产项目数据查询', path: '/tableManagement/projectData' },
+      { title: '有证房屋资产统计表', path: '/tableManagement/houseAssetStatistics' },
+      { title: '权证数量统计表', path: '/tableManagement/warrantAmountStatistics' },
+      { title: '权属证件一览表', path: '/tableManagement/ownershipCardList' },
+      { title: '资产价值统计表', path: '/tableManagement/assetWorthStatistics' }
+    ]
+  },
+  {
     title: '资产信息管理',
     children: [
       {

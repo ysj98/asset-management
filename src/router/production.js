@@ -558,6 +558,40 @@ let proRouter = [
     path: '/reportingList/details',
     name: '详情',
     component: () => import('@/views/reportingManagement/reportingRecordList/details.vue')
-  },
+  }, {
+    path: '/tableManagement/houseAssetAnalysis',
+    name: '房屋资产统计分析',
+    component: () => import('@/views/tableManagement/houseAssetAnalysis'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/tableManagement/projectData',
+    name: '资产项目数据查询',
+    component: () => import('@/views/tableManagement/projectDataSearch'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/tableManagement/projectData/assetProjectDetail',
+    name: '资产项目详情',
+    component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
+  }, {
+    path: '/tableManagement/houseAssetStatistics',
+    name: '有证房屋资产统计表',
+    component: () => import('@/views/tableManagement/houseAssetStatistics'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/tableManagement/warrantAmountStatistics',
+    name: '权证数量统计表',
+    component: () => import('@/views/tableManagement/warrantAmountStatistics'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/tableManagement/ownershipCardList',
+    name: '权属证件一览表',
+    component: () => import('@/views/tableManagement/ownershipCardList'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/tableManagement/assetWorthStatistics',
+    name: '资产价值统计表',
+    component: () => import('@/views/tableManagement/assetWorthStatistics'),
+    meta: { keepAlive: true }
+  }
 ]
 export default proRouter

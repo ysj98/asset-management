@@ -5,6 +5,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
+        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-right: 8px" @click="handleExport">导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newInventoryReport" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_NEW">新建盘点报告</SG-Button>
       </div>
       <div slot="form">
@@ -58,6 +59,7 @@ import {getCurrentDate, getThreeMonthsAgoDate} from 'utils/formatTime'
 import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
 const columns = [
   {
@@ -137,6 +139,7 @@ export default {
   data () {
     return {
       ASSET_MANAGEMENT,
+      exportBtnLoading: false, // 导出按钮loading
       allStyle: 'width: 170px; margin-right: 10px;',
       toggle: false,
       organName: '',
@@ -284,7 +287,7 @@ export default {
       this.paginator.pageNo = 1
       this.queryList()
     },
-    queryList () {
+    queryList (type) {
       let form = {
         organId: this.organId,
         startDate: this.queryCondition.beginDate,
@@ -294,6 +297,7 @@ export default {
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
+      if (type === 'export') { return form }
       this.$api.inventoryManagementApi.checkReportList(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
@@ -317,6 +321,15 @@ export default {
         }
       })
     },
+
+    // 导出
+    handleExport () {
+      this.exportBtnLoading = true
+      let data = this.queryList('export')
+      exportDataAsExcel(data, this.$api.tableManage.exportReportExcel, '盘点报告列表.xlsx', this).then(() => {
+        this.exportBtnLoading = false
+      })
+    }
   }
 }
 </script>

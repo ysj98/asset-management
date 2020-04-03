@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <!--<SG-Button icon="export" @click="handleExport">导出</SG-Button>-->
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <tree-select @changeTree="changeTree" style="width: 180px"/>
@@ -87,13 +87,14 @@
   import TreeSelect from 'src/views/common/treeSelect'
   import DateMethodOrgan from '../components/DateMethodOrgan'
   import SearchContainer from 'src/views/common/SearchContainer'
-  import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList} from 'src/views/common/commonQueryApi'
+  import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
   export default {
     name: 'WorthRegisterRecord',
     components: { SearchContainer, TreeSelect, DateMethodOrgan, NoDataTip },
     data () {
       return {
         fold: true, // 查询条件折叠按钮
+        exportBtnLoading: false, // 导出按钮
         assetNameCode: '', // 查询条件-登记名称
         categoryOptions: [], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
@@ -185,21 +186,21 @@
 
       // 导出
       handleExport () {
-        return this.$message.info('暂不支持')
-        // if (!this.tableObj.dataSource.length) {
-        //   return this.$message.info('无可导出数据')
-        // }
+        this.exportBtnLoading = true
+        let data = this.queryTableData({type: 'export'})
+        exportDataAsExcel(data, this.$api.tableManage.exportRecordExcel, '价值登记记录列表.xlsx', this).then(() => {
+          this.exportBtnLoading = false
+        })
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10}) {
+      queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           assetNameCode, approvalStatus, assetCategoryId,
           organProjectType, organProjectType: { assetType },
           dateMethodOrgan, assessmentMethod, dateMethodOrgan: { assessmentOrgan}
         } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
-        this.tableObj.loading = true
         let form = {
           ...organProjectType, ...dateMethodOrgan,
           pageSize: pageLength, pageNum: pageNo, assetNameCode,
@@ -209,6 +210,8 @@
           assessmentOrgan: (!assessmentOrgan || assessmentOrgan.includes('-1')) ? undefined : assessmentOrgan.join(','),
           assessmentMethod: (!assessmentMethod || assessmentMethod.includes('-1')) ? undefined : assessmentMethod.join(',')
         }
+        if (type === 'export') { return form }
+        this.tableObj.loading = true
         this.$api.worthRegister.queryRecordList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
