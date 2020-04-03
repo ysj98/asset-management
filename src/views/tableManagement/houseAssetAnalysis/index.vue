@@ -1,4 +1,4 @@
-<!--报表管理-房屋资产统计分析入口页面-->
+<!--报表管理-资产资产统计分析入口页面-->
 <template>
   <div class="asset_analysis">
     <!--查询条件部分-->
@@ -11,56 +11,96 @@
           mode="multiple"
           :maxTagCount="1"
           style="width: 100%"
-          :options="assetTypeOptions"
           v-model="assetType"
+          :options="assetTypeOptions"
           placeholder="请选择资产类型"
+          @change="selectAssetType"
         />
-      </a-col>
-      <a-col :span="9">
-        <province-city-district/>
       </a-col>
       <a-col :span="3">
-        <a-select
-          mode="multiple"
-          :maxTagCount="1"
-          style="width: 100%"
-          :options="assetTypeOptions"
-          v-model="assetType"
-          placeholder="请选择资产类型"
-        />
+        <a-select style="width: 100%" :options="useTypeOptions" v-model="useType" placeholder="请选择资产用途"/>
+      </a-col>
+      <a-col :span="9">
+        <province-city-district v-model="provinceCityDistrict"/>
       </a-col>
       <a-col :span="2">
-        <SG-Button type="primary">查询</SG-Button>
+        <SG-Button type="primary" @click="queryData">查询</SG-Button>
       </a-col>
     </a-row>
     <div style="padding: 0 45px 35px;">
       <!--汇总分析图表部分-->
-      <chart-part/>
+      <chart-part :queryInfo="queryInfo"/>
       <!--查询列表部分-->
-      <list-part/>
+      <list-part :queryInfo="queryInfo"/>
     </div>
   </div>
 </template>
 
 <script>
   import ProvinceCityDistrict from 'src/views/common/ProvinceCityDistrict'
+  import { queryPlatformDict } from 'src/views/common/commonQueryApi'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
-  import ListPart from './components/ListPart'
   import ChartPart from './components/ChartPart'
+  import ListPart from './components/ListPart'
   export default {
     name: 'index',
     components: { ListPart, ChartPart, OrganProject, ProvinceCityDistrict },
     data () {
       return {
-        organProjectValue: {}, // 查询条件-组织机构及项目值
+        queryInfo: {}, // 查询条件集合,
+        useType: '', // 查询条件-资产用途值
         assetType: ['-1'], // 查询条件-资产类型值
-        assetTypeOptions: [
-          { title: '全部资产状态', key: '-1' }
-        ], // 查询条件-资产类型选项
+        provinceCityDistrict: {}, // 查询条件-省市区
+        organProjectValue: {}, // 查询条件-组织机构及项目值
+        useTypeOptions: [{ title: '全部用途', key: '' }], // 查询条件-资产用途选项,
+        assetTypeOptions: [{ title: '全部资产类型', key: '-1' }], // 查询条件-资产类型选项
       }
     },
+    
+    created () {
+      this.queryUseType()
+      this.queryAssetType()
+    },
 
-    methods: {}
+    methods: {
+      // 选中资产类型
+      selectAssetType (value) {
+        if (value.length > 1 && value.includes('-1')) {
+          this.assetType = ['-1']
+        }
+      },
+
+      // 查询数据
+      queryData () {
+        const {assetType, organProjectValue, provinceCityDistrict: { province, city, district: region }, useType} = this
+        let str = assetType.includes('-1') ? '' : assetType.join(',')
+        this.queryInfo = { province, city, region, useType, assetType: str, ...organProjectValue }
+      },
+      
+      // 查询资产用途数据
+      queryUseType () {
+        this.$api.basics.queryNodesByRootCode({categoryCode: 60}).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            let list = (res.data || []).map(m => {
+              return { title: m.typeName, key: m.typeCode }
+            })
+            return this.useTypeOptions = [{ title: '全部资产用途', key: '' }].concat(list)
+          }
+          throw res.message
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '查询资产用途接口出错')
+        })
+      },
+
+      // 查询平台资产类型字典
+      queryAssetType () {
+        queryPlatformDict('asset_type').then(list =>
+          this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}, ...list]
+        )
+      },
+    }
   }
 </script>
 

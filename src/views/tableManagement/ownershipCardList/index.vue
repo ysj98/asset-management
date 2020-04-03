@@ -1,3 +1,4 @@
+<!--报表管理-权属证件一览表页面-->
 <template>
   <div class="ownership_card">
     <!--查询调件-->
@@ -9,45 +10,53 @@
         <tree-select @changeTree="changeTree" style="width: 100%"/>
       </a-col>
       <a-col :span="3">
-        <a-select v-model="kindOfRight" style="width: 100%" placeholder="请选择权属类型" :options="typeOptions"/>
+        <a-select v-model="queryObj.kindOfRight" style="width: 100%" placeholder="请选择权属类型" :options="typeOptions"/>
       </a-col>
       <a-col :span="3">
-        <a-select v-model="obligeeId" allowClear style="width: 100%" placeholder="请选择权属人" :options="ownerOptions"/>
+        <a-select v-model="queryObj.obligeeId" allowClear style="width: 100%" placeholder="请选择权属人" :options="ownerOptions"/>
       </a-col>
       <a-col :span="3">
-        <a-select v-model="status" style="width: 100%" placeholder="请选择权属状态" :options="statusOptions"/>
+        <a-select v-model="queryObj.status" style="width: 100%" placeholder="请选择权属状态" :options="statusOptions"/>
       </a-col>
       <a-col :span="3">
-        <a-input v-model.trim="warrantNbr" style="width: 100%" placeholder="请输入权证号"/>
+        <a-input v-model.trim="queryObj.warrantNbr" style="width: 100%" placeholder="请输入权证号"/>
       </a-col>
       <a-col :span="2">
         <SG-Button type="primary" @click="queryTableData">查询</SG-Button>
       </a-col>
     </a-row>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10"/>
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <template slot="warrantNbr" slot-scope="text, record">
+        <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record.warrantId)">{{text}}</span>
+      </template>
+    </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <!-- 复用权证管理查看详情页面 -->
+    <CardDetails ref="cardDetails"/>
   </div>
 </template>
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
   import TreeSelect from 'src/views/common/treeSelect'
+  import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
+  import CardDetails from 'src/views/ownershipManagement/authorityCardManagement/cardDetails'
   export default {
     name: 'index',
-    components: {  NoDataTip, TreeSelect },
+    components: { NoDataTip, TreeSelect, CardDetails },
     data () {
       return {
-        organId: '', // 组织机构ID
-        status: '', // 查询条件-权属状态
-        warrantNbr: '', // 查询条件-权证号
-        kindOfRight: '', // 查询条件-权属类型
-        obligeeId: undefined, // 查询条件-权属人
-        ownerOptions: [], // 查询条件-权属人选项
-        typeOptions: [
-          { title: '全部权属类型', key: '' }, { title: '产权证', key: '1' }, { title: '使用权证', key: '0' }
-        ], // 查询条件-权属类型选项
+        queryObj: {
+          organId: '', // 组织机构ID
+          status: '', // 查询条件-权属状态
+          warrantNbr: '', // 查询条件-权证号
+          kindOfRight: '', // 查询条件-权属类型
+          obligeeId: '', // 查询条件-权属人
+        },
+        ownerOptions: [{title: '全部权属人', key: ''}], // 查询条件-权属人选项
+        typeOptions: [{ title: '全部权属类型', key: '' }], // 查询条件-权属类型选项
         statusOptions: [
           { title: '全部权证状态', key: '' }, { title: '正常', key: '1' }, { title: '已注销', key: '0' }
         ], // 查询条件-权属状态选项
@@ -61,7 +70,7 @@
           dataSource: [],
           columns: [
             { title: '所属机构', dataIndex: 'organName' },
-            { title: '权证号', dataIndex: 'warrantNbr' },
+            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' } },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属人', dataIndex: 'obligeeName' },
             { title: '丘地号', dataIndex: 'lotNo' },
@@ -86,19 +95,36 @@
         },
       }
     },
+    
+    created () {
+      this.queryType()
+    },
 
     methods: {
+      // 查看权证详情
+      viewDetail (warrantId) {
+        this.$refs['cardDetails'].query(warrantId)
+      },
+
+      // 查询平台权属类型字典
+      queryType () {
+        queryPlatformDict('AMS_KIND_OF_RIGHT').then(list =>
+          this.typeOptions = [{title: '全部权属类型', key: ''}, ...list]
+        )
+      },
+
       // 根据organId查询权属人
       queryOwner (organId) {
-        this.ownerOptions = []
+        this.ownerOptions = [{name: '全部权属人', value: ''}]
         this.obligeeId = undefined
+        if (!organId) { return false }
         this.$api.assets.select({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             let list = (res.data || []).map(m => {
               return { title: m.obligeeName, key: m.obligeeId }
             })
-            return this.ownerOptions = [{name: '全部权属人', value: ''}, ...list]
+            return this.ownerOptions = [{title: '全部权属人', key: ''}, ...list]
           }
           throw res.message
         }).catch(err => {
@@ -108,26 +134,31 @@
 
       // 获取选择的组织机构
       changeTree (organId) {
-        this.organId = organId
+        this.queryObj.organId = organId
         this.queryOwner(organId)
       },
 
       // 导出
       handleExport () {
-        return false
+        const {queryObj, tableObj} = this
+        if (!tableObj.dataSource.length) { return this.$message.info('暂无导出数据') }
+        this.exportBtnLoading = true
+        exportDataAsExcel(queryObj, this.$api.tableManage.exportOwnershipCardList, '权属证件一览表.xls', this).then(() => {
+          this.exportBtnLoading = false
+        })
       },
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const {organProjectValue: {organId, projectId}} = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
+        const {queryObj} = this
+        if (!queryObj.organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.tableManage.projectAsset({organId, projectId}).then(r => {
+        this.$api.tableManage.queryWarrantList({pageSize: pageLength, pageNum: pageNo, ...queryObj}).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const {count, data} = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = data || []
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -157,8 +188,10 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table-thead th, .ant-table td {
-        white-space: nowrap;
+      & /deep/ .ant-table {
+        .ant-table-thead th, td {
+          white-space: nowrap;
+        }
       }
     }
   }

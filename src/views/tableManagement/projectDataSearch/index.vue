@@ -95,7 +95,7 @@
         projectStatusOptions: [
           {key: '-1', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
           {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
-          ], // 查询条件-项目状态选项
+        ], // 查询条件-项目状态选项
         takeOverOptions: [
           { title: '全部接管状态', key: '' }, { title: '已接管', key: '1' }, { title: '未接管', key: '0' }
         ], // 查询条件-接管状态选项
@@ -122,27 +122,27 @@
           dataSource: [],
           scroll: { x: true },
           columns: [
-            { key: 1, title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
-            { key: 2, title: '资产项目编码', dataIndex: 'projectCode' }, { key: 3, title: '接管机构', dataIndex: 'organName' },
-            { key: 4, title: '来源方式', dataIndex: 'sourceTypeName' }, { key: 5, title: '来源渠道', dataIndex: 'souceChannelType' },
-            { key: 18, title: '是否接管', dataIndex: 'takeOverName' }, { key: 19, title: '接管时间', dataIndex: 'takeOverDate' }, { key: 6, title: '建筑面积', dataIndex: 'area' },
-            { key: 7, title: '楼栋数', dataIndex: 'buildCount' },{ key: 41, title: '项目状态', dataIndex: 'approvalStatusName' },
-            { key: 8, title: '资产数量', dataIndex: 'assetCount' }, { key: 32, title: '运营(㎡)', dataIndex: 'transferOperationArea' },
-            { key: 34, title: '自用(㎡)', dataIndex: 'selfUserArea' }, { key: 33, title: '闲置(㎡)', dataIndex: 'idleArea' },
-            { key: 35, title: '占用(㎡)', dataIndex: 'occupationArea' }, { key: 36, title: '其它(㎡)', dataIndex: 'otherArea' },
-            { key: 38, title: '首次评估原值', dataIndex: 'assetValuation' }, { key: 37, title: '资产原值(元)', dataIndex: 'originalValue' },
-            { key: 39, title: '首次市场估值', dataIndex: 'firstMarketValue' }, { key: 40, title: '最新估值(元)', dataIndex: 'marketValue' },
-            { key: 9, title: '划转前房屋状态', dataIndex: 'houseStatusName' }, { key: 10, title: '上报基础情况表', dataIndex: 'reportBasicInfoDate' },
-            { key: 11, title: '房屋核实时间', dataIndex: 'houseVerificationDate' }, { key: 12, title: '上报房屋划转请示时间', dataIndex: 'reportHouseTransferReqDate' },
-            { key: 13, title: '上报核实报告时间', dataIndex: 'reportHouseVerificationDate' }, { key: 14, title: '划转批复下发时间', dataIndex: 'transferApprovalDate' },
-            { key: 15, title: '协议签署时间', dataIndex: 'agreementSignDate' }, { key: 16, title: '权属办理中存在问题', dataIndex: 'ownershipHandleProblems' },
-            { key: 17, title: '房屋划转历史遗留问题', dataIndex: 'houseTransferHisProblem' }, { key: 20, title: '房屋性质', dataIndex: 'houseTypeName' },
-            { key: 21, title: '划转时房屋权属', dataIndex: 'houseProperty' }, { key: 22, title: '划转时权利人', dataIndex: 'houseObligee' },
-            { key: 23, title: '权属变更时间', dataIndex: 'propertyChangeTime' }, { key: 24, title: '产权情况', dataIndex: 'ownershipStatusName' },
-            { key: 25, title: '能否过户', dataIndex: 'isTranster' }, { key: 26, title: '是否转运营', dataIndex: 'transferToOperationName' },
-            { key: 27, title: '转运营时间', dataIndex: 'transferOperationTime' }, { key: 29, title: '是否转物业', dataIndex: 'isPropertyName' },
-            { key: 30, title: '转物业时间', dataIndex: 'transferTime' },{ key: 31, title: '转物业面积', dataIndex: 'transferArea' },
-            { key: 42, title: '备注', dataIndex: 'remark' }
+            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
+            { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '接管机构', dataIndex: 'organName' },
+            { title: '来源方式', dataIndex: 'sourceTypeName' }, { title: '来源渠道', dataIndex: 'souceChannelType' },
+            { title: '是否接管', dataIndex: 'takeOverName' }, { title: '接管时间', dataIndex: 'takeOverDate' }, { title: '建筑面积', dataIndex: 'area' },
+            { title: '楼栋数', dataIndex: 'buildCount' },{ title: '项目状态', dataIndex: 'approvalStatusName' },
+            { title: '资产数量', dataIndex: 'assetCount' }, { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea' }, { title: '闲置(㎡)', dataIndex: 'idleArea' },
+            { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
+            { title: '首次评估原值', dataIndex: 'assetValuation' }, { title: '资产原值(元)', dataIndex: 'originalValue' },
+            { title: '首次市场估值', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' },
+            { title: '划转前房屋状态', dataIndex: 'houseStatusName' }, { title: '上报基础情况表', dataIndex: 'reportBasicInfoDate' },
+            { title: '房屋核实时间', dataIndex: 'houseVerificationDate' }, { title: '上报房屋划转请示时间', dataIndex: 'reportHouseTransferReqDate' },
+            { title: '上报核实报告时间', dataIndex: 'reportHouseVerificationDate' }, { title: '划转批复下发时间', dataIndex: 'transferApprovalDate' },
+            { title: '协议签署时间', dataIndex: 'agreementSignDate' }, { title: '权属办理中存在问题', dataIndex: 'ownershipHandleProblems' },
+            { title: '房屋划转历史遗留问题', dataIndex: 'houseTransferHisProblem' }, { title: '房屋性质', dataIndex: 'houseTypeName' },
+            { title: '划转时房屋权属', dataIndex: 'houseProperty' }, { title: '划转时权利人', dataIndex: 'houseObligee' },
+            { title: '权属变更时间', dataIndex: 'propertyChangeTime' }, { title: '产权情况', dataIndex: 'ownershipStatusName' },
+            { title: '能否过户', dataIndex: 'isTranster' }, { title: '是否转运营', dataIndex: 'transferToOperationName' },
+            { title: '转运营时间', dataIndex: 'transferOperationTime' }, { title: '是否转物业', dataIndex: 'isPropertyName' },
+            { title: '转物业时间', dataIndex: 'transferTime' },{ title: '转物业面积', dataIndex: 'transferArea' },
+            { title: '备注', dataIndex: 'remark' }
           ]
         },
         numList: [
@@ -199,11 +199,12 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { organProjectValue: { organId, projectId }, projectStatus, queryObj } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
-        this.tableObj.loading = true
         let form = {
           approvalStatusList: projectStatus.includes('-1') ? '' : projectStatus.join(','),
           organId, projectId, pageSize: pageLength, pageNum: pageNo, ...queryObj
         }
+        if (type === 'export') { return form }
+        this.tableObj.loading = true
         this.$api.tableManage.projectAsset(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -250,8 +251,15 @@
 
       // 导出
       handleExport () {
-        exportDataAsExcel({}, this.$api.tableManage.exportAssetProject, '资产项目查询列表导出.xls', this)
-        return false
+        const {tableObj: { columns }} = this
+        let form = this.queryTableData({type: 'export'})
+        let cells = columns.map(m => {
+          return { key: m.dataIndex, value: m.title}
+        })
+        this.exportBtnLoading = true
+        exportDataAsExcel({...form, cells}, this.$api.tableManage.exportAssetProject, '资产项目查询列表.xls', this).then(() => {
+          this.exportBtnLoading = false
+        })
       }
     },
 

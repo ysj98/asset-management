@@ -10,8 +10,15 @@
 
   export default {
     name: 'ChartPart',
+    props: ['queryInfo'],
     data () {
       return {}
+    },
+
+    watch: {
+      queryInfo: function () {
+        this.queryTableData({})
+      }
     },
 
     methods: {}

@@ -23,6 +23,7 @@
 
 <script>
   import EditTableHeader from './EditTableHeader'
+  import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
     name: 'ListPart',
     components: { EditTableHeader },
@@ -48,13 +49,20 @@
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
           { title: '用途', dataIndex: 'useTypeName' }, { title: '地区', dataIndex: 'regionName' },
-          // { title: '权属情况', dataIndex: 'ownershipStatusName' }
+          { title: '权属情况', dataIndex: 'ownershipStatusName' }
         ], // 统计维度的集合
         columnsDynamic: [], // Table 列头动态部分, 用于合成columns
         columns: [], // // Table 列头 = columnsDynamic合并单元格处理后 + columnsFixed
         modalObj: { title: '统计维度设置', status: false, okText: '应用', width: 600 },
         checkedHeaderArr: [], // 格式如['name', 'age']
         key: 0, // 更新Modal包裹的子组件, 防止Modal关闭后仍保留组件状态
+        sortIndex: {
+          organName: 1,
+          projectName: 2,
+          useTypeName: 3,
+          regionName: 4,
+          ownershipStatusName: 5
+        }, // 统计维度的顺序表，用于导出
         sortFunc: (a, b) => a - b // 默认排序算法
       }
     },
@@ -79,7 +87,7 @@
         const { queryInfo } = this
         if (!queryInfo.organId) { return this.$message.warn('请选择组织机构') }
         this.loading = true
-        this.$api.tableManage.projectAsset({...queryInfo, pageSize: pageLength, pageNum: pageNo}).then(r => {
+        this.$api.tableManage.queryAssetHouseList({...queryInfo, pageSize: pageLength, pageNum: pageNo}).then(r => {
           this.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -92,7 +100,7 @@
           throw res.message
         }).catch(err => {
           this.loading = false
-          this.$message.error(err || '查询接口出错')
+          this.$message.error(err || '查询列表接口出错')
         })
       },
 
@@ -222,7 +230,13 @@
 
       // 导出
       handleExport () {
-        return false
+        const { queryInfo, dataSource, sortIndex, columnsDynamic } = this
+        if (!dataSource.length) { return this.$message.info('暂无可导出数据') }
+        this.exportBtnLoading = true
+        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex])
+        exportDataAsExcel({...queryInfo, dimension}, this.$api.tableManage.exportAssetHouseList, '房屋资产统计分析列表.xls', this).then(() => {
+          this.exportBtnLoading = false
+        })
       }
     }
   }

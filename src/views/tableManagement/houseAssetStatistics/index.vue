@@ -1,3 +1,4 @@
+<!--报表管理-有证房屋资产统计表页面-->
 <template>
   <div class="house_asset">
     <!--查询调件-->
@@ -9,7 +10,7 @@
         <organ-project v-model="organProjectValue" :isShowBuilding="false"/>
       </a-col>
       <a-col :span="2">
-        <SG-Button type="primary" @click="queryTableData">查询</SG-Button>
+        <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
       </a-col>
     </a-row>
     <!--列表Table-->
@@ -22,6 +23,7 @@
 <script>
   import NoDataTip from 'src/components/noDataTips'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
+  import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
     components: { OrganProject, NoDataTip },
@@ -35,7 +37,7 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: true },
+          scroll: { x: 1800 },
           columns: [
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 150, fixed: 'left' },
             { title: '资产项目编码', dataIndex: 'projectCode' },
@@ -53,10 +55,18 @@
       }
     },
 
+    // mounted () {
+      // this.queryTableData({})
+    // },
+
     methods: {
       // 导出
       handleExport () {
-        return false
+        const {organProjectValue: {organId, projectId}} = this
+        this.exportBtnLoading = true
+        exportDataAsExcel({organId, projectId}, this.$api.tableManage.exportWarrantHouse, '有证房屋资产统计表.xls', this).then(() => {
+          this.exportBtnLoading = false
+        })
       },
 
       // 查询列表数据
@@ -64,7 +74,7 @@
         const {organProjectValue: {organId, projectId}} = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.tableManage.projectAsset({organId, projectId}).then(r => {
+        this.$api.tableManage.queryWarrantHouse({organId, projectId, pageSize: pageLength, pageNum: pageNo}).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -90,8 +100,10 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table-thead th, .ant-table td {
-        white-space: nowrap;
+      & /deep/ .ant-table {
+        .ant-table-thead th, td {
+          white-space: nowrap;
+        }
       }
     }
   }

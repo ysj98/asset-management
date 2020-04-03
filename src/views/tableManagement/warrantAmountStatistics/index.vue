@@ -1,3 +1,4 @@
+<!--报表管理-权证数量统计表页面-->
 <template>
   <div class="warranty_amount">
     <!--查询调件-->
@@ -22,6 +23,7 @@
 <script>
   import NoDataTip from 'src/components/noDataTips'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
+  import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
     components: { OrganProject, NoDataTip },
@@ -57,7 +59,11 @@
     methods: {
       // 导出
       handleExport () {
-        return false
+        const {organProjectValue: {organId, projectId}} = this
+        this.exportBtnLoading = true
+        exportDataAsExcel({organId, projectId}, this.$api.tableManage.exportWarrantStatistics, '权证数量统计表.xls', this).then(() => {
+          this.exportBtnLoading = false
+        })
       },
 
       // 查询列表数据
@@ -65,12 +71,12 @@
         const {organProjectValue: {organId, projectId}} = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.tableManage.projectAsset({organId, projectId}).then(r => {
+        this.$api.tableManage.queryWarrantStatistics({organId, projectId, pageSize: pageLength, pageNum: pageNo}).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const {count, data} = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = data || []
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -91,8 +97,10 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table-thead th, .ant-table td {
-        white-space: nowrap;
+      & /deep/ .ant-table {
+        .ant-table-thead th, td {
+          white-space: nowrap;
+        }
       }
     }
   }

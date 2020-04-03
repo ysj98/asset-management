@@ -42,11 +42,11 @@ export function exportDetailExcel (data) {
 // 资产项目数据查询
 // 资产项目导出
 export function exportAssetProject (data) {
-  return axiosPost(tableManage.exportAssetProject, data)
+  return axiosPost(tableManage.exportAssetProject, data, false, false, {responseType: 'blob'})
 }
 // 资产价值统计导出
 export function exportAssetValue (data) {
-  return axiosPost(tableManage.exportAssetValue, data)
+  return axiosPost(tableManage.exportAssetValue, data, false, false, {responseType: 'blob'})
 }
 // 资产价值数据报表
 export function getAssetValue (data) {
@@ -64,17 +64,13 @@ export function projectAsset (data) {
 export function getAssetCount (data) {
   return axiosPost(tableManage.getAssetCount, data)
 }
-// 资产项目查询导出
-export function exportAsset (data) {
-  return axiosPost(tableManage.exportAsset, data)
-}
 // 房屋资产统计分析-查询列表
 export function queryAssetHouseList (data) {
   return axiosPost(tableManage.queryAssetHouseList, data)
 }
 // 房屋资产统计分析-查询列表（导出）
 export function exportAssetHouseList (data) {
-  return axiosPost(tableManage.exportAssetHouseList, data)
+  return axiosPost(tableManage.exportAssetHouseList, data, false, false, {responseType: 'blob'})
 }
 // 房屋资产统计分析-汇总分析
 export function queryAssetHouseTotal (data) {
@@ -86,7 +82,7 @@ export function queryWarrantHouse (data) {
 }
 // 有证房屋资产统计表（导出）
 export function exportWarrantHouse (data) {
-  return axiosPost(tableManage.exportWarrantHouse, data)
+  return axiosPost(tableManage.exportWarrantHouse, data, false, false, {responseType: 'blob'})
 }
 // 权属证件一览表
 export function queryWarrantList (data) {
@@ -94,7 +90,7 @@ export function queryWarrantList (data) {
 }
 // 权属证件一览表（导出）
 export function exportOwnershipCardList (data) {
-  return axiosPost(tableManage.exportOwnershipCardList, data)
+  return axiosPost(tableManage.exportOwnershipCardList, data, false, false, {responseType: 'blob'})
 }
 // 权证数量统计表
 export function queryWarrantStatistics (data) {
@@ -102,5 +98,5 @@ export function queryWarrantStatistics (data) {
 }
 // 权证数量统计表（导出）
 export function exportWarrantStatistics (data) {
-  return axiosPost(tableManage.exportWarrantStatistics, data)
+  return axiosPost(tableManage.exportWarrantStatistics, data, false, false, {responseType: 'blob'})
 }

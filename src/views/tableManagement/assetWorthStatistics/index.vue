@@ -1,3 +1,4 @@
+<!--报表管理-资产价值统计表页面-->
 <template>
   <div class="asset_worth">
     <!--搜索条件-->
@@ -109,8 +110,8 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '资产编号', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' }, width: 150, fixed: 'left' },
-          { title: '资产名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
+          { title: '资产编号', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' } },
+          { title: '资产名称', dataIndex: 'assetName' },
           { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
           { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
           { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
@@ -162,7 +163,7 @@
         if (queryType === '0') {
           // 按月统计时，最大年份跨度1年
           for (let i = 1; i < 13; i++) {
-            arr.push({title: `${startTime}年${i}月估值`, dataIndex: `date_${i}`})
+            arr.push({title: `${startTime}-${i}月`, dataIndex: `date_${i}`})
           }
         } else {
           let len = Number(endTime) - Number(startTime) + 1
@@ -173,23 +174,23 @@
               // 为方便dataSource取值，保证dataIndex顺序排列
               let index = i * 4
               let temp = [
-                {title: `${startYear + i}年1季度估值`, dataIndex: `date_${index}`},
-                {title: `${startYear + i}年2季度估值`, dataIndex: `date_${index + 1}`},
-                {title: `${startYear + i}年3季度估值`, dataIndex: `date_${index + 2}`},
-                {title: `${startYear + i}年4季度估值`, dataIndex: `date_${index + 3}`}
+                {title: `${startYear + i}-1季度`, dataIndex: `date_${index}`},
+                {title: `${startYear + i}-2季度`, dataIndex: `date_${index + 1}`},
+                {title: `${startYear + i}-3季度`, dataIndex: `date_${index + 2}`},
+                {title: `${startYear + i}-4季度`, dataIndex: `date_${index + 3}`}
               ]
               arr = arr.concat(temp)
             } else if (queryType === '2') {
               // 选择按半年统计时，最大年份跨度3年
               let index = i * 2
               let temp = [
-                {title: `${startYear + i}年上半年估值`, dataIndex: `date_${index}`},
-                {title: `${startYear + i}年下半年估值`, dataIndex: `date_${index + 1}`}
+                {title: `${startYear + i}-上半年`, dataIndex: `date_${index}`},
+                {title: `${startYear + i}-下半年`, dataIndex: `date_${index + 1}`}
               ]
               arr = arr.concat(temp)
             } else if (queryType === '3') {
               // 选择按年统计时，最大年份跨度5年
-              arr.push({title: `${startYear + i}年估值`, dataIndex: `date_${i}`})
+              arr.push({title: `${startYear + i}年`, dataIndex: `date_${i}`})
             }
           }
         }
@@ -206,7 +207,7 @@
           others.endTime = others.startTime
         }
         let form = {
-          ...others, organId: 67, projectId, pageSize: pageLength, pageNum: pageNo,
+          ...others, organId, projectId, pageSize: pageLength, pageNum: pageNo,
           assetType: assetType.includes('-1') ? '' : assetType.join(','),
           status: status.includes('-1') ? '' : status.join(',')
         }
@@ -221,7 +222,8 @@
             const { count, data } = res.data
             this.tableObj.dataSource = (data || []).map(m => {
               let temp = {}
-              (m.dynamicData || []).forEach((n, i) => temp[`date_${i}`] = n)
+              let arr = m.dynamicData || []
+              arr.forEach((n, i) => temp[`date_${i}`] = n)
               return { ...m, ...temp}
             })
             return Object.assign(this.paginationObj, {
@@ -244,9 +246,9 @@
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            return this.numList = this.numList.map(m => {
+            return res.data ? this.numList = this.numList.map(m => {
               return { ...m, value: res.data[m.key] }
-            })
+            }) : false
           }
           throw res.message
         }).catch(err => {
@@ -340,8 +342,10 @@
       padding: 8px 0 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table-thead th, .ant-table td {
-        white-space: nowrap;
+      & /deep/ .ant-table {
+        .ant-table-thead th, td {
+          white-space: nowrap;
+        }
       }
     }
   }

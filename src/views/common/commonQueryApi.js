@@ -121,3 +121,20 @@ export const exportDataAsExcel = (data, API, name, context) => {
   })
 }
 
+// 查询平台字典
+// code: 'ASSESSMENT_METHOD' 查询评估方法
+// code: 'asset_type' 查询评估方法
+// code: 'AMS_KIND_OF_RIGHT' 查询权属类型
+export const queryPlatformDict = (code) => {
+  return API.basics.platformDict({code}).then(r => {
+    let res = r.data
+    if (res && String(res.code) === '0') {
+      return res.data.map(item => ({
+        title: item.name, key: String(item.value)
+      }))
+    }
+    throw res.message
+  }).catch(() => {
+    return []
+  })
+}
