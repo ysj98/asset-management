@@ -33,14 +33,7 @@
         tableLoading: false,
         exportBtnLoading: false, // 导出button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
-        dataSource: [
-          { key: 1232234, useTypeName: '吃肉', organName: '中国', projectName: '项目A', city: '北京', warranty: '是', regionName: '东城', area: 110 },
-          { key: 14235421234, useTypeName: '吃肉', organName: '美国', projectName: '项目B', city: '纽约', warranty: '是', regionName: '华尔街', area: 11300 },
-          { key: 122323234, useTypeName: '稀饭', organName: '中国', projectName: '项目A', city: '北京', warranty: '否', regionName: '东城', area: 5411 },
-          { key: 12432234, useTypeName: '喝酒', organName: '中国', projectName: '项目B', city: '北京', warranty: '否', regionName: '东城', area: 1461 },
-          { key: 124555234, useTypeName: '喝酒', organName: '美国', projectName: '项目C', city: '纽约', warranty: '否', regionName: '华尔街', area: 1541 },
-          { key: 127234, useTypeName: '吃肉4', organName: '中国', projectName: '项目A', city: '北京', warranty: '是', regionName: '东城', area: 11 },
-        ], // Table数据源
+        dataSource: [], // Table数据源
         columnsFixed: [
           { title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' },
           { title: '建筑面积', dataIndex: 'area' }, { title: '资产原值', dataIndex: 'originalValue' },
@@ -84,15 +77,17 @@
     methods: {
       // 查询Table DataSource
       queryTableData ({pageNo = 1, pageLength = 10}) {
-        const { queryInfo } = this
+        const { queryInfo, columnsDynamic, sortIndex } = this
         if (!queryInfo.organId) { return this.$message.warn('请选择组织机构') }
         this.loading = true
-        this.$api.tableManage.queryAssetHouseList({...queryInfo, pageSize: pageLength, pageNum: pageNo}).then(r => {
+        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex])
+        this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo}).then(r => {
           this.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
             this.dataSource = (data || []).map((m, key) => ({ ...m, key }))
+            this.handleColumns()
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })

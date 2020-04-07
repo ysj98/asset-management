@@ -29,7 +29,7 @@
     </a-row>
     <div style="padding: 0 45px 35px;">
       <!--汇总分析图表部分-->
-      <chart-part :queryInfo="queryInfo"/>
+      <chart-part :queryInfo="queryInfo" :key="key"/>
       <!--查询列表部分-->
       <list-part :queryInfo="queryInfo"/>
     </div>
@@ -47,6 +47,7 @@
     components: { ListPart, ChartPart, OrganProject, ProvinceCityDistrict },
     data () {
       return {
+        key: 0, // 刷新汇总分析组件
         queryInfo: {}, // 查询条件集合,
         useType: '', // 查询条件-资产用途值
         assetType: ['-1'], // 查询条件-资产类型值
@@ -72,9 +73,13 @@
 
       // 查询数据
       queryData () {
-        const {assetType, organProjectValue, provinceCityDistrict: { province, city, district: region }, useType} = this
+        const {
+          assetType, organProjectValue: { organId, projectId }, useType,
+          provinceCityDistrict: { province, city, district: region }
+        } = this
         let str = assetType.includes('-1') ? '' : assetType.join(',')
-        this.queryInfo = { province, city, region, useType, assetType: str, ...organProjectValue }
+        this.queryInfo = { province, city, region, useType, assetType: str, projectId, organId: 67 }
+        this.key = Date.now()
       },
       
       // 查询资产用途数据
