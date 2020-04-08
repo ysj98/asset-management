@@ -5,6 +5,7 @@
   <div class="ownershipRegistration">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn">新建权证</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
@@ -71,6 +72,8 @@
     <NewCard v-if="newShow" ref="newCard" @showFn="showFn" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
+    <!--导入-->
+    <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="权证批量导入"/>
   </div>
 </template>
 
@@ -84,6 +87,8 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import CardDetails from './cardDetails.vue'
 import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
+import BatchImport from 'src/views/common/eportAndDownFile'
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
 const columns = [
   {
@@ -172,7 +177,7 @@ const queryCondition =  {
     pageSize: 10,       // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport},
   props: {},
   data () {
     return {
@@ -387,6 +392,39 @@ export default {
           this.$message.error(res.data.message)
           this.loading = false
         }
+      })
+    },
+
+    // 打开批量导入Modal
+    openImportModal () {
+      if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
+      this.$refs.batchImport.visible = true
+    },
+
+    // 下载导入模板文件
+    downTemplate () {
+      exportDataAsExcel('import_template_qszj.xlsx', this.$api.tableManage.downloadTemplate, '权证导入模板.xlsx', this)
+    },
+
+    // 批量导入
+    uploadFile (file) {
+      const { queryCondition: {organId} } = this
+      let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
+      let fileData = new FormData()
+      fileData.append('file', file)
+      let query = `?organId=${organId}`
+      this.$api.tableManage.importOwnCardData(query, fileData).then(r => {
+        this.$SG_Message.destroy(name)
+        let res = r.data
+        if (res && String(res.code) === '0') {
+          this.$SG_Message.success(res.message || '导入成功')
+          this.$refs.batchImport.visible = false
+          return this.query()
+        }
+        throw res.message
+      }).catch(err => {
+        this.$SG_Message.destroy(name)
+        this.$SG_Message.error(err || '批量导入失败')
       })
     }
   },

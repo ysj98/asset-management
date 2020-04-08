@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入资产项目</SG-Button>
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button
           icon="plus"
           type="primary"
@@ -418,28 +418,28 @@
       
       // 下载导入模板文件
       downTemplate () {
-        exportDataAsExcel('', this.$api.tableManage.exportValueExcel, '资产项目批量导入模板.xls', this)
+        exportDataAsExcel('import_template_zcxm.xlsx', this.$api.tableManage.downloadTemplate, '资产项目批量导入模板.xlsx', this)
       },
 
       // 批量导入
       uploadFile (file) {
         const { organId } = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
         let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
         let fileData = new FormData()
         fileData.append('file', file)
         let query = `?organId=${organId}`
-        this.$api.reportManage.importTaskdetailList(query, fileData).then(r => {
+        this.$api.tableManage.importAssetProjectData(query, fileData).then(r => {
           this.$SG_Message.destroy(name)
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.$message.success(res.message || '导入成功')
+            this.$SG_Message.success(res.message || '导入成功')
+            this.$refs.batchImport.visible = false
             return this.queryTableData({type: 'search'})
           }
           throw res.message
         }).catch(err => {
           this.$SG_Message.destroy(name)
-          this.$message.error(err || '批量导入失败')
+          this.$SG_Message.error(err || '批量导入失败')
         })
       }
     },

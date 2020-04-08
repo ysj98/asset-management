@@ -78,7 +78,6 @@
       // 查询Table DataSource
       queryTableData ({pageNo = 1, pageLength = 10}) {
         const { queryInfo, columnsDynamic, sortIndex } = this
-        if (!queryInfo.organId) { return this.$message.warn('请选择组织机构') }
         this.loading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex])
         this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo}).then(r => {

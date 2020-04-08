@@ -100,3 +100,24 @@ export function queryWarrantStatistics (data) {
 export function exportWarrantStatistics (data) {
   return axiosPost(tableManage.exportWarrantStatistics, data, false, false, {responseType: 'blob'})
 }
+// 多模块导入
+// 权属人批量导入
+export function importOwnerData (query, data) {
+  return axiosPost(`${tableManage.importOwnerData}${query}`, data)
+}
+// 权属证件批量导入
+export function importOwnCardData (query, data) {
+  return axiosPost(`${tableManage.importOwnCardData}${query}`, data)
+}
+// 模板下载
+export function downloadTemplate (fileName) {
+  return axiosGet(`${tableManage.downloadTemplate}/${fileName}`, {}, false, {responseType: 'blob'})
+}
+// 资产卡片批量导入
+export function importAssetCardData (query, data) {
+  return axiosPost(`${tableManage.importAssetCardData}${query}`, data)
+}
+// 资产项目批量导入
+export function importAssetProjectData (query, data) {
+  return axiosPost(`${tableManage.importAssetProjectData}${query}`, data)
+}

@@ -698,4 +698,14 @@ export const tableManage = {
   queryWarrantStatistics: '/ams/statistics/warrant/number',
 // 权证数量统计表（导出）
   exportWarrantStatistics: '/ams/statistics/warrant/number/export',
+  // 权属人批量导入
+  importOwnerData: '/ams/ownerShipUser/importData',
+  // 权属证件批量导入
+  importOwnCardData: '/ams/ownerShipUser/warrant/importData',
+  // 模板下载
+  downloadTemplate: '/ams/project/download',
+  // 资产卡片批量导入
+  importAssetCardData: '/ams/assetCard/importData',
+  // 资产项目批量导入
+  importAssetProjectData: '/ams/project/importData'
 }
