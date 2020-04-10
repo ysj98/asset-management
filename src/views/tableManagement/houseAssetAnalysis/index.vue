@@ -79,7 +79,7 @@
         } = this
         if (!organId) { return this.$message.warn('请选择组织机构') }
         let str = assetType.includes('-1') ? '' : assetType.join(',')
-        this.queryInfo = { province, city, region, useType, assetType: str, projectId, organId }
+        this.queryInfo = { province, city, region, useType, assetType: str, projectId, organId, key: Date.now() }
         this.key = Date.now()
       },
       

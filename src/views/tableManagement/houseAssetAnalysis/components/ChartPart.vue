@@ -7,14 +7,17 @@
         <a-col :span="8">
           <div class="chart_title">建筑面积统计</div>
           <div id="area_statistics"></div>
+          <div v-if="!dataObj.buildArea" style="text-align: center; color: #00000073">暂无数据</div>
         </a-col>
         <a-col :span="8">
           <div class="chart_title">使用方向统计</div>
           <div id="direct_statistics"></div>
+          <div v-if="!dataObj.used" style="text-align: center; color: #00000073">暂无数据</div>
         </a-col>
         <a-col :span="8">
           <div class="chart_title">资产价值统计</div>
           <div id="asset_statistics"></div>
+          <div v-if="!dataObj.assetValue" style="text-align: center; color: #00000073">暂无数据</div>
         </a-col>
       </a-row>
     </div>
@@ -30,6 +33,7 @@
     data () {
       return {
         loading: false, // 页面loading
+        dataObj: {} // 判断是否展示图表的标志
       }
     },
     
@@ -47,6 +51,11 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { buildAreaList, usedList, assetValue } = res.data
+            this.dataObj = {
+              buildArea: (buildAreaList || []).length,
+              used: (usedList || []).length,
+              assetValue: Object.keys(assetValue || {}).length
+            }
             this.renderThetaChart('area_statistics', 'useTypeName', buildAreaList)
             this.renderThetaChart('direct_statistics', 'usedName', usedList)
             this.renderRectChart(assetValue)
@@ -60,6 +69,10 @@
       },
       // 绘制饼状图
       renderThetaChart (containerId, colorName, data = []) {
+        if (!data.length) {
+          document.getElementById(containerId).innerHTML = '<div style="text-align: center; color: #00000073">暂无汇总数据</div>'
+          return false
+        }
         const chart = new Chart({
           container: containerId, // 指定图表容器 ID
           height: 250, // 指定图表高度
@@ -68,7 +81,7 @@
         chart.coordinate('theta', { radius: 0.6 }) // 饼图大小
         chart.data(data)
         chart.interval().position('area').color(colorName).label('area', {
-          content: data => `${data.area}(${data.percentage || '-'})`
+          content: data => `${data.area} (${data.percentage ? `${data.percentage}%` : '-'})`
         }).adjust('stack')
         chart.tooltip(false).render()
       },
@@ -96,7 +109,7 @@
         chart.scale('value', {
           type: 'quantize',
           min: 0,
-          max,
+          max: max || 10, // 防止max = 0 时渲染报错
           alias: `单位：${obj.unitName}`
         }).axis('value', {
           title: {},

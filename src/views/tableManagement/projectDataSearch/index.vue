@@ -120,7 +120,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: true },
+          scroll: { x: 4500 },
           columns: [
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
             { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '接管机构', dataIndex: 'organName' },
@@ -185,7 +185,7 @@
         let{ initColumns } = this.tableObj
         this.checkedHeaderArr = arr
         let columns = initColumns.filter(n => arr.includes(n.dataIndex))
-        this.tableObj.scroll = { x: columns.length * 100 } // 防止较少列时出现滚动
+        this.tableObj.scroll = { x: columns.length * 120 } // 防止较少列时出现滚动
         this.tableObj.columns = columns
       },
 

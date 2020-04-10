@@ -69,8 +69,8 @@
           loading: false,
           dataSource: [],
           columns: [
+            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' },fixed: 'left' },
             { title: '所属机构', dataIndex: 'organName' },
-            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' } },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属人', dataIndex: 'obligeeName' },
             { title: '丘地号', dataIndex: 'lotNo' },

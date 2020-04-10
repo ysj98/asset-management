@@ -293,7 +293,7 @@
       // 获取当前年份
       let currentYear = new Date().getFullYear()
       let arr = []
-      for (let i = 0; i <= 20; i++) {
+      for (let i = 0; i <= 15; i++) {
         arr.push({ title: String(currentYear + i -10), key: String(currentYear + i - 10) })
       }
       this.startTimeOptions = [...arr]
