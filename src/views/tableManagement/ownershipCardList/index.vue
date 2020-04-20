@@ -58,7 +58,7 @@
         ownerOptions: [{title: '全部权属人', key: ''}], // 查询条件-权属人选项
         typeOptions: [{ title: '全部权属类型', key: '' }], // 查询条件-权属类型选项
         statusOptions: [
-          { title: '全部权证状态', key: '' }, { title: '正常', key: '1' }, { title: '已注销', key: '0' }
+          { title: '全部权属状态', key: '' }, { title: '正常', key: '1' }, { title: '已注销', key: '0' }
         ], // 查询条件-权属状态选项
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },

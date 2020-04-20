@@ -52,7 +52,7 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <span slot="projectName" slot-scope="text, record">
-        <router-link :to="{path: '/tableManagement/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
+        <router-link :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
           {{text}}
         </router-link>
       </span>
