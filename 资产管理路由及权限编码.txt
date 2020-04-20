@@ -36,12 +36,12 @@ V1.3
 
 V1.0.4
 报表管理
-/tableManagement/houseAssetAnalysis         房屋资产统计分析
-/tableManagement/projectData         资产项目数据查询
-/tableManagement/houseAssetStatistics         有证房屋资产统计表
-/tableManagement/warrantAmountStatistics         权证数量统计表
-/tableManagement/ownershipCardList         权属证件一览表
-/tableManagement/assetWorthStatistics         资产价值统计表
+/asset-management/#/tableManagement/houseAssetAnalysis         房屋资产统计分析
+/asset-management/#/tableManagement/projectData         资产项目数据查询
+/asset-management/#/tableManagement/houseAssetStatistics         有证房屋资产统计表
+/asset-management/#/tableManagement/warrantAmountStatistics         权证数量统计表
+/asset-management/#/tableManagement/ownershipCardList         权属证件一览表
+/asset-management/#/tableManagement/assetWorthStatistics         资产价值统计表
 
 
 新增权限编码如下:
