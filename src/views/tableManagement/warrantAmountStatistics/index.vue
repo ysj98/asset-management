@@ -2,7 +2,7 @@
 <template>
   <div class="warranty_amount">
     <!--查询调件-->
-    <a-row :gutter="8" style="padding: 20px 20px 20px 30px">
+    <a-row :gutter="8" style="width: 100%; padding: 20px 20px 20px 30px">
       <a-col :span="10">
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
       </a-col>

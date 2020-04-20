@@ -26,7 +26,7 @@
         </a-row>
       </div>
       <div slot="contentForm" style="margin-top: 15px">
-        <a-row :gutter="8">
+        <a-row :gutter="8" style="width: 100%">
           <a-col :span="4" :offset="3">
             <a-select v-model="queryObj.transferToOperation" style="width: 100%" placeholder="请选择转运营状态" :options="operateOptions"/>
           </a-col>

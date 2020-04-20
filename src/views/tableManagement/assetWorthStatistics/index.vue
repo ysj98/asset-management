@@ -7,7 +7,7 @@
         <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px">
-        <a-row :gutter="8">
+        <a-row :gutter="8" style="width: 100%">
           <a-col :span="8" :offset="8">
             <organ-project v-model="organProjectValue" :isShowBuilding="false"/>
           </a-col>
@@ -27,7 +27,7 @@
         </a-row>
       </div>
       <div slot="contentForm" style="margin-top: 15px">
-        <a-row :gutter="8">
+        <a-row :gutter="8" style="width: 100%">
           <a-col :span="5" :offset="queryObj.queryType !== '0' ? 3 : 6">
             <a-select
               mode="multiple"

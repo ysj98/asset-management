@@ -113,6 +113,7 @@
 <style lang='less' scoped>
   .asset_analysis {
     .search_style {
+      width: 100%;
       padding: 20px 20px 20px 30px;
       border-bottom: 1px solid #e8e8e8;
     }
