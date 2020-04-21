@@ -61,7 +61,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" class="custom_table td-pd10">
       <span slot="projectName" slot-scope="text, record">
         <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
@@ -110,7 +110,7 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '资产编号', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' } },
+          { title: '资产编号', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' }, fixed: 'left' },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
           { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
@@ -326,7 +326,7 @@
         this.generateEndTimeOption()
       },
 
-      assetName: function (val) {
+      'queryObj.assetName': function (val) {
         if (val.length > 40) {
           this.assetName = val.slice(0, 40)
           return this.$message.warn('最大支持40个字符')
@@ -338,13 +338,24 @@
 
 <style lang='less' scoped>
   .asset_worth {
-    .custom-table {
+    .custom_table {
       padding: 8px 0 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {
         .ant-table-thead th, td {
           white-space: nowrap;
+        }
+        .ant-table-thead {
+          font-size: 14px;
+          border-top: 1px solid #E6EAEF;
+          border-bottom: 1px solid #E6EAEF;
+          box-shadow: 0 2px 6px 0 rgba(66, 155, 255, 0.2);
+          th {
+            color: #49505E;
+            padding: 9px 15px;
+            background-color: #fff;
+          }
         }
       }
     }

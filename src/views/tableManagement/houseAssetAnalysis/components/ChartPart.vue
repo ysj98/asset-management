@@ -50,13 +50,25 @@
           this.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            const { buildAreaList, usedList, assetValue } = res.data
+            let { buildAreaList, usedList, assetValue } = res.data
+            let arr = []
+            let area = 0
+            let percentage = 0
+            let buildArea = buildAreaList || []
+            buildArea.forEach(m => {
+              if (!m.useTypeName) {
+                area += m.area ? Number(m.area) : 0
+                percentage += m.percentage ? Number(m.percentage) : 0
+              } else {
+                arr.push(m)
+              }
+            })
             this.dataObj = {
-              buildArea: (buildAreaList || []).length,
+              buildArea: buildArea.length,
               used: (usedList || []).length,
               assetValue: Object.keys(assetValue || {}).length
             }
-            this.renderThetaChart('area_statistics', 'useTypeName', buildAreaList)
+            this.renderThetaChart('area_statistics', 'useTypeName', [...arr, { useTypeName: '其他', area, percentage }])
             this.renderThetaChart('direct_statistics', 'usedName', usedList)
             this.renderRectChart(assetValue)
             return false
@@ -81,6 +93,8 @@
         chart.coordinate('theta', { radius: 0.6 }) // 饼图大小
         chart.data(data)
         chart.interval().position('area').color(colorName).label('area', {
+          layout: { type: 'overlap' },
+          offset: 0,
           content: data => `${data.area} (${data.percentage ? `${data.percentage}%` : '-'})`
         }).adjust('stack')
         chart.tooltip(false).render()
@@ -108,6 +122,7 @@
         chart.axis('title', false).interval().position('title*value').label('value').color('title')
         chart.scale('value', {
           type: 'quantize',
+          nice: true,
           min: 0,
           max: max || 10, // 防止max = 0 时渲染报错
           alias: `单位：${obj.unitName}`
@@ -129,6 +144,19 @@
       font-weight: bold;
       text-align: center;
       padding-bottom: 15px;
+    }
+    #area_statistics, #direct_statistics {
+      position: relative;
+      /*遮挡label,解决label全部点击取消后不能复原bug*/
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 25px;
+        background-color: transparent;
+      }
     }
   }
 </style>
