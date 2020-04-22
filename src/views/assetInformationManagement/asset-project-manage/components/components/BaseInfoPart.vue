@@ -230,6 +230,8 @@
             this.$message.error(err || '保存失败')
             return reject()
           })
+        } else {
+          reject()
         }
       })
     },

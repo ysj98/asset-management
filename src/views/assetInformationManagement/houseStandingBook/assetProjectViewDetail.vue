@@ -117,9 +117,9 @@
         <div class="asset-condition">
           <a-row class="asset-project-header">
             <a-col v-for="(item,index) in assetStatistics" :key="index" :span="4">
-              <div class="asset-project-item">
-                <div class="asset-project-item-title">{{item.title}}</div>
-                <div class="asset-project-item-number">{{item.area}}<span v-show="item.percent">({{item.percent}})</span></div>
+              <div class="asset-project-item custom-height">
+                <div class="asset-project-item-title" style="font-size: 14px; margin-bottom: 10px">{{item.title}}</div>
+                <div class="asset-project-item-number" style="font-size:20px; font-weight:bold; color:#324057">{{item.area || 0}}<span v-show="item.percent">({{item.percent}})</span></div>
               </div>
             </a-col>
           </a-row>
@@ -444,6 +444,10 @@ export default {
           border-right: none;
           position: relative;
           padding-bottom: 50px;
+          .custom-height {
+            padding: 18px 0;
+            height: auto !important;
+          }
           .asset-project-header {
             .asset-project-item {
               height: 80px;

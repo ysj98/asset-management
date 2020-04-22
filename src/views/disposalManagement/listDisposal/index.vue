@@ -10,7 +10,7 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <!-- <SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button> -->
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="query('')">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
       </div>
@@ -78,6 +78,7 @@ import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
@@ -237,28 +238,22 @@ export default {
       ],
       disposeModeData: [],
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
-      alterationDate: []
+      alterationDate: [],
+      exportBtnLoading: false // 导出按钮loading
     }
   },
   computed: {
   },
   methods: {
     // 导出
-    downloadFn () {
-      let obj = {
-      }
-      this.$api.assets.exportChangeScheduleList(obj).then(res => {
-        console.log(res)
-        let blob = new Blob([res.data])
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = '资产处置一览表.xls'
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
+    handleExport () {
+      this.exportBtnLoading = true
+      let data = this.query('export')
+      exportDataAsExcel(data, this.$api.tableManage.exportDetailExcel, '资产处置一览表.xlsx', this).then(() => {
+        this.exportBtnLoading = false
       })
     },
+
     // 组织机构树
     changeTree (value, label) {
       this.organName = label
@@ -439,8 +434,7 @@ export default {
       }
     },
     // 查询
-    query () {
-      this.loading = true
+    query (type) {
       let obj = {
         pageNum: this.queryCondition.pageNum,              // 当前页
         pageSize: this.queryCondition.pageSize,            // 每页显示记录数
@@ -457,6 +451,8 @@ export default {
         objectTypeList: this.judgmentMethodFn(this.queryCondition.assetClassify),             // 资产分类
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType)               // 处置类型(多选)
       }
+      if (type === 'export') { return obj }
+      this.loading = true
       this.$api.disposalManagement.getDetailAndDisposeListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data

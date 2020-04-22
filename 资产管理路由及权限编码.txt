@@ -34,6 +34,16 @@ V1.3
 附属配套管理
 /asset-management/#/subsidiary          附属配套管理
 
+V1.0.4
+报表管理
+/asset-management/#/houseAssetAnalysis         房屋资产统计分析
+/asset-management/#/projectData         资产项目数据查询
+/asset-management/#/houseAssetStatistics         有证房屋资产统计表
+/asset-management/#/warrantAmountStatistics         权证数量统计表
+/asset-management/#/ownershipCardList         权属证件一览表
+/asset-management/#/assetWorthStatistics         资产价值统计表
+
+
 新增权限编码如下:
 V1.0
 资产清理

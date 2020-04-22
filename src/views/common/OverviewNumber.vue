@@ -11,8 +11,8 @@
       v-for="item in numList"
       :style="{'background-color': item.bgColor || '', 'width': `${Math.floor(100000 / numList.length) / 1000}%`}"
     >
-      <div :style="{'font-size': '12px', 'color': item.fontColor || '#fff', 'margin-bottom': '3px'}">{{item.title}}</div>
-      <div :style="{'font-size': '16px', color: item.fontColor || '#fff', 'font-weight': 'bold'}">{{item.value}}</div>
+      <div :style="{'font-size': '14px', 'color': item.fontColor || '#fff', 'margin-bottom': '10px'}">{{item.title}}</div>
+      <div :style="{'font-size': '20px', color: item.fontColor || '#324057', 'font-weight': 'bold'}">{{item.value}}</div>
     </div>
   </div>
 </template>
@@ -29,13 +29,13 @@
 
 <style lang='less' scoped>
   .overview_num {
-    height: 83px;
+    /*height: 82px;*/
     /*margin: 10px 0;*/
     border: 1px solid #EFF2F7;
     border-right: none;
     .view_item {
       height: 100%;
-      padding-top: 18px;
+      padding: 18px 0;
       text-align: center;
       display: inline-block;
       border-right: 1px solid #EFF2F7;

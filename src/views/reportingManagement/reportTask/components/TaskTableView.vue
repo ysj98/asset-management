@@ -133,8 +133,10 @@
       margin-top: 15px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table-thead th, .ant-table td {
-        white-space: nowrap;
+      & /deep/ .ant-table {
+        .ant-table-thead th, td {
+          white-space: nowrap;
+        }
       }
     }
   }

@@ -6,6 +6,7 @@
   <div class="scheduleChanges pb70">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop: toggle?'16px': 0}">
        <div slot="headerBtns">
+         <SG-Button icon="export" :loading="exportBtnLoading" style="margin-right: 8px" @click="handleExport">导出</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.zcgl_dengji_create" icon="plus" @click="goPage('create')" type="primary">
           新增处置登记
         </SG-Button>
@@ -97,7 +98,7 @@
             </div>
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="query('')">查询</SG-Button>
           <SG-Button @click="restQuery">清空</SG-Button>
         </div>
       </div>
@@ -136,6 +137,7 @@ import noDataTips from '@/components/noDataTips'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import OperationPopover from '@/components/OperationPopover'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes  = {
@@ -256,6 +258,7 @@ export default {
   data () {
     return {
       ASSET_MANAGEMENT,
+      exportBtnLoading: false, // 导出按钮loading
       organId: '',   // 组织机构id
       organName: '', // 组织机构名称
       toggle: true, // 开关
@@ -303,7 +306,7 @@ export default {
         return val
       }
     },
-    query () {
+    query (type) {
       let data = {
         organId: this.organId,
         disposeName: this.queryCondition.disposeName,
@@ -319,6 +322,7 @@ export default {
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',
         disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',
       }
+      if (type === 'export') { return data }
       this.table.loading = true
       this.$api.basics.getDisposeRegisterList(data).then(res => {
         if (res.data.code === '0') {
@@ -340,7 +344,7 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn (type) {
-      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4  
+      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
       console.log('生成按钮', type)
       let arr = []
       // 草稿 已驳回
@@ -546,6 +550,15 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
+    },
+
+    // 导出
+    handleExport () {
+      this.exportBtnLoading = true
+      let data = this.query('export')
+      exportDataAsExcel(data, this.$api.tableManage.exportDisposeExcel, '处置登记列表.xlsx', this).then(() => {
+        this.exportBtnLoading = false
+      })
     }
   }
 }

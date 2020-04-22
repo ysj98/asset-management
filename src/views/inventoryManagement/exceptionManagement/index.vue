@@ -5,6 +5,7 @@
   <div>
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
+        <SG-Button icon="export" :loading="exportBtnLoading" @click="handleExport">导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search placeholder="资产名称/编码" :style="allStyle" :value="assetName" @change="assetNameChange" @search="queryClick" />
@@ -93,6 +94,7 @@ import noDataTips from '@/components/noDataTips'
 import {getCurrentDate, getMonthsAgoDate} from 'utils/formatTime'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
 const columns = [
   {
@@ -188,6 +190,7 @@ export default {
   data () {
     return {
       ASSET_MANAGEMENT,
+      exportBtnLoading: false, // 导出按钮loading
       allStyle: 'width: 170px; margin-right: 10px;',
       firstLoad: true,
       toggle: false,
@@ -331,7 +334,7 @@ export default {
       this.paginator.pageNo = 1
       this.queryList()
     },
-    queryList () {
+    queryList (type) {
       let form = {
         organId: this.organId,
         checkTimeDateStart: this.beginDate,
@@ -345,6 +348,7 @@ export default {
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
+      if (type === 'export') { return form }
       this.$api.inventoryManagementApi.exceptionList(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
@@ -454,6 +458,15 @@ export default {
         }
       })
     },
+
+    // 导出
+    handleExport () {
+      this.exportBtnLoading = true
+      let data = this.queryList('export')
+      exportDataAsExcel(data, this.$api.tableManage.exportExceptionExcel, '异常管理列表.xlsx', this).then(() => {
+        this.exportBtnLoading = false
+      })
+    }
   },
   created () {
   },

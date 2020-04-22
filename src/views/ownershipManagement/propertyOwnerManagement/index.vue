@@ -5,6 +5,8 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px">导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newPropertyOwner" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_NEW">新建权属人</SG-Button>
       </div>
       <div slot="form">
@@ -36,6 +38,8 @@
       @change="handlePageChange"
     />
     <handle-property-owner ref="handlePropertyOwner" :modalType="modalType" :organId="organId" :organName="organName" :ownerId="ownerId"></handle-property-owner>
+    <!--导入-->
+    <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="权属人批量导入"/>
   </div>
 </template>
 
@@ -44,6 +48,8 @@ import topOrganByUser from '@/views/common/topOrganByUser'
 import handlePropertyOwner from './handlePropertyOwner'
 import noDataTips from '@/components/noDataTips'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
+import BatchImport from 'src/views/common/eportAndDownFile'
 
 const columns = [
   {
@@ -101,7 +107,7 @@ const columns = [
 
 export default {
   components: {
-    topOrganByUser, handlePropertyOwner, noDataTips
+    topOrganByUser, handlePropertyOwner, noDataTips, BatchImport
   },
   data () {
     return {
@@ -119,7 +125,8 @@ export default {
       },
       modalType: 'new', // 弹窗类型
       ownerId: '', // 权属人id
-      showNoDataTips: false
+      showNoDataTips: false,
+      exportBtnLoading: false // 导出按钮loading
     }
   },
   methods: {
@@ -178,13 +185,14 @@ export default {
       this.queryList()
     },
     // 查询列表
-    queryList () {
+    queryList (type) {
       let form = {
         organId: this.organId,
         obligeeName: this.ownerName,
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
+      if (type === 'export') { return form }
       this.$api.assets.list(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
@@ -206,6 +214,48 @@ export default {
         } else {
           this.$message.error(res.data.message)
         }
+      })
+    },
+
+    // 导出
+    handleExport () {
+      this.exportBtnLoading = true
+      let data = this.queryList('export')
+      exportDataAsExcel(data, this.$api.tableManage.exportObligeeExcel, '权属人管理列表.xlsx', this).then(() => {
+        this.exportBtnLoading = false
+      })
+    },
+
+    // 打开批量导入Modal
+    openImportModal () {
+      if (!this.organId) { return this.$message.info('请选择组织机构') }
+      this.$refs.batchImport.visible = true
+    },
+
+    // 下载导入模板文件
+    downTemplate () {
+      exportDataAsExcel('import_template_qsr.xlsx', this.$api.tableManage.downloadTemplate, '权属人导入模板.xlsx', this)
+    },
+
+    // 批量导入
+    uploadFile (file) {
+      const { organId } = this
+      let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
+      let fileData = new FormData()
+      fileData.append('file', file)
+      let query = `?organId=${organId}`
+      this.$api.tableManage.importOwnerData(query, fileData).then(r => {
+        this.$SG_Message.destroy(name)
+        let res = r.data
+        if (res && String(res.code) === '0') {
+          this.$SG_Message.success(res.message || '导入成功')
+          this.$refs.batchImport.visible = false
+          return this.queryClick()
+        }
+        throw res.message
+      }).catch(err => {
+        this.$SG_Message.destroy(name)
+        this.$SG_Message.error(err || '批量导入失败')
       })
     }
   }

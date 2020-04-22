@@ -5,6 +5,8 @@
   <div class="assets-entry">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px">导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -94,6 +96,8 @@
       v-model="paginator.pageNo"
       @change="handlePageChange"
     />
+    <!--导入-->
+    <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="资产卡片导入"/>
   </div>
 </template>
 
@@ -104,6 +108,8 @@
   import {getCurrentDate, getMonthsAgoDate} from 'utils/formatTime'
   import moment from 'moment'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
+  import BatchImport from 'src/views/common/eportAndDownFile'
+  import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
   const columns = [
     {
@@ -225,7 +231,7 @@
   ]
   export default {
     components: {
-      TreeSelect, SegiRangePicker, noDataTips
+      TreeSelect, SegiRangePicker, noDataTips, BatchImport
     },
     data () {
       return {
@@ -256,7 +262,8 @@
           pageLength: 10,
           totalCount: 0
         },
-        showNoDataTips: false
+        showNoDataTips: false,
+        exportBtnLoading: false // 导出按钮loading
       }
     },
     watch: {
@@ -407,7 +414,7 @@
         this.paginator.pageNo = 1
         this.queryList()
       },
-      queryList () {
+      queryList (type) {
         let form = {
           organId: this.organId,
           projectId: this.assetProject,
@@ -423,6 +430,7 @@
           pageNum: this.paginator.pageNo,
           pageSize: this.paginator.pageLength
         }
+        if (type === 'export') { return form }
         this.$api.assets.queryCardPageList(form).then(res => {
           if (res.data.code === '0') {
             let data = res.data.data.data
@@ -531,6 +539,48 @@
           }
         })
       },
+
+      // 导出
+      handleExport () {
+        this.exportBtnLoading = true
+        let data = this.queryList('export')
+        exportDataAsExcel(data, this.$api.tableManage.exportCardExcel, '资产入账列表.xlsx', this).then(() => {
+          this.exportBtnLoading = false
+        })
+      },
+
+      // 打开批量导入Modal
+      openImportModal () {
+        if (!this.organId) { return this.$message.info('请选择组织机构') }
+        this.$refs.batchImport.visible = true
+      },
+
+      // 下载导入模板文件
+      downTemplate () {
+        exportDataAsExcel('import_template_zckp.xlsx', this.$api.tableManage.downloadTemplate, '资产卡片导入模板.xlsx', this)
+      },
+
+      // 批量导入
+      uploadFile (file) {
+        const { organId } = this
+        let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
+        let fileData = new FormData()
+        fileData.append('file', file)
+        let query = `?organId=${organId}`
+        this.$api.tableManage.importAssetCardData(query, fileData).then(r => {
+          this.$SG_Message.destroy(name)
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$SG_Message.success(res.message || '导入成功')
+            this.$refs.batchImport.visible = false
+            return this.queryClick()
+          }
+          throw res.message
+        }).catch(err => {
+          this.$SG_Message.destroy(name)
+          this.$SG_Message.error(err || '批量导入失败')
+        })
+      }
     },
     created () {
     },
