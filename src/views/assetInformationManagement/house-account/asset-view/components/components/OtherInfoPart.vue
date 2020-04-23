@@ -51,6 +51,15 @@
   import infoKeys from './otherInfoKeys'
   import operationInformation from './operationInformation'
   let getUuid = ((uuid = 1) => () => ++uuid)();
+  // let 2 收入，3费用
+  let reportBillIdNameMap = {
+    '2': '收入',
+    '3': '费用'
+  }
+  let settleUpMap = {
+    '0': '否',
+    '1': '是'
+  }
   let pagination = {
     pageNum: 1,
     pageSize: 10,
@@ -138,6 +147,12 @@
             // 相关费用
             if (type === 'relatedExpenses') {
               tableData = res.data.data.map((m,i) => {
+                m.reportBillIdName = m.reportBillId ? reportBillIdNameMap[String(m.reportBillId)] : '/'
+                m.settleUpName = m.settleUp ? settleUpMap[String(m.settleUp)] : '/'
+                m.amount = m.amount || '/'
+                m.unitPrice = m.unitPrice || '/'
+                m.readNumber = m.readNumber || '/'
+                m.useLevel = m.useLevel || '/'
                 return {
                   key: getUuid(),
                   ...m,
@@ -184,7 +199,6 @@
         }
         // 如果Tab被激活过，不再请求接口数据
         const {cacheDataObj} = this
-        console.log('你好世界=>', key, infoKeys[key])
         if (cacheDataObj[key]) {
           Object.assign(this, cacheDataObj[key])
         } else {

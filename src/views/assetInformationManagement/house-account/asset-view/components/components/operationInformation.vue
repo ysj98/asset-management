@@ -118,7 +118,7 @@ let columns2 = [
   },
   {
     title: "所属月份",
-    dataIndex: "statusName",
+    dataIndex: "accountCycle",
   },
   {
     title: "金额(元)",
@@ -139,7 +139,7 @@ export default {
   data() {
     return {
       moment,
-      pickerValue: [moment().subtract('month', 6), moment()],
+      pickerValue: [moment().subtract("month", 6), moment()],
       table: {
         columns,
         dataSource: [],
@@ -190,8 +190,8 @@ export default {
         pageNo: this.table2.pageNum,
         pageLimit: this.table2.pageSize,
         assetHouseId: this.assetHouseId,
-        startMonth: this.pickerValue[0].format('YYYYMM'),
-        endMonth: this.pickerValue[1].format('YYYYMM'),
+        startMonth: this.pickerValue[0].format("YYYYMM"),
+        endMonth: this.pickerValue[1].format("YYYYMM"),
       }
       this.$api.assets
         .assetOperationExpenseParam(data)
@@ -208,7 +208,16 @@ export default {
           if (data) {
             this.$api.assets.getAcctItemPageList(data).then((res) => {
               if (+res.data.code === 0) {
-                console.log("进入数据")
+                let result = res.data.data.data || []
+                this.table2.dataSource = result.map((item) => {
+                  item.fee = item.fee ? Number(item.fee) / 10 : '/'
+                  item.accountCycle = item.accountCycle ? (item.accountCycle.slice(0,4) + '-' + item.accountCycle.slice(4)) : '/'
+                  return {
+                    key: getUuid(),
+                    ...item,
+                  }
+                })
+                this.table2.totalCount = res.data.data.count
               }
             })
           }
@@ -216,22 +225,29 @@ export default {
     },
     validateTable2() {
       // 时间必有
-      
+
       if (!this.pickerValue || !this.pickerValue[0]) {
-        this.$message.error('请选择运营收入信息时间!')
+        this.$message.error("请选择运营收入信息时间!")
         return false
       }
       let startTime = new Date(this.pickerValue[0]).getTime()
       let endTime = new Date(this.pickerValue[1]).getTime()
-      let minStartTime = new Date(moment(endTime).subtract('month', 6)).getTime()
-      //  console.log('时间=>', minStartTime, startTime,endTime, minStartTime > startTime)
+      let minStartTime = new Date(
+        moment(endTime).subtract("month", 6)
+      ).getTime()
+      console.log(
+        "时间=>",
+        minStartTime,
+        startTime,
+        endTime,
+        minStartTime > startTime
+      )
       if (startTime > endTime) {
-        this.$message.error('请选择运营收入开始时间小于结束时间!')
+        this.$message.error("请选择运营收入开始时间小于结束时间!")
         return false
       }
-     
-      if (minStartTime > startTime) {
-        this.$message.error('请选择运营收入信息时间跨度不超过6个月!')
+      if (Math.floor(minStartTime / 1000) > Math.floor(startTime / 1000)) {
+        this.$message.error("请选择运营收入信息时间跨度不超过6个月!")
         return false
       }
       // 跨度不超过6个月

@@ -153,7 +153,7 @@ const keys = {
         { title: '费用/收入类型', dataIndex: 'incomeType' },
         { title: '费用/收入名称', dataIndex: 'incomeName' },
         { title: '所属月份', dataIndex: 'month' },
-        { title: '金额', dataIndex: 'amount' },
+        { title: '金额(元)', dataIndex: 'amount' },
         { title: '单价', dataIndex: 'unitPrice' },
         { title: '读数', dataIndex: 'readNumber' },
         { title: '用量', dataIndex: 'useLevel' },
