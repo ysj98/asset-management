@@ -206,6 +206,9 @@
             background-color: #fff;
           }
         }
+        .ant-table-placeholder {
+          display: none;
+        }
       }
     }
   }

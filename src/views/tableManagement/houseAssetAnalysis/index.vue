@@ -66,9 +66,8 @@
     methods: {
       // 选中资产类型
       selectAssetType (value) {
-        if (value.length > 1 && value.includes('-1')) {
-          this.assetType = ['-1']
-        }
+        let lastIndex = value.length - 1
+        this.assetType = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
       },
 
       // 查询数据

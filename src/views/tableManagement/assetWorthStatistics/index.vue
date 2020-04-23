@@ -16,6 +16,7 @@
               mode="multiple"
               :maxTagCount="1"
               style="width: 100%"
+              @change="assetTypeChange"
               :options="assetTypeOptions"
               v-model="queryObj.assetType"
               placeholder="请选择资产类型"
@@ -33,6 +34,7 @@
               mode="multiple"
               :maxTagCount="1"
               style="width: 100%"
+              @change="statusChange"
               :options="statusOptions"
               v-model="queryObj.status"
               placeholder="请选择资产状态"
@@ -95,9 +97,9 @@
         endTimeOptions: [], // 查询条件-统计结束时间选项
         startTimeOptions: [], // 查询条件-统计开始时间选项
         statusOptions: [
-          { title: '全部资产状态', key: '-1' }, { title: '未生效', key: '61' }, { title: '已取消', key: '40' },
-          { title: '正常', key: '1' }, { title: '报废', key: '1222' }, { title: '转让', key: '450' },
-          { title: '报损', key: '22' }, { title: '已清理', key: '14' }
+          { title: '全部资产状态', key: '-1' }, { title: '未生效', key: '0' }, { title: '正常', key: '1' },
+          { title: '已取消', key: '6' }, { title: '报废', key: '2' }, { title: '转让', key: '3' },
+          { title: '报损', key: '4' }, { title: '已清理', key: '5' }
         ], // 查询条件-资产状态选项
         objectTypeOptions: [{ title: '全部资产分类', key: '' }], // 查询条件-资产分类选项,主数据字典
         assetTypeOptions: [{ title: '全部资产类型', key: '-1' }], // 查询条件-资产类型选项，平台字典
@@ -283,10 +285,23 @@
       handleExport () {
         let data= this.queryTableData({type: 'export'})
         exportDataAsExcel(data, this.$api.tableManage.exportAssetValue, '资产价值统计表.xls', this)
+      },
+
+      // 全选与其他选项互斥处理
+      statusChange (value) {
+        let lastIndex = value.length - 1
+        this.queryObj.status = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
+      },
+
+      assetTypeChange (value) {
+        let lastIndex = value.length - 1
+        this.queryObj.assetType = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
+        this.queryCategoryOptions()
       }
     },
 
     created () {
+      this.queryAssetType()
       // 初始化Table列头
       let{ fixedColumns } = this
       this.tableObj.columns = fixedColumns
@@ -302,20 +317,6 @@
     watch: {
       organProjectValue: function (val, pre) {
         val.organId !== pre.organId && this.queryCategoryOptions()
-      },
-
-      // 全选与其他选项互斥处理
-      'queryObj.status': function (val) {
-        if (val.length > 1 && val.includes('-1')) {
-          this.queryObj.status = ['-1']
-        }
-      },
-
-      'queryObj.assetType': function (val) {
-        if (val.length > 1 && val.includes('-1')) {
-          this.queryObj.assetType = ['-1']
-        }
-        this.queryCategoryOptions()
       },
       
       'queryObj.queryType': function () {
@@ -356,6 +357,9 @@
             padding: 9px 15px;
             background-color: #fff;
           }
+        }
+        .ant-table-placeholder {
+          display: none;
         }
       }
     }

@@ -21,7 +21,15 @@
             <a-select v-model="queryObj.takeOver" style="width: 100%" placeholder="请选择接管状态" :options="takeOverOptions"/>
           </a-col>
           <a-col :span="4">
-            <a-select v-model="projectStatus" :maxTagCount="1" mode="multiple" style="width: 100%" placeholder="请选择项目状态" :options="projectStatusOptions"/>
+            <a-select
+              v-model="projectStatus"
+              :maxTagCount="1"
+              mode="multiple"
+              style="width: 100%"
+              placeholder="请选择项目状态"
+              @change="projectStatusChange"
+              :options="projectStatusOptions"
+            />
           </a-col>
         </a-row>
       </div>
@@ -93,8 +101,8 @@
         organProjectValue: {}, // 查询条件-组织机构及项目值
         sourceTypeOptions: [{ title: '全部来源方式', key: '' }], // 查询条件-来源方式选项
         projectStatusOptions: [
-          {key: '-1', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
-          {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
+          {key: '-1', title: '全部状态'}, {key: '0', title: '草稿'}, {key: '2', title: '待审批'},
+          {key: '3', title: '已驳回'}, {key: '1', title: '已审批'}, {key: '4', title: '已取消'}
         ], // 查询条件-项目状态选项
         takeOverOptions: [
           { title: '全部接管状态', key: '' }, { title: '已接管', key: '1' }, { title: '未接管', key: '0' }
@@ -125,9 +133,9 @@
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
             { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '接管机构', dataIndex: 'organName' },
             { title: '来源方式', dataIndex: 'sourceTypeName' }, { title: '来源渠道', dataIndex: 'souceChannelType' },
-            { title: '是否接管', dataIndex: 'takeOverName' }, { title: '接管时间', dataIndex: 'takeOverDate' }, { title: '建筑面积', dataIndex: 'area' },
+            { title: '是否接管', dataIndex: 'takeOverName' }, { title: '接管时间', dataIndex: 'takeOverDate' }, { title: '建筑面积(㎡)', dataIndex: 'area' },
             { title: '楼栋数', dataIndex: 'buildCount' },{ title: '项目状态', dataIndex: 'approvalStatusName' },
-            { title: '资产数量', dataIndex: 'assetCount' }, { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+            { title: '资产数量', dataIndex: 'assetCount' }, { title: '运营/转运营面积(㎡)', dataIndex: 'transferOperationArea' },
             { title: '自用(㎡)', dataIndex: 'selfUserArea' }, { title: '闲置(㎡)', dataIndex: 'idleArea' },
             { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
             { title: '首次评估原值', dataIndex: 'assetValuation' }, { title: '资产原值(元)', dataIndex: 'originalValue' },
@@ -141,7 +149,7 @@
             { title: '权属变更时间', dataIndex: 'propertyChangeTime' }, { title: '产权情况', dataIndex: 'ownershipStatusName' },
             { title: '能否过户', dataIndex: 'isTranster' }, { title: '是否转运营', dataIndex: 'transferToOperationName' },
             { title: '转运营时间', dataIndex: 'transferOperationTime' }, { title: '是否转物业', dataIndex: 'isPropertyName' },
-            { title: '转物业时间', dataIndex: 'transferTime' },{ title: '转物业面积', dataIndex: 'transferArea' },
+            { title: '转物业时间', dataIndex: 'transferTime' },{ title: '转物业面积(㎡)', dataIndex: 'transferArea' },
             { title: '备注', dataIndex: 'remark' }
           ]
         },
@@ -260,6 +268,12 @@
         exportDataAsExcel({...form, cells}, this.$api.tableManage.exportAssetProject, '资产项目查询列表.xls', this).then(() => {
           this.exportBtnLoading = false
         })
+      },
+
+      // 全选与其他选项互斥处理
+      projectStatusChange (value) {
+        let lastIndex = value.length - 1
+        this.projectStatus = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
       }
     },
 
@@ -275,13 +289,6 @@
       organProjectValue: function (val, pre) {
         // val && val.organId && this.queryTableData({type: 'search'})
         pre.organId !== val.organId && this.querySourceType(val.organId)
-      },
-
-      // 全选与其他选项互斥处理
-      projectStatus: function (val) {
-        if (val.length > 1 && val.includes('-1')) {
-          this.projectStatus = ['-1']
-        }
       }
     }
   }
