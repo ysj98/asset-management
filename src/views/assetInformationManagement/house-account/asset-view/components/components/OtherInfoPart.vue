@@ -21,6 +21,13 @@
           :dataSource="tableData"
           :pagination="false"
         />
+        <SG-FooterPagination
+          v-if="item['table']['pagination']"
+          :pageLength="pagination.pageSize"
+          :totalCount="pagination.totalCount"
+          v-model="pagination.pageNum"
+          @change="handleChange"
+        />
         <!--特殊处理：权属信息展示的第两个Table-->
         <div v-if="item['table2']">
           <div style="color: #49505E; margin: 35px 0 15px; font-weight: bold">{{item['table2']['tableTitle']}}</div>
@@ -33,15 +40,28 @@
           />
         </div>
       </a-tab-pane>
+      <a-tab-pane tab="运营信息" key="operationInformation">
+        <operationInformation :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>
 
 <script>
   import infoKeys from './otherInfoKeys'
+  import operationInformation from './operationInformation'
+  let getUuid = ((uuid = 1) => () => ++uuid)();
+  let pagination = {
+    pageNum: 1,
+    pageSize: 10,
+    totalCount: 0
+  }
   export default {
     name: 'OtherInfoPart',
-    props: ['assetHouseId', 'assetId'],
+    props: ['assetHouseId', 'assetId', 'transferOperationArea', 'transferOperationTime'],
+    components: {
+      operationInformation
+    },
     data () {
       return {
         infoKeys, // 所有Tab的展示字段
@@ -50,6 +70,7 @@
         tableData: [], // table信息
         table2Data: [], // table2信息
         cacheDataObj: {}, // 缓存信息
+        pagination: { ...pagination}, // 缓存分页一
         apiObj: {
           ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId' }, // 权属信息
           receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetObjectId', data: 'assetHouseId' }, // 接管信息
@@ -57,6 +78,7 @@
           billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId' }, // 账面信息
           accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId' }, // 附属&配套
           disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId' }, // 资产处置
+          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetHouseId', data: 'assetHouseId', pagination: true}, // 相关费用
         } // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
       }
     },
@@ -65,7 +87,13 @@
       queryDetail (type) {
         let { api, tip, param, data } = this.apiObj[type]
         if (!api) { return false }
-        this.$api.assets[api]({[param]: this[data]}).then(r => {
+        let queryData = {[param]: this[data]}
+        // 如果有分页
+        if (this.apiObj[type]['pagination']) {
+          queryData.pageNum = this.pagination.pageNum
+          queryData.pageSize = this.pagination.pageSize
+        }
+        this.$api.assets[api](queryData).then(r => {
           let res = r.data
           let detailData = {}
           let tableData = []
@@ -107,8 +135,19 @@
               detailData = others
               tableData = list
             }
+            // 相关费用
+            if (type === 'relatedExpenses') {
+              tableData = res.data.data.map((m,i) => {
+                return {
+                  key: getUuid(),
+                  ...m,
+                }
+              })
+              this.pagination.totalCount = Number(res.data.count)
+            }
             // 缓存数据
             let obj = type === 'ownInfo' ? { detailData, tableData, table2Data } : { detailData, tableData }
+            obj = type === 'relatedExpenses' ? { detailData, tableData, pagination: {...this.pagination}} : obj
             this.cacheDataObj[type] = obj
             return Object.assign(this, obj)
           }
@@ -116,7 +155,21 @@
         }).catch(err => {
           this.$message.error(err || `查询${tip}错误`)
         })
-      }
+      },
+      // 由于会出现多个接口查询
+      queryDetail2 (type) {
+        
+      },
+      handleChange(data) {
+        this.pagination.pageNum = data.pageNo;
+        this.pagination.pageSize = data.pageLength;
+        this.queryDetail(this.tabKey)
+      },
+      handleChange2(data) {
+        this.pagination2.pageNum = data.pageNo;
+        this.pagination2.pageSize = data.pageLength;
+        this.queryDetail2(this.tabKey)
+      },
     },
     
     created () {
@@ -125,8 +178,13 @@
 
     watch: {
       tabKey (key) {
+        // 如果是运营管理退出
+        if (key === 'operationInformation') {
+          return
+        }
         // 如果Tab被激活过，不再请求接口数据
         const {cacheDataObj} = this
+        console.log('你好世界=>', key, infoKeys[key])
         if (cacheDataObj[key]) {
           Object.assign(this, cacheDataObj[key])
         } else {
@@ -135,6 +193,7 @@
             detailData: {},
             tableData: [],
             table2Data: [],
+            pagination: {...pagination},
           })
           this.queryDetail(key)
         }

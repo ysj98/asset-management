@@ -1,7 +1,7 @@
 /*
  * @Description: 
  * @Date: 2020-02-24 15:17:22
- * @LastEditTime: 2020-03-03 10:30:22
+ * @LastEditTime: 2020-03-17 17:28:01
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { subsidiary } from '../config/config.url'
@@ -39,7 +39,7 @@ export function exportData (data) {
 }
 // 附属配套-导入
 export function batchImport (data) {
-  return axiosPost(subsidiary.batchImport, data)
+  return axiosPost(subsidiary.batchImport, data, false, false, {timeout: 1000 * 60 * 10})
 }
 // 根据资产id 查询资产信息
 export function getAssetById (data) {

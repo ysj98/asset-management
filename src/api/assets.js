@@ -504,3 +504,19 @@ export function updateCardStatus (data) {
 export function queryCardDetail (data) {
   return axiosPost(assets.assetEntry.queryCardDetail, data, false, false)
 }
+// 资产视图费用相关
+export function assetExpenseInfo (data) {
+  return axiosPost(assets.assetView.assetExpenseInfo, data)
+}
+// 资产视图-运营信息-合同信息（分页）
+export function assetOperationContractInfo (data) {
+  return axiosPost(assets.assetView.assetOperationContractInfo, data)
+}
+// 资产视图-运营信息-运营收入（分页）
+export function getAcctItemPageList (data) {
+  return axiosPost(assets.assetView.getAcctItemPageList, data)
+}
+// 资产视图-运营信息-运营收入（返回参数）
+export function assetOperationExpenseParam (data) {
+  return axiosPost(assets.assetView.assetOperationExpenseParam, data)
+}

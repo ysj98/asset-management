@@ -1,3 +1,4 @@
+
 <!--资产视图业务-资产视图详情页面-->
 <template>
   <div class="asset_view">
@@ -5,9 +6,9 @@
       <!--返回-->
     <!--</SG-Button>-->
     <!--基础信息部分-->
-    <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId"/>
+    <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" @updataTransfer="updataTransfer"/>
     <!--其它信息部分-->
-    <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId"/>
+    <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
   </div>
 </template>
 
@@ -20,11 +21,17 @@
     data () {
       return {
         assetHouseId: '', // 房屋Id
-        assetId: '' // 资产Id
+        assetId: '', // 资产Id
+        transferOperationArea: '', // 转运营面积
+        transferOperationTime: '', // 转运营时间
       }
     },
 
-    methods: {},
+    methods: {
+      updataTransfer (obj) {
+        Object.assign(this, obj)
+      }
+    },
     
     created () {
       const { query: { houseId, assetId } } = this.$route

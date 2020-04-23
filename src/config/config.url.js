@@ -267,7 +267,17 @@ export const assets = {
     // 资产详情-其他信息Tab-资产处置
     queryDisposeDetail: '/ams/disposeRegister/getListByAssetId',
     // 资产详情-其他信息Tab-附属&配套
-    queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId'
+    queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+    // 资产视图费用相关
+    assetExpenseInfo: '/ams/operationContract/assetExpenseInfo',
+    // 资产视图-运营信息-合同信息（分页）
+    assetOperationContractInfo: '/ams/operationContract/assetOperationContractInfo',
+    // // 资产视图-运营信息-运营收入（分页）
+    // assetOperationExpenseInfo: '/ams/operationContract/assetOperationExpenseInfo',
+    // 资产视图-运营信息-运营收入（返回参数）
+    assetOperationExpenseParam: '/ams/operationContract/assetOperationExpenseParam',
+    // 资产视图-运营信息-运营收入(计费接口)（分页）
+    getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
   },
   // 资产项目管理
   projectManage: {
