@@ -164,8 +164,8 @@
         let arr = []
         if (queryType === '0') {
           // 按月统计时，最大年份跨度1年
-          for (let i = 1; i < 13; i++) {
-            arr.push({title: `${startTime}-${i}月`, dataIndex: `date_${i}`})
+          for (let i = 0; i < 12; i++) {
+            arr.push({title: `${startTime}-${i + 1}月`, dataIndex: `date_${i}`})
           }
         } else {
           let len = Number(endTime) - Number(startTime) + 1
