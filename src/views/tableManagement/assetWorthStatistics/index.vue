@@ -63,7 +63,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom_table td-pd10">
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
       <span slot="projectName" slot-scope="text, record">
         <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
@@ -113,9 +113,9 @@
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
           { title: '资产编号', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' }, fixed: 'left' },
-          { title: '资产名称', dataIndex: 'assetName' },
+          { title: '资产名称', dataIndex: 'assetName', width: 180 },
           { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-          { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
+          { title: '所属机构', dataIndex: 'organName', width: 180 }, { title: '资产项目', dataIndex: 'projectName', width: 180 },
           { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
           { title: '首次市场估值(元)', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' }
         ], // 列头不变部分
@@ -125,7 +125,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: true },
+          scroll: { x: 1400 },
           columns: []
         },
         numList: [
@@ -197,6 +197,7 @@
           }
         }
         this.tableObj.columns = this.fixedColumns.concat(arr)
+        this.tableObj.scroll.x = 1400 + arr.length * 120
       },
 
       // 查询列表数据
@@ -272,13 +273,13 @@
         let arr = []
         let len = obj[queryType]
         this.endTimeOptions = []
-        if (startYear + len - 1 < Number(endTime) || startYear > Number(endTime)) {
-          this.queryObj.endTime = undefined
-        }
         for (let i = 0; i < len; i++) {
           arr.push({ title: String(startYear + i), key: String(startYear + i) })
         }
         this.endTimeOptions = arr
+        if (startYear + len - 1 < Number(endTime) || startYear > Number(endTime) || !endTime) {
+          this.queryObj.endTime = arr[0]['key']
+        }
       },
 
       // 导出
@@ -315,8 +316,12 @@
     },
 
     watch: {
-      organProjectValue: function (val, pre) {
-        val.organId !== pre.organId && this.queryCategoryOptions()
+      organProjectValue: {
+        handler: function (val, pre) {
+          val.organId !== pre.organId && this.queryCategoryOptions()
+          this.queryTableData({type: 'search'})
+        },
+        deep: true
       },
       
       'queryObj.queryType': function () {
@@ -329,7 +334,7 @@
 
       'queryObj.assetName': function (val) {
         if (val.length > 40) {
-          this.assetName = val.slice(0, 40)
+          this.queryObj.assetName = val.slice(0, 40)
           return this.$message.warn('最大支持40个字符')
         }
       }
@@ -339,27 +344,13 @@
 
 <style lang='less' scoped>
   .asset_worth {
-    .custom_table {
+    .custom-table {
       padding: 8px 0 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {
-        .ant-table-thead th, td {
+        .ant-table-thead th {
           white-space: nowrap;
-        }
-        .ant-table-thead {
-          font-size: 14px;
-          border-top: 1px solid #E6EAEF;
-          border-bottom: 1px solid #E6EAEF;
-          box-shadow: 0 2px 6px 0 rgba(66, 155, 255, 0.2);
-          th {
-            color: #49505E;
-            padding: 9px 15px;
-            background-color: #fff;
-          }
-        }
-        .ant-table-placeholder {
-          display: none;
         }
       }
     }

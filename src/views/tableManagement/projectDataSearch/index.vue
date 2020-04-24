@@ -150,7 +150,7 @@
             { title: '能否过户', dataIndex: 'isTranster' }, { title: '是否转运营', dataIndex: 'transferToOperationName' },
             { title: '转运营时间', dataIndex: 'transferOperationTime' }, { title: '是否转物业', dataIndex: 'isPropertyName' },
             { title: '转物业时间', dataIndex: 'transferTime' },{ title: '转物业面积(㎡)', dataIndex: 'transferArea' },
-            { title: '备注', dataIndex: 'remark' }
+            { title: '备注', dataIndex: 'remark', width: 180 }
           ]
         },
         numList: [
@@ -274,6 +274,7 @@
       projectStatusChange (value) {
         let lastIndex = value.length - 1
         this.projectStatus = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
+        this.queryTableData({type: 'search'})
       }
     },
 
@@ -286,9 +287,19 @@
     },
 
     watch: {
-      organProjectValue: function (val, pre) {
-        // val && val.organId && this.queryTableData({type: 'search'})
-        pre.organId !== val.organId && this.querySourceType(val.organId)
+      organProjectValue: {
+        handler: function (val, pre) {
+          this.queryTableData({type: 'search'})
+          pre.organId !== val.organId && this.querySourceType(val.organId)
+        },
+        deep: true
+      },
+
+      queryObj: {
+        handler: function () {
+          this.queryTableData({type: 'search'})
+        },
+        deep: true
       }
     }
   }
@@ -300,7 +311,7 @@
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table {
-      .ant-table-thead th,  td {
+      .ant-table-thead th {
         white-space: nowrap;
       }
     }

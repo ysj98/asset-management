@@ -63,6 +63,30 @@
       this.queryAssetType()
     },
 
+    watch: {
+      useType: function () {
+        this.queryData()
+      },
+
+      assetType: function () {
+        this.queryData()
+      },
+
+      provinceCityDistrict: {
+        handler: function () {
+          this.queryData()
+        },
+        deep: true
+      },
+
+      organProjectValue: {
+        handler: function () {
+          this.queryData()
+        },
+        deep: true
+      }
+    },
+
     methods: {
       // 选中资产类型
       selectAssetType (value) {
