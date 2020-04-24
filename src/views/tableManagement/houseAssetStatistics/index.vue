@@ -37,7 +37,7 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: true },
+          scroll: { x: 2200 },
           columns: [
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 150, fixed: 'left' },
             { title: '资产项目编码', dataIndex: 'projectCode' },

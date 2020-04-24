@@ -62,7 +62,9 @@
               }
             })
             this.isHasData = true
-            let list = arr.length || area || percentage ? [...arr, { useTypeName: '其他', area, percentage }] : []
+            let list = arr.length || area || percentage ? [
+              ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
+            ] : []
             // 加载完DOM渲染图表
             return this.$nextTick(function () {
               this.renderThetaChart('area_statistics', 'useTypeName', list)

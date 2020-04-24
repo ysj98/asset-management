@@ -66,7 +66,7 @@
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
-          scroll: {x: true},
+          scroll: {x: 2500},
           pagination: false,
           rowKey: 'warrantId',
           loading: false,
@@ -192,7 +192,7 @@
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {
-        .ant-table-thead th, td {
+        .ant-table-thead th {
           white-space: nowrap;
         }
         .ant-table-thead {

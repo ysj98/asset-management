@@ -80,7 +80,7 @@
         const { queryInfo, columnsDynamic, sortIndex } = this
         this.dataSource = []
         this.tableLoading = true
-        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex])
+        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
         this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo}).then(r => {
           this.tableLoading = false
           let res = r.data
@@ -132,7 +132,8 @@
         // 如果包含地区维度，则添加省份、城市列头
         isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(isHasRegion + 1, 0, ...columnsPC)
         this.columnsDynamic = columnsDynamic
-        this.handleColumns()
+        // this.handleColumns()
+        this.queryTableData({})
         // 防止较少列时出现滚动
         // this.scroll = { x: columns.length * 100 }
       },

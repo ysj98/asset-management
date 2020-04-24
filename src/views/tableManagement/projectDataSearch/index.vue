@@ -128,7 +128,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 4500 },
+          scroll: { x: 4800 },
           columns: [
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
             { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '接管机构', dataIndex: 'organName' },
