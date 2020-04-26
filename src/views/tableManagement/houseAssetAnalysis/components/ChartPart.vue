@@ -65,10 +65,11 @@
             let list = arr.length || area || percentage ? [
               ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
             ] : []
+            let usedArr = ((usedList || []).filter(v => Number(v.area))).length ? usedList : []
             // 加载完DOM渲染图表
             return this.$nextTick(function () {
               this.renderThetaChart('area_statistics', 'useTypeName', list)
-              this.renderThetaChart('direct_statistics', 'usedName', usedList)
+              this.renderThetaChart('direct_statistics', 'usedName', usedArr)
               this.renderRectChart(assetValue)
             })
             
