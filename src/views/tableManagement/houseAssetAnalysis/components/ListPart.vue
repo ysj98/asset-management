@@ -34,15 +34,15 @@
         exportBtnLoading: false, // 导出button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         dataSource: [], // Table数据源
+        columnsPC: [{ title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' }], // 省份城市字段跟随地区展示
         columnsFixed: [
-          { title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' },
           { title: '建筑面积', dataIndex: 'area' }, { title: '资产原值', dataIndex: 'originalValue' },
           { title: '首次评估原值', dataIndex: 'firstOriginalValue' }, { title: '最新估值', dataIndex: 'latestValuationValue' }
         ], // Table 列头固定部分
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
-          { title: '用途', dataIndex: 'useTypeName' }, { title: '地区', dataIndex: 'regionName' },
-          { title: '权属情况', dataIndex: 'ownershipStatusName' }
+          { title: '用途', dataIndex: 'useTypeName' }, { title: '权属情况', dataIndex: 'ownershipStatusName' },
+          { title: '地区', dataIndex: 'regionName' }
         ], // 统计维度的集合
         columnsDynamic: [], // Table 列头动态部分, 用于合成columns
         columns: [], // // Table 列头 = columnsDynamic合并单元格处理后 + columnsFixed
@@ -61,8 +61,8 @@
     },
     
     mounted () {
-      const { sortFactor } = this
-      this.columnsDynamic = sortFactor
+      const { sortFactor, columnsPC } = this
+      this.columnsDynamic = sortFactor.concat(columnsPC)
       this.sortFunc = this.generateSort(sortFactor)
       this.checkedHeaderArr = sortFactor.map(m => m.dataIndex)
       this.handleColumns()
@@ -79,14 +79,20 @@
       queryTableData ({pageNo = 1, pageLength = 10}) {
         const { queryInfo, columnsDynamic, sortIndex } = this
         this.dataSource = []
-        this.loading = true
-        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex])
+        this.tableLoading = true
+        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
         this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo}).then(r => {
-          this.loading = false
+          this.tableLoading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.dataSource = (data || []).map((m, key) => ({ ...m, key }))
+            this.dataSource = (data || []).map((m, key) => {
+              let obj = {}
+              // 防止排序时出现字段值为null,无法使用localeCompare
+              let arr = ['organName', 'projectName', 'useTypeName', 'regionName', 'ownershipStatusName']
+              arr.forEach(n => obj[n] = m[n] || '')
+              return { ...m, ...obj, key }
+            })
             this.handleColumns()
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
@@ -94,7 +100,7 @@
           }
           throw res.message
         }).catch(err => {
-          this.loading = false
+          this.tableLoading = false
           this.$message.error(err || '查询列表接口出错')
         })
       },
@@ -111,15 +117,23 @@
         if (!checkedList.length) {
           return this.$message.info('请至少选中一项!')
         }
+        const { columnsPC } = this
         // 同步sortFactor数据顺序
         this.sortFactor = options
         this.modalObj.status = false
         this.checkedHeaderArr = checkedList
         // 生成选中的且按统计维度顺序排列的columnsDynamic
-        let columnsDynamic = options.filter(n => checkedList.includes(n.dataIndex))
-        this.columnsDynamic = columnsDynamic
+        let isHasRegion = -1
+        let columnsDynamic = options.filter((n, i) => {
+          isHasRegion = n.dataIndex === 'regionName' ? i : isHasRegion
+          return checkedList.includes(n.dataIndex)
+        })
         this.sortFunc = this.generateSort(columnsDynamic)
-        this.handleColumns()
+        // 如果包含地区维度，则添加省份、城市列头
+        isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(isHasRegion + 1, 0, ...columnsPC)
+        this.columnsDynamic = columnsDynamic
+        // this.handleColumns()
+        this.queryTableData({})
         // 防止较少列时出现滚动
         // this.scroll = { x: columns.length * 100 }
       },

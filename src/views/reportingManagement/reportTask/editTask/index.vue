@@ -277,7 +277,7 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      .ant-table-thead th, td {
+      .ant-table-thead th {
         white-space: nowrap;
       }
     }

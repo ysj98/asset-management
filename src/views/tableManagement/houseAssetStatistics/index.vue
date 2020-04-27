@@ -37,27 +37,29 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: true },
+          scroll: { x: 2200 },
           columns: [
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 150, fixed: 'left' },
-            { title: '资产项目编码', dataIndex: 'projectCode' },
-            { title: '管理机构', dataIndex: 'organName' },
-            { title: '本企业有产权楼栋数量', dataIndex: 'ownBuildNumber' },
-            { title: '本企业有产权房屋数量', dataIndex: 'ownHouseNumber' },
-            { title: '本企业有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber' },
-            { title: '本企业有使用权房屋数量', dataIndex: 'ownUsedHouseNumber' },
-            { title: '其他企业有产权楼栋数量', dataIndex: 'otherBuildNumber' },
-            { title: '其他企业有产权房屋数量', dataIndex: 'otherHouseNumber' },
-            { title: '其他企业有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber' },
-            { title: '其他企业有使用权房屋数量', dataIndex: 'otherUsedHouseNumber' },
+            { title: '资产项目编码', dataIndex: 'projectCode', width: 150 },
+            { title: '管理机构', dataIndex: 'organName', width: 180 },
+            { title: '本企业有产权楼栋数量', dataIndex: 'ownBuildNumber', width: 180 },
+            { title: '本企业有产权房屋数量', dataIndex: 'ownHouseNumber', width: 180 },
+            { title: '本企业有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber', width: 180 },
+            { title: '本企业有使用权房屋数量', dataIndex: 'ownUsedHouseNumber', width: 180 },
+            { title: '其他企业有产权楼栋数量', dataIndex: 'otherBuildNumber', width: 180 },
+            { title: '其他企业有产权房屋数量', dataIndex: 'otherHouseNumber', width: 180 },
+            { title: '其他企业有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber', width: 180 },
+            { title: '其他企业有使用权房屋数量', dataIndex: 'otherUsedHouseNumber', width: 180 },
           ]
         },
       }
     },
 
-    // mounted () {
-      // this.queryTableData({})
-    // },
+    watch: {
+      organProjectValue: function () {
+        this.queryTableData({})
+      }
+    },
 
     methods: {
       // 导出
@@ -72,7 +74,7 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10}) {
         const {organProjectValue: {organId, projectId}} = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
+        if (!organId) { return this.tableObj.dataSource = [] }
         this.tableObj.loading = true
         this.$api.tableManage.queryWarrantHouse({organId, projectId, pageSize: pageLength, pageNum: pageNo}).then(r => {
           this.tableObj.loading = false
@@ -100,11 +102,11 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table {
-        .ant-table-thead th, td {
-          white-space: nowrap;
-        }
-      }
+      /*& /deep/ .ant-table {*/
+        /*.ant-table-thead th, td {*/
+          /*white-space: nowrap;*/
+        /*}*/
+      /*}*/
     }
   }
 </style>
