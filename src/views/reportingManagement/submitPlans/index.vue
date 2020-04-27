@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime: 2020-03-15 15:59:19
+ * @LastEditTime: 2020-04-27 10:16:36
  * @LastEditors: Please set LastEditors
  * @Description: 呈报计划
  * @FilePath: \asset-management\src\views\reportingManagement\submitForm\index.vue
@@ -330,7 +330,7 @@ export default {
       let _this = this
       this.$confirm({
         title: '提示',
-        content: '确认要删除该呈报计划吗',
+        content: '确认要删除该呈报计划吗?',
         onOk() {
           let obj = {
             reportPlanId: id,

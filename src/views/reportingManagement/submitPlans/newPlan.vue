@@ -594,28 +594,32 @@ export default {
 		// 资产选择变动
     assetChange (checkedData, checkedNames, rowsData) {
 			this.checkedData = checkedData
-			console.log(checkedData)
-			console.log(checkedNames)
-			console.log(rowsData)
 			rowsData.forEach((item, index) => {
 				item.indexs = index + 1
 			})
 			this.table.tableData = rowsData
       this.$refs.associateAssetModal.show = false
-		},
-		// 删除
+    },
+    // 删除
     deleteFn (record) {
-      this.table.tableData.forEach((item, index) => {
-        if (item.projectId === record.projectId) {
-          this.table.tableData.splice(index, 1)
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要删除吗？',
+        onOk() {
+          _this.table.tableData.forEach((item, index) => {
+            if (item.projectId === record.projectId) {
+              _this.table.tableData.splice(index, 1)
+            }
+          })
+          _this.checkedData.forEach((item, index) => {
+            if (record.projectId === item) {
+              _this.checkedData.splice(index, 1)
+            }
+          })
         }
       })
-      this.checkedData.forEach((item, index) => {
-        if (record.projectId === item) {
-          this.checkedData.splice(index, 1)
-        }
-      })
-		},
+    },
 		// 表格选人
     tabSelectPerson (record, index, type) {
 			console.log(record, index, type)
