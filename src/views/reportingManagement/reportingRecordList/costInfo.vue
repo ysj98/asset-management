@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-29 14:36:11
+ * @LastEditTime: 2020-04-29 16:23:02
  -->
 <template>
   <div class="assetsRegistration">
