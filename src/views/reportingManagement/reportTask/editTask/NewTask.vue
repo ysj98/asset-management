@@ -28,9 +28,11 @@
         <a-col :span="8">
           <a-form-item label="资产项目" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
+              showSearch
               style="width: 100%;"
-              placeholder="请选择资产项目"
               :options="projectOptions"
+              placeholder="请选择资产项目"
+              :filterOption="filterOption"
               @change="getId($event, 'projectId')"
               v-decorator="['projectId', {rules: [{required: true, message: '请选择资产项目'}]}]"
             />
@@ -140,6 +142,13 @@
     },
 
     methods: {
+      // 搜索过滤选项
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
+
       // 查询表单列表
       queryBillList () {
         this.$api.reportManage.queryAllReportBill().then(r => {

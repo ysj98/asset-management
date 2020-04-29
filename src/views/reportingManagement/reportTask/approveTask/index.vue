@@ -139,9 +139,9 @@
         let form = {
           action: 'sh', // 默认值
           searchText, pageSize: pageLength, pageNum: pageNo, beginDate, endDate,
-          taskType: (!taskType || taskType.includes('all')) ? undefined : taskType.join(','),
-          taskStatus: (!taskStatus || taskStatus.includes('all')) ? undefined : taskStatus.join(','),
-          reportBillId: (!reportBillId || reportBillId.includes('all')) ? undefined : reportBillId.join(',')
+          taskTypeSplice: (!taskType || taskType.includes('all')) ? undefined : taskType.join(','),
+          taskStatusSplice: (!taskStatus || taskStatus.includes('all')) ? undefined : taskStatus.join(','),
+          reportBillIdSplice: (!reportBillId || reportBillId.includes('all')) ? undefined : reportBillId.join(',')
         }
         this.tableObj.loading = true
         this.$api.reportManage.queryTaskPage(form).then(r => {
