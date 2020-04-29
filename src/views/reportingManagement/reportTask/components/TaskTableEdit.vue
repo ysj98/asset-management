@@ -140,7 +140,7 @@
                   style="width: 100%"
                   :placeholder="`请选择${m.columnDesc}`"
                   v-decorator="[`${m.columnName}_${record.key}`, {
-                    initialValue: text,
+                    initialValue: handleInitSelectValue(text, m.options),
                     rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
                   }]"
                 />
@@ -270,6 +270,11 @@
     },
 
     methods: {
+      // 判断选项中是否包含当前值
+      handleInitSelectValue (v, options) {
+        return options.some(m => String(m.key) === String(v)) ? v : undefined
+      },
+
       // 批处理Table Cell数据
       handleSameTableCell ({columnType, columnName, sameCellValue, options, columnDesc, type, columnLength}) {
         // 点击资产编码或资产卡片编码不执行操作
@@ -444,6 +449,7 @@
       
       // 导出模板
       exportTemplate () {
+        event.stopPropagation()
         this.exportBtnLoading = true
         const { reportBillId } = this.taskInfo
         this.$api.reportManage.exportDetailTemplate({reportBillId}).then(res => {
@@ -489,7 +495,8 @@
               dateArr.forEach(v => {
                 const { name, format } = v
                 if (m.hasOwnProperty(name)) {
-                  m[name] = m[name] ? moment(m[name], format) : null
+                  let dateTemp = m[name] ? moment(m[name], format) : null
+                  m[name] = (dateTemp && dateTemp.format(format) == 'Invalid date') ? null : dateTemp
                 }
               })
               let key = i + new Date().getTime()
@@ -567,6 +574,14 @@
       // 根据billId加载Table列头字段
       'taskInfo.reportBillId': function () {
         this.queryColumns()
+      },
+      
+      // 填报说明限制200字
+      resultRemark: function (val) {
+        if (val.length > 200) {
+          this.$message.warn('不得超过200字符')
+          this.resultRemark = val.slice(0, 200)
+        }
       }
     }
   }
