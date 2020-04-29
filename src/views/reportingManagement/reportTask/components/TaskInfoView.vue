@@ -42,7 +42,7 @@
           reportByName: '填报人',
           auditByName: '审核人',
           taskStatusName: '任务状态',
-          createBy: '发布人',
+          createByName: '发布人',
           createTime: '发布时间',
           taskTypeName: '任务类型'
         },

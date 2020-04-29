@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-29 14:36:03
+ * @LastEditTime: 2020-04-29 17:57:43
  -->
 <template>
   <div class="assetsRegistration">
@@ -338,7 +338,7 @@ export default {
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
         taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',                // 审批状态 1未完成 2待审批 3已驳回 4已完成
         taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : '',                  // 1临时 2固定 3数据
-        month: `${moment(this.month).format('YYYY-MM')}-01`,                     // 月份
+        month: this.month ? `${moment(this.month).format('YYYY-MM')}-01` : '',                     // 月份
         // month: '',
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',
         pageNum: this.queryCondition.pageNum,                // 当前页
