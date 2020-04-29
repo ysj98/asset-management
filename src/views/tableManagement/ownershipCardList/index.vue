@@ -26,7 +26,7 @@
       </a-col>
     </a-row>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="table-box td-pd10">
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="warrantNbr" slot-scope="text, record">
         <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record.warrantNbr)">{{text}}</span>
       </template>
@@ -66,13 +66,13 @@
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
-          scroll: {x: true},
+          scroll: { x: 2400 },
           pagination: false,
           rowKey: 'warrantId',
           loading: false,
           dataSource: [],
           columns: [
-            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' },fixed: 'left', width: 120 },
+            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, fixed: 'left' },
             { title: '所属机构', dataIndex: 'organName' },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属人', dataIndex: 'obligeeName' },
@@ -82,7 +82,7 @@
             { title: '权属用途', dataIndex: 'ownershipUseName' },
             { title: '建筑面积', dataIndex: 'buildArea' },
             { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea' },
-            { title: '分摊面积', dataIndex: 'apportionArea' },
+            { title: '分摊面积', dataIndex: 'apportionArea, width: 150' },
             { title: '产别', dataIndex: 'antenatal' },
             { title: '结构', dataIndex: 'structureName' },
             { title: '总层数', dataIndex: 'totalFloor' },
@@ -180,32 +180,26 @@
           this.queryObj.warrantNbr = val.slice(0, 60)
           return this.$message.warn('最多支持60字符')
         }
+      },
+
+      queryObj: {
+        handler: function () {
+          this.queryTableData({})
+        },
+        deep: true
       }
     }
   }
 </script>
 
 <style lang='less' scoped>
-  .ownership_card {
-    .table-box {
-      padding-bottom: 55px;
-      /*if you want to set scroll: { x: true }*/
-      /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table {
-        .ant-table-thead th, td {
-          white-space: nowrap;
-        }
-        .ant-table-thead {
-          font-size: 14px;
-          border-top: 1px solid #E6EAEF;
-          border-bottom: 1px solid #E6EAEF;
-          box-shadow: 0 2px 6px 0 rgba(66, 155, 255, 0.2);
-          th {
-            color: #49505E;
-            padding: 9px 15px;
-            background-color: #fff;
-          }
-        }
+  .custom-table {
+    padding-bottom: 55px;
+    /*if you want to set scroll: { x: true }*/
+    /*you need to add style .ant-table td { white-space: nowrap; }*/
+    & /deep/ .ant-table {
+      .ant-table-thead th {
+        white-space: nowrap;
       }
     }
   }

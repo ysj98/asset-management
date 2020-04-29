@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-03-09 11:14:36
+ * @LastEditTime: 2020-04-29 14:36:11
  -->
 <template>
   <div class="assetsRegistration">
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+        <SG-Button type="primary" @click="onSearch">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">

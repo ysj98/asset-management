@@ -1,8 +1,9 @@
 <!--
 选岗位或选人组件
 selectType  String 区分选人staff  选岗post
-selectOptList Aarry 编辑时已选种的岗或人
+selectOptList Array 编辑时已选种的岗或人
 selectionNumber Number 默认最多选择5个 传0不做选择控制且显示全选按钮
+allOrganId: Array  默认选择全部组织机构  如果传了组织机构进来就只能选择改组织机构下的组织机构的人
 -->
 <template>
   <div class="select-staffs-components">
@@ -25,11 +26,13 @@ selectionNumber Number 默认最多选择5个 传0不做选择控制且显示全
 
           <div class="query-condition">
             <!-- 选择组织机构 -->
-            <TreeSelect  
+            <TreeSelect
+            v-if="allOrganId.length === 0"
             @changeTree="changeTree"
           placeholder="请选择组织机构"
           :allowClear="false"
           :style="allStyle"/>
+          <primaryTree v-if="allOrganId.length > 0" @changeTree="changeTree" :allOrganId="allOrganId"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></primaryTree>
             <!-- 选择人员姓氏首字母 -->
             <!-- <letter-list v-if="selectType==='staff'" v-model="queryCondition.staff.firstLetter" class="letter-select"></letter-list> -->
             <!-- 姓名搜索 -->
@@ -110,8 +113,9 @@ selectionNumber Number 默认最多选择5个 传0不做选择控制且显示全
   </div>
 </template>
 <script>
-import letterList from './letterList.vue'
+// import letterList from './letterList.vue'
 import TreeSelect from "@/views/common/treeSelect"
+import primaryTree from './primaryTree'
 import _ from 'lodash'
 // import { queryUsersByOrgan, queryPostByOrgan } from '@/api/global'
 import { queryUserPageList, queryPostNewPageList } from '@/api/basics.js'
@@ -136,11 +140,15 @@ const allStyle = { width: "148px" }
 export default {
   name: 'selectStaffOrPost',
   components: {
-    letterList,
     // selectDropTree,
     TreeSelect,
+    primaryTree
   },
   props: {
+    allOrganId: {
+      type: Array,
+      default: () => []
+    },
     selectType: {
       type: [String, Number],
       default: 'staff'
@@ -156,6 +164,7 @@ export default {
   },
   data () {
     return {
+      judgeInstitutions: false,
       allStyle,
       visible: false,
       organId: {}, // 组织机构id

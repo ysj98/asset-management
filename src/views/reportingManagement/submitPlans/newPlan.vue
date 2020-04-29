@@ -242,17 +242,17 @@
     </FormFooter>
 		<div>
       <!-- 选人 -->
-      <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
+      <selectStaffOrPost ref="selectStaffOrPost" :allOrganId="organIdData" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
 		<!-- 选资产 -->
-		<associateAssetModal ref="associateAssetModal" :selectNumber="100" organId="" :judgeInstitutions="false" @assetChange="assetChange"></associateAssetModal>
+		<projectModal ref="projectModal" :selectNumber="100" :allOrganId="organIdData" :judgeInstitutions="false" @assetChange="assetChange"></projectModal>
   </div>
 </template>
 
 <script>
 import selectStaffOrPost from '@/views/common/selectStaffOrPost'
 import noDataTips from "@/components/noDataTips"
-import associateAssetModal from '../../common/projectModal'
+import projectModal from '../../common/projectModal'
 import FormFooter from '@/components/FormFooter'
 import {utils} from '@/utils/utils.js'
 import moment from 'moment'
@@ -349,7 +349,7 @@ let oneHasYear = [
 ]
 const beginDayOpt = Array.from({length:31}).map((v,i) => ({label: `${i+1}日`, value: `${i+1}`, key: `${i+1}`}))
 export default {
-  components: {associateAssetModal, selectStaffOrPost, FormFooter, noDataTips},
+  components: {projectModal, selectStaffOrPost, FormFooter, noDataTips},
   props: {},
   data () {
     return {
@@ -588,34 +588,38 @@ export default {
 		},
 		// 添加资产
     addTheAsset () {
-			this.$refs.associateAssetModal.show = true
-			this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.table.tableData)
+			this.$refs.projectModal.show = true
+			this.$refs.projectModal.redactCheckedDataFn(this.checkedData, this.table.tableData)
 		},
 		// 资产选择变动
     assetChange (checkedData, checkedNames, rowsData) {
 			this.checkedData = checkedData
-			console.log(checkedData)
-			console.log(checkedNames)
-			console.log(rowsData)
 			rowsData.forEach((item, index) => {
 				item.indexs = index + 1
 			})
 			this.table.tableData = rowsData
-      this.$refs.associateAssetModal.show = false
-		},
-		// 删除
+      this.$refs.projectModal.show = false
+    },
+    // 删除
     deleteFn (record) {
-      this.table.tableData.forEach((item, index) => {
-        if (item.projectId === record.projectId) {
-          this.table.tableData.splice(index, 1)
+      let _this = this
+      this.$confirm({
+        title: '提示',
+        content: '确认要删除吗？',
+        onOk() {
+          _this.table.tableData.forEach((item, index) => {
+            if (item.projectId === record.projectId) {
+              _this.table.tableData.splice(index, 1)
+            }
+          })
+          _this.checkedData.forEach((item, index) => {
+            if (record.projectId === item) {
+              _this.checkedData.splice(index, 1)
+            }
+          })
         }
       })
-      this.checkedData.forEach((item, index) => {
-        if (record.projectId === item) {
-          this.checkedData.splice(index, 1)
-        }
-      })
-		},
+    },
 		// 表格选人
     tabSelectPerson (record, index, type) {
 			console.log(record, index, type)

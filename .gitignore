@@ -20,3 +20,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+.VSCodeCounter/results.txt
+.VSCodeCounter/results.csv
+.VSCodeCounter/details.md
+.VSCodeCounter/results.md

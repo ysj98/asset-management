@@ -2,22 +2,19 @@
 <template>
   <a-spin :spinning="loading" class="chart_part">
     <SG-Title title="汇总分析"/>
-    <div style="margin-left: 45px" v-if="Object.keys(queryInfo).length">
+    <div style="margin-left: 45px" v-if="isHasData">
       <a-row :gutter="16">
         <a-col :span="8">
           <div class="chart_title">建筑面积统计</div>
           <div id="area_statistics"></div>
-          <div v-if="!dataObj.buildArea" style="text-align: center; color: #00000073">暂无数据</div>
         </a-col>
         <a-col :span="8">
           <div class="chart_title">使用方向统计</div>
           <div id="direct_statistics"></div>
-          <div v-if="!dataObj.used" style="text-align: center; color: #00000073">暂无数据</div>
         </a-col>
         <a-col :span="8">
           <div class="chart_title">资产价值统计</div>
           <div id="asset_statistics"></div>
-          <div v-if="!dataObj.assetValue" style="text-align: center; color: #00000073">暂无数据</div>
         </a-col>
       </a-row>
     </div>
@@ -33,7 +30,7 @@
     data () {
       return {
         loading: false, // 页面loading
-        dataObj: {} // 判断是否展示图表的标志
+        isHasData: false // 是否有图表数据，用于判断显示缺省文字
       }
     },
     
@@ -46,6 +43,7 @@
       queryData (form) {
         if (!form.organId) { return false }
         this.loading = true
+        this.isHasData = false
         this.$api.tableManage.queryAssetHouseTotal(form).then(r => {
           this.loading = false
           let res = r.data
@@ -63,49 +61,61 @@
                 arr.push(m)
               }
             })
-            this.dataObj = {
-              buildArea: buildArea.length,
-              used: (usedList || []).length,
-              assetValue: Object.keys(assetValue || {}).length
-            }
-            this.renderThetaChart('area_statistics', 'useTypeName', [...arr, { useTypeName: '其他', area, percentage }])
-            this.renderThetaChart('direct_statistics', 'usedName', usedList)
-            this.renderRectChart(assetValue)
-            return false
+            this.isHasData = true
+            let list = arr.length || area || percentage ? [
+              ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
+            ] : []
+            let usedArr = ((usedList || []).filter(v => Number(v.area))).length ? usedList : []
+            // 加载完DOM渲染图表
+            return this.$nextTick(function () {
+              this.renderThetaChart('area_statistics', 'useTypeName', list)
+              this.renderThetaChart('direct_statistics', 'usedName', usedArr)
+              this.renderRectChart(assetValue)
+            })
+            
           }
           throw res.message
         }).catch(err => {
+          this.isHasData = false
           this.loading = false
           this.$message.error(err || '查询汇总数据出错')
         })
       },
+
       // 绘制饼状图
       renderThetaChart (containerId, colorName, data = []) {
         if (!data.length) {
-          document.getElementById(containerId).innerHTML = '<div style="text-align: center; color: #00000073">暂无汇总数据</div>'
+          document.getElementById(containerId).innerHTML = '<div style="text-align: center; color: #00000073">暂无数据</div>'
           return false
         }
         const chart = new Chart({
           container: containerId, // 指定图表容器 ID
-          height: 250, // 指定图表高度
-          autoFit: true
+          autoFit: true,
+          height: 250 // 指定图表高度
         })
         chart.coordinate('theta', { radius: 0.6 }) // 饼图大小
         chart.data(data)
         chart.interval().position('area').color(colorName).label('area', {
-          layout: { type: 'overlap' },
-          offset: 0,
+          // layout: { type: 'overlap' },
+          // offset: 0,
           content: data => `${data.area} (${data.percentage ? `${data.percentage}%` : '-'})`
         }).adjust('stack')
-        chart.tooltip(false).render()
+        chart.tooltip({
+          showTitle: false,
+          showMarkers: false
+        }).render()
       },
 
       // 绘制柱状图
       renderRectChart (obj = {}) {
+        if (!Object.keys(obj).length) {
+          document.getElementById('asset_statistics').innerHTML = '<div style="text-align: center; color: #00000073">暂无数据</div>'
+          return false
+        }
         const chart = new Chart({
           container: 'asset_statistics',
-          height: 250,
-          autoFit: true
+          autoFit: true,
+          height: 250
         })
         let max = 0
         let arr = [
@@ -153,7 +163,7 @@
         display: block;
         position: absolute;
         bottom: 0;
-        width: 100%;
+        width: 50%;
         height: 25px;
         background-color: transparent;
       }

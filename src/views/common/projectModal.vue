@@ -18,7 +18,7 @@
           <div class="tab-container">
             <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="70px">
               <div slot="col-r">
-                <treeSelect v-if="!judgeInstitutions" @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+                <primaryTree v-if="!judgeInstitutions" @changeTree="changeTree" :allOrganId="allOrganId"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></primaryTree>
                 <a-input :style="allStyle" v-model="assetNameCode" placeholder="资产项目/编码"/>
                 <SG-Button type="primary" @click="queryClick">查询</SG-Button>
               </div>
@@ -73,7 +73,7 @@
 <script>
   import Cephalosome from '@/components/Cephalosome'
   import {utils} from '@/utils/utils.js'
-  import TreeSelect from './treeSelect'
+  import primaryTree from './primaryTree'
   import noDataTips from '@/components/noDataTips'
 
   const columns = [
@@ -106,7 +106,7 @@
   export default {
     components: {
       Cephalosome,
-      TreeSelect,
+      primaryTree,
       noDataTips
     },
     props: {
@@ -114,9 +114,9 @@
         type: Boolean,
         default: true
       },
-      organId: {
-        type: [String, Number],
-        default: ''
+      allOrganId: {
+        type: Array,
+        default: () => []
       },
       selectNumber: {
         type: Number,
@@ -245,6 +245,9 @@
         this.query()
       },
       query () {
+        if (this.paginator.organId === '') {
+          return
+        }
         this.loading = true
         let obj = {
           pageSize: this.paginator.pageLength,
