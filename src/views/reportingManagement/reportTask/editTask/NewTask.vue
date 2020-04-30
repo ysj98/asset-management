@@ -220,35 +220,32 @@
       // 提交
       handleSubmit (type) {
         let that = this
-        new Promise(resolve => {
-          that.validateFields(resolve)
-        }).then(values => {
-          // 获取填报数据
-          new Promise(resolve => {
-            that.$refs['taskTable'].handleSubmit(resolve)
-          }).then(data => {
-            const { attachment, taskInfo } = values
-            const { detailList } = data
-            let beginDate = moment().format('YYYY-MM-DD')
-            let form = {
-              reportTask: { ...taskInfo, beginDate, endDate: beginDate },
-              isSubmit: type ? 'N' : 'Y',
-              attachment, detailList, action: 'xz'
+        Promise.all([
+          new Promise(resolve => that.validateFields(resolve)),
+          new Promise(resolve => that.$refs['taskTable'].handleSubmit(resolve))
+        ]).then(res => {
+          const [values, data] = res
+          const { attachment, taskInfo } = values
+          const { detailList } = data
+          let beginDate = moment().format('YYYY-MM-DD')
+          let form = {
+            reportTask: { ...taskInfo, beginDate, endDate: beginDate },
+            isSubmit: type ? 'N' : 'Y',
+            attachment, detailList, action: 'xz'
+          }
+          that.submitBtnLoading = true
+          that.$api.reportManage.saveTaskOrDetail(form).then(r => {
+            that.submitBtnLoading = false
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              that.$message.success(`${type ? '暂存草稿' : '提交审批'}成功`)
+              // 跳回列表路由
+              return that.$router.push({ name: '呈报任务', params: { refresh: true } })
             }
-            that.submitBtnLoading = true
-            that.$api.reportManage.saveTaskOrDetail(form).then(r => {
-              that.submitBtnLoading = false
-              let res = r.data
-              if (res && String(res.code) === '0') {
-                that.$message.success(`${type ? '暂存草稿' : '提交审批'}成功`)
-                // 跳回列表路由
-                return that.$router.push({ name: '呈报任务', params: { refresh: true } })
-              }
-              throw res.message
-            }).catch(err => {
-              that.submitBtnLoading = false
-              that.$message.error(err || `${type ? '暂存草稿' : '提交审批'}失败`)
-            })
+            throw res.message
+          }).catch(err => {
+            that.submitBtnLoading = false
+            that.$message.error(err || `${type ? '暂存草稿' : '提交审批'}失败`)
           })
         })
       },
