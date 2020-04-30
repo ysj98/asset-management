@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-04-29 17:41:48
+ * @LastEditTime: 2020-04-30 16:54:40
  -->
 <template>
   <div>
@@ -204,8 +204,9 @@ let columns = [
     dataIndex: "organName",
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
+    title: '资产项目',
+    width: 150,
+    dataIndex: 'projectName'
   },
   {
     title: "合同编号",
@@ -328,6 +329,7 @@ export default {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
               item.taskTypeName = item.taskTypeName || '--'
+              item.objId = item.objId || item.objectId || '-'
               return {
                 key: getUuid(),
                 ...item

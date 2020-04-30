@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-04-29 18:18:35
+ * @LastEditTime: 2020-04-30 10:33:17
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -377,7 +377,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{reportInfo.objId || '-'}}</span>
+                <span class="label-value" >{{reportInfo.objId || reportInfo.objectId || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
