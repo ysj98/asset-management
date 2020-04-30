@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 17:42:19
+ * @LastEditTime: 2020-04-30 18:17:58
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -73,16 +73,8 @@ const approvalStatusData = [
     value: ''
   },
   {
-    name: '未完成',
-    value: '1'
-  },
-  {
     name: '待审批',
     value: '2'
-  },
-  {
-    name: '已驳回',
-    value: '3'
   },
   {
     name: '已完成',
