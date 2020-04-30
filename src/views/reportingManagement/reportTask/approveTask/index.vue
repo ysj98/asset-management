@@ -110,7 +110,7 @@
             { title: '任务编号', dataIndex: 'reportTaskId', fixed: 'left', scopedSlots: { customRender: 'reportTaskId' }, width: 150  },
             { title: '所属机构', dataIndex: 'organName'}, { title: '资产项目', dataIndex: 'projectName' }, { title: '任务名称', dataIndex: 'taskName' },
             { title: '呈报表单', dataIndex: 'reportBillName' }, { title: '任务类型', dataIndex: 'taskTypeName' },
-            { title: '计划执行日期', dataIndex: 'beginDate', scopedSlots: { customRender: 'executeDate' } }, { title: '填报人', dataIndex: 'reportByName' },
+            { title: '计划执行日期', dataIndex: 'executeDate', scopedSlots: { customRender: 'executeDate' } }, { title: '填报人', dataIndex: 'reportByName' },
             { title: '审核人', dataIndex: 'auditByName' }, { title: '实际填报日期', dataIndex: 'completeDate' },
             { title: '数据量', dataIndex: 'reportNum' }, { title: '审核状态', dataIndex: 'taskStatusName', fixed: 'right', width: 100 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 80 }

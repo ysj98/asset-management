@@ -24,11 +24,12 @@
       </a-row>
       <!--列表部分-->
       <div style="margin: 20px 0">
-        <a-tooltip :title="taskInfo.reportBillId ? '' : '请选择表单'">
-          <SG-Button icon="export" @click="exportTemplate" :loading="exportBtnLoading" :disabled="!taskInfo.reportBillId">
-            导出填报模板
-          </SG-Button>
+        <a-tooltip v-if="!taskInfo.reportBillId" title="请选择表单">
+          <SG-Button icon="export" disabled>导出填报模板</SG-Button>
         </a-tooltip>
+        <SG-Button v-else icon="export" @click="exportTemplate" :loading="exportBtnLoading">
+          导出填报模板
+        </SG-Button>
         <a-upload
           accept=".xls"
           :showUploadList="false"
@@ -38,10 +39,12 @@
           :disabled="!customColumns.length || !taskInfo.projectId"
         >
           <a-tooltip
-            :title="`${(!customColumns.length || !taskInfo.projectId) ? '请选择' : ''}${ !customColumns.length ? '表单 ' : ''}${!taskInfo.projectId ? '资产项目' : ''}`">
-          <SG-Button icon="plus" :disabled="!customColumns.length || !taskInfo.projectId">批量导入</SG-Button>
-          <!--<a-button> <a-icon type="upload" /> Click to Upload </a-button>-->
+            v-if="!customColumns.length || !taskInfo.projectId"
+            :title="`请选择${ !customColumns.length ? '表单 ' : ''}${!taskInfo.projectId ? '资产项目' : ''}`"
+          >
+            <SG-Button icon="plus" disabled>批量导入</SG-Button>
           </a-tooltip>
+          <SG-Button v-else icon="plus">批量导入</SG-Button>
         </a-upload>
         <span style="color: #e4393c; float: right; line-height: 32px; margin-right: 15px">填报总数: {{tableObj.dataSource.length}}</span>
       </div>
@@ -103,7 +106,7 @@
                   :placeholder="`请输入${m.columnDesc}`"
                   v-decorator="[`${m.columnName}_${record.key}`, {
                     initialValue: text,
-                    rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}]
+                    rules: [{required: !!m.columnNeed, message: `请输入${m.columnDesc}`}, {validator: validateMax}]
                   }]"
                 />
               </a-form-item>
@@ -270,6 +273,11 @@
     },
 
     methods: {
+      // 校验最大值
+      validateMax (rule, value, callback) {
+        Number(value) > 9999999999.99 ? callback('最大值不超过9999999999.99') : callback()
+      },
+
       // 判断选项中是否包含当前值
       handleInitSelectValue (v, options) {
         return options.some(m => String(m.key) === String(v)) ? v : undefined
