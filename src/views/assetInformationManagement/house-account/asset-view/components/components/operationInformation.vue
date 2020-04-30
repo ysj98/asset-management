@@ -34,7 +34,7 @@
       <SG-MonthPicker
         label="所属月份"
         style="display:inline-block;"
-        :defaultValueArray="[moment().subtract('month', 6), moment()]"
+        :defaultValueArray="[moment().subtract('month', 1), moment()]"
         v-model="pickerValue"
         @input="handlePickerChange"
       >
@@ -139,7 +139,7 @@ export default {
   data() {
     return {
       moment,
-      pickerValue: [moment().subtract("month", 6), moment()],
+      pickerValue: [moment().subtract("month", 1), moment()],
       table: {
         columns,
         dataSource: [],
@@ -206,6 +206,7 @@ export default {
         })
         .then((data) => {
           if (data) {
+            delete data.assetHouseId
             this.$api.assets.getAcctItemPageList(data).then((res) => {
               if (+res.data.code === 0) {
                 let result = res.data.data.data || []

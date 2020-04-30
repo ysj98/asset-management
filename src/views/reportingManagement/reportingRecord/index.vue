@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:45:49
- * @LastEditTime: 2020-03-08 20:50:52
+ * @LastEditTime: 2020-04-29 17:42:56
  -->
 <!--
 呈报记录页面
@@ -88,7 +88,7 @@
               notFoundContent="没有查询到数据"
             />
             <div class="box">
-              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+              <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
             <!-- 全部数据状态 -->
             <a-select
@@ -105,16 +105,15 @@
             </div>
             <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-            <SG-Button @click="restQuery">清除</SG-Button>
+            <!-- <SG-Button @click="restQuery">清除</SG-Button> -->
           </div>
           </div>
       </SearchContainer>
       <div>
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{ x: 1400}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -170,8 +169,6 @@ const queryCondition = {
   taskType: [''], // 呈报方式
   taskStatus: '', // 状态
   assetType: [''], // 资产类型(多选)
-  startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
-  endCreateDate: getNowMonthDate(),        // 备注：结束创建日期
   pageNum: 1,
   pageSize: 10
 };
@@ -271,6 +268,7 @@ export default {
     return {
       ASSET_MANAGEMENT,
       moment,
+      defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       toggle: true,
       allStyle,
       allWidth,
@@ -301,8 +299,10 @@ export default {
       data.billType = utils.deepClone(data.billType).join(',')
       data.assetType = utils.deepClone(data.assetType).join(',')
       data.taskType = utils.deepClone(data.taskType).join(',')
-      data.beginDate = data.startCreateDate
-      data.endDate = data.endCreateDate
+      if (this.defaultValue && this.defaultValue[0]) {
+        data.beginDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
+        data.endDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
+      }
       delete data.startCreateDate
       delete data.endCreateDate
       this.table.loading = true;
@@ -414,8 +414,7 @@ export default {
       this.queryCondition.taskType = [''];
       this.queryCondition.taskStatus = '';
       this.queryCondition.assetType = [''];
-      this.queryCondition.startCreateDate = getNMonthsAgoFirst(2)
-      this.queryCondition.endCreateDate = getNowMonthDate()
+      this.defaultValue = [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())]
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
@@ -441,6 +440,7 @@ export default {
       if (['detail', 'edit'].includes(type)) {
         query.reportRecordId = record.reportRecordId
         query.reportTaskId = record.reportTaskId
+        query.billType = record.reportBillId || ''
       }
       this.$router.push({ path: operationTypes[type], query });
     },
@@ -475,4 +475,7 @@ export default {
     flex: 0 0 190px;
   }
 }
+.overflowX{
+    overflow-x: auto !important;
+  }
 </style>

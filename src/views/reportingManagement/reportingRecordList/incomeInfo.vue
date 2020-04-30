@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-03-09 16:12:02
+ * @LastEditTime: 2020-04-29 17:41:24
  -->
 <template>
   <div>
@@ -30,7 +30,7 @@
               notFoundContent="没有查询到数据"
             />
             <div class="box">
-              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+              <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
             <!-- 资产名称或编码 -->
             <a-input
@@ -89,16 +89,15 @@
             </div>
             <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-            <SG-Button @click="restQuery">清除</SG-Button>
           </div>
           </div>
       </SearchContainer>
       <div>
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{ x: 1400}"
+          :scroll="{x:2400}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -152,8 +151,6 @@ const queryCondition = {
   objName: '', // 资产名称或编码
   taskType: [''], // 类型
   taskStatus: '', // 状态
-  startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
-  endCreateDate: getNowMonthDate(),        // 备注：结束创建日期
   month: null,
   incomeType: '', // 收入类型
   incomeName: '', // 收入名称
@@ -178,113 +175,98 @@ let columns = [
     title: "呈报编号",
     dataIndex: "reportRecordId",
     scopedSlots: { customRender: "reportRecordId" },
-    width: 100
+    width: 100,
+    fixed: 'left',
   },
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: 120
+    width: 120,
+    fixed: 'left',
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: 120
+    width: 120,
+    fixed: 'left',
   },
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
-    width: 120
   },
   {
     title: "所属机构",
     dataIndex: "organName",
-    
-    width: 100
   },
   {
     title: "收入类型",
     dataIndex: "incomeType",
-    width: 100
   },
   {
     title: "收入名称",
     dataIndex: "incomeName",
-    width: 100
   },
   {
     title: "客户名称",
     dataIndex: "customerName",
-    width: 120
   },
   {
     title: "所属月份",
     dataIndex: "month",
-    width: 120
   },
   {
     title: "金额(元)",
     dataIndex: "amount",
-    width: 120
   },
   {
     title: "单价",
     dataIndex: "unitPrice",
-    width: 100
   },
   {
     title: "读数",
     dataIndex: "readNumber",
-    width: 100
   },
   {
     title: "用量",
     dataIndex: "useLevel",
-    width: 100
   },
   {
     title: "是否结清",
     dataIndex: "settleUp",
-    width: 100
   },
   {
     title: "是否接管前收入",
     dataIndex: "incomeBeforeTakeover",
-    width: 100
   },
   {
     title: "外部ID",
     dataIndex: "objId",
-    width: 100
   },
   {
     title: "备注",
     dataIndex: "remark",
-    width: 100
   },
   {
     title: "填报人",
     dataIndex: "reportByName",
-    width: 100
   },
   {
     title: "填报日期",
     dataIndex: "realBeginDate",
-    width: 100
   },
   {
     title: "审核人",
     dataIndex: "auditByName",
-    width: 100
   },
   {
     title: "呈报方式",
     dataIndex: "taskTypeName",
-    width: 100
   },
   {
     title: "数据状态",
     dataIndex: "taskStatusName",
-    width: 100
+    width: 120,
+    fixed: 'right',
   },
 ];
 export default {
@@ -299,6 +281,7 @@ export default {
     return {
       ASSET_MANAGEMENT,
       moment,
+      defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       toggle: true,
       allStyle,
       allWidth,
@@ -324,10 +307,10 @@ export default {
       // 呈报表单参数改变
       data.taskType = utils.deepClone(data.taskType).join(',')
       data.month = data.month ? moment(data.month).format('YYYY-MM') + '-01' : ''
-      data.beginDate = data.startCreateDate
-      data.endDate = data.endCreateDate
-      delete data.startCreateDate
-      delete data.endCreateDate
+      if (this.defaultValue && this.defaultValue[0]) {
+        data.beginDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
+        data.endDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
+      }
       
       this.table.loading = true;
       this.$api.reportManage.queryAssetIncomePageList(data).then(
@@ -373,11 +356,6 @@ export default {
         }
       });
     },
-    // 起止日期发生变化
-    onDateChange (val) {
-      this.queryCondition.startCreateDate = val[0]
-      this.queryCondition.endCreateDate = val[1]
-    },
     taskTypeSelect (value) {
       this.$nextTick(function () {
         this.queryCondition.taskType = this.handleMultipleSelectValue(value, this.queryCondition.taskType, this.taskTypeOpt)
@@ -421,18 +399,6 @@ export default {
       this.queryCondition.pageSize = data.pageLength;
       this.query();
     },
-    // 重置查询条件
-    restQuery() {
-      this.queryCondition.projectId = "";
-      this.queryCondition.objName = '';
-      this.queryCondition.taskType = [''];
-      this.queryCondition.taskStatus = '';
-      this.queryCondition.incomeType = ''
-      this.queryCondition.incomeName = ''
-      this.queryCondition.startCreateDate = getNMonthsAgoFirst(2)       // 备注：开始创建日期
-      this.queryCondition.endCreateDate = getNowMonthDate()        // 备注：结束创建日期
-      this.queryCondition.month = null
-    },
     goPage(type, record) {
       let query = {
         type
@@ -473,4 +439,7 @@ export default {
     flex: 0 0 190px;
   }
 }
+.overflowX{
+    overflow-x: auto !important;
+  }
 </style>

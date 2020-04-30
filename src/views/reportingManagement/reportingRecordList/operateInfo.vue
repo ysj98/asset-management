@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-03-09 16:11:49
+ * @LastEditTime: 2020-04-29 17:41:48
  -->
 <template>
   <div>
@@ -30,7 +30,7 @@
               notFoundContent="没有查询到数据"
             />
             <div class="box">
-              <segi-range-picker label="填报日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
+              <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
             <!-- 资产名称或编码 -->
             <a-input
@@ -93,16 +93,16 @@
             </div>
             <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-            <SG-Button @click="restQuery">清除</SG-Button>
+            <!-- <SG-Button @click="restQuery">清除</SG-Button> -->
           </div>
           </div>
       </SearchContainer>
       <div>
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{ x: 1400}"
+          :scroll="{x:2400}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -156,8 +156,6 @@ const queryCondition = {
   objName: '', // 资产名称或编码
   taskType: [''], // 类型
   taskStatus: '', // 状态
-  startCreateDate: getNMonthsAgoFirst(2),       // 备注：开始创建日期
-  endCreateDate: getNowMonthDate(),        // 备注：结束创建日期
   contractCode: '', // 合同编号
   customerName: '', // 客户名称
   resourceName: '', // 资源名称
@@ -182,118 +180,102 @@ let columns = [
     title: "呈报编号",
     dataIndex: "reportRecordId",
     scopedSlots: { customRender: "reportRecordId" },
-    width: 100
+    width: 100,
+    fixed: 'left'
   },
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: 120
+    width: 120,
+    fixed: 'left'
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: 120
+    width: 120,
+    fixed: 'left'
   },
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
-    width: 120
   },
   {
     title: "所属机构",
     dataIndex: "organName",
-    
-    width: 100
   },
   {
     title: "资产项目",
     dataIndex: "projectName",
-    width: 100
   },
   {
     title: "合同编号",
     dataIndex: "contractCode",
-    width: 100
   },
   {
     title: "客户名称",
     dataIndex: "customerName",
-    width: 120
   },
   {
     title: "资源名称",
     dataIndex: "resourceName",
-    width: 120
   },
   {
     title: "租赁面积(元)",
     dataIndex: "leaseArea",
-    width: 120
   },
   {
     title: "合同开始日期",
     dataIndex: "contractBeginDate",
-    width: 100
   },
   {
     title: "合同截止日期",
     dataIndex: "contractEndDate",
-    width: 100
   },
   {
     title: "起始租金单价",
     dataIndex: "originRentUnitPriceAmount",
-    width: 100
   },
   {
     title: "平均租金单价(元)",
     dataIndex: "avgRentUnitPriceAmount",
-    width: 100
   },
   {
     title: "押金(元)",
     dataIndex: "deposit",
-    width: 100
   },
   {
     title: "合同租金总额(元)",
     dataIndex: "contractRentTotalAmount",
-    width: 100
   },
   {
     title: "外部ID",
     dataIndex: "objId",
-    width: 100
   },
   {
     title: "备注",
     dataIndex: "remark",
-    width: 100
   },
   {
     title: "填报人",
     dataIndex: "reportByName",
-    width: 100
   },
   {
     title: "填报日期",
     dataIndex: "realBeginDate",
-    width: 100
   },
   {
     title: "审核人",
     dataIndex: "auditByName",
-    width: 100
   },
   {
     title: "呈报方式",
     dataIndex: "taskTypeName",
-    width: 100
   },
   {
     title: "数据状态",
     dataIndex: "taskStatusName",
-    width: 100
+    width: 120,
+    fixed: 'right'
   },
 ];
 export default {
@@ -311,6 +293,7 @@ export default {
       toggle: true,
       allStyle,
       allWidth,
+      defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
       queryCondition: utils.deepClone(queryCondition),
       projectIdOpt,
       taskTypeOpt,
@@ -332,10 +315,10 @@ export default {
       };
       // 呈报表单参数改变
       data.taskType = utils.deepClone(data.taskType).join(',')
-      data.beginDate = data.startCreateDate
-      data.endDate = data.endCreateDate
-      delete data.startCreateDate
-      delete data.endCreateDate
+      if (this.defaultValue && this.defaultValue[0]) {
+        data.beginDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
+        data.endDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
+      }
       
       this.table.loading = true;
       this.$api.reportManage.queryAssetOperationPageList(data).then(
@@ -381,11 +364,6 @@ export default {
         }
       });
     },
-    // 起止日期发生变化
-    onDateChange (val) {
-      this.queryCondition.startCreateDate = val[0]
-      this.queryCondition.endCreateDate = val[1]
-    },
     taskTypeSelect (value) {
       this.$nextTick(function () {
         this.queryCondition.taskType = this.handleMultipleSelectValue(value, this.queryCondition.taskType, this.taskTypeOpt)
@@ -430,15 +408,15 @@ export default {
       this.query();
     },
     // 重置查询条件
-    restQuery() {
-      this.queryCondition.projectId = "";
-      this.queryCondition.objName = '';
-      this.queryCondition.taskType = [''];
-      this.queryCondition.taskStatus = '';
-      this.queryCondition.contractCode = ''
-      this.queryCondition.customerName = ''
-      this.queryCondition.endCreateDate = getNowMonthDate()  
-    },
+    // restQuery() {
+    //   this.queryCondition.projectId = "";
+    //   this.queryCondition.objName = '';
+    //   this.queryCondition.taskType = [''];
+    //   this.queryCondition.taskStatus = '';
+    //   this.queryCondition.contractCode = ''
+    //   this.queryCondition.customerName = ''
+    //   this.queryCondition.endCreateDate = getNowMonthDate()  
+    // },
 
     goPage(type, record) {
       let query = {
@@ -480,4 +458,8 @@ export default {
     flex: 0 0 190px;
   }
 }
+.overflowX{
+    overflow-x: auto !important;
+    width: 100%;
+  }
 </style>

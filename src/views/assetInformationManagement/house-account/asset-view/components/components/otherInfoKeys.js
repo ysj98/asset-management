@@ -146,7 +146,7 @@ const keys = {
     details: {
     },
     table: {
-      rowKey: 'key',
+      rowKey: 'keyId',
       pagination: true,
       columns: [
         { title: '类别', dataIndex: 'reportBillIdName' },

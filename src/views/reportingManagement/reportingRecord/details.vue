@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-03-08 20:28:19
+ * @LastEditTime: 2020-04-29 18:18:35
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -147,7 +147,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value" >{{taskInfo.reportBy || '-'}}</span>
+              <span class="label-value" >{{taskInfo.reportByName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">
@@ -157,7 +157,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value" >{{`${taskInfo.realBeginDate || ''}~${taskInfo.realEndDate || ''}`}}</span>
+              <span class="label-value" >{{`${taskInfo.beginDate || ''}~${taskInfo.endDate || ''}`}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">
@@ -167,7 +167,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value" >{{taskInfo.auditBy || '-'}}</span>
+              <span class="label-value" >{{taskInfo.auditByName || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">
@@ -215,7 +215,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value" >{{taskInfo.reportBillId || '-'}}</span>
+              <span class="label-value" >{{reportInfo.reportRecordId || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">
@@ -235,7 +235,7 @@
                 <i></i>
               </span>
               <span>：</span>
-              <span class="label-value" >{{taskInfo.createTime || '-'}}</span>
+              <span class="label-value" >{{taskInfo.realBeginDate || '-'}}</span>
             </div>
           </div>
           <div class="edit-box-content-item mb24">
@@ -377,7 +377,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+                <span class="label-value" >{{reportInfo.objId || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -387,7 +387,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{taskInfo.remark || '-'}}</span>
+                <span class="label-value" >{{reportInfo.remark || '-'}}</span>
               </div>
             </div>
           </template>
@@ -500,7 +500,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+                <span class="label-value" >{{reportInfo.objId || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -623,7 +623,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+                <span class="label-value" >{{reportInfo.objId || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -666,7 +666,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{reportInfo.objectId || '-'}}</span>
+                <span class="label-value" >{{reportInfo.objId || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -699,6 +699,7 @@ export default {
       reportBillId: '', // 填报类型
       reportTaskId: '', // 任务类型
       reportRecordId: '', // 呈报记录id
+      billType: '',
       taskInfo: {},
       reportInfo: {}
     }
@@ -708,6 +709,7 @@ export default {
     this.reportRecordId = this.$route.query.reportRecordId || ''
     this.reportBillId = this.$route.query.reportBillId || ''
     this.reportTaskId = this.$route.query.reportTaskId || ''
+    this.billType = this.$route.query.billType
     if (this.reportRecordId) {
       this.spinning = true
       Promise.all([this.queryReportRecordDetail(), this.queryTaskInfo()]).then(res => {
@@ -731,7 +733,8 @@ export default {
     },
     queryReportRecordDetail () {
       let data = {
-        reportRecordId: this.reportRecordId
+        reportRecordId: this.reportRecordId,
+        billType: this.billType
       }
       return this.$api.reportManage.queryReportRecordDetail(data).then(res => {
         if (res.data.code === "0") {
