@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 16:27:22
+ * @LastEditTime: 2020-04-30 17:09:21
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -175,7 +175,7 @@ const columns = [
   {
     title: '外部ID',
     width: 100,
-    dataIndex: 'objectId'
+    dataIndex: 'objId'
   },
   {
     title: '备注',
@@ -389,6 +389,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.objId = item.objId || item.objectId || '-'
             })
             this.tableData = data
             this.count = res.data.data.count

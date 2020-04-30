@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 16:30:26
+ * @LastEditTime: 2020-04-30 17:09:53
  -->
 <template>
   <div class="assetsRegistration">
@@ -344,6 +344,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.objId = item.objId || item.objectId || '-'
             })
             this.tableData = data
             this.count = res.data.data.count
