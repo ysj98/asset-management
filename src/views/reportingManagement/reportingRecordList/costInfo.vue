@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-29 18:02:37
+ * @LastEditTime: 2020-04-30 16:27:22
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -170,12 +170,12 @@ const columns = [
   {
     title: '是否接管前费用',
     width: 150,
-    dataIndex: 'incomeBeforeTakeover'
+    dataIndex: 'expenseBeforeTakeover'
   },
   {
     title: '外部ID',
     width: 100,
-    dataIndex: 'objId'
+    dataIndex: 'objectId'
   },
   {
     title: '备注',
