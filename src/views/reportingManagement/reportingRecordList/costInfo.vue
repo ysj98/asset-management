@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 17:09:21
+ * @LastEditTime: 2020-04-30 17:42:19
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -114,7 +114,7 @@ const columns = [
   },
   {
     title: '所属机构',
-    width: 150,
+    width: '250px',
     dataIndex: 'organName'
   },
   {
@@ -237,7 +237,7 @@ export default {
         taskType: ''
       },
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
-      month: moment(new Date()),
+      month: null,
       count: '',
       taskTypeData: [
         {

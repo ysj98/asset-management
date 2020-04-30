@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 17:09:53
+ * @LastEditTime: 2020-04-30 17:43:31
  -->
 <template>
   <div class="assetsRegistration">
@@ -170,7 +170,7 @@ export default {
         taskType: ''
       },
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
-      month: moment(new Date()),
+      month: null,
       assetTypeData: [],
       count: '',
       taskTypeData: [
