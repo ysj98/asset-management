@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-04-30 16:54:40
+ * @LastEditTime: 2020-04-30 17:17:56
  -->
 <template>
   <div>
@@ -102,7 +102,7 @@
           class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{x:2400}"
+          :scroll="{x:3400}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -186,18 +186,19 @@ let columns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: 120,
+    width: '160px',
     fixed: 'left'
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: 120,
+    width: '160px',
     fixed: 'left'
   },
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
+    width: '160px',
   },
   {
     title: "所属机构",
@@ -226,19 +227,23 @@ let columns = [
   },
   {
     title: "合同开始日期",
+    width: '160px',
     dataIndex: "contractBeginDate",
   },
   {
     title: "合同截止日期",
     dataIndex: "contractEndDate",
+    width: '160px',
   },
   {
     title: "起始租金单价",
     dataIndex: "originRentUnitPriceAmount",
+    width: '160px',
   },
   {
     title: "平均租金单价(元)",
     dataIndex: "avgRentUnitPriceAmount",
+    width: '160px',
   },
   {
     title: "押金(元)",
@@ -247,6 +252,7 @@ let columns = [
   {
     title: "合同租金总额(元)",
     dataIndex: "contractRentTotalAmount",
+    width: '160px',
   },
   {
     title: "外部ID",
@@ -263,6 +269,7 @@ let columns = [
   {
     title: "填报日期",
     dataIndex: "realBeginDate",
+    width: '160px',
   },
   {
     title: "审核人",
@@ -271,6 +278,7 @@ let columns = [
   {
     title: "呈报方式",
     dataIndex: "taskTypeName",
+    width: '160px',
   },
   {
     title: "数据状态",

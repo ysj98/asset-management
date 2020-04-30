@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-04-30 17:05:03
+ * @LastEditTime: 2020-04-30 17:18:20
  -->
 <template>
   <div>
@@ -97,7 +97,7 @@
           class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{x:2400}"
+          :scroll="{x:3400}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
