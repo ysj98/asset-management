@@ -47,7 +47,12 @@
       :dataSource="dataSource"
       class="custom-table td-pd10"
       :columns="type == 'Card' ? cardColumns : assetColumns"
-      :rowSelection="{ onChange: handleSelect, hideDefaultSelections: true, type: 'radio',}"
+      :rowSelection="{
+        type: 'radio',
+        onChange: handleSelect,
+        hideDefaultSelections: true,
+        selectedRowKeys: selectedRows.length ? [selectedRows[0][type == 'Card' ? 'cardId' : 'assetId']] : []
+      }"
     />
       <div v-if="!dataSource.length" style="text-align: center; margin: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
     <SG-FooterPagination
