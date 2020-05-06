@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-29 18:02:37
+ * @LastEditTime: 2020-04-30 18:17:58
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -73,16 +73,8 @@ const approvalStatusData = [
     value: ''
   },
   {
-    name: '未完成',
-    value: '1'
-  },
-  {
     name: '待审批',
     value: '2'
-  },
-  {
-    name: '已驳回',
-    value: '3'
   },
   {
     name: '已完成',
@@ -114,7 +106,7 @@ const columns = [
   },
   {
     title: '所属机构',
-    width: 150,
+    width: '250px',
     dataIndex: 'organName'
   },
   {
@@ -170,7 +162,7 @@ const columns = [
   {
     title: '是否接管前费用',
     width: 150,
-    dataIndex: 'incomeBeforeTakeover'
+    dataIndex: 'expenseBeforeTakeover'
   },
   {
     title: '外部ID',
@@ -237,7 +229,7 @@ export default {
         taskType: ''
       },
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
-      month: moment(new Date()),
+      month: null,
       count: '',
       taskTypeData: [
         {
@@ -389,6 +381,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.objId = item.objId || item.objectId || '-'
             })
             this.tableData = data
             this.count = res.data.data.count

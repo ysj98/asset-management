@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-04-29 17:41:24
+ * @LastEditTime: 2020-04-30 17:38:24
  -->
 <template>
   <div>
@@ -97,7 +97,7 @@
           class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{x:2400}"
+          :scroll="{x:3400}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -170,6 +170,14 @@ const taskStatusOpt = [
   { label: "待审批", value: "2" },
   { label: "已审批", value: "4" },
 ]
+let settleUpNameMap = {
+  '1': '是',
+  '0': '否'
+}
+let incomeBeforeTakeoverNameMap = {
+  '1': '是',
+  '0': '否'
+}
 let columns = [
   {
     title: "呈报编号",
@@ -181,13 +189,13 @@ let columns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: 120,
+    width: '160px',
     fixed: 'left',
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: 120,
+    width: '160px',
     fixed: 'left',
   },
   {
@@ -197,6 +205,11 @@ let columns = [
   {
     title: "所属机构",
     dataIndex: "organName",
+  },
+  {
+    title: '资产项目',
+    width: '160px',
+    dataIndex: 'projectName'
   },
   {
     title: "收入类型",
@@ -232,11 +245,11 @@ let columns = [
   },
   {
     title: "是否结清",
-    dataIndex: "settleUp",
+    dataIndex: "settleUpName",
   },
   {
     title: "是否接管前收入",
-    dataIndex: "incomeBeforeTakeover",
+    dataIndex: "incomeBeforeTakeoverName",
   },
   {
     title: "外部ID",
@@ -320,6 +333,9 @@ export default {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
               item.taskTypeName = item.taskTypeName || '--'
+              item.objId = item.objId || item.objectId || '-'
+              item.settleUpName = settleUpNameMap[item.settleUp] || '-'
+              item.incomeBeforeTakeoverName = incomeBeforeTakeoverNameMap[item.incomeBeforeTakeover] || '-'
               return {
                 key: getUuid(),
                 ...item
