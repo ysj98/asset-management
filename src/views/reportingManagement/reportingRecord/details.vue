@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-04-30 10:33:17
+ * @LastEditTime: 2020-05-07 17:19:21
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -739,6 +739,7 @@ export default {
       return this.$api.reportManage.queryReportRecordDetail(data).then(res => {
         if (res.data.code === "0") {
           let obj = res.data.data || {}
+          obj.objId = obj.objId || obj.objectId || '-'
           this.reportInfo =  {...obj}
         } else {
           this.$message.error(res.data.message);
