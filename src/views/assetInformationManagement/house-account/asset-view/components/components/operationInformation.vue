@@ -213,7 +213,7 @@ export default {
               if (+res.data.code === 0) {
                 let result = res.data.data.resultList || []
                 this.table2.dataSource = result.map((item) => {
-                  item.fee = item.fee ? Number(item.fee) / 10 : '/'
+                  item.fee = item.fee ? Number(item.fee) / 100 : '/'
                   item.accountCycle = item.accountCycle ? String(item.accountCycle) : ''
                   item.accountCycle = item.accountCycle ? (item.accountCycle.slice(0,4) + '-' + item.accountCycle.slice(4)) : '/'
                   return {
