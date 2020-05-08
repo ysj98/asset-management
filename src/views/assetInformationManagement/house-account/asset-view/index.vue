@@ -116,9 +116,9 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 2500 },
+          scroll: { x: 2800 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', width: 150, fixed: 'left' },
+            { title: '资产名称', dataIndex: 'assetName', width: 200, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName' },
             { title: '丘地号', dataIndex: 'addressNo' },
