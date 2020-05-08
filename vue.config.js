@@ -31,7 +31,8 @@ const proxyURL = [
   '/uhomecp-app/',
   '/common-api',
   '/uis/',
-  '/ams/'
+  '/ams/',
+  '/charging-api/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接

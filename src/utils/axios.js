@@ -60,6 +60,11 @@ axiosX.interceptors.response.use(
           store.dispatch('auth/logout')
           SG_Message.error(error.response.data.message)
         } else {
+          // console.log('接口全局报错=>', error.response)
+          // 特殊接口拦截
+          if (error.response.status === 404 && error.response.config.url === '/charging-api/rest-api/v1/assets/getAcctItemPageList') {
+            return
+          }
           SG_Message.error()
         }
       }

@@ -148,7 +148,7 @@
             if (type === 'relatedExpenses') {
               tableData = res.data.data.map((m,i) => {
                 m.reportBillIdName = m.reportBillId ? reportBillIdNameMap[String(m.reportBillId)] : '/'
-                m.settleUpName = m.settleUp ? settleUpMap[String(m.settleUp)] : '/'
+                m.settleUpName = m.settleUp || m.settleUp===0 ? settleUpMap[String(m.settleUp)] : '/'
                 m.amount = m.amount || '/'
                 m.unitPrice = m.unitPrice || '/'
                 m.readNumber = m.readNumber || '/'

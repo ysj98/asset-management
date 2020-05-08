@@ -193,6 +193,8 @@ export default {
         startMonth: this.pickerValue[0].format("YYYYMM"),
         endMonth: this.pickerValue[1].format("YYYYMM"),
       }
+      // data = {"pageNo":1,"pageLimit":10,"startMonth":"202005","endMonth":"202005","organId":1000279,"billObjType":14,"resInstId":"116071150"}
+
       this.$api.assets
         .assetOperationExpenseParam(data)
         .then((res) => {
@@ -209,16 +211,17 @@ export default {
             delete data.assetHouseId
             this.$api.assets.getAcctItemPageList(data).then((res) => {
               if (+res.data.code === 0) {
-                let result = res.data.data.data || []
+                let result = res.data.data.resultList || []
                 this.table2.dataSource = result.map((item) => {
                   item.fee = item.fee ? Number(item.fee) / 10 : '/'
+                  item.accountCycle = item.accountCycle ? String(item.accountCycle) : ''
                   item.accountCycle = item.accountCycle ? (item.accountCycle.slice(0,4) + '-' + item.accountCycle.slice(4)) : '/'
                   return {
                     key: getUuid(),
                     ...item,
                   }
                 })
-                this.table2.totalCount = res.data.data.count
+                this.table2.totalCount = res.data.data.paginator.totalCount
               }
             })
           }
