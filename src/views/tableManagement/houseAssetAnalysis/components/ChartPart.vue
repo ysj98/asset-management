@@ -23,14 +23,15 @@
 </template>
 
 <script>
-  import { Chart } from '@antv/g2'
+  import { Column, Pie } from '@antv/g2plot'
   export default {
     name: 'ChartPart',
     props: ['queryInfo'],
     data () {
       return {
         loading: false, // 页面loading
-        isHasData: false // 是否有图表数据，用于判断显示缺省文字
+        isHasData: false, // 是否有图表数据，用于判断显示缺省文字
+        chartInstance: {area_statistics: null, direct_statistics: null, asset_statistics: null}// 图表实例，用于重绘
       }
     },
     
@@ -38,12 +39,17 @@
       this.queryData(this.queryInfo)
     },
 
+    watch: {
+      queryInfo: function () {
+        this.queryData(this.queryInfo)
+      }
+    },
+
     methods: {
       // 查询汇总数据
       queryData (form) {
         if (!form.organId) { return false }
         this.loading = true
-        this.isHasData = false
         this.$api.tableManage.queryAssetHouseTotal(form).then(r => {
           this.loading = false
           let res = r.data
@@ -68,11 +74,10 @@
             let usedArr = ((usedList || []).filter(v => Number(v.area))).length ? usedList : []
             // 加载完DOM渲染图表
             return this.$nextTick(function () {
-              this.renderThetaChart('area_statistics', 'useTypeName', list)
-              this.renderThetaChart('direct_statistics', 'usedName', usedArr)
+              this.renderPieChart('area_statistics', 'useTypeName', list)
+              this.renderPieChart('direct_statistics', 'usedName', usedArr)
               this.renderRectChart(assetValue)
             })
-            
           }
           throw res.message
         }).catch(err => {
@@ -83,64 +88,74 @@
       },
 
       // 绘制饼状图
-      renderThetaChart (containerId, colorName, data = []) {
+      renderPieChart (containerId, colorField, data = []) {
+        let pieInstance = this.chartInstance[containerId]
         if (!data.length) {
+          // 实例存在且数据为空，销毁图表实例
+          pieInstance && pieInstance.destroy()
+          this.chartInstance[containerId] = null
           document.getElementById(containerId).innerHTML = '<div style="text-align: center; color: #00000073">暂无数据</div>'
           return false
         }
-        const chart = new Chart({
-          container: containerId, // 指定图表容器 ID
-          autoFit: true,
-          height: 250 // 指定图表高度
+        // 更新图表
+        if (pieInstance) {
+          return pieInstance.changeData(data)
+        }
+        // 新建图表实例
+        const piePlot = new Pie(document.getElementById(containerId), {
+          data,
+          colorField,
+          radius: 0.8,
+          height: 280,
+          angleField: 'area',
+          tooltip: { visible: false },
+          legend: { position: 'bottom-center' },
+          label: { visible: true, type: 'spider' }
         })
-        chart.coordinate('theta', { radius: 0.6 }) // 饼图大小
-        chart.data(data)
-        chart.interval().position('area').color(colorName).label('area', {
-          // layout: { type: 'overlap' },
-          // offset: 0,
-          content: data => `${data.area} (${data.percentage ? `${data.percentage}%` : '-'})`
-        }).adjust('stack')
-        chart.tooltip({
-          showTitle: false,
-          showMarkers: false
-        }).render()
+        piePlot.render()
+        this.chartInstance[containerId] = piePlot
       },
 
       // 绘制柱状图
       renderRectChart (obj = {}) {
+        let { chartInstance: { asset_statistics } } = this
         if (!Object.keys(obj).length) {
+          // 实例存在且数据为空，销毁图表实例
+          asset_statistics && asset_statistics.destroy()
+          this.chartInstance['asset_statistics'] = null
           document.getElementById('asset_statistics').innerHTML = '<div style="text-align: center; color: #00000073">暂无数据</div>'
           return false
         }
-        const chart = new Chart({
-          container: 'asset_statistics',
-          autoFit: true,
-          height: 250
-        })
-        let max = 0
-        let arr = [
-          { title: '资产原值', key: 'originalValue', value: 0 },
-          { title: '首次评估原值', key: 'firstOriginalValue', value: 0 },
-          { title: '首次评估市值', key: 'firstMarketValue', value: 0 },
-          { title: '最新估值', key: 'latestValuationValue', value: 0 }
+        let data = [
+          { typeName: '资产原值', key: 'originalValue', typeValue: 0 },
+          { typeName: '首次评估原值', key: 'firstOriginalValue', typeValue: 0 },
+          { typeName: '首次评估市值', key: 'firstMarketValue', typeValue: 0 },
+          { typeName: '最新估值', key: 'latestValuationValue', typeValue: 0 }
         ].map(m => {
-          let value = obj[m.key] ? Number(obj[m.key]) : 0
-          max = max > value ? max : value
-          return { ...m, value }
+          let typeValue = obj[m.key] ? Number(obj[m.key]) : 0
+          return { ...m, typeValue }
         })
-        chart.data(arr)
-        chart.axis('title', false).interval().position('title*value').label('value').color('title')
-        chart.scale('value', {
-          type: 'quantize',
-          nice: true,
-          min: 0,
-          max: max || 10, // 防止max = 0 时渲染报错
-          alias: `单位：${obj.unitName}`
-        }).axis('value', {
-          title: {},
-        }).legend({
-          position: 'right',
-        }).tooltip(false).render()
+        // 更新图表
+        if (asset_statistics) {
+          return asset_statistics.changeData(data)
+        }
+        // 新建图表实例
+        const columnPlot = new Column(document.getElementById('asset_statistics'), {
+          data,
+          height: 335,
+          xField: 'typeName',
+          yField: 'typeValue',
+          padding: 'auto',
+          label: { visible: true },
+          colorField: 'typeName',
+          tooltip: { visible: false },
+          xAxis: { label: { visible: false } },
+          yAxis: { label: { visible: false }, line: { visible: true } },
+          meta: { typeName: { alias: ' ' }, typeValue: { alias: `单位:(${obj.unitName})` } },
+          legend: { visible: true, position: 'right-center' }
+        })
+        columnPlot.render()
+        this.chartInstance['asset_statistics'] = columnPlot
       }
     }
   }
@@ -148,6 +163,7 @@
 
 <style lang='less' scoped>
   .chart_part {
+    margin-bottom: -20px;
     .chart_title {
       color: #49505e;
       font-size: 14px;
@@ -155,18 +171,18 @@
       text-align: center;
       padding-bottom: 15px;
     }
-    #area_statistics, #direct_statistics {
-      position: relative;
-      /*遮挡label,解决label全部点击取消后不能复原bug*/
-      &:after {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: 0;
-        width: 50%;
-        height: 25px;
-        background-color: transparent;
-      }
-    }
+    /*#area_statistics, #direct_statistics {*/
+      /*position: relative;*/
+      /*!*遮挡label,解决label全部点击取消后不能复原bug*!*/
+      /*&:after {*/
+        /*content: '';*/
+        /*display: block;*/
+        /*position: absolute;*/
+        /*bottom: 0;*/
+        /*width: 50%;*/
+        /*height: 25px;*/
+        /*background-color: transparent;*/
+      /*}*/
+    /*}*/
   }
 </style>

@@ -29,7 +29,7 @@
     </a-row>
     <div style="padding: 0 45px 35px;">
       <!--汇总分析图表部分-->
-      <chart-part :queryInfo="queryInfo" :key="key"/>
+      <chart-part :queryInfo="queryInfo"/>
       <!--查询列表部分-->
       <list-part :queryInfo="queryInfo"/>
     </div>
