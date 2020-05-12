@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import { Column, Pie } from '@antv/g2plot'
+  import { Chart } from '@antv/g2'
   export default {
     name: 'ChartPart',
     props: ['queryInfo'],
@@ -88,7 +88,7 @@
       },
 
       // 绘制饼状图
-      renderPieChart (containerId, colorField, data = []) {
+      renderPieChart (containerId, colorName, data = []) {
         let pieInstance = this.chartInstance[containerId]
         if (!data.length) {
           // 实例存在且数据为空，销毁图表实例
@@ -102,18 +102,22 @@
           return pieInstance.changeData(data)
         }
         // 新建图表实例
-        const piePlot = new Pie(document.getElementById(containerId), {
-          data,
-          colorField,
-          radius: 0.8,
-          height: 280,
-          angleField: 'area',
-          tooltip: { visible: false },
-          legend: { position: 'bottom-center' },
-          label: { visible: true, type: 'spider' }
+        const chart = new Chart({
+          container: containerId, // 指定图表容器 ID
+          autoFit: true
         })
-        piePlot.render()
-        this.chartInstance[containerId] = piePlot
+        chart.coordinate('theta', { radius: 0.6 }) // 饼图大小
+        chart.data(data)
+        chart.interval().position('area').color(colorName).label('area', {
+          // layout: { type: 'overlap' },
+          // offset: 0,
+          content: data => `${data.area} (${data.percentage ? `${data.percentage}%` : '-'})`
+        }).adjust('stack')
+        chart.tooltip({
+          showTitle: false,
+          showMarkers: false
+        }).render()
+        this.chartInstance[containerId] = chart
       },
 
       // 绘制柱状图
@@ -126,36 +130,41 @@
           document.getElementById('asset_statistics').innerHTML = '<div style="text-align: center; color: #00000073">暂无数据</div>'
           return false
         }
+        let max = 0
         let data = [
-          { typeName: '资产原值', key: 'originalValue', typeValue: 0 },
-          { typeName: '首次评估原值', key: 'firstOriginalValue', typeValue: 0 },
-          { typeName: '首次评估市值', key: 'firstMarketValue', typeValue: 0 },
-          { typeName: '最新估值', key: 'latestValuationValue', typeValue: 0 }
+          { title: '资产原值', key: 'originalValue', value: 0 },
+          { title: '首次评估原值', key: 'firstOriginalValue', value: 0 },
+          { title: '首次评估市值', key: 'firstMarketValue', value: 0 },
+          { title: '最新估值', key: 'latestValuationValue', value: 0 }
         ].map(m => {
-          let typeValue = obj[m.key] ? Number(obj[m.key]) : 0
-          return { ...m, typeValue }
+          let value = obj[m.key] ? Number(obj[m.key]) : 0
+          max = max > value ? max : value
+          return { ...m, value }
         })
         // 更新图表
         if (asset_statistics) {
           return asset_statistics.changeData(data)
         }
         // 新建图表实例
-        const columnPlot = new Column(document.getElementById('asset_statistics'), {
-          data,
-          height: 335,
-          xField: 'typeName',
-          yField: 'typeValue',
-          padding: 'auto',
-          label: { visible: true },
-          colorField: 'typeName',
-          tooltip: { visible: false },
-          xAxis: { label: { visible: false } },
-          yAxis: { label: { visible: false }, line: { visible: true } },
-          meta: { typeName: { alias: ' ' }, typeValue: { alias: `单位:(${obj.unitName})` } },
-          legend: { visible: true, position: 'right-center' }
-        })
-        columnPlot.render()
-        this.chartInstance['asset_statistics'] = columnPlot
+          const chart = new Chart({
+            container: 'asset_statistics',
+            autoFit: true,
+            height: 250 // 指定图表高度
+          })
+          chart.data(data)
+          chart.axis('title', false).interval().position('title*value').label('value').color('title')
+          chart.scale('value', {
+            type: 'quantize',
+            nice: true,
+            min: 0,
+            max: (max * 10 + 5) / 10 || 10, // 防止max = 0 时渲染报错
+            alias: `单位：${obj.unitName}`
+          }).axis('value', {
+            title: {},
+          }).legend({
+            position: 'right',
+          }).tooltip(false).render()
+        this.chartInstance['asset_statistics'] = chart
       }
     }
   }
@@ -171,18 +180,19 @@
       text-align: center;
       padding-bottom: 15px;
     }
-    /*#area_statistics, #direct_statistics {*/
-      /*position: relative;*/
-      /*!*遮挡label,解决label全部点击取消后不能复原bug*!*/
-      /*&:after {*/
-        /*content: '';*/
-        /*display: block;*/
-        /*position: absolute;*/
-        /*bottom: 0;*/
-        /*width: 50%;*/
-        /*height: 25px;*/
-        /*background-color: transparent;*/
-      /*}*/
-    /*}*/
+    #area_statistics, #direct_statistics {
+      position: relative;
+      height: 250px;
+      /*遮挡label,解决label全部点击取消后不能复原bug*/
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        width: 50%;
+        height: 25px;
+        background-color: transparent;
+      }
+    }
   }
 </style>
