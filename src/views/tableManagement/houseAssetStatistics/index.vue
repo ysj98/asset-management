@@ -7,10 +7,10 @@
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
       </a-col>
       <a-col :span="12">
-        <organ-project v-model="organProjectValue" :isShowBuilding="false"/>
+        <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
       </a-col>
       <a-col :span="2">
-        <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+        <SG-Button type="primary" @click="queryTableData({type: 'sum'})">查询</SG-Button>
       </a-col>
     </a-row>
     <!--列表Table-->
@@ -39,25 +39,41 @@
           dataSource: [],
           scroll: { x: 2200 },
           columns: [
-            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 150, fixed: 'left' },
-            { title: '资产项目编码', dataIndex: 'projectCode', width: 150 },
-            { title: '管理机构', dataIndex: 'organName', width: 180 },
-            { title: '本企业有产权楼栋数量', dataIndex: 'ownBuildNumber', width: 180 },
-            { title: '本企业有产权房屋数量', dataIndex: 'ownHouseNumber', width: 180 },
-            { title: '本企业有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber', width: 180 },
-            { title: '本企业有使用权房屋数量', dataIndex: 'ownUsedHouseNumber', width: 180 },
-            { title: '其他企业有产权楼栋数量', dataIndex: 'otherBuildNumber', width: 180 },
-            { title: '其他企业有产权房屋数量', dataIndex: 'otherHouseNumber', width: 180 },
-            { title: '其他企业有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber', width: 180 },
-            { title: '其他企业有使用权房屋数量', dataIndex: 'otherUsedHouseNumber', width: 180 },
+            { title: '资产项目名称', dataIndex: 'projectName', width: 150, fixed: 'left', customRender: (text) => {
+              return {
+                children: text,
+                attrs: (text === '当前页-合计' || text === '所有页-合计') ? {colSpan: 3} : {}
+              }
+            } },
+            { title: '资产项目编码', dataIndex: 'projectCode', width: 150, customRender: (text, row) => {
+              return {
+                children: text,
+                attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+              }
+            } },
+            { title: '管理机构', dataIndex: 'organName', width: 180, customRender: (text, row) => {
+              return {
+                children: text,
+                attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+              }
+            } },
+            { title: '本单位有产权楼栋数量', dataIndex: 'ownBuildNumber', width: 180 },
+            { title: '本单位有产权房屋数量', dataIndex: 'ownHouseNumber', width: 180 },
+            { title: '本单位有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber', width: 180 },
+            { title: '本单位有使用权房屋数量', dataIndex: 'ownUsedHouseNumber', width: 180 },
+            { title: '其他单位有产权楼栋数量', dataIndex: 'otherBuildNumber', width: 180 },
+            { title: '其他单位有产权房屋数量', dataIndex: 'otherHouseNumber', width: 180 },
+            { title: '其他单位有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber', width: 180 },
+            { title: '其他单位有使用权房屋数量', dataIndex: 'otherUsedHouseNumber', width: 180 },
           ]
         },
+        dataSum: {} // 所有数据合计
       }
     },
 
     watch: {
       organProjectValue: function () {
-        this.queryTableData({})
+        this.queryTableData({type: 'sum'})
       }
     },
 
@@ -66,30 +82,75 @@
       handleExport () {
         const {organProjectValue: {organId, projectId}} = this
         this.exportBtnLoading = true
-        exportDataAsExcel({organId, projectId}, this.$api.tableManage.exportWarrantHouse, '有证房屋资产统计表.xls', this).then(() => {
+        exportDataAsExcel({organId, projectIds: projectId || undefined}, this.$api.tableManage.exportWarrantHouse, '有证房屋资产统计表.xls', this).then(() => {
           this.exportBtnLoading = false
         })
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10}) {
-        const {organProjectValue: {organId, projectId}} = this
-        if (!organId) { return this.tableObj.dataSource = [] }
+      queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        const {organProjectValue: {organId, projectId}, dataSum} = this
+        if (!organId) { return this.$message.warn('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.tableManage.queryWarrantHouse({organId, projectId, pageSize: pageLength, pageNum: pageNo}).then(r => {
+        let form = {organId, projectIds: projectId || undefined}
+        let queryTablePromise = this.$api.tableManage.queryWarrantHouse({
+          ...form, pageSize: pageLength, pageNum: pageNo
+        }).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const {count, data} = res.data
-            this.tableObj.dataSource = data
-            return Object.assign(this.paginationObj, {
+            if (!data || !data.length) {
+              return this.tableObj.dataSource = []
+            }
+            let keys = [
+              'ownBuildNumber',
+              'ownHouseNumber',
+              'ownUsedBuildNumber',
+              'ownUsedHouseNumber',
+              'otherBuildNumber',
+              'otherHouseNumber',
+              'otherUsedBuildNumber',
+              'otherUsedHouseNumber'
+            ]
+            let sumInfo = {}
+            let dataSource = data.map(m => {
+              keys.forEach(key => {
+                !sumInfo[key] && (sumInfo[key] = 0)
+                sumInfo[key] += (m[key] ? Number(m[key]) : 0)
+              })
+              return m
+            }).concat({...sumInfo, projectCode: Date.now() + Math.random(), projectName: '当前页-合计'})
+            Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
+            return this.tableObj.dataSource = (type === 'sum') ? dataSource : dataSource.concat(dataSum)
           }
           throw res.message
         }).catch(err => {
           this.tableObj.loading = false
           this.$message.error(err || '查询接口出错')
+          return false
+        })
+        if (type === 'sum') {
+          Promise.all([queryTablePromise, this.queryDataSum(form)]).then(([dataSource, dataSum]) => {
+            dataSource && (this.tableObj.dataSource = dataSource.concat(dataSum))
+          })
+        }
+      },
+
+      // 查询当前条件下所有数据的合计信息
+      queryDataSum (form) {
+        let obj = {projectCode: Date.now() + Math.random(), projectName: '所有页-合计'}
+        return this.$api.tableManage.queryHouseAssetSumInfo(form).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.dataSum = { ...res.data, ...obj }
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || '查询所有页合计出错')
+          return this.dataSum = obj
         })
       }
     }
@@ -107,6 +168,11 @@
           /*white-space: nowrap;*/
         /*}*/
       /*}*/
+      & /deep/ .ant-table {
+        tr:last-child, tr:nth-last-child(2) {
+          font-weight: bold !important;
+        }
+      }
     }
   }
 </style>

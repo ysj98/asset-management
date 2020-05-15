@@ -278,6 +278,8 @@ export const assets = {
     assetOperationExpenseParam: '/ams/operationContract/assetOperationExpenseParam',
     // 资产视图-运营信息-运营收入(计费接口)（分页）
     getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
+    // 导出房屋卡片
+    exportHouseCard: '/ams/asset-house/exportById'
   },
   // 资产项目管理
   projectManage: {
@@ -717,5 +719,11 @@ export const tableManage = {
   // 资产卡片批量导入
   importAssetCardData: '/ams/assetCard/importData',
   // 资产项目批量导入
-  importAssetProjectData: '/ams/project/importData'
+  importAssetProjectData: '/ams/project/importData',
+  // 权证数量统计表(汇总)
+  queryWarrantSumInfo: '/ams/statistics/warrant/numberCount',
+  // 有证房屋资产统计表(汇总)
+  queryHouseAssetSumInfo: '/ams/statistics/asset/house/warrantCount',
+  // 权属证件一览表(汇总)
+  queryOwnershipCardSumInfo: '/ams/ownership/warrant/count'
 }

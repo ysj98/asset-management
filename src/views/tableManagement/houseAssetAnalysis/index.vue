@@ -3,8 +3,8 @@
   <div class="asset_analysis">
     <!--查询条件部分-->
     <a-row :gutter="8" class="search_style">
-      <a-col :span="6" :offset="1">
-        <organ-project v-model="organProjectValue" :isShowBuilding="false"/>
+      <a-col :span="7">
+        <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
       </a-col>
       <a-col :span="3">
         <a-select
@@ -102,7 +102,7 @@
         } = this
         if (!organId) { return this.$message.warn('请选择组织机构') }
         let str = assetType.includes('-1') ? '' : assetType.join(',')
-        this.queryInfo = { province, city, region, useType, assetType: str, projectId, organId, key: Date.now() }
+        this.queryInfo = { province, city, region, useType, assetType: str, projectIds: projectId || undefined, organId, key: Date.now() }
         this.key = Date.now()
       },
       

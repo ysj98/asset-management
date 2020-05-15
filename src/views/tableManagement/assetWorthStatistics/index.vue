@@ -8,8 +8,8 @@
       </div>
       <div slot="headerForm" style="margin-right: 8px">
         <a-row :gutter="8" style="width: 100%">
-          <a-col :span="8" :offset="8">
-            <organ-project v-model="organProjectValue" :isShowBuilding="false"/>
+          <a-col :span="12" :offset="4">
+            <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
           </a-col>
           <a-col :span="4">
             <a-select
@@ -29,7 +29,7 @@
       </div>
       <div slot="contentForm" style="margin-top: 15px">
         <a-row :gutter="8" style="width: 100%">
-          <a-col :span="5" :offset="queryObj.queryType !== '0' ? 3 : 6">
+          <a-col :span="4" :offset="queryObj.queryType !== '0' ? 0 : 3">
             <a-select
               mode="multiple"
               :maxTagCount="1"
@@ -40,7 +40,7 @@
               placeholder="请选择资产状态"
             />
           </a-col>
-          <a-col :span="4">
+          <a-col :span="3">
             <a-select v-model="queryObj.queryType" style="width: 100%" placeholder="请选择统计方式" :options="queryTypeOptions"/>
           </a-col>
           <a-col :span="3">
@@ -49,8 +49,14 @@
           <a-col :span="3" v-if="queryObj.queryType !== '0'">
             <a-select v-model="queryObj.endTime" style="width: 100%" placeholder="请选择结束时间" :options="endTimeOptions"/>
           </a-col>
-          <a-col :span="4">
-            <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="请输入资产名称或编码"/>
+          <a-col :span="3">
+            <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="资产名称或编码"/>
+          </a-col>
+          <a-col :span="6" style="text-align: center; height: 32px; padding-top: 7px">
+            <a-radio-group v-model="queryObj.dimension">
+              <a-radio value="1">按资产项目统计</a-radio>
+              <a-radio value="2">按资产统计</a-radio>
+            </a-radio-group>
           </a-col>
           <a-col :span="2">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
@@ -63,11 +69,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
-      <span slot="projectName" slot-scope="text, record">
-        <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
-      </span>
-    </a-table>
+    <a-table v-bind="tableObj" class="custom-table td-pd10"/>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
@@ -87,12 +89,14 @@
       return {
         fold: true,
         queryObj: {
-          queryType: '0', // 查询条件-统计类型值
+          dimension: '1', // 查询条件-统计维度
+          queryType: '3', // 查询条件-统计类型值
           objectType: '', // 查询条件-资产分类值
+          endTime: undefined, // 查询条件-结束时间,
+          startTime: undefined, // 查询条件-开始时间
+          assetName: '', //  查询条件-资产名称或编码
           status: ['-1'], // 查询条件-资产状态值,多选
-          assetType: ['-1'], // 查询条件-资产类型值,多选
-          startTime: String(new Date().getFullYear()), // 查询条件-开始时间
-          endTime: undefined, // 查询条件-结束时间
+          assetType: ['-1'] // 查询条件-资产类型值,多选
         },
         endTimeOptions: [], // 查询条件-统计结束时间选项
         startTimeOptions: [], // 查询条件-统计开始时间选项
@@ -112,13 +116,14 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '资产编号', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' }, fixed: 'left' },
-          { title: '资产名称', dataIndex: 'assetName', width: 180 },
-          { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
           { title: '所属机构', dataIndex: 'organName', width: 180 }, { title: '资产项目', dataIndex: 'projectName', width: 180 },
-          { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '评估原值(元)', dataIndex: 'assetValuation' },
-          { title: '首次市场估值(元)', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' }
-        ], // 列头不变部分
+          { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
+          { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' }
+        ], // 列头不变部分,按资产项目统计维度
+        columnsByAsset: [
+          { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
+          { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '资产状态', dataIndex: 'statusName' }
+        ], // 按资产统计维度动态展示
         tableObj: {
           pagination: false,
           rowKey: 'assetId',
@@ -131,8 +136,8 @@
         numList: [
           {title: '资产总数', key: 'assetCount', value: 0, fontColor: '#324057'},
           {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#4BD288'},
-          {title: '首次评估原值(元)', key: 'assetValuation', value: 0, bgColor: '#1890FF'},
-          {title: '首次评估市值(元)', key: 'firstMarketValue', value: 0, bgColor: '#DD81E6'},
+          {title: '首次成本法估值(元)', key: 'assetValuation', value: 0, bgColor: '#1890FF'},
+          {title: '首次市场法估值(元)', key: 'firstMarketValue', value: 0, bgColor: '#DD81E6'},
           {title: '最新价值(元)', key: 'marketValue', value: 0, bgColor: '#FD7474'}
         ], // 概览数据，title 标题，value 数值，color 背景色
       }
@@ -210,7 +215,7 @@
           others.endTime = others.startTime
         }
         let form = {
-          ...others, organId, projectId, pageSize: pageLength, pageNum: pageNo,
+          ...others, organId, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo,
           assetType: assetType.includes('-1') ? '' : assetType.join(','),
           status: status.includes('-1') ? '' : status.join(',')
         }
@@ -272,7 +277,6 @@
         }
         let arr = []
         let len = obj[queryType]
-        this.endTimeOptions = []
         for (let i = 0; i < len; i++) {
           arr.push({ title: String(startYear + i), key: String(startYear + i) })
         }
@@ -298,7 +302,25 @@
         let lastIndex = value.length - 1
         this.queryObj.assetType = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
         this.queryCategoryOptions()
-      }
+      },
+
+      // 按统计维度生成排序算法
+      generateSort (second) {
+        // 字符串排序利用API referenceStr.localeCompare(compareString[, locales[, options]])
+        // 详见https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+        // 没有对(a[columns[0]['dataIndex']]值的有无做判断，要保证有值，即使是''
+        return (a, b) => {
+          // 第一维度
+          if (!second) {
+            return a['organName'].localeCompare(b['organName'])
+          }
+          if (a['organName'].localeCompare(b['organName']) === 0) {
+            return a['projectName'].localeCompare(b['projectName'])
+          } else {
+            return a['organName'].localeCompare(b['organName'])
+          }
+        }
+      },
     },
 
     created () {
@@ -306,13 +328,18 @@
       // 初始化Table列头
       let{ fixedColumns } = this
       this.tableObj.columns = fixedColumns
-      // 获取当前年份
-      let currentYear = new Date().getFullYear()
+      // 获取开始年份
+      let currentYear = new Date().getFullYear() - 1 // 默认当前年份-1
       let arr = []
       for (let i = 0; i <= 15; i++) {
         arr.push({ title: String(currentYear + i -10), key: String(currentYear + i - 10) })
       }
       this.startTimeOptions = [...arr]
+      Object.assign(this.queryObj, {
+        startTime: String(currentYear),
+        endTime: String(currentYear + 1) // 默认当前年份
+      })
+      this.generateEndTimeOption()
     },
 
     watch: {

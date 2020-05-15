@@ -28,7 +28,7 @@
     >
       <a-input
         v-decorator="[ 'decorationSituation', { rules: [{max: 30, message: '最多30个字符'}] }]"
-        placeholder="请选择装修情况"
+        placeholder="请填写装修情况"
       />
     </a-form-item>
     <a-form-item
@@ -36,8 +36,8 @@
       :wrapper-col="formItemLayout.wrapperCol"
       label="保管部门"
     >
-      <a-input v-if="!isShowTreeSelect" @click="showTreeSelect" v-decorator="[ 'ownerOrganName']"/>
-      <tree-select v-else @changeTree="changeTree" placeholder="请选择保管部门"/>
+      <a-input v-if="!isShowTreeSelect" @click="showTreeSelect" v-decorator="[ 'ownerOrganName']" style="width: 100%"/>
+      <tree-select v-else @changeTree="changeTree" placeholder="请选择保管部门" style="width: 100%"/>
     </a-form-item>
     <a-form-item
       :label-col="formItemLayout.labelCol"

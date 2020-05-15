@@ -11,13 +11,13 @@
       </div>
       <div slot="headerForm" style="margin-right: 8px">
         <a-row :gutter="8">
-          <a-col :span="8" :offset="4">
-            <organ-project v-model="organProjectValue" :isShowBuilding="false" :allowClear="false"/>
+          <a-col :span="13" :offset="1">
+            <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
           </a-col>
-          <a-col :span="4">
+          <a-col :span="3">
             <a-select v-model="queryObj.sourceType" style="width: 100%" placeholder="请选择来源方式" :options="sourceTypeOptions"/>
           </a-col>
-          <a-col :span="4">
+          <a-col :span="3">
             <a-select v-model="queryObj.takeOver" style="width: 100%" placeholder="请选择接管状态" :options="takeOverOptions"/>
           </a-col>
           <a-col :span="4">
@@ -128,33 +128,37 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 4800 },
+          scroll: { x: 5200 },
           columns: [
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
-            { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '接管机构', dataIndex: 'organName' },
+            { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '管理机构', dataIndex: 'organName' },
             { title: '来源方式', dataIndex: 'sourceTypeName' }, { title: '来源渠道', dataIndex: 'souceChannelType' },
-            { title: '是否接管', dataIndex: 'takeOverName' }, { title: '接管时间', dataIndex: 'takeOverDate' }, { title: '建筑面积(㎡)', dataIndex: 'area' },
-            { title: '楼栋数', dataIndex: 'buildCount' },{ title: '项目状态', dataIndex: 'approvalStatusName' },
-            { title: '资产数量', dataIndex: 'assetCount' }, { title: '运营/转运营面积(㎡)', dataIndex: 'transferOperationArea' },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea' }, { title: '闲置(㎡)', dataIndex: 'idleArea' },
-            { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
-            { title: '首次评估原值', dataIndex: 'assetValuation' }, { title: '资产原值(元)', dataIndex: 'originalValue' },
-            { title: '首次市场估值', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' },
-            { title: '划转前房屋状态', dataIndex: 'houseStatusName' }, { title: '上报基础情况表', dataIndex: 'reportBasicInfoDate' },
-            { title: '房屋核实时间', dataIndex: 'houseVerificationDate' }, { title: '上报房屋划转请示时间', dataIndex: 'reportHouseTransferReqDate' },
-            { title: '上报核实报告时间', dataIndex: 'reportHouseVerificationDate' }, { title: '划转批复下发时间', dataIndex: 'transferApprovalDate' },
-            { title: '协议签署时间', dataIndex: 'agreementSignDate' }, { title: '权属办理中存在问题', dataIndex: 'ownershipHandleProblems' },
-            { title: '房屋划转历史遗留问题', dataIndex: 'houseTransferHisProblem' }, { title: '房屋性质', dataIndex: 'houseTypeName' },
+            { title: '建筑年代', dataIndex: 'buildAge' }, { title: '楼栋数', dataIndex: 'buildCount' },
+            { title: '资产数量', dataIndex: 'assetCount' }, { title: '房屋性质', dataIndex: 'houseTypeName' },
+            { title: '建筑面积(㎡)', dataIndex: 'area' }, { title: '划转前房屋状态', dataIndex: 'houseStatusName' },
+            { title: '上报基础情况表时间', dataIndex: 'reportBasicInfoDate' }, { title: '上报房屋划转请示时间', dataIndex: 'reportHouseTransferReqDate' },
+            { title: '房屋核实时间', dataIndex: 'houseVerificationDate' }, { title: '上报核实报告时间', dataIndex: 'reportHouseVerificationDate' },
+            { title: '划转批复下发时间', dataIndex: 'transferApprovalDate' }, { title: '协议签署时间', dataIndex: 'agreementSignDate' },
+            { title: '是否接管', dataIndex: 'takeOverName' }, { title: '接管时间', dataIndex: 'takeOverDate' },
+            { title: '权属办理中存在问题', dataIndex: 'ownershipHandleProblems' }, { title: '房屋划转历史遗留问题', dataIndex: 'houseTransferHisProblem' },
             { title: '划转时房屋权属', dataIndex: 'houseProperty' }, { title: '划转时权利人', dataIndex: 'houseObligee' },
             { title: '权属变更时间', dataIndex: 'propertyChangeTime' }, { title: '产权情况', dataIndex: 'ownershipStatusName' },
-            { title: '能否过户', dataIndex: 'isTranster' }, { title: '是否转运营', dataIndex: 'transferToOperationName' },
-            { title: '转运营时间', dataIndex: 'transferOperationTime' }, { title: '是否转物业', dataIndex: 'isPropertyName' },
+            { title: '是否过户', dataIndex: 'isTranster' }, { title: '是否转物业', dataIndex: 'isPropertyName' },
             { title: '转物业时间', dataIndex: 'transferTime' },{ title: '转物业面积(㎡)', dataIndex: 'transferArea' },
+            { title: '是否转运营', dataIndex: 'transferToOperationName' }, { title: '转运营时间', dataIndex: 'transferOperationTime' },
+            { title: '转运营面积(㎡)', dataIndex: 'transferOperationArea' }, { title: '运营面积(㎡)', dataIndex: 'operationArea' },
+            { title: '闲置(㎡)', dataIndex: 'idleArea' }, { title: '自用(㎡)', dataIndex: 'selfUserArea' },
+            { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
+            { title: '已运营基本情况', dataIndex: 'operationInfo' }, { title: '资产原值(元)', dataIndex: 'originalValue' },
+            { title: '首次成本法估值', dataIndex: 'assetValuation' }, { title: '首次市场法估值', dataIndex: 'firstMarketValue' },
+            { title: '最新估值(元)', dataIndex: 'marketValue' }, { title: '项目状态', dataIndex: 'approvalStatusName' },
             { title: '备注', dataIndex: 'remark', width: 180 }
           ]
         },
         numList: [
-          {title: '所有资产(㎡)', key: 'areaCount', value: 0, fontColor: '#324057'},
+          {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
+          {title: '楼栋数量', key: 'buildCount', value: 0, bgColor: '#5b8ff9'},
+          {title: '总建筑面积(㎡)', key: 'areaCount', value: 0, bgColor: '#d48265'},
           {title: '运营(㎡)', key: 'transferOperationAreaCount', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'idleAreaCount', value: 0, bgColor: '#1890FF'},
           {title: '自用(㎡)', key: 'selfUserAreaCount', value: 0, bgColor: '#DD81E6'},
@@ -175,9 +179,9 @@
 
       // 查询来源方式
       querySourceType (id) {
+        if (!id) { return false }
         this.sourceTypeOptions = []
         this.queryObj.sourceType = ''
-        if (!id) { return false }
         querySourceType(id, this).then(list => {
           return this.sourceTypeOptions = [{ title: '全部来源方式', key: '' }].concat(list)
         })
@@ -209,7 +213,7 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         let form = {
           approvalStatusList: projectStatus.includes('-1') ? '' : projectStatus.join(','),
-          organId, projectId, pageSize: pageLength, pageNum: pageNo, ...queryObj
+          organId, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo, ...queryObj
         }
         if (type === 'export') { return form }
         this.tableObj.loading = true
@@ -247,7 +251,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.numList = this.numList.map(m => {
-              return { ...m, value: res.data[m.key] }
+              return { ...m, value: res.data[m.key] || 0 }
             })
           }
           throw res.message
@@ -289,8 +293,8 @@
     watch: {
       organProjectValue: {
         handler: function (val, pre) {
-          this.queryTableData({type: 'search'})
-          pre.organId !== val.organId && this.querySourceType(val.organId)
+          !pre.organId && this.queryTableData({type: 'search'})
+          pre.organId !== val.organId ? this.querySourceType(val.organId) : this.queryTableData({type: 'search'})
         },
         deep: true
       },

@@ -2,11 +2,17 @@
 <!--资产视图业务-资产视图详情页面-->
 <template>
   <div class="asset_view">
-    <!--<SG-Button icon="rollback" style="position: absolute; top: 10px; right: 30px; z-index: 999" @click="$router.back()">-->
-      <!--返回-->
-    <!--</SG-Button>-->
+    <SG-Button
+      icon="export"
+      type="primary"
+      @click="exportCard"
+      :loading="exportBtnLoading"
+      style="position: absolute; top: 10px; right: 30px; z-index: 999"
+    >
+      导出房屋卡片
+    </SG-Button>
     <!--基础信息部分-->
-    <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" @updataTransfer="updataTransfer"/>
+    <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" @updateTransfer="updateTransfer"/>
     <!--其它信息部分-->
     <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
   </div>
@@ -20,15 +26,39 @@
     components: { OtherInfoPart, BaseInfoPart },
     data () {
       return {
+        exportBtnLoading: false,
         assetHouseId: '', // 房屋Id
         assetId: '', // 资产Id
         transferOperationArea: '', // 转运营面积
-        transferOperationTime: '', // 转运营时间
+        transferOperationTime: '' // 转运营时间
       }
     },
 
     methods: {
-      updataTransfer (obj) {
+      // 导出房屋卡片
+      exportCard () {
+        this.exportBtnLoading = true
+        const { assetHouseId, assetId } = this
+        this.$api.assets.exportHouseCard({ assetHouseId, assetId }).then(res => {
+          this.exportBtnLoading = false
+          if (String(res.status) === '200' && res.data && res.data.size) {
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(new Blob([res.data]))
+            a.download = '资产数据卡片(资管部).xlsx'
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            return a.remove()
+          }
+          throw res.message
+        }).catch(err => {
+          this.exportBtnLoading = false
+          this.$message.error(err || '导出房屋卡片失败')
+        })
+      },
+
+      // 兄弟组件间数据通信
+      updateTransfer (obj) {
         Object.assign(this, obj)
       }
     },

@@ -121,3 +121,15 @@ export function importAssetCardData (query, data) {
 export function importAssetProjectData (query, data) {
   return axiosPost(`${tableManage.importAssetProjectData}${query}`, data)
 }
+// 权证数量统计表(汇总)
+export function queryWarrantSumInfo (data) {
+  return axiosPost(tableManage.queryWarrantSumInfo, data)
+}
+// 有证房屋资产统计表(汇总)
+export function queryHouseAssetSumInfo (data) {
+  return axiosPost(tableManage.queryHouseAssetSumInfo, data)
+}
+// 权属证件一览表(汇总)
+export function queryOwnershipCardSumInfo (data) {
+  return axiosPost(tableManage.queryOwnershipCardSumInfo, data)
+}

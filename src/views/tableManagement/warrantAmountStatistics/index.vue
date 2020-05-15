@@ -7,10 +7,10 @@
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
       </a-col>
       <a-col :span="12">
-        <organ-project v-model="organProjectValue" :isShowBuilding="false"/>
+        <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
       </a-col>
       <a-col :span="2">
-        <SG-Button type="primary" @click="queryTableData">查询</SG-Button>
+        <SG-Button type="primary" @click="queryTableData({type: 'sum'})">查询</SG-Button>
       </a-col>
     </a-row>
     <!--列表Table-->
@@ -38,28 +38,44 @@
           loading: false,
           dataSource: [],
           columns: [
-            { title: '资产项目名称', dataIndex: 'projectName' },
-            { title: '资产项目编码', dataIndex: 'projectCode' },
-            { title: '管理机构', dataIndex: 'organName' },
+            { title: '资产项目名称', dataIndex: 'projectName', customRender: (text) => {
+              return {
+                children: text,
+                attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 3 } : {}
+              }
+            } },
+            { title: '资产项目编码', dataIndex: 'projectCode', customRender: (text, row) => {
+                return {
+                  children: text,
+                  attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+                }
+            } },
+            { title: '管理机构', dataIndex: 'organName', customRender: (text, row) => {
+                return {
+                  children: text,
+                  attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+                }
+            } },
             { title: '产权证', children: [
               { title: '总数', dataIndex: 'totalNumber' },
-              { title: '本企业', dataIndex: 'ownNumber' },
-              { title: '其他企业', dataIndex: 'otherNumber' }
+              { title: '本单位', dataIndex: 'ownNumber' },
+              { title: '其他单位', dataIndex: 'otherNumber' }
             ] },
             { title: '使用权证', children: [
               { title: '总数', dataIndex: 'usedTotalNumber' },
-              { title: '本企业', dataIndex: 'ownUsedNumber' },
-              { title: '其他企业', dataIndex: 'otherUsedNumber' }
+              { title: '本单位', dataIndex: 'ownUsedNumber' },
+              { title: '其他单位', dataIndex: 'otherUsedNumber' }
               ] }
           ]
         },
+        dataSum: {} // 所有数据合计
       }
     },
 
     watch: {
       organProjectValue: {
         handler: function () {
-          this.queryTableData({})
+          this.queryTableData({type: 'sum'})
         },
         deep: true
       }
@@ -70,30 +86,65 @@
       handleExport () {
         const {organProjectValue: {organId, projectId}} = this
         this.exportBtnLoading = true
-        exportDataAsExcel({organId, projectId}, this.$api.tableManage.exportWarrantStatistics, '权证数量统计表.xls', this).then(() => {
+        exportDataAsExcel({organId, projectIds: projectId || undefined}, this.$api.tableManage.exportWarrantStatistics, '权证数量统计表.xls', this).then(() => {
           this.exportBtnLoading = false
         })
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10}) {
-        const {organProjectValue: {organId, projectId}} = this
-        if (!organId) { return this.$message.info('请选择组织机构') }
+      queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        const {organProjectValue: {organId, projectId}, dataSum} = this
+        if (!organId) { return this.$message.warn('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.tableManage.queryWarrantStatistics({organId, projectId, pageSize: pageLength, pageNum: pageNo}).then(r => {
+        let form = {organId, projectIds: projectId || undefined}
+        let queryTablePromise = this.$api.tableManage.queryWarrantStatistics({
+          ...form, pageSize: pageLength, pageNum: pageNo
+        }).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const {count, data} = res.data
-            this.tableObj.dataSource = data || []
-            return Object.assign(this.paginationObj, {
-              totalCount: count, pageNo, pageLength
-            })
+            if (!data || !data.length) {
+              this.tableObj.dataSource = []
+              return false
+            }
+            let keys = ['totalNumber', 'ownNumber', 'otherNumber', 'usedTotalNumber', 'ownUsedNumber', 'otherUsedNumber']
+            let sumInfo = {}
+            let dataSource = data.map(m => {
+              keys.forEach(key => {
+                !sumInfo[key] && (sumInfo[key] = 0)
+                sumInfo[key] += (m[key] ? Number(m[key]) : 0)
+              })
+              return m
+            }).concat({...sumInfo, projectCode: Date.now() + Math.random(), projectName: '当前页-合计'})
+            Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength })
+            return this.tableObj.dataSource = (type === 'sum') ? dataSource : dataSource.concat(dataSum)
           }
           throw res.message
         }).catch(err => {
           this.tableObj.loading = false
           this.$message.error(err || '查询接口出错')
+          return false
+        })
+        if (type === 'sum') {
+          Promise.all([queryTablePromise, this.queryDataSum(form)]).then(([dataSource, dataSumInfo]) => {
+            dataSource && (this.tableObj.dataSource = dataSource.concat(dataSumInfo))
+          })
+        }
+      },
+      
+      // 查询当前条件下所有数据的合计信息
+      queryDataSum (form) {
+        let obj = {projectCode: Date.now() + Math.random(), projectName: '所有页-合计'}
+        return this.$api.tableManage.queryWarrantSumInfo(form).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            return this.dataSum = { ...res.data, ...obj }
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || '查询所有页合计出错')
+          return this.dataSum = obj
         })
       }
     }
@@ -109,6 +160,13 @@
       & /deep/ .ant-table {
         .ant-table-thead th {
           white-space: nowrap;
+          text-align: center;
+        }
+        td {
+          text-align: center;
+        }
+        tr:last-child, tr:nth-last-child(2) {
+          font-weight: bold !important;
         }
       }
     }

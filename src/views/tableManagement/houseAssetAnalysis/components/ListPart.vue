@@ -78,7 +78,6 @@
       // 查询Table DataSource
       queryTableData ({pageNo = 1, pageLength = 10}) {
         const { queryInfo, columnsDynamic, sortIndex } = this
-        this.dataSource = []
         this.tableLoading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
         this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo}).then(r => {

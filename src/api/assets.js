@@ -329,6 +329,10 @@ export function queryAssetViewDisposeDetail (data) {
 export function queryAssetViewAccessoryDetail (data) {
   return axiosPost(assets.assetView.queryAccessoryDetail, data)
 }
+// 导出房屋卡片
+export function exportHouseCard (data) {
+  return axiosGet(assets.assetView.exportHouseCard, data, false, {responseType: 'blob'})
+}
 // 查询组织机构下的员工
 export function queryUserListByOrganId (data) {
   return axiosGet(assets.assetView.userList, data)
