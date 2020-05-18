@@ -53,7 +53,7 @@
             <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="资产名称或编码"/>
           </a-col>
           <a-col :span="6" style="text-align: center; height: 32px; padding-top: 7px">
-            <a-radio-group v-model="queryObj.dimension">
+            <a-radio-group v-model="queryObj.dimension" @change="generateSortFunc">
               <a-radio value="1">按资产项目统计</a-radio>
               <a-radio value="2">按资产统计</a-radio>
             </a-radio-group>
@@ -69,7 +69,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10"/>
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered/>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
@@ -123,7 +123,7 @@
         columnsByAsset: [
           { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
           { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '资产状态', dataIndex: 'statusName' }
-        ], // 按资产统计维度动态展示
+        ], // 按资产统计维度时动态展示
         tableObj: {
           pagination: false,
           rowKey: 'assetId',
@@ -140,6 +140,8 @@
           {title: '首次市场法估值(元)', key: 'firstMarketValue', value: 0, bgColor: '#DD81E6'},
           {title: '最新价值(元)', key: 'marketValue', value: 0, bgColor: '#FD7474'}
         ], // 概览数据，title 标题，value 数值，color 背景色
+        isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
+        sortFunc: (a, b) => a['organName'].localeCompare(b['organName']) // 排序算法函数
       }
     },
 
@@ -164,8 +166,16 @@
         })
       },
       
-      // 根据统计方式生成列
-      generateColumns ({queryType, startTime, endTime}) {
+      // 根据统计方式和统计维度生成列
+      generateColumns ({queryType, startTime, endTime, dimension}, data) {
+        const { columnsByAsset, fixedColumns, sortFunc } = this
+        let dataSource = data.map(m => {
+          let temp = {}
+          let arr = m.dynamicData || []
+          arr.forEach((n, i) => temp[`date_${i}`] = n)
+          return { ...m, ...temp}
+        }).sort(sortFunc)
+        let fixedColumnsCopy = [...fixedColumns]
         let arr = []
         if (queryType === '0') {
           // 按月统计时，最大年份跨度1年
@@ -201,8 +211,43 @@
             }
           }
         }
-        this.tableObj.columns = this.fixedColumns.concat(arr)
-        this.tableObj.scroll.x = 1400 + arr.length * 120
+        dimension === '1' && fixedColumnsCopy.splice(1, 0, ...columnsByAsset)
+        // 计算需要合并的单元格起始位置及数量
+        let temp = {}
+        dataSource.forEach((m, index) => {
+          let { organName, projectName } = m
+          if (!temp[organName]) {
+            temp[organName] = 0
+            temp[`${organName}_start`] = String(index)
+          }
+          temp[organName] += 1
+          if (dimension === '2') {
+            if (!temp[projectName]) {
+              temp[projectName] = 0
+              temp[`${projectName}_start`] = String(index)
+            }
+            temp[projectName] += 1
+          }
+        })
+        let columns = fixedColumnsCopy.map(c => {
+          if (c.dataIndex === 'organName' || (dimension === '2' && c.dataIndex === 'projectName')) {
+            return {
+              ...c, customRender: (text, row, index) => {
+              return {
+                children: text,
+                attrs: { rowSpan: (temp[text] && temp[`${text}_start`] === String(index)) ? temp[text] : 0 }
+              }
+            }
+          }
+          } else {
+            return c
+          }
+        }).concat(arr)
+        Object.assign(this.tableObj, {
+          columns,
+          dataSource,
+          scroll: { x: columns.length * 150 }
+        })
       },
 
       // 查询列表数据
@@ -220,20 +265,14 @@
           status: status.includes('-1') ? '' : status.join(',')
         }
         if (type === 'export') { return form }
-        // 生成新的columns
-        this.generateColumns(others)
         this.tableObj.loading = true
         this.$api.tableManage.getAssetValue(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = (data || []).map(m => {
-              let temp = {}
-              let arr = m.dynamicData || []
-              arr.forEach((n, i) => temp[`date_${i}`] = n)
-              return { ...m, ...temp}
-            })
+            // 生成新的columns
+            this.generateColumns(others, data || [])
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -305,13 +344,13 @@
       },
 
       // 按统计维度生成排序算法
-      generateSort (second) {
+      generateSortFunc ({target: value}) {
         // 字符串排序利用API referenceStr.localeCompare(compareString[, locales[, options]])
         // 详见https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
         // 没有对(a[columns[0]['dataIndex']]值的有无做判断，要保证有值，即使是''
-        return (a, b) => {
+        this.sortFunc = (a, b) => {
           // 第一维度
-          if (!second) {
+          if (value === '1') {
             return a['organName'].localeCompare(b['organName'])
           }
           if (a['organName'].localeCompare(b['organName']) === 0) {
@@ -320,7 +359,7 @@
             return a['organName'].localeCompare(b['organName'])
           }
         }
-      },
+      }
     },
 
     created () {
@@ -346,7 +385,8 @@
       organProjectValue: {
         handler: function (val, pre) {
           val.organId !== pre.organId && this.queryCategoryOptions()
-          this.queryTableData({type: 'search'})
+          !this.isLoad && this.queryTableData({type: 'search'})
+          this.isLoad = true
         },
         deep: true
       },

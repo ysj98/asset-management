@@ -39,7 +39,7 @@
       <!--</template>-->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, type: 'page' })"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, searchType: 'page' })"/>
     <!-- 复用权证管理查看详情页面 -->
     <CardDetails ref="cardDetails"/>
   </div>
@@ -78,7 +78,7 @@
         ], // 概览数据，title 标题，value 数值，color 背景色
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
-          scroll: { x: 2400 },
+          scroll: { x: 2600 },
           pagination: false,
           rowKey: 'warrantId',
           loading: false,
@@ -179,7 +179,7 @@
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10, type}) {
+      queryTableData ({pageNo = 1, pageLength = 10, searchType}) {
         const {queryObj, organProjectValue: {organId, projectId}} = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -199,7 +199,7 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询接口出错')
         })
-        if (!type) { this.queryStatisticsInfo(form) }
+        if (!searchType) { this.queryStatisticsInfo(form) }
       }
     },
     
