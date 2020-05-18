@@ -116,7 +116,8 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '所属机构', dataIndex: 'organName', width: 180 }, { title: '资产项目', dataIndex: 'projectName', width: 180 },
+          { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 180 },
+          { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 180 },
           { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
           { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' }
         ], // 列头不变部分,按资产项目统计维度
