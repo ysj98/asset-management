@@ -725,5 +725,5 @@ export const tableManage = {
   // 有证房屋资产统计表(汇总)
   queryHouseAssetSumInfo: '/ams/statistics/asset/house/warrantCount',
   // 权属证件一览表(汇总)
-  queryOwnershipCardSumInfo: '/ams/ownership/warrant/count'
+  queryOwnershipCardSumInfo: '/ams/statistics/ownership/warrant/count'
 }

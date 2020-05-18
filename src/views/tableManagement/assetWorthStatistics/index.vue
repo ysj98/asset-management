@@ -211,7 +211,7 @@
             }
           }
         }
-        dimension === '1' && fixedColumnsCopy.splice(1, 0, ...columnsByAsset)
+        dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
         // 计算需要合并的单元格起始位置及数量
         let temp = {}
         dataSource.forEach((m, index) => {
@@ -418,6 +418,9 @@
       & /deep/ .ant-table {
         .ant-table-thead th {
           white-space: nowrap;
+        }
+        .ant-table-tbody tr td {
+          padding-left: 6px !important;
         }
       }
     }
