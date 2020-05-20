@@ -37,15 +37,15 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: 2200 },
+          scroll: { x: 2400 },
           columns: [
-            { title: '资产项目名称', dataIndex: 'projectName', width: 150, fixed: 'left', customRender: (text) => {
+            { title: '资产项目名称', dataIndex: 'projectName', width: 200, fixed: 'left', customRender: (text) => {
               return {
                 children: text,
                 attrs: (text === '当前页-合计' || text === '所有页-合计') ? {colSpan: 3} : {}
               }
             } },
-            { title: '资产项目编码', dataIndex: 'projectCode', width: 150, customRender: (text, row) => {
+            { title: '资产项目编码', dataIndex: 'projectCode', width: 200, customRender: (text, row) => {
               return {
                 children: text,
                 attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
