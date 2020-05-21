@@ -198,7 +198,7 @@
         let{ initColumns } = this.tableObj
         this.checkedHeaderArr = arr
         let columns = initColumns.filter(n => arr.includes(n.dataIndex))
-        this.tableObj.scroll = { x: columns.length * 120 } // 防止较少列时出现滚动
+        this.tableObj.scroll = { x: columns.length * 150 } // 防止较少列时出现滚动
         this.tableObj.columns = columns
       },
 
