@@ -116,8 +116,8 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 180 },
-          { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 180 },
+          { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220 },
+          { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 220 },
           { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
           { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' }
         ], // 列头不变部分,按资产项目统计维度
@@ -127,7 +127,7 @@
         ], // 按资产统计维度时动态展示
         tableObj: {
           pagination: false,
-          rowKey: 'assetId',
+          // rowKey: 'assetId',
           loading: false,
           initColumns: [],
           dataSource: [],
@@ -170,11 +170,11 @@
       // 根据统计方式和统计维度生成列
       generateColumns ({queryType, startTime, endTime, dimension}, data) {
         const { columnsByAsset, fixedColumns, sortFunc } = this
-        let dataSource = data.map(m => {
+        let dataSource = data.map((m, key) => {
           let temp = {}
           let arr = m.dynamicData || []
           arr.forEach((n, i) => temp[`date_${i}`] = n)
-          return { ...m, ...temp}
+          return { ...m, ...temp, key}
         }).sort(sortFunc)
         let fixedColumnsCopy = [...fixedColumns]
         let arr = []
@@ -219,24 +219,27 @@
           let { organName, projectName } = m
           if (!temp[organName]) {
             temp[organName] = 0
-            temp[`${organName}_start`] = String(index)
+            temp[`${organName}_start`] = index
           }
           temp[organName] += 1
           if (dimension === '2') {
-            if (!temp[projectName]) {
-              temp[projectName] = 0
-              temp[`${projectName}_start`] = String(index)
+            let name = `${organName}_${projectName}`
+            if (!temp[name]) {
+              temp[name] = 0
+              temp[`${name}_start`] = index
             }
-            temp[projectName] += 1
+            temp[name] += 1
           }
         })
         let columns = fixedColumnsCopy.map(c => {
-          if (c.dataIndex === 'organName' || (dimension === '2' && c.dataIndex === 'projectName')) {
+          let { dataIndex } = c
+          if (dataIndex === 'organName' || (dimension === '2' && dataIndex === 'projectName')) {
             return {
-              ...c, customRender: (text, row, index) => {
+              ...c, customRender: (text, row, i) => {
+              let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
               return {
                 children: text,
-                attrs: { rowSpan: (temp[text] && temp[`${text}_start`] === String(index)) ? temp[text] : 0 }
+                attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0 }
               }
             }
           }
