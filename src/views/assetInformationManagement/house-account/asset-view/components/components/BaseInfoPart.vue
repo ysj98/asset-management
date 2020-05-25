@@ -89,7 +89,7 @@
             temp.assetType = '房屋'
             temp.houseType = '房屋'
             let {transferOperationTime, transferOperationArea} = temp
-            this.$emit('updataTransfer', {transferOperationTime, transferOperationArea})
+            this.$emit('updateTransfer', {transferOperationTime, transferOperationArea})
             return this.infoData = temp
           }
           throw res.message || '查询接口出错'
