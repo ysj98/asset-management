@@ -44,7 +44,7 @@
           if (String(res.status) === '200' && res.data && res.data.size) {
             let a = document.createElement('a')
             a.href = URL.createObjectURL(new Blob([res.data]))
-            a.download = '资产数据卡片(资管部).xlsx'
+            a.download = '房屋卡片（资管部）.xlsx'
             a.style.display = 'none'
             document.body.appendChild(a)
             a.click()

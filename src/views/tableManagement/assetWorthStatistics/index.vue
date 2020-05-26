@@ -139,7 +139,7 @@
           {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#4BD288'},
           {title: '首次成本法估值(元)', key: 'assetValuation', value: 0, bgColor: '#1890FF'},
           {title: '首次市场法估值(元)', key: 'firstMarketValue', value: 0, bgColor: '#DD81E6'},
-          {title: '最新价值(元)', key: 'marketValue', value: 0, bgColor: '#FD7474'}
+          {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#FD7474'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
         sortFunc: (a, b) => a['organName'].localeCompare(b['organName']) // 排序算法函数
