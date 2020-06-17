@@ -12,7 +12,7 @@
       导出房屋卡片
     </SG-Button>
     <!--基础信息部分-->
-    <base-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" @updateTransfer="updateTransfer"/>
+    <base-info-part ref="baseInfoPart" v-if="assetHouseId" :assetHouseId="assetHouseId" @updateTransfer="updateTransfer"/>
     <!--其它信息部分-->
     <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
   </div>
@@ -44,7 +44,7 @@
           if (String(res.status) === '200' && res.data && res.data.size) {
             let a = document.createElement('a')
             a.href = URL.createObjectURL(new Blob([res.data]))
-            a.download = '房屋卡片（资管部）.xlsx'
+            a.download = `房屋卡片(${this.$refs.baseInfoPart.infoData.assetName}).xlsx`
             a.style.display = 'none'
             document.body.appendChild(a)
             a.click()
