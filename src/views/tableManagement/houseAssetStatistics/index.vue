@@ -37,9 +37,9 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: 2200 },
+          scroll: { x: 2400 },
           columns: [
-            { title: '资产项目名称', dataIndex: 'projectName', width: 200, fixed: 'left', customRender: (text) => {
+            { title: '资产项目名称', dataIndex: 'projectName', width: 320, fixed: 'left', customRender: (text) => {
               return {
                 children: text,
                 attrs: (text === '当前页-合计' || text === '所有页-合计') ? {colSpan: 3} : {}
@@ -57,14 +57,14 @@
                 attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
               }
             } },
-            { title: '本单位有产权楼栋数量', dataIndex: 'ownBuildNumber', width: 180 },
-            { title: '本单位有产权房屋数量', dataIndex: 'ownHouseNumber', width: 180 },
-            { title: '本单位有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber', width: 180 },
-            { title: '本单位有使用权房屋数量', dataIndex: 'ownUsedHouseNumber', width: 180 },
-            { title: '其他单位有产权楼栋数量', dataIndex: 'otherBuildNumber', width: 180 },
-            { title: '其他单位有产权房屋数量', dataIndex: 'otherHouseNumber', width: 180 },
-            { title: '其他单位有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber', width: 180 },
-            { title: '其他单位有使用权房屋数量', dataIndex: 'otherUsedHouseNumber', width: 180 },
+            { title: '本单位有产权楼栋数量', dataIndex: 'ownBuildNumber' },
+            { title: '本单位有产权房屋数量', dataIndex: 'ownHouseNumber' },
+            { title: '本单位有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber'},
+            { title: '本单位有使用权房屋数量', dataIndex: 'ownUsedHouseNumber' },
+            { title: '其他单位有产权楼栋数量', dataIndex: 'otherBuildNumber' },
+            { title: '其他单位有产权房屋数量', dataIndex: 'otherHouseNumber' },
+            { title: '其他单位有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber'},
+            { title: '其他单位有使用权房屋数量', dataIndex: 'otherUsedHouseNumber'},
           ]
         },
         dataSum: {} // 所有数据合计
@@ -163,12 +163,10 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
-      /*& /deep/ .ant-table {*/
-        /*.ant-table-thead th, td {*/
-          /*white-space: nowrap;*/
-        /*}*/
-      /*}*/
       & /deep/ .ant-table {
+        .ant-table-thead th, td {
+          white-space: nowrap;
+        }
         tr:last-child, tr:nth-last-child(2) {
           font-weight: bold !important;
         }

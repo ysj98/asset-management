@@ -76,7 +76,7 @@
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
-        :scroll="{ x: 2150 }"
+        :scroll="{ x: 2250 }"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -115,13 +115,13 @@
     {
       title: '所属机构',
       dataIndex: 'organName',
-      width: 160,
+      width: 200,
       fixed: 'left'
     },
     {
       title: '卡片编码',
       dataIndex: 'cardCode',
-      width: 120,
+      width: 180,
       fixed: 'left'
     },
     {
