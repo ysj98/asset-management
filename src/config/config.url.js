@@ -116,9 +116,11 @@ export const assets = {
   assetRegister: {
     // 资产登记-删除
     deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
-    // 资产登记-反审核
+    // 资产登记-列表统计
+    pageListStatistics: '/ams/registerOrder/pageListStatistics',
+    // 资产登记-撤销核实
     registerOrderReAudit: '/ams/registerOrder/registerOrderReAudit',
-    // 资产登记-审核
+    // 资产登记-核实
     registerOrderAudit: '/ams/registerOrder/registerOrderAudit',
     // 资产登记-新增保存
     saveRegisterOrder: '/ams/registerOrder/saveRegisterOrder',

@@ -102,13 +102,17 @@ export function assetListPage (data) {
 export function deleteByRegisterOrderId (data) {
   return axiosPost(assets.assetRegister.deleteByRegisterOrderId, data)
 }
-// 资产登记-反审核
+// 资产登记-撤销核实
 export function registerOrderReAudit (data) {
   return axiosPost(assets.assetRegister.registerOrderReAudit, data)
 }
-// 资产登记-审核
+// 资产登记-核实
 export function registerOrderAudit (data) {
   return axiosPost(assets.assetRegister.registerOrderAudit, data)
+}
+// 资产登记-列表统计
+export function pageListStatistics (data) {
+  return axiosPost(assets.assetRegister.pageListStatistics, data)
 }
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
