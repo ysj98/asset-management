@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 17:32:58
- * @LastEditTime: 2020-07-13 14:44:05
+ * @LastEditTime: 2020-07-13 16:10:54
  * @Description: 基本下载
 --> 
 <template>
@@ -111,7 +111,7 @@ export default {
     }, 200),
     // 请求列表默认20条
     queryBuildList (organId, positionName) {
-      this.$api.basics.queryBuildList({organId, positionName: positionName || '', positionType: this.checkboxAssetType}).then(res => {
+      this.$api.basics.queryBuildList({organId, aliasName: positionName || '', positionType: this.checkboxAssetType, subPositionType: ''}).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
           this.positionNameData = result.map(item => {
