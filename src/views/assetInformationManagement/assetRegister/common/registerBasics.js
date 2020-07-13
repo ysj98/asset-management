@@ -1,4 +1,12 @@
-// 资产列表
+/*
+ * @Author: LW
+ * @Date: 2020-07-10 17:11:45
+ * @LastEditTime: 2020-07-13 10:38:58
+ * @Description: file content
+ */ 
+
+//  -------- 房屋 ----------------------------------
+// 房屋列表
 export const columnsData = [
   { title: '楼栋名称', dataIndex: 'buildName', width: 150},
   { title: '房间名称', dataIndex: 'houseName', width: 150 },
@@ -16,7 +24,7 @@ export const columnsData = [
 ]
 
 
-// 资产列表
+// 房屋列表
 export const particulars = [
   { title: '楼栋名称', dataIndex: 'buildName', width: 100  },
   { title: '房屋名称', dataIndex: 'houseName', width: 100 },
@@ -41,29 +49,6 @@ export const particulars = [
   { title: '开始使用日期', dataIndex: 'startDate', width: 100 },
   { title: '已使用期数(月)', dataIndex: 'usedDate', width: 120 }
 ]
-
-// 楼栋名称（必填，字符型，取楼栋名称）、
-// 房屋名称（非必填，字符型，取房间名称）、
-// 资产名称（必填，字符型，当为楼栋时取楼栋名称，当为房屋时取房间名称）、
-// 资产编码（非必填，字符型，没有填写则系统自动生成）、
-// 建筑面积（必填，数值型，当为楼栋时取楼栋的建筑面积，当为房屋时取房间的建筑面积）、
-// 坐落位置（必填，字符型，取值楼栋的省市区+详细位置+房间名称）、
-// 权属情况（必填，取值：有证/无证）、
-// 权证号（字符型，长度50字符，当权属情况为有证时必填，多个以逗号分隔）、
-// 装修情况（非必填，字符型，长度30字符）、
-// 资产原值（非必填，数值型）、
-// 市场价值（非必填，数值型）、
-// 转运营时间（非必填，日期型）、
-// 转运营面积（非必填，数值型，单位㎡）、
-// 转物业时间（非必填，日期型）、
-// 转物业面积（非必填，数值型，单位㎡）、
-// 闲置面积（非必填，数值型，单位㎡）、
-// 自用面积（非必填，数值型，单位㎡）、
-// 占用面积（非必填，数值型，单位㎡）、
-// 其他面积（名称支持自定义，非必填，数值型，单位㎡）、
-// 使用期限（非必填，数值型，单位月）、
-// 开始使用日期（非必填，日期型）、
-// 已使用期数（非必填，数值型，单位㎡）
 
  // required: 必填的
 export const judgmentData = [
@@ -98,4 +83,24 @@ export const judgmentData = [
   { title: '使用期限(月)', dataIndex: 'validPeriod', required: true, type: 'number' },
   { title: '开始使用日期', dataIndex: 'startDate', required: false, type: 'number', date: true },
   { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' }
+]
+
+
+//  -------- 土地 ----------------------------------
+// 土地列表
+export const landData = [
+  { title: '土地名称', dataIndex: 'landName', width: 150},
+  { title: '土地编码', dataIndex: 'landCode', width: 150 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '土地面积(㎡)', dataIndex: 'landArea', width: 100 },
+  { title: '宗地号', dataIndex: 'theNo', width: 100 },
+  { title: '土地类型', dataIndex: 'landType', width: 100 },
+  { title: '土地用途', dataIndex: 'landUse', width: 100 },
+  { title: '权属类型', dataIndex: 'kindOfRight', width: 100 },
+  { title: '权属情况', dataIndex: 'ownershipStatus', width: 100 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
+  { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
+  { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]

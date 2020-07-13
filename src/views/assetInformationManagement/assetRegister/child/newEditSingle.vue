@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-10 18:09:27
+ * @LastEditTime: 2020-07-13 11:15:03
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -16,16 +16,16 @@
         </a-steps>
       </div>
       <!-- 房屋 -->
-      <house :organId="organId"></house>
+      <basic ref="basicRef" :organId="organId"></basic>
     </div>
   </div>
 </template>
 
 <script>
 import NewInformation from './newInformation'
-import house from './house'
+import basic from './basic'
 export default {
-  components: {NewInformation, house},
+  components: {NewInformation, basic},
   props: {},
   data () {
     return {

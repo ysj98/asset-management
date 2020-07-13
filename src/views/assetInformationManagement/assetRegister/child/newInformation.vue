@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:13:27
- * @LastEditTime: 2020-07-10 18:14:56
+ * @LastEditTime: 2020-07-13 11:17:43
  * @Description: 新增信息
 --> 
 <template>
@@ -59,6 +59,7 @@
                   }]"
                 :allowClear="false"
                 :filterOption="filterOption"
+                @change="assetTypeFn"
                 notFoundContent="没有查询到资产类型"
                 >
                 <a-select-option
@@ -89,6 +90,7 @@
 </template>
 
 <script>
+import bridge from './center.js'
 const newEditSingleData = {
   registerOrderCode: '',    // 资产名称
   assetType: undefined,     // 资产类型
@@ -181,8 +183,7 @@ export default {
           data.forEach(item => {
             arr.push({
               name: item.projectName,
-              value: item.projectId,
-              takeOver: item.takeOver
+              value: item.projectId
             })
           })
           this.projectIdData = [...arr]
@@ -196,12 +197,12 @@ export default {
     },
     // 项目监听
     projectIdFn (val) {
-      this.projectIdData.forEach(item => {
-        if (+val === +item.value) {
-          this.takeOver = item.takeOver
-        }
-      })
+      bridge.$emit('assetType', val, 'project')
     },
+    // 资产类型监听
+    assetTypeFn (val) {
+      bridge.$emit('assetType', val, 'asset')
+    }
   }
 }
 </script>

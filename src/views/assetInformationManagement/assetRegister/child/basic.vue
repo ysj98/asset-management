@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-10 18:21:06
+ * @LastEditTime: 2020-07-13 13:42:34
  * @Description: 房屋
 --> 
 <template>
@@ -38,8 +38,9 @@
 import {utils, calc} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData} from './../common/registerBasics'
+import {columnsData, judgmentData, landData} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
+import bridge from './center'
 export default {
   components: {OverviewNumber, noDataTips, basicDownload},
   props: {
@@ -56,17 +57,40 @@ export default {
         {title: '债权(元)', key: 'debtAmount', value: 0, bgColor: '#1890FF'},
         {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      tableData: [],
-      columns: [...columnsData]
+      tableData: [],    // 表格内容
+      columns: [],      // 表格表头
+      assetType: '',    // 资产类型
     }
   },
   computed: {
   },
   created () {
+    this.bridgeFn()
   },
   mounted () {
   },
   methods: {
+    // 切换资产类型时！切换所有数据
+    bridgeFn:function(){
+      bridge.$on("assetType",(val, type)=>{
+        //val值    type：project项目  asset资产类型
+        console.log(val, type, '切换资产类型时！切换所有数据231232')
+        // 房屋
+        if (type === 'asset' && val === '1') {
+          this.assetType = '1'
+          this.tableData = []
+          this.columns = columnsData
+        // 土地
+        } else if (type === 'asset' && val === '2') {
+          this.assetType = '2'
+          this.tableData = []
+          this.columns = landData
+        }
+        if (type === 'project' && val) {
+          this.tableData = []
+        }
+      })
+    },
     checkFile (fileName, fileSize) {
       // 检查文件类型
       let myFileType = false
@@ -205,7 +229,7 @@ export default {
     },
     // 下载模板
     downloadTemplate () {
-      this.$refs.basicDownload.queryBuildList(this.organId)
+      this.$refs.basicDownload.typesQueries(this.organId, this.assetType)
       this.$refs.basicDownload.modalShow = true
     },
     // 清空列表

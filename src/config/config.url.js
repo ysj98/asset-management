@@ -49,6 +49,8 @@ export const basics = {
   queryCityAndAreaList: '/basic-data-api/rest-api/v1/regionApi/queryRegionByPId',
   // 按照一级物业公司查询楼栋列表
   queryBuildList: '/basic-data-api/rest-api/v1/ams/buildApi/queryBuildList',
+  // 按照一级物业公司查询资源列表
+  positionApiList: '/basic-data-api/rest-api/v1/ams/positionApi/list',
   // 请求楼层
   queryFloorListByPosId: '/basic-data-api/rest-api/v1/floorApi/queryFloorListByPosId',
   // 03_通过字典code和groupId(集团一级组织ID)查询字典列表信息

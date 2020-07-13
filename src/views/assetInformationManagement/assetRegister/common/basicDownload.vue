@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 17:32:58
- * @LastEditTime: 2020-07-10 18:17:07
+ * @LastEditTime: 2020-07-13 14:44:05
  * @Description: 基本下载
 --> 
 <template>
@@ -25,15 +25,15 @@
         :maxTagCount="4"
         showSearch
         placeholder="请选择楼栋"
-        v-model="buildIds"
+        v-model="positionIds"
         @search="handleSearch"
         optionFilterProp="children"
-        :options="buildIdsData"
+        :options="positionNameData"
         :allowClear="true"
         :filterOption="false"
         notFoundContent="没有查询到数据"
         />
-        <div class="modal-nav">
+        <div class="modal-nav" v-if="checkboxAssetType === '1'">
           <a-checkbox-group v-model="scope">
             数据范围：<a-checkbox v-for="(item, index) in scopeData" :key="index" :value="item.value">{{item.name}}</a-checkbox>
           </a-checkbox-group>
@@ -76,10 +76,11 @@ export default {
       checkboxAssetType: '1',
       registerOrderId: '',
       scope: ['1', '2'],
-      buildIdsData: [],
+      positionNameData: [],
       organId: '',
       modalShow: false,
-      buildIds: []
+      positionIds: [],
+      searchBuildName: ''
     }
   },
   computed: {
@@ -89,7 +90,17 @@ export default {
   mounted () {
   },
   methods: {
-    // 楼栋搜索
+    // 类型查询
+    typesQueries (id, type) {
+      if (type === '1') {
+        this.checkboxAssetType = '1'
+        this.queryBuildList(id)
+      } else {
+        this.checkboxAssetType = '2'
+        this.queryBuildList(id)
+      }
+    },
+    // 搜索
     handleSearch (value) {
       this.searchBuildName = value
       this.debounceMothed()
@@ -98,31 +109,39 @@ export default {
     debounceMothed: debounce(function () {
         this.queryBuildList(this.organId, this.searchBuildName || '')
     }, 200),
-    // 请求楼栋列表默认20条
-    queryBuildList (organId, buildName) {
-      this.$api.basics.queryBuildList({organId, buildName: buildName || ''}).then(res => {
+    // 请求列表默认20条
+    queryBuildList (organId, positionName) {
+      this.$api.basics.queryBuildList({organId, positionName: positionName || '', positionType: this.checkboxAssetType}).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
-          this.buildIdsData = result.map(item => {
-            return {name: item.buildName, value: item.buildId, label: item.buildName}
+          this.positionNameData = result.map(item => {
+            return {name: item.positionName, value: item.positionId, label: item.positionName}
           })
         }
       })
     },
     // 下载模板确认
     commonFn () {
-      if (!this.buildIds || this.buildIds.length < 0) {
-        this.$message.info('请选择楼栋名称')
-        return
-      }
-      if (this.scope.length < 0) {
-        this.$message.info('请选择数据范围')
-        return
-      }
-      if (this.scope.includes('1')) {
-        this.checkBuildsObjectTypeFn()
-      } else {
-        this.confirmDownloadTemplate()
+      // 房屋
+      if (this.checkboxAssetType === '1') {
+        if (!this.positionIds || this.positionIds.length === 0) {
+          this.$message.info('请选择楼栋名称')
+          return
+        }
+        if (this.scope.length < 0) {
+          this.$message.info('请选择数据范围')
+          return
+        }
+        if (this.scope.includes('1')) {
+          this.checkBuildsObjectTypeFn()
+        } else {
+          this.confirmDownloadTemplate()
+        }
+      } else if (this.checkboxAssetType === '2') {
+        if (!this.positionIds || this.positionIds.length === 0) {
+          this.$message.info('请选择土地名称')
+          return
+        }
       }
     },
     // 下载模板
@@ -132,7 +151,7 @@ export default {
     // 资产登记-导出数据校验
     checkBuildsObjectTypeFn () {
       let obj = {
-        buildIds: this.buildIds,
+        positionIds: this.positionIds,
       }
       this.$api.assets.checkBuildsObjectType(obj).then(res => {
         if (res.data.code === '0') {
@@ -145,11 +164,12 @@ export default {
     // 模板下载
     confirmDownloadTemplate () {
       let obj = {
-        registerOrderId: this.registerOrderId,
-        assetType: this.checkboxAssetType,
-        buildIds: this.buildIds,
-        scope: this.scope.join(','),
-        organId: this.organId
+        registerOrderId: this.registerOrderId,  // 资产登记ID，修改时必填
+        assetType: this.checkboxAssetType,      // 资产类型, 1房屋、2土地、3设备
+        buildIds: this.checkboxAssetType === '1' ? this.positionIds : '',             // 楼栋id列表（房屋时必填）
+        scope: this.checkboxAssetType === '1' ? this.scope.join(',') : '',            // 1楼栋 2房屋（房屋时必填）
+        organId: this.organId,
+        blankIdList: this.checkboxAssetType === '2' ? this.positionIds : ''                         // 土地Id列表（土地时必填）
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])
