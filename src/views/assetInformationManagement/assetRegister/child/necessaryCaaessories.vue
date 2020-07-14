@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-14 17:24:45
+ * @LastEditTime: 2020-07-14 19:53:19
  * @Description: 附属配套
 --> 
 <template>
@@ -25,8 +25,10 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <span @click="deleteFn(record)">编辑</span>
-          <span @click="deleteFn(record)">删除</span>
+          <div class="tab-opt">
+            <span @click="deleteFn(record)">编辑</span>
+            <span class="pl10 postAssignment-icon" @click="deleteFn(record)">删除</span>
+          </div>
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -153,6 +155,16 @@ export default {
     .buytton-nav {
       flex: 1;
       text-align: right;
+    }
+  }
+  .tab-opt {
+    span {
+      padding-right: 10px;
+      color: #0084FF;
+      cursor: pointer;
+    }
+    .postAssignment-icon {
+      color: red;
     }
   }
 }

@@ -162,6 +162,14 @@ export function checkBuildsObjectType (data) {
 export function getListPageByRegisterOrderId (data) {
   return axiosPost(assets.assetRegister.getListPageByRegisterOrderId, data)
 }
+// 附属配套-新增/修改保存(资产登记版)
+export function addModifySaveByRgId (data) {
+  return axiosPost(assets.assetRegister.addModifySaveByRgId, data)
+}
+// 资产登记-查询资产列表-根据资产登记Id
+export function findAssetListByRgId (data) {
+  return axiosPost(assets.assetRegister.findAssetListByRgId, data)
+}
 
 // 资产清理
 // 资产清理-分页列表

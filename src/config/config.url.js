@@ -149,7 +149,11 @@ export const assets = {
     // 资产登记-读取excel模板文件
     checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType',
     // 资产登记-附属配套-分页查询列表
-    getListPageByRegisterOrderId: '/ams/subsidiaryMatching/getListPageByRegisterOrderId'
+    getListPageByRegisterOrderId: '/ams/subsidiaryMatching/getListPageByRegisterOrderId',
+    // 附属配套-新增/修改保存(资产登记版)
+    addModifySaveByRgId: '/ams/subsidiaryMatching/addModifySaveByRgId',
+    // 资产登记-查询资产列表-根据资产登记Id
+    findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId'
   },
   // 资产清理
   assetClear: {

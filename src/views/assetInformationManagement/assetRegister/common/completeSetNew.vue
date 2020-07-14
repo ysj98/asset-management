@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-14 18:09:16
+ * @LastEditTime: 2020-07-14 19:47:37
  * @Description: 新增附属配套
 --> 
 <template>
@@ -23,9 +23,11 @@
                 <a-select
                   :placeholder="'请选择资产名称'" :style="allWidth"
                   showSearch
-                  :options="projectIdData"
+                  :options="examine.projectIdData"
                   :allowClear="true"
-                  :filterOption="filterOption"
+                  optionFilterProp="children"
+                  @search="handleSearch"
+                  :filterOption="false"
                   v-decorator="['assetName',
                       {rules: [{required: true, message: '请选择类型'}], initialValue: subData.assetName}
                     ]"
@@ -34,9 +36,9 @@
               </a-form-item>
             </a-col>
           </a-form>
-          <a-col :span="12"><a-form-item label="资产编码：" v-bind="formItemLayout">{{subData.assetCode || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产分类：" v-bind="formItemLayout">{{subData.objectType || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产位置：" v-bind="formItemLayout">{{subData.pasitionString || '--'}}</a-form-item></a-col>
+          <a-col :span="12"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
+          <a-col :span="12"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
+          <a-col :span="12"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
         </a-row>
       <span class="section-title blue">附属配套信息</span>
       <div class="mt30 mb30">
@@ -70,7 +72,7 @@
                   :options="matchingTypeData"
                   :allowClear="true"
                   :filterOption="filterOption"
-                  v-decorator="['registerOrderCode',
+                  v-decorator="['matchingType',
                     {rules: [{required: true, message: '请选择类型'}], initialValue: subData.matchingType}
                   ]"
                   notFoundContent="没有查询到数据"
@@ -161,6 +163,7 @@
 </template>
 
 <script>
+import {debounce} from '@/utils/utils'
 export default {
   components: {},
   props: {},
@@ -169,16 +172,19 @@ export default {
       organId: '67',
       form: this.$form.createForm(this),
       modalShow: false,
-      projectIdData: [
-        { label: 1, key: 1 }
-      ],    // 资产名称
       matchingTypeData: [], // 类型
       unitOfMeasurementOpt: [],    // 计量单位
+      examine: {
+        projectIdData: [
+          { label: 1, key: 1 }
+        ],    // 资产名称
+      },
       subData: {
         subsidiaryMatchingId: '',  // 附属配套ID,修改必有
         registerOrderId: '',       // 资产登记ID
         assetId: '',               // 资产登记ID
         assetName: undefined,      // 资产名称
+        status: '',                  // 状态
         matchingName: '',          // 名称
         matchingCode: '',          // 编码
         matchingType: undefined,   // 类型
@@ -190,6 +196,7 @@ export default {
         remark: '',                // 备注
         files: []                  // 附件
       },
+      assetName: '',
       allWidth: {width: '200px'},
       widthBox: 'width: 80%',
       formItemTextarea: {
@@ -227,25 +234,67 @@ export default {
   },
   methods: {
     // 提交
-    addModifySaveByRgId () {
-      console.log(this.subData, '-=')
-      let obj = {
-            subsidiaryMatchingId: '',      //  附属配套ID,修改必有
-            registerOrderId: '',           //  资产登记ID
-            assetId: '',                   //  资产信息ID
-            status: '',                    //  状态 1启用 0停用      新增默认启动
-            matchingName: '',              //  名称
-            matchingCode: '',              //  编码
-            matchingType: '',              //  类型 SUBSIDIARY_MATCHING_ TYPE 1门、2窗、3仪表、4家具、5设备、6电梯
-            specificationType: '',         //  规格型号
-            value: '',                     //  价值(元)
-            number: '',                    //  数量
-            unitOfMeasurement: '',         //  计量单位
-            isBefore: '',                  //  是否接管前附属配套 1是 0否
-            remark: '',                    //  备注
-            attachmentList: []             //附件
+    addModifySaveByRgId (values) {
+      let files = []
+      if (this.subData.files.length !== 0) {
+        this.subData.files.forEach(item => {
+          files.push({
+            attachmentPath: item.url,
+            oldAttachmentName: item.name
+          })
+        })
       }
-      console.log(obj)
+      let obj = {
+        subsidiaryMatchingId: this.subData.subsidiaryMatchingId,  //  附属配套ID,修改必有
+        registerOrderId: this.subData.registerOrderId,            //  资产登记ID
+        assetId: this.subData.assetId,                            //  资产信息ID
+        status: this.subData.status,                              //  状态 1启用 0停用      新增默认启动
+        matchingName: values.matchingName,                        //  名称
+        matchingCode: values.matchingCode,                        //  编码
+        matchingType: values.matchingType,                        //  类型 SUBSIDIARY_MATCHING_ TYPE 1门、2窗、3仪表、4家具、5设备、6电梯
+        specificationType: values.specificationType,              //  规格型号
+        value: values.value,                                      //  价值(元)
+        number: values.number,                                    //  数量
+        unitOfMeasurement: values.unitOfMeasurement,              //  计量单位
+        isBefore: Number(this.subData.isBefore),                  //  是否接管前附属配套 1是 0否
+        remark: values.remark,                                    //  备注
+        attachmentList: files                                     // 附件
+      }
+      let loadingName = this.SG_Loding('保存中...')
+      this.$api.assets.addModifySaveByRgId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('提交成功')
+            this.handleCancel()
+          })
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$message.error(res.data.message)
+          })
+        }
+      })
+    },
+    // 搜索
+    handleSearch (value) {
+      this.assetName = value
+      this.debounceMothed()
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceMothed: debounce(function () {
+        this.findAssetListByRgId(this.subData.registerOrderId, this.assetName || '')
+    }, 200),
+    findAssetListByRgId (registerOrderId, assetName) {
+      let obj = {
+        registerOrderId: registerOrderId,    // 资产登记单Id
+        assetName: assetName           // 资产名称，支持模糊查询
+      }
+      this.$api.assets.findAssetListByRgId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.examine = res.data.data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     // 机构字典
     organDict (code) {
@@ -262,7 +311,7 @@ export default {
             this.unitOfMeasurementOpt  = [...arr]
           }
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.data.message)
         }
       })
     },
