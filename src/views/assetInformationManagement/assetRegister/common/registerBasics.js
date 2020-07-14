@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-13 10:38:58
+ * @LastEditTime: 2020-07-14 14:13:29
  * @Description: file content
  */ 
 
@@ -103,4 +103,23 @@ export const landData = [
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
+]
+
+//  -------- 附属配套 ----------------------------------
+export const auxiliary = [
+  { title: '附属配套ID', dataIndex: 'subsidiaryMatchingId', width: 100},
+  { title: '资产ID', dataIndex: 'assetId', width: 100 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产分类', dataIndex: 'assetTypeName', width: 100 },
+  { title: '附属配套名称', dataIndex: 'matchingName', width: 100 },
+  { title: '附属配套编码', dataIndex: 'matchingCode', width: 100 },
+  { title: '类型', dataIndex: 'matchingTypeName', width: 100 },
+  { title: '规格型号', dataIndex: 'specificationType', width: 100 },
+  { title: '价值(元)', dataIndex: 'value', width: 100 },
+  { title: '数量', dataIndex: 'number', width: 100 },
+  { title: '计量单位', dataIndex: 'unitOfMeasurementName', width: 100 },
+  { title: '接管前附属配套', dataIndex: 'isBeforeName', width: 100 },
+  { title: '备注', dataIndex: 'remark', width: 200 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 150, scopedSlots: { customRender: 'operation' }}
 ]

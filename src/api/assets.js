@@ -158,6 +158,10 @@ export function readExcelModel (data) {
 export function checkBuildsObjectType (data) {
   return axiosPost(assets.assetRegister.checkBuildsObjectType, data)
 }
+// 资产登记-附属配套-分页查询列表
+export function getListPageByRegisterOrderId (data) {
+  return axiosPost(assets.assetRegister.getListPageByRegisterOrderId, data)
+}
 
 // 资产清理
 // 资产清理-分页列表

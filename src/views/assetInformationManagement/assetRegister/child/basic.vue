@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-13 13:42:34
- * @Description: 房屋
+ * @LastEditTime: 2020-07-14 13:46:35
+ * @Description: 房屋土地
 --> 
 <template>
   <div class="sg-child-house">
@@ -284,50 +284,4 @@ export default {
 }
 </style>
 
-<style lang="less">
-.table-boxs {
-  .ant-table-placeholder {
-    display: none;
-  }
-  .ant-table-thead {
-    font-size: 14px;
-  }
-  .ant-table-thead tr th {
-    padding: 9px;
-    background-color: #fff;
-    color: #49505E;
-  }
-  .ant-table-tbody > tr > td {
-    padding: 9px 9px;
-  }
-  .ant-table-tbody {
-    tr:nth-child(even){
-      background-color: #F9FBFD;
-    }
-  }
-  table{
-    table-layout:fixed;
-    td{
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    tr:hover{
-      td{
-        white-space: normal;
-        overflow: auto;
-        text-overflow: clip;
-      }
-    }
-  }
-}
-</style>
-
-<style lang="less">
-.newEditSingle {
-  .ant-form-item-label label:after {
-    margin: 0 0 0 2px;
-  }
-}
-</style>
 

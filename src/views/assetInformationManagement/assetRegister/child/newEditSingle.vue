@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-13 16:50:18
+ * @LastEditTime: 2020-07-14 11:54:48
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -17,7 +17,9 @@
         </a-steps>
       </div>
       <!-- 房屋 -->
-      <basic ref="basicRef" :organId="organId"></basic>
+      <basic v-show="this.activeStepIndex === 0" ref="basicRef" :organId="organId"></basic>
+      <!-- 附属配套 -->
+      <necessaryCaaessories v-show="this.activeStepIndex === 1"></necessaryCaaessories>
     </div>
     <div class="step-footer-operation">
       <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :leftButtonName="leftButtonName" rightButtonName="下一步" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
@@ -29,9 +31,10 @@
 import tabFormFooter from '../../../common/tabFormFooter'
 import NewInformation from './newInformation'
 import basicDetails from './basicDetails'
+import necessaryCaaessories from './necessaryCaaessories'
 import basic from './basic'
 export default {
-  components: {NewInformation, basic, tabFormFooter, basicDetails},
+  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories},
   props: {},
   data () {
     return {

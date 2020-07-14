@@ -1,7 +1,7 @@
  <!--
  * @Author: LW
  * @Date: 2020-07-10 16:13:27
- * @LastEditTime: 2020-07-13 17:49:21
+ * @LastEditTime: 2020-07-14 09:54:24
  * @Description: 新增信息
 --> 
 <template>
@@ -62,6 +62,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .basicDetails {
+  margin-bottom: 30px;
   .playground-row {
     margin: 28px 20px 0 20px;
     .playground-col {
