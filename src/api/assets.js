@@ -182,6 +182,31 @@ export function downModle (data) {
 export function batchImportByRgId (data) {
   return axiosPost(assets.assetRegister.batchImportByRgId, data)
 }
+// 资产登记-价值信息统计
+export function getValueStatistics (data) {
+  return axiosPost(assets.assetRegister.getValueStatistics, data)
+}
+// 资产登记-价值信息批量导出
+export function valueExport (data) {
+  return axiosPost(assets.assetClassSet.valueExport, data, false, false, {responseType: 'blob'})
+}
+// 资产登记-价值信息批量导入
+export function valueImport (data) {
+  return axiosPost(assets.assetRegister.valueImport, data)
+}
+// 资产登记-价值信息分页列表
+export function queryValuePageListByRgId (data) {
+  return axiosPost(assets.assetRegister.queryValuePageListByRgId, data)
+}
+// 资产登记-价值信息详情
+export function getValueDetail (data) {
+  return axiosPost(assets.assetRegister.getValueDetail, data)
+}
+// 资产登记-编辑价值信息
+export function updateAssetValue (data) {
+  return axiosPost(assets.assetRegister.updateAssetValue, data)
+}
+
 // 资产清理
 // 资产清理-分页列表
 export function getCleanupPage (data) {

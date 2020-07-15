@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-15 10:44:22
+ * @LastEditTime: 2020-07-15 10:50:44
  * @Description: 附属配套
 --> 
 <template>
@@ -26,7 +26,7 @@
         >
         <template slot="operation" slot-scope="text, record">
           <div class="tab-opt">
-            <span @click="newlyFn('edit')">编辑</span>
+            <span @click="newlyFn('edit', record)">编辑</span>
             <span class="pl10 postAssignment-icon" @click="deleteFn(record)">删除</span>
           </div>
         </template>

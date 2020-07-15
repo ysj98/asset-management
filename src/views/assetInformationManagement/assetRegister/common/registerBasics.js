@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-14 14:13:29
+ * @LastEditTime: 2020-07-15 14:25:33
  * @Description: file content
  */ 
 
@@ -122,4 +122,20 @@ export const auxiliary = [
   { title: '接管前附属配套', dataIndex: 'isBeforeName', width: 100 },
   { title: '备注', dataIndex: 'remark', width: 200 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 150, scopedSlots: { customRender: 'operation' }}
+]
+
+//  -------- 价值信息 ----------------------------------
+
+export const valueToRegisterData = [
+  { title: '资产ID', dataIndex: 'assetId', width: 100 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产分类', dataIndex: 'assetTypeName', width: 100 },
+  { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
+  { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
+  { title: '使用期限(月)', dataIndex: 'validPeriod', width: 100 },
+  { title: '开始使用日期', dataIndex: 'startDate', width: 100 },
+  { title: '已使用期限', dataIndex: 'usedDate', width: 100 },
+  { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', width: 100 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]

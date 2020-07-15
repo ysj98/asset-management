@@ -159,7 +159,19 @@ export const assets = {
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
     // 批量导入-导入保存
-    batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId'
+    batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId',
+    // 资产登记-价值信息统计
+    getValueStatistics: '/ams/registerOrder/getValueStatistics',
+    // 资产登记-价值信息批量导出
+    valueExport: '/ams/registerOrder/valueExport',
+    // 资产登记-价值信息批量导入
+    valueImport: '/ams/registerOrder/valueImport',
+    // 资产登记-价值信息分页列表
+    queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
+    // 资产登记-价值信息详情
+    getValueDetail: '/ams/registerOrder/getValueDetail',
+    // 资产登记-编辑价值信息
+    updateAssetValue: '/ams/registerOrder/updateAssetValue'
   },
   // 资产清理
   assetClear: {

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-14 11:54:48
+ * @LastEditTime: 2020-07-15 10:48:17
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -20,6 +20,8 @@
       <basic v-show="this.activeStepIndex === 0" ref="basicRef" :organId="organId"></basic>
       <!-- 附属配套 -->
       <necessaryCaaessories v-show="this.activeStepIndex === 1"></necessaryCaaessories>
+      <!-- 价值登记 -->
+      <valueToRegister v-show="this.activeStepIndex === 2"></valueToRegister>
     </div>
     <div class="step-footer-operation">
       <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :leftButtonName="leftButtonName" rightButtonName="下一步" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
@@ -32,9 +34,10 @@ import tabFormFooter from '../../../common/tabFormFooter'
 import NewInformation from './newInformation'
 import basicDetails from './basicDetails'
 import necessaryCaaessories from './necessaryCaaessories'
+import valueToRegister from './valueToRegister'
 import basic from './basic'
 export default {
-  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories},
+  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister},
   props: {},
   data () {
     return {
