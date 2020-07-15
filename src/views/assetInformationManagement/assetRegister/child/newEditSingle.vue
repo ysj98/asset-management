@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-15 10:48:17
+ * @LastEditTime: 2020-07-15 14:42:23
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -24,7 +24,7 @@
       <valueToRegister v-show="this.activeStepIndex === 2"></valueToRegister>
     </div>
     <div class="step-footer-operation">
-      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :leftButtonName="leftButtonName" rightButtonName="下一步" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
+      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
     </div>
   </div>
 </template>
@@ -64,6 +64,13 @@ export default {
       } else {
         return '完成'
       }
+    },
+    rightButtonName: function () {
+      if (this.activeStepIndex === 4) {
+        return '上一步'
+      } else {
+        return '下一步'
+      }
     }
   },
   created () {
@@ -80,13 +87,21 @@ export default {
       if (this.activeStepIndex === 0) {
         console.log('保存')
         this.rightButtonDisabled = false
+      } else if (this.activeStepIndex === 4) {
+        // 点击完成
+        this.$router.push({path: '/assetRegister', query: {refresh: true}})
       } else {
         this.activeStepIndex--
       }
     },
     // 点击下一步或重置
     handleBackOrReset () {
-      this.activeStepIndex++
+      // 最后一步时显示上一步
+      if (this.activeStepIndex === 4) {
+        this.activeStepIndex--
+      } else {
+        this.activeStepIndex++
+      }
     },
   }
 }
