@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-14 19:53:19
+ * @LastEditTime: 2020-07-15 10:44:22
  * @Description: 附属配套
 --> 
 <template>
@@ -11,7 +11,7 @@
         <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
       </div>
       <div class="buytton-nav">
-        <SG-Button type="primary" weaken @click="newlyFn">新增配套</SG-Button>
+        <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量导入</SG-Button>
       </div>
     </div>
@@ -26,7 +26,7 @@
         >
         <template slot="operation" slot-scope="text, record">
           <div class="tab-opt">
-            <span @click="deleteFn(record)">编辑</span>
+            <span @click="newlyFn('edit')">编辑</span>
             <span class="pl10 postAssignment-icon" @click="deleteFn(record)">删除</span>
           </div>
         </template>
@@ -41,7 +41,10 @@
         @change="handleChange"
       />
     </div>
+    <!-- 新增编辑 -->
     <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew"></completeSetNew>
+    <!-- 下载模板 -->
+    <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
 </template>
 
@@ -49,8 +52,9 @@
 import {auxiliary} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
 import completeSetNew from './../common/completeSetNew'
+import eportAndDownFile from './.././../../common/eportAndDownFile'
 export default {
-  components: {noDataTips, completeSetNew},
+  components: {noDataTips, completeSetNew, eportAndDownFile},
   props: {},
   data () {
     return {
@@ -78,11 +82,37 @@ export default {
   },
   methods: {
     // 删除
-    deleteFn () {},
+    deleteFn (record) {
+        this.$SG_Modal.confirm({
+          title: `确定删除该附属配套吗?`,
+          okText: '确定',
+          cancelText: '取消',
+          onOk: () => {
+            let data = {
+              subsidiaryMatchingId: record.subsidiaryMatchingId,
+              status: '-1'
+            }
+            let loadingName = this.SG_Loding('提交中...')
+            this.$api.subsidiary.updateStatusOrDelete(data).then(res => {
+              if (res.data.code === '0') {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.success('删除成功')
+                  this.query()
+                })
+              } else {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$message.error(res.data.message)
+                })
+              }
+            })
+          }
+        })
+    },
     // 新增
-    newlyFn () {
+    newlyFn (str) {
       this.modalShow = true
       this.$nextTick(() => {
+        this.$refs.completeSetNew.allMounted(str)
         this.$refs.completeSetNew.modalShow = true
       })
     },
@@ -91,7 +121,51 @@ export default {
       this.modalShow = false
     },
     // 导入
-    addTheAsset () {},
+    addTheAsset () {
+      this.$refs.eportAndDownFile.visible = true
+    },
+    // 上传文件
+    uploadModeFile (file) {
+      let fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('organId', this.organId)
+      fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('assetType', this.assetType)
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.subsidiary.batchImportByRgId(fileData).then(res => {
+        if (res.data.code === '0') {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            this.query()
+          }) 
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$refs.downErrorFile.visible = true
+            this.upErrorInfo = res.data.message
+          })
+        }
+      }, () => {
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
+    },
+    down () {
+      let obj = {
+        registerOrderId: '',      // 资产登记单
+        assetType: ''             // 资产类型
+      }
+      this.$api.grid.downModle(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `附属配套.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+    },
     // 分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -131,6 +205,7 @@ export default {
           })
           this.tableData = data
           this.count = res.data.data.count
+          this.getMatchingListByAssetId()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -138,6 +213,20 @@ export default {
         }
       })
     },
+    // 统计
+    getMatchingListByAssetId () {
+      let obj = {
+        registerOrderId: '',      // 资产登记单
+        assetType: ''             // 资产类型
+      }
+      this.$api.assets.getMatchingListByAssetId(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.statistics = res.data.data.data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
   }
 }
 </script>

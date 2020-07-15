@@ -153,7 +153,13 @@ export const assets = {
     // 附属配套-新增/修改保存(资产登记版)
     addModifySaveByRgId: '/ams/subsidiaryMatching/addModifySaveByRgId',
     // 资产登记-查询资产列表-根据资产登记Id
-    findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId'
+    findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId',
+    // 资产登记-附属配套-统计
+    getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+    // 下载附属配套模板
+    downModle: '/ams/subsidiaryMatching/downModle',
+    // 批量导入-导入保存
+    batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId'
   },
   // 资产清理
   assetClear: {

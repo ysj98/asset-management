@@ -170,7 +170,18 @@ export function addModifySaveByRgId (data) {
 export function findAssetListByRgId (data) {
   return axiosPost(assets.assetRegister.findAssetListByRgId, data)
 }
-
+// 资产登记-附属配套-统计
+export function getMatchingListByAssetId (data) {
+  return axiosPost(assets.assetRegister.getMatchingListByAssetId, data)
+}
+// 下载附属配套模板
+export function downModle (data) {
+  return axiosPost(assets.assetClassSet.downModle, data, false, false, {responseType: 'blob'})
+}
+// 批量导入-导入保存
+export function batchImportByRgId (data) {
+  return axiosPost(assets.assetRegister.batchImportByRgId, data)
+}
 // 资产清理
 // 资产清理-分页列表
 export function getCleanupPage (data) {

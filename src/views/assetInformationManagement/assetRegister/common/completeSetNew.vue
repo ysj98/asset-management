@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-14 19:47:37
+ * @LastEditTime: 2020-07-15 10:24:31
  * @Description: 新增附属配套
 --> 
 <template>
@@ -169,15 +169,16 @@ export default {
   props: {},
   data () {
     return {
+      type: '',                   // 新增编辑
       organId: '67',
       form: this.$form.createForm(this),
       modalShow: false,
-      matchingTypeData: [], // 类型
-      unitOfMeasurementOpt: [],    // 计量单位
+      matchingTypeData: [],       // 类型
+      unitOfMeasurementOpt: [],   // 计量单位
       examine: {
         projectIdData: [
           { label: 1, key: 1 }
-        ],    // 资产名称
+        ],                        // 资产名称
       },
       subData: {
         subsidiaryMatchingId: '',  // 附属配套ID,修改必有
@@ -229,10 +230,52 @@ export default {
     }
   },
   mounted () {
-    this.organDict('SUBSIDIARY_MATCHING_TYPE')
-    this.organDict('MEASURE_UNIT')
   },
   methods: {
+    allMounted (str) {
+      this.type = str
+      if (str === 'edit') {
+        this.getMatchingById()
+      }
+      this.organDict('SUBSIDIARY_MATCHING_TYPE')
+      this.organDict('MEASURE_UNIT')
+    },
+    // 编辑查询
+    getMatchingById () {
+      let data = {
+        subsidiaryMatchingId: this.subData.subsidiaryMatchingId
+      }
+      this.$api.subsidiary.getMatchingById(data).then(res => {
+        if (res.data.code === "0") {
+          let obj = res.data.data || {}
+          // 处理表单数据
+          let o = {
+            matchingName: obj.matchingName,
+            matchingCode: obj.matchingCode,
+            matchingType: String(obj.matchingType),
+            specificationType: obj.specificationType,
+            value: obj.value,
+            number: obj.number,
+            unitOfMeasurement: obj.unitOfMeasurement,
+            remark: obj.remark,
+          }
+          // 处理复选框
+          this.checkNick = String(obj.isBefore) === '1' ? true : false
+          // 处理附件
+          if (obj.attachmentList && obj.attachmentList.length) {
+            this.subData.files = obj.attachmentList.map(item => {
+              return {url: item.attachmentPath, name: item.oldAttachmentName}
+            })
+          } else {
+            this.subData.files = []
+          }
+          this.oldDetailData = {...obj}
+          this.form.setFieldsValue(o)
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
     // 提交
     addModifySaveByRgId (values) {
       let files = []
@@ -248,7 +291,7 @@ export default {
         subsidiaryMatchingId: this.subData.subsidiaryMatchingId,  //  附属配套ID,修改必有
         registerOrderId: this.subData.registerOrderId,            //  资产登记ID
         assetId: this.subData.assetId,                            //  资产信息ID
-        status: this.subData.status,                              //  状态 1启用 0停用      新增默认启动
+        status: this.type === 'new' ? '1' : this.subData.status,  //  状态 1启用 0停用      新增默认启动
         matchingName: values.matchingName,                        //  名称
         matchingCode: values.matchingCode,                        //  编码
         matchingType: values.matchingType,                        //  类型 SUBSIDIARY_MATCHING_ TYPE 1门、2窗、3仪表、4家具、5设备、6电梯
