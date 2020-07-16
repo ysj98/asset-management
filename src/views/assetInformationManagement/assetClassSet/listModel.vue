@@ -1,0 +1,348 @@
+<!--
+ * @Date: 2020-07-10 17:21:14
+ * @Description: 列表通用模板
+-->
+<template>
+  <div>
+    <SG-SearchContainer background="white">
+      <div slot="btns">
+        <SG-Button v-if="showCreateBtn" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
+          >新建</SG-Button
+        >
+        <SG-Button type="primary" @click="exportList"
+          ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
+        >
+      </div>
+      <div slot="form">
+        <topOrganByUser
+          @change="organIdChange"
+          :formStyle="allStyle"
+          v-model="organId"
+          :hasAll="false"
+          :selectFirst="true"
+        />
+        <a-select
+          :style="allStyle"
+          v-model="status"
+          :options="statusOptions"
+          @change="queryClick"
+        ></a-select>
+        <a-input-search
+          placeholder="类别名称/编码"
+          :style="allStyle"
+          v-model="codeName"
+          @search="queryClick"
+        />
+      </div>
+    </SG-SearchContainer>
+    <div>
+      <a-table
+        :columns="columns"
+        :dataSource="dataSource"
+        class="custom-table td-pd10"
+        :pagination="false"
+      >
+        <template slot="operation" slot-scope="text, record">
+          <!--<OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>-->
+          <a
+            class="operation-btn"
+            v-if="+record.status === 0"
+            @click="operationFun('start', record)"
+            v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS"
+            >启用</a
+          >
+          <a
+            class="operation-btn"
+            v-else
+            @click="operationFun('stop', record)"
+            v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS"
+            >停用</a
+          >
+          <a
+            class="operation-btn"
+            v-show="+record.status === 1"
+            @click="operationFun('edit', record)"
+            v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_EDIT"
+            >编辑</a
+          >
+          <a class="operation-btn" @click="operationFun('detail', record)"
+            >详情</a
+          >
+        </template>
+        <template slot="statusName" slot-scope="text, record, index">
+          <div v-if="+record.status === 1">
+            <SG-Switch
+              disabled
+              checked
+              :id="String(index)"
+              style="margin-right: 10px;"
+            ></SG-Switch
+            >启用
+          </div>
+          <div v-else>
+            <SG-Switch
+              disabled
+              :id="String(index)"
+              style="margin-right: 10px;"
+            ></SG-Switch
+            >停用
+          </div>
+        </template>
+      </a-table>
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
+    </div>
+    <SG-FooterPagination
+      :pageLength="paginator.pageLength"
+      :totalCount="totalCount"
+      location="absolute"
+      v-model="paginator.pageNo"
+      @change="handlePageChange"
+    />
+    <createClassModal :action="action" :type="type" :storeDetail="storeDetail" ref="createClassModal"/>
+  </div>
+</template>
+
+<script>
+import segiIcon from "@/components/segiIcon.vue"
+import topOrganByUser from "@/views/common/topOrganByUser"
+import noDataTips from "@/components/noDataTips"
+import { ASSET_MANAGEMENT } from "@/config/config.power"
+import { getTargetObject } from "@/utils/utils"
+import { statusOptions, pageTypeMap, typeMap } from "./child/dict"
+import createClassModal from "./child/createClassModal"
+const columns = [
+  {
+    title: "分类编号",
+    dataIndex: "professionId",
+    width: 160,
+  },
+  {
+    title: "所属机构",
+    dataIndex: "organName",
+    width: 200,
+  },
+  {
+    title: "资产类型",
+    dataIndex: "assetTypeName",
+    width: 160,
+  },
+  {
+    title: "分类名称",
+    dataIndex: "professionName",
+    width: 160,
+  },
+  {
+    title: "分类编码",
+    dataIndex: "professionCode",
+    width: 160,
+  },
+  {
+    title: "计量单位",
+    dataIndex: "unitName",
+    width: 160,
+  },
+  {
+    title: "折旧年限",
+    dataIndex: "depreciationAge",
+    width: 160,
+  },
+  {
+    title: "净残值率(%)",
+    dataIndex: "netSalvageRate",
+    width: 160,
+  },
+  {
+    title: "折旧方法",
+    dataIndex: "depreciationMethodName",
+    width: 200,
+  },
+  {
+    title: "状态",
+    dataIndex: "statusName",
+    width: 180,
+    scopedSlots: { customRender: "statusName" },
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    width: 180,
+    scopedSlots: { customRender: "operation" },
+  },
+]
+const paginator = {
+  pageNo: 1,
+  pageLength: 10,
+}
+const allStyle = `width: 150px; marginLeft: 10px;`
+export default {
+  props: {
+    type: String,
+  },
+  components: {
+    segiIcon,
+    topOrganByUser,
+    noDataTips,
+    createClassModal
+  },
+  data() {
+    return {
+      ASSET_MANAGEMENT,
+      allStyle,
+      organId: "",
+      organName: "",
+      status: "",
+      codeName: "",
+      statusOptions,
+      columns,
+      dataSource: [],
+      paginator: { ...paginator },
+      totalCount: 0,
+      showNoDataTips: false,
+      storeDetail: {}, // 存储弹窗需要数据
+      action: 'create', // 是编辑还是信息，或者详情
+    }
+  },
+  watch: {
+    $route() {
+      if (this.$route.path === "/assetClassSet" && this.$route.query.refresh) {
+        // this.queryClick()
+      }
+    },
+  },
+  computed: {
+    // 是否显示创建按钮
+    showCreateBtn () {
+      return ["land"].includes(this.type)
+    }
+  },
+  methods: {
+    organIdChange(obj) {
+      this.storeDetail = {
+        organName: obj.name,
+        organId: obj.value
+      }
+      this.queryClick()
+    },
+    // 页码发生变化
+    handlePageChange(page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
+      this.queryList()
+    },
+    // 操作回调
+    operationFun(editType, record) {
+      let self = this
+      if (["edit", "detail"].includes(editType)) {
+        this.storeDetail.categoryConfId = record.categoryConfId
+      }
+      // 新增编辑详情
+      if (["create", "edit", "detail"].includes(editType)) {
+        this.action = editType
+        this.$refs.createClassModal.visible = true
+        return
+      }
+      // 如果开启
+      if (["start"].includes(editType)) {
+        this.changeStatus(1, record.categoryConfId, record.professionCode)
+        return
+      }
+      // 如果暂停
+      if (["stop"].includes(editType)) {
+        this.$confirm({
+          title: "提示",
+          content: "确认要停用该资产分类吗？",
+          onOk() {
+            self.changeStatus(0, record.categoryConfId, record.professionCode)
+          },
+        })
+        return
+      }
+    },
+    // 改变状态
+    changeStatus(status, id, professionCode) {
+      let form = {
+        categoryConfId: id,
+        status: status,
+        organId: this.organId,
+        professionCode: professionCode,
+        assetType: pageTypeMap[this.type]
+      }
+      this.$api.assets.updateStatus(form).then((res) => {
+        if (res.data.code === "0") {
+          this.$message.success("修改成功")
+          this.queryList()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 点击查询
+    queryClick() {
+      this.paginator.pageNo = 1
+      this.queryList()
+    },
+    // 查询列表
+    queryList() {
+      let form = {
+        organId: this.organId,
+        status: this.status,
+        codeName: this.codeName,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength,
+        assetType: pageTypeMap[this.type],
+      }
+      this.$api.assets.getPage(form).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
+          data.forEach((item, index) => {
+            item.key = index
+            for (let key in item) {
+              if (item[key] === "") {
+                item[key] = "--"
+              }
+            }
+          })
+          this.dataSource = data
+          this.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    exportList() {
+      let form = {
+        organId: this.organId,
+        status: this.status,
+        codeName: this.codeName,
+        assetType: pageTypeMap[this.type],
+      }
+      this.$api.assets.exportList(form).then((res) => {
+        console.log(res)
+        let blob = new Blob([res.data])
+        let a = document.createElement("a")
+        a.href = URL.createObjectURL(blob)
+        a.download = `资产${typeMap[this.type]}分类.xls`
+        a.style.display = "none"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+    },
+  },
+}
+</script>
+
+<style lang="less" scoped>
+.operation-btn {
+  color: #0084ff;
+  margin-right: 10px;
+}
+.custom-table {
+  padding-bottom: 50px;
+}
+</style>

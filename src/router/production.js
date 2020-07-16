@@ -97,16 +97,6 @@ let proRouter = [
     }
   },
   {
-    path: '/assetClassSet/edit',
-    name: '编辑',
-    component: () => import('@/views/assetInformationManagement/assetClassSet/editClassSet.vue')
-  },
-  {
-    path: '/assetClassSet/detail',
-    name: '详情',
-    component: () => import('@/views/assetInformationManagement/assetClassSet/checkClassSet.vue')
-  },
-  {
     path: '/assetProjectManage',
     name: '资产项目管理',
     component: () => import('@/views/assetInformationManagement/asset-project-manage'),
