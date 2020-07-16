@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-15 14:25:33
+ * @LastEditTime: 2020-07-15 16:28:52
  * @Description: file content
  */ 
 
@@ -137,5 +137,23 @@ export const valueToRegisterData = [
   { title: '开始使用日期', dataIndex: 'startDate', width: 100 },
   { title: '已使用期限', dataIndex: 'usedDate', width: 100 },
   { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', width: 100 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
+]
+
+//  -------- 使用方向 ----------------------------------
+export const directionUseData = [
+  { title: '资产ID', dataIndex: 'assetId', width: 100 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
+  { title: '建筑面积(㎡)', dataIndex: 'buildArea', width: 150 },
+  { title: '转物业时间', dataIndex: 'transferTime', width: 100 },
+  { title: '转物业面积(㎡)', dataIndex: 'transferArea', width: 100 },
+  { title: '转运营时间', dataIndex: 'transferOperationTime', width: 100 },
+  { title: '运营面积(㎡)', dataIndex: 'transferOperationArea', width: 100 },
+  { title: '自用面积(㎡)', dataIndex: 'selfUserArea', width: 100 },
+  { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 100 },
+  { title: '占用面积(㎡)', dataIndex: 'occupationArea', width: 100 },
+  { title: '其他面积(㎡)', dataIndex: 'otherArea', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]

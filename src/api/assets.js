@@ -206,6 +206,31 @@ export function getValueDetail (data) {
 export function updateAssetValue (data) {
   return axiosPost(assets.assetRegister.updateAssetValue, data)
 }
+// 使用方向修改
+export function useForUpdate (data) {
+  return axiosPost(assets.assetRegister.useForUpdate, data)
+}
+// 使用方向分页列表
+export function userForList (data) {
+  return axiosPost(assets.assetRegister.userForList, data)
+}
+// 使用方向详情
+export function useForDetail (data) {
+  return axiosGet(assets.assetRegister.useForDetail, data)
+}
+// 使用方向面积统计
+export function useForSummary (data) {
+  return axiosGet(assets.assetRegister.useForSummary, data)
+}
+// 批量导出
+export function userForExport (data) {
+  return axiosGet(assets.assetClassSet.userForExport, data, false, false, {responseType: 'blob'})
+}
+// 批量更新
+export function usrForImport (data) {
+  return axiosGet(assets.assetRegister.usrForImport, data)
+}
+
 
 // 资产清理
 // 资产清理-分页列表
