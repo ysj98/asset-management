@@ -19,6 +19,9 @@
         <a-tab-pane tab="房间信息" key="house">
           <houseInfo />
         </a-tab-pane>
+        <a-tab-pane tab="土地信息" key="land">
+          <landInfo />
+        </a-tab-pane>
       </a-tabs>
     </div>
   </div>
@@ -26,13 +29,15 @@
 <script>
 import buildingInfo from './buildingInfo'
 import houseInfo from './houseInfo'
+import landInfo from './land/landInfo'
 import topOrganByUser from '@/views/common/topOrganByUser'
 const allWidth = {width: '185px'}
 export default {
   components: {
     buildingInfo,
     houseInfo,
-    topOrganByUser
+    topOrganByUser,
+    landInfo
   },
   data () {
     return {
