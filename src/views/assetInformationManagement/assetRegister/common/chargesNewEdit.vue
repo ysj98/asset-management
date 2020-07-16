@@ -1,12 +1,13 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-16 15:06:00
+ * @LastEditTime: 2020-07-16 15:35:34
  * @Description: 新增相关费用
 --> 
 <template>
   <div class="basicDownload">
     <SG-Modal
+      :centered="true"
       width="900px"
       v-model="modalShow"
       okText="提交"
@@ -14,11 +15,12 @@
       @cancel="handleCancel"
       @ok="handleSubmit"
     >
-    <div>
+    <div class="chargesNewEdit">
       <span class="section-title blue">资产信息</span>
+      <div class="mt15 mb15">
         <a-row class="playground-row">
           <a-form :form="form" @submit="handleSubmit" v-if="type === 'new'">
-            <a-col :span="12">
+            <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'">
               <a-form-item label="名称" v-bind="formItemLayout">
                 <a-select
                   :placeholder="'请选择资产名称'" :style="allWidth"
@@ -36,16 +38,17 @@
               </a-form-item>
             </a-col>
           </a-form>
-          <a-col v-if="type === 'edit'" :span="12"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetName || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
+          <a-col v-if="type === 'edit'" :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产名称：" v-bind="formItemLayout">{{examine.assetName || '--'}}</a-form-item></a-col>
+          <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
+          <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
+          <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
         </a-row>
+      </div>
       <span class="section-title blue">相关费用信息</span>
       <div class="mt30 mb30">
         <a-row class="playground-row">
           <a-form :form="form" @submit="handleSubmit">
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="类别" v-bind="formItemLayout">
                 <a-select
                   :placeholder="'请选择类别'" :style="allWidth"
@@ -60,7 +63,7 @@
                   />
               </a-form-item>
             </a-col>
-             <a-col :span="12">
+             <a-col :span="12" class="h-65">
               <a-form-item label="费用/收入类型" v-bind="formItemLayout">
                 <a-input placeholder="请输入费用/收入类型"
                 :style="allWidth"
@@ -70,7 +73,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="费用/收入名称" v-bind="formItemLayout">
                 <a-input placeholder="请输入费用/收入名称"
                 :style="allWidth"
@@ -80,7 +83,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
                 <a-form-item label="客户名称" v-bind="formItemLayout">
                 <a-input placeholder="请输入客户名称"
                 :style="allWidth"
@@ -101,7 +104,7 @@
                 />
                 </a-form-item>
              </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="金额(元)" v-bind="formItemLayout">
                 <a-input-number placeholder="金额(元)"
                 :style="allWidth"
@@ -112,7 +115,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="读数" v-bind="formItemLayout">
                 <a-input-number placeholder="读数"
                 :style="allWidth"
@@ -318,5 +321,17 @@ export default {
 <style lang="less" scoped>
 .modal-nav {
   line-height: 60px;
+}
+.chargesNewEdit {
+  // max-height: 550px;
+  // overflow: auto;
+  padding: 32px 18px;
+  .h-65 {
+    height: 65px;
+  }
+  .h-40 {
+    height: 40px;
+    line-height: 40px;
+  }
 }
 </style>

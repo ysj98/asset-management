@@ -1,12 +1,13 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 17:22:25
- * @LastEditTime: 2020-07-16 11:24:43
+ * @LastEditTime: 2020-07-16 15:29:46
  * @Description: 使用方向
 -->
 <template>
   <div class="basicDownload">
     <SG-Modal
+      :centered="true"
       width="800px"
       v-model="modalShow"
       okText="提交"
@@ -14,7 +15,7 @@
       @cancel="handleCancel"
       @ok="handleSubmit"
     >
-    <div>
+    <div class="directionUseEdit">
       <span class="section-title blue">资产信息</span>
         <a-row class="playground-row">
           <a-col :span="12" class="playground-col">资产名称：{{examine.assetName || '--'}}</a-col>
@@ -256,7 +257,12 @@ export default {
     font-size: 12px;
   }
 }
-.h-65 {
-  height: 65px;
+.directionUseEdit {
+  max-height: 550px;
+  overflow: auto;
+  padding: 32px 18px 20px 18px;
+  .h-65 {
+    height: 65px;
+  }
 }
 </style>

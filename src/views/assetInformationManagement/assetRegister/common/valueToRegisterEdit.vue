@@ -1,12 +1,13 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 11:46:50
- * @LastEditTime: 2020-07-15 14:27:50
+ * @LastEditTime: 2020-07-16 15:36:02
  * @Description: 价值登记编辑
 --> 
 <template>
   <div class="basicDownload">
     <SG-Modal
+      :centered="true"
       width="800px"
       v-model="modalShow"
       okText="提交"
@@ -14,7 +15,7 @@
       @cancel="handleCancel"
       @ok="handleSubmit"
     >
-    <div>
+    <div class="valueToRegisterEdit">
       <span class="section-title blue">资产信息</span>
         <a-row class="playground-row">
           <a-col :span="12" class="playground-col">资产名称：{{examine.assetName || '--'}}</a-col>
@@ -212,7 +213,12 @@ export default {
     font-size: 12px;
   }
 }
-.h-65 {
-  height: 65px;
+.valueToRegisterEdit {
+  max-height: 550px;
+  overflow: auto;
+  padding: 32px 18px;
+  .h-65 {
+    height: 65px;
+  }
 }
 </style>
