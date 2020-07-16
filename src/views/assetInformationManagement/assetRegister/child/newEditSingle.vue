@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-15 14:56:22
+ * @LastEditTime: 2020-07-16 11:35:09
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -24,6 +24,8 @@
       <valueToRegister v-show="this.activeStepIndex === 2"></valueToRegister>
       <!-- 使用方向 -->
       <directionUse v-show="this.activeStepIndex === 3"></directionUse>
+      <!-- 相关费用 -->
+      <correlativeCharges v-show="this.activeStepIndex === 4"></correlativeCharges>
     </div>
     <div class="step-footer-operation">
       <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
@@ -38,9 +40,10 @@ import basicDetails from './basicDetails'
 import necessaryCaaessories from './necessaryCaaessories'
 import valueToRegister from './valueToRegister'
 import directionUse from './directionUse'
+import correlativeCharges from './correlativeCharges'
 import basic from './basic'
 export default {
-  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse},
+  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
   props: {},
   data () {
     return {
