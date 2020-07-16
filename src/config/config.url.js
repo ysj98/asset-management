@@ -49,6 +49,8 @@ export const basics = {
   queryCityAndAreaList: '/basic-data-api/rest-api/v1/regionApi/queryRegionByPId',
   // 按照一级物业公司查询楼栋列表
   queryBuildList: '/basic-data-api/rest-api/v1/ams/buildApi/queryBuildList',
+  // 按照一级物业公司查询资源列表
+  positionApiList: '/basic-data-api/rest-api/v1/ams/positionApi/list',
   // 请求楼层
   queryFloorListByPosId: '/basic-data-api/rest-api/v1/floorApi/queryFloorListByPosId',
   // 03_通过字典code和groupId(集团一级组织ID)查询字典列表信息
@@ -116,9 +118,11 @@ export const assets = {
   assetRegister: {
     // 资产登记-删除
     deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
-    // 资产登记-反审核
+    // 资产登记-列表统计
+    pageListStatistics: '/ams/registerOrder/pageListStatistics',
+    // 资产登记-撤销核实
     registerOrderReAudit: '/ams/registerOrder/registerOrderReAudit',
-    // 资产登记-审核
+    // 资产登记-核实
     registerOrderAudit: '/ams/registerOrder/registerOrderAudit',
     // 资产登记-新增保存
     saveRegisterOrder: '/ams/registerOrder/saveRegisterOrder',
@@ -143,7 +147,31 @@ export const assets = {
     // 资产登记-读取excel模板文件
     readExcelModel: '/ams/registerOrder/readExcelModel',
     // 资产登记-读取excel模板文件
-    checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType'
+    checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType',
+    // 资产登记-附属配套-分页查询列表
+    getListPageByRegisterOrderId: '/ams/subsidiaryMatching/getListPageByRegisterOrderId',
+    // 附属配套-新增/修改保存(资产登记版)
+    addModifySaveByRgId: '/ams/subsidiaryMatching/addModifySaveByRgId',
+    // 资产登记-查询资产列表-根据资产登记Id
+    findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId',
+    // 资产登记-附属配套-统计
+    getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+    // 下载附属配套模板
+    downModle: '/ams/subsidiaryMatching/downModle',
+    // 批量导入-导入保存
+    batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId',
+    // 资产登记-价值信息统计
+    getValueStatistics: '/ams/registerOrder/getValueStatistics',
+    // 资产登记-价值信息批量导出
+    valueExport: '/ams/registerOrder/valueExport',
+    // 资产登记-价值信息批量导入
+    valueImport: '/ams/registerOrder/valueImport',
+    // 资产登记-价值信息分页列表
+    queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
+    // 资产登记-价值信息详情
+    getValueDetail: '/ams/registerOrder/getValueDetail',
+    // 资产登记-编辑价值信息
+    updateAssetValue: '/ams/registerOrder/updateAssetValue'
   },
   // 资产清理
   assetClear: {

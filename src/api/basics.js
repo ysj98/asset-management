@@ -56,6 +56,10 @@ export function queryCityAndAreaList (data) {
 export function queryBuildList (data) {
   return axiosPost(basics.queryBuildList, data)
 }
+// 按照一级物业公司查询资源列表
+export function positionApiList (data) {
+  return axiosPost(basics.positionApiList, data)
+}
 //  请求楼层
 export function queryFloorListByPosId (data) {
   return axiosGet(basics.queryFloorListByPosId, data)

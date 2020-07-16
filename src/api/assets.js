@@ -102,13 +102,17 @@ export function assetListPage (data) {
 export function deleteByRegisterOrderId (data) {
   return axiosPost(assets.assetRegister.deleteByRegisterOrderId, data)
 }
-// 资产登记-反审核
+// 资产登记-撤销核实
 export function registerOrderReAudit (data) {
   return axiosPost(assets.assetRegister.registerOrderReAudit, data)
 }
-// 资产登记-审核
+// 资产登记-核实
 export function registerOrderAudit (data) {
   return axiosPost(assets.assetRegister.registerOrderAudit, data)
+}
+// 资产登记-列表统计
+export function pageListStatistics (data) {
+  return axiosPost(assets.assetRegister.pageListStatistics, data)
 }
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
@@ -153,6 +157,54 @@ export function readExcelModel (data) {
 // 资产登记-导出数据校验
 export function checkBuildsObjectType (data) {
   return axiosPost(assets.assetRegister.checkBuildsObjectType, data)
+}
+// 资产登记-附属配套-分页查询列表
+export function getListPageByRegisterOrderId (data) {
+  return axiosPost(assets.assetRegister.getListPageByRegisterOrderId, data)
+}
+// 附属配套-新增/修改保存(资产登记版)
+export function addModifySaveByRgId (data) {
+  return axiosPost(assets.assetRegister.addModifySaveByRgId, data)
+}
+// 资产登记-查询资产列表-根据资产登记Id
+export function findAssetListByRgId (data) {
+  return axiosPost(assets.assetRegister.findAssetListByRgId, data)
+}
+// 资产登记-附属配套-统计
+export function getMatchingListByAssetId (data) {
+  return axiosPost(assets.assetRegister.getMatchingListByAssetId, data)
+}
+// 下载附属配套模板
+export function downModle (data) {
+  return axiosPost(assets.assetClassSet.downModle, data, false, false, {responseType: 'blob'})
+}
+// 批量导入-导入保存
+export function batchImportByRgId (data) {
+  return axiosPost(assets.assetRegister.batchImportByRgId, data)
+}
+// 资产登记-价值信息统计
+export function getValueStatistics (data) {
+  return axiosPost(assets.assetRegister.getValueStatistics, data)
+}
+// 资产登记-价值信息批量导出
+export function valueExport (data) {
+  return axiosPost(assets.assetClassSet.valueExport, data, false, false, {responseType: 'blob'})
+}
+// 资产登记-价值信息批量导入
+export function valueImport (data) {
+  return axiosPost(assets.assetRegister.valueImport, data)
+}
+// 资产登记-价值信息分页列表
+export function queryValuePageListByRgId (data) {
+  return axiosPost(assets.assetRegister.queryValuePageListByRgId, data)
+}
+// 资产登记-价值信息详情
+export function getValueDetail (data) {
+  return axiosPost(assets.assetRegister.getValueDetail, data)
+}
+// 资产登记-编辑价值信息
+export function updateAssetValue (data) {
+  return axiosPost(assets.assetRegister.updateAssetValue, data)
 }
 
 // 资产清理
