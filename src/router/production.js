@@ -7,7 +7,10 @@ let proRouter = [
   {
     path: '/buildingDict',
     name: '楼盘字典',
-    component: () => import('@/views/buildingDict/index.vue')
+    component: () => import('@/views/buildingDict/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/buildingDict/createHouse',
@@ -23,6 +26,21 @@ let proRouter = [
     path: '/buildingDict/detailHouse',
     name: '房间详情',
     component: () => import('@/views/buildingDict/detailHouse.vue')
+  },
+  {
+    path: '/buildingDict/createLand',
+    name: '新建土地',
+    component: () => import('@/views/buildingDict/land/createLand.vue')
+  },
+  {
+    path: '/buildingDict/editLand',
+    name: '编辑土地',
+    component: () => import('@/views/buildingDict/land/editLand.vue')
+  },
+  {
+    path: '/buildingDict/detailLand',
+    name: '土地详情',
+    component: () => import('@/views/buildingDict/land/detailLand.vue')
   },
   {
     path: '/assetChange',
