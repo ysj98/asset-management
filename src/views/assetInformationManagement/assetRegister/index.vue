@@ -73,15 +73,15 @@ const approvalStatusData = [
   },
   {
     name: '未核实',
-    value: '1'
+    value: '0'
   },
   {
     name: '待入库',
-    value: '2'
+    value: '1'
   },
   {
     name: '已入库',
-    value: '3'
+    value: '2'
   }
 ]
 const columns = [
@@ -199,12 +199,28 @@ export default {
   methods: {
     // 操作
     operationFun (str, val) {
+      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
       switch (str) {
         case 'detail': {           // 详情
         val.type = 'detail'
           let particularsData = JSON.stringify([val])
           this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'particulars' }})
         }
+        break;
+        case 'basicInformation':    // 登记基础信息
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 0 }})
+        break;
+        case 'registrationAccessory':    // 登记附属配套
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 1 }})
+        break;
+        case 'registeredInformation':    // 登记价值信息
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 2 }})
+        break;
+        case 'RegisterDirections':    // 登记使用方向
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 3 }})
+        break;
+        case 'RegistrationFees':    // RegistrationFees
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 4 }})
         break;
         case 'delete':            // 删除
           this.commonFn('delete', val.registerOrderId)
@@ -229,7 +245,7 @@ export default {
     // 新建登记单
     newChangeSheetFn () {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
-      this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'new' }})
+      this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'new', activeStepIndex: '0' }})
     },
     commonFn (str, id) {
       let _this = this, interfaceName = '', contentTitle = '', succeedMessage = ''
@@ -395,31 +411,31 @@ export default {
     createOperationBtn (record) {
       // 审批状态   
       let arr = []
-      if (String(record.approvalStatus) === '1') {
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'play-circle', text: '登记基础信息', editType: 'basicInformation'})
       }
-      if (String(record.approvalStatus) === '1') {
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '登记附属配套', editType: 'registrationAccessory'})
       }
-      if (String(record.approvalStatus) === '1') {
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '登记价值信息', editType: 'registeredInformation'})
       }
-      if (String(record.approvalStatus) === '1') {
-        arr.push({iconType: 'close-circle', text: '登记使用信息', editType: 'usageInformation'})
-      }
-      if (String(record.approvalStatus) === '1') {
+      // if (String(record.approvalStatus) === '0') {
+      //   arr.push({iconType: 'close-circle', text: '登记使用信息', editType: 'usageInformation'})
+      // }
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'RegisterDirections '})
       }
-      if (String(record.approvalStatus) === '1') {
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '登记相关费用', editType: 'RegistrationFees'})
       }
-      if (String(record.approvalStatus) === '1') {
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '核实', editType: 'verify'})
       }
-      if (String(record.approvalStatus) === '1') {
+      if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
       }
-      if (String(record.approvalStatus) === '2') {
+      if (String(record.approvalStatus) === '1') {
         arr.push({iconType: 'delete', text: '撤销核实', editType: 'undoCheck'})
       }
       arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-16 15:35:34
+ * @LastEditTime: 2020-07-17 13:47:49
  * @Description: 新增相关费用
 --> 
 <template>
@@ -156,7 +156,10 @@ export default {
       organId: '67',
       form: this.$form.createForm(this),
       modalShow: false,
-      categoryData: [],       // 类型
+      categoryData: [             // 类型
+        { label: '费用', key: '0' },
+        { label: '收入', key: '1' }
+      ],
       unitOfMeasurementOpt: [],   // 计量单位
       examine: {
         projectIdData: [

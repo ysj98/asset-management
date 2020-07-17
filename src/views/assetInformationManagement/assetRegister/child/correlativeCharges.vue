@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-17 13:39:06
+ * @LastEditTime: 2020-07-17 13:50:00
  * @Description: 相关费用
 -->
 <template>
@@ -86,6 +86,8 @@ export default {
       arr = utils.deepClone(costData)
       arr.pop()
       this.columns = arr
+    } else {
+      this.columns = costData
     }
     this.query()
   },
