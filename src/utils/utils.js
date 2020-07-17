@@ -460,6 +460,11 @@ class Units {
     }
     return tree
   }
+  // 获取id
+  getUuid  () {
+    this.uuid = this.uuid || (this.uuid = 0)
+    return ++this.uuid
+  }
 }
 /**
  * 节流函数，对多次触发的函数，单位时间内只执行一次
@@ -565,3 +570,16 @@ export function uuid (len, radix) {
   }
   return uuid.join('')
 }
+
+// 快速复制对象里的值
+export function getTargetObject (targetObject, propsArray) {
+  if (typeof (targetObject) !== "object" || !Array.isArray(propsArray)) {
+  throw new Error("参数格式不正确");
+  }
+  const result = {};
+  Object.keys(targetObject).filter(key => propsArray.includes(key)).forEach(key => {
+  result[key] = targetObject[key];
+  })
+  return result;
+ }
+ 

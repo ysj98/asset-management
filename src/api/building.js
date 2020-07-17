@@ -140,3 +140,29 @@ export function buildingDownLoadExcel (data) {
 export function buildImportExcel (organId, data) {
   return axiosPost(building.buildImportExcel + organId, data, false, false, {timeout: 1000 * 60 * 10})
 }
+// 土地分页列表
+export function blankApiPageList (data) {
+  return axiosPost(building.blankApiPageList, data)
+}
+// 土地修改
+export function blankApiUpdate (data) {
+  return axiosPost(building.blankApiUpdate, data)
+}
+// 土地删除
+export function blankApiDelete (data) {
+  return axiosPost(building.blankApiDelete, data)
+}
+// 土地导出
+export function blankApiExport (data) {
+  return axiosPost(building.blankApiExport, data, false, true, {
+    responseType: 'blob'
+  })
+}
+// 土地详情
+export function blankApiDetail (data) {
+  return axiosGet(building.blankApiDetail, data)
+}
+// 土地新增
+export function blankApiInsert (data) {
+  return axiosPost(building.blankApiInsert, data)
+}

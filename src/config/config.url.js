@@ -55,6 +55,8 @@ export const basics = {
   queryFloorListByPosId: '/basic-data-api/rest-api/v1/floorApi/queryFloorListByPosId',
   // 03_通过字典code和groupId(集团一级组织ID)查询字典列表信息
   queryDictDataList: '/basic-data-api/rest-api/v1/dictApi/queryDictDataList',
+  // 业务字典查询 字典表接口 POST
+  queryDictList: '/basic-data-api/rest-api/v1/dictApi/queryDictList',
   // 平台字典
   platformDict: '/ams/assetDict/platformDict',
   // 机构字典
@@ -171,7 +173,33 @@ export const assets = {
     // 资产登记-价值信息详情
     getValueDetail: '/ams/registerOrder/getValueDetail',
     // 资产登记-编辑价值信息
-    updateAssetValue: '/ams/registerOrder/updateAssetValue'
+    updateAssetValue: '/ams/registerOrder/updateAssetValue',
+    // 使用方向修改
+    useForUpdate: '/ams/registerOrder/useFor/update',
+    // 使用方向分页列表
+    userForList: '/ams/registerOrder/userFor/list',
+    // 使用方向详情
+    useForDetail: '/ams/registerOrder/useFor/detail',
+    // 使用方向面积统计
+    useForSummary: '/ams/registerOrder/useFor/summary',
+    // 批量导出
+    userForExport: '/ams/registerOrder/userFor/export',
+    // 批量更新
+    usrForImport: '/ams/registerOrder/usrFor/import',
+    // 相关费用下载导入模板
+    correlationExpenseExport: '/ams/registerOrder/correlationExpense/export',
+    // 相关费用导入
+    correlationExpenseImport: '/ams/registerOrder/correlationExpense/import',
+    // 相关费用分页列表
+    correlationExpenseList: '/ams/registerOrder/correlationExpense/list',
+    // 相关费用删除
+    correlationExpenseDelete: '/ams/registerOrder/correlationExpense/delete',
+    // 相关费用新增修改
+    correlationExpenseUpdate: '/ams/registerOrder/correlationExpense/update',
+    // 相关费用详情
+    correlationExpenseDetail: '/ams/registerOrder/correlationExpense/detail',
+    // 相关费用金额统计
+    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total'
   },
   // 资产清理
   assetClear: {
@@ -422,7 +450,19 @@ export const building = {
   // 下载楼栋导入模板
   buildingDownLoadExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/downLoadExcel',
   // 楼栋批量导入
-  buildImportExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcel/'
+  buildImportExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcel/',
+  // 土地分页列表
+  blankApiPageList: '/basic-data-api/rest-api/v1/ams/blankApi/pageList',
+  // 土地修改
+  blankApiUpdate: '/basic-data-api/rest-api/v1/ams/blankApi/update',
+  // 土地删除
+  blankApiDelete: '/basic-data-api/rest-api/v1/ams/blankApi/delete',
+  // 土地导出
+  blankApiExport: '/basic-data-api/rest-api/v1/ams/blankApi/export',
+  // 土地详情
+  blankApiDetail: '/basic-data-api/rest-api/v1/ams/blankApi/detail',
+  // 土地新增
+  blankApiInsert: '/basic-data-api/rest-api/v1/ams/blankApi/insert',
 }
 
 // 权属概况

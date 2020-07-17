@@ -1,14 +1,14 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-15 14:42:23
+ * @LastEditTime: 2020-07-17 17:37:40
  * @Description: 登记单新建编辑
 --> 
 <template>
   <div class="newEditSingle">
     <!-- 登记单第一步信息 -->
-    <newInformation v-show="this.activeStepIndex === 0"></newInformation>
-    <basicDetails v-show="this.activeStepIndex !== 0"></basicDetails>
+    <newInformation v-show="this.activeStepIndex === 0 && setType === 'new'"></newInformation>
+    <basicDetails v-show="this.activeStepIndex !== 0 || setType === 'edit'"></basicDetails>
     <span class="section-title blue">资产明细</span>
     <div class="newEditSingle-nav">
       <div class="mb15">
@@ -22,8 +22,12 @@
       <necessaryCaaessories v-show="this.activeStepIndex === 1"></necessaryCaaessories>
       <!-- 价值登记 -->
       <valueToRegister v-show="this.activeStepIndex === 2"></valueToRegister>
+      <!-- 使用方向 -->
+      <directionUse v-show="this.activeStepIndex === 3"></directionUse>
+      <!-- 相关费用 -->
+      <correlativeCharges v-show="this.activeStepIndex === 4"></correlativeCharges>
     </div>
-    <div class="step-footer-operation">
+    <div class="step-footer-operation" v-if="setType === 'new'">
       <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
     </div>
   </div>
@@ -35,9 +39,11 @@ import NewInformation from './newInformation'
 import basicDetails from './basicDetails'
 import necessaryCaaessories from './necessaryCaaessories'
 import valueToRegister from './valueToRegister'
+import directionUse from './directionUse'
+import correlativeCharges from './correlativeCharges'
 import basic from './basic'
 export default {
-  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister},
+  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
   props: {},
   data () {
     return {
@@ -51,7 +57,7 @@ export default {
       organIdData: [],
       organId: '',
       setType: '',                // 新增还是编辑
-      rightButtonDisabled: true,    // 下一步禁止选择
+      rightButtonDisabled: true,  // 下一步禁止选择
       activeStepIndex: 0          // 第几步
     }
   },
@@ -77,6 +83,7 @@ export default {
     this.organIdData = JSON.parse(this.$route.query.record)
     this.organId = this.organIdData[0].value
     this.setType = this.$route.query.setType
+    this.activeStepIndex = this.$route.query.activeStepIndex
   },
   mounted () {
   },

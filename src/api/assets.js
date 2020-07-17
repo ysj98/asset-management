@@ -206,6 +206,58 @@ export function getValueDetail (data) {
 export function updateAssetValue (data) {
   return axiosPost(assets.assetRegister.updateAssetValue, data)
 }
+// 使用方向修改
+export function useForUpdate (data) {
+  return axiosPost(assets.assetRegister.useForUpdate, data)
+}
+// 使用方向分页列表
+export function userForList (data) {
+  return axiosPost(assets.assetRegister.userForList, data)
+}
+// 使用方向详情
+export function useForDetail (data) {
+  return axiosGet(assets.assetRegister.useForDetail, data)
+}
+// 使用方向面积统计
+export function useForSummary (data) {
+  return axiosGet(assets.assetRegister.useForSummary, data)
+}
+// 批量导出
+export function userForExport (data) {
+  return axiosGet(assets.assetClassSet.userForExport, data, false, false, {responseType: 'blob'})
+}
+// 批量更新
+export function usrForImport (data) {
+  return axiosGet(assets.assetRegister.usrForImport, data)
+}
+// 相关费用下载导入模板
+export function correlationExpenseExport (data) {
+  return axiosGet(assets.assetClassSet.correlationExpenseExport, data, false, false, {responseType: 'blob'})
+}
+// 相关费用导入
+export function correlationExpenseImport (data) {
+  return axiosPost(assets.assetRegister.correlationExpenseImport, data)
+}
+// 相关费用分页列表
+export function correlationExpenseList (data) {
+  return axiosPost(assets.assetRegister.correlationExpenseList, data)
+}
+// 相关费用删除
+export function correlationExpenseDelete (data) {
+  return axiosPost(assets.assetRegister.correlationExpenseDelete, data)
+}
+// 相关费用新增修改
+export function correlationExpenseUpdate (data) {
+  return axiosPost(assets.assetRegister.correlationExpenseUpdate, data)
+}
+// 相关费用详情
+export function correlationExpenseDetail (data) {
+  return axiosGet(assets.assetRegister.correlationExpenseDetail, data)
+}
+// 相关费用金额统计
+export function correlationExpenseTotal (data) {
+  return axiosGet(assets.assetRegister.correlationExpenseTotal, data)
+}
 
 // 资产清理
 // 资产清理-分页列表

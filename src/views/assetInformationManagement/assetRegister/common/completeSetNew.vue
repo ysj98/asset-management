@@ -1,50 +1,54 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-15 10:24:31
+ * @LastEditTime: 2020-07-16 15:36:14
  * @Description: 新增附属配套
 --> 
 <template>
   <div class="basicDownload">
     <SG-Modal
+     :centered="true"
       width="800px"
       v-model="modalShow"
       okText="提交"
-      title="新增附属配套"
+      :title="type === 'new' ? '新增附属配套' : '编辑附属配套'"
       @cancel="handleCancel"
       @ok="handleSubmit"
     >
-    <div>
+    <div class="completeSetNew">
       <span class="section-title blue">资产信息</span>
-        <a-row class="playground-row">
-          <a-form :form="form" @submit="handleSubmit">
-            <a-col :span="12">
-              <a-form-item label="名称" v-bind="formItemLayout">
-                <a-select
-                  :placeholder="'请选择资产名称'" :style="allWidth"
-                  showSearch
-                  :options="examine.projectIdData"
-                  :allowClear="true"
-                  optionFilterProp="children"
-                  @search="handleSearch"
-                  :filterOption="false"
-                  v-decorator="['assetName',
-                      {rules: [{required: true, message: '请选择类型'}], initialValue: subData.assetName}
-                    ]"
-                  notFoundContent="没有查询到数据"
-                  />
-              </a-form-item>
-            </a-col>
-          </a-form>
-          <a-col :span="12"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
-          <a-col :span="12"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
-        </a-row>
+        <div class="mt20">
+          <a-row class="playground-row" v-if="type === 'new'">
+            <a-form :form="form" @submit="handleSubmit">
+              <a-col :span="12" class="h-65">
+                <a-form-item label="名称" v-bind="formItemLayout">
+                  <a-select
+                    :placeholder="'请选择资产名称'" :style="allWidth"
+                    showSearch
+                    :options="examine.projectIdData"
+                    :allowClear="true"
+                    optionFilterProp="children"
+                    @search="handleSearch"
+                    :filterOption="false"
+                    v-decorator="['assetName',
+                        {rules: [{required: true, message: '请选择类型'}], initialValue: subData.assetName}
+                      ]"
+                    notFoundContent="没有查询到数据"
+                    />
+                </a-form-item>
+              </a-col>
+            </a-form>
+            <a-col v-if="type === 'edit'" :span="12"><a-form-item label="资产名称：" v-bind="formItemLayout">{{examine.assetName || '--'}}</a-form-item></a-col>
+            <a-col :span="12" class="h-65"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
+            <a-col :span="12" class="h-65"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
+            <a-col :span="12" class="h-65"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
+          </a-row>
+        </div>
       <span class="section-title blue">附属配套信息</span>
       <div class="mt30 mb30">
         <a-row class="playground-row">
           <a-form :form="form" @submit="handleSubmit">
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="名称" v-bind="formItemLayout">
                 <a-input placeholder="请输入名称"
                 :style="allWidth"
@@ -54,7 +58,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="编码" v-bind="formItemLayout">
                 <a-input placeholder="请输入编码"
                 :style="allWidth"
@@ -64,7 +68,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="类型" v-bind="formItemLayout">
                 <a-select
                   :placeholder="'请选择类型'" :style="allWidth"
@@ -79,7 +83,7 @@
                   />
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="规格型号" v-bind="formItemLayout">
                 <a-input placeholder="请输入规格型号"
                 :style="allWidth"
@@ -89,7 +93,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="价值(元)" v-bind="formItemLayout">
                 <a-input-number placeholder="请输入价值(元)"
                 :style="allWidth"
@@ -101,7 +105,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="数量" v-bind="formItemLayout">
                 <a-input-number placeholder="数量"
                 :style="allWidth"
@@ -112,7 +116,7 @@
                 ]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item label="计量单位" v-bind="formItemLayout">
                 <a-select
                   :placeholder="'请选择计量单位'" :style="allWidth"
@@ -127,7 +131,7 @@
                   />
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <a-col :span="12" class="h-65">
               <a-form-item>
               <a-checkbox :checked="subData.isBefore" @change="handleChange">
                 接管前附属配套
@@ -248,6 +252,7 @@ export default {
       this.$api.subsidiary.getMatchingById(data).then(res => {
         if (res.data.code === "0") {
           let obj = res.data.data || {}
+          this.examine = obj
           // 处理表单数据
           let o = {
             matchingName: obj.matchingName,
@@ -385,5 +390,13 @@ export default {
 <style lang="less" scoped>
 .modal-nav {
   line-height: 60px;
+}
+.completeSetNew {
+  max-height: 550px;
+  overflow: auto;
+  padding: 32px 18px;
+  .h-65 {
+    height: 65px;
+  }
 }
 </style>
