@@ -254,5 +254,12 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
   zcgl_submit_plans_audit: 'zcgl_submit_plans_audit',
   // 呈报计划-反审核
   zcgl_submit_plans_reverse_audit: 'zcgl_submit_plans_reverse_audit',
+   /**
+    * 资产入库
+    */
+   ASSET_IN_CREATE: 'asset_in_create', // 新建
+   ASSET_IN_EDIT: 'asset_in_edit', // 编辑
+   ASSET_REPORT_APPROVE: 'asset_in_approve', // 审批
+   ASSET_IN_DELETE: 'asset_in_delete', // 删除
 }
 

@@ -245,4 +245,13 @@ export default [
       },
     ]
   },
+  {
+    title: '资产入库',
+    children: [
+      {
+        title: '资产入库',
+        path: '/assetIn'
+      }
+    ]
+  },
 ]
