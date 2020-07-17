@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-17 16:56:32
+ * @LastEditTime: 2020-07-17 17:37:40
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -84,7 +84,6 @@ export default {
     this.organId = this.organIdData[0].value
     this.setType = this.$route.query.setType
     this.activeStepIndex = this.$route.query.activeStepIndex
-    console.log(this.setType, 'hdjfshfj')
   },
   mounted () {
   },

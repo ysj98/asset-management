@@ -208,19 +208,19 @@ export default {
         }
         break;
         case 'basicInformation':    // 登记基础信息
-        this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'edit', activeStepIndex: 0 }})
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 0 }})
         break;
         case 'registrationAccessory':    // 登记附属配套
-        this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'edit', activeStepIndex: 1 }})
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 1 }})
         break;
-        case 'usageInformation':    // 登记价值信息
-        this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'edit', activeStepIndex: 2 }})
+        case 'registeredInformation':    // 登记价值信息
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 2 }})
         break;
         case 'RegisterDirections':    // 登记使用方向
-        this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'edit', activeStepIndex: 3 }})
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 3 }})
         break;
         case 'RegistrationFees':    // RegistrationFees
-        this.$router.push({path: '/assetRegister/newEditSingle', query: { record: recordData, setType: 'edit', activeStepIndex: 3 }})
+        this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 4 }})
         break;
         case 'delete':            // 删除
           this.commonFn('delete', val.registerOrderId)
@@ -420,9 +420,9 @@ export default {
       if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '登记价值信息', editType: 'registeredInformation'})
       }
-      if (String(record.approvalStatus) === '0') {
-        arr.push({iconType: 'close-circle', text: '登记使用信息', editType: 'usageInformation'})
-      }
+      // if (String(record.approvalStatus) === '0') {
+      //   arr.push({iconType: 'close-circle', text: '登记使用信息', editType: 'usageInformation'})
+      // }
       if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'RegisterDirections '})
       }

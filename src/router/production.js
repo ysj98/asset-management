@@ -56,6 +56,11 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/assetRegister/child/newEditSingle.vue')
   },
   {
+    path: '/assetRegister/registerEdit',
+    name: '编辑登记单',
+    component: () => import('@/views/assetInformationManagement/assetRegister/child/registerEdit.vue')
+  },
+  {
     path: '/assetRegister/particulars',
     name: '登记单详情',
     component: () => import('@/views/assetInformationManagement/assetRegister/particulars.vue')
