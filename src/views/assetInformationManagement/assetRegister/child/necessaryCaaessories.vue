@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-15 10:50:44
+ * @LastEditTime: 2020-07-17 11:41:46
  * @Description: 附属配套
 --> 
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box">
+    <div class="button-box" v-if="record[0].type !== 'detail'">
       <div class="buytton-l">
         <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
       </div>
@@ -15,7 +15,7 @@
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量导入</SG-Button>
       </div>
     </div>
-    <div class="table-borders">
+    <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
         class="table-boxs"
         :columns="columns"
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import {utils} from '@/utils/utils'
 import {auxiliary} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
 import completeSetNew from './../common/completeSetNew'
@@ -58,7 +59,8 @@ export default {
   props: {},
   data () {
     return {
-      columns: auxiliary,
+      record: [],
+      columns: [],
       tableData: [],
       count: '',            // 总页数
       loading: false,
@@ -78,6 +80,13 @@ export default {
   created () {
   },
   mounted () {
+    this.record = JSON.parse(this.$route.query.record)
+    if (this.record[0].type === 'detail') {
+      let arr = []
+      arr = utils.deepClone(auxiliary)
+      arr.pop()
+      this.columns = arr
+    }
     this.query()
   },
   methods: {
@@ -255,6 +264,15 @@ export default {
     .postAssignment-icon {
       color: red;
     }
+  }
+}
+.overflowX{
+  /deep/ .ant-table-scroll {
+    overflow-x: auto;
+  }
+  /deep/.ant-table-header {
+    padding-bottom: 0px !important;
+    margin-bottom: 0px !important;
   }
 }
 </style>

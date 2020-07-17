@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-14 13:46:35
+ * @LastEditTime: 2020-07-17 11:26:09
  * @Description: 房屋土地
 --> 
 <template>
@@ -9,16 +9,16 @@
     <!--数据总览-->
     <overview-number :numList="numList"/>
     <div class="button-box">
-      <div class="buytton-nav">
+      <div class="buytton-nav" v-if="record[0].type !== 'detail'">
         <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
         <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
         <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
       </div>
     </div>
-    <div class="table-borders">
+    <div class="table-borders overflowX">
       <a-table
         class="table-boxs"
-        :scroll="{y: 450, x: 2700}"
+        :scroll="{y: 450, x: 2200}"
         :columns="columns"
         :dataSource="tableData"
         :pagination="false"
@@ -65,7 +65,24 @@ export default {
   computed: {
   },
   created () {
-    this.bridgeFn()
+    this.record = JSON.parse(this.$route.query.record)
+    if (this.record[0].type === 'detail') {
+      let arr = []
+      this.assetType = '2'
+      if (this.assetType === '1') {
+        console.log(columnsData)
+        arr = utils.deepClone(columnsData)
+        arr.pop()
+        console.log(arr)
+        this.columns = arr
+      } else if (this.assetType === '2') {
+        arr = utils.deepClone(landData)
+        arr.pop()
+        this.columns = arr
+      }
+    } else {
+      this.bridgeFn()
+    }
   },
   mounted () {
   },
@@ -280,6 +297,15 @@ export default {
   }
   .table-borders {
     border: 1px solid rgba(239,244,249,1)
+  }
+}
+.overflowX{
+  /deep/ .ant-table-scroll {
+    overflow-x: auto;
+  }
+  /deep/.ant-table-header {
+    padding-bottom: 0px !important;
+    margin-bottom: 0px !important;
   }
 }
 </style>

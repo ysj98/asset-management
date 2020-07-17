@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-16 15:01:32
+ * @LastEditTime: 2020-07-17 13:39:06
  * @Description: 相关费用
 -->
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box">
+    <div class="button-box" v-if="record[0].type !== 'detail'">
       <div class="buytton-l">
         <span>费用总额：{{statistics.num || '--'}}</span> <span class="p120">收入总额：{{statistics.valueAmount || '--'}}</span>
       </div>
@@ -15,7 +15,7 @@
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量导入</SG-Button>
       </div>
     </div>
-    <div class="table-borders">
+    <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
         class="table-boxs"
         :columns="columns"
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import {utils} from '@/utils/utils'
 import {costData} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
 import chargesNewEdit from './../common/chargesNewEdit'
@@ -58,7 +59,8 @@ export default {
   props: {},
   data () {
     return {
-      columns: costData,
+      record: [],
+      columns: [],
       tableData: [],
       count: '',            // 总页数
       loading: false,
@@ -78,6 +80,13 @@ export default {
   created () {
   },
   mounted () {
+    this.record = JSON.parse(this.$route.query.record)
+    if (this.record[0].type === 'detail') {
+      let arr = []
+      arr = utils.deepClone(costData)
+      arr.pop()
+      this.columns = arr
+    }
     this.query()
   },
   methods: {
@@ -250,6 +259,15 @@ export default {
     }
     .postAssignment-icon {
       color: red;
+    }
+  }
+  .overflowX{
+    /deep/ .ant-table-scroll {
+      overflow-x: auto;
+    }
+    /deep/.ant-table-header {
+      padding-bottom: 0px !important;
+      margin-bottom: 0px !important;
     }
   }
 }

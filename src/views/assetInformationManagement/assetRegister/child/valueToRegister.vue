@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-15 14:26:05
- * @Description: 价值登记
+ * @LastEditTime: 2020-07-17 11:41:37
+ * @Description: 价值信息
 --> 
 <template>
   <div class="valueToRegister">
-    <div class="button-box">
+    <div class="button-box" v-if="record[0].type !== 'detail'">
       <div class="buytton-l">
         <span>资产总原值：{{statistics.originalValue || '--'}}</span> <span class="p120">累计折旧总金额：{{statistics.depreciationAmount || '--'}}</span>
       </div>
@@ -15,7 +15,7 @@
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量更新</SG-Button>
       </div>
     </div>
-    <div class="table-borders">
+    <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
         class="table-boxs"
         :columns="columns"
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import {utils} from '@/utils/utils'
 import {valueToRegisterData} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
 import valueToRegisterEdit from './../common/valueToRegisterEdit'
@@ -55,8 +56,9 @@ export default {
   props: {},
   data () {
     return {
+      record: [],
       fileType: ['xls', 'xlsx'],
-      columns: valueToRegisterData,
+      columns: [],
       tableData: [],
       count: '',            // 总页数
       loading: false,
@@ -76,6 +78,13 @@ export default {
   created () {
   },
   mounted () {
+    this.record = JSON.parse(this.$route.query.record)
+    if (this.record[0].type === 'detail') {
+      let arr = []
+      arr = utils.deepClone(valueToRegisterData)
+      arr.pop()
+      this.columns = arr
+    }
     this.query()
   },
   methods: {
@@ -249,6 +258,15 @@ export default {
     }
     .postAssignment-icon {
       color: red;
+    }
+  }
+  .overflowX{
+    /deep/ .ant-table-scroll {
+      overflow-x: auto;
+    }
+    /deep/.ant-table-header {
+      padding-bottom: 0px !important;
+      margin-bottom: 0px !important;
     }
   }
 }

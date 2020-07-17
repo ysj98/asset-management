@@ -1,20 +1,20 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-16 11:14:13
+ * @LastEditTime: 2020-07-17 11:46:34
  * @Description: 使用方向
 --> 
 <template>
   <div class="directionUse">
     <!--数据总览-->
     <overview-number :numList="numList"/>
-    <div class="button-box">
+    <div class="button-box" v-if="record[0].type !== 'detail'">
       <div class="buytton-nav">
         <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量更新</SG-Button>
       </div>
     </div>
-    <div class="table-borders">
+    <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
         class="table-boxs"
         :columns="columns"
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import {utils} from '@/utils/utils'
 import {directionUseData} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
 import directionUseEdit from './../common/directionUseEdit'
@@ -55,6 +56,7 @@ export default {
   props: {},
   data () {
     return {
+      record: [],
       numList: [
         {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057'},
         {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
@@ -65,7 +67,7 @@ export default {
         {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       fileType: ['xls', 'xlsx'],
-      columns: directionUseData,
+      columns: [],
       tableData: [],
       count: '',            // 总页数
       loading: false,
@@ -84,6 +86,13 @@ export default {
   created () {
   },
   mounted () {
+    this.record = JSON.parse(this.$route.query.record)
+    if (this.record[0].type === 'detail') {
+      let arr = []
+      arr = utils.deepClone(directionUseData)
+      arr.pop()
+      this.columns = arr
+    }
     this.query()
   },
   methods: {
@@ -259,6 +268,15 @@ export default {
     }
     .postAssignment-icon {
       color: red;
+    }
+  }
+  .overflowX{
+    /deep/ .ant-table-scroll {
+      overflow-x: auto;
+    }
+    /deep/.ant-table-header {
+      padding-bottom: 0px !important;
+      margin-bottom: 0px !important;
     }
   }
 }
