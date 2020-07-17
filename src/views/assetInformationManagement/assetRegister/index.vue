@@ -201,6 +201,7 @@ export default {
     operationFun (str, val) {
       switch (str) {
         case 'detail': {           // 详情
+        val.type = 'detail'
           let particularsData = JSON.stringify([val])
           this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'particulars' }})
         }

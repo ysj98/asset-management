@@ -1,14 +1,14 @@
 <!--
  * @Author: LW
- * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-17 11:41:46
- * @Description: 附属配套
---> 
+ * @Date: 2020-07-16 11:30:26
+ * @LastEditTime: 2020-07-17 13:39:06
+ * @Description: 相关费用
+-->
 <template>
   <div class="necessaryCaaessories">
     <div class="button-box" v-if="record[0].type !== 'detail'">
       <div class="buytton-l">
-        <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
+        <span>费用总额：{{statistics.num || '--'}}</span> <span class="p120">收入总额：{{statistics.valueAmount || '--'}}</span>
       </div>
       <div class="buytton-nav">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
@@ -20,7 +20,7 @@
         class="table-boxs"
         :columns="columns"
         :loading="loading"
-        :scroll="{y: 450, x: 2300}"
+        :scroll="{y: 450, x: 1900}"
         :dataSource="tableData"
         :pagination="false"
         >
@@ -42,7 +42,7 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew"></completeSetNew>
+    <chargesNewEdit @cancel="cancel" v-if="modalShow" ref="chargesNewEdit"></chargesNewEdit>
     <!-- 下载模板 -->
     <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
@@ -50,12 +50,12 @@
 
 <script>
 import {utils} from '@/utils/utils'
-import {auxiliary} from './../common/registerBasics'
+import {costData} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
-import completeSetNew from './../common/completeSetNew'
+import chargesNewEdit from './../common/chargesNewEdit'
 import eportAndDownFile from './.././../../common/eportAndDownFile'
 export default {
-  components: {noDataTips, completeSetNew, eportAndDownFile},
+  components: {noDataTips, chargesNewEdit, eportAndDownFile},
   props: {},
   data () {
     return {
@@ -83,7 +83,7 @@ export default {
     this.record = JSON.parse(this.$route.query.record)
     if (this.record[0].type === 'detail') {
       let arr = []
-      arr = utils.deepClone(auxiliary)
+      arr = utils.deepClone(costData)
       arr.pop()
       this.columns = arr
     }
@@ -93,16 +93,15 @@ export default {
     // 删除
     deleteFn (record) {
         this.$SG_Modal.confirm({
-          title: `确定删除该附属配套吗?`,
+          title: `确认要删除该相关费用吗?`,
           okText: '确定',
           cancelText: '取消',
           onOk: () => {
             let data = {
-              subsidiaryMatchingId: record.subsidiaryMatchingId,
-              status: '-1'
+              correlationExpenseId: record.correlationExpenseId    // 相关费用id
             }
             let loadingName = this.SG_Loding('提交中...')
-            this.$api.subsidiary.updateStatusOrDelete(data).then(res => {
+            this.$api.subsidiary.correlationExpenseDelete(data).then(res => {
               if (res.data.code === '0') {
                 this.DE_Loding(loadingName).then(() => {
                   this.$SG_Message.success('删除成功')
@@ -121,12 +120,11 @@ export default {
     newlyFn (str) {
       this.modalShow = true
       this.$nextTick(() => {
-        this.$refs.completeSetNew.allMounted(str)
-        this.$refs.completeSetNew.modalShow = true
+        this.$refs.chargesNewEdit.allMounted(str)
+        this.$refs.chargesNewEdit.modalShow = true
       })
     },
     cancel () {
-      console.log('0-0-0-')
       this.modalShow = false
     },
     // 导入
@@ -139,9 +137,9 @@ export default {
       fileData.append('file', file)
       fileData.append('organId', this.organId)
       fileData.append('registerOrderId', this.registerOrderId)
-      fileData.append('assetType', this.assetType)
+      // fileData.append('assetType', this.assetType)
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.subsidiary.batchImportByRgId(fileData).then(res => {
+      this.$api.subsidiary.correlationExpenseImport(fileData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -164,7 +162,7 @@ export default {
         registerOrderId: '',      // 资产登记单
         assetType: ''             // 资产类型
       }
-      this.$api.grid.downModle(obj).then(res => {
+      this.$api.grid.correlationExpenseExport(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -186,27 +184,25 @@ export default {
       this.loading = true
       this.tableData = [
         {
-          subsidiaryMatchingId: '1000',                //类型：String  必有字段  备注：附属配套ID
-          assetId: '1000',                //类型：String  必有字段  备注：资产信息Id
-          assetCode: '1000',                //类型：String  必有字段  备注：资产编码
-          assetTypeName: '1000',                //类型：String  必有字段  备注：资产类型名称，fy
-          assetName: '1000',                //类型：String  必有字段  备注：资产名称，fy
-          matchingName: '1000',                //类型：String  必有字段  备注：附属配套名称
-          matchingCode: '1000',                //类型：String  必有字段  备注：附属配套编码
-          matchingType: '1000',                //类型：String  必有字段  备注：类型（附属配套）
-          matchingTypeName: '1000',                //类型：String  必有字段  备注：类型名称（附属配套），fy
-          specificationType: '1000',                //类型：String  必有字段  备注：规格型号
-          status: '1000',                //类型：String  必有字段  备注：状态，用于状态操作
-          statusName: '1000',                //类型：String  必有字段  备注：状态名称，fy
-          value: '1000',                //类型：String  必有字段  备注：价值(元)
-          number: '1000',                //类型：String  必有字段  备注：数量
-          unitOfMeasurementName: '1000',                //类型：String  必有字段  备注：计量单位名称，fy
-          isBeforeName: '1000',                //类型：String  必有字段  备注：是否接管前附属配套 1是 0否，fy
-          remark: '1000'                //类型：String  必有字段  备注：备注
+          correlationExpenseId:'mock',                //类型：String  必有字段  备注：相关费用ID
+          assetType:'1',                 //类型：String  必有字段  备注：资产类型
+          assetId:'mock',                //类型：String  必有字段  备注：资产ID
+          assetName:'mock',                //类型：String  必有字段  备注：资产名称
+          assetCode:'mock',                //类型：String  必有字段  备注：资产编码
+          objectType:'mock',                //类型：String  必有字段  备注：资产分类
+          objectTypeName:'mock',                //类型：String  必有字段  备注：资产分类名称
+          category:'mock',                //类型：String  必有字段  备注：类别
+          categoryType:'mock',                //类型：String  必有字段  备注：费用/收入类型
+          categoryName:'mock',                //类型：String  必有字段  备注：费用/收入类型名称
+          custName:'mock',                //类型：String  必有字段  备注：客户名称
+          belongMonth:'mock',                //类型：String  必有字段  备注：所属月份
+          amount:'mock',                //类型：String  必有字段  备注：金额(元)
+          readNum:'mock',                //类型：String  必有字段  备注：读数
+          remark:'mock'                //类型：String  必有字段  备注：备注
         }
       ]
       this.loading = false
-      this.$api.assets.getListPageByRegisterOrderId(this.queryCondition).then(res => {
+      this.$api.assets.correlationExpenseList(this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -214,7 +210,7 @@ export default {
           })
           this.tableData = data
           this.count = res.data.data.count
-          this.getMatchingListByAssetId()
+          this.correlationExpenseTotal()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -223,12 +219,12 @@ export default {
       })
     },
     // 统计
-    getMatchingListByAssetId () {
+    correlationExpenseTotal () {
       let obj = {
         registerOrderId: '',      // 资产登记单
         assetType: ''             // 资产类型
       }
-      this.$api.assets.getMatchingListByAssetId(obj).then(res => {
+      this.$api.assets.correlationExpenseTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
           this.statistics = res.data.data.data
         } else {
@@ -265,14 +261,14 @@ export default {
       color: red;
     }
   }
-}
-.overflowX{
-  /deep/ .ant-table-scroll {
-    overflow-x: auto;
-  }
-  /deep/.ant-table-header {
-    padding-bottom: 0px !important;
-    margin-bottom: 0px !important;
+  .overflowX{
+    /deep/ .ant-table-scroll {
+      overflow-x: auto;
+    }
+    /deep/.ant-table-header {
+      padding-bottom: 0px !important;
+      margin-bottom: 0px !important;
+    }
   }
 }
 </style>

@@ -10,124 +10,96 @@
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderCode || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">状态：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">核实人：{{particularsData.verifierByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">核实日期：{{particularsData.verifierTime || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">入库人：{{particularsData.storageByName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">入库日期：{{particularsData.storageTime || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
-          <a-col class="playground-col" :span="24">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件： <span v-if="files.length === 0">无</span>
-            <div class="umImg" v-if="files.length > 0">
-              <SG-UploadFile
-                v-model="files"
-                type="all"
-                :show="true"
-              />
-            </div>
-          </a-col>
         </a-row>
       </div>
     </div>
-    <div class="particulars-nav-c" :class="{'particulars-nav-teb': files.length > 0, 'particulars-box': files.length === 0}">
+    <div class="particulars-nav">
       <span class="section-title blue">资产明细</span>
       <div class="particulars-obj">
-        <div class="tab-exhibition">
-          <div class="exhibition" v-for="(item, index) in assetsTotal" :key="index">
-            <div class="exhibition-nav">
-              <div>{{item.name}}</div>
-              <div>{{item.value}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="particulars-tab">
-        <!-- table-layout-fixed -->
-        <div class="table-border">
-          <a-table
-            :scroll="{ x: 2600}"
-            :loading="loading"
-            :columns="columns"
-            :dataSource="tableData"
-            class="custom-table td-pd10"
-            :pagination="false"
-            >
-          </a-table>
-          <SG-FooterPagination
-            :pageLength="queryCondition.pageSize"
-            :totalCount="queryCondition.count"
-            :location="location"
-            :noPageTools="noPageTools"
-            v-model="queryCondition.pageNum"
-            @change="handleChange"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="particulars-nav" v-if="type === 'audit'">
-      <span class="section-title blue">审核信息</span>
-      <div class="particulars-obj">
-        <a-col class="playground-col" :span="8">审核人：{{particularsData.projectName || '--'}}</a-col>
-        <a-col class="playground-col" :span="8">审核时间：{{particularsData.organName || '--'}}</a-col>
-        <a-col class="playground-col remark" :span="24">审核意见：
-          <a-textarea placeholder="请输入审核意见"
-          :style="{width:'94%'}"
-          :autosize="{ minRows: 3, maxRows: 3 }"
-          v-decorator="remark"
-          />
-        </a-col>
+        <selectTab :activeType="'fancyActive'" style="margin:20px 0;" class="staffCare-tab" v-model="selectTabValue" @change="selectTabChange" :list="list"></selectTab>
+        <!-- 基础信息 -->
+        <keep-alive>
+          <basic v-if="this.selectTabValue === '0'" ref="basicRef" :organId="organId"></basic>
+        </keep-alive>
+        <!-- 附属配套 -->
+        <keep-alive>
+          <necessaryCaaessories v-if="this.selectTabValue === '1'" ref="necessaryCaaessories" :organId="organId"></necessaryCaaessories>
+        </keep-alive>
+        <!-- 价值信息 -->
+        <keep-alive>
+          <valueToRegister v-if="this.selectTabValue === '2'" ref="valueToRegister" :organId="organId"></valueToRegister>
+        </keep-alive>
+        <!-- 使用方向 -->
+        <keep-alive>
+          <directionUse v-if="this.selectTabValue === '3'" ref="directionUse" :organId="organId"></directionUse>
+        </keep-alive>
+        <!-- 相关费用 -->
+        <keep-alive>
+          <correlativeCharges v-if="this.selectTabValue === '4'" ref="correlativeCharges" :organId="organId"></correlativeCharges>
+        </keep-alive>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {particulars} from './registerBasics'
-const assetsTotal = [
-  {
-    code: 'assetsNum',
-    name: '资产数量',
-    value: '0'
-  },
-  {
-    code: 'areaNum',
-    name: '建筑面积',
-    value: '0'
-  },
-  {
-    code: 'originalNum',
-    name: '资产原值',
-    value: '0'
-  },
-  {
-    code: 'marketValueNum',
-    name: '市场价值',
-    value: '0'
-  }
-]
+import selectTab from '../../common/selectTab'
+import basic from './child/basic'
+import necessaryCaaessories from './child/necessaryCaaessories'
+import valueToRegister from './child/valueToRegister'
+import directionUse from './child/directionUse'
+import correlativeCharges from './child/correlativeCharges'
 export default {
-  components: {},
+  components: {selectTab, basic, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
   props: {},
   data () {
     return {
-      assetsTotal: [...assetsTotal],
+      organId: '',
       record: '',
       type: '',
-      remark: '',     // 意见
       particularsData: {},
-      files: [],
-      columns: particulars,
-      loading: false,
-      tableData: [],
-      location: '',
-      noPageTools: false,
-      queryCondition: {
-        pageSize: 10,
-        pageNum: 1,
-        count: ''
-      }
+      selectTabValue: '0',
+      list: [
+        {
+          label: '基础信息',
+          value: '0'
+        },
+        {
+          label: '附属配套',
+          value: '1'
+        },
+        {
+          label: '价值信息',
+          value: '2'
+        },
+        {
+          label: '使用方向',
+          value: '3'
+        },
+        {
+          label: '相关费用',
+          value: '4'
+        }
+      ]
     }
   },
   computed: {
   },
   methods: {
+    selectTabChange (val) {
+      this.selectTabValue = val
+    },
     // 查询详情
     query () {
       let obj = {
@@ -152,64 +124,14 @@ export default {
         }
       })
     },
-    // 资产列表
-    getRegisterOrderDetailsPageByIdFn () {
-      this.loading = true
-      let obj = {
-        registerOrderId: this.registerOrderId,
-        pageNum: this.queryCondition.pageNum,
-        pageSize: this.queryCondition.pageSize
-      }
-      this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
-          data.forEach((item, index) => {
-            item.key = index
-          })
-          this.tableData = data
-          this.queryCondition.count = res.data.data.count
-          this.loading = false
-        } else {
-          this.$message.error(res.data.message)
-          this.loading = false
-        }
-      })
-    },
-    // 分页查询
-    handleChange (data) {
-      this.queryCondition.pageNum = data.pageNo
-      this.queryCondition.pageSize = data.pageLength
-      this.getRegisterOrderDetailsPageByIdFn()
-    },
-    // 资产登记-详情明细统计
-    getRegisterOrderDetailsStatisticsFn () {
-      let obj = {
-        registerOrderId: this.registerOrderId
-      }
-      this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.assetsTotal.forEach(item => {
-            Object.keys(data).forEach(key => {
-              if (item.code === key) {
-                item.value = data[key]
-              }
-            })
-          })
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    }
   },
   created () {
   },
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
+    this.organId = this.record[0].organId
     this.registerOrderId = this.record[0].registerOrderId
     this.query()
-    this.getRegisterOrderDetailsPageByIdFn()
-    this.getRegisterOrderDetailsStatisticsFn()
   }
 }
 </script>
@@ -229,83 +151,11 @@ export default {
         }
       }
     }
-    .correspondingTask {
-      margin:35px 40px 0 40px;
-      border: 1px solid #F0F2F5;
-    }
-  }
-  .particulars-box {
-    padding: 0 126px 20px 70px;
-  }
-  .particulars-nav-teb {
-    padding: 42px 126px 20px 70px;
-  }
-  .particulars-nav-c {
-    .particulars-obj {
-      padding: 20px 0 20px 40px;
-      .playground-row {
-        .playground-col {
-          height: 40px;
-          line-height: 40px;
-          font-size: 12px;
-        }
-      }
-    }
-    .tab-exhibition {
-      margin: 10px 0;
-      display: flex;
-      height: 83px;
-      .exhibition {
-        flex: 1;
-        color: #fff;
-        text-align: center;
-        border-right: 1px solid #EFF2F7;
-        display: flex;
-        align-items:center;
-        justify-content:center;
-        .exhibition-nav {
-          align-items:center;
-          justify-content:center;
-          div:nth-of-type(1) {
-            font-size: 12px;
-          }
-          div:nth-of-type(2) {
-            padding-top: 4px;
-            font-size: 16px;
-            font-weight: bold;
-          }
-        }
-      }
-      .exhibition:nth-of-type(1){
-        background-color: rgb(75, 210, 136);
-      }
-      .exhibition:nth-of-type(2){
-        background-color: rgb(24, 144, 255);
-      }
-      .exhibition:nth-of-type(3){
-        background-color: rgb(221, 129, 230);
-      }
-      .exhibition:nth-of-type(4){
-        background-color: rgb(253, 116, 116);
-      }
-    }
-    .particulars-tab {
-      padding: 10px 0 20px 40px;
-    }
-  }
-  .nav-box {
-    padding-bottom: 100px;
-  }
-  .file {
-    margin: 20px 0 0 40px;
   }
 }
 .playground-col {
-    height: 40px;
-    line-height: 40px;
-    font-size: 12px;
-  }
-.remark {
-  line-height: 64px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 12px;
 }
 </style>

@@ -1,15 +1,14 @@
 <!--
  * @Author: LW
- * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-17 11:41:37
- * @Description: 价值信息
+ * @Date: 2020-07-15 14:50:50
+ * @LastEditTime: 2020-07-17 11:46:34
+ * @Description: 使用方向
 --> 
 <template>
-  <div class="valueToRegister">
+  <div class="directionUse">
+    <!--数据总览-->
+    <overview-number :numList="numList"/>
     <div class="button-box" v-if="record[0].type !== 'detail'">
-      <div class="buytton-l">
-        <span>资产总原值：{{statistics.originalValue || '--'}}</span> <span class="p120">累计折旧总金额：{{statistics.depreciationAmount || '--'}}</span>
-      </div>
       <div class="buytton-nav">
         <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量更新</SG-Button>
@@ -41,22 +40,32 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <valueToRegisterEdit @cancel="cancel" v-if="modalShow" ref="valueToRegisterEdit"></valueToRegisterEdit>
+    <directionUseEdit @cancel="cancel" v-if="modalShow" ref="directionUseEdit"></directionUseEdit>
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
 
 <script>
 import {utils} from '@/utils/utils'
-import {valueToRegisterData} from './../common/registerBasics'
+import {directionUseData} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
-import valueToRegisterEdit from './../common/valueToRegisterEdit'
+import directionUseEdit from './../common/directionUseEdit'
+import OverviewNumber from 'src/views/common/OverviewNumber'
 export default {
-  components: {noDataTips, valueToRegisterEdit},
+  components: {noDataTips, directionUseEdit, OverviewNumber},
   props: {},
   data () {
     return {
       record: [],
+      numList: [
+        {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057'},
+        {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
+        {title: '运营面积(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
+        {title: '自用面积(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+        {title: '占用面积(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+        {title: '其他面积(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'},
+        {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       fileType: ['xls', 'xlsx'],
       columns: [],
       tableData: [],
@@ -69,8 +78,7 @@ export default {
         pageNum: 1,
         registerOrderId: '',   // 资产登记单Id
         assetType: ''          // 资产类型
-      },
-      statistics: {}          // 统计
+      }
     }
   },
   computed: {
@@ -81,7 +89,7 @@ export default {
     this.record = JSON.parse(this.$route.query.record)
     if (this.record[0].type === 'detail') {
       let arr = []
-      arr = utils.deepClone(valueToRegisterData)
+      arr = utils.deepClone(directionUseData)
       arr.pop()
       this.columns = arr
     }
@@ -92,8 +100,8 @@ export default {
     editFn (record) {
       this.modalShow = true
       this.$nextTick(() => {
-        this.$refs.valueToRegisterEdit.getValueDetail(record)
-        this.$refs.valueToRegisterEdit.modalShow = true
+        this.$refs.directionUseEdit.getValueDetail(record)
+        this.$refs.directionUseEdit.modalShow = true
       })
     },
     cancel () {
@@ -122,6 +130,7 @@ export default {
     },
     // 文件上传
     change (files, e) {
+      console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', files[0])
@@ -137,7 +146,7 @@ export default {
         return this.$message.error('请先上传文件!')
       }
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.assets.readExcelModel(this.formData).then(res => {
+      this.$api.assets.usrForImport(this.formData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -159,9 +168,8 @@ export default {
     downFn () {
       let obj = {
         registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
       }
-      this.$api.grid.valueExport(obj).then(res => {
+      this.$api.grid.userForExport(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -183,25 +191,25 @@ export default {
       this.loading = true
       this.tableData = [
         {
-          assetId: 'mock',                //类型：String  必有字段  备注：资产Id
-          assetCode: 'mock',                //类型：String  必有字段  备注：资产编码
+          assetType: '1', //类型：String  必有字段  备注：资产类型
+          assetId: 'mock',                //类型：String  必有字段  备注：资产ID
           assetName: 'mock',                //类型：String  必有字段  备注：资产名称
-          organName: 'mock',                //类型：String  必有字段  备注：所属机构
-          projectName: 'mock',                //类型：String  必有字段  备注：所属资产项目
-          assetType: 'mock',                //类型：String  必有字段  备注：资产类型
-          assetTypeName: 'mock',                //类型：String  必有字段  备注：无
-          assetCategoryType: 'mock',                //类型：String  必有字段  备注：资产分类
-          assetCategoryName: 'mock',                //类型：String  必有字段  备注：资产分类 名称
-          pasitionString: 'mock',                //类型：String  必有字段  备注：资产位置，拼接字段
-          originalValue: 'mock',                //类型：String  必有字段  备注：资产原值
-          validPeriod: 'mock',                //类型：String  必有字段  备注：使用期限 单位月
-          startDate: 'mock',                //类型：String  必有字段  备注：开始使用日期
-          usedDate: 'mock',                //类型：String  必有字段  备注：已使用期数/月
-          depreciationAmount: 'mock'                //类型：String  必有字段  备注：累计折旧金额(元)
-        }
+          assetCode: 'mock',                //类型：String  必有字段  备注：资产编码
+          objectType: 'mock',                //类型：String  必有字段  备注：资产分类
+          objectTypeName: 'mock',                //类型：String  必有字段  备注：资产分类名称
+          buildArea: 'mock',                //类型：String  必有字段  备注：建筑面积(㎡)
+          transferTime: 'mock',                //类型：String  必有字段  备注：转物业时间
+          transferArea: 'mock',                //类型：String  必有字段  备注：转物业面积(㎡
+          transferOperationTime: 'mock',                //类型：String  必有字段  备注：转运营时间
+          transferOperationArea: 'mock',                //类型：String  必有字段  备注：运营面积(㎡)
+          selfUserArea: 'mock',                //类型：String  必有字段  备注：自用面积(㎡)
+          idleArea: 'mock',                //类型：String  必有字段  备注：闲置面积(㎡)
+          occupationArea: 'mock',                //类型：String  必有字段  备注：占用面积(㎡)
+          otherArea: 'mock'                //类型：String  必有字段  备注：其他面积(㎡)
+      }
       ]
       this.loading = false
-      this.$api.assets.queryValuePageListByRgId(this.queryCondition).then(res => {
+      this.$api.assets.userForList(this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -209,7 +217,7 @@ export default {
           })
           this.tableData = data
           this.count = res.data.data.count
-          this.getValueStatistics()
+          this.useForSummary()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -218,14 +226,16 @@ export default {
       })
     },
     // 统计
-    getValueStatistics () {
+    useForSummary () {
       let obj = {
         registerOrderId: '',      // 资产登记单
         assetType: ''             // 资产类型
       }
-      this.$api.assets.getValueStatistics(obj).then(res => {
+      this.$api.assets.useForSummary(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          this.statistics = res.data.data.data
+          return this.numList = this.numList.map(m => {
+            return { ...m, value: res.data[m.key] || 0 }
+          })
         } else {
           this.$message.error(res.data.message)
         }
@@ -235,7 +245,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.valueToRegister{
+.directionUse{
   .button-box {
     overflow: hidden;
     margin-bottom: 15px;
