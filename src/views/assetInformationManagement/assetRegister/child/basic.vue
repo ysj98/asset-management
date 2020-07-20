@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-20 14:12:53
+ * @LastEditTime: 2020-07-20 16:10:09
  * @Description: 房屋土地
 --> 
 <template>
@@ -137,6 +137,7 @@ export default {
       if (!files.length) { return }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', files[0])
+      fileData.append('assetType', this.assetType)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -165,45 +166,35 @@ export default {
              // 必填字段
               if (judgmentData[j].required) {
                 if (!arrData[i][judgmentData[j].dataIndex]) {
-                  this.DE_Loding(loadingName).then(() => {
-                    this.$message.info(`请输入${judgmentData[j].title}`)
-                  })
+                  this.DE_Loding(loadingName).then(() => { this.$message.info(`请输入${judgmentData[j].title}`)})
                   return
                 }
               }
-              // 判断只能为数字小数
+              // 判断只能为数字2小数
               if (judgmentData[j].type === 'float') {
                 if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][judgmentData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {
-                    this.$message.info(`请输入正确${judgmentData[j].title}(只支持2位小数)`)
-                  })
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}(只支持2位小数)`)})
                   return
                 }
               }
-              // 判断只能为数字小数
-              if (judgmentData[j].type === 'float2') {
+              // 判断只能为数字4小数
+              if (judgmentData[j].type === 'float4') {
                 if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][judgmentData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {
-                    this.$message.info(`请输入正确${judgmentData[j].title}(只支持4位小数)`)
-                  })
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}(只支持4位小数)`)})
                   return
                 }
               }
               // 判断只能为整数
               if (judgmentData[j].type === 'number') {
                 if (arrData[i][judgmentData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][judgmentData[j].dataIndex]))) {
-                  this.DE_Loding(loadingName).then(() => {
-                    this.$message.info(`请输入正确${judgmentData[j].title}`)
-                  })
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}`)})
                   return
                 }
               }
               // 判断不超过多少字符
               if (judgmentData[j].fontLength) {
                 if (arrData[i][judgmentData[j].dataIndex] && String(arrData[i][judgmentData[j].dataIndex]).length > judgmentData[j].fontLength) {
-                  this.DE_Loding(loadingName).then(() => {
-                    this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)
-                  })
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)})
                   return
                 }
               }
@@ -216,9 +207,7 @@ export default {
             }
             if (arrData[i].ownershipStatusName === '有证') {
               if (!arrData[i].warrantNbr) {
-                this.DE_Loding(loadingName).then(() => {
-                  this.$message.info('当权属情况为有证时需输入权证号')
-                })
+                this.DE_Loding(loadingName).then(() => {this.$message.info('当权属情况为有证时需输入权证号')})
                 return
               }
             }
@@ -226,8 +215,8 @@ export default {
             arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
             this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
-            this.numList[2].value = calc.add(this.numList[2].value, arrData[i].originalValue || 0)
-            this.numList[3].value = calc.add(this.numList[3].value, arrData[i].marketValue || 0)
+            this.numList[2].value = calc.add(this.numList[2].value, arrData[i].creditorAmount || 0)
+            this.numList[3].value = calc.add(this.numList[3].value, arrData[i].debtAmount || 0)
           }
           this.numList[0].value = arrData.length
           this.tableData = arrData
