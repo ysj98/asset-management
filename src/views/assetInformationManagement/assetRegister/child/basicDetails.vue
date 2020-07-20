@@ -1,7 +1,7 @@
  <!--
  * @Author: LW
  * @Date: 2020-07-10 16:13:27
- * @LastEditTime: 2020-07-14 09:54:24
+ * @LastEditTime: 2020-07-20 13:57:35
  * @Description: 新增信息
 --> 
 <template>
@@ -41,7 +41,8 @@ export default {
   },
   created () {
   },
-  mounted () {                                // 获取资产类型
+  mounted () {
+    this.methods()
   },
   methods: {
     editFn () {

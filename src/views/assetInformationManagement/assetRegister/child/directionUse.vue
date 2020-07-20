@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-20 13:44:56
+ * @LastEditTime: 2020-07-20 13:59:55
  * @Description: 使用方向
 --> 
 <template>
@@ -186,7 +186,7 @@ export default {
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.query()
+      // this.query()
     },
     // 查询
     query () {

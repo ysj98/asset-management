@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-20 11:54:59
+ * @LastEditTime: 2020-07-20 14:12:53
  * @Description: 房屋土地
 --> 
 <template>
@@ -345,6 +345,45 @@ export default {
         this.DE_Loding(loadingName).then(res => {
           this.$SG_Message.error('导入失败！')
         })
+      })
+    },
+    // 提交
+    save () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          if (this.tableData.length <= 0) {
+            this.$message.info('请导入资产明细')
+            return
+          }
+          let data = utils.deepClone(this.tableData)
+          data.forEach(item => {
+            item.ownershipStatus = this.organDictData[item.ownershipStatusName]
+          })
+          let obj = {
+            registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
+            registerOrderName: values.registerOrderName,    // 登记单名称
+            projectId: values.projectId,                    // 资产项目Id
+            assetType: values.assetType,                    // 资产类型Id
+            remark: values.remark,                          // 备注
+            organId: this.organId,                          // 组织机构id
+            assetHouseList: values.assetType === '1' ? data : [],   // 房屋
+            assetBlankList: values.assetType === '2' ? data : []    // 土地
+          }
+          // 新增
+          let loadingName = this.SG_Loding('保存中...')
+          this.$api.assets.saveRegisterOrder(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.success('提交成功')
+                this.$router.push({path: '/assetRegister', query: {refresh: true}})
+              })
+            } else {
+              this.DE_Loding(loadingName).then(() => {
+                this.$message.error(res.data.message)
+              })
+            }
+          }) 
+        }
       })
     },
   }

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-20 13:46:11
+ * @LastEditTime: 2020-07-20 13:59:25
  * @Description: 价值信息
 --> 
 <template>
@@ -87,7 +87,7 @@ export default {
       arr.pop()
       this.columns = arr
     }
-    this.query()
+    // this.query()
   },
   methods: {
     // 编辑
