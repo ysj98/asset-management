@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-17 17:37:40
+ * @LastEditTime: 2020-07-20 10:34:16
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -83,7 +83,9 @@ export default {
     this.organIdData = JSON.parse(this.$route.query.record)
     this.organId = this.organIdData[0].value
     this.setType = this.$route.query.setType
-    this.activeStepIndex = this.$route.query.activeStepIndex
+    if (this.setType !== 'new') {
+      this.activeStepIndex = this.$route.query.activeStepIndex
+    }
   },
   mounted () {
   },

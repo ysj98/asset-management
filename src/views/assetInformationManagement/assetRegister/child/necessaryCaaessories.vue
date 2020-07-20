@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-17 11:41:46
+ * @LastEditTime: 2020-07-20 13:45:26
  * @Description: 附属配套
 --> 
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box" v-if="record[0].type !== 'detail'">
+    <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-l">
         <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
       </div>
@@ -60,6 +60,7 @@ export default {
   data () {
     return {
       record: [],
+      setType: '',
       columns: [],
       tableData: [],
       count: '',            // 总页数
@@ -81,6 +82,7 @@ export default {
   },
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
+    this.setType = this.$route.query.setType
     if (this.record[0].type === 'detail') {
       let arr = []
       arr = utils.deepClone(auxiliary)

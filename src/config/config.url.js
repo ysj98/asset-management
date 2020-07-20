@@ -197,7 +197,9 @@ export const assets = {
     // 相关费用详情
     correlationExpenseDetail: '/ams/registerOrder/correlationExpense/detail',
     // 相关费用金额统计
-    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total'
+    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total',
+    // 批量更新（导入）
+    baseImport: '/ams/registerOrder/baseImport'
   },
   // 资产清理
   assetClear: {

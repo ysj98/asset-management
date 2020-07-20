@@ -199,10 +199,10 @@ export default {
   methods: {
     // 操作
     operationFun (str, val) {
-      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
+      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName, ...val}])
       switch (str) {
         case 'detail': {           // 详情
-        val.type = 'detail'
+          val.type = 'detail'
           let particularsData = JSON.stringify([val])
           this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'particulars' }})
         }
