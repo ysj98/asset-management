@@ -4,7 +4,7 @@
  * @Description: 
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { basics, ownershipSurvey, disposeRegister } from '../config/config.url'
+import { basics, ownershipSurvey, disposeRegister,  } from '../config/config.url'
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -151,4 +151,8 @@ export function getDisposeRegisterById (data) {
 // 组织机构请求项目
 export function queryCommunityListByOrganId (data) {
   return axiosGet(basics.queryCommunityListByOrganId, data)
+}
+// 业务字典查询 字典表接口 POST
+export function queryDictList (data) {
+  return axiosPost(basics.queryDictList, data)
 }

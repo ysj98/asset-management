@@ -460,6 +460,11 @@ class Units {
     }
     return tree
   }
+  // 获取id
+  getUuid  () {
+    this.uuid = this.uuid || (this.uuid = 0)
+    return ++this.uuid
+  }
 }
 /**
  * 节流函数，对多次触发的函数，单位时间内只执行一次

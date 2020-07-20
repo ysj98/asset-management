@@ -193,6 +193,15 @@ export default [
       // }
     ]
   },
+  {
+    title: '资产入库',
+    children: [
+      {
+        title: '资产入库',
+        path: '/assetIn'
+      }
+    ]
+  },
   // {
   //   title: '示例：表单',
   //   children: [

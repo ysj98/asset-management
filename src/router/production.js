@@ -7,7 +7,10 @@ let proRouter = [
   {
     path: '/buildingDict',
     name: '楼盘字典',
-    component: () => import('@/views/buildingDict/index.vue')
+    component: () => import('@/views/buildingDict/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/buildingDict/createHouse',
@@ -23,6 +26,21 @@ let proRouter = [
     path: '/buildingDict/detailHouse',
     name: '房间详情',
     component: () => import('@/views/buildingDict/detailHouse.vue')
+  },
+  {
+    path: '/buildingDict/createLand',
+    name: '新建土地',
+    component: () => import('@/views/buildingDict/land/createLand.vue')
+  },
+  {
+    path: '/buildingDict/editLand',
+    name: '编辑土地',
+    component: () => import('@/views/buildingDict/land/editLand.vue')
+  },
+  {
+    path: '/buildingDict/detailLand',
+    name: '土地详情',
+    component: () => import('@/views/buildingDict/land/detailLand.vue')
   },
   {
     path: '/assetChange',
@@ -587,6 +605,27 @@ let proRouter = [
     name: '资产价值统计表',
     component: () => import('@/views/tableManagement/assetWorthStatistics'),
     meta: { keepAlive: true }
+  }, {
+    path: '/assetIn',
+    name: '资产入库',
+    component: () => import('@/views/assetInformationManagement/assetIn/index.vue'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/assetIn/detail',
+    name: '详情', // 资产入库详情
+    component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
+  }, {
+    path: '/assetIn/approval',
+    name: '审核', // 资产入库审核
+    component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
+  }, {
+    path: '/assetIn/edit',
+    name: '编辑', // 资产入库编辑
+    component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
+  }, {
+    path: '/assetIn/new',
+    name: '新建', // 资产入库新建
+    component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
   }
 ]
 export default proRouter

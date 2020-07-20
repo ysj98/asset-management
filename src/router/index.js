@@ -23,7 +23,7 @@ const router = new Router({
 })
 // 拦截路由处理生产环境自动生产面包屑
 const breadNavList = [{name: '资产管理', path: ''}]
-const getLink = (toPath) => pro.filter(item => toPath.indexOf(item.path) !== -1) 
+const getLink = (toPath) => pro.filter(item => toPath.indexOf(item.path) !== -1)
 router.beforeEach((to, from, next) => {
   if (to.path !== from.path) {
     store.commit('pro/updateNav', [...breadNavList, ...getLink(to.path)])
