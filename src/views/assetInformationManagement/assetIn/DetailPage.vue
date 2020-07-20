@@ -5,7 +5,7 @@
     <SG-Title title="基本信息"/>
     <div style="margin-left: 45px">
       <a-row>
-        <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key" style="margin: 8px 0;">
+        <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key" style="margin: 12px 0;">
           <span style="color: #282D5B">{{title}}:</span>
           <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '无'}}</span>
         </a-col>

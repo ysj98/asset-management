@@ -199,7 +199,9 @@ export const assets = {
     // 相关费用详情
     correlationExpenseDetail: '/ams/registerOrder/correlationExpense/detail',
     // 相关费用金额统计
-    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total'
+    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total',
+    // 根据登记单Id资产登记明细列表-分页
+    getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList'
   },
   // 资产清理
   assetClear: {
@@ -794,4 +796,18 @@ export const tableManage = {
   queryHouseAssetSumInfo: '/ams/statistics/asset/house/warrantCount',
   // 权属证件一览表(汇总)
   queryOwnershipCardSumInfo: '/ams/statistics/ownership/warrant/count'
+}
+
+// 资产入库
+export const assetIn = {
+  // 入库单统计
+  getAssetStoreCount: '/ams/assetStore/getAssetStoreCount',
+  // 入库登记单导出
+  export: '/ams/assetStore/export',
+  // 新增资产入库或修改
+  addOrUpdateAssetStore: '/ams/assetStore/addOrUpdateAssetStore',
+  // 查询入库单详情
+  queryAssetStoreDetail: '/ams/assetStore/queryAssetStoreDetail',
+  // 资产入库列表查询
+  queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
 }
