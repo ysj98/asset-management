@@ -1,14 +1,14 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-17 11:46:34
+ * @LastEditTime: 2020-07-20 13:59:55
  * @Description: 使用方向
 --> 
 <template>
   <div class="directionUse">
     <!--数据总览-->
     <overview-number :numList="numList"/>
-    <div class="button-box" v-if="record[0].type !== 'detail'">
+    <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-nav">
         <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量更新</SG-Button>
@@ -57,6 +57,7 @@ export default {
   data () {
     return {
       record: [],
+      setType: '',
       numList: [
         {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057'},
         {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
@@ -87,6 +88,7 @@ export default {
   },
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
+    this.setType = this.$route.query.setType
     if (this.record[0].type === 'detail') {
       let arr = []
       arr = utils.deepClone(directionUseData)
@@ -184,7 +186,7 @@ export default {
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.query()
+      // this.query()
     },
     // 查询
     query () {

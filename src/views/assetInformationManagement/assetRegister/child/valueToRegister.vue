@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-17 11:41:37
+ * @LastEditTime: 2020-07-20 13:59:25
  * @Description: 价值信息
 --> 
 <template>
   <div class="valueToRegister">
-    <div class="button-box" v-if="record[0].type !== 'detail'">
+    <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-l">
         <span>资产总原值：{{statistics.originalValue || '--'}}</span> <span class="p120">累计折旧总金额：{{statistics.depreciationAmount || '--'}}</span>
       </div>
@@ -57,6 +57,7 @@ export default {
   data () {
     return {
       record: [],
+      setType: '',
       fileType: ['xls', 'xlsx'],
       columns: [],
       tableData: [],
@@ -79,13 +80,14 @@ export default {
   },
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
+    this.setType = this.$route.query.setType
     if (this.record[0].type === 'detail') {
       let arr = []
       arr = utils.deepClone(valueToRegisterData)
       arr.pop()
       this.columns = arr
     }
-    this.query()
+    // this.query()
   },
   methods: {
     // 编辑

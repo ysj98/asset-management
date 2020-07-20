@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-16 13:50:59
+ * @LastEditTime: 2020-07-20 15:58:57
  * @Description: file content
  */ 
 
@@ -50,7 +50,7 @@ export const particulars = [
   { title: '已使用期数(月)', dataIndex: 'usedDate', width: 120 }
 ]
 
- // required: 必填的
+ // 房屋导入校验规则
 export const judgmentData = [
   { title: '用途', dataIndex: 'useType', required: false },
   { title: '省', dataIndex: 'province', required: false },
@@ -65,7 +65,7 @@ export const judgmentData = [
   { title: '房屋名称', dataIndex: 'houseName', required: false },
   { title: '资产名称', dataIndex: 'assetName', required: true },
   { title: '资产编码', dataIndex: 'assetCode', required: false },
-  { title: '建筑面积', dataIndex: 'area', required: false, type: 'float2' },
+  { title: '建筑面积', dataIndex: 'area', required: false, type: 'float4' },
   { title: '坐落位置', dataIndex: 'pasitionString', required: false },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
@@ -82,9 +82,11 @@ export const judgmentData = [
   { title: '转物业面积', dataIndex: 'transferArea', required: false, type: 'float' },
   { title: '使用期限(月)', dataIndex: 'validPeriod', required: true, type: 'number' },
   { title: '开始使用日期', dataIndex: 'startDate', required: false, type: 'number', date: true },
-  { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' }
+  { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' },
+  { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', required: false, type: 'float' },
+  { title: '债权金额(元)', dataIndex: 'creditorAmount', required: false, type: 'float' },
+  { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' },
 ]
-
 
 //  -------- 土地 ----------------------------------
 // 土地列表

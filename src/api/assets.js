@@ -138,6 +138,10 @@ export function getRegisterOrderListPage (data) {
 export function downloadTemplate (data) {
   return axiosPost(assets.assetRegister.downloadTemplate, data, false, false, {responseType: 'blob'})
 }
+// 基本信息批量更新（导入）
+export function baseImport (data) {
+  return axiosPost(assets.assetRegister.baseImport, data)
+}
 // 资产登记转运营信息-根据资产项目ID
 export function getTransferByProjectId (data) {
   return axiosPost(assets.assetRegister.getTransferByProjectId, data)

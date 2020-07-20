@@ -201,7 +201,9 @@ export const assets = {
     // 相关费用金额统计
     correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total',
     // 根据登记单Id资产登记明细列表-分页
-    getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList'
+    getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList',
+    // 批量更新（导入）
+    baseImport: '/ams/registerOrder/baseImport'
   },
   // 资产清理
   assetClear: {
