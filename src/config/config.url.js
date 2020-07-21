@@ -546,6 +546,8 @@ export const worthRegister = {
   queryAssertValueTrend: '/ams/assetValueRegister/queryAssertValueTrend',
   // 资产价值一览表查询汇总
   queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
+  // 价值登记查询(汇总)
+  queryValueRegisterPageListSum: '/ams/assetValueRegister/queryValueRegisterPageListSum'
 }
 
 

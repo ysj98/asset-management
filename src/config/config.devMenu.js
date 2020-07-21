@@ -86,8 +86,16 @@ export default [
         path: '/assetEntry'
       },
       {
+        title: '资产估值记录',
+        path: '/worthRegisterRecord'
+      },
+      {
         title: '价值登记',
         path: '/worthRegister'
+      },
+      {
+        title: '资产价值一览表',
+        path: '/assetWorthList'
       }
     ]
   },
