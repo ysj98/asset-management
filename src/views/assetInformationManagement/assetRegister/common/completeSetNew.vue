@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-16 15:36:14
+ * @LastEditTime: 2020-07-21 17:20:30
  * @Description: 新增附属配套
 --> 
 <template>
@@ -189,7 +189,7 @@ export default {
         registerOrderId: '',       // 资产登记ID
         assetId: '',               // 资产登记ID
         assetName: undefined,      // 资产名称
-        status: '',                  // 状态
+        status: '',                // 状态
         matchingName: '',          // 名称
         matchingCode: '',          // 编码
         matchingType: undefined,   // 类型
@@ -236,9 +236,11 @@ export default {
   mounted () {
   },
   methods: {
-    allMounted (str) {
+    allMounted (str, obj) {
+      this.subData.registerOrderId = obj.registerOrderId
       this.type = str
       if (str === 'edit') {
+        this.subData.subsidiaryMatchingId = obj.subsidiaryMatchingId
         this.getMatchingById()
       }
       this.organDict('SUBSIDIARY_MATCHING_TYPE')

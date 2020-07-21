@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 17:32:58
- * @LastEditTime: 2020-07-13 16:10:54
+ * @LastEditTime: 2020-07-21 11:39:28
  * @Description: 基本下载
 --> 
 <template>
@@ -92,11 +92,12 @@ export default {
   methods: {
     // 类型查询
     typesQueries (id, type) {
+      this.organId = id
       if (type === '1') {
         this.checkboxAssetType = '1'
         this.queryBuildList(id)
       } else {
-        this.checkboxAssetType = '2'
+        this.checkboxAssetType = '4'
         this.queryBuildList(id)
       }
     },
@@ -110,12 +111,12 @@ export default {
         this.queryBuildList(this.organId, this.searchBuildName || '')
     }, 200),
     // 请求列表默认20条
-    queryBuildList (organId, positionName) {
-      this.$api.basics.queryBuildList({organId, aliasName: positionName || '', positionType: this.checkboxAssetType, subPositionType: ''}).then(res => {
+    queryBuildList (organId, aliasName) {
+      this.$api.basics.queryBuildList({organId, aliasName: aliasName || '', positionType: this.checkboxAssetType, subPositionType: ''}).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
           this.positionNameData = result.map(item => {
-            return {name: item.positionName, value: item.positionId, label: item.positionName}
+            return {name: item.aliasName, value: item.buildId, label: item.aliasName}
           })
         }
       })
@@ -137,7 +138,7 @@ export default {
         } else {
           this.confirmDownloadTemplate()
         }
-      } else if (this.checkboxAssetType === '2') {
+      } else if (this.checkboxAssetType === '4') {
         if (!this.positionIds || this.positionIds.length === 0) {
           this.$message.info('请选择土地名称')
           return
@@ -151,7 +152,7 @@ export default {
     // 资产登记-导出数据校验
     checkBuildsObjectTypeFn () {
       let obj = {
-        positionIds: this.positionIds,
+        buildIds: this.positionIds,
       }
       this.$api.assets.checkBuildsObjectType(obj).then(res => {
         if (res.data.code === '0') {
@@ -166,10 +167,10 @@ export default {
       let obj = {
         registerOrderId: this.registerOrderId,  // 资产登记ID，修改时必填
         assetType: this.checkboxAssetType,      // 资产类型, 1房屋、2土地、3设备
-        buildIds: this.checkboxAssetType === '1' ? this.positionIds : '',             // 楼栋id列表（房屋时必填）
+        buildIds: this.checkboxAssetType === '1' ? this.positionIds : [],             // 楼栋id列表（房屋时必填）
         scope: this.checkboxAssetType === '1' ? this.scope.join(',') : '',            // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
-        blankIdList: this.checkboxAssetType === '2' ? this.positionIds : ''                         // 土地Id列表（土地时必填）
+        blankIdList: this.checkboxAssetType === '4' ? this.positionIds : []                         // 土地Id列表（土地时必填）
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:13:27
- * @LastEditTime: 2020-07-13 16:50:28
+ * @LastEditTime: 2020-07-21 16:57:20
  * @Description: 新增信息
 --> 
 <template>
@@ -16,8 +16,8 @@
               <a-input placeholder="请输入登记单名称"
               :style="allWidth"
               :max="30"
-              v-decorator="['registerOrderCode',
-                {rules: [{required: true, max: 30, whitespace: true, message: '请输入登记单名称(不超过30字符)'}], initialValue: newEditSingleData.title}
+              v-decorator="['registerOrderName',
+                {rules: [{required: true, max: 30, whitespace: true, message: '请输入登记单名称(不超过30字符)'}], initialValue: newEditSingleData.registerOrderName}
               ]"/>
             </a-form-item>
           </a-col>
@@ -92,7 +92,7 @@
 <script>
 import bridge from './center.js'
 const newEditSingleData = {
-  registerOrderCode: '',    // 资产名称
+  registerOrderName: '',    // 资产名称
   assetType: undefined,     // 资产类型
   projectId: undefined,     // 资产项目
   remark: '',               // 备注
@@ -103,6 +103,7 @@ export default {
   props: {},
   data () {
     return {
+      saveValues: '',
       assetTypeData: [],     // 资产类型
       projectIdData: [],     // 资产项目
       newEditSingleData: {...newEditSingleData},
@@ -202,6 +203,14 @@ export default {
     // 资产类型监听
     assetTypeFn (val) {
       bridge.$emit('assetType', val, 'asset')
+    },
+    // 提交
+    save () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.saveValues = values
+        }
+      })
     }
   }
 }

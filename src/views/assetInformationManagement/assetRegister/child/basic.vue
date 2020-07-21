@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-20 16:10:09
+ * @LastEditTime: 2020-07-21 15:54:24
  * @Description: 房屋土地
 --> 
 <template>
@@ -19,7 +19,7 @@
         <SG-Button class="ml20" type="primary" weaken @click="batchUpdate">批量更新</SG-Button>
       </div>
     </div>
-    <div class="table-borders overflowX">
+    <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
         class="table-boxs"
         :scroll="{y: 450, x: 2200}"
@@ -56,6 +56,10 @@ export default {
   },
   data () {
     return {
+      basicData: [],
+      organDictData: {},     // 权属情况
+      ownershipData: {},     // 权属类型
+      fileType: ['xls', 'xlsx'],
       setType: '',
       numList: [
         {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
@@ -92,6 +96,8 @@ export default {
     }
   },
   mounted () {
+    this.organDict()
+    this.ownershipFn()
   },
   methods: {
     // 切换资产类型时！切换所有数据
@@ -134,6 +140,7 @@ export default {
     },
     // 文件上传
     change (files, e) {
+      console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', files[0])
@@ -152,7 +159,7 @@ export default {
       this.$api.assets.readExcelModel(this.formData).then(res => {
         if (res.data.code === '0') {
           e.target.value = ''
-          let resData = res.data.data
+          let resData = res.data.data.assetHouseList
           let arrData = utils.deepClone([...resData, ...this.tableData])
           // 数组去重根据type和objectId
           let hash = {}
@@ -199,11 +206,11 @@ export default {
                 }
               }
               // 判断时间转换
-              if (judgmentData[j].date) {
-                if (arrData[i][judgmentData[j].dataIndex]) {
-                  arrData[i][judgmentData[j].dataIndex] = utils.xlsxDate(arrData[i][judgmentData[j].dataIndex])
-                }
-              }
+              // if (judgmentData[j].date) {
+              //   if (arrData[i][judgmentData[j].dataIndex]) {
+              //     arrData[i][judgmentData[j].dataIndex] = utils.xlsxDate(arrData[i][judgmentData[j].dataIndex])
+              //   }
+              // }
             }
             if (arrData[i].ownershipStatusName === '有证') {
               if (!arrData[i].warrantNbr) {
@@ -236,12 +243,20 @@ export default {
         })
       })
     },
-    // 添加资产
+    // 导入资产清单
     addTheAsset () {
+      if (this.assetTypeFn()) { return}
       this.$refs.fileUpload.click()
+    },
+    assetTypeFn () {
+      if (!this.assetType) {
+        this.$message.info('请先选择资产类型')
+        return true
+      }
     },
     // 下载模板
     downloadTemplate () {
+      if (this.assetTypeFn()) { return}
       this.$refs.basicDownload.typesQueries(this.organId, this.assetType)
       this.$refs.basicDownload.modalShow = true
     },
@@ -297,11 +312,11 @@ export default {
         this.modalShow = false
       })
     },
-    // 导入
+    // 编辑批量更新导入
     batchUpdate () {
       this.$refs.batchUpload.click()
     },
-    // 文件上传
+    // 编辑批量更新文件上传
     batchUploadFn (files, e) {
       if (!files.length) { return }
       let fileData = new FormData()
@@ -336,45 +351,51 @@ export default {
         })
       })
     },
-    // 提交
-    save () {
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          if (this.tableData.length <= 0) {
-            this.$message.info('请导入资产明细')
-            return
-          }
-          let data = utils.deepClone(this.tableData)
-          data.forEach(item => {
-            item.ownershipStatus = this.organDictData[item.ownershipStatusName]
+    // 权属情况
+    organDict () {
+      this.$api.assets.platformDict({code: 'AMS_OWNERSHIP_STSTUS_TYPE'}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let organDictData = res.data.data
+          let obj = {}
+          organDictData.forEach(item => {
+            obj[item.name] = item.value
           })
-          let obj = {
-            registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
-            registerOrderName: values.registerOrderName,    // 登记单名称
-            projectId: values.projectId,                    // 资产项目Id
-            assetType: values.assetType,                    // 资产类型Id
-            remark: values.remark,                          // 备注
-            organId: this.organId,                          // 组织机构id
-            assetHouseList: values.assetType === '1' ? data : [],   // 房屋
-            assetBlankList: values.assetType === '2' ? data : []    // 土地
-          }
-          // 新增
-          let loadingName = this.SG_Loding('保存中...')
-          this.$api.assets.saveRegisterOrder(obj).then(res => {
-            if (Number(res.data.code) === 0) {
-              this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success('提交成功')
-                this.$router.push({path: '/assetRegister', query: {refresh: true}})
-              })
-            } else {
-              this.DE_Loding(loadingName).then(() => {
-                this.$message.error(res.data.message)
-              })
-            }
-          }) 
+          this.organDictData = obj
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },
+    // 权属类型
+    ownershipFn () {
+      this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let ownershipData = res.data.data
+          let obj = {}
+          ownershipData.forEach(item => {
+            obj[item.name] = item.value
+          })
+          this.ownershipData = obj
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 提交
+    save () {
+      console.log('2323')
+      if (this.tableData.length === 0) {
+        this.$message.info('请导入资产明细')
+        return true
+      }
+      console.log('你是')
+      let data = utils.deepClone(this.tableData)
+      data.forEach(item => {
+        item.ownershipStatus = this.organDictData[item.ownershipStatusName]
+        item.kindOfRight = this.ownershipData[item.kindOfRightName]
+      })
+      this.basicData = data
+    }
   }
 }
 </script>
@@ -393,6 +414,13 @@ export default {
   }
   .table-borders {
     border: 1px solid rgba(239,244,249,1)
+  }
+  .postAssignment-icon {
+    cursor: pointer;
+    color: #0084FF;
+  }
+  .postAssignment-icon:hover {
+    color: red;
   }
 }
 .overflowX{
