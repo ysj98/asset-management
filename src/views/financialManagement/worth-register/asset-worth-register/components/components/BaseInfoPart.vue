@@ -55,6 +55,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             placeholder="请选择资产类型"
             :options="typeOptions"
+            @change="value => setData(value, 'assetType')"
           />
         </a-form-item>
       </a-col>
@@ -288,7 +289,7 @@
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
-        if (type === 'assessmenBaseDate') {
+        if (type === 'assessmenBaseDate' || type === 'assetType') {
           value = val
         } else if (type === 'assessmentOrganName') {
           const { organOptions } = this
@@ -297,7 +298,7 @@
           const { projectOptions } = this
           let obj = projectOptions.filter(m => m.key === val)[0]
           value = obj ? { projectId: obj.key, projectName: obj.title } : null
-        } else {
+        } else if (type === 'assessmentMethodName') {
           const { methodOptions } = this
           value = methodOptions.filter(m => m.key === val)[0]['title']
         }
@@ -306,8 +307,8 @@
       
       // 单独校验资产项目是否选择
       validateProject () {
-        this.form.validateFieldsAndScroll(['projectId'], () => {
-          this.$message.warn('请选择资产项目')
+        this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
+          this.$message.warn('请先选择数据')
         })
       }
     },

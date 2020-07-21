@@ -33,7 +33,7 @@
               :help="validateAssets ? '请选择关联资产登记单' : ''" :validate-status="validateAssets ? 'error' : ''"
             >
             <span>
-              <a-tag closable v-for="m in addAssetList" :key="m.id" style="background: #fff;" @close="handleAddAsset(m)">
+              <a-tag closable v-for="m in selectedList" :key="m.id" style="background: #fff;" @close="handleAddAsset(m)">
                 {{m.name}}
               </a-tag>
               <a-tag color="#108ee9" @click="handleAddAsset('')">
@@ -63,12 +63,12 @@
       <!--资产明细-->
     <SG-Title title="资产明细"/>
     <a-table v-bind="tableObj" class="custom-table td-pd10" bordered>
-      <span slot="reportTaskId" slot-scope="text, record">
-        <router-link
-          class="action_text"
-          :to="{path: '/reportTask/taskDetail', query: {taskId: record.reportTaskId}}"
-        >{{text}}</router-link>
-      </span>
+      <!--<span slot="registerOrderId" slot-scope="text, record">-->
+        <!--<router-link-->
+          <!--class="action_text"-->
+          <!--:to="{path: '/reportTask/taskDetail', query: {taskId: record.registerOrderId}}"-->
+        <!--&gt;{{text}}</router-link>-->
+      <!--</span>-->
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryAssetByRegistId({ pageNo, pageLength })"/>
     <!--底部审批操作按钮组-->
@@ -87,7 +87,7 @@
         :organId="organId"
         :projectId="projectId"
         :assetType="assetType"
-        v-model="selectedList"
+        v-model="addAssetList"
         :height="modalObj.height"
         :key="`${projectId}${assetType}`"
       />
@@ -124,14 +124,15 @@
           loading: false,
           scroll: { x: 1600 },
           pagination: false,
-          rowKey: 'reportTaskId',
+          rowKey: 'registerOrderId',
           columns: [
-            { title: '任务编号', dataIndex: 'reportTaskId', scopedSlots: { customRender: 'reportTaskId' }, width: 150 },
-            { title: '所属机构', dataIndex: 'organName'}, { title: '资产项目', dataIndex: 'projectName' },
-            { title: '任务名称', dataIndex: 'taskName' }, { title: '呈报表单', dataIndex: 'reportBillName' },
-             { title: '任务类型', dataIndex: 'taskTypeName' }, { title: '填报人', dataIndex: 'reportByName' },
-            { title: '计划执行日期', dataIndex: 'executeDate' }, { title: '审核人', dataIndex: 'auditByName' },
-            { title: '实际填报日期', dataIndex: 'completeDate' }
+            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' }, width: 150 },
+            { title: '资产名称', dataIndex: 'assetName'}, { title: '资产编码', dataIndex: 'assetCode' },
+            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
+             { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
+            { title: '资产面积(㎡)', dataIndex: 'executeDate' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
+            { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
+            { title: '核实时间', dataIndex: 'verifierTime' }, { title: '核实人', dataIndex: 'verifierByName' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
@@ -153,18 +154,18 @@
       // 查询资产类型--平台字典
       queryAssetType () {
         queryAssetTypeList().then(list => {
-          list ? this.typeOptions = list : this.$message.error('查询楼栋失败')
+          list ? this.typeOptions = list : this.$message.error('查询资产类型失败')
         })
       },
 
       // 处理资产登记单Modal关闭/保存
       handleModalAction (type) {
-        let { isEditAll } = this
         if (type) {
-          isEditAll ? this.handleAssetValueAll() : this.getAssetList()
-        } else {
-          isEditAll ? this.handleEditTableAll(false) : this.handleAddModal(false)
+          this.selectedList = this.addAssetList
+          this.queryAssetByRegistId({})
         }
+        this.modalObj.isShow = false
+        this.addAssetList = this.selectedList
       },
 
       // 根据organId查询资产项目
@@ -177,10 +178,9 @@
       // 删除、选择关联资产登记单
       handleAddAsset (m) {
         if (m) {
-          this.addAssetList = this.addAssetList.filter(v => v.id !== m.id)
+          this.selectedList = this.selectedList.filter(v => v.id !== m.id)
         } else {
           let {projectId, assetType} = this.form.getFieldsValue(['projectId', 'assetType'])
-          debugger
           if (!projectId || !assetType) {
             this.$message.warn(`请选择${!projectId ? '资产项目' : ''} ${!assetType ? '资产类型' : ''}`)
           } else {
@@ -192,44 +192,72 @@
       
       // 根据资产登记单查询资产明细
       queryAssetByRegistId ({pageNo = 1, pageLength = 10}) {
-        debugger
+        const { selectedList } = this
+        this.tableObj.loading = true
+        this.$api.assets.getRegisterOrderDetailsPageByIdList({
+          registerOrderIdList: selectedList, pageNum: pageNo, pageSize: pageLength
+        }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { count, data } = res.data
+            this.tableObj.dataSource = data
+            return Object.assign(this.paginationObj, {
+              totalCount: count, pageNo, pageLength
+            })
+          }
+          throw res.message || '查询资产明细列表出错'
+        }).catch(err => {
+          this.$message.error(err || '查询资产明细列表出错')
+        }).finally(() => this.tableObj.loading = false)
       },
 
       // 查询入库单详情
       queryDetail (storeId) {
-        debugger
+        this.spinning = true
+        this.$api.assets.queryAssetStoreDetail({storeId}).then(({data: res}) => {
+          if (res && String(res.code) === '0') {
+            const {storeName, projectId, assetType, remark, organId, attachmentList} = res.data
+            this.attachmentList = (attachmentList || []).map(m => {
+              return { url: m.attachmentPath, name: m.oldAttachmentName }
+            })
+            this.organId = organId
+            return this.form.setFieldsValue({
+              storeName, projectId, assetType, remark
+            })
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || '查询入库单信息出错')
+        }).finally(() => this.spinning = false)
       },
 
       // 提交
       handleSubmit (type) {
-        let that = this
-        Promise.all([
-          new Promise(resolve => that.validateFields(resolve)),
-          new Promise(resolve => that.$refs['taskTable'].handleSubmit(resolve))
-        ]).then(res => {
-          const [values, data] = res
-          const { attachment, taskInfo } = values
-          const { detailList } = data
-          let beginDate = ''
+        if (type === 'cancel') {
+          return this.$router.go(-1)
+        }
+        this.form.validateFieldsAndScroll((err, values) => {
+          const { attachmentList, organId, selectedList, storeId } = this
+          this.validateAssets = !selectedList.length
+          if (err || !selectedList.length) { return false }
           let form = {
-            reportTask: { ...taskInfo, beginDate, endDate: beginDate },
-            isSubmit: type ? 'N' : 'Y',
-            attachment, detailList, action: 'xz'
+            ...values, organId, status: 'debugger', storeId,
+            assetRegisterId: selectedList.join(','),
+            attachmentList: attachmentList.map(m => {
+              return { attachmentPath: m.url, oldAttachmentName: m.name }
+            })
           }
-          that.submitBtnLoading = true
-          Promise.reject(form).then(r => {
-            that.submitBtnLoading = false
-            let res = r.data
+          this.submitBtnLoading = true
+          this.$api.assets.addOrUpdateAssetStore(form).then(({data: res}) => {
             if (res && String(res.code) === '0') {
-              that.$message.success(`${type ? '暂存草稿' : '提交审批'}成功`)
+              this.$message.success(`${storeId ? '修改' : '提交'}成功`)
               // 跳回列表路由
-              return that.$router.push({ name: '呈报任务', params: { refresh: true } })
+              return this.$router.push({ path: '/assetIn', query: { refresh: true } })
             }
             throw res.message
           }).catch(err => {
-            that.submitBtnLoading = false
-            that.$message.error(err || `${type ? '暂存草稿' : '提交审批'}失败`)
-          })
+            this.$message.error(err || `${storeId ? '修改' : '提交'}失败`)
+          }).finally(() => this.submitBtnLoading = false)
         })
       },
     },
@@ -245,9 +273,9 @@
 
     watch: {
       // 自定义必填项校验
-      auditUsers: function (val) {
+      selectedList: function (val) {
         if (val.length) {
-          this.validateAuditUsers = false
+          this.validateAssets = false
         }
       }
     }

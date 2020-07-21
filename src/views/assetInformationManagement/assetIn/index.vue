@@ -145,7 +145,7 @@
             { title: '资产数量', dataIndex: 'assetCount' },
             { title: '创建日期', dataIndex: 'createDate' },
             { title: '创建人', dataIndex: 'createUserName' },
-            { title: '状态', dataIndex: 'assetTypeName' },
+            { title: '状态', dataIndex: 'status' },
             { title: '备注', dataIndex: 'remark', width: 150 },
             { title: '操作', dataIndex: 'action', fixed: 'right', scopedSlots: { customRender: 'action' }, width: 80 }
           ]
@@ -176,7 +176,7 @@
       // 查询统计数据
       queryStatistics (form) {
         this.overviewNumSpinning = true
-        Promise.reject(form).then(r => {
+        this.$api.assets.getAssetStoreCount(form).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -231,11 +231,11 @@
 
       // 导出
       handleExport () {
-        // this.exportBtnLoading = true
-        // let data = this.queryTableData({type: 'export'})
-        // exportDataAsExcel(data, this.$api.tableManage.exportRecordExcel, '价值登记记录列表.xlsx', this).then(() => {
-        //   this.exportBtnLoading = false
-        // })
+        this.exportBtnLoading = true
+        let data = this.queryTableData({type: 'export'})
+        exportDataAsExcel(data, this.$api.assets.exportAssetInExcel, '资产入库列表.xls', this).then(() => {
+          this.exportBtnLoading = false
+        })
       },
 
       // 查询列表数据
@@ -255,7 +255,7 @@
         if (type === 'export') { return form }
         this.tableObj.loading = true
         this.queryStatistics(form)
-        Promise.reject(form).then(r => {
+        this.$api.assets.queryAssetStoreList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -272,6 +272,19 @@
           this.$message.error(err || '查询列表出错')
         })
       }
+    },
+
+    // 路由卫士，用于审批及提交成功后刷新列表
+    beforeRouteEnter (to, from, next) {
+      const { path } = from
+      const { params: { refresh } } = to
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        if ((path === '/assetIn/edit' || path === '/assetIn/new' || path === '/assetIn/approval') && refresh) {
+          const { paginationObj: { pageNo, pageLength } } = vm
+          vm.queryTableData({pageNo, pageLength})
+        }
+      })
     },
 
     created () {

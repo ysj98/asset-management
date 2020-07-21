@@ -5,7 +5,7 @@
  * @desc: Do not Edit
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { assets } from '../config/config.url'
+import { assets, assetIn } from '../config/config.url'
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -177,6 +177,10 @@ export function findAssetListByRgId (data) {
 // 资产登记-附属配套-统计
 export function getMatchingListByAssetId (data) {
   return axiosPost(assets.assetRegister.getMatchingListByAssetId, data)
+}
+// 根据登记单Id资产登记明细列表-分页
+export function getRegisterOrderDetailsPageByIdList (data) {
+  return axiosPost(assets.assetRegister.getRegisterOrderDetailsPageByIdList, data)
 }
 // 下载附属配套模板
 export function downModle (data) {
@@ -631,4 +635,26 @@ export function getAcctItemPageList (data) {
 // 资产视图-运营信息-运营收入（返回参数）
 export function assetOperationExpenseParam (data) {
   return axiosPost(assets.assetView.assetOperationExpenseParam, data)
+}
+
+// 资产入库相关
+// 入库单统计
+export function getAssetStoreCount (data) {
+  return axiosPost(assetIn.getAssetStoreCount, data)
+}
+// 入库登记单导出
+export function exportAssetInExcel (data) {
+  return axiosPost(assetIn.export, data, false, false, {responseType: 'blob'})
+}
+// 新增资产入库或修改
+export function addOrUpdateAssetStore (data) {
+  return axiosPost(assetIn.addOrUpdateAssetStore, data)
+}
+// 查询入库单详情
+export function queryAssetStoreDetail (data) {
+  return axiosGet(assetIn.queryAssetStoreDetail, data)
+}
+// 资产入库列表查询
+export function queryAssetStoreList (data) {
+  return axiosPost(assetIn.queryAssetStoreList, data)
 }

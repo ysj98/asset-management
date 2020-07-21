@@ -32,7 +32,7 @@
               :columns="columns"
               :loading="loading"
               :pagination="false"
-              :scroll="{x: 1200}"
+              :scroll="{x: 900}"
               :dataSource="dataSource"
               rowKey="registerOrderCode"
               class="custom-table td-pd10"
@@ -45,7 +45,7 @@
       <a-col :span="6">
         <div class="col_div" :style="`overflow-y: auto; height: ${height}px; max-height: ${height}px`">
           <div class="item_div" v-for="item in selectedList" :key="item.registerOrderId">
-            {{item.assetName}}
+            {{item.registerOrderName}}
             <a-icon type="close" class="remove_icon" @click="removeItem(item.registerOrderId)"/>
           </div>
         </div>
@@ -67,7 +67,7 @@
       // 资产类型 必须
       assetType: { type: [Number, String], default: () => '' },
       // 设置table高度
-      height: { type: [Number, String], default: () => 450 },
+      height: { type: [Number, String], default: () => 550 },
       // 初始选中的值，以v-model方式传入
       // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{assetId: 'UID001'}],
       value: { type: Array, default: () => [] }
@@ -100,14 +100,14 @@
         if (!projectId || !organId || !assetType) { return false}
         this.loading = true
         let form = {
-          assetTypes: [assetType], registerOrderName, projectId, organId,
-          pageSize: pageLength, pageNum: pageNo
+          assetTypes: assetType, registerOrderName, projectId, organId,
+          pageSize: pageLength, pageNum: pageNo, approvalStatusList: ['1']
         }
         this.$api.assets.getRegisterOrderListPage(form).then(({data}) => {
           if (data && data.code.toString() === '0') {
             this.loading = false
             const {count, data: list} = data.data
-            this.dataSource = list
+            this.dataSource = list || []
             this.paginationObj = Object.assign(this.paginationObj, {
               pageLength,
               pageNo: Number(pageNo),
@@ -135,7 +135,7 @@
     mounted () {
       const {allAttrs, value} = this
       this.selectedRowKeys = allAttrs ? value.map(i => i.registerOrderId) : value
-      this.fetchData({}) // 改后
+      this.fetchData({})
     },
     watch: {
       value: function (value) {
@@ -162,8 +162,6 @@
   .select_detail {
     min-width: 650px;
     .col_div {
-      /*height: 450px;*/
-      /*max-height: 450px;*/
       position: relative;
       border-radius: 3px;
       border: 1px solid #DCE1E6;

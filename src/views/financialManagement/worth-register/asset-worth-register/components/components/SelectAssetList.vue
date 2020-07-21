@@ -18,17 +18,17 @@
           <!--placeholder="请选择资产项目"-->
         <!--/>-->
       <!--</a-col>-->
-      <a-col :span="5">
-        <!--mode="multiple"-->
-        <!--:maxTagCount="2"-->
-        <a-select
-          style="width: 100%"
-          v-model="assetType"
-          @change="fetchData"
-          :options="assetTypeOptions"
-          placeholder="请选择资产类型"
-        />
-      </a-col>
+      <!--<a-col :span="5">-->
+        <!--&lt;!&ndash;mode="multiple"&ndash;&gt;-->
+        <!--&lt;!&ndash;:maxTagCount="2"&ndash;&gt;-->
+        <!--<a-select-->
+          <!--style="width: 100%"-->
+          <!--v-model="assetType"-->
+          <!--@change="fetchData"-->
+          <!--:options="assetTypeOptions"-->
+          <!--placeholder="请选择资产类型"-->
+        <!--/>-->
+      <!--</a-col>-->
       <a-col :span="5">
         <a-select
           style="width: 100%"
@@ -98,13 +98,15 @@
       // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
       queryType: { type: [Number, String], default: () => 1 },
       // 资产项目projectId, projectName
-      projectObj: { type: Object, default: () => {} }
+      projectObj: { type: Object, default: () => {} },
+      // 资产类型
+      assetType: { type: [Number, String], default: () => '' }
     },
     data () {
       return {
         assetNameCode: '', // 资产名
-        assetType: undefined, // 类型
-        assetTypeOptions: [], // 类型选项
+        // assetType: undefined, // 类型
+        // assetTypeOptions: [], // 类型选项
         projectId: undefined, // 资产项目
         projectOptions: [], // 资产项目选项
         objectType: undefined, // 资产类别
@@ -234,11 +236,12 @@
       }
     },
     mounted () {
-      const {allAttrs, value} = this
+      const {allAttrs, value, assetType} = this
       this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value
       // this.queryProjectByOrganId() 外层props传入，改前
-      this.queryAssetTypeDict()
+      // this.queryAssetTypeDict()
       this.fetchData({}) // 改后
+      this.queryObjectType(assetType)
     },
     watch: {
       value: function (value) {
@@ -258,9 +261,9 @@
         this.$emit('input', allAttrs ? selectedList : keys)
       },
 
-      assetType: function (assetType) {
-        this.queryObjectType(assetType)
-      }
+      // assetType: function (assetType) {
+      //   this.queryObjectType(assetType)
+      // }
     }
   }
 </script>
