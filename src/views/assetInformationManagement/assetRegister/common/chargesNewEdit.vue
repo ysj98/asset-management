@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-17 13:47:49
+ * @LastEditTime: 2020-07-22 13:46:21
  * @Description: 新增相关费用
 --> 
 <template>
@@ -40,7 +40,7 @@
           </a-form>
           <a-col v-if="type === 'edit'" :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产名称：" v-bind="formItemLayout">{{examine.assetName || '--'}}</a-form-item></a-col>
           <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
-          <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
+          <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectTypeName || '--'}}</a-form-item></a-col>
           <a-col :span="12" :class="type === 'new' ? 'h-65' :'h-40'"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
         </a-row>
       </div>

@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-21 14:36:05
+ * @LastEditTime: 2020-07-22 15:37:54
  * @Description: file content
  */ 
 
@@ -88,7 +88,7 @@ export const auxiliary = [
   { title: '资产ID', dataIndex: 'assetId', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
-  { title: '资产分类', dataIndex: 'assetTypeName', width: 100 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
   { title: '附属配套名称', dataIndex: 'matchingName', width: 100 },
   { title: '附属配套编码', dataIndex: 'matchingCode', width: 100 },
   { title: '类型', dataIndex: 'matchingTypeName', width: 100 },
@@ -107,7 +107,7 @@ export const valueToRegisterData = [
   { title: '资产ID', dataIndex: 'assetId', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
-  { title: '资产分类', dataIndex: 'assetTypeName', width: 100 },
+  { title: '资产分类', dataIndex: 'assetCategoryName', width: 100 },
   { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
   { title: '使用期限(月)', dataIndex: 'validPeriod', width: 100 },

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 11:46:50
- * @LastEditTime: 2020-07-16 15:36:02
+ * @LastEditTime: 2020-07-22 15:14:09
  * @Description: 价值登记编辑
 --> 
 <template>
@@ -20,7 +20,7 @@
         <a-row class="playground-row">
           <a-col :span="12" class="playground-col">资产名称：{{examine.assetName || '--'}}</a-col>
           <a-col :span="12" class="playground-col">资产编码：{{examine.assetCode || '--'}}</a-col>
-          <a-col :span="12" class="playground-col">资产分类：{{examine.assetTypeName || '--'}}</a-col>
+          <a-col :span="12" class="playground-col">资产分类：{{examine.assetCategoryName || '--'}}</a-col>
           <a-col :span="12" class="playground-col">资产位置：{{examine.pasitionString || '--'}}</a-col>
         </a-row>
       <span class="section-title blue">价值信息</span>
@@ -96,11 +96,13 @@ export default {
   props: {},
   data () {
     return {
-      organId: '67',
+      organId: '',
       form: this.$form.createForm(this),
       modalShow: false,
       examine: {},
       subData: {
+        assetId: '',
+        registerOrderId: '',            // 登记单id
         originalValue: '',              // 资产原值
         validPeriod: '',                // 使用期限
         startDate: '',                  // 开始使用日期
@@ -138,43 +140,37 @@ export default {
     // 编辑查询
     getValueDetail (record) {
       this.examine = record
-      let data = {
-        assetId	: record.assetId
+      this.subData.registerOrderId = record.registerOrderId
+      this.subData.assetType = record.assetType
+      this.subData.assetId = record.assetId
+      // 处理表单数据
+      let o = {
+        originalValue: record.originalValue,              // 资产原值
+        validPeriod: record.validPeriod,                  // 使用期限
+        startDate: record.startDate,                      // 开始使用日期
+        usedDate: record.usedDate,                        // 已使用期数/月
+        depreciationAmount: record.depreciationAmount     // 累计折旧金额(元)
       }
-      this.$api.assets.getValueDetail(data).then(res => {
-        if (res.data.code === "0") {
-          let obj = res.data.data || {}
-          // 处理表单数据
-          let o = {
-            originalValue: obj.originalValue,              // 资产原值
-            validPeriod: obj.validPeriod,                  // 使用期限
-            startDate: obj.startDate,                      // 开始使用日期
-            usedDate: obj.usedDate,                        // 已使用期数/月
-            depreciationAmount: obj.depreciationAmount     // 累计折旧金额(元)
-          }
-          this.form.setFieldsValue(o)
-        } else {
-          this.$message.error(res.data.message);
-        }
-      })
+      this.form.setFieldsValue(o)
     },
     // 提交
     updateAssetValue (values) {
       let obj = {
-        registerOrderId: '',                             // 登记单id
-        assetType: '',                                   // 资产类型
+        registerOrderId: this.subData.registerOrderId,   // 登记单id
+        assetType: this.subData.assetType,               // 资产类型
+        assetId: this.subData.assetId,
         originalValue: values.originalValue,             // 资产原值
         validPeriod: values.validPeriod,                 // 使用期限 单位月
-        startDate: values.startDate === undefined ? '' : `${values.startDate.format('YYYY-MM-DD')}`,                     // 开始使用日期
+        startDate: values.startDate === undefined ? '' : `${values.startDate.format('YYYY-MM-DD')}`,  // 开始使用日期
         usedDate: values.usedDate,                       // 已使用期数/月
         depreciationAmount: values.depreciationAmount    // 累计折旧金额(元)
       }
-      console.log(values, 'dddd')
       let loadingName = this.SG_Loding('保存中...')
       this.$api.assets.updateAssetValue(obj).then(res => {
         if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('提交成功')
+            this.$emit('allQuery')
             this.handleCancel()
           })
         } else {

@@ -87,7 +87,7 @@ const approvalStatusData = [
 const columns = [
   {
     title: '登记单编号',
-    dataIndex: 'registerOrderCode'
+    dataIndex: 'registerOrderId'
   },
   {
     title: '登记单名称',
@@ -216,10 +216,10 @@ export default {
         case 'registeredInformation':    // 登记价值信息
         this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 2 }})
         break;
-        case 'RegisterDirections':    // 登记使用方向
+        case 'registerDirections':    // 登记使用方向
         this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 3 }})
         break;
-        case 'RegistrationFees':    // RegistrationFees
+        case 'registrationFees':    // RegistrationFees
         this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 4 }})
         break;
         case 'delete':            // 删除
@@ -428,10 +428,10 @@ export default {
       //   arr.push({iconType: 'close-circle', text: '登记使用信息', editType: 'usageInformation'})
       // }
       if (String(record.approvalStatus) === '0') {
-        arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'RegisterDirections '})
+        arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'registerDirections'})
       }
       if (String(record.approvalStatus) === '0') {
-        arr.push({iconType: 'close-circle', text: '登记相关费用', editType: 'RegistrationFees'})
+        arr.push({iconType: 'close-circle', text: '登记相关费用', editType: 'registrationFees'})
       }
       if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '核实', editType: 'verify'})

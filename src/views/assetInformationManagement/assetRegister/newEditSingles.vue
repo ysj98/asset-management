@@ -811,7 +811,7 @@ export default {
     if (this.setType === 'edit') {
       this.enitData = JSON.parse(this.$route.query.enitData)
       this.registerOrderId = this.enitData[0].registerOrderId
-      this.editFn()
+      // this.editFn()
       this.getRegisterOrderDetailsByIdFn()
       this.getRegisterOrderDetailsStatisticsFn()
     }
