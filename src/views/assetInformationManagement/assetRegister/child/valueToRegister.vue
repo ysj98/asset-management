@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-22 14:16:49
+ * @LastEditTime: 2020-07-22 19:32:29
  * @Description: 价值信息
 --> 
 <template>
@@ -88,7 +88,7 @@ export default {
     this.queryCondition.organId = this.organId
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
-    if (this.record[0].type === 'detail') {
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(valueToRegisterData)
       arr.pop()

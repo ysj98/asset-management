@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-22 13:42:47
+ * @LastEditTime: 2020-07-22 19:32:10
  * @Description: 附属配套
 --> 
 <template>
@@ -91,7 +91,7 @@ export default {
     this.record = JSON.parse(this.$route.query.record)
     this.queryCondition.organId = this.organId
     this.setType = this.$route.query.setType
-    if (this.record[0].type === 'detail') {
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(auxiliary)
       arr.pop()

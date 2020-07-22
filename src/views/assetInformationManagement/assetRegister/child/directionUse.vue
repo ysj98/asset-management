@@ -93,7 +93,7 @@ export default {
     this.organId = this.organId
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
-    if (this.record[0].type === 'detail') {
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(directionUseData)
       arr.pop()

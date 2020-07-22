@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-22 15:37:54
+ * @LastEditTime: 2020-07-22 16:36:32
  * @Description: file content
  */ 
 
@@ -24,7 +24,7 @@ export const columnsData = [
 ]
 
 
- // 房屋导入校验规则
+// 房屋导入校验规则
 export const judgmentData = [
   { title: '用途', dataIndex: 'useType', required: false },
   { title: '省', dataIndex: 'province', required: false },
@@ -62,6 +62,8 @@ export const judgmentData = [
   { title: '债权金额(元)', dataIndex: 'creditorAmount', required: false, type: 'float' },
   { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' },
 ]
+// 土地导入校验规则
+export const landCheck = []
 
 //  -------- 土地 ----------------------------------
 // 土地列表

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-21 15:54:24
+ * @LastEditTime: 2020-07-22 20:11:19
  * @Description: 房屋土地
 --> 
 <template>
@@ -14,7 +14,7 @@
         <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
         <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
       </div>
-      <div class="buytton-nav" v-show="setType === 'edit'">
+      <div class="buytton-nav" v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId">
         <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="batchUpdate">批量更新</SG-Button>
       </div>
@@ -43,7 +43,7 @@
 import {utils, calc} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData, landData} from './../common/registerBasics'
+import {columnsData, judgmentData, landData, costData} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import bridge from './center'
 export default {
@@ -52,6 +52,14 @@ export default {
     organId: {
       type: [String, Number],
       default: ''
+    },
+    registerOrderId: {
+      type: [String, Number],
+      default: ''
+    },
+    assetType: {
+      type: [String, Number],
+      default: '' 
     }
   },
   data () {
@@ -68,25 +76,24 @@ export default {
         {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableData: [],    // 表格内容
-      columns: [],      // 表格表头
-      assetType: '',    // 资产类型
+      columns: []      // 表格表头
+      // assetType: '',    // 资产类型
     }
   },
   computed: {
   },
   created () {
+  },
+  mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
-    if (this.record[0].setType === 'detail') {
+    if (this.setType === 'detail') {
       let arr = []
-      this.assetType = '2'
-      if (this.assetType === '1') {
-        console.log(columnsData)
+      if (+this.record[0].assetType === 1) {
         arr = utils.deepClone(columnsData)
         arr.pop()
-        console.log(arr)
         this.columns = arr
-      } else if (this.assetType === '2') {
+      } else if (+this.record[0].assetType === 4) {
         arr = utils.deepClone(landData)
         arr.pop()
         this.columns = arr
@@ -94,8 +101,6 @@ export default {
     } else {
       this.bridgeFn()
     }
-  },
-  mounted () {
     this.organDict()
     this.ownershipFn()
   },
@@ -104,15 +109,14 @@ export default {
     bridgeFn:function(){
       bridge.$on("assetType",(val, type)=>{
         //val值    type：project项目  asset资产类型
-        console.log(val, type, '切换资产类型时！切换所有数据231232')
         // 房屋
         if (type === 'asset' && val === '1') {
           this.assetType = '1'
           this.tableData = []
           this.columns = columnsData
         // 土地
-        } else if (type === 'asset' && val === '2') {
-          this.assetType = '2'
+        } else if (type === 'asset' && val === '4') {
+          this.assetType = '4'
           this.tableData = []
           this.columns = landData
         }
@@ -295,8 +299,8 @@ export default {
       let obj = {
         registerOrderId: this.registerOrderId,  // 资产登记ID，修改时必填
         assetType: this.checkboxAssetType,      // 资产类型, 1房屋、2土地、3设备
-        buildIds: '',             // 楼栋id列表（房屋时必填）
-        scope: '',            // 1楼栋 2房屋（房屋时必填）
+        buildIds: '',                           // 楼栋id列表（房屋时必填）
+        scope: '',                              // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
         blankIdList: ''                         // 土地Id列表（土地时必填）
       }

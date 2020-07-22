@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-20 13:44:03
+ * @LastEditTime: 2020-07-22 19:31:57
  * @Description: 相关费用
 -->
 <template>
@@ -83,7 +83,7 @@ export default {
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
-    if (this.record[0].type === 'detail') {
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(costData)
       arr.pop()

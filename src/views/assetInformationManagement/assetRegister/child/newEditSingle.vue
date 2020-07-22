@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-22 14:31:01
+ * @LastEditTime: 2020-07-22 16:42:46
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -18,7 +18,7 @@
       </div>
       <!-- 房屋 -->
       <keep-alive>
-        <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId"></basic>
+        <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></basic>
       </keep-alive>
       <!-- 附属配套 -->
       <necessaryCaaessories v-if="this.activeStepIndex === 1" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
