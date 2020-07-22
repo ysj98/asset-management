@@ -136,21 +136,21 @@
         projectName: '', // 查询条件-资源项目名称
         takeOver: undefined, // 查询条件-是否接管
         takeOverOptions: [
-          {key: '-1', title: '全部接管状态'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
+          {key: 'all', title: '全部接管状态'}, {key: 1, title: '已接管'}, {key: 0, title: '未接管'}
         ], // 查询条件-是否接管选项
         isCurrent: false, // 查询条件-是否仅当前机构
         organId: '', // 查询条件-组织Id
         organName: '', // 查询条件-组织Id
         approvalStatusList: undefined, // 查询条件-项目状态
         statusOptions: [
-          {key: '-1', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
+          {key: 'all', title: '全部状态'}, {key: 0, title: '草稿'}, {key: 2, title: '待审批'},
           {key: 3, title: '已驳回'}, {key: 1, title: '已审批'}, {key: 4, title: '已取消'}
         ], // 查询条件-项目状态选项-查字典接口
         sourceTypeList: undefined, // 查询条件-来源方式
         sourceTypeOptions: [], // 查询条件-来源方式选项-查字典接口
         transferToOperation: undefined, // 查询条件-是否转运营
         operateOptions: [
-          {key: '-1', title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
+          {key: 'all', title: '全部运营状态'}, {key: 1, title: '已转运营'}, {key: 0, title: '未转运营'}
         ], // 查询条件-是否转运营选项
         numList: [
           {title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057'},
@@ -174,7 +174,8 @@
             { title: '来源渠道', dataIndex: 'souceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum' },
             { title: '资产项目状态', dataIndex: 'approvalStatusName' },
-            { title: '审核日期', dataIndex: 'auditDate' },
+            { title: '创建人', dataIndex: 'createByName' },
+            { title: '创建日期', dataIndex: 'createTime' },
             { title: '是否接管', dataIndex: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
             { title: '接管日期', dataIndex: 'takeOverDate' },
             // { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
@@ -199,21 +200,19 @@
       // 查询数据来源方式、审批状态字典接口
       querySourceTypeList () {
         let codeList = [
-          { code: 'source_type', type: 'sourceTypeOptions', name: '来源' }
+          { code: 'ams_source_type', type: 'sourceTypeOptions', name: '来源' }
           // { code: 'approval_status_type', type: 'statusOptions', name: '状态' } // 暂不查字典
         ]
         codeList.forEach(item => {
           let { type, code, name } = item
           this[type] = [] // 清空旧数据
-          const { organId } = this
-          if (!organId) { return false }
-          this.$api.assets.organDict({code, organId: this.organId}).then(r => {
+          this.$api.assets.platformDict({code}).then(r => {
             let res = r.data
             if (res && String(res.code) === '0') {
               let temp = (res.data || []).map(item => {
                 return { key: item.value, title: item.name }
               })
-              this[type] = [{key: '-1', title: `全部${ name }`}].concat(temp)
+              this[type] = [{key: 'all', title: `全部${ name }`}].concat(temp)
               return false
             }
             throw res.message || `查询机构${name}字典失败`
@@ -350,8 +349,6 @@
       changeTree (id, name) {
         this.organId = id
         this.organName = name
-        // 根据organId查询来源方式字典
-        this.querySourceTypeList()
         id && this.queryTableData({type: 'search'})
       },
 
@@ -361,11 +358,11 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          takeOver: takeOver === '-1' ? "" : takeOver,
+          takeOver: takeOver === 'all' ? "" : takeOver,
           organId, isCurrent, pageSize: pageLength, pageNum: pageNo, projectName,
-          transferToOperation: transferToOperation === '-1' ? "" : transferToOperation,
-          sourceTypeList: (sourceTypeList && sourceTypeList.includes('-1')) ? [] : sourceTypeList,
-          approvalStatusList: (approvalStatusList && approvalStatusList.includes('-1')) ? [] : approvalStatusList
+          transferToOperation: transferToOperation === 'all' ? "" : transferToOperation,
+          sourceTypeList: (sourceTypeList && sourceTypeList.includes('all')) ? [] : sourceTypeList,
+          approvalStatusList: (approvalStatusList && approvalStatusList.includes('all')) ? [] : approvalStatusList
         }
         this.$api.assets.queryProjectManageListPage(form).then(r => {
           this.tableObj.loading = false
@@ -444,18 +441,35 @@
       }
     },
 
+    created () {
+      // 查询来源方式字典
+      this.querySourceTypeList()
+    },
+
     watch: {
       // 全选与其他选项互斥处理
       approvalStatusList: function (val) {
-        if (val && val.length !== 1 && val.includes('-1')) {
-          this.approvalStatusList = ['-1']
+        const {statusOptions} = this
+        if (val.length === 1 && val[0] === 'all') {
+          return false
+        } else if (val.length === 1 && val[0] === 'all') {
+          return false
+        } else if (val.length === statusOptions.length || (val.length === statusOptions.length - 1 && !val.includes('all'))) {
+          this.approvalStatusList = ['all']
+        } else if (val.length > 1 && val.includes('all')) {
+          this.approvalStatusList = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 
       // 全选与其他选项互斥处理
       sourceTypeList: function (val) {
-        if (val && val.length !== 1 && val.includes('-1')) {
-          this.sourceTypeList = ['-1']
+        const {sourceTypeOptions} = this
+        if (val.length === 1 && val[0] === 'all') {
+          return false
+        } else if (val.length === sourceTypeOptions.length || (val.length === sourceTypeOptions.length - 1 && !val.includes('all'))) {
+          this.sourceTypeList = ['all']
+        } else if (val.length > 1 && val.includes('all')) {
+          this.sourceTypeList = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
 

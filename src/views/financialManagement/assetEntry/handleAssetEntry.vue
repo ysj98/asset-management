@@ -1080,10 +1080,10 @@ export default {
     // 获取资产来源下拉列表
     getAssetSourceOptions () {
       let form = {
-        code: 'source_type',
-        organId: this.organId
+        code: 'ams_source_type',
+        // organId: this.organId
       }
-      this.$api.basics.organDict(form).then(res => {
+      this.$api.basics.platformDict(form).then(res => {
         if (res.data.code === '0') {
           let arr = []
           res.data.data.forEach(item => {
