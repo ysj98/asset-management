@@ -11,7 +11,7 @@
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+        <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
@@ -176,7 +176,7 @@ export default {
         assetType: '',             // 备注：变动类型id(多个用，分割)
         createDateS: '',           // 备注：开始创建日期
         crateDateE: '',            // 备注：结束创建日期
-        isCurrent: false           // 备注：仅当前机构下资产清理单 0 否 1 是      // 不要了
+        // isCurrent: false           // 备注：仅当前机构下资产清理单 0 否 1 是      // 不要了
       },
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
@@ -362,20 +362,23 @@ export default {
         }
       })
     },
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 查询
     query () {
       this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        // approvalStatusList   状态
-        approvalStatuss: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatusList: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus : [],      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: this.queryCondition.projectId,            // 资产项目Id
-        organId: Number(this.queryCondition.organId),                // 组织机构id
+        organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
         createDateS: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
-        isCurrent: this.queryCondition.isCurrent               // 仅当前机构下资产清理单 0 否 1 是
+        crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
       }
       this.$api.assets.getRegisterOrderListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -387,6 +390,7 @@ export default {
           this.tableData = data
           this.count = res.data.data.count
           this.loading = false
+          this.pageListStatistics(obj)
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -394,7 +398,7 @@ export default {
       })
     },
     // 查询统计信息
-    queryStatistics (form) {
+    pageListStatistics (form) {
       this.$api.assets.pageListStatistics(form).then(r => {
         let res = r.data
         if (res && String(res.code) === '0') {
