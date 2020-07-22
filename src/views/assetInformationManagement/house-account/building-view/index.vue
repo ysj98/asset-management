@@ -50,7 +50,7 @@
     </div>
     <!--概览-->
     <a-spin :spinning="overviewNumSpinning">
-      <overview-number :numList="numList"/>
+      <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
@@ -117,11 +117,18 @@
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
           ]
         },
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' }
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+        current: null // 当前选中的概览区域下标，与后台入参一一对应
       }
     },
 
     methods: {
+      // 点击总览数据块
+      handleClickOverview ({i}) {
+        this.current = i
+        this.queryTableData({})
+      },
+
       // 查看楼栋视图详情
       handleViewDetail (buildId) {
         const { organProjectBuildingValue: { organId } } = this
@@ -130,10 +137,12 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList } } = this
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, current } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        this.$api.assets.queryBuildingViewPage({ organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo }).then(r => {
+        this.$api.assets.queryBuildingViewPage({
+          organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo, flag: current || ''
+        }).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -179,8 +188,8 @@
           return this.$message.info('无可导出数据')
         }
         this.exportBtnLoading = true
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList } } = this
-        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList}).then(res => {
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList}, current } = this
+        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList, flag: current || ''}).then(res => {
           this.exportBtnLoading = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')

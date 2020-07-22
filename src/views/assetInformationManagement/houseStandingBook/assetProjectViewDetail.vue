@@ -123,7 +123,7 @@
           <span class="label-value">{{detail.leaseInContractNo || '--'}}</span>
         </div>
       </div>
-      <div class="edit-box-content" style="margin-top: 0">
+      <div class="edit-box-content" :style="['1', '2', '3', '4'].includes(sourceType) ? 'margin-top: 0' : ''">
         <div class="edit-box-content-item">
           <span class="label-name">权属办理中存在问题：</span>
           <span class="label-value">{{detail.ownershipHandleProblems || '--'}}</span>
@@ -229,23 +229,19 @@ const ownershipColumns = [
     children: [
       {
         title: '总数',
-        dataIndex: 'ownerShipCount',
-        width: 120
+        dataIndex: 'ownerShipCount'
       },
       {
         title: '有证',
-        dataIndex: 'ownerShipYesCount',
-        width: 120
+        dataIndex: 'ownerShipYesCount'
       },
       {
         title: '待办',
-        dataIndex: 'ownerShipWaitCount',
-        width: 120
+        dataIndex: 'ownerShipWaitCount'
       },
       {
         title: '无证',
-        dataIndex: 'ownerShipNoCount',
-        width: 120
+        dataIndex: 'ownerShipNoCount'
       }
     ]
   },
@@ -254,23 +250,19 @@ const ownershipColumns = [
     children: [
       {
         title: '总数',
-        dataIndex: 'useShipCount',
-        width: 120
+        dataIndex: 'useShipCount'
       },
       {
         title: '有证',
-        dataIndex: 'useShipYesCount',
-        width: 120
+        dataIndex: 'useShipYesCount'
       },
       {
         title: '待办',
-        dataIndex: 'useShipWaitCount',
-        width: 120
+        dataIndex: 'useShipWaitCount'
       },
       {
         title: '无证',
-        dataIndex: 'useShipNoCount',
-        width: 120
+        dataIndex: 'useShipNoCount'
       }
     ]
   },
