@@ -1,5 +1,5 @@
 <!--
-  资产项目视图详情
+  资产项目视图详情-戚思婷
 -->
 <template>
   <div class="asset-project-view-detail">
@@ -35,6 +35,10 @@
           <span class="label-value">{{formatDate(detail.takeOverDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
+          <span class="label-name">接管状态：</span>
+          <span class="label-value">{{detail.takeoverAssetStatusName || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
           <span class="label-name">备注：</span>
           <span class="label-value">{{detail.remark || '--'}}</span>
         </div>
@@ -55,7 +59,8 @@
     </div>
     <div class="edit-box" style="margin-bottom: 10px">
       <div class="edit-box-title"><i></i><span>其他信息</span></div>
-      <div class="edit-box-content">
+      <!--当来源方式为 划转 字典值1-->
+      <div class="edit-box-content" v-if="sourceType === '1'">
         <div class="edit-box-content-item">
           <span class="label-name">划转批复下发时间：</span>
           <span class="label-value">{{formatDate(detail.transferApprovalDate) || '--'}}</span>
@@ -76,6 +81,49 @@
           <span class="label-name">上报划转请示时间：</span>
           <span class="label-value">{{formatDate(detail.reportHouseTransferReqDate) || '--'}}</span>
         </div>
+      </div>
+      <!--当来源方式为 外购 字典值2-->
+      <div class="edit-box-content" v-else-if="sourceType === '2'">
+        <div class="edit-box-content-item">
+          <span class="label-name">购买日期：</span>
+          <span class="label-value">{{formatDate(detail.purchaseDate) || '--'}}</span>
+        </div>
+      </div>
+      <!--当来源方式为 自建 字典值3-->
+      <div class="edit-box-content" v-else-if="sourceType === '3'">
+        <div class="edit-box-content-item">
+          <span class="label-name">开发商：</span>
+          <span class="label-value">{{detail.developers || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">承建商：</span>
+          <span class="label-value">{{detail.contractor || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">竣工日期：</span>
+          <span class="label-value">{{formatDate(detail.completionDate) || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">交付日期：</span>
+          <span class="label-value">{{formatDate(detail.deliveryDate) || '--'}}</span>
+        </div>
+      </div>
+      <!--当来源方式为 租入 字典值4-->
+      <div class="edit-box-content" v-else-if="sourceType === '4'">
+        <div class="edit-box-content-item">
+          <span class="label-name">租入开始日期：</span>
+          <span class="label-value">{{formatDate(detail.leaseInStartDate) || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">租入结束日期：</span>
+          <span class="label-value">{{formatDate(detail.leaseInEndDate) || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">租入合同编号：</span>
+          <span class="label-value">{{detail.leaseInContractNo || '--'}}</span>
+        </div>
+      </div>
+      <div class="edit-box-content" :style="['1', '2', '3', '4'].includes(sourceType) ? 'margin-top: 0' : ''">
         <div class="edit-box-content-item">
           <span class="label-name">权属办理中存在问题：</span>
           <span class="label-value">{{detail.ownershipHandleProblems || '--'}}</span>
@@ -152,7 +200,7 @@
 <script>
 import {dateToString} from 'utils/formatTime'
 import { basics } from '@/config/config.url'
-import _ from 'lodash'
+// import _ from 'lodash'
 const columns = [
   {
     title: '转运营日期',
@@ -177,39 +225,46 @@ const columns = [
 
 const ownershipColumns = [
   {
-    title: '有证',
+    title: '所有权',
     children: [
       {
-        title: '产权',
-        dataIndex: 'ownerTitleDeed',
-        width: 120
+        title: '总数',
+        dataIndex: 'ownerShipCount'
       },
       {
-        title: '使用权',
-        dataIndex: 'ownerUserDeed',
-        width: 120
+        title: '有证',
+        dataIndex: 'ownerShipYesCount'
+      },
+      {
+        title: '待办',
+        dataIndex: 'ownerShipWaitCount'
+      },
+      {
+        title: '无证',
+        dataIndex: 'ownerShipNoCount'
       }
     ]
   },
   {
-    title: '待办',
+    title: '使用权',
     children: [
       {
-        title: '产权',
-        dataIndex: 'waitOwnerTitleDeed',
-        width: 120
+        title: '总数',
+        dataIndex: 'useShipCount'
       },
       {
-        title: '使用权',
-        dataIndex: 'waitOwnerUserDeed',
-        width: 120
+        title: '有证',
+        dataIndex: 'useShipYesCount'
+      },
+      {
+        title: '待办',
+        dataIndex: 'useShipWaitCount'
+      },
+      {
+        title: '无证',
+        dataIndex: 'useShipNoCount'
       }
     ]
-  },
-  {
-    title: '无证',
-    dataIndex: 'noOwner',
-    width: 120
   },
   {
     title: '权属办理进度',
@@ -221,6 +276,7 @@ export default {
   data () {
     return {
       projectId: '',
+      sourceType: '', // 来源方式字典值，其他 99，租入 4，自建 3，外购 2，划转 1
       detail: {
         organName: '',
         projectName: '',
@@ -237,7 +293,8 @@ export default {
         houseVerificationDate: '',
         reportHouseTransferReqDate: '',
         ownershipHandleProblems: '',
-        houseTransferHisProblem: ''
+        houseTransferHisProblem: '',
+        takeoverAssetStatusName: ''
       },
       columns,
       dataSource: [],
@@ -280,7 +337,10 @@ export default {
       }
       this.$api.assets.projectDetailsById(form).then(res => {
         if (res.data.code === '0') {
-          this.detail = res.data.data
+          let {sourceType, organId, ...others}= res.data.data
+          this.detail = others
+          organId && this.getOwnershipData(organId)
+          this.sourceType = String(sourceType)
           this.detail.attachment.forEach(item => {
             item.url = item.attachmentPath
             item.name = item.oldAttachmentName
@@ -308,18 +368,11 @@ export default {
       })
     },
     // 获取权属概况
-    getOwnershipData () {
-      let form = {
-        projectId: this.projectId
-      }
-      this.$api.basics.queryByProjectId(form).then(res => {
+    getOwnershipData (organId) {
+      this.$api.assets.queryAssetProjectOwnershipInfo({organId}).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
           data.key = 0
-          data.ownerTitleDeed = data.owner.titleDeed
-          data.ownerUserDeed = data.owner.userDeed
-          data.waitOwnerTitleDeed = data.waitOwner.titleDeed
-          data.waitOwnerUserDeed = data.waitOwner.userDeed
           data.progress = data.progress + '%'
           this.ownershipDataSource = [data]
         } else {
@@ -383,7 +436,6 @@ export default {
     this.projectId = this.$route.query.projectId
     this.getDetail()
     this.getTransferInfo()
-    this.getOwnershipData()
     this.getAssetStatistics()
     this.getAssetList()
   }
@@ -525,6 +577,12 @@ export default {
             }
           }
         }
+      }
+    }
+    .custom-table {
+      & /deep/ .ant-table .ant-table-placeholder {
+        display: block;
+        border-bottom: 1px solid #e8e8e8;
       }
     }
   }

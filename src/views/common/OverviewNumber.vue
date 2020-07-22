@@ -6,10 +6,15 @@
 <template>
   <div class="overview_num" v-if="numList.length">
     <div
-      class="view_item"
+      v-for="(item, i) in numList"
       :key="item.title"
-      v-for="item in numList"
-      :style="{'background-color': item.bgColor || '', 'width': `${Math.floor(100000 / numList.length) / 1000}%`}"
+      @click="handleClick(item, i)"
+      :class="['view_item', (isEmit && i === current) ? 'current_selected' : '']"
+      :style="{
+        width: itemWidth,
+        cursor: isEmit ? 'pointer' : 'default',
+        backgroundColor: item.bgColor || ''
+      }"
     >
       <div :style="{'font-size': '14px', 'color': item.fontColor || '#fff', 'margin-bottom': '10px'}">{{item.title}}</div>
       <div :style="{'font-size': '20px', color: item.fontColor || '#324057', 'font-weight': 'bold'}">{{item.value}}</div>
@@ -20,10 +25,37 @@
 <script>
   export default {
     name: 'OverviewNumber',
-    props: ['numList']
+    props: {
+      numList: {
+        type: Array,
+        default: () => []
+      },
+      // 是否可点击
+      isEmit: {
+        type: Boolean,
+        default: () => false
+      },
+    },
     // numList: [
     //   {title: '所有资产项目', value: 0}, {title: '待审核', value: 0, bgColor: '#e4393c', fontColor: 'white'}
     // ] // 概览数据,如是格式，title 标题，value 数值，bgColor 背景色，fontColor 字体颜色
+    data () {
+      return {
+        current: null, // 当前选中的区域下标,
+        itemWidth: `${Math.floor(100000 / this.numList.length) / 1000}%`, // 每个方块的宽度
+      }
+    },
+
+    methods: {
+      // 点击事件
+      handleClick (item, index) {
+        // item: 当前区域的信息，i：当前区域的位置下标
+        let {current} = this
+        let i = current === index ? null : index
+        this.current = i
+        this.isEmit && this.$emit('click', {item: i ? item : {}, i})
+      }
+    }
   }
 </script>
 
@@ -39,6 +71,18 @@
       text-align: center;
       display: inline-block;
       border-right: 1px solid #EFF2F7;
+    }
+    .current_selected {
+      position: relative;
+      &:before {
+        content: '';
+        position: absolute;
+        top: -16px;
+        left: -16px;
+        border: 15px solid transparent;
+        border-top: 15px solid #0084ff;
+        transform: rotate(135deg);
+      }
     }
   }
 </style>

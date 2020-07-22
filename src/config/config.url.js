@@ -275,7 +275,9 @@ export const assets = {
     // 资产项目-编辑保存
     modifyProject: '/ams/project/modifyProject',
     // 资产项目-转运营信息统计
-    getTransferByProjectId: '/ams/project/getTransferByProjectId'
+    getTransferByProjectId: '/ams/project/getTransferByProjectId',
+    // 根据organId查询资产项目视图详情权属信息
+    queryAssetProjectOwnershipInfo: '/ams/asset-house/organ/houseViewShip'
   },
   // 房屋台账 - 楼栋视图
   buildingView: {

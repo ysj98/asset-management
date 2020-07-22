@@ -7,7 +7,7 @@
       <a-row :gutter="16">
         <a-col v-for="(item, i) in baseInfoKeys" :span="8" :key="i">
           <div v-for="{title, key} in item" :key="key" class="item_detail">
-            <div v-if="key==='picturePath'" style="text-align: center">
+            <div v-if="key==='picturePath'">
               <img :src="baseInfoData['picturePath'] ? `${imgPrx}${baseInfoData['picturePath']}` : defaultImgUrl" style="height: 115px"/>
             </div>
             <div v-else>

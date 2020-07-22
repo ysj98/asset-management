@@ -568,6 +568,10 @@ export function queryProjectManageGeneralInfo (data) {
 export function queryProjectManageOwnInfo (data) {
   return axiosGet(assets.projectManage.queryOwnInfo, data)
 }
+// 根据organId查询资产项目视图详情权属信息
+export function queryAssetProjectOwnershipInfo (data) {
+  return axiosGet(assets.assetProject.queryAssetProjectOwnershipInfo, data)
+}
 
 // 权属人管理
 // 权属人管理-新建或编辑权属人
