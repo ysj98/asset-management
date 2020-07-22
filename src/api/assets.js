@@ -175,8 +175,8 @@ export function findAssetListByRgId (data) {
   return axiosPost(assets.assetRegister.findAssetListByRgId, data)
 }
 // 资产登记-附属配套-统计
-export function getMatchingListByAssetId (data) {
-  return axiosPost(assets.assetRegister.getMatchingListByAssetId, data)
+export function getMatchingStatisByRgId (data) {
+  return axiosPost(assets.assetRegister.getMatchingStatisByRgId, data)
 }
 // 根据登记单Id资产登记明细列表-分页
 export function getRegisterOrderDetailsPageByIdList (data) {
@@ -207,9 +207,9 @@ export function queryValuePageListByRgId (data) {
   return axiosPost(assets.assetRegister.queryValuePageListByRgId, data)
 }
 // 资产登记-价值信息详情
-export function getValueDetail (data) {
-  return axiosPost(assets.assetRegister.getValueDetail, data)
-}
+// export function getValueDetail (data) {
+//   return axiosPost(assets.assetRegister.getValueDetail, data)
+// }
 // 资产登记-编辑价值信息
 export function updateAssetValue (data) {
   return axiosPost(assets.assetRegister.updateAssetValue, data)

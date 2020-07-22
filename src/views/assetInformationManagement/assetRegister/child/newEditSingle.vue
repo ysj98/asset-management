@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-21 17:01:03
+ * @LastEditTime: 2020-07-22 14:31:01
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -21,13 +21,13 @@
         <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId"></basic>
       </keep-alive>
       <!-- 附属配套 -->
-      <necessaryCaaessories v-if="this.activeStepIndex === 1" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
+      <necessaryCaaessories v-if="this.activeStepIndex === 1" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
       <!-- 价值登记 -->
-      <valueToRegister v-if="this.activeStepIndex === 2"></valueToRegister>
+      <valueToRegister v-if="this.activeStepIndex === 2" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></valueToRegister>
       <!-- 使用方向 -->
-      <directionUse v-if="this.activeStepIndex === 3"></directionUse>
+      <directionUse v-if="this.activeStepIndex === 3" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></directionUse>
       <!-- 相关费用 -->
-      <correlativeCharges v-if="this.activeStepIndex === 4"></correlativeCharges>
+      <correlativeCharges v-if="this.activeStepIndex === 4" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></correlativeCharges>
     </div>
     <div class="step-footer-operation" v-if="setType === 'new'">
       <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
@@ -90,6 +90,8 @@ export default {
     this.organId = this.organIdData[0].value
     this.setType = this.$route.query.setType
     if (this.setType !== 'new') {
+      this.registerOrderId = this.organIdData[0].registerOrderId
+      this.assetType = this.organIdData[0].assetType
       this.activeStepIndex = this.$route.query.activeStepIndex
     }
   },

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-20 13:59:55
+ * @LastEditTime: 2020-07-22 14:41:33
  * @Description: 使用方向
 --> 
 <template>
@@ -56,6 +56,7 @@ export default {
   props: {},
   data () {
     return {
+      organId: '',
       record: [],
       setType: '',
       numList: [
@@ -87,6 +88,9 @@ export default {
   created () {
   },
   mounted () {
+    this.queryCondition.registerOrderId = this.registerOrderId
+    this.queryCondition.assetType = this.assetType
+    this.organId = this.organId
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
     if (this.record[0].type === 'detail') {
@@ -94,6 +98,8 @@ export default {
       arr = utils.deepClone(directionUseData)
       arr.pop()
       this.columns = arr
+    } else {
+      this.columns = directionUseData
     }
     this.query()
   },
@@ -191,26 +197,6 @@ export default {
     // 查询
     query () {
       this.loading = true
-      this.tableData = [
-        {
-          assetType: '1', //类型：String  必有字段  备注：资产类型
-          assetId: 'mock',                //类型：String  必有字段  备注：资产ID
-          assetName: 'mock',                //类型：String  必有字段  备注：资产名称
-          assetCode: 'mock',                //类型：String  必有字段  备注：资产编码
-          objectType: 'mock',                //类型：String  必有字段  备注：资产分类
-          objectTypeName: 'mock',                //类型：String  必有字段  备注：资产分类名称
-          buildArea: 'mock',                //类型：String  必有字段  备注：建筑面积(㎡)
-          transferTime: 'mock',                //类型：String  必有字段  备注：转物业时间
-          transferArea: 'mock',                //类型：String  必有字段  备注：转物业面积(㎡
-          transferOperationTime: 'mock',                //类型：String  必有字段  备注：转运营时间
-          transferOperationArea: 'mock',                //类型：String  必有字段  备注：运营面积(㎡)
-          selfUserArea: 'mock',                //类型：String  必有字段  备注：自用面积(㎡)
-          idleArea: 'mock',                //类型：String  必有字段  备注：闲置面积(㎡)
-          occupationArea: 'mock',                //类型：String  必有字段  备注：占用面积(㎡)
-          otherArea: 'mock'                //类型：String  必有字段  备注：其他面积(㎡)
-      }
-      ]
-      this.loading = false
       this.$api.assets.userForList(this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -230,8 +216,8 @@ export default {
     // 统计
     useForSummary () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType             // 资产类型
       }
       this.$api.assets.useForSummary(obj).then(res => {
         if (Number(res.data.code) === 0) {

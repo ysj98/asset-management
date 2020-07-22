@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-21 17:37:07
+ * @LastEditTime: 2020-07-22 13:42:47
  * @Description: 附属配套
 --> 
 <template>
@@ -42,7 +42,7 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew"></completeSetNew>
+    <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew" @allQuery=allQuery></completeSetNew>
     <!-- 下载模板 -->
     <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
@@ -58,7 +58,8 @@ export default {
   components: {noDataTips, completeSetNew, eportAndDownFile},
   props: {
     registerOrderId: [String, Number],
-    assetType: [String, Number]
+    assetType: [String, Number],
+    organId: [String, Number]
   },
   data () {
     return {
@@ -88,7 +89,7 @@ export default {
     this.queryCondition.registerOrderId = this.registerOrderId
     this.queryCondition.assetType = this.assetType
     this.record = JSON.parse(this.$route.query.record)
-    this.queryCondition.organId = this.record[0].organId
+    this.queryCondition.organId = this.organId
     this.setType = this.$route.query.setType
     if (this.record[0].type === 'detail') {
       let arr = []
@@ -98,10 +99,14 @@ export default {
     } else {
       this.columns = auxiliary
     }
-    console.log(this.columns)
     this.query()
   },
   methods: {
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 删除
     deleteFn (record) {
         this.$SG_Modal.confirm({
@@ -136,9 +141,12 @@ export default {
       if (str === 'new') {
         obj = {
           registerOrderId: this.queryCondition.registerOrderId,            //  资产登记ID
+          organId: this.organId
         }
       } else {
-        obj = record
+        obj = record,
+        obj.registerOrderId = this.queryCondition.registerOrderId            //  资产登记ID
+        obj.organId = this.organId
       }
       this.$nextTick(() => {
         this.$refs.completeSetNew.allMounted(str, obj)
@@ -146,7 +154,6 @@ export default {
       })
     },
     cancel () {
-      console.log('0-0-0-')
       this.modalShow = false
     },
     // 导入
@@ -210,7 +217,7 @@ export default {
           })
           this.tableData = data
           this.count = res.data.data.count
-          this.getMatchingListByAssetId()
+          this.getMatchingStatisByRgId()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -219,14 +226,14 @@ export default {
       })
     },
     // 统计
-    getMatchingListByAssetId () {
+    getMatchingStatisByRgId () {
       let obj = {
         registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
         assetType: this.queryCondition.assetType             // 资产类型
       }
-      this.$api.assets.getMatchingListByAssetId(obj).then(res => {
+      this.$api.assets.getMatchingStatisByRgId(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          this.statistics = res.data.data.data
+          this.statistics = res.data.data
         } else {
           this.$message.error(res.data.message)
         }

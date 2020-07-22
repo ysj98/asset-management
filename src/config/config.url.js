@@ -157,7 +157,7 @@ export const assets = {
     // 资产登记-查询资产列表-根据资产登记Id
     findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId',
     // 资产登记-附属配套-统计
-    getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+    getMatchingStatisByRgId: '/ams/subsidiaryMatching/getMatchingStatisByRgId',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
     // 批量导入-导入保存
@@ -171,13 +171,13 @@ export const assets = {
     // 资产登记-价值信息分页列表
     queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
     // 资产登记-价值信息详情
-    getValueDetail: '/ams/registerOrder/getValueDetail',
+    // getValueDetail: '/ams/registerOrder/getValueDetail',
     // 资产登记-编辑价值信息
     updateAssetValue: '/ams/registerOrder/updateAssetValue',
     // 使用方向修改
     useForUpdate: '/ams/registerOrder/useFor/update',
     // 使用方向分页列表
-    userForList: '/ams/registerOrder/userFor/list',
+    userForList: '/ams/registerOrder/useFor/page',
     // 使用方向详情
     useForDetail: '/ams/registerOrder/useFor/detail',
     // 使用方向面积统计
