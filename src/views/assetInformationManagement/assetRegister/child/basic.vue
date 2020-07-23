@@ -21,7 +21,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="table-boxs"
+        class="custom-table table-boxs"
         :scroll="{y: 450, x: 2200}"
         :columns="columns"
         :dataSource="tableData"

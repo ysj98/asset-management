@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-23 18:28:21
+ * @LastEditTime: 2020-07-23 19:39:19
  * @Description: 相关费用
 -->
 <template>
@@ -17,7 +17,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="table-boxs"
+        class="custom-table table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 1900}"
