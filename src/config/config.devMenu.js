@@ -90,8 +90,16 @@ export default [
         path: '/assetEntry'
       },
       {
+        title: '资产估值记录',
+        path: '/worthRegisterRecord'
+      },
+      {
         title: '价值登记',
         path: '/worthRegister'
+      },
+      {
+        title: '资产价值一览表',
+        path: '/assetWorthList'
       }
     ]
   },
@@ -195,6 +203,15 @@ export default [
       //   title: '富文本编辑器',
       //   path: '/dev/editer'
       // }
+    ]
+  },
+  {
+    title: '资产入库',
+    children: [
+      {
+        title: '资产入库',
+        path: '/assetIn'
+      }
     ]
   },
   // {

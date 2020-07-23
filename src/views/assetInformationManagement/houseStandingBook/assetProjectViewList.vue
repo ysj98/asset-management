@@ -1,5 +1,5 @@
 <!--
-  资产项目视图列表页
+  资产项目视图列表页-戚思婷
 -->
 <template>
   <div class="asset-project-view-list">
@@ -37,7 +37,10 @@
         :pagination="false"
         :scroll="{ x: 1900 }">
         <template slot="operation" slot-scope="text, record">
-          <a class="operation-btn" @click="toDetail(record)">详情</a>
+          <a
+            v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'"
+            class="operation-btn" @click="toDetail(record)"
+          >详情</a>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
@@ -174,7 +177,11 @@ export default {
         pageLength: 10,
         totalCount: 0
       },
-      showNoDataTips: false
+      showNoDataTips: false,
+      sumKeys: [
+        'area', 'buildNum', 'assetNum', 'transferOperationArea', 'selfUserArea',
+        'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue'
+      ] // 求和用的对象
     }
   },
   methods: {
@@ -204,18 +211,18 @@ export default {
     // 点击查询
     queryClick () {
       this.paginator.pageNo = 1
-      this.queryStatistics()
-      this.queryList()
+      this.queryList().then(() => this.queryStatistics())
     },
     queryList () {
+      const {assetProject, organId, sumKeys, onlyCurrentOrgan, paginator: {pageNo, pageLength}} = this
       let form = {
-        organId: this.organId,
-        projectId: this.assetProject,
-        isCurrent: this.onlyCurrentOrgan,
-        pageNum: this.paginator.pageNo,
-        pageSize: this.paginator.pageLength
+        organId,
+        pageNum: pageNo,
+        pageSize: pageLength,
+        projectId: assetProject,
+        isCurrent: onlyCurrentOrgan
       }
-      this.$api.assets.viewGetAssetHouseList(form).then(res => {
+      return this.$api.assets.viewGetAssetHouseList(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
           if (data.length === 0) {
@@ -223,13 +230,19 @@ export default {
           } else {
             this.showNoDataTips = false
           }
+          let sumObj = {}
           data.forEach((item, index) => {
             item.key = index
+            sumKeys.forEach(key => {
+              !sumObj[key] && (sumObj[key] = 0)
+              sumObj[key] += item[key] ? Number(item[key]) : 0
+              sumObj[key] = Number(sumObj[key].toFixed(2))
+            })
             for (let key in item) {
               item[key] = item[key] || '--'
             }
           })
-          this.dataSource = data
+          this.dataSource = data.concat({...sumObj, projectCode: '当前页-合计', key: Date.now()})
           this.paginator.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
@@ -251,6 +264,9 @@ export default {
           this.assetStatistics[3].area = data.selfUserArea.toFixed(2)
           this.assetStatistics[4].area = data.occupationArea.toFixed(2)
           this.assetStatistics[5].area = data.otherArea.toFixed(2)
+          let sumObj = {}
+          this.sumKeys.forEach(key => sumObj[key] = data[key] ? data[key].toFixed(2) : 0)
+          this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
         } else {
           this.$message.error(res.data.message)
         }
@@ -323,5 +339,10 @@ export default {
   }
   .custom-table {
     padding-bottom: 50px;
+    & /deep/ table {
+      tr:last-child, tr:nth-last-child(2) {
+        font-weight: bold;
+      }
+    }
   }
 </style>

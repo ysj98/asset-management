@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-16 15:36:14
+ * @LastEditTime: 2020-07-22 14:08:54
  * @Description: 新增附属配套
 --> 
 <template>
@@ -18,30 +18,30 @@
     <div class="completeSetNew">
       <span class="section-title blue">资产信息</span>
         <div class="mt20">
-          <a-row class="playground-row" v-if="type === 'new'">
-            <a-form :form="form" @submit="handleSubmit">
-              <a-col :span="12" class="h-65">
-                <a-form-item label="名称" v-bind="formItemLayout">
-                  <a-select
-                    :placeholder="'请选择资产名称'" :style="allWidth"
-                    showSearch
-                    :options="examine.projectIdData"
-                    :allowClear="true"
-                    optionFilterProp="children"
-                    @search="handleSearch"
-                    :filterOption="false"
-                    v-decorator="['assetName',
-                        {rules: [{required: true, message: '请选择类型'}], initialValue: subData.assetName}
-                      ]"
-                    notFoundContent="没有查询到数据"
-                    />
-                </a-form-item>
-              </a-col>
+          <a-row class="playground-row">
+              <a-form :form="form" @submit="handleSubmit">
+                <a-col :span="12" :class="{'h-65': type === 'new'}" v-if="type === 'new'">
+                  <a-form-item label="名称" v-bind="formItemLayout">
+                    <a-select
+                      :placeholder="'请选择资产名称'" :style="allWidth"
+                      showSearch
+                      :options="examine.projectIdData"
+                      :allowClear="true"
+                      optionFilterProp="children"
+                      @search="handleSearch"
+                      :filterOption="false"
+                      v-decorator="['assetId',
+                          {rules: [{required: true, message: '请选择类型'}], initialValue: subData.assetId}
+                        ]"
+                      notFoundContent="没有查询到数据"
+                      />
+                  </a-form-item>
+                </a-col>
+              <a-col v-if="type === 'edit'" :class="{'h-40': type === 'edit'}" :span="12"><a-form-item label="资产名称：" v-bind="formItemLayout">{{examine.assetName || '--'}}</a-form-item></a-col>
+              <a-col :span="12" :class="{'h-65': type === 'new', 'h-40': type === 'edit'}"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
+              <a-col :span="12" :class="{'h-65': type === 'new', 'h-40': type === 'edit'}"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectTypeName || '--'}}</a-form-item></a-col>
+              <a-col :span="12" :class="{'h-65': type === 'new', 'h-40': type === 'edit'}"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
             </a-form>
-            <a-col v-if="type === 'edit'" :span="12"><a-form-item label="资产名称：" v-bind="formItemLayout">{{examine.assetName || '--'}}</a-form-item></a-col>
-            <a-col :span="12" class="h-65"><a-form-item label="资产编码：" v-bind="formItemLayout">{{examine.assetCode || '--'}}</a-form-item></a-col>
-            <a-col :span="12" class="h-65"><a-form-item label="资产分类：" v-bind="formItemLayout">{{examine.objectType || '--'}}</a-form-item></a-col>
-            <a-col :span="12" class="h-65"><a-form-item label="资产位置：" v-bind="formItemLayout">{{examine.pasitionString || '--'}}</a-form-item></a-col>
           </a-row>
         </div>
       <span class="section-title blue">附属配套信息</span>
@@ -174,22 +174,19 @@ export default {
   data () {
     return {
       type: '',                   // 新增编辑
-      organId: '67',
+      organId: '',
       form: this.$form.createForm(this),
       modalShow: false,
       matchingTypeData: [],       // 类型
       unitOfMeasurementOpt: [],   // 计量单位
       examine: {
-        projectIdData: [
-          { label: 1, key: 1 }
-        ],                        // 资产名称
+        projectIdData: [],                        // 资产名称
       },
       subData: {
         subsidiaryMatchingId: '',  // 附属配套ID,修改必有
         registerOrderId: '',       // 资产登记ID
-        assetId: '',               // 资产登记ID
-        assetName: undefined,      // 资产名称
-        status: '',                  // 状态
+        assetId: undefined,               // 资产登记ID
+        status: '',                // 状态
         matchingName: '',          // 名称
         matchingCode: '',          // 编码
         matchingType: undefined,   // 类型
@@ -236,10 +233,20 @@ export default {
   mounted () {
   },
   methods: {
-    allMounted (str) {
+    allMounted (str, obj) {
+      this.subData.registerOrderId = obj.registerOrderId
+      this.organId = obj.organId
       this.type = str
       if (str === 'edit') {
+        this.subData.assetId = obj.assetId
+        this.examine.assetName = obj.assetTypeName
+        this.examine.assetCode = obj.assetCode
+        this.examine.objectTypeName = obj.objectTypeName
+        this.examine.pasitionString = obj.pasitionString
+          this.subData.subsidiaryMatchingId = obj.subsidiaryMatchingId
         this.getMatchingById()
+      } else {
+         this.findAssetListByRgId(this.subData.registerOrderId, '')
       }
       this.organDict('SUBSIDIARY_MATCHING_TYPE')
       this.organDict('MEASURE_UNIT')
@@ -252,7 +259,6 @@ export default {
       this.$api.subsidiary.getMatchingById(data).then(res => {
         if (res.data.code === "0") {
           let obj = res.data.data || {}
-          this.examine = obj
           // 处理表单数据
           let o = {
             matchingName: obj.matchingName,
@@ -265,7 +271,7 @@ export default {
             remark: obj.remark,
           }
           // 处理复选框
-          this.checkNick = String(obj.isBefore) === '1' ? true : false
+          this.subData.isBefore = String(obj.isBefore) === '1' ? true : false
           // 处理附件
           if (obj.attachmentList && obj.attachmentList.length) {
             this.subData.files = obj.attachmentList.map(item => {
@@ -295,7 +301,7 @@ export default {
       let obj = {
         subsidiaryMatchingId: this.subData.subsidiaryMatchingId,  //  附属配套ID,修改必有
         registerOrderId: this.subData.registerOrderId,            //  资产登记ID
-        assetId: this.subData.assetId,                            //  资产信息ID
+        assetId: values.assetId,                            //  资产信息ID
         status: this.type === 'new' ? '1' : this.subData.status,  //  状态 1启用 0停用      新增默认启动
         matchingName: values.matchingName,                        //  名称
         matchingCode: values.matchingCode,                        //  编码
@@ -313,6 +319,7 @@ export default {
         if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('提交成功')
+            this.$emit('allQuery')
             this.handleCancel()
           })
         } else {
@@ -338,7 +345,24 @@ export default {
       }
       this.$api.assets.findAssetListByRgId(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          this.examine = res.data.data
+          let data = res.data.data
+          let arr = []
+          if (data && data.length !== 0) {
+            data.forEach(item => {
+              arr.push({label: item.assetName, value: item.assetId})
+            })
+            this.examine.projectIdData = arr
+            this.examine.assetName = data[0].assetName
+            this.examine.assetCode = data[0].assetCode
+            this.examine.objectTypeName = data[0].objectTypeName
+            this.examine.pasitionString = data[0].pasitionString
+          } else {
+            this.examine.projectIdData = []
+            this.examine.assetName = data[0].assetName
+            this.examine.assetCode = ''
+            this.examine.objectTypeName = ''
+            this.examine.pasitionString = ''
+          }
         } else {
           this.$message.error(res.data.message)
         }
@@ -397,6 +421,9 @@ export default {
   padding: 32px 18px;
   .h-65 {
     height: 65px;
+  }
+  .h-40 {
+    height: 40px;
   }
 }
 </style>

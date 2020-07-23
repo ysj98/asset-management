@@ -44,7 +44,7 @@
               @change="queryTableData"
               v-model="approvalStatus"
               :options="statusOptions"
-              placeholder="请选择资产状态"
+              placeholder="请选择登记单状态"
               :filterOption="filterOption"
             />
           </a-col>
@@ -71,6 +71,8 @@
         </a-row>
       </div>
     </search-container>
+    <!--数据总览-->
+    <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <span slot="action" slot-scope="text, record">
@@ -113,12 +115,13 @@
   import TreeSelect from 'src/views/common/treeSelect'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import DateMethodOrgan from '../components/DateMethodOrgan'
+  import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
   import {queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
     props: ['refreshKey'],
-    components: { SearchContainer, DateMethodOrgan, NoDataTip, TreeSelect },
+    components: { SearchContainer, DateMethodOrgan, NoDataTip, TreeSelect, OverviewNumber },
     data () {
       return {
         ASSET_MANAGEMENT, // 权限对象
@@ -162,6 +165,14 @@
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 220 }
           ]
         },
+        numList: [
+          {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
+          {title: '草稿', key: 'draft', value: 0, fontColor: '#324057'},
+          {title: '待审批', key: 'await', value: 0, fontColor: '#324057'},
+          {title: '已驳回', key: 'reject', value: 0, fontColor: '#324057'},
+          {title: '已审批', key: 'complete', value: 0, fontColor: '#324057'},
+          {title: '已取消', key: 'cancel', value: 0, fontColor: '#324057'}
+        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
       }
@@ -170,6 +181,22 @@
     methods: {
       // 下拉搜索筛选
       filterOption,
+
+      // 查询统计信息
+      querySumInfo (form) {
+        this.$api.worthRegister.queryValueRegisterPageListSum(form).then(({data: res}) => {
+          if (res && String(res.code) === '0') {
+            let { numList } = this
+            let obj = res.data || {}
+            return this.numList = numList.map(m => {
+              return { ...m, value: obj[m.key] || 0 }
+            })
+          }
+          throw res.message
+        }).catch(err => {
+          this.$message.error(err || '查询汇总接口出错')
+        })
+      },
 
       // 获取选择的组织机构
       changeTree (organId, organName) {
@@ -258,6 +285,7 @@
           assessmentMethod: (!assessmentMethod || assessmentMethod.includes('-1')) ? undefined : assessmentMethod.join(',')
         }
         if (type === 'export') { return form }
+        this.querySumInfo(form)
         this.tableObj.loading = true
         this.$api.worthRegister.queryRegisterList(form).then(r => {
           this.tableObj.loading = false

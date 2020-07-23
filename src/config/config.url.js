@@ -163,7 +163,7 @@ export const assets = {
     // 资产登记-查询资产列表-根据资产登记Id
     findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId',
     // 资产登记-附属配套-统计
-    getMatchingListByAssetId: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+    getMatchingStatisByRgId: '/ams/subsidiaryMatching/getMatchingStatisByRgId',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
     // 批量导入-导入保存
@@ -177,13 +177,13 @@ export const assets = {
     // 资产登记-价值信息分页列表
     queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
     // 资产登记-价值信息详情
-    getValueDetail: '/ams/registerOrder/getValueDetail',
+    // getValueDetail: '/ams/registerOrder/getValueDetail',
     // 资产登记-编辑价值信息
     updateAssetValue: '/ams/registerOrder/updateAssetValue',
     // 使用方向修改
     useForUpdate: '/ams/registerOrder/useFor/update',
     // 使用方向分页列表
-    userForList: '/ams/registerOrder/userFor/list',
+    userForList: '/ams/registerOrder/useFor/page',
     // 使用方向详情
     useForDetail: '/ams/registerOrder/useFor/detail',
     // 使用方向面积统计
@@ -205,7 +205,11 @@ export const assets = {
     // 相关费用详情
     correlationExpenseDetail: '/ams/registerOrder/correlationExpense/detail',
     // 相关费用金额统计
-    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total'
+    correlationExpenseTotal: '/ams/registerOrder/correlationExpense/total',
+    // 根据登记单Id资产登记明细列表-分页
+    getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList',
+    // 批量更新（导入）
+    baseImport: '/ams/registerOrder/baseImport'
   },
   // 资产清理
   assetClear: {
@@ -277,7 +281,9 @@ export const assets = {
     // 资产项目-编辑保存
     modifyProject: '/ams/project/modifyProject',
     // 资产项目-转运营信息统计
-    getTransferByProjectId: '/ams/project/getTransferByProjectId'
+    getTransferByProjectId: '/ams/project/getTransferByProjectId',
+    // 根据organId查询资产项目视图详情权属信息
+    queryAssetProjectOwnershipInfo: '/ams/asset-house/organ/houseViewShip'
   },
   // 房屋台账 - 楼栋视图
   buildingView: {
@@ -548,6 +554,8 @@ export const worthRegister = {
   queryAssertValueTrend: '/ams/assetValueRegister/queryAssertValueTrend',
   // 资产价值一览表查询汇总
   queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
+  // 价值登记查询(汇总)
+  queryValueRegisterPageListSum: '/ams/assetValueRegister/queryValueRegisterPageListSum'
 }
 
 
@@ -800,4 +808,18 @@ export const tableManage = {
   queryHouseAssetSumInfo: '/ams/statistics/asset/house/warrantCount',
   // 权属证件一览表(汇总)
   queryOwnershipCardSumInfo: '/ams/statistics/ownership/warrant/count'
+}
+
+// 资产入库
+export const assetIn = {
+  // 入库单统计
+  getAssetStoreCount: '/ams/assetStore/getAssetStoreCount',
+  // 入库登记单导出
+  export: '/ams/assetStore/export',
+  // 新增资产入库或修改
+  addOrUpdateAssetStore: '/ams/assetStore/addOrUpdateAssetStore',
+  // 查询入库单详情
+  queryAssetStoreDetail: '/ams/assetStore/queryAssetStoreDetail',
+  // 资产入库列表查询
+  queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
 }

@@ -11,7 +11,7 @@
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+        <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
@@ -87,7 +87,7 @@ const approvalStatusData = [
 const columns = [
   {
     title: '登记单编号',
-    dataIndex: 'registerOrderCode'
+    dataIndex: 'registerOrderId'
   },
   {
     title: '登记单名称',
@@ -176,7 +176,7 @@ export default {
         assetType: '',             // 备注：变动类型id(多个用，分割)
         createDateS: '',           // 备注：开始创建日期
         crateDateE: '',            // 备注：结束创建日期
-        isCurrent: false           // 备注：仅当前机构下资产清理单 0 否 1 是      // 不要了
+        // isCurrent: false           // 备注：仅当前机构下资产清理单 0 否 1 是      // 不要了
       },
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
@@ -199,12 +199,11 @@ export default {
   methods: {
     // 操作
     operationFun (str, val) {
-      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
+      let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName, ...val}])
       switch (str) {
         case 'detail': {           // 详情
-        val.type = 'detail'
           let particularsData = JSON.stringify([val])
-          this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'particulars' }})
+          this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'detail' }})
         }
         break;
         case 'basicInformation':    // 登记基础信息
@@ -216,10 +215,10 @@ export default {
         case 'registeredInformation':    // 登记价值信息
         this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 2 }})
         break;
-        case 'RegisterDirections':    // 登记使用方向
+        case 'registerDirections':    // 登记使用方向
         this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 3 }})
         break;
-        case 'RegistrationFees':    // RegistrationFees
+        case 'registrationFees':    // RegistrationFees
         this.$router.push({path: '/assetRegister/registerEdit', query: { record: recordData, setType: 'edit', activeStepIndex: 4 }})
         break;
         case 'delete':            // 删除
@@ -362,20 +361,23 @@ export default {
         }
       })
     },
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 查询
     query () {
       this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        // approvalStatusList   状态
-        approvalStatuss: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatusList: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus : [],      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectId: this.queryCondition.projectId,            // 资产项目Id
-        organId: Number(this.queryCondition.organId),                // 组织机构id
+        organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
         createDateS: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),             // 结束创建日期
-        isCurrent: this.queryCondition.isCurrent               // 仅当前机构下资产清理单 0 否 1 是
+        crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
       }
       this.$api.assets.getRegisterOrderListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -387,6 +389,7 @@ export default {
           this.tableData = data
           this.count = res.data.data.count
           this.loading = false
+          this.pageListStatistics(obj)
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -394,7 +397,7 @@ export default {
       })
     },
     // 查询统计信息
-    queryStatistics (form) {
+    pageListStatistics (form) {
       this.$api.assets.pageListStatistics(form).then(r => {
         let res = r.data
         if (res && String(res.code) === '0') {
@@ -424,10 +427,10 @@ export default {
       //   arr.push({iconType: 'close-circle', text: '登记使用信息', editType: 'usageInformation'})
       // }
       if (String(record.approvalStatus) === '0') {
-        arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'RegisterDirections '})
+        arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'registerDirections'})
       }
       if (String(record.approvalStatus) === '0') {
-        arr.push({iconType: 'close-circle', text: '登记相关费用', editType: 'RegistrationFees'})
+        arr.push({iconType: 'close-circle', text: '登记相关费用', editType: 'registrationFees'})
       }
       if (String(record.approvalStatus) === '0') {
         arr.push({iconType: 'close-circle', text: '核实', editType: 'verify'})

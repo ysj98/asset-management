@@ -251,6 +251,17 @@ let proRouter = [
     path: '/ownershipSurvey/assetOwnershipDetail',
     name: '资产权属详情',
     component: () => import('@/views/ownershipManagement/ownershipSurvey/assetOwnershipDetail.vue')
+  },{
+    path: '/worthRegisterRecord',
+    name: '资产估值记录',
+    component: () => import('@/views/financialManagement/worth-register/components/WorthRegisterRecord'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/assetWorthList',
+    name: '资产价值一览表',
+    component: () => import('@/views/financialManagement/worth-register/asset-worth-list'),
+    meta: { keepAlive: true }
   },
   {
     path: '/worthRegister',
@@ -607,6 +618,27 @@ let proRouter = [
     name: '资产价值统计表',
     component: () => import('@/views/tableManagement/assetWorthStatistics'),
     meta: { keepAlive: true }
+  }, {
+    path: '/assetIn',
+    name: '资产入库',
+    component: () => import('@/views/assetInformationManagement/assetIn/index.vue'),
+    meta: { keepAlive: true }
+  }, {
+    path: '/assetIn/detail',
+    name: '详情', // 资产入库详情
+    component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
+  }, {
+    path: '/assetIn/approval',
+    name: '审核', // 资产入库审核
+    component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
+  }, {
+    path: '/assetIn/edit',
+    name: '编辑', // 资产入库编辑
+    component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
+  }, {
+    path: '/assetIn/new',
+    name: '新建', // 资产入库新建
+    component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
   }
 ]
 export default proRouter

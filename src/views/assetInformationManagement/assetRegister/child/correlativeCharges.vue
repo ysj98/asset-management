@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-17 13:50:00
+ * @LastEditTime: 2020-07-22 19:31:57
  * @Description: 相关费用
 -->
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box" v-if="record[0].type !== 'detail'">
+    <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-l">
         <span>费用总额：{{statistics.num || '--'}}</span> <span class="p120">收入总额：{{statistics.valueAmount || '--'}}</span>
       </div>
@@ -60,6 +60,7 @@ export default {
   data () {
     return {
       record: [],
+      setType: '',
       columns: [],
       tableData: [],
       count: '',            // 总页数
@@ -81,7 +82,8 @@ export default {
   },
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
-    if (this.record[0].type === 'detail') {
+    this.setType = this.$route.query.setType
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(costData)
       arr.pop()

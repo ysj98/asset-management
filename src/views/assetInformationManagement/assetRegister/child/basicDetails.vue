@@ -1,7 +1,7 @@
  <!--
  * @Author: LW
  * @Date: 2020-07-10 16:13:27
- * @LastEditTime: 2020-07-14 09:54:24
+ * @LastEditTime: 2020-07-22 10:33:36
  * @Description: 新增信息
 --> 
 <template>
@@ -20,28 +20,30 @@
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    registerOrderId: [String, Number]
+  },
   data () {
     return {
       basicDetails: [
-        { text: '登记单编号', value: 'partitionName' },
-        { text: '登记单名称', value: 'totalNum' },
-        { text: '所属机构', value: 'partitionedNum' },
-        { text: '资产项目名称', value: 'unPartitionedNum' },
-        { text: '资产类型', value: 'totalNum' },
-        { text: '创建人', value: 'partitionedNum' },
-        { text: '创建日期', value: 'unPartitionedNum' },
-        { text: '备注', value: 'unPartitionedNum' }
+        { text: '登记单编号', value: 'registerOrderId' },
+        { text: '登记单名称', value: 'registerOrderName' },
+        { text: '所属机构', value: 'organName' },
+        { text: '资产项目名称', value: 'projectName' },
+        { text: '资产类型', value: 'assetTypeName' },
+        { text: '创建人', value: 'createByName' },
+        { text: '创建日期', value: 'createTime' },
+        { text: '备注', value: 'remark' }
       ],
       Detail: {},
-      registerOrderId: ''
     }
   },
   computed: {
   },
   created () {
   },
-  mounted () {                                // 获取资产类型
+  mounted () {
+    this.editFn()
   },
   methods: {
     editFn () {

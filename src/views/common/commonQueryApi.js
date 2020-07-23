@@ -88,7 +88,7 @@ export function queryCategoryList ({assetType, organId}) {
 
 // 根据organId查询来源字典
 export const querySourceType = (organId, context) => {
-  return context.$api.assets.organDict({code: 'source_type', organId}).then(r => {
+  return context.$api.assets.platformDict({code: 'ams_source_type', organId}).then(r => {
     let res = r.data
     if (res && String(res.code) === '0') {
       return (res.data || []).map(item => {

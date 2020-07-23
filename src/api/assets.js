@@ -5,7 +5,7 @@
  * @desc: Do not Edit
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { assets } from '../config/config.url'
+import { assets, assetIn } from '../config/config.url'
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -150,6 +150,10 @@ export function getRegisterOrderListPage (data) {
 export function downloadTemplate (data) {
   return axiosPost(assets.assetRegister.downloadTemplate, data, false, false, {responseType: 'blob'})
 }
+// 基本信息批量更新（导入）
+export function baseImport (data) {
+  return axiosPost(assets.assetRegister.baseImport, data)
+}
 // 资产登记转运营信息-根据资产项目ID
 export function getTransferByProjectId (data) {
   return axiosPost(assets.assetRegister.getTransferByProjectId, data)
@@ -183,8 +187,12 @@ export function findAssetListByRgId (data) {
   return axiosPost(assets.assetRegister.findAssetListByRgId, data)
 }
 // 资产登记-附属配套-统计
-export function getMatchingListByAssetId (data) {
-  return axiosPost(assets.assetRegister.getMatchingListByAssetId, data)
+export function getMatchingStatisByRgId (data) {
+  return axiosPost(assets.assetRegister.getMatchingStatisByRgId, data)
+}
+// 根据登记单Id资产登记明细列表-分页
+export function getRegisterOrderDetailsPageByIdList (data) {
+  return axiosPost(assets.assetRegister.getRegisterOrderDetailsPageByIdList, data)
 }
 // 下载附属配套模板
 export function downModle (data) {
@@ -211,9 +219,9 @@ export function queryValuePageListByRgId (data) {
   return axiosPost(assets.assetRegister.queryValuePageListByRgId, data)
 }
 // 资产登记-价值信息详情
-export function getValueDetail (data) {
-  return axiosPost(assets.assetRegister.getValueDetail, data)
-}
+// export function getValueDetail (data) {
+//   return axiosPost(assets.assetRegister.getValueDetail, data)
+// }
 // 资产登记-编辑价值信息
 export function updateAssetValue (data) {
   return axiosPost(assets.assetRegister.updateAssetValue, data)
@@ -572,6 +580,10 @@ export function queryProjectManageGeneralInfo (data) {
 export function queryProjectManageOwnInfo (data) {
   return axiosGet(assets.projectManage.queryOwnInfo, data)
 }
+// 根据organId查询资产项目视图详情权属信息
+export function queryAssetProjectOwnershipInfo (data) {
+  return axiosGet(assets.assetProject.queryAssetProjectOwnershipInfo, data)
+}
 
 // 权属人管理
 // 权属人管理-新建或编辑权属人
@@ -639,4 +651,26 @@ export function getAcctItemPageList (data) {
 // 资产视图-运营信息-运营收入（返回参数）
 export function assetOperationExpenseParam (data) {
   return axiosPost(assets.assetView.assetOperationExpenseParam, data)
+}
+
+// 资产入库相关
+// 入库单统计
+export function getAssetStoreCount (data) {
+  return axiosPost(assetIn.getAssetStoreCount, data)
+}
+// 入库登记单导出
+export function exportAssetInExcel (data) {
+  return axiosPost(assetIn.export, data, false, false, {responseType: 'blob'})
+}
+// 新增资产入库或修改
+export function addOrUpdateAssetStore (data) {
+  return axiosPost(assetIn.addOrUpdateAssetStore, data)
+}
+// 查询入库单详情
+export function queryAssetStoreDetail (data) {
+  return axiosGet(assetIn.queryAssetStoreDetail, data)
+}
+// 资产入库列表查询
+export function queryAssetStoreList (data) {
+  return axiosPost(assetIn.queryAssetStoreList, data)
 }

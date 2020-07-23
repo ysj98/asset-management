@@ -62,3 +62,7 @@ export function queryListSum (data) {
 export function queryPageListSum (data) {
   return axiosPost(worthRegister.queryPageListSum, data)
 }
+// 价值登记查询(汇总)
+export function queryValueRegisterPageListSum (data) {
+  return axiosPost(worthRegister.queryValueRegisterPageListSum, data)
+}

@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-17 11:41:46
+ * @LastEditTime: 2020-07-22 19:32:10
  * @Description: 附属配套
 --> 
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box" v-if="record[0].type !== 'detail'">
+    <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-l">
         <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
       </div>
@@ -42,7 +42,7 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew"></completeSetNew>
+    <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew" @allQuery=allQuery></completeSetNew>
     <!-- 下载模板 -->
     <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
@@ -56,10 +56,15 @@ import completeSetNew from './../common/completeSetNew'
 import eportAndDownFile from './.././../../common/eportAndDownFile'
 export default {
   components: {noDataTips, completeSetNew, eportAndDownFile},
-  props: {},
+  props: {
+    registerOrderId: [String, Number],
+    assetType: [String, Number],
+    organId: [String, Number]
+  },
   data () {
     return {
       record: [],
+      setType: '',
       columns: [],
       tableData: [],
       count: '',            // 总页数
@@ -67,6 +72,7 @@ export default {
       modalShow: false,
       noPageTools: false,
       queryCondition: {
+        organId: '',
         pageSize: 10,
         pageNum: 1,
         registerOrderId: '',   // 资产登记单Id
@@ -80,16 +86,27 @@ export default {
   created () {
   },
   mounted () {
+    this.queryCondition.registerOrderId = this.registerOrderId
+    this.queryCondition.assetType = this.assetType
     this.record = JSON.parse(this.$route.query.record)
-    if (this.record[0].type === 'detail') {
+    this.queryCondition.organId = this.organId
+    this.setType = this.$route.query.setType
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(auxiliary)
       arr.pop()
       this.columns = arr
+    } else {
+      this.columns = auxiliary
     }
     this.query()
   },
   methods: {
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 删除
     deleteFn (record) {
         this.$SG_Modal.confirm({
@@ -118,15 +135,25 @@ export default {
         })
     },
     // 新增
-    newlyFn (str) {
+    newlyFn (str, record) {
       this.modalShow = true
+      let obj = ''
+      if (str === 'new') {
+        obj = {
+          registerOrderId: this.queryCondition.registerOrderId,            //  资产登记ID
+          organId: this.organId
+        }
+      } else {
+        obj = record,
+        obj.registerOrderId = this.queryCondition.registerOrderId            //  资产登记ID
+        obj.organId = this.organId
+      }
       this.$nextTick(() => {
-        this.$refs.completeSetNew.allMounted(str)
+        this.$refs.completeSetNew.allMounted(str, obj)
         this.$refs.completeSetNew.modalShow = true
       })
     },
     cancel () {
-      console.log('0-0-0-')
       this.modalShow = false
     },
     // 导入
@@ -137,9 +164,7 @@ export default {
     uploadModeFile (file) {
       let fileData = new FormData()
       fileData.append('file', file)
-      fileData.append('organId', this.organId)
-      fileData.append('registerOrderId', this.registerOrderId)
-      fileData.append('assetType', this.assetType)
+      fileData.append('registerOrderId', this.queryCondition.registerOrderId)
       let loadingName = this.SG_Loding('导入中...')
       this.$api.subsidiary.batchImportByRgId(fileData).then(res => {
         if (res.data.code === '0') {
@@ -161,10 +186,10 @@ export default {
     },
     down () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType             // 资产类型
       }
-      this.$api.grid.downModle(obj).then(res => {
+      this.$api.assets.downModle(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -184,28 +209,6 @@ export default {
     // 查询
     query () {
       this.loading = true
-      this.tableData = [
-        {
-          subsidiaryMatchingId: '1000',                //类型：String  必有字段  备注：附属配套ID
-          assetId: '1000',                //类型：String  必有字段  备注：资产信息Id
-          assetCode: '1000',                //类型：String  必有字段  备注：资产编码
-          assetTypeName: '1000',                //类型：String  必有字段  备注：资产类型名称，fy
-          assetName: '1000',                //类型：String  必有字段  备注：资产名称，fy
-          matchingName: '1000',                //类型：String  必有字段  备注：附属配套名称
-          matchingCode: '1000',                //类型：String  必有字段  备注：附属配套编码
-          matchingType: '1000',                //类型：String  必有字段  备注：类型（附属配套）
-          matchingTypeName: '1000',                //类型：String  必有字段  备注：类型名称（附属配套），fy
-          specificationType: '1000',                //类型：String  必有字段  备注：规格型号
-          status: '1000',                //类型：String  必有字段  备注：状态，用于状态操作
-          statusName: '1000',                //类型：String  必有字段  备注：状态名称，fy
-          value: '1000',                //类型：String  必有字段  备注：价值(元)
-          number: '1000',                //类型：String  必有字段  备注：数量
-          unitOfMeasurementName: '1000',                //类型：String  必有字段  备注：计量单位名称，fy
-          isBeforeName: '1000',                //类型：String  必有字段  备注：是否接管前附属配套 1是 0否，fy
-          remark: '1000'                //类型：String  必有字段  备注：备注
-        }
-      ]
-      this.loading = false
       this.$api.assets.getListPageByRegisterOrderId(this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -214,7 +217,7 @@ export default {
           })
           this.tableData = data
           this.count = res.data.data.count
-          this.getMatchingListByAssetId()
+          this.getMatchingStatisByRgId()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
@@ -223,14 +226,14 @@ export default {
       })
     },
     // 统计
-    getMatchingListByAssetId () {
+    getMatchingStatisByRgId () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType             // 资产类型
       }
-      this.$api.assets.getMatchingListByAssetId(obj).then(res => {
+      this.$api.assets.getMatchingStatisByRgId(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          this.statistics = res.data.data.data
+          this.statistics = res.data.data
         } else {
           this.$message.error(res.data.message)
         }

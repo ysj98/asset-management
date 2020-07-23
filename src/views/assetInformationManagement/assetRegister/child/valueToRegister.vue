@@ -1,12 +1,12 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-17 11:41:37
+ * @LastEditTime: 2020-07-22 19:32:29
  * @Description: 价值信息
 --> 
 <template>
   <div class="valueToRegister">
-    <div class="button-box" v-if="record[0].type !== 'detail'">
+    <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-l">
         <span>资产总原值：{{statistics.originalValue || '--'}}</span> <span class="p120">累计折旧总金额：{{statistics.depreciationAmount || '--'}}</span>
       </div>
@@ -41,7 +41,7 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <valueToRegisterEdit @cancel="cancel" v-if="modalShow" ref="valueToRegisterEdit"></valueToRegisterEdit>
+    <valueToRegisterEdit @cancel="cancel" v-if="modalShow" ref="valueToRegisterEdit" @allQuery="allQuery"></valueToRegisterEdit>
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
@@ -53,10 +53,15 @@ import noDataTips from '@/components/noDataTips'
 import valueToRegisterEdit from './../common/valueToRegisterEdit'
 export default {
   components: {noDataTips, valueToRegisterEdit},
-  props: {},
+  props: {
+    registerOrderId: [String, Number],
+    assetType: [String, Number],
+    organId: [String, Number]
+  },
   data () {
     return {
       record: [],
+      setType: '',
       fileType: ['xls', 'xlsx'],
       columns: [],
       tableData: [],
@@ -78,20 +83,32 @@ export default {
   created () {
   },
   mounted () {
+    this.queryCondition.registerOrderId = this.registerOrderId
+    this.queryCondition.assetType = this.assetType
+    this.queryCondition.organId = this.organId
     this.record = JSON.parse(this.$route.query.record)
-    if (this.record[0].type === 'detail') {
+    this.setType = this.$route.query.setType
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(valueToRegisterData)
       arr.pop()
       this.columns = arr
+    } else {
+      this.columns = valueToRegisterData
     }
     this.query()
   },
   methods: {
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 编辑
     editFn (record) {
       this.modalShow = true
       this.$nextTick(() => {
+        record.registerOrderId = this.queryCondition.registerOrderId
         this.$refs.valueToRegisterEdit.getValueDetail(record)
         this.$refs.valueToRegisterEdit.modalShow = true
       })
@@ -125,7 +142,7 @@ export default {
       if (!files.length) { return }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', files[0])
-      fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('registerOrderId', this.queryCondition.registerOrderId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -141,6 +158,7 @@ export default {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
+            this.allQuery()
           })
         } else {
           e.target.value = ''
@@ -158,14 +176,14 @@ export default {
     // 导出
     downFn () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType             // 资产类型
       }
-      this.$api.grid.valueExport(obj).then(res => {
+      this.$api.assets.valueExport(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = `附属配套.xls`
+        a.download = `价值信息.xls`
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()
@@ -181,26 +199,6 @@ export default {
     // 查询
     query () {
       this.loading = true
-      this.tableData = [
-        {
-          assetId: 'mock',                //类型：String  必有字段  备注：资产Id
-          assetCode: 'mock',                //类型：String  必有字段  备注：资产编码
-          assetName: 'mock',                //类型：String  必有字段  备注：资产名称
-          organName: 'mock',                //类型：String  必有字段  备注：所属机构
-          projectName: 'mock',                //类型：String  必有字段  备注：所属资产项目
-          assetType: 'mock',                //类型：String  必有字段  备注：资产类型
-          assetTypeName: 'mock',                //类型：String  必有字段  备注：无
-          assetCategoryType: 'mock',                //类型：String  必有字段  备注：资产分类
-          assetCategoryName: 'mock',                //类型：String  必有字段  备注：资产分类 名称
-          pasitionString: 'mock',                //类型：String  必有字段  备注：资产位置，拼接字段
-          originalValue: 'mock',                //类型：String  必有字段  备注：资产原值
-          validPeriod: 'mock',                //类型：String  必有字段  备注：使用期限 单位月
-          startDate: 'mock',                //类型：String  必有字段  备注：开始使用日期
-          usedDate: 'mock',                //类型：String  必有字段  备注：已使用期数/月
-          depreciationAmount: 'mock'                //类型：String  必有字段  备注：累计折旧金额(元)
-        }
-      ]
-      this.loading = false
       this.$api.assets.queryValuePageListByRgId(this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -220,12 +218,12 @@ export default {
     // 统计
     getValueStatistics () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType                   // 资产类型
       }
       this.$api.assets.getValueStatistics(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          this.statistics = res.data.data.data
+          this.statistics = res.data.data
         } else {
           this.$message.error(res.data.message)
         }
