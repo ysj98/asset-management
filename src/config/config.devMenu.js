@@ -19,8 +19,12 @@ export default [
     title: '资产信息管理',
     children: [
       {
-        title: '资产变动',
-        path: '/assetChange'
+        title: '资产变更单',
+        path: '/assetChangeRegister',
+      },
+      {
+        title: '资产变动一览表',
+        path: '/assetChangeView',
       },
       {
         title: '资产清理',

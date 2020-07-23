@@ -56,6 +56,10 @@ export function exportChangeScheduleList (data) {
 export function getChangePage (data) {
   return axiosPost(assets.management.getChangePage, data)
 }
+
+export function getChangePageSum (data) {
+  return axiosPost(assets.management.getChangePageSum, data)
+}
 // 资产变动-删除
 export function deleteChange (data) {
   return axiosPost(assets.management.deleteChange, data)
@@ -75,6 +79,14 @@ export function exportChange (data) {
 // 资产变动-新增编辑
 export function submitChange (data) {
   return axiosPost(assets.management.submitChange, data)
+}
+// 资产变动-资产项目查楼栋
+export function organBuild (data) {
+  return axiosGet(assets.management.organBuild, data)
+}
+// 资产变动-查楼栋下房屋
+export function buildPage (data) {
+  return axiosGet(assets.management.buildPage, data)
 }
 // 资产变动-编辑明细
 export function getChangeInfo (data) {

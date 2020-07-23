@@ -8,6 +8,10 @@ export const deliveryProperty = [{
   dataIndex: 'assetCode',
   width: '10%'
 }, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
+}, {
   title: '所在位置',
   dataIndex: 'address',
   width: '10%'
@@ -40,6 +44,10 @@ export const deliveryOperation = [{
   title: '资产名称',
   dataIndex: 'assetName',
   width: '15%'
+}, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
@@ -79,6 +87,10 @@ export const changeDirectionUse = [{
 }, {
   title: '资产编码',
   dataIndex: 'assetCode'
+}, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
 }, {
   title: '所在位置',
   dataIndex: 'address'
@@ -132,7 +144,11 @@ export const projectChange = [{
   title: '资产编码',
   dataIndex: 'assetCode',
   width: '10%'
-}, {
+},{
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
+},{
   title: '所在位置',
   dataIndex: 'address',
   width: '10%'
@@ -165,6 +181,10 @@ export const variationOriginalValue = [{
   title: '资产名称',
   dataIndex: 'assetName',
   width: '15%'
+}, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
 }, {
   title: '资产编码',
   dataIndex: 'assetCode',
@@ -208,6 +228,10 @@ export const positionChange = [{
   dataIndex: 'assetCode',
   width: '10%'
 }, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
+}, {
   title: '所在位置',
   dataIndex: 'address',
   width: '10%'
@@ -229,6 +253,88 @@ export const positionChange = [{
   align: 'center',
   scopedSlots: { customRender: 'addressName' }
 },  {
+  title: '操作',
+  dataIndex: 'operation',
+  align: 'center',
+  scopedSlots: { customRender: 'operation' }
+}]
+// 基础信息变更
+export const baseChange = [{
+  title: '资产名称',
+  dataIndex: 'assetName',
+  width: '15%'
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode',
+  width: '10%'
+},{
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
+}, {
+  title: '资产分类',
+  dataIndex: 'assetCategoryName',
+  width: '10%'
+},{
+  title: '所在位置',
+  dataIndex: 'address',
+  width: '10%'
+}, {
+  title: '变更后资产名称',
+  dataIndex: 'newAssetName',
+  width: '10%',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetName' }
+}, {
+  title: '变更后资产编码',
+  dataIndex: 'newAssetCode',
+  width: '10%',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetCode' }
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  align: 'center',
+  scopedSlots: { customRender: 'operation' }
+}]
+// 债权债务变更
+export const debtChange = [{
+  title: '资产名称',
+  dataIndex: 'assetName',
+  width: '15%'
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode',
+  width: '10%'
+},{
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+  width: '10%'
+}, {
+  title: '资产分类',
+  dataIndex: 'assetCategoryName',
+  width: '10%'
+},{
+  title: '所在位置',
+  dataIndex: 'address',
+  width: '10%'
+}, {
+  title: '变更前债权金额',
+  dataIndex: 'newAssetName',
+  width: '10%',
+}, {
+  title: '变更前债务金额',
+  dataIndex: 'newAssetCode',
+  width: '10%',
+}, {
+  title: '变更后债权金额',
+  dataIndex: 'creditorAmount',
+  width: '10%',
+}, {
+  title: '变更后债务金额',
+  dataIndex: 'debtAmount',
+  width: '10%',
+}, {
   title: '操作',
   dataIndex: 'operation',
   align: 'center',
