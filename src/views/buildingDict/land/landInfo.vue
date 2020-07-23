@@ -8,9 +8,15 @@
       <!-- 搜索框 -->
       <div class="top-search-one">
         <div>
-          <SG-Button @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
+          <SG-Button
+            v-if="createPower"
+            @click="goPage('create')"
+            class="mr10"
+            icon="plus"
+            type="primary"
+          >新增</SG-Button>
           <!-- <SG-Button class="mr10" ><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button> -->
-          <SG-Button class="mr10">
+          <SG-Button @click="exportList" class="mr10">
             <segiIcon type="#icon-ziyuan10" class="mr10" />导出
           </SG-Button>
         </div>
@@ -145,10 +151,28 @@ export default {
         dataSource: [],
         loading: false,
         totalCount: 0
-      }
+      },
+      createPower: false, // 新建
+      editPower: false, // 编辑
+      deletePower: false // 删除
     };
   },
-  mounted() {},
+  watch: {
+    $route() {
+      if (
+        this.$route.path === "/buildingDict" &&
+        this.$route.query.refresh &&
+        this.$route.query.showKey === "land"
+      ) {
+        this.queryCondition.pageNum = 1;
+        this.queryCondition.pageSize = 10;
+        this.query();
+      }
+    }
+  },
+  mounted() {
+    this.handlePower();
+  },
   methods: {
     query() {
       let data = {
@@ -160,13 +184,17 @@ export default {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data || [];
+            let btnArr = this.createOperationBtn()
             this.table.dataSource = result.map(item => {
               return {
                 key: utils.getUuid(),
                 ...item,
-                landuseName: this.landuseOpt.find((v) => v.value===item.landuse).label,
-                landTypeName: this.landTypeOpt.find((v) => v.value===item.landType).label,
-                operationDataBtn: this.createOperationBtn(item)
+                landuseName: this.landuseOpt.find(v => v.value === item.landuse)
+                  .label,
+                landTypeName: this.landTypeOpt.find(
+                  v => v.value === item.landType
+                ).label,
+                operationDataBtn: btnArr
               };
             });
             this.table.totalCount = res.data.paginator.totalCount || 0;
@@ -294,23 +322,39 @@ export default {
       return data;
     },
     // 生成操作按钮
-    createOperationBtn(record) {
+    createOperationBtn() {
       // 审批状态
-      let arr = [
-        { iconType: "edit", text: "编辑", editType: "edit" },
-        { iconType: "delete", text: "删除", editType: "delete" }
-      ];
-      // if (this.$power.has(ASSET_MANAGEMENT.ASSET_EDIT_SUBSI)) {
-      //   arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
-      // }
-      // if (
-      //   String(record.status) === "0" &&
-      //   this.$power.has(ASSET_MANAGEMENT.ASSET_DELETE_SUBSI)
-      // ) {
-      //   arr.push({ iconType: "delete", text: "删除", editType: "delete" });
-      // }
+      let arr = [];
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_EDIT)) {
+        arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_DELETE)) {
+        arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+      }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
       return arr;
+    },
+    // 处理按钮权限
+    handlePower() {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_CREATE)) {
+        this.createPower = true;
+      }
+    },
+    exportList() {
+      let data = {
+        ...this.queryCondition
+      };
+      this.$api.building.blankApiExport(data).then(res => {
+        console.log(res);
+        let blob = new Blob([res.data]);
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `楼盘字典土地信息.xls`;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
     },
     // 操作事件函数
     operationFun(type, record) {
@@ -318,20 +362,19 @@ export default {
       if (["edit", "detail"].includes(type)) {
         this.goPage(type, record);
       }
-      if (["on", "off", "delete"].includes(type)) {
-        let info = operationInfo[type];
+      if (["delete"].includes(type)) {
         this.$SG_Modal.confirm({
-          title: `确定${info["msg"]}该附属配套吗?`,
+          title: `确定确认要删除该土地信息吗吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: () => {
             let data = {
-              subsidiaryMatchingId: record.subsidiaryMatchingId,
-              status: info["status"]
+              organId: this.queryCondition.organId,
+              blankId: record.blankId
             };
-            this.$api.subsidiary.updateStatusOrDelete(data).then(res => {
+            this.$api.building.blankApiDelete(data).then(res => {
               if (res.data.code === "0") {
-                this.$SG_Message.success(`${info["msg"]}成功！`);
+                this.$message.success("删除成功!")
                 this.query();
               } else {
                 this.$message.error(res.data.message);

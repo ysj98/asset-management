@@ -7,12 +7,16 @@
   <div class="buildingDict-page">
     <div class="custom-tabs">
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
+        <a-tab-pane tab="组织机构权属" key="organOwnership">
+          <organOwnership />
+        </a-tab-pane>
         <a-tab-pane tab="资产项目权属" key="assetProject">
           <assetProjectOwnership/>
         </a-tab-pane>
         <a-tab-pane tab="资产权属" key="asset">
           <assetOwnership />
         </a-tab-pane>
+        
       </a-tabs>
     </div>
   </div>
@@ -20,15 +24,17 @@
 <script>
 import assetOwnership from './assetOwnership.vue'
 import assetProjectOwnership from './assetProjectOwnership.vue'
+import organOwnership from './organOwnership.vue'
 const allWidth = {width: '185px'}
 export default {
   components: {
     assetOwnership,
-    assetProjectOwnership
+    assetProjectOwnership,
+    organOwnership
   },
   data () {
     return {
-      showKey: 'assetProject', // assetProject资产项目 asset 资产
+      showKey: 'organOwnership', // organOwnership组织机构权属  assetProject资产项目  asset 资产
       allWidth,
       organId: ''
     }

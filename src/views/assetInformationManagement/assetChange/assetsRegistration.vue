@@ -326,7 +326,6 @@ export default {
       };
       this.getChangePageSum(obj);
       this.$api.assets.getChangePage(obj).then(res => {
-        this.loading = false;
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || [];
           this.tableData = data.map((item, index) => {
@@ -341,6 +340,8 @@ export default {
         } else {
           this.$message.error(res.data.message);
         }
+      }).finally(() => {
+        this.loading = false;
       });
     },
     // 查询统计列表
@@ -349,7 +350,6 @@ export default {
       delete data.pageNum;
       delete data.pageSize;
       this.$api.assets.getChangePageSum(data).then(res => {
-        this.overviewNumSpinning = false;
         if (Number(res.data.code) === 0) {
           let data = res.data.data || {};
           this.numList = this.numList.map(item => {
@@ -362,7 +362,9 @@ export default {
         } else {
           this.$message.error(res.data.message);
         }
-      });
+      }).finally(() => {
+        this.overviewNumSpinning = false;
+      });;
     },
     // 高级搜索控制
     searchContainerFn(val) {
