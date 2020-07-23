@@ -128,12 +128,12 @@ export default {
     },
   },
   created () {
-  },
-  mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.organId = this.record[0].organId
     this.registerOrderId = this.record[0].registerOrderId
     this.assetType = this.record[0].assetType
+  },
+  mounted () {
     this.query()
   }
 }

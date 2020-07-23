@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-22 16:36:32
+ * @LastEditTime: 2020-07-23 11:29:29
  * @Description: file content
  */ 
 
@@ -139,18 +139,18 @@ export const directionUseData = [
 
 //  -------- 相关费用 ----------------------------------
 export const costData = [
-  { title: '相关费用ID', dataIndex: 'assetId', width: 100 },
-  { title: '资产ID', dataIndex: 'assetName', width: 150 },
-  { title: '资产名称', dataIndex: 'assetCode', width: 100 },
-  { title: '资产编码', dataIndex: 'objectTypeName', width: 100 },
-  { title: '资产分类', dataIndex: 'buildArea', width: 150 },
-  { title: '类别', dataIndex: 'transferTime', width: 100 },
-  { title: '费用/收入类型', dataIndex: 'transferArea', width: 100 },
-  { title: '费用/收入名称', dataIndex: 'transferOperationTime', width: 100 },
-  { title: '客户名称', dataIndex: 'transferOperationArea', width: 100 },
-  { title: '所属月份', dataIndex: 'selfUserArea', width: 100 },
-  { title: '金额', dataIndex: 'idleArea', width: 100 },
-  { title: '读数', dataIndex: 'occupationArea', width: 100 },
-  { title: '备注', dataIndex: 'otherArea', width: 100 },
+  { title: '相关费用ID', dataIndex: 'correlationExpenseId', width: 100 },
+  { title: '资产ID', dataIndex: 'assetId', width: 150 },
+  { title: '资产名称', dataIndex: 'assetName', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 150 },
+  { title: '类别', dataIndex: 'categoryShowName', width: 100 },
+  { title: '费用/收入类型', dataIndex: 'categoryType', width: 100 },
+  { title: '费用/收入名称', dataIndex: 'categoryName', width: 100 },
+  { title: '客户名称', dataIndex: 'custName', width: 100 },
+  { title: '所属月份', dataIndex: 'belongMonth', width: 100 },
+  { title: '金额', dataIndex: 'amount', width: 100 },
+  { title: '读数', dataIndex: 'readNum', width: 100 },
+  { title: '备注', dataIndex: 'remark', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
