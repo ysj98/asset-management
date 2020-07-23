@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-23 10:27:02
+ * @LastEditTime: 2020-07-23 15:27:44
  * @Description: 使用方向
 --> 
 <template>
@@ -33,7 +33,7 @@
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
-        location="absolute"
+        location="static"
         :noPageTools="noPageTools"
         v-model="queryCondition.pageNum"
         @change="handleChange"
@@ -195,7 +195,7 @@ export default {
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      // this.query()
+      this.query()
     },
     // 查询
     query () {
