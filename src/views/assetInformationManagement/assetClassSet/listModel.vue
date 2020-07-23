@@ -6,7 +6,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
-        <SG-Button v-if="showCreateBtn" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
+        <SG-Button v-if="createPower" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
           >新建</SG-Button
         >
         <SG-Button type="primary" @click="exportList"
@@ -43,49 +43,39 @@
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
-          <!--<OperationPopover :operationData="record.operationData" :record="record" @operationFun="operationFun"></OperationPopover>-->
+          <!-- 状态修改 -->
           <a
             class="operation-btn"
-            v-if="+record.status === 0"
-            @click="operationFun('start', record)"
-            v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS"
-            >启用</a
+            v-if="changePower"
+            @click="operationFun(String(record.status) === '0'?'start': 'stop', record)"
+            >{{String(record.status) === '0'?'启用':'停用'}}</a
           >
+          <!-- 编辑权限，及状态 -->
           <a
             class="operation-btn"
-            v-else
-            @click="operationFun('stop', record)"
-            v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS"
-            >停用</a
-          >
-          <a
-            class="operation-btn"
-            v-show="+record.status === 1"
             @click="operationFun('edit', record)"
-            v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_EDIT"
+            v-if="editPower&&String(record.status) === '1'"
             >编辑</a
+          >
+          <a
+            class="operation-btn"
+            @click="operationFun('delete', record)"
+            v-if="editPower&&String(record.status) === '0'"
+            >删除</a
           >
           <a class="operation-btn" @click="operationFun('detail', record)"
             >详情</a
           >
         </template>
         <template slot="statusName" slot-scope="text, record, index">
-          <div v-if="+record.status === 1">
+          <div>
             <SG-Switch
               disabled
-              checked
-              :id="String(index)"
+              :checked="String(record.status) === '1'"
+              :id="String(record.key)"
               style="margin-right: 10px;"
             ></SG-Switch
-            >启用
-          </div>
-          <div v-else>
-            <SG-Switch
-              disabled
-              :id="String(index)"
-              style="margin-right: 10px;"
-            ></SG-Switch
-            >停用
+            >{{String(record.status) === '1'?'启用':'停用'}}
           </div>
         </template>
       </a-table>
@@ -98,7 +88,7 @@
       v-model="paginator.pageNo"
       @change="handlePageChange"
     />
-    <createClassModal :action="action" :type="type" :storeDetail="storeDetail" ref="createClassModal"/>
+    <createClassModal @success="queryList" :action="action" :type="type" :storeDetail="storeDetail" ref="createClassModal"/>
   </div>
 </template>
 
@@ -110,6 +100,7 @@ import { ASSET_MANAGEMENT } from "@/config/config.power"
 import { getTargetObject } from "@/utils/utils"
 import { statusOptions, pageTypeMap, typeMap } from "./child/dict"
 import createClassModal from "./child/createClassModal"
+import Tools from "@/utils/utils"
 const columns = [
   {
     title: "分类编号",
@@ -200,34 +191,60 @@ export default {
       showNoDataTips: false,
       storeDetail: {}, // 存储弹窗需要数据
       action: 'create', // 是编辑还是信息，或者详情
+      createPower: false, // 创建权限
+      editPower: false, // 编辑权限
+      changePower: false, // 状态改变权限
+      deletePower: false, // 删除权限
     }
   },
-  watch: {
-    $route() {
-      if (this.$route.path === "/assetClassSet" && this.$route.query.refresh) {
-        // this.queryClick()
-      }
-    },
-  },
-  computed: {
-    // 是否显示创建按钮
-    showCreateBtn () {
-      return ["land"].includes(this.type)
-    }
+  mounted () {
+    this.handlePower()
   },
   methods: {
+    // 查询列表
+    queryList() {
+      let form = {
+        organId: this.organId,
+        status: this.status,
+        codeName: this.codeName,
+        pageNum: this.paginator.pageNo,
+        pageSize: this.paginator.pageLength,
+        assetType: pageTypeMap[this.type],
+      }
+      this.$api.assets.getPage(form).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data.data
+          if (data.length === 0) {
+            this.showNoDataTips = true
+          } else {
+            this.showNoDataTips = false
+          }
+          data.forEach((item, index) => {
+            item.key = Tools.getUuid()
+            for (let key in item) {
+              if (item[key] === "") {
+                item[key] = "--"
+              }
+            }
+          })
+          this.dataSource = data
+          this.totalCount = res.data.data.count
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 点击查询
+    queryClick() {
+      this.paginator.pageNo = 1
+      this.queryList()
+    },
     organIdChange(obj) {
       this.storeDetail = {
         organName: obj.name,
         organId: obj.value
       }
       this.queryClick()
-    },
-    // 页码发生变化
-    handlePageChange(page) {
-      this.paginator.pageNo = page.pageNo
-      this.paginator.pageLength = page.pageLength
-      this.queryList()
     },
     // 操作回调
     operationFun(editType, record) {
@@ -257,6 +274,25 @@ export default {
         })
         return
       }
+      // 如果是删除
+      if (["delete"].includes(editType)) {
+        this.$confirm({
+          title: "提示",
+          content: "确认要删除该资产分类吗？",
+          onOk() {
+            let data = {
+              orginId: this.organId,
+              blankId: record.blankId
+            }
+            this.$api.assets.blankApiDelete(data).then(res => {
+              if (res.data.code === '0') {
+                this.$message.success("删除成功")
+                this.queryList()
+              }
+            })
+          },
+        })
+      }
     },
     // 改变状态
     changeStatus(status, id, professionCode) {
@@ -271,44 +307,6 @@ export default {
         if (res.data.code === "0") {
           this.$message.success("修改成功")
           this.queryList()
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
-    // 点击查询
-    queryClick() {
-      this.paginator.pageNo = 1
-      this.queryList()
-    },
-    // 查询列表
-    queryList() {
-      let form = {
-        organId: this.organId,
-        status: this.status,
-        codeName: this.codeName,
-        pageNum: this.paginator.pageNo,
-        pageSize: this.paginator.pageLength,
-        assetType: pageTypeMap[this.type],
-      }
-      this.$api.assets.getPage(form).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data.data
-          if (data.length === 0) {
-            this.showNoDataTips = true
-          } else {
-            this.showNoDataTips = false
-          }
-          data.forEach((item, index) => {
-            item.key = index
-            for (let key in item) {
-              if (item[key] === "") {
-                item[key] = "--"
-              }
-            }
-          })
-          this.dataSource = data
-          this.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
         }
@@ -332,6 +330,39 @@ export default {
         a.click()
         a.remove()
       })
+    },
+    // 处理按钮权限
+    handlePower () {
+      // 如果是房屋权限判断
+      if (['house'].includes(this.type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_SET_EDIT)) {
+          this.editPower = true
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_SET_CHANGE_STATUS)) {
+          this.changePower = true
+        }
+      }
+      // 如果是土地权限判断
+      if (['land'].includes(this.type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_LAND_CREATE)) {
+          this.createPower = true
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_LAND_EDIT)) {
+          this.editPower = true
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_LAND_CHANGE)) {
+          this.changePower = true
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_LAND_DELETE)) {
+          this.deletePower = true
+        }
+      }
+    },
+    // 页码发生变化
+    handlePageChange(page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
+      this.queryList()
     },
   },
 }

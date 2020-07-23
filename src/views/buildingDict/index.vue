@@ -47,23 +47,23 @@ export default {
     }
   },
   created () {
-    let query = this.GET_ROUTE_QUERY(this.$route.path)
-    if (Object.keys(query).length > 0) {
-      if (query.showKey === 'house') {
-        this.showKey = 'house'
-      }
-    }
+    // let query = this.GET_ROUTE_QUERY(this.$route.path)
+    // if (Object.keys(query).length > 0) {
+    //   if (query.showKey === 'house') {
+    //     this.showKey = 'house'
+    //   }
+    // }
   },
-  beforeRouteLeave (to, from, next) {
-    if (to.path.indexOf(from.path) === -1) {
-      let o = {
-        key: from.path,
-        data: {}
-      }
-      this.$store.commit('pro/SET_ROUTE_QUERY', o)
-    }
-    next()
-  },
+  // beforeRouteLeave (to, from, next) {
+  //   if (to.path.indexOf(from.path) === -1) {
+  //     let o = {
+  //       key: from.path,
+  //       data: {}
+  //     }
+  //     this.$store.commit('pro/SET_ROUTE_QUERY', o)
+  //   }
+  //   next()
+  // },
   methods: {
     tabChange (v) {
       console.log(v)

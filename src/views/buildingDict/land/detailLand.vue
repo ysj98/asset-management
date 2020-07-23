@@ -152,13 +152,18 @@ export default {
       blankInfo: {},
       routeQuery: {},
       redMap: [], // 平面图
-      filePath: [] // 附件
+      filePath: [], // 附件
+      landTypeOpt: [], // 土地类型
+      landuseOpt: [], // 土地用途类型
+      landusetypeOpt: [], // 土地用途分类
     };
   },
   mounted() {
     let { organId, blankId, organName } = this.$route.query;
     Object.assign(this.routeQuery, { organId, blankId, organName });
-    this.blankApiDetail();
+    Promise.all([this.queryLandType(), this.queryLandUseList(), this.queryLandUseTypeList()]).then(res => {
+      this.blankApiDetail();
+    })
   },
   methods: {
     // 请求土地详情
@@ -174,10 +179,20 @@ export default {
             let data = res.data.data;
             // 处理图片
             this.blankInfo = data;
+            // 处理字段
+            let landType = this.landTypeOpt.find(item => item.value === data.landType)
+            data.landTypeName = landType ? landType.label : ''
+
+            let landuseType = this.landusetypeOpt.find(item => item.value === data.landuseType)
+            data.landuseTypeName = landuseType ? landuseType.label : ''
+            
+            let landuse = this.landuseOpt.find(item => item.value === data.landuse)
+            data.landuseName = landuse ? landuse.label : ''
             // 处理平面图
             if (data.redMap) {
               this.redMap = [{ url: data.redMap, name: "" }];
             }
+            
             // 处理附件
             if (data.filePath) {
               let filePath = data.filePath.split(",");
@@ -193,7 +208,64 @@ export default {
           this.loading = false;
         }
       );
-    }
+    },
+    // 查询土地类别
+    queryLandType() {
+      let data = {
+        dictCode: "OCM_LAND_TYPE",
+        dictFlag: "1"
+      };
+      return this.$api.basics.queryDictList(data).then(res => {
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          this.landTypeOpt = data.map(item => {
+            return {
+              value: item["dictValue"],
+              label: item["dictName"],
+              id: item["dictId"]
+            }
+          });
+        }
+      });
+    },
+    // 取全部土地用途
+    queryLandUseList() {
+      let data = {
+        dictCode: "OCM_LANDUSE",
+        dictFlag: "1"
+      };
+      return this.$api.basics.queryDictList(data).then(res => {
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          this.landuseOpt = data.map(item => {
+            return {
+              value: item["dictValue"],
+              label: item["dictName"],
+              id: item["dictId"]
+            }
+          });
+        }
+      });
+    },
+    // 取全部土地用途
+    queryLandUseTypeList() {
+      let data = {
+        dictCode: "OCM_LANDUSE_TYPE",
+        dictFlag: "1"
+      };
+      return this.$api.basics.queryDictList(data).then(res => {
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          this.landusetypeOpt = data.map(item => {
+            return {
+              value: item["dictValue"],
+              label: item["dictName"],
+              id: item["dictId"]
+            }
+          });
+        }
+      });
+    },
   }
 };
 </script>
