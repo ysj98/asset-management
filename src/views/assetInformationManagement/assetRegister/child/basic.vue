@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-22 20:11:19
+ * @LastEditTime: 2020-07-23 15:59:17
  * @Description: 房屋土地
 --> 
 <template>
@@ -9,7 +9,7 @@
     <!--数据总览-->
     <overview-number :numList="numList"/>
     <div class="button-box">
-      <div class="buytton-nav" v-show="setType === 'new'">
+      <div class="buytton-nav" v-show="setType === 'new' && !registerOrderId">
         <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
         <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
         <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
@@ -32,6 +32,15 @@
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+      <SG-FooterPagination
+        v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId"
+        :pageLength="footer.pageSize"
+        :totalCount="count"
+        location="static"
+        :noPageTools="false"
+        v-model="footer.pageNum"
+        @change="handleChange"
+      />
     </div>
     <basicDownload ref="basicDownload"></basicDownload>
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
@@ -43,7 +52,7 @@
 import {utils, calc} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData, landData, costData} from './../common/registerBasics'
+import {columnsData, judgmentData, landData, landCheck} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import bridge from './center'
 export default {
@@ -57,13 +66,18 @@ export default {
       type: [String, Number],
       default: ''
     },
-    assetType: {
+    assetTypeId: {
       type: [String, Number],
       default: '' 
     }
   },
   data () {
     return {
+      count: '',
+      footer: {
+        pageNum: 1,
+        pageSize: 10
+      },
       basicData: [],
       organDictData: {},     // 权属情况
       ownershipData: {},     // 权属类型
@@ -76,8 +90,8 @@ export default {
         {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableData: [],    // 表格内容
-      columns: []      // 表格表头
-      // assetType: '',    // 资产类型
+      columns: [],      // 表格表头
+      assetType: '',    // 资产类型
     }
   },
   computed: {
@@ -87,6 +101,7 @@ export default {
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
+    this.assetType = this.assetTypeId
     if (this.setType === 'detail') {
       let arr = []
       if (+this.record[0].assetType === 1) {
@@ -105,6 +120,40 @@ export default {
     this.ownershipFn()
   },
   methods: {
+    // 分页查询添加后和详情使用
+    handleChange (data) {
+      this.footer.pageNum = data.pageNo
+      this.footer.pageSize = data.pageLength
+      this.query()
+    },
+    // 查询详情
+    query (val) {
+      if (val === 'sub') {
+        this.footer.pageNum = 1
+        this.footer.pageSize = 10
+      }
+      this.loading = true
+      let obj = {
+        pageNum: this.footer.pageNum,
+        pageSize: this.footer.pageSize,
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data
+          data.forEach((item, index) => {
+            item.key = index
+          })
+          this.tableData = data
+          this.count = res.data.data.count
+          this.useForSummary()
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
+    },
     // 切换资产类型时！切换所有数据
     bridgeFn:function(){
       bridge.$on("assetType",(val, type)=>{
@@ -163,56 +212,73 @@ export default {
       this.$api.assets.readExcelModel(this.formData).then(res => {
         if (res.data.code === '0') {
           e.target.value = ''
-          let resData = res.data.data.assetHouseList
-          let arrData = utils.deepClone([...resData, ...this.tableData])
-          // 数组去重根据type和objectId
-          let hash = {}
-          arrData = arrData.reduce((preVal, curVal) => {
-            hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
-            return preVal
-          }, [])
+          let resData = [], arrData =[], publicData = []
+          // 房屋
+          if (this.assetType === '1') {
+            resData =  res.data.data.assetHouseList
+            arrData = utils.deepClone([...resData, ...this.tableData])
+            // 数组去重根据type和objectId
+            let hash = {}
+            arrData = arrData.reduce((preVal, curVal) => {
+              hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
+              return preVal
+            }, [])
+            publicData = judgmentData
+          } else if (this.assetType === '4') {
+          // 土地
+            resData =  res.data.data.assetBlankList
+            arrData = utils.deepClone([...resData, ...this.tableData])
+            // 数组去重根据objectId
+            let hash = {}
+            arrData = arrData.reduce((preVal, curVal) => {
+              hash[Number(curVal.objectId)] ? '' : hash[Number(curVal.objectId)] = true && preVal.push(curVal)
+              return preVal
+            }, [])
+            publicData = landCheck
+          }
+          landCheck
           // 遍历判断必填有字段
           for (let i = 0; i < arrData.length; i++) {
-            for (let j = 0; j < judgmentData.length; j++) {
+            for (let j = 0; j < publicData.length; j++) {
              // 必填字段
-              if (judgmentData[j].required) {
-                if (!arrData[i][judgmentData[j].dataIndex]) {
-                  this.DE_Loding(loadingName).then(() => { this.$message.info(`请输入${judgmentData[j].title}`)})
+              if (publicData[j].required) {
+                if (!arrData[i][publicData[j].dataIndex]) {
+                  this.DE_Loding(loadingName).then(() => { this.$message.info(`请输入${publicData[j].title}`)})
                   return
                 }
               }
               // 判断只能为数字2小数
-              if (judgmentData[j].type === 'float') {
-                if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][judgmentData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}(只支持2位小数)`)})
+              if (publicData[j].type === 'float') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持2位小数)`)})
                   return
                 }
               }
               // 判断只能为数字4小数
-              if (judgmentData[j].type === 'float4') {
-                if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][judgmentData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}(只支持4位小数)`)})
+              if (publicData[j].type === 'float4') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持4位小数)`)})
                   return
                 }
               }
               // 判断只能为整数
-              if (judgmentData[j].type === 'number') {
-                if (arrData[i][judgmentData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][judgmentData[j].dataIndex]))) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}`)})
+              if (publicData[j].type === 'number') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][publicData[j].dataIndex]))) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}`)})
                   return
                 }
               }
               // 判断不超过多少字符
-              if (judgmentData[j].fontLength) {
-                if (arrData[i][judgmentData[j].dataIndex] && String(arrData[i][judgmentData[j].dataIndex]).length > judgmentData[j].fontLength) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)})
+              if (publicData[j].fontLength) {
+                if (arrData[i][publicData[j].dataIndex] && String(arrData[i][publicData[j].dataIndex]).length > publicData[j].fontLength) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`${publicData[j].title}不超过${publicData[j].fontLength}字符`)})
                   return
                 }
               }
               // 判断时间转换
-              // if (judgmentData[j].date) {
-              //   if (arrData[i][judgmentData[j].dataIndex]) {
-              //     arrData[i][judgmentData[j].dataIndex] = utils.xlsxDate(arrData[i][judgmentData[j].dataIndex])
+              // if (publicData[j].date) {
+              //   if (arrData[i][publicData[j].dataIndex]) {
+              //     arrData[i][publicData[j].dataIndex] = utils.xlsxDate(arrData[i][publicData[j].dataIndex])
               //   }
               // }
             }
@@ -387,12 +453,10 @@ export default {
     },
     // 提交
     save () {
-      console.log('2323')
       if (this.tableData.length === 0) {
         this.$message.info('请导入资产明细')
         return true
       }
-      console.log('你是')
       let data = utils.deepClone(this.tableData)
       data.forEach(item => {
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
