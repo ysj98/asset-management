@@ -43,22 +43,24 @@ let proRouter = [
     component: () => import('@/views/buildingDict/land/detailLand.vue')
   },
   {
-    path: '/assetChange',
-    name: '资产变动',
-    component: () => import('@/views/assetInformationManagement/assetChange/index.vue'),
-    meta: {
-      keepAlive: true
-    }
+    path: '/assetChangeRegister',
+    name: '资产变更单',
+    component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),
   },
   {
-    path: '/assetChange/newEditSingle',
+    path: '/assetChangeRegister/newEditSingle',
     name: '变动申请',
     component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
   },
   {
-    path: '/assetChange/particulars',
+    path: '/assetChangeRegister/particulars',
     name: '变动单详情',
     component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
+  },
+  {
+    path: '/assetChangeView',
+    name: '资产变动一览表',
+    component: () => import('@/views/assetInformationManagement/assetChange/scheduleChanges.vue'),
   },
   {
     path: '/assetRegister',

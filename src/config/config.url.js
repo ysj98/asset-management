@@ -95,6 +95,8 @@ export const assets = {
     exportChangeScheduleList: '/ams/assetChange/exportChangeScheduleList',
     // 资产变动-分页列表
     getChangePage: '/ams/assetChange/getChangePage',
+    // 资产变动-列表汇总
+    getChangePageSum: '/ams/assetChange/getChangePageSum',
     // 资产变动-删除
     deleteChange: '/ams/assetChange/deleteChange',
     // 资产变动-审批
@@ -105,6 +107,10 @@ export const assets = {
     exportChange: '/ams/assetChange/exportChange',
     // 资产变动-新增编辑
     submitChange: '/ams/assetChange/submitChange',
+    // 资产项目查楼栋
+    organBuild: '/ams/asset-house/organ/build',
+    // 查楼栋下房屋
+    buildPage: '/ams/asset-house/build/page',
     // 资产变动-明细
     getChangeInfo: '/ams/assetChange/getChangeInfo',
     // 资产变动-终止交付
