@@ -279,38 +279,42 @@ export function correlationExpenseTotal (data) {
   return axiosGet(assets.assetRegister.correlationExpenseTotal, data)
 }
 
-// 资产清理
-// 资产清理-分页列表
+// 资产出库
+// 资产出库-分页列表
 export function getCleanupPage (data) {
   return axiosPost(assets.assetClear.getCleanupPage, data, true, false)
 }
-// 资产清理-删除
+// 资产出库-删除
 export function deleteCleanup (data) {
   return axiosPost(assets.assetClear.deleteCleanup, data, false, false)
 }
-// 资产清理-审批
+// 资产出库-审批
 export function approvalCleanup (data) {
   return axiosPost(assets.assetClear.approvalCleanup, data, false, false)
 }
-// 资产清理-审批
+// 资产出库-审批
 export function reverseApproveCleanup (data) {
   return axiosPost(assets.assetClear.reverseApproveCleanup, data, false, false)
 }
-// 资产清理-新增编辑保存
+// 资产出库-新增编辑保存
 export function submitCleanup (data) {
   return axiosPost(assets.assetClear.submitCleanup, data, false, false)
 }
-// 资产清理-编辑查询明细
+// 资产出库-编辑查询明细
 export function getCleanupInfo (data) {
   return axiosGet(assets.assetClear.getCleanupInfo, data)
 }
-// 资产清理-详情
+// 资产出库-详情
 export function getCleanupDetail (data) {
   return axiosGet(assets.assetClear.getCleanupDetail, data)
 }
-// 资产清理-资产明细分页列表
+// 资产出库-资产明细分页列表
 export function getCleanupDetailPage (data) {
   return axiosGet(assets.assetClear.getCleanupDetailPage, data)
+}
+// 资产出库-统计
+export function assetCleanupGetCount (data) {
+  return axiosPost(assets.assetClear.assetCleanupGetCount, data, false, false)
 }
 
 //资产分类设置

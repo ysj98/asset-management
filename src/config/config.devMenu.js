@@ -27,7 +27,7 @@ export default [
         path: '/assetChangeView',
       },
       {
-        title: '资产清理',
+        title: '资产出库',
         path: '/assetClear'
       },
       {

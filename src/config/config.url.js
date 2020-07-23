@@ -211,24 +211,26 @@ export const assets = {
     // 批量更新（导入）
     baseImport: '/ams/registerOrder/baseImport'
   },
-  // 资产清理
+  // 资产出库
   assetClear: {
-    // 资产清理-分页列表
+    // 资产出库-分页列表
     getCleanupPage: '/ams/assetCleanup/getCleanupPage',
-    // 资产清理-删除
+    // 资产出库-删除
     deleteCleanup: '/ams/assetCleanup/deleteCleanup',
-    // 资产清理-审批
+    // 资产出库-审批
     approvalCleanup: '/ams/assetCleanup/approvalCleanup',
-    // 资产清理-反审批
+    // 资产出库-反审批
     reverseApproveCleanup: '/ams/assetCleanup/reverseApproveCleanup',
-    // 资产清理-新增编辑保存
+    // 资产出库-新增编辑保存
     submitCleanup: '/ams/assetCleanup/submitCleanup',
-    // 资产清理-编辑查询明细
+    // 资产出库-编辑查询明细
     getCleanupInfo: '/ams/assetCleanup/getCleanupInfo',
-    // 资产清理-详情
+    // 资产出库-详情
     getCleanupDetail: '/ams/assetCleanup/getCleanupDetail',
-    // 资产清理-资产明细分页列表
-    getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage'
+    // 资产出库-资产明细分页列表
+    getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage',
+    // 资产出库-统计
+    assetCleanupGetCount: '/ams/assetCleanup/getCount',
   },
   // 资产分类设置
   assetClassSet: {
