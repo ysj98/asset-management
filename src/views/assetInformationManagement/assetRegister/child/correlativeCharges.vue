@@ -1,23 +1,23 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-23 11:49:24
+ * @LastEditTime: 2020-07-23 19:39:19
  * @Description: 相关费用
 -->
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box" v-if="setType !== 'detail'">
+    <div class="button-box">
       <div class="buytton-l">
         <span>费用总额：{{statistics.expenseAmount || 0}}</span> <span class="p120">收入总额：{{statistics.incomeAmount || 0}}</span>
       </div>
-      <div class="buytton-nav">
+      <div class="buytton-nav" v-if="setType !== 'detail'">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量导入</SG-Button>
       </div>
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="table-boxs"
+        class="custom-table table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 1900}"

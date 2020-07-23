@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-23 15:59:17
+ * @LastEditTime: 2020-07-23 18:34:50
  * @Description: 房屋土地
 --> 
 <template>
@@ -21,7 +21,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="table-boxs"
+        class="custom-table table-boxs"
         :scroll="{y: 450, x: 2200}"
         :columns="columns"
         :dataSource="tableData"
@@ -101,18 +101,20 @@ export default {
   mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
-    this.assetType = this.assetTypeId
-    if (this.setType === 'detail') {
+    this.assetType = String(this.assetTypeId)
+    if (this.setType === 'detail' || this.setType === 'edit') {
       let arr = []
-      if (+this.record[0].assetType === 1) {
+      this.assetType = String(this.record[0].assetType)
+      if (+this.record[0].assetType === 1) {                    // 房屋表头
         arr = utils.deepClone(columnsData)
         arr.pop()
         this.columns = arr
-      } else if (+this.record[0].assetType === 4) {
+      } else if (+this.record[0].assetType === 4) {             // 土地表头
         arr = utils.deepClone(landData)
         arr.pop()
         this.columns = arr
       }
+      this.query()
     } else {
       this.bridgeFn()
     }
@@ -140,17 +142,43 @@ export default {
       }
       this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
-          data.forEach((item, index) => {
-            item.key = index
-          })
-          this.tableData = data
+          let data = []
+          if (+this.assetType === 1) {
+            data = res.data.data.data.assetHoseList
+          } else {
+            data = res.data.data.data.assetLandList
+          }
+          if (data && data.length) {
+            data.forEach((item, index) => {
+              item.key = index
+            }) 
+          }
+          this.tableData = data || []
           this.count = res.data.data.count
-          this.useForSummary()
+          this.getRegisterOrderDetailsStatisticsFn()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
           this.loading = false
+        }
+      })
+    },
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatisticsFn () {
+      let obj = {
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          if (this.assetType === '4') {
+            this.numList[1].title = '土地面积'
+          }
+          return this.numList = this.numList.map(m => {
+            return { ...m, value: data[m.key] || 0 }
+          })
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },
@@ -163,11 +191,13 @@ export default {
           this.assetType = '1'
           this.tableData = []
           this.columns = columnsData
+          this.numList[1].title = '建筑面积'
         // 土地
         } else if (type === 'asset' && val === '4') {
           this.assetType = '4'
           this.tableData = []
           this.columns = landData
+          this.numList[1].title = '土地面积'
         }
         if (type === 'project' && val) {
           this.tableData = []
@@ -291,7 +321,11 @@ export default {
             arrData[i].key = i
             arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
-            this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
+            if (this.assetType === '1') {
+              this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
+            } else if (this.assetType === '4') {
+              this.numList[1].value = calc.add(this.numList[2].value, arrData[i].landArea || 0)
+            }
             this.numList[2].value = calc.add(this.numList[2].value, arrData[i].creditorAmount || 0)
             this.numList[3].value = calc.add(this.numList[3].value, arrData[i].debtAmount || 0)
           }
