@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-22 19:32:10
+ * @LastEditTime: 2020-07-23 10:13:32
  * @Description: 附属配套
 --> 
 <template>
@@ -35,7 +35,7 @@
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
-        location="absolute"
+        location="static"
         :noPageTools="noPageTools"
         v-model="queryCondition.pageNum"
         @change="handleChange"

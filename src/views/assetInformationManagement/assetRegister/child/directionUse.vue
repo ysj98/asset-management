@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-22 14:41:33
+ * @LastEditTime: 2020-07-23 10:27:02
  * @Description: 使用方向
 --> 
 <template>
@@ -53,10 +53,13 @@ import directionUseEdit from './../common/directionUseEdit'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 export default {
   components: {noDataTips, directionUseEdit, OverviewNumber},
-  props: {},
+  props: {
+    registerOrderId: [String, Number],
+    assetType: [String, Number],
+    organId: [String, Number]
+  },
   data () {
     return {
-      organId: '',
       record: [],
       setType: '',
       numList: [
@@ -222,7 +225,7 @@ export default {
       this.$api.assets.useForSummary(obj).then(res => {
         if (Number(res.data.code) === 0) {
           return this.numList = this.numList.map(m => {
-            return { ...m, value: res.data[m.key] || 0 }
+            return { ...m, value: res.data.data[m.key] || 0 }
           })
         } else {
           this.$message.error(res.data.message)

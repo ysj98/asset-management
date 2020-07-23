@@ -196,7 +196,7 @@ export function getRegisterOrderDetailsPageByIdList (data) {
 }
 // 下载附属配套模板
 export function downModle (data) {
-  return axiosPost(assets.assetClassSet.downModle, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.downModle, data, false, false, {responseType: 'blob'})
 }
 // 批量导入-导入保存
 export function batchImportByRgId (data) {
@@ -208,7 +208,7 @@ export function getValueStatistics (data) {
 }
 // 资产登记-价值信息批量导出
 export function valueExport (data) {
-  return axiosPost(assets.assetClassSet.valueExport, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.valueExport, data, false, false, {responseType: 'blob'})
 }
 // 资产登记-价值信息批量导入
 export function valueImport (data) {
@@ -244,7 +244,7 @@ export function useForSummary (data) {
 }
 // 批量导出
 export function userForExport (data) {
-  return axiosGet(assets.assetClassSet.userForExport, data, false, false, {responseType: 'blob'})
+  return axiosGet(assets.assetRegister.userForExport, data, false, false, {responseType: 'blob'})
 }
 // 批量更新
 export function usrForImport (data) {
@@ -252,7 +252,7 @@ export function usrForImport (data) {
 }
 // 相关费用下载导入模板
 export function correlationExpenseExport (data) {
-  return axiosGet(assets.assetClassSet.correlationExpenseExport, data, false, false, {responseType: 'blob'})
+  return axiosGet(assets.assetRegister.correlationExpenseExport, data, false, {responseType: 'blob'})
 }
 // 相关费用导入
 export function correlationExpenseImport (data) {

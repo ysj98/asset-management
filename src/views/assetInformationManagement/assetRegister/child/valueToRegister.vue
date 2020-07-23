@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-22 19:32:29
+ * @LastEditTime: 2020-07-23 09:51:11
  * @Description: 价值信息
 --> 
 <template>
@@ -34,7 +34,7 @@
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
-        location="absolute"
+        location="static"
         :noPageTools="noPageTools"
         v-model="queryCondition.pageNum"
         @change="handleChange"

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 17:22:25
- * @LastEditTime: 2020-07-16 15:29:46
+ * @LastEditTime: 2020-07-23 11:02:30
  * @Description: 使用方向
 -->
 <template>
@@ -124,6 +124,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -172,6 +173,7 @@ export default {
   mounted () {
   },
   methods: {
+    moment,
     // 编辑查询
     getValueDetail (record) {
       this.examine = record
@@ -185,9 +187,9 @@ export default {
           this.subData.assetId = obj.assetId
           // 处理表单数据
           let o = {
-            transferTime: obj.transferTime,                     // 转物业时间
+            transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : '',                     // 转物业时间
             transferArea: obj.transferArea,                     // 转物业面积(㎡)
-            transferOperationTime: obj.transferOperationTime,   // 转运营时间
+            transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : '',   // 转运营时间
             transferOperationArea: obj.transferOperationArea,   // 运营面积(㎡)
             selfUserArea: obj.selfUserArea,                     // 自用面积(㎡)
             idleArea: obj.idleArea,                             // 闲置面积(㎡)
@@ -204,9 +206,9 @@ export default {
     useForUpdate (values) {
       let obj = {
         assetId: this.subData.assetId,
-        transferTime: values.transferTime,                     // 转物业时间
+        transferTime: values.transferTime === undefined ? '' : `${values.transferTime.format('YYYY-MM-DD')}`,                     // 转物业时间
         transferArea: values.transferArea,                     // 转物业面积(㎡)
-        transferOperationTime: values.transferOperationTime,   // 转运营时间
+        transferOperationTime: values.transferOperationTime === undefined ? '' : `${values.transferOperationTime.format('YYYY-MM-DD')}`,   // 转运营时间
         transferOperationArea: values.transferOperationArea,   // 运营面积(㎡)
         selfUserArea: values.selfUserArea,                     // 自用面积(㎡)
         idleArea: values.idleArea,                             // 闲置面积(㎡)

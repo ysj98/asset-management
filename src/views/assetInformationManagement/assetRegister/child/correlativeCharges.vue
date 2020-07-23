@@ -1,14 +1,14 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-22 19:31:57
+ * @LastEditTime: 2020-07-23 11:49:24
  * @Description: 相关费用
 -->
 <template>
   <div class="necessaryCaaessories">
     <div class="button-box" v-if="setType !== 'detail'">
       <div class="buytton-l">
-        <span>费用总额：{{statistics.num || '--'}}</span> <span class="p120">收入总额：{{statistics.valueAmount || '--'}}</span>
+        <span>费用总额：{{statistics.expenseAmount || 0}}</span> <span class="p120">收入总额：{{statistics.incomeAmount || 0}}</span>
       </div>
       <div class="buytton-nav">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
@@ -35,14 +35,14 @@
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
-        location="absolute"
+        location="static"
         :noPageTools="noPageTools"
         v-model="queryCondition.pageNum"
         @change="handleChange"
       />
     </div>
     <!-- 新增编辑 -->
-    <chargesNewEdit @cancel="cancel" v-if="modalShow" ref="chargesNewEdit"></chargesNewEdit>
+    <chargesNewEdit @cancel="cancel" v-if="modalShow" ref="chargesNewEdit" @allQuery=allQuery></chargesNewEdit>
     <!-- 下载模板 -->
     <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
@@ -56,7 +56,11 @@ import chargesNewEdit from './../common/chargesNewEdit'
 import eportAndDownFile from './.././../../common/eportAndDownFile'
 export default {
   components: {noDataTips, chargesNewEdit, eportAndDownFile},
-  props: {},
+  props: {
+    registerOrderId: [String, Number],
+    assetType: [String, Number],
+    organId: [String, Number]
+  },
   data () {
     return {
       record: [],
@@ -81,6 +85,8 @@ export default {
   created () {
   },
   mounted () {
+    this.queryCondition.registerOrderId = this.registerOrderId
+    this.queryCondition.assetType = this.assetType
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
     if (this.setType === 'detail') {
@@ -94,6 +100,11 @@ export default {
     this.query()
   },
   methods: {
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 删除
     deleteFn (record) {
         this.$SG_Modal.confirm({
@@ -105,7 +116,7 @@ export default {
               correlationExpenseId: record.correlationExpenseId    // 相关费用id
             }
             let loadingName = this.SG_Loding('提交中...')
-            this.$api.subsidiary.correlationExpenseDelete(data).then(res => {
+            this.$api.assets.correlationExpenseDelete(data).then(res => {
               if (res.data.code === '0') {
                 this.DE_Loding(loadingName).then(() => {
                   this.$SG_Message.success('删除成功')
@@ -121,10 +132,23 @@ export default {
         })
     },
     // 新增
-    newlyFn (str) {
+    newlyFn (str, record) {
       this.modalShow = true
+      let obj = ''
+      if (str === 'new') {
+        obj = {
+          registerOrderId: this.queryCondition.registerOrderId,            //  资产登记ID
+          assetType: this.queryCondition.assetType,
+          organId: this.organId
+        }
+      } else {
+        obj = record,
+        obj.registerOrderId = this.queryCondition.registerOrderId,            //  资产登记ID
+        obj.assetType = this.queryCondition.assetType,
+        obj.organId = this.organId
+      }
       this.$nextTick(() => {
-        this.$refs.chargesNewEdit.allMounted(str)
+        this.$refs.chargesNewEdit.allMounted(str, obj)
         this.$refs.chargesNewEdit.modalShow = true
       })
     },
@@ -143,7 +167,7 @@ export default {
       fileData.append('registerOrderId', this.registerOrderId)
       // fileData.append('assetType', this.assetType)
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.subsidiary.correlationExpenseImport(fileData).then(res => {
+      this.$api.assets.correlationExpenseImport(fileData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -162,15 +186,17 @@ export default {
       })
     },
     down () {
+      console.log('9090')
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType             // 资产类型
       }
-      this.$api.grid.correlationExpenseExport(obj).then(res => {
+      console.log(obj, '-=-==')
+      this.$api.assets.correlationExpenseExport(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = `附属配套.xls`
+        a.download = `相关费用.xls`
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()
@@ -186,26 +212,6 @@ export default {
     // 查询
     query () {
       this.loading = true
-      this.tableData = [
-        {
-          correlationExpenseId:'mock',                //类型：String  必有字段  备注：相关费用ID
-          assetType:'1',                 //类型：String  必有字段  备注：资产类型
-          assetId:'mock',                //类型：String  必有字段  备注：资产ID
-          assetName:'mock',                //类型：String  必有字段  备注：资产名称
-          assetCode:'mock',                //类型：String  必有字段  备注：资产编码
-          objectType:'mock',                //类型：String  必有字段  备注：资产分类
-          objectTypeName:'mock',                //类型：String  必有字段  备注：资产分类名称
-          category:'mock',                //类型：String  必有字段  备注：类别
-          categoryType:'mock',                //类型：String  必有字段  备注：费用/收入类型
-          categoryName:'mock',                //类型：String  必有字段  备注：费用/收入类型名称
-          custName:'mock',                //类型：String  必有字段  备注：客户名称
-          belongMonth:'mock',                //类型：String  必有字段  备注：所属月份
-          amount:'mock',                //类型：String  必有字段  备注：金额(元)
-          readNum:'mock',                //类型：String  必有字段  备注：读数
-          remark:'mock'                //类型：String  必有字段  备注：备注
-        }
-      ]
-      this.loading = false
       this.$api.assets.correlationExpenseList(this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -225,12 +231,13 @@ export default {
     // 统计
     correlationExpenseTotal () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
-        assetType: ''             // 资产类型
+        registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
+        assetType: this.queryCondition.assetType             // 资产类型
       }
       this.$api.assets.correlationExpenseTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          this.statistics = res.data.data.data
+          this.statistics = res.data.data
+          console.log(this.statistics, '-=-=-=-=')
         } else {
           this.$message.error(res.data.message)
         }
