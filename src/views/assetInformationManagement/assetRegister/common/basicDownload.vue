@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 17:32:58
- * @LastEditTime: 2020-07-23 16:46:27
+ * @LastEditTime: 2020-07-23 17:13:11
  * @Description: 基本下载
 --> 
 <template>
@@ -119,7 +119,7 @@ export default {
         if (res.data.code === '0') {
           let result = res.data.data || []
           this.positionNameData = result.map(item => {
-            return {name: item.aliasName, value: item.buildId, label: item.aliasName}
+            return {name: item.aliasName, value: item.positionId, label: item.aliasName}
           })
         }
       })

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-23 11:37:00
+ * @LastEditTime: 2020-07-23 17:27:47
  * @Description: 新增附属配套
 --> 
 <template>
@@ -366,7 +366,7 @@ export default {
             this.examine.projectIdData = arr
           } else {
             this.examine.projectIdData = []
-            this.examine.assetName = data[0].assetName
+            this.examine.assetName = ''
             this.examine.assetCode = ''
             this.examine.objectTypeName = ''
             this.examine.pasitionString = ''
