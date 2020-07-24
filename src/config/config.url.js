@@ -825,3 +825,13 @@ export const assetIn = {
   // 资产入库列表查询
   queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
 }
+
+
+// 资产入库
+export const land = {
+  // 土地台账--资产视图
+  assetView: '/ams/assetLand/view/asset/assetView',
+  // 土地台账--资产视图汇总
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+}
+
