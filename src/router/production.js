@@ -639,6 +639,11 @@ let proRouter = [
     path: '/assetIn/new',
     name: '新建', // 资产入库新建
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
+  },
+  {
+    path: '/landAssetsView',
+    name: '土地资产视图',
+    component: () => import('@/views/landParameter/landAssetsView/index')
   }
 ]
 export default proRouter

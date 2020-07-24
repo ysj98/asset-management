@@ -111,6 +111,10 @@
           this.loading = false
           this.$message.error(err || '区域查询失败')
         })
+      },
+      // 外层控制主动清除
+      allClearFn () {
+        this.province = undefined
       }
     },
     
