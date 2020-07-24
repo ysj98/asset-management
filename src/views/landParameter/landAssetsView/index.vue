@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-24 17:45:11
+ * @LastEditTime: 2020-07-24 17:51:43
  * @Description: 土地资产视图
 --> 
 <template>
@@ -164,6 +164,11 @@ export default {
       approvalStatusData: [...approvalStatusData],
       queryCondition: {...queryCondition},
       count: '',
+      ownershipStatusObj: {
+        '0': '无证',
+        '1': '有证',
+        '2': '待办',
+      },
       projectData: [
         {
           name: '全部资产项目',
@@ -351,6 +356,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.ownershipStatusName = this.ownershipStatusObj(String(item.ownershipStatus))
             })
             this.tableData = data
             this.count = res.data.data.count
