@@ -1,15 +1,16 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-24 11:11:38
+ * @LastEditTime: 2020-07-24 15:01:07
  * @Description: 土地资产视图
 --> 
 <template>
   <div class="landAssetsView">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
-      <!-- <div slot="headerBtns">
-        <SG-Button type="primary" @click="downloadFn">导出</SG-Button>
-      </div> -->
+      <div slot="headerBtns">
+        <!-- <SG-Button type="primary" @click="downloadFn">导出</SG-Button> -->
+        <SG-Button type="primary" @click="listSet">列表设置</SG-Button>
+      </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
@@ -40,11 +41,11 @@
     <overview-number :numList="numList"/>
     <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        :scroll="{x: 2500}"
+        :scroll="scroll"
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
-        class="custom-table td-pd10"
+        class="custom-table table-boxs"
         :pagination="false"
         >
       </a-table>
@@ -58,6 +59,23 @@
         @change="handleChange"
       />
     </div>
+    <SG-Modal
+      width="500px"
+      v-model="modalShow"
+      okText="确定"
+      title="列表设置"
+      @ok="commonFn"
+    >
+      <div>
+        <a-checkbox-group v-model="listValue">
+          <a-row>
+            <a-col class="p10" :span="8" v-for="(item, index) in columnsData" :key="index">
+              <a-checkbox :value="item.dataIndex" :disabled="item.disabled ? item.disabled : false">{{item.title}}</a-checkbox>
+            </a-col>
+          </a-row>
+        </a-checkbox-group>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
@@ -68,32 +86,32 @@ import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
-const columns = [
-  { title: '资产名称', dataIndex: 'changeOrderDetailId', width: 100 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
-  { title: '管理机构', dataIndex: 'assetName', width: 100 },
-  { title: '宗地号', dataIndex: 'assetTypeName', width: 100 },
-  { title: '宗地位置', dataIndex: 'organName', width: 100 },
-  { title: '土地面积(㎡)', dataIndex: 'projectName', width: 100 },
-  { title: '资产项目名称', dataIndex: 'changeOrderId', width: 100 },
-  { title: '土地类型', dataIndex: 'changeTypeName', width: 100 },
-  { title: '土地用途', dataIndex: 'oldChangeInfo', width: 100 },
-  { title: '土地性质', dataIndex: 'changeInfo', width: 100 },
-  { title: '计容面积(㎡)', dataIndex: 'changeDate', width: 100 },
-  { title: '容积率', dataIndex: 'createByName', width: 100 },
-  { title: '权属情况', dataIndex: 'createTime', width: 100 },
-  { title: '权证号', dataIndex: 'approvalStatusName', width: 100 },
-  { title: '使用期限', dataIndex: 'oldChangeInfo1', width: 100 },
-  { title: '接管日期', dataIndex: 'changeInfo1', width: 100 },
-  { title: '运营(㎡)', dataIndex: 'changeDate1', width: 100 },
-  { title: '自用(㎡)', dataIndex: 'createByName1', width: 100 },
-  { title: '闲置(㎡)', dataIndex: 'createTime1', width: 100 },
-  { title: '其他(㎡)', dataIndex: 'approvalStatusName1', width: 100 },
-  { title: '财务卡片编码', dataIndex: 'changeInfo2', width: 100 },
-  { title: '资产原值(元)', dataIndex: 'changeDate2', width: 100 },
-  { title: '最新估值(元)', dataIndex: 'createByName2', width: 100 },
-  { title: '批准日期', dataIndex: 'createTime2', width: 100 },
-  { title: '资产状态', dataIndex: 'approvalStatusName2', width: 100 }
+const columnsData = [
+  { title: '资产名称', dataIndex: 'changeOrderDetailId', width: 150, disabled: true },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150, disabled: true },
+  { title: '管理机构', dataIndex: 'assetName', width: 150, disabled: true },
+  { title: '宗地号', dataIndex: 'assetTypeName', width: 150 },
+  { title: '宗地位置', dataIndex: 'organName', width: 150 },
+  { title: '土地面积(㎡)', dataIndex: 'projectName', width: 150 },
+  { title: '资产项目名称', dataIndex: 'changeOrderId', width: 150 },
+  { title: '土地类型', dataIndex: 'changeTypeName', width: 150 },
+  { title: '土地用途', dataIndex: 'oldChangeInfo', width: 150 },
+  { title: '土地性质', dataIndex: 'changeInfo', width: 150 },
+  { title: '计容面积(㎡)', dataIndex: 'changeDate', width: 150 },
+  { title: '容积率', dataIndex: 'createByName', width: 150 },
+  { title: '权属情况', dataIndex: 'createTime', width: 150 },
+  { title: '权证号', dataIndex: 'approvalStatusName', width: 150 },
+  { title: '使用期限', dataIndex: 'oldChangeInfo1', width: 150 },
+  { title: '接管日期', dataIndex: 'changeInfo1', width: 150 },
+  { title: '运营(㎡)', dataIndex: 'changeDate1', width: 150 },
+  { title: '自用(㎡)', dataIndex: 'createByName1', width: 150 },
+  { title: '闲置(㎡)', dataIndex: 'createTime1', width: 150 },
+  { title: '其他(㎡)', dataIndex: 'approvalStatusName1', width: 150 },
+  { title: '财务卡片编码', dataIndex: 'changeInfo2', width: 150 },
+  { title: '资产原值(元)', dataIndex: 'changeDate2', width: 150 },
+  { title: '最新估值(元)', dataIndex: 'createByName2', width: 150 },
+  { title: '批准日期', dataIndex: 'createTime2', width: 150 },
+  { title: '资产状态', dataIndex: 'approvalStatusName2', width: 150 }
 ]
 const operationData = [
   {iconType: 'form', text: '修改', editType: 'edit'},
@@ -126,25 +144,29 @@ const approvalStatusData = [
   }
 ]
 const queryCondition =  {
-    organId: '',   // 组织机构id
+    organId: '',         // 组织机构id
     approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-    projectId: '',   // 资产项目Id
-    assetType: '',    // 资产类型Id
-    assetClassify: '', // 资产分类
+    projectId: '',       // 资产项目Id
+    assetType: '',       // 资产类型Id
+    assetClassify: '',   // 资产分类
     startDate: '',       // 创建日期开始日期
-    endDate: '',    // 创建日期结束日期
+    endDate: '',         // 创建日期结束日期
     changStartDate: '',  // 变动日期开始
-    changEndDate: '',   // 变动日期结束
-    currentOrganId: '',   // 仅当前机构下资产清理单 0 否 1 是
-    assetName: '',    // 资产名称/编码模糊查询
-    pageNum: 1,     // 当前页
-    pageSize: 10    // 每页显示记录数
+    changEndDate: '',    // 变动日期结束
+    currentOrganId: '',  // 仅当前机构下资产清理单 0 否 1 是
+    assetName: '',       // 资产名称/编码模糊查询
+    pageNum: 1,          // 当前页
+    pageSize: 10         // 每页显示记录数
   }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
   props: {},
   data () {
     return {
+      modalShow: false,
+      listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
+      columnsData,
+      scroll: {x: columnsData.length * 150},
       numList: [
         {title: '资产数量', key: 'whole', value: 0, fontColor: '#324057'},
         {title: '土地面积(㎡)', key: 'notVerified', value: 0, bgColor: '#5b8ff9'},
@@ -163,7 +185,7 @@ export default {
       location: 'absolute',
       allStyle: allWidth,
       toggle: true,
-      columns,
+      columns: columnsData,
       organName: '',
       organId: '',
       tableData: [],
@@ -177,7 +199,6 @@ export default {
           value: ''
         }
       ],
-      changeTypeData: [],
       assetTypeData: [],
       assetClassifyData: [
         {
@@ -205,6 +226,24 @@ export default {
     //     a.remove()
     //   })
     // },
+    // 列表设置
+    listSet () {
+      this.listValue = this.columns.map(item => {
+        return item.dataIndex
+      })
+      this.modalShow = true
+    },
+    commonFn () {
+      let arr = []
+      columnsData.forEach(item => {
+        if (this.listValue.includes(item.dataIndex)) {
+          arr.push(item)
+        }
+      })
+      this.columns = arr
+      this.scroll = {x: this.columns.length * 150}
+      this.modalShow = false
+    },
     // 组织机构树
     changeTree (value, label) {
       this.organName = label
@@ -212,9 +251,9 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = ''
       this.queryCondition.assetClassify = ''
-      this.getObjectKeyValueByOrganIdFn()
-      this.getListFn()
-      this.query()
+      // this.getObjectKeyValueByOrganIdFn()
+      // this.getListFn()
+      // this.query()
     },
     // 搜索
     onSearch () {
@@ -261,9 +300,7 @@ export default {
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (str === 'asset_change_type') {
-            this.changeTypeData = [{name: '全部变动类型', value: ''}, ...data]
-          } else if (str === 'asset_type') {
+          if (str === 'asset_type') {
             this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
             this.getListFn()
           }
@@ -387,10 +424,8 @@ export default {
   created () {
   },
   mounted () {
-    // 获取变动类型
-    this.platformDictFn('asset_change_type')
     // 资产类型
-    this.platformDictFn('asset_type')
+    // this.platformDictFn('asset_type')
   }
 }
 </script>
