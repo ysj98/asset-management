@@ -87,7 +87,7 @@ let proRouter = [
   },
   {
     path: '/assetClear',
-    name: '资产清理',
+    name: '资产出库',
     component: () => import('@/views/assetInformationManagement/assetClear/index.vue'),
     meta: {
       keepAlive: true
