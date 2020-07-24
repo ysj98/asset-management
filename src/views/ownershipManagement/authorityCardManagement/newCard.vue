@@ -199,13 +199,13 @@
 </template>
 
 <script>
-import Cephalosome from '@/components/Cephalosome'
+// import Cephalosome from '@/components/Cephalosome'
 import moment from 'moment'
-import {debounce, utils, calc} from '@/utils/utils'
-import {accessCard, titleDeed, newCardData, columns, mortgageInformation} from './beat'
+import {debounce, utils} from '@/utils/utils'
+import {accessCard, titleDeed, newCardData, columns, mortgageInformation, landDeed} from './beat'
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {Cephalosome},
+  components: {},
   props: {
     organId: {
       type: [String, Number],
@@ -222,6 +222,7 @@ export default {
       setType: '',
       titleDeed: utils.deepClone(titleDeed),
       accessCard: utils.deepClone(accessCard),
+      landDeed: utils.deepClone(landDeed),
       warrantId: '',
       typeJudgment: '',        // 权利类型判断
       beat: [],
@@ -272,25 +273,24 @@ export default {
       }
     },
     'typeJudgment' () {
-      if (this.newData === 'new') {
-        if (this.typeJudgment === '1') {
-          this.titleDeed.forEach(item => {
+      if (this.newData === 'new') {        
+        if (this.typeJudgment === '1' || this.typeJudgment === '2' || this.typeJudgment === '3') {
+          let arr = []
+          if (this.typeJudgment === '1') {
+            arr = this.titleDeed
+          } else if (this.typeJudgment === '2') {
+            arr = this.accessCard
+          } else if (this.typeJudgment === '3') {
+            arr = this.landDeed
+          }
+          arr.forEach(item => {
             if (item.formType === 'input' || item.formType === 'inputNumber') {
               item.attrValue = ''
             } else if (item.formType === 'selcet' || item.formType === 'date') {
               item.attrValue = undefined
             }
           })
-          this.beat = this.titleDeed
-        } else if (this.typeJudgment === '2') {
-          this.accessCard.forEach(item => {
-            if (item.formType === 'input' || item.formType === 'inputNumber') {
-              item.attrValue = ''
-            } else if (item.formType === 'selcet' || item.formType === 'date') {
-              item.attrValue = undefined
-            }
-          })
-          this.beat = this.accessCard
+          this.beat = arr
         } else {
           // 新增进来全面清空数据
           this.beat = []
@@ -309,6 +309,8 @@ export default {
           this.beat = this.titleDeed
         } else if (this.typeJudgment === '2') {
           this.beat = this.accessCard
+        } else if (this.typeJudgment === '3') {
+          this.beat = landDeed
         }
       }
     }
@@ -408,12 +410,12 @@ export default {
           }
           let obj = {
             warrantId: this.warrantId,                                            // 类型：Number  必有字段  备注：权证id
-            warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,                                        // 类型：String  必有字段  备注：权证号
-            ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                                          // 类型：Number  必有字段  备注：权属形式
-            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,                                      // 类型：Number  必有字段  备注：权利类型
+            warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,              // 类型：String  必有字段  备注：权证号
+            ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                 // 类型：Number  必有字段  备注：权属形式
+            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,            // 类型：Number  必有字段  备注：权利类型
             lotNo: conditionalJudgment.includes(values.lotNo) ? '' : values.lotNo,                              // 类型：String  必有字段  备注：丘地号(产权证所有)
-            estateUnitCode: conditionalJudgment.includes(values.estateUnitCode) ? '' : values.estateUnitCode,                // 类型：String  必有字段  备注：不动产单元号(产权证所有)
-            seatingPosition: conditionalJudgment.includes(values.seatingPosition) ? '' : values.seatingPosition,             // 类型：String  必有字段  备注：坐落位置
+            estateUnitCode: conditionalJudgment.includes(values.estateUnitCode) ? '' : values.estateUnitCode,   // 类型：String  必有字段  备注：不动产单元号(产权证所有)
+            seatingPosition: conditionalJudgment.includes(values.seatingPosition) ? '' : values.seatingPosition, // 类型：String  必有字段  备注：坐落位置
             landArea: conditionalJudgment.includes(values.landArea) ? '' : values.landArea,                     // 类型：Number  必有字段  备注：土地面积(产权证所有)
             ownershipUse: conditionalJudgment.includes(values.ownershipUse) ? '' : values.ownershipUse,         // 类型：String  必有字段  备注：权属用途
             structure: conditionalJudgment.includes(values.structure) ? '' : values.structure,                  // 类型：String  必有字段  备注：结构

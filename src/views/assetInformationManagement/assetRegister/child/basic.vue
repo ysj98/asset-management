@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-24 11:33:09
+ * @LastEditTime: 2020-07-24 18:33:31
  * @Description: 房屋土地
 --> 
 <template>
@@ -479,7 +479,7 @@ export default {
     },
     // 权属类型
     ownershipFn () {
-      this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}).then(res => {
+      this.$api.assets.platformDict({code: 'AMS_ASSET_KIND_OF_RIGHT'}).then(res => {
         if (Number(res.data.code) === 0) {
           let ownershipData = res.data.data
           let obj = {}

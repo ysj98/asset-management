@@ -303,6 +303,111 @@ export const titleDeed = [
   }
 ]
 
+
+// 权利类型：土地使用权证展示
+export const landDeed = [
+  {
+    label: '坐落位置',
+    attrCode: 'seatingPosition',
+    formType: 'input',
+    attrValue: '',
+    max: 100,
+    required: true
+  },
+  {
+    label: '地号',
+    attrCode: 'landNumber',
+    formType: 'input',
+    attrValue: '',
+    max: 30,
+    required: true
+  },
+  {
+    label: '图号',
+    attrCode: 'picNumber',
+    formType: 'input',
+    attrValue: '',
+    max: 30,
+    required: true
+  },
+  {
+    label: '地类（用途）',
+    attrCode: 'landCategory',
+    formType: 'input',
+    attrValue: '',
+    max: 30,
+    required: true
+  },
+  {
+    label: '取得价格',
+    attrCode: 'getPrice',
+    formType: 'inputNumber',
+    attrValue: '',
+    min: 0,
+    precision: 2,
+    max: 99999999999.99,
+    required: false
+  },
+  {
+    label: '使用权类型',
+    attrCode: 'useCategory',
+    formType: 'input',
+    attrValue: '',
+    max: 30,
+    required: false
+  },
+  {
+    label: '使用权面积(㎡)',
+    attrCode: 'useArea',
+    formType: 'inputNumber',
+    attrValue: '',
+    min: 0,
+    precision: 2,
+    max: 99999999.99,
+    required: true
+  },
+  {
+    label: '独用面积(㎡)',
+    attrCode: 'exclusiveArea',
+    formType: 'inputNumber',
+    attrValue: '',
+    min: 0,
+    precision: 2,
+    max: 99999999.99,
+    required: true
+  },
+  {
+    label: '分摊面积(㎡)',
+    attrCode: 'apportionArea',
+    formType: 'inputNumber',
+    attrValue: '',
+    min: 0,
+    max: 9999999.99,
+    precision: 2,
+    required: true
+  },
+  {
+    label: '终止日期',
+    attrCode: 'terminationData',
+    formType: 'date',
+    attrValue: '',
+    required: true
+  },
+  {
+    label: '登记日期',
+    attrCode: 'rigisterDate',
+    formType: 'date',
+    attrValue: '',
+    required: true
+  },
+  {
+    label: '交接日期',
+    attrCode: 'handoverDate',
+    formType: 'date',
+    attrValue: '',
+    required: false
+  }
+]
 export const newCardData = {
   warrantId: '',                   // 类型：Number  必有字段  备注：权证id
   warrantNbr: '',                  // 类型：String  必有字段  备注：权证号
