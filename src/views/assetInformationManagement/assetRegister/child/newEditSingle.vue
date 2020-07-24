@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-23 19:17:01
+ * @LastEditTime: 2020-07-24 11:21:09
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -69,7 +69,6 @@ export default {
   computed: {
     leftButtonName: function () {
       if (this.activeStepIndex === 0) {
-
         return '保存'
       } else if (this.activeStepIndex < 4) {
         return '上一步'

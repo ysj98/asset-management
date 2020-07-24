@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-23 18:34:50
+ * @LastEditTime: 2020-07-24 11:33:09
  * @Description: 房屋土地
 --> 
 <template>
@@ -199,8 +199,15 @@ export default {
           this.columns = landData
           this.numList[1].title = '土地面积'
         }
+        // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
+        }
+        // 切换总的统计数据的值为0
+        if (!type && this.tableData.length === 0) {
+          this.numList.forEach(item => {
+            item.value = 0
+          })
         }
       })
     },
