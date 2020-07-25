@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 11:46:50
- * @LastEditTime: 2020-07-22 15:14:09
+ * @LastEditTime: 2020-07-25 16:19:19
  * @Description: 价值登记编辑
 --> 
 <template>
@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   components: {},
   props: {},
@@ -137,6 +138,7 @@ export default {
   mounted () {
   },
   methods: {
+    moment,
     // 编辑查询
     getValueDetail (record) {
       this.examine = record
@@ -147,11 +149,14 @@ export default {
       let o = {
         originalValue: record.originalValue,              // 资产原值
         validPeriod: record.validPeriod,                  // 使用期限
-        startDate: record.startDate,                      // 开始使用日期
+        startDate: record.startDate ? moment(record.startDate, 'YYYY-MM-DD') : '',                      // 开始使用日期
         usedDate: record.usedDate,                        // 已使用期数/月
         depreciationAmount: record.depreciationAmount     // 累计折旧金额(元)
       }
-      this.form.setFieldsValue(o)
+      console.log(o)
+      this.$nextTick(() => {
+        this.form.setFieldsValue(o)
+      })
     },
     // 提交
     updateAssetValue (values) {

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-23 18:34:50
+ * @LastEditTime: 2020-07-25 15:58:52
  * @Description: 房屋土地
 --> 
 <template>
@@ -21,7 +21,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="custom-table table-boxs"
+        class="table-boxs"
         :scroll="{y: 450, x: 2200}"
         :columns="columns"
         :dataSource="tableData"
@@ -128,6 +128,11 @@ export default {
       this.footer.pageSize = data.pageLength
       this.query()
     },
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 查询详情
     query (val) {
       if (val === 'sub') {
@@ -199,8 +204,15 @@ export default {
           this.columns = landData
           this.numList[1].title = '土地面积'
         }
+        // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
+        }
+        // 切换总的统计数据的值为0
+        if (!type && this.tableData.length === 0) {
+          this.numList.forEach(item => {
+            item.value = 0
+          })
         }
       })
     },
@@ -398,11 +410,11 @@ export default {
     downFn () {
       let obj = {
         registerOrderId: this.registerOrderId,  // 资产登记ID，修改时必填
-        assetType: this.checkboxAssetType,      // 资产类型, 1房屋、2土地、3设备
-        buildIds: '',                           // 楼栋id列表（房屋时必填）
+        assetType: this.assetType,      // 资产类型, 1房屋、2土地、3设备
+        buildIds: [],                           // 楼栋id列表（房屋时必填）
         scope: '',                              // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
-        blankIdList: ''                         // 土地Id列表（土地时必填）
+        blankIdList: []                         // 土地Id列表（土地时必填）
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])
@@ -424,8 +436,9 @@ export default {
     batchUploadFn (files, e) {
       if (!files.length) { return }
       let fileData = new FormData()
-      fileData.append('registerOrderModelFile', files[0])
-      fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('file', files[0])
+      // fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('assetType', this.assetType)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -439,8 +452,10 @@ export default {
       let loadingName = this.SG_Loding('导入中...')
       this.$api.assets.baseImport(this.formData).then(res => {
         if (res.data.code === '0') {
+          e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
+            this.allQuery()
           })
         } else {
           e.target.value = ''
@@ -472,7 +487,7 @@ export default {
     },
     // 权属类型
     ownershipFn () {
-      this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}).then(res => {
+      this.$api.assets.platformDict({code: 'AMS_ASSET_KIND_OF_RIGHT'}).then(res => {
         if (Number(res.data.code) === 0) {
           let ownershipData = res.data.data
           let obj = {}

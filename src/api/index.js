@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-19 14:44:17
- * @LastEditTime: 2020-02-24 15:23:42
+ * @LastEditTime: 2020-07-24 17:36:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \asset-management\src\api\index.js
@@ -24,6 +24,7 @@ import * as disposalManagement from './disposalManagement'
 import * as subsidiary from './subsidiary'
 import * as reportManage from './reportManage'
 import * as tableManage from './tableManage'
+import * as land from './land'
 const API = {
   auth,
   global,
@@ -36,7 +37,8 @@ const API = {
   disposalManagement,
   subsidiary,
   reportManage,
-  tableManage
+  tableManage,
+  land
 }
 export default {
   install (Vue) {

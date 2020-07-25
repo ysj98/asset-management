@@ -31,7 +31,7 @@ const proxyURL = [
   '/uhomecp-app/',
   '/common-api',
   '/uis/',
-  // '/ams/',
+  '/ams/',
   '/charging-api/'
 ]
 /**
@@ -71,6 +71,7 @@ proxy.addUrls(proxyURL, localhost, target)
 // proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.20:8080')
 proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.28:8080')
 // proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.34:8081')
+// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.28:8080')
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

@@ -69,7 +69,7 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard v-if="newShow" ref="newCard" @showFn="showFn" @successQuery="successQueryFn"  :organId="queryCondition.organId"></NewCard>
+    <NewCard v-if="newShow" ref="newCard" @showFn="showFn" @successQuery="successQueryFn"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
     <!--导入-->
@@ -209,21 +209,22 @@ export default {
       this.newShow = true
       this.$nextTick(() => {
         this.$refs.newCard.show = true
-        this.$refs.newCard.newFn('new')
+        this.$refs.newCard.newFn('new', this.queryCondition.organId)
         this.$refs.newCard.selectFn()
       })
     },
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
-        this.$refs.cardDetails.query(val.warrantNbr)
+        this.$refs.cardDetails.query(val.warrantNbr, val.organId)
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
         this.newShow = true
         this.$nextTick(() => {
           this.$refs.newCard.show = true
+          this.$refs.newCard.newFn('edit', val.organId)
           this.$refs.newCard.selectFn()
-          this.$refs.newCard.query(val.warrantId, val.warrantNbr)
+          this.$refs.newCard.query(val.warrantId, val.warrantNbr, val.organId)
         })
       } else if (type === 'logout') {
         let _this = this

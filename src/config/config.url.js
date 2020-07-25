@@ -171,9 +171,9 @@ export const assets = {
     // 资产登记-价值信息统计
     getValueStatistics: '/ams/registerOrder/getValueStatistics',
     // 资产登记-价值信息批量导出
-    valueExport: '/ams/registerOrder/valueExport',
+    valueExport: '/ams/registerOrder/downloadValueTemplateByRgId',
     // 资产登记-价值信息批量导入
-    valueImport: '/ams/registerOrder/valueImport',
+    valueImport: '/ams/registerOrder/importValueData',
     // 资产登记-价值信息分页列表
     queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
     // 资产登记-价值信息详情
@@ -209,7 +209,7 @@ export const assets = {
     // 根据登记单Id资产登记明细列表-分页
     getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList',
     // 批量更新（导入）
-    baseImport: '/ams/registerOrder/baseImport'
+    baseImport: '/ams/registerOrder/importBaseInfoData'
   },
   // 资产出库
   assetClear: {
@@ -829,3 +829,13 @@ export const assetIn = {
   // 资产入库列表查询
   queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
 }
+
+
+// 资产入库
+export const land = {
+  // 土地台账--资产视图
+  assetView: '/ams/assetLand/view/asset/assetView',
+  // 土地台账--资产视图汇总
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+}
+

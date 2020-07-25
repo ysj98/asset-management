@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-23 18:28:51
+ * @LastEditTime: 2020-07-25 16:34:32
  * @Description: 附属配套
 --> 
 <template>
@@ -17,7 +17,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="custom-table table-boxs"
+        class="table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 2300}"
@@ -166,16 +166,17 @@ export default {
       fileData.append('file', file)
       fileData.append('registerOrderId', this.queryCondition.registerOrderId)
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.subsidiary.batchImportByRgId(fileData).then(res => {
+      this.$api.assets.batchImportByRgId(fileData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
-            this.query()
+            this.$refs.eportAndDownFile.visible = false
+            this.allQuery()
           }) 
         } else {
+          this.$refs.eportAndDownFile.visible = false
           this.DE_Loding(loadingName).then(() => {
-            this.$refs.downErrorFile.visible = true
-            this.upErrorInfo = res.data.message
+            this.$SG_Message.error(res.data.message)
           })
         }
       }, () => {

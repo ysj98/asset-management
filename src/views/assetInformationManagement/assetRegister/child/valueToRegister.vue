@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 10:47:05
- * @LastEditTime: 2020-07-23 19:39:49
+ * @LastEditTime: 2020-07-25 16:17:33
  * @Description: 价值信息
 --> 
 <template>
@@ -17,7 +17,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="custom-table table-boxs"
+        class="table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 1900}"
@@ -109,8 +109,8 @@ export default {
       this.modalShow = true
       this.$nextTick(() => {
         record.registerOrderId = this.queryCondition.registerOrderId
-        this.$refs.valueToRegisterEdit.getValueDetail(record)
         this.$refs.valueToRegisterEdit.modalShow = true
+        this.$refs.valueToRegisterEdit.getValueDetail(record)
       })
     },
     cancel () {
@@ -141,7 +141,7 @@ export default {
     change (files, e) {
       if (!files.length) { return }
       let fileData = new FormData()
-      fileData.append('registerOrderModelFile', files[0])
+      fileData.append('file', files[0])
       fileData.append('registerOrderId', this.queryCondition.registerOrderId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
@@ -154,8 +154,9 @@ export default {
         return this.$message.error('请先上传文件!')
       }
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.assets.readExcelModel(this.formData).then(res => {
+      this.$api.assets.valueImport(this.formData).then(res => {
         if (res.data.code === '0') {
+          e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
             this.allQuery()

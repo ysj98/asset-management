@@ -173,6 +173,15 @@ export default [
     ]
   },
   {
+    title: '土地台账',
+    children: [
+      {
+        title: '资产视图',
+        path: '/landAssetsView'
+      }
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {
