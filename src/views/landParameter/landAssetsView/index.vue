@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-24 17:51:43
+ * @LastEditTime: 2020-07-25 14:35:20
  * @Description: 土地资产视图
 --> 
 <template>
@@ -140,12 +140,12 @@ export default {
       columnsData,
       scroll: {x: columnsData.length * 150},
       numList: [
-        {title: '资产数量', key: 'whole', value: 0, fontColor: '#324057'},
-        {title: '土地面积(㎡)', key: 'notVerified', value: 0, bgColor: '#5b8ff9'},
-        {title: '运营(㎡)', key: 'waitStorage', value: 0, bgColor: '#1890FF'},
-        {title: '闲置(㎡)', key: 'alreadyStorage', value: 0, bgColor: '#DD81E6'},
-        {title: '自用(㎡)', key: 'waitStorage1', value: 0, bgColor: '#FD7474'},
-        {title: '其他(㎡)', key: 'alreadyStorage1', value: 0, bgColor: '#BBC8D6'}
+        {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
+        {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#5b8ff9'},
+        {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
+        {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
+        {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474'},
+        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       provinces: {
         province: undefined,
@@ -336,7 +336,7 @@ export default {
     },
     // 查询
     query () {
-      this.loading = false
+      this.loading = true
       let obj = {
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省
@@ -356,7 +356,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
-              item.ownershipStatusName = this.ownershipStatusObj(String(item.ownershipStatus))
+              item.ownershipStatusName = item.ownershipStatus ? this.ownershipStatusObj[String(item.ownershipStatus)] : ''
             })
             this.tableData = data
             this.count = res.data.data.count
