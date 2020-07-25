@@ -271,7 +271,7 @@ export default {
     },
     'typeJudgment' () {
       if (this.newData === 'new') {        
-        if (this.typeJudgment === '1' || this.typeJudgment === '2' || this.typeJudgment === '3') {
+        if (this.typeJudgment) {
           let arr = []
           if (this.typeJudgment === '1') {
             arr = this.titleDeed
@@ -719,7 +719,7 @@ export default {
             } else if (this.typeJudgment === '2') {
               this.form.setFieldsValue({
                 houseOwner: data.amsOwnershipWarrant.houseOwner,
-                tenant: data.amsOwnershipWarrant.tenant,
+                tenantId: data.amsOwnershipWarrant.tenantId,
                 entrustOrganization: data.amsOwnershipWarrant.entrustOrganization,
                 buildArea: data.amsOwnershipWarrant.buildArea,
                 totalFloor: data.amsOwnershipWarrant.totalFloor,
@@ -747,13 +747,6 @@ export default {
               })
             }
           })
-          // 几个单独的字段
-          // this.form.setFieldsValue({
-          //   warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
-          //   ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
-          //   kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
-          //   remark: data.amsOwnershipWarrant.remark  // 备注
-          // })
           let files = []
           if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
               data.amsAttachmentList.forEach(item => {

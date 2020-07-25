@@ -83,7 +83,7 @@ const accessCard = [
   { text: '权属形式', value: 'ownerTypeName' },
   { text: '权利类型', value: 'kindOfRightName' },
   { text: '房屋所有权人', value: 'houseOwner' },
-  { text: '承租人', value: 'tenant' },
+  { text: '承租人', value: 'tenantIdName' },
   { text: '委托管理单位', value: 'entrustOrganization' },
   { text: '建筑面积(㎡)', value: 'buildArea' },
   { text: '专有建筑面积(㎡)', value: 'exclusiveBuildArea' },
@@ -187,6 +187,7 @@ export default {
     },
     // 详情查询
     query (warrantNbr, id) {
+      this.particularsData = {}
       this.show = true
       this.warrantNbr = warrantNbr
       this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr, organId: id}).then(res => {
@@ -194,7 +195,6 @@ export default {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
         this.particularsData = data.amsOwnershipWarrant
-        console.log(this.particularsData, '-=-=')
         let files = []
         if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
             data.amsAttachmentList.forEach(item => {
