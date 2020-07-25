@@ -202,9 +202,8 @@ export default {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName, ...val}])
       switch (str) {
         case 'detail': {           // 详情
-          val.type = 'detail'
           let particularsData = JSON.stringify([val])
-          this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'particulars' }})
+          this.$router.push({path: '/assetRegister/particulars', query: { record: particularsData, setType: 'detail' }})
         }
         break;
         case 'basicInformation':    // 登记基础信息

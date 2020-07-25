@@ -24,14 +24,13 @@ export default {
   },
   data () {
     return {
-      showKey: 'land',
+      showKey: 'house',
     }
   },
   created () {
   },
   methods: {
     tabChange (v) {
-      console.log(v)
       this.showKey = v
     }
   }

@@ -43,22 +43,29 @@ let proRouter = [
     component: () => import('@/views/buildingDict/land/detailLand.vue')
   },
   {
-    path: '/assetChange',
-    name: '资产变动',
-    component: () => import('@/views/assetInformationManagement/assetChange/index.vue'),
-    meta: {
-      keepAlive: true
-    }
+    path: '/assetChangeRegister',
+    name: '资产变更单',
+    component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),
   },
   {
-    path: '/assetChange/newEditSingle',
-    name: '变动申请',
+    path: '/assetChangeRegister/editSingle',
+    name: '编辑变更单',
+    component: () => import('@/views/assetInformationManagement/assetChange/editSingle.vue')
+  },
+  {
+    path: '/assetChangeRegister/newEditSingle',
+    name: '新建变更单',
     component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
   },
   {
-    path: '/assetChange/particulars',
-    name: '变动单详情',
+    path: '/assetChangeRegister/particulars',
+    name: '变更单详情',
     component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
+  },
+  {
+    path: '/assetChangeView',
+    name: '资产变更一览表',
+    component: () => import('@/views/assetInformationManagement/assetChange/scheduleChanges.vue'),
   },
   {
     path: '/assetRegister',
@@ -85,7 +92,7 @@ let proRouter = [
   },
   {
     path: '/assetClear',
-    name: '资产清理',
+    name: '资产出库',
     component: () => import('@/views/assetInformationManagement/assetClear/index.vue'),
     meta: {
       keepAlive: true
@@ -637,6 +644,11 @@ let proRouter = [
     path: '/assetIn/new',
     name: '新建', // 资产入库新建
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
+  },
+  {
+    path: '/landAssetsView',
+    name: '土地资产视图',
+    component: () => import('@/views/landParameter/landAssetsView/index')
   }
 ]
 export default proRouter

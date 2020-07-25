@@ -411,7 +411,7 @@ export default {
                     this.DE_Loding(loadingName).then(() => {
                       if (res.data.code === "0") {
                         this.$SG_Message.success(`新增房间成功`);
-                        this.goPage("index");
+                        this.goPage("index", true);
                       } else {
                         this.$message.error(res.data.message);
                       }
@@ -446,7 +446,7 @@ export default {
                     this.DE_Loding(loadingName).then(() => {
                       if (res.data.code === "0") {
                         this.$SG_Message.success("编辑房间成功");
-                        this.goPage("index");
+                        this.goPage("index", true);
                       } else {
                         this.$message.error(res.data.message);
                       }
@@ -723,8 +723,13 @@ export default {
         });
     },
     // 页面跳转
-    goPage(type) {
+    goPage(type, refresh) {
       let query = {};
+      // 如果需刷新页面
+      if (refresh) {
+        query.refresh = true
+        query.showKey = "house"
+      }
       this.$router.push({ path: operationTypes[type], query: query || {} });
     },
     // 楼栋搜索

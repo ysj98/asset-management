@@ -40,6 +40,16 @@ export const ASSET_MANAGEMENT = {
   ASSET_CLASS_SET_EDIT: 'zcgl_asset_class_set_edit',
   // 资产分类-启用/停用资产分类信息(状态)
   ASSET_CLASS_SET_CHANGE_STATUS: 'zcgl_asset_class_set_change_status',
+  // 2.0.0新增start
+  // 资产分类-新增土地
+  ASSET_CLASS_LAND_CREATE: 'asset_class_land_create',
+  // 资产分类-编辑土地
+  ASSET_CLASS_LAND_EDIT: 'asset_class_land_edit',
+  // 资产分类-状态改变土地
+  ASSET_CLASS_LAND_CHANGE: 'asset_class_land_change',
+  // 资产分类-状态删除土地
+  ASSET_CLASS_LAND_DELETE: 'asset_class_land_delete',
+  // 2.0.0新增end
   // 楼盘字典-新增房间
   ASSET_ADD_HOUSE: 'zcgl_add_house',
   // 楼盘字典-编辑房间
@@ -70,6 +80,14 @@ export const ASSET_MANAGEMENT = {
   ASSET_UNIT_EDIT: 'zcgl_unit_edit',
   // 楼盘字典-删除单元
   ASSET_UNIT_DELETE: 'zcgl_unit_delete',
+  // 2.0.0start
+  // 楼盘字典-创建土地
+  ASSET_DICT_LAND_CREATE: 'zcgl_dict_land_create',
+  // 楼盘字典-修改土地
+  ASSET_DICT_LAND_EDIT: 'zcgl_dict_land_edit',
+  // 楼盘字典-删除土地
+  ASSET_DICT_LAND_DELETE: 'zcgl_dict_land_delete',
+  // 2.0.0end
   /**
   * 资产变动
   **/

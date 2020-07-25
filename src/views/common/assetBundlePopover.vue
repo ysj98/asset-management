@@ -20,7 +20,7 @@
         <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类型" v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
+        <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
           <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
@@ -111,7 +111,7 @@ export default {
     queryType: {
       type: [String, Number],
       default: ''
-    }
+    },
   },
   data () {
     return {
@@ -207,13 +207,15 @@ export default {
         // 存着全部数据
         this.overallData = arrData
       }
-      if (this.selecData.projectId !== projectId) {
-        this.selecData.projectId = projectId
-        this.query()
-      }
+      this.selecData.projectId = projectId
+      // if (this.selecData.projectId !== projectId) {
+      //   this.selecData.projectId = projectId
+      //   this.query()
+      // }
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
         this.selecData.assetType = assetType
         this.assetTypeDisabled = true
+        this.assetTypeFn()
         this.query()
       }
       this.$nextTick(() => {
@@ -288,7 +290,7 @@ export default {
           if (str === 'asset_type') {
             this.assetTypeData = [...this.assetTypeData, ...data]
           }
-          this.getListFn()
+          // this.getListFn()
         } else {
           this.$message.error(res.data.message)
         }

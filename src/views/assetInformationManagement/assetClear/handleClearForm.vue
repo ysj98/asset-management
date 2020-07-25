@@ -1,5 +1,5 @@
 <!--
-  清理单的操作，包括新增，编辑，审核，详情
+  出库单的操作，包括新增，编辑，审核，详情
 -->
 <template>
   <div class="handle-clear-form">
@@ -8,15 +8,15 @@
         <div class="edit-box-title"><i></i><span>基础信息</span></div>
         <div class="edit-box-content">
           <div class="edit-box-content-item">
-            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">清理单编号<i></i></span><span>：</span></div>
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">出库单编号<i></i></span><span>：</span></div>
             <a-form-item>
               <a-input
-                placeholder="请输入清理单编号"
+                placeholder="请输入出库单编号"
                 :style="allStyle"
                 :max="30"
                 v-if="editable"
                 v-decorator="['cleaningOrderCode',
-                {rules: [{required: true, max: 30, whitespace: true, message: '请输入清理单编号(不超过30字符)'}], initialValue: detail.cleaningOrderCode}
+                {rules: [{required: true, max: 30, whitespace: true, message: '请输入出库单编号(不超过30字符)'}], initialValue: detail.cleaningOrderCode}
               ]"/>
               <span class="label-value" v-else>{{detail.cleaningOrderCode || '--'}}</span>
             </a-form-item>
@@ -60,18 +60,18 @@
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
-            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">清理原因<i></i></span><span>：</span></div>
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">出库原因<i></i></span><span>：</span></div>
             <a-form-item>
               <a-select
                 showSearch
                 allowClear
-                placeholder="请选择清理原因"
+                placeholder="请选择出库原因"
                 optionFilterProp="children"
                 :style="allStyle"
                 :options="cleanupTypeOptions"
                 :filterOption="filterOption"
                 v-decorator="['cleanupType',
-                {rules: [{required: true,  message: '请选择清理原因'}], initialValue: detail.cleanupType}]"
+                {rules: [{required: true,  message: '请选择出库原因'}], initialValue: detail.cleanupType}]"
                 v-if="editable"
               ></a-select>
               <span class="label-value" v-else>{{detail.cleanupTypeName || '--'}}</span>
@@ -351,7 +351,7 @@ export default {
         }
       })
     },
-    // 获取资产清理原因下拉列表
+    // 获取资产出库原因下拉列表
     getCleanupTypeOptions() {
       let form = {
         code: 'asset_cleanup_type'

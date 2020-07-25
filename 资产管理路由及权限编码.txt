@@ -185,7 +185,13 @@ asset_report_income     呈报记录收入
 asset_report_deprecia   呈报记录折旧
 asset_report_cost       呈报记录费用
 
-v2.0
+
+// 2.0.0新增权限
+资产分类设置
+asset_class_land_create    资产分类-新增土地
+asset_class_land_edit      资产分类-编辑土地
+asset_class_land_change    资产分类-状态改变土地
+asset_class_land_delete    资产分类-状态删除土地
 
 /* 资产入库 */
 ASSET_IN_CREATE: 'asset_in_create', // 新建

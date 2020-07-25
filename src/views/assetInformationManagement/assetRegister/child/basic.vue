@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-21 15:54:24
+ * @LastEditTime: 2020-07-25 15:58:52
  * @Description: 房屋土地
 --> 
 <template>
@@ -9,12 +9,12 @@
     <!--数据总览-->
     <overview-number :numList="numList"/>
     <div class="button-box">
-      <div class="buytton-nav" v-show="setType === 'new'">
+      <div class="buytton-nav" v-show="setType === 'new' && !registerOrderId">
         <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
         <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
         <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
       </div>
-      <div class="buytton-nav" v-show="setType === 'edit'">
+      <div class="buytton-nav" v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId">
         <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="batchUpdate">批量更新</SG-Button>
       </div>
@@ -32,6 +32,15 @@
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+      <SG-FooterPagination
+        v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId"
+        :pageLength="footer.pageSize"
+        :totalCount="count"
+        location="static"
+        :noPageTools="false"
+        v-model="footer.pageNum"
+        @change="handleChange"
+      />
     </div>
     <basicDownload ref="basicDownload"></basicDownload>
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
@@ -43,7 +52,7 @@
 import {utils, calc} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData, landData} from './../common/registerBasics'
+import {columnsData, judgmentData, landData, landCheck} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import bridge from './center'
 export default {
@@ -52,10 +61,23 @@ export default {
     organId: {
       type: [String, Number],
       default: ''
+    },
+    registerOrderId: {
+      type: [String, Number],
+      default: ''
+    },
+    assetTypeId: {
+      type: [String, Number],
+      default: '' 
     }
   },
   data () {
     return {
+      count: '',
+      footer: {
+        pageNum: 1,
+        pageSize: 10
+      },
       basicData: [],
       organDictData: {},     // 权属情况
       ownershipData: {},     // 权属类型
@@ -75,49 +97,122 @@ export default {
   computed: {
   },
   created () {
+  },
+  mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
-    if (this.record[0].setType === 'detail') {
+    this.assetType = String(this.assetTypeId)
+    if (this.setType === 'detail' || this.setType === 'edit') {
       let arr = []
-      this.assetType = '2'
-      if (this.assetType === '1') {
-        console.log(columnsData)
+      this.assetType = String(this.record[0].assetType)
+      if (+this.record[0].assetType === 1) {                    // 房屋表头
         arr = utils.deepClone(columnsData)
         arr.pop()
-        console.log(arr)
         this.columns = arr
-      } else if (this.assetType === '2') {
+      } else if (+this.record[0].assetType === 4) {             // 土地表头
         arr = utils.deepClone(landData)
         arr.pop()
         this.columns = arr
       }
+      this.query()
     } else {
       this.bridgeFn()
     }
-  },
-  mounted () {
     this.organDict()
     this.ownershipFn()
   },
   methods: {
+    // 分页查询添加后和详情使用
+    handleChange (data) {
+      this.footer.pageNum = data.pageNo
+      this.footer.pageSize = data.pageLength
+      this.query()
+    },
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
+    // 查询详情
+    query (val) {
+      if (val === 'sub') {
+        this.footer.pageNum = 1
+        this.footer.pageSize = 10
+      }
+      this.loading = true
+      let obj = {
+        pageNum: this.footer.pageNum,
+        pageSize: this.footer.pageSize,
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = []
+          if (+this.assetType === 1) {
+            data = res.data.data.data.assetHoseList
+          } else {
+            data = res.data.data.data.assetLandList
+          }
+          if (data && data.length) {
+            data.forEach((item, index) => {
+              item.key = index
+            }) 
+          }
+          this.tableData = data || []
+          this.count = res.data.data.count
+          this.getRegisterOrderDetailsStatisticsFn()
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
+    },
+    // 资产登记-详情明细统计
+    getRegisterOrderDetailsStatisticsFn () {
+      let obj = {
+        registerOrderId: this.registerOrderId
+      }
+      this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          if (this.assetType === '4') {
+            this.numList[1].title = '土地面积'
+          }
+          return this.numList = this.numList.map(m => {
+            return { ...m, value: data[m.key] || 0 }
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 切换资产类型时！切换所有数据
     bridgeFn:function(){
       bridge.$on("assetType",(val, type)=>{
         //val值    type：project项目  asset资产类型
-        console.log(val, type, '切换资产类型时！切换所有数据231232')
         // 房屋
         if (type === 'asset' && val === '1') {
           this.assetType = '1'
           this.tableData = []
           this.columns = columnsData
+          this.numList[1].title = '建筑面积'
         // 土地
-        } else if (type === 'asset' && val === '2') {
-          this.assetType = '2'
+        } else if (type === 'asset' && val === '4') {
+          this.assetType = '4'
           this.tableData = []
           this.columns = landData
+          this.numList[1].title = '土地面积'
         }
+        // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
+        }
+        // 切换总的统计数据的值为0
+        if (!type && this.tableData.length === 0) {
+          this.numList.forEach(item => {
+            item.value = 0
+          })
         }
       })
     },
@@ -159,56 +254,73 @@ export default {
       this.$api.assets.readExcelModel(this.formData).then(res => {
         if (res.data.code === '0') {
           e.target.value = ''
-          let resData = res.data.data.assetHouseList
-          let arrData = utils.deepClone([...resData, ...this.tableData])
-          // 数组去重根据type和objectId
-          let hash = {}
-          arrData = arrData.reduce((preVal, curVal) => {
-            hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
-            return preVal
-          }, [])
+          let resData = [], arrData =[], publicData = []
+          // 房屋
+          if (this.assetType === '1') {
+            resData =  res.data.data.assetHouseList
+            arrData = utils.deepClone([...resData, ...this.tableData])
+            // 数组去重根据type和objectId
+            let hash = {}
+            arrData = arrData.reduce((preVal, curVal) => {
+              hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
+              return preVal
+            }, [])
+            publicData = judgmentData
+          } else if (this.assetType === '4') {
+          // 土地
+            resData =  res.data.data.assetBlankList
+            arrData = utils.deepClone([...resData, ...this.tableData])
+            // 数组去重根据objectId
+            let hash = {}
+            arrData = arrData.reduce((preVal, curVal) => {
+              hash[Number(curVal.objectId)] ? '' : hash[Number(curVal.objectId)] = true && preVal.push(curVal)
+              return preVal
+            }, [])
+            publicData = landCheck
+          }
+          landCheck
           // 遍历判断必填有字段
           for (let i = 0; i < arrData.length; i++) {
-            for (let j = 0; j < judgmentData.length; j++) {
+            for (let j = 0; j < publicData.length; j++) {
              // 必填字段
-              if (judgmentData[j].required) {
-                if (!arrData[i][judgmentData[j].dataIndex]) {
-                  this.DE_Loding(loadingName).then(() => { this.$message.info(`请输入${judgmentData[j].title}`)})
+              if (publicData[j].required) {
+                if (!arrData[i][publicData[j].dataIndex]) {
+                  this.DE_Loding(loadingName).then(() => { this.$message.info(`请输入${publicData[j].title}`)})
                   return
                 }
               }
               // 判断只能为数字2小数
-              if (judgmentData[j].type === 'float') {
-                if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][judgmentData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}(只支持2位小数)`)})
+              if (publicData[j].type === 'float') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持2位小数)`)})
                   return
                 }
               }
               // 判断只能为数字4小数
-              if (judgmentData[j].type === 'float4') {
-                if (arrData[i][judgmentData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][judgmentData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}(只支持4位小数)`)})
+              if (publicData[j].type === 'float4') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持4位小数)`)})
                   return
                 }
               }
               // 判断只能为整数
-              if (judgmentData[j].type === 'number') {
-                if (arrData[i][judgmentData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][judgmentData[j].dataIndex]))) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${judgmentData[j].title}`)})
+              if (publicData[j].type === 'number') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][publicData[j].dataIndex]))) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}`)})
                   return
                 }
               }
               // 判断不超过多少字符
-              if (judgmentData[j].fontLength) {
-                if (arrData[i][judgmentData[j].dataIndex] && String(arrData[i][judgmentData[j].dataIndex]).length > judgmentData[j].fontLength) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`${judgmentData[j].title}不超过${judgmentData[j].fontLength}字符`)})
+              if (publicData[j].fontLength) {
+                if (arrData[i][publicData[j].dataIndex] && String(arrData[i][publicData[j].dataIndex]).length > publicData[j].fontLength) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`${publicData[j].title}不超过${publicData[j].fontLength}字符`)})
                   return
                 }
               }
               // 判断时间转换
-              // if (judgmentData[j].date) {
-              //   if (arrData[i][judgmentData[j].dataIndex]) {
-              //     arrData[i][judgmentData[j].dataIndex] = utils.xlsxDate(arrData[i][judgmentData[j].dataIndex])
+              // if (publicData[j].date) {
+              //   if (arrData[i][publicData[j].dataIndex]) {
+              //     arrData[i][publicData[j].dataIndex] = utils.xlsxDate(arrData[i][publicData[j].dataIndex])
               //   }
               // }
             }
@@ -221,7 +333,11 @@ export default {
             arrData[i].key = i
             arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
-            this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
+            if (this.assetType === '1') {
+              this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
+            } else if (this.assetType === '4') {
+              this.numList[1].value = calc.add(this.numList[2].value, arrData[i].landArea || 0)
+            }
             this.numList[2].value = calc.add(this.numList[2].value, arrData[i].creditorAmount || 0)
             this.numList[3].value = calc.add(this.numList[3].value, arrData[i].debtAmount || 0)
           }
@@ -294,11 +410,11 @@ export default {
     downFn () {
       let obj = {
         registerOrderId: this.registerOrderId,  // 资产登记ID，修改时必填
-        assetType: this.checkboxAssetType,      // 资产类型, 1房屋、2土地、3设备
-        buildIds: '',             // 楼栋id列表（房屋时必填）
-        scope: '',            // 1楼栋 2房屋（房屋时必填）
+        assetType: this.assetType,      // 资产类型, 1房屋、2土地、3设备
+        buildIds: [],                           // 楼栋id列表（房屋时必填）
+        scope: '',                              // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
-        blankIdList: ''                         // 土地Id列表（土地时必填）
+        blankIdList: []                         // 土地Id列表（土地时必填）
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])
@@ -320,8 +436,9 @@ export default {
     batchUploadFn (files, e) {
       if (!files.length) { return }
       let fileData = new FormData()
-      fileData.append('registerOrderModelFile', files[0])
-      fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('file', files[0])
+      // fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('assetType', this.assetType)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -335,8 +452,10 @@ export default {
       let loadingName = this.SG_Loding('导入中...')
       this.$api.assets.baseImport(this.formData).then(res => {
         if (res.data.code === '0') {
+          e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
+            this.allQuery()
           })
         } else {
           e.target.value = ''
@@ -368,7 +487,7 @@ export default {
     },
     // 权属类型
     ownershipFn () {
-      this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}).then(res => {
+      this.$api.assets.platformDict({code: 'AMS_ASSET_KIND_OF_RIGHT'}).then(res => {
         if (Number(res.data.code) === 0) {
           let ownershipData = res.data.data
           let obj = {}
@@ -383,12 +502,10 @@ export default {
     },
     // 提交
     save () {
-      console.log('2323')
       if (this.tableData.length === 0) {
         this.$message.info('请导入资产明细')
         return true
       }
-      console.log('你是')
       let data = utils.deepClone(this.tableData)
       data.forEach(item => {
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]

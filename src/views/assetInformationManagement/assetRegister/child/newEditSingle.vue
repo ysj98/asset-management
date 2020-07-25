@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-22 14:31:01
+ * @LastEditTime: 2020-07-24 11:21:09
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -18,7 +18,7 @@
       </div>
       <!-- 房屋 -->
       <keep-alive>
-        <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId"></basic>
+        <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId" :registerOrderId="registerOrderId" :assetTypeId="assetType"></basic>
       </keep-alive>
       <!-- 附属配套 -->
       <necessaryCaaessories v-if="this.activeStepIndex === 1" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
@@ -69,7 +69,6 @@ export default {
   computed: {
     leftButtonName: function () {
       if (this.activeStepIndex === 0) {
-
         return '保存'
       } else if (this.activeStepIndex < 4) {
         return '上一步'
@@ -116,8 +115,8 @@ export default {
         if (!data) {return}
         this.assetType = data.assetType
         console.log(this.assetType, 'assetTypeassetTypeassetType')
-        if (this.$refs.basicRef.save()) { return }
-        let basicData = this.$refs.basicRef.basicData
+        if (this.$refs.refs.basicRef.save()) { return }
+        let basicData = this.$refs.refs.basicRef.basicData
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称
@@ -126,7 +125,7 @@ export default {
           remark: data.remark,                          // 备注
           organId: this.organId,                          // 组织机构id
           assetHouseList: data.assetType === '1' ? basicData : [],   // 房屋
-          assetBlankList: data.assetType === '2' ? basicData : []    // 土地
+          assetBlankList: data.assetType === '4' ? basicData : []    // 土地
         }
         // 新增
         let loadingName = this.SG_Loding('保存中...')
@@ -137,6 +136,7 @@ export default {
               this.registerOrderId = res.data.data
               this.showSave = false
               this.rightButtonDisabled = false                     // 成功了才可以下一步
+              this.$refs.basicRef.query('sub')
               return true
             })
           } else {

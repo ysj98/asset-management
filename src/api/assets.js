@@ -56,6 +56,10 @@ export function exportChangeScheduleList (data) {
 export function getChangePage (data) {
   return axiosPost(assets.management.getChangePage, data)
 }
+
+export function getChangePageSum (data) {
+  return axiosPost(assets.management.getChangePageSum, data)
+}
 // 资产变动-删除
 export function deleteChange (data) {
   return axiosPost(assets.management.deleteChange, data)
@@ -75,6 +79,14 @@ export function exportChange (data) {
 // 资产变动-新增编辑
 export function submitChange (data) {
   return axiosPost(assets.management.submitChange, data)
+}
+// 资产变动-资产项目查楼栋
+export function organBuild (data) {
+  return axiosGet(assets.management.organBuild, data)
+}
+// 资产变动-查楼栋下房屋
+export function buildPage (data) {
+  return axiosGet(assets.management.buildPage, data)
 }
 // 资产变动-编辑明细
 export function getChangeInfo (data) {
@@ -184,7 +196,7 @@ export function getRegisterOrderDetailsPageByIdList (data) {
 }
 // 下载附属配套模板
 export function downModle (data) {
-  return axiosPost(assets.assetClassSet.downModle, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.downModle, data, false, false, {responseType: 'blob'})
 }
 // 批量导入-导入保存
 export function batchImportByRgId (data) {
@@ -196,7 +208,7 @@ export function getValueStatistics (data) {
 }
 // 资产登记-价值信息批量导出
 export function valueExport (data) {
-  return axiosPost(assets.assetClassSet.valueExport, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.valueExport, data, false, false, {responseType: 'blob'})
 }
 // 资产登记-价值信息批量导入
 export function valueImport (data) {
@@ -232,7 +244,7 @@ export function useForSummary (data) {
 }
 // 批量导出
 export function userForExport (data) {
-  return axiosGet(assets.assetClassSet.userForExport, data, false, false, {responseType: 'blob'})
+  return axiosGet(assets.assetRegister.userForExport, data, false, false, {responseType: 'blob'})
 }
 // 批量更新
 export function usrForImport (data) {
@@ -240,7 +252,7 @@ export function usrForImport (data) {
 }
 // 相关费用下载导入模板
 export function correlationExpenseExport (data) {
-  return axiosGet(assets.assetClassSet.correlationExpenseExport, data, false, false, {responseType: 'blob'})
+  return axiosGet(assets.assetRegister.correlationExpenseExport, data, false, {responseType: 'blob'})
 }
 // 相关费用导入
 export function correlationExpenseImport (data) {
@@ -267,38 +279,42 @@ export function correlationExpenseTotal (data) {
   return axiosGet(assets.assetRegister.correlationExpenseTotal, data)
 }
 
-// 资产清理
-// 资产清理-分页列表
+// 资产出库
+// 资产出库-分页列表
 export function getCleanupPage (data) {
   return axiosPost(assets.assetClear.getCleanupPage, data, true, false)
 }
-// 资产清理-删除
+// 资产出库-删除
 export function deleteCleanup (data) {
   return axiosPost(assets.assetClear.deleteCleanup, data, false, false)
 }
-// 资产清理-审批
+// 资产出库-审批
 export function approvalCleanup (data) {
   return axiosPost(assets.assetClear.approvalCleanup, data, false, false)
 }
-// 资产清理-审批
+// 资产出库-审批
 export function reverseApproveCleanup (data) {
   return axiosPost(assets.assetClear.reverseApproveCleanup, data, false, false)
 }
-// 资产清理-新增编辑保存
+// 资产出库-新增编辑保存
 export function submitCleanup (data) {
   return axiosPost(assets.assetClear.submitCleanup, data, false, false)
 }
-// 资产清理-编辑查询明细
+// 资产出库-编辑查询明细
 export function getCleanupInfo (data) {
   return axiosGet(assets.assetClear.getCleanupInfo, data)
 }
-// 资产清理-详情
+// 资产出库-详情
 export function getCleanupDetail (data) {
   return axiosGet(assets.assetClear.getCleanupDetail, data)
 }
-// 资产清理-资产明细分页列表
+// 资产出库-资产明细分页列表
 export function getCleanupDetailPage (data) {
   return axiosGet(assets.assetClear.getCleanupDetailPage, data)
+}
+// 资产出库-统计
+export function assetCleanupGetCount (data) {
+  return axiosPost(assets.assetClear.assetCleanupGetCount, data, false, false)
 }
 
 //资产分类设置

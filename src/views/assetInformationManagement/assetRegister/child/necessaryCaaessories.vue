@@ -1,16 +1,16 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-22 13:42:47
+ * @LastEditTime: 2020-07-25 16:34:32
  * @Description: 附属配套
 --> 
 <template>
   <div class="necessaryCaaessories">
-    <div class="button-box" v-if="setType !== 'detail'">
+    <div class="button-box">
       <div class="buytton-l">
         <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
       </div>
-      <div class="buytton-nav">
+      <div class="buytton-nav" v-if="setType !== 'detail'">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量导入</SG-Button>
       </div>
@@ -35,7 +35,7 @@
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
-        location="absolute"
+        location="static"
         :noPageTools="noPageTools"
         v-model="queryCondition.pageNum"
         @change="handleChange"
@@ -91,7 +91,7 @@ export default {
     this.record = JSON.parse(this.$route.query.record)
     this.queryCondition.organId = this.organId
     this.setType = this.$route.query.setType
-    if (this.record[0].type === 'detail') {
+    if (this.setType === 'detail') {
       let arr = []
       arr = utils.deepClone(auxiliary)
       arr.pop()
@@ -166,16 +166,17 @@ export default {
       fileData.append('file', file)
       fileData.append('registerOrderId', this.queryCondition.registerOrderId)
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.subsidiary.batchImportByRgId(fileData).then(res => {
+      this.$api.assets.batchImportByRgId(fileData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
-            this.query()
+            this.$refs.eportAndDownFile.visible = false
+            this.allQuery()
           }) 
         } else {
+          this.$refs.eportAndDownFile.visible = false
           this.DE_Loding(loadingName).then(() => {
-            this.$refs.downErrorFile.visible = true
-            this.upErrorInfo = res.data.message
+            this.$SG_Message.error(res.data.message)
           })
         }
       }, () => {

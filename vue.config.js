@@ -20,7 +20,7 @@ const getIPAdress = () => {
 const localhost = getIPAdress()
 console.log('IP', localhost)
 const target = 'http://192.168.1.11:10080'
-// const target = 'http://120.24.82.71:8080'
+// const target = 'http://192.168.3.28:8080'
 // const mock = 'http://192.168.3.34:8081'
 // const target = 'http://beta.uhomecp.com/'
 const proxyURL = [
@@ -69,6 +69,7 @@ const proxy = new Proxy()
 proxy.addUrls(proxyURL, localhost, target)
 // proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.14:8081')
 // proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.34:8081')
+
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

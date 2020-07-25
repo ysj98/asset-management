@@ -95,6 +95,8 @@ export const assets = {
     exportChangeScheduleList: '/ams/assetChange/exportChangeScheduleList',
     // 资产变动-分页列表
     getChangePage: '/ams/assetChange/getChangePage',
+    // 资产变动-列表汇总
+    getChangePageSum: '/ams/assetChange/getChangePageSum',
     // 资产变动-删除
     deleteChange: '/ams/assetChange/deleteChange',
     // 资产变动-审批
@@ -105,6 +107,10 @@ export const assets = {
     exportChange: '/ams/assetChange/exportChange',
     // 资产变动-新增编辑
     submitChange: '/ams/assetChange/submitChange',
+    // 资产项目查楼栋
+    organBuild: '/ams/asset-house/organ/build',
+    // 查楼栋下房屋
+    buildPage: '/ams/asset-house/build/page',
     // 资产变动-明细
     getChangeInfo: '/ams/assetChange/getChangeInfo',
     // 资产变动-终止交付
@@ -165,9 +171,9 @@ export const assets = {
     // 资产登记-价值信息统计
     getValueStatistics: '/ams/registerOrder/getValueStatistics',
     // 资产登记-价值信息批量导出
-    valueExport: '/ams/registerOrder/valueExport',
+    valueExport: '/ams/registerOrder/downloadValueTemplateByRgId',
     // 资产登记-价值信息批量导入
-    valueImport: '/ams/registerOrder/valueImport',
+    valueImport: '/ams/registerOrder/importValueData',
     // 资产登记-价值信息分页列表
     queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
     // 资产登记-价值信息详情
@@ -181,7 +187,7 @@ export const assets = {
     // 使用方向详情
     useForDetail: '/ams/registerOrder/useFor/detail',
     // 使用方向面积统计
-    useForSummary: '/ams/registerOrder/useFor/summary',
+    useForSummary: '/ams/registerOrder/useFor/total',
     // 批量导出
     userForExport: '/ams/registerOrder/userFor/export',
     // 批量更新
@@ -191,7 +197,7 @@ export const assets = {
     // 相关费用导入
     correlationExpenseImport: '/ams/registerOrder/correlationExpense/import',
     // 相关费用分页列表
-    correlationExpenseList: '/ams/registerOrder/correlationExpense/list',
+    correlationExpenseList: '/ams/registerOrder/correlationExpense/page',
     // 相关费用删除
     correlationExpenseDelete: '/ams/registerOrder/correlationExpense/delete',
     // 相关费用新增修改
@@ -203,26 +209,28 @@ export const assets = {
     // 根据登记单Id资产登记明细列表-分页
     getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList',
     // 批量更新（导入）
-    baseImport: '/ams/registerOrder/baseImport'
+    baseImport: '/ams/registerOrder/importBaseInfoData'
   },
-  // 资产清理
+  // 资产出库
   assetClear: {
-    // 资产清理-分页列表
+    // 资产出库-分页列表
     getCleanupPage: '/ams/assetCleanup/getCleanupPage',
-    // 资产清理-删除
+    // 资产出库-删除
     deleteCleanup: '/ams/assetCleanup/deleteCleanup',
-    // 资产清理-审批
+    // 资产出库-审批
     approvalCleanup: '/ams/assetCleanup/approvalCleanup',
-    // 资产清理-反审批
+    // 资产出库-反审批
     reverseApproveCleanup: '/ams/assetCleanup/reverseApproveCleanup',
-    // 资产清理-新增编辑保存
+    // 资产出库-新增编辑保存
     submitCleanup: '/ams/assetCleanup/submitCleanup',
-    // 资产清理-编辑查询明细
+    // 资产出库-编辑查询明细
     getCleanupInfo: '/ams/assetCleanup/getCleanupInfo',
-    // 资产清理-详情
+    // 资产出库-详情
     getCleanupDetail: '/ams/assetCleanup/getCleanupDetail',
-    // 资产清理-资产明细分页列表
-    getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage'
+    // 资产出库-资产明细分页列表
+    getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage',
+    // 资产出库-统计
+    assetCleanupGetCount: '/ams/assetCleanup/getCount',
   },
   // 资产分类设置
   assetClassSet: {
@@ -488,7 +496,7 @@ export const ownershipSurvey = {
   // 权属人下拉列表
   ownerShipUserSelect: '/ams/ownerShipUser/select',
   // 根据项目id查询权属情况
-  queryByProjectId: '/ams/ownerShip/queryByProjectId'
+  queryByProjectId: '/ams/ownerShip/queryByProjectId',
 }
 
 export const ownership = {
@@ -519,7 +527,11 @@ export const ownership = {
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
-  }
+  },
+  // 组织机构权属
+  organView: '/ams/ownerShip/owner/organView',
+  // 组织机构权属导出
+  organViewExport: '/ams/ownerShip/owner/export'
 }
 
 // 价值登记
@@ -819,3 +831,13 @@ export const assetIn = {
   // 资产入库列表查询
   queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
 }
+
+
+// 资产入库
+export const land = {
+  // 土地台账--资产视图
+  assetView: '/ams/assetLand/view/asset/assetView',
+  // 土地台账--资产视图汇总
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+}
+

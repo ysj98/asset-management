@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-22 14:08:54
+ * @LastEditTime: 2020-07-23 17:27:47
  * @Description: 新增附属配套
 --> 
 <template>
@@ -27,6 +27,7 @@
                       showSearch
                       :options="examine.projectIdData"
                       :allowClear="true"
+                      @change="assetFn"
                       optionFilterProp="children"
                       @search="handleSearch"
                       :filterOption="false"
@@ -301,7 +302,7 @@ export default {
       let obj = {
         subsidiaryMatchingId: this.subData.subsidiaryMatchingId,  //  附属配套ID,修改必有
         registerOrderId: this.subData.registerOrderId,            //  资产登记ID
-        assetId: values.assetId,                            //  资产信息ID
+        assetId: this.subData.assetId,                            //  资产信息ID
         status: this.type === 'new' ? '1' : this.subData.status,  //  状态 1启用 0停用      新增默认启动
         matchingName: values.matchingName,                        //  名称
         matchingCode: values.matchingCode,                        //  编码
@@ -329,6 +330,17 @@ export default {
         }
       })
     },
+    assetFn (val) {
+      this.subData.assetId = val
+      this.examine.projectIdData.forEach(item => {
+        if (item.assetId === val) {
+          this.examine.assetName = item.assetName
+          this.examine.assetCode = item.assetCode
+          this.examine.objectTypeName = item.objectTypeName
+          this.examine.pasitionString = item.pasitionString
+        }
+      })
+    },
     // 搜索
     handleSearch (value) {
       this.assetName = value
@@ -349,16 +361,12 @@ export default {
           let arr = []
           if (data && data.length !== 0) {
             data.forEach(item => {
-              arr.push({label: item.assetName, value: item.assetId})
+              arr.push({label: item.assetName, value: item.assetId, ...item})
             })
             this.examine.projectIdData = arr
-            this.examine.assetName = data[0].assetName
-            this.examine.assetCode = data[0].assetCode
-            this.examine.objectTypeName = data[0].objectTypeName
-            this.examine.pasitionString = data[0].pasitionString
           } else {
             this.examine.projectIdData = []
-            this.examine.assetName = data[0].assetName
+            this.examine.assetName = ''
             this.examine.assetCode = ''
             this.examine.objectTypeName = ''
             this.examine.pasitionString = ''

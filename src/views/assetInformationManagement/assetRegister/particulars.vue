@@ -8,7 +8,7 @@
       <span class="section-title blue">基本信息</span>
       <div class="particulars-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderCode || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderId || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
@@ -30,23 +30,23 @@
         <selectTab :activeType="'fancyActive'" style="margin:20px 0;" class="staffCare-tab" v-model="selectTabValue" @change="selectTabChange" :list="list"></selectTab>
         <!-- 基础信息 -->
         <keep-alive>
-          <basic v-if="this.selectTabValue === '0'" ref="basicRef" :organId="organId"></basic>
+          <basic v-if="this.selectTabValue === '0'" ref="basicRef" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></basic>
         </keep-alive>
         <!-- 附属配套 -->
         <keep-alive>
-          <necessaryCaaessories v-if="this.selectTabValue === '1'" ref="necessaryCaaessories" :organId="organId"></necessaryCaaessories>
+          <necessaryCaaessories v-if="this.selectTabValue === '1'" ref="necessaryCaaessories" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
         </keep-alive>
         <!-- 价值信息 -->
         <keep-alive>
-          <valueToRegister v-if="this.selectTabValue === '2'" ref="valueToRegister" :organId="organId"></valueToRegister>
+          <valueToRegister v-if="this.selectTabValue === '2'" ref="valueToRegister" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></valueToRegister>
         </keep-alive>
         <!-- 使用方向 -->
         <keep-alive>
-          <directionUse v-if="this.selectTabValue === '3'" ref="directionUse" :organId="organId"></directionUse>
+          <directionUse v-if="this.selectTabValue === '3'" ref="directionUse" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></directionUse>
         </keep-alive>
         <!-- 相关费用 -->
         <keep-alive>
-          <correlativeCharges v-if="this.selectTabValue === '4'" ref="correlativeCharges" :organId="organId"></correlativeCharges>
+          <correlativeCharges v-if="this.selectTabValue === '4'" ref="correlativeCharges" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></correlativeCharges>
         </keep-alive>
       </div>
     </div>
@@ -67,6 +67,8 @@ export default {
     return {
       organId: '',
       record: '',
+      registerOrderId: '',
+      assetType: '',
       type: '',
       particularsData: {},
       selectTabValue: '0',
@@ -126,11 +128,12 @@ export default {
     },
   },
   created () {
-  },
-  mounted () {
     this.record = JSON.parse(this.$route.query.record)
     this.organId = this.record[0].organId
     this.registerOrderId = this.record[0].registerOrderId
+    this.assetType = this.record[0].assetType
+  },
+  mounted () {
     this.query()
   }
 }
