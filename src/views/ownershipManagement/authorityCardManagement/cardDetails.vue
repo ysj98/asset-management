@@ -12,68 +12,9 @@
     <div class="newCard-nav">
       <span class="section-title blue">基础信息</span>
       <a-row class="playground-row">
-        <div v-if="this.kindOfRight === '1'">
-          <a-col class="playground-col" :span="12">权证号：{{particularsData.warrantNbr || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">不动产单元号：{{particularsData.estateUnitCode || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">丘地号：{{particularsData.lotNo || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">土地面积 (㎡)：{{conditionalJudgment.includes(particularsData.landArea) ? '--' : particularsData.landArea}}</a-col>
-          <a-col class="playground-col" :span="12">权属用途：{{particularsData.ownershipUseName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">结构：{{particularsData.structureName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">建筑面积(㎡) ：{{conditionalJudgment.includes(particularsData.buildArea) ? '--' : particularsData.buildArea}}</a-col>
-          <a-col class="playground-col" :span="12">专属建筑面积：{{conditionalJudgment.includes(particularsData.exclusiveBuildArea) ? '--' : particularsData.exclusiveBuildArea}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积(㎡) ：{{conditionalJudgment.includes(particularsData.apportionArea) ? '--' : particularsData.apportionArea}}</a-col>
-          <a-col class="playground-col" :span="12">总套数：{{conditionalJudgment.includes(particularsData.totalSuite) ? '--' : particularsData.totalSuite}}</a-col>
-          <a-col class="playground-col" :span="12">权利性质：{{particularsData.qualityOfRightName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">使用期限：{{particularsData.useLimitDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">登记日期：{{particularsData.rigisterDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
-        </div>
-        <div v-if="this.kindOfRight === '2'">
-          <a-col class="playground-col" :span="12">权证号：{{particularsData.warrantNbr || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">房屋所有权人：{{particularsData.houseOwner || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">承租人：{{particularsData.tenant || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">委托管理单位：{{particularsData.entrustOrganization || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">建筑面积(㎡)：{{conditionalJudgment.includes(particularsData.buildArea) ? '--' : particularsData.buildArea}}</a-col>
-          <a-col class="playground-col" :span="12">专有建筑面积(㎡)：{{conditionalJudgment.includes(particularsData.exclusiveBuildArea) ? '--' : particularsData.exclusiveBuildArea}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积(㎡)：{{conditionalJudgment.includes(particularsData.apportionArea) ? '--' : particularsData.apportionArea}}</a-col>
-          <a-col class="playground-col" :span="12">坐落位置：{{particularsData.seatingPosition || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">用 途：{{particularsData.ownershipUseName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">结  构：{{particularsData.structureName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">总层数：{{conditionalJudgment.includes(particularsData.totalFloor) ? '--' : particularsData.totalFloor}}</a-col>
-          <a-col class="playground-col" :span="12">所在层：{{conditionalJudgment.includes(particularsData.placeFloor) ? '--' : particularsData.placeFloor}}</a-col>
-          <a-col class="playground-col" :span="12">房屋号：{{particularsData.houseNo || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">租金单价：{{particularsData.rentUnitPice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">租金总价：{{conditionalJudgment.includes(particularsData.rentTotalPrice) ? '--' : particularsData.rentTotalPrice}}</a-col>
-          <a-col class="playground-col" :span="12">合同期限：{{particularsData.contractData || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">议价租金单价：{{particularsData.talkUnitPrice || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">议价租金总价：{{conditionalJudgment.includes(particularsData.talkTotalPrice) ? '--' : particularsData.talkTotalPrice}}</a-col>
-          <a-col class="playground-col" :span="12">租金缴纳期限：{{particularsData.rentPayDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">产别：{{particularsData.antenatal || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">登记日期：{{particularsData.rigisterDate || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
-        </div>
-        <div v-if="this.kindOfRight === '3'">
-          <a-col class="playground-col" :span="12">权证号：{{particularsData.warrantNbr || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">地号：{{particularsData.houseOwner || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">图号：{{particularsData.landNumber || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">座落位置：{{particularsData.picNumber || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">地类(用途)：{{conditionalJudgment.includes(particularsData.landCategory) ? '--' : particularsData.landCategory}}</a-col>
-          <a-col class="playground-col" :span="12">取得价格：{{conditionalJudgment.includes(particularsData.getPrice) ? '--' : particularsData.getPrice}}</a-col>
-          <a-col class="playground-col" :span="12">使用权类型：{{conditionalJudgment.includes(particularsData.useCategory) ? '--' : particularsData.useCategory}}</a-col>
-          <a-col class="playground-col" :span="12">使用权面积(㎡)：{{particularsData.useArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">独有面积(㎡)：{{particularsData.exclusiveArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">分摊面积(㎡)：{{particularsData.apportionArea || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">终止日期：{{conditionalJudgment.includes(particularsData.terminationData) ? '--' : particularsData.terminationData}}</a-col>
-          <a-col class="playground-col" :span="12">登记日期：{{conditionalJudgment.includes(particularsData.rigisterDate) ? '--' : particularsData.rigisterDate}}</a-col>
-          <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
-        </div>
+        <a-col class="playground-col" :span="12" v-for="(item, index) in basicDate" :key="index">
+          {{item.text}}：{{conditionalJudgment.includes(particularsData[item.value]) ? '--' : particularsData[item.value]}}
+        </a-col>
         <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
@@ -116,19 +57,80 @@
 
 <script>
 import {utils} from '@/utils/utils'
-import {accessCard, titleDeed, columns, mortgageInformation} from './beat'
+import {columns, mortgageInformation} from './beat'
 const conditionalJudgment = [undefined, null, '']
+const titleDeed = [
+  { text: '权证号', value: 'warrantNbr' },
+  { text: '权属形式', value: 'ownerTypeName' },
+  { text: '权利类型', value: 'kindOfRightName' },
+  { text: '不动产单元号', value: 'estateUnitCode' },
+  { text: '丘地号', value: 'lotNo' },
+  { text: '坐落位置', value: 'seatingPosition' },
+  { text: '土地面积 (㎡)', value: 'landArea' },
+  { text: '权属用途', value: 'ownershipUseName' },
+  { text: '结构', value: 'structureName' },
+  { text: '建筑面积(㎡)', value: 'buildArea' },
+  { text: '专属建筑面积', value: 'exclusiveBuildArea' },
+  { text: '分摊面积(㎡)', value: 'apportionArea' },
+  { text: '总套数', value: 'totalSuite' },
+  { text: '权利性质', value: 'qualityOfRightName' },
+  { text: '使用期限', value: 'useLimitDate' },
+  { text: '登记日期', value: 'rigisterDate' },
+  { text: '交接日期', value: 'handoverDate' },
+]
+const accessCard = [
+  { text: '权证号', value: 'warrantNbr' },
+  { text: '权属形式', value: 'ownerTypeName' },
+  { text: '权利类型', value: 'kindOfRightName' },
+  { text: '房屋所有权人', value: 'houseOwner' },
+  { text: '承租人', value: 'tenant' },
+  { text: '委托管理单位', value: 'entrustOrganization' },
+  { text: '建筑面积(㎡)', value: 'buildArea' },
+  { text: '专有建筑面积(㎡)', value: 'exclusiveBuildArea' },
+  { text: '分摊面积(㎡)', value: 'apportionArea' },
+  { text: '坐落位置', value: 'seatingPosition' },
+  { text: '用途', value: 'ownershipUseName' },
+  { text: '结构', value: 'structureName' },
+  { text: '总层数', value: 'totalFloor' },
+  { text: '所在层', value: 'placeFloor' },
+  { text: '房屋号', value: 'houseNo' },
+  { text: '租金单价', value: 'rentUnitPice' },
+  { text: '租金总价', value: 'rentTotalPrice' },
+  { text: '合同期限', value: 'contractData' },
+  { text: '议价租金单价', value: 'talkUnitPrice' },
+  { text: '议价租金总价', value: 'talkTotalPrice' },
+  { text: '租金缴纳期限', value: 'rentPayDate' },
+  { text: '产别', value: 'antenatal' },
+  { text: '登记日期', value: 'rigisterDate' },
+  { text: '交接日期', value: 'handoverDate' },
+]
+const landDeed = [
+  { text: '权证号', value: 'warrantNbr' },
+  { text: '权属形式', value: 'ownerTypeName' },
+  { text: '权利类型', value: 'kindOfRightName' },
+  { text: '地号', value: 'landNumber' },
+  { text: '图号', value: 'picNumber' },
+  { text: '座落位置', value: 'seatingPosition' },
+  { text: '地类(用途)', value: 'landCategory' },
+  { text: '取得价格', value: 'getPrice' },
+  { text: '使用权类型', value: 'useCategory' },
+  { text: '使用权面积(㎡)', value: 'useArea' },
+  { text: '独有面积(㎡)', value: 'exclusiveArea' },
+  { text: '分摊面积(㎡)', value: 'apportionArea' },
+  { text: '终止日期', value: 'terminationData' },
+  { text: '登记日期', value: 'rigisterDate' },
+  { text: '交接日期', value: 'handoverDate' }
+]
 export default {
   components: {},
-  props: {
-    // warrantNbr: {
-    //   type: [String, Number],
-    //   default: ''
-    // }
-  },
+  props: {},
   data () {
     return {
       conditionalJudgment,
+      basicDate: [],
+      titleDeed,
+      accessCard,
+      landDeed,
       particularsData: {},
       files: [],
       kindOfRight: '',        // 权利类型判断
@@ -168,9 +170,13 @@ export default {
         this.columns = arr.splice(0, arr.length - 1)
         let opt = utils.deepClone(mortgageInformation)
         this.mortgageInformation = opt.splice(0, opt.length - 1)
-        this.beat = titleDeed
+        if (val === '1') {
+          this.basicDate = titleDeed
+        } else if (val === '3') {
+          this.basicDate = landDeed
+        }
       } else if (val === '2') {
-        this.beat = accessCard
+        this.basicDate = accessCard
       }
     }
   },
