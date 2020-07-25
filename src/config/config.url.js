@@ -171,9 +171,9 @@ export const assets = {
     // 资产登记-价值信息统计
     getValueStatistics: '/ams/registerOrder/getValueStatistics',
     // 资产登记-价值信息批量导出
-    valueExport: '/ams/registerOrder/valueExport',
+    valueExport: '/ams/registerOrder/downloadValueTemplateByRgId',
     // 资产登记-价值信息批量导入
-    valueImport: '/ams/registerOrder/valueImport',
+    valueImport: '/ams/registerOrder/importValueData',
     // 资产登记-价值信息分页列表
     queryValuePageListByRgId: '/ams/registerOrder/queryValuePageListByRgId',
     // 资产登记-价值信息详情
@@ -209,7 +209,7 @@ export const assets = {
     // 根据登记单Id资产登记明细列表-分页
     getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList',
     // 批量更新（导入）
-    baseImport: '/ams/registerOrder/baseImport'
+    baseImport: '/ams/registerOrder/importBaseInfoData'
   },
   // 资产出库
   assetClear: {

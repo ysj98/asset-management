@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-23 19:39:27
+ * @LastEditTime: 2020-07-25 16:06:44
  * @Description: 使用方向
 --> 
 <template>
@@ -16,7 +16,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="custom-table table-boxs"
+        class="table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 1900}"

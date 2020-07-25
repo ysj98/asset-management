@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-23 19:39:19
+ * @LastEditTime: 2020-07-25 16:06:53
  * @Description: 相关费用
 -->
 <template>
@@ -17,7 +17,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="custom-table table-boxs"
+        class="table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 1900}"
@@ -171,7 +171,7 @@ export default {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
-            this.query()
+            this.allQuery()
           }) 
         } else {
           this.DE_Loding(loadingName).then(() => {
@@ -186,12 +186,10 @@ export default {
       })
     },
     down () {
-      console.log('9090')
       let obj = {
         registerOrderId: this.queryCondition.registerOrderId,      // 资产登记单
         assetType: this.queryCondition.assetType             // 资产类型
       }
-      console.log(obj, '-=-==')
       this.$api.assets.correlationExpenseExport(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')

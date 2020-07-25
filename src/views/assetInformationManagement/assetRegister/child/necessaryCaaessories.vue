@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-23 18:28:51
+ * @LastEditTime: 2020-07-25 16:01:50
  * @Description: 附属配套
 --> 
 <template>
@@ -17,7 +17,7 @@
     </div>
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
-        class="custom-table table-boxs"
+        class="table-boxs"
         :columns="columns"
         :loading="loading"
         :scroll="{y: 450, x: 2300}"
@@ -170,7 +170,7 @@ export default {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
-            this.query()
+            this.allQuery()
           }) 
         } else {
           this.DE_Loding(loadingName).then(() => {
