@@ -496,7 +496,7 @@ export const ownershipSurvey = {
   // 权属人下拉列表
   ownerShipUserSelect: '/ams/ownerShipUser/select',
   // 根据项目id查询权属情况
-  queryByProjectId: '/ams/ownerShip/queryByProjectId'
+  queryByProjectId: '/ams/ownerShip/queryByProjectId',
 }
 
 export const ownership = {
@@ -527,7 +527,11 @@ export const ownership = {
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
-  }
+  },
+  // 组织机构权属
+  organView: '/ams/ownerShip/owner/organView',
+  // 组织机构权属导出
+  organViewExport: '/ams/ownerShip/owner/export'
 }
 
 // 价值登记

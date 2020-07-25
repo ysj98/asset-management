@@ -300,7 +300,7 @@ export default {
         projectId: this.queryCondition.assetProject,
         multiAssetType: this.queryCondition.assetType.join(","),
         multiApprovalStatus: this.queryCondition.approvalStatus.join(","),
-        multiCleanupTypeData: this.queryCondition.cleanupType.join(","),
+        cleanupTypes: this.queryCondition.cleanupType.join(","),
         currentOrganId: this.queryCondition.onlyCurrentOrgan ? "1" : "0",
         startCreateDate: this.queryCondition.beginDate,
         endCreateDate: this.queryCondition.endDate,

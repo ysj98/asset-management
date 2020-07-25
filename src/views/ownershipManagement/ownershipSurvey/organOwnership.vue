@@ -62,19 +62,21 @@ import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
+import segiIcon from '@/components/segiIcon.vue'
+
 const allStyle = { width: "140px", marginRight: "10px" };
 let columns = [
   {
     title: "管理机构",
-    dataIndex: "planName"
+    dataIndex: "organName"
   },
   {
     title: "资产总数",
-    dataIndex: "storeName"
+    dataIndex: "assetCount"
   },
   {
     title: "办理进度",
-    dataIndex: "organName"
+    dataIndex: "progressName"
   },
   {
     title: "所有权",
@@ -82,19 +84,19 @@ let columns = [
     children: [
       {
         title: "总数",
-        dataIndex: "gtCount"
+        dataIndex: "ownerShipCount"
       },
       {
         title: "有证",
-        dataIndex: "gtSameCount"
+        dataIndex: "ownerShipYesCount"
       },
       {
         title: "无证",
-        dataIndex: "gtDiffCount"
+        dataIndex: "ownerShipNoCount"
       },
       {
         title: "待办证",
-        dataIndex: "gtDiffCount2"
+        dataIndex: "ownerShipWaitCount"
       }
     ]
   },
@@ -104,19 +106,19 @@ let columns = [
     children: [
       {
         title: "总数",
-        dataIndex: "storeGoodsCount"
+        dataIndex: "useShipCount"
       },
       {
         title: "有证",
-        dataIndex: "checkCount"
+        dataIndex: "useShipYesCount"
       },
       {
         title: "无证",
-        dataIndex: "diffCount"
+        dataIndex: "useShipNoCount"
       },
       {
         title: "待办证",
-        dataIndex: "diffCount2"
+        dataIndex: "useShipWaitCount"
       },
     ]
   },
@@ -125,12 +127,13 @@ const queryCondition = {
   organId: "",
   assetType: "", // 资产类型，多个用，分隔
   pageNum: 1,
-  pageSize: 20
+  pageSize: 10
 };
 export default {
   components: {
     SearchContainer,
     TreeSelect,
+    segiIcon,
     noDataTips
   },
   data() {
@@ -154,11 +157,34 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        assetType:
+        assetTypes:
           this.queryCondition.assetType.length > 0
             ? this.queryCondition.assetType.join(",")
             : "" // 资产类型id(多个用，分割)
       };
+      delete data.assetType
+      this.table.loading = true;
+      this.$api.ownership.organView(data).then(
+        res => {
+          this.table.loading = false;
+          if (res.data.code === "0") {
+            let result = res.data.data.data || [];
+            this.table.dataSource = result.map(item => {
+              item.progressName = String(item.progress) ? (item.progress + '%') : ''
+              return {
+                key: utils.getUuid(),
+                ...item
+              };
+            });
+            this.table.totalCount = res.data.data.count || 0;
+          } else {
+            this.$message.error(res.data.message);
+          }
+        },
+        () => {
+          this.table.loading = false;
+        }
+      );
     },
     // 资产类型发生变化
     changeAssetType(value) {
@@ -181,18 +207,22 @@ export default {
       this.searchQuery();
     },
     exportList() {
-      let form = {
-        organId: this.organId,
-        status: this.status,
-        codeName: this.codeName,
-        assetType: pageTypeMap[this.type],
-      }
-      this.$api.assets.exportList(form).then((res) => {
+      let data = {
+        ...this.queryCondition,
+        assetTypes:
+          this.queryCondition.assetType.length > 0
+            ? this.queryCondition.assetType.join(",")
+            : "" // 资产类型id(多个用，分割)
+      };
+      delete data.assetType
+      delete data.pageNum
+      delete data.pageSize
+      this.$api.ownership.organViewExport(data).then((res) => {
         console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement("a")
         a.href = URL.createObjectURL(blob)
-        a.download = `资产${typeMap[this.type]}分类.xls`
+        a.download = `组织机构权属表.xls`
         a.style.display = "none"
         document.body.appendChild(a)
         a.click()

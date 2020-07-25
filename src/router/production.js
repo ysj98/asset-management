@@ -48,18 +48,23 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),
   },
   {
+    path: '/assetChangeRegister/editSingle',
+    name: '编辑变更单',
+    component: () => import('@/views/assetInformationManagement/assetChange/editSingle.vue')
+  },
+  {
     path: '/assetChangeRegister/newEditSingle',
-    name: '变动申请',
+    name: '新建变更单',
     component: () => import('@/views/assetInformationManagement/assetChange/newEditSingle.vue')
   },
   {
     path: '/assetChangeRegister/particulars',
-    name: '变动单详情',
+    name: '变更单详情',
     component: () => import('@/views/assetInformationManagement/assetChange/particulars.vue')
   },
   {
     path: '/assetChangeView',
-    name: '资产变动一览表',
+    name: '资产变更一览表',
     component: () => import('@/views/assetInformationManagement/assetChange/scheduleChanges.vue'),
   },
   {

@@ -10,7 +10,7 @@
           type="primary"
           v-power="ASSET_MANAGEMENT.ASSET_CHANGE_NEW"
           @click="newChangeSheetFn"
-        >新建变动单</a-button>
+        >新建变更单</a-button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect
             @changeTree="changeTree"
@@ -28,7 +28,7 @@
           style="line-height: 32px"
           :checked="queryCondition.currentOrgan"
           @change="checkboxFn"
-        >仅当前机构下资产变动单</a-checkbox>
+        >仅当前机构下资产变更单</a-checkbox>
         <a-select
           :style="allStyle"
           placeholder="全部资产项目"
@@ -61,7 +61,7 @@
           :maxTagCount="1"
           :style="allStyle"
           mode="multiple"
-          placeholder="全部变动类型"
+          placeholder="全部变更类型"
           :tokenSeparators="[',']"
           @select="changeStatus"
           v-model="queryCondition.changeType"
@@ -184,7 +184,7 @@ const columns = [
     dataIndex: "organName"
   },
   {
-    title: "变动类型",
+    title: "变更类型",
     dataIndex: "changeTypeName"
   },
   {
@@ -196,7 +196,7 @@ const columns = [
     dataIndex: "assetTypeName"
   },
   {
-    title: "变动资产数量",
+    title: "变更资产数量",
     dataIndex: "assetChangeCount"
   },
   {
@@ -208,7 +208,7 @@ const columns = [
     dataIndex: "createByName"
   },
   {
-    title: "变动日期",
+    title: "变更日期",
     dataIndex: "changeDate"
   },
   {
@@ -252,7 +252,7 @@ export default {
         pageSize: 10, // 每页显示记录数
         projectId: "", // 资产项目Id
         organId: 1, // 组织机构id
-        changeType: "", // 备注：变动类型id(多个用，分割)
+        changeType: "", // 备注：变更类型id(多个用，分割)
         assetType: "", // 资产类型，多个用，分隔
         startCreateDate: getThreeMonthsAgoDate(), // 备注：开始创建日期
         endCreateDate: getCurrentDate(), // 备注：结束创建日期
@@ -274,9 +274,9 @@ export default {
         { title: "草稿", key: "draft", value: 0, bgColor: "#5b8ff9" },
         { title: "待审批", key: "await", value: 0, bgColor: "#d48265" },
         { title: "已驳回", key: "reject", value: 0, bgColor: "#4BD288" },
-        { title: "已审批", key: "cancel", value: 0, bgColor: "#1890FF" },
-        { title: "已取消", key: "complete", value: 0, bgColor: "#DD81E6" }
-      ]
+        { title: "已审批", key: "complete", value: 0, bgColor: "#1890FF" },
+        { title: "已取消", key: "cancel", value: 0, bgColor: "#DD81E6" }
+      ],
     };
   },
   computed: {},
@@ -293,7 +293,7 @@ export default {
     }
   },
   mounted() {
-    // 获取变动类型
+    // 获取变更类型
     this.platformDictFn("asset_change_type");
     // 获取资产类型
     this.platformDictFn("asset_type");
@@ -319,7 +319,7 @@ export default {
         multiChangeType:
           this.queryCondition.changeType.length > 0
             ? this.queryCondition.changeType.join(",")
-            : "", // 变动类型id(多个用，分割)
+            : "", // 变更类型id(多个用，分割)
         startCreateDate: this.queryCondition.startCreateDate, // 开始创建日期
         endCreateDate: this.queryCondition.endCreateDate, // 结束创建日期
         currentOrganId: this.queryCondition.currentOrgan ? 1 : 0 // 仅当前机构下资产清理单 0 否 1 是
@@ -375,7 +375,7 @@ export default {
       this.queryCondition.startCreateDate = val[0];
       this.queryCondition.endCreateDate = val[1];
     },
-    // 新建变动单
+    // 新建变更单
     newChangeSheetFn() {
       let recordData = JSON.stringify([
         { value: this.queryCondition.organId, name: this.organName }
@@ -400,7 +400,7 @@ export default {
       }
       if (
         this.$power.has(ASSET_MANAGEMENT.ASSET_CHANGE_DELETE) &&
-        ["3"].includes(String(record.approvalStatus))
+        ["0", "3"].includes(String(record.approvalStatus))
       ) {
         arr.push({ iconType: "edit", text: "删除", editType: "approval" });
       }
@@ -435,7 +435,7 @@ export default {
         ]);
         let enitData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetChangeRegister/newEditSingle",
+          path: "/assetChangeRegister/editSingle",
           query: { record: recordData, enitData: enitData, setType: "edit" }
         });
       }
@@ -543,7 +543,7 @@ export default {
         }
       });
     },
-    // 平台字典获取变动类型
+    // 平台字典获取变更类型
     platformDictFn(str) {
       let obj = {
         code: str
@@ -553,7 +553,7 @@ export default {
           let data = res.data.data;
           if (str === "asset_change_type") {
             this.changeTypeData = [
-              { name: "全部变动类型", value: "" },
+              { name: "全部变更类型", value: "" },
               ...data
             ];
           }
@@ -565,7 +565,7 @@ export default {
         }
       });
     },
-    // 选择是否查看当前机构变动单
+    // 选择是否查看当前机构变更单
     checkboxFn(e) {
       this.queryCondition.currentOrgan = e.target.checked;
     },

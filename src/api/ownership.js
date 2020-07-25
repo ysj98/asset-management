@@ -1,3 +1,7 @@
+/*
+ * @Date: 2019-11-28 17:24:01
+ * @Description: 
+ */ 
 
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { ownership } from '../config/config.url'
@@ -62,4 +66,12 @@ export function warrantDelete (data) {
 // 查询权证详情
 export function warrantDetail (data) {
   return axiosGet(ownership.authorityCardManagement.warrantDetail, data)
+}
+// 组织机构视图
+export function organView (data) {
+  return axiosGet(ownership.organView, data)
+}
+// 组织机构视图导出
+export function organViewExport (data) {
+  return axiosGet(ownership.organViewExport, data, false, {responseType: 'blob'})
 }
