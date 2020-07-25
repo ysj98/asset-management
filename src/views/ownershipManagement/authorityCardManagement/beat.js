@@ -23,7 +23,7 @@ export const accessCard = [
     formType: 'input',
     attrValue: '',
     max: 40,
-    required: true
+    required: false
   },
   {
     label: '建筑面积(㎡)',
@@ -43,7 +43,7 @@ export const accessCard = [
     min: 0,
     precision: 2,
     max: 9999999.99,
-    required: true
+    required: false
   },
   {
     label: '分摊面积(㎡)',
@@ -69,7 +69,7 @@ export const accessCard = [
     chooseArray: [],
     formType: 'selcet',
     attrValue: '',
-    required: true
+    required: false
   },
   {
     label: '结构',
@@ -77,7 +77,7 @@ export const accessCard = [
     chooseArray: [],
     formType: 'selcet',
     attrValue: '',
-    required: true
+    required: false
   },
   {
     label: '总层数',
@@ -168,7 +168,7 @@ export const accessCard = [
     attrCode: 'rigisterDate',
     formType: 'date',
     attrValue: '',
-    required: true
+    required: false
   },
   {
     label: '交接日期',
@@ -249,7 +249,7 @@ export const titleDeed = [
     min: 0,
     precision: 2,
     max: 9999999.99,
-    required: true
+    required: false
   },
   {
     label: '分摊面积(㎡)',
@@ -259,7 +259,7 @@ export const titleDeed = [
     min: 0,
     max: 9999999.99,
     precision: 2,
-    required: true
+    required: false
   },
   {
     label: '总套数',
@@ -277,7 +277,7 @@ export const titleDeed = [
     chooseArray: [],
     formType: 'selcet',
     attrValue: '',
-    required: true
+    required: false
   },
   {
     label: '使用期限',
@@ -292,7 +292,7 @@ export const titleDeed = [
     attrCode: 'rigisterDate',
     formType: 'date',
     attrValue: '',
-    required: true
+    required: false
   },
   {
     label: '交接日期',
