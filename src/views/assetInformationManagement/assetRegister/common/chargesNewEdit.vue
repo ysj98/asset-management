@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-23 13:49:01
+ * @LastEditTime: 2020-07-25 16:43:45
  * @Description: 新增相关费用
 --> 
 <template>
@@ -123,7 +123,7 @@
                 :min="0"
                 :precision="2"
                 v-decorator="['readNum',
-                  {rules: [{required: true, message: '请输入读数'}], initialValue: subData.readNum}
+                  {rules: [{required: false, message: '请输入读数'}], initialValue: subData.readNum}
                 ]"/>
               </a-form-item>
             </a-col>

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-25 16:06:53
+ * @LastEditTime: 2020-07-25 16:41:45
  * @Description: 相关费用
 -->
 <template>
@@ -170,13 +170,14 @@ export default {
       this.$api.assets.correlationExpenseImport(fileData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
+            this.$refs.eportAndDownFile.visible = false
             this.$SG_Message.success('导入成功！')
             this.allQuery()
           }) 
         } else {
           this.DE_Loding(loadingName).then(() => {
-            this.$refs.downErrorFile.visible = true
-            this.upErrorInfo = res.data.message
+            this.$refs.eportAndDownFile.visible = false
+            this.$SG_Message.error(res.data.message)
           })
         }
       }, () => {
