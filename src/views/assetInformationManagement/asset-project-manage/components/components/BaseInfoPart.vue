@@ -19,11 +19,10 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
-          <a-form-item label="来源方式" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-select
-              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择来源方式' : ''"
-              :options="typeOptions" @change="getSourceType"
-              v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
+          <a-form-item label="资产项目编码" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入资产项目编码"
+              v-decorator="['projectCode', {initialValue, rules: [{required: true, message: '请输入资产项目编码'}, {max: 30, message: '最多30个字符'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -36,26 +35,37 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
-          <a-form-item label="资产项目编码" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-input
-              :disabled="!isEdit" placeholder="请输入资产项目编码"
-              v-decorator="['projectCode', {initialValue, rules: [{required: true, message: '请输入资产项目编码'}, {max: 30, message: '最多30个字符'}]}]"
+          <a-form-item label="来源方式" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-select
+              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择来源方式' : ''"
+              :options="typeOptions" @change="getSourceType"
+              v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
             />
           </a-form-item>
         </a-col>
-        <a-col :span="colSpan" v-if="!type || type == 'approval'">
+        <a-col :span="colSpan">
           <a-form-item label="是否接管" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <span style="margin-left: 12px">{{isTakeOver}}</span>
+            <a-select
+              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择是否接管' : ''"
+              :options="takeOverOptions" @change="getTakeOver"
+              v-decorator="['takeOver', {initialValue: undefined, rules: [{required: true, message: '请选择是否接管'}]}]"
+            />
           </a-form-item>
         </a-col>
-        <a-col :span="colSpan" v-if="!type || type == 'approval'">
+        <a-col :span="colSpan" v-if="takeOver === '1'">
           <a-form-item label="接管日期" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <span style="margin-left: 12px">{{takeOverDate}}</span>
+            <a-date-picker
+              :disabled="!isEdit" style="width: 100%" :placeholder="isEdit ? '请选择接管日期' : ''"
+              v-decorator="['takeOverDate', { rules: [{required: true, message: '请选择接管日期'}]}]"
+            />
           </a-form-item>
         </a-col>
-        <a-col :span="colSpan" v-if="!type || type == 'approval'">
+        <a-col :span="colSpan" v-if="takeOver === '1'">
           <a-form-item label="接管状态" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <span style="margin-left: 12px">{{takeoverAssetStatusName}}</span>
+            <a-select
+              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择接管状态' : ''"
+              :options="takeOverStatusOptions" v-decorator="['takeoverAssetStatus', {initialValue: undefined}]"
+            />
           </a-form-item>
         </a-col>
       </a-row>
@@ -232,15 +242,13 @@
 
 <script>
   import moment from 'moment'
+  import { queryPlatformDict } from 'src/views/common/commonQueryApi'
   export default {
   name: 'BaseInfo',
   props: ['type', 'projectId', 'organTitle', 'organId', 'sourceTypeOptions'],
   data () {
     return {
       colSpan: 8,
-      isTakeOver: '否', // 是否接管
-      takeOverDate: '--', // 接管日期
-      takeoverAssetStatusName: '--', // 接管状态
       layout: 'horizontal',
       isEdit: false, // 是否可编辑
       labelCol: {span: 8},
@@ -251,8 +259,11 @@
       attachment: [], // 附件
       organName: '', // 管理机构
       organKey: '', // 管理机构
+      takeOver: '', // 是否接管，否 0，是 1
       sourceType: '', // 来源方式字典值，其他 99，租入 4，自建 3，外购 2，划转 1
       typeOptions: (this.sourceTypeOptions || []).slice(1), // 删除"全部"的选项
+      takeOverOptions: [{title: '是', key: '1'}, {title: '否', key: '0'}], // 是否接管的选项
+      takeOverStatusOptions: [], // 接管状态选项
       objBySourceType: {
         1: [
           'reportBasicInfoDate', 'houseVerificationDate', 'reportHouseTransferReqDate',
@@ -271,6 +282,11 @@
       this.sourceType = String(value)
     },
 
+    // 获取接管状态，动态展示其他字段
+    getTakeOver (value) {
+      this.takeOver = String(value)
+    },
+
     // 提交数据
     handleSubmit (resolve, reject) {
       const api = {
@@ -280,13 +296,16 @@
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { attachment, organId, type, projectId, objBySourceType, sourceType } = this
+          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver } = this
           // 转换日期格式为string
           let dateKeys = objBySourceType[sourceType] || []
           dateKeys.forEach(key => {
             let dateValue = values[key]
             values[key] = dateValue ?  moment(dateValue).format('YYYY-MM-DD') : ''
           })
+          if (String(takeOver) === '1') {
+            values.takeOverDate = values.takeOverDate ? moment(values.takeOverDate).format('YYYY-MM-DD') : ''
+          }
           let attachArr = attachment.map(m => {
             const { url: attachmentPath, suffix, name } = m
             return { attachmentPath, attachmentSuffix: suffix || name.split('.')[1], oldAttachmentName: name, newAttachmentName: name }
@@ -321,30 +340,33 @@
       this.$api.assets[api[type]]({projectId: this.projectId}).then(({data: res}) => {
         this.spinning = false
         if (res && String(res.code) === '0') {
-          const {
+          let {
             attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
-            takeoverAssetStatusName, takeOver, ownershipHandleProblems, remark, houseTransferHisProblem,
-            sourceTypeName, takeOverDate, ...others
+            takeoverAssetStatus, takeOver, ownershipHandleProblems, remark, houseTransferHisProblem,
+            sourceTypeName, takeOverDate, takeoverAssetStatusName, ...others
           } = res.data
           // 处理附件格式
           let attachArr = attachment.map(m => {
             return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
           })
+          takeOver = String(takeOver)
           Object.assign(this, {
-            takeOverDate,
-            takeoverAssetStatusName,
+            takeOver,
             attachment: attachArr,
             sourceType: String(sourceType),
-            isTakeOver: takeOver ? '是' : '否',
             organKey: organId, // 保存管理机构id
             organName: organName // 展示管理机构名称
           })
           // 转换日期格式为moment
           let formData = {
-            ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : '',
-            houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : '',
-            sourceType: type === 'show' ? sourceTypeName : String(sourceType),
-            projectName, souceChannelType, projectCode, remark: type === 'show' ? (remark || '无') : ''
+            ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : ownershipHandleProblems,
+            houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : houseTransferHisProblem,
+            projectName, sourceType: type === 'show' ? sourceTypeName : String(sourceType),
+            takeOver, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode
+          }
+          if (takeOver === '1') {
+            formData.takeoverAssetStatus = String(takeoverAssetStatus) || takeoverAssetStatusName
+            formData.takeOverDate = takeOverDate ?  moment(takeOverDate, 'YYYY-MM-DD') : null
           }
           // 转换日期格式为string
           let dateKeys = this.objBySourceType[sourceType] || []
@@ -396,6 +418,7 @@
 
   created () {
     this.initAction(this.type || 'show')
+    queryPlatformDict('TAKEOVER_ASSET_STATUS').then(list => this.takeOverStatusOptions = list)
   },
   
   watch: {

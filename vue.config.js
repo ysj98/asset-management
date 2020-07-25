@@ -67,7 +67,8 @@ class Proxy {
 const proxy = new Proxy()
 // proxy.addUrls(['/ams/checkplan/', '/ams/checktask/'], localhost, 'http://192.168.3.28:8080')
 proxy.addUrls(proxyURL, localhost, target)
-proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.14:8081')
+// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.14:8081')
+// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.34:8081')
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL

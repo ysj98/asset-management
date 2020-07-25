@@ -43,6 +43,11 @@ V1.0.4
 /asset-management/#/ownershipCardList         权属证件一览表
 /asset-management/#/assetWorthStatistics         资产价值统计表
 
+V2.0
+/asset-management/#//assetIn             资产入库
+/asset-management/#/assetWorthList       资产价值一览表
+/asset-management/#/worthRegisterRecord  资产估值记录
+
 
 新增权限编码如下:
 V1.0
@@ -179,3 +184,11 @@ asset_report_operate    呈报记录运营
 asset_report_income     呈报记录收入
 asset_report_deprecia   呈报记录折旧
 asset_report_cost       呈报记录费用
+
+v2.0
+
+/* 资产入库 */
+ASSET_IN_CREATE: 'asset_in_create', // 新建
+ASSET_IN_EDIT: 'asset_in_edit', // 编辑
+ASSET_IN_APPROVE: 'asset_in_approve', // 审批
+ASSET_IN_DELETE: 'asset_in_delete', // 删除

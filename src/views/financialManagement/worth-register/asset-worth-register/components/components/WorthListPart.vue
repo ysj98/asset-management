@@ -342,19 +342,27 @@
           // 按资产个数估值
           if (methodValue === '1') {
             let rest = assetValue * 100 % dataSource.length
-            let val = Number((assetValue * 100 / dataSource.length).toFixed())
+            let val = Math.floor(assetValue * 100 / dataSource.length)
             list = dataSource.map((m, i) => {
-              return {...m, assessmentValue: i + 1 === dataSource.length ? ((val + rest) / 100).toFixed(2) : (val / 100).toFixed(2)}
+              return {...m, assessmentValue: i + 1 === dataSource.length ? ((val + rest) / 100) : (val / 100)}
             })
           } else {
             // 按资产面积均摊
             let totalArea = 0
             dataSource.forEach(m => {
-              totalArea += m.assetArea ? Number(m.assetArea) : 0
+              totalArea += m.assetArea ? Number(m.assetArea) * 100 : 0
             })
-            totalArea && (list = dataSource.map(m => {
-              return {...m, assessmentValue: (assetValue / totalArea).toFixed(2)}
-            }))
+            list = dataSource.map((m, i) => {
+              let assessmentValue = ''
+              if (totalArea) {
+                let rest = (assetValue * 100) % (totalArea * 100)
+                if (assetValue) {
+                  let val = Math.floor(Number(m.assetArea) * 100 * assetValue * 100 / (totalArea * 100))
+                  assessmentValue = (i + 1 === dataSource.length) ? ((val + rest) / 100) : (val / 100)
+                }
+              }
+              return {...m, assessmentValue}
+            })
           }
         }
         this.calcSum(list)
@@ -383,7 +391,7 @@
         const {tableObj: {dataSource}} = this
         if (dataSource.length) {
           // 如果切换资产项目\资产类型，则清空Table dataSource
-          if (String(assetType) !== String(dataSource[0].projectId) || (projectObj && String(projectObj.projectId) !== String(dataSource[0].projectId))) {
+          if (String(assetType) !== String(dataSource[0].assetType) || (projectObj && String(projectObj.projectId) !== String(dataSource[0].projectId))) {
             // 重置selectedRowKeys
             this.tableObj.selectedRowKeys = []
             return this.tableObj.dataSource = []

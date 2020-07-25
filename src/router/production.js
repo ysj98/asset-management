@@ -626,7 +626,7 @@ let proRouter = [
     name: '详情', // 资产入库详情
     component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
   }, {
-    path: '/assetIn/approval',
+    path: '/assetIn/approve',
     name: '审核', // 资产入库审核
     component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
   }, {

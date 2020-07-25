@@ -8,7 +8,7 @@
     <div
       v-for="(item, i) in numList"
       :key="item.title"
-      @click="handleClick(item, i)"
+      @[eventName]="handleClick(item, i)"
       :class="['view_item', (isEmit && i === current) ? 'current_selected' : '']"
       :style="{
         width: itemWidth,
@@ -42,6 +42,7 @@
     data () {
       return {
         current: null, // 当前选中的区域下标,
+        eventName: this.isEmit ? 'click' : null, // 是否绑定click事件
         itemWidth: `${Math.floor(100000 / this.numList.length) / 1000}%`, // 每个方块的宽度
       }
     },

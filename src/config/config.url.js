@@ -812,6 +812,8 @@ export const assetIn = {
   export: '/ams/assetStore/export',
   // 新增资产入库或修改
   addOrUpdateAssetStore: '/ams/assetStore/addOrUpdateAssetStore',
+  // 新增资产入库或修改
+  auditAssetStore: '/ams/assetStore/auditAssetStore',
   // 查询入库单详情
   queryAssetStoreDetail: '/ams/assetStore/queryAssetStoreDetail',
   // 资产入库列表查询

@@ -14,14 +14,14 @@
           <a-col :span="8">
             <a-form-item label="资产项目" :label-col="labelCol" :wrapper-col="wrapperCol">
               <a-select showSearch style="width: 100%;" :options="projectOptions"
-                placeholder="请选择资产项目" :filterOption="filterOption"
+                placeholder="请选择资产项目" :filterOption="filterOption" @change="changeSelect"
                 v-decorator="['projectId', {rules: [{required: true, message: '请选择资产项目'}]}]"
               />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item label="资产类型" :label-col="labelCol" :wrapper-col="wrapperCol">
-              <a-select style="width: 100%;" placeholder="请选择资产类型" :options="typeOptions"
+              <a-select style="width: 100%;" placeholder="请选择资产类型" :options="typeOptions" @change="changeSelect"
                 v-decorator="['assetType', {rules: [{required: true, message: '请选择资产类型'}]}]"
               />
             </a-form-item>
@@ -33,8 +33,8 @@
               :help="validateAssets ? '请选择关联资产登记单' : ''" :validate-status="validateAssets ? 'error' : ''"
             >
             <span>
-              <a-tag closable v-for="m in selectedList" :key="m.id" style="background: #fff;" @close="handleAddAsset(m)">
-                {{m.name}}
+              <a-tag closable v-for="m in selectedList" :key="m.registerOrderId" style="background: #fff;" @close="handleAddAsset(m)">
+                {{m.registerOrderName}}
               </a-tag>
               <a-tag color="#108ee9" @click="handleAddAsset('')">
                 <a-icon type="select" style="margin-right: 8px"/>选择
@@ -70,11 +70,15 @@
         <!--&gt;{{text}}</router-link>-->
       <!--</span>-->
     </a-table>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryAssetByRegistId({ pageNo, pageLength })"/>
+    <SG-FooterPagination
+      v-if="tableObj.dataSource.length"
+      v-bind="paginationObj"
+      @change="({ pageNo, pageLength }) => queryAssetByRegistId({ pageNo, pageLength })"
+    />
     <!--底部审批操作按钮组-->
     <form-footer location="fixed">
-      <SG-Button type="primary" @click="handleSubmit('')" :loading="submitBtnLoading">提交审批</SG-Button>
-      <SG-Button @click="handleSubmit('cancel')" :loading="submitBtnLoading" style="margin-right: 8px">取消</SG-Button>
+      <SG-Button type="primary" @click="handleSubmit('')" :loading="submitBtnLoading">提交</SG-Button>
+      <SG-Button @click="handleSubmit('second')" style="margin-right: 8px">取消</SG-Button>
     </form-footer>
     <SG-Modal
       v-bind="modalObj"
@@ -84,12 +88,13 @@
     >
       <!-- 选择资产 -->
       <select-asset
+        :key="refreshKey"
+        ref="select_asset"
         :organId="organId"
         :projectId="projectId"
         :assetType="assetType"
-        v-model="addAssetList"
+        :initList="selectedList"
         :height="modalObj.height"
-        :key="`${projectId}${assetType}`"
       />
     </SG-Modal>
   </a-spin>
@@ -115,7 +120,6 @@
         spinning: false, // 页面加载状态
         projectOptions: [], // 资产项目选项
         selectedList: [], // 选中的资产登记单
-        addAssetList: [], // 添加的资产关联单数据
         submitBtnLoading: false, // 提交按钮loading
         form: this.$form.createForm(this), // 注册form
         validateAssets: false, // 自定义校验auditUsers标志
@@ -126,7 +130,7 @@
           pagination: false,
           rowKey: 'registerOrderId',
           columns: [
-            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' }, width: 150 },
+            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' }, fixed: 'left', width: 150 },
             { title: '资产名称', dataIndex: 'assetName'}, { title: '资产编码', dataIndex: 'assetCode' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
              { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
@@ -144,12 +148,18 @@
           cancelText: '取消',
           isShow: false
         },
+        refreshKey: 0 // 重新执行选择资产登记单组件
       }
     },
 
     methods: {
       // 下拉搜索筛选
       filterOption,
+      
+      // 改变资产项目或资产类型，清空关联的登记单
+      changeSelect () {
+        this.selectedList = []
+      },
 
       // 查询资产类型--平台字典
       queryAssetType () {
@@ -161,11 +171,10 @@
       // 处理资产登记单Modal关闭/保存
       handleModalAction (type) {
         if (type) {
-          this.selectedList = this.addAssetList
+          this.selectedList = this.$refs['select_asset'].selectedList
           this.queryAssetByRegistId({})
         }
         this.modalObj.isShow = false
-        this.addAssetList = this.selectedList
       },
 
       // 根据organId查询资产项目
@@ -178,13 +187,13 @@
       // 删除、选择关联资产登记单
       handleAddAsset (m) {
         if (m) {
-          this.selectedList = this.selectedList.filter(v => v.id !== m.id)
+          this.selectedList = this.selectedList.filter(v => v.registerOrderId !== m.registerOrderId)
         } else {
           let {projectId, assetType} = this.form.getFieldsValue(['projectId', 'assetType'])
           if (!projectId || !assetType) {
             this.$message.warn(`请选择${!projectId ? '资产项目' : ''} ${!assetType ? '资产类型' : ''}`)
           } else {
-            Object.assign(this, {projectId, assetType})
+            Object.assign(this, {projectId, assetType, refreshKey: Date.now()})
             this.modalObj.isShow = true
           }
         }
@@ -193,9 +202,10 @@
       // 根据资产登记单查询资产明细
       queryAssetByRegistId ({pageNo = 1, pageLength = 10}) {
         const { selectedList } = this
+        if (!selectedList.length) { return false }
         this.tableObj.loading = true
         this.$api.assets.getRegisterOrderDetailsPageByIdList({
-          registerOrderIdList: selectedList, pageNum: pageNo, pageSize: pageLength
+          registerOrderIdList: selectedList.map(m => m.registerOrderId), pageNum: pageNo, pageSize: pageLength
         }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -216,13 +226,26 @@
         this.spinning = true
         this.$api.assets.queryAssetStoreDetail({storeId}).then(({data: res}) => {
           if (res && String(res.code) === '0') {
-            const {storeName, projectId, assetType, remark, organId, attachmentList} = res.data
-            this.attachmentList = (attachmentList || []).map(m => {
-              return { url: m.attachmentPath, name: m.oldAttachmentName }
+            const {storeName, projectId, assetType, remark, organId, attachmentList, assetRegisterId, assetRegisterName} = res.data
+            this.queryProjectByOrganId(organId)
+            let idArr = assetRegisterId ? assetRegisterId.split(',') : []
+            let nameArr = assetRegisterName ? assetRegisterName.split(',') : []
+            Object.assign(this, {
+              organId,
+              selectedList: idArr.map((registerOrderId, i) => {
+                return {
+                  registerOrderName: nameArr[i], registerOrderId
+                }
+              }),
+              attachmentList: (attachmentList || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName }
+              })
             })
-            this.organId = organId
-            return this.form.setFieldsValue({
-              storeName, projectId, assetType, remark
+            this.queryAssetByRegistId({})
+            return this.$nextTick(function () {
+              this.form.setFieldsValue({
+                storeName, projectId, assetType: String(assetType), remark
+              })
             })
           }
           throw res.message
@@ -231,18 +254,21 @@
         }).finally(() => this.spinning = false)
       },
 
-      // 提交
+      // footer按钮操作
       handleSubmit (type) {
-        if (type === 'cancel') {
+        if (type === 'second') {
           return this.$router.go(-1)
         }
         this.form.validateFieldsAndScroll((err, values) => {
+          // 提交保存
           const { attachmentList, organId, selectedList, storeId } = this
           this.validateAssets = !selectedList.length
-          if (err || !selectedList.length) { return false }
+          if (err || !selectedList.length) {
+            return selectedList.length ? false : this.$message.warn('请选择关联资产登记单')
+          }
           let form = {
-            ...values, organId, status: 'debugger', storeId,
-            assetRegisterId: selectedList.join(','),
+            ...values, organId, status: 0, storeId,
+            assetRegisterId: selectedList.map(m => m.registerOrderId).join(','),
             attachmentList: attachmentList.map(m => {
               return { attachmentPath: m.url, oldAttachmentName: m.name }
             })
@@ -250,13 +276,13 @@
           this.submitBtnLoading = true
           this.$api.assets.addOrUpdateAssetStore(form).then(({data: res}) => {
             if (res && String(res.code) === '0') {
-              this.$message.success(`${storeId ? '修改' : '提交'}成功`)
+              this.$message.success('提交成功')
               // 跳回列表路由
               return this.$router.push({ path: '/assetIn', query: { refresh: true } })
             }
             throw res.message
           }).catch(err => {
-            this.$message.error(err || `${storeId ? '修改' : '提交'}失败`)
+            this.$message.error(err || '提交失败')
           }).finally(() => this.submitBtnLoading = false)
         })
       },
@@ -264,10 +290,9 @@
 
     mounted () {
       // 获取当前用户信息
-      let { query: {organId, storeId} } = this.$route
-      Object.assign(this, { organId, storeId })
-      organId && this.queryProjectByOrganId(organId)
-      storeId && this.queryDetail(storeId)
+      let { query: {id} } = this.$route
+      this.storeId = id
+      id && this.queryDetail(id)
       this.queryAssetType()
     },
 

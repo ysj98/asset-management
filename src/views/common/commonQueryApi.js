@@ -125,6 +125,7 @@ export const exportDataAsExcel = (data, API, name, context) => {
 // code: 'ASSESSMENT_METHOD' 查询评估方法
 // code: 'asset_type' 查询评估方法
 // code: 'AMS_KIND_OF_RIGHT' 查询权属类型
+// code: 'TAKEOVER_ASSET_STATUS' 查询接管状态
 export const queryPlatformDict = (code) => {
   return API.basics.platformDict({code}).then(r => {
     let res = r.data

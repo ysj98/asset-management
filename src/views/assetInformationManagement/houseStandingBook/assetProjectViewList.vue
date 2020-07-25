@@ -242,7 +242,7 @@ export default {
               item[key] = item[key] || '--'
             }
           })
-          this.dataSource = data.concat({...sumObj, projectCode: '当前页-合计', key: Date.now()})
+          this.dataSource = data.length ? data.concat({...sumObj, projectCode: '当前页-合计', key: Date.now()}) : []
           this.paginator.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
@@ -257,16 +257,16 @@ export default {
       }
       this.$api.assets.viewGetAssetHouseStatistics(form).then(res => {
         if (res.data.code === '0') {
-          let data = res.data.data
-          this.assetStatistics[0].area = data.measuredArea.toFixed(2)
-          this.assetStatistics[1].area = data.transferOperationArea.toFixed(2)
-          this.assetStatistics[2].area = data.idleArea.toFixed(2)
-          this.assetStatistics[3].area = data.selfUserArea.toFixed(2)
-          this.assetStatistics[4].area = data.occupationArea.toFixed(2)
-          this.assetStatistics[5].area = data.otherArea.toFixed(2)
+          let {measuredArea, transferOperationArea, idleArea, selfUserArea, occupationArea, otherArea} = res.data.data
+          this.assetStatistics[0].area = measuredArea ? measuredArea.toFixed(2) : 0
+          this.assetStatistics[1].area = transferOperationArea ? transferOperationArea.toFixed(2) : 0
+          this.assetStatistics[2].area = idleArea ? idleArea.toFixed(2) : 0
+          this.assetStatistics[3].area = selfUserArea ? selfUserArea.toFixed(2) : 0
+          this.assetStatistics[4].area = occupationArea ? occupationArea.toFixed(2) : 0
+          this.assetStatistics[5].area = otherArea ? otherArea.toFixed(2) : 0
           let sumObj = {}
-          this.sumKeys.forEach(key => sumObj[key] = data[key] ? data[key].toFixed(2) : 0)
-          this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
+          this.sumKeys.forEach(key => sumObj[key] = res['data'][key] ? res['data'][key].toFixed(2) : 0)
+          this.dataSource.length && this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
         } else {
           this.$message.error(res.data.message)
         }

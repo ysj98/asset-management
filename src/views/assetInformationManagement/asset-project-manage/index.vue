@@ -159,7 +159,7 @@
           {title: '已接管', value: 0, num: 'takeOveredNum', percent: 'takeOveredPercent', fontColor: '#324057'},
           {title: '转运营', value: 0, num: 'transferOperationNum', percent: 'transferOperationNumPercent', fontColor: '#324057'},
         ], // 概览数据，title 标题，value 数值，bgColor 背景色
-        modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '', maskClosable: false },
+        modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '', maskClosable: false, width: 820 },
         tableObj: {
           dataSource: [],
           loading: false,
