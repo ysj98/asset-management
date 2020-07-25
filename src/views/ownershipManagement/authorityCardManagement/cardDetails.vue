@@ -57,6 +57,23 @@
           <a-col class="playground-col" :span="12">登记日期：{{particularsData.rigisterDate || '--'}}</a-col>
           <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
         </div>
+        <div v-if="this.kindOfRight === '3'">
+          <a-col class="playground-col" :span="12">权证号：{{particularsData.warrantNbr || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权属形式：{{particularsData.ownerTypeName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">权利类型：{{particularsData.kindOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">地号：{{particularsData.houseOwner || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">图号：{{particularsData.landNumber || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">座落位置：{{particularsData.picNumber || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">地类(用途)：{{conditionalJudgment.includes(particularsData.landCategory) ? '--' : particularsData.landCategory}}</a-col>
+          <a-col class="playground-col" :span="12">取得价格：{{conditionalJudgment.includes(particularsData.getPrice) ? '--' : particularsData.getPrice}}</a-col>
+          <a-col class="playground-col" :span="12">使用权类型：{{conditionalJudgment.includes(particularsData.useCategory) ? '--' : particularsData.useCategory}}</a-col>
+          <a-col class="playground-col" :span="12">使用权面积(㎡)：{{particularsData.useArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">独有面积(㎡)：{{particularsData.exclusiveArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">分摊面积(㎡)：{{particularsData.apportionArea || '--'}}</a-col>
+          <a-col class="playground-col" :span="12">终止日期：{{conditionalJudgment.includes(particularsData.terminationData) ? '--' : particularsData.terminationData}}</a-col>
+          <a-col class="playground-col" :span="12">登记日期：{{conditionalJudgment.includes(particularsData.rigisterDate) ? '--' : particularsData.rigisterDate}}</a-col>
+          <a-col class="playground-col" :span="12">交接日期：{{particularsData.handoverDate || '--'}}</a-col>
+        </div>
         <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
@@ -69,7 +86,7 @@
           </a-col>
       </a-row>
     </div>
-    <div class="newCard-nav" v-if="this.kindOfRight === '1'">
+    <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3'">
       <span class="section-title blue">权属人</span>
       <div class="tab-nav table-border">
         <a-table
@@ -98,13 +115,11 @@
 </template>
 
 <script>
-import Cephalosome from '@/components/Cephalosome'
-import moment from 'moment'
-import {debounce, utils} from '@/utils/utils'
+import {utils} from '@/utils/utils'
 import {accessCard, titleDeed, columns, mortgageInformation} from './beat'
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {Cephalosome},
+  components: {},
   props: {
     // warrantNbr: {
     //   type: [String, Number],
@@ -148,7 +163,7 @@ export default {
   },
   watch: {
     'kindOfRight' (val) {
-      if (val === '1') {
+      if (val === '1' || val === '3') {
         let arr = utils.deepClone(columns)
         this.columns = arr.splice(0, arr.length - 1)
         let opt = utils.deepClone(mortgageInformation)
@@ -165,10 +180,10 @@ export default {
       this.show = false
     },
     // 详情查询
-    query (warrantNbr) {
+    query (warrantNbr, id) {
       this.show = true
       this.warrantNbr = warrantNbr
-      this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr}).then(res => {
+      this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr, organId: id}).then(res => {
         if (Number(res.data.code) === 0) {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)

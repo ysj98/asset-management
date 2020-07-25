@@ -11,10 +11,10 @@ export const accessCard = [
   },
   {
     label: '承租人',
-    attrCode: 'tenant',
-    formType: 'input',
+    attrCode: 'tenantId',
+    chooseArray: [],
+    formType: 'selcet',
     attrValue: '',
-    max: 40,
     required: true
   },
   {
@@ -391,7 +391,7 @@ export const landDeed = [
     attrCode: 'terminationData',
     formType: 'date',
     attrValue: '',
-    required: true
+    required: false
   },
   {
     label: '登记日期',
