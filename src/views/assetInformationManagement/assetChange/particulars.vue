@@ -27,9 +27,9 @@
           <a-col class="playground-col" :span="8">交付单位：{{particularsData.deliveryCompany || '--'}}</a-col>-->
           <template v-if="+changeType === 3">
             <div>
-              <a-col class="playground-col" :span="8">原值对象类型：{{'--'}}</a-col>
-              <a-col class="playground-col" :span="8">原值对象：{{'--'}}</a-col>
-              <a-col class="playground-col" :span="8">原值金额(元)：{{'--'}}</a-col>
+              <a-col class="playground-col" :span="8">原值对象类型：{{particularsData.originalObjectTypeName || '--'}}</a-col>
+              <a-col class="playground-col" :span="8">原值对象：{{particularsData.originalObjectIdName|| '--'}}</a-col>
+              <a-col class="playground-col" :span="8">原值金额(元)：{{particularsData.originalValue || '--'}}</a-col>
             </div>
           </template>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
@@ -82,6 +82,16 @@ import {
   debtChange
 } from "./basics";
 import { utils } from "@/utils/utils.js";
+const originalObjectTypeMap = {
+  "1": "资产项目",
+  "2": "楼栋",
+  "3": "车场",
+  "4": "资产"
+};
+const shareWayMap = {
+  "1": "按资产面积分摊",
+  "2": "按资产个数分摊"
+};
 export default {
   components: {},
   props: {},
@@ -143,6 +153,8 @@ export default {
         console.log(res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
+          data.originalObjectTypeName = originalObjectTypeMap[data.originalObjectType]
+          data.shareWayName = shareWayMap[data.shareWay]
           this.particularsData = data;
           let files = [];
           if (data.attachment && data.attachment.length > 0) {
