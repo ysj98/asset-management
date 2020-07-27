@@ -614,7 +614,7 @@ export default {
               this.form.setFieldsValue({
                 originalValue: data.originalValue,
                 shareWay: String(data.shareWay),
-                originalObjectId: String(data.originalObjectId),
+                originalObjectId: data.originalObjectId,
                 originalObjectType: String(data.originalObjectType),
               });
               // 原值对象类型选择
@@ -624,11 +624,11 @@ export default {
                 this.originalObjectTypeData = originalObjectTypeData_two;
               }
               // 选择资产项目
-              if (String(data.assetType) === "1") {
+              if (String(data.originalObjectType) === "1") {
                 this.originalObjectProject();
               }
               // 选择楼栋
-              if (String(data.assetType) === "2") {
+              if (String(data.originalObjectType) === "2") {
                 this.organBuild(data.projectId);
               }
             }
