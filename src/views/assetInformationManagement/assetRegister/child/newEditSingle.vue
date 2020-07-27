@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-27 14:19:51
+ * @LastEditTime: 2020-07-27 15:01:39
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -136,7 +136,9 @@ export default {
               this.registerOrderId = res.data.data
               this.showSave = false
               this.rightButtonDisabled = false                     // 成功了才可以下一步
-              this.$refs.basicRef.query('sub')
+              this.$nextTick(() => {
+                this.$refs.basicRef.query('sub')
+              })
               return true
             })
           } else {
