@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-27 15:48:51
+ * @LastEditTime: 2020-07-27 16:54:13
  * @Description: 房屋土地
 --> 
 <template>
@@ -102,22 +102,17 @@ export default {
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
     this.assetType = String(this.assetTypeId)
+    // 编辑和详情进来的判断
     if (this.setType === 'detail' || this.setType === 'edit') {
       let arr = []
       this.assetType = String(this.record[0].assetType)
       if (+this.record[0].assetType === 1) {                    // 房屋表头
         arr = utils.deepClone(columnsData)
-        if (this.setType === 'detail') {
-          arr.pop()
-        }
-        this.columns = arr
       } else if (+this.record[0].assetType === 4) {             // 土地表头
         arr = utils.deepClone(landData)
-        if (this.setType === 'detail') {
-          arr.pop()
-        }
-        this.columns = arr
       }
+      if (this.setType === 'detail') { arr.pop()}
+      this.columns = arr
       this.query()
     } else {
       this.bridgeFn()
