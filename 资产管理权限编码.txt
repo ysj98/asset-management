@@ -152,3 +152,12 @@ ASSET_IN_CREATE: 'asset_in_create', // 新建
 ASSET_IN_EDIT: 'asset_in_edit', // 编辑
 ASSET_IN_APPROVE: 'asset_in_approve', // 审批
 ASSET_IN_DELETE: 'asset_in_delete', // 删除
+
+资产登记
+zcgl_asset_register_basicInformation         // 资产登记-登记基础信息
+zcgl_asset_register_registrationAccessory    // 资产登记-登记附属配套
+zcgl_asset_register_registeredInformation    // 资产登记-登记价值信息
+zcgl_asset_register_registerDirections       // 资产登记-登记使用方向
+zcgl_asset_register_registrationFees         // 资产登记-登记相关费用
+zcgl_asset_register_verify                   // 资产登记-核实
+zcgl_asset_register_undoCheck                // 资产登记-撤销核实
