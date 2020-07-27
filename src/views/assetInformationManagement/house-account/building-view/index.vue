@@ -141,7 +141,7 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         this.$api.assets.queryBuildingViewPage({
-          organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo, flag: current || ''
+          organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo, flag: current ? (current - 1) : ''
         }).then(r => {
           this.tableObj.loading = false
           let res = r.data

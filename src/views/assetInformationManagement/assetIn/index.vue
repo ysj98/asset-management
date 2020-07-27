@@ -37,7 +37,7 @@
             <a-select
               mode="multiple"
               v-bind="properties"
-              v-model="assetInStatus"
+              v-model="status"
               :options="statusOptions"
               @change="queryTableData"
               placeholder="请选择入库单状态"
@@ -76,26 +76,30 @@
           <div slot="content">
             <router-link
               v-power="ASSET_MANAGEMENT.ASSET_IN_EDIT"
-              style="color: #6D7585; text-decoration: underline"
+              style="color: #6D7585; line-height: 35px"
               :to="{ path: '/assetIn/edit', query: {id: record.storeId}}"
             >
               <a-icon type="edit" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">编辑</span>
             </router-link>
-            <a style="display: block; margin-top: 27px" @click="deleteAsset(record.shiftId)" v-power="ASSET_MANAGEMENT.ASSET_IN_DELETE">
+            <a style="display: block; line-height: 35px" @click="deleteAsset(record.storeId)" v-power="ASSET_MANAGEMENT.ASSET_IN_DELETE">
               <a-icon type="delete" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">删除</span>
             </a>
-            <a style="display: block; margin-top: 27px" @click="approveAsset(record.shiftId)" v-power="ASSET_MANAGEMENT.ASSET_REPORT_APPROVE">
+            <router-link
+              v-power="ASSET_MANAGEMENT.ASSET_IN_APPROVE"
+              style="display: block; color: #6D7585; line-height: 35px"
+              :to="{ path: '/assetIn/approve', query: {id: record.storeId}}"
+            >
               <a-icon type="audit" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">审批</span>
-            </a>
+            </router-link>
           </div>
         </SG-PopoverMore>
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, type: 'page' })"/>
   </div>
 </template>
 
@@ -124,7 +128,7 @@
           assetType: []
         }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
         // 查询条件：提交日期--评估基准日-评估方式-评估机构
-        assetInStatus: [], // 查询条件-登记状态
+        status: [], // 查询条件-登记状态
         projectOptions: [], // 资产项目选项
         assetTypeOptions: [], // 资产类型选项
         statusOptions: [
@@ -137,17 +141,17 @@
           pagination: false,
           rowKey: 'storeCode',
           columns: [
-            { title: '入库单编号', dataIndex: 'storeCode', fixed: 'left', width: 120, scopedSlots: { customRender: 'storeCode' } },
-            { title: '入库单名称', dataIndex: 'storeName', fixed: 'left', width: 120 },
+            { title: '入库单编号', dataIndex: 'storeCode', scopedSlots: { customRender: 'storeCode' } },
+            { title: '入库单名称', dataIndex: 'storeName', width: 200 },
             { title: '管理机构', dataIndex: 'organName' },
             { title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '资产数量', dataIndex: 'assetCount' },
             { title: '创建日期', dataIndex: 'createDate' },
             { title: '创建人', dataIndex: 'createUserName' },
-            { title: '状态', dataIndex: 'status' },
+            { title: '状态', dataIndex: 'statusName' },
             { title: '备注', dataIndex: 'remark', width: 150 },
-            { title: '操作', dataIndex: 'action', fixed: 'right', scopedSlots: { customRender: 'action' }, width: 80 }
+            { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: 80 }
           ]
         },
         overviewNumSpinning: false, // 查询视图面积概览数据loading
@@ -191,12 +195,28 @@
         })
       },
 
-
-      // 资产审批
-      approveAsset () {},
-
       // 资产删除
-      deleteAsset () {},
+      deleteAsset (storeId) {
+        let _this = this
+        _this.$confirm({
+          title: '提示',
+          content: '确认要删除该登记单吗？',
+          okText: '确认',
+          cancelText: '取消',
+          onOk: function () {
+            _this.tableObj.loading = true
+            _this.$api.assets.auditAssetStore({ storeId, advice: '', status: 3 }).then(({data: res}) => {
+              if (res && String(res.code) === '0') {
+                _this.$message.success('删除成功')
+                return _this.queryTableData({})
+              }
+              throw res.message
+            }).catch(err => {
+              _this.$message.error(err || '删除失败')
+            }).finally(() => _this.tableObj.loading = false)
+          }
+        })
+      },
 
       // 获取日期
       changeCreateDate (date, dateStrings) {
@@ -241,26 +261,31 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
-          storeName, assetInStatus, minCreateDate, maxCreateDate,
-          organProjectType, organProjectType: { assetType, projectId }
+          storeName, status, minCreateDate, maxCreateDate,
+          organProjectType, organProjectType: { assetType, projectId, organId }
         } = this
         if (!organProjectType.organId) { return this.$message.info('请选择组织机构') }
         let form = {
-          ...organProjectType, minCreateDate, maxCreateDate,
-          projectId: projectId.join(','),
+          ...organProjectType, organId,
           pageSize: pageLength, pageNum: pageNo, storeName,
+          projectId: projectId.join(','), minCreateDate, maxCreateDate,
           assetType: (!assetType || assetType.includes('-1')) ? undefined : assetType.join(','),
-          assetInStatus: (!assetInStatus || assetInStatus.includes('-1')) ? undefined : assetInStatus.join(',')
+          status: (!status || status.includes('-1')) ? undefined : status.join(',')
         }
         if (type === 'export') { return form }
         this.tableObj.loading = true
-        this.queryStatistics(form)
+        type !== 'page' && this.queryStatistics(form)
         this.$api.assets.queryAssetStoreList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data
+            let nameList = ['待审批', '已驳回', '已审批', '已取消']
+            this.tableObj.dataSource = data.map(m => {
+              return {
+                ...m, statusName: m.status ? nameList[Number(m.status)] : ''
+              }
+            })
             Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -274,13 +299,11 @@
       }
     },
 
-    // 路由卫士，用于审批及提交成功后刷新列表
-    beforeRouteEnter (to, from, next) {
-      const { path } = from
-      const { params: { refresh } } = to
+    // 路由卫士，用于新建、编辑、审批成功后刷新列表
+    beforeRouteEnter ({query: {refresh}}, {path}, next) {
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if ((path === '/assetIn/edit' || path === '/assetIn/new' || path === '/assetIn/approval') && refresh) {
+        if ((path === '/assetIn/edit' || path === '/assetIn/new' || path === '/assetIn/approve') && refresh) {
           const { paginationObj: { pageNo, pageLength } } = vm
           vm.queryTableData({pageNo, pageLength})
         }
@@ -293,9 +316,9 @@
 
     watch: {
       // 全选与其他选项互斥处理
-      assetInStatus: function (val) {
+      status: function (val) {
         if (val && val.length !== 1 && val.includes('-1')) {
-          this.assetInStatus = ['-1']
+          this.status = ['-1']
         }
       },
 

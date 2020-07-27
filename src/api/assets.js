@@ -670,6 +670,10 @@ export function exportAssetInExcel (data) {
 export function addOrUpdateAssetStore (data) {
   return axiosPost(assetIn.addOrUpdateAssetStore, data)
 }
+// 入库单审核
+export function auditAssetStore (data) {
+  return axiosPost(assetIn.auditAssetStore, data)
+}
 // 查询入库单详情
 export function queryAssetStoreDetail (data) {
   return axiosGet(assetIn.queryAssetStoreDetail, data)

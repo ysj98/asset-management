@@ -7,12 +7,12 @@
       <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
         <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '无'}}</span>
-        <a-icon
-          type="edit"
-          v-if="key==='assetName'"
-          @click="handleModalOpen('edit')"
-          style="color: #0084FF; cursor: pointer; margin-left: 11px"
-        />
+        <!--<a-icon-->
+          <!--type="edit"-->
+          <!--v-if="key==='assetName'"-->
+          <!--@click="handleModalOpen('edit')"-->
+          <!--style="color: #0084FF; cursor: pointer; margin-left: 11px"-->
+        <!--/>-->
       </a-col>
     </a-row>
     <!--空间位置-->

@@ -277,7 +277,7 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
     */
    ASSET_IN_CREATE: 'asset_in_create', // 新建
    ASSET_IN_EDIT: 'asset_in_edit', // 编辑
-   ASSET_REPORT_APPROVE: 'asset_in_approve', // 审批
+   ASSET_IN_APPROVE: 'asset_in_approve', // 审批
    ASSET_IN_DELETE: 'asset_in_delete', // 删除
 }
 

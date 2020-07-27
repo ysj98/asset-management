@@ -23,12 +23,14 @@
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
       </div>
+      <div slot="headerForm">
+        <div style="width: 55%; float: right; margin-right: 8px">
+          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false"/>
+        </div>
+      </div>
       <div slot="contentForm">
         <a-row :gutter="8">
-          <a-col :span="10">
-            <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false"/>
-          </a-col>
-          <a-col :span="5">
+          <a-col :span="5" :offset="6">
             <a-select
               v-model="status"
               mode="multiple"
@@ -39,15 +41,25 @@
             />
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="请输入资产名称" v-model="assetName"/>
+            <a-select
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              v-model="categoryId"
+              placeholder="请选择资产分类"
+              :options="categoryOptions"
+            />
           </a-col>
-          <a-col :span="4" style="text-align: left">
+          <a-col :span="5">
+            <a-input placeholder="请输入资产名称或编码" v-model="assetName"/>
+          </a-col>
+          <a-col :span="3" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="15">
+          <a-col :span="15" :offset="6">
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
         </a-row>
@@ -55,7 +67,7 @@
     </search-container>
     <!--数据概览信息-->
     <a-spin :spinning="overviewNumSpinning">
-      <overview-number :numList="numList"/>
+      <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
@@ -103,9 +115,12 @@
         fold: true,
         assetName: '', // 查询条件-资产名称
         status: undefined, // 查询条件-资产状态值
+        categoryId: [], // 查询条件-资产分类
+        categoryOptions: [], // 查询条件-资产分类选项
         statusOptions: [
-          { title: '全部状态', key: '-1' }, { title: '未生效', key: '0' }, { title: '正常', key: '1' },
-          { title: '报废', key: '2' }, { title: '转让', key: '3' }, { title: '报损', key: '4' }, { title: '已清理', key: '5' }
+          { title: '全部状态', key: '-1' }, { title: '未入库', key: '0' }, { title: '正常', key: '1' },
+          { title: '报废', key: '2' }, { title: '转让', key: '3' }, { title: '报损', key: '4' },
+          { title: '已出库', key: '5' }, { title: '已取消', key: '6' }, { title: '入库中', key: '7' }
         ], // 查询条件-资产状态选项
         provinceCityDistrictValue: {}, // 查询条件-省-市-区值对象
         organProjectBuildingValue: {}, // 查询条件-组织机构-资产项目-楼栋对象
@@ -116,9 +131,9 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 2800 },
+          scroll: { x: 2900 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', width: 250, fixed: 'left' },
+            { title: 'xxxxxx资产名称', dataIndex: 'assetName', width: 250, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '丘地号', dataIndex: 'addressNo' },
@@ -131,6 +146,7 @@
             { title: '分类', dataIndex: 'objectTypeName' },
             { title: '用途', dataIndex: 'useType' },
             { title: '资产形态', dataIndex: 'typeName' },
+            { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属状态', dataIndex: 'ownershipStatusName' },
             { title: '权证号', dataIndex: 'warrantNbr' },
             { title: '接管时间', dataIndex: 'startDate' },
@@ -160,10 +176,32 @@
         exportAssetBtn: false, // 导出资产视图button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
+        current: null // 当前选中的概览区域下标，与后台入参一一对应
       }
     },
 
     methods: {
+      // 点击总览数据块
+      handleClickOverview ({i}) {
+        this.current = i
+        this.queryTableData({})
+      },
+
+      // 根据organId查询资产分类选项
+      queryCategoryOptions (organId) {
+        this.categoryId = []
+        this.categoryOptions = []
+        this.$api.assets.getList({organId, assetType: 1}).then(({data: res}) => {
+          if (res && String(res.code) === '0') {
+            const arr = (res.data || []).map(m => {
+              return { title: m.assetTypeName, key: m.categoryConfId }
+            })
+            return this.categoryOptions = [{ title: '全部分类', key: 'all' }].concat(arr)
+          }
+          throw res.message || '查询资产分类出错'
+        }).catch(err => this.$message.error(err || '查询资产分类出错'))
+      },
+
       // 列表设置Modal保存
       handleModalOk () {
         let arr = this.$refs['tableHeader'].checkedList
@@ -188,14 +226,14 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo,
-          statusList: status === -1 ? [] : status
+          statusList: status === -1 ? [] : status, flag: current ? (current - 1) : ''
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
@@ -246,12 +284,12 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status,
-          tableObj: { columns }
+          tableObj: { columns }, current
         } = this
         let form = type === 'exportHouseBtn' ? {
           assetHouseId: buildIdList.join(',')
         } : {
-          organId, buildIdList, projectIdList,
+          organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
           province, city, region, assetName, status: status || null,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action')
         }
@@ -289,8 +327,9 @@
     },
 
     watch: {
-      organProjectBuildingValue: function (val) {
-        val && val.organId && this.queryTableData({type: 'search'})
+      organProjectBuildingValue: function (val, pre) {
+        this.queryTableData({type: 'search'})
+        val.organId !== pre.organId && this.queryCategoryOptions(val.organId)
       },
 
       // 全选与其他选项互斥处理
@@ -299,6 +338,12 @@
           this.status = ['-1']
         }
       },
+
+      categoryId: function (val) {
+        if (val && val.length !== 1 && val.includes('-1')) {
+          this.categoryId = ['-1']
+        }
+      }
     }
   }
 </script>

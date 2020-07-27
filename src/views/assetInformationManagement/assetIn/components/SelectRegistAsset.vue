@@ -1,8 +1,6 @@
 <!--查询所选资产项目及资产类型下的资产登记单-->
 <!--props参数释义：
 1.height: String || Number, 设置Table及已选人员框高度，默认450px
-2.allAttrs: Boolean，是否获取全部属性，默认false获取userId字符串构成的数组
-3.value: Array，直接用v-model绑定组件即可,默认格式['UID001', 'UID001']，若 allAttrs 为true, 输入格式[{assetId: 'UID001'}]
 -->
 <template>
   <div class="select_detail">
@@ -34,7 +32,7 @@
               :pagination="false"
               :scroll="{x: 900}"
               :dataSource="dataSource"
-              rowKey="registerOrderCode"
+              rowKey="registerOrderId"
               class="custom-table td-pd10"
               :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
             />
@@ -58,8 +56,6 @@
   export default {
     name: 'SelectRegistAsset',
     props: {
-      // 是否获取全部属性，默认获取userId字符串构成的数组
-      allAttrs: { type: Boolean, default: () => false },
       // projectId 必须
       projectId: { type: [Number, String], default: () => '' },
       // projectId 必须
@@ -68,9 +64,8 @@
       assetType: { type: [Number, String], default: () => '' },
       // 设置table高度
       height: { type: [Number, String], default: () => 550 },
-      // 初始选中的值，以v-model方式传入
-      // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{assetId: 'UID001'}],
-      value: { type: Array, default: () => [] }
+      // 初始选中的值，以v-model方式传入, 格式['UID001', 'UID001']
+      initList: { type: Array, default: () => [] }
     },
     data () {
       return {
@@ -81,7 +76,7 @@
         selectedRowKeys: [], // Table选中项
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: true },
         columns: [
-          { title: '登记单编号', dataIndex: 'registerOrderCode', fixed: 'left', width: 120 },
+          { title: '登记单编号', dataIndex: 'registerOrderId', fixed: 'left', width: 120 },
           { title: '登记单名称', dataIndex: 'registerOrderName' },
           { title: '所属机构', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },
@@ -97,13 +92,13 @@
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
         const {registerOrderName, assetType, projectId, organId} = this
-        if (!projectId || !organId || !assetType) { return false}
+        if (!projectId || !organId || !assetType) { return Promise.reject() }
         this.loading = true
         let form = {
           assetTypes: assetType, registerOrderName, projectId, organId,
           pageSize: pageLength, pageNum: pageNo, approvalStatusList: ['1']
         }
-        this.$api.assets.getRegisterOrderListPage(form).then(({data}) => {
+        return this.$api.assets.getRegisterOrderListPage(form).then(({data}) => {
           if (data && data.code.toString() === '0') {
             this.loading = false
             const {count, data: list} = data.data
@@ -133,17 +128,11 @@
       }
     },
     mounted () {
-      const {allAttrs, value} = this
-      this.selectedRowKeys = allAttrs ? value.map(i => i.registerOrderId) : value
-      this.fetchData({})
+      this.fetchData({}).then(() => this.selectedRowKeys = this.initList.map(i => Number(i.registerOrderId)))
     },
     watch: {
-      value: function (value) {
-        this.selectedRowKeys = this.allAttrs ? value.map(i => i.registerOrderId) : value
-      },
-
       selectedRowKeys: function (keys) {
-        let {dataSource, allAttrs, selectedList} = this
+        let {dataSource, selectedList} = this
         let primaryKeys = []
         let primaryList = selectedList.filter(n => {
           let flag = keys.includes(n.registerOrderId)
@@ -152,7 +141,6 @@
         })
         let newList = dataSource.filter(i => !primaryKeys.includes(i.registerOrderId) && keys.includes(i.registerOrderId))
         this.selectedList = primaryList.concat(newList)
-        this.$emit('input', allAttrs ? selectedList : keys)
       }
     }
   }

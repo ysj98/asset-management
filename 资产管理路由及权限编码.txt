@@ -43,6 +43,11 @@ V1.0.4
 /asset-management/#/ownershipCardList         权属证件一览表
 /asset-management/#/assetWorthStatistics         资产价值统计表
 
+V2.0
+/asset-management/#//assetIn             资产入库
+/asset-management/#/assetWorthList       资产价值一览表
+/asset-management/#/worthRegisterRecord  资产估值记录
+
 
 新增权限编码如下:
 V1.0
@@ -187,3 +192,9 @@ asset_class_land_create    资产分类-新增土地
 asset_class_land_edit      资产分类-编辑土地
 asset_class_land_change    资产分类-状态改变土地
 asset_class_land_delete    资产分类-状态删除土地
+
+/* 资产入库 */
+ASSET_IN_CREATE: 'asset_in_create', // 新建
+ASSET_IN_EDIT: 'asset_in_edit', // 编辑
+ASSET_IN_APPROVE: 'asset_in_approve', // 审批
+ASSET_IN_DELETE: 'asset_in_delete', // 删除
