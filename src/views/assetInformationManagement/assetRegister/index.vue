@@ -415,28 +415,28 @@ export default {
       // 审批状态   
       let arr = []
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_BASIC)) {
-        arr.push({iconType: 'play-circle', text: '登记基础信息', editType: 'basicInformation'})
+        arr.push({iconType: 'book', text: '登记基础信息', editType: 'basicInformation'})
       }
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_ACCESSORY)) {
-        arr.push({iconType: 'close-circle', text: '登记附属配套', editType: 'registrationAccessory'})
+        arr.push({iconType: 'hdd', text: '登记附属配套', editType: 'registrationAccessory'})
       }
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_REGISTERED)) {
-        arr.push({iconType: 'close-circle', text: '登记价值信息', editType: 'registeredInformation'})
+        arr.push({iconType: 'strikethrough', text: '登记价值信息', editType: 'registeredInformation'})
       }
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_DIRECTION)) {
-        arr.push({iconType: 'close-circle', text: '登记使用方向', editType: 'registerDirections'})
+        arr.push({iconType: 'select', text: '登记使用方向', editType: 'registerDirections'})
       }
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_FEES)) {
-        arr.push({iconType: 'close-circle', text: '登记相关费用', editType: 'registrationFees'})
+        arr.push({iconType: 'block', text: '登记相关费用', editType: 'registrationFees'})
       }
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_VERIFY)) {
-        arr.push({iconType: 'close-circle', text: '核实', editType: 'verify'})
+        arr.push({iconType: 'check-square', text: '核实', editType: 'verify'})
       }
       if (String(record.approvalStatus) === '0' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_DELETE)) {
         arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
       }
       if (String(record.approvalStatus) === '1' && this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTER_UNDOCHECK)) {
-        arr.push({iconType: 'delete', text: '撤销核实', editType: 'undoCheck'})
+        arr.push({iconType: 'logout', text: '撤销核实', editType: 'undoCheck'})
       }
       arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
       return arr
