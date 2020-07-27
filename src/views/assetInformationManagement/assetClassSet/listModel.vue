@@ -6,9 +6,9 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
-        <SG-Button v-if="createPower" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
+        <!-- <SG-Button v-if="createPower" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
           >新建</SG-Button
-        >
+        > -->
         <SG-Button type="primary" @click="exportList"
           ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
         >
@@ -88,7 +88,7 @@
       v-model="paginator.pageNo"
       @change="handlePageChange"
     />
-    <createClassModal @success="queryList" :action="action" :type="type" :storeDetail="storeDetail" ref="createClassModal"/>
+    <createClassModal @success="queryList" :categoryConfId="categoryConfId" :action="action" :type="type" :storeDetail="storeDetail" ref="createClassModal"/>
   </div>
 </template>
 
@@ -191,6 +191,7 @@ export default {
       showNoDataTips: false,
       storeDetail: {}, // 存储弹窗需要数据
       action: 'create', // 是编辑还是信息，或者详情
+      categoryConfId: '', // 当前点击分类id
       createPower: false, // 创建权限
       editPower: false, // 编辑权限
       changePower: false, // 状态改变权限
@@ -250,7 +251,7 @@ export default {
     operationFun(editType, record) {
       let self = this
       if (["edit", "detail"].includes(editType)) {
-        this.storeDetail.categoryConfId = record.categoryConfId
+        this.categoryConfId = record.categoryConfId
       }
       // 新增编辑详情
       if (["create", "edit", "detail"].includes(editType)) {
@@ -279,12 +280,12 @@ export default {
         this.$confirm({
           title: "提示",
           content: "确认要删除该资产分类吗？",
-          onOk() {
+          onOk: () => {
             let data = {
               orginId: this.organId,
               blankId: record.blankId
             }
-            this.$api.assets.blankApiDelete(data).then(res => {
+            this.$api.building.blankApiDelete(data).then(res => {
               if (res.data.code === '0') {
                 this.$message.success("删除成功")
                 this.queryList()

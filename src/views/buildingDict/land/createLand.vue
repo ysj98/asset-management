@@ -335,6 +335,7 @@ export default {
         organName: "",
         organId: ""
       },
+      bussType: 'blankDir',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },

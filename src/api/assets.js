@@ -278,6 +278,10 @@ export function correlationExpenseDetail (data) {
 export function correlationExpenseTotal (data) {
   return axiosGet(assets.assetRegister.correlationExpenseTotal, data)
 }
+// 资产登记-删除基础信息
+export function deleteBase (data) {
+  return axiosPost(assets.assetRegister.deleteBase, data)
+}
 
 // 资产出库
 // 资产出库-分页列表

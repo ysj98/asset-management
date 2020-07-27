@@ -30,14 +30,15 @@
             :hasAll="false"
             :selectFirst="true"
           />
-          <!-- mode="multiple"
-            :maxTagCount="1" -->
+          
           <!-- 全部运营项目-->
           <a-select
             showSearch
             placeholder="请选择运营项目"
             v-model="queryCondition.communityId"
             @change="communityIdSelect"
+            mode="multiple"
+            :maxTagCount="1"
             optionFilterProp="children"
             :style="allWidth"
             :options="communityIdOpt"
@@ -176,7 +177,8 @@ export default {
   methods: {
     query() {
       let data = {
-        ...this.queryCondition
+        ...this.queryCondition,
+        communityId: this.queryCondition.communityId.join(',')
       };
       this.table.loading = true;
       this.$api.building.blankApiPageList(data).then(
@@ -342,7 +344,8 @@ export default {
     },
     exportList() {
       let data = {
-        ...this.queryCondition
+        ...this.queryCondition,
+        communityId: this.queryCondition.communityId.join(',')
       };
       delete data.pageNum
       delete data.pageSize

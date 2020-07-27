@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-24 11:21:09
+ * @LastEditTime: 2020-07-27 15:01:39
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -115,8 +115,8 @@ export default {
         if (!data) {return}
         this.assetType = data.assetType
         console.log(this.assetType, 'assetTypeassetTypeassetType')
-        if (this.$refs.refs.basicRef.save()) { return }
-        let basicData = this.$refs.refs.basicRef.basicData
+        if (this.$refs.basicRef.save()) { return }
+        let basicData = this.$refs.basicRef.basicData
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称
@@ -136,7 +136,9 @@ export default {
               this.registerOrderId = res.data.data
               this.showSave = false
               this.rightButtonDisabled = false                     // 成功了才可以下一步
-              this.$refs.basicRef.query('sub')
+              this.$nextTick(() => {
+                this.$refs.basicRef.query('sub')
+              })
               return true
             })
           } else {
