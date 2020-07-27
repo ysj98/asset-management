@@ -154,7 +154,7 @@ export function blankApiDelete (data) {
 }
 // 土地导出
 export function blankApiExport (data) {
-  return axiosPost(building.blankApiExport, data, false, true, {
+  return axiosPost(building.blankApiExport, data, false, false, {
     responseType: 'blob'
   })
 }

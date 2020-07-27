@@ -472,7 +472,7 @@ export const building = {
   // 土地删除
   blankApiDelete: '/basic-data-api/rest-api/v1/ams/blankApi/delete',
   // 土地导出
-  blankApiExport: '/basic-data-api/rest-api/v1/ams/blankApi/export',
+  blankApiExport: '/basic-data-batch-api/rest-api/v1/ams/blankApi/export',
   // 土地详情
   blankApiDetail: '/basic-data-api/rest-api/v1/ams/blankApi/detail',
   // 土地新增
