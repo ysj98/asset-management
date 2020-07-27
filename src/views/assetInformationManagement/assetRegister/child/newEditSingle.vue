@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-24 11:21:09
+ * @LastEditTime: 2020-07-27 14:19:51
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -115,8 +115,8 @@ export default {
         if (!data) {return}
         this.assetType = data.assetType
         console.log(this.assetType, 'assetTypeassetTypeassetType')
-        if (this.$refs.refs.basicRef.save()) { return }
-        let basicData = this.$refs.refs.basicRef.basicData
+        if (this.$refs.basicRef.save()) { return }
+        let basicData = this.$refs.basicRef.basicData
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称
