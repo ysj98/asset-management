@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-25 15:53:13
+ * @LastEditTime: 2020-07-27 14:21:40
  * @Description: file content
  */ 
 
@@ -55,7 +55,7 @@ export const judgmentData = [
   { title: '其他面积', dataIndex: 'otherArea', required: true, type: 'float' },
   { title: '转物业日期', dataIndex: 'transferTime', required: false, date: true }, //  type: 'number', 
   { title: '转物业面积', dataIndex: 'transferArea', required: false, type: 'float' },
-  { title: '使用期限(月)', dataIndex: 'validPeriod', required: true, type: 'number' },
+  { title: '使用期限(月)', dataIndex: 'validPeriod', required: false, type: 'number' },
   { title: '开始使用日期', dataIndex: 'startDate', required: false, date: true },  // type: 'number',
   { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' },
   { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', required: false, type: 'float' },
@@ -88,7 +88,7 @@ export const landCheck = [
   { title: '其他面积', dataIndex: 'otherArea', required: true, type: 'float' },
   { title: '转物业日期', dataIndex: 'transferTime', required: false, date: true }, //  type: 'number', 
   { title: '转物业面积', dataIndex: 'transferArea', required: false, type: 'float' },
-  { title: '使用期限(月)', dataIndex: 'validPeriod', required: true, type: 'number' },
+  { title: '使用期限(月)', dataIndex: 'validPeriod', required: false, type: 'number' },
   { title: '开始使用日期', dataIndex: 'startDate', required: false, date: true },  // type: 'number',
   { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' },
   { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', required: false, type: 'float' },
