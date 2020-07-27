@@ -8,7 +8,7 @@
         <a-button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search v-model="queryCondition.registerOrderName" placeholder="登记单名称/登记单编号" maxlength="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.registerOrderName" placeholder="登记单名称/编号" maxlength="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
