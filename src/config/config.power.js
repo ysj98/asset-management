@@ -106,16 +106,30 @@ export const ASSET_MANAGEMENT = {
   /**
    * 资产登记
    **/
-  // 资产登记-新增登记单
-  ASSET_REGISTER_NEW: 'zcgl_asset_register_new',
   // 资产登记-编辑登记单
   ASSET_REGISTER_EDIT: 'zcgl_asset_register_edit',
   // 资产登记-审核
   ASSET_REGISTER_AUDIT: 'zcgl_asset_register_audit',
   // 资产登记-反审核
   ASSET_REGISTER_REVERSE_AUDIT: 'zcgl_asset_register_reverse_audit',
+  // 资产登记-新增登记单
+  ASSET_REGISTER_NEW: 'zcgl_asset_register_new',
   // 资产登记-删除
   ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete',
+  // 资产登记-登记基础信息
+  ASSET_REGISTER_BASIC: 'zcgl_asset_register_basicInformation',
+  // 资产登记-登记附属配套
+  ASSET_REGISTER_ACCESSORY: 'zcgl_asset_register_registrationAccessory',
+  // 资产登记-登记价值信息
+  ASSET_REGISTER_REGISTERED: 'zcgl_asset_register_registeredInformation',
+  // 资产登记-登记使用方向
+  ASSET_REGISTER_DIRECTION: 'zcgl_asset_register_registerDirections',
+  // 资产登记-登记相关费用
+  ASSET_REGISTER_FEES: 'zcgl_asset_register_registrationFees',
+  // 资产登记-核实
+  ASSET_REGISTER_VERIFY: 'zcgl_asset_register_verify',
+  // 资产登记-撤销核实
+  ASSET_REGISTER_UNDOCHECK: 'zcgl_asset_register_undoCheck',
 
   /**
   * 资产项目管理APM （asset-project-manage）
