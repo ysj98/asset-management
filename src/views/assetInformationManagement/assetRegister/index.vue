@@ -8,7 +8,7 @@
         <a-button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search v-model="queryCondition.registerOrderName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.registerOrderName" placeholder="资产名称" maxlength="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -379,7 +379,7 @@ export default {
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
         createDateS: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         crateDateE: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderName: this.queryCondition.registerOrderName,                                // 登记单名称
+        registerOrderName: this.queryCondition.registerOrderName ? this.queryCondition.registerOrderName : null,                                // 登记单名称
       }
       this.$api.assets.getRegisterOrderListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
