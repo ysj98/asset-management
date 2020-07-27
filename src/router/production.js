@@ -140,35 +140,41 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/asset-project-manage/components/ProjectDetailPage')
   },
   {
-    path: '/houseStandingBook',
-    name: '房屋台账',
-    component: () => import('@/views/assetInformationManagement/houseStandingBook/index.vue'),
-    meta: {
-      keepAlive: true
-    }
+    path: '/organView',
+    name: '组织机构视图',
+    component: () => import('@/views/assetInformationManagement/house-account/organ-view/index.vue'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/assetProjectView',
+    name: '资产项目视图',
+    component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewList.vue'),
+    meta: { keepAlive: true }
   },
   {
     path: '/houseStandingBook/assetProjectViewDetail',
     name: '资产项目视图详情',
-    component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail.vue')
+    component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail')
   },
-  // {
-  //   path: '/assetView',
-  //   name: '资产视图',
-  //   component: () => import('@/views/assetInformationManagement/house-account/asset-view')
-  // },
   {
-    path: '/houseStandingBook/assetViewDetail',
+    path: '/assetView',
+    name: '资产视图',
+    component: () => import('@/views/assetInformationManagement/house-account/asset-view/index.vue'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/assetView/assetViewDetail',
     name: '资产视图详情',
     component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
   },
-  // {
-  //   path: '/buildingView',
-  //   name: '楼栋视图',
-  //   component: () => import('@/views/assetInformationManagement/house-account/building-view')
-  // },
   {
-    path: '/houseStandingBook/buildingViewDetail',
+    path: '/buildingView',
+    name: '楼栋视图',
+    component: () => import('@/views/assetInformationManagement/house-account/building-view/index.vue'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/buildingView/buildingViewDetail',
     name: '楼栋视图详情',
     component: () => import('@/views/assetInformationManagement/house-account/building-view/components/BuildingDetailPage')
   },
