@@ -252,6 +252,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    // categoryConfId
+    categoryConfId: {
+      default: ''
+    },
     type: {
       default: "house"
     },
@@ -307,7 +311,7 @@ export default {
           };
           // 如果是编辑
           if (this.action === "edit") {
-            data.categoryConfId = this.storeDetail.categoryConfId;
+            data.categoryConfId = this.categoryConfId;
           }
           this.$api.assets.update(data).then(res => {
             if (res.data.code === "0") {
@@ -324,7 +328,7 @@ export default {
     // 查询资产详情
     getDetail() {
       let data = {
-        categoryConfId: this.storeDetail.categoryConfId,
+        categoryConfId: this.categoryConfId,
         organId: this.storeDetail.organId,
         assetType: pageTypeMap[this.type]
       };
