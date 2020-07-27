@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-25 15:58:52
+ * @LastEditTime: 2020-07-27 15:48:51
  * @Description: 房屋土地
 --> 
 <template>
@@ -107,11 +107,15 @@ export default {
       this.assetType = String(this.record[0].assetType)
       if (+this.record[0].assetType === 1) {                    // 房屋表头
         arr = utils.deepClone(columnsData)
-        arr.pop()
+        if (this.setType === 'detail') {
+          arr.pop()
+        }
         this.columns = arr
       } else if (+this.record[0].assetType === 4) {             // 土地表头
         arr = utils.deepClone(landData)
-        arr.pop()
+        if (this.setType === 'detail') {
+          arr.pop()
+        }
         this.columns = arr
       }
       this.query()
@@ -273,7 +277,7 @@ export default {
             // 数组去重根据objectId
             let hash = {}
             arrData = arrData.reduce((preVal, curVal) => {
-              hash[Number(curVal.objectId)] ? '' : hash[Number(curVal.objectId)] = true && preVal.push(curVal)
+              hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
               return preVal
             }, [])
             publicData = landCheck
@@ -386,7 +390,12 @@ export default {
     },
     // 删除
     deleteFn (record) {
-      this.commomDelete('delete', record.key)
+      console.log(record)
+      if (record.assetId) {
+        this.deleteBase(record)
+      } else {
+        this.commomDelete('delete', record.key)
+      }
     },
     commomDelete (str, recordKey) {
       let _this = this
@@ -403,6 +412,26 @@ export default {
           } else {
             _this.tableData = []
           }
+        }
+      })
+    },
+    deleteBase (record) {
+      let _this = this
+      _this.$confirm({
+        title: '提示',
+        content: '确认要删除该资产吗？资产相关信息将一起删除！',
+        onOk() {
+          let obj = {
+            registerOrderId: _this.registerOrderId,
+            assetId: record.assetId
+          }
+          _this.$api.assets.deleteBase(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+          })
         }
       })
     },

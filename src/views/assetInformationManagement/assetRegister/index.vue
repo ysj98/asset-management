@@ -8,14 +8,14 @@
         <a-button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search v-model="queryCondition.registerOrderName" placeholder="资产名称" maxlength="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.registerOrderName" placeholder="登记单名称/登记单编号" maxlength="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+        <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
           <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
@@ -172,7 +172,7 @@ export default {
         approvalStatus: '',        // 状态
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
-        projectId: '',             // 资产项目Id
+        projectId: undefined,             // 资产项目Id
         organId:1,                 // 组织机构id
         assetType: '',             // 变动类型id(多个用，分割)
         createDateS: '',           // 开始创建日期
@@ -187,12 +187,7 @@ export default {
           value: ''
         }
       ],
-      projectData: [
-        {
-          name: '全部资产项目',
-          value: ''
-        }
-      ]
+      projectData: []
     }
   },
   computed: {
@@ -314,7 +309,7 @@ export default {
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
-      this.queryCondition.projectId = ''
+      this.queryCondition.projectId = undefined
       this.query()
       this.getObjectKeyValueByOrganIdFn()
     },
@@ -340,7 +335,7 @@ export default {
               value: item.projectId
             })
           })
-          this.projectData = [{name: '全部资产项目', value: ''}, ...arr]
+          this.projectData = arr
         } else {
           this.$message.error(res.data.message)
         }
@@ -374,7 +369,7 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus : [],      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectId: this.queryCondition.projectId,            // 资产项目Id
+        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
         createDateS: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
