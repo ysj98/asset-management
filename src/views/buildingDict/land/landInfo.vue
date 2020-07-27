@@ -30,6 +30,8 @@
             :hasAll="false"
             :selectFirst="true"
           />
+          <!-- mode="multiple"
+            :maxTagCount="1" -->
           <!-- 全部运营项目-->
           <a-select
             showSearch
@@ -37,8 +39,6 @@
             v-model="queryCondition.communityId"
             @change="communityIdSelect"
             optionFilterProp="children"
-            mode="multiple"
-            :maxTagCount="1"
             :style="allWidth"
             :options="communityIdOpt"
             :allowClear="false"
@@ -344,6 +344,8 @@ export default {
       let data = {
         ...this.queryCondition
       };
+      delete data.pageNum
+      delete data.pageSize
       this.$api.building.blankApiExport(data).then(res => {
         console.log(res);
         let blob = new Blob([res.data]);
