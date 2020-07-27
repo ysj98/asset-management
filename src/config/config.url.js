@@ -209,7 +209,9 @@ export const assets = {
     // 根据登记单Id资产登记明细列表-分页
     getRegisterOrderDetailsPageByIdList: '/ams/registerOrder/getRegisterOrderDetailsPageByIdList',
     // 批量更新（导入）
-    baseImport: '/ams/registerOrder/importBaseInfoData'
+    baseImport: '/ams/registerOrder/importBaseInfoData',
+    // 资产登记-删除基础信息
+    deleteBase: '/ams/registerOrder/deleteBase'
   },
   // 资产出库
   assetClear: {
