@@ -258,7 +258,7 @@ export const ASSET_MANAGEMENT = {
     * 呈报任务管理
     */
  // 呈报任务管理-呈报任务-新增
- RM_TASK_NEW: 'rm_task_new',
+ RM_TASK_NEW: 'asset_rm_task_new',
  /**
   * 附属配套管理
   */
