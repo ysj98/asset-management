@@ -362,13 +362,24 @@ export default {
       this.queryCondition.pageSize = 10
       this.query()
     },
+    alljudge (val) {
+      if (val.length !== 0) {
+        if (val[0] === '') {
+          return []
+        } else {
+          return val
+        }
+      } else {
+        return []
+      }
+    },
     // 查询
     query () {
       this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        approvalStatusList: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus : [],      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
