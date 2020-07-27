@@ -1,154 +1,154 @@
-ĞÂÔöÈ¨ÏŞ±àÂëÈçÏÂ:
+ï»¿æ–°å¢æƒé™ç¼–ç å¦‚ä¸‹:
 V1.0
-×Ê²úÇåÀí
-zcgl_asset_clear_new                ×Ê²úÇåÀí-ĞÂ½¨ÇåÀíµ¥
-zcgl_asset_clear_edit               ×Ê²úÇåÀí-±à¼­ÇåÀíµ¥
-zcgl_asset_clear_audit              ×Ê²úÇåÀí-ÉóºËÇåÀíµ¥
-zcgl_asset_clear_reverse_audit      ×Ê²úÇåÀí-·´ÉóºËÇåÀíµ¥
-zcgl_asset_clear_delete             ×Ê²úÇåÀí-É¾³ıÇåÀíµ¥
+èµ„äº§æ¸…ç†
+zcgl_asset_clear_new                èµ„äº§æ¸…ç†-æ–°å»ºæ¸…ç†å•
+zcgl_asset_clear_edit               èµ„äº§æ¸…ç†-ç¼–è¾‘æ¸…ç†å•
+zcgl_asset_clear_audit              èµ„äº§æ¸…ç†-å®¡æ ¸æ¸…ç†å•
+zcgl_asset_clear_reverse_audit      èµ„äº§æ¸…ç†-åå®¡æ ¸æ¸…ç†å•
+zcgl_asset_clear_delete             èµ„äº§æ¸…ç†-åˆ é™¤æ¸…ç†å•
 
-×Ê²ú·ÖÀàÉèÖÃ
-zcgl_asset_class_set_edit           ×Ê²ú·ÖÀà-±à¼­×Ê²ú·ÖÀàĞÅÏ¢
-zcgl_asset_class_set_change_status  ×Ê²ú·ÖÀà-ÆôÓÃ/Í£ÓÃ×Ê²ú·ÖÀàĞÅÏ¢(×´Ì¬)
+èµ„äº§åˆ†ç±»è®¾ç½®
+zcgl_asset_class_set_edit           èµ„äº§åˆ†ç±»-ç¼–è¾‘èµ„äº§åˆ†ç±»ä¿¡æ¯
+zcgl_asset_class_set_change_status  èµ„äº§åˆ†ç±»-å¯ç”¨/åœç”¨èµ„äº§åˆ†ç±»ä¿¡æ¯(çŠ¶æ€)
 
-Â¥ÅÌ×Öµä
-zcgl_add_house                Â¥ÅÌ×Öµä-ĞÂÔö·¿¼ä
-zcgl_edit_house               Â¥ÅÌ×Öµä-±à¼­·¿¼ä
-zcgl_housezl_in               Â¥ÅÌ×Öµä-·¿¼ä×ÊÁÏµ¼Èë
-zcgl_house_in                 Â¥ÅÌ×Öµä-·¿¼äÅúÁ¿¸üĞÂ
-zcgl_house_out                Â¥ÅÌ×Öµä-·¿¼äµ¼³ö
-zcgl_house_state              Â¥ÅÌ×Öµä-·¿¼ä×´Ì¬ĞŞ¸Ä
-zcgl_build_add                Â¥ÅÌ×Öµä-ĞÂ½¨Â¥¶°
-zcgl_build_edit               Â¥ÅÌ×Öµä-±à¼­Â¥¶°
-zcgl_build_delete             Â¥ÅÌ×Öµä-É¾³ıÂ¥¶°
-zcgl_floor_add                Â¥ÅÌ×Öµä-ĞÂ½¨Â¥²ã
-zcgl_floor_edit               Â¥ÅÌ×Öµä-±à¼­Â¥²ã
-zcgl_floor_delete             Â¥ÅÌ×Öµä-É¾³ıÂ¥²ã
-zcgl_unit_add                 Â¥ÅÌ×Öµä-ĞÂ½¨µ¥Ôª
-zcgl_unit_edit                Â¥ÅÌ×Öµä-±à¼­µ¥Ôª
-zcgl_unit_delete              Â¥ÅÌ×Öµä-É¾³ıµ¥Ôª
-
-
-×Ê²úÏîÄ¿¹ÜÀíAPM £¨asset-project-manage£©
-zcgl_apm_new                  ×Ê²úÏîÄ¿¹ÜÀí-ĞÂ½¨
-zcgl_apm_edit                 ×Ê²úÏîÄ¿¹ÜÀí-±à¼­
-zcgl_apm_approval             ×Ê²úÏîÄ¿¹ÜÀí-ÉóºË
-zcgl_apm_delete               ×Ê²úÏîÄ¿¹ÜÀí-É¾³ı
-zcgl_apm_reApproval           ×Ê²úÏîÄ¿¹ÜÀí-·´ÉóºË
-
-×Ê²ú±ä¶¯
-zcgl_asset_change_new            ×Ê²ú±ä¶¯-ĞÂÔö±ä¶¯µ¥
-zcgl_asset_change_edit           ×Ê²ú±ä¶¯-±à¼­±ä¶¯µ¥
-zcgl_asset_change_audit          ×Ê²ú±ä¶¯-ÉóºË
-zcgl_asset_change_reverse_audit  ×Ê²ú±ä¶¯-·´ÉóºË
-zcgl_asset_change_delete         ×Ê²ú±ä¶¯-É¾³ı
-zcgl_asset_change_end_delivery   ×Ê²ú±ä¶¯- ½áÊø½»¸¶
+æ¥¼ç›˜å­—å…¸
+zcgl_add_house                æ¥¼ç›˜å­—å…¸-æ–°å¢æˆ¿é—´
+zcgl_edit_house               æ¥¼ç›˜å­—å…¸-ç¼–è¾‘æˆ¿é—´
+zcgl_housezl_in               æ¥¼ç›˜å­—å…¸-æˆ¿é—´èµ„æ–™å¯¼å…¥
+zcgl_house_in                 æ¥¼ç›˜å­—å…¸-æˆ¿é—´æ‰¹é‡æ›´æ–°
+zcgl_house_out                æ¥¼ç›˜å­—å…¸-æˆ¿é—´å¯¼å‡º
+zcgl_house_state              æ¥¼ç›˜å­—å…¸-æˆ¿é—´çŠ¶æ€ä¿®æ”¹
+zcgl_build_add                æ¥¼ç›˜å­—å…¸-æ–°å»ºæ¥¼æ ‹
+zcgl_build_edit               æ¥¼ç›˜å­—å…¸-ç¼–è¾‘æ¥¼æ ‹
+zcgl_build_delete             æ¥¼ç›˜å­—å…¸-åˆ é™¤æ¥¼æ ‹
+zcgl_floor_add                æ¥¼ç›˜å­—å…¸-æ–°å»ºæ¥¼å±‚
+zcgl_floor_edit               æ¥¼ç›˜å­—å…¸-ç¼–è¾‘æ¥¼å±‚
+zcgl_floor_delete             æ¥¼ç›˜å­—å…¸-åˆ é™¤æ¥¼å±‚
+zcgl_unit_add                 æ¥¼ç›˜å­—å…¸-æ–°å»ºå•å…ƒ
+zcgl_unit_edit                æ¥¼ç›˜å­—å…¸-ç¼–è¾‘å•å…ƒ
+zcgl_unit_delete              æ¥¼ç›˜å­—å…¸-åˆ é™¤å•å…ƒ
 
 
-×Ê²úµÇ¼Ç
-zcgl_asset_register_new          ×Ê²úµÇ¼Ç-ĞÂÔöµÇ¼Çµ¥
-zcgl_asset_register_edit           ×Ê²úµÇ¼Ç-±à¼­µÇ¼Çµ¥
-zcgl_asset_register_audit        ×Ê²úµÇ¼Ç-ÉóºË
-zcgl_asset_register_reverse_audit ×Ê²úµÇ¼Ç-·´ÉóºË
-zcgl_asset_register_delete       ×Ê²úµÇ¼Ç-É¾³ı
+èµ„äº§é¡¹ç›®ç®¡ç†APM ï¼ˆasset-project-manageï¼‰
+zcgl_apm_new                  èµ„äº§é¡¹ç›®ç®¡ç†-æ–°å»º
+zcgl_apm_edit                 èµ„äº§é¡¹ç›®ç®¡ç†-ç¼–è¾‘
+zcgl_apm_approval             èµ„äº§é¡¹ç›®ç®¡ç†-å®¡æ ¸
+zcgl_apm_delete               èµ„äº§é¡¹ç›®ç®¡ç†-åˆ é™¤
+zcgl_apm_reApproval           èµ„äº§é¡¹ç›®ç®¡ç†-åå®¡æ ¸
+
+èµ„äº§å˜åŠ¨
+zcgl_asset_change_new            èµ„äº§å˜åŠ¨-æ–°å¢å˜åŠ¨å•
+zcgl_asset_change_edit           èµ„äº§å˜åŠ¨-ç¼–è¾‘å˜åŠ¨å•
+zcgl_asset_change_audit          èµ„äº§å˜åŠ¨-å®¡æ ¸
+zcgl_asset_change_reverse_audit  èµ„äº§å˜åŠ¨-åå®¡æ ¸
+zcgl_asset_change_delete         èµ„äº§å˜åŠ¨-åˆ é™¤
+zcgl_asset_change_end_delivery   èµ„äº§å˜åŠ¨- ç»“æŸäº¤ä»˜
+
+
+èµ„äº§ç™»è®°
+zcgl_asset_register_new          èµ„äº§ç™»è®°-æ–°å¢ç™»è®°å•
+zcgl_asset_register_edit           èµ„äº§ç™»è®°-ç¼–è¾‘ç™»è®°å•
+zcgl_asset_register_audit        èµ„äº§ç™»è®°-å®¡æ ¸
+zcgl_asset_register_reverse_audit èµ„äº§ç™»è®°-åå®¡æ ¸
+zcgl_asset_register_delete       èµ„äº§ç™»è®°-åˆ é™¤
 
 
 V1.1
-È¨ÊôÈË¹ÜÀí
-zcgl_property_owner_new          È¨ÊôÈË¹ÜÀí-ĞÂÔö
-zcgl_property_owner_edit         È¨ÊôÈË¹ÜÀí-±à¼­
-zcgl_property_owner_delete       È¨ÊôÈË¹ÜÀí-É¾³ı
+æƒå±äººç®¡ç†
+zcgl_property_owner_new          æƒå±äººç®¡ç†-æ–°å¢
+zcgl_property_owner_edit         æƒå±äººç®¡ç†-ç¼–è¾‘
+zcgl_property_owner_delete       æƒå±äººç®¡ç†-åˆ é™¤
 
-×Ê²úÈëÕË
-zcgl_asset_entry_new             ×Ê²úÈëÕË-ĞÂÔö
-zcgl_asset_entry_edit            ×Ê²úÈëÕË-±à¼­
-zcgl_asset_entry_reverse_audit   ×Ê²úÈëÕË-·´ÉóºË
-zcgl_asset_entry_delete          ×Ê²úÈëÕË-É¾³ı
+èµ„äº§å…¥è´¦
+zcgl_asset_entry_new             èµ„äº§å…¥è´¦-æ–°å¢
+zcgl_asset_entry_edit            èµ„äº§å…¥è´¦-ç¼–è¾‘
+zcgl_asset_entry_reverse_audit   èµ„äº§å…¥è´¦-åå®¡æ ¸
+zcgl_asset_entry_delete          èµ„äº§å…¥è´¦-åˆ é™¤
 
-×Ê²ú¼ÛÖµµÇ¼Çawr£¨asset_worth_register£©
-zcgl_awr_add                    ×Ê²ú¼ÛÖµµÇ¼ÇĞÂÔö
-zcgl_awr_edit                   ×Ê²ú¼ÛÖµµÇ¼Ç±à¼­
-zcgl_awr_approval               ×Ê²ú¼ÛÖµµÇ¼ÇÉóºË
-zcgl_awr_delete                 ×Ê²ú¼ÛÖµµÇ¼ÇÉ¾³ı
+èµ„äº§ä»·å€¼ç™»è®°awrï¼ˆasset_worth_registerï¼‰
+zcgl_awr_add                    èµ„äº§ä»·å€¼ç™»è®°æ–°å¢
+zcgl_awr_edit                   èµ„äº§ä»·å€¼ç™»è®°ç¼–è¾‘
+zcgl_awr_approval               èµ„äº§ä»·å€¼ç™»è®°å®¡æ ¸
+zcgl_awr_delete                 èµ„äº§ä»·å€¼ç™»è®°åˆ é™¤
 
-È¨Êô¸Å¿ö
-zcgl_proownership_set            ×Ê²úÏîÄ¿È¨ÊôÉèÖÃ
-zcgl_ownership_detail            ×Ê²úÈ¨ÊôÏêÇé
+æƒå±æ¦‚å†µ
+zcgl_proownership_set            èµ„äº§é¡¹ç›®æƒå±è®¾ç½®
+zcgl_ownership_detail            èµ„äº§æƒå±è¯¦æƒ…
 
-È¨ÊôµÇ¼Ç
-zcgl_asset_ownerr_new           È¨ÊôµÇ¼Ç-ĞÂÔöÈ¨ÊôµÇ¼Çµ¥
-zcgl_asset_ownerr_edit          È¨ÊôµÇ¼Ç-±à¼­È¨ÊôµÇ¼Çµ¥
-zcgl_asset_ownerr_audit         È¨ÊôµÇ¼Ç-ÉóºË
-zcgl_asset_ownerr_reverse_audit È¨ÊôµÇ¼Ç-·´ÉóºË
-zcgl_asset_ownerr_delete        È¨ÊôµÇ¼Ç-É¾³ı
+æƒå±ç™»è®°
+zcgl_asset_ownerr_new           æƒå±ç™»è®°-æ–°å¢æƒå±ç™»è®°å•
+zcgl_asset_ownerr_edit          æƒå±ç™»è®°-ç¼–è¾‘æƒå±ç™»è®°å•
+zcgl_asset_ownerr_audit         æƒå±ç™»è®°-å®¡æ ¸
+zcgl_asset_ownerr_reverse_audit æƒå±ç™»è®°-åå®¡æ ¸
+zcgl_asset_ownerr_delete        æƒå±ç™»è®°-åˆ é™¤
 
-È¨Ö¤¹ÜÀí
-zcgl_asset_acm_new              È¨Ö¤¹ÜÀí-ĞÂÔöÈ¨Ö¤¹ÜÀíµ¥
-zcgl_asset_acm_edit             È¨Ö¤¹ÜÀí-±à¼­È¨Ö¤¹ÜÀíµ¥
-zcgl_asset_acm_delete           È¨Ö¤¹ÜÀí-×¢Ïú
+æƒè¯ç®¡ç†
+zcgl_asset_acm_new              æƒè¯ç®¡ç†-æ–°å¢æƒè¯ç®¡ç†å•
+zcgl_asset_acm_edit             æƒè¯ç®¡ç†-ç¼–è¾‘æƒè¯ç®¡ç†å•
+zcgl_asset_acm_delete           æƒè¯ç®¡ç†-æ³¨é”€
 
 V1.2
-ÅÌµãÈÎÎñ
-zcgl_task_new                   ÅÌµãÈÎÎñ-Éú³ÉÅÌµãµ¥
-zcgl_task_edit                  ÅÌµãÈÎÎñ-ÅÌµãÈÎÎñ±à¼­
-zcgl_task_delete                ÅÌµãÈÎÎñ-ÅÌµãÈÎÎñÈ¡Ïû
+ç›˜ç‚¹ä»»åŠ¡
+zcgl_task_new                   ç›˜ç‚¹ä»»åŠ¡-ç”Ÿæˆç›˜ç‚¹å•
+zcgl_task_edit                  ç›˜ç‚¹ä»»åŠ¡-ç›˜ç‚¹ä»»åŠ¡ç¼–è¾‘
+zcgl_task_delete                ç›˜ç‚¹ä»»åŠ¡-ç›˜ç‚¹ä»»åŠ¡å–æ¶ˆ
 
-ÅÌµãÖ´ĞĞ
-zcgl_execute_new                ÅÌµãÖ´ĞĞ-µÇ¼ÇÅÌµã½á¹û
+ç›˜ç‚¹æ‰§è¡Œ
+zcgl_execute_new                ç›˜ç‚¹æ‰§è¡Œ-ç™»è®°ç›˜ç‚¹ç»“æœ
 
-ÅÌµã±¨¸æ
-zcgl_inventory_report_new               ÅÌµã±¨¸æ-ĞÂ½¨
-zcgl_inventory_report_edit              ÅÌµã±¨¸æ-±à¼­
-zcgl_inventory_report_delete            ÅÌµã±¨¸æ-É¾³ı
-zcgl_inventory_report_reverse_audit     ÅÌµã±¨¸æ-·´ÉóºË
+ç›˜ç‚¹æŠ¥å‘Š
+zcgl_inventory_report_new               ç›˜ç‚¹æŠ¥å‘Š-æ–°å»º
+zcgl_inventory_report_edit              ç›˜ç‚¹æŠ¥å‘Š-ç¼–è¾‘
+zcgl_inventory_report_delete            ç›˜ç‚¹æŠ¥å‘Š-åˆ é™¤
+zcgl_inventory_report_reverse_audit     ç›˜ç‚¹æŠ¥å‘Š-åå®¡æ ¸
 
-ÅÌµã¼Æ»®
-zcgl_plan_create                ÅÌµã¼Æ»®-ĞÂÔöÅÌµã¼Æ»®
-zcgl_plan_edit                  ÅÌµã¼Æ»®-±à¼­ÅÌµã¼Æ»®
-zcgl_plan_delete                ÅÌµã¼Æ»®-É¾³ıÅÌµã¼Æ»®
-zcgl_plan_reverseapply          ÅÌµã¼Æ»®-·´ÉóºËÅÌµã¼Æ»®
+ç›˜ç‚¹è®¡åˆ’
+zcgl_plan_create                ç›˜ç‚¹è®¡åˆ’-æ–°å¢ç›˜ç‚¹è®¡åˆ’
+zcgl_plan_edit                  ç›˜ç‚¹è®¡åˆ’-ç¼–è¾‘ç›˜ç‚¹è®¡åˆ’
+zcgl_plan_delete                ç›˜ç‚¹è®¡åˆ’-åˆ é™¤ç›˜ç‚¹è®¡åˆ’
+zcgl_plan_reverseapply          ç›˜ç‚¹è®¡åˆ’-åå®¡æ ¸ç›˜ç‚¹è®¡åˆ’
 
-´¦ÖÃµÇ¼Ç
-zcgl_dengji_create                ´¦ÖÃµÇ¼Ç-ĞÂÔöÅÌµã¼Æ»®
-zcgl_dengji_edit                  ´¦ÖÃµÇ¼Ç-±à¼­ÅÌµã¼Æ»®
-zcgl_dengji_delete                ´¦ÖÃµÇ¼Ç-É¾³ıÅÌµã¼Æ»®
-zcgl_dengji_reverseapply          ´¦ÖÃµÇ¼Ç-·´ÉóºËÅÌµã¼Æ»®
+å¤„ç½®ç™»è®°
+zcgl_dengji_create                å¤„ç½®ç™»è®°-æ–°å¢ç›˜ç‚¹è®¡åˆ’
+zcgl_dengji_edit                  å¤„ç½®ç™»è®°-ç¼–è¾‘ç›˜ç‚¹è®¡åˆ’
+zcgl_dengji_delete                å¤„ç½®ç™»è®°-åˆ é™¤ç›˜ç‚¹è®¡åˆ’
+zcgl_dengji_reverseapply          å¤„ç½®ç™»è®°-åå®¡æ ¸ç›˜ç‚¹è®¡åˆ’
 V1.3
-³Ê±¨ÈÎÎñ¹ÜÀíreport-manage
-rm_task_new                       ĞÂÔö³Ê±¨ÈÎÎñ
+å‘ˆæŠ¥ä»»åŠ¡ç®¡ç†report-manage
+rm_task_new                       æ–°å¢å‘ˆæŠ¥ä»»åŠ¡
 
-³Ê±¨¼Æ»®
-zcgl_submit_plans_new     ³Ê±¨¼Æ»®-ĞÂ½¨
-zcgl_submit_plans_edit    ³Ê±¨¼Æ»®-±à¼­
-zcgl_submit_plans_delete  ³Ê±¨¼Æ»®-É¾³ı
-zcgl_submit_plans_audit   ³Ê±¨¼Æ»®-ÉóºË
-zcgl_submit_plans_reverse_audit ³Ê±¨¼Æ»®-·´ÉóºË
-¸½ÊôÅäÌ×¹ÜÀí
-asset_create_subsi      ĞÂ½¨¸½ÊôÅäÌ×
-asset_edit_subsi        ±à¼­¸½ÊôÅäÌ×
-asset_status_subsi      ¸½ÊôÅäÌ××´Ì¬¸Ä±ä
-asset_delete_subsi      É¾³ı¸½ÊôÅäÌ×
-³Ê±¨¼ÇÂ¼Ò»ÀÀ±í
-asset_report_operate    ³Ê±¨¼ÇÂ¼ÔËÓª
-asset_report_income     ³Ê±¨¼ÇÂ¼ÊÕÈë
-asset_report_deprecia   ³Ê±¨¼ÇÂ¼ÕÛ¾É
-asset_report_cost       ³Ê±¨¼ÇÂ¼·ÑÓÃ
+å‘ˆæŠ¥è®¡åˆ’
+zcgl_submit_plans_new     å‘ˆæŠ¥è®¡åˆ’-æ–°å»º
+zcgl_submit_plans_edit    å‘ˆæŠ¥è®¡åˆ’-ç¼–è¾‘
+zcgl_submit_plans_delete  å‘ˆæŠ¥è®¡åˆ’-åˆ é™¤
+zcgl_submit_plans_audit   å‘ˆæŠ¥è®¡åˆ’-å®¡æ ¸
+zcgl_submit_plans_reverse_audit å‘ˆæŠ¥è®¡åˆ’-åå®¡æ ¸
+é™„å±é…å¥—ç®¡ç†
+asset_create_subsi      æ–°å»ºé™„å±é…å¥—
+asset_edit_subsi        ç¼–è¾‘é™„å±é…å¥—
+asset_status_subsi      é™„å±é…å¥—çŠ¶æ€æ”¹å˜
+asset_delete_subsi      åˆ é™¤é™„å±é…å¥—
+å‘ˆæŠ¥è®°å½•ä¸€è§ˆè¡¨
+asset_report_operate    å‘ˆæŠ¥è®°å½•è¿è¥
+asset_report_income     å‘ˆæŠ¥è®°å½•æ”¶å…¥
+asset_report_deprecia   å‘ˆæŠ¥è®°å½•æŠ˜æ—§
+asset_report_cost       å‘ˆæŠ¥è®°å½•è´¹ç”¨
 
 
-// 2.0.0ĞÂÔöÈ¨ÏŞ
-×Ê²ú·ÖÀàÉèÖÃ
-asset_class_land_create    ×Ê²ú·ÖÀà-ĞÂÔöÍÁµØ
-asset_class_land_edit      ×Ê²ú·ÖÀà-±à¼­ÍÁµØ
-asset_class_land_change    ×Ê²ú·ÖÀà-×´Ì¬¸Ä±äÍÁµØ
-asset_class_land_delete    ×Ê²ú·ÖÀà-×´Ì¬É¾³ıÍÁµØ
+// 2.0.0æ–°å¢æƒé™
+èµ„äº§åˆ†ç±»è®¾ç½®
+asset_class_land_create    èµ„äº§åˆ†ç±»-æ–°å¢åœŸåœ°
+asset_class_land_edit      èµ„äº§åˆ†ç±»-ç¼–è¾‘åœŸåœ°
+asset_class_land_change    èµ„äº§åˆ†ç±»-çŠ¶æ€æ”¹å˜åœŸåœ°
+asset_class_land_delete    èµ„äº§åˆ†ç±»-çŠ¶æ€åˆ é™¤åœŸåœ°
 
-Â¥ÅÌ×Öµä--ÍÁµØ
-zcgl_dict_land_create  Â¥ÅÌ×Öµä-´´½¨ÍÁµØ
-zcgl_dict_land_edit   Â¥ÅÌ×Öµä-ĞŞ¸ÄÍÁµØ
+æ¥¼ç›˜å­—å…¸--åœŸåœ°
+zcgl_dict_land_create  æ¥¼ç›˜å­—å…¸-åˆ›å»ºåœŸåœ°
+zcgl_dict_land_edit   æ¥¼ç›˜å­—å…¸-ä¿®æ”¹åœŸåœ°
 zcgl_dict_land_delete  zcgl_dict_land_edit
 
-/* ×Ê²úÈë¿â */
-ASSET_IN_CREATE: 'asset_in_create', // ĞÂ½¨
-ASSET_IN_EDIT: 'asset_in_edit', // ±à¼­
-ASSET_IN_APPROVE: 'asset_in_approve', // ÉóÅú
-ASSET_IN_DELETE: 'asset_in_delete', // É¾³ı
+/* èµ„äº§å…¥åº“ */
+ASSET_IN_CREATE: 'asset_in_create', // æ–°å»º
+ASSET_IN_EDIT: 'asset_in_edit', // ç¼–è¾‘
+ASSET_IN_APPROVE: 'asset_in_approve', // å®¡æ‰¹
+ASSET_IN_DELETE: 'asset_in_delete', // åˆ é™¤
