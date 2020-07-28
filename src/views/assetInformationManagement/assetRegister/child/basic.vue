@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-28 09:46:25
+ * @LastEditTime: 2020-07-28 11:20:16
  * @Description: 房屋土地
 --> 
 <template>
@@ -332,16 +332,9 @@ export default {
             arrData[i].key = i
             arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
-            if (this.assetType === '1') {
-              this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
-            } else if (this.assetType === '4') {
-              this.numList[1].value = calc.add(this.numList[1].value, arrData[i].landArea || 0)
-            }
-            this.numList[2].value = calc.add(this.numList[2].value, arrData[i].creditorAmount || 0)
-            this.numList[3].value = calc.add(this.numList[3].value, arrData[i].debtAmount || 0)
           }
-          this.numList[0].value = arrData.length
           this.tableData = arrData
+          this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
           })
@@ -402,13 +395,33 @@ export default {
             _this.tableData.forEach((item, index) => {
               if (item.key === recordKey) {
                 _this.tableData.splice(index, 1)
+                _this.calcFn()
               }
             })
           } else {
             _this.tableData = []
+            _this.calcFn()
           }
         }
       })
+    },
+    // 每次再次计算统计的值
+    calcFn () {
+      this.numList.forEach(list => {
+        list.value = 0
+      })
+      if (this.tableData.length > 0) {
+        this.tableData.forEach(item => {
+          if (this.assetType === '1') {
+            this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
+          } else if (this.assetType === '4') {
+            this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
+          }
+          this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
+          this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)
+        })
+      }
+      this.numList[0].value = this.tableData.length
     },
     deleteBase (record) {
       let _this = this
