@@ -39,12 +39,29 @@ export default [
         path: '/assetRegister'
       },
       {
-        title: '房屋台账',
-        path: '/houseStandingBook'
-      },
-      {
         title: '附属配套管理',
         path: '/subsidiary'
+      }
+    ]
+  },
+  {
+    title: '房屋台账',
+    children: [
+      {
+        title: '组织机构视图',
+        path: '/organView'
+      },
+      {
+        title: '资产项目视图',
+        path: '/assetProjectView'
+      },
+      {
+        title: '资产视图',
+        path: '/assetView'
+      },
+      {
+        title: '楼栋视图',
+        path: '/buildingView'
       }
     ]
   },

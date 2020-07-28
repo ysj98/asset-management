@@ -290,9 +290,10 @@
 
     mounted () {
       // 获取当前用户信息
-      let { query: {id} } = this.$route
+      let { query: {id, organId} } = this.$route
       this.storeId = id
       id && this.queryDetail(id)
+      !id && organId && this.queryProjectByOrganId(organId)
       this.queryAssetType()
     },
 

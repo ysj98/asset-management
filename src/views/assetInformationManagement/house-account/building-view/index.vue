@@ -126,13 +126,13 @@
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
-        this.queryTableData({})
+        this.queryTableData({type: 'search'})
       },
 
       // 查看楼栋视图详情
       handleViewDetail (buildId) {
         const { organProjectBuildingValue: { organId } } = this
-        buildId && this.$router.push({ path: '/houseStandingBook/buildingViewDetail', query: {organId, buildId }})
+        buildId && this.$router.push({ path: '/buildingView/buildingViewDetail', query: {organId, buildId }})
       },
 
       // 查询列表数据
@@ -189,7 +189,7 @@
         }
         this.exportBtnLoading = true
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList}, current } = this
-        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList, flag: current || ''}).then(res => {
+        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList, flag: current ? (current - 1) : ''}).then(res => {
           this.exportBtnLoading = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')

@@ -343,17 +343,18 @@
           let {
             attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
             takeoverAssetStatus, takeOver, ownershipHandleProblems, remark, houseTransferHisProblem,
-            sourceTypeName, takeOverDate, takeoverAssetStatusName, ...others
+            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, ...others
           } = res.data
           // 处理附件格式
           let attachArr = attachment.map(m => {
             return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
           })
           takeOver = String(takeOver)
+          sourceType = String(sourceType)
           Object.assign(this, {
             takeOver,
+            sourceType,
             attachment: attachArr,
-            sourceType: String(sourceType),
             organKey: organId, // 保存管理机构id
             organName: organName // 展示管理机构名称
           })
@@ -361,12 +362,19 @@
           let formData = {
             ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : ownershipHandleProblems,
             houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : houseTransferHisProblem,
-            projectName, sourceType: type === 'show' ? sourceTypeName : String(sourceType),
+            projectName, sourceType: type === 'show' ? sourceTypeName : sourceType,
             takeOver, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode
           }
           if (takeOver === '1') {
-            formData.takeoverAssetStatus = String(takeoverAssetStatus) || takeoverAssetStatusName
+            formData.takeoverAssetStatus = String(takeoverAssetStatus) || takeoverAssetStatusName || ''
             formData.takeOverDate = takeOverDate ?  moment(takeOverDate, 'YYYY-MM-DD') : null
+          }
+          if (sourceType === '3') {
+            formData.developers = type === 'show' ? (developers || '无') : ''
+            formData.contractor = type === 'show' ? (contractor || '无') : ''
+          }
+          if (sourceType === '4') {
+            formData.leaseInContractNo = type === 'show' ? (leaseInContractNo || '无') : ''
           }
           // 转换日期格式为string
           let dateKeys = this.objBySourceType[sourceType] || []

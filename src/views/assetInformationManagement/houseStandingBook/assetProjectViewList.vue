@@ -178,14 +178,14 @@ export default {
         totalCount: 0
       },
       showNoDataTips: false,
-      sumKeys: [
-        'area', 'buildNum', 'assetNum', 'transferOperationArea', 'selfUserArea',
-        'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue'
-      ] // 求和用的对象
+      sumObj: {
+        area: '', buildNum: '', assetNum: '', transferOperationArea: '', selfUserArea: '',
+        idleArea: '', occupationArea: '', otherArea: '', originalValue: '', marketValue: ''
+      } // 求和用的对象
     }
   },
   methods: {
-    changeTree (value, label) {
+    changeTree (value) {
       this.organId = value
       this.getAssetProjectOptions()
       this.queryClick()
@@ -211,10 +211,10 @@ export default {
     // 点击查询
     queryClick () {
       this.paginator.pageNo = 1
-      this.queryList().then(() => this.queryStatistics())
+      this.queryList('click').then(() => this.queryStatistics())
     },
-    queryList () {
-      const {assetProject, organId, sumKeys, onlyCurrentOrgan, paginator: {pageNo, pageLength}} = this
+    queryList (type) {
+      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}} = this
       let form = {
         organId,
         pageNum: pageNo,
@@ -230,19 +230,22 @@ export default {
           } else {
             this.showNoDataTips = false
           }
-          let sumObj = {}
+          let pageSum = {}
           data.forEach((item, index) => {
             item.key = index
-            sumKeys.forEach(key => {
-              !sumObj[key] && (sumObj[key] = 0)
-              sumObj[key] += item[key] ? Number(item[key]) : 0
-              sumObj[key] = Number(sumObj[key].toFixed(2))
+            Object.keys(sumObj).forEach(key => {
+              !pageSum[key] && (pageSum[key] = 0)
+              pageSum[key] += item[key] ? Number(item[key]) : 0
+              pageSum[key] = Number(pageSum[key].toFixed(2))
             })
             for (let key in item) {
               item[key] = item[key] || '--'
             }
           })
-          this.dataSource = data.length ? data.concat({...sumObj, projectCode: '当前页-合计', key: Date.now()}) : []
+          this.dataSource = data.length ? data.concat({...pageSum, projectCode: '当前页-合计', key: Date.now()}) : []
+          if (type !== 'click' && this.dataSource.length) {
+            this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now() + 100})
+          }
           this.paginator.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
@@ -257,16 +260,16 @@ export default {
       }
       this.$api.assets.viewGetAssetHouseStatistics(form).then(res => {
         if (res.data.code === '0') {
-          let {measuredArea, transferOperationArea, idleArea, selfUserArea, occupationArea, otherArea} = res.data.data
+          let temp = res.data.data || {}
+          let {measuredArea, transferOperationArea, idleArea, selfUserArea, occupationArea, otherArea} = temp
           this.assetStatistics[0].area = measuredArea ? measuredArea.toFixed(2) : 0
           this.assetStatistics[1].area = transferOperationArea ? transferOperationArea.toFixed(2) : 0
           this.assetStatistics[2].area = idleArea ? idleArea.toFixed(2) : 0
           this.assetStatistics[3].area = selfUserArea ? selfUserArea.toFixed(2) : 0
           this.assetStatistics[4].area = occupationArea ? occupationArea.toFixed(2) : 0
           this.assetStatistics[5].area = otherArea ? otherArea.toFixed(2) : 0
-          let sumObj = {}
-          this.sumKeys.forEach(key => sumObj[key] = res['data'][key] ? res['data'][key].toFixed(2) : 0)
-          this.dataSource.length && this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
+          Object.keys(this.sumObj).forEach(key => this['sumObj'][key] = temp[key] ? temp[key].toFixed(2) : 0)
+          this.dataSource.length && this.dataSource.push({...this.sumObj, projectCode: '所有页-合计', key: Date.now()})
         } else {
           this.$message.error(res.data.message)
         }

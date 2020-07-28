@@ -310,6 +310,17 @@ export const assets = {
     // 查询楼栋楼层下房间面积
     queryRoomArea: '/ams/asset-house/area/house'
   },
+  // 房屋台账-组织机构视图
+  organView: {
+    // 组织机构视图分页查询
+    queryOrganViewList: '/ams/asset-house/organ/houseView',
+    // 组织机构视图面积概览查询
+    queryOrganArea: '/ams/asset-house/organ/getTotal',
+    // 详情查询
+    queryDetail: '/ams/asset-house/organ/houseViewShip',
+    // 导出
+    exportOrganView: '/ams/asset-house/export',
+  },
   // 房屋台账 - 资产视图
   assetView: {
     // 房屋资产信息查询

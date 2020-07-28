@@ -50,6 +50,11 @@ V2.0
 /asset-management/#/assetChangeRegister  资产变更单
 /asset-management/#/assetChangeView      资产变更一览表
 
+/asset-management/#/organView             房屋台账-组织机构视图
+/asset-management/#/assetProjectView      房屋台账-资产项目视图
+/asset-management/#/assetView             房屋台账-资产视图
+/asset-management/#/buildingView          房屋台账-楼栋视图
+
 /asset-management/#/landAssetsView       土地台账-资产视图
 
 
