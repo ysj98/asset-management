@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-27 16:54:13
+ * @LastEditTime: 2020-07-28 09:46:25
  * @Description: 房屋土地
 --> 
 <template>
@@ -335,7 +335,7 @@ export default {
             if (this.assetType === '1') {
               this.numList[1].value = calc.add(this.numList[1].value, arrData[i].area || 0)
             } else if (this.assetType === '4') {
-              this.numList[1].value = calc.add(this.numList[2].value, arrData[i].landArea || 0)
+              this.numList[1].value = calc.add(this.numList[1].value, arrData[i].landArea || 0)
             }
             this.numList[2].value = calc.add(this.numList[2].value, arrData[i].creditorAmount || 0)
             this.numList[3].value = calc.add(this.numList[3].value, arrData[i].debtAmount || 0)
