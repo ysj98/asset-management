@@ -207,11 +207,13 @@ export default {
         // 存着全部数据
         this.overallData = arrData
       }
-      this.selecData.projectId = projectId
-      // if (this.selecData.projectId !== projectId) {
-      //   this.selecData.projectId = projectId
-      //   this.query()
-      // }
+      if (this.selecData.projectId !== projectId) {
+        this.selecData.projectId = projectId
+        if (assetType) {
+          this.selecData.assetType = assetType
+          this.query()
+        }
+      }
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
         this.selecData.assetType = assetType
         this.assetTypeDisabled = true
