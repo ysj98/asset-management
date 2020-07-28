@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 17:32:58
- * @LastEditTime: 2020-07-23 17:13:11
+ * @LastEditTime: 2020-07-28 11:27:10
  * @Description: 基本下载
 --> 
 <template>
@@ -70,7 +70,7 @@ export default {
     return {
       checkboxData,
       scopeData,
-      checkboxAssetType: '1',
+      checkboxAssetType: '',
       registerOrderId: '',
       scope: ['1', '2'],
       positionNameData: [],
@@ -96,12 +96,17 @@ export default {
     // 类型查询
     typesQueries (id, type) {
       this.organId = id
-      if (type === '1') {
-        this.checkboxAssetType = '1'
-        this.positionApiList(id)
-      } else {
-        this.checkboxAssetType = '4'
-        this.positionApiList(id)
+      // 判断每次进来不同就重新获取一次数据
+      if (type !== this.checkboxAssetType) {
+        if (type === '1') {
+          this.checkboxAssetType = '1'
+          this.positionIds = []
+          this.positionApiList(id)
+        } else {
+          this.checkboxAssetType = '4'
+          this.positionIds = []
+          this.positionApiList(id)
+        }
       }
     },
     // 搜索
