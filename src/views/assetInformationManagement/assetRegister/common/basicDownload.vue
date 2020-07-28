@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 17:32:58
- * @LastEditTime: 2020-07-23 17:13:11
+ * @LastEditTime: 2020-07-28 10:36:24
  * @Description: 基本下载
 --> 
 <template>
@@ -70,7 +70,7 @@ export default {
     return {
       checkboxData,
       scopeData,
-      checkboxAssetType: '1',
+      checkboxAssetType: '',
       registerOrderId: '',
       scope: ['1', '2'],
       positionNameData: [],
