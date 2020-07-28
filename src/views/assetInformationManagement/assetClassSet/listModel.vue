@@ -163,6 +163,9 @@ const paginator = {
 };
 const allStyle = `width: 150px; marginLeft: 10px;`;
 export default {
+  props: {
+    type: {default: ''}
+  },
   components: {
     segiIcon,
     topOrganByUser,
