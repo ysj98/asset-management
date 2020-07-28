@@ -49,7 +49,7 @@
         exportBtnLoading: false, // 导出按钮loading
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         numList: [
-          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
+          {title: '所有资产(㎡)', key: 'area', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
           {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
