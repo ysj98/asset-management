@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-28 11:20:16
+ * @LastEditTime: 2020-07-28 19:24:43
  * @Description: 房屋土地
 --> 
 <template>
@@ -112,7 +112,7 @@ export default {
         arr = utils.deepClone(landData)
       }
       if (this.setType === 'detail') { arr.pop()}
-      this.columns = arr
+      this.columns = [{title: '资产id', dataIndex: 'assetId', width: 150}, ...arr]
       this.query()
     } else {
       this.bridgeFn()
@@ -317,11 +317,11 @@ export default {
                 }
               }
               // 判断时间转换
-              // if (publicData[j].date) {
-              //   if (arrData[i][publicData[j].dataIndex]) {
-              //     arrData[i][publicData[j].dataIndex] = utils.xlsxDate(arrData[i][publicData[j].dataIndex])
-              //   }
-              // }
+              if (publicData[j].date) {
+                if (arrData[i][publicData[j].dataIndex]) {
+                  arrData[i][publicData[j].dataIndex] = utils.xlsxDate(arrData[i][publicData[j].dataIndex])
+                }
+              }
             }
             if (arrData[i].ownershipStatusName === '有证') {
               if (!arrData[i].warrantNbr) {
