@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-28 19:24:43
+ * @LastEditTime: 2020-07-28 19:34:06
  * @Description: 房屋土地
 --> 
 <template>
@@ -112,7 +112,7 @@ export default {
         arr = utils.deepClone(landData)
       }
       if (this.setType === 'detail') { arr.pop()}
-      this.columns = [{title: '资产id', dataIndex: 'assetId', width: 150}, ...arr]
+      this.columns = [{title: '资产ID', dataIndex: 'assetId', width: 150}, ...arr]
       this.query()
     } else {
       this.bridgeFn()
@@ -128,8 +128,8 @@ export default {
       this.query()
     },
     allQuery () {
-      this.queryCondition.pageNum = 1
-      this.queryCondition.pageSize = 10
+      this.footer.pageNum = 1
+      this.footer.pageSize = 10
       this.query()
     },
     // 查询详情
@@ -489,10 +489,11 @@ export default {
       let loadingName = this.SG_Loding('导入中...')
       this.$api.assets.baseImport(this.formData).then(res => {
         if (res.data.code === '0') {
+          console.log('-=-=-=')
           e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.success('导入成功！')
             this.allQuery()
+            this.$SG_Message.success('导入成功！')
           })
         } else {
           e.target.value = ''
