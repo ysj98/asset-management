@@ -148,10 +148,10 @@ zcgl_dict_land_edit   楼盘字典-修改土地
 zcgl_dict_land_delete  zcgl_dict_land_edit
 
 /* 资产入库 */
-asset_in_create        新建
-asset_in_edit          编辑
-asset_in_approve       审批
-asset_in_delete'       删除
+asset_in_create        资产入库-新建
+asset_in_edit          资产入库-编辑
+asset_in_approve       资产入库-审批
+asset_in_delete'       资产入库-删除
 
 资产登记
 zcgl_asset_register_basicInformation         // 资产登记-登记基础信息

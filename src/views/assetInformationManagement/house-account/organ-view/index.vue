@@ -49,9 +49,9 @@
         exportBtnLoading: false, // 导出按钮loading
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         numList: [
-          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '所有资产(㎡)', key: 'area', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
           dataSource: [],
@@ -132,16 +132,16 @@
 
       // 查询组织机构视图面积概览数据
       queryAreaInfo() {
-        let {organId, numList, tableObj: {dataSource}, current, sumKeys} = this
+        let {organId, numList, tableObj: {dataSource}, current, sumObj} = this
         this.overviewNumSpinning = true
         this.$api.assets.queryOrganArea({organId, flag: current ? (current - 1) : ''}).then(({data: res}) => {
           this.overviewNumSpinning = false
           if (res && String(res.code) === '0') {
-            let sumObj = {}
+            let obj = {}
             let list = res.data || {}
-            sumKeys.forEach(key => sumObj[key] = list[key] ? list[key].toFixed(2) : 0)
-            this.sumObj = sumObj
-            dataSource.length && this.tableObj.dataSource.push({...sumObj, organName: '全部合计', organId: Date.now()})
+            Object.keys(sumObj).forEach(key => obj[key] = list[key] ? list[key].toFixed(2) : 0)
+            this.sumObj = obj
+            dataSource.length && this.tableObj.dataSource.push({...obj, organName: '全部合计', organId: Date.now()})
             return this.numList = numList.map(m => {
               return {...m, value: list[m.key] || 0}
             })
