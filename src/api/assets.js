@@ -469,6 +469,24 @@ export function exportHouseCard (data) {
 export function queryUserListByOrganId (data) {
   return axiosGet(assets.assetView.userList, data)
 }
+// 房屋台账
+// 组织机构视图
+// 查询组织机构视图列表
+export function queryOrganViewList (data) {
+  return axiosPost(assets.organView.queryOrganViewList, data)
+}
+// 查询组织机构视图面积概览
+export function queryOrganArea (data) {
+  return axiosGet(assets.organView.queryOrganArea, data)
+}
+// 查询组织机构视图详情
+export function queryOrganViewDetail (data) {
+  return axiosPost(assets.organView.queryDetail, data)
+}
+// 导出组织机构视图
+export function exportOrganView(data) {
+  return axiosPost(assets.organView.exportOrganView, data, false, false, {responseType: 'blob'})
+}
 
 // 资产项目管理
 // 分页查询资产项目列表-根据组织ID

@@ -334,9 +334,12 @@ export default {
         this.$message.info('请先选择资产项目')
         return
       }
+      if (!this.form.getFieldValue('assetType')) {
+        this.$message.info('请先选择资产类型')
+        return
+      }
       if (this.changeType) {
-        console.log(this.checkedData, '给回去的')
-        this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), '', this.tableData)
+        this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.form.getFieldValue('assetType'), this.tableData)
         this.$refs.assetBundlePopover.show = true
       } else {
         this.$message.info('请先选择登记类型')
@@ -366,7 +369,7 @@ export default {
     // 新增权证
     newFn () {
       this.$refs.newCard.show = true
-      this.$refs.newCard.newFn('new')
+      this.$refs.newCard.newFn('new', this.organId)
       this.$refs.newCard.selectFn()
     },
     // 删除

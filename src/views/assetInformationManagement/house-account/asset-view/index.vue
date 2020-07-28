@@ -78,7 +78,7 @@
         <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
       <!--</span>-->
       <span slot="action" slot-scope="text, record">
-        <router-link :to="{ path: '/houseStandingBook/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
+        <router-link :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
@@ -184,7 +184,7 @@
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
-        this.queryTableData({})
+        this.queryTableData({type: 'search'})
       },
 
       // 根据organId查询资产分类选项
