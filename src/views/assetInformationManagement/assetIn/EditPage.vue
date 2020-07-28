@@ -159,6 +159,7 @@
       // 改变资产项目或资产类型，清空关联的登记单
       changeSelect () {
         this.selectedList = []
+        this.tableObj.dataSource = []
       },
 
       // 查询资产类型--平台字典
@@ -202,7 +203,7 @@
       // 根据资产登记单查询资产明细
       queryAssetByRegistId ({pageNo = 1, pageLength = 10}) {
         const { selectedList } = this
-        if (!selectedList.length) { return false }
+        if (!selectedList.length) { return this.tableObj.dataSource = [] }
         this.tableObj.loading = true
         this.$api.assets.getRegisterOrderDetailsPageByIdList({
           registerOrderIdList: selectedList.map(m => m.registerOrderId), pageNum: pageNo, pageSize: pageLength
@@ -292,6 +293,7 @@
       // 获取当前用户信息
       let { query: {id, organId} } = this.$route
       this.storeId = id
+      this.organId = organId
       id && this.queryDetail(id)
       !id && organId && this.queryProjectByOrganId(organId)
       this.queryAssetType()
@@ -303,6 +305,7 @@
         if (val.length) {
           this.validateAssets = false
         }
+        this.queryAssetByRegistId({})
       }
     }
   }
