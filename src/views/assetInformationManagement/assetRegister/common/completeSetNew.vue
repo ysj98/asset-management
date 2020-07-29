@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-23 17:27:47
+ * @LastEditTime: 2020-07-29 15:30:04
  * @Description: 新增附属配套
 --> 
 <template>
@@ -90,7 +90,7 @@
                 :style="allWidth"
                 :max="30"
                 v-decorator="['specificationType',
-                  {rules: [{max: 30}], initialValue: subData.specificationType}
+                  {rules: [{required: false, max: 30, message: '请输入规格型号(不超过30字符)'}], initialValue: subData.specificationType}
                 ]"/>
               </a-form-item>
             </a-col>
