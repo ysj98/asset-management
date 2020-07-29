@@ -192,12 +192,12 @@
                     placeholder="原值金额"
                     :style="allWidth"
                     step="1"
-                    :max="99999999999.99"
                     :min="0"
+                    :max="99999999999.99"
                     :precision="2"
                     @change="originalValueChange"
                     v-decorator="['originalValue',
-                {rules: [{required: true, message: '请输入原值金额'}],
+                {rules: [{required: true, message: '请输入原值金额'}, {validator: validatorOriginalValue}],
                 initialValue: newEditSingleData.originalValue}
               ]"
                   />
@@ -1110,6 +1110,14 @@ export default {
       // 如果是资产原值，且知产是自动计算
       if (this.changeType=='3'&&['1', '2'].includes(this.originalObjectType)) {
         this.computedEqually()
+      }
+    },
+    // 验证资产对象原值
+    validatorOriginalValue (rule, value, callback) {
+      if (Number(value) > 99999999999.99) {
+        callback('最大值99999999999.99')
+      } else {
+        callback()
       }
     },
     // 平台字典获取变更类型

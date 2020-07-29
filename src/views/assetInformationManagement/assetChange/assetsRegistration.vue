@@ -176,6 +176,10 @@ const approvalStatusData = [
 ];
 const columns = [
   {
+    title: "变更单编号",
+    dataIndex: "changeOrderId"
+  },
+  {
     title: "变更单名称",
     dataIndex: "title"
   },

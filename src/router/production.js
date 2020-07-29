@@ -46,6 +46,9 @@ let proRouter = [
     path: '/assetChangeRegister',
     name: '资产变更单',
     component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetChangeRegister/editSingle',
