@@ -53,7 +53,7 @@
           <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
           <div class="tab-opt">
             <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')" v-power="ASSET_MANAGEMENT.ASSET_ACM_EDIT">编辑</span>
+            <span @click="operationFn(record, 'edit')" v-show="+record.status === 0" v-power="ASSET_MANAGEMENT.ASSET_ACM_EDIT">编辑</span>
             <span @click="operationFn(record, 'logout')" v-show="+record.status === 1" v-power="ASSET_MANAGEMENT.ASSET_ACM_DELETE">注销</span>
           </div>
         </template>
