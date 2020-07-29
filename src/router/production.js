@@ -100,22 +100,22 @@ let proRouter = [
   },
   {
     path: '/assetClear/new',
-    name: '新建清理单',
+    name: '新建出库单',
     component: () => import('@/views/assetInformationManagement/assetClear/newClearForm.vue')
   },
   {
     path: '/assetClear/edit',
-    name: '编辑清理单',
+    name: '编辑出库单',
     component: () => import('@/views/assetInformationManagement/assetClear/editClearForm.vue')
   },
   {
     path: '/assetClear/audit',
-    name: '清理单审核',
+    name: '出库单审核',
     component: () => import('@/views/assetInformationManagement/assetClear/auditClearForm.vue')
   },
   {
     path: '/assetClear/detail',
-    name: '清理单详情',
+    name: '出库单详情',
     component: () => import('@/views/assetInformationManagement/assetClear/checkClearForm.vue')
   },
   {

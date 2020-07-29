@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-28 15:49:05
+ * @LastEditTime: 2020-07-29 11:36:35
  * @Description: file content
  */ 
 
@@ -40,7 +40,7 @@ export const judgmentData = [
   { title: '资产名称', dataIndex: 'assetName', required: true },
   { title: '资产编码', dataIndex: 'assetCode', required: false },
   { title: '建筑面积', dataIndex: 'area', required: false, type: 'float4' },
-  { title: '坐落位置', dataIndex: 'pasitionString', required: false },
+  { title: '坐落位置', dataIndex: 'position', required: false },
   { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
