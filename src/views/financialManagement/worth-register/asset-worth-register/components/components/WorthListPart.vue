@@ -234,7 +234,7 @@
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            let temp = { total, ...res.data }
+            let temp = { ...res.data, total }
             return this.numList = this.numList.map(m => {
               return { ...m, value: temp[m.key] || 0 }
             })

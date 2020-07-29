@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-25 16:34:32
+ * @LastEditTime: 2020-07-29 15:59:03
  * @Description: 附属配套
 --> 
 <template>
@@ -20,7 +20,7 @@
         class="table-boxs"
         :columns="columns"
         :loading="loading"
-        :scroll="{y: 450, x: 2300}"
+        :scroll="{y: 450, x: 2500}"
         :dataSource="tableData"
         :pagination="false"
         >

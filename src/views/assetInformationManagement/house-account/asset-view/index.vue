@@ -133,7 +133,7 @@
           dataSource: [],
           scroll: { x: 2900 },
           columns: [
-            { title: 'xxxxxx资产名称', dataIndex: 'assetName', width: 250, fixed: 'left' },
+            { title: '资产名称', dataIndex: 'assetName', width: 250, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '丘地号', dataIndex: 'addressNo' },
@@ -194,7 +194,7 @@
         this.$api.assets.getList({organId, assetType: 1}).then(({data: res}) => {
           if (res && String(res.code) === '0') {
             const arr = (res.data || []).map(m => {
-              return { title: m.assetTypeName, key: m.categoryConfId }
+              return { title: m.professionName, key: m.professionCode }
             })
             return this.categoryOptions = [{ title: '全部分类', key: 'all' }].concat(arr)
           }

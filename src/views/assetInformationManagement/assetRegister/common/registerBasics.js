@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-29 11:36:35
+ * @LastEditTime: 2020-07-29 16:11:35
  * @Description: file content
  */ 
 
@@ -11,13 +11,13 @@ export const columnsData = [
   { title: '楼栋名称', dataIndex: 'buildName', width: 150},
   { title: '房间名称', dataIndex: 'houseName', width: 150 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '建筑面积', dataIndex: 'area', width: 100 },
-  { title: '坐落位置', dataIndex: 'pasitionString', width: 230 },
+  { title: '坐落位置', dataIndex: 'pasitionString', width: 250 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
-  { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
-  { title: '装修情况', dataIndex: 'decorationSituation', width: 100 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '装修情况', dataIndex: 'decorationSituation', width: 200 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
@@ -101,7 +101,7 @@ export const landData = [
   { title: '土地名称', dataIndex: 'landName', width: 150},
   { title: '土地编码', dataIndex: 'landCode', width: 150 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '土地面积(㎡)', dataIndex: 'landArea', width: 100 },
   { title: '宗地号', dataIndex: 'theNo', width: 100 },
   { title: '土地类型', dataIndex: 'landTypeName', width: 100 },
@@ -120,7 +120,7 @@ export const auxiliary = [
   { title: '附属配套ID', dataIndex: 'subsidiaryMatchingId', width: 100},
   { title: '资产ID', dataIndex: 'assetId', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
   { title: '附属配套名称', dataIndex: 'matchingName', width: 100 },
   { title: '附属配套编码', dataIndex: 'matchingCode', width: 100 },
@@ -139,9 +139,9 @@ export const auxiliary = [
 export const valueToRegisterData = [
   { title: '资产ID', dataIndex: 'assetId', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '资产分类', dataIndex: 'assetCategoryName', width: 100 },
-  { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
+  { title: '资产位置', dataIndex: 'pasitionString', width: 250 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
   { title: '使用期限(月)', dataIndex: 'validPeriod', width: 100 },
   { title: '开始使用日期', dataIndex: 'startDate', width: 100 },
@@ -154,7 +154,7 @@ export const valueToRegisterData = [
 export const directionUseData = [
   { title: '资产ID', dataIndex: 'assetId', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
   { title: '建筑面积(㎡)', dataIndex: 'buildArea', width: 150 },
   { title: '转物业时间', dataIndex: 'transferTime', width: 100 },
@@ -173,7 +173,7 @@ export const costData = [
   { title: '相关费用ID', dataIndex: 'correlationExpenseId', width: 100 },
   { title: '资产ID', dataIndex: 'assetId', width: 150 },
   { title: '资产名称', dataIndex: 'assetName', width: 100 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 150 },
   { title: '类别', dataIndex: 'categoryShowName', width: 100 },
   { title: '费用/收入类型', dataIndex: 'categoryType', width: 100 },

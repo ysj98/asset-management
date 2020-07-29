@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-25 16:43:45
+ * @LastEditTime: 2020-07-29 15:32:32
  * @Description: 新增相关费用
 --> 
 <template>
@@ -90,7 +90,7 @@
                 :style="allWidth"
                 :max="30"
                 v-decorator="['custName',
-                  {rules: [{max: 30}], initialValue: subData.custName}
+                  {rules: [{required: false, max: 30, message: '请输入客户名称(不超过30字符)'}], initialValue: subData.custName}
                 ]"/>
               </a-form-item>
             </a-col>

@@ -266,21 +266,21 @@ let proRouter = [
     name: '资产权属详情',
     component: () => import('@/views/ownershipManagement/ownershipSurvey/assetOwnershipDetail.vue')
   },{
-    path: '/worthRegisterRecord',
+    path: '/assetAssessRecord',
     name: '资产估值记录',
-    component: () => import('@/views/financialManagement/worth-register/components/WorthRegisterRecord'),
+    component: () => import('@/views/financialManagement/worth-register/components/WorthRegisterRecord.vue'),
     meta: { keepAlive: true }
   },
   {
     path: '/assetWorthList',
     name: '资产价值一览表',
-    component: () => import('@/views/financialManagement/worth-register/asset-worth-list'),
+    component: () => import('@/views/financialManagement/worth-register/asset-worth-list/index.vue'),
     meta: { keepAlive: true }
   },
   {
     path: '/worthRegister',
     name: '价值登记',
-    component: () => import('@/views/financialManagement/worth-register'),
+    component: () => import('@/views/financialManagement/worth-register/index.vue'),
     meta: { keepAlive: true }
   },
   {
