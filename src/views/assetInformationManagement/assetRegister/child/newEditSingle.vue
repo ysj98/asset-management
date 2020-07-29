@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-27 15:01:39
+ * @LastEditTime: 2020-07-29 15:09:36
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -91,7 +91,7 @@ export default {
     if (this.setType !== 'new') {
       this.registerOrderId = this.organIdData[0].registerOrderId
       this.assetType = this.organIdData[0].assetType
-      this.activeStepIndex = this.$route.query.activeStepIndex
+      this.activeStepIndex = Number(this.$route.query.activeStepIndex)
     }
   },
   watch: {
