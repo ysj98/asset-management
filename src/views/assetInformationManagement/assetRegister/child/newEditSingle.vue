@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-29 15:09:36
+ * @LastEditTime: 2020-07-29 15:24:19
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -59,6 +59,13 @@ export default {
         {title: '使用方向'},
         {title: '相关费用'}
       ],
+      titleData: {
+        0: '登记基础信息',
+        1: '登记配套附属',
+        2: '登记价值信息',
+        3: '登记使用方向',
+        4: '登记相关费用'
+      },
       organIdData: [],
       organId: '',
       setType: '',                // 新增还是编辑
@@ -92,6 +99,7 @@ export default {
       this.registerOrderId = this.organIdData[0].registerOrderId
       this.assetType = this.organIdData[0].assetType
       this.activeStepIndex = Number(this.$route.query.activeStepIndex)
+      this.$store.commit('pro/updateNav', [{name: '资产管理', path: ''}, {name: '资产登记', path: '/assetRegister'}, {name: `${this.titleData[this.activeStepIndex]}`, path: ''}])
     }
   },
   watch: {
