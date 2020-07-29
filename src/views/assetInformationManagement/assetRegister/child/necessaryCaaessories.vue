@@ -1,14 +1,14 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-29 15:59:03
+ * @LastEditTime: 2020-07-29 17:44:34
  * @Description: 附属配套
 --> 
 <template>
   <div class="necessaryCaaessories">
     <div class="button-box">
       <div class="buytton-l">
-        <span>配套附属总数量：{{statistics.num || '--'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '--'}}</span>
+        <span>配套附属总数量：{{statistics.num || '0'}}</span> <span class="p120">总价值：{{statistics.valueAmount || '0'}}元</span>
       </div>
       <div class="buytton-nav" v-if="setType !== 'detail'">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
