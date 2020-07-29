@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-29 15:32:32
+ * @LastEditTime: 2020-07-29 19:44:19
  * @Description: 新增相关费用
 --> 
 <template>
@@ -95,12 +95,12 @@
               </a-form-item>
             </a-col>
             <a-col :span="12" class="h-65">
-              <a-form-item label="转运营时间" v-bind="formItemLayout">
+              <a-form-item label="所属月份" v-bind="formItemLayout">
                 <a-date-picker
                 :style="allWidth"
-                placeholder="转运营时间"
+                placeholder="所属月份"
                 v-decorator="['belongMonth',
-                  {rules: [{ required: false, message: '转运营时间'}]}
+                  {rules: [{ required: true, message: '所属月份'}]}
                 ]"
                 />
                 </a-form-item>

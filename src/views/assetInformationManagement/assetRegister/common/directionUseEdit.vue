@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 17:22:25
- * @LastEditTime: 2020-07-23 11:02:30
+ * @LastEditTime: 2020-07-29 19:40:47
  * @Description: 使用方向
 -->
 <template>
@@ -125,6 +125,7 @@
 
 <script>
 import moment from 'moment'
+const conditionalJudgment = [undefined, null, '']
 export default {
   components: {},
   props: {},
@@ -187,9 +188,9 @@ export default {
           this.subData.assetId = obj.assetId
           // 处理表单数据
           let o = {
-            transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : '',                     // 转物业时间
+            transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : undefined,                     // 转物业时间
             transferArea: obj.transferArea,                     // 转物业面积(㎡)
-            transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : '',   // 转运营时间
+            transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : undefined,   // 转运营时间
             transferOperationArea: obj.transferOperationArea,   // 运营面积(㎡)
             selfUserArea: obj.selfUserArea,                     // 自用面积(㎡)
             idleArea: obj.idleArea,                             // 闲置面积(㎡)
@@ -206,14 +207,14 @@ export default {
     useForUpdate (values) {
       let obj = {
         assetId: this.subData.assetId,
-        transferTime: values.transferTime === undefined ? '' : `${values.transferTime.format('YYYY-MM-DD')}`,                     // 转物业时间
-        transferArea: values.transferArea,                     // 转物业面积(㎡)
-        transferOperationTime: values.transferOperationTime === undefined ? '' : `${values.transferOperationTime.format('YYYY-MM-DD')}`,   // 转运营时间
-        transferOperationArea: values.transferOperationArea,   // 运营面积(㎡)
-        selfUserArea: values.selfUserArea,                     // 自用面积(㎡)
-        idleArea: values.idleArea,                             // 闲置面积(㎡)
-        occupationArea: values.occupationArea,                 // 占用面积(㎡)
-        otherArea: values.otherArea                            // 其他面积(㎡)
+        transferTime: conditionalJudgment.includes(values.transferTime) ? '' : `${values.transferTime.format('YYYY-MM-DD')}`,                     // 转物业时间
+        transferArea: conditionalJudgment.includes(values.transferArea) ? '' : values.transferArea,                     // 转物业面积(㎡)
+        transferOperationTime: conditionalJudgment.includes(values.transferOperationTime) ? '' : `${values.transferOperationTime.format('YYYY-MM-DD')}`,   // 转运营时间
+        transferOperationArea: conditionalJudgment.includes(values.transferOperationArea) ? '' : values.transferOperationArea,   // 运营面积(㎡)
+        selfUserArea: conditionalJudgment.includes(values.selfUserArea) ? '' : values.selfUserArea,                     // 自用面积(㎡)
+        idleArea: conditionalJudgment.includes(values.idleArea) ? '' : values.idleArea,                             // 闲置面积(㎡)
+        occupationArea: conditionalJudgment.includes(values.occupationArea) ? '' : values.occupationArea,                 // 占用面积(㎡)
+        otherArea: conditionalJudgment.includes(values.otherArea) ? '' : values.otherArea                            // 其他面积(㎡)
       }
       console.log(values, 'dddd')
       let loadingName = this.SG_Loding('保存中...')

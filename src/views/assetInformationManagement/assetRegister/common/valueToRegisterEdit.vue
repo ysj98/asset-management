@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 11:46:50
- * @LastEditTime: 2020-07-25 16:19:19
+ * @LastEditTime: 2020-07-29 19:32:21
  * @Description: 价值登记编辑
 --> 
 <template>
@@ -92,6 +92,7 @@
 
 <script>
 import moment from 'moment'
+const conditionalJudgment = [undefined, null, '']
 export default {
   components: {},
   props: {},
@@ -147,9 +148,9 @@ export default {
       this.subData.assetId = record.assetId
       // 处理表单数据
       let o = {
-        originalValue: record.originalValue,              // 资产原值
+        originalValue: Number(record.originalValue),              // 资产原值
         validPeriod: record.validPeriod,                  // 使用期限
-        startDate: record.startDate ? moment(record.startDate, 'YYYY-MM-DD') : '',                      // 开始使用日期
+        startDate: record.startDate ? moment(record.startDate, 'YYYY-MM-DD') : undefined,                      // 开始使用日期
         usedDate: record.usedDate,                        // 已使用期数/月
         depreciationAmount: record.depreciationAmount     // 累计折旧金额(元)
       }
@@ -164,11 +165,11 @@ export default {
         registerOrderId: this.subData.registerOrderId,   // 登记单id
         assetType: this.subData.assetType,               // 资产类型
         assetId: this.subData.assetId,
-        originalValue: values.originalValue,             // 资产原值
-        validPeriod: values.validPeriod,                 // 使用期限 单位月
-        startDate: values.startDate === undefined ? '' : `${values.startDate.format('YYYY-MM-DD')}`,  // 开始使用日期
-        usedDate: values.usedDate,                       // 已使用期数/月
-        depreciationAmount: values.depreciationAmount    // 累计折旧金额(元)
+        originalValue: conditionalJudgment.includes(values.originalValue) ? '' : values.originalValue,             // 资产原值
+        validPeriod: conditionalJudgment.includes(values.validPeriod) ? '' : values.validPeriod,                 // 使用期限 单位月
+        startDate: conditionalJudgment.includes(values.startDate) ? '' : `${values.startDate.format('YYYY-MM-DD')}`,  // 开始使用日期
+        usedDate: conditionalJudgment.includes(values.usedDate) ? '' : values.usedDate,                       // 已使用期数/月
+        depreciationAmount: conditionalJudgment.includes(values.depreciationAmount) ? '' : values.depreciationAmount    // 累计折旧金额(元)
       }
       let loadingName = this.SG_Loding('保存中...')
       this.$api.assets.updateAssetValue(obj).then(res => {
