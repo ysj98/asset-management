@@ -406,7 +406,7 @@ export default {
         this.$power.has(ASSET_MANAGEMENT.ASSET_CHANGE_DELETE) &&
         ["0", "3"].includes(String(record.approvalStatus))
       ) {
-        arr.push({ iconType: "edit", text: "删除", editType: "approval" });
+        arr.push({ iconType: "edit", text: "删除", editType: "delete" });
       }
       arr.push({
         iconType: "file-text",
@@ -498,7 +498,7 @@ export default {
       if (str === "delete") {
         this.$confirm({
           title: "提示",
-          content: "确认要删除该资产登记单吗？",
+          content: "确认要删除该资产变更单吗？",
           onOk() {
             let obj = {
               changeOrderId: id

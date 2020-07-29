@@ -1168,7 +1168,7 @@ export default {
     },
     // 取消
     cancel() {
-      this.$router.push({ path: "/assetChange" });
+      this.$router.push({ path: "/assetChangeRegister" });
     },
     filterOption(input, option) {
       return (
