@@ -12,6 +12,7 @@
             <a-form-item :colon="false" v-bind="formItemLayout">
               <label slot="label">变更单名称：</label>
               <a-input
+              autoComplete="off"
                 placeholder="请输入标题"
                 :style="allWidth"
                 :max="50"
@@ -193,7 +194,7 @@
                     step="1"
                     :max="99999999999.99"
                     :min="0"
-                    :precision="0"
+                    :precision="2"
                     @change="originalValueChange"
                     v-decorator="['originalValue',
                 {rules: [{required: true, message: '请输入原值金额'}],
@@ -1122,8 +1123,8 @@ export default {
           // 变更类型
           if (code === "asset_change_type") {
             this.changeTypeData = [...data];
-            this.changeTypeData.push({ name: "基础信息", value: "7" });
-            this.changeTypeData.push({ name: "债权债务", value: "8" });
+            // this.changeTypeData.push({ name: "基础信息", value: "7" });
+            // this.changeTypeData.push({ name: "债权债务", value: "8" });
           }
           // 资产类型
           if (code === "asset_type") {
