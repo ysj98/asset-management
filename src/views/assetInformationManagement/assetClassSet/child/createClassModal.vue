@@ -60,6 +60,7 @@
               </div>
               <a-form-item>
                 <a-input
+                  :disabled="true"
                   placeholder="请输入分类名称"
                   :style="allStyle"
                   v-if="editable"
@@ -86,6 +87,7 @@
               </div>
               <a-form-item>
                 <a-input
+                  :disabled="true"
                   placeholder="请输入分类编码"
                   :style="allStyle"
                   v-if="editable"
@@ -332,6 +334,12 @@ export default {
         organId: this.storeDetail.organId,
         assetType: pageTypeMap[this.type]
       };
+      // 如果有分类编码
+      if (this.categoryConfId) {
+        data.categoryConfId = this.categoryConfId
+      } else {
+        data.professionCode = this.storeDetail.professionCode
+      }
       this.$api.assets.getDetail(data).then(res => {
         if (res.data.code === "0") {
           let result = res.data.data || {};

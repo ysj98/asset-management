@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-25 16:06:44
+ * @LastEditTime: 2020-07-28 19:37:33
  * @Description: 使用方向
 --> 
 <template>
@@ -107,6 +107,11 @@ export default {
     this.query()
   },
   methods: {
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.queryCondition.pageSize = 10
+      this.query()
+    },
     // 编辑
     editFn (record) {
       this.modalShow = true
@@ -161,6 +166,7 @@ export default {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
+            this.allQuery()
           })
         } else {
           e.target.value = ''
