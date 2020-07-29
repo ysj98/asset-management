@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-29 11:50:13
+ * @LastEditTime: 2020-07-29 13:57:51
  * @Description: 房屋土地
 --> 
 <template>
@@ -157,8 +157,9 @@ export default {
               item.key = index
             }) 
           }
-          // 只要查询了都要正式资产id
-          this.columns.unshift({title: '资产ID', dataIndex: 'assetId', width: 150})
+          if (this.columns[0].dataIndex !== 'assetId') {
+            this.columns.unshift({title: '资产ID', dataIndex: 'assetId', width: 150})
+          }
           this.tableData = data || []
           this.count = res.data.data.count
           this.getRegisterOrderDetailsStatisticsFn()
