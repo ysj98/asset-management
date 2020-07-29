@@ -252,7 +252,7 @@
         assetSubject: [''],
         assetSubjectOptions: [],
         assetClassify: [''],
-        assetClassifyOptions: [],
+        assetClassifyOptions: [{label: '全部资产分类', value: ''}],
         beginDate: getMonthsAgoDate(6),
         endDate: getCurrentDate(),
         entryBeginDate: '',
@@ -522,6 +522,9 @@
         let obj = {
           organId: this.organId,
           assetType: this.assetType.length > 0 ? this.assetType.join(',') : ''
+        }
+        if (!obj.assetType) {
+          return
         }
         this.$api.assets.getList(obj).then(res => {
           if (res.data.code === '0') {
