@@ -72,9 +72,11 @@
         </router-link>
       </template>
       <template slot="action" slot-scope="text, record">
+        <!--['0 待审批', '1 已驳回', '2 已审批', '3 已取消']-->
         <SG-PopoverMore trigger="hover">
           <div slot="content">
             <router-link
+              v-if="String(record.status) === '1'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_EDIT"
               style="color: #6D7585; line-height: 35px"
               :to="{ path: '/assetIn/edit', query: {id: record.storeId}}"
@@ -82,11 +84,17 @@
               <a-icon type="edit" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">编辑</span>
             </router-link>
-            <a style="display: block; line-height: 35px" @click="deleteAsset(record.storeId)" v-power="ASSET_MANAGEMENT.ASSET_IN_DELETE">
+            <a
+              v-if="String(record.status) === '1'"
+              style="display: block; line-height: 35px"
+              @click="deleteAsset(record.storeId)"
+              v-power="ASSET_MANAGEMENT.ASSET_IN_DELETE"
+            >
               <a-icon type="delete" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">删除</span>
             </a>
             <router-link
+              v-if="String(record.status) === '0'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_APPROVE"
               style="display: block; color: #6D7585; line-height: 35px"
               :to="{ path: '/assetIn/approve', query: {id: record.storeId}}"
@@ -283,7 +291,7 @@
             let nameList = ['待审批', '已驳回', '已审批', '已取消']
             this.tableObj.dataSource = data.map(m => {
               return {
-                ...m, statusName: m.status ? nameList[Number(m.status)] : ''
+                ...m, statusName: nameList[m.status]
               }
             })
             Object.assign(this.paginationObj, {
