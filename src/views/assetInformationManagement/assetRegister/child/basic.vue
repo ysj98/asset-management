@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-28 19:46:31
+ * @LastEditTime: 2020-07-29 11:50:13
  * @Description: 房屋土地
 --> 
 <template>
@@ -112,7 +112,7 @@ export default {
         arr = utils.deepClone(landData)
       }
       if (this.setType === 'detail') { arr.pop()}
-      this.columns = [{title: '资产ID', dataIndex: 'assetId', width: 150}, ...arr]
+      this.columns = arr
       this.query()
     } else {
       this.bridgeFn()
@@ -157,6 +157,8 @@ export default {
               item.key = index
             }) 
           }
+          // 只要查询了都要正式资产id
+          this.columns.unshift({title: '资产ID', dataIndex: 'assetId', width: 150})
           this.tableData = data || []
           this.count = res.data.data.count
           this.getRegisterOrderDetailsStatisticsFn()
