@@ -269,6 +269,7 @@ export default {
           this.assetStatistics[4].area = occupationArea ? occupationArea.toFixed(2) : 0
           this.assetStatistics[5].area = otherArea ? otherArea.toFixed(2) : 0
           Object.keys(this.sumObj).forEach(key => this['sumObj'][key] = temp[key] ? temp[key].toFixed(2) : 0)
+          this.sumObj.area =  temp.measuredArea || 0
           this.dataSource.length && this.dataSource.push({...this.sumObj, projectCode: '所有页-合计', key: Date.now()})
         } else {
           this.$message.error(res.data.message)
