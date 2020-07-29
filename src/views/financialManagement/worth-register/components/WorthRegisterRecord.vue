@@ -12,7 +12,7 @@
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">
-          <a-col :span="4">
+          <a-col :span="5">
             <a-select
               v-bind="properties"
               :options="projectOptions"
@@ -21,7 +21,7 @@
               v-model="organProjectType.projectId"
             />
           </a-col>
-          <a-col :span="4">
+          <a-col :span="5">
             <a-select
               mode="multiple"
               v-bind="properties"
@@ -31,17 +31,7 @@
               v-model="organProjectType.assetType"
             />
           </a-col>
-          <a-col :span="4">
-            <a-select
-              mode="multiple"
-              v-bind="properties"
-              @change="queryTableData"
-              v-model="assetCategoryId"
-              :options="categoryOptions"
-              placeholder="请选择资产分类"
-            />
-          </a-col>
-          <a-col :span="4">
+          <a-col :span="5">
             <a-select
               mode="multiple"
               v-bind="properties"
@@ -51,7 +41,7 @@
               placeholder="请选择登记状态"
             />
           </a-col>
-          <a-col :span="4">
+          <a-col :span="5">
             <a-select
               mode="multiple"
               v-bind="properties"
@@ -87,7 +77,7 @@
   import TreeSelect from 'src/views/common/treeSelect'
   import DateMethodOrgan from '../components/DateMethodOrgan'
   import SearchContainer from 'src/views/common/SearchContainer'
-  import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
+  import {queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
   export default {
     name: 'WorthRegisterRecord',
     components: { SearchContainer, TreeSelect, DateMethodOrgan, NoDataTip },
@@ -96,8 +86,6 @@
         fold: true, // 查询条件折叠按钮
         exportBtnLoading: false, // 导出按钮
         assetNameCode: '', // 查询条件-登记名称
-        categoryOptions: [], // 查询条件-资产分类选项
-        assetCategoryId: undefined, // 查询条件-资产分类id
         organProjectType: {
           organId: '',
           organName: '',
@@ -160,7 +148,6 @@
         this.projectOptions = [] // 清空
         this.queryProjectByOrganId(organId)
         organId && this.queryTableData({})
-        this.queryCategoryOptions()
       },
 
       // 根据organId查询资产项目
@@ -196,7 +183,7 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
-          assetNameCode, approvalStatus, assetCategoryId,
+          assetNameCode, approvalStatus,
           organProjectType, organProjectType: { assetType },
           dateMethodOrgan, assessmentMethod, dateMethodOrgan: { assessmentOrgan}
         } = this
@@ -205,7 +192,6 @@
           ...organProjectType, ...dateMethodOrgan,
           pageSize: pageLength, pageNum: pageNo, assetNameCode,
           assetType: (!assetType || assetType.includes('-1')) ? undefined : assetType.join(','),
-          assetCategoryId: (!assetCategoryId || assetCategoryId.includes('-1')) ? undefined : assetCategoryId.join(','),
           approvalStatus: (!approvalStatus || approvalStatus.includes('-1')) ? undefined : approvalStatus.join(','),
           assessmentOrgan: (!assessmentOrgan || assessmentOrgan.includes('-1')) ? undefined : assessmentOrgan.join(','),
           assessmentMethod: (!assessmentMethod || assessmentMethod.includes('-1')) ? undefined : assessmentMethod.join(',')
@@ -227,17 +213,6 @@
         }).catch(err => {
           this.tableObj.loading = false
           this.$message.error(err || '查询价值登记记录接口出错')
-        })
-      },
-
-      // 根据资产类型查资产分类列表
-      queryCategoryOptions () {
-        this.categoryOptions = []
-        const { organId, assetType } = this.organProjectType
-        if (!organId || !assetType || !assetType.length) { return false }
-        let assetVal = assetType.includes('-1') ? '' : assetType.join(',')
-        queryCategoryList({ assetType: assetVal, organId }).then(list => {
-          list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
       }
     },
@@ -276,7 +251,6 @@
           this.organProjectType.assetType = ['-1']
         }
         this.queryTableData({})
-        this.queryCategoryOptions()
       },
 
       assessmentMethod: function (val) {

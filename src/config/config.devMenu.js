@@ -108,7 +108,7 @@ export default [
       },
       {
         title: '资产估值记录',
-        path: '/worthRegisterRecord'
+        path: '/assetAssessRecord'
       },
       {
         title: '价值登记',
