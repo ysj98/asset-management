@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-29 15:30:04
+ * @LastEditTime: 2020-07-29 15:55:41
  * @Description: 新增附属配套
 --> 
 <template>
@@ -240,7 +240,7 @@ export default {
       this.type = str
       if (str === 'edit') {
         this.subData.assetId = obj.assetId
-        this.examine.assetName = obj.assetTypeName
+        this.examine.assetName = obj.assetName
         this.examine.assetCode = obj.assetCode
         this.examine.objectTypeName = obj.objectTypeName
         this.examine.pasitionString = obj.pasitionString

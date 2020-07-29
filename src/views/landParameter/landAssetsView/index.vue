@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-25 14:35:20
+ * @LastEditTime: 2020-07-29 16:20:25
  * @Description: 土地资产视图
 --> 
 <template>
@@ -97,7 +97,7 @@ const columnsData = [
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '使用期限', dataIndex: 'validPeriod', width: 150 },
   { title: '接管日期', dataIndex: 'takeOverDate', width: 150 },
-  { title: '运营(㎡)', dataIndex: 'transferArea', width: 150 },
+  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
   { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
   { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
   { title: '其他(㎡)', dataIndex: 'otherArea', width: 150 },
