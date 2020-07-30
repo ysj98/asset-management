@@ -64,17 +64,16 @@
     </a-spin>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
-      <template slot="storeCode" slot-scope="text, record">
-        <router-link style="color: #6D7585; text-decoration: underline"
-          :to="{ path: '/assetIn/detail', query: {id: record.storeId}}"
-        >
-          {{text}}
-        </router-link>
-      </template>
       <template slot="action" slot-scope="text, record">
         <!--['0 待审批', '1 已驳回', '2 已审批', '3 已取消']-->
         <SG-PopoverMore trigger="hover">
           <div slot="content">
+            <router-link style="color: #6D7585; line-height: 35px"
+              :to="{ path: '/assetIn/detail', query: {id: record.storeId}}"
+            >
+              <a-icon type="read" style="color: #a7adb8; font-size: 15px"/>
+              <span style="margin-left: 12px; color: #49505E; font-size: 15px">详情</span>
+            </router-link>
             <router-link
               v-if="String(record.status) === '1'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_EDIT"
@@ -149,7 +148,7 @@
           pagination: false,
           rowKey: 'storeCode',
           columns: [
-            { title: '入库单编号', dataIndex: 'storeCode', scopedSlots: { customRender: 'storeCode' } },
+            { title: '入库单编号', dataIndex: 'storeCode' },
             { title: '入库单名称', dataIndex: 'storeName', width: 200 },
             { title: '管理机构', dataIndex: 'organName' },
             { title: '资产项目', dataIndex: 'projectName' },
