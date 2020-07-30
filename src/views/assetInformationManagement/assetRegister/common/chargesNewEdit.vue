@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-29 19:44:19
+ * @LastEditTime: 2020-07-30 12:36:51
  * @Description: 新增相关费用
 --> 
 <template>
@@ -96,7 +96,7 @@
             </a-col>
             <a-col :span="12" class="h-65">
               <a-form-item label="所属月份" v-bind="formItemLayout">
-                <a-date-picker
+                <a-month-picker
                 :style="allWidth"
                 placeholder="所属月份"
                 v-decorator="['belongMonth',
@@ -111,6 +111,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
+                :max="999999999.99"
                 v-decorator="['amount',
                   {rules: [{required: true, message: '请输入金额(元)'}], initialValue: subData.amount}
                 ]"/>
@@ -122,6 +123,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
+                :max="999999999.99"
                 v-decorator="['readNum',
                   {rules: [{required: false, message: '请输入读数'}], initialValue: subData.readNum}
                 ]"/>
@@ -245,7 +247,7 @@ export default {
             categoryType: obj.categoryType,     // 费用/收入类型
             categoryName: obj.categoryName,     // 费用/收入名称
             custName: obj.custName,             // 客户名称
-            belongMonth: obj.belongMonth ? moment(obj.belongMonth, 'YYYY-MM-DD') : '',       // 转运营时间
+            belongMonth: obj.belongMonth ? moment(obj.belongMonth, 'YYYY-MM') : '',       // 转运营时间
             amount: obj.amount,                 // 金额
             readNum: obj.readNum,               // 读数
             remark: obj.remark                  // 备注
@@ -266,7 +268,7 @@ export default {
        categoryType: values.categoryType,           // 费用/收入类型
        categoryName: values.categoryName,           // 费用/收入名称
        custName: values.custName,               // 客户名称
-       belongMonth: values.belongMonth === undefined ? '' : `${values.belongMonth.format('YYYY-MM-DD')}`,            // 转运营时间
+       belongMonth: values.belongMonth === undefined ? '' : `${values.belongMonth.format('YYYY-MM')}`,            // 转运营时间
        amount: values.amount,                 // 金额
        readNum: values.readNum,                // 读数
        remark: values.remark                 // 备注

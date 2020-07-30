@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 17:22:25
- * @LastEditTime: 2020-07-29 19:40:47
+ * @LastEditTime: 2020-07-30 11:55:12
  * @Description: 使用方向
 -->
 <template>
@@ -44,6 +44,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
+                :max="99999999.99"
                 v-decorator="['transferArea',
                   {rules: [{required: false, message: '转物业面积(支持两位小数)'}], initialValue: subData.transferArea}
                 ]"/>
@@ -65,9 +66,10 @@
                 <a-input-number placeholder="运营面积(㎡)"
                 :style="allWidth"
                 :min="0"
+                :max="99999999.99"
                 :precision="2"
                 v-decorator="['transferOperationArea',
-                  {rules: [{ required: false, message: '运营面积(㎡)(支持两位小数)'}], initialValue: subData.transferOperationArea}
+                  {rules: [{ required: true, message: '运营面积(㎡)(支持两位小数)'}], initialValue: subData.transferOperationArea}
                 ]"/>
               </a-form-item>
             </a-col>
@@ -76,9 +78,10 @@
                 <a-input-number placeholder="自用面积(㎡)"
                 :style="allWidth"
                 :min="0"
+                :max="99999999.99"
                 :precision="2"
                 v-decorator="['selfUserArea',
-                  {rules: [{ required: false, message: '自用面积(㎡)(支持两位小数)'}], initialValue: subData.selfUserArea}
+                  {rules: [{ required: true, message: '自用面积(㎡)(支持两位小数)'}], initialValue: subData.selfUserArea}
                 ]"/>
               </a-form-item>
             </a-col>
@@ -87,9 +90,10 @@
                 <a-input-number placeholder="占用面积(㎡)"
                 :style="allWidth"
                 :min="0"
+                :max="99999999.99"
                 :precision="2"
                 v-decorator="['occupationArea',
-                  {rules: [{ required: false, message: '占用面积(㎡)(支持两位小数)'}], initialValue: subData.occupationArea}
+                  {rules: [{ required: true, message: '占用面积(㎡)(支持两位小数)'}], initialValue: subData.occupationArea}
                 ]"/>
               </a-form-item>
             </a-col>
@@ -98,9 +102,10 @@
                 <a-input-number placeholder="其他面积(㎡)"
                 :style="allWidth"
                 :min="0"
+                :max="99999999.99"
                 :precision="2"
                 v-decorator="['otherArea',
-                  {rules: [{ required: false, message: '其他面积(㎡)(支持两位小数)'}], initialValue: subData.otherArea}
+                  {rules: [{ required: true, message: '其他面积(㎡)(支持两位小数)'}], initialValue: subData.otherArea}
                 ]"/>
               </a-form-item>
             </a-col>
@@ -109,9 +114,10 @@
                 <a-input-number placeholder="闲置面积(㎡)"
                 :style="allWidth"
                 :min="0"
+                :max="99999999.99"
                 :precision="2"
                 v-decorator="['idleArea',
-                  {rules: [{ required: false, message: '闲置面积(㎡)(支持两位小数)'}], initialValue: subData.idleArea}
+                  {rules: [{ required: true, message: '闲置面积(㎡)(支持两位小数)'}], initialValue: subData.idleArea}
                 ]"/>
               </a-form-item>
             </a-col>
