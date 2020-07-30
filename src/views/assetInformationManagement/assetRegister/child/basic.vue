@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-30 10:18:35
+ * @LastEditTime: 2020-07-30 13:54:21
  * @Description: 房屋土地
 --> 
 <template>
@@ -322,7 +322,7 @@ export default {
               // 判断时间转换
               if (publicData[j].date) {
                 if (arrData[i][publicData[j].dataIndex]) {
-                  arrData[i][publicData[j].dataIndex] = utils.xlsxDate(arrData[i][publicData[j].dataIndex])
+                  arrData[i][publicData[j].dataIndex] = utils.xlsxDate(Number(arrData[i][publicData[j].dataIndex]))
                 }
               }
             }
@@ -337,6 +337,7 @@ export default {
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
           }
           this.tableData = arrData
+          console.log(this.tableData)
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')

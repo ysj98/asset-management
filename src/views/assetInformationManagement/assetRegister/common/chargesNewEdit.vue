@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 13:57:58
- * @LastEditTime: 2020-07-30 12:36:51
+ * @LastEditTime: 2020-07-30 14:26:35
  * @Description: 新增相关费用
 --> 
 <template>
@@ -111,7 +111,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
-                :max="999999999.99"
+                :max="9999999.99"
                 v-decorator="['amount',
                   {rules: [{required: true, message: '请输入金额(元)'}], initialValue: subData.amount}
                 ]"/>
@@ -123,7 +123,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
-                :max="999999999.99"
+                :max="9999999.99"
                 v-decorator="['readNum',
                   {rules: [{required: false, message: '请输入读数'}], initialValue: subData.readNum}
                 ]"/>
