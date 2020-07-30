@@ -32,6 +32,8 @@
         </div>
       </div>
     </SearchContainer>
+    <!--数据总览-->
+    <overview-number :numList="numList" />
     <div class="table-layout-fixed" ref="table_box">
       <a-table
         :loading="loading"
@@ -80,13 +82,13 @@
 <script>
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
-import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import NewCard from './newCard.vue'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import CardDetails from './cardDetails.vue'
 import noDataTips from '@/components/noDataTips'
-import {utils, debounce} from '@/utils/utils.js'
+import OverviewNumber from 'src/views/common/OverviewNumber'
+// import {utils, debounce} from '@/utils/utils.js'
 import BatchImport from 'src/views/common/eportAndDownFile'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
@@ -177,7 +179,7 @@ const queryCondition =  {
     pageSize: 10,       // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber},
   props: {},
   data () {
     return {
@@ -198,7 +200,14 @@ export default {
       statusData: [...statusData],
       queryCondition: {...queryCondition},
       count: '',
-      obligeeIdData: []
+      obligeeIdData: [],
+      numList: [
+        {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057'},
+        {title: '建筑面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
+        {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
+        {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
+        {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'}
+      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     }
   },
   computed: {
@@ -395,7 +404,21 @@ export default {
         }
       })
     },
-
+    // 资产登记-详情明细统计
+    assetViewTotal () {
+      let obj = {
+      }
+      this.$api.land.assetViewTotal(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          return this.numList = this.numList.map(m => {
+            return { ...m, value: data[m.key] || 0 }
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 打开批量导入Modal
     openImportModal () {
       if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }

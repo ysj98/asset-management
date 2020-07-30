@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-30 18:45:38
+ * @LastEditTime: 2020-07-30 19:51:15
  * @Description: 土地资产视图
 --> 
 <template>
@@ -371,11 +371,13 @@ export default {
       )
     },
     alljudge (val) {
+      let str = ''
       if (val.length !== 0) {
         if (val[0] === '') {
           return ''
         } else {
-          return val.join(',')
+          str = val.join(',')
+          return str
         }
       } else {
         return ''
@@ -387,7 +389,7 @@ export default {
       let obj = {
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省
-        region: this.provinces.region ? this.provinces.region : '',         // 区
+        region: this.provinces.district ? this.provinces.district : '',         // 区
         flag: this.current,                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
         landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
         objectTypes: this.alljudge(this.queryCondition.objectTypes),    // 资产分类(多选)
@@ -412,7 +414,7 @@ export default {
             this.count = 0
           }
           this.loading = false
-          this.assetViewTotal()
+          this.assetViewTotal(obj)
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -420,20 +422,9 @@ export default {
       })
     },
     // 资产登记-详情明细统计
-    assetViewTotal () {
-      let obj = {
-        city: this.provinces.city ? this.provinces.city : '',               // 市
-        province: this.provinces.province ? this.provinces.province : '',   // 省
-        region: this.provinces.region ? this.provinces.region : '',         // 区
-        flag: this.current,                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
-        landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
-        objectTypes: this.queryCondition.objectTypes.length > 0 ? this.queryCondition.objectTypes.join(',') : '',    // 资产分类(多选)
-        organId: this.queryCondition.organId,                               // 组织机构id
-        projectId: this.queryCondition.projectId,                           //类型：String  必有字段  备注：项目id
-        statuss: this.queryCondition.statuss.length > 0 ? this.queryCondition.statuss.join(',') : '',                // 资产状态(多选)
-        pageNum: 1,         // 当前页
-        pageSize: 1        // 每页显示记录数
-      }
+    assetViewTotal (obj) {
+      obj.pageNum = 1
+      obj.pageSize = 1
       this.$api.land.assetViewTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
