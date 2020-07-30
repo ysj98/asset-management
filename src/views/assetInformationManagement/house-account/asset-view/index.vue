@@ -114,7 +114,7 @@
       return {
         fold: true,
         assetName: '', // 查询条件-资产名称
-        status: undefined, // 查询条件-资产状态值
+        status: [], // 查询条件-资产状态值
         categoryId: [], // 查询条件-资产分类
         categoryOptions: [], // 查询条件-资产分类选项
         statusOptions: [
@@ -233,7 +233,7 @@
         let form = {
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo,
-          statusList: status === -1 ? [] : status, flag: current ? (current - 1) : ''
+          statusList: status.includes('-1') ? [] : status, flag: current ? (current - 1) : ''
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
