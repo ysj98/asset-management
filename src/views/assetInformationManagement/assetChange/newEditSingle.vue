@@ -925,7 +925,7 @@ export default {
         // 平均值
         let pin = calc.divide(originalValue, nums);
         this.tableData.forEach((item) => {
-          item.newOriginalValue = Number(item.assetArea) ? 0 :Number(
+          item.newOriginalValue = !Number(item.assetArea) ? 0 :Number(
             Number(calc.multiply(pin, item.assetArea)).toFixed(2)
           );
         });

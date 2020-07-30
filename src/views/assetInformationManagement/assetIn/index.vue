@@ -68,7 +68,7 @@
         <!--['0 待审批', '1 已驳回', '2 已审批', '3 已取消']-->
         <SG-PopoverMore trigger="hover">
           <div slot="content">
-            <router-link style="color: #6D7585; line-height: 35px"
+            <router-link style="color: #6D7585; line-height: 35px; display: block; "
               :to="{ path: '/assetIn/detail', query: {id: record.storeId}}"
             >
               <a-icon type="read" style="color: #a7adb8; font-size: 15px"/>
@@ -77,7 +77,7 @@
             <router-link
               v-if="String(record.status) === '1'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_EDIT"
-              style="color: #6D7585; line-height: 35px"
+              style="color: #6D7585; line-height: 35px; display: block; "
               :to="{ path: '/assetIn/edit', query: {id: record.storeId}}"
             >
               <a-icon type="edit" style="color: #a7adb8; font-size: 15px"/>
