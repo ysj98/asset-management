@@ -59,7 +59,7 @@
           {title: '入库单名称', key: 'storeName'}, {title: '入库单编号', key: 'storeCode'}, {title: '状态', key: 'statusName'},
           {title: '所属机构', key: 'organName'}, {title: '资产项目', key: 'projectName'}, {title: '资产类型', key: 'assetTypeName'},
           {title: '关联资产登记单', key: 'assetRegisterName'}, {title: '创建人', key: 'createUserName'},
-          {title: '创建日期', key: 'createDate'}, {title: '备注', key: 'desc', span: 24}
+          {title: '创建日期', key: 'createDate'}, {title: '备注', key: 'remark', span: 24}
         ], // 基本信息字段
         advice: '', // 审核意见
         attachmentList: [], // 附件

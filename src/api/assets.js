@@ -38,7 +38,7 @@ export function platformDict (data) {
 export function getList (data) {
   // 如果资产类型为空
   if (!data.assetType) {
-    return
+    return Promise.reject()
   }
   // 如果是多选 删除"" 去第一项值
   let assetType = data.assetType.split(',')

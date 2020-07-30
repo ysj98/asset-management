@@ -245,9 +245,14 @@
       // 根据资产类型查资产分类列表
       queryCategoryOptions () {
         this.categoryOptions = []
-        const { organId, assetType } = this.organProjectType
+        const { organProjectType: { organId, assetType }, assetTypeOptions } = this
         if (!organId || !assetType || !assetType.length) { return false }
-        let assetVal = assetType.includes('-1') ? '' : assetType.join(',')
+        let assetVal = ''
+        if (assetType.includes('-1')) {
+          assetVal = [...assetTypeOptions].splice(1).map(m => m.key).join(',')
+        } else {
+          assetVal = assetType.join(',')
+        }
         queryCategoryList({ assetType: assetVal, organId }).then(list => {
           list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
