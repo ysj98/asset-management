@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-30 17:04:00
+ * @LastEditTime: 2020-07-30 18:45:38
  * @Description: 土地资产视图
 --> 
 <template>
@@ -93,6 +93,8 @@ const columnsData = [
   { title: '资产项目名称', dataIndex: 'projectName', width: 150 },
   { title: '土地类型', dataIndex: 'landType', width: 150 },
   { title: '土地用途', dataIndex: 'landuse', width: 150 },
+  { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150 },
+  { title: '容积率', dataIndex: 'landRate', width: 150 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 150 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '使用期限', dataIndex: 'validPeriod', width: 150 },
@@ -104,6 +106,7 @@ const columnsData = [
   { title: '财务卡片编码', dataIndex: 'cardCode', width: 150 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+  { title: ' 批准日期', dataIndex: 'approvalDate', width: 150 },
   { title: '资产状态', dataIndex: 'statusName', width: 150 }
 ]
 const approvalStatusData = [
