@@ -123,7 +123,7 @@ let proRouter = [
   },
   {
     path: '/assetClassSet',
-    name: '资产分类设置',
+    name: '资产分类',
     component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue'),
     meta: {
       keepAlive: true
