@@ -30,7 +30,7 @@
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
           <a-col :span="6">
-            <a-select v-model="takeOver" placeholder="请选择接管状态" style="width: 100%;" :options="takeOverOptions"/>
+            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 100%;" :options="takeOverOptions"/>
           </a-col>
           <a-col :span="6">
             <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 100%;" :options="operateOptions"/>

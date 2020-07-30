@@ -61,9 +61,9 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan" v-if="takeOver === '1'">
-          <a-form-item label="接管状态" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-form-item label="接管时资产状态" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
-              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择接管状态' : ''"
+              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择资产状态' : ''"
               :options="takeOverStatusOptions" v-decorator="['takeoverAssetStatus', {initialValue: undefined}]"
             />
           </a-form-item>
@@ -263,7 +263,7 @@
       sourceType: '', // 来源方式字典值，其他 99，租入 4，自建 3，外购 2，划转 1
       typeOptions: (this.sourceTypeOptions || []).slice(1), // 删除"全部"的选项
       takeOverOptions: [{title: '是', key: '1'}, {title: '否', key: '0'}], // 是否接管的选项
-      takeOverStatusOptions: [], // 接管状态选项
+      takeOverStatusOptions: [], // 接管时资产状态选项
       objBySourceType: {
         1: [
           'reportBasicInfoDate', 'houseVerificationDate', 'reportHouseTransferReqDate',

@@ -128,10 +128,10 @@
           loading: false,
           scroll: { x: 1600 },
           pagination: false,
-          rowKey: 'registerOrderId',
+          rowKey: 'assetCode',
           columns: [
-            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' }, fixed: 'left', width: 150 },
-            { title: '资产名称', dataIndex: 'assetName'}, { title: '资产编码', dataIndex: 'assetCode' },
+            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' } },
+            { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
              { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
             { title: '资产面积(㎡)', dataIndex: 'executeDate' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
