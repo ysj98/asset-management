@@ -118,9 +118,8 @@
             { title: '所属机构', dataIndex: 'organName' },
             { title: '资产项目', dataIndex: 'projectName' },
             { title: '资产原值(元)', dataIndex: 'originalValue' },
-            { title: '评估原值(元)', dataIndex: 'assetValuation' },
-            { title: '市场值(元)', dataIndex: 'marketValue' },
-            { title: '原值评估值基准日', dataIndex: 'originalAssessmenBaseDate' },
+            { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
+            { title: '首次市场法估值(元)', dataIndex: 'marketValue' },
             { title: '最新估值(元)', dataIndex: 'assessmentValue' },
             { title: '评估方法', dataIndex: 'assessmentMethodName' },
             { title: '评估机构', dataIndex: 'assessmentOrganName' },
@@ -132,7 +131,7 @@
         numList: [
           {title: '资产总数', key: 'total', value: 0, fontColor: '#324057'},
           {title: '资产原值(元)', key: 'originalValue', value: 0, fontColor: '#324057'},
-          {title: '评估原值(元)', key: 'assetValuation', value: 0, fontColor: '#324057'},
+          {title: '首次成本法估值(元)', key: 'assetValuation', value: 0, fontColor: '#324057'},
           {title: '最新价值(元)', key: 'marketValue', value: 0, fontColor: '#324057'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
