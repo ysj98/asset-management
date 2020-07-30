@@ -191,7 +191,7 @@
       queryCategoryOptions (organId) {
         this.categoryId = []
         this.categoryOptions = []
-        this.$api.assets.getList({organId, assetType: 1}).then(({data: res}) => {
+        this.$api.assets.getList({organId, assetType: '1'}).then(({data: res}) => {
           if (res && String(res.code) === '0') {
             const arr = (res.data || []).map(m => {
               return { title: m.professionName, key: m.professionCode }

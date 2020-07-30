@@ -337,9 +337,9 @@ export default {
       }
       this.$api.assets.projectDetailsById(form).then(res => {
         if (res.data.code === '0') {
-          let {sourceType, organId, ...others}= res.data.data
+          let {sourceType, projectId, ...others}= res.data.data
           this.detail = others
-          organId && this.getOwnershipData(organId)
+          projectId && this.getOwnershipData(projectId)
           this.sourceType = String(sourceType)
           this.detail.attachment.forEach(item => {
             item.url = item.attachmentPath
@@ -368,8 +368,8 @@ export default {
       })
     },
     // 获取权属概况
-    getOwnershipData (organId) {
-      this.$api.assets.queryAssetProjectOwnershipInfo({organId}).then(res => {
+    getOwnershipData (projectId) {
+      this.$api.assets.queryAssetProjectOwnershipInfo({projectId}).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
           data.key = 0

@@ -107,7 +107,7 @@ class Units {
     time.setYear(time.getFullYear() - 70)
     let year = time.getFullYear() + ''
     let month = time.getMonth() + 1 + ''
-    let date = time.getDate() + ''
+    let date = time.getDate() - 1  + ''
     return year + format + (month < 10 ? '0' + month : month)+ format + (date < 10 ? '0' + date : date)
   }
   // 调整控件高度，使页面不因控件太高而出现滚动条

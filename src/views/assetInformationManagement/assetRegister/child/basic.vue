@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-29 13:57:51
+ * @LastEditTime: 2020-07-30 10:18:35
  * @Description: 房屋土地
 --> 
 <template>
@@ -477,7 +477,7 @@ export default {
       if (!files.length) { return }
       let fileData = new FormData()
       fileData.append('file', files[0])
-      // fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('registerOrderId', this.registerOrderId)
       fileData.append('assetType', this.assetType)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {

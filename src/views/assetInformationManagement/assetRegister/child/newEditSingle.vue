@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-29 15:24:19
+ * @LastEditTime: 2020-07-30 10:09:08
  * @Description: 登记单新建编辑
 --> 
 <template>
@@ -30,7 +30,7 @@
       <correlativeCharges v-if="this.activeStepIndex === 4" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></correlativeCharges>
     </div>
     <div class="step-footer-operation" v-if="setType === 'new'">
-      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
+      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :showAloneCancel="true" @aloneCancel="aloneCancel" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
     </div>
   </div>
 </template>
@@ -172,6 +172,14 @@ export default {
         this.activeStepIndex++
       }
     },
+    // 取消
+    aloneCancel () {
+      if (this.registerOrderId) {
+        this.$router.push({path: '/assetRegister', query: {refresh: true}})
+      } else {
+        this.$router.push({path: '/assetRegister'})
+      }
+    }
   }
 }
 </script>
