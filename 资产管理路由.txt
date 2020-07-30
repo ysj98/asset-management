@@ -46,7 +46,7 @@ V1.0.4
 V2.0
 /asset-management/#//assetIn             资产入库
 /asset-management/#/assetWorthList       资产价值一览表
-/asset-management/#/worthRegisterRecord  资产估值记录
+/asset-management/#/assetAssessRecord  资产估值记录
 /asset-management/#/assetChangeRegister  资产变更单
 /asset-management/#/assetChangeView      资产变更一览表
 
