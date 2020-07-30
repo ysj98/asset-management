@@ -102,13 +102,14 @@ class Units {
     }
     return fmt
   }
-  xlsxDate (numb, format="-") {
-    let time = new Date((numb - 1) * 24 * 3600000 + 1)
-    time.setYear(time.getFullYear() - 70)
-    let year = time.getFullYear() + ''
-    let month = time.getMonth() + 1 + ''
-    let date = time.getDate() - 1  + ''
-    return year + format + (month < 10 ? '0' + month : month)+ format + (date < 10 ? '0' + date : date)
+  xlsxDate(serial, format = '-') {
+    var utc_days = Math.floor(serial - 25569)
+    var utc_value = utc_days * 86400
+    var date_info = new Date(utc_value * 1000)
+    var returnDate = date_info.getFullYear()
+    returnDate += format + (date_info.getMonth() < 9 ? '0' + (date_info.getMonth() + 1) : (date_info.getMonth() + 1))
+    returnDate += format + (date_info.getDate() < 10 ? '0' + date_info.getDate() : date_info.getDate())
+    return returnDate
   }
   // 调整控件高度，使页面不因控件太高而出现滚动条
   AdjustHeight (elem) {

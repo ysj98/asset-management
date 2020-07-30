@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 11:46:50
- * @LastEditTime: 2020-07-29 19:32:21
+ * @LastEditTime: 2020-07-30 12:38:33
  * @Description: 价值登记编辑
 --> 
 <template>
@@ -44,6 +44,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="0"
+                :max="999"
                 v-decorator="['validPeriod',
                   {rules: [{ required: false, message: '使用期限'}], initialValue: subData.validPeriod}
                 ]"/>
@@ -65,6 +66,7 @@
                 <a-input-number placeholder="已使用期限"
                 :style="allWidth"
                 :min="0"
+                :max="999"
                 :precision="0"
                 v-decorator="['usedDate',
                   {rules: [{ required: false, message: '已使用期限'}], initialValue: subData.usedDate}
@@ -77,6 +79,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
+                :max="999999999.99"
                 v-decorator="['depreciationAmount',
                   {rules: [{ required: false, message: '累计折旧金额(支持两位小数)'}], initialValue: subData.depreciationAmount}
                 ]"/>

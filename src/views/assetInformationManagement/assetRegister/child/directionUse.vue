@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-29 20:01:41
+ * @LastEditTime: 2020-07-30 14:22:03
  * @Description: 使用方向
 --> 
 <template>
@@ -184,7 +184,7 @@ export default {
     // 导出
     downFn () {
       let obj = {
-        registerOrderId: '',      // 资产登记单
+        registerOrderId: this.registerOrderId,      // 资产登记单
       }
       this.$api.assets.userForExport(obj).then(res => {
         let blob = new Blob([res.data])

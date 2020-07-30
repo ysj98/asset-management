@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-29 16:20:25
+ * @LastEditTime: 2020-07-30 15:23:06
  * @Description: 土地资产视图
 --> 
 <template>
@@ -13,7 +13,7 @@
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
+        <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="allQuery" />
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
@@ -35,7 +35,7 @@
       </div>
     </SearchContainer>
         <!--数据总览-->
-    <overview-number :numList="numList"/>
+    <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
       <a-table
         :scroll="scroll"
@@ -136,6 +136,7 @@ export default {
   data () {
     return {
       modalShow: false,
+      current: null,
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
       scroll: {x: columnsData.length * 150},
@@ -202,6 +203,32 @@ export default {
     //     a.remove()
     //   })
     // },
+    // 点击总览数据块
+    // 0运营；1闲置；2自用；3占用；4其他
+    handleClickOverview({i}) {
+      console.log(i)
+      switch (i) {
+        case 0:    // 资产数量
+          this.current = ''
+        break;
+        case 1:    // 土地面积
+          this.current = 4
+        break;
+        case 2:    // 运营
+          this.current = 0
+        break;
+        case 3:    // 闲置
+          this.current = 1
+        break;
+        case 4:    // 自用
+          this.current = 2
+        break;
+        case 5:    // 其他
+          this.current = 3
+        break;
+      }
+      this.allQuery()
+    },
     // 列表设置
     listSet () {
       this.listValue = this.columns.map(item => {
@@ -229,10 +256,10 @@ export default {
       this.queryCondition.objectTypes = ''
       this.getObjectKeyValueByOrganIdFn()
       this.getListFn()
-      this.query()
+      this.allQuery()
     },
     // 搜索
-    onSearch () {
+    allQuery () {
       this.queryCondition.pageNum = 1
       this.query()
     },
@@ -341,7 +368,7 @@ export default {
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省
         region: this.provinces.region ? this.provinces.region : '',         // 区
-        flag: '',                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
+        flag: this.current,                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
         landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
         objectTypes: this.queryCondition.objectTypes.length > 0 ? this.queryCondition.objectTypes.join(',') : '',    // 资产分类(多选)
         organId: this.queryCondition.organId,          // 组织机构id
@@ -378,7 +405,7 @@ export default {
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省
         region: this.provinces.region ? this.provinces.region : '',         // 区
-        flag: '',                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
+        flag: this.current,                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
         landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
         objectTypes: this.queryCondition.objectTypes.length > 0 ? this.queryCondition.objectTypes.join(',') : '',    // 资产分类(多选)
         organId: this.queryCondition.organId,                               // 组织机构id
