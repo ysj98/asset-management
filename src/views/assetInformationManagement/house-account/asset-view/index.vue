@@ -118,7 +118,7 @@
         categoryId: [], // 查询条件-资产分类
         categoryOptions: [], // 查询条件-资产分类选项
         statusOptions: [
-          { title: '全部状态', key: '-1' }, { title: '未入库', key: '0' }, { title: '正常', key: '1' },
+          { title: '全部状态', key: '-1' }, { title: '待入库', key: '0' }, { title: '正常', key: '1' },
           { title: '报废', key: '2' }, { title: '转让', key: '3' }, { title: '报损', key: '4' },
           { title: '已出库', key: '5' }, { title: '已取消', key: '6' }, { title: '入库中', key: '7' }
         ], // 查询条件-资产状态选项

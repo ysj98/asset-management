@@ -58,6 +58,8 @@
     props: {
       // projectId 必须
       projectId: { type: [Number, String], default: () => '' },
+      // storeId 必须
+      storeId: { type: [Number, String], default: () => '' },
       // projectId 必须
       organId: { type: [Number, String], default: () => '' },
       // 资产类型 必须
@@ -91,12 +93,12 @@
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
-        const {registerOrderName, assetType, projectId, organId} = this
+        const {registerOrderName, assetType, projectId, organId, storeId} = this
         if (!projectId || !organId || !assetType) { return Promise.reject() }
         this.loading = true
         let form = {
-          assetTypes: assetType, registerOrderName, projectId, organId,
-          pageSize: pageLength, pageNum: pageNo, approvalStatusList: ['1']
+          assetTypes: assetType, registerOrderName, projectId, organId, storeId,
+          pageSize: pageLength, pageNum: pageNo, approvalStatusList: ['1'], operationSource: '2'
         }
         return this.$api.assets.getRegisterOrderListPage(form).then(({data}) => {
           if (data && data.code.toString() === '0') {

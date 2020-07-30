@@ -252,7 +252,7 @@ export function useForSummary (data) {
 }
 // 批量导出
 export function userForExport (data) {
-  return axiosGet(assets.assetRegister.userForExport, data, false, false, {responseType: 'blob'})
+  return axiosGet(assets.assetRegister.userForExport, data, false, {responseType: 'blob'})
 }
 // 批量更新
 export function usrForImport (data) {
