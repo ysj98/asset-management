@@ -96,7 +96,7 @@
         this.loading = true
         let form = {
           assetTypes: assetType, registerOrderName, projectId, organId,
-          pageSize: pageLength, pageNum: pageNo, approvalStatusList: ['1']
+          pageSize: pageLength, pageNum: pageNo, approvalStatusList: ['1'], operationSource: '2'
         }
         return this.$api.assets.getRegisterOrderListPage(form).then(({data}) => {
           if (data && data.code.toString() === '0') {
