@@ -192,12 +192,12 @@
                     placeholder="原值金额"
                     :style="allWidth"
                     step="1"
-                    :max="99999999999.99"
                     :min="0"
+                    :max="99999999999.99"
                     :precision="2"
                     @change="originalValueChange"
                     v-decorator="['originalValue',
-                {rules: [{required: true, message: '请输入原值金额'}],
+                {rules: [{required: true, message: '请输入原值金额'}, {validator: validatorOriginalValue}],
                 initialValue: newEditSingleData.originalValue}
               ]"
                   />
@@ -1112,6 +1112,14 @@ export default {
         this.computedEqually()
       }
     },
+    // 验证资产对象原值
+    validatorOriginalValue (rule, value, callback) {
+      if (Number(value) > 99999999999.99) {
+        callback('最大值99999999999.99')
+      } else {
+        callback()
+      }
+    },
     // 平台字典获取变更类型
     platformDictFn(code) {
       let obj = {
@@ -1160,7 +1168,7 @@ export default {
     },
     // 取消
     cancel() {
-      this.$router.push({ path: "/assetChange" });
+      this.$router.push({ path: "/assetChangeRegister" });
     },
     filterOption(input, option) {
       return (

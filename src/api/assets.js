@@ -36,6 +36,14 @@ export function platformDict (data) {
 }
 // 查询资产分类列表
 export function getList (data) {
+  // 如果资产类型为空
+  if (!data.assetType) {
+    return
+  }
+  // 如果是多选 删除"" 去第一项值
+  let assetType = data.assetType.split(',')
+  assetType = assetType.filter(item => Boolean(item))
+  data.assetType = assetType[0]
   return axiosGet(assets.project.getList, data)
 }
 

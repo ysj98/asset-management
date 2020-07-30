@@ -186,6 +186,12 @@ export default {
             item.key = index;
             item.newOriginalValue = item.originalValue;
             item.changeProjectId = item.changeProjectName;
+            // 债权映射
+            item.newCreditorAmount = item.creditorAmount;
+            item.newDebtAmount = item.debtAmount;
+
+            item.creditorAmount = item.oldCreditorAmount;
+            item.debtAmount = item.oldDebtAmount;
           });
           this.tableData = data;
           this.queryCondition.count = res.data.data.count;
