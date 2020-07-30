@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-30 16:39:02
+ * @LastEditTime: 2020-07-30 20:04:17
  * @Description: 使用方向
 --> 
 <template>
@@ -40,7 +40,7 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <directionUseEdit @cancel="cancel" v-if="modalShow" ref="directionUseEdit"></directionUseEdit>
+    <directionUseEdit @cancel="cancel" v-if="modalShow" ref="directionUseEdit" @allQuery="allQuery"></directionUseEdit>
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
