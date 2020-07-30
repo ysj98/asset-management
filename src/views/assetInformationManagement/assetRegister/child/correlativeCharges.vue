@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-29 17:42:23
+ * @LastEditTime: 2020-07-30 14:30:47
  * @Description: 相关费用
 -->
 <template>
@@ -11,7 +11,7 @@
         <span>费用总额：{{statistics.expenseAmount || 0}}元</span> <span class="p120">收入总额：{{statistics.incomeAmount || 0}}元</span>
       </div>
       <div class="buytton-nav" v-if="setType !== 'detail'">
-        <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
+        <SG-Button type="primary" weaken @click="newlyFn('new')">新增相关费用</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量导入</SG-Button>
       </div>
     </div>

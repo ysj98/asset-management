@@ -9,7 +9,7 @@
       <div class="particulars-obj">
         <a-row class="playground-row">
           <a-col class="playground-col" :span="8">登记单编号：{{particularsData.registerOrderId || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">登记单名称：{{particularsData.registerOrderName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>

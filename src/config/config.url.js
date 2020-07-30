@@ -189,7 +189,7 @@ export const assets = {
     // 使用方向面积统计
     useForSummary: '/ams/registerOrder/useFor/total',
     // 批量导出
-    userForExport: '/ams/registerOrder/userFor/export',
+    userForExport: '/ams/registerOrder/useFor/export',
     // 批量更新
     usrForImport: '/ams/registerOrder/usrFor/import',
     // 相关费用下载导入模板
