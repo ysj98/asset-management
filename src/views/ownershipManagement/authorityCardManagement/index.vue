@@ -33,7 +33,7 @@
       </div>
     </SearchContainer>
     <!--数据总览-->
-    <overview-number :numList="numList" />
+    <!-- <overview-number :numList="numList" /> -->
     <div class="table-layout-fixed" ref="table_box">
       <a-table
         :loading="loading"
