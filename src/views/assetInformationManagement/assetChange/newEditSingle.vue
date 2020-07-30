@@ -419,7 +419,7 @@
       </div>
     </div>
     <!-- 选择资产 -->
-    <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <AssetBundlePopover :changeType="true" :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
     <FormFooter style="border:none;" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交</SG-Button>
@@ -908,10 +908,10 @@ export default {
     computedEqually: debounce(function () {
       let shareWay = this.shareWay;
       let originalValue = this.originalValue;
-      console.log("原值分摊方式");
-      console.log("shareWay", shareWay);
-      console.log("originalValue", originalValue);
-      console.log("this.tableData.length", this.tableData.length);
+      // console.log("原值分摊方式");
+      // console.log("shareWay", shareWay);
+      // console.log("originalValue", originalValue);
+      // console.log("this.tableData.length", this.tableData.length);
       if (!shareWay || !originalValue || !this.tableData.length) {
         return;
       }
@@ -925,7 +925,7 @@ export default {
         // 平均值
         let pin = calc.divide(originalValue, nums);
         this.tableData.forEach((item) => {
-          item.newOriginalValue = Number(
+          item.newOriginalValue = Number(item.assetArea) ? 0 :Number(
             Number(calc.multiply(pin, item.assetArea)).toFixed(2)
           );
         });

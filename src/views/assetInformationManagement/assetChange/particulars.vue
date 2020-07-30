@@ -137,9 +137,9 @@ export default {
         arr = utils.deepClone(projectChange);
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "7") {
-        this.columns = baseChange;
+        this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "8") {
-        this.columns = debtChange;
+        this.columns = arr.splice(0, arr.length - 1);
       }
     }
   },

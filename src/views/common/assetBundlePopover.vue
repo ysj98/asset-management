@@ -112,6 +112,10 @@ export default {
       type: [String, Number],
       default: ''
     },
+    changeType: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -311,6 +315,9 @@ export default {
         projectId: this.selecData.projectId,  // 资产项目ID
         pageSize: this.selecData.pageSize,
         pageNum: this.selecData.pageNum
+      }
+      if (this.changeType && !obj.assetType) {
+        return
       }
       this.$api.assets.assetListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
