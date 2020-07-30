@@ -90,6 +90,7 @@
       <select-asset
         :key="refreshKey"
         ref="select_asset"
+        :storeId="storeId"
         :organId="organId"
         :projectId="projectId"
         :assetType="assetType"
