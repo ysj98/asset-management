@@ -166,7 +166,7 @@ export const projectChange = [{
   title: '变更前资产项目',
   dataIndex: 'projectName',
 }, {
-  title: '变动后资产项目',
+  title: '变更后资产项目',
   dataIndex: 'changeProjectId',
   align: 'center',
   scopedSlots: { customRender: 'changeProjectId' },
