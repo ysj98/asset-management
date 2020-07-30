@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-30 14:22:03
+ * @LastEditTime: 2020-07-30 16:39:02
  * @Description: 使用方向
 --> 
 <template>
@@ -190,7 +190,7 @@ export default {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = `附属配套.xls`
+        a.download = `资产使用方向.xls`
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()

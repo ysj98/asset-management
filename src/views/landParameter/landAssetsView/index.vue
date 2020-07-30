@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-30 15:23:06
+ * @LastEditTime: 2020-07-30 17:04:00
  * @Description: 土地资产视图
 --> 
 <template>
@@ -20,7 +20,7 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.statuss">
               <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
-            <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
+            <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption" @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
               <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
@@ -108,15 +108,15 @@ const columnsData = [
 ]
 const approvalStatusData = [
   { name: '全部状态', value: ''},
-  { name: '未生效', value: '0'},
+  { name: '待入库', value: '0'},
   { name: '正常', value: '1'},
   { name: '报废', value: '2'},
   { name: '转让', value: '3'},
   { name: '报损', value: '4'},
-  { name: '已清理', value: '5'},
-  { name: '已取消', value: '6' }
+  { name: '已出库', value: '5'},
+  { name: '已取消', value: '6' },
+  { name: '入库中', value: '7' }
 ]
-
 const queryCondition =  {
   city: '',           // 市
   province: '',       // 省
@@ -136,13 +136,13 @@ export default {
   data () {
     return {
       modalShow: false,
-      current: null,
+      current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
       scroll: {x: columnsData.length * 150},
       numList: [
         {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
-        {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#5b8ff9'},
+        {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
         {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
         {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474'},
@@ -324,6 +324,12 @@ export default {
         this.queryCondition.objectTypes = this.handleMultipleSelectValue(value, this.queryCondition.objectTypes, this.assetClassifyData)
       })
     },
+    // 项目
+    projectIdFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.projectId = this.handleMultipleSelectValue(value, this.queryCondition.projectId, this.projectData)
+      })
+    },
     // 状态发生变化
     approvalStatusFn (value) {
       this.$nextTick(function () {
@@ -361,6 +367,17 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
+    alljudge (val) {
+      if (val.length !== 0) {
+        if (val[0] === '') {
+          return ''
+        } else {
+          return val.join(',')
+        }
+      } else {
+        return ''
+      }
+    },
     // 查询
     query () {
       this.loading = true
@@ -370,10 +387,10 @@ export default {
         region: this.provinces.region ? this.provinces.region : '',         // 区
         flag: this.current,                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
         landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
-        objectTypes: this.queryCondition.objectTypes.length > 0 ? this.queryCondition.objectTypes.join(',') : '',    // 资产分类(多选)
+        objectTypes: this.alljudge(this.queryCondition.objectTypes),    // 资产分类(多选)
         organId: this.queryCondition.organId,          // 组织机构id
-        projectId: this.queryCondition.projectId,      //类型：String  必有字段  备注：项目id
-        statuss: this.queryCondition.statuss.length > 0 ? this.queryCondition.statuss.join(',') : '',                 // 资产状态(多选)
+        projectId: this.alljudge(this.queryCondition.projectId),      //类型：String  必有字段  备注：项目id
+        statuss: this.alljudge(this.queryCondition.statuss),                 // 资产状态(多选)
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize         // 每页显示记录数
       }
@@ -456,6 +473,8 @@ export default {
     }
   }
   .city {
+    float: right;
+    margin-right: 8px;
     /deep/.ant-col-8 {width: 180px;}
     /deep/.province_style {
       width: 170px;
@@ -489,7 +508,7 @@ export default {
   .search-from-box{
     flex: 1;
     flex-wrap: wrap;
-    text-align: left;
+    text-align: right;
   }
   .two-row-box{
     padding-top: 14px;

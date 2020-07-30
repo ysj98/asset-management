@@ -12,7 +12,7 @@
             <a-form-item :colon="false" v-bind="formItemLayout">
               <label slot="label">变更单名称：</label>
               <a-input
-              autoComplete="off"
+                autocomplete="off"
                 placeholder="请输入标题"
                 :style="allWidth"
                 :max="50"
@@ -208,6 +208,7 @@
                   <label slot="label">原值分摊方式：</label>
                   <a-select
                     showSearch
+                    :disabled="true"
                     :style="allWidth"
                     placeholder="请选择原值分摊方式"
                     v-decorator="['shareWay',{
@@ -439,7 +440,7 @@ import {
   positionChange,
   projectChange,
   baseChange,
-  debtChange
+  debtChange,
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips";
@@ -458,22 +459,22 @@ const newEditSingleData = {
   changeDate: {}, // 变更日期
   remark: "", // 备注
   files: [],
-  organId: ""
+  organId: "",
 };
 const conditionalJudgment = [undefined, null, ""];
 const originalObjectTypeData = [
   { name: "资产项目", value: "1" },
   { name: "楼栋", value: "2" },
   // { name: "车场", value: "3" },
-  { name: "资产", value: "4" }
+  { name: "资产", value: "4" },
 ];
 let originalObjectTypeData_two = [
   { name: "资产项目", value: "1" },
-  { name: "资产", value: "4" }
+  { name: "资产", value: "4" },
 ];
 const shareWayData = [
   { name: "按资产面积分摊", value: "1" },
-  { name: "按资产个数分摊", value: "2" }
+  { name: "按资产个数分摊", value: "2" },
 ];
 export default {
   components: { AssetBundlePopover, FormFooter, noDataTips },
@@ -509,19 +510,19 @@ export default {
       formItemTextarea: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 2 }
-        }
+          sm: { span: 2 },
+        },
       },
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 6 }
+          sm: { span: 6 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 16 }
-        }
-      }
+          sm: { span: 16 },
+        },
+      },
     };
   },
   computed: {},
@@ -546,7 +547,7 @@ export default {
       } else if (val === "8") {
         this.columns = debtChange;
       }
-    }
+    },
   },
   created() {
     this.organIdData = JSON.parse(this.$route.query.record);
@@ -563,7 +564,7 @@ export default {
       this.editFn();
     } else {
       this.form.setFieldsValue({
-        organId: this.organIdData[0].value
+        organId: this.organIdData[0].value,
       });
     }
   },
@@ -571,18 +572,18 @@ export default {
     // 编辑获取接口
     editFn() {
       let obj = {
-        changeOrderId: this.changeOrderId
+        changeOrderId: this.changeOrderId,
       };
-      this.$api.assets.getChangeInfo(obj).then(res => {
+      this.$api.assets.getChangeInfo(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           this.changeType = String(data.changeType);
           let files = [];
           if (data.attachment && data.attachment.length > 0) {
-            data.attachment.forEach(item => {
+            data.attachment.forEach((item) => {
               files.push({
                 url: item.attachmentPath,
-                name: item.newAttachmentName
+                name: item.newAttachmentName,
               });
             });
           }
@@ -608,10 +609,10 @@ export default {
               assetType: String(data.assetType),
               changeType: String(data.changeType),
               changeDate: moment(data.changeDate, "YYYY-MM-DD"),
-              remark: data.remark
+              remark: data.remark,
             });
             // 如果是资产原值
-            if (String(data.changeType) === '3') {
+            if (String(data.changeType) === "3") {
               this.form.setFieldsValue({
                 originalValue: data.originalValue,
                 shareWay: String(data.shareWay),
@@ -639,7 +640,7 @@ export default {
               originalObjectType: String(data.originalObjectType), // 原值对象类型
               assetType: String(data.assetType),
               shareWay: String(data.shareWay),
-              originalValue: Number(data.originalValue) || undefined
+              originalValue: Number(data.originalValue) || undefined,
             });
             this.checkedData = [...checkedData];
             this.tableData = data.assetDetailList;
@@ -660,10 +661,10 @@ export default {
           }
           let files = [];
           if (this.newEditSingleData.files.length > 0) {
-            this.newEditSingleData.files.forEach(list => {
+            this.newEditSingleData.files.forEach((list) => {
               files.push({
                 attachmentPath: list.url,
-                oldAttachmentName: list.name
+                oldAttachmentName: list.name,
               });
             });
           }
@@ -743,7 +744,7 @@ export default {
               }
             }
           }
-          this.tableData.forEach(item => {
+          this.tableData.forEach((item) => {
             arr.push({
               assetId: item.assetId,
               projectId: Number(item.projectId), // 资产项目Id
@@ -777,7 +778,7 @@ export default {
               creditorAmount:
                 String(this.changeType) === "8" ? item.newCreditorAmount : "", // 变更后债权金额
               debtAmount:
-                String(this.changeType) === "8" ? item.newDebtAmount : "" // 变更后债权金额
+                String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
             });
           });
           let obj = {
@@ -795,16 +796,16 @@ export default {
             originalObjectId: values.originalObjectId,
             originalValue: values.originalValue,
             shareWay: values.shareWay,
-            assetDetailList: arr
+            assetDetailList: arr,
           };
           let loadingName = this.SG_Loding("保存中...");
-          this.$api.assets.submitChange(obj).then(res => {
+          this.$api.assets.submitChange(obj).then((res) => {
             if (Number(res.data.code) === 0) {
               this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success("提交成功");
                 this.$router.push({
                   path: "/assetChangeRegister",
-                  query: { refresh: true }
+                  query: { refresh: true },
                 });
               });
             } else {
@@ -872,12 +873,45 @@ export default {
       } else {
         this.originalObjectTypeData = originalObjectTypeData_two;
       }
+      // 如果是设备 并且变更类型是原值变动  原值对象类型非资产
+      this.handleDefaultShareWay();
+    },
+    handleDefaultShareWay() {
+      // 如果是设备 并且变更类型是原值变动  原值对象类型非资产
+      if (this.changeType === "3" && this.originalObjectType !== "4") {
+        let value = this.assetType === "3" ? "2" : "1";
+        this.form.setFieldsValue({ shareWay: value });
+        this.shareWay = value;
+      }
+    },
+    // 拼接备注
+    joinRemark() {
+      // 根据”+$原值对象类型$（$原值对象$）+“资产原值”+$原值金额$+$原值分摊规则$，
+      //如根据楼栋（楼栋001）资产原值为100000按照资产面积分摊
+      if (this.changeType === "3" && this.originalObjectType !== "4") {
+        let originalObjectTypeName = this.originalObjectTypeData.find(
+          (item) => item.value === this.originalObjectType
+        ).name;
+        let originalObjectId = this.form.getFieldValue("originalObjectId") || ''
+        let originalObjectIdName = this.originalObjectIdData.find(
+          (item) => item.value === originalObjectId
+        ).name;
+        let shareWayName = this.shareWayData.find(
+          (item) => item.value === this.shareWay
+        ).name;
+        let originalValue = this.originalValue
+        return `根据${originalObjectTypeName}(${originalObjectIdName})资产原值${originalValue}${shareWayName}`
+      }
+      return ''
     },
     // 计算平均分摊值
-    computedEqually: debounce(function() {
+    computedEqually: debounce(function () {
       let shareWay = this.shareWay;
       let originalValue = this.originalValue;
       console.log("原值分摊方式");
+      console.log("shareWay", shareWay);
+      console.log("originalValue", originalValue);
+      console.log("this.tableData.length", this.tableData.length);
       if (!shareWay || !originalValue || !this.tableData.length) {
         return;
       }
@@ -890,8 +924,10 @@ export default {
         console.log("得到总数=>", nums);
         // 平均值
         let pin = calc.divide(originalValue, nums);
-        this.tableData.forEach(item => {
-          item.newOriginalValue = Number(pin.toFixed(2))
+        this.tableData.forEach((item) => {
+          item.newOriginalValue = Number(
+            Number(calc.multiply(pin, item.assetArea)).toFixed(2)
+          );
         });
         // 依次各个值
       }
@@ -899,11 +935,12 @@ export default {
       if (shareWay === "2") {
         // 平均值
         let pin = calc.divide(originalValue, this.tableData.length);
-        this.tableData.forEach(item => {
-          item.newOriginalValue = Number(pin.toFixed(2))
+        this.tableData.forEach((item) => {
+          item.newOriginalValue = Number(pin.toFixed(2));
         });
         // 依次各个值
       }
+      this.form.setFieldsValue({'remark': this.joinRemark()})
     }, 200),
     // 资产类型改变清空值
     assetTypeChangeClear() {
@@ -913,12 +950,13 @@ export default {
           originalObjectType: undefined,
           originalObjectId: undefined,
           shareWay: undefined,
-          originalValue: undefined
+          originalValue: undefined,
         });
         this.originalObjectIdData = [];
         this.tableData = [];
         this.checkedData = [];
       }
+      this.handleDefaultShareWay();
     },
     // 资产项目改变
     projectChangeFn(val) {
@@ -948,8 +986,8 @@ export default {
       let projectId = this.form.getFieldValue("projectId");
       this.originalObjectType = val;
       this.originalObjectIdData = [];
-      this.tableData = []
-      this.checkedData = []
+      this.tableData = [];
+      this.checkedData = [];
       if (["1", "2"].includes(val)) {
         this.form.setFieldsValue({ originalObjectId: undefined });
       }
@@ -970,28 +1008,31 @@ export default {
         this.organBuild(val);
       }
       // 选择车场
+      this.$nextTick(() => {
+        this.handleDefaultShareWay();
+      });
     },
     // 项目生成原值对象
     originalObjectProject() {
       let projectId = this.form.getFieldValue("projectId");
       this.originalObjectIdData = [
-        this.projectIdData.find(item => item.value === projectId)
+        this.projectIdData.find((item) => item.value === projectId),
       ];
     },
     // 项目请求楼栋
     organBuild() {
       let data = {
         organId: this.organId,
-        projectId: this.projectId
+        projectId: this.projectId,
       };
-      this.$api.assets.organBuild(data).then(res => {
+      this.$api.assets.organBuild(data).then((res) => {
         if (res.data.code === "0") {
           let result = res.data.data || [];
-          this.originalObjectIdData = result.map(item => {
+          this.originalObjectIdData = result.map((item) => {
             return {
               ...item,
               name: item.buildName,
-              value: item.buildId
+              value: item.buildId,
             };
           });
         }
@@ -1004,15 +1045,15 @@ export default {
         organId: this.organId,
         projectIdList: [projectId],
         buildIdList: [val],
-        type: "2"
+        type: "2",
       };
-      this.$api.assets.queryAssetViewPage(data).then(res => {
+      this.$api.assets.queryAssetViewPage(data).then((res) => {
         if (res.data.code === "0") {
           let result = res.data.data.data || [];
           let keys = [];
-          let arr = result.map(element => {
+          let arr = result.map((element) => {
             keys.push(element.assetId);
-            element.assetObjectId = element.assetHouseId
+            element.assetObjectId = element.assetHouseId;
             element.key = element.assetId;
             element.oldOriginalValue = element.originalValue;
             element.newOriginalValue = ""; // 变动后原值
@@ -1028,7 +1069,7 @@ export default {
             element.disposeReceive = ""; // 处置收入
             element.remark = ""; // 处置备注
             return {
-              ...element
+              ...element,
             };
           });
           this.checkedData = keys;
@@ -1060,13 +1101,13 @@ export default {
         queryType: "1",
         projectId,
         pageNum: 1,
-        pageSize: 5000
+        pageSize: 5000,
       };
-      this.$api.assets.assetListPage(obj).then(res => {
+      this.$api.assets.assetListPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let result = res.data.data.data || [];
           let keys = [];
-          let arr = result.map(element => {
+          let arr = result.map((element) => {
             keys.push(element.assetId);
             element.key = element.assetId;
             element.oldOriginalValue = element.originalValue;
@@ -1083,7 +1124,7 @@ export default {
             element.disposeReceive = ""; // 处置收入
             element.remark = ""; // 处置备注
             return {
-              ...element
+              ...element,
             };
           });
           this.checkedData = keys;
@@ -1108,24 +1149,27 @@ export default {
         }
       });
       // 如果是资产原值，且知产是自动计算
-      if (this.changeType=='3'&&['1', '2'].includes(this.originalObjectType)) {
-        this.computedEqually()
+      if (
+        this.changeType == "3" &&
+        ["1", "2"].includes(this.originalObjectType)
+      ) {
+        this.computedEqually();
       }
     },
     // 验证资产对象原值
-    validatorOriginalValue (rule, value, callback) {
+    validatorOriginalValue(rule, value, callback) {
       if (Number(value) > 99999999999.99) {
-        callback('最大值99999999999.99')
+        callback("最大值99999999999.99");
       } else {
-        callback()
+        callback();
       }
     },
     // 平台字典获取变更类型
     platformDictFn(code) {
       let obj = {
-        code
+        code,
       };
-      this.$api.assets.platformDict(obj).then(res => {
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           // 变更类型
@@ -1147,17 +1191,17 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.organId,
-        projectName: ""
+        projectName: "",
       };
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           let arr = [];
-          data.forEach(item => {
+          data.forEach((item) => {
             arr.push({
               name: item.projectName,
               value: item.projectId,
-              label: item.projectName
+              label: item.projectName,
             });
           });
           this.projectIdData = [...arr];
@@ -1176,8 +1220,8 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
