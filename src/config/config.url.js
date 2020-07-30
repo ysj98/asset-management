@@ -286,8 +286,8 @@ export const assets = {
     modifyProject: '/ams/project/modifyProject',
     // 资产项目-转运营信息统计
     getTransferByProjectId: '/ams/project/getTransferByProjectId',
-    // 根据organId查询资产项目视图详情权属信息
-    queryAssetProjectOwnershipInfo: '/ams/asset-house/organ/houseViewShip'
+    // 根据projectId查询资产项目视图详情权属信息
+    queryAssetProjectOwnershipInfo: '/ams/ownerShip/owner/organViewShip'
   },
   // 房屋台账 - 楼栋视图
   buildingView: {
