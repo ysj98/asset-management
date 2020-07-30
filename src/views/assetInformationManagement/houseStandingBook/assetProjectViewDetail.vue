@@ -35,7 +35,7 @@
           <span class="label-value">{{formatDate(detail.takeOverDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">接管状态：</span>
+          <span class="label-name">接管时资产状态：</span>
           <span class="label-value">{{detail.takeoverAssetStatusName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
