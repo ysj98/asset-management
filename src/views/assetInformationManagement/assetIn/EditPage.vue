@@ -28,18 +28,18 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="8">
-            <a-form-item required label="关联资产登记单" :label-col="labelCol" :wrapper-col="wrapperCol"
+          <a-col :span="24">
+            <a-form-item required label="关联资产登记单" :label-col="{span: 2}" :wrapper-col="{span: 22}"
               :help="validateAssets ? '请选择关联资产登记单' : ''" :validate-status="validateAssets ? 'error' : ''"
             >
-            <span>
-              <a-tag closable v-for="m in selectedList" :key="m.registerOrderId" style="background: #fff;" @close="handleAddAsset(m)">
-                {{m.registerOrderName}}
-              </a-tag>
-              <a-tag color="#108ee9" @click="handleAddAsset('')">
-                <a-icon type="select" style="margin-right: 8px"/>选择
-              </a-tag>
-            </span>
+              <div>
+                <a-tag closable v-for="m in selectedList" :key="m.registerOrderId" style="background: #fff;" @close="handleAddAsset(m)">
+                  {{m.registerOrderName}}
+                </a-tag>
+                <a-tag color="#108ee9" @click="handleAddAsset('')">
+                  <a-icon type="select" style="margin-right: 8px"/>选择
+                </a-tag>
+              </div>
             </a-form-item>
           </a-col>
         </a-row>
@@ -129,7 +129,6 @@
           loading: false,
           scroll: { x: 1600 },
           pagination: false,
-          rowKey: 'assetCode',
           columns: [
             { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' } },
             { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
@@ -212,7 +211,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = (data || []).map((m, key) => ({...m, key}))
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })

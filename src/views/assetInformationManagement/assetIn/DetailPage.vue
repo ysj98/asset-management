@@ -6,7 +6,12 @@
       <SG-Title title="基本信息"/>
       <div style="margin-left: 45px">
         <a-row>
-          <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key" style="margin: 12px 0;">
+          <a-col
+            :span="span || 8" :key="key"
+            v-for="{title, key, span} in baseInfoKeys"
+            :title="key === 'assetRegisterName' ? infoData[key] : ''"
+            style="margin: 12px 0; white-space: nowrap; overflow: hidden"
+          >
             <span style="color: #282D5B">{{title}}:</span>
             <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '--'}}</span>
           </a-col>
@@ -74,7 +79,6 @@
           loading: false,
           pagination: false,
           scroll: { x: 1600 },
-          rowKey: 'assetCode',
           columns: [
             { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' } },
             { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
@@ -107,7 +111,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            this.tableObj.dataSource = data
+            this.tableObj.dataSource = (data || []).map((m, key) => ({...m, key}))
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
