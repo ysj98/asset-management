@@ -191,7 +191,7 @@ export const assets = {
     // 批量导出
     userForExport: '/ams/registerOrder/useFor/export',
     // 批量更新
-    usrForImport: '/ams/registerOrder/usrFor/import',
+    usrForImport: '/ams/registerOrder/useFor/import',
     // 相关费用下载导入模板
     correlationExpenseExport: '/ams/registerOrder/correlationExpense/export',
     // 相关费用导入
