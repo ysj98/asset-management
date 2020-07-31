@@ -27,9 +27,18 @@
           <a-col class="playground-col" :span="8">交付单位：{{particularsData.deliveryCompany || '--'}}</a-col>-->
           <template v-if="+changeType === 3">
             <div>
-              <a-col class="playground-col" :span="8">原值对象类型：{{particularsData.originalObjectTypeName || '--'}}</a-col>
-              <a-col class="playground-col" :span="8">原值对象：{{particularsData.originalObjectIdName|| '--'}}</a-col>
-              <a-col class="playground-col" :span="8">原值金额(元)：{{particularsData.originalValue || '--'}}</a-col>
+              <a-col
+                class="playground-col"
+                :span="8"
+              >原值对象类型：{{particularsData.originalObjectTypeName || '--'}}</a-col>
+              <a-col
+                class="playground-col"
+                :span="8"
+              >原值对象：{{particularsData.originalObjectIdName|| '--'}}</a-col>
+              <a-col
+                class="playground-col"
+                :span="8"
+              >原值金额(元)：{{particularsData.originalValue || '--'}}</a-col>
             </div>
           </template>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
@@ -79,18 +88,19 @@ import {
   positionChange,
   projectChange,
   baseChange,
-  debtChange
+  debtChange,
+  baseChangeTwo,
 } from "./basics";
 import { utils } from "@/utils/utils.js";
 const originalObjectTypeMap = {
   "1": "资产项目",
   "2": "楼栋",
   "3": "车场",
-  "4": "资产"
+  "4": "资产",
 };
 const shareWayMap = {
   "1": "按资产面积分摊",
-  "2": "按资产个数分摊"
+  "2": "按资产个数分摊",
 };
 export default {
   components: {},
@@ -98,6 +108,7 @@ export default {
   data() {
     return {
       changeType: "",
+      assetType: "",
       changeOrderId: "",
       particularsData: {},
       files: [],
@@ -109,8 +120,8 @@ export default {
       queryCondition: {
         pageSize: 10,
         pageNum: 1,
-        count: ""
-      }
+        count: "",
+      },
     };
   },
   computed: {},
@@ -137,31 +148,35 @@ export default {
         arr = utils.deepClone(projectChange);
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "7") {
+        arr = utils.deepClone(baseChange);
         this.columns = arr.splice(0, arr.length - 1);
+        this.handleBaseAndHuse();
       } else if (val === "8") {
+        arr = utils.deepClone(debtChange);
         this.columns = arr.splice(0, arr.length - 1);
       }
-    }
+    },
   },
   methods: {
     // 查询详情
     query() {
       let obj = {
-        changeOrderId: this.changeOrderId
+        changeOrderId: this.changeOrderId,
       };
-      this.$api.assets.getChangeDetail(obj).then(res => {
+      this.$api.assets.getChangeDetail(obj).then((res) => {
         console.log(res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          data.originalObjectTypeName = originalObjectTypeMap[data.originalObjectType]
-          data.shareWayName = shareWayMap[data.shareWay]
+          data.originalObjectTypeName =
+            originalObjectTypeMap[data.originalObjectType];
+          data.shareWayName = shareWayMap[data.shareWay];
           this.particularsData = data;
           let files = [];
           if (data.attachment && data.attachment.length > 0) {
-            data.attachment.forEach(item => {
+            data.attachment.forEach((item) => {
               files.push({
                 url: item.attachmentPath,
-                name: item.newAttachmentName
+                name: item.newAttachmentName,
               });
             });
           }
@@ -177,9 +192,9 @@ export default {
       let obj = {
         changeOrderId: this.changeOrderId,
         pageNum: this.queryCondition.pageNum,
-        pageSize: this.queryCondition.pageSize
+        pageSize: this.queryCondition.pageSize,
       };
-      this.$api.assets.getChangeDetailPage(obj).then(res => {
+      this.$api.assets.getChangeDetailPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
           data.forEach((item, index) => {
@@ -192,6 +207,9 @@ export default {
 
             item.creditorAmount = item.oldCreditorAmount;
             item.debtAmount = item.oldDebtAmount;
+
+            // 基础信息字段映射
+            item.newDecorationSituation = item.decorationSituation;
           });
           this.tableData = data;
           this.queryCondition.count = res.data.data.count;
@@ -202,21 +220,30 @@ export default {
         }
       });
     },
+    // 当为基础信息变动， 并且为房屋或者车场，资产类型
+    handleBaseAndHuse() {
+      console.log("会进到这里来2", this.changeType, "www", this.assetType);
+      if (this.changeType === "7" && ["1"].includes(this.assetType)) {
+        let arr = utils.deepClone(baseChangeTwo);
+        this.columns = arr.splice(0, arr.length - 1);
+      }
+    },
     // 分页查询
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
       this.getChangeDetailPageFn();
-    }
+    },
   },
   created() {},
   mounted() {
     this.particularsData = JSON.parse(this.$route.query.record);
     this.changeOrderId = this.particularsData[0].changeOrderId;
-    this.changeType = this.particularsData[0].changeType;
+    this.changeType = this.particularsData[0].changeType + "";
+    this.assetType = this.particularsData[0].assetType + "";
     this.query();
     this.getChangeDetailPageFn();
-  }
+  },
 };
 </script>
 <style lang="less" scoped>
