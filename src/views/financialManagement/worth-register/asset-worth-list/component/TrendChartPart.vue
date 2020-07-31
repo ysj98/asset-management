@@ -7,8 +7,9 @@
       </div>
       <div class="tip_style">
         <span>资产原值：<span style="font-weight: bold">{{originalValue || '--'}}</span>元</span>
-        <span><i style="background-color: #F49000"></i>评估原值</span>
-        <span><i style="background-color: #45A2FF"></i>评估市值</span>
+        <span v-for="m in tips" :key="m.title">
+          <i :style="{backgroundColor: m.color}"></i>{{m.title}}
+        </span>
       </div>
     </div>
   </a-spin>
@@ -29,7 +30,12 @@
       return {
         defaultImg,
         spinning: false, //加载状态
-        trendInfo: [] // 趋势图数据
+        trendInfo: [], // 趋势图数据
+        tips: [
+          {title: '成本法估值', color: '#F49000', method: '1'},
+          {title: '市场法估值', color: '#0000ff', method: '2'},
+          {title: '收益法估值', color: '#33cc66', method: '3'}
+        ] // 图示说明文字及颜色
       }
     },
 
@@ -38,16 +44,17 @@
       renderChart (dataSource) {
         if (!dataSource || !dataSource.length) { return false }
         let categoryList = []
+        let {tips} = this
         let data = dataSource.map(m => {
           const { assessmenBaseDate, assessmentOrganName, assessmentValue, assessmentMethod, assessmentMethodName } = m
           categoryList.push(assessmenBaseDate)
-          let key = String(assessmentMethod) === '1' ? '评估原值：' : '评估市值：'
+          // let key = String(assessmentMethod) === '1' ? '评估原值：' : '评估市值：'
           return {
             value: assessmentValue,
-            itemStyle: { color: String(assessmentMethod) === '1' ? '#F49000' : '#45A2FF' },
+            itemStyle: { color: (tips[Number(assessmentMethod) - 1] || {}).color || '' },  // 后期获取接口数据，需要优化
             tooltip: {
               padding: [10, 15],
-              formatter: `${key}${assessmentValue}元<br/>评估方法：${assessmentMethodName || ''}<br/>评估机构：${assessmentOrganName}<br/>评估时间：${assessmenBaseDate}`
+              formatter: `评估价值：${assessmentValue}元<br/>评估方法：${assessmentMethodName || ''}<br/>评估机构：${assessmentOrganName}<br/>评估时间：${assessmenBaseDate}`
             }
           }
         })
