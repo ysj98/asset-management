@@ -134,7 +134,7 @@
             { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
              { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
-            { title: '资产面积(㎡)', dataIndex: 'executeDate' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
+            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
             { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
             { title: '核实时间', dataIndex: 'verifierTime' }, { title: '核实人', dataIndex: 'verifierByName' }
           ]
@@ -173,7 +173,7 @@
       handleModalAction (type) {
         if (type) {
           this.selectedList = this.$refs['select_asset'].selectedList
-          this.queryAssetByRegistId({})
+          // this.queryAssetByRegistId({})
         }
         this.modalObj.isShow = false
       },
