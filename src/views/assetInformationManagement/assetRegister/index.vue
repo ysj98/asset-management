@@ -120,7 +120,7 @@ const columns = [
   },
   {
     title: '核实时间',
-    dataIndex: 'verificationTime'
+    dataIndex: 'verifierTime'
   },
   {
     title: '核实人',

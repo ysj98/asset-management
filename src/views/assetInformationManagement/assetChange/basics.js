@@ -294,6 +294,50 @@ export const baseChange = [{
   align: 'center',
   scopedSlots: { customRender: 'operation' }
 }]
+// 基础信息变更222
+export const baseChangeTwo = [{
+  title: '资产名称',
+  dataIndex: 'assetName',
+  width: '15%'
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode',
+},{
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+}, {
+  title: '资产分类',
+  dataIndex: 'assetCategoryName',
+},{
+  title: '所在位置',
+  dataIndex: 'address',
+}, {
+  title: '装修',
+  dataIndex: 'oldDecorationSituation',
+}, {
+  title: '变更后资产名称',
+  dataIndex: 'newAssetName',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetName' },
+  width: 120
+}, {
+  title: '变更后资产编码',
+  dataIndex: 'newAssetCode',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetCode' },
+  width: 120
+}, {
+  title: '变更后装修情况',
+  dataIndex: 'newDecorationSituation',
+  align: 'center',
+  scopedSlots: { customRender: 'newDecorationSituation' },
+  width: 120
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  align: 'center',
+  scopedSlots: { customRender: 'operation' }
+}]
 // 债权债务变更
 export const debtChange = [{
   title: '资产名称',

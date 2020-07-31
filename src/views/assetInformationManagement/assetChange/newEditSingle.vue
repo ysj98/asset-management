@@ -387,6 +387,13 @@
             <template v-if="changeType === '7'" slot="newAssetCode" slot-scope="text, record">
               <a-input size="small" maxlength="30" v-model="record.newAssetCode" />
             </template>
+            <template
+              v-if="changeType === '7' && ['1'].includes(assetType)"
+              slot="newDecorationSituation"
+              slot-scope="text, record"
+            >
+              <a-input size="small" maxlength="200" v-model="record.newDecorationSituation" />
+            </template>
             <!-- 债权债务 -->
             <template v-if="changeType === '8'" slot="newCreditorAmount" slot-scope="text, record">
               <a-input-number
@@ -419,7 +426,13 @@
       </div>
     </div>
     <!-- 选择资产 -->
-    <AssetBundlePopover :changeType="true" :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <AssetBundlePopover
+      :changeType="true"
+      :organId="organId"
+      queryType="1"
+      ref="assetBundlePopover"
+      @status="status"
+    ></AssetBundlePopover>
     <FormFooter style="border:none;" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交</SG-Button>
@@ -441,6 +454,7 @@ import {
   projectChange,
   baseChange,
   debtChange,
+  baseChangeTwo,
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips";
@@ -544,6 +558,9 @@ export default {
         this.columns = projectChange;
       } else if (val === "7") {
         this.columns = baseChange;
+        // 装修情况有变化
+        console.log("会进到这里来1");
+        this.handleBaseAndHuse();
       } else if (val === "8") {
         this.columns = debtChange;
       }
@@ -577,7 +594,6 @@ export default {
       this.$api.assets.getChangeInfo(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          this.changeType = String(data.changeType);
           let files = [];
           if (data.attachment && data.attachment.length > 0) {
             data.attachment.forEach((item) => {
@@ -587,6 +603,14 @@ export default {
               });
             });
           }
+          Object.assign(this, {
+            projectId: data.projectId,
+            changeType: String(data.changeType), // 用来判断对象变更类型
+            originalObjectType: String(data.originalObjectType), // 原值对象类型
+            assetType: String(data.assetType),
+            shareWay: String(data.shareWay),
+            originalValue: Number(data.originalValue) || undefined,
+          });
           this.newEditSingleData.files = files;
           let checkedData = [];
           data.assetDetailList.forEach((item, index) => {
@@ -599,6 +623,9 @@ export default {
 
             item.creditorAmount = item.oldCreditorAmount;
             item.debtAmount = item.oldDebtAmount;
+
+            // 基础信息字段映射
+            item.newDecorationSituation = item.decorationSituation;
             checkedData.push(item.assetId);
           });
           this.$nextTick(() => {
@@ -634,18 +661,10 @@ export default {
                 this.organBuild(data.projectId);
               }
             }
-            Object.assign(this, {
-              projectId: data.projectId,
-              changeType: String(data.changeType), // 用来判断对象变更类型
-              originalObjectType: String(data.originalObjectType), // 原值对象类型
-              assetType: String(data.assetType),
-              shareWay: String(data.shareWay),
-              originalValue: Number(data.originalValue) || undefined,
-            });
             this.checkedData = [...checkedData];
             this.tableData = data.assetDetailList;
+            console.log(this.tableData, "拿到的数据");
           });
-          console.log(this.tableData, "拿到的数据");
         } else {
           this.$message.error(res.data.message);
         }
@@ -775,6 +794,11 @@ export default {
                 String(this.changeType) === "7" ? item.newAssetName : "", // 变更后资产名称
               newAssetCode:
                 String(this.changeType) === "7" ? item.newAssetCode : "", // 变更后资产编码
+              decorationSituation:
+                String(this.changeType) === "7" &&
+                ["1"].includes(String(this.assetType))
+                  ? item.newDecorationSituation
+                  : "", // 变更后装修情况
               creditorAmount:
                 String(this.changeType) === "8" ? item.newCreditorAmount : "", // 变更后债权金额
               debtAmount:
@@ -822,8 +846,10 @@ export default {
       this.checkedData = [...val];
       data.forEach((item, index) => {
         item.key = item.assetId;
+        item.oldDecorationSituation = item.decorationSituation;
       });
       this.tableData = data;
+      console.log("有走这里=>", this.tableData);
       this.$refs.assetBundlePopover.show = false;
     },
     // 添加资产
@@ -875,6 +901,8 @@ export default {
       }
       // 如果是设备 并且变更类型是原值变动  原值对象类型非资产
       this.handleDefaultShareWay();
+      // 装修情况有变化
+      this.handleBaseAndHuse();
     },
     handleDefaultShareWay() {
       // 如果是设备 并且变更类型是原值变动  原值对象类型非资产
@@ -892,17 +920,18 @@ export default {
         let originalObjectTypeName = this.originalObjectTypeData.find(
           (item) => item.value === this.originalObjectType
         ).name;
-        let originalObjectId = this.form.getFieldValue("originalObjectId") || ''
+        let originalObjectId =
+          this.form.getFieldValue("originalObjectId") || "";
         let originalObjectIdName = this.originalObjectIdData.find(
           (item) => item.value === originalObjectId
         ).name;
         let shareWayName = this.shareWayData.find(
           (item) => item.value === this.shareWay
         ).name;
-        let originalValue = this.originalValue
-        return `根据${originalObjectTypeName}(${originalObjectIdName})资产原值${originalValue}${shareWayName}`
+        let originalValue = this.originalValue;
+        return `根据${originalObjectTypeName}(${originalObjectIdName})资产原值${originalValue}${shareWayName}`;
       }
-      return ''
+      return "";
     },
     // 计算平均分摊值
     computedEqually: debounce(function () {
@@ -925,9 +954,9 @@ export default {
         // 平均值
         let pin = calc.divide(originalValue, nums);
         this.tableData.forEach((item) => {
-          item.newOriginalValue = !Number(item.assetArea) ? 0 :Number(
-            Number(calc.multiply(pin, item.assetArea)).toFixed(2)
-          );
+          item.newOriginalValue = !Number(item.assetArea)
+            ? 0
+            : Number(Number(calc.multiply(pin, item.assetArea)).toFixed(2));
         });
         // 依次各个值
       }
@@ -940,8 +969,15 @@ export default {
         });
         // 依次各个值
       }
-      this.form.setFieldsValue({'remark': this.joinRemark()})
+      this.form.setFieldsValue({ remark: this.joinRemark() });
     }, 200),
+    // 当为基础信息变动， 并且为房屋或者车场，资产类型
+    handleBaseAndHuse() {
+      console.log("会进到这里来2", this.changeType, "www", this.assetType);
+      if (this.changeType === "7" && ["1"].includes(this.assetType)) {
+        this.columns = baseChangeTwo;
+      }
+    },
     // 资产类型改变清空值
     assetTypeChangeClear() {
       // 如果是变更类型资产原值
