@@ -19,16 +19,8 @@
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
     </SG-SearchContainer>
-    <div class="asset-project-header">
-      <a-row>
-        <a-col v-for="(item,index) in assetStatistics" :key="index" :span="4">
-          <div class="asset-project-item">
-            <div class="asset-project-item-title">{{item.title}}</div>
-            <div class="asset-project-item-number">{{item.area}}</div>
-          </div>
-        </a-col>
-      </a-row>
-    </div>
+    <!--概览-->
+    <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     <div>
       <a-table
         :columns="columns"
@@ -58,6 +50,7 @@
 <script>
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
+import OverviewNumber from 'src/views/common/OverviewNumber'
 
 const columns = [
   {
@@ -153,7 +146,7 @@ const columns = [
 
 export default {
   components: {
-    TreeSelect, noDataTips
+    TreeSelect, noDataTips, OverviewNumber
   },
   data () {
     return {
@@ -162,14 +155,11 @@ export default {
       assetProject: '',
       assetProjectOptions: [],
       onlyCurrentOrgan: false,
-      assetStatistics: [
-        {title: '所有资产(㎡)', area: ''},
-        {title: '运营(㎡)', area: ''},
-        {title: '闲置(㎡)', area: ''},
-        {title: '自用(㎡)', area: ''},
-        {title: '占用(㎡)', area: ''},
-        {title: '其他(㎡)', area: ''},
-      ],
+      numList: [
+        {title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
+        {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+        {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
+      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       columns,
       dataSource: [],
       paginator: {
@@ -181,10 +171,17 @@ export default {
       sumObj: {
         area: '', buildNum: '', assetNum: '', transferOperationArea: '', selfUserArea: '',
         idleArea: '', occupationArea: '', otherArea: '', originalValue: '', marketValue: ''
-      } // 求和用的对象
+      }, // 求和用的对象
+      current: null // 当前选中的概览区域下标，与后台入参一一对应
     }
   },
   methods: {
+    // 点击总览数据块
+    handleClickOverview({i}) {
+      this.current = i
+      this.queryClick()
+    },
+
     changeTree (value) {
       this.organId = value
       this.getAssetProjectOptions()
@@ -214,13 +211,14 @@ export default {
       this.queryList('click').then(() => this.queryStatistics())
     },
     queryList (type) {
-      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}} = this
+      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
       let form = {
         organId,
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
-        isCurrent: onlyCurrentOrgan
+        isCurrent: onlyCurrentOrgan,
+        flag: current ? (current - 1) : null
       }
       return this.$api.assets.viewGetAssetHouseList(form).then(res => {
         if (res.data.code === '0') {
@@ -236,7 +234,7 @@ export default {
             Object.keys(sumObj).forEach(key => {
               !pageSum[key] && (pageSum[key] = 0)
               pageSum[key] += item[key] ? Number(item[key]) : 0
-              pageSum[key] = Number(pageSum[key].toFixed(2))
+              if (index === data.length - 1) { pageSum[key] = pageSum[key].toFixed(2)}
             })
             for (let key in item) {
               item[key] = item[key] || '--'
@@ -256,21 +254,21 @@ export default {
       let form = {
         organId: this.organId,
         projectId: this.assetProject,
-        isCurrent: this.onlyCurrentOrgan
+        isCurrent: this.onlyCurrentOrgan,
+        flag: this.current ? (this.current - 1) : null
       }
       this.$api.assets.viewGetAssetHouseStatistics(form).then(res => {
         if (res.data.code === '0') {
           let temp = res.data.data || {}
-          let {measuredArea, transferOperationArea, idleArea, selfUserArea, occupationArea, otherArea} = temp
-          this.assetStatistics[0].area = measuredArea ? measuredArea.toFixed(2) : 0
-          this.assetStatistics[1].area = transferOperationArea ? transferOperationArea.toFixed(2) : 0
-          this.assetStatistics[2].area = idleArea ? idleArea.toFixed(2) : 0
-          this.assetStatistics[3].area = selfUserArea ? selfUserArea.toFixed(2) : 0
-          this.assetStatistics[4].area = occupationArea ? occupationArea.toFixed(2) : 0
-          this.assetStatistics[5].area = otherArea ? otherArea.toFixed(2) : 0
-          Object.keys(this.sumObj).forEach(key => this['sumObj'][key] = temp[key] ? temp[key].toFixed(2) : 0)
-          this.sumObj.area =  temp.measuredArea || 0
-          this.dataSource.length && this.dataSource.push({...this.sumObj, projectCode: '所有页-合计', key: Date.now()})
+          let {measuredArea} = temp
+          let {numList, dataSource, sumObj} = this
+          this.numList = numList.map(m => {
+            return {...m, value: temp[m.key] ? temp[m.key].toFixed(2) : 0}
+          })
+          Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ? temp[key].toFixed(2) : 0)
+          sumObj.area =  measuredArea ? measuredArea.toFixed(2) : 0
+          this.sumObj = sumObj
+          dataSource.length && this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
         } else {
           this.$message.error(res.data.message)
         }
@@ -301,46 +299,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .asset-project-header {
-    border-top: 1px solid #EFF2F7;
-    .asset-project-item {
-      /*height: 80px;*/
-      padding: 18px 0;
-      text-align: center;
-      color: white;
-      border-right: 1px solid #EFF2F7;
-      .asset-project-item-title {
-        font-size: 14px;
-        margin-bottom: 10px;
-      }
-      .asset-project-item-number {
-        font-size: 20px;
-        font-weight:bold;
-        color: #324057 !important;
-      }
-    }
-    .ant-col-4 {
-      &:nth-child(1) .asset-project-item{
-        background: white;
-        color: #49505E;
-      }
-      &:nth-child(2) {
-        background: #1EC76A;
-      }
-      &:nth-child(3) {
-        background: #46A6FF;
-      }
-      &:nth-child(4) {
-        background: #E49AEB;
-      }
-      &:nth-child(5) {
-        background: #FD9090;
-      }
-      &:nth-child(6) {
-        background: #BBC8D6;
-      }
-    }
-  }
   .custom-table {
     padding-bottom: 50px;
     & /deep/ table {

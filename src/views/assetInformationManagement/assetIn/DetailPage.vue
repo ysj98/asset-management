@@ -133,7 +133,7 @@
             assetRegisterId && this.queryAssetByRegistId({assetRegisterId})
             return Object.assign(this, {
               assetRegisterId,
-              infoData: { others, statusName: nameList[status] },
+              infoData: { ...others, statusName: nameList[status] },
               attachmentList: (attachmentList || []).map(m => {
                 return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
               })
