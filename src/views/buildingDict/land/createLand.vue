@@ -535,9 +535,10 @@ export default {
     queryLandType() {
       let data = {
         dictCode: "OCM_LAND_TYPE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.routeQuery.organId
       };
-      this.$api.basics.queryDictList(data).then(res => {
+      this.$api.basics.queryDictDataList(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = data.map(item => ({
@@ -552,9 +553,10 @@ export default {
     queryLandUseTypeList() {
       let data = {
         dictCode: "OCM_LANDUSE_TYPE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.routeQuery.organId
       };
-      this.$api.basics.queryDictList(data).then(res => {
+      this.$api.basics.queryDictDataList(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseTypeOpt = data.map(item => ({
@@ -569,9 +571,10 @@ export default {
     queryLandUseList() {
       let data = {
         dictCode: "OCM_LANDUSE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.routeQuery.organId
       };
-      this.$api.basics.queryDictList(data).then(res => {
+      this.$api.basics.queryDictDataList(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseOpt = data.map(item => ({

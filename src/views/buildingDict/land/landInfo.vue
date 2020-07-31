@@ -218,9 +218,10 @@ export default {
     queryLandType() {
       let data = {
         dictCode: "OCM_LAND_TYPE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.queryCondition.organId
       };
-      return this.$api.basics.queryDictList(data).then(res => {
+      return this.$api.basics.queryDictDataList(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = utils.deepClone(landTypeOpt);
@@ -239,9 +240,10 @@ export default {
     queryLandUseList() {
       let data = {
         dictCode: "OCM_LANDUSE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.queryCondition.organId
       };
-      return this.$api.basics.queryDictList(data).then(res => {
+      return this.$api.basics.queryDictDataList(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseOpt = utils.deepClone(landuseOpt);
