@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-30 20:04:17
+ * @LastEditTime: 2020-07-31 17:23:31
  * @Description: 使用方向
 --> 
 <template>
@@ -149,7 +149,7 @@ export default {
       console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
-      fileData.append('registerOrderModelFile', files[0])
+      fileData.append('file', files[0])
       fileData.append('registerOrderId', this.registerOrderId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {

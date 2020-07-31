@@ -256,7 +256,7 @@ export function userForExport (data) {
 }
 // 批量更新
 export function usrForImport (data) {
-  return axiosGet(assets.assetRegister.usrForImport, data)
+  return axiosPost(assets.assetRegister.usrForImport, data)
 }
 // 相关费用下载导入模板
 export function correlationExpenseExport (data) {
