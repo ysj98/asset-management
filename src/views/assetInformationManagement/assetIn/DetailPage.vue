@@ -84,7 +84,7 @@
             { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
-            { title: '资产面积(㎡)', dataIndex: 'executeDate' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
+            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
             { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
             { title: '核实时间', dataIndex: 'verifierTime' }, { title: '核实人', dataIndex: 'verifierByName' }
           ]
@@ -128,11 +128,12 @@
         this.$api.assets.queryAssetStoreDetail({storeId}).then(({data: res}) => {
           this.spinning = false
           if (res && String(res.code) === '0') {
-            const {attachmentList, assetRegisterId, ...others} = res.data
+            let nameList = ['待审批', '已驳回', '已审批', '已取消']
+            const {attachmentList, assetRegisterId, status, ...others} = res.data
             assetRegisterId && this.queryAssetByRegistId({assetRegisterId})
             return Object.assign(this, {
               assetRegisterId,
-              infoData: others,
+              infoData: { others, statusName: nameList[status] },
               attachmentList: (attachmentList || []).map(m => {
                 return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
               })

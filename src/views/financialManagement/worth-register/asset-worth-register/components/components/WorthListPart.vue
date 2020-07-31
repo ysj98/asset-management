@@ -352,17 +352,24 @@
             dataSource.forEach(m => {
               totalArea += m.assetArea ? Number(m.assetArea) * 100 : 0
             })
-            list = dataSource.map((m, i) => {
-              let assessmentValue = ''
-              if (totalArea) {
-                let rest = (assetValue * 100) % (totalArea * 100)
-                if (assetValue) {
-                  let val = Math.floor(Number(m.assetArea) * 100 * assetValue * 100 / (totalArea * 100))
-                  assessmentValue = (i + 1 === dataSource.length) ? ((val + rest) / 100) : (val / 100)
-                }
-              }
-              return {...m, assessmentValue}
-            })
+            totalArea = totalArea ? totalArea / 100 : 0
+            if (totalArea && assetValue) {
+              let diff = 1
+              let rest = 0
+               if (assetValue >= totalArea) {
+                 rest = assetValue % totalArea
+               } else {
+                 diff = Math.pow(10, totalArea.toFixed().length - assetValue.toFixed().length)
+                 rest = (assetValue * diff * 10) % totalArea
+               }
+              list = dataSource.map((m, i) => {
+                let val = Math.floor(100 * Number(m.assetArea || 0) * assetValue / totalArea)
+                let assessmentValue = (i + 1 === dataSource.length) ? ((val + rest * (diff === 1 ? 1 : 10) / diff) / 100) : (val / 100)
+                return {...m, assessmentValue}
+              })
+            } else {
+              list = dataSource
+            }
           }
         }
         this.calcSum(list)
