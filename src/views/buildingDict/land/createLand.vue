@@ -536,15 +536,16 @@ export default {
       let data = {
         dictCode: "OCM_LAND_TYPE",
         dictFlag: "1",
-        groupId: this.routeQuery.organId
+        groupId: this.routeQuery.organId,
+        code: "OCM_LAND_TYPE",
+        organId: this.routeQuery.organId,
       };
-      this.$api.basics.queryDictDataList(data).then(res => {
+      this.$api.basics.organDict(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = data.map(item => ({
-            value: item["dictValue"],
-            label: item["dictName"],
-            id: item["dictId"]
+            value: item["value"],
+            label: item["name"],
           }));
         }
       });
@@ -554,15 +555,16 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE_TYPE",
         dictFlag: "1",
-        groupId: this.routeQuery.organId
+        groupId: this.routeQuery.organId,
+        code: "OCM_LANDUSE_TYPE",
+        organId: this.routeQuery.organId,
       };
-      this.$api.basics.queryDictDataList(data).then(res => {
+      this.$api.basics.organDict(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseTypeOpt = data.map(item => ({
-            value: item["dictValue"],
-            label: item["dictName"],
-            id: item["dictId"]
+            value: item["value"],
+            label: item["name"],
           }));
         }
       });
@@ -572,15 +574,16 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE",
         dictFlag: "1",
-        groupId: this.routeQuery.organId
+        groupId: this.routeQuery.organId,
+        code: "OCM_LANDUSE",
+        organId: this.routeQuery.organId,
       };
-      this.$api.basics.queryDictDataList(data).then(res => {
+      this.$api.basics.organDict(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseOpt = data.map(item => ({
-            value: item["dictValue"],
-            label: item["dictName"],
-            id: item["dictId"]
+            value: item["value"],
+            label: item["name"],
           }));
         }
       });

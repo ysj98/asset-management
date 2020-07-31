@@ -219,17 +219,19 @@ export default {
       let data = {
         dictCode: "OCM_LAND_TYPE",
         dictFlag: "1",
-        groupId: this.queryCondition.organId
+        groupId: this.queryCondition.organId,
+        code: "OCM_LAND_TYPE",
+        organId: this.queryCondition.organId,
       };
-      return this.$api.basics.queryDictDataList(data).then(res => {
+      return this.$api.basics.organDict(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = utils.deepClone(landTypeOpt);
           data.forEach(item => {
             this.landTypeOpt.push({
-              value: item["dictValue"],
-              label: item["dictName"],
-              id: item["dictId"]
+              value: item["value"],
+              label: item["name"],
+              // id: item["dictId"]
             });
           });
           this.queryCondition.landType = "";
@@ -241,17 +243,18 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE",
         dictFlag: "1",
-        groupId: this.queryCondition.organId
+        groupId: this.queryCondition.organId,
+        code: "OCM_LANDUSE",
+        organId: this.queryCondition.organId,
       };
-      return this.$api.basics.queryDictDataList(data).then(res => {
+      return this.$api.basics.organDict(data).then(res => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseOpt = utils.deepClone(landuseOpt);
           data.forEach(item => {
             this.landuseOpt.push({
-              value: item["dictValue"],
-              label: item["dictName"],
-              id: item["dictId"]
+               value: item["value"],
+               label: item["name"],
             });
           });
           this.queryCondition.landuse = "";
