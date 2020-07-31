@@ -39,7 +39,7 @@
         if (!dataSource || !dataSource.length) { return false }
         let categoryList = []
         let data = dataSource.map(m => {
-          const { assessmenBaseDate, assessmentOrganName, assessmentValue, assessmentMethod } = m
+          const { assessmenBaseDate, assessmentOrganName, assessmentValue, assessmentMethod, assessmentMethodName } = m
           categoryList.push(assessmenBaseDate)
           let key = String(assessmentMethod) === '1' ? '评估原值：' : '评估市值：'
           return {
@@ -47,7 +47,7 @@
             itemStyle: { color: String(assessmentMethod) === '1' ? '#F49000' : '#45A2FF' },
             tooltip: {
               padding: [10, 15],
-              formatter: `${key}${assessmentValue}元<br/>评估机构：${assessmentOrganName}<br/>评估时间：${assessmenBaseDate}`
+              formatter: `${key}${assessmentValue}元<br/>评估方法：${assessmentMethodName || ''}<br/>评估机构：${assessmentOrganName}<br/>评估时间：${assessmenBaseDate}`
             }
           }
         })

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 17:22:25
- * @LastEditTime: 2020-07-30 11:55:12
+ * @LastEditTime: 2020-07-30 20:03:11
  * @Description: 使用方向
 -->
 <template>
@@ -228,6 +228,7 @@ export default {
         if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('提交成功')
+            this.$emit('allQuery')
             this.handleCancel()
           })
         } else {
