@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-13 17:56:01
- * @LastEditTime: 2020-07-29 17:44:34
+ * @LastEditTime: 2020-08-01 18:07:52
  * @Description: 附属配套
 --> 
 <template>
@@ -44,7 +44,7 @@
     <!-- 新增编辑 -->
     <completeSetNew @cancel="cancel" v-if="modalShow" ref="completeSetNew" @allQuery=allQuery></completeSetNew>
     <!-- 下载模板 -->
-    <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
+    <eportAndDownFile title="附属配套" ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
 </template>
 
