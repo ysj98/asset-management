@@ -252,8 +252,8 @@ export default {
   }
   .create-btn{
     height: 69px;
-    padding-left: 20px;
-    padding-right: 15px;
+    padding-left: 12px;
+    padding-right: 12px;
     border-bottom: 1px solid rgba(238,242,245,1);
     display: flex;
     justify-content: space-between;
