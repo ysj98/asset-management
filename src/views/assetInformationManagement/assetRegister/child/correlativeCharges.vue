@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-16 11:30:26
- * @LastEditTime: 2020-07-30 14:30:47
+ * @LastEditTime: 2020-08-01 18:08:20
  * @Description: 相关费用
 -->
 <template>
@@ -44,7 +44,7 @@
     <!-- 新增编辑 -->
     <chargesNewEdit @cancel="cancel" v-if="modalShow" ref="chargesNewEdit" @allQuery=allQuery></chargesNewEdit>
     <!-- 下载模板 -->
-    <eportAndDownFile ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
+    <eportAndDownFile title="相关费用" ref="eportAndDownFile" @upload="uploadModeFile" @down="down"></eportAndDownFile>
   </div>
 </template>
 

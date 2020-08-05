@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-07-29 16:11:35
+ * @LastEditTime: 2020-08-03 10:32:07
  * @Description: file content
  */ 
 
@@ -13,7 +13,7 @@ export const columnsData = [
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '建筑面积', dataIndex: 'area', width: 100 },
-  { title: '坐落位置', dataIndex: 'pasitionString', width: 250 },
+  { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
@@ -106,7 +106,7 @@ export const landData = [
   { title: '宗地号', dataIndex: 'theNo', width: 100 },
   { title: '土地类型', dataIndex: 'landTypeName', width: 100 },
   { title: '土地用途', dataIndex: 'landuseName', width: 100 },
-  { title: '坐落位置', dataIndex: 'pasitionString', width: 230 },
+  { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },

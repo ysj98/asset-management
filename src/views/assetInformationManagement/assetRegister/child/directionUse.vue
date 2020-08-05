@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-07-31 17:23:31
+ * @LastEditTime: 2020-08-01 10:25:54
  * @Description: 使用方向
 --> 
 <template>
@@ -164,6 +164,7 @@ export default {
       let loadingName = this.SG_Loding('导入中...')
       this.$api.assets.usrForImport(this.formData).then(res => {
         if (res.data.code === '0') {
+          e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
             this.allQuery()

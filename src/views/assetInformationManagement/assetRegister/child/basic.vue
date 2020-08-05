@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-07-30 13:54:21
+ * @LastEditTime: 2020-08-03 10:34:03
  * @Description: 房屋土地
 --> 
 <template>
@@ -22,7 +22,7 @@
     <div class="table-borders" :class="{'overflowX': tableData.length === 0}">
       <a-table
         class="table-boxs"
-        :scroll="{y: 450, x: 2200}"
+        :scroll="{y: 450, x: 2300}"
         :columns="columns"
         :dataSource="tableData"
         :pagination="false"
@@ -55,6 +55,12 @@ import noDataTips from '@/components/noDataTips'
 import {columnsData, judgmentData, landData, landCheck} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import bridge from './center'
+let getUuid = (() => {
+  let uuid = 1
+  return () => {
+    return ++uuid
+  }
+})()
 export default {
   components: {OverviewNumber, noDataTips, basicDownload},
   props: {
@@ -73,6 +79,7 @@ export default {
   },
   data () {
     return {
+      keyUuid: getUuid(),
       count: '',
       footer: {
         pageNum: 1,
@@ -257,30 +264,13 @@ export default {
         if (res.data.code === '0') {
           e.target.value = ''
           let resData = [], arrData =[], publicData = []
-          // 房屋
           if (this.assetType === '1') {
-            resData =  res.data.data.assetHouseList
-            arrData = utils.deepClone([...resData, ...this.tableData])
-            // 数组去重根据type和objectId
-            let hash = {}
-            arrData = arrData.reduce((preVal, curVal) => {
-              hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
-              return preVal
-            }, [])
+            arrData = res.data.data.assetHouseList
             publicData = judgmentData
           } else if (this.assetType === '4') {
-          // 土地
             resData =  res.data.data.assetBlankList
-            arrData = utils.deepClone([...resData, ...this.tableData])
-            // 数组去重根据objectId
-            let hash = {}
-            arrData = arrData.reduce((preVal, curVal) => {
-              hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
-              return preVal
-            }, [])
             publicData = landCheck
           }
-          landCheck
           // 遍历判断必填有字段
           for (let i = 0; i < arrData.length; i++) {
             for (let j = 0; j < publicData.length; j++) {
@@ -332,12 +322,31 @@ export default {
                 return
               }
             }
-            arrData[i].key = i
+            arrData[i].key = i + getUuid() 
             arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
           }
-          this.tableData = arrData
-          console.log(this.tableData)
+          resData = utils.deepClone([...arrData, ...this.tableData])
+          // 房屋
+          if (this.assetType === '1') {
+            // 数组去重根据type和objectId
+            let hash = {}
+            resData = resData.reduce((preVal, curVal) => {
+              hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
+              return preVal
+            }, [])
+            publicData = judgmentData
+          } else if (this.assetType === '4') {
+            // 土地
+            // 数组去重根据objectId
+            let hash = {}
+            resData = resData.reduce((preVal, curVal) => {
+              hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
+              return preVal
+            }, [])
+            publicData = landCheck
+          }
+          this.tableData = resData
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -553,6 +562,7 @@ export default {
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
         item.kindOfRight = this.ownershipData[item.kindOfRightName]
       })
+      console.log(data, '-=-=-=')
       this.basicData = data
     }
   }
