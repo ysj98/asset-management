@@ -109,8 +109,11 @@ export default {
     containTreeNodes () {
       if (this.searchValueInput) {
         const collect = []
+        // 向上找树节点
         const filterList = Object.values(this.store).filter(v => v.title.includes(this.searchValueInput)).map(v => v.key)
         this.upwardCollectOrgan(filterList, collect)
+        // 向下找树节点
+
         return collect
       } else {
         return Object.keys(this.store)
@@ -142,7 +145,6 @@ export default {
     },
     // 向上收集节点树
     upwardCollectOrgan (list, store) {
-      console.log('vvvv', list)
       if (list.length) {
         const upwardList = list.map(v => {
           if (!store.includes(v)) {
@@ -160,7 +162,6 @@ export default {
         return this.containTreeNodes.includes(item.key)
       }).map(item => {
         let o = {...item}
-        // o.children = []
         return o
       })
       // 重组树树结构
@@ -168,10 +169,13 @@ export default {
       return treeData
     },
     onChange (e) {
+      this.searchValueInput = e.target.value
       let value = this.searchValueInput
       if (!value || !value.trim()) {
-        this.expandedKeys = [...this.copyExpandedKeys]
-        this.gData = this.copyGdata
+        // this.expandedKeys = [...this.copyExpandedKeys]
+        // this.gData = this.copyGdata
+        this.resetLoad()
+        this.treeUuid = getUuid()
         return
       }
       let treeData = this.upCreateTree()
@@ -185,12 +189,14 @@ export default {
         return !filterKeys.includes(item)
       })
       this.gData = treeData
-      console.log('展开', expandedKeys)
+      // console.log('数据=>', this.gData)
+      // console.log('展开', expandedKeys)
       Object.assign(this, {
-        expandedKeys,
+        expandedKeys: [topItem.key],
         // searchValue: value,
         autoExpandParent: true
       })
+      this.treeUuid = getUuid()
     },
     // 重新加载
     resetLoad () {
