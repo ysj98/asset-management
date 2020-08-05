@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-07-30 19:51:15
+ * @LastEditTime: 2020-08-01 16:23:09
  * @Description: 土地资产视图
 --> 
 <template>
@@ -405,7 +405,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
-              item.ownershipStatusName = item.ownershipStatus ? this.ownershipStatusObj[String(item.ownershipStatus)] : ''
+              item.ownershipStatusName = String(item.ownershipStatus) ? this.ownershipStatusObj[String(item.ownershipStatus)] : ''
             })
             this.tableData = data
             this.count = res.data.data.count

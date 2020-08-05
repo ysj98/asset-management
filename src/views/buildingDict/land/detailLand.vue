@@ -161,42 +161,52 @@ export default {
   mounted() {
     let { organId, blankId, organName } = this.$route.query;
     Object.assign(this.routeQuery, { organId, blankId, organName });
-    Promise.all([this.queryLandType(), this.queryLandUseList(), this.queryLandUseTypeList()]).then(res => {
+    Promise.all([
+      this.queryLandType(),
+      this.queryLandUseList(),
+      this.queryLandUseTypeList(),
+    ]).then((res) => {
       this.blankApiDetail();
-    })
+    });
   },
   methods: {
     // 请求土地详情
     blankApiDetail() {
       let data = {
-        blankId: this.routeQuery.blankId
+        blankId: this.routeQuery.blankId,
       };
       this.loading = true;
       this.$api.building.blankApiDetail(data).then(
-        res => {
+        (res) => {
           this.loading = false;
           if (res.data.code === "0") {
             let data = res.data.data;
             // 处理图片
             this.blankInfo = data;
             // 处理字段
-            let landType = this.landTypeOpt.find(item => item.value === data.landType)
-            data.landTypeName = landType ? landType.label : ''
+            let landType = this.landTypeOpt.find(
+              (item) => item.value === data.landType
+            );
+            data.landTypeName = landType ? landType.label : "";
 
-            let landuseType = this.landusetypeOpt.find(item => item.value === data.landuseType)
-            data.landuseTypeName = landuseType ? landuseType.label : ''
-            
-            let landuse = this.landuseOpt.find(item => item.value === data.landuse)
-            data.landuseName = landuse ? landuse.label : ''
+            let landuseType = this.landusetypeOpt.find(
+              (item) => item.value === data.landuseType
+            );
+            data.landuseTypeName = landuseType ? landuseType.label : "";
+
+            let landuse = this.landuseOpt.find(
+              (item) => item.value === data.landuse
+            );
+            data.landuseName = landuse ? landuse.label : "";
             // 处理平面图
             if (data.redMap) {
               this.redMap = [{ url: data.redMap, name: "" }];
             }
-            
+
             // 处理附件
             if (data.filePath) {
               let filePath = data.filePath.split(",");
-              this.filePath = filePath.map(url => {
+              this.filePath = filePath.map((url) => {
                 return { url, name: url.substring(url.lastIndexOf("/") + 1) };
               });
             }
@@ -213,17 +223,19 @@ export default {
     queryLandType() {
       let data = {
         dictCode: "OCM_LAND_TYPE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.routeQuery.organId,
+        code: "OCM_LAND_TYPE",
+        organId: this.routeQuery.organId,
       };
-      return this.$api.basics.queryDictList(data).then(res => {
+      return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
-          this.landTypeOpt = data.map(item => {
+          this.landTypeOpt = data.map((item) => {
             return {
-              value: item["dictValue"],
-              label: item["dictName"],
-              id: item["dictId"]
-            }
+              value: item["value"],
+              label: item["name"],
+            };
           });
         }
       });
@@ -232,17 +244,19 @@ export default {
     queryLandUseList() {
       let data = {
         dictCode: "OCM_LANDUSE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.routeQuery.organId,
+        code: "OCM_LANDUSE",
+        organId: this.routeQuery.organId,
       };
-      return this.$api.basics.queryDictList(data).then(res => {
+      return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
-          this.landuseOpt = data.map(item => {
+          this.landuseOpt = data.map((item) => {
             return {
-              value: item["dictValue"],
-              label: item["dictName"],
-              id: item["dictId"]
-            }
+              value: item["value"],
+              label: item["name"],
+            };
           });
         }
       });
@@ -251,22 +265,24 @@ export default {
     queryLandUseTypeList() {
       let data = {
         dictCode: "OCM_LANDUSE_TYPE",
-        dictFlag: "1"
+        dictFlag: "1",
+        groupId: this.routeQuery.organId,
+        code: "OCM_LANDUSE_TYPE",
+        organId: this.routeQuery.organId,
       };
-      return this.$api.basics.queryDictList(data).then(res => {
+      return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
-          this.landusetypeOpt = data.map(item => {
+          this.landusetypeOpt = data.map((item) => {
             return {
-              value: item["dictValue"],
-              label: item["dictName"],
-              id: item["dictId"]
-            }
+              value: item["value"],
+              label: item["name"],
+            };
           });
         }
       });
     },
-  }
+  },
 };
 </script>
 <style lang="less" scoped>
