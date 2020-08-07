@@ -149,6 +149,11 @@ let proRouter = [
     meta: { keepAlive: true }
   },
   {
+    path: '/organView/detail',
+    name: '详情',
+    component: () => import('@/views/assetInformationManagement/house-account/organ-view/organViewDetail.vue')
+  },
+  {
     path: '/assetProjectView',
     name: '资产项目视图',
     component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewList.vue'),

@@ -147,7 +147,8 @@ export default {
         dataSource: [],
         loading: false,
         totalCount: 0
-      }
+      },
+      totalTableRow: {}, // 汇总数据行
     };
   },
   mounted() {
@@ -186,6 +187,11 @@ export default {
         }
       );
     },
+    // 请求汇总
+    organViewTotal () {
+      
+    },
+    
     // 资产类型发生变化
     changeAssetType(value) {
       this.$nextTick(function() {

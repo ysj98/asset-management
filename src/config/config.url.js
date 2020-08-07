@@ -317,9 +317,14 @@ export const assets = {
     // 组织机构视图面积概览查询
     queryOrganArea: '/ams/asset-house/organ/getTotal',
     // 详情查询
+    // 组织机构视图详情权属 V2
     queryDetail: '/ams/asset-house/organ/houseViewShip',
     // 导出
     exportOrganView: '/ams/asset-house/export',
+    // 组织机构详情
+    viewGetAssetHouseListForOrgan: '/ams/asset-house/viewGetAssetHouseListForOrgan',
+    // 组织机构视图详情表头统计
+    viewGetAssetHouseStatisticsForOrgan: '/ams/asset-house/viewGetAssetHouseStatisticsForOrgan'
   },
   // 房屋台账 - 资产视图
   assetView: {
@@ -544,7 +549,9 @@ export const ownership = {
   // 组织机构权属
   organView: '/ams/ownerShip/owner/organView',
   // 组织机构权属导出
-  organViewExport: '/ams/ownerShip/owner/export'
+  organViewExport: '/ams/ownerShip/owner/export',
+  // 组织机构权属统计
+  organViewTotal: '/ams/ownerShip/owner/organViewTotal'
 }
 
 // 价值登记

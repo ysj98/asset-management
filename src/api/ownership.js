@@ -75,3 +75,7 @@ export function organView (data) {
 export function organViewExport (data) {
   return axiosGet(ownership.organViewExport, data, false, {responseType: 'blob'})
 }
+// 组织机构视图导出
+export function organViewTotal (data) {
+  return axiosGet(ownership.organViewTotal, data)
+}

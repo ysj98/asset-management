@@ -485,7 +485,7 @@ export function queryOrganViewList (data) {
 }
 // 查询组织机构视图面积概览
 export function queryOrganArea (data) {
-  return axiosGet(assets.organView.queryOrganArea, data)
+  return axiosPost(assets.organView.queryOrganArea, data)
 }
 // 查询组织机构视图详情
 export function queryOrganViewDetail (data) {
@@ -495,7 +495,14 @@ export function queryOrganViewDetail (data) {
 export function exportOrganView(data) {
   return axiosPost(assets.organView.exportOrganView, data, false, false, {responseType: 'blob'})
 }
-
+// 组织机构详情
+export function viewGetAssetHouseListForOrgan (data) {
+  return axiosPost(assets.organView.viewGetAssetHouseListForOrgan, data)
+}
+// 组织机构视图详情表头统计
+export function viewGetAssetHouseStatisticsForOrgan (data) {
+  return axiosPost(assets.organView.viewGetAssetHouseStatisticsForOrgan, data)
+}
 // 资产项目管理
 // 分页查询资产项目列表-根据组织ID
 export function queryProjectManageListPage (data) {
