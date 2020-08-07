@@ -394,11 +394,11 @@
     watch: {
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
-        const { projectObj, assetType } = data
-        const {tableObj: {dataSource}} = this
-        if (dataSource.length) {
+        const {tableObj: {dataSource}, type} = this
+        if ((type === 'add' || type === 'edit') && dataSource.length) {
+          const { projectObj, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
-          if (String(assetType) !== String(dataSource[0].assetType) || (projectObj && String(projectObj.projectId) !== String(dataSource[0].projectId))) {
+          if ((assetType && String(assetType) !== String(dataSource[0].assetType)) || (projectObj && String(projectObj.projectId) !== String(dataSource[0].projectId))) {
             // 重置selectedRowKeys
             this.tableObj.selectedRowKeys = []
             return this.tableObj.dataSource = []
