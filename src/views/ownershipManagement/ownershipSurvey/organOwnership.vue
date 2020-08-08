@@ -6,9 +6,9 @@
   <div class="assetProject-page pb70">
     <SearchContainer type="line" :value="false">
       <div slot="headerBtns">
-        <SG-Button type="primary" @click="exportList"
-          ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
-        >
+        <SG-Button type="primary" @click="exportList">
+          <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
+        </SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect
@@ -62,21 +62,25 @@ import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
-import segiIcon from '@/components/segiIcon.vue'
+import segiIcon from "@/components/segiIcon.vue";
 
 const allStyle = { width: "140px", marginRight: "10px" };
 let columns = [
   {
     title: "管理机构",
-    dataIndex: "organName"
+    dataIndex: "organName",
   },
   {
     title: "资产总数",
-    dataIndex: "assetCount"
+    dataIndex: "assetCount",
+  },
+  {
+    title: "权证总面积(㎡)",
+    dataIndex: "ownerShipTotalArea",
   },
   {
     title: "办理进度",
-    dataIndex: "progressName"
+    dataIndex: "progressName",
   },
   {
     title: "所有权",
@@ -84,21 +88,21 @@ let columns = [
     children: [
       {
         title: "总数",
-        dataIndex: "ownerShipCount"
+        dataIndex: "ownerShipCount",
       },
       {
         title: "有证",
-        dataIndex: "ownerShipYesCount"
+        dataIndex: "ownerShipYesCount",
       },
       {
         title: "无证",
-        dataIndex: "ownerShipNoCount"
+        dataIndex: "ownerShipNoCount",
       },
       {
         title: "待办证",
-        dataIndex: "ownerShipWaitCount"
-      }
-    ]
+        dataIndex: "ownerShipWaitCount",
+      },
+    ],
   },
   {
     title: "使用权",
@@ -106,35 +110,35 @@ let columns = [
     children: [
       {
         title: "总数",
-        dataIndex: "useShipCount"
+        dataIndex: "useShipCount",
       },
       {
         title: "有证",
-        dataIndex: "useShipYesCount"
+        dataIndex: "useShipYesCount",
       },
       {
         title: "无证",
-        dataIndex: "useShipNoCount"
+        dataIndex: "useShipNoCount",
       },
       {
         title: "待办证",
-        dataIndex: "useShipWaitCount"
+        dataIndex: "useShipWaitCount",
       },
-    ]
+    ],
   },
-]
+];
 const queryCondition = {
   organId: "",
   assetType: "", // 资产类型，多个用，分隔
   pageNum: 1,
-  pageSize: 10
+  pageSize: 10,
 };
 export default {
   components: {
     SearchContainer,
     TreeSelect,
     segiIcon,
-    noDataTips
+    noDataTips,
   },
   data() {
     return {
@@ -146,7 +150,7 @@ export default {
         columns,
         dataSource: [],
         loading: false,
-        totalCount: 0
+        totalCount: 0,
       },
       totalTableRow: {}, // 汇总数据行
     };
@@ -155,28 +159,32 @@ export default {
     this.platformDictFn("asset_type");
   },
   methods: {
-    query() {
+    async query() {
+      await this.organViewTotal()
       let data = {
         ...this.queryCondition,
         assetTypes:
           this.queryCondition.assetType.length > 0
             ? this.queryCondition.assetType.join(",")
-            : "" // 资产类型id(多个用，分割)
+            : "", // 资产类型id(多个用，分割)
       };
-      delete data.assetType
+      delete data.assetType;
       this.table.loading = true;
       this.$api.ownership.organView(data).then(
-        res => {
+        (res) => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
-            this.table.dataSource = result.map(item => {
-              item.progressName = String(item.progress) ? (item.progress + '%') : ''
+            this.table.dataSource = result.map((item) => {
+              item.progressName = String(item.progress)
+                ? item.progress + "%"
+                : "";
               return {
                 key: utils.getUuid(),
-                ...item
+                ...item,
               };
             });
+            this.table.dataSource.push({...this.totalTableRow})
             this.table.totalCount = res.data.data.count || 0;
           } else {
             this.$message.error(res.data.message);
@@ -188,13 +196,26 @@ export default {
       );
     },
     // 请求汇总
-    organViewTotal () {
-      
+    organViewTotal() {
+      let data = {
+        organId: this.queryCondition.organId,
+        assetTypes:
+          this.queryCondition.assetType.length > 0
+            ? this.queryCondition.assetType.join(",")
+            : "", // 资产类型id(多个用，分割)
+      };
+      return this.$api.ownership.organViewTotal(data).then((res) => {
+        if (res.data.code === "0") {
+          this.totalTableRow = {...res.data.data, key: utils.getUuid(), organName: '全部汇总'}
+        } else {
+          this.$message.error(res.data.message || res.data.msg);
+        }
+      });
     },
-    
+
     // 资产类型发生变化
     changeAssetType(value) {
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(
           value,
           this.queryCondition.assetType,
@@ -218,22 +239,22 @@ export default {
         assetTypes:
           this.queryCondition.assetType.length > 0
             ? this.queryCondition.assetType.join(",")
-            : "" // 资产类型id(多个用，分割)
+            : "", // 资产类型id(多个用，分割)
       };
-      delete data.assetType
-      delete data.pageNum
-      delete data.pageSize
+      delete data.assetType;
+      delete data.pageNum;
+      delete data.pageSize;
       this.$api.ownership.organViewExport(data).then((res) => {
-        console.log(res)
-        let blob = new Blob([res.data])
-        let a = document.createElement("a")
-        a.href = URL.createObjectURL(blob)
-        a.download = `组织机构权属表.xls`
-        a.style.display = "none"
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      })
+        console.log(res);
+        let blob = new Blob([res.data]);
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `组织机构权属表.xls`;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
@@ -256,15 +277,18 @@ export default {
     // 平台字典获取变动类型
     platformDictFn(str) {
       let obj = {
-        code: str
+        code: str,
       };
-      this.$api.assets.platformDict(obj).then(res => {
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           if (str === "asset_type") {
-            this.assetTypeData = [{ label: "全部资产类型", value: "" }, ...data.map(item => {
-              return {...item, label: item.name}
-            })];
+            this.assetTypeData = [
+              { label: "全部资产类型", value: "" },
+              ...data.map((item) => {
+                return { ...item, label: item.name };
+              }),
+            ];
           }
         } else {
           this.$message.error(res.data.message);
@@ -282,7 +306,23 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    }
-  }
+    },
+  },
 };
 </script>
+<style lang='less' scoped>
+.custom-table {
+  padding-bottom: 55px;
+  /*if you want to set scroll: { x: true }*/
+  /*you need to add style .ant-table td { white-space: nowrap; }*/
+  & /deep/ .ant-table {
+    .ant-table-thead th {
+      white-space: nowrap;
+    }
+    tr:last-child
+     {
+      font-weight: bold;
+    }
+  }
+}
+</style>
