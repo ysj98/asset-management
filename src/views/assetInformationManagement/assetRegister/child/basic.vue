@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-08-03 10:34:03
+ * @LastEditTime: 2020-08-10 15:25:15
  * @Description: 房屋土地
 --> 
 <template>
@@ -268,7 +268,7 @@ export default {
             arrData = res.data.data.assetHouseList
             publicData = judgmentData
           } else if (this.assetType === '4') {
-            resData =  res.data.data.assetBlankList
+            arrData =  res.data.data.assetBlankList
             publicData = landCheck
           }
           // 遍历判断必填有字段
