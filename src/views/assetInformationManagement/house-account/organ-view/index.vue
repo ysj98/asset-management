@@ -40,7 +40,7 @@
       <!--<span style="color: #0084FF; cursor: pointer">{{text}}</span>-->
       <!--</span>-->
       <span slot="action" slot-scope="text, record">
-        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+        <span v-if="!record.totalRow" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" />
@@ -156,7 +156,7 @@ export default {
     handleViewDetail(record) {
       let query = {
         organId: record.organId,
-        statusList: this.statusList
+        statusList: this.statusList.includes('all') ? [] : this.statusList
       }
       this.$router.push({ path: '/organView/detail', query: query || {} });
     },
@@ -194,6 +194,7 @@ export default {
                   ...pageSum,
                   organName: "本页合计",
                   organId: "-999",
+                  totalRow: true
                 })
               : [];
             // 查询楼栋面积统计数据
@@ -203,6 +204,7 @@ export default {
                   ...sumObj,
                   organName: "全部合计",
                   organId: Date.now(),
+                  totalRow: true
                 });
             } else {
               this.queryAreaInfo();
