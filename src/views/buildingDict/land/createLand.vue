@@ -545,7 +545,7 @@ export default {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = data.map(item => ({
-            value: item["categoryConfId"],
+            value: item["professionCode"],
             label: item["professionName"],
           }));
         }

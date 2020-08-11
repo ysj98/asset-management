@@ -254,6 +254,7 @@ export default {
                 ...obj,
                 organName: "全部合计",
                 organId: Date.now(),
+                totalRow: true
               });
             return (this.numList = numList.map((m) => {
               return { ...m, value: list[m.key] || 0 };
