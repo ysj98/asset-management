@@ -30,7 +30,7 @@
             :hasAll="false"
             :selectFirst="true"
           />
-          
+
           <!-- 全部运营项目-->
           <a-select
             showSearch
@@ -128,7 +128,7 @@ import {
   queryCondition,
   communityIdOpt,
   landTypeOpt,
-  landuseOpt
+  landuseOpt,
 } from "./dict.js";
 export default {
   components: {
@@ -136,7 +136,7 @@ export default {
     noDataTips,
     segiIcon,
     OperationPopover,
-    topOrganByUser
+    topOrganByUser,
   },
   data() {
     return {
@@ -151,11 +151,11 @@ export default {
         columns,
         dataSource: [],
         loading: false,
-        totalCount: 0
+        totalCount: 0,
       },
       createPower: false, // 新建
       editPower: false, // 编辑
-      deletePower: false // 删除
+      deletePower: false, // 删除
     };
   },
   watch: {
@@ -169,7 +169,7 @@ export default {
         this.queryCondition.pageSize = 10;
         this.query();
       }
-    }
+    },
   },
   mounted() {
     this.handlePower();
@@ -178,25 +178,27 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(',')
+        communityId: this.queryCondition.communityId.join(","),
       };
       this.table.loading = true;
       this.$api.building.blankApiPageList(data).then(
-        res => {
+        (res) => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data || [];
-            let btnArr = this.createOperationBtn()
-            this.table.dataSource = result.map(item => {
+            let btnArr = this.createOperationBtn();
+
+            this.table.dataSource = result.map((item) => {
+              let landuseOptRow =
+                this.landuseOpt.find((v) => v.value === item.landuse) || {};
+              let landTypeOptRow =
+                this.landTypeOpt.find((v) => v.value === item.landType) || {};
               return {
                 key: utils.getUuid(),
                 ...item,
-                landuseName: this.landuseOpt.find(v => v.value === item.landuse)
-                  .label,
-                landTypeName: this.landTypeOpt.find(
-                  v => v.value === item.landType
-                ).label,
-                operationDataBtn: btnArr
+                landuseName: landuseOptRow.label,
+                landTypeName: landTypeOptRow.label,
+                operationDataBtn: btnArr,
               };
             });
             this.table.totalCount = res.data.paginator.totalCount || 0;
@@ -222,16 +224,16 @@ export default {
         // groupId: this.queryCondition.organId,
         // code: "OCM_LAND_TYPE",
         organId: this.queryCondition.organId,
-        assetType: '4'
+        assetType: "4",
       };
       // this.$api.basics.organDict(data)
-      return this.$api.assets.getList(data).then(res => {
+      return this.$api.assets.getList(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = utils.deepClone(landTypeOpt);
-          data.forEach(item => {
+          data.forEach((item) => {
             this.landTypeOpt.push({
-              value: item["categoryConfId"],
+              value: item["professionCode"],
               label: item["professionName"],
               // id: item["dictId"]
             });
@@ -249,14 +251,14 @@ export default {
         code: "OCM_LANDUSE",
         organId: this.queryCondition.organId,
       };
-      return this.$api.basics.organDict(data).then(res => {
+      return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landuseOpt = utils.deepClone(landuseOpt);
-          data.forEach(item => {
+          data.forEach((item) => {
             this.landuseOpt.push({
-               value: item["value"],
-               label: item["name"],
+              value: item["value"],
+              label: item["name"],
             });
           });
           this.queryCondition.landuse = "";
@@ -265,21 +267,21 @@ export default {
     },
     queryCommunityListByOrganId() {
       let data = {
-        organId: this.queryCondition.organId
+        organId: this.queryCondition.organId,
       };
-      this.$api.basics.queryCommunityListByOrganId(data).then(res => {
+      this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
         if (res.data.code === "0") {
           let result = res.data.data || [];
-          let resultArr = result.map(item => {
+          let resultArr = result.map((item) => {
             return {
               label: item.name,
               value: item.communityId,
-              ...item
+              ...item,
             };
           });
           this.communityIdOpt = [
             ...utils.deepClone(communityIdOpt),
-            ...resultArr
+            ...resultArr,
           ];
         }
       });
@@ -304,7 +306,7 @@ export default {
       }
     },
     communityIdSelect(value) {
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         this.queryCondition.communityId = this.handleMultipleSelectValue(
           value,
           this.queryCondition.communityId,
@@ -352,11 +354,11 @@ export default {
     exportList() {
       let data = {
         ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(',')
+        communityId: this.queryCondition.communityId.join(","),
       };
-      delete data.pageNum
-      delete data.pageSize
-      this.$api.building.blankApiExport(data).then(res => {
+      delete data.pageNum;
+      delete data.pageSize;
+      this.$api.building.blankApiExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
@@ -382,17 +384,17 @@ export default {
           onOk: () => {
             let data = {
               organId: this.queryCondition.organId,
-              blankId: record.blankId
+              blankId: record.blankId,
             };
-            this.$api.building.blankApiDelete(data).then(res => {
+            this.$api.building.blankApiDelete(data).then((res) => {
               if (res.data.code === "0") {
-                this.$message.success("删除成功!")
+                this.$message.success("删除成功!");
                 this.query();
               } else {
                 this.$message.error(res.data.message);
               }
             });
-          }
+          },
         });
       }
     },
@@ -402,12 +404,12 @@ export default {
         {
           organId: this.queryCondition.organId,
           organName: this.organName,
-          type
+          type,
         }
       );
       if (["edit", "detail"].includes(type)) {
         Object.assign(query, {
-          blankId: record.blankId
+          blankId: record.blankId,
         });
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });
@@ -424,8 +426,8 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
