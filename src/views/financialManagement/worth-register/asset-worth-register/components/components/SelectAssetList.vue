@@ -29,7 +29,7 @@
           <!--placeholder="请选择资产类型"-->
         <!--/>-->
       <!--</a-col>-->
-      <a-col :span="5">
+      <a-col :span="6">
         <a-select
           style="width: 100%"
           v-model="objectType"
@@ -38,7 +38,7 @@
           placeholder="请选择资产类别"
         />
       </a-col>
-      <a-col :span="5">
+      <a-col :span="6">
         <a-input-search
           v-model.trim="assetNameCode"
           style="width: 100%"
@@ -47,7 +47,7 @@
           placeholder="请输入资产名称"
         />
       </a-col>
-      <a-col :span="6">
+      <a-col :span="6" :offset="3">
         <div style="line-height: 32px">已选：<span style="color: #49505E; font-weight: bold">{{selectedList.length}}</span></div>
       </a-col>
     </a-row>
@@ -97,8 +97,8 @@
       value: { type: Array, default: () => [] },
       // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
       queryType: { type: [Number, String], default: () => 1 },
-      // 资产项目projectId, projectName
-      projectObj: { type: Object, default: () => {} },
+      // 资产项目projectId
+      proId: { type: [Number, String], default: () => '' },
       // 资产类型
       assetType: { type: [Number, String], default: () => '' }
     },
@@ -132,7 +132,7 @@
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
-        const {objectType, assetNameCode, assetType, projectObj: { projectId }, queryType, organId} = this
+        const {objectType, assetNameCode, assetType, proId: projectId, queryType, organId} = this
         if (!projectId) { return this.$message.warn('资产项目Id不存在')}
         this.loading = true
         let form = {
@@ -142,7 +142,7 @@
           objectType: objectType === '-1' ? '' : objectType,
           pageSize: pageLength, pageNum: pageNo
         }
-        this.$api.assets.assetListPage(form).then(r => {
+        return this.$api.assets.assetListPage(form).then(r => {
           let res = r.data
           if (res && res.code.toString() === '0') {
             this.loading = false
@@ -237,10 +237,9 @@
     },
     mounted () {
       const {allAttrs, value, assetType} = this
-      this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value
       // this.queryProjectByOrganId() 外层props传入，改前
       // this.queryAssetTypeDict()
-      this.fetchData({}) // 改后
+      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) // 改后
       this.queryObjectType(assetType)
     },
     watch: {

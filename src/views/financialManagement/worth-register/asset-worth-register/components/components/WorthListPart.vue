@@ -60,8 +60,8 @@
         v-model="selectedList"
         :height="modalObj.height"
         :assetType="dynamicData.assetType"
-        :projectObj="dynamicData.projectObj"
-        :key="dynamicData.projectObj && `${dynamicData.projectObj.projectId}${dynamicData.assetType}`"
+        :proId="dynamicData.projectId"
+        :key="`${dynamicData.projectId}${dynamicData.assetType}`"
       />
       <!--快捷录入资产估值-->
       <set-asset v-else ref="setAsset" :assetType="dynamicData.assetType"/>
@@ -177,9 +177,9 @@
       // 添加资产
       handleAddModal (bool) {
         if (bool) {
-          const { tableObj: { dataSource }, dynamicData: { projectObj, assetType } } = this
+          const { tableObj: { dataSource }, dynamicData: { projectId, assetType } } = this
           // 校验是否已选择资产项目
-          if (!assetType || !projectObj || !projectObj.projectId || !projectObj.projectName) {
+          if (!assetType || !projectId) {
             return this.$emit('validateProject')
           }
           let list = []
@@ -396,9 +396,9 @@
       dynamicData: function (data) {
         const {tableObj: {dataSource}, type} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {
-          const { projectObj, assetType } = data
+          const { projectId, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
-          if ((assetType && String(assetType) !== String(dataSource[0].assetType)) || (projectObj && String(projectObj.projectId) !== String(dataSource[0].projectId))) {
+          if ((assetType && String(assetType) !== String(dataSource[0].assetType)) || (String(projectId) !== String(dataSource[0].projectId))) {
             // 重置selectedRowKeys
             this.tableObj.selectedRowKeys = []
             return this.tableObj.dataSource = []

@@ -114,10 +114,11 @@
             const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
             this.dynamicData = {
+              assetType: others.assetType,
               assessmenBaseDate: others.assessmenBaseDate,
               assessmentOrganName: others.assessmentOrganName,
               assessmentMethodName: others.assessmentMethodName,
-              projectObj: { projectId: others.projectId, projectName: others.projectName }
+              projectId: others.projectId
             }
             return Object.assign(this, { stepList, details: { ...details, ...others } })
           }
