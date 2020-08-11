@@ -98,7 +98,7 @@ let columnsFrist = [
   {
     title: "权属办理进度",
     dataIndex: "progress",
-    width: 200
+    width: 200,
   },
 ];
 let columns = [
@@ -193,7 +193,7 @@ export default {
           value: 0,
           bgColor: "#4BD288",
         },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#d48265" },
+        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
         {
           title: "自用(㎡)",
           key: "selfUserArea",
@@ -206,18 +206,18 @@ export default {
           value: 0,
           bgColor: "#FD7474",
         },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#DD81E6" },
+        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
         {
           title: "资产原值(元)",
           key: "originalValue",
           value: 0,
-          bgColor: "#324057",
+          bgColor: "#DD81E6",
         },
         {
           title: "最新估值(元)",
           key: "marketValue",
           value: 0,
-          bgColor: "#d48265",
+          bgColor: "#1890FF",
         },
       ],
       table: {
@@ -244,10 +244,10 @@ export default {
     let { organId, statusList } = this.$route.query;
     this.routeQueryStore = { organId, statusList };
   },
-  mounted () {
-    this.viewGetAssetHouseListForOrgan()
-    this.viewGetAssetHouseStatisticsForOrgan()
-    this.queryOrganViewDetail()
+  mounted() {
+    this.viewGetAssetHouseListForOrgan();
+    this.viewGetAssetHouseStatisticsForOrgan();
+    this.queryOrganViewDetail();
   },
   methods: {
     // 查询详情列表
@@ -305,10 +305,10 @@ export default {
         .queryOrganViewDetail(data)
         .then((res) => {
           if (Number(res.data.code) === 0) {
-            let result = res.data.data || {}
+            let result = res.data.data || {};
             if (Object.keys(result).length) {
-              result.progress = result.progress + '%'
-              this.tableFirst.dataSource = [{...result, key: 1}]
+              result.progress = result.progress + "%";
+              this.tableFirst.dataSource = [{ ...result, key: 1 }];
             }
           } else {
             this.$message.error(res.data.message || res.data.msg || "请求错误");

@@ -84,7 +84,8 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
-    proxy: proxy.data
+    proxy: proxy.data,
+    host: localhost
   },
   css: {
     loaderOptions: {
