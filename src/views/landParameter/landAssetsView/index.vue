@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-08-01 16:23:09
+ * @LastEditTime: 2020-08-25 17:15:40
  * @Description: 土地资产视图
 --> 
 <template>
@@ -228,6 +228,9 @@ export default {
         break;
         case 5:    // 其他
           this.current = 3
+        break;
+        case null:
+          this.current = ''
         break;
       }
       this.allQuery()
