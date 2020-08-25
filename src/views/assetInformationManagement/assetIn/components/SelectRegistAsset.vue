@@ -85,7 +85,7 @@
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产数量', dataIndex: 'assetNum' },
           { title: '创建人', dataIndex: 'createByName' },
-          { title: '创建日期', dataIndex: 'storageTime' }
+          { title: '创建日期', dataIndex: 'createTime' }
         ]
       }
     },

@@ -40,7 +40,7 @@
           <a-select
             v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'projectObj')"
+            @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
             :options="projectOptions"
           />
@@ -289,15 +289,11 @@
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
-        if (type === 'assessmenBaseDate' || type === 'assetType') {
+        if (type === 'assessmenBaseDate' || type === 'assetType' || type === 'projectId') {
           value = val
         } else if (type === 'assessmentOrganName') {
           const { organOptions } = this
           value = organOptions.filter(m => m.key === val)[0]['title']
-        } else if (type === 'projectObj') {
-          const { projectOptions } = this
-          let obj = projectOptions.filter(m => m.key === val)[0]
-          value = obj ? { projectId: obj.key, projectName: obj.title } : null
         } else if (type === 'assessmentMethodName') {
           const { methodOptions } = this
           value = methodOptions.filter(m => m.key === val)[0]['title']

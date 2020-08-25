@@ -160,7 +160,7 @@ export default {
   },
   methods: {
     async query() {
-      await this.organViewTotal()
+      await this.organViewTotal();
       let data = {
         ...this.queryCondition,
         assetTypes:
@@ -184,7 +184,7 @@ export default {
                 ...item,
               };
             });
-            this.table.dataSource.push({...this.totalTableRow})
+            this.table.dataSource.push({ ...this.totalTableRow });
             this.table.totalCount = res.data.data.count || 0;
           } else {
             this.$message.error(res.data.message);
@@ -206,7 +206,13 @@ export default {
       };
       return this.$api.ownership.organViewTotal(data).then((res) => {
         if (res.data.code === "0") {
-          this.totalTableRow = {...res.data.data, key: utils.getUuid(), organName: '全部汇总'}
+          let result = res.data.data || {};
+          this.totalTableRow = {
+            ...result,
+            key: utils.getUuid(),
+            organName: "全部汇总",
+            progressName: result.progress + "%",
+          };
         } else {
           this.$message.error(res.data.message || res.data.msg);
         }
@@ -319,8 +325,7 @@ export default {
     .ant-table-thead th {
       white-space: nowrap;
     }
-    tr:last-child
-     {
+    tr:last-child {
       font-weight: bold;
     }
   }

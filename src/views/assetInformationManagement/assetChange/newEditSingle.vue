@@ -1060,6 +1060,7 @@ export default {
       let data = {
         organId: this.organId,
         projectId: this.projectId,
+        type: '1'
       };
       this.$api.assets.organBuild(data).then((res) => {
         if (res.data.code === "0") {
