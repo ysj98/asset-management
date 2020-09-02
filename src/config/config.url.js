@@ -166,6 +166,8 @@ export const assets = {
     getMatchingStatisByRgId: '/ams/subsidiaryMatching/getMatchingStatisByRgId',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
+    // 下载附属配套模板，带条件下载
+    downBatchModle: '/ams/subsidiaryMatching/downBatchModle',
     // 批量导入-导入保存
     batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId',
     // 资产登记-价值信息统计

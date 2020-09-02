@@ -206,6 +206,10 @@ export function getRegisterOrderDetailsPageByIdList (data) {
 export function downModle (data) {
   return axiosPost(assets.assetRegister.downModle, data, false, false, {responseType: 'blob'})
 }
+// 下载附属配套模板，带条件
+export function downBatchModle (data) {
+  return axiosPost(assets.assetRegister.downBatchModle, data, false, false, {responseType: 'blob'})
+}
 // 批量导入-导入保存
 export function batchImportByRgId (data) {
   return axiosPost(assets.assetRegister.batchImportByRgId, data)
