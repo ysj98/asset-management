@@ -693,6 +693,11 @@ export function getAcctItemPageList (data) {
 export function assetOperationExpenseParam (data) {
   return axiosPost(assets.assetView.assetOperationExpenseParam, data)
 }
+// 资产入账分页查询汇总
+export function queryCardPageListSum (data) {
+  return axiosPost(assets.assetView.queryCardPageListSum, data)
+}
+
 
 // 资产入库相关
 // 入库单统计

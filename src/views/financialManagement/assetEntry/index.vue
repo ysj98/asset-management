@@ -71,6 +71,8 @@
         <SG-DatePicker label="入账日期" pickerType="RangePicker" style="width: 200px;" @change="onEntryDateChange"></SG-DatePicker>
       </div>
     </SG-SearchContainer>
+    <!--数据总览-->
+    <overview-number :numList="numList"/>
     <div>
       <a-table
         :columns="columns"
@@ -110,6 +112,8 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import BatchImport from 'src/views/common/eportAndDownFile'
   import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
+  import {utils} from '@/utils/utils'
+  import OverviewNumber from 'src/views/common/OverviewNumber'
 
   const columns = [
     {
@@ -231,7 +235,7 @@
   ]
   export default {
     components: {
-      TreeSelect, SegiRangePicker, noDataTips, BatchImport
+      TreeSelect, SegiRangePicker, noDataTips, BatchImport, OverviewNumber
     },
     data () {
       return {
@@ -263,7 +267,14 @@
           totalCount: 0
         },
         showNoDataTips: false,
-        exportBtnLoading: false // 导出按钮loading
+        exportBtnLoading: false, // 导出按钮loading
+        numList: [
+          {title: '资产卡片数量', key: 'num', value: 0, fontColor: '#324057'},
+          {title: '入账原值(元)', key: 'purchaseValue', value: 0, bgColor: '#4BD288'},
+          {title: '累计折旧(元)', key: 'cumulativeDepreciation', value: 0, bgColor: '#1890FF'},
+          {title: '资产净值(元)', key: 'netValue', value: 0, bgColor: '#DD81E6'},
+          {title: '减值准备(元)', key: 'impairmentReady', value: 0, bgColor: '#FD7474'}
+        ] // 概览数字数据, title 标题，value 数值，bgColor 背景色
       }
     },
     watch: {
@@ -449,6 +460,23 @@
             })
             this.dataSource = data
             this.paginator.totalCount = res.data.data.count
+            this.queryCardPageListSum(form)
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      },
+      //明细统计
+      queryCardPageListSum (obj) {
+        let recordedData = utils.deepClone(obj)
+        delete recordedData.pageNum
+        delete recordedData.pageSize
+        this.$api.assets.queryCardPageListSum(recordedData).then(res => {
+          if (Number(res.data.code) === 0) {
+            let data = res.data.data
+            return this.numList = this.numList.map(m => {
+              return { ...m, value: data[m.key] || 0 }
+            })
           } else {
             this.$message.error(res.data.message)
           }

@@ -367,7 +367,9 @@ export const assets = {
     // 资产视图-运营信息-运营收入(计费接口)（分页）
     getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
     // 导出房屋卡片
-    exportHouseCard: '/ams/asset-house/exportById'
+    exportHouseCard: '/ams/asset-house/exportById',
+    // 资产入账分页查询汇总
+    queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
   },
   // 资产项目管理
   projectManage: {
