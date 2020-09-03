@@ -166,6 +166,8 @@ export const assets = {
     getMatchingStatisByRgId: '/ams/subsidiaryMatching/getMatchingStatisByRgId',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
+    // 下载附属配套模板，带条件下载
+    downBatchModle: '/ams/subsidiaryMatching/downBatchModle',
     // 批量导入-导入保存
     batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId',
     // 资产登记-价值信息统计
@@ -369,7 +371,9 @@ export const assets = {
     // 资产视图-运营信息-运营收入(计费接口)（分页）
     getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
     // 导出房屋卡片
-    exportHouseCard: '/ams/asset-house/exportById'
+    exportHouseCard: '/ams/asset-house/exportById',
+    // 资产入账分页查询汇总
+    queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
   },
   // 资产项目管理
   projectManage: {
