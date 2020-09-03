@@ -1,0 +1,710 @@
+<!--
+  资产出库
+-->
+<template>
+    <div class="assets-clear">
+        <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
+            <div slot="headBtns">
+                <SG-Button
+                        icon="plus"
+                        type="primary"
+                        @click="newClearForm"
+                        v-power="ASSET_MANAGEMENT.ASSET_CLEAR_NEW"
+                >导出</SG-Button>
+                <div style="position:absolute;top: 20px;right: 76px;display:flex;">
+                    <treeSelect
+                            @changeTree="changeTree"
+                            placeholder="请选择组织机构"
+                            :allowClear="false"
+                            :style="allStyle"
+                    ></treeSelect>
+                    <a-select
+                            showSearch
+                            :maxTagCount="1"
+                            placeholder="请选择资产项目"
+                            mode="multiple"
+                            :tokenSeparators="[',']"
+                            :style="allStyle"
+                            v-model="queryData.projectIdList"
+                            :options="assetProjectOptions"
+                            @select="filterOption"
+                    ></a-select>
+                    <a-select
+                            :maxTagCount="1"
+                            mode="multiple"
+                            :tokenSeparators="[',']"
+                            placeholder="全部资产类型"
+                            v-model="queryData.assetTypeList"
+                            :options="assetTypeOptions"
+                            style="width: 190px; margin-right: 10px;"
+                            @select="changeAssetType"
+                    ></a-select>
+                    <a-select
+                            :maxTagCount="1"
+                            :style="allStyle"
+                            mode="multiple"
+                            :tokenSeparators="[',']"
+                            placeholder="全部状态"
+                            v-model="queryData.approvalStatusList"
+                            :options="approvalStatusData"
+                            @select="changeStatus"
+                    ></a-select>
+                    <a-input
+                            v-model.trim="queryData.assetName"
+                            style="width: 190px"
+                            :maxLength="30"
+                            placeholder="资产名称/编码"
+                    />
+                </div>
+            </div>
+            <div slot="btns">
+                <SG-Button type="primary" @click="queryClick">查询</SG-Button>
+            </div>
+            <div slot="form" class="formCon">
+                <a-select
+                        showSearch
+                        allowClear
+                        placeholder="全部出库原因"
+                        optionFilterProp="children"
+                        :maxTagCount="1"
+                        :style="allStyle"
+                        mode="multiple"
+                        v-model="queryData.cleanupTypeList"
+                        :tokenSeparators="[',']"
+                        :options="cleanupTypeData"
+                        @select="changeCleanupType"
+                ></a-select>
+                <a-select
+                        showSearch
+                        allowClear
+                        placeholder="全部资产分类"
+                        optionFilterProp="children"
+                        :maxTagCount="1"
+                        :style="allStyle"
+                        mode="multiple"
+                        v-model="queryData.objectTypeList"
+                        :tokenSeparators="[',']"
+                        :options="assetClassifyData"
+                        @select="assetClassifyDataFn"
+                ></a-select>
+                <segi-range-picker
+                        label="入库日期"
+                        style="margin-right: 10px;"
+                        :canSelectToday="true"
+                        @dateChange="onDateChange"
+                ></segi-range-picker>
+                <a-input
+                        v-model.trim="queryData.cleaningOrderCode"
+                        style="width: 190px"
+                        :maxLength="30"
+                        placeholder="出库单名称/编码"
+                />
+            </div>
+        </SG-SearchContainer>
+        <!--数据概览信息-->
+        <a-spin :spinning="overviewNumSpinning">
+            <overview-number :numList="numList" />
+        </a-spin>
+        <div>
+            <a-table
+                    :columns="columns"
+                    :dataSource="dataSource"
+                    class="custom-table td-pd10"
+                    :pagination="false"
+            >
+                <template slot="operation" slot-scope="text, record">
+                    <a class="operation-btn" @click="handleOperation(record)">详情</a>
+                </template>
+            </a-table>
+            <no-data-tips v-show="showNoDataTips"></no-data-tips>
+        </div>
+        <SG-FooterPagination
+                :pageLength="queryData.pageSize"
+                :totalCount="pageTotalCount"
+                location="absolute"
+                v-model="queryData.pageNum"
+                @change="handlePageChange"
+        />
+    </div>
+</template>
+
+<script>
+    import TreeSelect from "../../common/treeSelect";
+    import SegiRangePicker from "@/components/SegiRangePicker";
+    import { getCurrentDate, getThreeMonthsAgoDate } from "utils/formatTime";
+    import noDataTips from "@/components/noDataTips";
+    import moment from "moment";
+    import { ASSET_MANAGEMENT } from "@/config/config.power";
+    import OverviewNumber from "@/views/common/OverviewNumber";
+
+    const columns = [
+        {
+            title: "出库明细ID",
+            dataIndex: "assetId",
+            width: 160
+        },
+        {
+            title: "资产名称",
+            dataIndex: "assetName",
+            width: 160
+        },
+        {
+            title: "资产编码",
+            dataIndex: "assetCode",
+            width: 160
+        },
+        {
+            title: "资产类型",
+            dataIndex: "assetTypeName",
+            width: 160
+        },
+        {
+            title: "资产分类",
+            dataIndex: "objectTypeName",
+            width: 120
+        },
+        {
+            title: "管理机构",
+            dataIndex: "organName",
+            width: 160
+        },
+        {
+            title: "资产项目名称",
+            dataIndex: "projectName",
+            width: 160
+        },
+        {
+            title: "出库单编号",
+            dataIndex: "cleaningOrderCode",
+            width: 160
+        },
+        {
+            title: "出库原因",
+            dataIndex: "cleanupTypeName",
+            width: 120
+        },
+        {
+            title: "资产位置",
+            dataIndex: "location",
+            width: 120
+        },
+        {
+            title: "资产面积",
+            dataIndex: "area",
+            width: 120
+        },
+        {
+            title: "出库人",
+            dataIndex: "creatUserName",
+            width: 120
+        },
+        {
+            title: "出库日期",
+            dataIndex: "createDate",
+            width: 160
+        },
+        {
+            title: "状态",
+            dataIndex: "approvalStatusName",
+            width: 120
+        },
+        {
+            title: "操作",
+            width: 80,
+            dataIndex: "operation",
+            scopedSlots: { customRender: "operation" }
+        }
+    ];
+
+    const approvalStatusData = [
+        {
+            label: "全部状态",
+            value: ""
+        },
+        {
+            label: "草稿",
+            value: "0"
+        },
+        {
+            label: "待审批",
+            value: "2"
+        },
+        {
+            label: "已驳回",
+            value: "3"
+        },
+        {
+            label: "已审批",
+            value: "1"
+        },
+        {
+            label: "已取消",
+            value: "4"
+        }
+    ];
+
+    export default {
+        components: {
+            TreeSelect,
+            SegiRangePicker,
+            noDataTips,
+            OverviewNumber
+        },
+        data() {
+            return {
+                organName: "",
+                organId: "",
+                queryData: {
+                    assetTypeList: [''], // 全部资产类型
+                    objectTypeList: [''], // 资产分类
+                    cleanupTypeList: [''], // 出库原因
+                    approvalStatusList: [''], // 出库单状态
+                    projectIdList: [''], // 资产项目
+                    maxDate: '',
+                    minDate: '',
+                    assetName: '', // 资产名称/编码
+                    cleaningOrderCode: '', // 出库单/编码
+                    pageSize: 10,
+                    pageNum: 1,
+                },
+                pageTotalCount: 0,
+                assetClassifyData: [
+                    {
+                        label: '全部资产分类',
+                        value: ''
+                    }
+                ], // 全部资产分类
+                cleanupTypeData: [
+                    {
+                        label: "全部出库原因",
+                        value: ""
+                    }
+                ], // 资产出库原因
+                assetProjectOptions: [], // 资产项目
+                assetTypeOptions: [], // 资产类型
+                approvalStatusData: [...approvalStatusData], // 状态
+                numList: [
+                    { title: "全部", key: "total", value: 0, fontColor: "#324057" },
+                    { title: "草稿", key: "draftTotal", value: 0, bgColor: "#5b8ff9" },
+                    { title: "待审批", key: "pendingTotal", value: 0, bgColor: "#d48265" },
+                    { title: "已驳回", key: "approvedTotal", value: 0, bgColor: "#4BD288" },
+                    {
+                        title: "已审批",
+                        key: "haveApprovedTotal",
+                        value: 0,
+                        bgColor: "#1890FF"
+                    },
+                    { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#DD81E6" }
+                ], // 统计数据
+                ASSET_MANAGEMENT,
+                allStyle: "width: 170px; margin-right: 10px;",
+                columns,
+                dataSource: [],
+
+
+                toggle: false,
+                showNoDataTips: false,
+                overviewNumSpinning: false,
+
+            };
+        },
+        watch: {
+            $route() {
+                if (this.$route.path === "/assetClear" && this.$route.query.refresh) {
+                    this.queryClick();
+                }
+            }
+        },
+        created() {},
+        mounted() {
+            this.platformDict("asset_type");
+        },
+        methods: {
+            moment,
+            // 全部资产分类
+            assetClassifyDataFn(value){
+                console.log('全部资产分类:', value, this.queryData.objectTypeList)
+                this.$nextTick(() => {
+                    this.queryData.objectTypeList = this.handleMultipleSelectValue(
+                        value,
+                        this.queryData.objectTypeList,
+                        this.assetClassifyData
+                    );
+                });
+            },
+            // 状态发生变化
+            changeStatus(value) {
+                console.log('资产状态： ', value, this.queryData.approvalStatusList)
+                this.$nextTick(() => {
+                    this.queryData.approvalStatusList = this.handleMultipleSelectValue(
+                        value,
+                        this.queryData.approvalStatusList,
+                        this.approvalStatusData
+                    );
+                });
+            },
+            // 出库原因发生改变
+            changeCleanupType(value) {
+                console.log('出库原因： ', value, this.queryData.cleanupTypeList)
+                this.$nextTick(function() {
+                    this.queryData.cleanupTypeList = this.handleMultipleSelectValue(
+                        value,
+                        this.queryData.cleanupTypeList,
+                        this.cleanupTypeData
+                    );
+                });
+            },
+            // 资产类型发生变化
+            changeAssetType(value) {
+                console.log('资产类型： ', value, this.queryData.assetTypeList)
+                this.$nextTick(function() {
+                    this.queryData.assetTypeList = this.handleMultipleSelectValue(
+                        value,
+                        this.queryData.assetTypeList,
+                        this.assetTypeOptions
+                    );
+                    this.getListFn()
+                });
+            },
+            // 资产项目发生变化
+            filterOption(value) {
+                console.log('资产项目:', value, this.queryData.projectIdList)
+                this.$nextTick(() => {
+                    this.queryData.projectIdList = this.handleMultipleSelectValue(
+                        value,
+                        this.queryData.projectIdList,
+                        this.assetProjectOptions
+                    );
+                });
+            },
+            // 处理多选下拉框有全选时的数组
+            handleMultipleSelectValue(value, data, dataOptions) {
+                // 如果选的是全部
+                if (value === "") {
+                    data = [""];
+                } else {
+                    let totalIndex = data.indexOf("");
+
+                    if (totalIndex > -1) {
+                        data.splice(totalIndex, 1);
+                    } else {
+                        // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+                        if (data.length === dataOptions.length - 1) {
+                            data = [""];
+                        }
+                    }
+                }
+                return data;
+            },
+            // 起止日期发生变化
+            onDateChange(val) {
+                this.queryData.maxDate = val[0];
+                this.queryData.minDate = val[1];
+            },
+            // 组织机构变化
+            changeTree(value, label) {
+                this.organName = label;
+                this.organId = value;
+                this.getAssetProjectOptions();
+                this.organDict("asset_cleanup_type");
+                this.getListFn()
+                this.queryClick();
+            },
+            // 页码发生变化
+            handlePageChange(page) {
+                this.queryData.pageNum = page.pageNo;
+                this.queryData.pageSize = page.pageLength;
+                this.queryList();
+            },
+            // 导出
+            newClearForm() {
+                alert('导出')
+            },
+            // 点击查询
+            queryClick() {
+                this.queryData.pageNum = 1;
+                this.queryList();
+            },
+            // 调用接口 查询列表
+            queryList() {
+                const params = {
+                    ...this.queryData,
+                    organId: this.organId
+                }
+                this.assetCleanupGetCount()
+                // this.$api.assets.getGeneralSurvey(params)
+                this.MOCKLIST(params).then(res => {
+                    console.log('MOCK：', res)
+                    if (Number(res.data.code) === 0) {
+                        const data = res.data.data
+                        this.pageTotalCount = data.count
+                        const list = data.data
+                        if (list.length) {
+                            this.showNoDataTips = false
+                            this.dataSource = list.map((item, index) => {
+                                item.key = item.assetId + index
+                                return item
+                            })
+                        } else {
+                            this.showNoDataTips = true
+                        }
+                        console.log(res.data.data)
+                    } else {
+                        this.showNoDataTips = true
+                        this.$message.error(res.data.message);
+                    }
+                }).catch(err => {
+                    this.showNoDataTips = true
+                    this.$message.error(err.data.message);
+                })
+            },
+            // 获取资产项目
+            getAssetProjectOptions() {
+                let form = {
+                    organId: this.organId
+                };
+                this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
+                    if (res.data.code === "0") {
+                        let arr = [{ label: "全部资产项目", value: "" }];
+                        res.data.data.forEach(item => {
+                            let obj = {
+                                label: item.projectName,
+                                value: item.projectId
+                            };
+                            arr.push(obj);
+                        });
+                        this.assetProjectOptions = arr;
+                    } else {
+                        this.$message.error(res.data.message);
+                    }
+                });
+            },
+            // 获取全部资产类型
+            platformDict(code) {
+                let form = {
+                    code
+                };
+                this.$api.basics.platformDict(form).then(res => {
+                    if (res.data.code === "0") {
+                        let result = res.data.data || [];
+                        let arr = result.map(item => {
+                            return {
+                                label: item.name,
+                                value: item.value
+                            };
+                        });
+                        // 出库原因
+                        if (code === "asset_type") {
+                            this.assetTypeOptions = [
+                                {
+                                    label: "全部资产类型",
+                                    value: ""
+                                },
+                                ...arr
+                            ];
+                            this.getListFn()
+                        }
+                    } else {
+                        this.$message.error(res.data.message);
+                    }
+                });
+            },
+            // 获取资产出库原因下拉列表
+            organDict(code) {
+                let form = {
+                    code
+                };
+                this.$api.basics.organDict(form).then(res => {
+                    if (res.data.code === "0") {
+                        let result = res.data.data || [];
+                        let arr = result.map(item => {
+                            return {
+                                label: item.name,
+                                value: item.value
+                            };
+                        });
+                        // 出库原因
+                        if (code === "asset_cleanup_type") {
+                            this.cleanupTypeData = [
+                                {
+                                    label: "全部出库原因",
+                                    value: ""
+                                },
+                                ...arr
+                            ];
+                        }
+                    } else {
+                        this.$message.error(res.data.message);
+                    }
+                });
+            },
+            // 获取资产分类列表
+            getListFn () {
+                if (!this.organId) {
+                    return
+                }
+                let obj = {
+                    organId: this.organId,
+                    assetType: this.queryData.assetTypeList.length > 0 ? this.queryData.assetTypeList.join(',') : ''
+                }
+                this.$api.assets.getList(obj).then(res => {
+                    if (Number(res.data.code) === 0) {
+                        let data = res.data.data
+                        let arr = []
+                        data.forEach(item => {
+                            arr.push({
+                                name: item.professionName,
+                                value: item.professionCode
+                            })
+                        })
+                        this.assetClassifyData = [{label: '全部资产分类', value: ''}, ...arr]
+                    }
+                })
+            },
+            // 查询统计列表
+            assetCleanupGetCount() {
+                const params =  {
+                    "cleanupType": this.queryData.cleanupTypeList.join(','),                //类型：String  必有字段  备注：清理类型
+                    "clearingName": `${this.queryData.assetName},${this.queryData.cleaningOrderCode}`, //类型：String  必有字段  备注：资产出库单/名称
+                    "currentOrganId": 1, //类型：Number  必有字段  备注：仅当前机构下资产清理单 0 否 1 是
+                    "endCreateDate": this.queryData.minDate, //类型：String  必有字段  备注：结束时间
+                    "multiApprovalStatus": this.queryData.approvalStatusList.join(','), //类型：String  必有字段  备注：审批状态
+                    "multiAssetType": this.queryData.assetTypeList.join(','), //类型：String  必有字段  备注：资产类型
+                    "organId": this.organId, //类型：Number  必有字段  备注：组织机构
+                    "pageNum": this.queryData.pageNum, //类型：Number  必有字段  备注：无
+                    "pageSize": this.queryData.pageSize, //类型：Number  必有字段  备注：无
+                    "projectId": this.queryData.projectIdList.join(','), //类型：String  必有字段  备注：资产项目id
+                    "startCreateDate": this.queryData.maxDate //类型：String  必有字段  备注：开始时间
+                }
+                // this.$api.assets.assetCleanupGetCount(params)
+                this.MOCKCOUNT(params).then(res => {
+                    if (Number(res.data.code) === 0) {
+                        let data = res.data.data || {};
+                        this.numList = this.numList.map(item => {
+                            return {
+                                ...item,
+                                value: data[item.key]
+                            };
+                        });
+                        console.log("this.numList", this.numList);
+                    } else {
+                        this.$message.error(res.data.message);
+                    }
+                })
+                .finally(() => {
+                    this.overviewNumSpinning = false;
+                });
+            },
+            // 列表详情按钮
+            handleOperation(record) {
+                console.log(record)
+                this.$router.push({
+                    path: "/assetTable/detail",
+                    query: {
+                        assetId: record.assetId,
+                        assetType: record.assetType
+                    }
+                });
+            },
+
+            // @delete MOCK数据 s
+            MOCKLIST(params){
+                console.log(params)
+                return new Promise(resolve => {
+                  const list = []
+                  for (let i = 0; i < 15; i++) {
+                    const obj = {
+                        "assetId": i,                //类型：Number  必有字段  备注：资产id
+                        "cleaningOrderCode":"1abcd" + i,                //类型：String  必有字段  备注：出库单编号
+                        "assetName":"剪刀" + i,                //类型：String  必有字段  备注：资产名称
+                        "assetCode":"code2" + i,                //类型：String  必有字段  备注：资产编码
+                        "assetType":3,                //类型：Number  必有字段  备注：资产类型
+                        "assetTypeName":"设备" + i,                //类型：String  必有字段  备注：资产类型名称
+                        "objectType":"1",                //类型：String  必有字段  备注：资产分类
+                        "objectTypeName":"mock" + i,                //类型：String  必有字段  备注：资产分类名称
+                        "organId":1300,                //类型：Number  必有字段  备注：管理机构
+                        "organName":"四格运营",                //类型：String  必有字段  备注：管理机构名称
+                        "projectId":1,                //类型：Number  必有字段  备注：项目id
+                        "projectName":"不收费",                //类型：String  必有字段  备注：项目名称
+                        "cleanupType":5,                //类型：Number  必有字段  备注：出库原因
+                        "cleanupTypeName":"资产拆迁",                //类型：String  必有字段  备注： 出库原因名称
+                        "area":"mixed",                //类型：Mixed  必有字段  备注：资产面积
+                        "location":"mixed",                //类型：Mixed  必有字段  备注：资产位置
+                        "createDate":"mixed",                //类型：Mixed  必有字段  备注：出库时间
+                        "creatUserName":"周柏甫",                //类型：String  必有字段  备注：出库人名称
+                        "approvalStatus":4,                //类型：Number  必有字段  备注：批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+                        "approvalStatusName":"已取消"                //类型：String  必有字段  备注：批状态名称
+                    }
+                      list.push(obj)
+                  }
+                  const res = {
+                      data: {
+                          code: 0,
+                          "message":"操作成功",
+                          "data": {                //类型：Object  必有字段  备注：无
+                              "count":15,                //类型：Number  必有字段  备注：无
+                              "pages":3,                //类型：Number  必有字段  备注：无
+                              "data": list                //类型：Array  必有字段  备注：无
+                          },
+                      }
+                  }
+                  resolve(res)
+                })
+            },
+            MOCKCOUNT(params){
+                console.log(params)
+                return new Promise(resolve => {
+                    const res = {
+                        data: {
+                            "data": {                //类型：Object  必有字段  备注：无
+                                "total":"11",                //类型：String  必有字段  备注：全部数量
+                                "draftTotal":"20",                //类型：String  必有字段  备注：草稿数量
+                                "pendingTotal":"30",                //类型：String  必有字段  备注：待审批数量
+                                "approvedTotal":"40",                //类型：String  必有字段  备注：已驳回数量
+                                "haveApprovedTotal":"51",                //类型：String  必有字段  备注：已审批数量
+                                "cancelTotal":"60"                //类型：String  必有字段  备注：已取消数量
+                            },
+                            "code":"0",                //类型：String  必有字段  备注：无
+                            "message":"操作成功"                //类型：String  必有字段  备注：无
+                        }
+                    }
+                    resolve(res)
+                })
+            },
+            // @delete MOCK数据 e
+
+            // 高级搜索控制
+            searchContainerFn(val) {
+                this.toggle = val;
+            },
+        }
+    };
+</script>
+
+<style lang="less" scoped>
+    .assets-clear {
+        /deep/ .sg-search-container .bottom-fold-wrap .search-icon {
+            display: none;
+        }
+    }
+
+    .formCon {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        > * {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            height: 32px;
+        }
+    }
+    .operation-btn {
+        color: #0084ff;
+        margin-right: 10px;
+    }
+    .custom-table {
+        padding-bottom: 50px;
+    }
+</style>

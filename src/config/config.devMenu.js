@@ -41,6 +41,14 @@ export default [
       {
         title: '附属配套管理',
         path: '/subsidiary'
+      },
+      {
+        title: '资产出库一览表',
+        path: '/assetTable',
+      },
+      {
+        title: '资产出库一览表详情',
+        path: '/assetTable/detail',
       }
     ]
   },
