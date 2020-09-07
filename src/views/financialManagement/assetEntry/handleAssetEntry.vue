@@ -546,6 +546,7 @@
             <a-form-item>
               <a-select
                 allowClear
+                dropdownClassName="dropdown-class-depreciation"
                 placeholder="请选择折旧方法"
                 :style="allStyle"
                 :options="depreciationMethodOptions"
@@ -809,8 +810,12 @@ export default {
         this.$message.info('请先选择资产项目')
         return
       }
+      if (!this.form.getFieldValue('assetType')) {
+        this.$message.info('请先选择资产类型')
+        return
+      }
       this.$refs.associateAssetModal.show = true
-      this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.dataSource)
+      this.$refs.associateAssetModal.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.dataSource, this.form.getFieldValue('assetType'))
     },
     // 关联资产发生变动
     assetChange (checkedData, checkedNames, rowsData, extraData) {
@@ -820,7 +825,8 @@ export default {
       this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
       this.detail.purchaseValue = extraData.originalValueSum
       this.form.setFieldsValue({
-        purchaseValue: extraData.originalValueSum
+        purchaseValue: extraData.originalValueSum,
+        assetIds: checkedData.join(',')
       })
       this.form.setFieldsValue({
         num: this.checkedData.length
@@ -828,12 +834,12 @@ export default {
       this.form.setFieldsValue({
         assetType: extraData.assetType.toString()
       })
-      this.form.setFieldsValue({
+      this.form.setFieldsValue({                // 资产分类回填
         assetCategoryId: extraData.assetCategory.toString()
       })
       this.handleChangeAssetCategory(extraData.assetCategory.toString())
-      this.form.setFieldsValue({
-        assetPurpose: extraData.useType.toString()
+      this.form.setFieldsValue({                // 资产用途回填
+        assetPurpose: extraData.useType ? extraData.useType.toString() : ''
       })
       this.dataSource = rowsData
       this.$refs.associateAssetModal.show = false
@@ -911,8 +917,11 @@ export default {
     changeAssetType (value) {
       this.detail.assetType = value
       this.getAssetCategoryOptions()
+      this.checkedData = []
+      this.dataSource = []
       this.form.setFieldsValue({
-        assetCategoryId: undefined
+        assetCategoryId: undefined,     // 资产分类
+        assetIds: undefined             // 关联资产
       })
     },
     // 资产分类发生变化
@@ -1106,6 +1115,7 @@ export default {
         organId: this.organId
       }
       this.$api.basics.organDict(form).then(res => {
+        console.log(res, '获取存放地点下拉列表')
         if (res.data.code === '0') {
           let arr = []
           res.data.data.forEach(item => {
@@ -1269,6 +1279,8 @@ export default {
           this.detail.assetNames = checkedNames.join(',')
           this.associateAssetsOptions = [{label: this.detail.assetNames, value: this.detail.assetIds}]
           this.dataSource = this.detail.assetList
+          // 查询资产分类
+          this.getAssetCategoryOptions()
         } else {
           this.$message.error(res.data.message)
         }
@@ -1318,6 +1330,9 @@ export default {
 }
 </script>
 
+<style lang="less">
+  .dropdown-class-depreciation{width: 200px !important;}
+</style>
 <style lang="less" scoped>
   .handle-asset-entry {
     padding: 40px 105px 40px 95px;

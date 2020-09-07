@@ -235,6 +235,8 @@ export const assets = {
     getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage',
     // 资产出库-统计
     assetCleanupGetCount: '/ams/assetCleanup/getCount',
+    // 资产出库一览表
+    getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
   },
   // 资产分类设置
   assetClassSet: {
@@ -369,7 +371,9 @@ export const assets = {
     // 资产视图-运营信息-运营收入(计费接口)（分页）
     getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
     // 导出房屋卡片
-    exportHouseCard: '/ams/asset-house/exportById'
+    exportHouseCard: '/ams/asset-house/exportById',
+    // 资产入账分页查询汇总
+    queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
   },
   // 资产项目管理
   projectManage: {
@@ -874,6 +878,12 @@ export const land = {
   // 土地台账--资产视图
   assetView: '/ams/assetLand/view/asset/assetView',
   // 土地台账--资产视图汇总
-  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal',
+  // 资产地图- 资产概况
+  overview: '/ams/asset/map/overview',
+  // 资产地图- 资产全量数据
+  mapData: '/ams/asset/map/list',
+  // 资产地图- 资产详情
+  mapDetail: '/ams/asset/map/detail'
 }
 

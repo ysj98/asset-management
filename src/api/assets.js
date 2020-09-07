@@ -332,6 +332,10 @@ export function getCleanupDetailPage (data) {
 export function assetCleanupGetCount (data) {
   return axiosPost(assets.assetClear.assetCleanupGetCount, data, false, false)
 }
+// 资产出库一览表
+export function getGeneralSurvey(data) {
+  return axiosPost(assets.assetClear.getGeneralSurvey, data, false, false)
+}
 
 //资产分类设置
 // 资产分类设置-资产分类列表
@@ -697,6 +701,11 @@ export function getAcctItemPageList (data) {
 export function assetOperationExpenseParam (data) {
   return axiosPost(assets.assetView.assetOperationExpenseParam, data)
 }
+// 资产入账分页查询汇总
+export function queryCardPageListSum (data) {
+  return axiosPost(assets.assetView.queryCardPageListSum, data)
+}
+
 
 // 资产入库相关
 // 入库单统计

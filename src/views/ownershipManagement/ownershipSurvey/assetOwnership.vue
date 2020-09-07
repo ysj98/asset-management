@@ -440,7 +440,8 @@ export default {
     goPage(type, record) {
       let query = {
         type,
-        assetHouseId: record.assetHouseId
+        assetHouseId: record.assetHouseId,
+        organId: record.organId
       };
       this.$router.push({ path: operationTypes[type], query });
     },

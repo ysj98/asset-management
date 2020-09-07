@@ -101,9 +101,9 @@
         endTimeOptions: [], // 查询条件-统计结束时间选项
         startTimeOptions: [], // 查询条件-统计开始时间选项
         statusOptions: [
-          { title: '全部资产状态', key: '-1' }, { title: '未生效', key: '0' }, { title: '正常', key: '1' },
-          { title: '已取消', key: '6' }, { title: '报废', key: '2' }, { title: '转让', key: '3' },
-          { title: '报损', key: '4' }, { title: '已清理', key: '5' }
+          { title: '全部资产状态', key: '-1' }, { title: '待入库', key: '0' }, { title: '正常', key: '1' },
+          { title: '报废', key: '2' }, { title: '转让', key: '3' },
+          { title: '报损', key: '4' }, { title: '已出库', key: '5' }, { title: '已取消', key: '6' }, { name: '入库中', value: '7' }
         ], // 查询条件-资产状态选项
         objectTypeOptions: [{ title: '全部资产分类', key: '' }], // 查询条件-资产分类选项,主数据字典
         assetTypeOptions: [{ title: '全部资产类型', key: '-1' }], // 查询条件-资产类型选项，平台字典

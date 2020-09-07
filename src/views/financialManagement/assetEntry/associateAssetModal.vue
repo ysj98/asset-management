@@ -24,7 +24,7 @@
                 <a-select :style="allStyle" :disabled="judgeInstitutions" placeholder="全部资产项目" v-model="projectId">
                   <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
-                <a-select :style="allStyle" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
+                <a-select :style="allStyle" :disabled="judgeInstitutions" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
                   <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
                 <a-select :style="allStyle" placeholder="全部资产类别" v-model="objectType">
@@ -162,7 +162,7 @@
         projectId: '',  // 资产项目ID
         projectData: [],
         assetTypeData: [],
-        objectTypeData: [],
+        objectTypeData: [{ name: '全部资产类型', value: ''}],
         allStyle: 'width: 140px; margin-right: 10px;',
         columns,
         dataSource: [],
@@ -267,7 +267,9 @@
               checkedData.push(element.assetId)
               checkedNames.push(element.assetName)
               rowsData.push(element)
-              extraData.originalValueSum = utils.accAdd(parseFloat(extraData.originalValueSum).toFixed(2), parseFloat(element.originalValue).toFixed(2))
+              if (this.judgeInstitutions) {
+                extraData.originalValueSum = utils.accAdd(parseFloat(extraData.originalValueSum).toFixed(2), parseFloat(element.originalValue).toFixed(2))
+              }
               if (index === 0) {
                 extraData.assetType = element.assetType
                 extraData.assetCategory = element.objectType
@@ -421,7 +423,7 @@
         })
       },
       // 外面给回来的数据
-      redactCheckedDataFn (redactChecked, projectId, overallData) {
+      redactCheckedDataFn (redactChecked, projectId, overallData, assetType) {
         // 有组织机构树的时候每次进来都调第一页！为了适应表格选择
         // if (!this.judgeInstitutions) {
         //   this.paginator.pageNo = 1
@@ -442,6 +444,11 @@
         if (this.judgeInstitutions) {
           if (this.projectId !== projectId) {
             this.projectId = projectId
+            this.query()
+          }
+          if (this.assetType !== assetType) {
+            this.assetType = assetType
+            this.getListFn()
             this.query()
           }
         }
