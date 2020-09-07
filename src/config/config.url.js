@@ -547,6 +547,8 @@ export const ownership = {
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
+    // 权证统计
+    warrantTotal: '/ams/ownerShipUser/warrant/total'
   },
   // 组织机构权属
   organView: '/ams/ownerShip/owner/organView',
@@ -590,7 +592,19 @@ export const worthRegister = {
 // 处置管理
 export const dispose = {
   // 资产处置一览表-主列表查询(分页)
-  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage'
+  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage',
+  // 资产处置一览表-统计
+  getDetailAndDisposeListStat: '/ams/disposeRegister/getDetailAndDisposeListStat',
+  // 资产处置一览表-组织机构-主列表查询(分页)
+  getDisposeOrganListPage: '/ams/disposeRegister/getDisposeOrganListPage',
+  // 组织机构视图导出
+  getDisposeOrganExport: '/ams/disposeRegister/getDisposeOrganExport',
+  // 组织机构视图，统计
+  getDisposeOrganStatistics: '/ams/disposeRegister/getDisposeOrganStatistics',
+  // 资产处置一览表-组织机构-详情查询(分页)
+  getDispOrgProDetListPage: '/ams/disposeRegister/getDispOrgProDetListPage',
+  // 组织机构视图，详情统计
+  getDispOrgStatProDetail: '/ams/disposeRegister/getDispOrgStatProDetail'
 }
 
 

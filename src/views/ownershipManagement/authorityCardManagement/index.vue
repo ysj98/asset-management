@@ -24,6 +24,7 @@
           </a-select>
           <a-select :style="allStyle" showSearch placeholder="请选择权属形式"
               optionFilterProp="children"
+              mode="multiple"
               :options="ownerTypeData"
               v-model="queryCondition.ownerTypeList"
               :allowClear="true"
@@ -36,13 +37,13 @@
           <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="queryHandler">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
       </div>
     </SearchContainer>
     <!--数据总览-->
-    <!-- <overview-number :numList="numList" /> -->
+    <overview-number :numList="numList" />
     <div class="table-layout-fixed" ref="table_box">
       <a-table
         :loading="loading"
@@ -213,15 +214,12 @@ export default {
       obligeeIdData: [],
       numList: [
         {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057'},
-        {title: '建筑面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
+        {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
         {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
         {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      ownerTypeData: [{
-        label: '全部权属形式',
-        value: ''
-      }] // 权属形式
+      ownerTypeData: [] // 权属形式
     }
   },
   computed: {
@@ -277,7 +275,7 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.obligeeId = ''
       this.selectFn()
-      this.query()
+      this.queryHandler()
     },
     // 搜索
     onSearch () {
@@ -370,7 +368,8 @@ export default {
       this.alterationDate = []
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
-      this.query()
+      this.queryCondition.ownerTypeList = []
+      this.queryHandler()
     },
     filterOption(input, option) {
       return (
@@ -392,6 +391,7 @@ export default {
         organId: Number(this.queryCondition.organId),        // 组织机构
         kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
+        ownerTypeList: this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         pageNum: this.queryCondition.pageNum,     // 当前页
@@ -414,6 +414,39 @@ export default {
           this.loading = false
         } else {
           this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
+    },
+    // 点击查询按钮
+    queryHandler () {
+      this.query()
+      this.warrantTotal()
+    },
+    warrantTotal () {
+      this.loading = true
+      let obj = {
+        organId: Number(this.queryCondition.organId),        // 组织机构
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
+        ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
+        status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : ''    // 权证号
+      }
+      this.$api.ownership.warrantTotal(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.numList[0].value = data.totalWarrantCount
+          this.numList[1].value = data.buildArea
+          this.numList[2].value = data.assetWarrantCount
+          this.numList[3].value = data.landWarrantCount
+          this.numList[4].value = data.useWarrantCount
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.numList.forEach(item => {
+            item.value = 0
+          })
           this.loading = false
         }
       })
@@ -466,9 +499,15 @@ export default {
     // 导出列表
     exportData () {
       let data = {
+        organId: Number(this.queryCondition.organId),        // 组织机构
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        obligeeId: this.queryCondition.obligeeId,       // 权属人
+        ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
+        status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        warrantNbr: this.queryCondition.warrantNbr    // 权证号
       }
       let loadingName = this.SG_Loding('导出中...')
-      this.$api.subsidiary.exportData(data).then(res => {
+      this.$api.ownership.warrantExport(data).then(res => {
         this.$SG_Message.destroy(loadingName)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
@@ -490,10 +529,10 @@ export default {
         if (+res.data.code === 0) {
           let data = res.data.data
           let arr = [
-            {
-              label: '全部权属形式',
-              value: ''
-            }
+            // {
+            //   label: '全部权属形式',
+            //   value: ''
+            // }
           ]
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
@@ -514,7 +553,7 @@ export default {
       if (this.$route.path === '/authorityCardManagement' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
-        this.query()
+        this.queryHandler()
       }
     }
   },

@@ -359,8 +359,8 @@ export default {
       },
       upErrorInfo: '',
       upLoadInfo: {
-        projectId: '',
-        assetType: ''
+        projectId: undefined,
+        assetType: undefined
       },
       assetProjectOptions: [],
       assetTypeOptions: []
@@ -617,11 +617,11 @@ export default {
     },
     // 下载模板文件
     downModeFile () {
-      if (this.upLoadInfo.projectId === '') {
+      if (this.upLoadInfo.projectId === '' || this.upLoadInfo.projectId === undefined) {
         this.$SG_Message.error('请选择资产项目')
         return false
       }
-      if (this.upLoadInfo.assetType === '') {
+      if (this.upLoadInfo.assetType === '' || this.upLoadInfo.assetType === undefined) {
         this.$SG_Message.error('请选择资产类型')
         return false
       }

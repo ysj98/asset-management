@@ -342,6 +342,11 @@ let proRouter = [
     component: () => import('@/views/disposalManagement/listDisposal/index')
   },
   {
+    path: '/disposalManagement/listDisposal/detail',
+    name: '详情',
+    component: () => import('@/views/disposalManagement/listDisposal/organContent/detail')
+  },
+  {
     path: '/inventoryManagement/countingTask',
     name: '盘点任务',
     component: () => import('@/views/inventoryManagement/countingTask/index'),
