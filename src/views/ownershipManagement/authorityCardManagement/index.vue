@@ -260,7 +260,7 @@ export default {
           }
           _this.$api.ownership.warrantDelete(obj).then(res => {
             if (Number(res.data.code) === 0) {
-              _this.$message.info('销该成功')
+              _this.$message.info('注销成功')
               _this.query()
             } else {
               _this.$message.error(res.data.message)

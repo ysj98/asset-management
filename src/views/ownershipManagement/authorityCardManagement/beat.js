@@ -460,7 +460,7 @@ export const columns = [
     width: 100,
     dataIndex: 'certificateNo'
   }, {
-    title: '占用比例',
+    title: '占用比例(%)',
     width: 100,
     dataIndex: 'percent',
     scopedSlots: { customRender: 'percent' }
