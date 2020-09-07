@@ -206,6 +206,10 @@ export function getRegisterOrderDetailsPageByIdList (data) {
 export function downModle (data) {
   return axiosPost(assets.assetRegister.downModle, data, false, false, {responseType: 'blob'})
 }
+// 下载附属配套模板，带条件
+export function downBatchModle (data) {
+  return axiosPost(assets.assetRegister.downBatchModle, data, false, false, {responseType: 'blob'})
+}
 // 批量导入-导入保存
 export function batchImportByRgId (data) {
   return axiosPost(assets.assetRegister.batchImportByRgId, data)
@@ -327,6 +331,10 @@ export function getCleanupDetailPage (data) {
 // 资产出库-统计
 export function assetCleanupGetCount (data) {
   return axiosPost(assets.assetClear.assetCleanupGetCount, data, false, false)
+}
+// 资产出库一览表
+export function getGeneralSurvey(data) {
+  return axiosPost(assets.assetClear.getGeneralSurvey, data, false, false)
 }
 
 //资产分类设置
@@ -693,6 +701,11 @@ export function getAcctItemPageList (data) {
 export function assetOperationExpenseParam (data) {
   return axiosPost(assets.assetView.assetOperationExpenseParam, data)
 }
+// 资产入账分页查询汇总
+export function queryCardPageListSum (data) {
+  return axiosPost(assets.assetView.queryCardPageListSum, data)
+}
+
 
 // 资产入库相关
 // 入库单统计

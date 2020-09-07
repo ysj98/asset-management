@@ -7,7 +7,9 @@
       <div slot="headBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px">导出</SG-Button>
-        <SG-Button icon="plus" type="primary" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
+        <SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
+        <!-- 暂时不用 -->
+        <!-- <SG-Button type="primary" @click="listSet">列表设置</SG-Button> -->
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search placeholder="卡片名称/编码" :style="allStyle" :value="cardName" @change="cardNameChange" @search="queryClick" />
@@ -71,12 +73,14 @@
         <SG-DatePicker label="入账日期" pickerType="RangePicker" style="width: 200px;" @change="onEntryDateChange"></SG-DatePicker>
       </div>
     </SG-SearchContainer>
+    <!--数据总览-->
+    <overview-number :numList="numList"/>
     <div>
       <a-table
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
-        :scroll="{ x: 2250 }"
+        :scroll="scroll"
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
@@ -98,35 +102,43 @@
     />
     <!--导入-->
     <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="资产卡片导入"/>
+    <!-- 列表设置 -->
+    <listCarefully ref="listCarefully" :columnsData="columnsData" @determineSet="determineSetFn"></listCarefully>
   </div>
 </template>
 
 <script>
   import TreeSelect from '../../common/treeSelect'
-  import SegiRangePicker from '@/components/SegiRangePicker'
+  // import SegiRangePicker from '@/components/SegiRangePicker'
   import noDataTips from '@/components/noDataTips'
   import {getCurrentDate, getMonthsAgoDate} from 'utils/formatTime'
   import moment from 'moment'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import BatchImport from 'src/views/common/eportAndDownFile'
   import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
+  import {utils} from '@/utils/utils'
+  import OverviewNumber from 'src/views/common/OverviewNumber'
+  import listCarefully from 'src/views/common/listCarefully'
 
-  const columns = [
+  const columnsData = [
     {
       title: '所属机构',
       dataIndex: 'organName',
+      disabled: true,
       width: 200,
       fixed: 'left'
     },
     {
       title: '卡片编码',
       dataIndex: 'cardCode',
+      disabled: true,
       width: 180,
       fixed: 'left'
     },
     {
       title: '卡片名称',
       dataIndex: 'cardName',
+      disabled: true,
       width: 120
     },
     {
@@ -199,7 +211,8 @@
       width: 170,
       dataIndex: 'operation',
       fixed: 'right',
-      scopedSlots: { customRender: 'operation' }
+      scopedSlots: { customRender: 'operation' },
+      disabled: true
     }
   ]
 
@@ -231,17 +244,19 @@
   ]
   export default {
     components: {
-      TreeSelect, SegiRangePicker, noDataTips, BatchImport
+      TreeSelect, noDataTips, BatchImport, OverviewNumber, listCarefully
     },
     data () {
       return {
         ASSET_MANAGEMENT,
         allStyle: 'width: 170px; margin-right: 10px;',
+        scroll: {x: columnsData.length * 150},
+        columnsData,
         toggle: false,
         organName: '',
         organId: '',
         cardName: '',
-        columns,
+        columns: [...columnsData],
         dataSource: [],
         approvalStatus: [''],
         approvalStatusData: [...approvalStatusData],
@@ -263,7 +278,14 @@
           totalCount: 0
         },
         showNoDataTips: false,
-        exportBtnLoading: false // 导出按钮loading
+        exportBtnLoading: false, // 导出按钮loading
+        numList: [
+          {title: '资产卡片数量', key: 'num', value: 0, fontColor: '#324057'},
+          {title: '入账原值(元)', key: 'purchaseValue', value: 0, bgColor: '#4BD288'},
+          {title: '累计折旧(元)', key: 'cumulativeDepreciation', value: 0, bgColor: '#1890FF'},
+          {title: '资产净值(元)', key: 'netValue', value: 0, bgColor: '#DD81E6'},
+          {title: '减值准备(元)', key: 'impairmentReady', value: 0, bgColor: '#FD7474'}
+        ] // 概览数字数据, title 标题，value 数值，bgColor 背景色
       }
     },
     watch: {
@@ -278,6 +300,25 @@
     },
     methods: {
       moment,
+      // 列表设置
+      listSet () {
+        this.$refs.listCarefully.modalShow = true
+        let listValue = this.columns.map(item => {
+          return item.dataIndex
+        })
+        this.$refs.listCarefully.listValue = listValue
+      },
+      determineSetFn (listValue) {
+        let arr = []
+        this.columnsData.forEach(item => {
+          if (listValue.includes(item.dataIndex)) {
+            arr.push(item)
+          }
+        })
+        this.columns = arr
+        this.scroll = {x: this.columns.length * 150}
+        this.$refs.listCarefully.modalShow = false
+      },
       // 高级搜索控制
       searchContainerFn (val) {
         this.toggle = val
@@ -449,6 +490,23 @@
             })
             this.dataSource = data
             this.paginator.totalCount = res.data.data.count
+            this.queryCardPageListSum(form)
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      },
+      //明细统计
+      queryCardPageListSum (obj) {
+        let recordedData = utils.deepClone(obj)
+        delete recordedData.pageNum
+        delete recordedData.pageSize
+        this.$api.assets.queryCardPageListSum(recordedData).then(res => {
+          if (Number(res.data.code) === 0) {
+            let data = res.data.data
+            return this.numList = this.numList.map(m => {
+              return { ...m, value: data[m.key] || 0 }
+            })
           } else {
             this.$message.error(res.data.message)
           }
