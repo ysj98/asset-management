@@ -858,6 +858,12 @@ export const land = {
   // 土地台账--资产视图
   assetView: '/ams/assetLand/view/asset/assetView',
   // 土地台账--资产视图汇总
-  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal',
+  // 资产地图- 资产概况
+  overview: '/ams/asset/map/overview',
+  // 资产地图- 资产全量数据
+  mapData: '/ams/asset/map/list',
+  // 资产地图- 资产详情
+  mapDetail: '/ams/asset/map/detail'
 }
 

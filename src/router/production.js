@@ -663,6 +663,11 @@ let proRouter = [
     path: '/landAssetsView',
     name: '土地资产视图',
     component: () => import('@/views/landParameter/landAssetsView/index')
+  },
+  {
+    path: '/assetMap',
+    name: '资产地图',
+    component: () => import('@/views/landParameter/assetMap/index')
   }
 ]
 export default proRouter

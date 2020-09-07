@@ -20,7 +20,6 @@ const SG_Message = SG_UI.SG_Message.Message
 let axiosX = axios.create({
   baseURL: baseConfig.DEV_API_URL || ''
 })
-
 // request 拦截
 axiosX.interceptors.request.use(
   config => {
