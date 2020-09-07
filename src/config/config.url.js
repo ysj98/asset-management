@@ -235,6 +235,8 @@ export const assets = {
     getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage',
     // 资产出库-统计
     assetCleanupGetCount: '/ams/assetCleanup/getCount',
+    // 资产出库一览表
+    getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
   },
   // 资产分类设置
   assetClassSet: {
