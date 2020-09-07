@@ -285,6 +285,7 @@ export default {
     return {
       type: "",
       assetHouseId: "",
+      organId: '',
       spinning: false,
       // 权属信息
       tableInfo: {
@@ -308,6 +309,7 @@ export default {
   created() {
     this.type = this.$route.query.type || "";
     this.assetHouseId = this.$route.query.assetHouseId || "";
+    this.organId = this.$route.query.organId || ''
     this.assetDetail();
   },
   methods: {
@@ -366,7 +368,7 @@ export default {
       if (!warrantNbr) {
         return
       }
-      this.$refs.certDetail.query(warrantNbr)
+      this.$refs.certDetail.query(warrantNbr, this.organId)
     }
   }
 };

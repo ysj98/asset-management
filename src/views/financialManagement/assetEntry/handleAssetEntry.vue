@@ -546,6 +546,7 @@
             <a-form-item>
               <a-select
                 allowClear
+                dropdownClassName="dropdown-class-depreciation"
                 placeholder="请选择折旧方法"
                 :style="allStyle"
                 :options="depreciationMethodOptions"
@@ -1114,6 +1115,7 @@ export default {
         organId: this.organId
       }
       this.$api.basics.organDict(form).then(res => {
+        console.log(res, '获取存放地点下拉列表')
         if (res.data.code === '0') {
           let arr = []
           res.data.data.forEach(item => {
@@ -1328,6 +1330,9 @@ export default {
 }
 </script>
 
+<style lang="less">
+  .dropdown-class-depreciation{width: 200px !important;}
+</style>
 <style lang="less" scoped>
   .handle-asset-entry {
     padding: 40px 105px 40px 95px;

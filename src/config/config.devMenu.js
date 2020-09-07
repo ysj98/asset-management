@@ -203,7 +203,11 @@ export default [
       {
         title: '资产视图',
         path: '/landAssetsView'
-      }
+      },
+      {
+        title: '资产地图',
+        path: '/assetMap'
+      },
     ]
   },
   {

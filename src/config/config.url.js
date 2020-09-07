@@ -553,6 +553,8 @@ export const ownership = {
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
+    // 权证统计
+    warrantTotal: '/ams/ownerShipUser/warrant/total'
   },
   // 组织机构权属
   organView: '/ams/ownerShip/owner/organView',
@@ -596,7 +598,19 @@ export const worthRegister = {
 // 处置管理
 export const dispose = {
   // 资产处置一览表-主列表查询(分页)
-  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage'
+  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage',
+  // 资产处置一览表-统计
+  getDetailAndDisposeListStat: '/ams/disposeRegister/getDetailAndDisposeListStat',
+  // 资产处置一览表-组织机构-主列表查询(分页)
+  getDisposeOrganListPage: '/ams/disposeRegister/getDisposeOrganListPage',
+  // 组织机构视图导出
+  getDisposeOrganExport: '/ams/disposeRegister/getDisposeOrganExport',
+  // 组织机构视图，统计
+  getDisposeOrganStatistics: '/ams/disposeRegister/getDisposeOrganStatistics',
+  // 资产处置一览表-组织机构-详情查询(分页)
+  getDispOrgProDetListPage: '/ams/disposeRegister/getDispOrgProDetListPage',
+  // 组织机构视图，详情统计
+  getDispOrgStatProDetail: '/ams/disposeRegister/getDispOrgStatProDetail'
 }
 
 
@@ -866,6 +880,12 @@ export const land = {
   // 土地台账--资产视图
   assetView: '/ams/assetLand/view/asset/assetView',
   // 土地台账--资产视图汇总
-  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal',
+  // 资产地图- 资产概况
+  overview: '/ams/asset/map/overview',
+  // 资产地图- 资产全量数据
+  mapData: '/ams/asset/map/list',
+  // 资产地图- 资产详情
+  mapDetail: '/ams/asset/map/detail'
 }
 
