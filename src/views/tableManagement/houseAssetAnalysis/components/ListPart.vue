@@ -41,7 +41,7 @@
         ], // Table 列头固定部分
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
-          { title: '用途', dataIndex: 'useTypeName' }, { title: '权属情况', dataIndex: 'ownershipStatusName' },
+          { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '权属情况', dataIndex: 'ownershipStatusName' },
           { title: '地区', dataIndex: 'regionName' }
         ], // 统计维度的集合
         columnsDynamic: [], // Table 列头动态部分, 用于合成columns
@@ -52,7 +52,7 @@
         sortIndex: {
           organName: 1,
           projectName: 2,
-          useTypeName: 3,
+          objectTypeName: 3,
           regionName: 4,
           ownershipStatusName: 5
         }, // 统计维度的顺序表，用于导出
@@ -88,7 +88,7 @@
             this.dataSource = (data || []).map((m, key) => {
               let obj = {}
               // 防止排序时出现字段值为null,无法使用localeCompare
-              let arr = ['organName', 'projectName', 'useTypeName', 'regionName', 'ownershipStatusName']
+              let arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName']
               arr.forEach(n => obj[n] = m[n] || '')
               return { ...m, ...obj, key }
             })

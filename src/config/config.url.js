@@ -255,6 +255,8 @@ export const assets = {
   },
   // 房屋台账-资产项目视图
   assetProjectView: {
+    // 导出资产项目视图列表
+    exportAssetProjectViewList: '/ams/project/exportProjectView',
     // 资产项目视图列表-查询房屋和楼栋信息分页查询
     viewGetAssetHouseList: '/ams/project/viewGetAssetHouseList',
     // 资产项目视图列表头-查询房屋和楼栋信息统计

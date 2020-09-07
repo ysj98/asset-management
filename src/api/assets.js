@@ -364,6 +364,10 @@ export function getDetail (data) {
 }
 
 // 房屋台账-资产项目视图
+// 资产项目视图列表-导出资产项目视图列表
+export function exportAssetProjectViewList (data) {
+  return axiosPost(assets.assetProjectView.exportAssetProjectViewList, data, false, false, {responseType: 'blob'})
+}
 // 资产项目视图列表-查询房屋和楼栋信息分页查询
 export function viewGetAssetHouseList (data) {
   return axiosPost(assets.assetProjectView.viewGetAssetHouseList, data, true, false)
