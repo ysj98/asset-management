@@ -4,7 +4,7 @@
     <SG-Title title="汇总分析"/>
     <div style="margin-left: 45px" v-if="isHasData">
       <a-row :gutter="16">
-        <a-col :span="8" v-for="(val, name) in divObj" :key="name">
+        <a-col :span="12" v-for="(val, name) in divObj" :key="name" style="margin-bottom: 25px">
           <div class="chart_title">{{val}}</div>
           <div :id="name"></div>
         </a-col>
@@ -30,11 +30,17 @@
         loading: false, // 页面loading
         isHasData: false, // 是否有图表数据，用于判断显示缺省文字
         divObj: {
-          area_statistics: '建筑面积统计',
+          type_statistics: '资产分类统计',
           direct_statistics: '使用方向统计',
+          ownership_statistics: '权属情况统计',
           asset_statistics: '资产价值统计'
         }, // 图表寄存的div集合
-        chartInstance: {area_statistics: null, direct_statistics: null, asset_statistics: null}// 图表实例，用于重绘
+        chartInstance: {
+          type_statistics: null,
+          direct_statistics: null,
+          asset_statistics: null,
+          ownership_statistics: null
+        }// 图表实例，用于重绘
       }
     },
 
@@ -58,7 +64,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             this.isHasData = true
-            let { buildAreaList, usedList, assetValue } = res.data
+            let { buildAreaList, usedList, assetValue, ownershipAreaList } = res.data
             let arr = []
             let area = 0
             let percentage = 0
@@ -77,8 +83,9 @@
             let usedArr = ((usedList || []).filter(v => Number(v.area))).length ? usedList : []
             // 加载完DOM渲染图表
             return this.$nextTick(function () {
-              this.renderPieChart('area_statistics', 'useTypeName', list)
+              this.renderPieChart('type_statistics', 'useTypeName', list)
               this.renderPieChart('direct_statistics', 'usedName', usedArr)
+              this.renderPieChart('ownership_statistics', 'useTypeName', ownershipAreaList || [])
               this.renderRectChart(assetValue)
             })
           }
@@ -172,7 +179,7 @@
       text-align: center;
       padding-bottom: 15px;
     }
-    #asset_statistics, #area_statistics, #direct_statistics {
+    #asset_statistics, #type_statistics, #direct_statistics, #ownership_statistics {
       height: 250px;
       width: 100%;
     }

@@ -176,6 +176,8 @@ export const assets = {
     getMatchingSta: '/ams/subsidiaryMatching/getMatchingSta',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
+    // 下载附属配套模板，带条件下载
+    downBatchModle: '/ams/subsidiaryMatching/downBatchModle',
     // 批量导入-导入保存
     batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId',
     // 资产登记-价值信息统计
@@ -243,6 +245,8 @@ export const assets = {
     getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage',
     // 资产出库-统计
     assetCleanupGetCount: '/ams/assetCleanup/getCount',
+    // 资产出库一览表
+    getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
   },
   // 资产分类设置
   assetClassSet: {
@@ -261,6 +265,8 @@ export const assets = {
   },
   // 房屋台账-资产项目视图
   assetProjectView: {
+    // 导出资产项目视图列表
+    exportAssetProjectViewList: '/ams/project/exportProjectView',
     // 资产项目视图列表-查询房屋和楼栋信息分页查询
     viewGetAssetHouseList: '/ams/project/viewGetAssetHouseList',
     // 资产项目视图列表头-查询房屋和楼栋信息统计
@@ -379,7 +385,9 @@ export const assets = {
     // 资产视图-运营信息-运营收入(计费接口)（分页）
     getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
     // 导出房屋卡片
-    exportHouseCard: '/ams/asset-house/exportById'
+    exportHouseCard: '/ams/asset-house/exportById',
+    // 资产入账分页查询汇总
+    queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
   },
   // 资产项目管理
   projectManage: {
@@ -557,6 +565,8 @@ export const ownership = {
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
+    // 权证统计
+    warrantTotal: '/ams/ownerShipUser/warrant/total'
   },
   // 组织机构权属
   organView: '/ams/ownerShip/owner/organView',
@@ -600,7 +610,19 @@ export const worthRegister = {
 // 处置管理
 export const dispose = {
   // 资产处置一览表-主列表查询(分页)
-  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage'
+  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage',
+  // 资产处置一览表-统计
+  getDetailAndDisposeListStat: '/ams/disposeRegister/getDetailAndDisposeListStat',
+  // 资产处置一览表-组织机构-主列表查询(分页)
+  getDisposeOrganListPage: '/ams/disposeRegister/getDisposeOrganListPage',
+  // 组织机构视图导出
+  getDisposeOrganExport: '/ams/disposeRegister/getDisposeOrganExport',
+  // 组织机构视图，统计
+  getDisposeOrganStatistics: '/ams/disposeRegister/getDisposeOrganStatistics',
+  // 资产处置一览表-组织机构-详情查询(分页)
+  getDispOrgProDetListPage: '/ams/disposeRegister/getDispOrgProDetListPage',
+  // 组织机构视图，详情统计
+  getDispOrgStatProDetail: '/ams/disposeRegister/getDispOrgStatProDetail'
 }
 
 
@@ -876,6 +898,12 @@ export const land = {
   // 土地台账--资产视图
   assetView: '/ams/assetLand/view/asset/assetView',
   // 土地台账--资产视图汇总
-  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal'
+  assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal',
+  // 资产地图- 资产概况
+  overview: '/ams/asset/map/overview',
+  // 资产地图- 资产全量数据
+  mapData: '/ams/asset/map/list',
+  // 资产地图- 资产详情
+  mapDetail: '/ams/asset/map/detail'
 }
 

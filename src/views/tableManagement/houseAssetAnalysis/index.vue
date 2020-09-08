@@ -3,7 +3,7 @@
   <div class="asset_analysis">
     <!--查询条件部分-->
     <a-row :gutter="8" class="search_style">
-      <a-col :span="7">
+      <a-col :span="9">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
       </a-col>
       <a-col :span="3">
@@ -11,14 +11,11 @@
           mode="multiple"
           :maxTagCount="1"
           style="width: 100%"
-          v-model="assetType"
-          :options="assetTypeOptions"
-          placeholder="请选择资产类型"
-          @change="selectAssetType"
+          v-model="objectType"
+          @change="objectTypeChange"
+          placeholder="请选择资产分类"
+          :options="objectTypeOptions"
         />
-      </a-col>
-      <a-col :span="3">
-        <a-select style="width: 100%" :options="useTypeOptions" v-model="useType" placeholder="请选择资产用途"/>
       </a-col>
       <a-col :span="9">
         <province-city-district v-model="provinceCityDistrict"/>
@@ -38,7 +35,7 @@
 
 <script>
   import ProvinceCityDistrict from 'src/views/common/ProvinceCityDistrict'
-  import { queryPlatformDict } from 'src/views/common/commonQueryApi'
+  import { queryCategoryList } from 'src/views/common/commonQueryApi'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import ChartPart from './components/ChartPart'
   import ListPart from './components/ListPart'
@@ -49,29 +46,14 @@
       return {
         key: 0, // 刷新汇总分析组件
         queryInfo: {}, // 查询条件集合,
-        useType: '', // 查询条件-资产用途值
-        assetType: ['-1'], // 查询条件-资产类型值
+        objectType: [], // 查询条件-资产分类
         provinceCityDistrict: {}, // 查询条件-省市区
         organProjectValue: {}, // 查询条件-组织机构及项目值
-        useTypeOptions: [{ title: '全部用途', key: '' }], // 查询条件-资产用途选项,
-        assetTypeOptions: [{ title: '全部资产类型', key: '-1' }], // 查询条件-资产类型选项
+        objectTypeOptions: [{ title: '全部分类', key: '' }], // 查询条件-资产分类选项
       }
-    },
-    
-    created () {
-      this.queryUseType()
-      this.queryAssetType()
     },
 
     watch: {
-      useType: function () {
-        this.queryData()
-      },
-
-      assetType: function () {
-        this.queryData()
-      },
-
       provinceCityDistrict: {
         handler: function () {
           this.queryData()
@@ -80,55 +62,43 @@
       },
 
       organProjectValue: {
-        handler: function () {
+        handler: function (obj) {
           this.queryData()
+          obj.organId && this.queryObjectTypeByOrganId(obj.organId)
         },
         deep: true
       }
     },
 
     methods: {
-      // 选中资产类型
-      selectAssetType (value) {
-        let lastIndex = value.length - 1
-        this.assetType = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
+      // 资产类型全选与其他选项互斥处理
+      objectTypeChange (value) {
+        this.objectType = value[value.length - 1] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+        this.queryData()
       },
 
       // 查询数据
       queryData () {
         const {
-          assetType, organProjectValue: { organId, projectId }, useType,
+          organProjectValue: { organId, projectId }, objectType,
           provinceCityDistrict: { province, city, district: region }
         } = this
         if (!organId) { return this.$message.warn('请选择组织机构') }
-        let str = assetType.includes('-1') ? '' : assetType.join(',')
-        this.queryInfo = { province, city, region, useType, assetType: str, projectIds: projectId || undefined, organId, key: Date.now() }
+        this.queryInfo = {
+          projectIds: projectId || undefined, organId, key: Date.now(),
+          province, city, region, objectType: objectType.includes('all') ? [] : objectType
+        }
         this.key = Date.now()
       },
       
-      // 查询资产用途数据
-      queryUseType () {
-        this.$api.basics.queryNodesByRootCode({categoryCode: 60}).then(r => {
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            let list = (res.data || []).map(m => {
-              return { title: m.typeName, key: m.typeCode }
-            })
-            return this.useTypeOptions = [{ title: '全部资产用途', key: '' }].concat(list)
-          }
-          throw res.message
+      // 根据organId查询资产分类数据
+      queryObjectTypeByOrganId (organId) {
+        queryCategoryList({assetType: '1', organId}).then(list => {
+          this.objectTypeOptions = [{ title: '全部资产分类', key: 'all' }].concat(list)
         }).catch(err => {
-          this.tableObj.loading = false
-          this.$message.error(err || '查询资产用途接口出错')
+          this.$message.error(err || '查询资产分类接口出错')
         })
-      },
-
-      // 查询平台资产类型字典
-      queryAssetType () {
-        queryPlatformDict('asset_type').then(list =>
-          this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}, ...list]
-        )
-      },
+      }
     }
   }
 </script>

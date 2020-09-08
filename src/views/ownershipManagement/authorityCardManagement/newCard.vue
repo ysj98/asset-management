@@ -700,10 +700,10 @@ export default {
               remark: data.amsOwnershipWarrant.remark,  // 备注
               exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,  // 专属建筑面积
               apportionArea: data.amsOwnershipWarrant.apportionArea,  // 分摊面积
-              ownershipUse: String(data.amsOwnershipWarrant.ownershipUse),  // 权属用途
+              ownershipUse: conditionalJudgment.includes(data.amsOwnershipWarrant.ownershipUse) ? undefined : String(data.amsOwnershipWarrant.ownershipUse),  // 权属用途
               rigisterDate: conditionalJudgment.includes(data.amsOwnershipWarrant.rigisterDate) ? undefined : moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
               handoverDate: conditionalJudgment.includes(data.amsOwnershipWarrant.handoverDate) ? undefined : moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD'),
-              structure: String(data.amsOwnershipWarrant.structure),     // 结构
+              structure: conditionalJudgment.includes(data.amsOwnershipWarrant.structure) ? undefined : String(data.amsOwnershipWarrant.structure),     // 结构
               seatingPosition: data.amsOwnershipWarrant.seatingPosition,    // 坐落位置
             })
             if (this.typeJudgment === '1') {

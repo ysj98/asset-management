@@ -101,7 +101,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
-          <a-form-item label="房屋核实时间" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-form-item label="资产核实时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit" style="width: 100%" :placeholder="isEdit ? '请选择房屋核实时间' : ''"
               v-decorator="['houseVerificationDate']"
@@ -109,7 +109,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
-          <a-form-item label="上报房屋划转请示时间" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-form-item label="上报资产划转请示时间" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :disabled="!isEdit" style="width: 100%" :placeholder="isEdit ? '请选择划上报房屋划转请示时间' : ''"
               v-decorator="['reportHouseTransferReqDate']"

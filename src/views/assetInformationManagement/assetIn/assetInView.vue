@@ -243,7 +243,7 @@ export default {
         maxDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
         storeName: this.queryCondition.registerOrderNameOrId                                // 入库单编码
       }
-      this.$api.assets.getGeneralSurvey(obj).then(res => {
+      this.$api.assets.assetInGetGeneralSurvey(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {

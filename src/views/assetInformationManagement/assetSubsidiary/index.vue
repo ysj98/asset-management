@@ -142,7 +142,35 @@
       </div>
     </div>
     <!-- 批量更新 -->
-    <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" title="附属配套导入"/>
+    <eportAndDownFile class="asset-subsidiary-eport" @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" width="800px" title="附属配套导入" >
+      <div slot="upLoadModule" class="upLoad-content">
+        <div class="upLoad-content-li">
+          <span><i>*</i>资产项目：</span>
+          <a-select
+            showSearch
+            placeholder="请选择资产项目"
+            optionFilterProp="children"
+            :style="allStyle"
+            v-model="upLoadInfo.projectId"
+            :options="assetProjectOptions"
+            :filterOption="filterOption"></a-select>
+        </div>
+        <div class="upLoad-content-li">
+          <span><i>*</i>资产类型：</span>
+          <!-- @select="changeAssetType" -->
+          <a-select
+            placeholder="请选择资产类型"
+            v-model="upLoadInfo.assetType"
+            :options="assetTypeOptions"
+            :style="allStyle"></a-select>
+        </div>
+        <div class="left-title">下载模板文件：</div>
+        <div>
+          <i class="file-background"></i>
+          <span @click="downModeFile" class="down_btn" style="margin-left: 17px;">下载</span>
+        </div>
+      </div>
+    </eportAndDownFile>
     <downErrorFile ref="downErrorFile">
       <div>{{upErrorInfo}}</div>
     </downErrorFile>
@@ -158,6 +186,7 @@ import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OperationPopover from '@/components/OperationPopover'
 import downErrorFile from '@/views/common/downErrorFile'
+import _ from 'lodash'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -328,9 +357,16 @@ export default {
         loading: false,
         totalCount: 0
       },
-      upErrorInfo: ''
+      upErrorInfo: '',
+      upLoadInfo: {
+        projectId: undefined,
+        assetType: undefined
+      },
+      assetProjectOptions: [],
+      assetTypeOptions: []
     };
   },
+  
   watch: {
     '$route' () {
       if (this.$route.path === '/subsidiary' && this.$route.query.refresh) {
@@ -338,6 +374,24 @@ export default {
         this.queryCondition.pageSize = 10
           this.query()
         }
+    },
+    projectIdOpt: {
+      handler (val) {
+        let assetProjectOptions = _.cloneDeep(val)
+        assetProjectOptions.splice(0, 1)
+        this.assetProjectOptions = [...assetProjectOptions]
+      },
+      immediate: true,
+      deep: true
+    },
+    assetTypeListOpt: {
+      handler (val) {
+        let assetTypeOptions = _.cloneDeep(val)
+        assetTypeOptions.splice(0, 1)
+        this.assetTypeOptions = [...assetTypeOptions]
+      },
+      immediate: true,
+      deep: true
     }
   },
   created() {
@@ -563,21 +617,35 @@ export default {
     },
     // 下载模板文件
     downModeFile () {
+      if (this.upLoadInfo.projectId === '' || this.upLoadInfo.projectId === undefined) {
+        this.$SG_Message.error('请选择资产项目')
+        return false
+      }
+      if (this.upLoadInfo.assetType === '' || this.upLoadInfo.assetType === undefined) {
+        this.$SG_Message.error('请选择资产类型')
+        return false
+      }
       let loadingName = this.SG_Loding('下载中...')
-      this.$api.subsidiary.downBatchModle().then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.data])
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            // ${this.organName}
-            a.download = `附属配套模板.xls`
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
+      let params = Object.assign({}, this.upLoadInfo)
+      this.$api.assets.downBatchModle(params).then(res => {
+        this.$SG_Message.destroy(loadingName)
+        // if (Number(res.data.code) === 0) {
+          
+        // } else {
+        //   this.$SG_Message.error(res.data.message)
+        // }
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        // ${this.organName}
+        a.download = `附属配套模板.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
       }, () => {
         this.$SG_Message.destroy(loadingName)
-        this.$SG_Message.error('附属配套模板!')
+        this.$SG_Message.error(res.data.message)
       })
     },
     // 上传文件
@@ -647,11 +715,24 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    }
+    },
+    // // 资产类型发生变化
+    // changeAssetType(value) {
+    //   this.$nextTick(function() {
+    //     this.upLoadInfo.assetType = this.handleMultipleSelectValue(
+    //       value,
+    //       this.upLoadInfo.assetType,
+    //       this.assetTypeOptions
+    //     )
+    //   })
+    // }
+  },
+  mounted () {
+    // this.platformDict("asset_type");
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .search-content-box {
   display: flex;
   justify-content: space-between;
@@ -664,6 +745,31 @@ export default {
   .two-row-box {
     padding-top: 14px;
     flex: 0 0 190px;
+  }
+}
+.upLoad-content {
+  padding: 20px 0 20px 50px;
+  border-left: 1px solid rgba(192,199,209,1);
+  .file-background{
+    display: inline-block;
+    width: 49px;
+    height: 56px;
+    background-image: url('../../../assets/image/undertake/exl.png');
+    background-size: 100% 100%;
+  }
+  .upLoad-content-li {
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 20px;
+    // .ant-select-selection__placeholder {
+      // display: block!important;
+    // }
+    & >span > i {
+      color: #ff3a3a;
+    }
+  }
+  .left-title{
+    margin-bottom: 15px;
   }
 }
 </style>

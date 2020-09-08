@@ -8,7 +8,7 @@
       <span class="section-title blue">基本信息</span>
       <div class="particulars-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 题：{{particularsData.registerName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">登记单名称：{{particularsData.registerName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">登记类型：{{particularsData.registerTypeName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">登&nbsp;&nbsp;&nbsp;记&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;状&nbsp;&nbsp;&nbsp;态：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目：{{particularsData.projectName || '--'}}</a-col>

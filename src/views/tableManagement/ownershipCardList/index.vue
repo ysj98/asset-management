@@ -32,7 +32,7 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="warrantNbr" slot-scope="text, record">
-        <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record.warrantNbr)">{{text}}</span>
+        <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{text}}</span>
       </template>
       <!--<template slot="lotNo" slot-scope="text, record">-->
         <!--<span>{{`${text || ''}/${record.estateUnitCode || ''}`}}</span>-->
@@ -89,7 +89,7 @@
             { title: '资产项目', dataIndex: 'projectName', width: 150 },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属人/承租人', dataIndex: 'obligeeName', width: 150 },
-            { title: '被委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
+            { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
             { title: '房屋号/丘地号/不动产单元号', dataIndex: 'lotNo', scopedSlots: { customRender: 'lotNo' }, width: 200 },
             { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
             { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
@@ -137,8 +137,8 @@
       },
 
       // 查看权证详情
-      viewDetail (warrantNbr) {
-        this.$refs['cardDetails'].query(warrantNbr)
+      viewDetail (record) {
+        this.$refs['cardDetails'].query(record.warrantNbr, record.organId)
       },
 
       // 查询平台权属类型字典
