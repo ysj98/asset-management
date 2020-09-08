@@ -249,7 +249,7 @@ export const ASSET_MANAGEMENT = {
   zcgl_plan_edit: 'zcgl_plan_edit',
   zcgl_plan_delete: 'zcgl_plan_delete',
   zcgl_plan_reverseapply: 'zcgl_plan_reverseapply',
-  /* 
+  /*
   * 处置一览表
   */
   czyl_zzjgst_dc: 'czyl_zzjgst_dc', // 组织机构视图导出
@@ -301,5 +301,14 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
    ASSET_IN_EDIT: 'asset_in_edit', // 编辑
    ASSET_IN_APPROVE: 'asset_in_approve', // 审批
    ASSET_IN_DELETE: 'asset_in_delete', // 删除
+   /**
+    * V2.0.2报表管理
+    */
+   TM_AW_EXPORT: 'table_manage_asset_worth_export',       // 报表管理-资产价值统计导出
+   TM_AP_EXPORT: 'table_manage_asset_project_export',     // 报表管理-资产项目数据查询导出
+   TM_HA_EXPORT: 'table_manage_house_asset_export',       // 报表管理-有证房屋资产导出
+   TM_OA_EXPORT: 'table_manage_ownership_amount_export',  // 报表管理-权证数量统计导出
+   TM_OL_EXPORT: 'table_manage_ownership_list_export',    // 报表管理-权属证件一览表导出
+   TM_AA_EXPORT: 'table_manage_asset_analysis_export',    // 报表管理-房屋资产统计分析列表导出
 }
 

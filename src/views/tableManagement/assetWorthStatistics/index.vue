@@ -4,7 +4,9 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
+        <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
+          导出
+        </SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px">
         <a-row :gutter="8" style="width: 100%">
@@ -88,6 +90,7 @@
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import SearchContainer from 'src/views/common/SearchContainer'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
   import moment from 'moment'
   export default {
@@ -97,6 +100,7 @@
       return {
         fold: true,
         queryObj: {
+          ASSET_MANAGEMENT, // 权限对象
           dimension: '1', // 查询条件-统计维度
           queryType: '3', // 查询条件-统计类型值
           objectType: '', // 查询条件-资产分类值

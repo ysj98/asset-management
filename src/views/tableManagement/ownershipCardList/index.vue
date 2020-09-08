@@ -4,7 +4,9 @@
     <!--查询调件-->
     <a-row :gutter="8" style="width: 100%; padding: 20px 20px 20px 30px">
       <a-col :span="2">
-        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
+        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OL_EXPORT">
+          导出
+        </SG-Button>
       </a-col>
       <a-col :span="8">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
@@ -47,6 +49,7 @@
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
@@ -56,6 +59,7 @@
     components: { NoDataTip, OrganProject, CardDetails, OverviewNumber },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         queryObj: {
           status: '', // 查询条件-权属状态
           warrantNbr: '', // 查询条件-权证号

@@ -167,3 +167,13 @@ zcgl_asset_register_registerDirections       // 资产登记-登记使用方向
 zcgl_asset_register_registrationFees         // 资产登记-登记相关费用
 zcgl_asset_register_verify                   // 资产登记-核实
 zcgl_asset_register_undoCheck                // 资产登记-撤销核实
+
+v2.0.2新增按钮权限
+
+报表管理
+table_manage_asset_worth_export       // 报表管理-资产价值统计导出
+table_manage_asset_project_export     // 报表管理-资产项目数据查询导出
+table_manage_house_asset_export       // 报表管理-有证房屋资产导出
+table_manage_ownership_amount_export  // 报表管理-权证数量统计导出
+table_manage_ownership_list_export    // 报表管理-权属证件一览表导出
+table_manage_asset_analysis_export    // 报表管理-房屋资产统计分析列表导出
