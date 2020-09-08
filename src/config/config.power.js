@@ -168,6 +168,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_EDIT: 'zcgl_asset_acm_edit',
   // 权证管理-注销
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
+  // 权证管理-导出
+  ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
 
   /**
   * 权属人管理
@@ -247,6 +249,11 @@ export const ASSET_MANAGEMENT = {
   zcgl_plan_edit: 'zcgl_plan_edit',
   zcgl_plan_delete: 'zcgl_plan_delete',
   zcgl_plan_reverseapply: 'zcgl_plan_reverseapply',
+  /* 
+  * 处置一览表
+  */
+  czyl_zzjgst_dc: 'czyl_zzjgst_dc', // 组织机构视图导出
+  czyl_zcst_dc: 'czyl_zcst_dc', // 资产视图导出
   /**
    * 处置登记
    */
@@ -266,6 +273,7 @@ export const ASSET_MANAGEMENT = {
  ASSET_EDIT_SUBSI: 'asset_edit_subsi', // 编辑附属配套
  ASSET_STATUS_SUBSI: 'asset_status_subsi', // 附属配套状态改变
  ASSET_DELETE_SUBSI: 'asset_delete_subsi', // 删除附属配套
+ ASSET_EXPORT_SUBSI: 'asset_export_subsi', // 导出附属配套
  /**
   * 呈报记录一览表
  */

@@ -10,7 +10,7 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading">导出</SG-Button>
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zcst_dc">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
@@ -82,6 +82,7 @@ import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
@@ -134,6 +135,10 @@ const columns = [
   {
     title: '处置原因',
     dataIndex: 'disposeReason'
+  },
+  {
+    title: '处置面积(㎡)',
+    dataIndex: 'dispArea'
   },
   {
     title: '处置成本(元)',
@@ -212,6 +217,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       dateWidth,
       // scrollHeight: {y: 0},
       loading: false,
@@ -465,7 +471,7 @@ export default {
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',   // 处置日期,开始
         disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',     // 处置日期,结束
         projectId: this.queryCondition.projectId,          // 资产项目Id
-        assetTypeList: [this.queryCondition.assetType],                  //类型：String  可有字段  资产类型Id
+        assetTypeList: this.queryCondition.assetType === '' ? [] : [this.queryCondition.assetType],                  //类型：String  可有字段  资产类型Id
         disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode),              // 处置方式
         objectTypeList: this.judgmentMethodFn(this.queryCondition.assetClassify),             // 资产分类
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType)               // 处置类型(多选)
