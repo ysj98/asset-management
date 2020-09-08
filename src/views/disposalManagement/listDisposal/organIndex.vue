@@ -468,6 +468,9 @@ export default {
     text-align: right;
     .ant-select, .sg-datePicker.box {
       margin-top: 14px;
+      .combobox {
+        width: 170px;
+      }
     }
   }
   .two-row-box{

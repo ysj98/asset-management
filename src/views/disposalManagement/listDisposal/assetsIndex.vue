@@ -136,6 +136,10 @@ const columns = [
     dataIndex: 'disposeReason'
   },
   {
+    title: '处置面积(㎡)',
+    dataIndex: 'dispArea'
+  },
+  {
     title: '处置成本(元)',
     dataIndex: 'disposeCost'
   },
@@ -465,7 +469,7 @@ export default {
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',   // 处置日期,开始
         disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',     // 处置日期,结束
         projectId: this.queryCondition.projectId,          // 资产项目Id
-        assetTypeList: [this.queryCondition.assetType],                  //类型：String  可有字段  资产类型Id
+        assetTypeList: this.queryCondition.assetType === '' ? [] : [this.queryCondition.assetType],                  //类型：String  可有字段  资产类型Id
         disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode),              // 处置方式
         objectTypeList: this.judgmentMethodFn(this.queryCondition.assetClassify),             // 资产分类
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType)               // 处置类型(多选)

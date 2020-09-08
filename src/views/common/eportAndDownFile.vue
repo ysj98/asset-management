@@ -27,6 +27,7 @@
           </div>
         </div>
         <!-- <div class="upLoad-right" v-if="showDown"> -->
+        <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
         <slot name="upLoadModule" v-if="showDown && this.$slots.upLoadModule"></slot>
         <div class="upLoad-right" v-if="showDown && !this.$slots.upLoadModule">
           <div class="left-title">下载模板文件：</div>
@@ -34,7 +35,6 @@
             <i class="file-background"></i>
             <span @click="handleDown" class="down_btn" style="margin-left: 17px;">下载</span>
           </div>
-          <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
         </div>
         <!-- </div> -->
       </div>

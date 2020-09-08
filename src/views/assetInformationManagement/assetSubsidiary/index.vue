@@ -651,27 +651,28 @@ export default {
     // 上传文件
     uploadModeFile (file) {
       // this.$refs.eportAndDownFile.hideModal()
-      console.log('批量更新', file)
       let fileData = new FormData()
       fileData.append('file', file)
       fileData.append('organId', this.queryCondition.organId)
+      // fileData.append('projectId', this.queryCondition.projectId)
       let loadingName = this.SG_Loding('导入中...')
       this.$api.subsidiary.batchImport(fileData).then(res => {
-        if (res.data.code === '0') {
+        if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
+            this.$refs.eportAndDownFile.visible = false
             this.$SG_Message.success('导入成功！')
             this.query()
           }) 
         } else {
           this.DE_Loding(loadingName).then(() => {
-            this.$refs.downErrorFile.visible = true
+            this.$refs.eportAndDownFile.visible = true
             this.upErrorInfo = res.data.message
-            // this.$SG_Message.error(res.data.message || '导入失败！')
+            this.$SG_Message.error(res.data.message || '导入失败！')
           })
         }
       }, () => {
         this.DE_Loding(loadingName).then(res => {
-          this.$SG_Message.error('导入失败！')
+          this.$SG_Message.error(res.data.message || '导入失败！')
         })
       })
     },
