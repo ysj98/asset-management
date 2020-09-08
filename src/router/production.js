@@ -78,6 +78,19 @@ let proRouter = [{
     }
   },
   {
+    path: '/assetRegisterView',
+    name: '资产登记一览表',
+    component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterView.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetRegisterView/detail',
+    name: '资产登记一览表详情',
+    component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterViewDetail/index.vue')
+  },
+  {
     path: '/assetRegister/newEditSingle',
     name: '新建登记单',
     component: () => import('@/views/assetInformationManagement/assetRegister/child/newEditSingle.vue')
@@ -694,6 +707,17 @@ let proRouter = [{
     path: '/assetIn/new',
     name: '新建', // 资产入库新建
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
+  },
+  {
+    path: '/assetInView',
+    name: '资产入库一览表',
+    component: () => import('@/views/assetInformationManagement/assetIn/assetInView.vue'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/assetInView/detail',
+    name: '详情', // 资产入库一览表详情
+    component: () => import('@/views/assetInformationManagement/assetIn/assetInViewDetail/index')
   },
   {
     path: '/landAssetsView',

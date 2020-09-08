@@ -52,11 +52,19 @@
           <a-col :span="3">
             <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="资产名称或编码"/>
           </a-col>
-          <a-col :span="6" style="text-align: center; height: 32px; padding-top: 7px">
-            <a-radio-group v-model="queryObj.dimension" @change="generateSortFunc">
-              <a-radio value="1">按资产项目统计</a-radio>
-              <a-radio value="2">按资产统计</a-radio>
-            </a-radio-group>
+          <a-col :span="3">
+          <!--<a-col :span="6" style="text-align: center; height: 32px; padding-top: 7px">-->
+            <!--<a-radio-group v-model="queryObj.dimension" @change="generateSortFunc">-->
+              <!--<a-radio value="1">按资产项目统计</a-radio>-->
+              <!--<a-radio value="2">按资产统计</a-radio>-->
+            <!--</a-radio-group>-->
+            <a-select
+              style="width: 100%"
+              @change="generateSortFunc"
+              :options="dimensionOptions"
+              v-model="queryObj.dimension"
+              placeholder="请选择统计维度"
+            />
           </a-col>
           <a-col :span="2">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
@@ -100,6 +108,9 @@
         },
         endTimeOptions: [], // 查询条件-统计结束时间选项
         startTimeOptions: [], // 查询条件-统计开始时间选项
+        dimensionOptions: [
+          { title: '按资产项目统计', key: '1' }, { title: '按资产统计', key: '2' }, { title: '按组织机构统计', key: '3' }
+        ], // 查询条件-统计维度选项
         statusOptions: [
           { title: '全部资产状态', key: '-1' }, { title: '待入库', key: '0' }, { title: '正常', key: '1' },
           { title: '报废', key: '2' }, { title: '转让', key: '3' },
@@ -123,8 +134,13 @@
         ], // 列头不变部分,按资产项目统计维度
         columnsByAsset: [
           { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
-          { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '资产状态', dataIndex: 'statusName' }
+          { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
+          { title: '资产状态', dataIndex: 'statusName' }
         ], // 按资产统计维度时动态展示
+        columnsByOrgan: [
+          { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 220 },
+          { title: '资产数量', dataIndex: 'assetCount' }, { title: '资产面积(㎡)', dataIndex: 'assetArea' }
+        ], // 按组织机构统计维度时动态展示
         tableObj: {
           pagination: false,
           // rowKey: 'assetId',
@@ -169,15 +185,16 @@
       
       // 根据统计方式和统计维度生成列
       generateColumns ({queryType, startTime, endTime, dimension}, data) {
-        const { columnsByAsset, fixedColumns, sortFunc } = this
+        const { columnsByAsset, fixedColumns, sortFunc, columnsByOrgan } = this
         let dataSource = data.map((m, key) => {
           let temp = {}
           let arr = m.dynamicData || []
           arr.forEach((n, i) => temp[`date_${i}`] = n)
           return { ...m, ...temp, key}
-        }).sort(sortFunc)
+        })
         let fixedColumnsCopy = [...fixedColumns]
         let arr = []
+        let columns = []
         if (queryType === '0') {
           // 按月统计时，最大年份跨度1年
           for (let i = 0; i < 12; i++) {
@@ -212,41 +229,45 @@
             }
           }
         }
-        dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
-        // 计算需要合并的单元格起始位置及数量
-        let temp = {}
-        dataSource.forEach((m, index) => {
-          let { organName, projectName } = m
-          if (!temp[organName]) {
-            temp[organName] = 0
-            temp[`${organName}_start`] = index
-          }
-          temp[organName] += 1
-          if (dimension === '2') {
-            let name = `${organName}_${projectName}`
-            if (!temp[name]) {
-              temp[name] = 0
-              temp[`${name}_start`] = index
+        if (dimension === '1' || dimension === '2') {
+          dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
+          // 计算需要合并的单元格起始位置及数量
+          let temp = {}
+          dataSource.sort(sortFunc).forEach((m, index) => {
+            let { organName, projectName } = m
+            if (!temp[organName]) {
+              temp[organName] = 0
+              temp[`${organName}_start`] = index
             }
-            temp[name] += 1
-          }
-        })
-        let columns = fixedColumnsCopy.map(c => {
-          let { dataIndex } = c
-          if (dataIndex === 'organName' || (dimension === '2' && dataIndex === 'projectName')) {
-            return {
-              ...c, customRender: (text, row, i) => {
-              let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
-              return {
-                children: text,
-                attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0 }
+            temp[organName] += 1
+            if (dimension === '2') {
+              let name = `${organName}_${projectName}`
+              if (!temp[name]) {
+                temp[name] = 0
+                temp[`${name}_start`] = index
               }
+              temp[name] += 1
             }
-          }
-          } else {
-            return c
-          }
-        }).concat(arr)
+          })
+          columns = fixedColumnsCopy.map(c => {
+            let { dataIndex } = c
+            if (dataIndex === 'organName' || (dimension === '2' && dataIndex === 'projectName')) {
+              return {
+                ...c, customRender: (text, row, i) => {
+                  let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
+                  return {
+                    children: text,
+                    attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0 }
+                  }
+                }
+              }
+            } else {
+              return c
+            }
+          }).concat(arr)
+        } else {
+          columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(2)), ...arr)
+        }
         Object.assign(this.tableObj, {
           columns,
           dataSource,
@@ -356,11 +377,12 @@
           // 第一维度
           if (value === '1') {
             return a['organName'].localeCompare(b['organName'])
-          }
-          if (a['organName'].localeCompare(b['organName']) === 0) {
-            return a['projectName'].localeCompare(b['projectName'])
-          } else {
-            return a['organName'].localeCompare(b['organName'])
+          } else if (value === '2') {
+            if (a['organName'].localeCompare(b['organName']) === 0) {
+              return a['projectName'].localeCompare(b['projectName'])
+            } else {
+              return a['organName'].localeCompare(b['organName'])
+            }
           }
         }
       }

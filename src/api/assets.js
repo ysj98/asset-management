@@ -134,6 +134,18 @@ export function registerOrderAudit (data) {
 export function pageListStatistics (data) {
   return axiosPost(assets.assetRegister.pageListStatistics, data)
 }
+// 资产登记一览表-主列表
+export function findAssetRegListPage (data) {
+  return axiosPost(assets.assetRegister.findAssetRegListPage, data)
+}
+// 资产登记一览表-主列表导出
+export function assetRegListPageExport (data) {
+  return axiosPost(assets.assetRegister.assetRegListPageExport, data, false, false, {responseType: 'blob'})
+}
+// 资产登记一览表-列表统计
+export function assetRegSta (data) {
+  return axiosPost(assets.assetRegister.assetRegSta, data)
+}
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
   return axiosPost(assets.assetRegister.saveRegisterOrder, data)
@@ -186,6 +198,10 @@ export function checkBuildsObjectType (data) {
 export function getListPageByRegisterOrderId (data) {
   return axiosPost(assets.assetRegister.getListPageByRegisterOrderId, data)
 }
+// 资产登记一览表-附属配套-分页查询列表
+export function getMatchingListByAssetIdPage (data) {
+  return axiosPost(assets.assetRegister.getMatchingListByAssetIdPage, data)
+}
 // 附属配套-新增/修改保存(资产登记版)
 export function addModifySaveByRgId (data) {
   return axiosPost(assets.assetRegister.addModifySaveByRgId, data)
@@ -197,6 +213,10 @@ export function findAssetListByRgId (data) {
 // 资产登记-附属配套-统计
 export function getMatchingStatisByRgId (data) {
   return axiosPost(assets.assetRegister.getMatchingStatisByRgId, data)
+}
+// 资产登记一览表-附属配套-统计
+export function getMatchingSta (data) {
+  return axiosPost(assets.assetRegister.getMatchingSta, data)
 }
 // 根据登记单Id资产登记明细列表-分页
 export function getRegisterOrderDetailsPageByIdList (data) {
@@ -364,6 +384,10 @@ export function getDetail (data) {
 }
 
 // 房屋台账-资产项目视图
+// 资产项目视图列表-导出资产项目视图列表
+export function exportAssetProjectViewList (data) {
+  return axiosPost(assets.assetProjectView.exportAssetProjectViewList, data, false, false, {responseType: 'blob'})
+}
 // 资产项目视图列表-查询房屋和楼栋信息分页查询
 export function viewGetAssetHouseList (data) {
   return axiosPost(assets.assetProjectView.viewGetAssetHouseList, data, true, false)
@@ -689,6 +713,10 @@ export function queryCardDetail (data) {
 export function assetExpenseInfo (data) {
   return axiosPost(assets.assetView.assetExpenseInfo, data)
 }
+// 资产登记一览表-费用相关-统计
+export function assetExpenseTotal (data) {
+  return axiosPost(assets.assetView.assetExpenseTotal, data)
+}
 // 资产视图-运营信息-合同信息（分页）
 export function assetOperationContractInfo (data) {
   return axiosPost(assets.assetView.assetOperationContractInfo, data)
@@ -731,4 +759,16 @@ export function queryAssetStoreDetail (data) {
 // 资产入库列表查询
 export function queryAssetStoreList (data) {
   return axiosPost(assetIn.queryAssetStoreList, data)
+}
+// 资产入库一览表列表查询
+export function assetInGetGeneralSurvey (data) {
+  return axiosPost(assetIn.getGeneralSurvey, data)
+}
+// 资产入库一览表列表统计
+export function getGeneralSurveyTotal (data) {
+  return axiosPost(assetIn.getGeneralSurveyTotal, data)
+}
+// 资产入库一览表列表导出
+export function getGeneralSurveyExport (data) {
+  return axiosPost(assetIn.getGeneralSurveyExport, data, false, false, {responseType: 'blob'})
 }

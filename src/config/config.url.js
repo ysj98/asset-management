@@ -128,6 +128,12 @@ export const assets = {
     deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
     // 资产登记-列表统计
     pageListStatistics: '/ams/registerOrder/pageListStatistics',
+    // 资产登记一览表-主列表
+    findAssetRegListPage: '/ams/registerOrder/findAssetRegListPage',
+    // 资产登记一览表-主列表导出
+    assetRegListPageExport: '/ams/registerOrder/assetRegListPageExport',
+    // 资产登记一览表-列表统计
+    assetRegSta: '/ams/registerOrder/assetRegSta',
     // 资产登记-撤销核实
     registerOrderReAudit: '/ams/registerOrder/registerOrderReAudit',
     // 资产登记-核实
@@ -158,12 +164,16 @@ export const assets = {
     checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType',
     // 资产登记-附属配套-分页查询列表
     getListPageByRegisterOrderId: '/ams/subsidiaryMatching/getListPageByRegisterOrderId',
+    // 资产登记一览表-附属配套-分页查询列表
+    getMatchingListByAssetIdPage: '/ams/subsidiaryMatching/getMatchingListByAssetIdPage',
     // 附属配套-新增/修改保存(资产登记版)
     addModifySaveByRgId: '/ams/subsidiaryMatching/addModifySaveByRgId',
     // 资产登记-查询资产列表-根据资产登记Id
     findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId',
     // 资产登记-附属配套-统计
     getMatchingStatisByRgId: '/ams/subsidiaryMatching/getMatchingStatisByRgId',
+    // 资产登记一览表-附属配套-统计
+    getMatchingSta: '/ams/subsidiaryMatching/getMatchingSta',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
     // 下载附属配套模板，带条件下载
@@ -255,6 +265,8 @@ export const assets = {
   },
   // 房屋台账-资产项目视图
   assetProjectView: {
+    // 导出资产项目视图列表
+    exportAssetProjectViewList: '/ams/project/exportProjectView',
     // 资产项目视图列表-查询房屋和楼栋信息分页查询
     viewGetAssetHouseList: '/ams/project/viewGetAssetHouseList',
     // 资产项目视图列表头-查询房屋和楼栋信息统计
@@ -362,6 +374,8 @@ export const assets = {
     queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId',
     // 资产视图费用相关
     assetExpenseInfo: '/ams/operationContract/assetExpenseInfo',
+    // 资产登记一览表-相关费用统计
+    assetExpenseTotal: '/ams/operationContract/assetExpenseTotal',
     // 资产视图-运营信息-合同信息（分页）
     assetOperationContractInfo: '/ams/operationContract/assetOperationContractInfo',
     // // 资产视图-运营信息-运营收入（分页）
@@ -869,7 +883,13 @@ export const assetIn = {
   // 查询入库单详情
   queryAssetStoreDetail: '/ams/assetStore/queryAssetStoreDetail',
   // 资产入库列表查询
-  queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
+  queryAssetStoreList: '/ams/assetStore/queryAssetStoreList',
+  // 资产入库一览表-列表
+  getGeneralSurvey: '/ams/assetStore/getGeneralSurvey',
+  // 资产入库一览表-列表统计
+  getGeneralSurveyTotal: '/ams/assetStore/getGeneralSurveyTotal',
+  // 资产入库一览表-列表导出
+  getGeneralSurveyExport: '/ams/assetStore/getGeneralSurveyExport'
 }
 
 
