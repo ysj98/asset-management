@@ -731,7 +731,10 @@ let proRouter = [{
   }, {
     path: '/assetTable',
     name: '资产出库一览表',
-    component: () => import('@/views/assetInformationManagement/assetsTable/index')
+    component: () => import('@/views/assetInformationManagement/assetsTable/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetTable/detail',

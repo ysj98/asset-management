@@ -168,6 +168,7 @@ zcgl_asset_register_registrationFees         // 资产登记-登记相关费用
 zcgl_asset_register_verify                   // 资产登记-核实
 zcgl_asset_register_undoCheck                // 资产登记-撤销核实
 
+
 v2.0.2新增按钮权限
 
 报表管理
@@ -183,3 +184,6 @@ asset_in_view_export                       资产入库一览表-导出
 
 /* 资产登记一览表 */
 asset_register_view_export                      资产登记一览表-导出
+
+// 资产出库
+asset_in_export     资产出库一览表导出

@@ -7,19 +7,20 @@ const isProd = process.env.NODE_ENV === 'production'
 const getIPAdress = () => {
   var interfaces = os.networkInterfaces();
   for (var devName in interfaces) {
-      var iface = interfaces[devName];
-      for (var i = 0; i < iface.length; i++) {
-          var alias = iface[i];
-          if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal && alias.netmask === '255.255.255.0') {
-              return alias.address;
-          }
+    var iface = interfaces[devName];
+    for (var i = 0; i < iface.length; i++) {
+      var alias = iface[i];
+      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal && alias.netmask === '255.255.255.0') {
+        return alias.address;
       }
+    }
   }
 }
 
 const localhost = getIPAdress()
 console.log('IP', localhost)
-// const target = 'http://192.168.1.11:10080'
+const target = 'http://192.168.1.11:10080'
+// const target = 'http://192.168.3.34:8081'
 // const target = 'http://192.168.3.28:8080'
 // const mock = 'http://192.168.3.34:8081'
 // const target = 'http://beta.uhomecp.com/'
@@ -39,7 +40,7 @@ const proxyURL = [
  * Proxy 类，用于构建需要代理的数据对接
  */
 class Proxy {
-  constructor () {
+  constructor() {
     this.data = {}
   }
   /**
@@ -48,7 +49,7 @@ class Proxy {
    * @param {*} localhost 本机地址
    * @param {*} target 代理远程地址
    */
-  addUrls (urls, localhost, target) {
+  addUrls(urls, localhost, target) {
     urls.forEach(el => {
       this.data[el] = {
         target,
@@ -80,7 +81,7 @@ module.exports = {
   // build后文件名
   outputDir: 'asset-management',
   // 引用的静态文件
-  assetsDir:'./static',
+  assetsDir: './static',
   filenameHashing: true,
   lintOnSave: false,
   productionSourceMap: false,
@@ -92,7 +93,7 @@ module.exports = {
     loaderOptions: {
       less: {
         modifyVars: {
-          'font-size-base' : '12px',
+          'font-size-base': '12px',
           'primary-color': '#0084FF'
         },
         javascriptEnabled: true
@@ -138,12 +139,12 @@ module.exports = {
   },
   chainWebpack: config => {
     config.resolve.alias
-      .set("@", path.join(__dirname,"src"))
-      .set("src", path.join(__dirname,"src"))
-      .set("assets", path.join(__dirname,"src/assets"))
-      .set("components", path.join(__dirname,"src/components"))
-      .set("store", path.join(__dirname,"src/store"))
-      .set("api", path.join(__dirname,"src/api"))
-      .set("utils", path.join(__dirname,"src/utils"));
+      .set("@", path.join(__dirname, "src"))
+      .set("src", path.join(__dirname, "src"))
+      .set("assets", path.join(__dirname, "src/assets"))
+      .set("components", path.join(__dirname, "src/components"))
+      .set("store", path.join(__dirname, "src/store"))
+      .set("api", path.join(__dirname, "src/api"))
+      .set("utils", path.join(__dirname, "src/utils"));
   },
 }

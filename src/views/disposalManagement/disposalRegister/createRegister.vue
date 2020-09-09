@@ -187,6 +187,8 @@
       <div class="button-box">
         <div class="buytton-nav">
           <SG-Button class="choice" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
+          <SG-Button class="choice" type="primary" weaken @click="quickEntry('1')">快捷录入处置成本</SG-Button>
+          <SG-Button class="choice" type="primary" weaken @click="quickEntry('2')">快捷录入处置收入</SG-Button>
         </div>
       </div>
       <div class="createRegister-obj">
@@ -319,6 +321,59 @@
         <span>{{modelTitle}}：</span><a-input-number style="width: 200px" :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="modelData"/>
       </div>
       </SG-Modal>
+
+<!--    快捷设置  开始-->
+    <SG-Modal
+            v-model="modalInfo.show"
+            width="700px"
+            :title="modalInfo.title"
+            okText="确定"
+            @ok="modalFn"
+    >
+    <div class="l-modal-container">
+      <div class="l-modal-left">
+        <div class="l-modal-select">
+          <span class="icon-red" v-show="quickInfo.type === '1'">处置成本对象: </span>
+          <span class="icon-red" v-show="quickInfo.type === '2'">处置收入对象: </span>
+<!--          <a-select v-model="quickInfo.select" >-->
+<!--            <a-select-option-->
+<!--                    v-for="item in quickInfo.options"-->
+<!--                    :key="item.value"-->
+<!--                    :value="item.value"-->
+<!--            >{{item.label}}</a-select-option>-->
+<!--          </a-select>-->
+        </div>
+        <div class="l-modal-radio">
+          <div class="l-modal-radio-lable">
+            <span class="icon-red">分摊方式: </span>
+          </div>
+          <div class="">
+<!--            <SG-RadioGroup direction="vertical" v-model="quickInfo.radioValue" style="font-size: 14px;">-->
+<!--              <SG-Radio :value="1">按照资产个数均摊</SG-Radio>-->
+<!--              <SG-Radio :value="2">按照资产面积均摊</SG-Radio>-->
+<!--            </SG-RadioGroup>-->
+          </div>
+        </div>
+      </div>
+      <div class="l-modal-right">
+        <div class="l-modal-input">
+          <span class="icon-red" v-show="quickInfo.type === '1'">处置成本金额(元): </span>
+          <span class="icon-red" v-show="quickInfo.type === '2'">处置收入金额(元): </span>
+<!--          <a-input-->
+<!--                  v-model.trim="quickInfo.value"-->
+<!--                  :maxLength="30"-->
+<!--                  placeholder="请输入金额"-->
+<!--          />-->
+        </div>
+        <div class="l-modal-explain">
+          <p>*说明：例如成本对象是所有资产，处置成本金额为100万，5个资产，那么每个资产处置成本为20万</p>
+          <p>*说明：例如成本对象是所有资产，处置成本金额为100万，资产01面积为100㎡，资产02面积为300㎡，那么资产001处置成本为25万，资产02处置成本为75万</p>
+          <p>*说明：例如成本对象是单个资产，处置成本金额为100万，那么所有的资产处置成本都为100万</p>
+        </div>
+      </div>
+    </div>
+    </SG-Modal>
+<!--    快捷设置  结束-->
   </div>
 </template>
 
@@ -333,6 +388,27 @@ export default {
   props: {},
   data () {
     return {
+      modalInfo: {
+        title: '',
+        show: false,
+      },
+      // 快捷录入信息
+      quickInfo: {
+        value: '',
+        type: '',
+        select: '1',
+        options: [
+          {
+            label: '所有资产',
+            value: '1'
+          },
+          {
+            label: '单个资产',
+            value: '2'
+          },
+        ],
+        radioValue: 1
+      },
       modelTitle: '',
       modelData: 0,
       show: false,                // 批量设置弹窗显示
@@ -400,6 +476,17 @@ export default {
   },
   methods: {
     moment,
+    // 快捷录入处置成本、收入按钮
+    quickEntry(type) {
+      if (type === '1') {
+        alert('快捷录入处置成本')
+        this.modalInfo.show = true
+        this.modalInfo.title = '快捷录入处置成本'
+        this.quickInfo.type = type
+      } else if (type === '2') {
+        alert('快捷录入处置收入')
+      }
+    },
     // 弹窗批量设置
     modalFn () {
       this.table.dataSource.forEach(item => {
@@ -842,6 +929,22 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+  .l-modal-container{
+    display: flex;
+    font-size: 14px;
+    .l-modal-left, .l-modal-right{
+      width: 50%;
+    }
+    .l-modal-left{
+      padding-right: 8px;
+      .l-modal-radio{
+        display: flex;
+      }
+    }
+    .l-modal-right{
+      padding-left: 8px;
+    }
+  }
 .createRegister {
   padding-bottom: 70px;
   .createRegister-nav{
