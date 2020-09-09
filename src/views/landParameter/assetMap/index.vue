@@ -13,7 +13,9 @@
         <suspensionRightBlock @search="handleSearchMap"></suspensionRightBlock>
       </div>
       <!-- 显示弹窗 -->
-      <div></div>
+      <div class="show-map-detail" v-show="showDetailModal">
+        <component :is="currentTabComponent" :detailInfo="detailInfo"  @close="closeDetailMap"></component>
+      </div>
     </div>
   </a-spin>
 </template>
@@ -24,6 +26,8 @@ import mapLandIcon from "./images/map_land.png"
 import mapHouseIcon from "./images/map_house.png"
 import mapLandTipIcon from "./images/map_land_tip.png"
 import mapHouseTipIcon from "./images/map_house_tip.png"
+import landMapDetail from "./component/landMapDetail"
+import houseMapDetail from "./component/houseMapDetail"
 var markerMap = {
   "1": {
     name: "楼栋: ",
@@ -48,23 +52,72 @@ export default {
   name: "AssetMapPage",
   components: {
     suspensionRightBlock,
+    landMapDetail,
+    houseMapDetail
   },
   data() {
     return {
       mapDomId: "asset-map-box",
-      loading: false,
+      loading: false, // 全局
+      loadingDetail: false, // 详情
       map: null,
       markerStore: [],
       ComplexCustomOverlay: null,
+      currentTabComponent: 'landMapDetail', // 当前弹窗详情
+      showDetailModal: false, // 当前是否显示地图详情
+      detailInfo: {}, // 土地信息
     }
   },
   mounted() {
     this.createBaiduMap()
   },
   methods: {
+    // 点击地图标注
+    handleClickMap (obj) {
+      console.log('拿到数据=>', obj)
+      this.showDetailModal = true
+      this.queryMapDetail(obj)
+    },
+    // 关闭详情弹窗
+    closeDetailMap (type) {
+      this.showDetailModal = false
+    },
+    // 请求地图详情
+    queryMapDetail (obj) {
+      let {resourceId, resourceType} = obj
+      let data = {resourceId, resourceType}
+      this.loadingDetail = true
+      this.$api.land
+        .mapDetail(data)
+        .then((res) => {
+          if (+res.data.code === 0) {
+            let result = res.data.data || {}
+            // 楼栋信息
+            if (String(resourceType)==='1') {
+              this.detailInfo = {...result.buildInfo}
+            }
+            // 土地信息
+            if (String(resourceType)==='2') {
+              this.detailInfo = {...result.landInfo}
+            }
+          } else {
+            this.$message.error(res.data.message || res.data.msg)
+          }
+        })
+        .finally(() => {
+          this.loadingDetail = false
+        })
+    },
+    restMap () {
+      Object.assign(this, {
+        showDetailModal: false, // 当前是否显示地图详情
+        detailInfo: {}, // 土地信息
+      })
+    },
     // 搜索地图全量
     handleSearchMap(data = {}) {
       console.log("拿到查询参数=>", data)
+      this.restMap()
       this.loading = true
       this.$api.land
         .mapData(data)
@@ -101,6 +154,7 @@ export default {
     },
     // 创建实例
     createBaiduMap() {
+      var self = this
       var { mapDomId } = this
       // 百度地图API功能
       var map = new BMap.Map(mapDomId, { minZoom: 5, maxZoom: 7 })
@@ -194,16 +248,17 @@ export default {
         var that = this
         div.onmouseover = function() {
           // this这里的this是指dom
-          console.log("移入数据")
           this.style.zIndex = Tools.getUuid()
           tipDiv.style.display = 'block'
         }
-
         div.onmouseout = function() {
-          console.log("移出数据")
           tipDiv.style.display = 'none'
         }
-
+        div.onclick = function() {
+          console.log("点击数据")
+          self.handleClickMap({...that.opt})
+          return false
+        }
         map.getPanes().labelPane.appendChild(div)
 
         return div
@@ -232,5 +287,10 @@ export default {
   top: 10px;
   right: 10px;
   z-index: 2;
+}
+.show-map-detail{
+  position: absolute;
+  top: 12px;
+  left: 12px;
 }
 </style>

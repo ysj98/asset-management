@@ -1,10 +1,10 @@
 /*
  * @Author: LW
  * @Date: 2020-07-24 17:33:50
- * @LastEditTime: 2020-09-07 11:18:16
+ * @LastEditTime: 2020-09-08 18:07:00
  * @Description: 土地
  */ 
-import { axiosPost } from '../utils/axios'
+import { axiosPost, axiosGet } from '../utils/axios'
 import { land } from '../config/config.url'
 
 // post请求示例

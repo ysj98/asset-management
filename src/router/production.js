@@ -78,7 +78,7 @@ let proRouter = [{
     }
   },
   {
-    path: '/assetRegisterView',
+    path: '/assetCheckInView',
     name: '资产登记一览表',
     component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterView.vue'),
     meta: {
@@ -86,7 +86,7 @@ let proRouter = [{
     }
   },
   {
-    path: '/assetRegisterView/detail',
+    path: '/assetCheckInView/detail',
     name: '资产登记一览表详情',
     component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterViewDetail/index.vue')
   },
@@ -709,13 +709,13 @@ let proRouter = [{
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
   },
   {
-    path: '/assetInView',
+    path: '/assetStorageView',
     name: '资产入库一览表',
     component: () => import('@/views/assetInformationManagement/assetIn/assetInView.vue'),
     meta: { keepAlive: true }
   },
   {
-    path: '/assetInView/detail',
+    path: '/assetStorageView/detail',
     name: '详情', // 资产入库一览表详情
     component: () => import('@/views/assetInformationManagement/assetIn/assetInViewDetail/index')
   },
@@ -731,7 +731,10 @@ let proRouter = [{
   }, {
     path: '/assetTable',
     name: '资产出库一览表',
-    component: () => import('@/views/assetInformationManagement/assetsTable/index')
+    component: () => import('@/views/assetInformationManagement/assetsTable/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetTable/detail',

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:17:52
- * @LastEditTime: 2020-03-09 14:43:37
+ * @LastEditTime: 2020-09-09 18:10:27
  * @LastEditors: Please set LastEditors
  * @Description: 盘点任务
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\index.vue
@@ -112,7 +112,7 @@ let columns = [
   {
     title: "任务名称",
     dataIndex: "taskName",
-    width: 120
+    width: 150
   },
   {
     title: "负责人",
@@ -128,7 +128,7 @@ let columns = [
   {
     title: "计划执行时间",
     dataIndex: "beginDateEndDate",
-    width: 100
+    width: 150
   },
   {
     title: "实际完成时间",

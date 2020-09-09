@@ -289,10 +289,15 @@ export default {
   height: 30px;
   line-height: 30px;
   padding: 0 15px;
+  
+box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
 }
 .map-search-box {
   margin-top: 5px;
   background-color: #fff;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
+  border-radius: 4px;
+  overflow: hidden;
   .search-title {
     height: 32px;
     line-height: 32px;
@@ -301,8 +306,8 @@ export default {
   }
   .search-content {
     padding: 10px 15px;
-    min-height: 400px;
-    max-height: calc(100vh - 118px);
+    // min-height: 400px;
+    max-height: calc(100vh - 127px);
     overflow-y: auto;
   }
   .search-checkbox {

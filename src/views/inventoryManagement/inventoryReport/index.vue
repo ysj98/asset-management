@@ -5,7 +5,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="btns">
-        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-right: 8px" @click="handleExport">导出</SG-Button>
+        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_INVENTORY_REPORT_EXPORT" @click="handleExport">导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newInventoryReport" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_NEW">新建盘点报告</SG-Button>
       </div>
       <div slot="form">

@@ -917,11 +917,13 @@ export default {
     changeAssetType (value) {
       this.detail.assetType = value
       this.getAssetCategoryOptions()
+      this.getAssetPurposeOptions()
       this.checkedData = []
       this.dataSource = []
       this.form.setFieldsValue({
         assetCategoryId: undefined,     // 资产分类
-        assetIds: undefined             // 关联资产
+        assetIds: undefined,             // 关联资产
+        assetPurpose: undefined          // 资产用途
       })
     },
     // 资产分类发生变化
@@ -1065,26 +1067,42 @@ export default {
         }
       })
     },
-    // 获取资产用途下拉列表
+    // 获取资产房屋用途下拉列表
     getAssetPurposeOptions () {
-      let form = {
-        categoryCode: 60
-      }
-      this.$api.basics.queryNodesByRootCode(form).then(res => {
-        if (res.data.code === '0') {
-          let arr = []
-          res.data.data.forEach(item => {
-            let obj = {
-              label: item.typeName,
-              value: item.typeCode
-            }
-            arr.push(obj)
-          })
-          this.assetPurposeOptions = arr
-        } else {
-          this.$message.error(res.data.message)
+      if (+this.detail.assetType === 1) {
+        let form = {
+          categoryCode: 60
         }
-      })
+        this.$api.basics.queryNodesByRootCode(form).then(res => {
+          if (res.data.code === '0') {
+            let arr = []
+            res.data.data.forEach(item => {
+              let obj = {
+                label: item.typeName,
+                value: item.typeCode
+              }
+              arr.push(obj)
+            })
+            this.assetPurposeOptions = arr
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      } else {
+        let data = {
+          code: 'OCM_LANDUSE',
+          organId: this.organId
+        }
+        this.$api.basics.organDict(data).then(res => {
+          if (res.data.code === "0") {
+            let data = res.data.data
+            this.assetPurposeOptions = data.map(item => ({
+              value: item["value"],
+              label: item["name"],
+            }))
+          }
+        })
+      }
     },
     // 获取资产来源下拉列表
     getAssetSourceOptions () {
@@ -1281,6 +1299,8 @@ export default {
           this.dataSource = this.detail.assetList
           // 查询资产分类
           this.getAssetCategoryOptions()
+          // 查询资产类型
+          this.getAssetPurposeOptions()
         } else {
           this.$message.error(res.data.message)
         }
@@ -1316,7 +1336,6 @@ export default {
       this.getAssetTypeOptions()
       this.getAssetCategoryOptions()
       this.getUnitOptions()
-      this.getAssetPurposeOptions()
       this.getAssetSourceOptions()
       this.getStoragePathOptions()
       this.getAssetSubjectList()
