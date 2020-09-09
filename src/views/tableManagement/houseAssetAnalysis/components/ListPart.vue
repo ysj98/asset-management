@@ -5,7 +5,9 @@
     <div style="margin-left: 45px">
       <a-row style="margin-bottom: 8px">
         <a-col :span="12">
-          <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
+          <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AA_EXPORT">
+            导出
+          </SG-Button>
         </a-col>
         <a-col :span="12" style="text-align: right; line-height: 32px">
           <a-icon type="setting" @click="openModal" style="color: #299fff; font-size: 18px; cursor: pointer; padding-right: 8px"/>
@@ -23,6 +25,7 @@
 
 <script>
   import EditTableHeader from './EditTableHeader'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
     name: 'ListPart',
@@ -30,14 +33,18 @@
     props: ['queryInfo'],
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         tableLoading: false,
         exportBtnLoading: false, // 导出button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         dataSource: [], // Table数据源
         columnsPC: [{ title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' }], // 省份城市字段跟随地区展示
         columnsFixed: [
-          { title: '建筑面积', dataIndex: 'area' }, { title: '资产原值', dataIndex: 'originalValue' },
-          { title: '首次评估原值', dataIndex: 'firstOriginalValue' }, { title: '最新估值', dataIndex: 'latestValuationValue' }
+          { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+          { title: '自用(㎡)', dataIndex: 'selfUserArea' }, { title: '闲置(㎡)', dataIndex: 'idleArea' },
+          { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
+          { title: '资产原值', dataIndex: 'originalValue' }, { title: '首次评估原值', dataIndex: 'firstOriginalValue' },
+          { title: '最新估值', dataIndex: 'latestValuationValue' }
         ], // Table 列头固定部分
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },

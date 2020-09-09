@@ -10,7 +10,7 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading">导出</SG-Button>
+        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zzjgst_dc">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
@@ -102,6 +102,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
 import {getCurrentDate, getMonthsAgoDate} from '@/utils/formatTime'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
@@ -182,6 +183,7 @@ export default {
       noPageTools: false,
       allStyle: allWidth,
       toggle: true,
+      ASSET_MANAGEMENT,
       tableInfo: {
         location: 'absolute',
         columns,

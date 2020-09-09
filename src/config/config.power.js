@@ -168,6 +168,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_EDIT: 'zcgl_asset_acm_edit',
   // 权证管理-注销
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
+  // 权证管理-导出
+  ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
 
   /**
   * 权属人管理
@@ -247,6 +249,11 @@ export const ASSET_MANAGEMENT = {
   zcgl_plan_edit: 'zcgl_plan_edit',
   zcgl_plan_delete: 'zcgl_plan_delete',
   zcgl_plan_reverseapply: 'zcgl_plan_reverseapply',
+  /*
+  * 处置一览表
+  */
+  czyl_zzjgst_dc: 'czyl_zzjgst_dc', // 组织机构视图导出
+  czyl_zcst_dc: 'czyl_zcst_dc', // 资产视图导出
   /**
    * 处置登记
    */
@@ -266,6 +273,7 @@ export const ASSET_MANAGEMENT = {
  ASSET_EDIT_SUBSI: 'asset_edit_subsi', // 编辑附属配套
  ASSET_STATUS_SUBSI: 'asset_status_subsi', // 附属配套状态改变
  ASSET_DELETE_SUBSI: 'asset_delete_subsi', // 删除附属配套
+ ASSET_EXPORT_SUBSI: 'asset_export_subsi', // 导出附属配套
  /**
   * 呈报记录一览表
  */
@@ -294,12 +302,21 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
    ASSET_IN_APPROVE: 'asset_in_approve', // 审批
    ASSET_IN_DELETE: 'asset_in_delete', // 删除
    /**
-    * 资产入库一览表
+    * V2.0.2资产入库一览表
     */
    ASSET_IN_VIEW_EXPORT: 'asset_in_view_export', // 导出
    /**
-    * 资产登记一览表
+    * V2.0.2资产登记一览表
     */
    ASSET_REGISTER_VIEW_EXPORT: 'asset_register_view_export', // 导出
+   /**
+    * V2.0.2报表管理
+    */
+   TM_AW_EXPORT: 'table_manage_asset_worth_export',       // 报表管理-资产价值统计导出
+   TM_AP_EXPORT: 'table_manage_asset_project_export',     // 报表管理-资产项目数据查询导出
+   TM_HA_EXPORT: 'table_manage_house_asset_export',       // 报表管理-有证房屋资产导出
+   TM_OA_EXPORT: 'table_manage_ownership_amount_export',  // 报表管理-权证数量统计导出
+   TM_OL_EXPORT: 'table_manage_ownership_list_export',    // 报表管理-权属证件一览表导出
+   TM_AA_EXPORT: 'table_manage_asset_analysis_export',    // 报表管理-房屋资产统计分析列表导出
 }
 

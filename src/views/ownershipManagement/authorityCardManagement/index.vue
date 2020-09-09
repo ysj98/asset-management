@@ -6,7 +6,7 @@
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
-        <SG-Button type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn">新建权证</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->

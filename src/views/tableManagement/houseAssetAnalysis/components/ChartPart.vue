@@ -30,10 +30,10 @@
         loading: false, // 页面loading
         isHasData: false, // 是否有图表数据，用于判断显示缺省文字
         divObj: {
-          type_statistics: '资产分类统计',
-          direct_statistics: '使用方向统计',
-          ownership_statistics: '权属情况统计',
-          asset_statistics: '资产价值统计'
+          type_statistics: '资产分类统计(㎡)',
+          direct_statistics: '使用方向统计(㎡)',
+          ownership_statistics: '权属情况统计(㎡)',
+          asset_statistics: '资产价值统计(万元)'
         }, // 图表寄存的div集合
         chartInstance: {
           type_statistics: null,

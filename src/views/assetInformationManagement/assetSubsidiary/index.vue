@@ -13,7 +13,7 @@
         <div slot="headerBtns">
           <SG-Button v-power="ASSET_MANAGEMENT.ASSET_CREATE_SUBSI"  @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
           <SG-Button class="mr10"  @click="openImportModal"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
-          <SG-Button type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.ASSET_EXPORT_SUBSI" type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
         <div slot="headerForm">
             <treeSelect
