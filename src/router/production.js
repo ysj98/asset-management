@@ -3,8 +3,7 @@
  * @Author: chen han
  * @Description:
  */
-let proRouter = [
-  {
+let proRouter = [{
     path: '/buildingDict',
     name: '楼盘字典',
     component: () => import('@/views/buildingDict/index.vue'),
@@ -79,6 +78,19 @@ let proRouter = [
     }
   },
   {
+    path: '/assetRegisterView',
+    name: '资产登记一览表',
+    component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterView.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetRegisterView/detail',
+    name: '资产登记一览表详情',
+    component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterViewDetail/index.vue')
+  },
+  {
     path: '/assetRegister/newEditSingle',
     name: '新建登记单',
     component: () => import('@/views/assetInformationManagement/assetRegister/child/newEditSingle.vue')
@@ -146,7 +158,9 @@ let proRouter = [
     path: '/organView',
     name: '组织机构视图',
     component: () => import('@/views/assetInformationManagement/house-account/organ-view/index.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/organView/detail',
@@ -157,7 +171,9 @@ let proRouter = [
     path: '/assetProjectView',
     name: '资产项目视图',
     component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewList.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/houseStandingBook/assetProjectViewDetail',
@@ -168,7 +184,9 @@ let proRouter = [
     path: '/assetView',
     name: '资产视图',
     component: () => import('@/views/assetInformationManagement/house-account/asset-view/index.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetView/assetViewDetail',
@@ -179,7 +197,9 @@ let proRouter = [
     path: '/buildingView',
     name: '楼栋视图',
     component: () => import('@/views/assetInformationManagement/house-account/building-view/index.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/buildingView/buildingViewDetail',
@@ -270,23 +290,29 @@ let proRouter = [
     path: '/ownershipSurvey/assetOwnershipDetail',
     name: '资产权属详情',
     component: () => import('@/views/ownershipManagement/ownershipSurvey/assetOwnershipDetail.vue')
-  },{
+  }, {
     path: '/assetAssessRecord',
     name: '资产估值记录',
     component: () => import('@/views/financialManagement/worth-register/components/WorthRegisterRecord.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetWorthList',
     name: '资产价值一览表',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-list/index.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/worthRegister',
     name: '价值登记',
     component: () => import('@/views/financialManagement/worth-register/index.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/worthRegister/detailRegister',
@@ -340,6 +366,11 @@ let proRouter = [
     path: '/disposalManagement/listDisposal',
     name: '资产处置一览表',
     component: () => import('@/views/disposalManagement/listDisposal/index')
+  },
+  {
+    path: '/disposalManagement/listDisposal/detail',
+    name: '详情',
+    component: () => import('@/views/disposalManagement/listDisposal/organContent/detail')
   },
   {
     path: '/inventoryManagement/countingTask',
@@ -558,7 +589,9 @@ let proRouter = [
     path: '/reportTask',
     name: '呈报任务',
     component: () => import('@/views/reportingManagement/reportTask'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/reportTask/editTask',
@@ -597,7 +630,9 @@ let proRouter = [
     path: '/reportingList',
     name: '呈报记录一览表',
     component: () => import('@/views/reportingManagement/reportingRecordList'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/reportingList/details',
@@ -607,12 +642,16 @@ let proRouter = [
     path: '/houseAssetAnalysis',
     name: '房屋资产统计分析',
     component: () => import('@/views/tableManagement/houseAssetAnalysis'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/projectData',
     name: '资产项目数据查询',
     component: () => import('@/views/tableManagement/projectDataSearch'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/projectData/assetProjectDetail',
     name: '资产项目详情',
@@ -621,27 +660,37 @@ let proRouter = [
     path: '/houseAssetStatistics',
     name: '有证房屋资产统计表',
     component: () => import('@/views/tableManagement/houseAssetStatistics'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/warrantAmountStatistics',
     name: '权证数量统计表',
     component: () => import('@/views/tableManagement/warrantAmountStatistics'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/ownershipCardList',
     name: '权属证件一览表',
     component: () => import('@/views/tableManagement/ownershipCardList'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/assetWorthStatistics',
     name: '资产价值统计表',
     component: () => import('@/views/tableManagement/assetWorthStatistics'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/assetIn',
     name: '资产入库',
     component: () => import('@/views/assetInformationManagement/assetIn/index.vue'),
-    meta: { keepAlive: true }
+    meta: {
+      keepAlive: true
+    }
   }, {
     path: '/assetIn/detail',
     name: '详情', // 资产入库详情
@@ -660,11 +709,26 @@ let proRouter = [
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
   },
   {
+    path: '/assetInView',
+    name: '资产入库一览表',
+    component: () => import('@/views/assetInformationManagement/assetIn/assetInView.vue'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/assetInView/detail',
+    name: '详情', // 资产入库一览表详情
+    component: () => import('@/views/assetInformationManagement/assetIn/assetInViewDetail/index')
+  },
+  {
     path: '/landAssetsView',
     name: '土地资产视图',
     component: () => import('@/views/landParameter/landAssetsView/index')
   },
   {
+    path: '/assetMap',
+    name: '资产地图',
+    component: () => import('@/views/landParameter/assetMap/index')
+  }, {
     path: '/assetTable',
     name: '资产出库一览表',
     component: () => import('@/views/assetInformationManagement/assetsTable/index')

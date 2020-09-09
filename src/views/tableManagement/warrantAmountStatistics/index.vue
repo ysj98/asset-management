@@ -4,7 +4,9 @@
     <!--查询调件-->
     <a-row :gutter="8" style="width: 100%; padding: 20px 20px 20px 30px">
       <a-col :span="10">
-        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
+        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OA_EXPORT">
+          导出
+        </SG-Button>
       </a-col>
       <a-col :span="12">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
@@ -22,6 +24,7 @@
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
@@ -29,6 +32,7 @@
     components: { OrganProject, NoDataTip },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         exportBtnLoading: false, // 导出按钮loading
         organProjectValue: {}, // 查询条件-组织机构及项目值
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
