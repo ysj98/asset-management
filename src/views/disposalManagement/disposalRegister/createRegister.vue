@@ -310,48 +310,51 @@
       <assetBundlePopover :organId="organId" queryType="4" ref="assetBundlePopover" @status="status"></assetBundlePopover>
     </div>
     <!-- 批量设置 -->
-     <SG-Modal
-        v-model="show"
-        width="400px"
-        title="批量设置"
-        okText="确定"
-        @ok="modalFn"
-      >
-      <div style="margin: 26px 0">
-        <span>{{modelTitle}}：</span><a-input-number style="width: 200px" :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="modelData"/>
-      </div>
-      </SG-Modal>
+<!--     <SG-Modal-->
+<!--        v-model="show"-->
+<!--        width="400px"-->
+<!--        title="批量设置"-->
+<!--        okText="确定"-->
+<!--        @ok="modalFn"-->
+<!--      >-->
+<!--      <div style="margin: 26px 0">-->
+<!--        <span>{{modelTitle}}：</span><a-input-number style="width: 200px" :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="modelData"/>-->
+<!--      </div>-->
+<!--      </SG-Modal>-->
 
 <!--    快捷设置  开始-->
     <SG-Modal
             v-model="modalInfo.show"
-            width="700px"
+            width="800px"
             :title="modalInfo.title"
             okText="确定"
-            @ok="modalFn"
+            @ok="quickFn"
     >
     <div class="l-modal-container">
       <div class="l-modal-left">
         <div class="l-modal-select">
-          <span class="icon-red" v-show="quickInfo.type === '1'">处置成本对象: </span>
-          <span class="icon-red" v-show="quickInfo.type === '2'">处置收入对象: </span>
-<!--          <a-select v-model="quickInfo.select" >-->
-<!--            <a-select-option-->
-<!--                    v-for="item in quickInfo.options"-->
-<!--                    :key="item.value"-->
-<!--                    :value="item.value"-->
-<!--            >{{item.label}}</a-select-option>-->
-<!--          </a-select>-->
+          <span class="icon-red" v-show="quickInfo.type === '1'">处置成本对象： </span>
+          <span class="icon-red" v-show="quickInfo.type === '2'">处置收入对象： </span>
+          <a-select v-model="quickInfo.select" style="width: 150px">
+            <a-select-option
+                    v-for="item in quickInfo.options"
+                    :key="item.value"
+                    :value="item.value"
+            >{{item.label}}</a-select-option>
+          </a-select>
         </div>
         <div class="l-modal-radio">
           <div class="l-modal-radio-lable">
-            <span class="icon-red">分摊方式: </span>
+            <span class="icon-red">分摊方式： </span>
           </div>
-          <div class="">
-<!--            <SG-RadioGroup direction="vertical" v-model="quickInfo.radioValue" style="font-size: 14px;">-->
-<!--              <SG-Radio :value="1">按照资产个数均摊</SG-Radio>-->
-<!--              <SG-Radio :value="2">按照资产面积均摊</SG-Radio>-->
-<!--            </SG-RadioGroup>-->
+          <div v-show="quickInfo.select === '1'" style="margin-left: 10px;">
+            <SG-RadioGroup direction="vertical" v-model="quickInfo.radioValue" style="font-size: 14px;">
+              <SG-Radio :value="1">按照资产个数均摊</SG-Radio>
+              <SG-Radio :value="2">按照资产面积均摊</SG-Radio>
+            </SG-RadioGroup>
+          </div>
+          <div v-show="quickInfo.select === '2'" style="line-height: 30px;margin-left: 10px;">
+            <SG-Radio :checked="true">不分摊，每个资产处置收入相同</SG-Radio>
           </div>
         </div>
       </div>
@@ -359,11 +362,15 @@
         <div class="l-modal-input">
           <span class="icon-red" v-show="quickInfo.type === '1'">处置成本金额(元): </span>
           <span class="icon-red" v-show="quickInfo.type === '2'">处置收入金额(元): </span>
-<!--          <a-input-->
-<!--                  v-model.trim="quickInfo.value"-->
-<!--                  :maxLength="30"-->
-<!--                  placeholder="请输入金额"-->
-<!--          />-->
+<!--          <a-form-item v-bind="formItemLayout" label="" style="margin-bottom: 0px;margin-left: 5px;">-->
+            <a-input-number placeholder="请输入金额(元)"
+                            style="width: 190px;"
+                            :min="0"
+                            :max="999999999.99"
+                            v-model="quickInfo.value"
+                            step="1.00" :precision="2"
+                            v-decorator="['disposeReceive', {rules: [{required: true, message: '请输入处置收入(元)(范围0-999999999.99)'}], initialValue: quickInfo.value}]"/>
+<!--          </a-form-item>-->
         </div>
         <div class="l-modal-explain">
           <p>*说明：例如成本对象是所有资产，处置成本金额为100万，5个资产，那么每个资产处置成本为20万</p>
@@ -388,15 +395,16 @@ export default {
   props: {},
   data () {
     return {
+      // 快捷录入弹出框
       modalInfo: {
         title: '',
         show: false,
       },
       // 快捷录入信息
       quickInfo: {
-        value: '',
-        type: '',
-        select: '1',
+        value: '', // 处置金额
+        type: '', // 类型 1 为处置成本  2 处置收入
+        select: '1', // 1 所有资产  2 单个资产
         options: [
           {
             label: '所有资产',
@@ -476,15 +484,20 @@ export default {
   },
   methods: {
     moment,
+    // 快捷录入弹框确认按钮
+    quickFn(){
+      console.log(this.quickInfo)
+    },
     // 快捷录入处置成本、收入按钮
     quickEntry(type) {
       if (type === '1') {
-        alert('快捷录入处置成本')
         this.modalInfo.show = true
         this.modalInfo.title = '快捷录入处置成本'
         this.quickInfo.type = type
       } else if (type === '2') {
-        alert('快捷录入处置收入')
+        this.modalInfo.show = true
+        this.modalInfo.title = '快捷录入处置收入'
+        this.quickInfo.type = type
       }
     },
     // 弹窗批量设置
@@ -932,17 +945,39 @@ export default {
   .l-modal-container{
     display: flex;
     font-size: 14px;
-    .l-modal-left, .l-modal-right{
-      width: 50%;
-    }
+    /*.l-modal-left, .l-modal-right{*/
+    /*  width: 50%;*/
+    /*}*/
     .l-modal-left{
+      width: 350px;
       padding-right: 8px;
       .l-modal-radio{
         display: flex;
+        margin-top: 30px;
+      }
+      .icon-red{
+        line-height: 30px;
+      }
+      .l-modal-radio/deep/.sg-radio-group.sg-radio-group-vertical>.sg-radio+.sg-radio{
+        margin-top: 25px;
       }
     }
     .l-modal-right{
       padding-left: 8px;
+      flex: 1;
+    }
+    .l-modal-input{
+      display: flex;
+      align-items: center;
+      padding-left: 15px;
+    }
+    .l-modal-explain{
+      margin-top: 30px;
+      font-size: 12px;
+      color: #bfbfbf;
+      p{
+        margin-bottom: 5px;
+      }
     }
   }
 .createRegister {

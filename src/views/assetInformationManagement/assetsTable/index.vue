@@ -422,8 +422,9 @@
                     ...this.queryData,
                     organId: this.organId
                 }
-                this.$api.assets.getGeneralSurveyExport(params).then(res => {
+                this.$api.assets.getGeneralSurveyExportOut(params).then(res => {
                     this.exportBtnLoading = false
+                    console.log(typeof res.data)
                     if (Number(res.data.code) === -1) {
                         this.$message.error('导出失败');
                         return

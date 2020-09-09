@@ -248,7 +248,7 @@ export const assets = {
     // 资产出库一览表
     getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
     // 资产出库一览表导出
-    getGeneralSurveyExport: '/ams/assetCleanup/getGeneralSurveyExport',
+    getGeneralSurveyExportOut: '/ams/assetCleanup/getGeneralSurveyExport',
   },
   // 资产分类设置
   assetClassSet: {
