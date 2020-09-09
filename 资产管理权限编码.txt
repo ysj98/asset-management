@@ -86,6 +86,7 @@ zcgl_asset_ownerr_delete        权属登记-删除
 zcgl_asset_acm_new              权证管理-新增权证管理单
 zcgl_asset_acm_edit             权证管理-编辑权证管理单
 zcgl_asset_acm_delete           权证管理-注销
+zcgl_asset_acm_export           权证管理-导出
 
 V1.2
 盘点任务
@@ -108,6 +109,10 @@ zcgl_plan_edit                  盘点计划-编辑盘点计划
 zcgl_plan_delete                盘点计划-删除盘点计划
 zcgl_plan_reverseapply          盘点计划-反审核盘点计划
 
+处置一览表
+czyl_zzjgst_dc                    组织机构视图导出
+czyl_zcst_dc                      资产视图导出
+
 处置登记
 zcgl_dengji_create                处置登记-新增盘点计划
 zcgl_dengji_edit                  处置登记-编辑盘点计划
@@ -128,6 +133,7 @@ asset_create_subsi      新建附属配套
 asset_edit_subsi        编辑附属配套
 asset_status_subsi      附属配套状态改变
 asset_delete_subsi      删除附属配套
+asset_export_subsi      导出附属配套
 呈报记录一览表
 asset_report_operate    呈报记录运营
 asset_report_income     呈报记录收入
@@ -161,6 +167,23 @@ zcgl_asset_register_registerDirections       // 资产登记-登记使用方向
 zcgl_asset_register_registrationFees         // 资产登记-登记相关费用
 zcgl_asset_register_verify                   // 资产登记-核实
 zcgl_asset_register_undoCheck                // 资产登记-撤销核实
+
+
+v2.0.2新增按钮权限
+
+报表管理
+table_manage_asset_worth_export       // 报表管理-资产价值统计导出
+table_manage_asset_project_export     // 报表管理-资产项目数据查询导出
+table_manage_house_asset_export       // 报表管理-有证房屋资产导出
+table_manage_ownership_amount_export  // 报表管理-权证数量统计导出
+table_manage_ownership_list_export    // 报表管理-权属证件一览表导出
+table_manage_asset_analysis_export    // 报表管理-房屋资产统计分析列表导出
+
+/* 资产入库一览表 */
+asset_in_view_export                       资产入库一览表-导出
+
+/* 资产登记一览表 */
+asset_register_view_export                      资产登记一览表-导出
 
 // 资产出库
 asset_in_export     资产出库一览表导出

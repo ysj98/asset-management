@@ -1,0 +1,353 @@
+<!--
+ * @Date: 2020-09-04 11:11:45
+ * @Description: 右侧悬浮框
+ * @Author: chh
+-->
+<template>
+  <div class="suspensionRightBlock-page">
+    <!-- 导航显示 -->
+    <div class="nav-top pointer" @click="handleSwitch">
+      <span>{{ showMenuStr }}</span>
+      <span class="fr">
+        <a-icon :type="iconType" />
+      </span>
+    </div>
+    <!-- 搜索条件块 -->
+    <div class="map-search-box" v-show="toggle">
+      <div class="search-title">
+        <span>查询条件</span>
+        <span class="fr pointer" @click="handleSwitch"
+          ><a-icon type="close"
+        /></span>
+      </div>
+      <!-- 查询主体 -->
+      <div class="search-content">
+        <div class="serach-condition-input">
+          <organTreeSelect @changeTree="changeTree" style="width: 100%" />
+        </div>
+        <!-- 类型 -->
+        <div class="search-item">
+          <div class="search-item-label">类型:</div>
+          <div class="search-item-content">
+            <SG-CheckboxGroup @change="checkboxGroupChnage">
+              <span
+                class="search-checkbox"
+                v-for="item in assetTypeListOpt"
+                :key="item.value"
+                ><SG-Checkbox :value="item.value" :key="item.value">{{
+                  item.label
+                }}</SG-Checkbox></span
+              >
+            </SG-CheckboxGroup>
+          </div>
+        </div>
+        <!-- 省份 -->
+        <div class="search-item">
+          <div class="search-item-label">省份:</div>
+          <div class="search-item-content">
+            <span
+              class="search-item-province ellipsis pointer"
+              :class="queryCondition.province === item.value && 'active'"
+              v-for="item in provinceOpt"
+              @click="handleSelectAdress('province', item)"
+              :key="item.key"
+              :title="item.label"
+            >
+              {{ item.label }}
+            </span>
+          </div>
+        </div>
+        <!-- 城市 -->
+        <div class="search-item">
+          <div class="search-item-label">城市:</div>
+          <div class="search-item-content">
+            <span
+              class="search-item-province ellipsis pointer"
+              :class="queryCondition.city === item.value && 'active'"
+              v-for="item in cityOpt"
+              @click="handleSelectAdress('city', item)"
+              :key="item.key"
+              :title="item.label"
+            >
+              {{ item.label }}
+            </span>
+          </div>
+        </div>
+        <!-- 表格 -->
+        <div>
+          <a-spin :spinning="loading">
+            <a-table class="table-boxs" bordered v-bind="table"> </a-table>
+          </a-spin>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import Tools from "@/utils/utils"
+import organTreeSelect from "./organTreeSelect"
+import { columns, arrkeys, dataIndexs } from "../lib/dict.js"
+let provinceOptFrist = {
+  label: "全国",
+  value: "",
+  key: Tools.getUuid(),
+}
+let cityOptFrist = { label: "全省", value: "", key: Tools.getUuid() }
+export default {
+  name: "suspensionRightBlock",
+  components: {
+    organTreeSelect,
+  },
+  data() {
+    return {
+      toggle: true,
+      // menus: ["海文花园", "广东省", "深圳市"],
+      assetTypeListOpt: [], // 请求资产类型
+      provinceOpt: [{ ...provinceOptFrist }], // 省份
+      cityOpt: [{ ...cityOptFrist }],
+      loading: false,
+      // 表格数据
+      table: {
+        columns,
+        dataSource: [],
+        pagination: false,
+      },
+      // 查询参数
+      queryCondition: {
+        province: "",
+        city: "",
+        organId: "",
+        organName: "",
+      },
+      assetTypes: [],
+      // 路由查询参数
+      routeQueryStore: {},
+    }
+  },
+  computed: {
+    iconType() {
+      return this.toggle ? "up" : "down"
+    },
+    // 显示菜单
+    showMenuStr() {
+      return this.menus.join(" > ")
+    },
+    menus() {
+      let provinceLabel = this.provinceOpt.find(
+        (item) => item.value === this.queryCondition.province
+      )
+      let cityLabel = this.cityOpt.find(
+        (item) => item.value === this.queryCondition.city
+      )
+      console.log("provinceLabel", provinceLabel, cityLabel)
+      return [
+        this.queryCondition.organName,
+        provinceLabel.label,
+        cityLabel.label,
+      ]
+    },
+  },
+  created() {
+    this.platformDict("asset_type")
+    this.queryProvinceList()
+  },
+  methods: {
+    query() {
+      let data = {
+        ...this.queryCondition,
+        assetTypes: this.assetTypes.join(","),
+      }
+      this.$emit('search', data)
+      // this.loading = true
+      this.$api.land
+        .overview(data)
+        .then((res) => {
+          if (+res.data.code === 0) {
+            let result = res.data.data || {}
+            let dataSource = arrkeys.map((item) => {
+              let key = item[1]
+              let o = { key: Tools.getUuid(), name: item[0] }
+
+              dataIndexs.forEach((dataIndex) => {
+                o[dataIndex] = result[dataIndex][key]
+              })
+              return o
+            })
+            this.table.dataSource = dataSource
+            console.log("得到表格数据=>", this.table.dataSource)
+          } else {
+            this.$message.error(res.data.message || res.data.msg)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    // 拼接处导航栏
+    // 选择省市区
+    handleSelectAdress(type, item) {
+      let { label, value } = item
+      console.log("选择省市区", type, item)
+      if (type === "province") {
+        let flag = this.queryCondition.province === value
+        if (flag) {
+          return
+        }
+        Object.assign(this.queryCondition, {
+          province: value,
+          city: "",
+        })
+        ;(this.cityOpt = [{...cityOptFrist}]),
+          this.queryCityAndAreaList(value, type)
+      }
+      if (type === "city") {
+        let flag = this.queryCondition.city === value
+        if (flag) {
+          return
+        }
+        this.queryCondition.city = value
+      }
+      this.query()
+    },
+    // 地址选项开关
+    handleSwitch() {
+      this.toggle = !this.toggle
+    },
+    // 多选框改变
+    checkboxGroupChnage(checkedValues) {
+      console.log("checked = ", checkedValues)
+      this.assetTypes = checkedValues
+      this.query()
+    },
+    // 获取选择的组织机构
+    changeTree(organId, organName) {
+      Object.assign(this.queryCondition, {
+        organName,
+        organId,
+      })
+      console.log("没有进来吗=>", organId, organName)
+      this.query()
+    },
+    // 平台字典
+    platformDict(code) {
+      this.$api.assets.platformDict({ code }).then((res) => {
+        if (res.data.code === "0") {
+          let result = res.data.data || []
+          let arr = result.map((item) => ({
+            label: item.name,
+            ...item,
+            key: Tools.getUuid(),
+          }))
+          // 资产类型
+          if (code === "asset_type") {
+            this.assetTypeListOpt = arr
+          }
+        }
+      })
+    },
+    // 请求省
+    queryProvinceList() {
+      return this.$api.basics.queryProvinceList().then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data || []
+          this.provinceOpt = data.map((item) => {
+            return {
+              label: item.name,
+              value: item.regionId,
+              key: Tools.getUuid(),
+            }
+          })
+          this.provinceOpt.unshift({...provinceOptFrist})
+        }
+      })
+    },
+    // 请求市区
+    queryCityAndAreaList(parentRegionId, type) {
+      this.$api.basics.queryCityAndAreaList({ parentRegionId }).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data || []
+          let result = data.map((item) => {
+            return { label: item.name, value: item.regionId }
+          })
+          // 市
+          if (type === "province") {
+            this.cityOpt = result
+            this.cityOpt.unshift({...cityOptFrist})
+          }
+        }
+      })
+    },
+  },
+}
+</script>
+<style lang="less" scoped>
+.suspensionRightBlock-page {
+  width: 450px;
+}
+.nav-top {
+  background-color: #fff;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 15px;
+  
+box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
+}
+.map-search-box {
+  margin-top: 5px;
+  background-color: #fff;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
+  border-radius: 4px;
+  overflow: hidden;
+  .search-title {
+    height: 32px;
+    line-height: 32px;
+    padding: 0px 15px;
+    border-bottom: 1px solid #dadada;
+  }
+  .search-content {
+    padding: 10px 15px;
+    // min-height: 400px;
+    max-height: calc(100vh - 127px);
+    overflow-y: auto;
+  }
+  .search-checkbox {
+    width: 75px;
+    display: inline-block;
+  }
+  .search-item-province {
+    width: 62px;
+    display: inline-block;
+    font-size: 14px;
+    color: #6d7585;
+    line-height: 26px;
+    margin-right: 10px;
+    &:hover,
+    &.active {
+      color: #0084ff;
+    }
+  }
+  .search-item {
+    display: grid;
+    grid-template-columns: 50px auto;
+    grid-template-rows: auto;
+    margin-top: 13px;
+    .search-item-label {
+      font-size: 15px;
+      font-weight: bold;
+      color: #6d7585;
+    }
+  }
+  /deep/ .ant-select-selection {
+    border: 1px solid #dce1e6;
+    border-radius: 16px;
+  }
+  /deep/ .sg-checkbox-group .ant-checkbox-wrapper {
+    font-size: 14px;
+  }
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

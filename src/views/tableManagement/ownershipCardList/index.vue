@@ -4,7 +4,9 @@
     <!--查询调件-->
     <a-row :gutter="8" style="width: 100%; padding: 20px 20px 20px 30px">
       <a-col :span="2">
-        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport">导出</SG-Button>
+        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OL_EXPORT">
+          导出
+        </SG-Button>
       </a-col>
       <a-col :span="8">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
@@ -32,7 +34,7 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="warrantNbr" slot-scope="text, record">
-        <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record.warrantNbr)">{{text}}</span>
+        <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{text}}</span>
       </template>
       <!--<template slot="lotNo" slot-scope="text, record">-->
         <!--<span>{{`${text || ''}/${record.estateUnitCode || ''}`}}</span>-->
@@ -47,6 +49,7 @@
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
@@ -56,6 +59,7 @@
     components: { NoDataTip, OrganProject, CardDetails, OverviewNumber },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         queryObj: {
           status: '', // 查询条件-权属状态
           warrantNbr: '', // 查询条件-权证号
@@ -89,7 +93,7 @@
             { title: '资产项目', dataIndex: 'projectName', width: 150 },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属人/承租人', dataIndex: 'obligeeName', width: 150 },
-            { title: '被委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
+            { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
             { title: '房屋号/丘地号/不动产单元号', dataIndex: 'lotNo', scopedSlots: { customRender: 'lotNo' }, width: 200 },
             { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
             { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
@@ -137,8 +141,8 @@
       },
 
       // 查看权证详情
-      viewDetail (warrantNbr) {
-        this.$refs['cardDetails'].query(warrantNbr)
+      viewDetail (record) {
+        this.$refs['cardDetails'].query(record.warrantNbr, record.organId)
       },
 
       // 查询平台权属类型字典

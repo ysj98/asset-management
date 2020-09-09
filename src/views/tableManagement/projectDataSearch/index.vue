@@ -5,7 +5,7 @@
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
         <SG-Button icon="setting" @click="handleModalStatus" style="margin-right: 10px">列表设置</SG-Button>
-        <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport">
+        <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AP_EXPORT">
           导出
         </SG-Button>
       </div>
@@ -79,6 +79,7 @@
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import SearchContainer from 'src/views/common/SearchContainer'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
   import EditTableHeader from './EditTableHeader'
   import moment from 'moment'
@@ -87,6 +88,7 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, OrganProject, NoDataTip },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         fold: true,
         queryObj: {
           takeOver: '', // 查询条件-接管状态值

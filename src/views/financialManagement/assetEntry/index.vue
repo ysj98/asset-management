@@ -9,7 +9,7 @@
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px">导出</SG-Button>
         <SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
         <!-- 暂时不用 -->
-        <!-- <SG-Button type="primary" @click="listSet">列表设置</SG-Button> -->
+        <!-- <SG-Button type="primary" style="margin-right: 8px" @click="listSet">列表设置</SG-Button> -->
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search placeholder="卡片名称/编码" :style="allStyle" :value="cardName" @change="cardNameChange" @search="queryClick" />
@@ -125,7 +125,7 @@
       title: '所属机构',
       dataIndex: 'organName',
       disabled: true,
-      width: 200,
+      width: 300,
       fixed: 'left'
     },
     {
@@ -234,7 +234,7 @@
       value: '3'
     },
     {
-      label: '在役',
+      label: '已审批',
       value: '1'
     },
     {
@@ -250,7 +250,7 @@
       return {
         ASSET_MANAGEMENT,
         allStyle: 'width: 170px; margin-right: 10px;',
-        scroll: {x: columnsData.length * 150},
+        scroll: {x: columnsData.length * 140},
         columnsData,
         toggle: false,
         organName: '',
@@ -448,7 +448,7 @@
         })
       },
       handleOperation (pageType, record) {
-        this.$router.push({path: '/assetEntry/' + pageType, query: {pageType: pageType, cardId: record.cardId, organId: this.organId, organName: this.organName}})
+        this.$router.push({path: '/assetEntry/' + pageType, query: {pageType: pageType, cardId: record.cardId, organId: record.organId, organName: record.organName}})
       },
       // 点击查询
       queryClick () {

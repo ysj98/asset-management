@@ -39,6 +39,10 @@ export default [
         path: '/assetRegister'
       },
       {
+        title: '资产登记一览表',
+        path: '/assetRegisterView'
+      },
+      {
         title: '附属配套管理',
         path: '/subsidiary'
       },
@@ -203,7 +207,11 @@ export default [
       {
         title: '资产视图',
         path: '/landAssetsView'
-      }
+      },
+      {
+        title: '资产地图',
+        path: '/assetMap'
+      },
     ]
   },
   {
@@ -245,6 +253,10 @@ export default [
       {
         title: '资产入库',
         path: '/assetIn'
+      },
+      {
+        title: '资产入库一览表',
+        path: '/assetInView'
       }
     ]
   },

@@ -495,7 +495,7 @@ let oneHasYear = [
   {label: '每年第12个月', key: '12'},
 ]
 // 表格数据
-let columns = [
+const columns = [
   {
     title: "编号",
     dataIndex: "order",
@@ -560,7 +560,7 @@ export default {
       oneHasYear,
       form: this.$form.createForm(this),
       table: {
-        columns: _.cloneDeep(columns),
+        columns: utils.deepClone(columns),
         dataSource: [],
         loading: false,
         totalCount: 0,
@@ -698,7 +698,10 @@ export default {
     },
     // 去除表格操作列
     popTableColumn () {
-      this.table.columns.pop()
+      let arr = []
+      arr = utils.deepClone(columns)
+      arr.pop()
+      this.table.columns = arr
     },
     // 在表格压入一条数据
     pushTableLine() {

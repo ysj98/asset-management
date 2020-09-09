@@ -4,9 +4,9 @@
  * 日期：2019年6月26日
  */
 
- /**
- * 公共的权限常量
- **/
+/**
+* 公共的权限常量
+**/
 export const GLOBAL = {
   // 按行政区查找组织机构树的权限
   ADMINISTRATIVE_PERMISSION: 'c-common-administrative',
@@ -16,9 +16,9 @@ export const GLOBAL = {
   DOWNLOADCENTER_DOWNLOAD: 'c_download_file_download_001'
 }
 
- /**
- * 以下是具体业务的权限常量
- **/
+/**
+* 以下是具体业务的权限常量
+**/
 export const ASSET_MANAGEMENT = {
   /**
   * 资产清理
@@ -168,6 +168,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_EDIT: 'zcgl_asset_acm_edit',
   // 权证管理-注销
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
+  // 权证管理-导出
+  ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
 
   /**
   * 权属人管理
@@ -227,9 +229,9 @@ export const ASSET_MANAGEMENT = {
   **/
   // 盘点执行-登记盘点结果
   ASSET_EXECUTE_NEW: 'zcgl_execute_new',
- /**
-  * 盘点报告
-  */
+  /**
+   * 盘点报告
+   */
   // 盘点报告-新建
   ASSET_INVENTORY_REPORT_NEW: 'zcgl_inventory_report_new',
   // 盘点报告-编辑
@@ -247,32 +249,38 @@ export const ASSET_MANAGEMENT = {
   zcgl_plan_edit: 'zcgl_plan_edit',
   zcgl_plan_delete: 'zcgl_plan_delete',
   zcgl_plan_reverseapply: 'zcgl_plan_reverseapply',
+  /*
+  * 处置一览表
+  */
+  czyl_zzjgst_dc: 'czyl_zzjgst_dc', // 组织机构视图导出
+  czyl_zcst_dc: 'czyl_zcst_dc', // 资产视图导出
   /**
    * 处置登记
    */
- zcgl_dengji_create: 'zcgl_dengji_create',
- zcgl_dengji_edit: 'zcgl_dengji_edit',
- zcgl_dengji_delete: 'zcgl_dengji_delete',
- zcgl_dengji_reverseapply: 'zcgl_dengji_reverseapply',
-   /**
-    * 呈报任务管理
-    */
- // 呈报任务管理-呈报任务-新增
- RM_TASK_NEW: 'asset_rm_task_new',
- /**
-  * 附属配套管理
+  zcgl_dengji_create: 'zcgl_dengji_create',
+  zcgl_dengji_edit: 'zcgl_dengji_edit',
+  zcgl_dengji_delete: 'zcgl_dengji_delete',
+  zcgl_dengji_reverseapply: 'zcgl_dengji_reverseapply',
+  /**
+   * 呈报任务管理
+   */
+  // 呈报任务管理-呈报任务-新增
+  RM_TASK_NEW: 'asset_rm_task_new',
+  /**
+   * 附属配套管理
+   */
+  ASSET_CREATE_SUBSI: 'asset_create_subsi', // 新建附属配套
+  ASSET_EDIT_SUBSI: 'asset_edit_subsi', // 编辑附属配套
+  ASSET_STATUS_SUBSI: 'asset_status_subsi', // 附属配套状态改变
+  ASSET_DELETE_SUBSI: 'asset_delete_subsi', // 删除附属配套
+  ASSET_EXPORT_SUBSI: 'asset_export_subsi', // 导出附属配套
+  /**
+   * 呈报记录一览表
   */
- ASSET_CREATE_SUBSI: 'asset_create_subsi', // 新建附属配套
- ASSET_EDIT_SUBSI: 'asset_edit_subsi', // 编辑附属配套
- ASSET_STATUS_SUBSI: 'asset_status_subsi', // 附属配套状态改变
- ASSET_DELETE_SUBSI: 'asset_delete_subsi', // 删除附属配套
- /**
-  * 呈报记录一览表
- */
-ASSET_REPORT_OPERATE: 'asset_report_operate', // 呈报记录运营
-ASSET_REPORT_INCOME: 'asset_report_income', // 呈报记录收入
-ASSET_REPORT_DEPRECIA: 'asset_report_deprecia', // 呈报记录折旧
-ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
+  ASSET_REPORT_OPERATE: 'asset_report_operate', // 呈报记录运营
+  ASSET_REPORT_INCOME: 'asset_report_income', // 呈报记录收入
+  ASSET_REPORT_DEPRECIA: 'asset_report_deprecia', // 呈报记录折旧
+  ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
   /**
  * 呈报计划
  */
@@ -286,14 +294,31 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
   zcgl_submit_plans_audit: 'zcgl_submit_plans_audit',
   // 呈报计划-反审核
   zcgl_submit_plans_reverse_audit: 'zcgl_submit_plans_reverse_audit',
-   /**
-    * 资产入库
-    */
-   ASSET_IN_CREATE: 'asset_in_create', // 新建
-   ASSET_IN_EDIT: 'asset_in_edit', // 编辑
-   ASSET_IN_APPROVE: 'asset_in_approve', // 审批
-   ASSET_IN_DELETE: 'asset_in_delete', // 删除
+  /**
+   * 资产入库
+   */
+  ASSET_IN_CREATE: 'asset_in_create', // 新建
+  ASSET_IN_EDIT: 'asset_in_edit', // 编辑
+  ASSET_IN_APPROVE: 'asset_in_approve', // 审批
+  ASSET_IN_DELETE: 'asset_in_delete', // 删除
 
-     ASSET_IN_EXPORT: 'asset_in_export', // 资产出库一览表导出
+  ASSET_IN_EXPORT: 'asset_in_export', // 资产出库一览表导出
+  /**
+   * V2.0.2资产入库一览表
+   */
+  ASSET_IN_VIEW_EXPORT: 'asset_in_view_export', // 导出
+  /**
+   * V2.0.2资产登记一览表
+   */
+  ASSET_REGISTER_VIEW_EXPORT: 'asset_register_view_export', // 导出
+  /**
+   * V2.0.2报表管理
+   */
+  TM_AW_EXPORT: 'table_manage_asset_worth_export',       // 报表管理-资产价值统计导出
+  TM_AP_EXPORT: 'table_manage_asset_project_export',     // 报表管理-资产项目数据查询导出
+  TM_HA_EXPORT: 'table_manage_house_asset_export',       // 报表管理-有证房屋资产导出
+  TM_OA_EXPORT: 'table_manage_ownership_amount_export',  // 报表管理-权证数量统计导出
+  TM_OL_EXPORT: 'table_manage_ownership_list_export',    // 报表管理-权属证件一览表导出
+  TM_AA_EXPORT: 'table_manage_asset_analysis_export',    // 报表管理-房屋资产统计分析列表导出
 }
 
