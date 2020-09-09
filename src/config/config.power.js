@@ -293,5 +293,13 @@ ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
    ASSET_IN_EDIT: 'asset_in_edit', // 编辑
    ASSET_IN_APPROVE: 'asset_in_approve', // 审批
    ASSET_IN_DELETE: 'asset_in_delete', // 删除
+   /**
+    * 资产入库一览表
+    */
+   ASSET_IN_VIEW_EXPORT: 'asset_in_view_export', // 导出
+   /**
+    * 资产登记一览表
+    */
+   ASSET_REGISTER_VIEW_EXPORT: 'asset_register_view_export', // 导出
 }
 

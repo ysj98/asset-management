@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
@@ -75,6 +75,7 @@ import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
@@ -144,6 +145,7 @@ export default {
   components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
   data () {
     return {
+      ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
       columns,
