@@ -102,6 +102,10 @@ export default [
         path: '/ownershipRegistration'
       },
       {
+        title: '权属登记一览表',
+        path: '/ownershipRegisterView',
+      },
+      {
         title: '权证管理',
         path: '/authorityCardManagement'
       },

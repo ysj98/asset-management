@@ -233,6 +233,11 @@ let proRouter = [{
     component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationParticulars.vue')
   },
   {
+    path: '/ownershipRegisterView',
+    name: '权属登记一览表',
+    component: () => import('@/views/ownershipManagement/ownershipRegisterView/index')
+  },
+  {
     path: '/authorityCardManagement',
     name: '权证管理',
     component: () => import('@/views/ownershipManagement/authorityCardManagement/index.vue'),
@@ -737,6 +742,6 @@ let proRouter = [{
     path: '/assetTable/detail',
     name: '资产出库一览表详情',
     component: () => import('@/views/assetInformationManagement/assetsTable/detail')
-  }
+  },
 ]
 export default proRouter
