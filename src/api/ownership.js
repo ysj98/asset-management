@@ -49,7 +49,13 @@ export function warrantDownload (data) {
 }
 // 权证导出
 export function warrantExport (data) {
-  return axiosGet(ownership.authorityCardManagement.warrantExport, data)
+  return axiosPost(ownership.authorityCardManagement.warrantExport, data, false, false, {
+    responseType: 'blob'
+  })
+}
+// 权证统计
+export function warrantTotal (data) {
+  return axiosPost(ownership.authorityCardManagement.warrantTotal, data)
 }
 // 权证新增或修改
 export function warrantSaveOrUpdate (data) {
