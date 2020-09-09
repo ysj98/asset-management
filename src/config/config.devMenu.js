@@ -40,7 +40,7 @@ export default [
       },
       {
         title: '资产登记一览表',
-        path: '/assetRegisterView'
+        path: '/assetCheckInView'
       },
       {
         title: '附属配套管理',
@@ -256,7 +256,7 @@ export default [
       },
       {
         title: '资产入库一览表',
-        path: '/assetInView'
+        path: '/assetStorageView'
       }
     ]
   },

@@ -53,7 +53,7 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <router-link :to="{ path: '/assetRegisterView/detail', query: { registerOrderId: record.registerOrderId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
+          <router-link :to="{ path: '/assetCheckInView/detail', query: { registerOrderId: record.registerOrderId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
         </template>
       </a-table>
     </div>

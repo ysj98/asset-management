@@ -53,7 +53,7 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <router-link :to="{ path: '/assetInView/detail', query: { storeId: record.storeId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
+          <router-link :to="{ path: '/assetStorageView/detail', query: { storeId: record.storeId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
         </template>
       </a-table>
     </div>
