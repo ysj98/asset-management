@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 15:37:38
- * @LastEditTime : 2020-01-03 17:19:39
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-09-09 14:15:53
+ * @LastEditors: Please set LastEditors
  * @Description: 登记盘盈资产
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\assetsInventorySurplus.vue
  -->
@@ -278,6 +278,7 @@ export default {
           }
           this.newCardData.files = files
           }
+          this.getListFn()      // 查询资产分类
         } else {
           this.$message.error(res.data.message)
         }
