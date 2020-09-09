@@ -194,6 +194,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ENTRY_REVERSE_AUDIT: 'zcgl_asset_entry_reverse_audit',
   // 资产入账-删除
   ASSET_ENTRY_DELETE: 'zcgl_asset_entry_delete',
+  // 资产入账-导出
+  ASSET_ENTRY_EXPORT: 'zcgl_asset_entry_export',
   /**
    * 权属概况
    */
@@ -229,6 +231,11 @@ export const ASSET_MANAGEMENT = {
   **/
   // 盘点执行-登记盘点结果
   ASSET_EXECUTE_NEW: 'zcgl_execute_new',
+  // 盘点执行-登记盘点结果-导出资产清单
+  ASSET_EXECUTE_LISTASSETS: 'zcgl_execute_listAssets',
+  // 盘点执行-登记盘点结果-导出异常信息
+  ASSET_EXECUTE_EXCEPTION: 'zcgl_execute_exception',
+  
   /**
    * 盘点报告
    */
@@ -242,6 +249,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_INVENTORY__REPORT_AUDIT: 'zcgl_inventory_report_audit',
   // 盘点报告-反审核
   ASSET_INVENTORY_REPORT_REVERSE_AUDIT: 'zcgl_inventory_report_reverse_audit',
+  // 盘点报告-导出
+  ASSET_INVENTORY_REPORT_EXPORT: 'zcgl_inventory_report_export',
   /**
    * 盘点计划
   */

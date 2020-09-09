@@ -187,3 +187,13 @@ asset_register_view_export                      资产登记一览表-导出
 
 // 资产出库
 asset_in_export     资产出库一览表导出
+
+资产入账
+zcgl_asset_entry_export        资产入账导出
+
+盘点执行
+zcgl_execute_listAssets        盘点执行-登记盘点结果-导出资产清单
+zcgl_execute_exception         盘点执行-登记盘点结果-导出异常信息
+
+盘点报告
+zcgl_inventory_report_export   盘点报告-导出
