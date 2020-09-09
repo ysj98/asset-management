@@ -149,6 +149,10 @@
       queryType: {
         type: [String, Number],
         default: ''
+      },
+      typeTask: {
+        type: [String, Number],
+        default: ''
       }
     },
     data () {
@@ -374,6 +378,9 @@
         this.query()
       },
       query () {
+        if (this.typeTask !== 'task' && !this.assetType) {
+          return
+        }
         this.loading = true
         let obj = {
           organId: this.judgeInstitutions ? this.organId : this.paginator.organId,

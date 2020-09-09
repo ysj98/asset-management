@@ -1,8 +1,8 @@
 <!--
  * @Author: Lw
  * @Date: 2019-12-25 15:07:07
- * @LastEditTime : 2020-01-10 15:16:56
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-09-09 15:15:04
+ * @LastEditors: Please set LastEditors
  * @Description: 盘点执行登记/详情
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\detail.vue
  -->
@@ -31,7 +31,7 @@
       <div class="particulars-obj">
       <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
         <div slot="col-l">
-          <SG-Button type="primary" style="margin-right: 10px" weaken @click="downloadTemplateFn('0')">导出资产清单</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.ASSET_EXECUTE_LISTASSETS" type="primary" style="margin-right: 10px" weaken @click="downloadTemplateFn('0')">导出资产清单</SG-Button>
           <SG-Button v-if="changeType === 'set'" type="primary" @click="importExcelFn()" weaken>导入盘点结果</SG-Button>
         </div>
         <div slot="col-r" class="nav">
@@ -75,7 +75,7 @@
       <Cephalosome style="margin: 0" :rightCol="18" :leftCol="6">
         <div slot="col-l">
           <SG-Button v-if="changeType === 'set'" type="primary" style="margin-right: 10px" weaken @click="registerAssetsFn">登记盘盈资产</SG-Button>
-          <SG-Button type="primary" @click="downloadTemplateFn('1')" weaken>导出异常信息</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.ASSET_EXECUTE_EXCEPTION" type="primary" @click="downloadTemplateFn('1')" weaken>导出异常信息</SG-Button>
         </div>
         <div slot="col-r">
           <div class="nav">
@@ -150,12 +150,14 @@ import FormFooter from '@/components/FormFooter'
 import inventoryResultRegistration from './inventoryResultRegistration'
 import assetsInventorySurplus from './assetsInventorySurplus'
 import viewDetails from './viewDetails'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 export default {
   components: {Cephalosome, noDataTips, FormFooter, inventoryResultRegistration, assetsInventorySurplus, viewDetails},
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       organId: '',
       fileType: ['xls', 'xlsx'],
       formData: null,

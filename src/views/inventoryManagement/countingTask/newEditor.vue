@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime: 2020-09-02 16:25:31
+ * @LastEditTime: 2020-09-09 11:52:40
  * @LastEditors: Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -166,7 +166,7 @@
     </div>
     <div v-if="IsShow">
       <!-- 选资产 -->
-      <associateAssetModal ref="associateAssetModal" queryType="1" :judgeInstitutions="false" @assetChange="assetChange" @handleCancelFn="handleCancelFn"></associateAssetModal>
+      <associateAssetModal ref="associateAssetModal" typeTask="task" queryType="1" :judgeInstitutions="false" @assetChange="assetChange" @handleCancelFn="handleCancelFn"></associateAssetModal>
     </div>
   </div>
 </template>
