@@ -237,6 +237,8 @@ export const assets = {
     assetCleanupGetCount: '/ams/assetCleanup/getCount',
     // 资产出库一览表
     getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
+    // 资产出库一览表导出
+    getGeneralSurveyExport: '/ams/assetCleanup/getGeneralSurveyExport',
   },
   // 资产分类设置
   assetClassSet: {
@@ -713,7 +715,11 @@ export const subsidiary = {
   // 附属配套-导入
   batchImport: '/ams/subsidiaryMatching/batchImport',
   // 根据资产id 查询资产信息
-  getAssetById: '/ams/asset/getAssetById'
+  getAssetById: '/ams/asset/getAssetById',
+  // 查询附属配套列表
+  getMatchingListByAssetIdPage: '/ams/subsidiaryMatching/getMatchingListByAssetIdPage',
+  // 附属配套统计
+  getMatchingSta: '/ams/subsidiaryMatching/getMatchingSta'
 }
 
 // 呈报管理

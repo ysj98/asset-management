@@ -336,6 +336,10 @@ export function assetCleanupGetCount (data) {
 export function getGeneralSurvey(data) {
   return axiosPost(assets.assetClear.getGeneralSurvey, data, false, false)
 }
+//  资产出库一览表导出
+export function getGeneralSurveyExport(data) {
+  return axiosPost(assets.assetClear.getGeneralSurveyExport, data, false, false, {responseType: 'blob'})
+}
 
 //资产分类设置
 // 资产分类设置-资产分类列表

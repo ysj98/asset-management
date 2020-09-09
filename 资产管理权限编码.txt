@@ -161,3 +161,6 @@ zcgl_asset_register_registerDirections       // 资产登记-登记使用方向
 zcgl_asset_register_registrationFees         // 资产登记-登记相关费用
 zcgl_asset_register_verify                   // 资产登记-核实
 zcgl_asset_register_undoCheck                // 资产登记-撤销核实
+
+// 资产出库
+asset_in_export     资产出库一览表导出
