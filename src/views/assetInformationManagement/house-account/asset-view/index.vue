@@ -71,12 +71,9 @@
     </a-spin>
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
-      <!--<span slot="projectName" slot-scope="text, record">-->
-        <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
-      <!--</span>-->
-      <!--<span slot="buildName" slot-scope="text, record">-->
-        <!--<router-link :to="{ path: '/assetViewDetail', query: { houseId: record.assetHouseId } }">{{text}}</router-link>-->
-      <!--</span>-->
+      <template slot="assetName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
       <span slot="action" slot-scope="text, record">
         <router-link :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
@@ -106,10 +103,11 @@
   import SearchContainer from 'src/views/common/SearchContainer'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTableHeader from './components/EditTableHeader'
+  import tooltipText from 'src/views/common/TooltipText'
   import NoDataTip from 'src/components/noDataTips'
   export default {
     name: 'index',
-    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip },
+    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
         fold: true,
@@ -133,7 +131,7 @@
           dataSource: [],
           scroll: { x: 2900 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', width: 250, fixed: 'left' },
+            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '丘地号', dataIndex: 'addressNo' },
