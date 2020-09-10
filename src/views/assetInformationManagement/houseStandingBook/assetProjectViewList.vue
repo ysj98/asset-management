@@ -10,6 +10,7 @@
           type="primary"
           @click="handleExport"
           :loading='exportBtnLoading'
+          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT"
         >导出</SG-Button>
       </div>
       <div slot="form">
@@ -67,6 +68,7 @@
 <script>
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 const columns = [
@@ -167,6 +169,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT, // 权限对象
       allStyle: 'width: 170px; margin-right: 10px;',
       organId: '',
       assetProject: '',

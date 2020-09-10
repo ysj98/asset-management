@@ -82,12 +82,12 @@
         pagination: { ...pagination}, // 缓存分页一
         apiObj: {
           ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId' }, // 权属信息
-          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetObjectId', data: 'assetHouseId' }, // 接管信息
-          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetObjectId', data: 'assetHouseId' }, // 变动记录
+          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId' }, // 接管信息
+          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId' }, // 变动记录
           billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId' }, // 账面信息
           accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId' }, // 附属&配套
           disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId' }, // 资产处置
-          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetHouseId', data: 'assetHouseId', pagination: true}, // 相关费用
+          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true}, // 相关费用
         } // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
       }
     },
@@ -146,7 +146,7 @@
             }
             // 相关费用
             if (type === 'relatedExpenses') {
-              tableData = res.data.data.map((m,i) => {
+              tableData = res.data.data.map(m => {
                 m.reportBillIdName = m.reportBillId ? reportBillIdNameMap[String(m.reportBillId)] : '/'
                 m.settleUpName = m.settleUp || m.settleUp===0 ? settleUpMap[String(m.settleUp)] : '/'
                 m.amount = m.amount || '/'
@@ -171,20 +171,12 @@
           this.$message.error(err || `查询${tip}错误`)
         })
       },
-      // 由于会出现多个接口查询
-      queryDetail2 (type) {
-        
-      },
+
       handleChange(data) {
         this.pagination.pageNum = data.pageNo;
         this.pagination.pageSize = data.pageLength;
         this.queryDetail(this.tabKey)
-      },
-      handleChange2(data) {
-        this.pagination2.pageNum = data.pageNo;
-        this.pagination2.pageSize = data.pageLength;
-        this.queryDetail2(this.tabKey)
-      },
+      }
     },
     
     created () {

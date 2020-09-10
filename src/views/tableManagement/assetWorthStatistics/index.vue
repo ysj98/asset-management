@@ -4,7 +4,12 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
+        <SG-Button
+          icon="import"
+          type="primary"
+          @click="handleExport"
+          :loading='exportBtnLoading'
+          v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
           导出
         </SG-Button>
       </div>
@@ -99,8 +104,8 @@
     data () {
       return {
         fold: true,
+        ASSET_MANAGEMENT, // 权限对象
         queryObj: {
-          ASSET_MANAGEMENT, // 权限对象
           dimension: '1', // 查询条件-统计维度
           queryType: '3', // 查询条件-统计类型值
           objectType: '', // 查询条件-资产分类值

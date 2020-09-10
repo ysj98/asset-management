@@ -10,6 +10,7 @@
             type="primary"
             @click="handleExport"
             :loading="exportBtnLoading"
+            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_EXPORT"
           >导出楼栋视图</SG-Button>
         </a-col>
         <!--<a-col :span="15">-->
@@ -54,6 +55,9 @@
     </a-spin>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <template slot="buildName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
       <span slot="assetNum" slot-scope="text">
         <span style="color: #0084FF; cursor: pointer">{{text}}</span>
       </span>
@@ -68,13 +72,16 @@
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
+  import TooltipText from 'src/views/common/TooltipText'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   export default {
     name: 'index',
-    components: { OverviewNumber, NoDataTip },
+    components: { OverviewNumber, NoDataTip, TooltipText },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         exportBtnLoading: false, // 导出按钮loading
         organOptions: [], // 组织机构选项
@@ -96,8 +103,8 @@
           pagination: false,
           rowKey: 'buildId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'buildName', width: 150, fixed: 'left' },
-            { title: '楼栋编号', dataIndex: 'buildCode', width: 150, fixed: 'left' },
+            { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left' },
+            { title: '楼栋编号', dataIndex: 'buildCode'},
             { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
             { title: '丘地号', dataIndex: 'addressNo', width: 150 },
             { title: '建筑年代', dataIndex: 'years' },
