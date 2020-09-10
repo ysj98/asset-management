@@ -929,8 +929,8 @@ export const land = {
   viewGetAssetLandList: '/ams/project/viewGetAssetLandList',
   // 土地台账--资产项目视图汇总
   viewGetAssetLandStatistics: '/ams/project/viewGetAssetLandStatistics',
-  // 土地台账--资产项目视图详情
-  organViewExport: '/ams/project/viewLandDetailsPage',
+  // 土地台账--资产项目视图详情--资产状况
+  viewLandDetailsPage: '/ams/project/viewLandDetailsPage',
   // 土地台账--资产项目视图详情导出
   viewGetAssetLandExport: '/ams/project/viewGetAssetLandExport',
   // 资产地图- 资产概况
