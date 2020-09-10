@@ -2,7 +2,7 @@
   <div class="entering-date" @click="openDateModal">
     <div class="entering-date-border">
       <div class="entering-date-label">{{label}}</div>
-      <a-range-picker @change="onEnteringDateChange" :allowClear="false" :placeholder="placeholder" :format="format" :mode="mode" :value="dateValue" :open="showDateModal" :disabledDate="disabledDate" @panelChange="handlePanelChange"/>
+      <a-range-picker @change="onEnteringDateChange" :allowClear="allowClear" :placeholder="placeholder" :format="format" :mode="mode" :value="dateValue" :open="showDateModal" :disabledDate="disabledDate" @panelChange="handlePanelChange"/>
     </div>
   </div>
 </template>
@@ -23,6 +23,10 @@ export default {
     format: {
       type: String,
       default: 'YYYY-MM-DD'
+    },
+    allowClear: {
+      type: Boolean,
+      default: false,
     },
     placeholder: {
       type: Array,

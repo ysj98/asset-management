@@ -113,6 +113,12 @@
                     class="custom-table td-pd10"
                     :pagination="false"
             >
+                <template slot="organName" slot-scope="text, record">
+                    <tooltip-text :text="record.organName" :width="120"></tooltip-text>
+                </template>
+                <template slot="location" slot-scope="text, record">
+                    <tooltip-text :text="record.location" :width="120"></tooltip-text>
+                </template>
                 <template slot="operation" slot-scope="text, record">
                     <a class="operation-btn" @click="handleOperation(record)">详情</a>
                 </template>
@@ -136,6 +142,7 @@
     import moment from "moment";
     import { ASSET_MANAGEMENT } from "@/config/config.power";
     import OverviewNumber from "@/views/common/OverviewNumber";
+    import TooltipText from "../../common/TooltipText";
     // import {calc} from '@/utils/utils'
     // import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
@@ -158,7 +165,7 @@
         {
             title: "资产类型",
             dataIndex: "assetTypeName",
-            width: 160
+            width: 120
         },
         {
             title: "资产分类",
@@ -168,7 +175,8 @@
         {
             title: "管理机构",
             dataIndex: "organName",
-            width: 160
+            width: 120,
+            scopedSlots: { customRender: "organName" }
         },
         {
             title: "资产项目名称",
@@ -188,7 +196,8 @@
         {
             title: "资产位置",
             dataIndex: "location",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "location" }
         },
         {
             title: "资产面积",
@@ -247,6 +256,7 @@
 
     export default {
         components: {
+            TooltipText,
             TreeSelect,
             SegiRangePicker,
             noDataTips,

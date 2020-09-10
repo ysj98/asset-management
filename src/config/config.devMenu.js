@@ -102,6 +102,10 @@ export default [
         path: '/ownershipRegistration'
       },
       {
+        title: '权属登记一览表',
+        path: '/ownershipRegisterView',
+      },
+      {
         title: '权证管理',
         path: '/authorityCardManagement'
       },
@@ -207,6 +211,14 @@ export default [
       {
         title: '资产视图',
         path: '/landAssetsView'
+      },
+      {
+        title: '组织机构视图',
+        path: '/landOrganView'
+      },
+      {
+        title: '资产项目视图',
+        path: '/landProjectView'
       },
       {
         title: '资产地图',

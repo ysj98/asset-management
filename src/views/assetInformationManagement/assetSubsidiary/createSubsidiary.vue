@@ -1,7 +1,7 @@
 <!--
  * @Description: 新建资产信息 配套附属资源
  * @Date: 2020-02-17 19:01:00
- * @LastEditTime: 2020-03-13 17:52:33
+ * @LastEditTime: 2020-09-10 14:00:17
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -513,6 +513,9 @@ export default {
     },
     showRadioAssetModal () {
        this.$refs.radioAssetModal.show = true
+       this.$nextTick(() => {
+        this.$refs.radioAssetModal.query()
+       })
     },
     // 资产选择变动
     assetChange (row) {

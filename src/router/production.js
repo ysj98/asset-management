@@ -78,7 +78,7 @@ let proRouter = [{
     }
   },
   {
-    path: '/assetCheckInView',
+    path: '/assetRegisterView',
     name: '资产登记一览表',
     component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterView.vue'),
     meta: {
@@ -86,7 +86,7 @@ let proRouter = [{
     }
   },
   {
-    path: '/assetCheckInView/detail',
+    path: '/assetRegisterView/detail',
     name: '资产登记一览表详情',
     component: () => import('@/views/assetInformationManagement/assetRegister/assetRegisterViewDetail/index.vue')
   },
@@ -231,6 +231,11 @@ let proRouter = [{
     path: '/ownershipRegistration/registrationParticulars',
     name: '权属登记详情',
     component: () => import('@/views/ownershipManagement/ownershipRegistration/registrationParticulars.vue')
+  },
+  {
+    path: '/ownershipRegisterView',
+    name: '权属登记一览表',
+    component: () => import('@/views/ownershipManagement/ownershipRegisterView/index')
   },
   {
     path: '/authorityCardManagement',
@@ -709,13 +714,13 @@ let proRouter = [{
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')
   },
   {
-    path: '/assetStorageView',
+    path: '/assetInView',
     name: '资产入库一览表',
     component: () => import('@/views/assetInformationManagement/assetIn/assetInView.vue'),
     meta: { keepAlive: true }
   },
   {
-    path: '/assetStorageView/detail',
+    path: '/assetInView/detail',
     name: '详情', // 资产入库一览表详情
     component: () => import('@/views/assetInformationManagement/assetIn/assetInViewDetail/index')
   },
@@ -723,6 +728,31 @@ let proRouter = [{
     path: '/landAssetsView',
     name: '土地资产视图',
     component: () => import('@/views/landParameter/landAssetsView/index')
+  },
+  {
+    path: '/landAssetsView/detail',
+    name: '详情',
+    component: () => import('@/views/landParameter/landAssetsView/components/landDetailPage.vue')
+  },
+  {
+    path: '/landOrganView',
+    name: '组织机构视图',
+    component: () => import('@/views/landParameter/landOrganView/index')
+  },
+  {
+    path: '/landOrganView/detail',
+    name: '详情',
+    component: () => import('@/views/landParameter/landOrganView/landOrganViewDetail.vue')
+  },
+  {
+    path: '/landProjectView',
+    name: '资产项目视图',
+    component: () => import('@/views/landParameter/landProjectView/index')
+  },
+  {
+    path: '/landProjectView/detail',
+    name: '详情',
+    component: () => import('@/views/landParameter/landProjectView/landProjectViewDetail.vue')
   },
   {
     path: '/assetMap',
@@ -740,6 +770,6 @@ let proRouter = [{
     path: '/assetTable/detail',
     name: '资产出库一览表详情',
     component: () => import('@/views/assetInformationManagement/assetsTable/detail')
-  }
+  },
 ]
 export default proRouter

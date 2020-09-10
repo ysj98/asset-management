@@ -75,7 +75,10 @@
               </a-col>
             </a-row>
           </div>
-          <div class="detail-content-right"></div>
+          <div class="detail-content-right pt10">
+            <img v-if="imgSrc" :src="imgSrc" alt="">
+            <img v-else src="../../../../assets/image/default_house.png">
+          </div>
         </div>
       </div>
       <!-- 表格部分 -->
@@ -202,6 +205,11 @@ export default {
       }
     }
   },
+  computed: {
+    imgSrc () {
+      return this.detailInfo.picPath ? (configs.hostPrime + this.detailInfo.picPath) : ''
+    }
+  },
   filters: {
     filterNullValue (val) {
       return val ? val : '-'
@@ -233,6 +241,12 @@ export default {
   border-radius: 4px;
   font-size: 13px;
   overflow: hidden;
+}
+.detail-content-right{
+  >img {
+    width: 100%;
+    height: auto;
+  }
 }
 .detail-page {
   max-height: calc(100vh - 96px);

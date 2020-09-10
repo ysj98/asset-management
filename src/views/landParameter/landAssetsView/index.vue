@@ -45,6 +45,9 @@
         class="custom-table table-boxs"
         :pagination="false"
         >
+        <span slot="action" slot-scope="text, record">
+          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+        </span>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -107,7 +110,8 @@ const columnsData = [
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
   { title: ' 批准日期', dataIndex: 'approvalDate', width: 150 },
-  { title: '资产状态', dataIndex: 'statusName', width: 150 }
+  { title: '资产状态', dataIndex: 'statusName', width: 150 },
+  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 70}
 ]
 const approvalStatusData = [
   { name: '全部状态', value: ''},
@@ -206,6 +210,10 @@ export default {
     //     a.remove()
     //   })
     // },
+    // 查看土地资产视图详情
+    handleViewDetail (record) {
+      this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId: record.assetLandId }})
+    },
     // 点击总览数据块
     // 0运营；1闲置；2自用；3占用；4其他
     handleClickOverview({i}) {

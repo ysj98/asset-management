@@ -7,10 +7,10 @@
                     <span class="lable">出库单ID：</span>
                     <span class="value">{{cleanupInfo.cleaningOrderId}}</span>
                 </div>
-<!--                <div class="l-model-item">-->
-<!--                    <span class="lable">出库单名称：</span>-->
-<!--                    <span class="value">入库单001</span>-->
-<!--                </div>-->
+                <div class="l-model-item">
+                    <span class="lable">出库单名称：</span>
+                    <span class="value">{{cleanupInfo.cleaningOrderCode}}</span>
+                </div>
                 <div class="l-model-item">
                     <span class="lable">出库单编号：</span>
                     <span class="value">{{cleanupInfo.cleaningOrderCode}}</span>

@@ -211,23 +211,46 @@ export default {
         // 存着全部数据
         this.overallData = arrData
       }
+      
+      let flag = false // 搜索条件有变化
+      // 项目变化
       if (this.selecData.projectId !== projectId) {
         this.selecData.projectId = projectId
-        this.query()
+        flag = true
       }
+      // 资产类型变化
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
+        flag = true
         this.selecData.assetType = assetType
         this.assetTypeDisabled = true
         this.assetTypeFn()
+      }
+      // 是否第一次加载
+      if (this.firstCall) {
+        flag = true
+        this.firstCall = false
+      }
+      // 是否发起请求
+      if (flag) {
         this.query()
       }
+      // if (this.selecData.projectId !== projectId) {
+      //   this.selecData.projectId = projectId
+      //   this.query()
+      // }
+      // if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
+      //   this.selecData.assetType = assetType
+      //   this.assetTypeDisabled = true
+      //   this.assetTypeFn()
+      //   this.query()
+      // }
       this.$nextTick(() => {
         this.selectedRowKeys = redactChecked
       })
-      if (this.firstCall) {
-        this.query()
-        this.firstCall = false
-      }
+      // if (this.firstCall) {
+      //   this.query()
+      //   this.firstCall = false
+      // }
     },
     // 关闭弹窗
     handleCancel () {

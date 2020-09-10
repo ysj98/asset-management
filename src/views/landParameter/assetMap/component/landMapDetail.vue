@@ -93,7 +93,10 @@
               </a-col>
             </a-row>
           </div>
-          <div class="detail-content-right"></div>
+          <div class="detail-content-right pt10">
+            <img v-if="imgSrc" :src="imgSrc" alt="">
+            <img v-else src="../../../../assets/image/default_house_old.png">
+          </div>
         </div>
       </div>
       <!-- 表格部分 -->
@@ -113,6 +116,7 @@
 
 <script>
 import Tools from '@/utils/utils'
+import configs from '@/config/config.base.js'
 const columns = [
   {
     title: "资产面积(㎡)",
@@ -191,6 +195,11 @@ export default {
       }
     }
   },
+  computed: {
+    imgSrc () {
+      return this.detailInfo.redMap ? (configs.hostPrime + this.detailInfo.redMap) : ''
+    }
+  },
   filters: {
     filterNullValue (val) {
       return val ? val : '-'
@@ -222,6 +231,12 @@ export default {
   border-radius: 4px;
   font-size: 13px;
   overflow: hidden;
+}
+.detail-content-right{
+  >img {
+    width: 100%;
+    height: auto;
+  }
 }
 .detail-page {
   max-height: calc(100vh - 96px);
