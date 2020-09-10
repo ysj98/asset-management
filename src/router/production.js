@@ -730,6 +730,31 @@ let proRouter = [{
     component: () => import('@/views/landParameter/landAssetsView/index')
   },
   {
+    path: '/landAssetsView/detail',
+    name: '详情',
+    component: () => import('@/views/landParameter/landAssetsView/components/landDetailPage.vue')
+  },
+  {
+    path: '/landOrganView',
+    name: '组织机构视图',
+    component: () => import('@/views/landParameter/landOrganView/index')
+  },
+  {
+    path: '/landOrganView/detail',
+    name: '详情',
+    component: () => import('@/views/landParameter/landOrganView/landOrganViewDetail.vue')
+  },
+  {
+    path: '/landProjectView',
+    name: '资产项目视图',
+    component: () => import('@/views/landParameter/landProjectView/index')
+  },
+  {
+    path: '/landProjectView/detail',
+    name: '详情',
+    component: () => import('@/views/landParameter/landProjectView/landProjectViewDetail.vue')
+  },
+  {
     path: '/assetMap',
     name: '资产地图',
     component: () => import('@/views/landParameter/assetMap/index')

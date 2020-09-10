@@ -213,6 +213,14 @@ export default [
         path: '/landAssetsView'
       },
       {
+        title: '组织机构视图',
+        path: '/landOrganView'
+      },
+      {
+        title: '资产项目视图',
+        path: '/landProjectView'
+      },
+      {
         title: '资产地图',
         path: '/assetMap'
       },

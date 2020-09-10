@@ -911,6 +911,28 @@ export const land = {
   assetView: '/ams/assetLand/view/asset/assetView',
   // 土地台账--资产视图汇总
   assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal',
+  // 土地台账--资产视图详情
+  assetViewDetail: '/ams/assetLand/view/asset/assetViewDetail',
+  // 土地台账--组织机构视图
+  organView: '/ams/assetLand/view/asset/organView',
+  // 土地台账--组织机构视图汇总
+  organViewTotal: '/ams/assetLand/view/asset/organViewTotal',
+  // 土地台账--组织机构视图详情权属概况
+  organViewShipDetail: '/ams/assetLand/view/asset/organViewShipDetail',
+  // 土地台账--组织机构视图详情资产概况汇总
+  organViewProjectDetailTotal: '/ams/assetLand/view/asset/organViewProjectDetailTotal',
+  // 土地台账--组织机构视图详情资产概况列表
+  organViewProjectDetail: '/ams/assetLand/view/asset/organViewProjectDetail',
+  // 土地台账--组织机构视图导出
+  organViewExport: '/ams/assetLand/view/asset/organViewExport',
+  // 土地台账--资产项目视图
+  viewGetAssetLandList: '/ams/project/viewGetAssetLandList',
+  // 土地台账--资产项目视图汇总
+  viewGetAssetLandStatistics: '/ams/project/viewGetAssetLandStatistics',
+  // 土地台账--资产项目视图详情
+  organViewExport: '/ams/project/viewLandDetailsPage',
+  // 土地台账--资产项目视图详情导出
+  viewGetAssetLandExport: '/ams/project/viewGetAssetLandExport',
   // 资产地图- 资产概况
   overview: '/ams/asset/map/overview',
   // 资产地图- 资产全量数据
