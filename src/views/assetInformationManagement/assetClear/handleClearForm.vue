@@ -8,10 +8,10 @@
         <div class="edit-box-title"><i></i><span>基础信息</span></div>
         <div class="edit-box-content">
           <div class="edit-box-content-item">
-            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">出库单编号<i></i></span><span>：</span></div>
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">出库单名称<i></i></span><span>：</span></div>
             <a-form-item>
               <a-input
-                placeholder="请输入出库单编号"
+                placeholder="请输入出库单名称"
                 :style="allStyle"
                 :max="30"
                 v-if="editable"

@@ -91,6 +91,7 @@
               <a-form-item v-bind="formItemLayout" label="处置成本(元)：">
                 <a-input-number placeholder="请输入处置成本(元)"
                 :style="allWidth"
+                disabled
                 :min="0"
                 :max="999999999.99"
                 step="1.00" :precision="2"
@@ -101,6 +102,7 @@
               <a-form-item v-bind="formItemLayout" label="处置收入(元)：">
                 <a-input-number placeholder="请输入处置收入(元)"
                 :style="allWidth"
+                disabled
                 :min="0"
                 :max="999999999.99"
                 step="1.00" :precision="2"
@@ -202,17 +204,19 @@
             >
             <!-- 处置成本 -->
             <template slot="disposeCost">
-              <a class="icon-red" @click="openSubjectModal('cost')">处置成本(元)</a>
+<!--              <a class="icon-red" @click="openSubjectModal('cost')">处置成本(元)</a>-->
+              <span class="icon-red">处置成本(元)</span>
             </template>
             <template slot="disposeCost" slot-scope="text, record">
-              <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.disposeCost"/>
+              <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" @change="sumDisposeCost" v-model="record.disposeCost"/>
             </template>
             <!-- 处置收入 -->
             <template slot="disposeReceive">
-              <a class="icon-red" @click="openSubjectModal('income')">处置收入(元)</a>
+<!--              <a class="icon-red" @click="openSubjectModal('income')">处置收入(元)</a>-->
+              <span class="icon-red">处置收入(元)</span>
             </template>
             <template slot="disposeReceive" slot-scope="text, record">
-              <a-input-number :min="0" :step="1.00" :max="999999999.99" :precision="2" v-model="record.disposeReceive"/>
+              <a-input-number :min="0" :step="1.00" :max="999999999.99" @change="sumDisposeReceive" :precision="2" v-model="record.disposeReceive"/>
             </template>
             <!-- 备注 -->
             <template slot="remark" slot-scope="text, record">
@@ -362,15 +366,14 @@
         <div class="l-modal-input">
           <span class="icon-red" v-show="quickInfo.type === '1'">处置成本金额(元): </span>
           <span class="icon-red" v-show="quickInfo.type === '2'">处置收入金额(元): </span>
-<!--          <a-form-item v-bind="formItemLayout" label="" style="margin-bottom: 0px;margin-left: 5px;">-->
-            <a-input-number placeholder="请输入金额(元)"
-                            style="width: 190px;"
-                            :min="0"
-                            :max="999999999.99"
-                            v-model="quickInfo.value"
-                            step="1.00" :precision="2"
-                            v-decorator="['disposeReceive', {rules: [{required: true, message: '请输入处置收入(元)(范围0-999999999.99)'}], initialValue: quickInfo.value}]"/>
-<!--          </a-form-item>-->
+          <a-input-number
+                  placeholder="请输入金额(元)"
+                  style="width: 190px;margin-left: 10px;"
+                  :min="0"
+                  :max="999999999.99"
+                  step="1.00" :precision="2"
+                  v-model="quickInfo.value"
+          />
         </div>
         <div class="l-modal-explain">
           <p>*说明：例如成本对象是所有资产，处置成本金额为100万，5个资产，那么每个资产处置成本为20万</p>
@@ -390,6 +393,8 @@ import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import moment from 'moment'
 import {columns, receivingData, costSharingModeData, receiptPayment, conditionalJudgment} from './beat.js'
+import {calc} from '@/utils/utils'
+
 export default {
   components: {FormFooter, AssetBundlePopover},
   props: {},
@@ -484,21 +489,113 @@ export default {
   },
   methods: {
     moment,
+    // 计算总和
+    sumDisposeCost(){
+      const amount = this.table.dataSource.reduce((accumulator, currentValue) => accumulator + currentValue.disposeCost, 0)
+      console.log(amount)
+      this.newCardData.disposeCost = amount
+    },
+    sumDisposeReceive(){
+      const amount = this.table.dataSource.reduce((accumulator, currentValue) => accumulator + currentValue.disposeReceive, 0)
+      console.log(amount)
+      this.newCardData.disposeReceive = amount
+    },
+    // 设置列表金额
+    setTableAmount(data){
+      let mean = 0
+      let remainder = 0
+      if (data instanceof Array) {
+        mean = data[0]
+        remainder = data[1]
+      } else {
+        mean = data
+      }
+      this.table.dataSource.forEach((item, index) => {
+        let amount = 0
+        if (this.quickInfo.select === '1') {
+          if (this.quickInfo.radioValue === 1) {
+            amount = mean
+            if (index === this.table.dataSource.length - 1) {
+              amount += remainder
+            }
+          }
+          if (this.quickInfo.radioValue === 2) {
+            amount = Number(calc.multiply(mean, Number(item.assetArea)).toFixed(2))
+            if (index === this.table.dataSource.length - 1) {
+              amount += remainder
+            }
+          }
+        }
+        if (this.quickInfo.select === '2') {
+          amount = mean
+        }
+        if (this.quickInfo.type === '1') {
+          item.disposeCost = amount
+        } else if (this.quickInfo.type === '2') {
+          item.disposeReceive = amount
+        }
+      })
+      this.modalInfo.show = false
+    },
+    // 转换小数
+    formatDecimals(num){
+      let numStr = num.toString()
+      const index = numStr.indexOf('.')
+      return Number( numStr.slice(0, index + 3))
+    },
+    // 计算金额
+    computeAmount(){
+      let amount = 0
+      const value = this.quickInfo.value
+      if (this.quickInfo.select === '2') {
+        amount = value
+      } else {
+        let count
+        if (this.quickInfo.radioValue === 1) {
+          count = this.table.dataSource.length
+        }
+        if (this.quickInfo.radioValue === 2) {
+          count = 0
+          this.table.dataSource.forEach(item => {
+            console.log(item.assetArea)
+            count += Number(item.assetArea)
+          })
+          console.log('面积总和：', count)
+        }
+        const mean = this.formatDecimals(Number(value / count))
+        const remainder = Number(Number(value - mean * count).toFixed(2))
+        amount = [mean, remainder]
+      }
+      return amount
+    },
     // 快捷录入弹框确认按钮
     quickFn(){
+      if (this.quickInfo.value === '') {
+        this.$message.info('请输入金额')
+        return
+      }
       console.log(this.quickInfo)
+      const amount = this.computeAmount()
+      console.log(amount)
+      this.setTableAmount(amount)
+      this.sumDisposeCost()
+      this.sumDisposeReceive()
     },
     // 快捷录入处置成本、收入按钮
     quickEntry(type) {
-      if (type === '1') {
-        this.modalInfo.show = true
-        this.modalInfo.title = '快捷录入处置成本'
-        this.quickInfo.type = type
-      } else if (type === '2') {
-        this.modalInfo.show = true
-        this.modalInfo.title = '快捷录入处置收入'
-        this.quickInfo.type = type
+      console.log(this.table.dataSource)
+      if (this.table.dataSource.length === 0) {
+        this.$message.info('请先添加资产！')
+        return
       }
+      if (type === '1') {
+        this.modalInfo.title = '快捷录入处置成本'
+      } else if (type === '2') {
+        this.modalInfo.title = '快捷录入处置收入'
+      }
+      this.modalInfo.show = true
+      this.quickInfo.type = type
+      this.quickInfo.value = ''
     },
     // 弹窗批量设置
     modalFn () {
