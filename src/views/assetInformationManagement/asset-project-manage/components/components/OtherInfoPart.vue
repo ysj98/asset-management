@@ -65,7 +65,7 @@
               { title: '使用权', dataIndex: 'pending_userDeed' }
             ] },
             { title: '无证', dataIndex: 'noOwner' },
-            { title: '权属办理进度', dataIndex: 'progress' }
+            { title: '权属办理进度(%)', dataIndex: 'progress' }
           ]
         }, // 权属概况Table
         stepList: [
