@@ -197,3 +197,18 @@ zcgl_execute_exception         盘点执行-登记盘点结果-导出异常信�
 
 盘点报告
 zcgl_inventory_report_export   盘点报告-导出
+
+房屋台账
+house_account_asset_project_export  资产项目视图导出
+house_account_building_view_export  楼栋视图导出
+house_account_asset_view_export     资产视图导出
+house_account_organ_view_export     组织机构视图导出
+
+资产入库
+asset_in_list_export    资产入库列表导出
+
+价值登记
+worth_register_record_export  价值登记记录导出
+worth_register_list_export    价值一览表导出
+worth_register_asset_export   资产登记列表导出
+

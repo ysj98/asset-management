@@ -10,7 +10,13 @@
           v-power="ASSET_MANAGEMENT.ASSET_AWR_ADD"
           @click="handleBtnAction({type: 'add'})"
         >新建价值登记单</SG-Button>
-        <SG-Button icon="export" :loading="exportBtnLoading" style="margin-left: 10px" @click="handleExport">导出</SG-Button>
+        <SG-Button
+          icon="export"
+          :loading="exportBtnLoading"
+          style="margin-left: 10px"
+          @click="handleExport"
+          v-power="ASSET_MANAGEMENT.WORTH_REGISTER_ASSET_EXPORT"
+        >导出</SG-Button>
       </div>
       <div slot="headerForm">
         <tree-select @changeTree="changeTree" style="width: 180px"/>

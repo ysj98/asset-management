@@ -4,7 +4,12 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading">导出</SG-Button>
+        <SG-Button
+          icon="export"
+          @click="handleExport"
+          :loading="exportBtnLoading"
+          v-power="ASSET_MANAGEMENT.ASSET_IN_LIST_EXPORT"
+        >导出</SG-Button>
       </div>
       <div slot="headerForm">
         <tree-select @changeTree="changeTree" style="width: 180px"/>
@@ -78,6 +83,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import TreeSelect from 'src/views/common/treeSelect'
   import TrendChartPart from './component/TrendChartPart'
+  import {ASSET_MANAGEMENT} from 'src/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
   import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
@@ -88,6 +94,7 @@
       return {
         moment,
         assetId: '', // 资产ID
+        ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         isShowTrend: false, // 显示趋势图Modal
         assetNameCode: '', // 查询条件-登记名称
