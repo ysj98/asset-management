@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
-        <a-col :span="10">
+        <a-col :span="7">
           <SG-Button
             icon="import"
             type="primary"
@@ -15,7 +15,7 @@
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
-        <a-col :span="6">
+        <a-col :span="5">
           <a-select
             showSearch
             style="width: 100%"
@@ -26,7 +26,7 @@
             v-model="organProjectBuildingValue.organId"
           ></a-select>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="5">
           <a-select
             allowClear
             showSearch
@@ -38,6 +38,16 @@
             :filterOption="filterOption"
             v-model="organProjectBuildingValue.buildingId"
           ></a-select>
+        </a-col>
+        <a-col :span="5">
+          <a-select
+            v-model="organProjectBuildingValue.statusList"
+            mode="multiple"
+            :maxTagCount="1"
+            style="width: 100%"
+            placeholder="请选择资产状态"
+            :options="statusListOpt"
+          />
         </a-col>
         <a-col :span="2">
           <SG-Button
@@ -82,7 +92,8 @@
         organProjectBuildingValue: {
           organId: undefined,
           projectId: undefined, // 用不到，暂存，临时需求隐藏处理
-          buildingId: undefined
+          buildingId: undefined,
+          statusList: []
         }, // 查询条件-组织机构-资产项目-楼栋对象
         numList: [
           {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
@@ -118,7 +129,15 @@
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
-        current: null // 当前选中的概览区域下标，与后台入参一一对应
+        current: null, // 当前选中的概览区域下标，与后台入参一一对应
+        statusListOpt: [
+          { title: "全部状态", key: "all" },
+          { title: "待入库", key: "0" },
+          { title: "正常", key: "1" },
+          { title: "报废", key: "2" },
+          { title: "转让", key: "3" },
+          { title: "报损", key: "4" },
+        ]
       }
     },
 
@@ -138,10 +157,11 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, current } = this
+        let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         this.$api.assets.queryBuildingViewPage({
-          organId, buildIdList, projectIdList, pageSize: pageLength, pageNum: pageNo, flag: current ? (current - 1) : ''
+          organId, buildIdList, statusList, projectIdList, pageSize: pageLength, pageNum: pageNo, flag: current ? (current - 1) : ''
         }).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -166,8 +186,9 @@
       // 查询楼栋视图面积概览数据
       queryAreaInfo () {
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, numList } = this
+        let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         this.overviewNumSpinning = true
-        this.$api.assets.queryBuildingViewFloorArea({ organId, buildIdList, projectIdList }).then(r => {
+        this.$api.assets.queryBuildingViewFloorArea({ organId, statusList, buildIdList, projectIdList }).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -189,7 +210,8 @@
         }
         this.exportBtnLoading = true
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList}, current } = this
-        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList, flag: current ? (current - 1) : ''}).then(res => {
+        let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
+        this.$api.assets.exportBuildingViewExcel({organId, buildIdList, projectIdList, statusList, flag: current ? (current - 1) : ''}).then(res => {
           this.exportBtnLoading = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
