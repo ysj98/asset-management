@@ -85,3 +85,15 @@ export function organViewExport (data) {
 export function organViewTotal (data) {
   return axiosGet(ownership.organViewTotal, data)
 }
+// 权属登记单一览表查询
+export function registerList (data) {
+  return axiosPost(ownership.registerList, data)
+}
+// 权属登记单一览表统计
+export function registerTotal (data) {
+  return axiosPost(ownership.registerTotal, data)
+}
+// 权属登记单一览表导出
+export function registerExport (data) {
+  return axiosPost(ownership.registerExport, data, false, false, {responseType: 'blob'})
+}

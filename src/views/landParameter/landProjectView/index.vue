@@ -3,18 +3,19 @@
 -->
 <template>
   <div class="asset-project-view-list">
-    <SG-SearchContainer background="white">
-      <div slot="btns">
+    <a-row :gutter="8" style="padding: 20px 30px">
+      <a-col :span="10">
         <SG-Button
           icon="import"
           type="primary"
           @click="handleExport"
-          :loading='exportBtnLoading'
-          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT"
-        >导出</SG-Button>
-      </div>
-      <div slot="form">
+          :loading="exportBtnLoading"
+        >导出组织机构视图</SG-Button>
+      </a-col>
+      <a-col :span="3">
         <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+      </a-col>
+      <a-col :span="3">
         <a-select
           showSearch
           placeholder="请选择资产项目"
@@ -24,19 +25,24 @@
           :options="assetProjectOptions"
           :filterOption="filterOption"
         ></a-select>
+      </a-col>
+      <a-col :span="3">
         <a-select
+          v-model="statusList"
           mode="multiple"
           :maxTagCount="1"
-          v-model="status"
-          :style="allStyle"
-          @change="statusChange"
-          :options="statusOptions"
+          style="width: 100%"
           placeholder="请选择资产状态"
+          :options="statusListOpt"
         />
+      </a-col>
+      <a-col :span="3">
         <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
+      </a-col>
+      <a-col :span="2">
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
-      </div>
-    </SG-SearchContainer>
+      </a-col>
+    </a-row>
     <!--概览-->
     <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     <div>
@@ -68,9 +74,8 @@
 <script>
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
-import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OverviewNumber from 'src/views/common/OverviewNumber'
-import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
+
 const columns = [
   {
     title: '资产项目名称',
@@ -169,19 +174,12 @@ export default {
   },
   data () {
     return {
-      ASSET_MANAGEMENT, // 权限对象
-      allStyle: 'width: 170px; margin-right: 10px;',
+      allStyle: 'width: 100%; margin-right: 10px;',
       organId: '',
       assetProject: '',
       assetProjectOptions: [],
       onlyCurrentOrgan: false,
-      status: 'all',
-      exportBtnLoading: false, // 导出button loading标志
-      statusOptions: [
-        { title: '全部资产状态', key: 'all' }, { title: '待入库', key: '0' }, { title: '正常', key: '1' },
-        { title: '报废', key: '2' }, { title: '已转让', key: '3' }, { title: '报损', key: '4' },
-        { title: '入库中', key: '7' }
-      ], // 查询条件-资产状态选项
+      exportBtnLoading: false, // 导出按钮loading
       numList: [
         {title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
@@ -199,24 +197,27 @@ export default {
         area: '', buildNum: '', assetNum: '', transferOperationArea: '', selfUserArea: '',
         idleArea: '', occupationArea: '', otherArea: '', originalValue: '', marketValue: ''
       }, // 求和用的对象
-      current: null // 当前选中的概览区域下标，与后台入参一一对应
+      current: null, // 当前选中的概览区域下标，与后台入参一一对应
+      statusList: [], // 资产分类
+      statusListOpt: [
+        { title: "全部状态", key: "all" },
+        { title: "待入库", key: "0" },
+        { title: "正常", key: "1" },
+        { title: "报废", key: "2" },
+        { title: "转让", key: "3" },
+        { title: "报损", key: "4" },
+      ],
     }
   },
-  methods: {
-    // 导出
-    handleExport () {
-      this.exportBtnLoading = true
-      exportDataAsExcel(
-        this.queryList('export'), this.$api.assets.exportAssetProjectViewList, '资产项目视图列表.xls', this
-      ).finally(() => this.exportBtnLoading = false)
-    },
-
+  watch: {
     // 全选与其他选项互斥处理
-    statusChange (value) {
-      let lastIndex = value.length - 1
-      this.status = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+    statusList: function (val) {
+      if (val && val.length !== 1 && val.includes("all")) {
+        this.statusList = ["all"];
+      }
     },
-
+  },
+  methods: {
     // 点击总览数据块
     handleClickOverview({i}) {
       this.current = i
@@ -238,7 +239,7 @@ export default {
       )
     },
     toDetail (record) {
-      this.$router.push({path: '/houseStandingBook/assetProjectViewDetail', query: {projectId: record.projectId}})
+      this.$router.push({path: '/landProjectView/detail', query: {projectId: record.projectId}})
     },
     // 页码发生变化
     handlePageChange (page) {
@@ -252,7 +253,7 @@ export default {
       this.queryList('click').then(() => this.queryStatistics())
     },
     queryList (type) {
-      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current, status} = this
+      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
       let form = {
         organId,
         pageNum: pageNo,
@@ -260,12 +261,9 @@ export default {
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
         flag: current ? (current - 1) : null,
-        statusList: status.includes('all') ? [] : status
+        statusList: this.statusList.includes("all") ? [] : this.statusList
       }
-      if (type === 'export') {
-        return form
-      }
-      return this.$api.assets.viewGetAssetHouseList(form).then(res => {
+      return this.$api.land.viewGetAssetLandList(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
           if (data.length === 0) {
@@ -295,14 +293,16 @@ export default {
         }
       })
     },
+    // 查询汇总信息
     queryStatistics () {
       let form = {
+        statusList: this.statusList.includes("all") ? [] : this.statusList,
         organId: this.organId,
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null
       }
-      this.$api.assets.viewGetAssetHouseStatistics(form).then(res => {
+      this.$api.land.viewGetAssetLandStatistics(form).then(res => {
         if (res.data.code === '0') {
           let temp = res.data.data || {}
           let {measuredArea} = temp
@@ -319,6 +319,37 @@ export default {
         }
       })
     },
+    // 导出数据
+    handleExport() {
+      this.exportBtnLoading = true;
+      const { organId, current, assetProject, onlyCurrentOrgan } = this;
+      this.$api.land
+        .viewGetAssetLandExport({
+          organId,
+          projectId: assetProject,
+          isCurrent: onlyCurrentOrgan,
+          statusList: this.statusList.includes("all") ? [] : this.statusList,
+          flag: current ? current - 1 : ""
+        })
+        .then((res) => {
+          this.exportBtnLoading = false;
+          if (res.status === 200 && res.data && res.data.size) {
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([res.data]));
+            a.download = "组织机构视图导出列表.xls";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            return a.remove();
+          }
+          throw res.message || "导出组织机构视图失败";
+        })
+        .catch((err) => {
+          this.exportBtnLoading = false;
+          this.$message.error(err || "导出组织机构视图失败");
+        });
+    },
+    // 查询项目
     getAssetProjectOptions () {
       let form = {
         organId: this.organId

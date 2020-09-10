@@ -7,6 +7,7 @@
       type="primary"
       @click="exportCard"
       :loading="exportBtnLoading"
+      v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT"
       style="position: absolute; top: 10px; right: 30px; z-index: 999"
     >
       导出房屋卡片
@@ -21,11 +22,13 @@
 <script>
   import BaseInfoPart from './components/BaseInfoPart'
   import OtherInfoPart from "./components/OtherInfoPart"
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   export default {
     name: 'AssetViewPage',
     components: { OtherInfoPart, BaseInfoPart },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         exportBtnLoading: false,
         assetHouseId: '', // 房屋Id
         assetId: '', // 资产Id

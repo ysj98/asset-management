@@ -4,7 +4,7 @@
   <div :style="`width: ${width}px`">
     <a-tooltip v-if="isShowTooltip" overlayClassName="tooltip_self">
       <template slot="title">{{text}}</template>
-      <div :style="`cursor: default; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: ${width}px`">
+      <div :style="`overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: ${width}px`">
         {{text}}
       </div>
     </a-tooltip>

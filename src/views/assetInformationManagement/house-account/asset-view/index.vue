@@ -9,6 +9,7 @@
           type="primary"
           :loading='exportAssetBtn'
           @click="handleExport('exportAssetBtn')"
+          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT"
         >导出资产视图</SG-Button>
         <!--二期开发-->
         <!--<SG-Button-->
@@ -104,6 +105,7 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTableHeader from './components/EditTableHeader'
   import tooltipText from 'src/views/common/TooltipText'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
   export default {
     name: 'index',
@@ -111,6 +113,7 @@
     data () {
       return {
         fold: true,
+        ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
         status: [], // 查询条件-资产状态值
         categoryId: [], // 查询条件-资产分类

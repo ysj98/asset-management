@@ -235,7 +235,7 @@ export const ASSET_MANAGEMENT = {
   ASSET_EXECUTE_LISTASSETS: 'zcgl_execute_listAssets',
   // 盘点执行-登记盘点结果-导出异常信息
   ASSET_EXECUTE_EXCEPTION: 'zcgl_execute_exception',
-  
+
   /**
    * 盘点报告
    */
@@ -329,5 +329,26 @@ export const ASSET_MANAGEMENT = {
   TM_OA_EXPORT: 'table_manage_ownership_amount_export',  // 报表管理-权证数量统计导出
   TM_OL_EXPORT: 'table_manage_ownership_list_export',    // 报表管理-权属证件一览表导出
   TM_AA_EXPORT: 'table_manage_asset_analysis_export',    // 报表管理-房屋资产统计分析列表导出
+  /**
+   * V2.0.2房屋台账
+   */
+  HOUSE_ACCOUNT_AP_EXPORT: 'house_account_asset_project_export',   // 房屋台账-资产项目视图导出
+  HOUSE_ACCOUNT_BV_EXPORT: 'house_account_building_view_export',   // 房屋台账-楼栋视图导出
+  HOUSE_ACCOUNT_AV_EXPORT: 'house_account_asset_view_export',   // 房屋台账-资产视图导出
+  HOUSE_ACCOUNT_OV_EXPORT: 'house_account_organ_view_export',   // 房屋台账-组织机构视图导出
+  /**
+   * V2.0.2资产入库
+   */
+  ASSET_IN_LIST_EXPORT: 'asset_in_list_export',                           // 资产入库列表-导出
+  /**
+   * V2.0.2价值登记
+   */
+  WORTH_REGISTER_RECORD_EXPORT: 'worth_register_record_export',   // 价值登记记录导出
+  WORTH_REGISTER_LIST_EXPORT: 'worth_register_list_export',       // 价值一览表导出
+  WORTH_REGISTER_ASSET_EXPORT: 'worth_register_asset_export',     // 资产登记列表导出
+  /**
+   * V2.0.2权属登记一览表
+   */
+  ASSET_REGISTERVIEW_EXPORT: 'asset_registerview_export', // 权属登记一览表
 }
 
