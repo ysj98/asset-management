@@ -33,8 +33,9 @@
     },
     
     created () {
-      const { query: { assetLandId } } = this.$route
+      const { query: { assetLandId, assetId } } = this.$route
       this.assetLandId = assetLandId
+      this.assetId = assetId
     }
   }
 </script>

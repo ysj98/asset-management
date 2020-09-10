@@ -3,7 +3,7 @@
  * @Date: 2020-07-24 09:59:14
  * @LastEditTime: 2020-08-25 17:15:40
  * @Description: 土地资产视图
---> 
+-->
 <template>
   <div class="landAssetsView">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
@@ -158,7 +158,7 @@ export default {
       provinces: {
         province: undefined,
         city: undefined,
-        district: undefined 
+        district: undefined
       },
       loading: false,
       noPageTools: false,
@@ -211,8 +211,8 @@ export default {
     //   })
     // },
     // 查看土地资产视图详情
-    handleViewDetail (record) {
-      this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId: record.assetLandId }})
+    handleViewDetail ({assetLandId, assetId}) {
+      this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId, assetId }})
     },
     // 点击总览数据块
     // 0运营；1闲置；2自用；3占用；4其他
@@ -483,7 +483,7 @@ export default {
     /deep/.ant-col-8 {width: 180px;}
     /deep/.province_style {
       width: 170px;
-      margin: 14px 10px 0 0; 
+      margin: 14px 10px 0 0;
       flex: 1;
       margin-top: 14px;
       display: inline-block;
@@ -491,7 +491,7 @@ export default {
     }
     /deep/.city_style {
       width: 170px;
-      margin: 14px 10px 0 0; 
+      margin: 14px 10px 0 0;
       flex: 1;
       margin-top: 14px;
       display: inline-block;
@@ -499,7 +499,7 @@ export default {
     }
     /deep/.district_style {
       width: 170px;
-      margin: 14px 10px 0 0; 
+      margin: 14px 10px 0 0;
       flex: 1;
       margin-top: 14px;
       display: inline-block;
