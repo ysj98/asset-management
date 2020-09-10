@@ -10,6 +10,7 @@
             type="primary"
             @click="handleExport"
             :loading="exportBtnLoading"
+            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
@@ -52,15 +53,17 @@
 </template>
 
 <script>
-import NoDataTip from "src/components/noDataTips";
-import TreeSelect from "src/views/common/treeSelect";
-import OverviewNumber from "src/views/common/OverviewNumber";
+import NoDataTip from "src/components/noDataTips"
+import TreeSelect from "src/views/common/treeSelect"
+import {ASSET_MANAGEMENT} from '@/config/config.power'
+import OverviewNumber from "src/views/common/OverviewNumber"
 export default {
   name: "index",
   components: { OverviewNumber, NoDataTip, TreeSelect },
   data() {
     return {
       organName: "",
+      ASSET_MANAGEMENT, // 权限对象
       organId: "", // 查询条件-组织机构
       exportBtnLoading: false, // 导出按钮loading
       overviewNumSpinning: false, // 查询视图面积概览数据loading
@@ -163,20 +166,18 @@ export default {
 
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
-      const { sumObj, organId, current, statusList } = this;
+      const { sumObj, organId, current, statusList } = this
       if (!organId) {
         return this.$message.info("请选择组织机构");
       }
       this.tableObj.loading = true;
-      this.$api.assets
-        .queryOrganViewList({
-          organId,
-          pageSize: pageLength,
-          pageNum: pageNo,
-          flag: current ? current - 1 : "",
-          statusList: statusList.includes("all") ? [] : statusList,
-        })
-        .then(({ data: res }) => {
+      this.$api.assets.queryOrganViewList({
+        organId,
+        pageSize: pageLength,
+        pageNum: pageNo,
+        flag: current ? current - 1 : "",
+        statusList: statusList.includes("all") ? [] : statusList
+      }).then(({ data: res }) => {
           this.tableObj.loading = false;
           if (res && String(res.code) === "0") {
             const { count, data } = res.data;

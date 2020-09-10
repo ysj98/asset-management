@@ -10,6 +10,7 @@
             type="primary"
             @click="handleExport"
             :loading="exportBtnLoading"
+            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_EXPORT"
           >导出楼栋视图</SG-Button>
         </a-col>
         <!--<a-col :span="15">-->
@@ -72,6 +73,7 @@
 <script>
   import NoDataTip from 'src/components/noDataTips'
   import TooltipText from 'src/views/common/TooltipText'
+  import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   export default {
@@ -79,6 +81,7 @@
     components: { OverviewNumber, NoDataTip, TooltipText },
     data () {
       return {
+        ASSET_MANAGEMENT, // 权限对象
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         exportBtnLoading: false, // 导出按钮loading
         organOptions: [], // 组织机构选项
