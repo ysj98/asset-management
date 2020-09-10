@@ -11,7 +11,10 @@
         :contentStyle="{ paddingTop: toggle ? '16px' : 0 }"
       >
         <div slot="headerBtns">
-          <SG-Button type="primary" @click="exportData"
+          <SG-Button
+            v-if="hasRegisterViewExport"
+            type="primary"
+            @click="exportData"
             ><segiIcon type="#icon-ziyuan10" class="mr10" />导出</SG-Button
           >
         </div>
@@ -177,7 +180,7 @@ import segiIcon from "@/components/segiIcon.vue"
 import Tools from "@/utils/utils"
 import { ASSET_MANAGEMENT } from "@/config/config.power"
 import OperationPopover from "@/components/OperationPopover"
-import SegiRangePicker from "@/components/SegiRangePicker";
+import SegiRangePicker from "@/components/SegiRangePicker"
 import {
   allStyle,
   allWidth,
@@ -199,10 +202,11 @@ export default {
     noDataTips,
     segiIcon,
     OverviewNumber,
-    SegiRangePicker
+    SegiRangePicker,
   },
   data() {
     return {
+      hasRegisterViewExport: false, // 导出权限
       allStyle,
       allWidth,
       queryCondition: Tools.deepClone(queryCondition),
@@ -232,6 +236,7 @@ export default {
     }
   },
   created() {
+    this.handleBtnPower()
     this.platformDictFn("asset_type")
     this.platformDictFn("AMS_REGISTER_TYPE")
   },
@@ -358,6 +363,41 @@ export default {
         }
       )
     },
+    // 按钮权限
+    handleBtnPower() {
+      this.hasRegisterViewExport = this.$power.has(
+        ASSET_MANAGEMENT.ASSET_REGISTERVIEW_EXPORT
+      )
+      console.log("权限按钮=>", this.hasRegisterViewExport)
+    },
+    // 获取资产分类下拉列表
+    getAssetClassifyOptions() {
+      console.log('输出=>', this.queryCondition.assetTypeList)
+      let obj = {
+        organId: this.queryCondition.organId,
+        assetType: this.queryCondition.assetTypeList.join(","),
+      }
+      this.queryCondition.objectTypeList = ['']
+      this.objectTypeListOpt = Tools.deepClone(objectTypeListOpt)
+      if (!obj.assetType) {
+        return
+      }
+      this.$api.assets.getList(obj).then((res) => {
+        if (res.data.code === "0") {
+          let arr = [{ label: "全部资产分类", value: "" }]
+          res.data.data.forEach((item) => {
+            let obj = {
+              label: item.professionName,
+              value: item.professionCode,
+            }
+            arr.push(obj)
+          })
+          this.objectTypeListOpt = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
@@ -398,6 +438,7 @@ export default {
           this.queryCondition.assetTypeList,
           this.assetTypeListOpt
         )
+        this.getAssetClassifyOptions()
       })
     },
     approvalStatusListSelect(value) {
@@ -429,17 +470,18 @@ export default {
     },
     // 起止日期发生变化
     onDateChange(val) {
-      console.log('时间改变=>', val)
-      this.queryCondition.startDate = val[0];
-      this.queryCondition.endDate = val[1];
+      console.log("时间改变=>", val)
+      this.queryCondition.startDate = val[0]
+      this.queryCondition.endDate = val[1]
     },
     // 选择组织机构
     changeTree(value, label) {
       this.organName = label
       this.queryCondition.organId = value
       this.projectIdListOpt = Tools.deepClone(projectIdListOpt)
-      this.queryCondition.projectIdList = [""]
+      this.queryCondition.projectIdList = [""] // 清除项目
       this.getObjectKeyValueByOrganIdFn()
+      this.getAssetClassifyOptions()
       this.searchQuery()
     },
     platformDictFn(code) {

@@ -131,7 +131,7 @@ export default {
     handleSave () {
       let data = Object.values(this.changeData)
       if (data.length === 0) {
-        this.$message.error('未改变改变权属办理设置或备注')
+        this.$message.error('未改变权属办理设置或备注')
         return
       }
       let loadingName = this.SG_Loding('保存中...')
