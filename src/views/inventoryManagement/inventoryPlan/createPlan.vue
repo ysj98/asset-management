@@ -970,9 +970,9 @@ export default {
         }
         .label-name-box {
           float: left;
-          line-height: 34px;
+          line-height: 39px;
           .label-name {
-            height: 34px;
+            height: 39px;
             font-family: PingFang-SC-Regular;
             color: #282d5b;
             margin-right: 3px;

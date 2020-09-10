@@ -219,7 +219,7 @@ export default {
         flag = true
       }
       // 资产类型变化
-      if (assetType && this.selecData.assetType !== assetType) {
+      if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
         flag = true
         this.selecData.assetType = assetType
         this.assetTypeDisabled = true
