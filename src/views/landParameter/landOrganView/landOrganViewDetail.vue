@@ -53,15 +53,15 @@ import noDataTips from "@/components/noDataTips";
 let columnsFrist = [
   {
     title: "有证",
-    dataIndex: "ownerShipYesCount",
+    dataIndex: "yesCount",
   },
   {
     title: "无证",
-    dataIndex: "ownerShipNoCount",
+    dataIndex: "noCount",
   },
   {
     title: "待办",
-    dataIndex: "ownerShipWaitCount",
+    dataIndex: "waitCount",
   },
   {
     title: "权属办理进度",

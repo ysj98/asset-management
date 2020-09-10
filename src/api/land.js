@@ -29,19 +29,19 @@ export function organViewTotal(data) {
 }
 // 土地台账--组织机构视图详情权属概况
 export function organViewShipDetail(data) {
-  return axiosPost(land.organViewShipDetail, data)
+  return axiosGet(land.organViewShipDetail, data)
 }
 // 土地台账--组织机构视图详情资产概况汇总
 export function organViewProjectDetailTotal(data) {
-  return axiosPost(land.organViewProjectDetailTotal, data)
+  return axiosGet(land.organViewProjectDetailTotal, data)
 }
 // 土地台账--组织机构视图详情资产概况列表
 export function organViewProjectDetail(data) {
-  return axiosPost(land.organViewProjectDetail, data)
+  return axiosGet(land.organViewProjectDetail, data)
 }
 // 土地台账--组织机构视图导出
 export function organViewExport(data) {
-  return axiosPost(land.organViewExport, data, false, true, {
+  return axiosPost(land.organViewExport, data, false, false, {
     responseType: 'blob'
   })
 }
@@ -53,13 +53,13 @@ export function viewGetAssetLandList(data) {
 export function viewGetAssetLandStatistics(data) {
   return axiosPost(land.viewGetAssetLandStatistics, data)
 }
-// 土地台账--资产项目视图详情
+// 土地台账--资产项目视图详情-资产状况
 export function viewLandDetailsPage(data) {
   return axiosPost(land.viewLandDetailsPage, data)
 }
 // 土地台账--资产项目视图导出
 export function viewGetAssetLandExport(data) {
-  return axiosPost(land.viewGetAssetLandExport, data, false, true, {
+  return axiosPost(land.viewGetAssetLandExport, data, false, false, {
     responseType: 'blob'
   })
 }

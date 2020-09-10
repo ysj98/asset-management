@@ -7,7 +7,7 @@
       <div class="edit-box-title"><i></i><span>基础信息</span></div>
       <div class="edit-box-content">
         <div class="edit-box-content-item">
-          <span class="label-name">组织机构：</span>
+          <span class="label-name">管理机构：</span>
           <span class="label-value">{{detail.organName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
@@ -36,6 +36,10 @@
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">接管时资产状态：</span>
+          <span class="label-value">{{detail.takeoverAssetStatusName || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">项目状态：</span>
           <span class="label-value">{{detail.takeoverAssetStatusName || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
@@ -135,18 +139,6 @@
       </div>
     </div>
     <div class="edit-box">
-      <div class="edit-box-title"><i></i><span>转运营（物业）</span></div>
-      <div class="edit-box-content">
-        <a-table
-          :columns="columns"
-          :dataSource="dataSource"
-          class="custom-table td-pd10 table-border"
-          :pagination="false"
-        >
-        </a-table>
-      </div>
-    </div>
-    <div class="edit-box">
       <div class="edit-box-title"><i></i><span>权属概况</span></div>
       <div class="edit-box-content">
         <a-table
@@ -167,7 +159,7 @@
             <a-col v-for="(item,index) in assetStatistics" :key="index" :span="4">
               <div class="asset-project-item custom-height">
                 <div class="asset-project-item-title" style="font-size: 14px; margin-bottom: 10px">{{item.title}}</div>
-                <div class="asset-project-item-number" style="font-size:20px; font-weight:bold; color:#324057">{{item.area || 0}}<span v-show="item.percent">({{item.percent}})</span></div>
+                <div class="asset-project-item-number" style="font-size:20px; font-weight:bold; color:#324057">{{item.area || 0}}</div>
               </div>
             </a-col>
           </a-row>
@@ -201,75 +193,23 @@
 import {dateToString} from 'utils/formatTime'
 import { basics } from '@/config/config.url'
 // import _ from 'lodash'
-const columns = [
-  {
-    title: '转运营日期',
-    dataIndex: 'transferOperationTime',
-    width: '160'
-  },
-  {
-    title: '转运营面积',
-    dataIndex: 'transferOperationArea',
-    width: '160'
-  },
-  {
-    title: '转物业日期',
-    dataIndex: 'transferTime',
-    width: '160'
-  },
-  {
-    title: '转物业面积',
-    dataIndex: 'transferArea',
-    width: '160'
-  }]
 
 const ownershipColumns = [
   {
-    title: '所有权',
-    children: [
-      {
-        title: '总数',
-        dataIndex: 'ownerShipCount'
-      },
-      {
-        title: '有证',
-        dataIndex: 'ownerShipYesCount'
-      },
-      {
-        title: '待办',
-        dataIndex: 'ownerShipWaitCount'
-      },
-      {
-        title: '无证',
-        dataIndex: 'ownerShipNoCount'
-      }
-    ]
+    title: '有证',
+    dataIndex: 'useShipYesCount'
   },
   {
-    title: '使用权',
-    children: [
-      {
-        title: '总数',
-        dataIndex: 'useShipCount'
-      },
-      {
-        title: '有证',
-        dataIndex: 'useShipYesCount'
-      },
-      {
-        title: '待办',
-        dataIndex: 'useShipWaitCount'
-      },
-      {
-        title: '无证',
-        dataIndex: 'useShipNoCount'
-      }
-    ]
+    title: '无证',
+    dataIndex: 'useShipNoCount'
+  },
+  {
+    title: '待办',
+    dataIndex: 'useShipWaitCount'
   },
   {
     title: '权属办理进度',
-    dataIndex: 'progress',
-    width: 120
+    dataIndex: 'progress'
   }]
 
 export default {
@@ -296,8 +236,6 @@ export default {
         houseTransferHisProblem: '',
         takeoverAssetStatusName: ''
       },
-      columns,
-      dataSource: [],
       ownershipColumns,
       ownershipDataSource: [],
       assetStatistics: [
@@ -350,26 +288,13 @@ export default {
         }
       })
     },
-    // 获取转运营信息统计
-    getTransferInfo () {
-      let form = {
-        projectId: this.projectId
-      }
-      this.$api.assets.getProjectTransferByProjectId(form).then(res => {
-        if (res.data.code === '0') {
-          let data = res.data.data
-          data.key = 0
-          data.transferOperationTime = this.formatDate(data.transferOperationTime)
-          data.transferTime = this.formatDate(data.transferTime)
-          this.dataSource = [data]
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
     // 获取权属概况
     getOwnershipData (projectId) {
-      this.$api.assets.queryAssetProjectOwnershipInfo({projectId}).then(res => {
+      let form = {
+        projectId,
+        assetType: 4
+      }
+      this.$api.assets.queryAssetProjectOwnershipInfo(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
           data.key = 0
@@ -385,39 +310,32 @@ export default {
       let form = {
         projectId: this.projectId
       }
-      this.$api.assets.viewProjectHouseDetails(form).then(res => {
+      this.$api.land.viewGetAssetLandStatistics(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
-          this.assetStatistics[0].area = data.allArea.toFixed(2)
-          this.assetStatistics[1].area = data.operationNum.toFixed(2)
-          this.assetStatistics[1].percent = data.operationNumPercent
-          this.assetStatistics[2].area = data.idleNum.toFixed(2)
-          this.assetStatistics[2].percent = data.idleNumPercent
-          this.assetStatistics[3].area = data.selfUseNum.toFixed(2)
-          this.assetStatistics[3].percent = data.selfUseNumPercent
-          this.assetStatistics[4].area = data.occupyNum.toFixed(2)
-          this.assetStatistics[4].percent = data.occupyNumPercent
-          this.assetStatistics[5].area = data.otherNum.toFixed(2)
-          this.assetStatistics[5].percent = data.otherNumPercent
+          this.assetStatistics[0].area = data.measuredArea.toFixed(2)
+          this.assetStatistics[1].area = data.transferOperationArea.toFixed(2)
+          this.assetStatistics[2].area = data.idleArea.toFixed(2)
+          this.assetStatistics[3].area = data.selfUserArea.toFixed(2)
+          this.assetStatistics[4].area = data.occupationArea.toFixed(2)
+          this.assetStatistics[5].area = data.otherArea.toFixed(2)
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
+    // 资产状况列表
     getAssetList () {
       let form = {
         projectId: this.projectId,
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       }
-      this.$api.assets.viewDetailsPage(form).then(res => {
+      console.log('获取列表获取列表')
+      this.$api.land.viewLandDetailsPage(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
           this.assetList = data
-          // this.assetList[0].pictureUrl = '/picture/2019/11/19/338/201911191743467970_1920_1080.JPEG'
-          // let obj = _.cloneDeep(this.assetList[0])
-          // this.assetList.push(obj)
-          // this.assetList[1].pictureUrl = null
           this.assetList.forEach(item => {
             if (item.pictureUrl) {
               item.pictureUrl = this.imgPrx + item.pictureUrl
@@ -435,7 +353,6 @@ export default {
   mounted () {
     this.projectId = this.$route.query.projectId
     this.getDetail()
-    this.getTransferInfo()
     this.getAssetStatistics()
     this.getAssetList()
   }
