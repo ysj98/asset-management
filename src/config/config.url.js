@@ -575,7 +575,13 @@ export const ownership = {
   // 组织机构权属导出
   organViewExport: '/ams/ownerShip/owner/export',
   // 组织机构权属统计
-  organViewTotal: '/ams/ownerShip/owner/organViewTotal'
+  organViewTotal: '/ams/ownerShip/owner/organViewTotal',
+  // 权属登记单一览表导出
+  registerExport: '/ams/ownerShip/ship/register/export',
+  // 权属登记单一览表查询
+  registerList: '/ams/ownerShip/ship/register/list',
+  // 权属登记单一览表统计
+  registerTotal: '/ams/ownerShip/ship/register/total',
 }
 
 // 价值登记

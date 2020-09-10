@@ -157,7 +157,7 @@ export default {
       var self = this
       var { mapDomId } = this
       // 百度地图API功能
-      var map = new BMap.Map(mapDomId, { minZoom: 5, maxZoom: 7 })
+      var map = new BMap.Map(mapDomId, { minZoom: 5, maxZoom: 9 })
       this.map = map
       map.enableScrollWheelZoom(true) //开启鼠标滚轮缩放
       var point = new BMap.Point(107.4, 33.42)
