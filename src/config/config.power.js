@@ -346,5 +346,9 @@ export const ASSET_MANAGEMENT = {
   WORTH_REGISTER_RECORD_EXPORT: 'worth_register_record_export',   // 价值登记记录导出
   WORTH_REGISTER_LIST_EXPORT: 'worth_register_list_export',       // 价值一览表导出
   WORTH_REGISTER_ASSET_EXPORT: 'worth_register_asset_export',     // 资产登记列表导出
+  /**
+   * V2.0.2权属登记一览表
+   */
+  ASSET_REGISTERVIEW_EXPORT: 'asset_registerview_export', // 权属登记一览表
 }
 

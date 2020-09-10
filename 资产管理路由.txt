@@ -57,5 +57,8 @@ V2.0
 
 /asset-management/#/landAssetsView       土地台账-资产视图
 
+V2.0.2
+/asset-management/#/ownershipRegisterView   权属登记一览表
+
 
 

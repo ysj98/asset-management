@@ -212,3 +212,7 @@ worth_register_record_export  价值登记记录导出
 worth_register_list_export    价值一览表导出
 worth_register_asset_export   资产登记列表导出
 
+权属登记一览表
+asset_registerview_export // 权属登记一览表导出
+
+
