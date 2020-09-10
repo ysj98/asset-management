@@ -6,6 +6,7 @@
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn">新建权证</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
@@ -21,19 +22,28 @@
           <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部权属人" v-model="queryCondition.obligeeId">
             <a-select-option v-for="(item, index) in obligeeIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
+          <a-select :style="allStyle" showSearch placeholder="请选择权属形式"
+              optionFilterProp="children"
+              mode="multiple"
+              :options="ownerTypeData"
+              v-model="queryCondition.ownerTypeList"
+              :allowClear="true"
+              :filterOption="false"
+              notFoundContent="没有查询到数据"
+              v-decorator="['ownerType',{ rules: [{required: true, message: '请选择权属形式'}], initialValue: ''}]"/>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="statusFn" v-model="queryCondition.status">
             <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="queryHandler">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
       </div>
     </SearchContainer>
     <!--数据总览-->
-    <!-- <overview-number :numList="numList" /> -->
+    <overview-number :numList="numList" />
     <div class="table-layout-fixed" ref="table_box">
       <a-table
         :loading="loading"
@@ -175,6 +185,7 @@ const queryCondition =  {
     obligeeId: '',      // 权属人
     status: '',         // 权证状态
     warrantNbr: '',     // 权证号
+    ownerTypeList: [],  // 权属形式
     pageNum: 1,         // 第几页
     pageSize: 10,       // 每页显示记录数
   }
@@ -203,11 +214,12 @@ export default {
       obligeeIdData: [],
       numList: [
         {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057'},
-        {title: '建筑面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
+        {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
         {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
         {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      ownerTypeData: [] // 权属形式
     }
   },
   computed: {
@@ -246,7 +258,7 @@ export default {
           }
           _this.$api.ownership.warrantDelete(obj).then(res => {
             if (Number(res.data.code) === 0) {
-              _this.$message.info('销该成功')
+              _this.$message.info('注销成功')
               _this.query()
             } else {
               _this.$message.error(res.data.message)
@@ -263,7 +275,7 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.obligeeId = ''
       this.selectFn()
-      this.query()
+      this.queryHandler()
     },
     // 搜索
     onSearch () {
@@ -356,7 +368,8 @@ export default {
       this.alterationDate = []
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
-      this.query()
+      this.queryCondition.ownerTypeList = []
+      this.queryHandler()
     },
     filterOption(input, option) {
       return (
@@ -378,6 +391,7 @@ export default {
         organId: Number(this.queryCondition.organId),        // 组织机构
         kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
+        ownerTypeList: this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         pageNum: this.queryCondition.pageNum,     // 当前页
@@ -404,6 +418,39 @@ export default {
         }
       })
     },
+    // 点击查询按钮
+    queryHandler () {
+      this.query()
+      this.warrantTotal()
+    },
+    warrantTotal () {
+      this.loading = true
+      let obj = {
+        organId: Number(this.queryCondition.organId),        // 组织机构
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
+        ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
+        status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : ''    // 权证号
+      }
+      this.$api.ownership.warrantTotal(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.numList[0].value = data.totalWarrantCount
+          this.numList[1].value = data.buildArea
+          this.numList[2].value = data.assetWarrantCount
+          this.numList[3].value = data.landWarrantCount
+          this.numList[4].value = data.useWarrantCount
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.numList.forEach(item => {
+            item.value = 0
+          })
+          this.loading = false
+        }
+      })
+    },
     // 资产登记-详情明细统计
     assetViewTotal () {
       let obj = {
@@ -424,12 +471,10 @@ export default {
       if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
       this.$refs.batchImport.visible = true
     },
-
     // 下载导入模板文件
     downTemplate () {
       exportDataAsExcel('import_template_qszj.xlsx', this.$api.tableManage.downloadTemplate, '权证导入模板.xlsx', this)
     },
-
     // 批量导入
     uploadFile (file) {
       const { queryCondition: {organId} } = this
@@ -450,6 +495,55 @@ export default {
         this.$SG_Message.destroy(name)
         this.$SG_Message.error(err || '批量导入失败')
       })
+    },
+    // 导出列表
+    exportData () {
+      let data = {
+        organId: Number(this.queryCondition.organId),        // 组织机构
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        obligeeId: this.queryCondition.obligeeId,       // 权属人
+        ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
+        status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        warrantNbr: this.queryCondition.warrantNbr    // 权证号
+      }
+      let loadingName = this.SG_Loding('导出中...')
+      this.$api.ownership.warrantExport(data).then(res => {
+        this.$SG_Message.destroy(loadingName)
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        // ${this.organName}
+        a.download = `权证管理.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      }, () => {
+        this.$SG_Message.destroy(loadingName)
+        this.$SG_Message.error('权证管理导出失败!')
+      })
+    },
+    // 权属形式
+    platformDict () {
+      this.$api.assets.platformDict({code: 'AMS_OWNER_TYPE'}).then(res => {
+        if (+res.data.code === 0) {
+          let data = res.data.data
+          let arr = [
+            // {
+            //   label: '全部权属形式',
+            //   value: ''
+            // }
+          ]
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.ownerTypeData = arr
+        } else {
+          this.$message.error(res.data.message)
+        }
+      }, res => {
+        this.$message.error(res.data.message)
+      })
     }
   },
   created () {
@@ -459,13 +553,15 @@ export default {
       if (this.$route.path === '/authorityCardManagement' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
-        this.query()
+        this.queryHandler()
       }
     }
   },
   mounted () {
     // 权利类型
     this.platformDictFn()
+    // 权属类型
+    this.platformDict()
   }
 }
 </script>

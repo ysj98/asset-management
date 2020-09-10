@@ -4,6 +4,15 @@
 <template>
   <div class="asset-project-view-list">
     <SG-SearchContainer background="white">
+      <div slot="btns">
+        <SG-Button
+          icon="import"
+          type="primary"
+          @click="handleExport"
+          :loading='exportBtnLoading'
+          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT"
+        >导出</SG-Button>
+      </div>
       <div slot="form">
         <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select
@@ -15,6 +24,15 @@
           :options="assetProjectOptions"
           :filterOption="filterOption"
         ></a-select>
+        <a-select
+          mode="multiple"
+          :maxTagCount="1"
+          v-model="status"
+          :style="allStyle"
+          @change="statusChange"
+          :options="statusOptions"
+          placeholder="请选择资产状态"
+        />
         <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
@@ -50,8 +68,9 @@
 <script>
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OverviewNumber from 'src/views/common/OverviewNumber'
-
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 const columns = [
   {
     title: '资产项目名称',
@@ -150,11 +169,19 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT, // 权限对象
       allStyle: 'width: 170px; margin-right: 10px;',
       organId: '',
       assetProject: '',
       assetProjectOptions: [],
       onlyCurrentOrgan: false,
+      status: 'all',
+      exportBtnLoading: false, // 导出button loading标志
+      statusOptions: [
+        { title: '全部资产状态', key: 'all' }, { title: '待入库', key: '0' }, { title: '正常', key: '1' },
+        { title: '报废', key: '2' }, { title: '已转让', key: '3' }, { title: '报损', key: '4' },
+        { title: '入库中', key: '7' }
+      ], // 查询条件-资产状态选项
       numList: [
         {title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
@@ -176,6 +203,20 @@ export default {
     }
   },
   methods: {
+    // 导出
+    handleExport () {
+      this.exportBtnLoading = true
+      exportDataAsExcel(
+        this.queryList('export'), this.$api.assets.exportAssetProjectViewList, '资产项目视图列表.xls', this
+      ).finally(() => this.exportBtnLoading = false)
+    },
+
+    // 全选与其他选项互斥处理
+    statusChange (value) {
+      let lastIndex = value.length - 1
+      this.status = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+    },
+
     // 点击总览数据块
     handleClickOverview({i}) {
       this.current = i
@@ -211,14 +252,18 @@ export default {
       this.queryList('click').then(() => this.queryStatistics())
     },
     queryList (type) {
-      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
+      let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current, status} = this
       let form = {
         organId,
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
-        flag: current ? (current - 1) : null
+        flag: current ? (current - 1) : null,
+        statusList: status.includes('all') ? [] : status
+      }
+      if (type === 'export') {
+        return form
       }
       return this.$api.assets.viewGetAssetHouseList(form).then(res => {
         if (res.data.code === '0') {

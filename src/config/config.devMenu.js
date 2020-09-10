@@ -39,8 +39,20 @@ export default [
         path: '/assetRegister'
       },
       {
+        title: '资产登记一览表',
+        path: '/assetCheckInView'
+      },
+      {
         title: '附属配套管理',
         path: '/subsidiary'
+      },
+      {
+        title: '资产出库一览表',
+        path: '/assetTable',
+      },
+      {
+        title: '资产出库一览表详情',
+        path: '/assetTable/detail',
       }
     ]
   },
@@ -88,6 +100,10 @@ export default [
       {
         title: '权属登记',
         path: '/ownershipRegistration'
+      },
+      {
+        title: '权属登记一览表',
+        path: '/ownershipRegisterView',
       },
       {
         title: '权证管理',
@@ -203,7 +219,11 @@ export default [
       {
         title: '资产项目视图',
         path: '/landProjectView'
-      }
+      },
+      {
+        title: '资产地图',
+        path: '/assetMap'
+      },
     ]
   },
   {
@@ -245,6 +265,10 @@ export default [
       {
         title: '资产入库',
         path: '/assetIn'
+      },
+      {
+        title: '资产入库一览表',
+        path: '/assetStorageView'
       }
     ]
   },

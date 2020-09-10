@@ -131,7 +131,6 @@ let columns2 = [
 ]
 export default {
   props: [
-    "assetHouseId",
     "assetId",
     "transferOperationArea",
     "transferOperationTime",
@@ -165,7 +164,7 @@ export default {
       let data = {
         pageNum: this.table.pageNum,
         pageSize: this.table.pageSize,
-        assetHouseId: this.assetHouseId,
+        assetId: this.assetId,
       }
       this.$api.assets.assetOperationContractInfo(data).then((res) => {
         if (+res.data.code === 0) {
@@ -189,7 +188,7 @@ export default {
       let data = {
         pageNo: this.table2.pageNum,
         pageLimit: this.table2.pageSize,
-        assetHouseId: this.assetHouseId,
+        assetId: this.assetId,
         startMonth: this.pickerValue[0].format("YYYYMM"),
         endMonth: this.pickerValue[1].format("YYYYMM"),
       }

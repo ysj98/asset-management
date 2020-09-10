@@ -5,7 +5,12 @@
     <search-container v-model="fold">
       <div slot="headerBtns">
         <SG-Button icon="import" @click="newAsset" style="margin-right: 8px">入库登记</SG-Button>
-        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading">导出</SG-Button>
+        <SG-Button
+          icon="export"
+          @click="handleExport"
+          :loading="exportBtnLoading"
+          v-power="ASSET_MANAGEMENT.ASSET_IN_LIST_EXPORT"
+        >导出</SG-Button>
       </div>
       <div slot="headerForm">
         <tree-select @changeTree="changeTree" style="width: 240px"/>
@@ -122,7 +127,7 @@
     components: { SearchContainer, TreeSelect, NoDataTip, OverviewNumber },
     data () {
       return {
-        ASSET_MANAGEMENT,
+        ASSET_MANAGEMENT, // 权限对象
         fold: false, // 查询条件折叠按钮
         exportBtnLoading: false, // 导出按钮
         storeName: '', // 查询条件-名称或编号

@@ -6,11 +6,11 @@
 --> 
 <template>
   <div class="valueToRegister">
-    <div class="button-box" v-if="setType !== 'detail'">
+    <div class="button-box">
       <div class="buytton-l">
         <span>资产总原值：{{statistics.originalValue || '0'}}元</span> <span class="p120">累计折旧总金额：{{statistics.depreciationAmount || '0'}}元</span>
       </div>
-      <div class="buytton-nav">
+      <div class="buytton-nav" v-if="setType !== 'detail'">
         <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="addTheAsset">批量更新</SG-Button>
       </div>

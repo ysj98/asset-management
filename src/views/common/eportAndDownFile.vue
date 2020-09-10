@@ -8,7 +8,7 @@
         @cancel="hideModal"
         :title="title"
         v-model="visible"
-        :width="showDown?'745px':'450px'"
+        :width="width ? width : showDown ? '745px' : '450px'"
         @ok="handleSave"
         :maskClosable="false"
         okText="导入"
@@ -26,14 +26,17 @@
             </div>
           </div>
         </div>
-        <div class="upLoad-right" v-if="showDown">
+        <!-- <div class="upLoad-right" v-if="showDown"> -->
+        <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
+        <slot name="upLoadModule" v-if="showDown && this.$slots.upLoadModule"></slot>
+        <div class="upLoad-right" v-if="showDown && !this.$slots.upLoadModule">
           <div class="left-title">下载模板文件：</div>
           <div>
             <i class="file-background"></i>
             <span @click="handleDown" class="down_btn" style="margin-left: 17px;">下载</span>
           </div>
         </div>
-        <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
+        <!-- </div> -->
       </div>
     </SG-Modal>
 </template>
@@ -71,8 +74,11 @@ export default {
     // 后台接收文件流的 key值
     uploadKey: {
       default: 'file'
+    },
+    width: {
+      type: String,
+      default: ''
     }
-
   },
   data () {
     return {
@@ -151,13 +157,16 @@ export default {
       this.$emit('upload', this.formData)
     },
   },
+  mounted () {
+    console.log(this.$slots.upLoadModule)
+  }
 }
 </script>
 <style lang="less" scoped>
   .upLoad-main{
     color: #959DAB;
     display: flex;
-    height: 200px;
+    min-height: 200px;
     padding: 20px 60px;
     .upLoad-left{
       flex: 0 0 380px;

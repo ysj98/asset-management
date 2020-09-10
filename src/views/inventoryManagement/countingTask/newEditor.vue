@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-27 11:37:37
- * @LastEditTime: 2020-03-17 11:38:12
+ * @LastEditTime: 2020-09-09 11:52:40
  * @LastEditors: Please set LastEditors
  * @Description: 任务新增编辑
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\newEditor.vue
@@ -166,7 +166,7 @@
     </div>
     <div v-if="IsShow">
       <!-- 选资产 -->
-      <associateAssetModal ref="associateAssetModal" queryType="1" :judgeInstitutions="false" @assetChange="assetChange" @handleCancelFn="handleCancelFn"></associateAssetModal>
+      <associateAssetModal ref="associateAssetModal" typeTask="task" queryType="1" :judgeInstitutions="false" @assetChange="assetChange" @handleCancelFn="handleCancelFn"></associateAssetModal>
     </div>
   </div>
 </template>
@@ -450,7 +450,7 @@ export default {
       }
       // 资产明细
       if (str === 'particulars') {
-        // console.log(record, index, '拿到的数据')
+        console.log(record, index, '拿到的数据')
         this.IsShow = true
         this.assetIdIndex = index
         this.$nextTick(() => {
@@ -465,10 +465,16 @@ export default {
                   let data = res.data.data || []
                   let arr = []
                   data.forEach((item, index) => {
-                    key: index
+                    item.key = index
                     arr.push(item.assetId)
                   })
-                  this.$refs.associateAssetModal.redactCheckedDataFn(arr, '', data)
+                  if (record.rowsData && record.rowsData.length !== 0) {
+                    let assetIdData = [...new Set([...arr, ...record.assetId])]
+                    console.log(assetIdData, [...data, ...record.rowsData])
+                    this.$refs.associateAssetModal.redactCheckedDataFn(assetIdData, '', [...data, ...record.rowsData])
+                  } else {
+                    this.$refs.associateAssetModal.redactCheckedDataFn(arr, '', data)
+                  }
                 } else {
                   this.$message.error(res.data.message)
                 }

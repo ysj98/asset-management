@@ -45,3 +45,11 @@ export function batchImport (data) {
 export function getAssetById (data) {
   return axiosPost(subsidiary.getAssetById, data)
 }
+// 获取附属配套列表
+export function getMatchingListByAssetIdPage(data) {
+  return axiosPost(subsidiary.getMatchingListByAssetIdPage, data, false, false, {timeout: 1000 * 60 * 10})
+}
+// 获取附属配套统计
+export function getMatchingSta(data) {
+  return axiosPost(subsidiary.getMatchingSta, data, false, false, {timeout: 1000 * 60 * 10})
+}

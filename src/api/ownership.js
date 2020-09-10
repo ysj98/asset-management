@@ -49,7 +49,13 @@ export function warrantDownload (data) {
 }
 // 权证导出
 export function warrantExport (data) {
-  return axiosGet(ownership.authorityCardManagement.warrantExport, data)
+  return axiosPost(ownership.authorityCardManagement.warrantExport, data, false, false, {
+    responseType: 'blob'
+  })
+}
+// 权证统计
+export function warrantTotal (data) {
+  return axiosPost(ownership.authorityCardManagement.warrantTotal, data)
 }
 // 权证新增或修改
 export function warrantSaveOrUpdate (data) {
@@ -78,4 +84,16 @@ export function organViewExport (data) {
 // 组织机构视图导出
 export function organViewTotal (data) {
   return axiosGet(ownership.organViewTotal, data)
+}
+// 权属登记单一览表查询
+export function registerList (data) {
+  return axiosPost(ownership.registerList, data)
+}
+// 权属登记单一览表统计
+export function registerTotal (data) {
+  return axiosPost(ownership.registerTotal, data)
+}
+// 权属登记单一览表导出
+export function registerExport (data) {
+  return axiosPost(ownership.registerExport, data, false, false, {responseType: 'blob'})
 }

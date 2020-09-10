@@ -128,6 +128,12 @@ export const assets = {
     deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
     // 资产登记-列表统计
     pageListStatistics: '/ams/registerOrder/pageListStatistics',
+    // 资产登记一览表-主列表
+    findAssetRegListPage: '/ams/registerOrder/findAssetRegListPage',
+    // 资产登记一览表-主列表导出
+    assetRegListPageExport: '/ams/registerOrder/assetRegListPageExport',
+    // 资产登记一览表-列表统计
+    assetRegSta: '/ams/registerOrder/assetRegSta',
     // 资产登记-撤销核实
     registerOrderReAudit: '/ams/registerOrder/registerOrderReAudit',
     // 资产登记-核实
@@ -158,14 +164,20 @@ export const assets = {
     checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType',
     // 资产登记-附属配套-分页查询列表
     getListPageByRegisterOrderId: '/ams/subsidiaryMatching/getListPageByRegisterOrderId',
+    // 资产登记一览表-附属配套-分页查询列表
+    getMatchingListByAssetIdPage: '/ams/subsidiaryMatching/getMatchingListByAssetIdPage',
     // 附属配套-新增/修改保存(资产登记版)
     addModifySaveByRgId: '/ams/subsidiaryMatching/addModifySaveByRgId',
     // 资产登记-查询资产列表-根据资产登记Id
     findAssetListByRgId: '/ams/registerOrder/findAssetListByRgId',
     // 资产登记-附属配套-统计
     getMatchingStatisByRgId: '/ams/subsidiaryMatching/getMatchingStatisByRgId',
+    // 资产登记一览表-附属配套-统计
+    getMatchingSta: '/ams/subsidiaryMatching/getMatchingSta',
     // 下载附属配套模板
     downModle: '/ams/subsidiaryMatching/downModle',
+    // 下载附属配套模板，带条件下载
+    downBatchModle: '/ams/subsidiaryMatching/downBatchModle',
     // 批量导入-导入保存
     batchImportByRgId: '/ams/subsidiaryMatching/batchImportByRgId',
     // 资产登记-价值信息统计
@@ -233,6 +245,10 @@ export const assets = {
     getCleanupDetailPage: '/ams/assetCleanup/getCleanupDetailPage',
     // 资产出库-统计
     assetCleanupGetCount: '/ams/assetCleanup/getCount',
+    // 资产出库一览表
+    getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
+    // 资产出库一览表导出
+    getGeneralSurveyExportOut: '/ams/assetCleanup/getGeneralSurveyExport',
   },
   // 资产分类设置
   assetClassSet: {
@@ -251,6 +267,8 @@ export const assets = {
   },
   // 房屋台账-资产项目视图
   assetProjectView: {
+    // 导出资产项目视图列表
+    exportAssetProjectViewList: '/ams/project/exportProjectView',
     // 资产项目视图列表-查询房屋和楼栋信息分页查询
     viewGetAssetHouseList: '/ams/project/viewGetAssetHouseList',
     // 资产项目视图列表头-查询房屋和楼栋信息统计
@@ -358,6 +376,8 @@ export const assets = {
     queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId',
     // 资产视图费用相关
     assetExpenseInfo: '/ams/operationContract/assetExpenseInfo',
+    // 资产登记一览表-相关费用统计
+    assetExpenseTotal: '/ams/operationContract/assetExpenseTotal',
     // 资产视图-运营信息-合同信息（分页）
     assetOperationContractInfo: '/ams/operationContract/assetOperationContractInfo',
     // // 资产视图-运营信息-运营收入（分页）
@@ -367,7 +387,9 @@ export const assets = {
     // 资产视图-运营信息-运营收入(计费接口)（分页）
     getAcctItemPageList: '/charging-api/rest-api/v1/assets/getAcctItemPageList',
     // 导出房屋卡片
-    exportHouseCard: '/ams/asset-house/exportById'
+    exportHouseCard: '/ams/asset-house/exportById',
+    // 资产入账分页查询汇总
+    queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
   },
   // 资产项目管理
   projectManage: {
@@ -545,13 +567,21 @@ export const ownership = {
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
+    // 权证统计
+    warrantTotal: '/ams/ownerShipUser/warrant/total'
   },
   // 组织机构权属
   organView: '/ams/ownerShip/owner/organView',
   // 组织机构权属导出
   organViewExport: '/ams/ownerShip/owner/export',
   // 组织机构权属统计
-  organViewTotal: '/ams/ownerShip/owner/organViewTotal'
+  organViewTotal: '/ams/ownerShip/owner/organViewTotal',
+  // 权属登记单一览表导出
+  registerExport: '/ams/ownerShip/ship/register/export',
+  // 权属登记单一览表查询
+  registerList: '/ams/ownerShip/ship/register/list',
+  // 权属登记单一览表统计
+  registerTotal: '/ams/ownerShip/ship/register/total',
 }
 
 // 价值登记
@@ -588,7 +618,19 @@ export const worthRegister = {
 // 处置管理
 export const dispose = {
   // 资产处置一览表-主列表查询(分页)
-  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage'
+  getDetailAndDisposeListPage: '/ams/disposeRegister/getDetailAndDisposeListPage',
+  // 资产处置一览表-统计
+  getDetailAndDisposeListStat: '/ams/disposeRegister/getDetailAndDisposeListStat',
+  // 资产处置一览表-组织机构-主列表查询(分页)
+  getDisposeOrganListPage: '/ams/disposeRegister/getDisposeOrganListPage',
+  // 组织机构视图导出
+  getDisposeOrganExport: '/ams/disposeRegister/getDisposeOrganExport',
+  // 组织机构视图，统计
+  getDisposeOrganStatistics: '/ams/disposeRegister/getDisposeOrganStatistics',
+  // 资产处置一览表-组织机构-详情查询(分页)
+  getDispOrgProDetListPage: '/ams/disposeRegister/getDispOrgProDetListPage',
+  // 组织机构视图，详情统计
+  getDispOrgStatProDetail: '/ams/disposeRegister/getDispOrgStatProDetail'
 }
 
 
@@ -707,7 +749,11 @@ export const subsidiary = {
   // 附属配套-导入
   batchImport: '/ams/subsidiaryMatching/batchImport',
   // 根据资产id 查询资产信息
-  getAssetById: '/ams/asset/getAssetById'
+  getAssetById: '/ams/asset/getAssetById',
+  // 查询附属配套列表
+  getMatchingListByAssetIdPage: '/ams/subsidiaryMatching/getMatchingListByAssetIdPage',
+  // 附属配套统计
+  getMatchingSta: '/ams/subsidiaryMatching/getMatchingSta'
 }
 
 // 呈报管理
@@ -849,7 +895,13 @@ export const assetIn = {
   // 查询入库单详情
   queryAssetStoreDetail: '/ams/assetStore/queryAssetStoreDetail',
   // 资产入库列表查询
-  queryAssetStoreList: '/ams/assetStore/queryAssetStoreList'
+  queryAssetStoreList: '/ams/assetStore/queryAssetStoreList',
+  // 资产入库一览表-列表
+  getGeneralSurvey: '/ams/assetStore/getGeneralSurvey',
+  // 资产入库一览表-列表统计
+  getGeneralSurveyTotal: '/ams/assetStore/getGeneralSurveyTotal',
+  // 资产入库一览表-列表导出
+  getGeneralSurveyExport: '/ams/assetStore/getGeneralSurveyExport'
 }
 
 
@@ -881,5 +933,11 @@ export const land = {
   organViewExport: '/ams/project/viewLandDetailsPage',
   // 土地台账--资产项目视图详情导出
   viewGetAssetLandExport: '/ams/project/viewGetAssetLandExport',
+  // 资产地图- 资产概况
+  overview: '/ams/asset/map/overview',
+  // 资产地图- 资产全量数据
+  mapData: '/ams/asset/map/list',
+  // 资产地图- 资产详情
+  mapDetail: '/ams/asset/map/detail'
 }
 

@@ -182,10 +182,7 @@
           if (!assetType || !projectId) {
             return this.$emit('validateProject')
           }
-          let list = []
-          dataSource.forEach(m => {
-            list.push(Number(m.assetId))
-          })
+          let list = dataSource.map(m => Number(m.assetId))
           Object.assign(this, {
             modalObj: { width: 1000, height: 450, title: '选择资产', okText: '确定选择', cancelText: '取消', isShow: false },
             isEditAll: false,
@@ -219,9 +216,16 @@
         this.modalObj.isShow = !selectedList.length
         // 去重处理，比较arr 与 tableObj.dataSource
         if (selectedList.length) {
-          const { tableObj: { dataSource } } = this
+          let { tableObj: { dataSource } } = this
+          this.initList = [...selectedList]
           let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
-          newList.length && this.queryAssetListByAssetId(newList)
+          if (newList.length) {
+            this.queryAssetListByAssetId(newList)
+          } else {
+            // 过滤列表中被取消选中的数据
+            dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
+            return this.calcSum(dataSource)
+          }
         }
       },
 
@@ -273,7 +277,7 @@
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
         let form = {}
-        let { registerId, tableObj: { dataSource }, dynamicData } = this
+        let { registerId, tableObj: { dataSource }, dynamicData, selectedList } = this
         if (status === 'init') {
           form.registerId = registerId
         } else {
@@ -290,10 +294,9 @@
             if (status === 'init') {
               dataSource = addData
             } else {
-              // 新增：删除旧dataSource最后一行求和数据
-              dataSource.splice(-1, 1, ...addData)
-              // 关闭选择资产Modal
-              this.modalObj.isShow = false
+              dataSource.push(...addData)
+              // 过滤列表中被取消选中的数据
+              dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData}))
             return this.calcSum(list)
@@ -394,14 +397,17 @@
     watch: {
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
-        const {tableObj: {dataSource}, type} = this
+        let {tableObj: {dataSource}, type, numList} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
           if ((assetType && String(assetType) !== String(dataSource[0].assetType)) || (String(projectId) !== String(dataSource[0].projectId))) {
             // 重置selectedRowKeys
             this.tableObj.selectedRowKeys = []
-            return this.tableObj.dataSource = []
+            this.tableObj.dataSource = []
+            return this.numList = numList.map(m => {
+              return { ...m, value:  0 }
+            })
           }
           this.tableObj.dataSource = dataSource.map(m => {
             return Object.assign(m, data)
