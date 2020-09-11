@@ -1,4 +1,3 @@
-
 <!--资产视图业务-资产视图详情页面-->
 <template>
   <div class="asset_view">
@@ -7,7 +6,7 @@
       type="primary"
       @click="exportCard"
       :loading="exportBtnLoading"
-      v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT"
+      v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AVD_EXPORT"
       style="position: absolute; top: 10px; right: 30px; z-index: 999"
     >
       导出房屋卡片

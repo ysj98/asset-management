@@ -199,10 +199,11 @@ zcgl_execute_exception         盘点执行-登记盘点结果-导出异常信�
 zcgl_inventory_report_export   盘点报告-导出
 
 房屋台账
-house_account_asset_project_export  资产项目视图导出
-house_account_building_view_export  楼栋视图导出
-house_account_asset_view_export     资产视图导出
-house_account_organ_view_export     组织机构视图导出
+house_account_asset_project_export      资产项目视图导出
+house_account_building_view_export      楼栋视图导出
+house_account_asset_view_export         资产视图列表导出
+house_account_asset_view_detail_export  房屋台账-资产视图详情导出
+house_account_organ_view_export         组织机构视图导出
 
 资产入库
 asset_in_list_export    资产入库列表导出

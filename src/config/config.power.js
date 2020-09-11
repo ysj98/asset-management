@@ -334,7 +334,8 @@ export const ASSET_MANAGEMENT = {
    */
   HOUSE_ACCOUNT_AP_EXPORT: 'house_account_asset_project_export',   // 房屋台账-资产项目视图导出
   HOUSE_ACCOUNT_BV_EXPORT: 'house_account_building_view_export',   // 房屋台账-楼栋视图导出
-  HOUSE_ACCOUNT_AV_EXPORT: 'house_account_asset_view_export',   // 房屋台账-资产视图导出
+  HOUSE_ACCOUNT_AV_EXPORT: 'house_account_asset_view_export',   // 房屋台账-资产视图列表导出
+  HOUSE_ACCOUNT_AVD_EXPORT: 'house_account_asset_view_detail_export',   // 房屋台账-资产视图详情导出
   HOUSE_ACCOUNT_OV_EXPORT: 'house_account_organ_view_export',   // 房屋台账-组织机构视图导出
   /**
    * V2.0.2资产入库

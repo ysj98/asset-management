@@ -1,8 +1,22 @@
 <!--页面较长时，快捷导航组件，会固定在父组件页面左上角-->
-<!--通过绝对定位固定页面左侧，父页面要设置 ** position: relative **-->
-<!--待完善，不可用-->
+<!--支持双向v-model传递，<float-anchor v-model="someNodeId"/>,值为锚点节点的id值,可根据需要监听-->
+<!--
+  使用时示例：
+  <template>
+    <div>                     // template下根节点，FloatAnchor 须放在根节点下
+      <float-anchor/>
+      <div>                   // FloatAnchor的兄弟节点，只能有一个
+        <div id="aaa"></div>  // 锚点元素 1, 可以为组件元素
+        <div id="bbb"></div>  // 锚点元素 2, 可以为组件元素
+        <div id="ccc"></div>  // 锚点元素 3, 可以为组件元素
+        <div id="ddd"></div>  // 锚点元素 4, 可以为组件元素
+        ...
+      </div>
+    </div>
+  </template>
+ -->
 <template>
-  <div class="left_anchor" id="left_anchor">
+  <div class="float_anchor" id="float_anchor">
     <div
       v-for="item in anchorList"
       :key="item.id"
@@ -16,7 +30,7 @@
 
 <script>
   export default {
-    name: 'LeftAnchor',
+    name: 'FloatAnchor',
     props: {
       anchorList: {
         type: Array,
@@ -32,21 +46,26 @@
     data () {
       return {
         selectedId: '', // 选中的锚点Id
+        timeoutId: 0 // 监听页面滚动的定时器ID
       }
     },
 
     mounted () {
       const {anchorList, value} = this
       this.selectedId = value || (anchorList[0] ? anchorList[0].id : '')
-      let div = document.getElementById('left_anchor')
+      let div = document.getElementById('float_anchor')
       let {offsetWidth, offsetHeight} = div
       div.style.marginTop = `-${offsetHeight}px`
       if (div.parentElement) {
-        // div.parentElement.style = 'postion: relative'
+        // 设置父元素定位
+        div.parentElement.style = 'postion: relative; height: 100%;'
       }
-      if (div.nextElementSibling) {
-        // div.nextElementSibling.style.marginLeft = `${offsetWidth + 48}px; height: 100%; overflow-y: auto`
-        // div.nextElementSibling.onscroll = this.calcScrollHeight
+      let sibling = div.nextElementSibling
+      if (sibling) {
+        // 设置兄弟元素样式
+        sibling.style = `padding-right: 40px; margin-left: ${offsetWidth + 80}px; height: 100%; overflow-y: auto;`
+        // 监听兄弟元素滚动
+        sibling.onscroll = this.calcScrollHeight
       }
     },
 
@@ -57,17 +76,24 @@
     },
 
     methods: {
-      // 计算父元素滚动高度
+      // 跳转到指定锚点
+      jumpTo (id) {
+        let node = id ? document.getElementById(id) : ''
+        node && node.scrollIntoView()
+      },
+
+      // 计算兄弟元素滚动高度
       calcScrollHeight (e) {
-        debugger
         let _this = this
         let {timeoutId, anchorList} = _this
         timeoutId && clearTimeout(timeoutId)
         this.timeoutId = setTimeout(() => {
           let {target: {scrollTop}} = e
           for (let obj of anchorList) {
-            if (obj.offset + 50 > scrollTop) {
-              _this.anchorId = obj.id
+            let id = obj.id
+            let node = id ? document.getElementById(id) : ''
+            if (node && node.offsetTop + 50 > scrollTop) {
+              _this.selectedId = id
               break
             }
           }
@@ -78,22 +104,23 @@
       selectItem (id) {
         this.selectedId = id
         this.$emit('input', id) // 用于组件v-model
-        this.$emit('jumpTo', id) // 用于传递动作
+        this.jumpTo(id)
       }
     }
   }
 </script>
 
 <style lang='less' scoped>
-  .left_anchor {
+  .float_anchor {
     position: sticky;
-    left: 0;
+    margin-left: 50px;
     top: 70px;
     width: 144px;
+    z-index: 999;
     color: #6D7585;
     font-size: 15px;
-    border-radius: 8px;
     overflow: hidden;
+    border-radius: 8px;
     padding-bottom: 50px;
     background: rgba(242, 242, 242, 1);
     .anchor_item {
