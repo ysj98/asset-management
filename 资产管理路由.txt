@@ -66,4 +66,5 @@ V2.0.2
 /asset-management/#/assetCheckInView        资产登记一览表
 
 /asset-management/#/assetStorageView        资产入库一览表
+/asset-management/#/assetTable        资产出库一览表
 
