@@ -114,7 +114,7 @@
   .float_anchor {
     position: sticky;
     margin-left: 50px;
-    top: 70px;
+    top: 30px;
     width: 144px;
     z-index: 999;
     color: #6D7585;
