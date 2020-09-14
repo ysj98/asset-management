@@ -62,5 +62,7 @@ V2.0
 V2.0.2
 /asset-management/#/ownershipRegisterView   权属登记一览表
 
+/asset-management/#/assetCheckInView        资产登记一览表
 
+/asset-management/#/assetStorageView        资产入库一览表
 
