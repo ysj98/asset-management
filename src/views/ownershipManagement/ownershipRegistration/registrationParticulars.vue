@@ -86,6 +86,10 @@ export default {
       let val = String(value)
       let arr = []
       arr = utils.deepClone(register)
+      arr.unshift({
+        title: '序号',
+        dataIndex: 'serial'
+      })
       this.columns = arr.splice(0, arr.length - 1)
     }
   },
@@ -113,6 +117,7 @@ export default {
             item.key = index
             item.address = item.location
             item.assetArea = item.area
+            item.serial = index + 1 + ((this.queryCondition.pageNum - 1) * this.queryCondition.pageSize)
           })
           this.tableData = data.amsOwnershipRegisterDetailList
         } else {

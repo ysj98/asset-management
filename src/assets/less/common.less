@@ -71,6 +71,10 @@
   height: -moz-calc(~"100vh - 40px");
   height: calc(~"100vh - 40px");
   position: relative;
+  &>div {
+    height: 100%;
+    overflow: auto;
+  }
 }
 /*滚动条样式*/
 ::-webkit-scrollbar{

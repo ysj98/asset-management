@@ -11,6 +11,7 @@
                         type="primary"
                         @click="newClearForm"
                         :loading="exportBtnLoading"
+                        v-power="ASSET_MANAGEMENT.ASSET_IN_EXPORT"
                 >导出</SG-Button>
                 <div style="position:absolute;top: 20px;right: 76px;display:flex;">
                     <treeSelect
