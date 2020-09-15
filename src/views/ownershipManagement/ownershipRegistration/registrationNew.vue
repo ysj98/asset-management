@@ -263,11 +263,30 @@ export default {
     'changeType' (val) {
       this.checkedData = []
       this.tableData = []
+      let columns = []
       if (val === '3') {    // 注销登记
-        this.columns = cancellation
+        columns = cancellation
       } else {     // // 首次登记 变更登记
-        this.columns = register
+        columns = register
       }
+      if (columns[0].dataIndex !== 'serial') {
+        columns.unshift({
+          title: '序号',
+          dataIndex: 'serial',
+          width: '8%'
+        })
+      }
+      this.columns = [...columns]
+    },
+    tableData: {
+      handler (val) {
+        console.log(val)
+        val.forEach((item, index) => {
+          item.serial = index + 1
+        })
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -287,7 +306,7 @@ export default {
     // 选择权证给回来的数据
     chooseWarrantsStatus (val, data, roeNameData, selectKey) {
       let warrantNbrDataIs = [{label: roeNameData.join(','), value: val.join(',')}]
-      this.tableData.forEach(item => {
+      this.tableData.forEach((item, index) => {
         if (item.key === selectKey) {
           item.warrantGeneralData = data
           item.warrantNbrData = warrantNbrDataIs

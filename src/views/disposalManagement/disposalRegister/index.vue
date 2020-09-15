@@ -565,7 +565,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .scheduleChanges {
-   position: relative;
+  //  position: relative;
   .box {
     display: inline-block;
   }

@@ -75,7 +75,13 @@ export default {
     // 点击地图标注
     handleClickMap (obj) {
       console.log('拿到数据=>', obj)
+      let {resourceType} = obj
+      let detailMap = {
+        '1': 'houseMapDetail',
+        '2': 'landMapDetail'
+      }
       this.showDetailModal = true
+      this.currentTabComponent = detailMap[String(resourceType)]
       this.queryMapDetail(obj)
     },
     // 关闭详情弹窗
@@ -212,10 +218,10 @@ export default {
           boxShadow: configOpt.boxShadow,
           color: configOpt.color,
           border: configOpt.border,
-          borderTopLeftRadius: '50px',
-          borderBottomLeftRadius: '50px',
-          borderTopRightRadius: '4px',
-          borderBottomRightRadius: '4px',
+          borderTopLeftRadius: '15px',
+          borderBottomLeftRadius: '15px',
+          borderTopRightRadius: '5px',
+          borderBottomRightRadius: '5px',
           padding: '5px 15px',
         }
         for (let key in tipDivStyle) tipDiv.style[key] = tipDivStyle[key]
