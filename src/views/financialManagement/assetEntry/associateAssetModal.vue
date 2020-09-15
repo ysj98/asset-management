@@ -198,7 +198,7 @@
     watch: {
       projectId () {
         console.log('projectId发生变化')
-        this.query()
+        // this.query()
       }
     },
     methods: {
@@ -449,25 +449,27 @@
           this.overallData = arrData
         }
         if (this.judgeInstitutions) {
+          let sumRequest = false
           if (this.projectId !== projectId) {
+            sumRequest = true
             this.projectId = projectId
-            this.query()
           }
           if (this.assetType !== assetType) {
+            sumRequest = true
             this.assetType = assetType
             this.getListFn()
+          }
+          if (this.firstCall) {
+            sumRequest = true
+            this.firstCall = false
+          }
+          if (sumRequest) {
             this.query()
           }
         }
         this.$nextTick(() => {
           this.selectedRowKeys = redactChecked
         })
-        if (this.judgeInstitutions) {
-          if (this.firstCall) {
-            this.query()
-            this.firstCall = false
-          }
-        }
       },
     },
     mounted () {

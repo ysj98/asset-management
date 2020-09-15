@@ -75,6 +75,10 @@ const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top':
 const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
+    title: '序号',
+    dataIndex: 'serial'
+  },
+  {
     title: '登记单名称',
     dataIndex: 'registerName'
   },
@@ -369,6 +373,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.serial = index + 1 + ((this.queryCondition.pageNum - 1) * this.queryCondition.pageSize)
             })
             this.tableData = data
             this.count = res.data.data.count

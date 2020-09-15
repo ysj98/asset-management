@@ -56,12 +56,15 @@ V2.0
 /asset-management/#/buildingView          房屋台账-楼栋视图
 
 /asset-management/#/landAssetsView       土地台账-资产视图
-/asset-management/#/landOrganView       土地台账-组织机构视图
-/asset-management/#/landProjectView       土地台账-资产项目视图
 
 V2.0.2
+/asset-management/#/landOrganView       土地台账-组织机构视图
+/asset-management/#/landProjectView       土地台账-资产项目视图
 /asset-management/#/ownershipRegisterView   权属登记一览表
 /asset-management/#/assetMap   资产地图
 
+/asset-management/#/assetCheckInView        资产登记一览表
 
+/asset-management/#/assetStorageView        资产入库一览表
+/asset-management/#/assetTable        资产出库一览表
 

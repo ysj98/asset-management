@@ -55,6 +55,12 @@
         <template slot="obligeeName" slot-scope="text, record">
           <span>{{record.obligeeName || '--'}}</span>
         </template>
+        <template slot="ownerTypeName" slot-scope="text, record">
+          <span>{{record.ownerTypeName || '--'}}</span>
+        </template>
+        <template slot="lotNoEstateUnitCode" slot-scope="text, record">
+          <span>{{record.lotNoEstateUnitCode || '--'}}</span>
+        </template>
         <template slot="useLimitDate" slot-scope="text, record">
           <span>{{record.useLimitDate || '--'}}</span>
         </template>
@@ -118,11 +124,17 @@ const columns = [
   {
     title: '权属人',
     dataIndex: 'obligeeName',
-    scopedSlots: { customRender: 'obligeeName' },
+    scopedSlots: { customRender: 'obligeeName' }
   },
   {
-    title: '丘地号/不动产单元号',
-    dataIndex: 'lotNoEstateUnitCode'
+    title: '权属形式',
+    dataIndex: 'ownerTypeName',
+    scopedSlots: { customRender: 'ownerTypeName' }
+  },
+  {
+    title: '房屋号/丘地号/不动产单元号',
+    dataIndex: 'lotNoEstateUnitCode',
+    scopedSlots: { customRender: 'ownerTypeName' }
   },
   {
     title: '坐落位置',
