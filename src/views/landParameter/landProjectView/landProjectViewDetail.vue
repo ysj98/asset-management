@@ -86,7 +86,7 @@
           <span class="label-value">{{formatDate(detail.reportHouseTransferReqDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">上报核实报告时间：：</span>
+          <span class="label-name">上报核实报告时间：</span>
           <span class="label-value">{{detail.reportingVerificationReportDate || '--'}}</span>
         </div>
       </div>

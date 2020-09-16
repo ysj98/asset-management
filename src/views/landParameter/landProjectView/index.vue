@@ -90,7 +90,7 @@ const columns = [
     fixed: 'left'
   },
   {
-    title: '接管机构',
+    title: '管理机构',
     dataIndex: 'organName',
     width: 120
   },
