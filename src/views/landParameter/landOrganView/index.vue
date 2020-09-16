@@ -130,6 +130,7 @@ export default {
         { title: "报废", key: "2" },
         { title: "转让", key: "3" },
         { title: "报损", key: "4" },
+        { title: '入库中', key: '7' }
       ],
     };
   },

@@ -79,6 +79,10 @@ let columns = [
     dataIndex: "projectCode",
   },
   {
+    title: '管理机构',
+    dataIndex: 'organName'
+  },
+  {
     title: "来源方式",
     dataIndex: "sourceTypeName",
   },
@@ -100,31 +104,31 @@ let columns = [
   },
   {
     title: "运营(㎡)",
-    dataIndex: "transferOperationArea",
+    dataIndex: "transferOperationAreaTotal",
   },
   {
     title: "自用(㎡)",
-    dataIndex: "selfUserArea",
+    dataIndex: "selfUserAreaTotal",
   },
   {
     title: "闲置(㎡)",
-    dataIndex: "idleArea",
+    dataIndex: "idleAreaTotal",
   },
   {
     title: "占用(㎡)",
-    dataIndex: "occupationArea",
+    dataIndex: "occupationAreaTotal",
   },
   {
     title: "其他(㎡)",
-    dataIndex: "otherArea",
+    dataIndex: "otherAreaTotal",
   },
   {
     title: "资产原值(元)",
-    dataIndex: "originalValue",
+    dataIndex: "originalValueTotal",
   },
   {
     title: "最新估值(元)",
-    dataIndex: "marketValue",
+    dataIndex: "marketValueTotal",
   },
 ];
 export default {
