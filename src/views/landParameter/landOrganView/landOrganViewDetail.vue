@@ -79,6 +79,10 @@ let columns = [
     dataIndex: "projectCode",
   },
   {
+    title: '管理机构',
+    dataIndex: 'organName'
+  },
+  {
     title: "来源方式",
     dataIndex: "sourceTypeName",
   },
