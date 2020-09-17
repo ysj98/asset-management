@@ -34,7 +34,7 @@
           >
             <template slot="chosenId" slot-scope="text, record">
               <div style="padding-right: 10px;">
-                <a-radio :checked="record.taskId == chosenTaskId" @change="changeRadio(record)"></a-radio>
+                <a-radio :checked="record.taskId == chosenTaskId" @click="changeRadio(record)"></a-radio>
               </div>
             </template>
             <template slot="progress" slot-scope="text, record">
