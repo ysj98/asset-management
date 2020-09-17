@@ -83,8 +83,9 @@ const approvalStatusData = [
 
 const columns = [
   {
-    title: '入库编号',
-    dataIndex: 'storeId'
+    title: '入库单明细id',
+    dataIndex: 'relId',
+    width: 120
   },
   {
     title: '资产名称',
