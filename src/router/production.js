@@ -727,7 +727,10 @@ let proRouter = [{
   {
     path: '/landAssetsView',
     name: '土地资产视图',
-    component: () => import('@/views/landParameter/landAssetsView/index')
+    component: () => import('@/views/landParameter/landAssetsView/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/landAssetsView/detail',
@@ -737,7 +740,10 @@ let proRouter = [{
   {
     path: '/landOrganView',
     name: '组织机构视图',
-    component: () => import('@/views/landParameter/landOrganView/index')
+    component: () => import('@/views/landParameter/landOrganView/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/landOrganView/detail',
@@ -747,7 +753,10 @@ let proRouter = [{
   {
     path: '/landProjectView',
     name: '资产项目视图',
-    component: () => import('@/views/landParameter/landProjectView/index')
+    component: () => import('@/views/landParameter/landProjectView/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/landProjectView/detail',

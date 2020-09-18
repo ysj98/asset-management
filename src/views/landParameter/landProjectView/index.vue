@@ -2,7 +2,7 @@
   资产项目视图列表页-戚思婷
 -->
 <template>
-  <div class="asset-project-view-list">
+  <div class="asset-project-view-list" style="overflow-x: hidden">
     <a-row :gutter="8" style="padding: 20px 30px">
       <a-col :span="10">
         <SG-Button
@@ -90,7 +90,7 @@ const columns = [
     fixed: 'left'
   },
   {
-    title: '接管机构',
+    title: '管理机构',
     dataIndex: 'organName',
     width: 120
   },
@@ -107,21 +107,6 @@ const columns = [
   {
     title: '接管时间',
     dataIndex: 'takeOverDate',
-    width: 100
-  },
-  {
-    title: '建筑面积(㎡)',
-    dataIndex: 'area',
-    width: 100
-  },
-  {
-    title: '楼栋数',
-    dataIndex: 'buildNum',
-    width: 100
-  },
-  {
-    title: '资产数量',
-    dataIndex: 'assetNum',
     width: 100
   },
   {
@@ -179,11 +164,11 @@ export default {
       assetProject: '',
       assetProjectOptions: [],
       onlyCurrentOrgan: false,
-      exportBtnLoading: false, // 导出按钮loading
+      exportBtnLoading: false, // 导出按钮
       numList: [
-        {title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
+        {title: '土地数量', key: 'landCount', value: 0, fontColor: '#324057'}, {title: '土地面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#FD7474'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-        {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
+        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       columns,
       dataSource: [],

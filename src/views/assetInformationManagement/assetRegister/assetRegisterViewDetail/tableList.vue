@@ -14,7 +14,7 @@
     </div>
     <div class="table-borders">
       <a-table
-        class="table-boxs"
+        class="table-boxs table-layout-fixed"
         :columns="columns"
         :loading="loading"
         :dataSource="tableData"
@@ -38,16 +38,16 @@
 import noDataTips from '@/components/noDataTips'
 
 const necessaryCaaessoriesColumns = [
-  { title: '附属配套ID', dataIndex: 'subsidiaryMatchingId'},
+  { title: '附属配套ID', dataIndex: 'subsidiaryMatchingId', width: '8%'},
   { title: '附属配套名称', dataIndex: 'matchingName' },
   { title: '附属配套编码', dataIndex: 'matchingCode' },
-  { title: '类型', dataIndex: 'matchingTypeName' },
+  { title: '类型', dataIndex: 'matchingTypeName', width: '6%' },
   { title: '规格型号', dataIndex: 'specificationType' },
   { title: '价值(元)', dataIndex: 'value' },
-  { title: '数量', dataIndex: 'number' },
+  { title: '数量', dataIndex: 'number', width: '6%' },
   { title: '计量单位', dataIndex: 'unitOfMeasurementName' },
   { title: '接管前附属配套', dataIndex: 'isBeforeName' },
-  { title: '备注', dataIndex: 'remark'}
+  { title: '备注', dataIndex: 'remark', width: '15%'}
 ]
 
 const correlativeChargesColumns = [
@@ -135,7 +135,8 @@ export default {
       let params = {
         pageNum: this.queryCondition.pageNum,
         pageSize: this.queryCondition.pageSize,
-        assetId: this.assetId
+        assetId: this.assetId,
+        sourceType: 2
       }
       this.$api.assets.assetExpenseInfo(params).then(res => {
         if (Number(res.data.code) === 0) {
@@ -170,7 +171,8 @@ export default {
     // 相关费用统计
     assetExpenseTotal () {
       let obj = {
-        assetId: this.assetId      // 资产信息ID
+        assetId: this.assetId,      // 资产信息ID
+        sourceType: 2
       }
       this.$api.assets.assetExpenseTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {

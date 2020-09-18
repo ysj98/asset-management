@@ -140,7 +140,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .particulars {
-  overflow: hidden;
+  // overflow: hidden;
   padding-bottom: 70px;
   .particulars-nav{
     padding: 42px 126px 20px 70px;

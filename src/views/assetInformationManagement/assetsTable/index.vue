@@ -93,6 +93,7 @@
                         label="入库日期"
                         style="margin-right: 10px;"
                         :canSelectToday="true"
+                        :defaultValue="defaultValue"
                         @dateChange="onDateChange"
                 ></segi-range-picker>
                 <a-input
@@ -229,10 +230,10 @@
     ];
 
     const approvalStatusData = [
-        // {
-        //     label: "全部状态",
-        //     value: ""
-        // },
+        {
+            label: "全部状态",
+            value: ""
+        },
         {
             label: "草稿",
             value: "0"
@@ -268,11 +269,11 @@
                 organName: "",
                 organId: "",
                 queryData: {
-                    assetTypeList: [], // 全部资产类型
-                    objectTypeList: [], // 资产分类
-                    cleanupTypeList: [], // 出库原因
-                    approvalStatusList: [], // 出库单状态
-                    projectIdList: [], // 资产项目
+                    assetTypeList: [''], // 全部资产类型
+                    objectTypeList: [''], // 资产分类
+                    cleanupTypeList: [''], // 出库原因
+                    approvalStatusList: [''], // 出库单状态
+                    projectIdList: [''], // 资产项目
                     maxDate: '',
                     minDate: '',
                     assetName: '', // 资产名称/编码
@@ -280,21 +281,30 @@
                     pageSize: 10,
                     pageNum: 1,
                 },
+                defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
                 pageTotalCount: 0,
                 assetClassifyData: [
-                    // {
-                    //     label: '全部资产分类',
-                    //     value: ''
-                    // }
+                    {
+                        label: '全部资产分类',
+                        value: ''
+                    }
                 ], // 全部资产分类
                 cleanupTypeData: [
-                    // {
-                    //     label: "全部出库原因",
-                    //     value: ""
-                    // }
+                    {
+                        label: "全部出库原因",
+                        value: ""
+                    }
                 ], // 资产出库原因
-                assetProjectOptions: [], // 资产项目
-                assetTypeOptions: [], // 资产类型
+                assetProjectOptions: [ {
+                    label: "全部资产项目",
+                    value: ""
+                }], // 资产项目
+                assetTypeOptions: [
+                    {
+                        label: "全部资产类型",
+                        value: ""
+                    }
+                ], // 资产类型
                 approvalStatusData: [...approvalStatusData], // 状态
                 numList: [
                     { title: "全部", key: "total", value: 0, fontColor: "#324057" },
@@ -310,11 +320,10 @@
                     { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#DD81E6" }
                 ], // 统计数据
                 ASSET_MANAGEMENT,
-                allStyle: "width: 170px; margin-right: 10px;",
+                allStyle: "width: 180px; margin-right: 10px;",
                 columns,
                 dataSource: [],
                 exportBtnLoading: false, // 导出按钮loading
-
 
                 toggle: false,
                 showNoDataTips: false,
@@ -333,6 +342,7 @@
         },
         mounted() {
             this.platformDict("asset_type");
+            this.onDateChange(this.defaultValue)
         },
         methods: {
             moment,
@@ -408,8 +418,8 @@
             },
             // 起止日期发生变化
             onDateChange(val) {
-                this.queryData.maxDate = val[0];
-                this.queryData.minDate = val[1];
+                this.queryData.maxDate = moment(val[0]).format('YYYY-MM-DD')
+                this.queryData.minDate = moment(val[1]).format('YYYY-MM-DD')
             },
             // 组织机构变化
             changeTree(value, label) {
@@ -507,6 +517,12 @@
                             arr.push(obj);
                         });
                         this.assetProjectOptions = arr;
+                        this.assetProjectOptions.unshift(
+                            {
+                                label: "全部资产项目",
+                                value: ""
+                            }
+                        )
                     } else {
                         this.$message.error(res.data.message);
                     }
@@ -529,10 +545,10 @@
                         // 出库原因
                         if (code === "asset_type") {
                             this.assetTypeOptions = [
-                                // {
-                                //     label: "全部资产类型",
-                                //     value: ""
-                                // },
+                                {
+                                    label: "全部资产类型",
+                                    value: ""
+                                },
                                 ...arr
                             ];
                             this.getListFn()
@@ -559,10 +575,10 @@
                         // 出库原因
                         if (code === "asset_cleanup_type") {
                             this.cleanupTypeData = [
-                                // {
-                                //     label: "全部出库原因",
-                                //     value: ""
-                                // },
+                                {
+                                    label: "全部出库原因",
+                                    value: ""
+                                },
                                 ...arr
                             ];
                         }
@@ -591,7 +607,7 @@
                             })
                         })
                         this.assetClassifyData = [
-                            // {label: '全部资产分类', value: ''},
+                            {label: '全部资产分类', value: ''},
                             ...arr
                         ]
                     } else {

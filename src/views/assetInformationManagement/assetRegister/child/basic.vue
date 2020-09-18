@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-08-10 15:25:15
+ * @LastEditTime: 2020-09-16 11:45:13
  * @Description: 房屋土地
 --> 
 <template>
@@ -88,6 +88,8 @@ export default {
       basicData: [],
       organDictData: {},     // 权属情况
       ownershipData: {},     // 权属类型
+      ownershipDataName: [],   // 权属类型名称
+      organDictDataName: [],   // 权属情况名称
       fileType: ['xls', 'xlsx'],
       setType: '',
       numList: [
@@ -316,6 +318,14 @@ export default {
                 }
               }
             }
+            if (!this.ownershipDataName.includes(arrData[i].kindOfRightName)) {
+              this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属类型`)})
+              return
+            }
+            if (!this.organDictDataName.includes(arrData[i].ownershipStatusName)) {
+              this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属情况`)})
+              return
+            }
             if (arrData[i].ownershipStatusName === '有证') {
               if (!arrData[i].warrantNbr) {
                 this.DE_Loding(loadingName).then(() => {this.$message.info('当权属情况为有证时需输入权证号')})
@@ -527,9 +537,12 @@ export default {
         if (Number(res.data.code) === 0) {
           let organDictData = res.data.data
           let obj = {}
+          let organDictDataName = []
           organDictData.forEach(item => {
             obj[item.name] = item.value
+            organDictDataName.push(item.name)
           })
+          this.organDictDataName = organDictDataName
           this.organDictData = obj
         } else {
           this.$message.error(res.data.message)
@@ -542,9 +555,12 @@ export default {
         if (Number(res.data.code) === 0) {
           let ownershipData = res.data.data
           let obj = {}
+          let ownershipDataName = []
           ownershipData.forEach(item => {
             obj[item.name] = item.value
+            ownershipDataName.push(item.name)
           })
+          this.ownershipDataName = ownershipDataName
           this.ownershipData = obj
         } else {
           this.$message.error(res.data.message)
