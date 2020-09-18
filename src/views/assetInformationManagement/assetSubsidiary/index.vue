@@ -678,6 +678,8 @@ export default {
     },
     // 显示导入弹窗
     openImportModal () {
+      this.upLoadInfo.projectId = undefined
+      this.upLoadInfo.assetType = undefined
       this.$refs.eportAndDownFile.visible = true
     },
     // 机构字典

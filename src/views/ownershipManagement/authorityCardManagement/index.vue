@@ -58,9 +58,9 @@
         <template slot="ownerTypeName" slot-scope="text, record">
           <span>{{record.ownerTypeName || '--'}}</span>
         </template>
-        <template slot="lotNoEstateUnitCode" slot-scope="text, record">
+        <!-- <template slot="lotNoEstateUnitCode" slot-scope="text, record">
           <span>{{record.lotNoEstateUnitCode || '--'}}</span>
-        </template>
+        </template> -->
         <template slot="useLimitDate" slot-scope="text, record">
           <span>{{record.useLimitDate || '--'}}</span>
         </template>
@@ -133,8 +133,7 @@ const columns = [
   },
   {
     title: '房屋号/丘地号/不动产单元号',
-    dataIndex: 'lotNoEstateUnitCode',
-    scopedSlots: { customRender: 'ownerTypeName' }
+    dataIndex: 'lotNoEstateUnitCode'
   },
   {
     title: '坐落位置',
@@ -415,7 +414,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
-              item.lotNoEstateUnitCode = `${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
+              item.lotNoEstateUnitCode = `${item.houseNo || '--'}/${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
             })
             this.tableData = data
             this.count = res.data.data.count
