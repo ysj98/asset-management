@@ -351,5 +351,9 @@ export const ASSET_MANAGEMENT = {
    * V2.0.2权属登记一览表
    */
   ASSET_REGISTERVIEW_EXPORT: 'asset_registerview_export', // 权属登记一览表
+  /**
+   * 2.0.2
+   */
+  ASSET_BUILDLAND_EXPORT:'asset_buildland_export', // 楼盘字典土地导出
 }
 

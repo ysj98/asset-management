@@ -6,7 +6,7 @@
 export const arrkeys = [
   ['数量个数', 'assetNum' ],
   ['面积(㎡)', 'assetArea'],
-  ['价值(万元)', 'assetValue'],
+  ['价值(元)', 'assetValue'],
   ['所有权占比', 'ownerShipPercent'],
   ['使用权占比', 'onlyUsePercent'],
   ['有证资产占比', 'warrantPercent'],

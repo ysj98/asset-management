@@ -29,7 +29,7 @@
         <div class="search-item">
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
-            <SG-CheckboxGroup @change="checkboxGroupChnage">
+            <SG-CheckboxGroup v-model="assetTypes" @change="checkboxGroupChnage">
               <span
                 class="search-checkbox"
                 v-for="item in assetTypeListOpt"
@@ -241,6 +241,9 @@ export default {
           // 资产类型
           if (code === "asset_type") {
             this.assetTypeListOpt = arr
+            this.assetTypes = arr.map(item => {
+              return item.value
+            })
           }
         }
       })

@@ -216,4 +216,7 @@ worth_register_asset_export   资产登记列表导出
 权属登记一览表
 asset_registerview_export // 权属登记一览表导出
 
+楼盘字典中的土地 导出按钮
+asset_buildland_export // 楼盘字典中的土地导出按钮
+
 
