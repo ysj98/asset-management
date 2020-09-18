@@ -25,7 +25,7 @@
         <!-- 一项数据 -->
         <div class="body-item">
           <div class="body-item-left">
-            <span class="body-label">权利类型：</span>
+            <span class="body-label">权证类型：</span>
             <span class="body-content">产权证</span>
           </div>
           <div class="body-item-right">
@@ -106,7 +106,7 @@
             <span class="body-content">2040-02-25</span>
           </div>
           <div class="body-item-right">
-            <span class="body-label">结构：</span>
+            <span class="body-label">建筑结构：</span>
             <span class="body-content">钢筋混凝土</span>
           </div>
         </div>

@@ -60,7 +60,7 @@
             <!-- 全部权属类型 -->
             <a-select
               showSearch
-              placeholder="请选择权利类型"
+              placeholder="请选择权证类型"
               v-model="queryCondition.kindOfRights"
               optionFilterProp="children"
               @change="kindOfRightsSelect"
@@ -163,7 +163,7 @@ const queryCondition = {
   projectId: "",
   ownershipStatuss: [''], // 权属情况(多选)
   obligeeId: "", // 权属人
-  kindOfRights: [''], // 权利类型(多选)
+  kindOfRights: [''], // 权证类型(多选)
   statuss: [''], // 资产状态(多选)
   name: "", // 资产名称/权证号
   pageNum: 1,
@@ -177,7 +177,7 @@ const ownershipStatussOpt = [
   { label: "待办", value: "2" }
 ];
 const obligeeIdOpt = [{ label: "全部权属人", value: "" }];
-const kindOfRightsOpt = [{ label: "全部权利类型", value: "" }];
+const kindOfRightsOpt = [{ label: "全部权证类型", value: "" }];
 const statussOpt = [
   { label: "全部资产状态", value: "" },
   { label: "未生效", value: "0" },
@@ -235,7 +235,7 @@ let columns = [
     width: 120
   },
   {
-    title: "权利类型",
+    title: "权证类型",
     dataIndex: "kindOfRightName",
     width: 120
   },
@@ -425,7 +425,7 @@ export default {
         if (res.data.code === "0") {
           let result = res.data.data || [];
           let arr = result.map(item => ({ label: item.name, ...item }));
-          // 权利类型
+          // 权证类型
           if (code === "AMS_KIND_OF_RIGHT") {
             this.kindOfRightsOpt = [
               ...utils.deepClone(kindOfRightsOpt),
