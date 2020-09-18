@@ -488,6 +488,7 @@ export default {
     },
     // 批量导入
     uploadFile (file) {
+      this.$refs.batchImport.visible = false
       const { queryCondition: {organId} } = this
       let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
       let fileData = new FormData()

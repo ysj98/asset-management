@@ -103,6 +103,7 @@
                 showSearch
                 :style="allWidth"
                 placeholder="请选择资产类型"
+                @change="assetChange"
                 v-decorator="['assetType',{
                     rules: [{required: true, message: '请选择资产类型'}],
                     initialValue: newEditSingleData.assetType
@@ -280,7 +281,6 @@ export default {
     },
     tableData: {
       handler (val) {
-        console.log(val)
         val.forEach((item, index) => {
           item.serial = index + 1
         })
@@ -374,6 +374,11 @@ export default {
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    // 改变资产
+    assetChange () {
+      this.checkedData = []
+      this.tableData = []
     },
     handleSubmit (e) {
       e.preventDefault()
