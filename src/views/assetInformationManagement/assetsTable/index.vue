@@ -469,10 +469,17 @@
             },
             // 调用接口 查询列表
             queryList() {
-                const params = {
-                    ...this.queryData,
-                    organId: this.organId
-                }
+              const {queryData} = this
+              let obj = {};
+              ['assetTypeList', 'objectTypeList', 'cleanupTypeList', 'approvalStatusList', 'projectIdList'].forEach(key =>
+                // 过滤空值
+                obj[key] = queryData[key].filter(m => m)
+              )
+              const params = {
+                ...queryData,
+                ...obj,
+                organId: this.organId
+              }
                 this.assetCleanupGetCount()
                 this.$api.assets.getGeneralSurvey(params).then(res => {
                     if (Number(res.data.code) === 0) {

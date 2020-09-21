@@ -1,12 +1,12 @@
 <!--
  * @Date: 2020-07-23 16:30:01
  * @Description: 组织机构权属
---> 
+-->
 <template>
   <div class="assetProject-page pb70">
     <SearchContainer type="line" :value="false">
       <div slot="headerBtns">
-        <SG-Button type="primary" @click="exportList">
+        <SG-Button type="primary" @click="exportList" v-power="ASSET_MANAGEMENT.ASSET_PROOWNERSHIP_ORGAN_EXPORT">
           <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
         </SG-Button>
       </div>
