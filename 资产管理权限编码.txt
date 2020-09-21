@@ -1,0 +1,226 @@
+﻿新增权限编码如下:
+V1.0
+资产清理
+zcgl_asset_clear_new                资产清理-新建清理单
+zcgl_asset_clear_edit               资产清理-编辑清理单
+zcgl_asset_clear_audit              资产清理-审核清理单
+zcgl_asset_clear_reverse_audit      资产清理-反审核清理单
+zcgl_asset_clear_delete             资产清理-删除清理单
+
+资产分类设置
+zcgl_asset_class_set_edit           资产分类-编辑资产分类信息
+zcgl_asset_class_set_change_status  资产分类-启用/停用资产分类信息(状态)
+
+楼盘字典
+zcgl_add_house                楼盘字典-新增房间
+zcgl_edit_house               楼盘字典-编辑房间
+zcgl_housezl_in               楼盘字典-房间资料导入
+zcgl_house_in                 楼盘字典-房间批量更新
+zcgl_house_out                楼盘字典-房间导出
+zcgl_house_state              楼盘字典-房间状态修改
+zcgl_build_add                楼盘字典-新建楼栋
+zcgl_build_edit               楼盘字典-编辑楼栋
+zcgl_build_delete             楼盘字典-删除楼栋
+zcgl_floor_add                楼盘字典-新建楼层
+zcgl_floor_edit               楼盘字典-编辑楼层
+zcgl_floor_delete             楼盘字典-删除楼层
+zcgl_unit_add                 楼盘字典-新建单元
+zcgl_unit_edit                楼盘字典-编辑单元
+zcgl_unit_delete              楼盘字典-删除单元
+
+
+资产项目管理APM （asset-project-manage）
+zcgl_apm_new                  资产项目管理-新建
+zcgl_apm_edit                 资产项目管理-编辑
+zcgl_apm_approval             资产项目管理-审核
+zcgl_apm_delete               资产项目管理-删除
+zcgl_apm_reApproval           资产项目管理-反审核
+
+资产变动
+zcgl_asset_change_new            资产变动-新增变动单
+zcgl_asset_change_edit           资产变动-编辑变动单
+zcgl_asset_change_audit          资产变动-审核
+zcgl_asset_change_reverse_audit  资产变动-反审核
+zcgl_asset_change_delete         资产变动-删除
+zcgl_asset_change_end_delivery   资产变动- 结束交付
+
+
+资产登记
+zcgl_asset_register_new          资产登记-新增登记单
+zcgl_asset_register_edit           资产登记-编辑登记单
+zcgl_asset_register_audit        资产登记-审核
+zcgl_asset_register_reverse_audit 资产登记-反审核
+zcgl_asset_register_delete       资产登记-删除
+
+
+V1.1
+权属人管理
+zcgl_property_owner_new          权属人管理-新增
+zcgl_property_owner_edit         权属人管理-编辑
+zcgl_property_owner_delete       权属人管理-删除
+
+资产入账
+zcgl_asset_entry_new             资产入账-新增
+zcgl_asset_entry_edit            资产入账-编辑
+zcgl_asset_entry_reverse_audit   资产入账-反审核
+zcgl_asset_entry_delete          资产入账-删除
+
+资产价值登记awr（asset_worth_register）
+zcgl_awr_add                    资产价值登记新增
+zcgl_awr_edit                   资产价值登记编辑
+zcgl_awr_approval               资产价值登记审核
+zcgl_awr_delete                 资产价值登记删除
+
+权属概况
+zcgl_proownership_set            资产项目权属设置
+zcgl_ownership_detail            资产权属详情
+
+权属登记
+zcgl_asset_ownerr_new           权属登记-新增权属登记单
+zcgl_asset_ownerr_edit          权属登记-编辑权属登记单
+zcgl_asset_ownerr_audit         权属登记-审核
+zcgl_asset_ownerr_reverse_audit 权属登记-反审核
+zcgl_asset_ownerr_delete        权属登记-删除
+
+权证管理
+zcgl_asset_acm_new              权证管理-新增权证管理单
+zcgl_asset_acm_edit             权证管理-编辑权证管理单
+zcgl_asset_acm_delete           权证管理-注销
+zcgl_asset_acm_export           权证管理-导出
+
+V1.2
+盘点任务
+zcgl_task_new                   盘点任务-生成盘点单
+zcgl_task_edit                  盘点任务-盘点任务编辑
+zcgl_task_delete                盘点任务-盘点任务取消
+
+盘点执行
+zcgl_execute_new                盘点执行-登记盘点结果
+
+盘点报告
+zcgl_inventory_report_new               盘点报告-新建
+zcgl_inventory_report_edit              盘点报告-编辑
+zcgl_inventory_report_delete            盘点报告-删除
+zcgl_inventory_report_reverse_audit     盘点报告-反审核
+
+盘点计划
+zcgl_plan_create                盘点计划-新增盘点计划
+zcgl_plan_edit                  盘点计划-编辑盘点计划
+zcgl_plan_delete                盘点计划-删除盘点计划
+zcgl_plan_reverseapply          盘点计划-反审核盘点计划
+
+处置一览表
+czyl_zzjgst_dc                    组织机构视图导出
+czyl_zcst_dc                      资产视图导出
+
+处置登记
+zcgl_dengji_create                处置登记-新增盘点计划
+zcgl_dengji_edit                  处置登记-编辑盘点计划
+zcgl_dengji_delete                处置登记-删除盘点计划
+zcgl_dengji_reverseapply          处置登记-反审核盘点计划
+V1.3
+呈报任务管理report-manage
+rm_task_new                       新增呈报任务
+
+呈报计划
+zcgl_submit_plans_new     呈报计划-新建
+zcgl_submit_plans_edit    呈报计划-编辑
+zcgl_submit_plans_delete  呈报计划-删除
+zcgl_submit_plans_audit   呈报计划-审核
+zcgl_submit_plans_reverse_audit 呈报计划-反审核
+附属配套管理
+asset_create_subsi      新建附属配套
+asset_edit_subsi        编辑附属配套
+asset_status_subsi      附属配套状态改变
+asset_delete_subsi      删除附属配套
+asset_export_subsi      导出附属配套
+呈报记录一览表
+asset_report_operate    呈报记录运营
+asset_report_income     呈报记录收入
+asset_report_deprecia   呈报记录折旧
+asset_report_cost       呈报记录费用
+
+
+// 2.0.0新增权限
+资产分类设置
+asset_class_land_create    资产分类-新增土地
+asset_class_land_edit      资产分类-编辑土地
+asset_class_land_change    资产分类-状态改变土地
+asset_class_land_delete    资产分类-状态删除土地
+
+楼盘字典--土地
+zcgl_dict_land_create  楼盘字典-创建土地
+zcgl_dict_land_edit   楼盘字典-修改土地
+zcgl_dict_land_delete  zcgl_dict_land_edit
+
+/* 资产入库 */
+asset_in_create        资产入库-新建
+asset_in_edit          资产入库-编辑
+asset_in_approve       资产入库-审批
+asset_in_delete'       资产入库-删除
+
+资产登记
+zcgl_asset_register_basicInformation         // 资产登记-登记基础信息
+zcgl_asset_register_registrationAccessory    // 资产登记-登记附属配套
+zcgl_asset_register_registeredInformation    // 资产登记-登记价值信息
+zcgl_asset_register_registerDirections       // 资产登记-登记使用方向
+zcgl_asset_register_registrationFees         // 资产登记-登记相关费用
+zcgl_asset_register_verify                   // 资产登记-核实
+zcgl_asset_register_undoCheck                // 资产登记-撤销核实
+
+
+v2.0.2新增按钮权限
+
+报表管理
+table_manage_asset_worth_export       // 报表管理-资产价值统计导出
+table_manage_asset_project_export     // 报表管理-资产项目数据查询导出
+table_manage_house_asset_export       // 报表管理-有证房屋资产导出
+table_manage_ownership_amount_export  // 报表管理-权证数量统计导出
+table_manage_ownership_list_export    // 报表管理-权属证件一览表导出
+table_manage_asset_analysis_export    // 报表管理-房屋资产统计分析列表导出
+
+/* 资产入库一览表 */
+asset_in_view_export                       资产入库一览表-导出
+
+/* 资产登记一览表 */
+asset_register_view_export                      资产登记一览表-导出
+
+// 资产出库
+asset_in_export     资产出库一览表导出
+
+资产入账
+zcgl_asset_entry_export        资产入账导出
+
+盘点执行
+zcgl_execute_listAssets        盘点执行-登记盘点结果-导出资产清单
+zcgl_execute_exception         盘点执行-登记盘点结果-导出异常信息
+
+盘点报告
+zcgl_inventory_report_export   盘点报告-导出
+
+房屋台账
+house_account_asset_project_export      资产项目视图导出
+house_account_building_view_export      楼栋视图导出
+house_account_asset_view_export         资产视图列表导出
+house_account_asset_view_detail_export  房屋台账-资产视图详情导出
+house_account_organ_view_export         组织机构视图导出
+
+资产入库
+asset_in_list_export    资产入库列表导出
+
+价值登记
+worth_register_record_export  价值登记记录导出
+worth_register_list_export    价值一览表导出
+worth_register_asset_export   资产登记列表导出
+
+权属登记一览表
+asset_registerview_export // 权属登记一览表导出
+
+土地台账导出
+land_project_export  土地台账资产项目列表导出
+land_organ_export 土地台账资产项目列表导出
+
+楼盘字典中的土地 导出按钮
+asset_buildland_export // 楼盘字典中的土地导出按钮
+
+

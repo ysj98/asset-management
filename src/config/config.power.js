@@ -352,6 +352,11 @@ export const ASSET_MANAGEMENT = {
    */
   ASSET_REGISTERVIEW_EXPORT: 'asset_registerview_export', // 权属登记一览表
   /**
+   * V2.0.2土地台账
+   */
+  LAND_PROJECT_EXPORT: 'land_project_export', // 土地台账资产项目列表导出
+  LAND_ORGAN_EXPORT: 'land_organ_export', // 土地台账资产项目列表导出
+  /**
    * 2.0.2
    */
   ASSET_BUILDLAND_EXPORT:'asset_buildland_export', // 楼盘字典土地导出

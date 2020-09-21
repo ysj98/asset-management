@@ -9,8 +9,9 @@
           icon="import"
           type="primary"
           @click="handleExport"
+          v-power="ASSET_MANAGEMENT.LAND_PROJECT_EXPORT"
           :loading="exportBtnLoading"
-        >导出组织机构视图</SG-Button>
+        >导出资产项目视图</SG-Button>
       </a-col>
       <a-col :span="3">
         <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -205,7 +206,13 @@ export default {
   methods: {
     // 点击总览数据块
     handleClickOverview({i}) {
-      this.current = i
+      let currentTemp = 0
+      if (i === 1) {
+        currentTemp = 5
+      } else if (i > 1) {
+        currentTemp = i - 1
+      }
+      this.current = currentTemp
       this.queryClick()
     },
 
@@ -321,17 +328,17 @@ export default {
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement("a");
             a.href = URL.createObjectURL(new Blob([res.data]));
-            a.download = "组织机构视图导出列表.xls";
+            a.download = "资产项目视图导出列表.xls";
             a.style.display = "none";
             document.body.appendChild(a);
             a.click();
             return a.remove();
           }
-          throw res.message || "导出组织机构视图失败";
+          throw res.message || "导出资产项目视图失败";
         })
         .catch((err) => {
           this.exportBtnLoading = false;
-          this.$message.error(err || "导出组织机构视图失败");
+          this.$message.error(err || "导出资产项目视图失败");
         });
     },
     // 查询项目
