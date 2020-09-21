@@ -94,47 +94,47 @@ const columns = [
   {
     title: '管理机构',
     dataIndex: 'organName',
-    width: 120
+    width: 150
   },
   {
     title: '来源方式',
     dataIndex: 'sourceTypeName',
-    width: 120
+    width: 130
   },
   {
     title: '来源渠道',
     dataIndex: 'souceChannelType',
-    width: 120
+    width: 130
   },
   {
     title: '接管时间',
     dataIndex: 'takeOverDate',
-    width: 100
+    width: 130
   },
   {
     title: '运营(㎡)',
     dataIndex: 'transferOperationArea',
-    width: 100
+    width: 130
   },
   {
     title: '自用(㎡)',
     dataIndex: 'selfUserArea',
-    width: 100
+    width: 130
   },
   {
     title: '闲置(㎡)',
     dataIndex: 'idleArea',
-    width: 100
+    width: 130
   },
   {
     title: '占用(㎡)',
     dataIndex: 'occupationArea',
-    width: 100
+    width: 130
   },
   {
     title: '其他(㎡)',
     dataIndex: 'otherArea',
-    width: 100
+    width: 130
   },
   {
     title: '资产原值',
