@@ -216,4 +216,8 @@ worth_register_asset_export   资产登记列表导出
 权属登记一览表
 asset_registerview_export // 权属登记一览表导出
 
+土地台账导出
+land_project_export  土地台账资产项目列表导出
+land_organ_export 土地台账资产项目列表导出
+
 
