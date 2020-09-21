@@ -4,7 +4,7 @@
  * @Author: chh
  */
 export const arrkeys = [
-  ['数量个数', 'assetNum' ],
+  ['数量个数', 'assetNum'],
   ['面积(㎡)', 'assetArea'],
   ['价值(元)', 'assetValue'],
   ['所有权占比', 'ownerShipPercent'],
@@ -23,10 +23,20 @@ export const columns = [{
 }, {
   title: "总数",
   dataIndex: "totalInfo",
-}, {
-  title: "土地",
-  dataIndex: "landInfo",
-}, {
-  title: "房屋",
-  dataIndex: "houseInfo",
 }]
+export let getColumns = (arr) => {
+  let nvColumns = [...columns]
+  if (arr.includes('4')) {
+    nvColumns.push({
+      title: "土地",
+      dataIndex: "landInfo",
+    })
+  }
+  if (arr.includes('1')) {
+    nvColumns.push({
+      title: "房屋",
+      dataIndex: "houseInfo",
+    })
+  }
+  return nvColumns
+}
