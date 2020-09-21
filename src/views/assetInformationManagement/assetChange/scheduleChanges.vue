@@ -5,7 +5,13 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
+        <SG-Button
+          type="primary"
+          @click="downloadFn"
+          v-power="ASSET_MANAGEMENT.ASSET_CHANGE_LIST_EXPORT"
+        >
+          <segiIcon type="#icon-ziyuan10" class="icon-right"/>导出
+        </SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
@@ -72,6 +78,7 @@
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
+import { ASSET_MANAGEMENT } from "@/config/config.power"
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
@@ -190,6 +197,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       dateWidth,
       // scrollHeight: {y: 0},
       loading: false,

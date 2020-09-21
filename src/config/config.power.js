@@ -344,12 +344,31 @@ export const ASSET_MANAGEMENT = {
   /**
    * V2.0.2价值登记
    */
-  WORTH_REGISTER_RECORD_EXPORT: 'worth_register_record_export',   // 价值登记记录导出
+  WORTH_REGISTER_RECORD_EXPORT: 'worth_register_record_export',   // 资产估值记录导出
   WORTH_REGISTER_LIST_EXPORT: 'worth_register_list_export',       // 价值一览表导出
   WORTH_REGISTER_ASSET_EXPORT: 'worth_register_asset_export',     // 资产登记列表导出
   /**
    * V2.0.2权属登记一览表
    */
   ASSET_REGISTERVIEW_EXPORT: 'asset_registerview_export', // 权属登记一览表
+
+  /**
+   * V2.0.2资产分类
+   */
+  ASSET_CLASS_LAND_EXPORT: 'asset_class_land_export ', // 资产分类土地列表导出
+  ASSET_CLASS_HOUSE_EXPORT: 'asset_class_house_export ', // 资产分类房屋列表导出
+
+  /**
+   * 权属人管理
+   **/
+  PROPERTY_OWNER_EXPORT: 'property_owner_export',   // 权属人管理-导出
+  /**
+   * 权属概况
+   */
+  ASSET_PROOWNERSHIP_ORGAN_EXPORT: 'proownership_organ_export',   // 权属概况-组织机构权属列表-导出
+  /**
+   * 资产变更一览表
+   */
+  ASSET_CHANGE_LIST_EXPORT: 'asset_change_list_export', // 资产变更一览表-导出
 }
 

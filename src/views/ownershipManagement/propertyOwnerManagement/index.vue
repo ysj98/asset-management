@@ -6,7 +6,13 @@
     <SG-SearchContainer background="white">
       <div slot="btns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
-        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px">导出</SG-Button>
+        <SG-Button
+          icon="export"
+          @click="handleExport"
+          :loading="exportBtnLoading"
+          style="margin-right: 8px"
+          v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_EXPORT"
+        >导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newPropertyOwner" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_NEW">新建权属人</SG-Button>
       </div>
       <div slot="form">
