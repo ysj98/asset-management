@@ -86,7 +86,7 @@
 <script>
 import Tools from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
-import { columns, arrkeys, dataIndexs } from "../lib/dict.js"
+import { columns, arrkeys, dataIndexs, getColumns } from "../lib/dict.js"
 let provinceOptFrist = {
   label: "全国",
   value: "",
@@ -217,6 +217,7 @@ export default {
     checkboxGroupChnage(checkedValues) {
       console.log("checked = ", checkedValues)
       this.assetTypes = checkedValues
+      this.table.columns = getColumns(checkedValues)
       this.query()
     },
     // 获取选择的组织机构
@@ -244,6 +245,7 @@ export default {
             this.assetTypes = arr.map(item => {
               return item.value
             })
+            this.table.columns = getColumns(this.assetTypes)
           }
         }
       })
