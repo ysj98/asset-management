@@ -352,6 +352,10 @@ export function getCleanupDetailPage (data) {
 export function assetCleanupGetCount (data) {
   return axiosPost(assets.assetClear.assetCleanupGetCount, data, false, false)
 }
+// 资产出库一览表-统计
+export function assetCleanupListTotal (data) {
+  return axiosPost(assets.assetClear.assetCleanupListTotal, data, false, false)
+}
 // 资产出库一览表
 export function getGeneralSurvey(data) {
   return axiosPost(assets.assetClear.getGeneralSurvey, data, false, false)
