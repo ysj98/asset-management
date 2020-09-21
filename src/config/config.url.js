@@ -247,6 +247,8 @@ export const assets = {
     assetCleanupGetCount: '/ams/assetCleanup/getCount',
     // 资产出库一览表
     getGeneralSurvey: '/ams/assetCleanup/getGeneralSurvey',
+    // 资产出库一览表-汇总统计
+    assetCleanupListTotal: '/ams/assetCleanup/getGeneralSurveyTotal',
     // 资产出库一览表导出
     getGeneralSurveyExportOut: '/ams/assetCleanup/getGeneralSurveyExport',
   },

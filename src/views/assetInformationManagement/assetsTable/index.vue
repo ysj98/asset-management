@@ -418,8 +418,8 @@
             },
             // 起止日期发生变化
             onDateChange(val) {
-                this.queryData.maxDate = moment(val[0]).format('YYYY-MM-DD')
-                this.queryData.minDate = moment(val[1]).format('YYYY-MM-DD')
+                this.queryData.minDate = moment(val[0]).format('YYYY-MM-DD')
+                this.queryData.maxDate = moment(val[1]).format('YYYY-MM-DD')
             },
             // 组织机构变化
             changeTree(value, label) {
@@ -439,8 +439,14 @@
             // 导出
             newClearForm() {
                 this.exportBtnLoading = true
+                let obj = {};
+                ['assetTypeList', 'objectTypeList', 'cleanupTypeList', 'approvalStatusList', 'projectIdList'].forEach(key =>
+                  // 过滤空值
+                  obj[key] = this.queryData[key].filter(m => m)
+                )
                 const params = {
                     ...this.queryData,
+                    ...obj,
                     organId: this.organId
                 }
                 this.$api.assets.getGeneralSurveyExportOut(params).then(res => {
@@ -480,7 +486,7 @@
                 ...obj,
                 organId: this.organId
               }
-                this.assetCleanupGetCount()
+                this.assetCleanupGetCount(params)
                 this.$api.assets.getGeneralSurvey(params).then(res => {
                     if (Number(res.data.code) === 0) {
                         const data = res.data.data
@@ -626,22 +632,22 @@
                 })
             },
             // 查询统计列表
-            assetCleanupGetCount() {
+            assetCleanupGetCount(params) {
                 this.overviewNumSpinning = true
-                const params =  {
-                    "cleanupType": this.queryData.cleanupTypeList.join(','),                //类型：String  必有字段  备注：清理类型
-                    "clearingName": `${this.queryData.assetName},${this.queryData.cleaningOrderCode}`, //类型：String  必有字段  备注：资产出库单/名称
-                    "currentOrganId": 1, //类型：Number  必有字段  备注：仅当前机构下资产清理单 0 否 1 是
-                    "endCreateDate": this.queryData.minDate, //类型：String  必有字段  备注：结束时间
-                    "multiApprovalStatus": this.queryData.approvalStatusList.join(','), //类型：String  必有字段  备注：审批状态
-                    "multiAssetType": this.queryData.assetTypeList.join(','), //类型：String  必有字段  备注：资产类型
-                    "organId": this.organId, //类型：Number  必有字段  备注：组织机构
-                    "pageNum": this.queryData.pageNum, //类型：Number  必有字段  备注：无
-                    "pageSize": this.queryData.pageSize, //类型：Number  必有字段  备注：无
-                    "projectId": this.queryData.projectIdList.join(','), //类型：String  必有字段  备注：资产项目id
-                    "startCreateDate": this.queryData.maxDate //类型：String  必有字段  备注：开始时间
-                }
-                this.$api.assets.assetCleanupGetCount(params).then(res => {
+                // const params =  {
+                //     "cleanupType": this.queryData.cleanupTypeList.join(','),                //类型：String  必有字段  备注：清理类型
+                //     "clearingName": `${this.queryData.assetName},${this.queryData.cleaningOrderCode}`, //类型：String  必有字段  备注：资产出库单/名称
+                //     "currentOrganId": 1, //类型：Number  必有字段  备注：仅当前机构下资产清理单 0 否 1 是
+                //     "endCreateDate": this.queryData.minDate, //类型：String  必有字段  备注：结束时间
+                //     "multiApprovalStatus": this.queryData.approvalStatusList.join(','), //类型：String  必有字段  备注：审批状态
+                //     "multiAssetType": this.queryData.assetTypeList.join(','), //类型：String  必有字段  备注：资产类型
+                //     "organId": this.organId, //类型：Number  必有字段  备注：组织机构
+                //     "pageNum": this.queryData.pageNum, //类型：Number  必有字段  备注：无
+                //     "pageSize": this.queryData.pageSize, //类型：Number  必有字段  备注：无
+                //     "projectId": this.queryData.projectIdList.join(','), //类型：String  必有字段  备注：资产项目id
+                //     "startCreateDate": this.queryData.maxDate //类型：String  必有字段  备注：开始时间
+                // }
+                this.$api.assets.assetCleanupListTotal(params).then(res => {
                     if (Number(res.data.code) === 0) {
                         let data = res.data.data || {};
                         this.numList = this.numList.map(item => {
