@@ -380,5 +380,9 @@ export const ASSET_MANAGEMENT = {
    * 2.0.2
    */
   ASSET_BUILDLAND_EXPORT:'asset_buildland_export', // 楼盘字典土地导出
+  /**
+   * 2.0.2 异常管理
+   */
+  EXCEPTION_MANAGE_EXPORT: 'exception_manage_export', // 异常管理导出
 }
 

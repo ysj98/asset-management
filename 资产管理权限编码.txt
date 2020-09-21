@@ -237,3 +237,6 @@ asset_buildland_export // 楼盘字典中的土地导出按钮
 
 资产变更一览表
 asset_change_list_export, // 资产变更一览表-导出
+
+异常管理
+exception_manage_export // 异常管理列表导出
