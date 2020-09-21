@@ -77,7 +77,7 @@
           </div>
           <div class="detail-content-right pt10">
             <img v-if="imgSrc" :src="imgSrc" alt="">
-            <img v-else src="../../../../assets/image/default_house.png">
+            <img v-else src="../images/default_house.png">
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@ const columns = [
     dataIndex: "assetArea",
   },
    {
-    title: "资产价值(万元)",
+    title: "资产价值(元)",
     dataIndex: "assetValue",
   },
 ]
@@ -161,7 +161,7 @@ let getDataRow = (obj, columns) => {
   let keys = columns.map(item => item.dataIndex)
   let o = {key: Tools.getUuid()}
   keys.forEach(item => {
-    o[item] = obj[item]
+    o[item] = obj[item] || '-'
   })
   return o
 }
@@ -189,7 +189,7 @@ export default {
       },
       // 表格3
       tableThree: {
-        columns: columnsTwo,
+        columns: columnsThree,
         dataSource: [],
         pagination: false,
       },
@@ -201,7 +201,6 @@ export default {
         this.table.dataSource = [getDataRow(nv, columns)]
         this.tableTwo.dataSource = [getDataRow(nv, columnsTwo)]
         this.tableThree.dataSource = [getDataRow(nv, columnsThree)]
-        console.log('拿到数据', getDataRow(nv, columns), getDataRow(nv, columnsTwo))
       }
     }
   },

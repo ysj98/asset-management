@@ -16,7 +16,7 @@
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权利类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权证类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
             <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部权属人" v-model="queryCondition.obligeeId">
@@ -55,6 +55,12 @@
         <template slot="obligeeName" slot-scope="text, record">
           <span>{{record.obligeeName || '--'}}</span>
         </template>
+        <template slot="ownerTypeName" slot-scope="text, record">
+          <span>{{record.ownerTypeName || '--'}}</span>
+        </template>
+        <!-- <template slot="lotNoEstateUnitCode" slot-scope="text, record">
+          <span>{{record.lotNoEstateUnitCode || '--'}}</span>
+        </template> -->
         <template slot="useLimitDate" slot-scope="text, record">
           <span>{{record.useLimitDate || '--'}}</span>
         </template>
@@ -112,16 +118,21 @@ const columns = [
     dataIndex: 'warrantNbr'
   },
   {
-    title: '权利类型',
+    title: '权证类型',
     dataIndex: 'kindOfRightName'
   },
   {
     title: '权属人',
     dataIndex: 'obligeeName',
-    scopedSlots: { customRender: 'obligeeName' },
+    scopedSlots: { customRender: 'obligeeName' }
   },
   {
-    title: '丘地号/不动产单元号',
+    title: '权属形式',
+    dataIndex: 'ownerTypeName',
+    scopedSlots: { customRender: 'ownerTypeName' }
+  },
+  {
+    title: '房屋号/丘地号/不动产单元号',
     dataIndex: 'lotNoEstateUnitCode'
   },
   {
@@ -133,7 +144,7 @@ const columns = [
     dataIndex: 'ownershipUseName'
   },
   {
-    title: '建筑面积(㎡)',
+    title: '权证面积(㎡)',
     dataIndex: 'buildArea'
   },
   {
@@ -181,7 +192,7 @@ const statusData = [
 ]
 const queryCondition =  {
     organId: '',        // 组织机构
-    kindOfRights: '',   // 权利类型(多选)
+    kindOfRights: '',   // 权证类型(多选)
     obligeeId: '',      // 权属人
     status: '',         // 权证状态
     warrantNbr: '',     // 权证号
@@ -318,7 +329,7 @@ export default {
         }
       })
     },
-    // 权利类型
+    // 权证类型
     platformDictFn () {
       let obj = {
         code: 'AMS_KIND_OF_RIGHT'
@@ -326,13 +337,13 @@ export default {
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          this.kindOfRightsData = [{name: '全部权利类型', value: ''}, ...data]
+          this.kindOfRightsData = [{name: '全部权证类型', value: ''}, ...data]
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    // 权利类型变化
+    // 权证类型变化
     kindOfRightsDataFn (value) {
       this.$nextTick(function () {
         this.queryCondition.kindOfRights = this.handleMultipleSelectValue(value, this.queryCondition.kindOfRights, this.kindOfRightsData)
@@ -389,7 +400,7 @@ export default {
       this.loading = true
       let obj = {
         organId: Number(this.queryCondition.organId),        // 组织机构
-        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权证类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
@@ -403,7 +414,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
-              item.lotNoEstateUnitCode = `${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
+              item.lotNoEstateUnitCode = `${item.houseNo || '--'}/${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
             })
             this.tableData = data
             this.count = res.data.data.count
@@ -427,7 +438,7 @@ export default {
       this.loading = true
       let obj = {
         organId: Number(this.queryCondition.organId),        // 组织机构
-        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权证类型(多选)
         obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
@@ -477,6 +488,7 @@ export default {
     },
     // 批量导入
     uploadFile (file) {
+      this.$refs.batchImport.visible = false
       const { queryCondition: {organId} } = this
       let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
       let fileData = new FormData()
@@ -500,7 +512,7 @@ export default {
     exportData () {
       let data = {
         organId: Number(this.queryCondition.organId),        // 组织机构
-        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权利类型(多选)
+        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权证类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
@@ -558,14 +570,14 @@ export default {
     }
   },
   mounted () {
-    // 权利类型
+    // 权证类型
     this.platformDictFn()
     // 权属类型
     this.platformDict()
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .ownershipRegistration {
   .from-second {
     padding: 26px 190px 0 0;
@@ -597,5 +609,11 @@ export default {
   .custom-table {
     padding-bottom: 60px;
   }
+}
+.sg-message>.main.confirmDelete>.content, .sg-message>.main.custom>.content, .sg-message>.main.error>.content, .sg-message>.main.info>.content, .sg-message>.main.loading>.content, .sg-message>.main.loadingErr>.content, .sg-message>.main.networkErr>.content, .sg-message>.main.success>.content {
+  background-position: top left;
+  min-height: 233px;
+  height: auto;
+  padding: 10px;
 }
 </style>

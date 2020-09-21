@@ -95,7 +95,7 @@
           </div>
           <div class="detail-content-right pt10">
             <img v-if="imgSrc" :src="imgSrc" alt="">
-            <img v-else src="../../../../assets/image/default_house_old.png">
+            <img v-else src="../images/default_land.png">
           </div>
         </div>
       </div>
@@ -123,11 +123,11 @@ const columns = [
     dataIndex: "landArea",
   },
   {
-    title: "资产原值(万元)",
+    title: "资产原值(元)",
     dataIndex: "originalValue",
   },
    {
-    title: "最新估值(万元)",
+    title: "最新估值(元)",
     dataIndex: "marketValue",
   },
 ]

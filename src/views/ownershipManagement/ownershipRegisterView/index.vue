@@ -121,7 +121,7 @@
             <a-input
               :maxLength="30"
               v-model="queryCondition.registerNameCode"
-              placeholder="权属登记单编码"
+              placeholder="权属登记单名称"
               :style="allWidth"
             />
           </div>

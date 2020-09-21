@@ -103,6 +103,7 @@
                 showSearch
                 :style="allWidth"
                 placeholder="请选择资产类型"
+                @change="assetChange"
                 v-decorator="['assetType',{
                     rules: [{required: true, message: '请选择资产类型'}],
                     initialValue: newEditSingleData.assetType
@@ -263,11 +264,29 @@ export default {
     'changeType' (val) {
       this.checkedData = []
       this.tableData = []
+      let columns = []
       if (val === '3') {    // 注销登记
-        this.columns = cancellation
+        columns = cancellation
       } else {     // // 首次登记 变更登记
-        this.columns = register
+        columns = register
       }
+      if (columns[0].dataIndex !== 'serial') {
+        columns.unshift({
+          title: '序号',
+          dataIndex: 'serial',
+          width: '8%'
+        })
+      }
+      this.columns = [...columns]
+    },
+    tableData: {
+      handler (val) {
+        val.forEach((item, index) => {
+          item.serial = index + 1
+        })
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -287,7 +306,7 @@ export default {
     // 选择权证给回来的数据
     chooseWarrantsStatus (val, data, roeNameData, selectKey) {
       let warrantNbrDataIs = [{label: roeNameData.join(','), value: val.join(',')}]
-      this.tableData.forEach(item => {
+      this.tableData.forEach((item, index) => {
         if (item.key === selectKey) {
           item.warrantGeneralData = data
           item.warrantNbrData = warrantNbrDataIs
@@ -355,6 +374,11 @@ export default {
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    // 改变资产
+    assetChange () {
+      this.checkedData = []
+      this.tableData = []
     },
     handleSubmit (e) {
       e.preventDefault()

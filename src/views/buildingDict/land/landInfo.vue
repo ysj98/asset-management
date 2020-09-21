@@ -16,7 +16,7 @@
             type="primary"
           >新增</SG-Button>
           <!-- <SG-Button class="mr10" ><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button> -->
-          <SG-Button @click="exportList" class="mr10">
+          <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10">
             <segiIcon type="#icon-ziyuan10" class="mr10" />导出
           </SG-Button>
         </div>
@@ -104,7 +104,7 @@
         <SG-FooterPagination
           :pageLength="queryCondition.pageSize"
           :totalCount="table.totalCount"
-          location="absolute"
+          location="fixed"
           v-model="queryCondition.pageNum"
           @change="handleChange"
         />
@@ -141,6 +141,7 @@ export default {
   data() {
     return {
       ASSET_MANAGEMENT,
+      hasPowerExport: false, // 导出按钮权限
       allStyle,
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
@@ -219,22 +220,23 @@ export default {
     // 查询土地类别
     queryLandType() {
       let data = {
-        // dictCode: "OCM_LAND_TYPE",
-        // dictFlag: "1",
-        // groupId: this.queryCondition.organId,
-        // code: "OCM_LAND_TYPE",
+        dictCode: "OCM_LAND_TYPE",
+        dictFlag: "1",
+        groupId: this.queryCondition.organId,
+        code: "OCM_LAND_TYPE",
         organId: this.queryCondition.organId,
-        assetType: "4",
+        // assetType: "4",
       };
+      // this.$api.assets.getList(data)
       // this.$api.basics.organDict(data)
-      return this.$api.assets.getList(data).then((res) => {
+      return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = utils.deepClone(landTypeOpt);
           data.forEach((item) => {
             this.landTypeOpt.push({
-              value: item["professionCode"],
-              label: item["professionName"],
+              value: item["value"],
+              label: item["name"],
               // id: item["dictId"]
             });
           });
@@ -349,6 +351,9 @@ export default {
     handlePower() {
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_CREATE)) {
         this.createPower = true;
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
+        this.hasPowerExport = true
       }
     },
     exportList() {

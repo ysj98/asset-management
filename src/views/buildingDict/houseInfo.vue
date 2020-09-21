@@ -158,7 +158,7 @@
       <SG-FooterPagination
         :pageLength="queryCondition.pageLength"
         :totalCount="table.totalCount"
-        location="absolute"
+        location="fixed"
         v-model="queryCondition.pageNo"
         @change="handleChange"
       />

@@ -21,7 +21,7 @@
           <div class="tab-container">
           <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
             <div slot="col-r">
-            <a-select :style="allStyle" placeholder="全部权利类型" v-model="selecData.kindOfRights">
+            <a-select :style="allStyle" placeholder="全部权证类型" v-model="selecData.kindOfRights">
               <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码"/>
@@ -98,7 +98,7 @@ const columns = [
     dataIndex: 'warrantNbr'
   },
   {
-    title: '权利类型',
+    title: '权证类型',
     dataIndex: 'kindOfRightName'
   },
   {
@@ -293,7 +293,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           if (str === 'AMS_KIND_OF_RIGHT') {
-            this.kindOfRightsData = [{name: '全部权利类型', value: ''}, ...data]
+            this.kindOfRightsData = [{name: '全部权证类型', value: ''}, ...data]
           }
         } else {
           this.$message.error(res.data.message)
@@ -304,7 +304,7 @@ export default {
       this.loading = true
       let obj = {
         organId: this.organId,         // 组织机构
-        kindOfRights: this.selecData.kindOfRights,              // 权利类型(多选)
+        kindOfRights: this.selecData.kindOfRights,              // 权证类型(多选)
         obligeeId: '',                 // 权属人
         status: '1',                    // 权证状态
         warrantNbr: this.selecData.warrantNbr,                // 权证号

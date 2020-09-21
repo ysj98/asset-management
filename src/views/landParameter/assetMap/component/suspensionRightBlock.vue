@@ -29,7 +29,7 @@
         <div class="search-item">
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
-            <SG-CheckboxGroup @change="checkboxGroupChnage">
+            <SG-CheckboxGroup v-model="assetTypes" @change="checkboxGroupChnage">
               <span
                 class="search-checkbox"
                 v-for="item in assetTypeListOpt"
@@ -241,6 +241,9 @@ export default {
           // 资产类型
           if (code === "asset_type") {
             this.assetTypeListOpt = arr
+            this.assetTypes = arr.map(item => {
+              return item.value
+            })
           }
         }
       })
@@ -343,6 +346,12 @@ box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
   }
   /deep/ .sg-checkbox-group .ant-checkbox-wrapper {
     font-size: 14px;
+  }
+  /deep/ .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active{
+    box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1)
+  }
+  /deep/ .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection{
+    box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1)
   }
 }
 .ellipsis {

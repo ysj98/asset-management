@@ -7,7 +7,7 @@
  * @FilePath: \asset-management\src\api\disposalManagement.js
  */
 
-import { axiosPost, axiosGet  } from '../utils/axios'
+import { axiosPost, axiosGet } from '../utils/axios'
 import { dispose } from '../config/config.url'
 // post请求示例
 // export function seachInspectionInstByItems (data) {
@@ -26,36 +26,36 @@ import { dispose } from '../config/config.url'
 
 // 处置管理
 // 资产处置一览表-资产视图-主列表查询(分页)
-export function getDetailAndDisposeListPage (data) {
+export function getDetailAndDisposeListPage(data) {
   return axiosPost(dispose.getDetailAndDisposeListPage, data)
 }
 
 // 资产处置一览表-资产视图-统计数据
-export function getDetailAndDisposeListStat (data) {
+export function getDetailAndDisposeListStat(data) {
   return axiosPost(dispose.getDetailAndDisposeListStat, data)
 }
 
 // 资产处置一览表-组织机构视图-主列表
-export function getDisposeOrganListPage (data) {
+export function getDisposeOrganListPage(data) {
   return axiosPost(dispose.getDisposeOrganListPage, data)
 }
 
 // 资产处置一览表-组织机构视图-导出
-export function getDisposeOrganExport (data) {
+export function getDisposeOrganExport(data) {
   return axiosPost(dispose.getDisposeOrganExport, data, false, false, { responseType: 'blob' })
 }
 
 // 资产处置一览表-组织机构视图-统计数据
-export function getDisposeOrganStatistics (data) {
+export function getDisposeOrganStatistics(data) {
   return axiosPost(dispose.getDisposeOrganStatistics, data)
 }
 
 // 资产处置一览表-组织机构视图-详情列表
-export function getDispOrgProDetListPage (data) {
+export function getDispOrgProDetListPage(data) {
   return axiosPost(dispose.getDispOrgProDetListPage, data)
 }
 
 // 资产处置一览表-组织机构视图-详情统计数据
-export function getDispOrgStatProDetail (data) {
+export function getDispOrgStatProDetail(data) {
   return axiosPost(dispose.getDispOrgStatProDetail, data)
 }

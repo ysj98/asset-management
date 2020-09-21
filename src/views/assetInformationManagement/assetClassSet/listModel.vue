@@ -77,7 +77,7 @@
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
       :totalCount="totalCount"
-      location="absolute"
+      location="fixed"
       v-model="paginator.pageNo"
       @change="handlePageChange"
     />
