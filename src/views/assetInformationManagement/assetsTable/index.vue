@@ -151,7 +151,7 @@
     const columns = [
         {
             title: "出库明细ID",
-            dataIndex: "assetId",
+            dataIndex: "cleaningOrderDetailId",
             width: 160
         },
         {
