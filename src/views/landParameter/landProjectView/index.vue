@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -160,6 +161,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       allStyle: 'width: 100%; margin-right: 10px;',
       organId: '',
       assetProject: '',
