@@ -17,6 +17,16 @@ export const dataIndexs = [
   'landInfo',
   'houseInfo'
 ]
+export const getDataIndexs = (arr) => {
+  let dataIndexs = ['totalInfo']
+  if (arr.includes('4')) {
+    dataIndexs.push('landInfo')
+  }
+  if (arr.includes('1')) {
+    dataIndexs.push('houseInfo')
+  }
+  return dataIndexs
+}
 export const columns = [{
   title: "类型",
   dataIndex: "name",

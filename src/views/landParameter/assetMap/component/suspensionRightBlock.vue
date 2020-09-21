@@ -86,7 +86,7 @@
 <script>
 import Tools from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
-import { columns, arrkeys, dataIndexs, getColumns } from "../lib/dict.js"
+import { columns, arrkeys, dataIndexs, getColumns, getDataIndexs } from "../lib/dict.js"
 let provinceOptFrist = {
   label: "全国",
   value: "",
@@ -164,11 +164,12 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
+            let keysArr = getDataIndexs(this.assetTypes)
             let dataSource = arrkeys.map((item) => {
               let key = item[1]
               let o = { key: Tools.getUuid(), name: item[0] }
 
-              dataIndexs.forEach((dataIndex) => {
+              keysArr.forEach((dataIndex) => {
                 o[dataIndex] = result[dataIndex][key]
               })
               return o
