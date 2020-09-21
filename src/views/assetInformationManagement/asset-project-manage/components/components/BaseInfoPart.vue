@@ -366,7 +366,7 @@
             takeOver, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode
           }
           if (takeOver === '1') {
-            formData.takeoverAssetStatus = type === 'show' ? (takeoverAssetStatusName || '无') : String(takeoverAssetStatus)
+            formData.takeoverAssetStatus = type === 'show' ? (takeoverAssetStatusName || '无') : String(takeoverAssetStatus || '')
             formData.takeOverDate = takeOverDate ?  moment(takeOverDate, 'YYYY-MM-DD') : null
           }
           if (sourceType === '3') {
