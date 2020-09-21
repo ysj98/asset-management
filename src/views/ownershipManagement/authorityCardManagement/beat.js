@@ -1,5 +1,5 @@
 // formType: input: 输入框  inputNumber: 数字输入框  selcet：选择框   date:时间选择
-// 权利类型：使用权证列表展示
+// 权证类型：使用权证列表展示
 export const accessCard = [
   {
     label: '房屋所有权人',
@@ -23,7 +23,7 @@ export const accessCard = [
     formType: 'input',
     attrValue: '',
     max: 40,
-    required: false
+    required: true
   },
   {
     label: '建筑面积(㎡)',
@@ -53,7 +53,7 @@ export const accessCard = [
     min: 0,
     max: 9999999.99,
     precision: 2,
-    required: true
+    required: false
   },
   {
     label: '坐落位置',
@@ -179,7 +179,7 @@ export const accessCard = [
   }
 ]
 
-// 权利类型：产权证列表展示
+// 权证类型：产权证列表展示
 export const titleDeed = [
   {
     label: '丘地号',
@@ -224,7 +224,7 @@ export const titleDeed = [
     required: true
   },
   {
-    label: '结构',
+    label: '建筑结构',
     attrCode: 'structure',
     chooseArray: [],
     formType: 'selcet',
@@ -242,7 +242,7 @@ export const titleDeed = [
     required: true
   },
   {
-    label: '专属建筑面积',
+    label: '专有建筑面积',
     attrCode: 'exclusiveBuildArea',
     formType: 'inputNumber',
     attrValue: '',
@@ -304,7 +304,7 @@ export const titleDeed = [
 ]
 
 
-// 权利类型：土地使用权证展示
+// 权证类型：土地使用权证展示
 export const landDeed = [
   {
     label: '坐落位置',
@@ -354,7 +354,7 @@ export const landDeed = [
     formType: 'input',
     attrValue: '',
     max: 30,
-    required: false
+    required: true
   },
   {
     label: '使用权面积(㎡)',
@@ -384,7 +384,7 @@ export const landDeed = [
     min: 0,
     max: 9999999.99,
     precision: 2,
-    required: true
+    required: false
   },
   {
     label: '终止日期',
@@ -412,15 +412,15 @@ export const newCardData = {
   warrantId: '',                   // 类型：Number  必有字段  备注：权证id
   warrantNbr: '',                  // 类型：String  必有字段  备注：权证号
   ownerType: undefined,            // 类型：Number  必有字段  备注：权属形式
-  kindOfRight: undefined,          // 类型：Number  必有字段  备注：权利类型
+  kindOfRight: undefined,          // 类型：Number  必有字段  备注：权证类型
   lotNo: '',                       // 类型：String  必有字段  备注：丘地号(产权证所有)
   estateUnitCode: '',              // 类型：String  必有字段  备注：不动产单元号(产权证所有)
   seatingPosition: '',             // 类型：String  必有字段  备注：坐落位置
   landArea: '',                    // 类型：Number  必有字段  备注：土地面积(产权证所有)
   ownershipUse: undefined,         // 类型：String  必有字段  备注：权属用途
-  structure: undefined,            // 类型：String  必有字段  备注：结构
+  structure: undefined,            // 类型：String  必有字段  备注：建筑结构
   buildArea: '',                   // 类型：Number  必有字段  备注：建筑面积
-  exclusiveBuildArea: '',          // 类型：Number  必有字段  备注：专属建筑面积
+  exclusiveBuildArea: '',          // 类型：Number  必有字段  备注：专有建筑面积
   apportionArea: '',               // 类型：Number  必有字段  备注：分摊面积
   totalSuite: '',                  // 类型：Number  必有字段  备注：总套数(产权证所有)
   qualityOfRight: undefined,       // 类型：String  必有字段  备注：权利性质(产权证所有)

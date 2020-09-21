@@ -356,5 +356,9 @@ export const ASSET_MANAGEMENT = {
    */
   LAND_PROJECT_EXPORT: 'land_project_export', // 土地台账资产项目列表导出
   LAND_ORGAN_EXPORT: 'land_organ_export', // 土地台账资产项目列表导出
+  /**
+   * 2.0.2
+   */
+  ASSET_BUILDLAND_EXPORT:'asset_buildland_export', // 楼盘字典土地导出
 }
 

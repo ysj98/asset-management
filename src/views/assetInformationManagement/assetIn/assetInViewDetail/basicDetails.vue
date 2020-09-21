@@ -20,6 +20,11 @@
           {{item.text}}：{{getBasicByHouseDetail[item.value] || getBasicByHouseDetail[item.value] === 0 ? getBasicByHouseDetail[item.value] : '--'}}
         </a-col>
       </a-row>
+      <a-row class="playground-row" v-if="type === 'getBasicByGround'">
+        <a-col class="playground-col" :span="8" v-for="(item, index) in getBasicByGround" :key="index">
+          {{item.text}}：{{getBasicByGroundDetail[item.value] || getBasicByGroundDetail[item.value] === 0 ? getBasicByGroundDetail[item.value] : '--'}}
+        </a-col>
+      </a-row>
       <a-row class="playground-row" v-show="type === 'getValueInformation'">
         <a-col class="playground-col" :span="8" v-for="(item, index) in valueInformation" :key="index">
           {{item.text}}：{{valueInformationDetail[item.value] || valueInformationDetail[item.value] === 0 ? valueInformationDetail[item.value] : '--'}}
@@ -85,6 +90,23 @@ export default {
         { text: '债务金额(元)', value: 'debtAmount' }
       ],
       getBasicByHouseDetail: {},
+      getBasicByGround: [
+        { text: '资产ID', value: 'assetId' },
+        { text: '资产名称', value: 'assetName' },
+        { text: '资产编码', value: 'assetCode' },
+        { text: '资产类型', value: 'assetTypeName' },
+        { text: '资产分类', value: 'objectTypeName' },
+        { text: '资产面积(㎡)', value: 'landArea' },
+        { text: '土地名称', value: 'landName' },
+        { text: '土地编号', value: 'landCode' },
+        { text: '资产位置', value: 'address' },
+        { text: '权属类型', value: 'kindOfRightName' },
+        { text: '权属情况', value: 'ownershipStatusName' },
+        { text: '权证号', value: 'warrantNbr' },
+        { text: '债权金额(元)', value: 'creditorAmount' },
+        { text: '债务金额(元)', value: 'debtAmount' }
+      ],
+      getBasicByGroundDetail: {},
       valueInformation: [
         { text: '资产原值(元)', value: 'originalValue' },
         { text: '使用期限(月)', value: 'validPeriod' },
@@ -116,6 +138,9 @@ export default {
         this.getRegisterOrderById()
         break;
       case 'getBasicByHouse':
+        this.getAssetById()
+        break;
+      case 'getBasicByGround':
         this.getAssetById()
         break;
       default:
@@ -161,6 +186,12 @@ export default {
               this.getBasicByHouseDetail[key] = obj.assetHouse[key]
             }
             this.$emit('change', obj.assetHouse)
+          } else {
+            this.getBasicByGroundDetail = {...obj}
+            for (let key in obj.assetLand) {
+              this.getBasicByGroundDetail[key] = obj.assetLand[key]
+            }
+            this.$emit('change', obj.assetLand)
           }
         } else {
           this.$message.error(res.data.message);

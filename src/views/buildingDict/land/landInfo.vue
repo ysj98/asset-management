@@ -16,7 +16,7 @@
             type="primary"
           >新增</SG-Button>
           <!-- <SG-Button class="mr10" ><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button> -->
-          <SG-Button @click="exportList" class="mr10">
+          <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10">
             <segiIcon type="#icon-ziyuan10" class="mr10" />导出
           </SG-Button>
         </div>
@@ -141,6 +141,7 @@ export default {
   data() {
     return {
       ASSET_MANAGEMENT,
+      hasPowerExport: false, // 导出按钮权限
       allStyle,
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
@@ -349,6 +350,9 @@ export default {
     handlePower() {
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_CREATE)) {
         this.createPower = true;
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
+        this.hasPowerExport = true
       }
     },
     exportList() {

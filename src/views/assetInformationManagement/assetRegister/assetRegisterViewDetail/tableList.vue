@@ -135,7 +135,8 @@ export default {
       let params = {
         pageNum: this.queryCondition.pageNum,
         pageSize: this.queryCondition.pageSize,
-        assetId: this.assetId
+        assetId: this.assetId,
+        sourceType: 2
       }
       this.$api.assets.assetExpenseInfo(params).then(res => {
         if (Number(res.data.code) === 0) {
@@ -170,7 +171,8 @@ export default {
     // 相关费用统计
     assetExpenseTotal () {
       let obj = {
-        assetId: this.assetId      // 资产信息ID
+        assetId: this.assetId,      // 资产信息ID
+        sourceType: 2
       }
       this.$api.assets.assetExpenseTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {

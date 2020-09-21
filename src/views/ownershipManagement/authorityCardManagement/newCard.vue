@@ -46,8 +46,8 @@
           </a-col>
           <a-col class="playground-col" :span="12">
             <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">权利类型：</label>
-              <a-select :style="allWidth" showSearch placeholder="请选择权利类型"
+              <label slot="label">权证类型：</label>
+              <a-select :style="allWidth" showSearch placeholder="请选择权证类型"
               :disabled="setType === 'edit'"
               optionFilterProp="children"
               :options="kindOfRightData"
@@ -55,7 +55,7 @@
               :allowClear="true"
               :filterOption="false"
               notFoundContent="没有查询到数据"
-              v-decorator="['kindOfRight',{ rules: [{required: true, message: '请选择权利类型'}], initialValue: newCardData.kindOfRight}]"/>
+              v-decorator="['kindOfRight',{ rules: [{required: true, message: '请选择权证类型'}], initialValue: newCardData.kindOfRight}]"/>
             </a-form-item>
           </a-col>
           <!-- beat -->
@@ -220,16 +220,16 @@ export default {
       accessCard: utils.deepClone(accessCard),
       landDeed: utils.deepClone(landDeed),
       warrantId: '',
-      typeJudgment: '',        // 权利类型判断
+      typeJudgment: '',        // 权证类型判断
       beat: [],
       mortgageInformation: [...mortgageInformation],  // 抵押信息
       columns: [...columns],
       rigisterDate: {},        // 登记日期
       handoverDate: {},        // 交接日期
-      kindOfRightData: [],     // 权利类型
+      kindOfRightData: [],     // 权证类型
       ownerTypeData: [],       // 权属形式
       ownershipUseData: [],    // 权属用途
-      structureData: [],       // 结构
+      structureData: [],       // 建筑结构
       qualityOfRightData: [],  // 权利性质
       amsOwnershipWarrantObligeeList: [],           // 权属人列表信息
       amsOwnershipWarrantMortgageList: [],          // 抵押信息
@@ -294,7 +294,7 @@ export default {
           this.form.setFieldsValue({
             warrantNbr: '',  // 权证号
             ownerType: undefined,      // 权属形式
-            kindOfRight: undefined, // 权利类型
+            kindOfRight: undefined, // 权证类型
             remark: ''  // 备注
           })
           this.newCardData = utils.deepClone(newCardData)
@@ -324,7 +324,7 @@ export default {
       }
       this.platformDictFn()  // 字段表获取数据
     },
-    // 权利类型
+    // 权证类型
     kindOfRightChange (val) {
       this.typeJudgment = val
     },
@@ -416,15 +416,15 @@ export default {
             warrantId: this.warrantId,                                                                          // 权证id
             warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,               // 权证号
             ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                  // 权属形式
-            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,            // 权利类型
+            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,            // 权证类型
             lotNo: conditionalJudgment.includes(values.lotNo) ? '' : values.lotNo,                              // 丘地号(产权证所有)
             estateUnitCode: conditionalJudgment.includes(values.estateUnitCode) ? '' : values.estateUnitCode,   // 不动产单元号(产权证所有)
             seatingPosition: conditionalJudgment.includes(values.seatingPosition) ? '' : values.seatingPosition, // 坐落位置
             landArea: conditionalJudgment.includes(values.landArea) ? '' : values.landArea,                     // 土地面积(产权证所有)
             ownershipUse: conditionalJudgment.includes(values.ownershipUse) ? '' : values.ownershipUse,         // 权属用途
-            structure: conditionalJudgment.includes(values.structure) ? '' : values.structure,                  // 结构
+            structure: conditionalJudgment.includes(values.structure) ? '' : values.structure,                  // 建筑结构
             buildArea: conditionalJudgment.includes(values.buildArea) ? '' : values.buildArea,                  // 建筑面积
-            exclusiveBuildArea: conditionalJudgment.includes(values.exclusiveBuildArea) ? '' : values.exclusiveBuildArea,        // 专属建筑面积
+            exclusiveBuildArea: conditionalJudgment.includes(values.exclusiveBuildArea) ? '' : values.exclusiveBuildArea,        // 专有建筑面积
             apportionArea: conditionalJudgment.includes(values.apportionArea) ? '' : values.apportionArea,       //  分摊面积
             totalSuite: conditionalJudgment.includes(values.totalSuite) ? '' : values.totalSuite,                //  总套数(产权证所有)
             qualityOfRight: conditionalJudgment.includes(values.qualityOfRight) ? '' : values.qualityOfRight,    // 权利性质(产权证所有)
@@ -516,7 +516,7 @@ export default {
           })
           this.ownerTypeData = arr
         }
-        // 权利类型
+        // 权证类型
         if (+res[1].data.code === 0) {
           let data = res[1].data.data
           let arr = []
@@ -534,7 +534,7 @@ export default {
           })
           this.ownershipUseData = arr
         }
-        // 建筑结构
+        // 建筑建筑结构
         if (+res[3].data.code === 0) {
           let data = res[3].data.data
           let arr = []
@@ -557,7 +557,7 @@ export default {
           if (item.attrCode === 'ownershipUse') {
             item.chooseArray = this.ownershipUseData
           }
-          // 结构
+          // 建筑结构
           if (item.attrCode === 'structure') {
             item.chooseArray = this.structureData
           }
@@ -571,7 +571,7 @@ export default {
           if (item.attrCode === 'ownershipUse') {
             item.chooseArray = this.ownershipUseData
           }
-          // 结构
+          // 建筑结构
           if (item.attrCode === 'structure') {
             item.chooseArray = this.structureData
           }
@@ -696,14 +696,14 @@ export default {
             this.form.setFieldsValue({
               warrantNbr: data.amsOwnershipWarrant.warrantNbr,  // 权证号
               ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
-              kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权利类型
+              kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权证类型
               remark: data.amsOwnershipWarrant.remark,  // 备注
-              exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,  // 专属建筑面积
+              exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,  // 专有建筑面积
               apportionArea: data.amsOwnershipWarrant.apportionArea,  // 分摊面积
               ownershipUse: conditionalJudgment.includes(data.amsOwnershipWarrant.ownershipUse) ? undefined : String(data.amsOwnershipWarrant.ownershipUse),  // 权属用途
               rigisterDate: conditionalJudgment.includes(data.amsOwnershipWarrant.rigisterDate) ? undefined : moment(data.amsOwnershipWarrant.rigisterDate, 'YYYY-MM-DD'),
               handoverDate: conditionalJudgment.includes(data.amsOwnershipWarrant.handoverDate) ? undefined : moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD'),
-              structure: conditionalJudgment.includes(data.amsOwnershipWarrant.structure) ? undefined : String(data.amsOwnershipWarrant.structure),     // 结构
+              structure: conditionalJudgment.includes(data.amsOwnershipWarrant.structure) ? undefined : String(data.amsOwnershipWarrant.structure),     // 建筑结构
               seatingPosition: data.amsOwnershipWarrant.seatingPosition,    // 坐落位置
             })
             if (this.typeJudgment === '1') {
