@@ -9,7 +9,10 @@
         <!-- <SG-Button v-if="createPower" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
           >新建</SG-Button
         >-->
-        <SG-Button type="primary" @click="exportList">
+        <SG-Button type="primary" @click="exportList" v-if="type === 'land'" v-power="ASSET_MANAGEMENT.ASSET_CLASS_LAND_EXPORT">
+          <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
+        </SG-Button>
+        <SG-Button type="primary" @click="exportList" v-else v-power="ASSET_MANAGEMENT.ASSET_CLASS_HOUSE_EXPORT">
           <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
         </SG-Button>
       </div>

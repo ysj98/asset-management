@@ -14,13 +14,17 @@
       </div>
       <!-- 显示弹窗 -->
       <div class="show-map-detail" v-show="showDetailModal">
-        <component :is="currentTabComponent" :detailInfo="detailInfo"  @close="closeDetailMap"></component>
+        <component
+          :is="currentTabComponent"
+          :detailInfo="detailInfo"
+          @close="closeDetailMap"
+        ></component>
       </div>
     </div>
   </a-spin>
 </template>
 <script>
-import Tools from '@/utils/utils'
+import Tools from "@/utils/utils"
 import suspensionRightBlock from "./component/suspensionRightBlock"
 import mapLandIcon from "./images/map_land.png"
 import mapHouseIcon from "./images/map_house.png"
@@ -53,7 +57,7 @@ export default {
   components: {
     suspensionRightBlock,
     landMapDetail,
-    houseMapDetail
+    houseMapDetail,
   },
   data() {
     return {
@@ -63,7 +67,7 @@ export default {
       map: null,
       markerStore: [],
       ComplexCustomOverlay: null,
-      currentTabComponent: 'landMapDetail', // 当前弹窗详情
+      currentTabComponent: "landMapDetail", // 当前弹窗详情
       showDetailModal: false, // 当前是否显示地图详情
       detailInfo: {}, // 土地信息
     }
@@ -73,25 +77,25 @@ export default {
   },
   methods: {
     // 点击地图标注
-    handleClickMap (obj) {
-      console.log('拿到数据=>', obj)
-      let {resourceType} = obj
+    handleClickMap(obj) {
+      console.log("拿到数据=>", obj)
+      let { resourceType } = obj
       let detailMap = {
-        '1': 'houseMapDetail',
-        '2': 'landMapDetail'
+        "1": "houseMapDetail",
+        "2": "landMapDetail",
       }
       this.showDetailModal = true
       this.currentTabComponent = detailMap[String(resourceType)]
       this.queryMapDetail(obj)
     },
     // 关闭详情弹窗
-    closeDetailMap (type) {
+    closeDetailMap(type) {
       this.showDetailModal = false
     },
     // 请求地图详情
-    queryMapDetail (obj) {
-      let {resourceId, resourceType} = obj
-      let data = {resourceId, resourceType}
+    queryMapDetail(obj) {
+      let { resourceId, resourceType } = obj
+      let data = { resourceId, resourceType }
       this.loadingDetail = true
       this.$api.land
         .mapDetail(data)
@@ -99,12 +103,12 @@ export default {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
             // 楼栋信息
-            if (String(resourceType)==='1') {
-              this.detailInfo = {...result.buildInfo}
+            if (String(resourceType) === "1") {
+              this.detailInfo = { ...result.buildInfo }
             }
             // 土地信息
-            if (String(resourceType)==='2') {
-              this.detailInfo = {...result.landInfo}
+            if (String(resourceType) === "2") {
+              this.detailInfo = { ...result.landInfo }
             }
           } else {
             this.$message.error(res.data.message || res.data.msg)
@@ -114,7 +118,7 @@ export default {
           this.loadingDetail = false
         })
     },
-    restMap () {
+    restMap() {
       Object.assign(this, {
         showDetailModal: false, // 当前是否显示地图详情
         detailInfo: {}, // 土地信息
@@ -163,7 +167,7 @@ export default {
       var self = this
       var { mapDomId } = this
       // 百度地图API功能
-      var map = new BMap.Map(mapDomId, { minZoom: 5, maxZoom: 9 })
+      var map = new BMap.Map(mapDomId, { minZoom: 5, maxZoom: 10 })
       this.map = map
       map.enableScrollWheelZoom(true) //开启鼠标滚轮缩放
       var point = new BMap.Point(107.4, 33.42)
@@ -204,12 +208,26 @@ export default {
         img.src = configOpt.markerIcon
         div.appendChild(img)
 
+        // 创建圆环
+        var divRing = document.createElement("div")
+        var divRingStyle = {
+          position: "absolute",
+          width: "6px",
+          height: "6px",
+          background: "#FFFFFF",
+          borderRadius: "50%",
+          top: '9px',
+          left: '9px',
+        }
+        for (let key in divRingStyle) divRing.style[key] = divRingStyle[key]
+        div.appendChild(divRing)
+
         // 创建提示容器
         var tipDiv = document.createElement("div")
         var tipDivStyle = {
-          display: 'none',
+          display: "none",
           position: "absolute",
-          zIndex: '1',
+          zIndex: "1",
           top: "-32px",
           left: "50%",
           transform: "translateX(-50%)",
@@ -218,11 +236,11 @@ export default {
           boxShadow: configOpt.boxShadow,
           color: configOpt.color,
           border: configOpt.border,
-          borderTopLeftRadius: '15px',
-          borderBottomLeftRadius: '15px',
-          borderTopRightRadius: '5px',
-          borderBottomRightRadius: '5px',
-          padding: '5px 15px',
+          borderTopLeftRadius: "15px",
+          borderBottomLeftRadius: "15px",
+          borderTopRightRadius: "5px",
+          borderBottomRightRadius: "5px",
+          padding: "5px 15px",
         }
         for (let key in tipDivStyle) tipDiv.style[key] = tipDivStyle[key]
         // 创建提示icon
@@ -231,7 +249,7 @@ export default {
         var imgIconStyle = {
           width: "16px",
           height: "16px",
-          marginRight: '10px'
+          marginRight: "10px",
         }
         for (let key in imgIconStyle) imgIcon.style[key] = imgIconStyle[key]
         tipDiv.appendChild(imgIcon)
@@ -241,12 +259,12 @@ export default {
         // 创建箭头
         var arrow = document.createElement("span")
         var arrowStyle = {
-          position: 'absolute',
-          border: '10px solid',
+          position: "absolute",
+          border: "10px solid",
           left: "50%",
           transform: "translateX(-50%)",
-          bottom: '-17px',
-          borderColor: '#fff transparent transparent transparent'
+          bottom: "-17px",
+          borderColor: "#fff transparent transparent transparent",
         }
         for (let key in arrowStyle) arrow.style[key] = arrowStyle[key]
         tipDiv.appendChild(arrow)
@@ -255,14 +273,14 @@ export default {
         div.onmouseover = function() {
           // this这里的this是指dom
           this.style.zIndex = Tools.getUuid()
-          tipDiv.style.display = 'block'
+          tipDiv.style.display = "block"
         }
         div.onmouseout = function() {
-          tipDiv.style.display = 'none'
+          tipDiv.style.display = "none"
         }
         div.onclick = function() {
           console.log("点击数据")
-          self.handleClickMap({...that.opt})
+          self.handleClickMap({ ...that.opt })
           return false
         }
         map.getPanes().labelPane.appendChild(div)
@@ -294,7 +312,7 @@ export default {
   right: 10px;
   z-index: 2;
 }
-.show-map-detail{
+.show-map-detail {
   position: absolute;
   top: 12px;
   left: 12px;

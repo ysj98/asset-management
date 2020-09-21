@@ -220,22 +220,23 @@ export default {
     // 查询土地类别
     queryLandType() {
       let data = {
-        // dictCode: "OCM_LAND_TYPE",
-        // dictFlag: "1",
-        // groupId: this.queryCondition.organId,
-        // code: "OCM_LAND_TYPE",
+        dictCode: "OCM_LAND_TYPE",
+        dictFlag: "1",
+        groupId: this.queryCondition.organId,
+        code: "OCM_LAND_TYPE",
         organId: this.queryCondition.organId,
-        assetType: "4",
+        // assetType: "4",
       };
+      // this.$api.assets.getList(data)
       // this.$api.basics.organDict(data)
-      return this.$api.assets.getList(data).then((res) => {
+      return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
           this.landTypeOpt = utils.deepClone(landTypeOpt);
           data.forEach((item) => {
             this.landTypeOpt.push({
-              value: item["professionCode"],
-              label: item["professionName"],
+              value: item["value"],
+              label: item["name"],
               // id: item["dictId"]
             });
           });
