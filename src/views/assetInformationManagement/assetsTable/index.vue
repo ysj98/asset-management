@@ -418,8 +418,8 @@
             },
             // 起止日期发生变化
             onDateChange(val) {
-                this.queryData.maxDate = moment(val[0]).format('YYYY-MM-DD')
-                this.queryData.minDate = moment(val[1]).format('YYYY-MM-DD')
+                this.queryData.minDate = moment(val[0]).format('YYYY-MM-DD')
+                this.queryData.maxDate = moment(val[1]).format('YYYY-MM-DD')
             },
             // 组织机构变化
             changeTree(value, label) {
