@@ -24,7 +24,7 @@
   </a-spin>
 </template>
 <script>
-import Tools from "@/utils/utils"
+import Tools, {calc} from "@/utils/utils"
 import suspensionRightBlock from "./component/suspensionRightBlock"
 import mapLandIcon from "./images/map_land.png"
 import mapHouseIcon from "./images/map_house.png"
@@ -105,10 +105,33 @@ export default {
             // 楼栋信息
             if (String(resourceType) === "1") {
               this.detailInfo = { ...result.buildInfo }
+              // 修改价值元
+              if (this.detailInfo.assetValue) {
+                this.detailInfo.assetValue = calc.divide(Number(this.detailInfo.assetValue), 1000)
+              }
+              // 修改面积
+              if (this.detailInfo.assetArea) {
+                this.detailInfo.assetArea = Number(this.detailInfo.assetArea).toFixed(2)
+              }
+              if (this.detailInfo.builtArea) {
+                this.detailInfo.builtArea = Number(this.detailInfo.builtArea).toFixed(2)
+              }
             }
             // 土地信息
             if (String(resourceType) === "2") {
               this.detailInfo = { ...result.landInfo }
+              // 修改价值元
+              if (this.detailInfo.originalValue) {
+                this.detailInfo.originalValue = calc.divide(Number(this.detailInfo.originalValue), 1000)
+              }
+              // 修改价值元
+              if (this.detailInfo.marketValue) {
+                this.detailInfo.marketValue = calc.divide(Number(this.detailInfo.marketValue), 1000)
+              }
+              // 修改面积
+              if (this.detailInfo.landArea) {
+                this.detailInfo.landArea = Number(this.detailInfo.landArea).toFixed(2)
+              }
             }
           } else {
             this.$message.error(res.data.message || res.data.msg)
