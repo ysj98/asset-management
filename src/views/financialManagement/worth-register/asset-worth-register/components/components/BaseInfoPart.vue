@@ -134,8 +134,8 @@
       <a-col :span="24">
         <a-form-item
           label="备注"
-          :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
-          :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
+          :label-col="type == 'approval' || type == 'detail' ? {span: 1} : {span: 2}"
+          :wrapper-col="type == 'approval' || type == 'detail' ? {span: 23} : {span: 21}"
         >
           <a-textarea
             :rows="type == 'approval' || type == 'detail' ? '' : 4"
@@ -341,8 +341,10 @@
     .disabled_form {
       /*不可以编辑时覆盖表单组件的默认样式*/
       & /deep/ .ant-form-item {
+        width: 100% !important;
         margin-bottom: 8px !important;
         textarea.ant-input-disabled {
+          width: 100% !important;
           margin-top: 7px;
         }
         .ant-form-item-required:before {

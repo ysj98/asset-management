@@ -71,7 +71,7 @@
       </a-row>
       <a-row>
         <a-col :span="24">
-          <a-form-item label="备注" :label-col="type ? {span:4} : {}" :wrapper-col="type ? {span: 20} : {}">
+          <a-form-item label="备注" :label-col="type ? {span:4} : {span:1}" :wrapper-col="type ? {span: 20} : {span:23}">
             <a-textarea
               :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入备注"
               v-decorator="['remark', { initialValue, rules: [{max: 200, message: '最多200个字符'}] }]"
@@ -216,7 +216,7 @@
       </a-row>
       <a-row>
         <a-col :span="24">
-          <a-form-item label="权属办理中存在问题" :label-col="type ? {span:4} : {}" :wrapper-col="type ? {span: 20} : {}">
+          <a-form-item label="权属办理中存在问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
             <a-textarea
               :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入权属办理中存在问题"
               v-decorator="['ownershipHandleProblems', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
@@ -224,7 +224,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="24">
-          <a-form-item label="历史遗留问题" :label-col="type ? {span:4} : {}" :wrapper-col="type ? {span: 20} : {}">
+          <a-form-item label="历史遗留问题" :label-col="type ? {span:4} : {span:2}" :wrapper-col="type ? {span: 20} : {span:22}">
             <a-textarea
               :disabled="!isEdit"
               style="resize: none"
@@ -443,8 +443,10 @@
   .disabled_form {
     /*不可以编辑时覆盖表单组件的默认样式*/
     & /deep/ .ant-form-item {
+      width: 100% !important;
       margin-bottom: 8px !important;
       textarea.ant-input-disabled {
+        width: 100% !important;
         margin-top: 5px;
       }
       .ant-form-item-required:before {

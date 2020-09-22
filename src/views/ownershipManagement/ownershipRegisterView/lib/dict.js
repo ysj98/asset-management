@@ -63,57 +63,71 @@ export let columns = [
   {
     title: "登记编号",
     dataIndex: "registerDetailId",
+    width: "150px"
   },
   {
     title: "资产名称",
     dataIndex: "assetName",
+    width: "200px"
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
+    width: "150px"
   },
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
+    width: "150px"
   },
   {
     title: "资产分类",
     dataIndex: "assetCategoryName",
+    width: "150px"
   },
   {
     title: "管理机构",
     dataIndex: "organName",
+    width: "150px"
   },
   {
     title: "资产项目",
     dataIndex: "projectName",
+    width: "150px"
   },
   {
     title: "登记单编号",
     dataIndex: "registerId",
+    width: "150px"
   },
   {
     title: "登记类型",
     dataIndex: "registerTypeName",
+    width: "150px"
   },
   {
     title: "原权证号",
     dataIndex: "oldWarrantNbr",
+    width: "150px"
   },
   {
     title: "新权证号",
     dataIndex: "warrantNbr",
+    width: "150px"
   },
   {
     title: "登记日期",
     dataIndex: "createTime",
+    width: "150px"
   },
   {
     title: "登记人",
     dataIndex: "createByName",
+    width: "150px"
   },
   {
     title: "状态",
     dataIndex: "approvalStatusName",
+    width: "150px"
   }
 ];
