@@ -29,7 +29,7 @@
         <div class="search-item">
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
-            <SG-CheckboxGroup @change="checkboxGroupChnage">
+            <SG-CheckboxGroup v-model="assetTypes" @change="checkboxGroupChnage">
               <span
                 class="search-checkbox"
                 v-for="item in assetTypeListOpt"
@@ -86,7 +86,7 @@
 <script>
 import Tools from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
-import { columns, arrkeys, dataIndexs } from "../lib/dict.js"
+import { columns, arrkeys, dataIndexs, getColumns, getDataIndexs } from "../lib/dict.js"
 let provinceOptFrist = {
   label: "全国",
   value: "",
@@ -164,11 +164,12 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
+            let keysArr = getDataIndexs(this.assetTypes)
             let dataSource = arrkeys.map((item) => {
               let key = item[1]
               let o = { key: Tools.getUuid(), name: item[0] }
 
-              dataIndexs.forEach((dataIndex) => {
+              keysArr.forEach((dataIndex) => {
                 o[dataIndex] = result[dataIndex][key]
               })
               return o
@@ -217,6 +218,7 @@ export default {
     checkboxGroupChnage(checkedValues) {
       console.log("checked = ", checkedValues)
       this.assetTypes = checkedValues
+      this.table.columns = getColumns(checkedValues)
       this.query()
     },
     // 获取选择的组织机构
@@ -241,6 +243,10 @@ export default {
           // 资产类型
           if (code === "asset_type") {
             this.assetTypeListOpt = arr
+            this.assetTypes = arr.map(item => {
+              return item.value
+            })
+            this.table.columns = getColumns(this.assetTypes)
           }
         }
       })

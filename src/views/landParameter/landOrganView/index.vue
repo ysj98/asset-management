@@ -9,6 +9,7 @@
             icon="import"
             type="primary"
             @click="handleExport"
+            v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT"
             :loading="exportBtnLoading"
           >导出组织机构视图</SG-Button>
         </a-col>
@@ -49,6 +50,7 @@
 </template>
 
 <script>
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import NoDataTip from "src/components/noDataTips";
 import TreeSelect from "src/views/common/treeSelect";
 import OverviewNumber from "src/views/common/OverviewNumber";
@@ -57,6 +59,7 @@ export default {
   components: { OverviewNumber, NoDataTip, TreeSelect },
   data() {
     return {
+      ASSET_MANAGEMENT,
       organName: "",
       organId: "", // 查询条件-组织机构
       exportBtnLoading: false, // 导出按钮loading

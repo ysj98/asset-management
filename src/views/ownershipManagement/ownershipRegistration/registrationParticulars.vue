@@ -86,10 +86,12 @@ export default {
       let val = String(value)
       let arr = []
       arr = utils.deepClone(register)
-      arr.unshift({
-        title: '序号',
-        dataIndex: 'serial'
-      })
+      if (arr[0].dataIndex !== 'serial') {
+        arr.unshift({
+          title: '序号',
+          dataIndex: 'serial'
+        })
+      }
       this.columns = arr.splice(0, arr.length - 1)
     }
   },
