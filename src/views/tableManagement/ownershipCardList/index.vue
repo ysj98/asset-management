@@ -36,9 +36,9 @@
       <template slot="warrantNbr" slot-scope="text, record">
         <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{text}}</span>
       </template>
-      <!--<template slot="lotNo" slot-scope="text, record">-->
-        <!--<span>{{`${text || ''}/${record.estateUnitCode || ''}`}}</span>-->
-      <!--</template>-->
+      <template slot="lotNo" slot-scope="text, record">
+        <span>{{`${'--'}/${record.lotNo || '--'}/${record.estateUnitCode || '--'}`}}</span>
+      </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, searchType: 'page' })"/>
@@ -99,7 +99,7 @@
             { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
             { title: '建筑面积', dataIndex: 'buildArea' },
             { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea' },
-            { title: '分摊面积', dataIndex: 'apportionArea, width: 150' },
+            { title: '分摊面积', dataIndex: 'apportionArea', width: 150 },
             { title: '产别', dataIndex: 'antenatal' },
             { title: '结构', dataIndex: 'structureName' },
             { title: '总层数', dataIndex: 'totalFloor' },
