@@ -89,13 +89,14 @@
                         :options="assetClassifyData"
                         @select="assetClassifyDataFn"
                 ></a-select>
-                <segi-range-picker
+                <SG-DatePicker
                         label="入库日期"
-                        style="margin-right: 10px;"
-                        :canSelectToday="true"
+                        style="width: 232px;"
+                        pickerType="RangePicker"
                         :defaultValue="defaultValue"
-                        @dateChange="onDateChange"
-                ></segi-range-picker>
+                        format="YYYY-MM-DD"
+                        @change="onDateChange"
+                ></SG-DatePicker>
                 <a-input
                         v-model.trim="queryData.cleaningOrderCode"
                         style="width: 190px"
