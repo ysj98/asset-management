@@ -525,7 +525,7 @@ export default {
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
         // ${this.organName}
-        a.download = `权证管理.xls`
+        a.download = `权证数据导出.xls`
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()
