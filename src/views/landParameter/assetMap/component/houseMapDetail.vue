@@ -112,7 +112,7 @@ const columns = [
     dataIndex: "assetArea",
   },
    {
-    title: "资产价值(元)",
+    title: "资产价值(万元)",
     dataIndex: "assetValue",
   },
 ]

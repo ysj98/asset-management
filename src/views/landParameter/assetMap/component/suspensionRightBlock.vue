@@ -29,7 +29,10 @@
         <div class="search-item">
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
-            <SG-CheckboxGroup v-model="assetTypes" @change="checkboxGroupChnage">
+            <SG-CheckboxGroup
+              v-model="assetTypes"
+              @change="checkboxGroupChnage"
+            >
               <span
                 class="search-checkbox"
                 v-for="item in assetTypeListOpt"
@@ -84,9 +87,15 @@
   </div>
 </template>
 <script>
-import Tools from "@/utils/utils"
+import Tools, {calc} from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
-import { columns, arrkeys, dataIndexs, getColumns, getDataIndexs } from "../lib/dict.js"
+import {
+  columns,
+  arrkeys,
+  dataIndexs,
+  getColumns,
+  getDataIndexs,
+} from "../lib/dict.js"
 let provinceOptFrist = {
   label: "全国",
   value: "",
@@ -157,7 +166,7 @@ export default {
         ...this.queryCondition,
         assetTypes: this.assetTypes.join(","),
       }
-      this.$emit('search', data)
+      this.$emit("search", data)
       // this.loading = true
       this.$api.land
         .overview(data)
@@ -170,6 +179,18 @@ export default {
               let o = { key: Tools.getUuid(), name: item[0] }
 
               keysArr.forEach((dataIndex) => {
+                // 如果是面积
+                if (key === "assetArea") {
+                  result[dataIndex][key] = Number(result[dataIndex][key])
+                    ? Number(result[dataIndex][key]).toFixed(2)
+                    : result[dataIndex][key]
+                }
+                // 如果是价值
+                if (key === "assetValue") {
+                  result[dataIndex][key] = Number(result[dataIndex][key])
+                    ? calc.divide(Number(result[dataIndex][key]), 1000)
+                    : result[dataIndex][key]
+                }
                 o[dataIndex] = result[dataIndex][key]
               })
               return o
@@ -198,7 +219,7 @@ export default {
           province: value,
           city: "",
         })
-        ;(this.cityOpt = [{...cityOptFrist}]),
+        ;(this.cityOpt = [{ ...cityOptFrist }]),
           this.queryCityAndAreaList(value, type)
       }
       if (type === "city") {
@@ -243,7 +264,7 @@ export default {
           // 资产类型
           if (code === "asset_type") {
             this.assetTypeListOpt = arr
-            this.assetTypes = arr.map(item => {
+            this.assetTypes = arr.map((item) => {
               return item.value
             })
             this.table.columns = getColumns(this.assetTypes)
@@ -263,7 +284,7 @@ export default {
               key: Tools.getUuid(),
             }
           })
-          this.provinceOpt.unshift({...provinceOptFrist})
+          this.provinceOpt.unshift({ ...provinceOptFrist })
         }
       })
     },
@@ -278,7 +299,7 @@ export default {
           // 市
           if (type === "province") {
             this.cityOpt = result
-            this.cityOpt.unshift({...cityOptFrist})
+            this.cityOpt.unshift({ ...cityOptFrist })
           }
         }
       })
@@ -295,8 +316,8 @@ export default {
   height: 30px;
   line-height: 30px;
   padding: 0 15px;
-  
-box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
+
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
 }
 .map-search-box {
   margin-top: 5px;
@@ -350,11 +371,15 @@ box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
   /deep/ .sg-checkbox-group .ant-checkbox-wrapper {
     font-size: 14px;
   }
-  /deep/ .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active{
-    box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1)
+  /deep/ .ant-select-focused .ant-select-selection,
+  .ant-select-selection:focus,
+  .ant-select-selection:active {
+    box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1);
   }
-  /deep/ .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection{
-    box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1)
+  /deep/ .ant-select-focused .ant-select-selection,
+  .ant-select-selection:focus,
+  .ant-select-selection {
+    box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1);
   }
 }
 .ellipsis {

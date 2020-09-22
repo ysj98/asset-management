@@ -36,9 +36,9 @@
       <template slot="warrantNbr" slot-scope="text, record">
         <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{text}}</span>
       </template>
-      <template slot="lotNo" slot-scope="text, record">
+      <!-- <template slot="lotNo" slot-scope="text, record">
         <span>{{`${'--'}/${record.lotNo || '--'}/${record.estateUnitCode || '--'}`}}</span>
-      </template>
+      </template> -->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, searchType: 'page' })"/>
@@ -94,7 +94,7 @@
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属人/承租人', dataIndex: 'obligeeName', width: 150 },
             { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
-            { title: '房屋号/丘地号/不动产单元号', dataIndex: 'lotNo', scopedSlots: { customRender: 'lotNo' }, width: 200 },
+            { title: '房屋号/丘地号/不动产单元号', dataIndex: 'combinationCode', width: 200 },
             { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
             { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
             { title: '建筑面积', dataIndex: 'buildArea' },

@@ -86,7 +86,7 @@ zcgl_asset_ownerr_delete        权属登记-删除
 zcgl_asset_acm_new              权证管理-新增权证管理单
 zcgl_asset_acm_edit             权证管理-编辑权证管理单
 zcgl_asset_acm_delete           权证管理-注销
-zcgl_asset_acm_export           权证管理-导出
+
 
 V1.2
 盘点任务
@@ -109,9 +109,6 @@ zcgl_plan_edit                  盘点计划-编辑盘点计划
 zcgl_plan_delete                盘点计划-删除盘点计划
 zcgl_plan_reverseapply          盘点计划-反审核盘点计划
 
-处置一览表
-czyl_zzjgst_dc                    组织机构视图导出
-czyl_zcst_dc                      资产视图导出
 
 处置登记
 zcgl_dengji_create                处置登记-新增盘点计划
@@ -133,7 +130,7 @@ asset_create_subsi      新建附属配套
 asset_edit_subsi        编辑附属配套
 asset_status_subsi      附属配套状态改变
 asset_delete_subsi      删除附属配套
-asset_export_subsi      导出附属配套
+
 呈报记录一览表
 asset_report_operate    呈报记录运营
 asset_report_income     呈报记录收入
@@ -240,3 +237,13 @@ asset_change_list_export, // 资产变更一览表-导出
 
 异常管理
 exception_manage_export // 异常管理列表导出
+
+处置一览表
+czyl_zzjgst_dc                    组织机构视图导出
+czyl_zcst_dc                      资产视图导出
+
+权证管理-导出
+zcgl_asset_acm_export           权证管理-导出
+
+导出附属配套
+asset_export_subsi      导出附属配套

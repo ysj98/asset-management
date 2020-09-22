@@ -123,11 +123,11 @@ const columns = [
     dataIndex: "landArea",
   },
   {
-    title: "资产原值(元)",
+    title: "资产原值(万元)",
     dataIndex: "originalValue",
   },
    {
-    title: "最新估值(元)",
+    title: "最新估值(万元)",
     dataIndex: "marketValue",
   },
 ]

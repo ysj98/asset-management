@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 11:46:50
- * @LastEditTime: 2020-07-30 12:38:33
+ * @LastEditTime: 2020-09-22 18:35:39
  * @Description: 价值登记编辑
 --> 
 <template>
@@ -32,6 +32,7 @@
                 <a-input-number placeholder="资产原值"
                 :style="allWidth"
                 :min="0"
+                :max="99999999.99"
                 :precision="2"
                 v-decorator="['originalValue',
                   {rules: [{required: true, message: '资产原值(支持两位小数)'}], initialValue: subData.originalValue}
@@ -79,7 +80,7 @@
                 :style="allWidth"
                 :min="0"
                 :precision="2"
-                :max="999999999.99"
+                :max="99999999.99"
                 v-decorator="['depreciationAmount',
                   {rules: [{ required: false, message: '累计折旧金额(支持两位小数)'}], initialValue: subData.depreciationAmount}
                 ]"/>
