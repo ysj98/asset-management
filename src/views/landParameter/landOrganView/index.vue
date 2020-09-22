@@ -65,7 +65,7 @@ export default {
       exportBtnLoading: false, // 导出按钮loading
       overviewNumSpinning: false, // 查询视图面积概览数据loading
       numList: [
-        { title: "全部资产(㎡)", key: "area", value: 0, fontColor: "#324057" },
+        { title: "全部资产(㎡)", key: "landArea", value: 0, fontColor: "#324057" },
         {
           title: "运营(㎡)",
           key: "transferOperationArea",
@@ -113,7 +113,7 @@ export default {
         location: "absolute",
       },
       sumObj: {
-        area: "",
+        organName: "",
         landArea: "",
         landCount: "",
         transferOperationArea: "",

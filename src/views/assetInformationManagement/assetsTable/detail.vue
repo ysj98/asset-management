@@ -4,17 +4,17 @@
             <SG-Title title="出库单信息" noMargin/>
             <div class="l-model">
                 <div class="l-model-item">
-                    <span class="lable">出库单ID：</span>
+                    <span class="lable">出库单编号：</span>
                     <span class="value">{{cleanupInfo.cleaningOrderId}}</span>
                 </div>
                 <div class="l-model-item">
                     <span class="lable">出库单名称：</span>
                     <span class="value">{{cleanupInfo.cleaningOrderCode}}</span>
                 </div>
-                <div class="l-model-item">
-                    <span class="lable">出库单编号：</span>
-                    <span class="value">{{cleanupInfo.cleaningOrderCode}}</span>
-                </div>
+<!--                <div class="l-model-item">-->
+<!--                    <span class="lable">出库单编号：</span>-->
+<!--                    <span class="value">{{cleanupInfo.cleaningOrderCode}}</span>-->
+<!--                </div>-->
                 <div class="l-model-item">
                     <span class="lable">出库单状态：</span>
                     <span class="value">{{cleanupInfo.approvalStatusName}}</span>
