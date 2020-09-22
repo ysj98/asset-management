@@ -85,7 +85,7 @@
               <template v-if="text">
                 <span
                   class="nav_name"
-                  @click="showCertDetail(item)"
+                  @click="showCertDetail(item, record.organId)"
                   v-for="(item, i) in text.split(',')"
                   :key="i"
                 >{{item}}{{text.split(',').length==(i+1)? '': ','}}</span>
@@ -140,7 +140,7 @@
               <template v-if="text">
                 <span
                   class="nav_name"
-                  @click="showCertDetail(item)"
+                  @click="showCertDetail(item, record.organId)"
                   v-for="(item, i) in text.split(',')"
                   :key="i"
                 >{{item}}{{text.split(',').length==(i+1)? '': ','}}</span>
@@ -154,7 +154,7 @@
               <template v-if="text">
                 <span
                   class="nav_name"
-                  @click="showCertDetail(item)"
+                  @click="showCertDetail(item, record.organId)"
                   v-for="(item, i) in text.split(',')"
                   :key="i"
                 >{{item}}{{text.split(',').length==(i+1)? '': ','}}</span>
@@ -363,12 +363,12 @@ export default {
         this.spinning = false
       });
     },
-    showCertDetail(warrantNbr) {
+    showCertDetail(warrantNbr, organId) {
       console.log('拿到产权好', warrantNbr)
       if (!warrantNbr) {
         return
       }
-      this.$refs.certDetail.query(warrantNbr, this.organId)
+      this.$refs.certDetail.query(warrantNbr, organId)
     }
   }
 };
