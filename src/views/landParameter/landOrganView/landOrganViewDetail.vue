@@ -293,6 +293,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .organViewDetail-page {
+  overflow: hidden;
   margin: 40px;
 }
 </style>

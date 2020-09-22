@@ -112,6 +112,16 @@ const columns = [
     width: 130
   },
   {
+    title: '土地面积(㎡)',
+    dataIndex: 'landArea',
+    width: 130
+  },
+  {
+    title: '土地数量',
+    dataIndex: 'landCount',
+    width: 130
+  },
+  {
     title: '运营(㎡)',
     dataIndex: 'transferOperationArea',
     width: 130

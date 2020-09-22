@@ -171,7 +171,7 @@
             <a-col :span="4">
               <div class="asset-project-introduction">
                 <img :src="item.pictureUrl">
-                <div class="asset-project-introduction-name">{{item.buildName}}</div>
+                <div class="asset-project-introduction-name">{{item.landName}}</div>
               </div>
             </a-col>
             <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.operationNum}}<span>({{item.operationNumPercent}})</span></div></div></a-col>
