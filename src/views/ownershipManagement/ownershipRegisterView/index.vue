@@ -137,7 +137,7 @@
       <a-spin :spinning="overviewNumSpinning">
         <overview-number :numList="numList" />
       </a-spin>
-      <div>
+      <div class="table-layout-fixed">
         <a-table
           class="custom-table td-pd10"
           :loading="table.loading"
