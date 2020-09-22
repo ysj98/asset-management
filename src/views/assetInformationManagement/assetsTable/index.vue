@@ -116,14 +116,52 @@
                     class="custom-table td-pd10"
                     :pagination="false"
             >
+                <template slot="cleaningOrderDetailId" slot-scope="text, record">
+                    <tooltip-text :text="record.cleaningOrderDetailId" :width="75"></tooltip-text>
+                </template>
+                <template slot="assetName" slot-scope="text, record">
+                    <tooltip-text :text="record.assetName" :width="70"></tooltip-text>
+                </template>
+                <template slot="assetCode" slot-scope="text, record">
+                    <tooltip-text :text="record.assetCode" :width="70"></tooltip-text>
+                </template>
+                <template slot="assetTypeName" slot-scope="text, record">
+                    <tooltip-text :text="record.assetTypeName" :width="70"></tooltip-text>
+                </template>
+                <template slot="objectTypeName" slot-scope="text, record">
+                    <tooltip-text :text="record.objectTypeName" :width="70"></tooltip-text>
+                </template>
                 <template slot="organName" slot-scope="text, record">
-                    <tooltip-text :text="record.organName" :width="120"></tooltip-text>
+                    <tooltip-text :text="record.organName" :width="80"></tooltip-text>
+                </template>
+                <template slot="projectName" slot-scope="text, record">
+                    <tooltip-text :text="record.projectName" :width="90"></tooltip-text>
+                </template>
+                <template slot="cleaningOrderCode" slot-scope="text, record">
+                    <tooltip-text :text="record.cleaningOrderCode" :width="80"></tooltip-text>
+                </template>
+                <template slot="cleanupTypeName" slot-scope="text, record">
+                    <tooltip-text :text="record.cleanupTypeName" :width="70"></tooltip-text>
                 </template>
                 <template slot="location" slot-scope="text, record">
                     <tooltip-text :text="record.location" :width="120"></tooltip-text>
                 </template>
+                <template slot="area" slot-scope="text, record">
+                    <tooltip-text :text="record.area" :width="70"></tooltip-text>
+                </template>
+                <template slot="creatUserName" slot-scope="text, record">
+                    <tooltip-text :text="record.creatUserName" :width="65"></tooltip-text>
+                </template>
+                <template slot="createDate" slot-scope="text, record">
+                    <tooltip-text :text="record.createDate" :width="70"></tooltip-text>
+                </template>
+                <template slot="approvalStatusName" slot-scope="text, record">
+                    <tooltip-text :text="record.approvalStatusName" :width="60"></tooltip-text>
+                </template>
                 <template slot="operation" slot-scope="text, record">
-                    <a class="operation-btn" @click="handleOperation(record)">详情</a>
+                    <div style="width: 50px;">
+                        <a class="operation-btn" @click="handleOperation(record)">详情</a>
+                    </div>
                 </template>
             </a-table>
             <no-data-tips v-show="showNoDataTips"></no-data-tips>
@@ -153,27 +191,32 @@
         {
             title: "出库明细ID",
             dataIndex: "cleaningOrderDetailId",
-            width: 160
+            width: 160,
+            scopedSlots: { customRender: "cleaningOrderDetailId" }
         },
         {
             title: "资产名称",
             dataIndex: "assetName",
-            width: 160
+            width: 160,
+            scopedSlots: { customRender: "assetName" }
         },
         {
             title: "资产编码",
             dataIndex: "assetCode",
-            width: 160
+            width: 160,
+            scopedSlots: { customRender: "assetCode" }
         },
         {
             title: "资产类型",
             dataIndex: "assetTypeName",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "assetTypeName" }
         },
         {
             title: "资产分类",
             dataIndex: "objectTypeName",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "objectTypeName" }
         },
         {
             title: "管理机构",
@@ -184,17 +227,20 @@
         {
             title: "资产项目名称",
             dataIndex: "projectName",
-            width: 160
+            width: 160,
+            scopedSlots: { customRender: "projectName" }
         },
         {
             title: "出库单编号",
             dataIndex: "cleaningOrderCode",
-            width: 160
+            width: 160,
+            scopedSlots: { customRender: "cleaningOrderCode" }
         },
         {
             title: "出库原因",
             dataIndex: "cleanupTypeName",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "cleanupTypeName" }
         },
         {
             title: "资产位置",
@@ -205,22 +251,26 @@
         {
             title: "资产面积",
             dataIndex: "area",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "area" }
         },
         {
             title: "出库人",
             dataIndex: "creatUserName",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "creatUserName" }
         },
         {
             title: "出库日期",
             dataIndex: "createDate",
-            width: 160
+            width: 160,
+            scopedSlots: { customRender: "createDate" }
         },
         {
             title: "状态",
             dataIndex: "approvalStatusName",
-            width: 120
+            width: 120,
+            scopedSlots: { customRender: "approvalStatusName" }
         },
         {
             title: "操作",
