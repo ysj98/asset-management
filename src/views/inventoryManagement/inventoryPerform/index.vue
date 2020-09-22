@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:19:43
- * @LastEditTime : 2020-01-10 15:14:43
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-09-22 17:42:37
+ * @LastEditors: Please set LastEditors
  * @Description: 盘点执行
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\index.vue
  -->
@@ -85,6 +85,10 @@ const checkStatusData = [
   {
     name: '已完成',
     value: '1'
+  },
+  {
+    name: '未盘点',
+    value: '0'
   }
 ]
 let columns = [
