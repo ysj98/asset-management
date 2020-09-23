@@ -903,6 +903,8 @@ export default {
       this.handleDefaultShareWay();
       // 装修情况有变化
       this.handleBaseAndHuse();
+      // 清空表格
+      this.tableData = []
     },
     handleDefaultShareWay() {
       // 如果是设备 并且变更类型是原值变动  原值对象类型非资产
