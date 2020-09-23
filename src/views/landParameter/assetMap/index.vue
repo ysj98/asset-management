@@ -107,7 +107,7 @@ export default {
               this.detailInfo = { ...result.buildInfo }
               // 修改价值元
               if (this.detailInfo.assetValue) {
-                this.detailInfo.assetValue = calc.divide(Number(this.detailInfo.assetValue), 1000)
+                this.detailInfo.assetValue =  Math.floor(calc.divide(Number(this.detailInfo.assetValue), 10000) * 100) / 100
               }
               // 修改面积
               if (this.detailInfo.assetArea) {
@@ -122,11 +122,11 @@ export default {
               this.detailInfo = { ...result.landInfo }
               // 修改价值元
               if (this.detailInfo.originalValue) {
-                this.detailInfo.originalValue = calc.divide(Number(this.detailInfo.originalValue), 1000)
+                this.detailInfo.originalValue = Math.floor(calc.divide(Number(this.detailInfo.originalValue), 10000) * 100) / 100
               }
               // 修改价值元
               if (this.detailInfo.marketValue) {
-                this.detailInfo.marketValue = calc.divide(Number(this.detailInfo.marketValue), 1000)
+                this.detailInfo.marketValue = Math.floor(calc.divide(Number(this.detailInfo.marketValue), 10000) * 100) / 100
               }
               // 修改面积
               if (this.detailInfo.landArea) {

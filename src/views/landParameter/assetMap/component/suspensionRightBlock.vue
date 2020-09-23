@@ -188,7 +188,7 @@ export default {
                 // 如果是价值
                 if (key === "assetValue") {
                   result[dataIndex][key] = Number(result[dataIndex][key])
-                    ? calc.divide(Number(result[dataIndex][key]), 1000)
+                    ? Math.floor(calc.divide(Number(result[dataIndex][key]), 10000) * 100) / 100
                     : result[dataIndex][key]
                 }
                 o[dataIndex] = result[dataIndex][key]
