@@ -615,7 +615,7 @@ export default {
           let checkedData = [];
           data.assetDetailList.forEach((item, index) => {
             item.key = item.assetId + index;
-            item.addressName = item.address;
+            // item.addressName = item.address;
             item.newOriginalValue = item.originalValue;
             // 债权映射
             item.newCreditorAmount = item.creditorAmount;
