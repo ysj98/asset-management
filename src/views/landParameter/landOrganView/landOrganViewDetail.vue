@@ -27,7 +27,7 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" />
     </a-spin>
-    <div class="table-layout-fixed pb50">
+    <div class="table-layout-fixed">
       <a-table
         :loading="table.loading"
         :columns="table.columns"
@@ -196,7 +196,7 @@ export default {
       },
       footerOpt: {
         noPageTools: false,
-        location: "absolute",
+        // location: "absolute",
       },
       routeQueryStore: {
         organId: "",
@@ -250,7 +250,7 @@ export default {
             this.numList = this.numList.map((item) => {
               return {
                 ...item,
-                value: data[item.key],
+                value: data[item.key] || '--',
               };
             });
           } else {
@@ -293,7 +293,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .organViewDetail-page {
-  overflow: hidden;
-  margin: 40px;
+  /*overflow: hidden;*/
+  padding: 40px;
 }
 </style>

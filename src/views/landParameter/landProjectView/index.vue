@@ -4,7 +4,7 @@
 <template>
   <div class="asset-project-view-list" style="overflow-x: hidden">
     <a-row :gutter="8" style="padding: 20px 30px">
-      <a-col :span="10">
+      <a-col :span="9">
         <SG-Button
           icon="import"
           type="primary"
@@ -37,7 +37,7 @@
           :options="statusListOpt"
         />
       </a-col>
-      <a-col :span="3">
+      <a-col :span="4">
         <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
       </a-col>
       <a-col :span="2">
@@ -112,13 +112,13 @@ const columns = [
     width: 130
   },
   {
-    title: '土地面积(㎡)',
-    dataIndex: 'landArea',
+    title: '土地数量',
+    dataIndex: 'landCount',
     width: 130
   },
   {
-    title: '土地数量',
-    dataIndex: 'landCount',
+    title: '土地面积(㎡)',
+    dataIndex: 'landArea',
     width: 130
   },
   {
