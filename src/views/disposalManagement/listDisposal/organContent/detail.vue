@@ -33,6 +33,10 @@ const columns = [
     dataIndex: 'organName'
   },
   {
+    title: '资产项目',
+    dataIndex: 'projectName'
+  },
+  {
     title: '处置数量',
     dataIndex: 'dispNum'
   },
