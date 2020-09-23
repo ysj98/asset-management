@@ -90,7 +90,7 @@
                         @select="assetClassifyDataFn"
                 ></a-select>
                 <SG-DatePicker
-                        label="入库日期"
+                        label="出库日期"
                         style="width: 232px;"
                         pickerType="RangePicker"
                         :defaultValue="defaultValue"
