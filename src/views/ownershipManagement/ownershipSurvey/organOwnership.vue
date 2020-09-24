@@ -177,7 +177,7 @@ export default {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map((item) => {
               item.progressName = String(item.progress)
-                ? item.progress + "%"
+                ? item.progress
                 : "";
               return {
                 key: utils.getUuid(),
