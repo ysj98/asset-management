@@ -211,7 +211,7 @@ export default {
             ...result,
             key: utils.getUuid(),
             organName: "全部汇总",
-            progressName: result.progress + "%",
+            progressName: result.progress
           };
         } else {
           this.$message.error(res.data.message || res.data.msg);
