@@ -713,7 +713,7 @@ export default {
                 landArea: data.amsOwnershipWarrant.landArea,
                 buildArea: data.amsOwnershipWarrant.buildArea,
                 totalSuite: data.amsOwnershipWarrant.totalSuite,
-                qualityOfRight: String(data.amsOwnershipWarrant.qualityOfRight),
+                qualityOfRight: conditionalJudgment.includes(data.amsOwnershipWarrant.qualityOfRight) ? undefined : String(data.amsOwnershipWarrant.qualityOfRight),
                 useLimitDate: data.amsOwnershipWarrant.useLimitDate,
               })
             } else if (this.typeJudgment === '2') {

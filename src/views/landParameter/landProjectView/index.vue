@@ -52,7 +52,7 @@
         :dataSource="dataSource"
         class="custom-table td-pd10"
         :pagination="false"
-        :scroll="{ x: 1900 }">
+        :scroll="{ x: 2200 }">
         <template slot="operation" slot-scope="text, record">
           <a
             v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'"

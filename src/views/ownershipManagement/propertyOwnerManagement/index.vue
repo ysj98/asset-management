@@ -143,7 +143,9 @@ export default {
     },
     // 页码发生变化
     handlePageChange (page) {
+      console.log(page, 'pagepagepage')
       this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 操作回调

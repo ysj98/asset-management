@@ -548,8 +548,11 @@ export default {
 </script>
 <style lang="less" scoped>
 .ownershipRegisterView-page {
-  /deep/ .search-box .search-content .content-icon {
+  /deep/ .search-box .search-content  .search-content .content-icon {
     display: none;
+  }
+  /deep/ .search-box .search-content .content-form {
+    text-align: initial !important;
   }
   .box {
     display: inline-block;

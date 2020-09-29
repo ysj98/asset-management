@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-04-30 17:17:56
+ * @LastEditTime: 2020-09-29 14:13:06
  -->
 <template>
   <div>
@@ -115,7 +115,7 @@
         <SG-FooterPagination
           :pageLength="queryCondition.pageSize"
           :totalCount="table.totalCount"
-          location="absolute"
+          location="location"
           v-model="queryCondition.pageNum"
           @change="handleChange"
         />

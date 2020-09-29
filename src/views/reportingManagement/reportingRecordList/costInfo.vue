@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 18:17:58
+ * @LastEditTime: 2020-09-29 14:10:29
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -210,7 +210,7 @@ export default {
       isChild: false,
       loading: false,
       noPageTools: false,
-      location: 'absolute',
+      location: 'fixed',
       approvalStatusData: [...approvalStatusData],
       allStyle: 'width: 140px; margin-right: 10px;',
       columns,

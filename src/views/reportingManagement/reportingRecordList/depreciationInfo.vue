@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-04-30 17:43:31
+ * @LastEditTime: 2020-09-29 14:12:26
  -->
 <template>
   <div class="assetsRegistration">
@@ -152,7 +152,7 @@ export default {
       isChild: false,
       loading: false,
       noPageTools: false,
-      location: 'absolute',
+      location: 'fixed',
       approvalStatusData: [...approvalStatusData],
       allStyle: 'width: 140px; margin-right: 10px;',
       columns,

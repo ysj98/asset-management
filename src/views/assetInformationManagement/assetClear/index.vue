@@ -142,7 +142,7 @@ import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OverviewNumber from "@/views/common/OverviewNumber";
 const columns = [
   {
-    title: "出库单编号",
+    title: "出库单名称",
     dataIndex: "cleaningOrderCode",
     width: 160
   },
