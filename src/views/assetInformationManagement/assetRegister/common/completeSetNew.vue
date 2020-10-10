@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-14 14:43:17
- * @LastEditTime: 2020-07-29 15:55:41
+ * @LastEditTime: 2020-10-10 10:52:42
  * @Description: 新增附属配套
 --> 
 <template>
@@ -268,7 +268,7 @@ export default {
             specificationType: obj.specificationType,
             value: obj.value,
             number: obj.number,
-            unitOfMeasurement: obj.unitOfMeasurement,
+            unitOfMeasurement: obj.unitOfMeasurement || '',
             remark: obj.remark,
           }
           // 处理复选框
@@ -310,7 +310,7 @@ export default {
         specificationType: values.specificationType,              //  规格型号
         value: values.value,                                      //  价值(元)
         number: values.number,                                    //  数量
-        unitOfMeasurement: values.unitOfMeasurement,              //  计量单位
+        unitOfMeasurement: values.unitOfMeasurement || '',              //  计量单位
         isBefore: Number(this.subData.isBefore),                  //  是否接管前附属配套 1是 0否
         remark: values.remark,                                    //  备注
         attachmentList: files                                     // 附件

@@ -123,7 +123,7 @@ export default {
       })
     },
     goToTask (record) {
-      let o = {taskId: record.taskId, detail: true, page: 'plan'}
+      let o = {taskId: record.taskId, detail: true, page: 'plan', refresh: true}
       this.$router.push({ path: '/inventoryPlan/detail/taskDetail', query: {quersData: JSON.stringify([o])}});
     },
     handleChange (data) {

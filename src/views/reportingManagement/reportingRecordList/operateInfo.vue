@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-09-29 14:13:06
+ * @LastEditTime: 2020-10-10 10:46:29
  -->
 <template>
   <div>
@@ -186,13 +186,13 @@ let columns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: '160px',
+    width: '200px',
     fixed: 'left'
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: '160px',
+    width: '200px',
     fixed: 'left'
   },
   {
