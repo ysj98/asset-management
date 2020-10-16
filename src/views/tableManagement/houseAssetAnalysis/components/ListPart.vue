@@ -27,6 +27,7 @@
   import EditTableHeader from './EditTableHeader'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
+  import {utils} from '@/utils/utils'
   export default {
     name: 'ListPart',
     components: { EditTableHeader },
@@ -72,7 +73,11 @@
     
     mounted () {
       const { sortFactor, columnsPC } = this
-      this.columnsDynamic = sortFactor.concat(columnsPC)
+      let sortFactorData = utils.deepClone(sortFactor)
+      sortFactorData.splice(4, 0, ...columnsPC)
+      // this.columnsDynamic = sortFactor.concat(columnsPC)
+      this.columnsDynamic = sortFactorData
+      console.log(this.columnsDynamic, 'dddssa')
       this.sortFunc = this.generateSort(sortFactor)
       this.checkedHeaderArr = sortFactor.map(m => m.dataIndex)
       this.handleColumns()
@@ -141,7 +146,7 @@
         })
         this.sortFunc = this.generateSort(columnsDynamic)
         // 如果包含地区维度，则添加省份、城市列头
-        isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(isHasRegion + 1, 0, ...columnsPC)
+        isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(checkedList.length - 1, 0, ...columnsPC)
         this.columnsDynamic = columnsDynamic
         // this.handleColumns()
         this.queryTableData({})
