@@ -86,7 +86,7 @@
         if (!organId) { return this.$message.warn('请选择组织机构') }
         this.queryInfo = {
           projectIds: projectId || undefined, organId, key: Date.now(),
-          province, city, region, objectType: objectType.includes('all') ? [] : objectType
+          province, city, region, objectTypeIdList: objectType.includes('all') ? [] : objectType
         }
         this.key = Date.now()
       },

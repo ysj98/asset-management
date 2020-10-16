@@ -78,7 +78,7 @@
       // this.columnsDynamic = sortFactor.concat(columnsPC)
       this.columnsDynamic = sortFactorData
       console.log(this.columnsDynamic, 'dddssa')
-      this.sortFunc = this.generateSort(sortFactor)
+      // this.sortFunc = this.generateSort(sortFactor)
       this.checkedHeaderArr = sortFactor.map(m => m.dataIndex)
       this.handleColumns()
     },
@@ -128,6 +128,7 @@
       // 列表设置Modal保存
       handleModalOk () {
         let { checkedList, options, penetrateValue} = this.$refs['tableHeader']
+        console.log(this.$refs['tableHeader'])
         this.penetrateData = penetrateValue
         this.organQueryType = checkedList.includes('organName') ? penetrateValue : ''
         if (!checkedList.length) {
@@ -144,9 +145,16 @@
           isHasRegion = n.dataIndex === 'regionName' ? i : isHasRegion
           return checkedList.includes(n.dataIndex)
         })
-        this.sortFunc = this.generateSort(columnsDynamic)
+        // let isHasRegionIndex = 0
+        // columnsDynamic.forEach((item, index) => {
+        //   if (item === 'regionName') {
+        //     isHasRegionIndex = index
+        //   }
+        // })
+        // this.sortFunc = this.generateSort(columnsDynamic)
+        console.log(checkedList, '则添加省份、城市列头则添加省份、城市列头')
         // 如果包含地区维度，则添加省份、城市列头
-        isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(checkedList.length - 1, 0, ...columnsPC)
+        isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(isHasRegion, 0, ...columnsPC)
         this.columnsDynamic = columnsDynamic
         // this.handleColumns()
         this.queryTableData({})
@@ -156,6 +164,7 @@
 
       // 按统计维度生成排序算法
       generateSort (columns) {
+        console.log(columns, 'dsfsdfds ')
         // 字符串排序利用API referenceStr.localeCompare(compareString[, locales[, options]])
         // 详见https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
         // 这里有个重要前提，已知要排序维度的最大值，该业务场景最大值为 5，厌恶的嵌套，没想到更好地思路
@@ -225,10 +234,10 @@
 
       // 处理columns中需要合并的列
       handleColumns () {
-        const { columnsFixed, dataSource, sortFunc, columnsDynamic } = this
+        const { columnsFixed, dataSource, columnsDynamic } = this
         // 对dataSource按统计维度排序
-        let newDataSource = dataSource.sort(sortFunc)
-        let gatherInfo = this.calcRowSpan(newDataSource, columnsDynamic)
+        // let newDataSource = dataSource.sort(sortFunc)
+        let gatherInfo = this.calcRowSpan(dataSource, columnsDynamic)
         this.columns = columnsDynamic.map((m, i) => {
           return {
             ...m,
