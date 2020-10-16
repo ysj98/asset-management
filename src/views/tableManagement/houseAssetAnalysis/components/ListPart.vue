@@ -18,7 +18,7 @@
     </div>
     <!--编辑列表表头-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk">
-      <edit-table-header :key="key" ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="sortFactor"/>
+      <edit-table-header :key="key" ref="tableHeader" :penetrateData="penetrateData" :checkedArr="checkedHeaderArr" :columns="sortFactor"/>
     </SG-Modal>
   </div>
 </template>
@@ -33,6 +33,8 @@
     props: ['queryInfo'],
     data () {
       return {
+        penetrateData: '2',
+        organQueryType: '2',    // 统计维度设置
         ASSET_MANAGEMENT, // 权限对象
         tableLoading: false,
         exportBtnLoading: false, // 导出button loading标志
@@ -40,6 +42,7 @@
         dataSource: [], // Table数据源
         columnsPC: [{ title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' }], // 省份城市字段跟随地区展示
         columnsFixed: [
+          { title: '资产数量', dataIndex: 'assetNum' },
           { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
           { title: '自用(㎡)', dataIndex: 'selfUserArea' }, { title: '闲置(㎡)', dataIndex: 'idleArea' },
           { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
@@ -87,7 +90,7 @@
         const { queryInfo, columnsDynamic, sortIndex } = this
         this.tableLoading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
-        this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo}).then(r => {
+        this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo, organQueryType: this.organQueryType}).then(r => {
           this.tableLoading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -119,7 +122,9 @@
 
       // 列表设置Modal保存
       handleModalOk () {
-        let { checkedList, options } = this.$refs['tableHeader']
+        let { checkedList, options, penetrateValue} = this.$refs['tableHeader']
+        this.penetrateData = penetrateValue
+        this.organQueryType = checkedList.includes('organName') ? penetrateValue : ''
         if (!checkedList.length) {
           return this.$message.info('请至少选中一项!')
         }

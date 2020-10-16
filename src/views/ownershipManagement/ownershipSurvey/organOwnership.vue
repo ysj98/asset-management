@@ -91,12 +91,28 @@ let columns = [
         dataIndex: "ownerShipCount",
       },
       {
+        title: "总面积(㎡)",
+        dataIndex: "ownerShipArea",
+      },
+      {
         title: "有证",
         dataIndex: "ownerShipYesCount",
       },
       {
+        title: "有证面积(㎡)",
+        dataIndex: "ownerShipYesArea",
+      },
+      {
         title: "无证",
         dataIndex: "ownerShipNoCount",
+      },
+      {
+        title: "无证面积(㎡)",
+        dataIndex: "ownerShipNoArea",
+      },
+      {
+        title: "待办证面积(㎡)",
+        dataIndex: "ownerShipWaitArea",
       },
       {
         title: "待办证",
@@ -113,16 +129,32 @@ let columns = [
         dataIndex: "useShipCount",
       },
       {
+        title: "总面积(㎡)",
+        dataIndex: "useShipArea",
+      },
+      {
         title: "有证",
         dataIndex: "useShipYesCount",
+      },
+      {
+        title: "有证面积(㎡)",
+        dataIndex: "useShipYesArea",
       },
       {
         title: "无证",
         dataIndex: "useShipNoCount",
       },
       {
+        title: "无证面积(㎡)",
+        dataIndex: "useShipNoArea",
+      },
+      {
         title: "待办证",
         dataIndex: "useShipWaitCount",
+      },
+      {
+        title: "待办证",
+        dataIndex: "useShipWaitArea",
       },
     ],
   },

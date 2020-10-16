@@ -77,6 +77,7 @@
                 arr.push(m)
               }
             })
+            console.log(arr)
             let list = area || percentage ? [
               ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
             ] : arr
@@ -121,7 +122,7 @@
           tooltip: { trigger: 'item', formatter: '{b} : {c} ({d}%)'}, // 自定义提示格式
           legend: { type: 'scroll', bottom: 0, itemWidth: 10, itemHeight: 10 }, // 图例样式
           grid: { containLabel: true, top: 10, right: 10, left: 10, bottom: 40 },  // 距父元素边框距离
-          series: [{ data, type: 'pie', radius: '55%', label: { show: true, formatter: '{c}'}, hoverOffset: 3 }],
+          series: [{ data, type: 'pie', radius: '55%', label: { show: true, formatter: '{c} ({d}%)'}, hoverOffset: 3 }],
           color: ['#5b8ff9', '#5ad8a6', '#5d7092', '#f6bd16', '#657798', '#e96c5b', '#6395f9', '#d48265', '#ca8622', '#bda29a', '#6e7074', '#c4ccd3'] // 自定义调色盘
         })
       },

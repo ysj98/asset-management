@@ -1,7 +1,7 @@
 <!--报表管理-房屋资产统计分析入口页面--查询列表Part--编辑列表表头组件-->
 <template>
   <div class="table_header">
-    <a-checkbox-group v-model="checkedList">
+    <a-checkbox-group v-model="checkedList" @change="checkedFn">
       <a-list itemLayout="horizontal" :dataSource="options" bordered>
         <a-list-item slot="renderItem" slot-scope="item, index" style="line-height: 24px">
           <a-checkbox :value="item.dataIndex" style="width: 340px">{{item.title}}</a-checkbox>
@@ -15,21 +15,51 @@
         </a-list-item>
       </a-list>
     </a-checkbox-group>
+    <a-radio-group v-if="show" v-model="penetrateValue">
+      <a-radio v-for="(item, index) in penetrate" :key="index" :style="radioStyle" :value="item.value">{{item.name}}</a-radio>
+    </a-radio-group>
   </div>
 </template>
 
 <script>
   export default {
     name: 'EditTableHeader',
-    props: ['columns', 'checkedArr'],
+    props: ['columns', 'checkedArr', 'penetrateData'],
     data () {
       return {
+        radioStyle: {
+          display: 'block',
+          height: '30px',
+          lineHeight: '30px',
+        },
+        penetrateValue: '2',
+        show: true,
+        penetrate: [
+          {
+            value: '1',
+            name: '按组织机构层级展示'
+          },
+          {
+            value: '2',
+            name: '平铺所有资产管理机构'
+          }
+        ],
         checkedList: [], // 选中项
         options: [] // 数据选项
       }
     },
 
     methods: {
+      checkedFn (val) {
+        this.show = this.checkedList.includes('organName')
+        if (!this.show) {
+          if (val === 'int') {
+            this.penetrateValue = this.penetrateData
+          } else {
+            this.penetrateValue = '2'
+          }
+        }
+      },
       // 排序
       handleRank(type, index) {
         let { options } = this
@@ -51,6 +81,9 @@
         checkedList: checkedArr,
         options: [...columns]
       })
+    },
+    mounted () {
+      this.checkedFn('int')
     }
   }
 </script>
