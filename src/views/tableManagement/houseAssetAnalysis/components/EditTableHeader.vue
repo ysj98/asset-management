@@ -53,11 +53,9 @@
       checkedFn (val) {
         this.show = this.checkedList.includes('organName')
         if (!this.show) {
-          if (val === 'int') {
-            this.penetrateValue = this.penetrateData
-          } else {
-            this.penetrateValue = '2'
-          }
+          val === 'int' ? this.penetrateValue = this.penetrateData : this.penetrateValue = '2'
+        } else {
+          val === 'int' ? this.penetrateValue = this.penetrateData : ''
         }
       },
       // 排序
