@@ -139,22 +139,29 @@
         this.sortFactor = options
         this.modalObj.status = false
         this.checkedHeaderArr = checkedList
-        // 生成选中的且按统计维度顺序排列的columnsDynamic
-        let isHasRegion = -1
-        let columnsDynamic = options.filter((n, i) => {
-          isHasRegion = n.dataIndex === 'regionName' ? i : isHasRegion
-          return checkedList.includes(n.dataIndex)
+        let columnsDynamic = []   // 生成选中头部
+        let arr = utils.deepClone(options)
+        let arrData = []
+        // 给每个选中的压入一个标识
+        arr.forEach(item => {
+          item.keys = '1'
+          if (!checkedList.includes(item.dataIndex)) {
+            item.keys = '0'
+          }
+          if (item.keys === '1') {
+            arrData.push(item)
+          }
         })
-        // let isHasRegionIndex = 0
-        // columnsDynamic.forEach((item, index) => {
-        //   if (item === 'regionName') {
-        //     isHasRegionIndex = index
-        //   }
-        // })
-        // this.sortFunc = this.generateSort(columnsDynamic)
-        console.log(checkedList, '则添加省份、城市列头则添加省份、城市列头')
+        // 在通过选中的标识拿到要在第几位添加省市区
+        let isHasRegionIndex = 0
+        arrData.forEach((item, index) => {
+          if (item.dataIndex === 'regionName') {
+            isHasRegionIndex = index
+          }
+          columnsDynamic.push(item)
+        })
         // 如果包含地区维度，则添加省份、城市列头
-        isHasRegion !== -1 && checkedList.includes('regionName') && columnsDynamic.splice(isHasRegion, 0, ...columnsPC)
+        checkedList.includes('regionName') && columnsDynamic.splice(isHasRegionIndex, 0, ...columnsPC)
         this.columnsDynamic = columnsDynamic
         // this.handleColumns()
         this.queryTableData({})
