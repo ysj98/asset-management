@@ -811,7 +811,15 @@ export const reportManage = {
   // 查询资产费用(分页)
   queryAssetExpensePageList: '/ams/reportdata/queryAssetExpensePageList',
   // 查询资产运营(分页)
-  queryAssetOperationPageList: '/ams/reportdata/queryAssetOperationPageList'
+  queryAssetOperationPageList: '/ams/reportdata/queryAssetOperationPageList',
+  // 导出资产运营
+  exportAssetOperationList: '/ams/reportdata/exportAssetOperationList',
+  // 导出资产费用列表
+  exportAssetExpenseList: '/ams/reportdata/exportAssetExpenseList',
+  // 导出资产收入列表
+  exportAssetIncomeList: '/ams/reportdata/exportAssetIncomeList',
+  // 导出资产折旧列表
+  exportAssetDeprecitionList: '/ams/reportdata/exportAssetDeprecitionList'
 }
 
 // v1.0.4需求，报表管理，其中也涉及多模块导出、导入

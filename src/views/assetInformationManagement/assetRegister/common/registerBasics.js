@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-08-03 10:32:07
+ * @LastEditTime: 2020-10-19 14:23:03
  * @Description: file content
  */ 
 
@@ -45,7 +45,7 @@ export const judgmentData = [
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '装修情况', dataIndex: 'decorationSituation', required: true, fontLength: 30 },
-  { title: '资产原值', dataIndex: 'originalValue', required: true, type: 'float' },
+  { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float' },
   { title: '市场价值', dataIndex: 'marketValue', required: false, type: 'float' },
   { title: '转运营日期', dataIndex: 'transferOperationTime', required: false, date: true },   //  type: 'number', 
   { title: '转运营面积', dataIndex: 'transferOperationArea', required: true, type: 'float' },
@@ -78,7 +78,7 @@ export const landCheck = [
   { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
-  { title: '资产原值', dataIndex: 'originalValue', required: true, type: 'float' },
+  { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float' },
   { title: '市场价值', dataIndex: 'marketValue', required: false, type: 'float' },
   { title: '转运营日期', dataIndex: 'transferOperationTime', required: false, date: true },   //  type: 'number', 
   { title: '转运营面积', dataIndex: 'transferOperationArea', required: true, type: 'float' },

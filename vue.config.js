@@ -19,10 +19,10 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress()
 console.log('IP', localhost)
-// const target = 'http://192.168.1.11:10080'
+const target = 'http://192.168.1.11:10080'
 // const target = 'http://192.168.3.28:8080' // 周柏甫
 // const mock = 'http://192.168.3.34:8081'
-const target = 'http://beta.uhomecp.com/'
+// const target = 'http://beta.uhomecp.com/'
 // const target = 'http://192.168.1.11:10080'
 // const target = 'http://192.168.3.34:8081'
 // const target = 'http://192.168.3.28:8080'

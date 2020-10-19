@@ -179,7 +179,7 @@ export const accessCard = [
   }
 ]
 
-// 权证类型：产权证列表展示
+// 权证类型：不动产权证列表展示
 export const titleDeed = [
   {
     label: '丘地号',
@@ -187,7 +187,7 @@ export const titleDeed = [
     formType: 'input',
     attrValue: '',
     max: 30,
-    required: true
+    required: false
   },
   {
     label: '不动产单元号',
@@ -195,7 +195,7 @@ export const titleDeed = [
     formType: 'input',
     attrValue: '',
     max: 30,
-    required: true
+    required: false
   },
   {
     label: '坐落位置',

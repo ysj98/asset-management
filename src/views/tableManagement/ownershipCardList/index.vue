@@ -2,31 +2,24 @@
 <template>
   <div class="ownership_card">
     <!--查询调件-->
-    <a-row :gutter="8" style="width: 100%; padding: 20px 20px 20px 30px">
-      <a-col :span="2">
-        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OL_EXPORT">
-          导出
-        </SG-Button>
-      </a-col>
-      <a-col :span="8">
-        <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
-      </a-col>
-      <a-col :span="3">
-        <a-select v-model="queryObj.kindOfRight" style="width: 100%" placeholder="请选择权属类型" :options="typeOptions"/>
-      </a-col>
-      <a-col :span="3">
-        <a-select v-model="queryObj.obligeeId" allowClear style="width: 100%" placeholder="请选择权属人" :options="ownerOptions"/>
-      </a-col>
-      <a-col :span="3">
-        <a-select v-model="queryObj.status" style="width: 100%" placeholder="请选择权属状态" :options="statusOptions"/>
-      </a-col>
-      <a-col :span="3">
-        <a-input v-model.trim="queryObj.warrantNbr" style="width: 100%" placeholder="请输入权证号"/>
-      </a-col>
-      <a-col :span="2">
+    <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
+      <div slot="headBtns">
+        <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OL_EXPORT">导出</SG-Button>
+        <div style="width: 310px; position:absolute; top: 20px; right: 76px; display:flex;">
+          <organ-project class="organ-class" v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
+        </div>
+      </div>
+      <div slot="btns">
         <SG-Button type="primary" @click="queryTableData">查询</SG-Button>
-      </a-col>
-    </a-row>
+      </div>
+      <div slot="form" class="formCon">
+        <a-select v-model="queryObj.kindOfRight" :style="allStyle" placeholder="请选择权属类型" :options="typeOptions"/>
+        <a-select v-model="queryObj.obligeeId" allowClear :style="allStyle" placeholder="请选择权属人" :options="ownerOptions"/>
+        <a-select v-model="queryObj.status" :style="allStyle" placeholder="请选择权属状态" :options="statusOptions"/>
+        <a-select v-model="queryObj.ownerFlag" :style="allStyle" placeholder="请选择权证归属" :options="ownerFlagOptions"/>
+        <a-input v-model.trim="queryObj.warrantNbr" :style="allStyle" placeholder="请输入权证号"/>
+      </div>
+    </SG-SearchContainer>
     <!--数据概览信息-->
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList"/>
@@ -59,8 +52,12 @@
     components: { NoDataTip, OrganProject, CardDetails, OverviewNumber },
     data () {
       return {
+        styleSet: 'min-width: 150px !important;',
+        toggle: false,
+        allStyle: 'width: 150px; margin-right: 10px;',
         ASSET_MANAGEMENT, // 权限对象
         queryObj: {
+          ownerFlag: '',  // 权证归属
           status: '', // 查询条件-权属状态
           warrantNbr: '', // 查询条件-权证号
           kindOfRight: '', // 查询条件-权属类型
@@ -73,6 +70,9 @@
         statusOptions: [
           { title: '全部权属状态', key: '' }, { title: '正常', key: '1' }, { title: '已注销', key: '0' }
         ], // 查询条件-权属状态选项
+        ownerFlagOptions: [
+          { title: '全部权证归属', key: '' }, { title: '本单位权证', key: '1' }, { title: '其他单位权证', key: '0' }
+        ],
         exportBtnLoading: false, // 导出按钮loading
         numList: [
           {title: '权证数量', key: 'total', value: 0, bgColor: '#4BD288'},
@@ -122,6 +122,10 @@
     },
 
     methods: {
+      // 高级搜索控制
+      searchContainerFn (val) {
+        this.toggle = val
+      },
       // 查询统计数据
       queryStatisticsInfo (form) {
         this.overviewNumSpinning = true
@@ -239,6 +243,19 @@
       .ant-table-thead th {
         white-space: nowrap;
       }
+    }
+  }
+  .organ-class {
+    .project_style {
+      width: 150px;
+    }
+  }
+</style>
+
+<style lang='less'>
+  .organ-class {
+    .project_style, .tree-select, .building_style {
+      width: 150px !important;
     }
   }
 </style>

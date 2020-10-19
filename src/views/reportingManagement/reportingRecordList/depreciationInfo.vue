@@ -1,12 +1,13 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-09-29 14:12:26
+ * @LastEditTime: 2020-10-19 16:52:18
  -->
 <template>
   <div class="assetsRegistration">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
+        <SG-Button v-if="$power.has(ASSET_MANAGEMENT.ASSET_DEPRECIATION_EXPORT)" @click="openExport" type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="资产卡片名称/编码" maxlength="30" @search="onSearch" />
@@ -65,6 +66,7 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {getNowMonthDate, getNMonthsAgoFirst} from 'utils/formatTime'
 import noDataTips from '@/components/noDataTips'
+import segiIcon from '@/components/segiIcon.vue'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -143,7 +145,7 @@ const columns = [
   }
 ]
 export default {
-  components: {TreeSelect, noDataTips},
+  components: {TreeSelect, noDataTips, segiIcon},
   props: {},
   data () {
     return {
@@ -357,7 +359,35 @@ export default {
           this.loading = false
         }
       })
-    }
+    },
+    // 导出
+    openExport () {
+      let loadingName = this.SG_Loding('导出中...')
+      let obj = {
+        organId: this.queryCondition.organId,
+        projectId: this.queryCondition.project,
+        objName: this.queryCondition.taskName,
+        beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),
+        endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
+        taskStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',                // 审批状态 1未完成 2待审批 3已驳回 4已完成
+        taskType: this.queryCondition.taskType.length > 0 ? this.queryCondition.taskType.join(',') : '',                  // 1临时 2固定 3数据
+        month: this.month ? `${moment(this.month).format('YYYY-MM')}-01` : '',                     // 月份
+        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',
+      }
+      this.$api.reportManage.exportAssetExpenseList(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产折旧信息.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        this.DE_Loding(loadingName).then(() => {})
+      }).catch(err => {
+        this.DE_Loding(loadingName).then(() => {})
+      })
+    },
   },
   watch: {
     '$route' () {

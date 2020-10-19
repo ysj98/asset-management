@@ -32,9 +32,9 @@
             { title: '资产类型', dataIndex: 'assetTypeName', key: 'assetTypeName'},
             { title: '楼栋数', dataIndex: 'buildNum', key: 'buildNum' },
             { title: '资产数', dataIndex: 'assetNum', key: 'assetNum', align: 'assetNum' },
-            { title: '面积', key: 'area', dataIndex: 'area', align: 'right' },
-            { title: '资产账面原值', key: 'originalValue', dataIndex: 'originalValue', align: 'right' },
-            { title: '资产市值', key: 'marketValue', dataIndex: 'marketValue', align: 'right' }
+            { title: '面积(㎡)', key: 'area', dataIndex: 'area', align: 'right' },
+            { title: '资产账面原值(万元)', key: 'originalValue', dataIndex: 'originalValue', align: 'right' },
+            { title: '资产市值(万元)', key: 'marketValue', dataIndex: 'marketValue', align: 'right' }
           ]
         }, // 资产概况Table
         operateTable: {

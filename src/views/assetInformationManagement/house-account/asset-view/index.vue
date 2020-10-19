@@ -30,8 +30,8 @@
         </div>
       </div>
       <div slot="contentForm">
-        <a-row :gutter="8">
-          <a-col :span="5" :offset="6">
+        <a-row :gutter="12">
+          <a-col :span="5">
             <a-select
               v-model="status"
               mode="multiple"
@@ -54,13 +54,24 @@
           <a-col :span="5">
             <a-input placeholder="请输入资产名称或编码" v-model="assetName"/>
           </a-col>
+          <a-col :span="5">
+            <a-select
+              mode="multiple"
+              :maxTagCount="1"
+              v-model="useType"
+              style="width: 100%"
+              @change="useTypeChange"
+              :options="useTypeOptions"
+              placeholder="请选择用途"
+            />
+          </a-col>
           <a-col :span="3" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
         </a-row>
-        <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="15" :offset="6">
+        <a-row :gutter="12" style="margin-top: 14px">
+          <a-col :span="15">
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
         </a-row>
@@ -112,6 +123,8 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
+        useType: [],           // 用途
+        useTypeOptions: [],    // 用途
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
@@ -182,6 +195,11 @@
     },
 
     methods: {
+      // 全选与其他选项互斥处理
+      useTypeChange (value) {
+        let lastIndex = value.length - 1
+        this.useType = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+      },
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
@@ -227,7 +245,7 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, useType
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -235,7 +253,8 @@
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
-          statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : ''
+          statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
+          useTypes: useType.includes('all') ? '' : useType.join(','),
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
@@ -285,7 +304,7 @@
         let api = { exportHouseBtn: 'exportAssetViewHouseExcel', exportAssetBtn: 'exportAssetViewExcel' }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status,
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType,
           tableObj: { columns }, current
         } = this
         let form = type === 'exportHouseBtn' ? {
@@ -293,7 +312,8 @@
         } : {
           organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
           province, city, region, assetName, status: status || null,
-          display: columns.map(m => m.dataIndex).filter(n => n !== 'action')
+          display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
+          useTypes: useType.includes('all') ? '' : useType.join(','),
         }
         this.$api.assets[api[type]](form).then(res => {
           this[type] = false
@@ -317,9 +337,31 @@
       handleTransform (type) {
         // type && this.$router.push('www.baidu.com')
         type && this.$message.info('暂不支持该操作')
-      }
+      },
+      // 楼栋用途
+      queryNodesByRootCode () {
+        let data = {
+          categoryCode: '60'
+        }
+        this.$api.basics.queryNodesByRootCode(data).then(res => {
+          if (res.data.code === '0') {
+            let result = res.data.data || []
+            let arr = [{label: '全部用途', value: 'all'}]
+            result.forEach(item => {
+              let obj = {
+                label: item.typeName,
+                value: item.typeCode
+              }
+              arr.push(obj)
+            })
+            this.useTypeOptions = arr
+          }
+        })
+      },
     },
-
+    mounted () {
+      this.queryNodesByRootCode()
+    },
     created () {
       // 初始化Table列头
       let{ columns } = this.tableObj

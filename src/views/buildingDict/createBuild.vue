@@ -96,10 +96,10 @@
                         showSearch
                         optionFilterProp="children"
                         :options="useTypeOpt"
-                        :allowClear="false"
+                        :allowClear="true"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['useType', {rules: [{required: true, whitespace: true, message: '请选择楼栋用途'}]}]"
+                        v-decorator="['useType', {rules: [{required: false, whitespace: true, message: '请选择楼栋用途'}]}]"
                       />
                   </a-form-item>
                 </a-col>
