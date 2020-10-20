@@ -8,8 +8,8 @@
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <!-- <div slot="headerBtns">
-        <SG-Button type="primary" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
-      </div> -->
+          <SG-Button type="primary" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+        </div> -->
         <div slot="contentForm" class="search-content-box">
           <div class="search-from-box">
             <treeSelect
@@ -30,6 +30,30 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
+            <a-select
+              :maxTagCount="1"
+              :allowClear="false"
+              mode="multiple"
+              :tokenSeparators="[',']"
+              placeholder="全部资产类型"
+              v-model="queryCondition.assetTypes"
+              :options="assetTypeOptions"
+              :style="allStyle"
+              @select="changeAssetType"
+            ></a-select>
+            <a-select
+              showSearch
+              :allowClear="false"
+              placeholder="全部资产分类"
+              optionFilterProp="children"
+              :maxTagCount="1"
+              :style="allStyle"
+              mode="multiple"
+              v-model="queryCondition.objectTypes"
+              :tokenSeparators="[',']"
+              :options="assetClassifyData"
+              @select="assetClassifyDataFn"
+            ></a-select>
             <!-- 全部权属情况 -->
             <a-select
               showSearch
@@ -57,7 +81,7 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 全部权属类型 -->
+            <!-- 权证类型 -->
             <a-select
               showSearch
               placeholder="请选择权证类型"
@@ -68,6 +92,18 @@
               :maxTagCount="1"
               :style="allWidth"
               :options="kindOfRightsOpt"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
+            <!-- 权属类型 -->
+            <a-select
+              showSearch
+              placeholder="请选择权属类型"
+              v-model="queryCondition.shipType"
+              optionFilterProp="children"
+              :style="allStyle"
+              :options="shipTypeOpt"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -161,11 +197,14 @@ const allWidth = {
 const queryCondition = {
   organId: "",
   projectId: "",
-  ownershipStatuss: [''], // 权属情况(多选)
-  obligeeId: "", // 权属人
-  kindOfRights: [''], // 权证类型(多选)
-  statuss: [''], // 资产状态(多选)
-  name: "", // 资产名称/权证号
+  ownershipStatuss: [''],  // 权属情况(多选)
+  objectTypes: [''],    // 资产分类
+  assetTypes: [''],     // 资产类型
+  obligeeId: "",           // 权属人
+  kindOfRights: [''],      // 权证类型(多选)
+  shipType: '',            // 权属类型
+  statuss: [''],           // 资产状态(多选)
+  name: "",                // 资产名称/权证号
   pageNum: 1,
   pageSize: 10
 };
@@ -178,6 +217,7 @@ const ownershipStatussOpt = [
 ];
 const obligeeIdOpt = [{ label: "全部权属人", value: "" }];
 const kindOfRightsOpt = [{ label: "全部权证类型", value: "" }];
+const shipTypeOpt = [{ label: "全部权属类型", value: "" }];
 const statussOpt = [
   { label: "全部资产状态", value: "" },
   { label: "未生效", value: "0" },
@@ -205,6 +245,11 @@ let columns = [
     width: 120
   },
   {
+    title: "资产分类",
+    dataIndex: "objectTypeName",
+    width: 120
+  },
+  {
     title: "管理机构",
     dataIndex: "organName",
     width: 120
@@ -227,6 +272,11 @@ let columns = [
   {
     title: "权属情况",
     dataIndex: "ownershipStatusName",
+    width: 100
+  },
+  {
+    title: "权属类型",
+    dataIndex: "shipTypeName",
     width: 100
   },
   {
@@ -265,6 +315,8 @@ export default {
   },
   data() {
     return {
+      assetClassifyData: [{label: '全部资产分类', value: ''}],
+      assetTypeOptions: [],
       ASSET_MANAGEMENT,
       toggle: true,
       allStyle,
@@ -274,6 +326,7 @@ export default {
       ownershipStatussOpt,
       obligeeIdOpt,
       kindOfRightsOpt,
+      shipTypeOpt,
       statussOpt,
       table: {
         columns,
@@ -285,6 +338,8 @@ export default {
   },
   created() {
     this.platformDictFn("AMS_KIND_OF_RIGHT");
+    this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
+    this.platformDictFn("asset_type");
   },
   methods: {
     query() {
@@ -295,6 +350,8 @@ export default {
       data.ownershipStatuss = data.ownershipStatuss.join(',')
       data.kindOfRights = data.kindOfRights.join(',')
       data.statuss = data.statuss.join(',')
+      data.assetTypes = data.assetTypes.join(',')
+      data.objectTypes = data.objectTypes.join(',')
       this.table.loading = true;
       this.$api.basics.assetList(data).then(
         res => {
@@ -366,6 +423,20 @@ export default {
         this.queryCondition.kindOfRights = this.handleMultipleSelectValue(value, this.queryCondition.kindOfRights, this.kindOfRightsOpt)
       })
     },
+    assetClassifyDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.objectTypes = this.handleMultipleSelectValue(value, this.queryCondition.objectTypes, this.assetClassifyData)
+      })
+    },
+    changeAssetType (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetTypes = this.handleMultipleSelectValue(value, this.queryCondition.assetTypes, this.assetTypeOptions)
+        if (!this.queryCondition.assetTypes[0]) {
+          this.assetClassifyData = [{label: '全部资产分类', value: ''}]
+        }
+        this.getListFn()
+      })
+    },
     statussSelect (value) {
       this.$nextTick(function () {
         this.queryCondition.statuss = this.handleMultipleSelectValue(value, this.queryCondition.statuss, this.statussOpt)
@@ -377,9 +448,12 @@ export default {
       this.queryCondition.organId = value;
       this.queryCondition.projectId = "";
       this.queryCondition.obligeeId = "";
+      this.queryCondition.objectTypes = ['']
+      this.queryCondition.assetTypes = ['']
       this.getObjectKeyValueByOrganIdFn();
       this.ownerShipUserSelect();
       this.searchQuery();
+      this.getListFn()
     },
     handleMultipleSelectValue (value, data, dataOptions) {
       // 如果选的是全部
@@ -400,7 +474,25 @@ export default {
       return data
     },
     // 导出
-    openExport () {},
+    openExport () {
+      let data = {
+        ...this.queryCondition,
+        flag: this.queryCondition.currentOrgan ? 1 : 0
+      };
+      data.pageNum = 1
+      data.pageSize = 1
+      this.$api.basics.projectExport(data).then((res) => {
+        console.log(res);
+        let blob = new Blob([res.data]);
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `资产项目权属表.xls`;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    },
     // 重置分页查询
     searchQuery() {
       this.queryCondition.pageNum = 1;
@@ -419,6 +511,9 @@ export default {
       this.queryCondition.kindOfRights = [''];
       this.queryCondition.statuss = [''];
       this.queryCondition.name = "";
+      this.queryCondition.assetTypes = ['']
+      this.queryCondition.objectTypes = ['']
+      this.queryCondition.shipType = "";
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
@@ -431,11 +526,51 @@ export default {
               ...utils.deepClone(kindOfRightsOpt),
               ...arr
             ];
+          } else if (code === 'AMS_ASSET_KIND_OF_RIGHT') {
+            // 权属类型
+            this.shipTypeOpt = [
+              ...utils.deepClone(shipTypeOpt),
+              ...arr
+            ];
+          } else if (code === "asset_type") {
+            this.assetTypeOptions = [
+              {
+                  label: "全部资产类型",
+                  value: ""
+              },
+                ...arr
+            ];
+            this.getListFn()
           }
         } else {
           this.$message.error(res.data.message);
         }
       });
+    },
+    // 获取资产分类列表
+    getListFn () {
+       if (!this.queryCondition.organId) {
+         return
+       }
+      let obj = {
+        organId: this.queryCondition.organId,
+        assetType: this.queryCondition.assetTypes.length > 0 ? this.queryCondition.assetTypes.join(',') : ''
+      }
+      this.$api.assets.getList(obj).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              label: item.professionName,
+              value: item.professionCode
+            })
+          })
+          this.assetClassifyData = [{label: '全部资产分类', value: ''}, ...arr]
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
     },
     goPage(type, record) {
       let query = {

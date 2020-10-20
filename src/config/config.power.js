@@ -373,6 +373,7 @@ export const ASSET_MANAGEMENT = {
    * 权属概况
    */
   ASSET_PROOWNERSHIP_ORGAN_EXPORT: 'proownership_organ_export',   // 权属概况-组织机构权属列表-导出
+  ASSET_OWNERSHIP_ITEMS_EXPORT: 'asset_ownership_items_export',   // 权属概况-资产项目权属属列表-导出
   /**
    * 资产变更一览表
    */

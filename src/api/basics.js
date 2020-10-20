@@ -80,6 +80,10 @@ export function organDict (data) {
 export function ownerShipList (data) {
   return axiosPost(ownershipSurvey.ownerShipList, data)
 }
+// 资产项目权属导出
+export function projectExport (data) {
+  return axiosPost(ownershipSurvey.projectExport, data)
+}
 // 资产项目权属详情列表信息
 export function attrList (data) {
   return axiosPost(ownershipSurvey.attrList, data)

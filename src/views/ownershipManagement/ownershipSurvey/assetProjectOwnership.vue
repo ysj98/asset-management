@@ -6,6 +6,11 @@
  <template>
   <div class="assetProject-page pb70">
     <SearchContainer type="line" :value="false">
+      <div slot="headerBtns">
+        <SG-Button type="primary" @click="exportList" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_ITEMS_EXPORT">
+          <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
+        </SG-Button>
+      </div>
       <div slot="headerForm">
         <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产项目</a-checkbox>
         <treeSelect
@@ -35,7 +40,7 @@
           placeholder="全部资产类型"
           @select="changeAssetType"
           :tokenSeparators="[',']"
-          v-model="queryCondition.assetType"
+          v-model="queryCondition.assetTypes"
           :options="assetTypeData"
           :allowClear="false"
           :filterOption="filterOption"
@@ -85,6 +90,7 @@ import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import noDataTips from "@/components/noDataTips";
+import segiIcon from '@/components/segiIcon.vue'
 // 页面跳转
 const operationTypes = {
   detail: "/ownershipSurvey/projectDetail",
@@ -97,7 +103,7 @@ const queryCondition = {
   organId: "",
   projectName: "",
   projectId: "",
-  assetType: '',
+  assetTypes: '',
   currentOrgan: false,
   pageSize: 10,
   pageNum: 1
@@ -178,7 +184,8 @@ export default {
   components: {
     SearchContainer,
     TreeSelect,
-    noDataTips
+    noDataTips,
+    segiIcon
   },
   data() {
     return {
@@ -210,12 +217,31 @@ export default {
     this.platformDictFn("asset_type");
   },
   methods: {
+    exportList() {
+      let data = {
+        ...this.queryCondition,
+        flag: this.queryCondition.currentOrgan ? 1 : 0
+      };
+      data.pageNum = 1
+      data.pageSize = 1
+      this.$api.basics.projectExport(data).then((res) => {
+        console.log(res);
+        let blob = new Blob([res.data]);
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `资产项目权属表.xls`;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    },
     // 资产类型发生变化
     changeAssetType(value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(
+        this.queryCondition.assetTypes = this.handleMultipleSelectValue(
           value,
-          this.queryCondition.assetType,
+          this.queryCondition.assetTypes,
           this.assetTypeData
         );
       });
@@ -223,7 +249,7 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        flag: this.queryCondition.currentOrgan ? 1 : 0
+        flag: this.queryCondition.currentOrgan ? 1 : 0,
       };
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(

@@ -525,6 +525,8 @@ export const building = {
 export const ownershipSurvey = {
   // 资产项目权属列表查询
   ownerShipList: '/ams/ownerShip/list',
+  // 资产项目权属导出
+  projectExport: '/ownerShip/owner/projectExport',
   // 资产项目权属详情列表信息
   attrList: '/ams/ownerShip/attr/list',
   // 资产项目权属详情基本信息
