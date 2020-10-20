@@ -37,6 +37,7 @@
     </SearchContainer>
     <div>
       <a-table
+        :scroll="{ x: 2870}"
         class="custom-table td-pd10"
         bordered
         :loading="table.loading"
@@ -69,18 +70,26 @@ let columns = [
   {
     title: "管理机构",
     dataIndex: "organName",
+    width: '200px',
+    fixed: 'left'
   },
   {
     title: "资产总数",
     dataIndex: "assetCount",
+    width: '100px',
+    fixed: 'left'
   },
   {
     title: "权证总面积(㎡)",
     dataIndex: "ownerShipTotalArea",
+    width: '100px',
+    fixed: 'left'
   },
   {
     title: "办理进度",
     dataIndex: "progressName",
+    width: '80px',
+    fixed: 'left'
   },
   {
     title: "所有权",
@@ -89,34 +98,42 @@ let columns = [
       {
         title: "总数",
         dataIndex: "ownerShipCount",
+        width: '100px',
       },
       {
         title: "总面积(㎡)",
         dataIndex: "ownerShipArea",
+        width: '200px',
       },
       {
         title: "有证",
         dataIndex: "ownerShipYesCount",
+        width: '100px',
       },
       {
         title: "有证面积(㎡)",
         dataIndex: "ownerShipYesArea",
+        width: '200px',
       },
       {
         title: "无证",
         dataIndex: "ownerShipNoCount",
+        width: '100px',
       },
       {
         title: "无证面积(㎡)",
         dataIndex: "ownerShipNoArea",
+        width: '100px',
       },
       {
         title: "待办证面积(㎡)",
         dataIndex: "ownerShipWaitArea",
+        width: '200px',
       },
       {
         title: "待办证",
         dataIndex: "ownerShipWaitCount",
+        width: '150px',
       },
     ],
   },
@@ -127,34 +144,42 @@ let columns = [
       {
         title: "总数",
         dataIndex: "useShipCount",
+        width: '100px',
       },
       {
         title: "总面积(㎡)",
         dataIndex: "useShipArea",
+        width: '200px',
       },
       {
         title: "有证",
+        width: '100px',
         dataIndex: "useShipYesCount",
       },
       {
         title: "有证面积(㎡)",
+        width: '200px',
         dataIndex: "useShipYesArea",
       },
       {
         title: "无证",
+        width: '100px',
         dataIndex: "useShipNoCount",
       },
       {
         title: "无证面积(㎡)",
+        width: '200px',
         dataIndex: "useShipNoArea",
       },
       {
         title: "待办证",
+        width: '100px',
         dataIndex: "useShipWaitCount",
       },
       {
         title: "待办证",
         dataIndex: "useShipWaitArea",
+        width: '150px',
       },
     ],
   },
