@@ -533,6 +533,8 @@ export const ownershipSurvey = {
   attrBase: '/ams/ownerShip/attr/base',
   // 资产权属列表
   assetList: '/ams/ownerShip/attr/asset/list',
+  // 资产权属导出
+  assetExport: '/ams/ownerShip/owner/assetExport',
   // 资产权属详情
   assetDetail: '/ams/ownerShip/attr/asset/detail',
   // 权属登记

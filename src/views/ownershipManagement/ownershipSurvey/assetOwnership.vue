@@ -7,9 +7,9 @@
   <div>
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
-        <!-- <div slot="headerBtns">
-          <SG-Button type="primary" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
-        </div> -->
+        <div slot="headerBtns">
+          <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_OPT_EXPORT" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
+        </div>
         <div slot="contentForm" class="search-content-box">
           <div class="search-from-box">
             <treeSelect
@@ -477,11 +477,16 @@ export default {
     openExport () {
       let data = {
         ...this.queryCondition,
-        flag: this.queryCondition.currentOrgan ? 1 : 0
+        flag: "0"
       };
+      data.ownershipStatuss = data.ownershipStatuss.join(',')
+      data.kindOfRights = data.kindOfRights.join(',')
+      data.statuss = data.statuss.join(',')
+      data.assetTypes = data.assetTypes.join(',')
+      data.objectTypes = data.objectTypes.join(',')
       data.pageNum = 1
       data.pageSize = 1
-      this.$api.basics.projectExport(data).then((res) => {
+      this.$api.basics.assetExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");

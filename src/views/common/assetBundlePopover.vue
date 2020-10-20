@@ -36,6 +36,7 @@
       <div class="tab-nav">
         <div class="table-border table-layout-fixed">
           <a-table
+            :scroll="{y: 450 }"
             :rowSelection="rowSelection"
             :loading="loading"
             :columns="columns"

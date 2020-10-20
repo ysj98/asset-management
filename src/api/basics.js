@@ -100,6 +100,10 @@ export function attrSet (data) {
 export function assetList (data) {
   return axiosPost(ownershipSurvey.assetList, data)
 }
+// 资产权属导出
+export function assetExport (data) {
+  return axiosPost(ownershipSurvey.assetExport, data)
+}
 // 资产权属详情
 export function assetDetail (data) {
   return axiosGet(ownershipSurvey.assetDetail, data)

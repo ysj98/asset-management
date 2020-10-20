@@ -54,60 +54,6 @@ let columns = [
     width: "10%",
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
-    width: "15%",
-  },
-  {
-    title: "所在位置",
-    dataIndex: "location",
-    width: "20%",
-  },
-  {
-    title: "面积(㎡)",
-    dataIndex: "area",
-    width: "10%",
-  },
-  {
-    title: "权证号",
-    dataIndex: "warrantNbr",
-    width: "10%",
-  },
-  {
-    title: "权利人",
-    dataIndex: "obligeeName",
-    width: "10%",
-  },
-  {
-    title: "权属处理方式",
-    dataIndex: "settingMethodName",
-    width: "124px",
-  },
-  {
-    title: "备注",
-    dataIndex: "remark",
-    width: "124px",
-  },
-];
-
-// 表格数据
-let columnsDetail = [
-  {
-    title: "资产名称",
-    dataIndex: "assetName",
-    width: "20%",
-  },
-  {
-    title: "资产编码",
-    dataIndex: "assetCode",
-    width: "15%",
-  },
-  {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    width: "10%",
-  },
-  {
     title: "资产分类",
     dataIndex: "objectTypeName",
     width: "10%",
@@ -169,7 +115,7 @@ export default {
     return {
       queryCondition: { ...queryCondition },
       table: {
-        columns: [],
+        columns,
         dataSource: [],
         loading: false,
         totalCount: 0,
@@ -177,11 +123,6 @@ export default {
     };
   },
   mounted() {
-    if (this.type === 'detail') {
-      this.table.columns = columnsDetail
-    } else {
-      this.table.columns = columns
-    }
     this.query();
   },
   methods: {
