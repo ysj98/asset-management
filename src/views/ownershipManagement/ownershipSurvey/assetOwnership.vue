@@ -350,8 +350,10 @@ export default {
       data.ownershipStatuss = data.ownershipStatuss.join(',')
       data.kindOfRights = data.kindOfRights.join(',')
       data.statuss = data.statuss.join(',')
-      data.assetTypes = data.assetTypes.join(',')
-      data.objectTypes = data.objectTypes.join(',')
+      data.assetTypes[0] === '' ? data.assetTypes = [] : data.assetTypes.join(',')
+      data.objectTypes[0] === '' ? data.objectTypes = [] : data.objectTypes.join(',')
+      // data.assetTypes = data.assetTypes.join(',')
+      // data.objectTypes = data.objectTypes.join(',')
       this.table.loading = true;
       this.$api.basics.assetList(data).then(
         res => {
@@ -479,11 +481,13 @@ export default {
         ...this.queryCondition,
         flag: "0"
       };
+      data.assetTypes[0] === '' ? data.assetTypes = [] : data.assetTypes.join(',')
+      data.objectTypes[0] === '' ? data.objectTypes = [] : data.objectTypes.join(',')
       data.ownershipStatuss = data.ownershipStatuss.join(',')
       data.kindOfRights = data.kindOfRights.join(',')
       data.statuss = data.statuss.join(',')
-      data.assetTypes = data.assetTypes.join(',')
-      data.objectTypes = data.objectTypes.join(',')
+      // data.assetTypes = data.assetTypes.join(',')
+      // data.objectTypes = data.objectTypes.join(',')
       data.pageNum = 1
       data.pageSize = 1
       this.$api.basics.assetExport(data).then((res) => {
@@ -491,7 +495,7 @@ export default {
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `资产项目权属表.xls`;
+        a.download = `资产权属表.xls`;
         a.style.display = "none";
         document.body.appendChild(a);
         a.click();
@@ -580,7 +584,9 @@ export default {
     goPage(type, record) {
       let query = {
         type,
-        assetHouseId: record.assetHouseId,
+        // assetHouseId: record.assetHouseId,
+        assetObjectId: record.assetObjectId,
+        assetType: record.assetType,
         organId: record.organId
       };
       this.$router.push({ path: operationTypes[type], query });

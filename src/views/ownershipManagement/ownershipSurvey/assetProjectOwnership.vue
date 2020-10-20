@@ -224,6 +224,7 @@ export default {
       };
       data.pageNum = 1
       data.pageSize = 1
+      data.assetTypes = this.alljudge(data.assetTypes)
       this.$api.basics.projectExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
@@ -246,11 +247,23 @@ export default {
         );
       });
     },
+    alljudge (val) {
+      if (val.length !== 0) {
+        if (val[0] === '') {
+          return []
+        } else {
+          return val
+        }
+      } else {
+        return []
+      }
+    },
     query() {
       let data = {
         ...this.queryCondition,
         flag: this.queryCondition.currentOrgan ? 1 : 0,
       };
+      data.assetTypes = this.alljudge(data.assetTypes)
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(
         res => {

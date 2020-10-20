@@ -289,7 +289,8 @@ export default {
   data() {
     return {
       type: "",
-      assetHouseId: "",
+      assetObjectId: '',
+      assetType: '',
       organId: '',
       spinning: false,
       // 权属信息
@@ -313,14 +314,16 @@ export default {
   },
   created() {
     this.type = this.$route.query.type || "";
-    this.assetHouseId = this.$route.query.assetHouseId || "";
+    this.assetObjectId = this.$route.query.assetObjectId || "";
+    this.assetType = this.$route.query.assetType || "";
     this.organId = this.$route.query.organId || ''
     this.assetDetail();
   },
   methods: {
     assetDetail() {
       let data = {
-        assetHouseId: this.assetHouseId
+        assetObjectId: this.assetObjectId,
+        assetType: this.assetType
       };
       this.spinning = true
       this.$api.basics.assetDetail(data).then(res => {
