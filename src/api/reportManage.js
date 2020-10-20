@@ -1,7 +1,7 @@
 /*
  * @Description:
  * @Date: 2020-03-04 18:38:38
- * @LastEditTime: 2020-10-19 16:14:32
+ * @LastEditTime: 2020-10-20 18:02:16
  */
 
 import { axiosPost, axiosGet  } from '../utils/axios'
@@ -115,22 +115,17 @@ export function queryAssetOperationPageList (data) {
 
 // 导出资产运营
 export function exportAssetOperationList (data) {
-	return axiosPost(reportManage.exportAssetOperationList, data)
+  return axiosPost(reportManage.exportAssetOperationList, data, false, false, {responseType: 'blob'})
 }
-// /ams/reportdata/exportAssetOperationList
 // 导出资产费用列表
 export function exportAssetExpenseList (data) {
-	return axiosPost(reportManage.exportAssetExpenseList, data)
+	return axiosPost(reportManage.exportAssetExpenseList, data, false, false, {responseType: 'blob'})
 }
-// /ams/reportdata/exportAssetExpenseList
 // 导出资产收入列表
 export function exportAssetIncomeList (data) {
-	return axiosPost(reportManage.exportAssetIncomeList, data)
+	return axiosPost(reportManage.exportAssetIncomeList, data, false, false, {responseType: 'blob'})
 }
-// /ams/reportdata/exportAssetIncomeList
-
 // 导出资产折旧列表
 export function exportAssetDeprecitionList (data) {
-	return axiosPost(reportManage.exportAssetDeprecitionList, data)
+	return axiosPost(reportManage.exportAssetDeprecitionList, data, false, false, {responseType: 'blob'})
 }
-// /ams/reportdata/exportAssetDeprecitionList
