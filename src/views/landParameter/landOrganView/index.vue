@@ -101,8 +101,8 @@ export default {
           { title: "闲置(㎡)", dataIndex: "idleArea" },
           { title: "占用(㎡)", dataIndex: "occupationArea" },
           { title: "其它(㎡)", dataIndex: "otherArea" },
-          { title: "资产原值(万元)", dataIndex: "originalValue" },
-          { title: "最新估值(万元)", dataIndex: "marketValue" },
+          { title: "资产原值", dataIndex: "originalValue" },
+          { title: "最新估值", dataIndex: "marketValue" },
           { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
         ],
       },

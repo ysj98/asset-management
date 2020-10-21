@@ -208,13 +208,13 @@ export default {
         },
         { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
         {
-          title: "资产原值(元)",
+          title: "资产原值(万元)",
           key: "originalValue",
           value: 0,
           bgColor: "#DD81E6",
         },
         {
-          title: "最新估值(元)",
+          title: "最新估值(万元)",
           key: "marketValue",
           value: 0,
           bgColor: "#1890FF",
