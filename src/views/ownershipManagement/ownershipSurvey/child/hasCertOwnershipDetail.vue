@@ -71,6 +71,11 @@ let columns = [
     width: "10%"
   },
   {
+    title: "资产分类",
+    dataIndex: "objectTypeName",
+    width: "10%",
+  },
+  {
     title: "资产项目名称",
     dataIndex: "projectName",
     width: "15%"
@@ -80,10 +85,15 @@ let columns = [
     dataIndex: "location",
     width: "20%"
   },
+  // {
+  //   title: "面积(㎡)",
+  //   dataIndex: "area",
+  //   width: "10%"
+  // },
   {
-    title: "面积(㎡)",
-    dataIndex: "area",
-    width: "10%"
+    title: "权属类型",
+    dataIndex: "kindOfRightName",
+    width: "10%",
   },
   {
     title: "权证号",

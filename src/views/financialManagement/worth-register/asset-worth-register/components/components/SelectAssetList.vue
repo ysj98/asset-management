@@ -67,7 +67,7 @@
               :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
             />
           </div>
-          <SG-FooterPagination v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
+          <SG-FooterPagination ref="footerPagination" v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
         </div>
       </a-col>
       <a-col :span="6">
@@ -115,7 +115,7 @@
         loading: false, // Table loading
         selectedList: [], // 选中人员list
         selectedRowKeys: [], // Table选中项
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: true },
+        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: false },
         columns: [
           { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 120 },
           { title: '资产名称', dataIndex: 'assetName' },
@@ -241,6 +241,13 @@
       // this.queryAssetTypeDict()
       this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) // 改后
       this.queryObjectType(assetType)
+      // 添加可以选择不同数量分页
+      this.$nextTick(function () {
+        let arr = this.$refs.footerPagination.pageLists
+        if (!arr.includes(200)) {
+          this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100, 200]
+        }
+      })
     },
     watch: {
       value: function (value) {

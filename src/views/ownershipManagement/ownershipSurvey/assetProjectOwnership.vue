@@ -6,6 +6,11 @@
  <template>
   <div class="assetProject-page pb70">
     <SearchContainer type="line" :value="false">
+      <div slot="headerBtns">
+        <SG-Button type="primary" @click="exportList" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_ITEMS_EXPORT">
+          <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
+        </SG-Button>
+      </div>
       <div slot="headerForm">
         <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产项目</a-checkbox>
         <treeSelect
@@ -22,6 +27,21 @@
           optionFilterProp="children"
           :style="allStyle"
           :options="projectIdOpt"
+          :allowClear="false"
+          :filterOption="filterOption"
+          notFoundContent="没有查询到数据"
+        />
+        <!-- 资产类型 -->
+        <a-select
+          showSearch
+          :maxTagCount="1"
+          :style="allStyle"
+          mode="multiple"
+          placeholder="全部资产类型"
+          @select="changeAssetType"
+          :tokenSeparators="[',']"
+          v-model="queryCondition.assetTypes"
+          :options="assetTypeData"
           :allowClear="false"
           :filterOption="filterOption"
           notFoundContent="没有查询到数据"
@@ -70,6 +90,7 @@ import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import noDataTips from "@/components/noDataTips";
+import segiIcon from '@/components/segiIcon.vue'
 // 页面跳转
 const operationTypes = {
   detail: "/ownershipSurvey/projectDetail",
@@ -82,6 +103,7 @@ const queryCondition = {
   organId: "",
   projectName: "",
   projectId: "",
+  assetTypes: '',
   currentOrgan: false,
   pageSize: 10,
   pageNum: 1
@@ -92,6 +114,12 @@ const projectIdOpt = [
     value: ""
   }
 ];
+const assetTypeData = [
+  {
+    label: "全部资产类型",
+    value: ""
+  }
+]
 let columns = [
   {
     title: "管理机构",
@@ -156,7 +184,8 @@ export default {
   components: {
     SearchContainer,
     TreeSelect,
-    noDataTips
+    noDataTips,
+    segiIcon
   },
   data() {
     return {
@@ -166,6 +195,7 @@ export default {
       organName: "", // 所选组织机构名称
       queryCondition,
       projectIdOpt,
+      assetTypeData,
       table: {
         columns,
         dataSource: [],
@@ -183,12 +213,57 @@ export default {
       }
     }
   },
+  mounted() {
+    this.platformDictFn("asset_type");
+  },
   methods: {
-    query() {
+    exportList() {
       let data = {
         ...this.queryCondition,
         flag: this.queryCondition.currentOrgan ? 1 : 0
       };
+      data.pageNum = 1
+      data.pageSize = 1
+      data.assetTypes = this.alljudge(data.assetTypes)
+      this.$api.basics.projectExport(data).then((res) => {
+        console.log(res);
+        let blob = new Blob([res.data]);
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `资产项目权属表.xls`;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    },
+    // 资产类型发生变化
+    changeAssetType(value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetTypes = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.assetTypes,
+          this.assetTypeData
+        );
+      });
+    },
+    alljudge (val) {
+      if (val.length !== 0) {
+        if (val[0] === '') {
+          return []
+        } else {
+          return val
+        }
+      } else {
+        return []
+      }
+    },
+    query() {
+      let data = {
+        ...this.queryCondition,
+        flag: this.queryCondition.currentOrgan ? 1 : 0,
+      };
+      data.assetTypes = this.alljudge(data.assetTypes)
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(
         res => {
@@ -233,6 +308,45 @@ export default {
           this.$message.error(res.data.message);
         }
       });
+    },
+    // 平台字典获取变动类型
+    platformDictFn(str) {
+      let obj = {
+        code: str,
+      };
+      this.$api.assets.platformDict(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data;
+          if (str === "asset_type") {
+            this.assetTypeData = [
+              { label: "全部资产类型", value: "" },
+              ...data.map((item) => {
+                return { ...item, label: item.name };
+              }),
+            ];
+          }
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue(value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === "") {
+        data = [""];
+      } else {
+        let totalIndex = data.indexOf("");
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1);
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = [""];
+          }
+        }
+      }
+      return data;
     },
     // 选择组织机构
     changeTree(value, label) {

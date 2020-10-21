@@ -80,6 +80,10 @@ export function organDict (data) {
 export function ownerShipList (data) {
   return axiosPost(ownershipSurvey.ownerShipList, data)
 }
+// 资产项目权属导出
+export function projectExport (data) {
+  return axiosPost(ownershipSurvey.projectExport, data, false, false, {responseType: 'blob'})
+}
 // 资产项目权属详情列表信息
 export function attrList (data) {
   return axiosPost(ownershipSurvey.attrList, data)
@@ -95,6 +99,10 @@ export function attrSet (data) {
 // 资产权属列表
 export function assetList (data) {
   return axiosPost(ownershipSurvey.assetList, data)
+}
+// 资产权属导出
+export function assetExport (data) {
+  return axiosPost(ownershipSurvey.assetExport, data, false, false, {responseType: 'blob'})
 }
 // 资产权属详情
 export function assetDetail (data) {

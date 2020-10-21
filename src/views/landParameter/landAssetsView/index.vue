@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-08-25 17:15:40
+ * @LastEditTime: 2020-10-19 18:01:19
  * @Description: 土地资产视图
 -->
 <template>
@@ -25,6 +25,9 @@
             </a-select>
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
               <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
+              <a-select-option v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
         </div>
@@ -134,6 +137,7 @@ const queryCondition =  {
   organId: '',        // 组织机构id
   projectId: '',      //类型：String  必有字段  备注：项目id
   statuss: '',        // 资产状态(多选)
+  useType: '',        // 用途
   pageNum: 1,         // 当前页
   pageSize: 10        // 每页显示记录数
 }
@@ -187,6 +191,12 @@ export default {
       assetClassifyData: [
         {
           name: '全部分类',
+          value: ''
+        }
+      ],
+      useTypeOptions: [
+        {
+          name: '全部用途',
           value: ''
         }
       ]
@@ -268,9 +278,11 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = ''
       this.queryCondition.objectTypes = ''
+      this.queryCondition.useType = ''
       this.getObjectKeyValueByOrganIdFn()
       this.getListFn()
       this.allQuery()
+      this.queryLandUseList()
     },
     // 搜索
     allQuery () {
@@ -338,6 +350,12 @@ export default {
         this.queryCondition.objectTypes = this.handleMultipleSelectValue(value, this.queryCondition.objectTypes, this.assetClassifyData)
       })
     },
+    // 用途
+    useTypeChange (value) {
+      this.$nextTick(function () {
+        this.queryCondition.useType = this.handleMultipleSelectValue(value, this.queryCondition.useType, this.useTypeOptions)
+      })
+    },
     // 项目
     projectIdFn (value) {
       this.$nextTick(function () {
@@ -400,13 +418,14 @@ export default {
       let obj = {
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省
-        region: this.provinces.district ? this.provinces.district : '',         // 区
-        flag: this.current,                                                           // 类型：0运营；1闲置；2自用；3占用；4其他
+        region: this.provinces.district ? this.provinces.district : '',     // 区
+        flag: this.current,                                                 // 类型：0运营；1闲置；2自用；3占用；4其他
         landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
-        objectTypes: this.alljudge(this.queryCondition.objectTypes),    // 资产分类(多选)
-        organId: this.queryCondition.organId,          // 组织机构id
-        projectId: this.alljudge(this.queryCondition.projectId),      //类型：String  必有字段  备注：项目id
-        statuss: this.alljudge(this.queryCondition.statuss),                 // 资产状态(多选)
+        objectTypes: this.alljudge(this.queryCondition.objectTypes),        // 资产分类(多选)
+        useTypes: this.alljudge(this.queryCondition.useType),               // 用途(多选)
+        organId: this.queryCondition.organId,                               // 组织机构id
+        projectId: this.alljudge(this.queryCondition.projectId),            // 项目id
+        statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize         // 每页显示记录数
       }
@@ -446,7 +465,23 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    }
+    },
+    // 取全部土地用途
+    queryLandUseList() {
+      let data = {
+        dictCode: "OCM_LANDUSE",
+        dictFlag: "1",
+        groupId: this.queryCondition.organId,
+        code: "OCM_LANDUSE",
+        organId: this.queryCondition.organId,
+      }
+      this.$api.basics.organDict(data).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data
+          this.useTypeOptions = [{name: '全部用途', value: ''}, ...data]
+        }
+      })
+    },
   },
   created () {
   },

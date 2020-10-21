@@ -1,14 +1,14 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-10-10 10:46:29
+ * @LastEditTime: 2020-10-19 16:50:54
  -->
 <template>
   <div>
     <div class="pb70">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
-          <!-- <SG-Button type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button> -->
+          <SG-Button v-if="$power.has(ASSET_MANAGEMENT.ASSET_OPERATING_EXPORT)" @click="openExport" type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
         <div slot="headerForm">
             <treeSelect
@@ -406,7 +406,33 @@ export default {
       return data
     },
     // 导出
-    openExport () {},
+    openExport () {
+      let loadingName = this.SG_Loding('导出中...')
+      let data = {
+        ...this.queryCondition,
+      };
+      // 呈报表单参数改变
+      data.taskType = utils.deepClone(data.taskType).join(',')
+      if (this.defaultValue && this.defaultValue[0]) {
+        data.beginDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
+        data.endDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
+      }
+      delete data.pageNum
+      delete data.pageSize
+      this.$api.reportManage.exportAssetOperationList(data).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产运营信息.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        this.DE_Loding(loadingName).then(() => {})
+      }).catch(err => {
+        this.DE_Loding(loadingName).then(() => {})
+      })
+    },
     // 重置分页查询
     searchQuery() {
       this.queryCondition.pageNum = 1;

@@ -290,6 +290,13 @@ export const ASSET_MANAGEMENT = {
   ASSET_REPORT_INCOME: 'asset_report_income', // 呈报记录收入
   ASSET_REPORT_DEPRECIA: 'asset_report_deprecia', // 呈报记录折旧
   ASSET_REPORT_COST: 'asset_report_cost', // 呈报记录费用
+
+  // 导出权限
+  ASSET_OPERATING_EXPORT: 'asset_operating_export', // 资产运营
+  ASSET_INCOME_EXPORT: 'asset_income_export', // 资产收入
+  ASSET_COST_EXPORT: 'asset_cost_export', // 资产费用
+  ASSET_DEPRECIATION_EXPORT: 'asset_depreciation_export', // 折旧
+
   /**
  * 呈报计划
  */
@@ -366,6 +373,8 @@ export const ASSET_MANAGEMENT = {
    * 权属概况
    */
   ASSET_PROOWNERSHIP_ORGAN_EXPORT: 'proownership_organ_export',   // 权属概况-组织机构权属列表-导出
+  ASSET_OWNERSHIP_ITEMS_EXPORT: 'asset_ownership_items_export',   // 权属概况-资产项目权属属列表-导出
+  ASSET_OWNERSHIP_OPT_EXPORT: 'asset_ownership_opt_export',   // 权属概况-资产权属属列表-导出
   /**
    * 资产变更一览表
    */

@@ -155,7 +155,7 @@
         numList: [
           {title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057'},
           {title: '待审核', value: 0, num: 'toBeAuditedNum', percent: 'toBeAuditedPercent', fontColor: '#324057'},
-          {title: '接管中', value: 0, num: 'takeOverNum', percent: 'takeOverPercent', fontColor: '#324057'},
+          {title: '未接管', value: 0, num: 'takeOverNum', percent: 'takeOverPercent', fontColor: '#324057'},
           {title: '已接管', value: 0, num: 'takeOveredNum', percent: 'takeOveredPercent', fontColor: '#324057'},
           {title: '转运营', value: 0, num: 'transferOperationNum', percent: 'transferOperationNumPercent', fontColor: '#324057'},
         ], // 概览数据，title 标题，value 数值，bgColor 背景色

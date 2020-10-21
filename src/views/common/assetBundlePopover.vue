@@ -36,6 +36,7 @@
       <div class="tab-nav">
         <div class="table-border table-layout-fixed">
           <a-table
+            :scroll="{y: 450 }"
             :rowSelection="rowSelection"
             :loading="loading"
             :columns="columns"
@@ -46,6 +47,7 @@
           </a-table>
           <no-data-tips v-show="tableData.length === 0"></no-data-tips>
           <SG-FooterPagination
+            ref="footerPagination"
             class="sg-footer"
             :pageLength="selecData.pageSize"
             :totalCount="count"
@@ -122,7 +124,7 @@ export default {
       firstCall: true,
       columns,
       loading: false,
-      noPageTools: true,
+      noPageTools: false,
       location: 'absolute',
       count: '',
       projectData: [],
@@ -385,6 +387,13 @@ export default {
           this.loading = false
         }
       })
+      // 添加可以选择不同数量分页
+      this.$nextTick(function () {
+        let arr = this.$refs.footerPagination.pageLists
+        if (!arr.includes(200)) {
+          this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100, 200]
+        }
+      })
     },
     // 分页查询
     handleChange (data) {
@@ -399,6 +408,10 @@ export default {
     this.getObjectKeyValueByOrganIdFn()
     // 资产类型
     this.platformDictFn('asset_type')
+    // this.$nextTick( function () {
+    //   console.log(this.$refs['footerPagination'])
+    //   this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100, 200]
+    // })
   }
 }
 </script>
