@@ -151,7 +151,7 @@
           xAxis: { type: 'category', show: false }, // 隐藏X轴
           legend: { itemWidth: 10, itemHeight: 10, bottom: 0 }, // 图例样式
           color: ['#5b8ff9', '#5ad8a6', '#5d7092', '#f6bd16'], // 自定义调色盘
-          grid: { containLabel: true, top: 10, right: 10, left: 10, bottom: 40 }, // 距父元素边框距离
+          grid: { containLabel: true, top: 20, right: 10, left: 10, bottom: 40 }, // 距父元素边框距离
           series: [
             { name: '资产原值', key: 'originalValue' },
             { name: '首次评估原值', key: 'firstOriginalValue' },
