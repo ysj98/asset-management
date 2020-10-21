@@ -126,14 +126,14 @@ let columns = [
         width: '100px',
       },
       {
-        title: "待办证面积(㎡)",
-        dataIndex: "ownerShipWaitArea",
-        width: '200px',
-      },
-      {
         title: "待办证",
         dataIndex: "ownerShipWaitCount",
         width: '150px',
+      },
+      {
+        title: "待办证面积(㎡)",
+        dataIndex: "ownerShipWaitArea",
+        width: '200px',
       },
     ],
   },
@@ -177,7 +177,7 @@ let columns = [
         dataIndex: "useShipWaitCount",
       },
       {
-        title: "待办证",
+        title: "待办证面积(㎡)",
         dataIndex: "useShipWaitArea",
         width: '150px',
       },
