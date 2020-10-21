@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-10-19 16:52:18
+ * @LastEditTime: 2020-10-21 15:47:22
  -->
 <template>
   <div class="assetsRegistration">
@@ -374,7 +374,7 @@ export default {
         month: this.month ? `${moment(this.month).format('YYYY-MM')}-01` : '',                     // 月份
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',
       }
-      this.$api.reportManage.exportAssetExpenseList(obj).then(res => {
+      this.$api.reportManage.exportAssetDeprecitionList(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
