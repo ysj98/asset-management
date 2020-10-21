@@ -37,7 +37,7 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 2870}"
+        :scroll="{ x: 2970}"
         class="custom-table td-pd10"
         bordered
         :loading="table.loading"
@@ -76,6 +76,12 @@ let columns = [
   {
     title: "资产总数",
     dataIndex: "assetCount",
+    width: '100px',
+    fixed: 'left'
+  },
+  {
+    title: "资产面积(㎡)",
+    dataIndex: "assetArea",
     width: '100px',
     fixed: 'left'
   },
