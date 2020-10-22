@@ -37,8 +37,8 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 1930}"
-        class="custom-table td-pd10"
+        :scroll="{ x: 2000}"
+        class="custom-table td-pd10 eliminate-table"
         bordered
         :loading="table.loading"
         :pagination="false"
@@ -105,7 +105,7 @@ let columns = [
       {
         title: "总面积(㎡)",
         dataIndex: "ownerShipArea",
-        width: '80px',
+        width: '100px',
       },
       {
         title: "有证",
@@ -115,7 +115,7 @@ let columns = [
       {
         title: "有证面积(㎡)",
         dataIndex: "ownerShipYesArea",
-       width: '80px',
+        width: '100px',
       },
       {
         title: "无证",
@@ -125,7 +125,7 @@ let columns = [
       {
         title: "无证面积(㎡)",
         dataIndex: "ownerShipNoArea",
-        width: '80px',
+        width: '100px',
       },
       {
         title: "待办证",
@@ -135,7 +135,7 @@ let columns = [
       {
         title: "待办证面积(㎡)",
         dataIndex: "ownerShipWaitArea",
-        width: '80px',
+        width: '100px',
       },
     ],
   },
@@ -151,7 +151,7 @@ let columns = [
       {
         title: "总面积(㎡)",
         dataIndex: "useShipArea",
-        width: '80px',
+        width: '100px',
       },
       {
         title: "有证",
@@ -160,7 +160,7 @@ let columns = [
       },
       {
         title: "有证面积(㎡)",
-        width: '80px',
+        width: '100px',
         dataIndex: "useShipYesArea",
       },
       {
@@ -170,7 +170,7 @@ let columns = [
       },
       {
         title: "无证面积(㎡)",
-        width: '80px',
+        width: '100px',
         dataIndex: "useShipNoArea",
       },
       {
@@ -181,7 +181,7 @@ let columns = [
       {
         title: "待办证面积(㎡)",
         dataIndex: "useShipWaitArea",
-        width: '80px',
+        width: '100px',
       },
     ],
   },
@@ -378,14 +378,32 @@ export default {
 <style lang='less' scoped>
 .custom-table {
   padding-bottom: 55px;
-  /*if you want to set scroll: { x: true }*/
-  /*you need to add style .ant-table td { white-space: nowrap; }*/
   & /deep/ .ant-table {
     .ant-table-thead th {
       white-space: nowrap;
     }
     tr:last-child {
       font-weight: bold;
+    }
+  }
+}
+</style>
+
+<style lang='less'>
+.eliminate-table {
+  & /deep/ .ant-table {
+    .ant-table-thead {
+      tr:nth-of-type(2) {
+        th:first-child{
+          padding-left: 6px !important;
+        }
+        td:first-child{
+          padding-left: 6px !important;
+        }
+        td:last-child{
+          padding-left: 6px !important;
+        }
+      }
     }
   }
 }
