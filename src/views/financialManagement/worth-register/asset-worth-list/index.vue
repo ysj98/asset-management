@@ -65,6 +65,24 @@
     <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <template slot="assetCode" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="assetName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="organName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="projectName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="assetTypeName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="assetCategoryName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
       <template slot="action" slot-scope="text, record">
         <span v-if="record.projectName !== '合计：'" class="action_text" @click="viewTrendAction(true, record)">趋势图</span>
       </template>
@@ -86,10 +104,11 @@
   import {ASSET_MANAGEMENT} from 'src/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
+  import TooltipText from "src/views/common/TooltipText";
   import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
-    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber },
+    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber, TooltipText },
     data () {
       return {
         moment,
@@ -114,16 +133,16 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 2000 },
+          scroll: { x: 1900 },
           pagination: false,
           rowKey: 'assetId',
           columns: [
-            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: 180 },
-            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 200 },
-            { title: '资产类型', dataIndex: 'assetTypeName' },
-            { title: '资产分类', dataIndex: 'assetCategoryName' },
-            { title: '所属机构', dataIndex: 'organName' },
-            { title: '资产项目', dataIndex: 'projectName' },
+            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', scopedSlots: { customRender: 'assetCode' }, },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', scopedSlots: { customRender: 'assetName' }, },
+            { title: '资产类型', dataIndex: 'assetTypeName', scopedSlots: { customRender: 'assetTypeName' }, },
+            { title: '资产分类', dataIndex: 'assetCategoryName', scopedSlots: { customRender: 'assetCategoryName' }, },
+            { title: '所属机构', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, },
+            { title: '资产项目', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, },
             { title: '资产原值(元)', dataIndex: 'originalValue' },
             { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
             { title: '首次市场法估值(元)', dataIndex: 'marketValue' },
