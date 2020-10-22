@@ -37,7 +37,7 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 2030}"
+        :scroll="{ x: 2090}"
         class="custom-table td-pd10 eliminate-table"
         bordered
         :loading="table.loading"
@@ -47,7 +47,7 @@
         :locale="{emptyText: '暂无数据'}"
       >
       <template slot="organName" slot-scope="text">
-        <tooltip-text :text="text"/>
+        <tooltip-text width="250" :text="text"/>
       </template>
       </a-table>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -76,7 +76,6 @@ let columns = [
     title: "管理机构",
     dataIndex: "organName",
     scopedSlots: { customRender: 'organName' },
-    // width: '200px',
     fixed: 'left'
   },
   {
