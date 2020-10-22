@@ -37,15 +37,19 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 1930}"
-        class="custom-table td-pd10"
+        :scroll="{ x: 2030}"
+        class="custom-table td-pd10 eliminate-table"
         bordered
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
-      ></a-table>
+      >
+      <template slot="organName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      </a-table>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -64,13 +68,15 @@ import { utils } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
 import segiIcon from "@/components/segiIcon.vue";
+ import TooltipText from "../../common/TooltipText";
 
 const allStyle = { width: "140px", marginRight: "10px" };
 let columns = [
   {
     title: "管理机构",
     dataIndex: "organName",
-    width: '200px',
+    scopedSlots: { customRender: 'organName' },
+    // width: '200px',
     fixed: 'left'
   },
   {
@@ -105,7 +111,6 @@ let columns = [
       {
         title: "总面积(㎡)",
         dataIndex: "ownerShipArea",
-        width: '80px',
       },
       {
         title: "有证",
@@ -115,7 +120,6 @@ let columns = [
       {
         title: "有证面积(㎡)",
         dataIndex: "ownerShipYesArea",
-       width: '80px',
       },
       {
         title: "无证",
@@ -125,7 +129,6 @@ let columns = [
       {
         title: "无证面积(㎡)",
         dataIndex: "ownerShipNoArea",
-        width: '80px',
       },
       {
         title: "待办证",
@@ -135,7 +138,6 @@ let columns = [
       {
         title: "待办证面积(㎡)",
         dataIndex: "ownerShipWaitArea",
-        width: '80px',
       },
     ],
   },
@@ -151,7 +153,6 @@ let columns = [
       {
         title: "总面积(㎡)",
         dataIndex: "useShipArea",
-        width: '80px',
       },
       {
         title: "有证",
@@ -160,7 +161,6 @@ let columns = [
       },
       {
         title: "有证面积(㎡)",
-        width: '80px',
         dataIndex: "useShipYesArea",
       },
       {
@@ -170,7 +170,6 @@ let columns = [
       },
       {
         title: "无证面积(㎡)",
-        width: '80px',
         dataIndex: "useShipNoArea",
       },
       {
@@ -180,8 +179,7 @@ let columns = [
       },
       {
         title: "待办证面积(㎡)",
-        dataIndex: "useShipWaitArea",
-        width: '80px',
+        dataIndex: "useShipWaitArea"
       },
     ],
   },
@@ -198,6 +196,7 @@ export default {
     TreeSelect,
     segiIcon,
     noDataTips,
+    TooltipText
   },
   data() {
     return {
@@ -386,6 +385,26 @@ export default {
     }
     tr:last-child {
       font-weight: bold;
+    }
+  }
+}
+</style>
+
+<style lang='less'>
+.eliminate-table {
+  & /deep/ .ant-table {
+    .ant-table-thead {
+      tr:nth-of-type(2) {
+        th:first-child{
+          padding-left: 6px !important;
+        }
+        td:first-child{
+          padding-left: 6px !important;
+        }
+        td:last-child{
+          padding-left: 6px !important;
+        }
+      }
     }
   }
 }
