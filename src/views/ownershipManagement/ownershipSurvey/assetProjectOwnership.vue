@@ -51,6 +51,7 @@
     </SearchContainer>
     <div>
       <a-table
+        bordered
         class="custom-table td-pd10"
         :loading="table.loading"
         :pagination="false"
@@ -156,28 +157,80 @@ let columns = [
     title: "办理进度",
     dataIndex: "tranProgress",
     scopedSlots: { customRender: "tranProgress" },
-    width: 200
+    width: 150
+  },
+   {
+    title: "所有权",
+    dataIndex: "goodsTypeNames",
+    children: [
+      {
+        title: "总数",
+        dataIndex: "ownerShipCount",
+        width: 100
+      },
+      {
+        title: "有证",
+        dataIndex: "ownerShipYesCount",
+        width: 100
+      },
+      {
+        title: "无证",
+        dataIndex: "ownerShipNoCount",
+        width: 100
+      },
+      {
+        title: "待办证",
+        dataIndex: "ownerShipWaitCount",
+       width: 100
+      }
+    ],
   },
   {
-    title: "有证资产数",
-    dataIndex: "ownershipCount",
-    width: 100
+    title: "使用权",
+    dataIndex: "wsPrice",
+    children: [
+      {
+        title: "总数",
+        dataIndex: "useShipCount",
+        width: 100
+      },
+      {
+        title: "有证",
+        width: 100,
+        dataIndex: "useShipYesCount",
+      },
+      {
+        title: "无证",
+        width: 100,
+        dataIndex: "useShipNoCount",
+      },
+      {
+        title: "待办证",
+       width: 100,
+        dataIndex: "useShipWaitCount",
+      }
+    ],
   },
-  {
-    title: "无证资产数",
-    dataIndex: "noOwnershipCount",
-    width: 100
-  },
-  {
-    title: "待办资产数",
-    dataIndex: "waitOwnershipCount",
-    width: 100
-  },
+  // {
+  //   title: "有证资产数",
+  //   dataIndex: "ownershipCount",
+  //   width: 100
+  // },
+  // {
+  //   title: "无证资产数",
+  //   dataIndex: "noOwnershipCount",
+  //   width: 100
+  // },
+  // {
+  //   title: "待办资产数",
+  //   dataIndex: "waitOwnershipCount",
+  //   width: 100
+  // },
   {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 120
+    width: 200
   }
 ];
 export default {
