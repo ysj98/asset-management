@@ -407,8 +407,4 @@ export default {
     }
   }
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> v2.0.4.1
