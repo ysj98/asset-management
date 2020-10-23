@@ -36,9 +36,10 @@
       </div>
     </SearchContainer>
     <div>
+      <!-- class="custom-table td-pd10 eliminate-table" -->
       <a-table
-        :scroll="{ x: 2090}"
-        class="custom-table td-pd10 eliminate-table"
+        class="custom-tables"
+        :scroll="{ x: 2600}"
         bordered
         :loading="table.loading"
         :pagination="false"
@@ -75,6 +76,7 @@ let columns = [
   {
     title: "管理机构",
     dataIndex: "organName",
+    width: '250px',
     scopedSlots: { customRender: 'organName' },
     fixed: 'left'
   },
@@ -86,12 +88,12 @@ let columns = [
   {
     title: "资产面积(㎡)",
     dataIndex: "assetArea",
-    width: '100px',
+    width: '150px',
   },
   {
     title: "权证总面积(㎡)",
     dataIndex: "ownerShipTotalArea",
-   width: '100px',
+   width: '150px',
   },
   {
     title: "办理进度",
@@ -114,7 +116,7 @@ let columns = [
       {
         title: "有证",
         dataIndex: "ownerShipYesCount",
-        width: '60px',
+        width: '80px',
       },
       {
         title: "有证面积(㎡)",
@@ -123,7 +125,7 @@ let columns = [
       {
         title: "无证",
         dataIndex: "ownerShipNoCount",
-        width: '60px',
+        width: '80px',
       },
       {
         title: "无证面积(㎡)",
@@ -132,7 +134,7 @@ let columns = [
       {
         title: "待办证",
         dataIndex: "ownerShipWaitCount",
-        width: '60px',
+        width: '80px',
       },
       {
         title: "待办证面积(㎡)",
@@ -155,7 +157,7 @@ let columns = [
       },
       {
         title: "有证",
-        width: '60px',
+        width: '80px',
         dataIndex: "useShipYesCount",
       },
       {
@@ -164,7 +166,7 @@ let columns = [
       },
       {
         title: "无证",
-        width: '60px',
+        width: '80px',
         dataIndex: "useShipNoCount",
       },
       {
@@ -173,7 +175,7 @@ let columns = [
       },
       {
         title: "待办证",
-        width: '60px',
+        width: '80px',
         dataIndex: "useShipWaitCount",
       },
       {

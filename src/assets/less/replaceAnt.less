@@ -335,3 +335,81 @@
   .table-borders {
     border: 1px solid rgba(239,244,249,1)
   }
+
+
+  .custom-tables{
+    .ant-table-header{
+      background: #fff;
+    }
+    .ant-table-empty .ant-table-body{
+      overflow: visible!important;
+    }
+    .ant-table-placeholder{
+      border-bottom: none;
+      display: none;
+    }
+    .ant-table-thead{
+      font-size: 14px;
+      background-color: #fff;
+      border-top: 1px solid #E6EAEF;
+      border-bottom: 1px solid #E6EAEF;
+      box-shadow:0px 2px 6px 0px rgba(66,155,255,0.2);
+    }
+    .ant-table-tbody{
+      tr{
+        td{font-size: 12px; color: #959DAB; word-break: break-all;}
+      }
+      tr:nth-child(even){
+        background-color: #F9FBFD;
+      }
+    }
+    // &.td-pd10{
+    //   tr{
+    //     td{padding: 10px 6px;}
+    //   }
+    // }
+    // &.th-td-padding-10-20 {
+    //   tr {
+    //     th {
+    //       padding: 10px 20px;
+    //     }
+    //     td {
+    //       padding: 10px 20px;
+    //     }
+    //   }
+    // }
+    // 迷你表格样式
+    .ant-table-small{
+      border: none;
+    }
+    .ant-table-small > .ant-table-content > .ant-table-body{
+      margin: 0;
+    }
+    .ant-table-fixed-header .ant-table-scroll .ant-table-header
+    {
+      height: 61px;
+      overflow: hidden
+    }
+    // 固定表头样式
+    .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body{
+      overflow-y: auto!important;
+    }
+    .ant-table-footer
+    {
+      border: 0;
+      padding: 0;
+      background: #fff;
+    }
+   .ant-table-fixed-header.ant-table-scroll-position-left.ant-table-small
+   {
+     .ant-table-header{
+       height: 61px;
+     }
+   }
+   // 表头没有上边框
+   &.no_topBoder{
+      .ant-table-thead{
+       border-top: none;
+      }
+    }
+  }
