@@ -37,7 +37,7 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 2030}"
+        :scroll="{ x: 2090}"
         class="custom-table td-pd10 eliminate-table"
         bordered
         :loading="table.loading"
@@ -76,7 +76,6 @@ let columns = [
     title: "管理机构",
     dataIndex: "organName",
     scopedSlots: { customRender: 'organName' },
-    width: '250px',
     fixed: 'left'
   },
   {
