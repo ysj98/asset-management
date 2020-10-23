@@ -1,6 +1,6 @@
 <!--价值登记页面--资产价值一览表Tab页面-->
 <template>
-  <div class="asset_worth_list">
+  <div class="asset_worth_list pb70">
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
@@ -64,7 +64,26 @@
     <!--数据总览-->
     <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <!-- class="custom-table td-pd10" -->
+    <a-table v-bind="tableObj" class="custom-tables">
+      <template slot="assetCode" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="assetName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="organName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="projectName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="assetTypeName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="assetCategoryName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
       <template slot="action" slot-scope="text, record">
         <span v-if="record.projectName !== '合计：'" class="action_text" @click="viewTrendAction(true, record)">趋势图</span>
       </template>
@@ -86,10 +105,11 @@
   import {ASSET_MANAGEMENT} from 'src/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
+  import TooltipText from "src/views/common/TooltipText";
   import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
-    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber },
+    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber, TooltipText },
     data () {
       return {
         moment,
@@ -114,20 +134,20 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 2000 },
+          scroll: { x: 2600 },
           pagination: false,
           rowKey: 'assetId',
           columns: [
-            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: 180 },
-            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 200 },
-            { title: '资产类型', dataIndex: 'assetTypeName' },
-            { title: '资产分类', dataIndex: 'assetCategoryName' },
-            { title: '所属机构', dataIndex: 'organName' },
-            { title: '资产项目', dataIndex: 'projectName' },
-            { title: '资产原值(元)', dataIndex: 'originalValue' },
+            { title: '资产编号', dataIndex: 'assetCode', fixed: 'left', width: '150px', scopedSlots: { customRender: 'assetCode' }, },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: '150px', scopedSlots: { customRender: 'assetName' }, },
+            { title: '资产类型', dataIndex: 'assetTypeName', width: '150px', scopedSlots: { customRender: 'assetTypeName' }, },
+            { title: '资产分类', dataIndex: 'assetCategoryName', width: '150px', scopedSlots: { customRender: 'assetCategoryName' }, },
+            { title: '所属机构', dataIndex: 'organName', width: '150px', scopedSlots: { customRender: 'organName' }, },
+            { title: '资产项目', dataIndex: 'projectName', width: '150px', scopedSlots: { customRender: 'projectName' }, },
+            { title: '资产原值(元)', dataIndex: 'originalValue', width: '150px'},
             { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
             { title: '首次市场法估值(元)', dataIndex: 'marketValue' },
-            { title: '最新估值(元)', dataIndex: 'assessmentValue' },
+            { title: '最新估值(元)', dataIndex: 'assessmentValue', width: '150px' },
             { title: '评估方法', dataIndex: 'assessmentMethodName' },
             { title: '评估机构', dataIndex: 'assessmentOrganName' },
             { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
@@ -325,7 +345,7 @@
 <style lang='less' scoped>
   .asset_worth_list {
     .custom-table {
-      padding-bottom: 55px;
+      padding-bottom: 70px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {

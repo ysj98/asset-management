@@ -36,16 +36,21 @@
       </div>
     </SearchContainer>
     <div>
+      <!-- class="custom-table td-pd10 eliminate-table" -->
       <a-table
-        :scroll="{ x: 2000}"
-        class="custom-table td-pd10 eliminate-table"
+        class="custom-tables"
+        :scroll="{ x: 2600}"
         bordered
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"
         :dataSource="table.dataSource"
         :locale="{emptyText: '暂无数据'}"
-      ></a-table>
+      >
+      <template slot="organName" slot-scope="text">
+        <tooltip-text width="250" :text="text"/>
+      </template>
+      </a-table>
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -64,13 +69,15 @@ import { utils } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
 import segiIcon from "@/components/segiIcon.vue";
+ import TooltipText from "../../common/TooltipText";
 
 const allStyle = { width: "140px", marginRight: "10px" };
 let columns = [
   {
     title: "管理机构",
     dataIndex: "organName",
-    width: '200px',
+    width: '250px',
+    scopedSlots: { customRender: 'organName' },
     fixed: 'left'
   },
   {
@@ -81,12 +88,12 @@ let columns = [
   {
     title: "资产面积(㎡)",
     dataIndex: "assetArea",
-    width: '100px',
+    width: '150px',
   },
   {
     title: "权证总面积(㎡)",
     dataIndex: "ownerShipTotalArea",
-   width: '100px',
+   width: '150px',
   },
   {
     title: "办理进度",
@@ -105,37 +112,33 @@ let columns = [
       {
         title: "总面积(㎡)",
         dataIndex: "ownerShipArea",
-        width: '100px',
       },
       {
         title: "有证",
         dataIndex: "ownerShipYesCount",
-        width: '60px',
+        width: '80px',
       },
       {
         title: "有证面积(㎡)",
         dataIndex: "ownerShipYesArea",
-        width: '100px',
       },
       {
         title: "无证",
         dataIndex: "ownerShipNoCount",
-        width: '60px',
+        width: '80px',
       },
       {
         title: "无证面积(㎡)",
         dataIndex: "ownerShipNoArea",
-        width: '100px',
       },
       {
         title: "待办证",
         dataIndex: "ownerShipWaitCount",
-        width: '60px',
+        width: '80px',
       },
       {
         title: "待办证面积(㎡)",
         dataIndex: "ownerShipWaitArea",
-        width: '100px',
       },
     ],
   },
@@ -151,37 +154,33 @@ let columns = [
       {
         title: "总面积(㎡)",
         dataIndex: "useShipArea",
-        width: '100px',
       },
       {
         title: "有证",
-        width: '60px',
+        width: '80px',
         dataIndex: "useShipYesCount",
       },
       {
         title: "有证面积(㎡)",
-        width: '100px',
         dataIndex: "useShipYesArea",
       },
       {
         title: "无证",
-        width: '60px',
+        width: '80px',
         dataIndex: "useShipNoCount",
       },
       {
         title: "无证面积(㎡)",
-        width: '100px',
         dataIndex: "useShipNoArea",
       },
       {
         title: "待办证",
-        width: '60px',
+        width: '80px',
         dataIndex: "useShipWaitCount",
       },
       {
         title: "待办证面积(㎡)",
-        dataIndex: "useShipWaitArea",
-        width: '100px',
+        dataIndex: "useShipWaitArea"
       },
     ],
   },
@@ -198,6 +197,7 @@ export default {
     TreeSelect,
     segiIcon,
     noDataTips,
+    TooltipText
   },
   data() {
     return {
@@ -407,4 +407,8 @@ export default {
     }
   }
 }
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> v2.0.4.1

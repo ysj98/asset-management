@@ -27,7 +27,7 @@ const target = 'http://beta.uhomecp.com/'
 // const target = 'http://192.168.3.34:8081'
 // const target = 'http://192.168.3.28:8080'
 // const mock = 'http://192.168.3.34:8081'
-// const target = 'http://beta.uhomecp.com/'
+const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
   '/uhomecp-sso/',
