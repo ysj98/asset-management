@@ -190,11 +190,11 @@ let columns = [
     children: [
       {
         title: "数量",
-        dataIndex: "noShipCount;"
+        dataIndex: "noShipCount"
       },
       {
         title: "面积(㎡)",
-        dataIndex: "noShipCountArea;;"
+        dataIndex: "noShipCountArea"
       },
     ]
   }
