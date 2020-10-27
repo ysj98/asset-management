@@ -39,7 +39,7 @@
       <!-- class="custom-table td-pd10 eliminate-table" -->
       <a-table
         class="custom-tables"
-        :scroll="{ x: 2600}"
+        :scroll="{ x: 2700}"
         bordered
         :loading="table.loading"
         :pagination="false"
@@ -184,6 +184,20 @@ let columns = [
       },
     ],
   },
+  {
+    title: "暂无权属",
+    dataIndex: "noOwnership",
+    children: [
+      {
+        title: "数量",
+        dataIndex: "noShipCount;"
+      },
+      {
+        title: "面积(㎡)",
+        dataIndex: "noShipCountArea;;"
+      },
+    ]
+  }
 ];
 const queryCondition = {
   organId: "",
