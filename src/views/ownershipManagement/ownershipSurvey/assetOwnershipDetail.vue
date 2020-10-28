@@ -184,11 +184,6 @@ const tableInfoColumns = [
     width: "10%"
   },
   {
-    title: "权属形式",
-    dataIndex: "ownerTypeName",
-    width: "10%"
-  },
-  {
     title: "权证类型",
     dataIndex: "kindOfRightName",
     width: "15%"
