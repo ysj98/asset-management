@@ -140,7 +140,7 @@ asset_report_cost       呈报记录费用
 asset_operating_export  导出资产运营
 asset_income_export     导出资产收入
 asset_cost_export       导出资产费用
-asset_cost_export       导出折旧信息
+asset_depreciation_export       导出折旧信息
 
 // 2.0.0新增权限
 资产分类设置
