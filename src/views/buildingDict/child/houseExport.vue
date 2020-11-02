@@ -61,7 +61,7 @@
         />
         </div>
         <div class="clearfix">
-          <a-button class="fr" @click="exportHouse" type="primary">下载模板</a-button>
+          <a-button class="fr" @click="exportHouse" type="primary">导出</a-button>
         </div>
    </div>
 </SG-Modal>

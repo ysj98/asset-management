@@ -181,7 +181,7 @@
       handleExport () {
         this.exportBtnLoading = true
         let data = this.queryTableData({type: 'export'})
-        exportDataAsExcel(data, this.$api.tableManage.exportRecordExcel, '价值登记记录列表.xlsx', this).then(() => {
+        exportDataAsExcel(data, this.$api.tableManage.exportRecordExcel, '资产估值记录.xlsx', this).then(() => {
           this.exportBtnLoading = false
         })
       },
