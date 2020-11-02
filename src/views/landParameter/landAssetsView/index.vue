@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-10-19 18:01:19
+ * @LastEditTime: 2020-11-02 17:23:13
  * @Description: 土地资产视图
 -->
 <template>
@@ -37,8 +37,10 @@
         </div>
       </div>
     </SearchContainer>
-        <!--数据总览-->
-    <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
+    <!--数据总览-->
+    <a-spin :spinning="overviewNumSpinning">
+      <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
+    </a-spin>
     <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
       <a-table
         :scroll="scroll"
@@ -147,6 +149,7 @@ export default {
   data () {
     return {
       modalShow: false,
+      overviewNumSpinning: false,
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
@@ -251,7 +254,7 @@ export default {
           this.current = ''
         break;
       }
-      this.allQuery()
+      this.allQuery('asset')
     },
     // 列表设置
     listSet () {
@@ -285,9 +288,9 @@ export default {
       this.queryLandUseList()
     },
     // 搜索
-    allQuery () {
+    allQuery (str) {
       this.queryCondition.pageNum = 1
-      this.query()
+      this.query(str)
     },
     // 高级搜索控制
     searchContainerFn (val) {
@@ -413,7 +416,7 @@ export default {
       }
     },
     // 查询
-    query () {
+    query (str) {
       this.loading = true
       let obj = {
         city: this.provinces.city ? this.provinces.city : '',               // 市
@@ -444,7 +447,9 @@ export default {
             this.count = 0
           }
           this.loading = false
-          this.assetViewTotal(obj)
+          if (str !== 'asset') {
+            this.assetViewTotal(obj)
+          }
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -453,16 +458,19 @@ export default {
     },
     // 资产登记-详情明细统计
     assetViewTotal (obj) {
+      this.overviewNumSpinning = true
       obj.pageNum = 1
       obj.pageSize = 1
       this.$api.land.assetViewTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          return this.numList = this.numList.map(m => {
+          this.numList = this.numList.map(m => {
             return { ...m, value: data[m.key] || 0 }
           })
+          this.overviewNumSpinning = false
         } else {
           this.$message.error(res.data.message)
+          this.overviewNumSpinning = false
         }
       })
     },

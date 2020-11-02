@@ -45,9 +45,12 @@
       </a-col>
     </a-row>
     <!--概览-->
-    <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
+    <a-spin :spinning="overviewNumSpinning">
+      <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
+    </a-spin>
     <div>
       <a-table
+        :loading="loading"
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
@@ -171,6 +174,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      overviewNumSpinning: false,
       ASSET_MANAGEMENT,
       allStyle: 'width: 100%; margin-right: 10px;',
       organId: '',
@@ -225,7 +230,7 @@ export default {
         currentTemp = i - 1
       }
       this.current = currentTemp
-      this.queryClick()
+      this.queryList('click')
     },
 
     changeTree (value) {
@@ -257,6 +262,7 @@ export default {
       this.queryList('click').then(() => this.queryStatistics())
     },
     queryList (type) {
+      this.loading = true
       let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
       let form = {
         organId,
@@ -292,13 +298,16 @@ export default {
             this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now() + 100})
           }
           this.paginator.totalCount = res.data.data.count
+          this.loading = false
         } else {
+          this.loading = false
           this.$message.error(res.data.message)
         }
       })
     },
     // 查询汇总信息
     queryStatistics () {
+      this.overviewNumSpinning = true
       let form = {
         statusList: this.statusList.includes("all") ? [] : this.statusList,
         organId: this.organId,
@@ -324,7 +333,9 @@ export default {
           sumObj.area =  measuredArea ? measuredArea.toFixed(2) : 0
           this.sumObj = sumObj
           dataSource.length && this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
+          this.overviewNumSpinning = false
         } else {
+          this.overviewNumSpinning = false
           this.$message.error(res.data.message)
         }
       })

@@ -152,7 +152,7 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: "search" });
+      this.queryTableData({ type: '' });
     },
 
     // 查看组织机构视图详情

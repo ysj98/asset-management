@@ -203,7 +203,7 @@
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
-        this.queryTableData({type: 'search'})
+        this.queryTableData({type: ''})
       },
 
       // 根据organId查询资产分类选项

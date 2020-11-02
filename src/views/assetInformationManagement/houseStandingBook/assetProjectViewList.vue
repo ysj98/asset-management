@@ -220,7 +220,8 @@ export default {
     // 点击总览数据块
     handleClickOverview({i}) {
       this.current = i
-      this.queryClick()
+      // this.queryClick()
+      this.queryList('click')
     },
 
     changeTree (value) {

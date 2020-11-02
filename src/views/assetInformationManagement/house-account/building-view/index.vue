@@ -152,7 +152,7 @@
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
-        this.queryTableData({type: 'search'})
+        this.queryTableData({type: ''})
       },
 
       // 查看楼栋视图详情
