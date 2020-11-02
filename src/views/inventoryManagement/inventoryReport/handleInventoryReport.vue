@@ -275,7 +275,7 @@ const abnormalColumns = [
   },
   {
     title: '处理建议',
-    dataIndex: 'handleRemark'
+    dataIndex: 'handleTip'
   },
   {
     title: '操作',

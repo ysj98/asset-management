@@ -171,7 +171,11 @@
           return this.$message.warn('请选择数据')
         }
         let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
-        data.length ? this.calcSum(data) : this.tableObj.dataSource = []
+        if (!data.length) {
+          this.tableObj.dataSource = []
+          this.selectedRowKeys = []
+        }
+        this.calcSum(data)
       },
 
       // 添加资产
