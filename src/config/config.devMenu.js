@@ -228,6 +228,25 @@ export default [
     ]
   },
   {
+    title: '资产入库',
+    children: [
+      {
+        title: '资产入库',
+        path: '/assetIn'
+      },
+      {
+        title: '资产入库一览表',
+        path: '/assetStorageView'
+      }
+    ]
+  },
+  {
+    title: '使用规划',
+    children: [
+      { title: '资产交付管理', path: '/assetDelivery' }
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {
@@ -258,19 +277,6 @@ export default [
       //   title: '富文本编辑器',
       //   path: '/dev/editer'
       // }
-    ]
-  },
-  {
-    title: '资产入库',
-    children: [
-      {
-        title: '资产入库',
-        path: '/assetIn'
-      },
-      {
-        title: '资产入库一览表',
-        path: '/assetStorageView'
-      }
     ]
   },
   // {

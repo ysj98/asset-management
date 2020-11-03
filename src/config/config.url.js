@@ -969,3 +969,18 @@ export const land = {
   mapDetail: '/ams/asset/map/detail'
 }
 
+// 资产入库
+export const delivery = {
+  // 交付管理-修改状态
+  updateStatus: '/ams/delivery/updateStatus',
+  // 交付管理-分页列表
+  getDeliveryPage: 'ams/delivery/getDeliveryPage',
+  // 交付管理-列表汇总
+  getDeliveryPageSum: 'ams/assetChange/getDeliveryPageSum',
+  // 交付管理-导出
+  exportDeliveryList: 'ams/delivery/exportDeliveryList',
+  // 交付管理-新增编辑保存
+  saveOrUpdateDelivery: '/ams/delivery/saveOrUpdateDelivery',
+  // 交付管理-终止交付
+  stopDelivery: '/ams/delivery/stopDelivery'
+}
