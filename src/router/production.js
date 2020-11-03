@@ -780,5 +780,18 @@ let proRouter = [{
     name: '资产出库一览表详情',
     component: () => import('@/views/assetInformationManagement/assetsTable/detail')
   },
+  {
+    path: '/resourcesReport',
+    name: '房屋资产&资源统计表',
+    component: () => import('@/views/tableManagement/resourcesReport/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/resourcesReport/assetDetails',
+    name: '资产明细',
+    component: () => import('@/views/tableManagement/resourcesReport/child/assetDetails')
+  },
 ]
 export default proRouter

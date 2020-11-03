@@ -133,3 +133,32 @@ export function queryHouseAssetSumInfo (data) {
 export function queryOwnershipCardSumInfo (data) {
   return axiosPost(tableManage.queryOwnershipCardSumInfo, data)
 }
+//  --------------------------------------房屋资产&资源统计表-------------------------------------------------------------
+// 房屋资产&资源统计表-导出
+export function houseResourceExport (data) {
+  return axiosPost(tableManage.houseResourceExport, data, false, false, {responseType: 'blob'})
+}
+// 房屋资产&资源统计表-明细-导出
+export function detailExport (data) {
+  return axiosPost(tableManage.detailExport, data, false, false, {responseType: 'blob'})
+}
+// 房屋资产&资源统计表-明细-房屋列表
+export function detailPageList (data) {
+  return axiosPost(tableManage.detailPageList, data)
+}
+// 房屋资产&资源统计表-明细-房屋列表
+export function detailHousePage (data) {
+  return axiosPost(tableManage.detailHousePage, data)
+}
+// 房屋资产&资源统计表-明细-汇总
+export function detailTotal (data) {
+  return axiosPost(tableManage.detailTotal, data)
+}
+// 房屋资产&资源统计表-查询列表
+export function houseResourcePageList (data) {
+  return axiosPost(tableManage.houseResourcePageList, data)
+}
+// 房屋资产&资源统计表-汇总
+export function houseResourceTotal (data) {
+  return axiosPost(tableManage.houseResourceTotal, data)
+}

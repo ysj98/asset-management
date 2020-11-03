@@ -893,7 +893,21 @@ export const tableManage = {
   // 有证房屋资产统计表(汇总)
   queryHouseAssetSumInfo: '/ams/statistics/asset/house/warrantCount',
   // 权属证件一览表(汇总)
-  queryOwnershipCardSumInfo: '/ams/statistics/ownership/warrant/count'
+  queryOwnershipCardSumInfo: '/ams/statistics/ownership/warrant/count',
+  // 房屋资产&资源统计表-导出
+  houseResourceExport: '/ams/statistics/houseResource/export',
+  // 房屋资产&资源统计表-明细-导出
+  detailExport: '/ams/statistics/houseResource/detail/export',
+  // 房屋资产&资源统计表-明细-房屋列表
+  detailPageList: '/ams/statistics/houseResource/detail/pageList',
+  // 房屋资产&资源统计表-明细-房屋列表
+  detailHousePage: '/ams/statistics/houseResource/detail/housePage',
+  // 房屋资产&资源统计表-明细-汇总
+  detailTotal: '/ams/statistics/houseResource/detail/total',
+  // 房屋资产&资源统计表-查询列表
+  houseResourcePageList: '/ams/statistics/houseResource/pageList',
+  // 房屋资产&资源统计表-汇总
+  houseResourceTotal: '/ams/statistics/houseResource/total'
 }
 
 // 资产入库
