@@ -798,5 +798,15 @@ let proRouter = [{
     name: '资产交付管理',
     component: () => import('@/views/usePlanning/assetDelivery/index')
   },
+  {
+    path: '/assetDelivery/newEditor',
+    name: '新增',
+    component: () => import('@/views/usePlanning/assetDelivery/child/newEditor')
+  },
+  {
+    path: '/assetDelivery/editDelivery',
+    name: '编辑',
+    component: () => import('@/views/usePlanning/assetDelivery/child/editDelivery')
+  },
 ]
 export default proRouter

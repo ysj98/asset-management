@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-19 14:44:17
- * @LastEditTime: 2020-07-24 17:36:23
+ * @LastEditTime: 2020-11-04 10:06:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \asset-management\src\api\index.js
@@ -25,6 +25,7 @@ import * as subsidiary from './subsidiary'
 import * as reportManage from './reportManage'
 import * as tableManage from './tableManage'
 import * as land from './land'
+import * as delivery from './delivery'
 const API = {
   auth,
   global,
@@ -38,7 +39,8 @@ const API = {
   subsidiary,
   reportManage,
   tableManage,
-  land
+  land,
+  delivery
 }
 export default {
   install (Vue) {

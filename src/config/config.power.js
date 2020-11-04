@@ -393,5 +393,16 @@ export const ASSET_MANAGEMENT = {
    * 2.0.2 异常管理
    */
   EXCEPTION_MANAGE_EXPORT: 'exception_manage_export', // 异常管理导出
+  /**
+   * 资产交付管理
+   */
+  ASSET_DELIVERY_NEW: 'asset_delivery_new',           // 资产交付新建
+  ASSET_DELIVERY_EDIT: 'asset_delivery_edit',         // 资产交付编辑
+  ASSET_DELIVERY_EXPORT: 'asset_delivery_export',     // 资产交付导出
+  ASSET_DELIVERY_AUDIT: 'asset_delivery_audit',     // 资产交付审批
+  ASSET_DELIVERY_DELETE: 'asset_delivery_delete',     // 资产交付删除
+  ASSET_DELIVERY_REVERSE_AUDIT: 'asset_delivery_reverse_audit',     // 资产交付反审批
+  ASSET_DELIVERY_end: 'asset_delivery_end',     // 资产交付结束交付
 }
+
 

@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-03 17:08:08
+ * @LastEditTime: 2020-11-04 18:06:08
  * @Description: 资产交付管理
 -->
 <template>
@@ -11,9 +11,10 @@
         <a-button
           icon="plus"
           type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_CHANGE_NEW"
+          v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_NEW"
           @click="newChangeSheetFn"
         >新建交付单</a-button>
+        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_EXPORT" class="ml10" type="primary" @click="downloadFn">导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect
             @changeTree="changeTree"
@@ -21,10 +22,11 @@
             :allowClear="false"
             :style="allStyle"
           ></treeSelect>
+          <a-input-search v-model="queryCondition.deliveryNameOrId" placeholder="交付单号/名称" maxlength="30" :style="allStyle" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+        <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select
@@ -120,6 +122,8 @@
         @change="handleChange"
       />
     </div>
+    <!-- 结束交付 -->
+    <terminationDelivery ref="deliveryRef" @submitFn="query"></terminationDelivery>
   </div>
 </template>
 
@@ -132,95 +136,31 @@ import { getCurrentDate, getThreeMonthsAgoDate } from "utils/formatTime";
 import noDataTips from "@/components/noDataTips";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import OperationPopover from "@/components/OperationPopover";
+import terminationDelivery from './child/terminationDelivery'
 const approvalStatusData = [
-  {
-    name: "全部状态",
-    value: ""
-  },
-  {
-    name: "草稿",
-    value: "0"
-  },
-  {
-    name: "待审批",
-    value: "2"
-  },
-  {
-    name: "已驳回",
-    value: "3"
-  },
-  {
-    name: "已审批",
-    value: "1"
-  },
-  {
-    name: "已取消",
-    value: "4"
-  }
+  { name: "全部状态", value: '' },
+  { name: "草稿", value: "0" },
+  { name: "待审批", value: "2" },
+  { name: "已驳回", value: "3" },
+  { name: "已审批", value: "1" },
+  { name: "已取消", value: "4" }
 ];
 const columns = [
-  {
-    title: "交付单编号",
-    dataIndex: "deliveryId"
-  },
-  {
-    title: "交付单名称",
-    dataIndex: "deliveryName"
-  },
-  {
-    title: "所属机构",
-    dataIndex: "organName"
-  },
-  {
-    title: "资产项目名称",
-    dataIndex: "projectName"
-  },
-  {
-    title: "资产类型",
-    dataIndex: "assetTypeName"
-  },
-  {
-    title: "交付类型",
-    dataIndex: "deliveryTypeName"
-  },
-  {
-    title: "交付单位",
-    dataIndex: "deliveryCompany"
-  },
-  {
-    title: "交付资产数量",
-    dataIndex: "assetChangeCount"
-  },
-  {
-    title: "交付面积(㎡)",
-    dataIndex: "deliveryArea"
-  },
-  {
-    title: "交付日期",
-    dataIndex: "deliveryDate"
-  },
-  {
-    title: "结束日期",
-    dataIndex: "endDate"
-  },
-  {
-    title: "创建人",
-    dataIndex: "createByName"
-  },
-  {
-    title: "创建日期",
-    dataIndex: "createTime"
-  },
-  {
-    title: "状态",
-    dataIndex: "approvalStatusName"
-  },
-  {
-    title: "操作",
-    dataIndex: "operation",
-    width: 90,
-    scopedSlots: { customRender: "operation" }
-  }
+  { title: "交付单编号", dataIndex: "deliveryId" },
+  { title: "交付单名称", dataIndex: "deliveryName" },
+  { title: "所属机构", dataIndex: "organName" },
+  { title: "资产项目名称", dataIndex: "projectName" },
+  { title: "资产类型", dataIndex: "assetTypeName" },
+  { title: "交付类型", dataIndex: "deliveryTypeName" },
+  { title: "交付单位", dataIndex: "deliveryCompany" },
+  { title: "交付资产数量", dataIndex: "assetChangeCount" },
+  { title: "交付面积(㎡)", dataIndex: "deliveryArea" },
+  { title: "交付日期", dataIndex: "deliveryDate" },
+  { title: "结束日期", dataIndex: "endDate" },
+  { title: "创建人", dataIndex: "createByName" },
+  { title: "创建日期", dataIndex: "createTime" },
+  { title: "状态", dataIndex: "approvalStatusName" },
+  { title: "操作", dataIndex: "operation", width: 90, scopedSlots: { customRender: "operation" }}
 ];
 export default {
   components: {
@@ -228,7 +168,8 @@ export default {
     OverviewNumber,
     SegiRangePicker,
     noDataTips,
-    OperationPopover
+    OperationPopover,
+    terminationDelivery
   },
   props: {},
   data() {
@@ -243,21 +184,22 @@ export default {
       approvalStatusData: [...approvalStatusData],
       allStyle: "width: 140px; margin-right: 10px;",
       columns,
-      organName: "",
-      organId: "",
+      organName: '',
+      organId: '',
       tableData: [],
       queryCondition: {
-        approvalStatus: "", // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        pageNum: 1, // 当前页
-        pageSize: 10, // 每页显示记录数
-        projectId: "", // 资产项目Id
-        organId: 1, // 组织机构id
-        deliveryType: "", //交付类型
-        assetType: "", // 资产类型，多个用，分隔
-        startCreateDate: getThreeMonthsAgoDate(), // 备注：开始创建日期
-        endCreateDate: getCurrentDate(), // 备注：结束创建日期
+        deliveryNameOrId: '',       // 交付单号/名称
+        approvalStatus: '',         // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        pageNum: 1,                 // 当前页
+        pageSize: 10,               // 每页显示记录数
+        projectId: '',              // 资产项目Id
+        organId: '',                // 组织机构id
+        deliveryType: '',           // 交付类型
+        assetType: '',              // 资产类型，多个用，分隔
+        startCreateDate: getThreeMonthsAgoDate(),   // 开始创建日期
+        endCreateDate: getCurrentDate(),            // 结束创建日期
       },
-      count: "",
+      count: '',
       changeTypeData: [
         { name: '全部交付类型', value: ''},
         { name: '交付物业', value: '1'},
@@ -265,10 +207,7 @@ export default {
       ],
       assetTypeData: [],
       projectData: [
-        {
-          name: "全部资产项目",
-          value: ""
-        }
+        { name: "全部资产项目", value: '' }
       ],
       overviewNumSpinning: false,
       numList: [
@@ -300,28 +239,75 @@ export default {
   },
   methods: {
     moment,
+      // 导出
+    downloadFn () {
+      let obj = {
+        organId: this.queryCondition.organId,                               // 组织机构id
+        objectTypeIdList: this.alljudge(this.queryCondition.objectTypes),   // 资产分类
+        status: this.alljudge(this.queryCondition.statuss)                 //  资产状态(多选)
+      }
+      this.$api.delivery.exportDeliveryList(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产交付管理.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+    },
+    // 统一搜索
+    allQuery () {
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
     // 查询
     query() {
+      this.tableData = [
+        {
+          deliveryId:1,                //类型：Number  必有字段  备注：交付单Id
+          deliveryName: '111',                //类型：String  必有字段  备注：交付单名称
+          projectName: '111',                //类型：String  必有字段  备注：资产项目名称
+          organId: '1000279',
+          organName: '西部数据',                //类型：String  必有字段  备注：组织机构名称
+          deliveryType:1,                //类型：Number  必有字段  备注：交付类型
+          deliveryTypeName: '111',                //类型：String  必有字段  备注：交付类型名称
+          deliveryCompany: '111',                //类型：String  必有字段  备注：交付单位
+          assetChangeCount:1,                //类型：Number  必有字段  备注：资产数量
+          deliveryArea: '111',                //类型：String  必有字段  备注：交付面积
+          createByName: '111',                //类型：String  必有字段  备注：创建人
+          createTime: '111',                //类型：String  必有字段  备注：创建时间
+          approvalStatusName: '111',                //类型：String  必有字段  备注：审批状态名称
+          approvalStatus: 3,                //类型：String  必有字段  备注：审批状态
+          deliveryDate: '111',                //类型：String  必有字段  备注：交付日期
+          endDate: '111',                //类型：String  必有字段  备注：结束日期
+          assetTypeName: '111'                //类型：String  必有字段  备注：资产类型名称
+        }
+      ]
+      this.tableData = this.tableData.map((item, index) => {
+        // 处理按钮权限
+        item.operationData = this.handleBtn(item)
+        return {
+          ...item,
+          key: index
+        };
+      });
       this.loading = true;
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
-        multiApprovalStatus:
-          this.queryCondition.approvalStatus.length > 0
-            ? this.queryCondition.approvalStatus.join(",")
-            : "", // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        multiAssetType:
-          this.queryCondition.assetType.length > 0
-            ? this.queryCondition.assetType.join(",")
-            : "", // 资产类型id(多个用，分割)
-        projectId: this.queryCondition.projectId, // 资产项目Id
         organId: this.queryCondition.organId, // 组织机构id this.queryCondition.organId,
+        projectId: this.queryCondition.projectId, // 资产项目Id
         deliveryType: this.queryCondition.deliveryType, // 交付类型
-        startCreateDate: this.queryCondition.startCreateDate, // 开始创建日期
-        endCreateDate: this.queryCondition.endCreateDate, // 结束创建日期
-      };
+        deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
+        assetTypeList: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(",") : [], // 资产类型id(多个用，分割)
+        deliveryDateStar: this.queryCondition.startCreateDate, // 开始创建日期
+        deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
+        approvalStatusList: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(",") : '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+      }
       this.getChangePageSum(obj);
-      this.$api.assets.getChangePage(obj).then(res => {
+      this.$api.delivery.getDeliveryPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || [];
           this.tableData = data.map((item, index) => {
@@ -345,7 +331,7 @@ export default {
       let data = { ...obj };
       delete data.pageNum;
       delete data.pageSize;
-      this.$api.assets.getChangePageSum(data).then(res => {
+      this.$api.delivery.getDeliveryPageSum(data).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || {};
           this.numList = this.numList.map(item => {
@@ -371,34 +357,35 @@ export default {
       this.queryCondition.startCreateDate = val[0];
       this.queryCondition.endCreateDate = val[1];
     },
-    // 新建变更单
+    // 新建交付单
     newChangeSheetFn() {
       let recordData = JSON.stringify([
-        { value: this.queryCondition.organId, name: this.organName }
+        { organId: this.queryCondition.organId, organName: this.organName }
       ]);
       this.$router.push({
-        path: "/assetChangeRegister/newEditSingle",
-        query: { record: recordData, setType: "new" }
+        path: '/assetDelivery/newEditor',
+        query: { record: recordData, setType: 'new' }
       });
     },
     // 处理按钮
     handleBtn(record) {
       let arr = [];
+      // 0草稿   2待审批、已驳回3、已审批1  已取消4
       // 编辑权限
-      if (
-        this.$power.has(ASSET_MANAGEMENT.ASSET_CHANGE_EDIT) &&
-        ["0", "3"].includes(String(record.approvalStatus))
-      ) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_EDIT) && ["0", "3"].includes(String(record.approvalStatus))) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (["2"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_AUDIT) && ["2"].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: "edit", text: "审批", editType: "audit" });
       }
-      if (
-        this.$power.has(ASSET_MANAGEMENT.ASSET_CHANGE_DELETE) &&
-        ["0", "3"].includes(String(record.approvalStatus))
-      ) {
+      if (this.$power.has(ASSET_MANAGEMENT.asset_delivery_delete) &&["0", "3"].includes(String(record.approvalStatus))) {
         arr.push({ iconType: "edit", text: "删除", editType: "delete" });
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_REVERSE_AUDIT) && ["1"].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: "edit", text: "反审批", editType: "reverseAudit" });
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_end) && ["1"].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: "edit", text: "结束交付", editType: "end" });
       }
       arr.push({
         iconType: "file-text",
@@ -413,26 +400,33 @@ export default {
       if (["particulars"].includes(str)) {
         let particularsData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetChangeRegister/particulars",
-          query: { record: particularsData }
+          path: "/assetDelivery/editDelivery",
+          query: { record: particularsData, setType: 'new' }
         });
       }
       // 删除
       if (["delete"].includes(str)) {
-        this.commonFn("delete", val.changeOrderId);
+        this.commonFn("delete", val.deliveryId);
+      }
+      // 反审核
+      if (["reverseAudit"].includes(str)) {
+        this.commonFn("reverseAudit", val.deliveryId);
       }
       // 审批
-      if (["approval"].includes(str)) {
+      if (["audit"].includes(str)) {
+        this.commonFn("audit", val.deliveryId);
+      }
+      // 结束交付
+      if (["end"].includes(str)) {
+        this.$refs.deliveryRef.status = true
+        this.$refs.deliveryRef.replacement(val.deliveryId)        // 重置数据
       }
       // 编辑
       if (["edit"].includes(str)) {
-        let recordData = JSON.stringify([
-          { value: this.queryCondition.organId, name: this.organName }
-        ]);
-        let enitData = JSON.stringify([val]);
+        let recordData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetChangeRegister/editSingle",
-          query: { record: recordData, enitData: enitData, setType: "edit" }
+          path: "/assetDelivery/editDelivery",
+          query: { record: recordData, setType: "edit" }
         });
       }
     },
@@ -459,16 +453,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -476,18 +470,39 @@ export default {
     },
     commonFn(str, id) {
       let _this = this;
-      // 删除
+      let obj = {
+        content: '',                   // 提示内容
+        info: '',                      // 成功提示内容
+        approvalStatus: '',            // 状态
+      }
+      if (str === "delete") {                // 删除
+        obj.content = '确认要删除该交付单吗？'
+        obj.info = '删除成功'
+        obj.approvalStatus = 4
+      } else if (str === 'reverseAudit') {   // 反审核
+        obj.content = '确认要反审核该交付单吗？'
+        obj.info = '反审核成功'
+        obj.approvalStatus = 0
+      } else if (str === 'audit') {          // 审核
+        obj.content = '确认要审核该交付单吗？'
+        obj.info = '审核成功'
+        obj.approvalStatus = 1
+      }
+      if (!obj.approvalStatus) {
+        return
+      }
       if (str === "delete") {
         this.$confirm({
           title: "提示",
-          content: "确认要删除该资产变更单吗？",
+          content: obj.content,
           onOk() {
             let obj = {
-              changeOrderId: id
+              deliveryId: id,
+              approvalStatus: obj.approvalStatus
             };
-            _this.$api.assets.deleteChange(obj).then(res => {
+            _this.$api.delivery.updateStatus(obj).then(res => {
               if (Number(res.data.code) === 0) {
-                _this.$message.info("删除成功");
+                _this.$message.info(obj.info);
                 _this.query();
               } else {
                 _this.$message.error(res.data.message);
@@ -495,7 +510,6 @@ export default {
             });
           }
         });
-        // 终止交付
       }
     },
     // 选择组织机构
@@ -503,29 +517,26 @@ export default {
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
-      this.queryCondition.projectId = "";
-      this.query();
+      this.queryCondition.projectId = ''
+      this.allQuery();
       this.getObjectKeyValueByOrganIdFn();
     },
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId,
-        projectName: ""
+        projectName: ''
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           let arr = [];
           data.forEach(item => {
-            arr.push({
-              name: item.projectName,
-              value: item.projectId
-            });
-          });
-          this.projectData = [{ name: "全部资产项目", value: "" }, ...arr];
+            arr.push({name: item.projectName, value: item.projectId})
+          })
+          this.projectData = [{ name: "全部资产项目", value: '' }, ...arr]
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.data.message)
         }
       });
     },
@@ -538,7 +549,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
+            this.assetTypeData = [{ name: "全部资产类型", value: '' }, ...data];
           }
         } else {
           this.$message.error(res.data.message);
@@ -551,12 +562,11 @@ export default {
       this.queryCondition.pageSize = data.pageLength;
       this.query();
     },
+    // 选择框搜索
     filterOption(input, option) {
       return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
     },
   }
 };
