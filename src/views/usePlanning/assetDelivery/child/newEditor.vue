@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-04 18:05:59
+ * @LastEditTime: 2020-11-05 09:59:01
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -128,7 +128,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
         <div class="button-box">
-          <div class="fl">交付资产数量：{{assetChangeCount}}个，合计交付面积：{}㎡</div>
+          <div class="fl">交付资产数量：{{assetChangeCount}}个，合计交付面积：{deliveryArea}㎡</div>
           <div class="fr">
             <SG-Button class="mr10" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
             <SG-Button :disabled="selectedRowKeys.length === 0" type="primary" weaken @click="deleteFn">删除</SG-Button>
@@ -253,6 +253,7 @@ export default {
   props: {},
   data () {
     return {
+      deliveryArea: '',      // 交付面积
       assetChangeCount: '',  // 资产数量
       setType: '',           // 新增编辑
       selectedRowKeys: [],   // 表格选择的数据
@@ -308,9 +309,78 @@ export default {
     this.platformDictFn()                                    // 获取资产类型
   },
   methods: {
-    // 编辑回填
+    // 编辑回填基础信息
     editFn () {
-
+      this.$api.delivery.getDeliveryById({deliveryId: ''}).then((res) => {
+        if (Number(res.data.code) === 0) {
+          console.log(res)
+          let o = {
+            deliveryName: '',          // 交付名称
+            assetType: undefined,     // 资产类型
+            projectId: undefined,     // 资产项目
+            deliveryType: undefined,  // 交付类型
+            deliveryCompany: '',      // 交付单位
+            deliveryDate: undefined,  // 交付日期
+            endDate: undefined,        // 截止日期
+            remark: '',               // 备注
+          }
+          this.form.setFieldsValue(o)
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 查资产明细
+    getDeliveryDetailList () {
+      this.$api.delivery.getDeliveryById({deliveryId: ''}).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.checkedData = []
+          data.forEach(item => {
+            item.key = item.assetId
+            this.checkedData.push(item.assetId)
+          })
+          this.tableData = data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 查汇总信息
+    getDeliveryDetailListStatistics () {
+      this.$api.delivery.getDeliveryDetailListStatistics({deliveryId: ''}).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.assetChangeCount = data.assetChangeCount    // 数量
+          this.deliveryArea = data.deliveryArea            // 面积
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 附件查询
+    attachment () {
+      let obj = {
+        objectId: '',       // 交付id
+        objectType: '18'      // 类型：交付信息18
+      }
+      this.$api.basics.attachment({obj}).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let files = []
+          if (data.attachment && data.attachment.length > 0) {
+            data.attachment.forEach((item) => {
+              files.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName,
+              })
+            })
+          }
+          this.newEditSingleData.files = files
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     // 提交
     save () {
@@ -490,12 +560,12 @@ export default {
     // 项目监听
     projectIdFn () {
       this.tableData = []
-      this.checkedData
+      this.checkedData = []
     },
     // 资产类型监听
     assetTypeFn () {
       this.tableData = []
-      this.checkedData
+      this.checkedData = []
     },
   }
 }

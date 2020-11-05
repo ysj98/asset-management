@@ -25,6 +25,10 @@ export function fileDownLoad (data) {
     responseType: 'blob'
   })
 }
+// 附件下载
+export function attachment (data) {
+  return axiosGet(basics.attachment, data)
+}
 // 文件上传
 export function fileUpload (data) {
   return axiosPost(basics.fileUpload, data)

@@ -33,6 +33,8 @@ export const basics = {
   fileUpload: '/basic-data-batch-api/rest-api/v1/fileApi/fileUpload',
   // 文件下载
   fileDownLoad: '/basic-data-batch-api/rest-api/v1/fileApi/fileDownLoad',
+  // 附件查询
+  attachment: '/attachment/list',
   // 文件下载
   // fileDownLoad: '/uis/fileApi/fileDownLoad',
   // 查询所有一级物业
@@ -981,6 +983,12 @@ export const delivery = {
   exportDeliveryList: 'ams/delivery/exportDeliveryList',
   // 交付管理-新增编辑保存
   saveOrUpdateDelivery: '/ams/delivery/saveOrUpdateDelivery',
-  // 交付管理-终止交付
-  stopDelivery: '/ams/delivery/stopDelivery'
+  // 交付管理-分页查询交付明细列表
+  getDeliveryDetailListPage: '/ams/delivery/getDeliveryDetailListPage',
+  // 交付管理-查询交付信息
+  getDeliveryById: '/ams/delivery/getDeliveryById',
+  // 交付管理-查询交付明细列表
+  getDeliveryDetailList: '/ams/delivery/getDeliveryDetailList',
+  // 交付管理-查询明细列表汇总
+  getDeliveryDetailListStatistics: '/ams/delivery/getDeliveryDetailListStatistics',
 }
