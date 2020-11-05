@@ -66,3 +66,14 @@ export function queryPageListSum (data) {
 export function queryValueRegisterPageListSum (data) {
   return axiosPost(worthRegister.queryValueRegisterPageListSum, data)
 }
+// 导入价值模板
+export function importValueTemplate (data) {
+  return axiosPost(worthRegister.importValueTemplate, data)
+}
+// 下载模板
+export function downloadValueTemplate (data) {
+  return axiosPost(worthRegister.downloadValueTemplate, data, false, false, {
+    responseType: 'blob'
+  })
+}
+

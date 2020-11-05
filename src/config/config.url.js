@@ -619,7 +619,11 @@ export const worthRegister = {
   // 资产价值一览表查询汇总
   queryPageListSum: '/ams/assetValueRegister/queryAssertValuePageListSum',
   // 价值登记查询(汇总)
-  queryValueRegisterPageListSum: '/ams/assetValueRegister/queryValueRegisterPageListSum'
+  queryValueRegisterPageListSum: '/ams/assetValueRegister/queryValueRegisterPageListSum',
+  // 价值登记导入
+  importValueTemplate: '/ams/assetValueRegister/importValueTemplate',
+  // 下周模板
+  downloadValueTemplate: '/ams/assetValueRegister/downloadValueTemplate'
 }
 
 

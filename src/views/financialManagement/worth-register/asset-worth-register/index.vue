@@ -17,6 +17,12 @@
           @click="handleExport"
           v-power="ASSET_MANAGEMENT.WORTH_REGISTER_ASSET_EXPORT"
         >导出</SG-Button>
+        <SG-Button
+          icon="export"
+          :loading="bulkImportLoading"
+          style="margin-left: 10px"
+          @click="bulkImport"
+        >批量导入</SG-Button>
       </div>
       <div slot="headerForm">
         <tree-select @changeTree="changeTree" style="width: 180px"/>
@@ -111,6 +117,27 @@
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
+    <!-- 批量更新 -->
+    <batch-import class="asset-subsidiary-eport" @upload="uploadFile" @down="downTemplate" ref="batchImport" width="800px" title="价值登记批量导入">
+      <div slot="upLoadModule" class="upLoad-content">
+        <div class="upLoad-content-li">
+          <span><i>*</i>资产项目：</span>
+          <a-select
+            showSearch
+            placeholder="请选择资产项目"
+            optionFilterProp="children"
+            :style="allStyle"
+            v-model="fileProjectId"
+            :options="projectOptions"
+            :filterOption="filterOption"></a-select>
+        </div>
+        <div class="left-title">下载模板文件：</div>
+        <div>
+          <i class="file-background"></i>
+          <span @click="downTemplate" class="down_btn" style="margin-left: 17px;">下载</span>
+        </div>
+      </div>
+    </batch-import>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
 </template>
@@ -123,17 +150,22 @@
   import DateMethodOrgan from '../components/DateMethodOrgan'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import SearchContainer from 'src/views/common/SearchContainer'
+  import BatchImport from 'src/views/common/eportAndDownFile'
   import {queryProjectListByOrganId, filterOption, queryAssetTypeList, queryAssetMethodList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
+  const allStyle = { width: "170px", "margin-right": "10px"};
   export default {
     name: 'index',
     props: ['refreshKey'],
-    components: { SearchContainer, DateMethodOrgan, NoDataTip, TreeSelect, OverviewNumber },
+    components: { SearchContainer, DateMethodOrgan, NoDataTip, TreeSelect, OverviewNumber, BatchImport },
     data () {
       return {
+        allStyle: allStyle,
+        fileProjectId: '',
         ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         registerName: '', // 查询条件-登记名称
         exportBtnLoading: false, // 导出按钮loading
+        bulkImportLoading: false,   // 批量导入
         organProjectType: {
           organId: '',
           organName: '',
@@ -255,7 +287,47 @@
           this.exportBtnLoading = false
         })
       },
-
+      // 导入
+      bulkImport () {
+        this.$refs.batchImport.visible = true
+      },
+      // 下载导入模板文件
+      downTemplate () {
+        if (this.fileProjectId === '' || this.fileProjectId === undefined) {
+          this.$SG_Message.error('请选择资产项目')
+          return false
+        }
+        let obj = {
+          organId: this.organProjectType.organId,
+          projectId: this.fileProjectId
+        }
+        exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '资产项目批量导入模板.xlsx', this)
+      },
+      // 批量导入
+      uploadFile (file) {
+        if (this.fileProjectId === '' || this.fileProjectId === undefined) {
+          this.$SG_Message.error('请选择资产项目')
+          return false
+        }
+        let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' })
+        let fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('organId', this.organProjectType.organId)
+        fileData.append('projectId', this.fileProjectId || '')
+        this.$api.worthRegister.importValueTemplate(fileData).then(r => {
+          this.$SG_Message.destroy(name)
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$SG_Message.success(res.message || '导入成功')
+            this.$refs.batchImport.visible = false
+            return this.queryTableData({type: 'search'})
+          }
+          throw res.message
+        }).catch(err => {
+          this.$SG_Message.destroy(name)
+          this.$SG_Message.error(err || '批量导入失败')
+        })
+      },
       // 删除项目
       confirmDelete (registerId) {
         this.tableObj.loading = true
@@ -369,6 +441,7 @@
         key !== preKey && this.queryTableData ({pageNo, pageLength})
       }
     }
+    
   }
 </script>
 
@@ -389,6 +462,31 @@
       cursor: pointer;
       margin-right: 12px;
       white-space: nowrap;
+    }
+  }
+</style>
+
+<style lang='less'>
+  .upLoad-content {
+    padding: 20px 0 20px 50px;
+    border-left: 1px solid rgba(192,199,209,1);
+    .file-background{
+      display: inline-block;
+      width: 49px;
+      height: 56px;
+      background-image: url('../../../../assets/image/undertake/exl.png');
+      background-size: 100% 100%;
+    }
+    .upLoad-content-li {
+      width: 100%;
+      display: inline-block;
+      margin-bottom: 20px;
+      & >span > i {
+        color: #ff3a3a;
+      }
+    }
+    .left-title{
+      margin-bottom: 15px;
     }
   }
 </style>

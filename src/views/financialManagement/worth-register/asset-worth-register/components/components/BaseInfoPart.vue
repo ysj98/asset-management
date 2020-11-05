@@ -38,6 +38,8 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产项目">
           <a-select
+            showSearch
+            :filterOption="filterOption"
             v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'projectId')"
@@ -175,6 +177,9 @@
     },
 
     methods: {
+      filterOption (input, option) {
+        return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      },
       // 提交数据
       handleSubmit (resolve, reject) {
         this.form.validateFieldsAndScroll((err, values) => {
