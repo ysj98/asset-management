@@ -808,5 +808,10 @@ let proRouter = [{
     name: '编辑',
     component: () => import('@/views/usePlanning/assetDelivery/child/editDelivery')
   },
+  {
+    path: '/assetDelivery/details',
+    name: '详情',
+    component: () => import('@/views/usePlanning/assetDelivery/child/details')
+  },
 ]
 export default proRouter

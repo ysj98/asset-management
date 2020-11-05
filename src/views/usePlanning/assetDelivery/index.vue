@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-04 18:06:08
+ * @LastEditTime: 2020-11-05 10:15:17
  * @Description: 资产交付管理
 -->
 <template>
@@ -400,8 +400,8 @@ export default {
       if (["particulars"].includes(str)) {
         let particularsData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetDelivery/editDelivery",
-          query: { record: particularsData, setType: 'new' }
+          path: "/assetDelivery/details",
+          query: { record: particularsData, setType: 'details' }
         });
       }
       // 删除
