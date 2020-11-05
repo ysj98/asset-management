@@ -13,11 +13,11 @@
               <label slot="label">变更单名称：</label>
               <a-input
                 autocomplete="off"
-                placeholder="请输入标题"
+                placeholder="请输入变更单名称"
                 :style="allWidth"
                 :max="50"
                 v-decorator="['title',
-                {rules: [{required: true, max: 50, whitespace: true, message: '请输入标题(不超过50字符)'}], initialValue: newEditSingleData.title}
+                {rules: [{required: true, max: 50, whitespace: true, message: '请输入变更单名称(不超过50字符)'}], initialValue: newEditSingleData.title}
               ]"
               />
             </a-form-item>
@@ -413,6 +413,15 @@
                 v-model="record.newDebtAmount"
               />
             </template>
+            <template v-if="changeType === '9'" slot="newAssetArea" slot-scope="text, record">
+              <a-input-number
+                size="small"
+                :min="0"
+                :step="1.00"
+                :precision="2"
+                v-model="record.newAssetArea"
+              />
+            </template>
             <!-- 操作 -->
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
@@ -455,6 +464,7 @@ import {
   baseChange,
   debtChange,
   baseChangeTwo,
+  assetSize,
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips";
@@ -559,10 +569,11 @@ export default {
       } else if (val === "7") {
         this.columns = baseChange;
         // 装修情况有变化
-        console.log("会进到这里来1");
         this.handleBaseAndHuse();
       } else if (val === "8") {
         this.columns = debtChange;
+      } else if (val === "9") {
+        this.columns = assetSize;      // 资产面积
       }
     },
   },
@@ -623,7 +634,8 @@ export default {
 
             item.creditorAmount = item.oldCreditorAmount;
             item.debtAmount = item.oldDebtAmount;
-
+            // 资产面积映射
+            item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
             checkedData.push(item.assetId);
@@ -761,6 +773,11 @@ export default {
                 this.$message.info("变更后债务金额");
                 return;
               }
+            } else if (String(this.changeType) === "9") {
+              if (!this.tableData[i].newAssetArea) {
+                this.$message.info("请输入变更后资产面积");
+                return;
+              }
             }
           }
           this.tableData.forEach((item) => {
@@ -803,6 +820,7 @@ export default {
                 String(this.changeType) === "8" ? item.newCreditorAmount : "", // 变更后债权金额
               debtAmount:
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
+              newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : ""   // 变更后资产面积
             });
           });
           let obj = {

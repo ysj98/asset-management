@@ -378,3 +378,35 @@ export const debtChange = [{
   align: 'center',
   scopedSlots: { customRender: 'operation' }
 }]
+
+
+// 资产面积
+export const assetSize = [{
+  title: '资产名称',
+  dataIndex: 'assetName',
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode',
+},{
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+}, {
+  title: '资产分类',
+  dataIndex: 'assetCategoryName',
+}, {
+  title: '所在位置',
+  dataIndex: 'address',
+}, {
+  title: '资产面积(㎡)',
+  dataIndex: 'assetArea',
+}, {
+  title: '变更后资产面积(㎡)',
+  dataIndex: 'newAssetArea',
+  scopedSlots: { customRender: 'newAssetArea' },
+  width: 150,
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  align: 'center',
+  scopedSlots: { customRender: 'operation' }
+}]

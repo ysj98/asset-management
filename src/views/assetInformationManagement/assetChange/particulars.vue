@@ -90,6 +90,7 @@ import {
   baseChange,
   debtChange,
   baseChangeTwo,
+  assetSize
 } from "./basics";
 import { utils } from "@/utils/utils.js";
 const originalObjectTypeMap = {
@@ -154,6 +155,9 @@ export default {
       } else if (val === "8") {
         arr = utils.deepClone(debtChange);
         this.columns = arr.splice(0, arr.length - 1);
+      } else if (val === "9") {
+        arr = utils.deepClone(assetSize);
+        this.columns = arr.splice(0, arr.length - 1);
       }
     },
   },
@@ -207,7 +211,8 @@ export default {
 
             item.creditorAmount = item.oldCreditorAmount;
             item.debtAmount = item.oldDebtAmount;
-
+            // 资产面积映射
+            item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
           });

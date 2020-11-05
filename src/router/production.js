@@ -813,5 +813,10 @@ let proRouter = [{
     name: '详情',
     component: () => import('@/views/usePlanning/assetDelivery/child/details')
   },
+  {
+    path: '/assetDeliveryRecord',
+    name: '资产交付记录',
+    component: () => import('@/views/usePlanning/assetDeliveryRecord/index')
+  },
 ]
 export default proRouter
