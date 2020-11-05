@@ -149,6 +149,8 @@
         <span class="section-title blue">权属登记详情</span>
         <div class="button-box">
           <div class="buytton-nav">
+            <SG-Button v-if="+changeType !== 3" class="buytton-nav-r" type="primary" weaken @click="batchExport">批量导出</SG-Button>
+            <SG-Button v-if="+changeType !== 3"  class="buytton-nav-r" type="primary" weaken @click="bulkImport ">批量导入</SG-Button>
             <SG-Button class="buytton-nav-r" type="primary" weaken @click="newFn">新增权证</SG-Button>
             <SG-Button type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
           </div>
@@ -196,10 +198,12 @@
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
+    <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
 
 <script>
+import {utils} from '@/utils/utils'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import chooseWarrants from '../../common/chooseWarrants'
 import NewCard from '../authorityCardManagement/newCard'
@@ -223,6 +227,7 @@ export default {
   props: {},
   data () {
     return {
+      fileType: ['xls', 'xlsx'],
       warrantNbrData: [],
       registerId: '',
       organId: '',
@@ -295,10 +300,6 @@ export default {
       this.checkedData = [...val]
       data.forEach((item, index) => {
         item.key = item.assetId
-        // item.oldWarrantNbr = item.warrantNbr
-        // item.warrantNbr = undefined
-        // item.warrantNbrData = []      // 用于存储单个下拉框数据
-        // item.warrantGeneralData = []  // 用于存权证号总是数据
       })
       this.tableData = data
       this.$refs.assetBundlePopover.show = false
@@ -315,24 +316,8 @@ export default {
       })
       this.$refs.chooseWarrants.show = false
     },
-    change () {},
     // 选择新权证号
     handleChange(value) {
-      // let warrantGeneralData = []   // 各种遍历给回去总的数据
-      // if (value.warrantNbrData.length > 0) {
-      //   let ctr = value.warrantNbrData[0].label.split(',')
-      //   let ctl = value.warrantNbrData[0].value.split(',')
-      //   ctr.forEach((item, index) => {
-      //     ctl.forEach((list, indexs) => {
-      //       if (index === indexs) {
-      //         warrantGeneralData.push({
-      //           warrantNbr: item,
-      //           warrantId: Number(list)
-      //         })
-      //       }
-      //     })
-      //   })
-      // }
       value.warrantGeneralData.forEach(list => {
         list.lotNoEstateUnitCode = `${list.lotNo || '--'}/${list.estateUnitCode || '--'}`
       })
@@ -388,6 +373,91 @@ export default {
         } else {
           // console.log('Received values of form: ', values)
         }
+      })
+    },
+    // 批量导出
+    batchExport () {
+      let arr = utils.deepClone(this.tableData)
+      arr.forEach((item) => {
+        delete item.warrantGeneralData
+      })
+      this.$api.ownership.shipAssetExport(arr).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `权属登记.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+    },
+    // 批量导入
+    bulkImport () {
+      if (!this.form.getFieldValue('projectId')) {
+        this.$message.info('请先选择资产项目')
+        return
+      }
+      if (!this.form.getFieldValue('assetType')) {
+        this.$message.info('请先选择资产类型')
+        return
+      }
+      this.$refs.fileUpload.click()
+    },
+    checkFile (fileName, fileSize) {
+      // 检查文件类型
+      let myFileType = false
+      if (this.fileType.length) {
+        const FileType = fileName.split('.').pop().toLowerCase()
+        myFileType = this.fileType.some(item => item.toLowerCase() === FileType)
+      }
+      // 检查文件大小
+      let mfileSize = true
+      if (fileSize) {
+        mfileSize = fileSize <= (this.fileMaxSize * 1024)
+      }
+      return {
+        size: mfileSize,
+        type: myFileType
+      }
+    },
+    // 文件上传
+    change (files, e) {
+      console.log(files)
+      if (!files.length) { return }
+      let fileData = new FormData()
+      fileData.append('file', files[0])
+      fileData.append('projectId', this.form.getFieldValue('projectId'))
+      fileData.append('assetType', this.form.getFieldValue('assetType'))
+      let validObj = this.checkFile(files[0].name, files[0].size)
+      if (!validObj.type) {
+        this.$message.error('上传文件类型错误!')
+        return
+      }
+      this.fileName = files[0].name
+      this.formData = fileData
+      if (this.formData === null) {
+        return this.$message.error('请先上传文件!')
+      }
+      let loadingName = this.SG_Loding('导入中...')
+      this.$api.ownership.shipImportData(this.formData).then(res => {
+        if (res.data.code === '0') {
+          e.target.value = ''
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.success('导入成功！')
+            console.log(res, 'p[p[p[p[')
+          })
+        } else {
+          e.target.value = ''
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(res.data.message)
+          })
+        }
+      }, () => {
+        e.target.value = ''
+        this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
+        })
       })
     },
     // 新增权证

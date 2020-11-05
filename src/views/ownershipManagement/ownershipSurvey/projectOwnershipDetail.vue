@@ -21,7 +21,7 @@
         </div>
         <div>
           <span class="detail-label">权属办理进度：</span>
-          <span class="detail-content">{{tranProgress | filterNum}}%</span>
+          <span class="detail-content">{{tranProgress | filterNum}}</span>
         </div>
       </div>
       <!-- 基本信息 -->
@@ -32,12 +32,12 @@
       <div class="detail-table-box" ref="table_box">
         <a-tabs @change="tabChange" v-model="showKey" :animated="false">
           <a-tab-pane :tab="'无证(' + (this.noOwnershipCount || 0) + ')'" key="noOwnership">
-            <noCertOwnershipDetail @change="handleChange" :projectId="projectId" :type="type"/>
+            <noCertOwnershipDetail  @change="handleChange" :projectId="projectId" :type="type" :assetTypes="assetTypes"/>
           </a-tab-pane>
-          <a-tab-pane :tab="'有证(' + (this.ownershipCount || 0) + ')'" key="ownership">
+          <a-tab-pane :tab="'有证(' + (this.ownershipCount || 0) + ')'" key="ownership" :assetTypes="assetTypes">
             <hasCertOwnershipDetail @change="handleChange" :projectId="projectId" :type="type"/>
           </a-tab-pane>
-          <a-tab-pane :tab="'待办(' + (this.waitOwnershipCount || 0) + ')'" key="waitOwnership">
+          <a-tab-pane :tab="'待办(' + (this.waitOwnershipCount || 0) + ')'" key="waitOwnership" :assetTypes="assetTypes">
             <waitCertOwnershipDetail :projectId="projectId" :type="type"/>
           </a-tab-pane>
         </a-tabs>
@@ -69,6 +69,7 @@ export default {
   },
   data () {
     return {
+      assetTypes: '',
       type: '',
       projectId: '',
       scrollHeight: {y: 'auto'},
@@ -90,6 +91,7 @@ export default {
   created () {
     this.projectId = this.$route.query.projectId || ''
     this.type = this.$route.query.type
+    this.assetTypes = this.$route.query.assetTypes
     this.attrBase()
   },
   mounted () {
@@ -103,6 +105,7 @@ export default {
     attrBase () {
       let data = {
         projectId: this.projectId,
+        assetTypes: this.assetTypes.length === 0 ? '' : this.assetTypes.join(',')
       }
       this.$api.basics.attrBase(data).then(res => {
         if (res.data.code === '0') {

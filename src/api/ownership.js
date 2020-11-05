@@ -37,6 +37,15 @@ export function shipDetail (data) {
 export function saveOrUpdate (data) {
   return axiosPost(ownership.ownershipRegistration.saveOrUpdate, data)
 }
+// 批量导出
+export function shipAssetExport (data) {
+  return axiosPost(ownership.ownershipRegistration.shipAssetExport, data, false, false, { responseType: 'blob'})
+}
+// 批量导入
+export function shipImportData (data) {
+  return axiosPost(ownership.ownershipRegistration.shipImportData, data)
+}
+
 
 // 权属管理 - 权证管理
 // 权证导入

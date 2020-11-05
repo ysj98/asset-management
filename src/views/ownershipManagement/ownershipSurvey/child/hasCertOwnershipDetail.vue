@@ -131,6 +131,10 @@ export default {
     },
     scrollHeight: {
       default: () => ({ y: "auto" })
+    },
+    assetTypes: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -152,7 +156,8 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        projectId: this.projectId
+        projectId: this.projectId,
+        assetTypes: this.assetTypes
       };
       this.table.loading = true;
       this.$api.basics.attrList(data).then(

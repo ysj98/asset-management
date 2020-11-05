@@ -326,6 +326,7 @@ export default {
             this.table.dataSource = result.map(item => {
               item.sourceTypeName = item.sourceTypeName || "--";
               item.souceChannelType = item.souceChannelType || "--";
+              item.tranProgress = item.tranProgress.substring(0, item.tranProgress.length - 1)
               return {
                 key: getUuid(),
                 ...item
@@ -427,7 +428,8 @@ export default {
     goPage(type, record) {
       let query = {
         type,
-        projectId: record.projectId
+        projectId: record.projectId,
+        assetTypes: this.queryCondition.assetTypes || []
       };
       this.$router.push({ path: operationTypes[type], query });
     },

@@ -558,6 +558,10 @@ export const ownership = {
     shipDetail: '/ams/ownerShip/ship/detail',
     // 权属登记删除
     saveOrUpdate: '/ams/ownerShip/ship/saveOrUpdate',
+    // 批量导出
+    shipAssetExport: '/ams/ownerShip/ship/assetExport',
+    // 批量导入
+    shipImportData: '/ams/ownerShip/importData',
   },
   // 权证管理
   authorityCardManagement: {
