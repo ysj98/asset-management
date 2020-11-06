@@ -1002,5 +1002,5 @@ export const delivery = {
   // 资产交付记录
   deliveryGetChangeSchedulePage: '/ams/deliveryDetail/getChangeSchedulePage',
   // 资产交付记录导出
-  deliveryExportChangeScheduleList: '/ams/deliveryDetail/deliveryExportChangeScheduleList'
+  deliveryExportChangeScheduleList: '/ams/deliveryDetail/exportChangeScheduleList'
 }

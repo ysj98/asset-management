@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 13:45:32
- * @LastEditTime: 2020-11-06 17:48:30
+ * @LastEditTime: 2020-11-06 18:19:44
  * @Description: 资产交付记录
 -->
 <template>
@@ -109,7 +109,7 @@ const columns = [
     dataIndex: 'projectName'
   },
   {
-    title: '资产面积',
+    title: '资产面积(㎡)',
     dataIndex: 'assetArea'
   },
   {
