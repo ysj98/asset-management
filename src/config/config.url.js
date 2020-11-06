@@ -999,4 +999,8 @@ export const delivery = {
   getDeliveryDetailList: '/ams/delivery/getDeliveryDetailList',
   // 交付管理-查询明细列表汇总
   getDeliveryDetailListStatistics: '/ams/delivery/getDeliveryDetailListStatistics',
+  // 资产交付记录
+  deliveryGetChangeSchedulePage: '/ams/deliveryDetail/getChangeSchedulePage',
+  // 资产交付记录导出
+  deliveryExportChangeScheduleList: '/ams/deliveryDetail/deliveryExportChangeScheduleList'
 }

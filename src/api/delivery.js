@@ -32,22 +32,28 @@ export function saveOrUpdateDelivery (data) {
   return axiosPost(delivery.saveOrUpdateDelivery, data)
 }
 // 交付管理-分页查询交付明细列表
-// /ams/delivery/getDeliveryDetailListPage
 export function getDeliveryDetailListPage (data) {
   return axiosPost(delivery.getDeliveryDetailListPage, data)
 }
 // 交付管理-查询交付信息
-// /ams/delivery/getDeliveryById
 export function getDeliveryById (data) {
   return axiosGet(delivery.getDeliveryById, data)
 }
 // 交付管理-查询交付明细列表
-// /ams/delivery/getDeliveryDetailList
 export function getDeliveryDetailList (data) {
   return axiosGet(delivery.getDeliveryDetailList, data)
 }
 // 交付管理-查询明细列表汇总
-// /ams/delivery/getDeliveryDetailListStatistics
 export function getDeliveryDetailListStatistics (data) {
   return axiosGet(delivery.getDeliveryDetailListStatistics, data)
+}
+
+// 资产交付记录
+// 资产交付记录列表
+export function deliveryGetChangeSchedulePage (data) {
+  return axiosPost(delivery.deliveryGetChangeSchedulePage, data)
+}
+// 资产交付记录导出
+export function deliveryExportChangeScheduleList (data) {
+  return axiosPost(delivery.deliveryExportChangeScheduleList, data)
 }
