@@ -55,5 +55,5 @@ export function deliveryGetChangeSchedulePage (data) {
 }
 // 资产交付记录导出
 export function deliveryExportChangeScheduleList (data) {
-  return axiosPost(delivery.deliveryExportChangeScheduleList, data)
+  return axiosPost(delivery.deliveryExportChangeScheduleList, data, false, false, {responseType: 'blob'})
 }
