@@ -1,14 +1,14 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2020-11-03 13:43:45
+ * @LastEditTime: 2020-11-06 14:19:34
  * @Description: 资源报表
 -->
 <template>
   <div class="landAssetsView">
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button type="primary" @click="downloadFn">导出</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -56,6 +56,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 const columnsData = [
   { title: '管理机构', dataIndex: 'organName', width: 150 },
   { title: '资产数量', dataIndex: 'assetNum', width: 150 },
@@ -90,6 +91,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       allStyle: 'width: 170px; margin-right: 10px;',
       modalShow: false,
       overviewNumSpinning: false,

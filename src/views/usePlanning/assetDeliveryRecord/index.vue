@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 13:45:32
- * @LastEditTime: 2020-11-05 15:16:43
+ * @LastEditTime: 2020-11-06 14:26:22
  * @Description: 资产交付记录
 -->
 <template>
@@ -11,7 +11,7 @@
         <SG-Button
           type="primary"
           @click="downloadFn"
-          v-power="ASSET_MANAGEMENT.ASSET_CHANGE_LIST_EXPORT"
+          v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_RECORD"
         >
           <segiIcon type="#icon-ziyuan10" class="icon-right"/>导出
         </SG-Button>

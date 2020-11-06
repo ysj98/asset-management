@@ -215,6 +215,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_AWR_APPROVAL: 'zcgl_awr_approval',
   // 资产价值登记-删除
   ASSET_AWR_DELETE: 'zcgl_awr_delete',
+  // 价值登记导入 v2.06
+  ASSET_AWR_IMPORT: 'zcgl_awr_import',
 
   /**
   * 盘点任务
@@ -396,13 +398,23 @@ export const ASSET_MANAGEMENT = {
   /**
    * 资产交付管理
    */
-  ASSET_DELIVERY_NEW: 'asset_delivery_new',           // 资产交付新建
-  ASSET_DELIVERY_EDIT: 'asset_delivery_edit',         // 资产交付编辑
-  ASSET_DELIVERY_EXPORT: 'asset_delivery_export',     // 资产交付导出
-  ASSET_DELIVERY_AUDIT: 'asset_delivery_audit',     // 资产交付审批
-  ASSET_DELIVERY_DELETE: 'asset_delivery_delete',     // 资产交付删除
-  ASSET_DELIVERY_REVERSE_AUDIT: 'asset_delivery_reverse_audit',     // 资产交付反审批
-  ASSET_DELIVERY_end: 'asset_delivery_end',     // 资产交付结束交付
+  ASSET_DELIVERY_NEW: 'asset_delivery_new',                       // 资产交付新建
+  ASSET_DELIVERY_EDIT: 'asset_delivery_edit',                     // 资产交付编辑
+  ASSET_DELIVERY_EXPORT: 'asset_delivery_export',                 // 资产交付导出
+  ASSET_DELIVERY_AUDIT: 'asset_delivery_audit',                   // 资产交付审批
+  ASSET_DELIVERY_DELETE: 'asset_delivery_delete',                 // 资产交付删除
+  ASSET_DELIVERY_REVERSE_AUDIT: 'asset_delivery_reverse_audit',   // 资产交付反审批
+  ASSET_DELIVERY_end: 'asset_delivery_end',                       // 资产交付结束交付
+
+  /**
+   * 房屋资产&资源统计表
+   */
+  ASSET_RESOURCE_STATISTICS_EXPORT: 'asset_resource_statistics_export',            // 房屋资产&资源统计表
+  ASSET_RESOURCE_DETAIL_EXPORT: 'asset_resource_detail_export',                    // 房屋资产&资源统计表-资产明细
+   /**
+   * 资产交付记录
+   */
+  ASSET_DELIVERY_RECORD: 'asset_delivery_record',                   // 资产交付记录导出
 }
 
 

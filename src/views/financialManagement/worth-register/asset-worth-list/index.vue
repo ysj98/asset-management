@@ -146,7 +146,7 @@
             { title: '资产项目', dataIndex: 'projectName', width: '150px', scopedSlots: { customRender: 'projectName' }, },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: '150px'},
             { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
-            { title: '首次市场法估值(元)', dataIndex: 'marketValue' },
+            { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue' },
             { title: '最新估值(元)', dataIndex: 'assessmentValue', width: '150px' },
             { title: '评估方法', dataIndex: 'assessmentMethodName' },
             { title: '评估机构', dataIndex: 'assessmentOrganName' },

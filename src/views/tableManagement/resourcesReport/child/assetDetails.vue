@@ -1,14 +1,14 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2020-11-03 14:48:17
+ * @LastEditTime: 2020-11-06 14:20:23
  * @Description: 资产明细
 -->
 <template>
   <div class="landAssetsView">
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button type="primary" @click="downloadFn">导出</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_DETAIL_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm">
         <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
@@ -54,6 +54,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import housingDetails from './housingDetails'
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 const columnsData = [
   { title: '管理机构', dataIndex: 'organName'},
   { title: '项目名称', dataIndex: 'projectName'},
@@ -83,6 +84,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       assetId: '',                   // 资产id
       housingShow: false,            // 房间弹框控制
       allStyle: 'width: 170px; margin-right: 10px;',

@@ -22,6 +22,7 @@
           :loading="bulkImportLoading"
           style="margin-left: 10px"
           @click="bulkImport"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_IMPORT"
         >批量导入</SG-Button>
       </div>
       <div slot="headerForm">

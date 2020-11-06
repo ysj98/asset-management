@@ -126,7 +126,7 @@
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '所属机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
             { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
-            { title: '首次市场法估值(元)', dataIndex: 'marketValue' },
+            { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue' },
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
             { title: '上次评估值', dataIndex: 'lastAssessmentValue' },
             { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
