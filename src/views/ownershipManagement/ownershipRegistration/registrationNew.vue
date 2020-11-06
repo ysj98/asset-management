@@ -377,10 +377,17 @@ export default {
     },
     // 批量导出
     batchExport () {
+      if (this.tableData.length === 0) {
+        this.$message.info('请先选择资产')
+        return
+      }
+      console.log(this.tableData)
       let arr = utils.deepClone(this.tableData)
       arr.forEach((item) => {
-        delete item.warrantGeneralData
+        item.warrantGeneralData = []
+        item.warrantNbr = item.warrantNbrData.length > 0 ? item.warrantNbrData[0].label : ''
       })
+      console.log(arr, '9090mshsh')
       this.$api.ownership.shipAssetExport(arr).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
@@ -394,6 +401,10 @@ export default {
     },
     // 批量导入
     bulkImport () {
+      if (!this.form.getFieldValue('registerType')) {
+        this.$message.info('请先选择登记类型')
+        return
+      }
       if (!this.form.getFieldValue('projectId')) {
         this.$message.info('请先选择资产项目')
         return
@@ -445,7 +456,21 @@ export default {
           e.target.value = ''
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
-            console.log(res, 'p[p[p[p[')
+            let data = res.data.data
+            console.log(data, '909dh你好是')
+            let checkedData = []
+            if (this.changeType !== '3') {
+              data.forEach((item, index) => {
+                item.key = item.assetId
+                item.address = item.location
+                item.assetArea = item.area
+                checkedData.push(item.assetId)
+                item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
+                item.warrantNbr = item.warrantIds.join(',')
+                item.warrantGeneralData = item.warrants  // 用于存权证号总是数据
+              })
+            }
+            this.tableData = data
           })
         } else {
           e.target.value = ''
