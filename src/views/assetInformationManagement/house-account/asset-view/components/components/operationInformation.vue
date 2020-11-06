@@ -67,6 +67,10 @@ let columns = [
     dataIndex: "resourceName",
   },
   {
+    title: "租赁面积(㎡)",
+    dataIndex: "leaseArea",
+  },
+  {
     title: "合同编号",
     dataIndex: "contractCode",
   },

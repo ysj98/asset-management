@@ -227,6 +227,21 @@
                     />
                   </a-form-item>
                 </a-col>
+                <a-col v-bind="formSpan">
+                  <a-form-item label="物业管理单位" v-bind="formItemLayout">
+                    <a-input :maxLength="30" :style="allWidth" v-decorator="['organManagement', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
+                  <a-form-item label="物业缴费期限" v-bind="formItemLayout">
+                    <a-input :maxLength="30" :style="allWidth" v-decorator="['organPayDeadline', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
+                  <a-form-item label="物业费" v-bind="formItemLayout">
+                    <a-input :maxLength="30" :style="allWidth" v-decorator="['organFee', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">

@@ -136,6 +136,7 @@
             { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '管理机构', dataIndex: 'organName' },
             { title: '来源方式', dataIndex: 'sourceTypeName' }, { title: '来源渠道', dataIndex: 'souceChannelType' },
             { title: '建筑年代', dataIndex: 'buildAge' }, { title: '楼栋数', dataIndex: 'buildCount' },
+            { title: '整栋接管数量', dataIndex: 'assetBuildCount' },
             { title: '资产数量', dataIndex: 'assetCount' }, { title: '房屋性质', dataIndex: 'houseTypeName' },
             { title: '建筑面积(㎡)', dataIndex: 'area' }, { title: '划转前房屋状态', dataIndex: 'houseStatusName' },
             { title: '上报基础情况表时间', dataIndex: 'reportBasicInfoDate' }, { title: '上报房屋划转请示时间', dataIndex: 'reportHouseTransferReqDate' },
@@ -155,6 +156,7 @@
             { title: '已运营基本情况', dataIndex: 'operationInfo' }, { title: '资产原值(元)', dataIndex: 'originalValue' },
             { title: '首次成本法估值', dataIndex: 'assetValuation' }, { title: '首次市场法估值', dataIndex: 'firstMarketValue' },
             { title: '最新估值(元)', dataIndex: 'marketValue' }, { title: '项目状态', dataIndex: 'approvalStatusName' },
+            { title: '已租面积', dataIndex: 'rentedArea' },{ title: '未租面积', dataIndex: 'unRentedArea' },
             { title: '备注', dataIndex: 'remark', width: 180 }
           ]
         },
