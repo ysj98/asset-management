@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 11:27:08
- * @LastEditTime: 2020-11-04 14:23:19
+ * @LastEditTime: 2020-11-09 16:32:02
  * @Description: 结束交付
 -->
 <template>
@@ -90,11 +90,12 @@ export default {
           console.log(values)
           let obj = {
             deliveryId: this.deliveryId,         // 交付id
+            approvalStatus: '',                  // 状态
             cause: values.cause,                 // 原因
             endDate: values.endDate === undefined ? '' : `${values.endDate.format('YYYY-MM-DD')}`,       // 日期
           }
           let loadingName = this.SG_Loding("保存中...");
-          this.$api.delivery.stopDelivery(obj).then((res) => {
+          this.$api.delivery.updateStatus(obj).then((res) => {
             if (Number(res.data.code) === 0) {
               this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success("提交成功")

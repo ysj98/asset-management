@@ -364,6 +364,7 @@ export default {
               element.disposeCost = ''         // 处置成本
               element.disposeReceive = ''      // 处置收入
               element.remark = ''              // 处置备注
+              element.deliveryArea = ''        // 交付面积
               arrData.push(element)
             })
             this.tableData = data

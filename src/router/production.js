@@ -796,7 +796,10 @@ let proRouter = [{
   {
     path: '/assetDelivery',
     name: '资产交付管理',
-    component: () => import('@/views/usePlanning/assetDelivery/index')
+    component: () => import('@/views/usePlanning/assetDelivery/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/assetDelivery/newEditor',

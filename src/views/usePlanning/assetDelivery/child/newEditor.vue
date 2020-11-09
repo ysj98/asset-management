@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-05 09:59:01
+ * @LastEditTime: 2020-11-09 16:29:43
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -67,7 +67,7 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item :colon="false" label="资产类型：" v-bind="formItemLayout">
+            <a-form-item :colon="false" label="交付类型：" v-bind="formItemLayout">
               <label slot="label">交付类型：</label>
               <a-select
                 showSearch
@@ -128,7 +128,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
         <div class="button-box">
-          <div class="fl">交付资产数量：{{assetChangeCount}}个，合计交付面积：{deliveryArea}㎡</div>
+          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个，合计交付面积：{{deliveryArea || 0}}㎡</div>
           <div class="fr">
             <SG-Button class="mr10" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
             <SG-Button :disabled="selectedRowKeys.length === 0" type="primary" weaken @click="deleteFn">删除</SG-Button>
@@ -190,6 +190,7 @@
 import AssetBundlePopover from "src/views/common/assetBundlePopover";
 import noDataTips from "@/components/noDataTips";
 import FormFooter from "@/components/FormFooter";
+import moment from "moment";
 const conditionalJudgment = [undefined, null, ""];
 const columns = [
    {
@@ -215,7 +216,7 @@ const columns = [
     width: '10%'
   }, {
     title: '资产分类',
-    dataIndex: 'assetCategoryName',
+    dataIndex: 'assetObjectTypeName',
     width: '8%'
   }, {
     title: '资产面积',
@@ -253,6 +254,8 @@ export default {
   props: {},
   data () {
     return {
+      moment,
+      deliveryId: '',        // 交付id
       deliveryArea: '',      // 交付面积
       assetChangeCount: '',  // 资产数量
       setType: '',           // 新增编辑
@@ -299,21 +302,25 @@ export default {
     console.log(this.organIdData)
     this.organId = this.organIdData[0].organId
     this.organName = this.organIdData[0].organName
-    this.setType = this.$route.query.setType                 // 判断新增修改
+    this.setType = this.$route.query.setType               // 判断新增修改
   },
   mounted () {
     if (this.setType === 'edit') {
+      this.deliveryId = this.organIdData[0].deliveryId
       this.editFn()
+      this.getDeliveryDetailList()                          // 获取明细
+      this.getDeliveryDetailListStatistics()                // 获取汇总
+      this.attachment()                                     // 获取附件
     }
-    this.getObjectKeyValueByOrganIdFn()                      // 获取资产项目
-    this.platformDictFn()                                    // 获取资产类型
+    this.getObjectKeyValueByOrganIdFn()                     // 获取资产项目
+    this.platformDictFn()                                   // 获取资产类型
   },
   methods: {
     // 编辑回填基础信息
     editFn () {
-      this.$api.delivery.getDeliveryById({deliveryId: ''}).then((res) => {
+      this.$api.delivery.getDeliveryById({deliveryId: this.deliveryId}).then((res) => {
         if (Number(res.data.code) === 0) {
-          console.log(res)
+          let obj = res.data.data
           let o = {
             deliveryName: '',          // 交付名称
             assetType: undefined,     // 资产类型
@@ -324,6 +331,15 @@ export default {
             endDate: undefined,        // 截止日期
             remark: '',               // 备注
           }
+          for(var key in o){
+            if (['assetType', 'deliveryType'].includes(key)) {
+              o[key] = String(obj[key])
+            } else if (['deliveryDate', 'endDate'].includes(key)) {
+              o[key] = moment(obj[key], "YYYY-MM-DD")
+            } else {
+              o[key] = obj[key]
+            }
+          }
           this.form.setFieldsValue(o)
         } else {
           this.$message.error(res.data.message)
@@ -332,12 +348,14 @@ export default {
     },
     // 查资产明细
     getDeliveryDetailList () {
-      this.$api.delivery.getDeliveryById({deliveryId: ''}).then((res) => {
+      this.$api.delivery.getDeliveryDetailList({deliveryId: this.deliveryId}).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.checkedData = []
           data.forEach(item => {
             item.key = item.assetId
+            item.address = item.pasitionString
+            item.assetCategoryName = item.assetObjectTypeName
             this.checkedData.push(item.assetId)
           })
           this.tableData = data
@@ -348,7 +366,7 @@ export default {
     },
     // 查汇总信息
     getDeliveryDetailListStatistics () {
-      this.$api.delivery.getDeliveryDetailListStatistics({deliveryId: ''}).then((res) => {
+      this.$api.delivery.getDeliveryDetailListStatistics({deliveryId: this.deliveryId}).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.assetChangeCount = data.assetChangeCount    // 数量
@@ -361,15 +379,15 @@ export default {
     // 附件查询
     attachment () {
       let obj = {
-        objectId: '',       // 交付id
+        objectId: this.deliveryId,       // 交付id
         objectType: '18'      // 类型：交付信息18
       }
-      this.$api.basics.attachment({obj}).then((res) => {
+      this.$api.basics.attachment(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           let files = []
-          if (data.attachment && data.attachment.length > 0) {
-            data.attachment.forEach((item) => {
+          if (data && data.length > 0) {
+            data.forEach((item) => {
               files.push({
                 url: item.attachmentPath,
                 name: item.newAttachmentName,
@@ -383,7 +401,7 @@ export default {
       })
     },
     // 提交
-    save () {
+    save (str) {
       this.form.validateFields((err, values) => {
         if (!err) {
           if (this.tableData.length === 0) {
@@ -393,8 +411,7 @@ export default {
           let arr = []
           let assetDetailList = []
           this.tableData.forEach(item => {
-            if (conditionalJudgment.includes(item.deliveryArea)) {
-              arr.push(item.assetId)
+            if (!conditionalJudgment.includes(item.deliveryArea)) {
               assetDetailList.push({
                 deliveryDetailId: conditionalJudgment.includes(item.deliveryDetailId) ? '' : item.deliveryDetailId,  //明细Id 修改时必填
                 deliveryId: conditionalJudgment.includes(item.deliveryId) ? '' : item.deliveryId, // 修改时必填
@@ -403,13 +420,16 @@ export default {
                 assetCode: item.assetCode,            // 资产编码
                 organId: item.organId,                // 组织机构Id
                 projectId: item.projectId,            // 资产项目Id
-                assetObjectId: item.assetObjectId,    // 资产分类
+                assetObjectId: item.assetObjectId,    // 资产对象id
+                objectType: item.objectType,          // 资产分类
                 assetArea: item.assetArea,            // 资产面积
                 remark: item.remark,                  // 备注，填的
                 deliveryArea: item.deliveryArea,      // 交付面积，填的
                 oldTransferArea: item.transferArea,   // 原交付物业面积(转物业面积)
                 oldTransferOperationArea: item.transferOperationArea   // 原交付运营面积(原转运营面积)
               })
+            } else {
+              arr.push(item.assetId)
             }
           })
           if (arr.length !== 0) {
@@ -426,19 +446,20 @@ export default {
             });
           }
           let obj = {
-            deliveryId:1,                                 // 交付ID
+            deliveryId: this.deliveryId,                  // 交付ID
             deliveryName: values.deliveryName,            // 交付名称
             organId: this.organId,                        // 组织机构id
             assetType: values.assetType,                  // 资产类型
             projectId: values.projectId,                  // 资产项目Id
             deliveryType: values.deliveryType,            // 交付类型 取值1交付物业、2交付运营
             deliveryCompany: values.deliveryCompany,      // 交付单位
-            deliveryDate: values.deliveryDate,            // 交付日期
+            deliveryDate: values.deliveryDate === undefined ? '' : `${values.deliveryDate.format('YYYY-MM-DD')}`, // 交付日期
             endDate: values.endDate === undefined ? '' : `${values.endDate.format('YYYY-MM-DD')}`,    // 截止日期
             remark: values.remark,                        // 备注
             attachmentList: files,
             assetChangeCount: this.assetChangeCount,      // 资产数量
-            assetDetailList: assetDetailList              // 资产明细
+            assetDetailList: assetDetailList,             // 资产明细
+            approvalStatus: str === 'draft' ? 0 : 1,                           // 状态
           }
           console.log(obj)
           let loadingName = this.SG_Loding("保存中...");

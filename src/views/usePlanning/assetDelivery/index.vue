@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-05 10:15:17
+ * @LastEditTime: 2020-11-09 16:31:08
  * @Description: 资产交付管理
 -->
 <template>
@@ -88,6 +88,7 @@
             label="交付日期"
             :defaultValue="undefined"
             :canSelectToday="true"
+            :allowClear="true"
             @dateChange="onDateChange"
           ></segi-range-picker>
         </div>
@@ -224,7 +225,7 @@ export default {
   watch: {
     $route() {
       if (
-        this.$route.path === "/assetChangeRegister" &&
+        this.$route.path === "/assetDelivery" &&
         this.$route.query.refresh
       ) {
         this.queryCondition.pageNum = 1;
@@ -264,35 +265,6 @@ export default {
     },
     // 查询
     query() {
-      this.tableData = [
-        {
-          deliveryId:1,                //类型：Number  必有字段  备注：交付单Id
-          deliveryName: '111',                //类型：String  必有字段  备注：交付单名称
-          projectName: '111',                //类型：String  必有字段  备注：资产项目名称
-          organId: '1000279',
-          organName: '西部数据',                //类型：String  必有字段  备注：组织机构名称
-          deliveryType:1,                //类型：Number  必有字段  备注：交付类型
-          deliveryTypeName: '111',                //类型：String  必有字段  备注：交付类型名称
-          deliveryCompany: '111',                //类型：String  必有字段  备注：交付单位
-          assetChangeCount:1,                //类型：Number  必有字段  备注：资产数量
-          deliveryArea: '111',                //类型：String  必有字段  备注：交付面积
-          createByName: '111',                //类型：String  必有字段  备注：创建人
-          createTime: '111',                //类型：String  必有字段  备注：创建时间
-          approvalStatusName: '111',                //类型：String  必有字段  备注：审批状态名称
-          approvalStatus: 3,                //类型：String  必有字段  备注：审批状态
-          deliveryDate: '111',                //类型：String  必有字段  备注：交付日期
-          endDate: '111',                //类型：String  必有字段  备注：结束日期
-          assetTypeName: '111'                //类型：String  必有字段  备注：资产类型名称
-        }
-      ]
-      this.tableData = this.tableData.map((item, index) => {
-        // 处理按钮权限
-        item.operationData = this.handleBtn(item)
-        return {
-          ...item,
-          key: index
-        };
-      });
       this.loading = true;
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
@@ -301,10 +273,10 @@ export default {
         projectId: this.queryCondition.projectId, // 资产项目Id
         deliveryType: this.queryCondition.deliveryType, // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
-        assetTypeList: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(",") : [], // 资产类型id(多个用，分割)
+        assetTypeList: this.queryCondition.assetType || [], // 资产类型id(多个用，分割)
         deliveryDateStar: this.queryCondition.startCreateDate, // 开始创建日期
         deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
-        approvalStatusList: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(",") : '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
       this.getChangePageSum(obj);
       this.$api.delivery.getDeliveryPage(obj).then(res => {
@@ -488,29 +460,29 @@ export default {
         obj.info = '审核成功'
         obj.approvalStatus = 1
       }
-      if (!obj.approvalStatus) {
+      if (obj.approvalStatus === '') {
         return
       }
-      if (str === "delete") {
-        this.$confirm({
-          title: "提示",
-          content: obj.content,
-          onOk() {
-            let obj = {
-              deliveryId: id,
-              approvalStatus: obj.approvalStatus
-            };
-            _this.$api.delivery.updateStatus(obj).then(res => {
-              if (Number(res.data.code) === 0) {
-                _this.$message.info(obj.info);
-                _this.query();
-              } else {
-                _this.$message.error(res.data.message);
-              }
-            });
-          }
-        });
-      }
+      this.$confirm({
+        title: "提示",
+        content: obj.content,
+        onOk() {
+          let o = {
+            deliveryId: id,
+            approvalStatus: obj.approvalStatus,
+            cause: '',
+            endDate: ''
+          };
+          _this.$api.delivery.updateStatus(o).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info(obj.info);
+              _this.query();
+            } else {
+              _this.$message.error(res.data.message);
+            }
+          });
+        }
+      })
     },
     // 选择组织机构
     changeTree(value, label) {

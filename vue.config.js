@@ -20,13 +20,6 @@ const getIPAdress = () => {
 const localhost = getIPAdress()
 console.log('IP', localhost)
 const target = 'http://192.168.1.11:10080'
-// const target = 'http://192.168.3.28:8080' // 周柏甫
-// const mock = 'http://192.168.3.34:8081'
-// const target = 'http://beta.uhomecp.com/'
-// const target = 'http://192.168.1.11:10080'
-// const target = 'http://192.168.3.34:8081'
-// const target = 'http://192.168.3.28:8080'
-// const mock = 'http://192.168.3.34:8081'
 // const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
@@ -71,12 +64,9 @@ class Proxy {
 }
 // 实例化 Proxy 类
 const proxy = new Proxy()
-// proxy.addUrls(['/ams/checkplan/', '/ams/checktask/'], localhost, 'http://192.168.3.28:8080')
 proxy.addUrls(proxyURL, localhost, target)
-proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.56:8081')
-// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.20:8080')
-// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.69:8081')
-// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.30:8081')
+// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.56:8081')
+proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.43:8081')
 
 // 配置
 module.exports = {

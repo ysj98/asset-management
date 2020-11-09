@@ -34,7 +34,7 @@ export const basics = {
   // 文件下载
   fileDownLoad: '/basic-data-batch-api/rest-api/v1/fileApi/fileDownLoad',
   // 附件查询
-  attachment: '/attachment/list',
+  attachment: '/ams/attachment/list',
   // 文件下载
   // fileDownLoad: '/uis/fileApi/fileDownLoad',
   // 查询所有一级物业
@@ -984,11 +984,11 @@ export const delivery = {
   // 交付管理-修改状态
   updateStatus: '/ams/delivery/updateStatus',
   // 交付管理-分页列表
-  getDeliveryPage: 'ams/delivery/getDeliveryPage',
+  getDeliveryPage: '/ams/delivery/getDeliveryPage',
   // 交付管理-列表汇总
-  getDeliveryPageSum: 'ams/assetChange/getDeliveryPageSum',
+  getDeliveryPageSum: '/ams/delivery/getDeliveryPageSum',
   // 交付管理-导出
-  exportDeliveryList: 'ams/delivery/exportDeliveryList',
+  exportDeliveryList: '/ams/delivery/exportDeliveryList',
   // 交付管理-新增编辑保存
   saveOrUpdateDelivery: '/ams/delivery/saveOrUpdateDelivery',
   // 交付管理-分页查询交付明细列表
