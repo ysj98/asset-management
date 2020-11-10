@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 10:01:40
- * @LastEditTime: 2020-11-05 10:45:03
+ * @LastEditTime: 2020-11-10 09:41:55
  * @Description: 详情
 -->
 <template>
@@ -77,7 +77,7 @@ const columns = [
     width: '10%'
   }, {
     title: '资产分类',
-    dataIndex: 'assetCategoryName',
+    dataIndex: 'assetObjectTypeName',
     width: '8%'
   }, {
     title: '资产面积',
@@ -85,7 +85,7 @@ const columns = [
     width: '6%'
   }, {
     title: '资产位置',
-    dataIndex: 'address',
+    dataIndex: 'pasitionString',
     width: '10%'
   }, {
     title: '交付物积(㎡)',
@@ -110,7 +110,7 @@ const basicData = [
   { name: '交付单位', key: 'deliveryCompany'},
   { name: '交付日期', key: 'deliveryDate'},
   { name: '结束日期', key: 'endDate'},
-  { name: '创建人', key: 'createBy'},
+  { name: '创建人', key: 'createByName'},
   { name: '创建日期', key: 'createTime'},
   { name: '备注', key: 'remark'}
 ]
@@ -119,6 +119,7 @@ export default {
   props: {},
   data() {
     return {
+      deliveryId: '',           // 交付单id
       basicData,
       basicObj: {},             // 基本信息
       assetChangeCount: '',     // 资产数量
@@ -143,7 +144,7 @@ export default {
   methods: {
     // 查询基本信息
     query() {
-      this.$api.delivery.getDeliveryById({deliveryId: ''}).then((res) => {
+      this.$api.delivery.getDeliveryById({deliveryId: this.deliveryId}).then((res) => {
         if (Number(res.data.code) === 0) {
           this.basicObj = res.data.data
         } else {
@@ -152,15 +153,20 @@ export default {
       });
     },
     // 查资产明细
-    getDeliveryDetailList () {
-      this.$api.delivery.getDeliveryById({deliveryId: ''}).then((res) => {
+    getDeliveryDetailListPage () {
+      let obj = {
+        deliveryId: this.deliveryId,                  // 交付id
+        pageNum: this.queryCondition.pageNum,         
+        pageSize: this.queryCondition.pageSize
+      }
+      this.$api.delivery.getDeliveryDetailListPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data.data
           this.checkedData = []
           data.forEach(item => {
             item.key = item.assetId
-            this.checkedData.push(item.assetId)
           })
+          this.queryCondition.count = res.data.data.count
           this.tableData = data
         } else {
           this.$message.error(res.data.message)
@@ -169,7 +175,7 @@ export default {
     },
     // 查汇总信息
     getDeliveryDetailListStatistics () {
-      this.$api.delivery.getDeliveryDetailListStatistics({deliveryId: ''}).then((res) => {
+      this.$api.delivery.getDeliveryDetailListStatistics({deliveryId: this.deliveryId}).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.assetChangeCount = data.assetChangeCount    // 数量
@@ -182,22 +188,22 @@ export default {
     // 附件查询
     attachment () {
       let obj = {
-        objectId: '',         // 交付id
+        objectId: this.deliveryId,       // 交付id
         objectType: '18'      // 类型：交付信息18
       }
-      this.$api.basics.attachment({obj}).then((res) => {
+      this.$api.basics.attachment(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           let files = []
-          if (data.attachment && data.attachment.length > 0) {
-            data.attachment.forEach((item) => {
+          if (data && data.length > 0) {
+            data.forEach((item) => {
               files.push({
                 url: item.attachmentPath,
                 name: item.newAttachmentName,
               })
             })
           }
-          this.newEditSingleData.files = files
+          this.files = files
         } else {
           this.$message.error(res.data.message)
         }
@@ -207,13 +213,17 @@ export default {
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.getChangeDetailPageFn()
+      this.getDeliveryDetailListPage()
     },
   },
   created() {},
   mounted() {
     this.particularsData = JSON.parse(this.$route.query.record)
+    this.deliveryId = this.particularsData[0].deliveryId
     this.query()
+    this.getDeliveryDetailListPage()
+    this.getDeliveryDetailListStatistics()
+    this.attachment()
   },
 };
 </script>

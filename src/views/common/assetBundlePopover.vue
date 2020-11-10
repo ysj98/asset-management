@@ -117,6 +117,10 @@ export default {
     changeType: {
       type: Boolean,
       default: false
+    },
+    judgmentType: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -351,20 +355,23 @@ export default {
             let arrData = utils.deepClone(this.overallData)
             data.forEach((element, index) => {
               element.key = element.assetId
-              element.oldOriginalValue = element.originalValue
-              element.newOriginalValue = ''          // 变动后原值
-              element.transferArea = ''              // 交付物业面积
-              element.transferOperationArea = ''     // 交付运营面积
-              element.addressName = ''               // 变动后位置
-              element.changeProjectId = ''           // 变动后资产项目
-              element.oldWarrantNbr = element.warrantNbr
-              element.warrantNbr = undefined
-              element.warrantNbrData = []      // 用于存储单个下拉框数据
-              element.warrantGeneralData = []  // 用于存权证号总是数据
-              element.disposeCost = ''         // 处置成本
-              element.disposeReceive = ''      // 处置收入
               element.remark = ''              // 处置备注
-              element.deliveryArea = ''        // 交付面积
+              if (this.judgmentType === 'delivery') {
+                element.deliveryArea = ''        // 交付面积
+              } else {
+                element.oldOriginalValue = element.originalValue
+                element.newOriginalValue = ''          // 变动后原值
+                element.transferArea = ''              // 交付物业面积
+                element.transferOperationArea = ''     // 交付运营面积
+                element.addressName = ''               // 变动后位置
+                element.changeProjectId = ''           // 变动后资产项目
+                element.oldWarrantNbr = element.warrantNbr
+                element.warrantNbr = undefined
+                element.warrantNbrData = []      // 用于存储单个下拉框数据
+                element.warrantGeneralData = []  // 用于存权证号总是数据
+                element.disposeCost = ''         // 处置成本
+                element.disposeReceive = ''      // 处置收入
+              }
               arrData.push(element)
             })
             this.tableData = data

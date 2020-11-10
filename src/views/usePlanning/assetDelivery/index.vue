@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-09 16:31:08
+ * @LastEditTime: 2020-11-10 10:00:07
  * @Description: 资产交付管理
 -->
 <template>
@@ -87,8 +87,8 @@
           <segi-range-picker
             label="交付日期"
             :defaultValue="undefined"
-            :canSelectToday="true"
             :allowClear="true"
+            :canSelectToday="true"
             @dateChange="onDateChange"
           ></segi-range-picker>
         </div>
@@ -133,7 +133,6 @@ import SegiRangePicker from "@/components/SegiRangePicker";
 import TreeSelect from "../../common/treeSelect";
 import moment from "moment";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { getCurrentDate, getThreeMonthsAgoDate } from "utils/formatTime";
 import noDataTips from "@/components/noDataTips";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import OperationPopover from "@/components/OperationPopover";
@@ -147,15 +146,15 @@ const approvalStatusData = [
   { name: "已取消", value: "4" }
 ];
 const columns = [
-  { title: "交付单编号", dataIndex: "deliveryId" },
+  { title: "交付单编号", dataIndex: "deliveryId", width: 110 },
   { title: "交付单名称", dataIndex: "deliveryName" },
   { title: "所属机构", dataIndex: "organName" },
-  { title: "资产项目名称", dataIndex: "projectName" },
+  { title: "资产项目", dataIndex: "projectName" },
   { title: "资产类型", dataIndex: "assetTypeName" },
   { title: "交付类型", dataIndex: "deliveryTypeName" },
   { title: "交付单位", dataIndex: "deliveryCompany" },
-  { title: "交付资产数量", dataIndex: "assetChangeCount" },
-  { title: "交付面积(㎡)", dataIndex: "deliveryArea" },
+  { title: "交付资产数量", dataIndex: "assetChangeCount", width: 100 },
+  { title: "交付面积(㎡)", dataIndex: "deliveryArea", width: 100 },
   { title: "交付日期", dataIndex: "deliveryDate" },
   { title: "结束日期", dataIndex: "endDate" },
   { title: "创建人", dataIndex: "createByName" },
@@ -197,8 +196,8 @@ export default {
         organId: '',                // 组织机构id
         deliveryType: '',           // 交付类型
         assetType: '',              // 资产类型，多个用，分隔
-        startCreateDate: getThreeMonthsAgoDate(),   // 开始创建日期
-        endCreateDate: getCurrentDate(),            // 结束创建日期
+        startCreateDate: '',   // 开始创建日期
+        endCreateDate: '',            // 结束创建日期
       },
       count: '',
       changeTypeData: [
@@ -243,9 +242,16 @@ export default {
       // 导出
     downloadFn () {
       let obj = {
-        organId: this.queryCondition.organId,                               // 组织机构id
-        objectTypeIdList: this.alljudge(this.queryCondition.objectTypes),   // 资产分类
-        status: this.alljudge(this.queryCondition.statuss)                 //  资产状态(多选)
+        pageNum: '', // 当前页
+        pageSize: '', // 每页显示记录数
+        organId: this.queryCondition.organId, // 组织机构id this.queryCondition.organId,
+        projectId: this.queryCondition.projectId, // 资产项目Id
+        deliveryType: this.queryCondition.deliveryType, // 交付类型
+        deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
+        assetTypeList: this.queryCondition.assetType || [], // 资产类型id(多个用，分割)
+        deliveryDateStar: this.queryCondition.startCreateDate, // 开始创建日期
+        deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
+        approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
       this.$api.delivery.exportDeliveryList(obj).then(res => {
         let blob = new Blob([res.data])
@@ -278,7 +284,6 @@ export default {
         deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
         approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
-      this.getChangePageSum(obj);
       this.$api.delivery.getDeliveryPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || [];
@@ -291,6 +296,7 @@ export default {
             };
           });
           this.count = res.data.data.count || 0;
+          this.getChangePageSum(obj);
         } else {
           this.$message.error(res.data.message);
         }

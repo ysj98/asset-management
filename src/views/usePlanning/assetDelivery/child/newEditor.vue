@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-09 16:29:43
+ * @LastEditTime: 2020-11-09 18:08:08
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -128,7 +128,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
         <div class="button-box">
-          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个，合计交付面积：{{deliveryArea || 0}}㎡</div>
+          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个，合计交付面积：{{deliveryArea ? deliveryArea.toFixed(2) : 0}}㎡</div>
           <div class="fr">
             <SG-Button class="mr10" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
             <SG-Button :disabled="selectedRowKeys.length === 0" type="primary" weaken @click="deleteFn">删除</SG-Button>
@@ -153,6 +153,7 @@
                 :max="+record.assetArea"
                 :step="1.00"
                 :precision="2"
+                @change="deliveryChange"
                 v-model="record.deliveryArea"
               />
             </template>
@@ -177,6 +178,7 @@
     </FormFooter>
     <!-- 选择资产 -->
     <AssetBundlePopover
+      judgmentType="delivery"
       :changeType="true"
       :organId="organId"
       queryType="1"
@@ -187,6 +189,7 @@
 </template>
 
 <script>
+import {calc, debounce} from '@/utils/utils'
 import AssetBundlePopover from "src/views/common/assetBundlePopover";
 import noDataTips from "@/components/noDataTips";
 import FormFooter from "@/components/FormFooter";
@@ -216,7 +219,7 @@ const columns = [
     width: '10%'
   }, {
     title: '资产分类',
-    dataIndex: 'assetObjectTypeName',
+    dataIndex: 'assetCategoryName',
     width: '8%'
   }, {
     title: '资产面积',
@@ -299,7 +302,6 @@ export default {
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
-    console.log(this.organIdData)
     this.organId = this.organIdData[0].organId
     this.organName = this.organIdData[0].organName
     this.setType = this.$route.query.setType               // 判断新增修改
@@ -356,9 +358,12 @@ export default {
             item.key = item.assetId
             item.address = item.pasitionString
             item.assetCategoryName = item.assetObjectTypeName
+            item.transferArea = item.oldTransferArea
+            item.transferOperationArea = item.oldTransferOperationArea
             this.checkedData.push(item.assetId)
           })
           this.tableData = data
+          console.log(this.tableData, '编辑拿到是数据')
         } else {
           this.$message.error(res.data.message)
         }
@@ -425,8 +430,8 @@ export default {
                 assetArea: item.assetArea,            // 资产面积
                 remark: item.remark,                  // 备注，填的
                 deliveryArea: item.deliveryArea,      // 交付面积，填的
-                oldTransferArea: item.transferArea,   // 原交付物业面积(转物业面积)
-                oldTransferOperationArea: item.transferOperationArea   // 原交付运营面积(原转运营面积)
+                oldTransferArea: item.transferArea || '',   // 原交付物业面积(转物业面积)
+                oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
               })
             } else {
               arr.push(item.assetId)
@@ -461,7 +466,6 @@ export default {
             assetDetailList: assetDetailList,             // 资产明细
             approvalStatus: str === 'draft' ? 0 : 1,                           // 状态
           }
-          console.log(obj)
           let loadingName = this.SG_Loding("保存中...");
           this.$api.delivery.saveOrUpdateDelivery(obj).then((res) => {
             if (Number(res.data.code) === 0) {
@@ -480,6 +484,23 @@ export default {
           })
         }
       })
+    },
+    // 监听输入的值
+    deliveryChange () {
+      this.debounceMothed()
+    },
+    // 防抖函数计算交付面积总计
+    debounceMothed: debounce(function () {
+      this.calcFn()
+    }, 200),
+    // 每次再次计算统计的值
+    calcFn () {
+      this.deliveryArea = 0
+      if (this.tableData.length > 0) {
+        this.tableData.forEach(item => {
+          this.deliveryArea = calc.add(this.deliveryArea, item.deliveryArea || 0)
+        })
+      }
     },
     // 取消
     cancel () {
@@ -503,6 +524,7 @@ export default {
           })
           _this.checkedData = arr
           _this.assetChangeCount = _this.tableData.length
+          _this.calcFn()
           _this.selectedRowKeys = []
         }
       })
@@ -517,6 +539,7 @@ export default {
       });
       this.tableData = data;
       this.assetChangeCount = this.tableData.length
+      this.calcFn()
       this.$refs.assetBundlePopover.show = false;
     },
      // 添加资产

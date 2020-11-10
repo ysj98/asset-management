@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 11:27:08
- * @LastEditTime: 2020-11-09 16:32:02
+ * @LastEditTime: 2020-11-09 18:25:47
  * @Description: 结束交付
 -->
 <template>
@@ -100,6 +100,7 @@ export default {
               this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success("提交成功")
                 this.$emit('submitFn')
+                this.cancel()
               });
             } else {
               this.DE_Loding(loadingName).then(() => {
