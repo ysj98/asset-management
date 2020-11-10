@@ -57,3 +57,6 @@ export function deliveryGetChangeSchedulePage (data) {
 export function deliveryExportChangeScheduleList (data) {
   return axiosPost(delivery.deliveryExportChangeScheduleList, data, false, false, {responseType: 'blob'})
 }
+export function getTotalDeliveryArea (data) {
+  return axiosPost(delivery.getTotalDeliveryArea, data)
+}

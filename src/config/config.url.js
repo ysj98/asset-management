@@ -979,7 +979,7 @@ export const land = {
   mapDetail: '/ams/asset/map/detail'
 }
 
-// 资产入库
+// 交付管理
 export const delivery = {
   // 交付管理-修改状态
   updateStatus: '/ams/delivery/updateStatus',
@@ -1002,5 +1002,7 @@ export const delivery = {
   // 资产交付记录
   deliveryGetChangeSchedulePage: '/ams/deliveryDetail/getChangeSchedulePage',
   // 资产交付记录导出
-  deliveryExportChangeScheduleList: '/ams/deliveryDetail/exportChangeScheduleList'
+  deliveryExportChangeScheduleList: '/ams/deliveryDetail/exportChangeScheduleList',
+  // 资产交付记录汇总
+  getTotalDeliveryArea: '/ams/deliveryDetail/getTotalDeliveryArea'
 }

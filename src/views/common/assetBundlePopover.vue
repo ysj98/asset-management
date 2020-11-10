@@ -175,7 +175,6 @@ export default {
   },
   watch: {
     'selectedData.projectId' () {
-      console.log('projectId发生变化')
       this.query()
     }
   },
@@ -192,8 +191,6 @@ export default {
       }
       let checkedData = []
       let rowsData = []
-      console.log(this.selectedRowKeys, '选中的')
-      console.log(this.overallData, '总的')
       this.selectedRowKeys.forEach(item => {
         this.overallData.forEach((element, index) => {
           if (item === element.assetId) {

@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 13:45:32
- * @LastEditTime: 2020-11-09 14:00:33
+ * @LastEditTime: 2020-11-10 17:43:09
  * @Description: 资产交付记录
 -->
 <template>
@@ -82,7 +82,7 @@ const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top'
 const columns = [
   {
     title: '交付ID',
-    dataIndex: 'deliveryId'
+    dataIndex: 'deliveryDetailId'
   },
   {
     title: '资产名称',
@@ -118,11 +118,11 @@ const columns = [
   },
   {
     title: '交付单ID',
-    dataIndex: 'deliveryDetailId'
+    dataIndex: 'deliveryId'
   },
   {
     title: '交付单名称',
-    dataIndex: 'deliveryCodeName'
+    dataIndex: 'deliveryName'
   },
   {
     title: '交付类型',
@@ -450,6 +450,19 @@ export default {
             this.count = 0
           }
           this.loading = false
+          this.getTotalDeliveryArea(obj)
+        } else {
+          this.$message.error(res.data.message)
+          this.loading = false
+        }
+      })
+    },
+    getTotalDeliveryArea (obj) {
+      this.$api.delivery.getTotalDeliveryArea(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let obj = {key: data + '10000', deliveryArea: data, deliveryCompany: '交付总面积:'}
+          this.tableData.push(obj)
         } else {
           this.$message.error(res.data.message)
           this.loading = false

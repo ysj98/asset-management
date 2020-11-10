@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-10 13:56:54
+ * @LastEditTime: 2020-11-10 16:33:53
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -496,11 +496,10 @@ export default {
     }, 200),
     // 每次再次计算统计的值
     calcFn () {
-      this.deliveryArea = 0
       if (this.tableData.length > 0) {
-        this.tableData.forEach(item => {
-          this.deliveryArea = calc.add(this.deliveryArea, item.deliveryArea || 0)
-        })
+        this.deliveryArea = this.tableData.reduce((sun, current) => calc.add(sun, current.deliveryArea || 0), 0)
+      } else {
+        this.deliveryArea = 0
       }
     },
     // 取消
