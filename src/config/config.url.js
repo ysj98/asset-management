@@ -18,6 +18,13 @@ export const User = {
   popedomCode: '/uhomecp-sso/v3/propertyUser/popedomCode',
 }
 
+export const publicCode = {
+  // 编码规则-资产登记获取生成字段值
+  getCodingRulesByCode: '/ams/codingRules/getCodingRulesByCode',
+  // 资项目获取生成字段
+  getProjectCode: '/ams/project/getProjectCode'
+}
+
 export const Global = {
   // 文件上传
   fileUpload: '/uhomecp-app/common/oneFileUpload.json'

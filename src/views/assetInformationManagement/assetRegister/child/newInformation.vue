@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:13:27
- * @LastEditTime: 2020-07-21 16:57:20
+ * @LastEditTime: 2020-11-10 18:08:34
  * @Description: 新增信息
 --> 
 <template>
@@ -138,6 +138,7 @@ export default {
     this.setType = this.$route.query.setType                 // 判断新增修改
     this.getObjectKeyValueByOrganIdFn()                      // 获取资产项目
     this.platformDictFn()                                    // 获取资产类型
+    this.getCodingRulesByCode()                              // 获取资产登记单规则
   },
   methods: {
     handleSubmit (e) {
@@ -147,6 +148,20 @@ export default {
           console.log('Received values of form: ', values)
         } else {
           // console.log('Received values of form: ', values)
+        }
+      })
+    },
+    // 查询编码规则
+    getCodingRulesByCode () {
+      let obj = {
+        organId: this.organId,
+        code: 'register_order_name'
+      }
+      this.$api.publicCode.getCodingRulesByCode(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.form.setFieldsValue({registerOrderName: res.data.data.value})
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },

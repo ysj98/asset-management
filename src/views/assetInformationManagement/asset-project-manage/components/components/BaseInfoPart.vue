@@ -277,6 +277,19 @@
   },
   
   methods: {
+    // 查询编码规则
+    getProjectCode () {
+      let obj = {
+        organId: this.organId
+      }
+      this.$api.publicCode.getProjectCode(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.form.setFieldsValue({projectCode: res.data.data})
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     // 获取来源方式，动态展示其他信息模块中的字段
     getSourceType (value) {
       this.sourceType = String(value)
@@ -406,6 +419,7 @@
           // 新增时管理机构名称和Id取自props
           this.organName = this.organTitle
           this.organKey = this.organId
+          this.getProjectCode()
         } else {
           // 编辑时调用接口查询详情
           this.queryDetail('edit')
