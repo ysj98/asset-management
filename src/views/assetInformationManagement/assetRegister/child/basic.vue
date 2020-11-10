@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-09-16 11:45:13
+ * @LastEditTime: 2020-11-10 15:59:02
  * @Description: 房屋土地
 --> 
 <template>
@@ -286,14 +286,21 @@ export default {
               // 判断只能为数字2小数
               if (publicData[j].type === 'float') {
                 if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持2位小数)`)})
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持10位数2位小数)`)})
+                  return
+                }
+              }
+              // 判断只能为13位数字2小数
+              if (publicData[j].type === 'float132') {
+                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,13}|\d{1,11}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持13位数2位小数)`)})
                   return
                 }
               }
               // 判断只能为数字4小数
               if (publicData[j].type === 'float4') {
                 if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持4位小数)`)})
+                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持10位数2位小数)`)})
                   return
                 }
               }
