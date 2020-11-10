@@ -1,10 +1,11 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 10:01:40
- * @LastEditTime: 2020-11-10 09:41:55
+ * @LastEditTime: 2020-11-10 10:23:25
  * @Description: 详情
 -->
 <template>
+<a-spin :spinning="spinning">
   <div class="particulars">
     <div class="particulars-nav">
       <span class="section-title blue">基本信息</span>
@@ -50,6 +51,7 @@
       </div>
     </div>
   </div>
+</a-spin>
 </template>
 
 <script>
@@ -119,6 +121,7 @@ export default {
   props: {},
   data() {
     return {
+      spinning: false,
       deliveryId: '',           // 交付单id
       basicData,
       basicObj: {},             // 基本信息
@@ -154,6 +157,7 @@ export default {
     },
     // 查资产明细
     getDeliveryDetailListPage () {
+      this.loading = true
       let obj = {
         deliveryId: this.deliveryId,                  // 交付id
         pageNum: this.queryCondition.pageNum,         
@@ -168,8 +172,10 @@ export default {
           })
           this.queryCondition.count = res.data.data.count
           this.tableData = data
+          this.loading = false
         } else {
           this.$message.error(res.data.message)
+          this.loading = false
         }
       })
     },
@@ -220,10 +226,15 @@ export default {
   mounted() {
     this.particularsData = JSON.parse(this.$route.query.record)
     this.deliveryId = this.particularsData[0].deliveryId
-    this.query()
-    this.getDeliveryDetailListPage()
-    this.getDeliveryDetailListStatistics()
-    this.attachment()
+    this.spinning = true
+    Promise.all([
+      this.query(),
+      this.getDeliveryDetailListPage(),
+      this.getDeliveryDetailListStatistics(),
+      this.attachment(),
+    ]).then((res) => {
+      this.spinning = false
+    })
   },
 };
 </script>

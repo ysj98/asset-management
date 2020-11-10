@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-10 10:00:07
+ * @LastEditTime: 2020-11-10 10:29:24
  * @Description: 资产交付管理
 -->
 <template>
@@ -242,15 +242,15 @@ export default {
       // 导出
     downloadFn () {
       let obj = {
-        pageNum: '', // 当前页
-        pageSize: '', // 每页显示记录数
-        organId: this.queryCondition.organId, // 组织机构id this.queryCondition.organId,
-        projectId: this.queryCondition.projectId, // 资产项目Id
-        deliveryType: this.queryCondition.deliveryType, // 交付类型
+        pageNum: '',                                              // 当前页
+        pageSize: '',                                             // 每页显示记录数
+        organId: this.queryCondition.organId,                     // 组织机构id
+        projectId: this.queryCondition.projectId,                 // 资产项目Id
+        deliveryType: this.queryCondition.deliveryType,           // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
-        assetTypeList: this.queryCondition.assetType || [], // 资产类型id(多个用，分割)
-        deliveryDateStar: this.queryCondition.startCreateDate, // 开始创建日期
-        deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
+        assetTypeList: this.queryCondition.assetType || [],       // 资产类型id(多个用，分割)
+        deliveryDateStar: this.queryCondition.startCreateDate,    // 开始创建日期
+        deliveryDateEnd: this.queryCondition.endCreateDate,       // 结束创建日期
         approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
       this.$api.delivery.exportDeliveryList(obj).then(res => {
@@ -273,15 +273,15 @@ export default {
     query() {
       this.loading = true;
       let obj = {
-        pageNum: this.queryCondition.pageNum, // 当前页
-        pageSize: this.queryCondition.pageSize, // 每页显示记录数
-        organId: this.queryCondition.organId, // 组织机构id this.queryCondition.organId,
-        projectId: this.queryCondition.projectId, // 资产项目Id
-        deliveryType: this.queryCondition.deliveryType, // 交付类型
+        pageNum: this.queryCondition.pageNum,                     // 当前页
+        pageSize: this.queryCondition.pageSize,                   // 每页显示记录数
+        organId: this.queryCondition.organId,                     // 组织机构id
+        projectId: this.queryCondition.projectId,                 // 资产项目Id
+        deliveryType: this.queryCondition.deliveryType,           // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
-        assetTypeList: this.queryCondition.assetType || [], // 资产类型id(多个用，分割)
-        deliveryDateStar: this.queryCondition.startCreateDate, // 开始创建日期
-        deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
+        assetTypeList: this.queryCondition.assetType || [],       // 资产类型id(多个用，分割)
+        deliveryDateStar: this.queryCondition.startCreateDate,    // 开始创建日期
+        deliveryDateEnd: this.queryCondition.endCreateDate,       // 结束创建日期
         approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
       this.$api.delivery.getDeliveryPage(obj).then(res => {
@@ -306,6 +306,7 @@ export default {
     },
     // 查询统计列表
     getChangePageSum(obj) {
+      this.overviewNumSpinning = true
       let data = { ...obj };
       delete data.pageNum;
       delete data.pageSize;
@@ -321,6 +322,7 @@ export default {
           console.log('this.numList', this.numList)
         } else {
           this.$message.error(res.data.message);
+          this.overviewNumSpinning = false;
         }
       }).finally(() => {
         this.overviewNumSpinning = false;
@@ -449,9 +451,9 @@ export default {
     commonFn(str, id) {
       let _this = this;
       let obj = {
-        content: '',                   // 提示内容
-        info: '',                      // 成功提示内容
-        approvalStatus: '',            // 状态
+        content: '',                        // 提示内容
+        info: '',                           // 成功提示内容
+        approvalStatus: '',                 // 状态
       }
       if (str === "delete") {                // 删除
         obj.content = '确认要删除该交付单吗？'
@@ -494,7 +496,6 @@ export default {
     changeTree(value, label) {
       this.organName = label;
       this.queryCondition.organId = value;
-      this.queryCondition.pageNum = 1;
       this.queryCondition.projectId = ''
       this.allQuery();
       this.getObjectKeyValueByOrganIdFn();

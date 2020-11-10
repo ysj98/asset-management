@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-09 18:08:08
+ * @LastEditTime: 2020-11-10 10:20:55
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -309,10 +309,12 @@ export default {
   mounted () {
     if (this.setType === 'edit') {
       this.deliveryId = this.organIdData[0].deliveryId
-      this.editFn()
-      this.getDeliveryDetailList()                          // 获取明细
-      this.getDeliveryDetailListStatistics()                // 获取汇总
-      this.attachment()                                     // 获取附件
+      Promise.all([
+        this.editFn(),
+        this.getDeliveryDetailList(),                          // 获取明细
+        this.getDeliveryDetailListStatistics(),                // 获取汇总
+        this.attachment(),                                     // 获取附件
+      ]).then((res) => {})
     }
     this.getObjectKeyValueByOrganIdFn()                     // 获取资产项目
     this.platformDictFn()                                   // 获取资产类型
@@ -363,7 +365,6 @@ export default {
             this.checkedData.push(item.assetId)
           })
           this.tableData = data
-          console.log(this.tableData, '编辑拿到是数据')
         } else {
           this.$message.error(res.data.message)
         }
