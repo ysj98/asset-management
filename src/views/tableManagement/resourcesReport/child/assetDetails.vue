@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2020-11-06 14:20:23
+ * @LastEditTime: 2020-11-10 15:29:50
  * @Description: 资产明细
 -->
 <template>
@@ -11,9 +11,17 @@
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_DETAIL_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm">
-        <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
+        <a-select
+          :style="allStyle"
+          :allowClear="true"
+          mode="multiple"
+          :maxTagCount="1"
+          v-model="queryCondition.projectId"
+          :options="projectData"
+          placeholder="请选择资产项目"
+          :filterOption="filterOption"
+          :loading="loading && !projectData.length"
+        ></a-select>
         <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="40" :style="allStyle" @search="allQuery" />
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
@@ -45,7 +53,7 @@
         @change="handleChange"
       />
     </div>
-    <housingDetails v-if="housingShow" :assetId="assetId" ref="housingDetails" @cancelFn="cancelFn"></housingDetails>
+    <housingDetails v-if="housingShow" :record="record" ref="housingDetails" @cancelFn="cancelFn"></housingDetails>
   </div>
 </template>
 
@@ -74,7 +82,7 @@ const columnsData = [
 ]
 const queryCondition =  {
   organId: '',        // 组织机构id
-  projectId: '',      // 项目id
+  projectId: undefined,      // 项目id
   assetNameCode: '',  // 资产名称/编码
   pageNum: 1,         // 当前页
   pageSize: 10        // 每页显示记录数
@@ -85,9 +93,8 @@ export default {
   data () {
     return {
       ASSET_MANAGEMENT,
-      assetId: '',                   // 资产id
       housingShow: false,            // 房间弹框控制
-      allStyle: 'width: 170px; margin-right: 10px;',
+      allStyle: 'width: 240px; margin-right: 10px;',
       overviewNumSpinning: false,
       columnsData,
       scroll: {x: columnsData.length * 150},
@@ -116,7 +123,7 @@ export default {
     downloadFn () {
       let obj = {
         organId: this.queryCondition.organId,                // 组织机构id
-        projectId: this.queryCondition.projectId,            // 项目id
+        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId,            // 项目id
         assetNameCode: this.queryCondition.assetNameCode,    // 资产名称/编码
       }
       this.$api.tableManage.detailExport(obj).then(res => {
@@ -136,8 +143,8 @@ export default {
       this.housingShow = false
     },
     // 查看房屋详情
-    handleViewDetail ({assetId}) {
-      this.assetId = assetId
+    handleViewDetail (record) {
+      this.record = record
       this.housingShow = true
       this.$nextTick(() => {
         this.$refs.housingDetails.status = true
@@ -166,7 +173,8 @@ export default {
           let arr = []
           data.forEach(item => {
             arr.push({
-              name: item.projectName,
+              key: item.projectId,
+              title:item.projectName,
               value: item.projectId
             })
           })
@@ -183,30 +191,11 @@ export default {
     },
     // 查询
     query (str) {
-      this.tableData = [
-        {
-          key: '1',
-          "organName":"mock",                //类型：String  必有字段  备注：管理机构名称
-          "projectName":"mock",                //类型：String  必有字段  备注：资产项目名称
-          "objectTypeName":"mock",                //类型：String  必有字段  备注：分类名称
-          "assetId":"mock",                //类型：String  必有字段  备注：资产ID
-          "assetName":"mock",                //类型：String  必有字段  备注：资产名称
-          "assetCode":"mock",                //类型：String  必有字段  备注：资产编码
-          "useType":"mock",                //类型：String  必有字段  备注：资产用途
-          "typeName":"mock",                //类型：String  必有字段  备注：资产形态
-          "buildName":"mock",                //类型：String  必有字段  备注：楼栋名称
-          "originalValue":"mock",                //类型：String  必有字段  备注：资产原值(元)
-          "marketValue":"mock",                //类型：String  必有字段  备注：最新估值(元)
-          "assetArea":"mock",                //类型：String  必有字段  备注：资产面积(㎡)
-          "houseNum":"mock",                //类型：String  必有字段  备注：房屋数量
-          "houseTotalArea":"mock",                //类型：String  必有字段  备注：房屋总面积(㎡)
-          "assetStatusName":"mock"                //类型：String  必有字段  备注：资产状态名称
-        }
-      ]
-      // this.loading = true
+      this.loading = true
       let obj = {
         organId: this.queryCondition.organId,                // 组织机构id
-        projectId: this.queryCondition.projectId,            // 项目id
+        selectOrganId: this.selectOrganId,
+        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId,            // 项目id
         assetNameCode: this.queryCondition.assetNameCode,    // 资产名称/编码
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize         // 每页显示记录数
@@ -257,6 +246,7 @@ export default {
   },
   mounted () {
     this.queryCondition.organId = this.$route.query.organId
+    this.selectOrganId =  this.$route.query.selectOrganId
     this.getObjectKeyValueByOrganIdFn()
     this.query()
   }

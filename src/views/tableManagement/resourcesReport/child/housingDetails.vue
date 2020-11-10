@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2020-11-03 15:44:45
+ * @LastEditTime: 2020-11-10 14:56:50
  * @Description: 房屋名称
 -->
 <template>
@@ -14,7 +14,7 @@
   >
     <div class="m15">
       <div class="mt10 mb10">
-        <div style="text-align: right;">
+        <div style="text-align: right;" v-if="this.record.type === 1">
           <a-select
             showSearch
             placeholder="请选择单元"
@@ -37,6 +37,18 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
+          <!-- 房号 -->
+          <a-select
+            showSearch
+            placeholder="请选择房号"
+            v-model="queryCondition.houseId"
+            optionFilterProp="children"
+            :style="allStyle"
+            :options="houseOpt"
+            :allowClear="false"
+            :filterOption="filterOption"
+            notFoundContent="没有查询到数据"
+          />
           <a-select
             placeholder="请选择状态"
             showSearch
@@ -47,7 +59,7 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
-          <a-input v-model="queryCondition.roomNo" placeholder="房号" maxlength="40" :style="allStyle" />
+          <!-- <a-input v-model="queryCondition.houseId" placeholder="房号" maxlength="40" :style="allStyle" /> -->
           <SG-Button type="primary" style="margin-left: 10px;" @click="query">查询</SG-Button>
         </div>
       </div>
@@ -77,25 +89,26 @@ import noDataTips from '@/components/noDataTips'
 import { utils } from "@/utils/utils";
 const unitOpt = [{ label: "全部单元", value: "" }]
 const floorOpt = [{ label: "全部楼层", value: "" }]
+const houseOpt = [{ label: "全部房号", value: "" }];
 const houseStatusOpt = [{ label: "全部房屋状态", value: "" }, { label: "有效", value: "1" }, { label: "无效", value: "0" }]
 const columns = [
-  { title: '资产编码', dataIndex: 'assetCode' },
-  { title: '资产名称', dataIndex: 'assetName'},
-  { title: '资产形态', dataIndex: 'typeName'},
-  { title: '资产面积(㎡)', dataIndex: 'assetArea' },
+  // { title: '资产编码', dataIndex: 'assetCode' },
+  // { title: '资产名称', dataIndex: 'assetName'},
+  // { title: '资产形态', dataIndex: 'typeName'},
+  // { title: '资产面积(㎡)', dataIndex: 'assetArea' },
   { title: '楼栋名称', dataIndex: 'buildName' },
   { title: '单元', dataIndex: 'unitName' },
   { title: '楼层', dataIndex: 'floorName' },
-  { title: '房号', dataIndex: 'roomNo' },
-  { title: '房间面积(㎡)', dataIndex: 'houseArea' },
-  { title: '房间状态', dataIndex: 'houseStatus' }
+  { title: '房号', dataIndex: 'houseId' },
+  { title: '房间面积(㎡)', dataIndex: 'area' },
+  { title: '房间状态', dataIndex: 'statusName' }
 ]
 export default {
   components: {noDataTips},
   props: {
-    assetId: {
-      type: [Number, String],
-      default: ''
+    record: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -110,13 +123,14 @@ export default {
       location: '',
       unitOpt: utils.deepClone(unitOpt),       // 单元数组
       floorOpt: utils.deepClone(floorOpt),     // 楼层数据
+      houseOpt: utils.deepClone(houseOpt),
       houseStatusOpt: houseStatusOpt,          // 房屋状态
       queryCondition: {
         assetId: '',      // 资产ID
         unitId: '',       // 单元ID
         floorId: '',      // 楼层ID
         houseStatus: '',  // 房屋状态
-        roomNo: '',       // 房号
+        houseId: '',       // 房号
         pageSize: 10,
         pageNum: 1
       }
@@ -127,8 +141,11 @@ export default {
   created () {
   },
   mounted () {
-    this.queryCondition.assetId = this.assetId
-    this.getOptions('getUnitByBuildId', '123535')
+    this.queryCondition.assetId = this.record.assetId
+    if (+this.record.type === 1) {
+      // 根据楼栋请求单元
+      this.getOptions('getUnitByBuildId', this.record.objectId)
+    }
     this.query()
   },
   methods: {
@@ -147,6 +164,7 @@ export default {
     // 单元选择
     watchUnitChange () {
       this.queryAddFloorOptions(this.queryCondition.unitId, '1')
+      this.getOptions("getHouseByUnitId", this.queryCondition.unitId);
     },
     // 请求楼层
     queryAddFloorOptions(positionId, subPositionType) {
@@ -166,24 +184,27 @@ export default {
       })
     },
     query () {
+      this.loading = true
       let obj = {
-        assetId: this.queryCondition.assetId,            // 资产ID
+        organId: this.record.organId,
+        buildId: this.record.objectId,
         unitId: this.queryCondition.unitId,              // 单元ID
         floorId: this.queryCondition.floorId,            // 楼层ID
-        houseStatus: this.queryCondition.houseStatus,    // 房屋状态
-        roomNo: this.queryCondition.roomNo,              // 房号
+        status: this.queryCondition.houseStatus,         // 房屋状态
+        houseId: this.queryCondition.houseId,             // 房号
         pageNum: this.queryCondition.pageNum,            // 当前页
         pageSize: this.queryCondition.pageSize           // 每页显示记录数
       }
-      this.$api.tableManage.detailHousePage(obj).then(res => {
+      this.$api.building.queryHouseByPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = res.data.data
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
+              item.statusName = +item.status === 0 ? '无效' : '有效'
             })
             this.tableData = data
-            this.count = res.data.data.count
+            this.count = res.data.paginator.totalCount
           } else {
             this.tableData = []
             this.count = 0
@@ -208,10 +229,22 @@ export default {
         resetArr = utils.deepClone(unitOpt);
         this.unitOpt = resetArr;
       }
+      // 以单元请求房号
+      if (type === "getHouseByUnitId") {
+        PARAMS = "#UNIT_ID:" + value;
+        resetArr = utils.deepClone(houseOpt);
+        this.houseOpt = resetArr;
+      }
+      // // 以楼栋请求房号
+      // if (type === "getHouseByBuildId") {
+      //   PARAMS = "#BUILD_ID:" + value;
+      //   resetArr = utils.deepClone(houseOpt);
+      //   this.houseOpt = resetArr;
+      // }
       let data = {
         SQL_CODE: type,
         PARAMS: PARAMS
-      };
+      }
       this.$api.basics.getOptions(data).then(res => {
         if (res.data.code === "0") {
           let result = res.data.data || [];

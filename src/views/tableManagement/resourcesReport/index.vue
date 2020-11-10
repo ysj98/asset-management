@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2020-11-06 14:19:34
+ * @LastEditTime: 2020-11-10 14:05:04
  * @Description: 资源报表
 -->
 <template>
@@ -144,7 +144,7 @@ export default {
     },
     // 查看土地资产视图详情
     handleViewDetail ({organId}) {
-      this.$router.push({path: '/resourcesReport/assetDetails', query: { organId }})
+      this.$router.push({path: '/resourcesReport/assetDetails', query: { organId, selectOrganId: this.queryCondition.organId }})
     },
     // 组织机构树
     changeTree (value, label) {
@@ -239,22 +239,7 @@ export default {
     },
     // 查询
     query (str) {
-      this.tableData = [
-        {
-          key: '1',
-          organId:  '1000279',                //类型：String  必有字段  备注：管理机构ID
-          organName : 'mock' ,                //类型：String  必有字段  备注：管理机构名称
-          assetNum : 'mock' ,                //类型：String  必有字段  备注：资产数量
-          objectTypeName : 'mock' ,                //类型：String  必有字段  备注：分类名称
-          assetArea : 'mock' ,                //类型：String  必有字段  备注：资产面积
-          buildNum : 'mock' ,                //类型：String  必有字段  备注：楼栋数量
-          houseNum : 'mock' ,                //类型：String  必有字段  备注：房屋数量
-          houseTotalArea : 'mock' ,                //类型：String  必有字段  备注：房屋总面积(㎡)
-          originalValue : 'mock' ,                //类型：String  必有字段  备注：资产原值(元)
-          marketValue : 'mock'                 //类型：String  必有字段  备注：最新估值(元)
-        }
-      ]
-      // this.loading = true
+      this.loading = true
       let obj = {
         organId: this.queryCondition.organId,                               // 组织机构id
         objectTypeIdList: this.alljudge(this.queryCondition.objectTypes),   // 资产分类
