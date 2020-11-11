@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-10 10:29:24
+ * @LastEditTime: 2020-11-11 14:06:48
  * @Description: 资产交付管理
 -->
 <template>
@@ -249,7 +249,7 @@ export default {
         deliveryType: this.queryCondition.deliveryType,           // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
         assetTypeList: this.queryCondition.assetType || [],       // 资产类型id(多个用，分割)
-        deliveryDateStar: this.queryCondition.startCreateDate,    // 开始创建日期
+        deliveryDateStart: this.queryCondition.startCreateDate,    // 开始创建日期
         deliveryDateEnd: this.queryCondition.endCreateDate,       // 结束创建日期
         approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
@@ -280,7 +280,7 @@ export default {
         deliveryType: this.queryCondition.deliveryType,           // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
         assetTypeList: this.queryCondition.assetType || [],       // 资产类型id(多个用，分割)
-        deliveryDateStar: this.queryCondition.startCreateDate,    // 开始创建日期
+        deliveryDateStart: this.queryCondition.startCreateDate,    // 开始创建日期
         deliveryDateEnd: this.queryCondition.endCreateDate,       // 结束创建日期
         approvalStatusList: this.queryCondition.approvalStatus || [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
       }
