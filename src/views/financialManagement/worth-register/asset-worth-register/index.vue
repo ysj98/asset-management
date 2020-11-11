@@ -302,7 +302,7 @@
           organId: this.organProjectType.organId,
           projectId: this.fileProjectId
         }
-        exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '资产项目批量导入模板.xlsx', this)
+        exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '价值登记批量导入模板.xlsx', this)
       },
       // 批量导入
       uploadFile (file) {

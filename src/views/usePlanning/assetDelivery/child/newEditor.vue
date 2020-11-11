@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-10 16:33:53
+ * @LastEditTime: 2020-11-11 10:17:39
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -339,7 +339,7 @@ export default {
             if (['assetType', 'deliveryType'].includes(key)) {
               o[key] = String(obj[key])
             } else if (['deliveryDate', 'endDate'].includes(key)) {
-              o[key] = moment(obj[key], "YYYY-MM-DD")
+              o[key] = obj[key] ? moment(obj[key], "YYYY-MM-DD") : undefined
             } else {
               o[key] = obj[key]
             }
