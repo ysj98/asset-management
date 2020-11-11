@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-11 14:40:00
+ * @LastEditTime: 2020-11-11 17:30:30
  * @Description: 资产交付管理
 -->
 <template>
@@ -367,16 +367,16 @@ export default {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_AUDIT) && ["2"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "edit", text: "审批", editType: "audit" });
+        arr.push({ iconType: "check-square", text: "审批", editType: "audit" });
       }
       if (this.$power.has(ASSET_MANAGEMENT.asset_delivery_delete) &&["0", "3"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "edit", text: "删除", editType: "delete" });
+        arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_REVERSE_AUDIT) && ["1"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "edit", text: "反审批", editType: "reverseAudit" });
+        arr.push({ iconType: "logout", text: "反审批", editType: "reverseAudit" });
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_end) && ["1"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "edit", text: "结束交付", editType: "end" });
+        arr.push({ iconType: "book", text: "结束交付", editType: "end" });
       }
       arr.push({
         iconType: "file-text",
