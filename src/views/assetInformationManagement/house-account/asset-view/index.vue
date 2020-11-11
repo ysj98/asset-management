@@ -145,7 +145,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 2900 },
+          scroll: { x: 3500 },
           columns: [
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
@@ -173,6 +173,11 @@
             { title: '资产原值(元)', dataIndex: 'originalValue' },
             { title: '最新估值(元)', dataIndex: 'marketValue' },
             { title: '资产状态', dataIndex: 'statusName' },
+            { title: '物业管理单位', dataIndex: 'organManagement' },
+            { title: '物业缴费期限', dataIndex: 'organPayDeadline' },
+            { title: '物业费', dataIndex: 'organFee' },
+            { title: '已租面积', dataIndex: 'rentedArea' },
+            { title: '未租面积', dataIndex: 'unRentedArea' },
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
           ]
         },
