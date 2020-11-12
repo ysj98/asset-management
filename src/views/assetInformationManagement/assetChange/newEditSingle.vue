@@ -1158,7 +1158,7 @@ export default {
         queryType: "1",
         projectId,
         pageNum: 1,
-        pageSize: 5000,
+        pageSize: 10000,
       };
       this.$api.assets.assetListPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {

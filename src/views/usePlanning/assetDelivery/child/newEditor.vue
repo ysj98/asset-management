@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-11 10:17:39
+ * @LastEditTime: 2020-11-12 17:22:31
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -230,7 +230,7 @@ const columns = [
     dataIndex: 'address',
     width: '10%'
   }, {
-    title: '交付物积(㎡)',
+    title: '交付面积(㎡)',
     dataIndex: 'deliveryArea',
     align: 'center',
     scopedSlots: { customRender: 'deliveryArea' }
