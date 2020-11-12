@@ -55,6 +55,10 @@ export default {
     canSelectToday: {
       type: Boolean,
       default: false
+    },
+    disabledDateType: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -71,12 +75,16 @@ export default {
   methods: {
     moment,
     disabledDate (current) {
-      // Can not select days before today and today
-      if (this.canSelectToday) {
-        return current > moment().endOf('day')
+      if (this.disabledDateType) {
+        // Can not select days before today and today
+        if (this.canSelectToday) {
+          return current > moment().endOf('day')
+        }
+        let date = new Date(new Date() - 24 * 60 * 60 * 1000)
+        return current > moment(date, 'YYYY-MM-DD')
+      } else {
+        return undefined
       }
-      let date = new Date(new Date() - 24 * 60 * 60 * 1000)
-      return current > moment(date, 'YYYY-MM-DD')
     },
     openDateModal () {
       this.showDateModal = true

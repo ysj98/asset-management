@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-04 14:31:59
- * @LastEditTime: 2020-11-12 17:22:31
+ * @LastEditTime: 2020-11-12 18:43:23
  * @Description: 资产交付管理-新增编辑
 -->
 <template>
@@ -413,6 +413,14 @@ export default {
           if (this.tableData.length === 0) {
             this.$message.info("请选择资产明细");
             return;
+          }
+          if (values.endDate) {
+            let start = values.deliveryDate.format('YYYY-MM-DD')
+            let endDate = values.endDate.format('YYYY-MM-DD')
+            if (endDate < start) {
+              this.$message.info("结束日期不能小于交付日期");
+              return;
+            }
           }
           let arr = []
           let assetDetailList = []

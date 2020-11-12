@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-11 17:30:30
+ * @LastEditTime: 2020-11-12 18:38:01
  * @Description: 资产交付管理
 -->
 <template>
@@ -85,6 +85,7 @@
         </a-select>
         <div class="box">
           <segi-range-picker
+            :disabledDateType="false"
             label="交付日期"
             :defaultValue="undefined"
             :allowClear="true"
