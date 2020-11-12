@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-12 18:38:01
+ * @LastEditTime: 2020-11-12 19:16:05
  * @Description: 资产交付管理
 -->
 <template>
@@ -31,6 +31,17 @@
       <div slot="form" class="formCon">
         <a-select
           :style="allStyle"
+          :allowClear="true"
+          mode="multiple"
+          :maxTagCount="1"
+          v-model="queryCondition.projectId"
+          :options="projectData"
+          placeholder="请选择资产项目"
+          :filterOption="filterOption"
+          :loading="loading && !projectData.length"
+        ></a-select>
+        <!-- <a-select
+          :style="allStyle"
           placeholder="全部资产项目"
           v-model="queryCondition.projectId"
           :showSearch="true"
@@ -41,7 +52,7 @@
             :key="index"
             :value="item.value"
           >{{item.name}}</a-select-option>
-        </a-select>
+        </a-select> -->
         <a-select
           :maxTagCount="1"
           :style="allStyle"
@@ -183,7 +194,7 @@ export default {
       noPageTools: false,
       location: "absolute",
       approvalStatusData: [...approvalStatusData],
-      allStyle: "width: 140px; margin-right: 10px;",
+      allStyle: "width: 170px; margin-right: 10px;",
       columns,
       organName: '',
       organId: '',
@@ -193,7 +204,7 @@ export default {
         approvalStatus: '',         // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         pageNum: 1,                 // 当前页
         pageSize: 10,               // 每页显示记录数
-        projectId: '',              // 资产项目Id
+        projectId: undefined,              // 资产项目Id
         organId: '',                // 组织机构id
         deliveryType: '',           // 交付类型
         assetType: '',              // 资产类型，多个用，分隔
@@ -207,9 +218,7 @@ export default {
         { name: '交付运营', value: '2'},
       ],
       assetTypeData: [],
-      projectData: [
-        { name: "全部资产项目", value: '' }
-      ],
+      projectData: [],
       overviewNumSpinning: false,
       numList: [
         { title: "全部", key: "total", value: 0, fontColor: "#324057" },
@@ -246,7 +255,7 @@ export default {
         pageNum: '',                                              // 当前页
         pageSize: '',                                             // 每页显示记录数
         organId: this.queryCondition.organId,                     // 组织机构id
-        projectId: this.queryCondition.projectId,                 // 资产项目Id
+        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId,            // 项目id
         deliveryType: this.queryCondition.deliveryType,           // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
         assetTypeList: this.alljudge(this.queryCondition.assetType),       // 资产类型id(多个用，分割)
@@ -288,7 +297,7 @@ export default {
         pageNum: this.queryCondition.pageNum,                     // 当前页
         pageSize: this.queryCondition.pageSize,                   // 每页显示记录数
         organId: this.queryCondition.organId,                     // 组织机构id
-        projectId: this.queryCondition.projectId,                 // 资产项目Id
+        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId,            // 项目id
         deliveryType: this.queryCondition.deliveryType,           // 交付类型
         deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
         assetTypeList: this.alljudge(this.queryCondition.assetType),       // 资产类型id(多个用，分割)
@@ -508,7 +517,7 @@ export default {
     changeTree(value, label) {
       this.organName = label;
       this.queryCondition.organId = value;
-      this.queryCondition.projectId = ''
+      this.queryCondition.projectId = undefined
       this.allQuery();
       this.getObjectKeyValueByOrganIdFn();
     },
@@ -523,9 +532,9 @@ export default {
           let data = res.data.data;
           let arr = [];
           data.forEach(item => {
-            arr.push({name: item.projectName, value: item.projectId})
+            arr.push({title: item.projectName, value: item.projectId, key: item.projectId,})
           })
-          this.projectData = [{ name: "全部资产项目", value: '' }, ...arr]
+          this.projectData = arr
         } else {
           this.$message.error(res.data.message)
         }

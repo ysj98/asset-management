@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2020-11-10 15:29:50
+ * @LastEditTime: 2020-11-12 18:48:51
  * @Description: 资产明细
 -->
 <template>
@@ -69,7 +69,7 @@ const columnsData = [
   { title: '资产名称', dataIndex: 'assetName'},
   { title: '资产编码', dataIndex: 'assetCode' },
   { title: '资产分类', dataIndex: 'objectTypeName' },
-  { title: '资产用途', dataIndex: 'useType' },
+  { title: '资产用途', dataIndex: 'useTypeName' },
   { title: '资产形态', dataIndex: 'typeName' },
   { title: '楼栋名称', dataIndex: 'buildName' },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
