@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2020-11-10 14:05:04
+ * @LastEditTime: 2020-11-13 18:20:35
  * @Description: 资源报表
 -->
 <template>
@@ -70,14 +70,14 @@ const columnsData = [
 ]
 const approvalStatusData = [
   { name: '全部状态', value: ''},
-  { name: '待入库', value: '0'},
-  { name: '正常', value: '1'},
-  { name: '报废', value: '2'},
-  { name: '转让', value: '3'},
-  { name: '报损', value: '4'},
+  { name: '待入库', value: 0},
+  { name: '正常', value: 1},
+  { name: '报废', value: 2},
+  { name: '转让', value: 3},
+  { name: '报损', value: 4},
   // { name: '已出库', value: '5'},
   // { name: '已取消', value: '6' },
-  { name: '入库中', value: '7' }
+  { name: '入库中', value: 7 }
 ]
 const queryCondition =  {
   objectTypes: '',    // 资产分类(多选)

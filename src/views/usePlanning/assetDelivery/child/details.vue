@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 10:01:40
- * @LastEditTime: 2020-11-10 10:23:25
+ * @LastEditTime: 2020-11-13 18:30:27
  * @Description: 详情
 -->
 <template>
@@ -246,9 +246,9 @@ export default {
       padding: 20px 0 20px 40px;
       .playground-row {
         .playground-col {
-          height: 40px;
-          line-height: 40px;
-          font-size: 12px;
+        line-height: 40px;
+        font-size: 12px;
+        word-break: break-all;
         }
       }
       .particulars-t {

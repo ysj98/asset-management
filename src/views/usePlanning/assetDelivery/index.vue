@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 16:32:18
- * @LastEditTime: 2020-11-12 19:16:05
+ * @LastEditTime: 2020-11-13 18:33:04
  * @Description: 资产交付管理
 -->
 <template>
@@ -376,10 +376,10 @@ export default {
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_EDIT) && ["0", "3"].includes(String(record.approvalStatus))) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_AUDIT) && ["2"].includes(String(record.approvalStatus))) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_AUDIT) && ["0","2"].includes(String(record.approvalStatus))) {
         arr.push({ iconType: "check-square", text: "审批", editType: "audit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.asset_delivery_delete) &&["0", "3"].includes(String(record.approvalStatus))) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_DELETE) &&["0", "3"].includes(String(record.approvalStatus))) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_REVERSE_AUDIT) && ["1"].includes(String(record.approvalStatus))) {

@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2020-11-12 18:48:51
+ * @LastEditTime: 2020-11-13 18:25:49
  * @Description: 资产明细
 -->
 <template>
@@ -23,7 +23,7 @@
           :loading="loading && !projectData.length"
         ></a-select>
         <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="40" :style="allStyle" @search="allQuery" />
-        <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+        <SG-Button type="primary" style="margin-right: 10px;" @click="allQuery">查询</SG-Button>
       </div>
     </SearchContainer>
     <!--数据总览-->

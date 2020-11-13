@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2020-11-10 14:56:50
+ * @LastEditTime: 2020-11-13 18:26:36
  * @Description: 房屋名称
 -->
 <template>
@@ -99,7 +99,7 @@ const columns = [
   { title: '楼栋名称', dataIndex: 'buildName' },
   { title: '单元', dataIndex: 'unitName' },
   { title: '楼层', dataIndex: 'floorName' },
-  { title: '房号', dataIndex: 'houseId' },
+  { title: '房号', dataIndex: 'roomNo' },
   { title: '房间面积(㎡)', dataIndex: 'area' },
   { title: '房间状态', dataIndex: 'statusName' }
 ]
@@ -192,8 +192,8 @@ export default {
         floorId: this.queryCondition.floorId,            // 楼层ID
         status: this.queryCondition.houseStatus,         // 房屋状态
         houseId: this.queryCondition.houseId,             // 房号
-        pageNum: this.queryCondition.pageNum,            // 当前页
-        pageSize: this.queryCondition.pageSize           // 每页显示记录数
+        pageNo: this.queryCondition.pageNum,            // 当前页
+        pageLength: this.queryCondition.pageSize           // 每页显示记录数
       }
       this.$api.building.queryHouseByPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
