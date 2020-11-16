@@ -355,6 +355,12 @@ export default {
               element.remark = ''              // 处置备注
               if (this.judgmentType === 'delivery') {
                 element.deliveryArea = ''        // 交付面积
+              } if (this.judgmentType === 'register') {
+                element.objectTypeName = element.assetCategoryName
+                element.warrantNbr = undefined
+                element.oldWarrantNbr = element.warrantNbr
+                element.warrantNbrData = []      // 用于存储单个下拉框数据
+                element.warrantGeneralData = []  // 用于存权证号总是数据
               } else {
                 element.oldOriginalValue = element.originalValue
                 element.newOriginalValue = ''          // 变动后原值

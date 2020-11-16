@@ -106,3 +106,7 @@ export function registerTotal (data) {
 export function registerExport (data) {
   return axiosPost(ownership.registerExport, data, false, false, {responseType: 'blob'})
 }
+// 权属登记单查询汇总
+export function shipTotal (data) {
+  return axiosPost(ownership.ownershipRegistration.shipTotal, data)
+}

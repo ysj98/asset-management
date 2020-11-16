@@ -1,3 +1,9 @@
+/*
+ * @Author: L
+ * @Date: 2019-12-19 14:44:17
+ * @LastEditTime: 2020-11-16 17:29:06
+ * @Description: file content
+ */
 // 首次登记 变更登记
 export const register = [{
   title: '资产名称',
@@ -15,6 +21,14 @@ export const register = [{
   title: '资产项目名称',
   dataIndex: 'projectName',
   width: '10%'
+}, {
+  title: '资产分类',
+  dataIndex: 'objectTypeName',
+  width: '8%'
+}, {
+  title: '权属类型',
+  dataIndex: 'kindOfRightName',
+  width: '8%'
 }, {
   title: '所在位置',
   dataIndex: 'address',
@@ -60,6 +74,14 @@ export const cancellation = [{
   title: '资产项目名称',
   dataIndex: 'projectName',
   width: '10%'
+}, {
+  title: '资产分类',
+  dataIndex: 'objectTypeName',
+  width: '8%'
+}, {
+  title: '权属类型',
+  dataIndex: 'kindOfRightName',
+  width: '8%'
 }, {
   title: '所在位置',
   dataIndex: 'address',

@@ -19,6 +19,9 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
             <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部登记类型" :tokenSeparators="[',']"  @select="changeTypeDataFn" v-model="queryCondition.registerTypeList">
+            <a-select-option v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -32,6 +35,9 @@
         </div>
       </div>
     </SearchContainer>
+    <a-spin :spinning="overviewNumSpinning">
+      <overview-number :numList="numList"/>
+    </a-spin>
     <div class="table-layout-fixed">
       <a-table
         :loading="loading"
@@ -69,14 +75,15 @@ import moment from 'moment'
 import segiIcon from '@/components/segiIcon.vue'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {utils, debounce} from '@/utils/utils.js'
+import OverviewNumber from "@/views/common/OverviewNumber";
 import noDataTips from '@/components/noDataTips'
 const checkboxAllStyle = {'margin-right': '10px', flex: 1, 'margin-top': '20px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
-    title: '序号',
-    dataIndex: 'serial'
+    title: '登记单编号',
+    dataIndex: 'registerId'
   },
   {
     title: '登记单名称',
@@ -152,6 +159,7 @@ const approvalStatusData = [
   }
 ]
 const queryCondition =  {
+    registerTypeList: '',
     organId: '',         // 组织机构id
     projectId: '',       // 资产项目Id
     assetType: '',       // 资产类型Id
@@ -163,10 +171,19 @@ const queryCondition =  {
     flag: false     // 备注：仅当前机构下资产清理单 0 否 1 是
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips},
+  components: {SearchContainer, TreeSelect, segiIcon, noDataTips, OverviewNumber},
   props: {},
   data () {
     return {
+      overviewNumSpinning: false,
+      numList: [
+        { title: "全部", key: "total", value: 0, fontColor: "#324057" },
+        { title: "草稿", key: "zero", value: 0, bgColor: "#5b8ff9" },
+        { title: "待审批", key: "tow", value: 0, bgColor: "#d48265" },
+        { title: "已驳回", key: "three", value: 0, bgColor: "#4BD288" },
+        { title: "已审批", key: "one", value: 0, bgColor: "#1890FF"},
+        { title: "已取消", key: "four", value: 0, bgColor: "#DD81E6" }
+      ],
       checkboxAllStyle,
       ASSET_MANAGEMENT,
       dateWidth,
@@ -304,6 +321,8 @@ export default {
             this.queryCondition.approvalStatus = status
           } else if (str === 'asset_type') {
             this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
+          } else if (str === 'AMS_REGISTER_TYPE') {
+            this.changeTypeData = [{name: '全部登记类型', value: ''}, ...data]
           }
         } else {
           this.$message.error(res.data.message)
@@ -314,6 +333,11 @@ export default {
     assetTypeDataFn (value) {
       this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+      })
+    },
+    changeTypeDataFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.registerTypeList = this.handleMultipleSelectValue(value, this.queryCondition.registerTypeList, this.changeTypeData)
       })
     },
     // 状态发生变化
@@ -353,10 +377,22 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
+    alljudge (val) {
+      if (val.length !== 0) {
+        if (val[0] === '') {
+          return []
+        } else {
+          return val
+        }
+      } else {
+        return []
+      }
+    },
     // 查询
     query () {
       this.loading = true
       let obj = {
+        registerTypeList: this.alljudge(this.queryCondition.registerTypeList),
         projectId: this.queryCondition.projectId,       // 资产项目Id
         organId: Number(this.queryCondition.organId),         // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
@@ -387,6 +423,25 @@ export default {
           this.loading = false
         }
       })
+      this.shipTotal(utils.deepClone(obj))
+    },
+    // 统计
+    shipTotal (obj) {
+      this.overviewNumSpinning = true
+      obj.pageNum = 1
+      obj.pageSize = 1
+      this.$api.ownership.shipTotal(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.numList = this.numList.map(m => {
+            return { ...m, value: data[m.key] || 0 }
+          })
+          this.overviewNumSpinning = false
+        } else {
+          this.$message.error(res.data.message)
+          this.overviewNumSpinning = false
+        }
+      })
     }
   },
   watch: {
@@ -405,6 +460,7 @@ export default {
     // this.platformDictFn('approval_status_type')
     // 资产类型
     this.platformDictFn('asset_type')
+    this.platformDictFn('AMS_REGISTER_TYPE')
   }
 }
 </script>

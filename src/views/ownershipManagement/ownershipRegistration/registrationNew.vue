@@ -186,7 +186,7 @@
       </div>
     </div>
     <!-- 选择资产 -->
-    <AssetBundlePopover :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
+    <AssetBundlePopover judgmentType="register" :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
     <!-- 选择权证 -->
     <chooseWarrants :organId="organId" ref="chooseWarrants" @status="chooseWarrantsStatus"></chooseWarrants>
     <!-- 新增权证 -->
@@ -384,6 +384,8 @@ export default {
       console.log(this.tableData)
       let arr = utils.deepClone(this.tableData)
       arr.forEach((item) => {
+        item.area = item.area || item.assetArea
+        item.location = item.location || item.address
         item.warrantGeneralData = []
         item.warrantNbr = item.warrantNbrData.length > 0 ? item.warrantNbrData[0].label : ''
       })
@@ -465,8 +467,13 @@ export default {
                 item.address = item.location
                 item.assetArea = item.area
                 checkedData.push(item.assetId)
-                item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
-                item.warrantNbr = item.warrantIds.join(',')
+                if (item.warrantIds && item.warrantIds.length !== 0) {
+                  item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
+                  item.warrantNbr = item.warrantIds.join(',')
+                } else {
+                  item.warrantNbrData = []
+                  item.warrantNbr = ''
+                }
                 item.warrantGeneralData = item.warrants  // 用于存权证号总是数据
               })
             }

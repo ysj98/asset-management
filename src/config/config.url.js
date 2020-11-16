@@ -569,6 +569,8 @@ export const ownership = {
     shipAssetExport: '/ams/ownerShip/ship/assetExport',
     // 批量导入
     shipImportData: '/ams/ownerShip/importData',
+    // 权属登记单查询汇总
+    shipTotal: '/ams/ownerShip/ship/total'
   },
   // 权证管理
   authorityCardManagement: {
