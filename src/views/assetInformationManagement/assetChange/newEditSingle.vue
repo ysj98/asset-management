@@ -471,6 +471,7 @@ import noDataTips from "@/components/noDataTips";
 import { utils, calc, debounce } from "@/utils/utils.js";
 
 import moment from "moment";
+import { columns } from '../../buildingDict/land/dict';
 const newEditSingleData = {
   title: "", // 登记单名称
   changeType: undefined, // 变更类型
@@ -966,11 +967,11 @@ export default {
       }
       // 按资产面积分摊
       if (shareWay === "1") {
+        let meanTotal = 0
         // 把面积叠加起来
         let nums = this.tableData.reduce((nums, item) => {
           return calc.add(nums, item.assetArea ? Number(item.assetArea) : 0);
         }, 0);
-        console.log("得到总数=>", nums);
         // 平均值
         let pin = calc.divide(originalValue, nums);
         this.tableData.forEach((item) => {
@@ -978,6 +979,27 @@ export default {
             ? 0
             : Number(Number(calc.multiply(pin, item.assetArea)).toFixed(2));
         });
+        // 计算平均值总和
+        meanTotal = this.tableData.reduce((sun, current) => calc.add(sun, current.newOriginalValue || 0), 0)
+        // 如果平均值总和大于输入值  大于的部分从第一个有面积的地方减去
+        if (meanTotal > originalValue) {
+          let big = calc.minus(meanTotal, originalValue)
+          for(let i = 0; i <= this.tableData.length; i++){
+            if (Number(this.tableData[i].assetArea) !== 0) {
+              this.tableData[i].newOriginalValue = calc.minus(this.tableData[i].newOriginalValue, big)
+              return
+            }
+          }
+        } else if (meanTotal < originalValue) {
+        // 如果平均值总和小于输入值  多出来的部分从第一个面积加进去
+          let big = calc.minus(originalValue, meanTotal)
+          for(let i = 0; i <= this.tableData.length; i++){
+            if (Number(this.tableData[i].assetArea) !== 0) {
+              this.tableData[i].newOriginalValue = calc.add(big, this.tableData[i].newOriginalValue)
+              return
+            }
+          }
+        }
         // 依次各个值
       }
       // 按资产个数分摊
