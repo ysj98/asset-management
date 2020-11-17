@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-10-21 15:47:22
+ * @LastEditTime: 2020-11-17 14:19:00
  -->
 <template>
   <div class="assetsRegistration">
@@ -326,7 +326,7 @@ export default {
       this.loading = true
       let obj = {
         organId: this.queryCondition.organId,
-        projectId: this.queryCondition.project,
+        projectId: this.queryCondition.projectId,
         objName: this.queryCondition.taskName,
         beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),
@@ -365,7 +365,7 @@ export default {
       let loadingName = this.SG_Loding('导出中...')
       let obj = {
         organId: this.queryCondition.organId,
-        projectId: this.queryCondition.project,
+        projectId: this.queryCondition.projectId,
         objName: this.queryCondition.taskName,
         beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),

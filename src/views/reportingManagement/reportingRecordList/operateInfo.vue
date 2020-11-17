@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-10-19 16:50:54
+ * @LastEditTime: 2020-11-17 14:16:46
  -->
 <template>
   <div>
@@ -173,7 +173,7 @@ const taskTypeOpt = [
 const taskStatusOpt = [
   { label: "全部数据状态", value: "" },
   { label: "待审批", value: "2" },
-  { label: "已审批", value: "4" },
+  { label: "已完成", value: "4" },
 ]
 let columns = [
   {

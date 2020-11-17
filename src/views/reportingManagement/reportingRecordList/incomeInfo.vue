@@ -168,7 +168,7 @@ const taskTypeOpt = [
 const taskStatusOpt = [
   { label: "全部数据状态", value: "" },
   { label: "待审批", value: "2" },
-  { label: "已审批", value: "4" },
+  { label: "已完成", value: "4" },
 ]
 let settleUpNameMap = {
   '1': '是',
