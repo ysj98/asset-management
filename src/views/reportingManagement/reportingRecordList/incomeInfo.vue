@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-10-19 16:51:33
+ * @LastEditTime: 2020-11-17 13:49:28
  -->
 <template>
   <div>
@@ -245,11 +245,11 @@ let columns = [
   },
   {
     title: "是否结清",
-    dataIndex: "settleUpName",
+    dataIndex: "settleUp",
   },
   {
     title: "是否接管前收入",
-    dataIndex: "incomeBeforeTakeoverName",
+    dataIndex: "incomeBeforeTakeover",
   },
   {
     title: "外部ID",
@@ -334,7 +334,6 @@ export default {
             this.table.dataSource = result.map(item => {
               item.taskTypeName = item.taskTypeName || '--'
               item.objId = item.objId || item.objectId || '-'
-              item.settleUpName = settleUpNameMap[item.settleUp] || '-'
               item.incomeBeforeTakeoverName = incomeBeforeTakeoverNameMap[item.incomeBeforeTakeover] || '-'
               return {
                 key: getUuid(),
