@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2020-11-13 18:26:36
+ * @LastEditTime: 2020-11-17 17:05:45
  * @Description: 房屋名称
 -->
 <template>
@@ -145,6 +145,8 @@ export default {
     if (+this.record.type === 1) {
       // 根据楼栋请求单元
       this.getOptions('getUnitByBuildId', this.record.objectId)
+    } else if (+this.record.type === 2) {
+      this.queryCondition.houseId = this.record.objectId
     }
     this.query()
   },
@@ -187,7 +189,7 @@ export default {
       this.loading = true
       let obj = {
         organId: this.record.organId,
-        buildId: this.record.objectId,
+        buildId: this.record.buildId,
         unitId: this.queryCondition.unitId,              // 单元ID
         floorId: this.queryCondition.floorId,            // 楼层ID
         status: this.queryCondition.houseStatus,         // 房屋状态

@@ -322,10 +322,9 @@
         this.queryProjectOptions()
       } else {
         // 修改布局
-        this.formItemLayout = { labelCol: {}, wrapperCol: {} }
+        this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }
       }
     },
-    
     watch: {
       'details': function () {
         this.renderDetail()
@@ -357,6 +356,9 @@
         }
         .ant-calendar-picker-icon {
           display: none;
+        }
+        .ant-form-item-children {
+          width: 100%;
         }
         .ant-input:disabled {
           border: none;

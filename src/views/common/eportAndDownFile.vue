@@ -142,6 +142,7 @@ export default {
     hideModal () {
       this.visible = false
       this.resetData()
+      this.$emit('hideModalFn')
     },
     // 重置数据
     resetData () {

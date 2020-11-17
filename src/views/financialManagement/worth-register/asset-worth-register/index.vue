@@ -119,26 +119,28 @@
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <!-- 批量更新 -->
-    <batch-import class="asset-subsidiary-eport" @upload="uploadFile" @down="downTemplate" ref="batchImport" width="800px" title="价值登记批量导入">
-      <div slot="upLoadModule" class="upLoad-content">
-        <div class="upLoad-content-li">
-          <span><i>*</i>资产项目：</span>
-          <a-select
-            showSearch
-            placeholder="请选择资产项目"
-            optionFilterProp="children"
-            :style="allStyle"
-            v-model="fileProjectId"
-            :options="projectOptions"
-            :filterOption="filterOption"></a-select>
+    <div v-if="visibleShow">
+      <batch-import class="asset-subsidiary-eport" @hideModalFn="hideModalFn" @upload="uploadFile" @down="downTemplate" ref="batchImport" width="800px" title="价值登记批量导入">
+        <div slot="upLoadModule" class="upLoad-content">
+          <div class="upLoad-content-li">
+            <span><i>*</i>资产项目：</span>
+            <a-select
+              showSearch
+              placeholder="请选择资产项目"
+              optionFilterProp="children"
+              :style="allStyle"
+              v-model="fileProjectId"
+              :options="projectOptions"
+              :filterOption="filterOption"></a-select>
+          </div>
+          <div class="left-title">下载模板文件：</div>
+          <div>
+            <i class="file-background"></i>
+            <span @click="downTemplate" class="down_btn" style="margin-left: 17px;">下载</span>
+          </div>
         </div>
-        <div class="left-title">下载模板文件：</div>
-        <div>
-          <i class="file-background"></i>
-          <span @click="downTemplate" class="down_btn" style="margin-left: 17px;">下载</span>
-        </div>
-      </div>
-    </batch-import>
+      </batch-import>
+    </div>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
 </template>
@@ -160,8 +162,9 @@
     components: { SearchContainer, DateMethodOrgan, NoDataTip, TreeSelect, OverviewNumber, BatchImport },
     data () {
       return {
+        visibleShow: false,
         allStyle: allStyle,
-        fileProjectId: '',
+        fileProjectId: undefined,
         ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         registerName: '', // 查询条件-登记名称
@@ -290,7 +293,10 @@
       },
       // 导入
       bulkImport () {
-        this.$refs.batchImport.visible = true
+        this.visibleShow = true
+        this.$nextTick(() => {
+          this.$refs.batchImport.visible = true
+        })
       },
       // 下载导入模板文件
       downTemplate () {
@@ -303,6 +309,10 @@
           projectId: this.fileProjectId
         }
         exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '价值登记批量导入模板.xlsx', this)
+      },
+      hideModalFn () {
+        this.fileProjectId = undefined
+        this.visibleShow = false
       },
       // 批量导入
       uploadFile (file) {
@@ -321,12 +331,14 @@
           if (res && String(res.code) === '0') {
             this.$SG_Message.success(res.message || '导入成功')
             this.$refs.batchImport.visible = false
+            this.hideModalFn()
             return this.queryTableData({type: 'search'})
           }
           throw res.message
         }).catch(err => {
           this.$SG_Message.destroy(name)
           this.$SG_Message.error(err || '批量导入失败')
+          this.hideModalFn()
         })
       },
       // 删除项目

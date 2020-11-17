@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-05-07 17:19:21
+ * @LastEditTime: 2020-11-17 17:32:21
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -480,7 +480,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{Number(reportInfo.settleUp) === 0? '否':'是'}}</span>
+                <span class="label-value" >{{reportInfo.settleUp || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -490,7 +490,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{Number(reportInfo.incomeBeforeTakeover) === 0? '否':'是'}}</span>
+                <span class="label-value" >{{reportInfo.incomeBeforeTakeover || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -603,7 +603,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{Number(reportInfo.settleUp) === 0? '否':'是'}}</span>
+                <span class="label-value" >{{reportInfo.settleUp || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
@@ -613,7 +613,7 @@
                   <i></i>
                 </span>
                 <span>：</span>
-                <span class="label-value" >{{Number(reportInfo.incomeBeforeTakeover) === 0? '否':'是'}}</span>
+                <span class="label-value" >{{reportInfo.expenseBeforeTakeover || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">

@@ -153,6 +153,8 @@ export default {
           let data = res.data.data.data
           data.forEach((item, index) => {
             item.key = index
+            item.settleUp = Number(item.settleUp) === 0 ? '否' : '是'
+            item.incomeBeforeTakeover = Number(item.incomeBeforeTakeover) === 0 ? '否' : '是'
           })
           this.tableData = data
           this.queryCondition.totalCount = res.data.data.count
