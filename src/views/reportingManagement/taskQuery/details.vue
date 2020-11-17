@@ -155,6 +155,7 @@ export default {
             item.key = index
             item.settleUp = Number(item.settleUp) === 0 ? '否' : '是'
             item.incomeBeforeTakeover = Number(item.incomeBeforeTakeover) === 0 ? '否' : '是'
+            item.expenseBeforeTakeover = Number(item.expenseBeforeTakeover) === 0 ? '否' : '是'
           })
           this.tableData = data
           this.queryCondition.totalCount = res.data.data.count
