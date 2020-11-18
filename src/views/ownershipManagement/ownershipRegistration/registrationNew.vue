@@ -441,6 +441,7 @@ export default {
       let fileData = new FormData()
       fileData.append('file', files[0])
       fileData.append('projectId', this.form.getFieldValue('projectId'))
+      fileData.append('organId', this.form.getFieldValue('organId'))
       fileData.append('assetType', this.form.getFieldValue('assetType'))
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
@@ -471,13 +472,17 @@ export default {
                   item.warrantNbrData = [{label: item.warrantNbr, value: item.warrantIds.join(',')}]      // 用于存储单个下拉框数据
                   item.warrantNbr = item.warrantIds.join(',')
                 } else {
+                  item.warrantGeneralData = []
                   item.warrantNbrData = []
+                  item.warrants = []
+                  item.warrantIds = []
                   item.warrantNbr = ''
                 }
                 item.warrantGeneralData = item.warrants  // 用于存权证号总是数据
               })
             }
             this.tableData = data
+            console.log(this.tableData, '这是没事')
           })
         } else {
           e.target.value = ''
