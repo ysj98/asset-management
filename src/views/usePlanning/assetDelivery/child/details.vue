@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-05 10:01:40
- * @LastEditTime: 2020-11-13 18:30:27
+ * @LastEditTime: 2020-11-18 15:56:02
  * @Description: 详情
 -->
 <template>
@@ -90,7 +90,7 @@ const columns = [
     dataIndex: 'pasitionString',
     width: '10%'
   }, {
-    title: '交付物积(㎡)',
+    title: '交付面积(㎡)',
     dataIndex: 'deliveryArea',
     align: 'center',
     scopedSlots: { customRender: 'deliveryArea' }
