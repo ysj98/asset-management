@@ -1,18 +1,19 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2020-11-17 17:05:45
+ * @LastEditTime: 2020-11-18 11:47:54
  * @Description: 房屋名称
 -->
 <template>
   <SG-Modal
+    width="1030px"
     v-model="status"
     title="房屋详情"
     :footer="null"
     :noPadding="true"
     @cancel="cancel"
   >
-    <div class="m15">
+    <div class="housingDetails m15">
       <div class="mt10 mb10">
         <div style="text-align: right;" v-if="this.record.type === 1">
           <a-select
@@ -63,23 +64,28 @@
           <SG-Button type="primary" style="margin-left: 10px;" @click="query">查询</SG-Button>
         </div>
       </div>
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :dataSource="tableData"
-        class="custom-table table-boxs"
-        :pagination="false"
-        >
-      </a-table>
-      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-      <SG-FooterPagination
-        :pageLength="queryCondition.pageSize"
-        :totalCount="count"
-        :location="location"
-        :noPageTools="noPageTools"
-        v-model="queryCondition.pageNum"
-        @change="handleChange"
-      />
+      <div class="tab-nav">
+        <div class="table-border table-layout-fixed">
+        <a-table
+          :scroll="{y: 450 }"
+          :loading="loading"
+          :columns="columns"
+          :dataSource="tableData"
+          class="custom-table td-pd10"
+          :pagination="false"
+          >
+        </a-table>
+        <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+        <SG-FooterPagination
+          :pageLength="queryCondition.pageSize"
+          :totalCount="count"
+          :location="location"
+          :noPageTools="noPageTools"
+          v-model="queryCondition.pageNum"
+          @change="handleChange"
+        />
+      </div>
+    </div>
     </div>
   </SG-Modal>
 </template>
@@ -120,7 +126,7 @@ export default {
       tableData: [],
       count: '',
       noPageTools: false,
-      location: '',
+      location: 'absolute',
       unitOpt: utils.deepClone(unitOpt),       // 单元数组
       floorOpt: utils.deepClone(floorOpt),     // 楼层数据
       houseOpt: utils.deepClone(houseOpt),
@@ -269,4 +275,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.housingDetails {
+  height: 600px;
+  .tab-nav {
+    height: 500px;
+  }
+}
 </style>
