@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-26 18:08:25
- * @LastEditTime : 2020-01-03 15:26:17
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-11-19 17:13:30
+ * @LastEditors: Please set LastEditors
  * @Description: 盘点结果
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\viewDetails.vue
  -->
@@ -37,6 +37,7 @@
           <a-col class="playground-col" :span="12">盘点时间：{{particularsData.checkTime || '--'}}</a-col>
           <a-col class="playground-col" :span="12">盘点结果：{{particularsData.checkResultName || '--'}}</a-col>
           <a-col class="playground-col" :span="24">异常说明：{{particularsData.remark || '--'}}</a-col>
+          <a-col class="playground-col" :span="24">处理建议：{{particularsData.handleTip || '--'}}</a-col>
           <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">图片： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
               <SG-UploadFile
