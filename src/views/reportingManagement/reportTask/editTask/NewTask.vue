@@ -316,7 +316,7 @@
 
 <style lang='less' scoped>
   .new_task {
-    padding: 0 40px;
-    margin-bottom: 80px;
+    padding: 0 40px 80px 40px;
+    // margin-bottom: 80px;
   }
 </style>
