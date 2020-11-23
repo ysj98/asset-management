@@ -13,7 +13,7 @@
     <a-row :gutter="8">
       <!--组织机构选择控件, 单选-->
       <a-col :span="isShowBuilding ? 8 : 12">
-        <tree-select @changeTree="changeTree" class="organ_style"/>
+        <tree-select @changeTree="changeTree" :allowClear="false" class="organ_style"/>
       </a-col>
       <a-col :span="isShowBuilding ? 8 : 12">
         <a-select

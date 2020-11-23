@@ -220,12 +220,14 @@ const kindOfRightsOpt = [{ label: "全部权证类型", value: "" }];
 const shipTypeOpt = [{ label: "全部权属类型", value: "" }];
 const statussOpt = [
   { label: "全部资产状态", value: "" },
-  { label: "未生效", value: "0" },
+  { label: "待入库", value: "0" },
   { label: "正常", value: "1" },
-  { label: "资产报废", value: "2" },
-  { label: "资产转让", value: "3" },
-  { label: "资产报损", value: "4" },
-  { label: "已清理", value: "5" }
+  { label: "报废", value: "2" },
+  { label: "转让", value: "3" },
+  { label: "报损", value: "4" },
+  { label: "已出库", value: "5" },
+  { label: "已取消", value: "6" },
+  { label: "入库中", value: "7" }
 ];
 let columns = [
   {

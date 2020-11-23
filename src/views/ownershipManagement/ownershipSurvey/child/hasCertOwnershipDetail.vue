@@ -132,13 +132,14 @@ export default {
     scrollHeight: {
       default: () => ({ y: "auto" })
     },
-    assetTypes: {
-      type: Array,
-      default: () => []
-    }
+    // assetTypes: {
+    //   type: Array,
+    //   default: () => []
+    // }
   },
   data() {
     return {
+      assetTypes: [],
       seletOpt,
       queryCondition: { ...queryCondition },
       table: {
@@ -150,6 +151,7 @@ export default {
     };
   },
   mounted() {
+    this.assetTypes = this.$route.query.assetTypes
     this.query();
   },
   methods: {

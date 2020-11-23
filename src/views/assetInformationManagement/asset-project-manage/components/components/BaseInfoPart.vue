@@ -71,7 +71,7 @@
       </a-row>
       <a-row>
         <a-col :span="24">
-          <a-form-item label="备注" :label-col="type ? {span:4} : {span:1}" :wrapper-col="type ? {span: 20} : {span:23}">
+          <a-form-item label="备注" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
             <a-textarea
               :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入备注"
               v-decorator="['remark', { initialValue, rules: [{max: 200, message: '最多200个字符'}] }]"
@@ -80,8 +80,8 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="colSpan === 12 ? 24 : 8">
-          <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : ''}" :wrapper-col="{span: colSpan === 12 ? 19 : ''}">
+        <a-col :span="colSpan === 12 ? 24 : 24">
+          <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : 3}" :wrapper-col="{span: colSpan === 12 ? 19 : 21}">
             <SG-UploadFile v-if="isEdit || attachment.length" type="all" :show="!isEdit" v-model="attachment"/>
             <span v-else style="margin-left: 12px">无</span>
           </a-form-item>
@@ -224,7 +224,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="24">
-          <a-form-item label="历史遗留问题" :label-col="type ? {span:4} : {span:2}" :wrapper-col="type ? {span: 20} : {span:22}">
+          <a-form-item label="历史遗留问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
             <a-textarea
               :disabled="!isEdit"
               style="resize: none"
@@ -427,8 +427,8 @@
       } else {
         Object.assign(this, {
           colSpan: type == 'approval' ? 12 : 8,
-          labelCol: type == 'approval' ? {span: 8} : {},
-          wrapperCol: type == 'approval' ? {span: 16} : {},
+          labelCol: type == 'approval' ? {span: 8} : {span: 9},
+          wrapperCol: type == 'approval' ? {span: 16} : {span: 15},
           isEdit: false,
           layout: type == 'approval' ? 'horizontal' : 'inline',
           initialValue: '无'
