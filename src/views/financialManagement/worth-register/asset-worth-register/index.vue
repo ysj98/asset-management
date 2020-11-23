@@ -287,7 +287,7 @@
       handleExport () {
         this.exportBtnLoading = true
         let data = this.queryTableData({type: 'export'})
-        exportDataAsExcel(data, this.$api.tableManage.exportRegisterExcel, '资产价值登记列表.xlsx', this).then(() => {
+        exportDataAsExcel(data, this.$api.tableManage.exportRegisterExcel, '资产价值登记列表.xls', this).then(() => {
           this.exportBtnLoading = false
         })
       },
@@ -308,7 +308,7 @@
           organId: this.organProjectType.organId,
           projectId: this.fileProjectId
         }
-        exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '价值登记批量导入模板.xlsx', this)
+        exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '价值登记批量导入模板.xls', this)
       },
       hideModalFn () {
         this.fileProjectId = undefined
