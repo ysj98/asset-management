@@ -101,7 +101,7 @@
                         v-model.trim="queryData.cleaningOrderCode"
                         style="width: 190px"
                         :maxLength="30"
-                        placeholder="出库单名称/编码"
+                        placeholder="出库单名称/编号"
                 />
             </div>
         </SG-SearchContainer>
