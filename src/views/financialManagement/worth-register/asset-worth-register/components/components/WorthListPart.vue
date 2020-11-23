@@ -20,10 +20,23 @@
           <!--<span style="font-weight: bold">{{tableObj.dataSource.length ? tableObj.dataSource.length - 1 : 0}}</span>-->
         <!--</div>-->
       </div>
+      <!-- class="custom-table td-pd10 eliminate-table" -->
       <a-table
         v-bind="tableObj"
-        class="custom-table td-pd10 table-border"
+        class="custom-tables"
       >
+        <template slot="assetName" slot-scope="text">
+          <tooltip-text width="250" :text="text"/>
+        </template>
+        <template slot="assetCode" slot-scope="text">
+        <tooltip-text width="150" :text="text"/>
+        </template>
+        <template slot="organName" slot-scope="text">
+          <tooltip-text width="250" :text="text"/>
+        </template>
+        <template slot="assessmentOrganName" slot-scope="text">
+          <tooltip-text width="150" :text="text"/>
+        </template>
         <template slot="assessmentValue" slot-scope="text, record">
           <a-input-number
             :min="0"
@@ -73,9 +86,10 @@
   import SelectAssetList from './SelectAssetList'
   import SetAsset from './SetAssetValue'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import TooltipText from "src/views/common/TooltipText";
   export default {
     name: 'WorthListPart',
-    components: { SelectAssetList, OverviewNumber, SetAsset },
+    components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText },
     props: ['type', 'registerId', 'organId', 'dynamicData'],
     data () {
       return {
@@ -83,14 +97,14 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: 2200 },
+          scroll: { x: 3200 },
           rowKey: 'assetId',
           selectedRowKeys: [], // Table选中的key数据
           columns: [
             { title: '编号', dataIndex: 'index', fixed: 'left', width: 70 },
-            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 200 },
-            { title: '资产编码', dataIndex: 'assetCode' },
-            { title: '所属机构', dataIndex: 'organName' },
+            { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 250, scopedSlots: { customRender: 'assetName' } },
+            { title: '资产编码', dataIndex: 'assetCode', width: 150, scopedSlots: { customRender: 'assetCode' } },
+            { title: '所属机构', dataIndex: 'organName', width: 250, scopedSlots: { customRender: 'organName' } },
             { title: '所属资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' },
             { title: '资产分类', dataIndex: 'assetCategoryName' },
@@ -101,7 +115,7 @@
             { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
             { title: '上次评估值', dataIndex: 'lastAssessmentValue' },
             { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
-            { title: '评估机构', dataIndex: 'assessmentOrganName' },
+            { title: '评估机构', dataIndex: 'assessmentOrganName', width: 150, scopedSlots: { customRender: 'assessmentOrganName' } },
             { title: '本次估值(元)', dataIndex: 'assessmentValue', scopedSlots: { customRender: 'assessmentValue' }, fixed: 'right', width: 120 },
             { title: '上浮比', dataIndex: 'upRate', fixed: 'right', width: 120 }
           ]
