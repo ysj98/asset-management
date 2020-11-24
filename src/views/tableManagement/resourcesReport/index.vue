@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2020-11-13 18:20:35
+ * @LastEditTime: 2020-11-24 10:26:20
  * @Description: 资源报表
 -->
 <template>
@@ -129,7 +129,7 @@ export default {
       let obj = {
         organId: this.queryCondition.organId,                               // 组织机构id
         objectTypeIdList: this.alljudge(this.queryCondition.objectTypes),   // 资产分类
-        status: this.alljudge(this.queryCondition.statuss)                 //  资产状态(多选)
+        statusList: this.alljudge(this.queryCondition.statuss)                 //  资产状态(多选)
       }
       this.$api.tableManage.houseResourceExport(obj).then(res => {
         let blob = new Blob([res.data])
@@ -243,7 +243,7 @@ export default {
       let obj = {
         organId: this.queryCondition.organId,                               // 组织机构id
         objectTypeIdList: this.alljudge(this.queryCondition.objectTypes),   // 资产分类
-        status: this.alljudge(this.queryCondition.statuss),                 //  资产状态(多选)
+        statusList: this.alljudge(this.queryCondition.statuss),                 //  资产状态(多选)
         pageNum: this.queryCondition.pageNum,                               // 当前页
         pageSize: this.queryCondition.pageSize                              // 每页显示记录数
       }
