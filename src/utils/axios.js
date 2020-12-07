@@ -18,8 +18,10 @@ const SG_Message = SG_UI.SG_Message.Message
 
 // 创建一个请求对象
 let axiosX = axios.create({
-  baseURL: baseConfig.DEV_API_URL || ''
+  // baseURL: baseConfig.DEV_API_URL || ''
+  baseURL: baseConfig.unifyContext || ''
 })
+axios.defaults.baseURL = baseConfig.unifyContext || ''
 // request 拦截
 axiosX.interceptors.request.use(
   config => {

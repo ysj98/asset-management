@@ -7,7 +7,7 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>资产管理</title>
     <% if (process.env.NODE_ENV === 'production') { %>
-      <script src="/configs.js?v=<%=new Date().getTime()%>"></script>
+      <script src="/uhomeccp/configs.js?v=<%=new Date().getTime()%>"></script>
       <script>
         /**
          * 加载 CDN 资源函数
@@ -18,6 +18,7 @@
           // 获取配置
           var configs = window.__configs
           target = target || configs.cdnURL
+          var unifyContext = configs && configs.unifyContext ? configs.unifyContext : ''
           // 使用变量防止转义
           var script = '/script'
           for (var i = 0; i < urls.length; i++) {
@@ -26,7 +27,7 @@
               document.write("<script src='" + target + urls[i] + "'><" + script + '>')
             // 否则使用根目录下的 /lib/ 下的文件
             } else {
-              document.write("<script src='/lib" + urls[i] + "'><" + script + '>')
+              document.write("<script src='" + unifyContext + "/lib" + urls[i] + "'><" + script + '>')
             }
           }
         }
