@@ -12,7 +12,8 @@ let conf = {
 let configs = {
   hostImg: conf.local,
   hostPrime: '', //  开发与生产环境切换
-  CookieDomain: ''
+  CookieDomain: '',
+  unifyContext: ''
 }
 // 如果可以
 if (process.env.NODE_ENV === 'production') {

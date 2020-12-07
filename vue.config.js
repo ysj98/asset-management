@@ -71,7 +71,7 @@ proxy.addUrls(proxyURL, localhost, target)
 // 配置
 module.exports = {
   // 部署应用包时的基本 URL
-  publicPath: '/asset-management/',
+  publicPath: './',
   // build后文件名
   outputDir: 'asset-management',
   // 引用的静态文件
