@@ -74,6 +74,9 @@
           <a-col :span="15">
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
+          <a-col :span="5">
+            <a-input placeholder="详细地址" v-model="address"/>
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -128,6 +131,7 @@
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
+        address:'',  // 查询条件-资产地址
         status: [], // 查询条件-资产状态值
         categoryId: [], // 查询条件-资产分类
         categoryOptions: [], // 查询条件-资产分类选项
