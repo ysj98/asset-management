@@ -7,7 +7,8 @@
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
-        <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn">新建权证</SG-Button>
+        <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn" style="margin-right: 8px">新建权证</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
@@ -35,6 +36,7 @@
             <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
+          <a-input :style="allStyle" v-model="queryCondition.seatingPosition" placeholder="坐落位置" maxlength="30"  />
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="queryHandler">查询</SG-Button>
@@ -49,6 +51,7 @@
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
+        :row-selection="rowSelection"
         class="custom-table td-pd10"
         :pagination="false"
         >
@@ -199,6 +202,7 @@ const queryCondition =  {
     ownerTypeList: [],  // 权属形式
     pageNum: 1,         // 第几页
     pageSize: 10,       // 每页显示记录数
+    seatingPosition: '' // 坐落位置
   }
 export default {
   components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber},
@@ -223,6 +227,8 @@ export default {
       queryCondition: {...queryCondition},
       count: '',
       obligeeIdData: [],
+      control:true,
+      idArr: [],
       numList: [
         {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057'},
         {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
@@ -230,7 +236,41 @@ export default {
         {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
         {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      ownerTypeData: [] // 权属形式
+      ownerTypeData: [], // 权属形式
+      rowSelection: {
+  onChange: (selectedRowKeys, selectedRows) => {
+    
+    this.idArr = []
+    this.idArr = selectedRows.map(item => {
+        return item.warrantId
+    })
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows, this.idArr);
+  },
+  onSelect: (record, selected, selectedRows) => {
+    console.log(record, selected, selectedRows);
+    if(selectedRows.length==0){
+      this.control = true
+    }else{
+      this.control = false
+    }
+    
+  },
+  onSelectAll: (selected, selectedRows, changeRows) => {
+    if(selectedRows.length==0){
+      this.control = true
+    }else{
+      this.control = false
+    }
+    
+    console.log(selected, selectedRows, changeRows);
+  },
+   getCheckboxProps: record => ({
+          props: {
+            disabled: record.statusName === '注销', // 注销权证禁止选择
+            name: record.statusName,
+          },
+        })
+}
     }
   },
   computed: {
@@ -407,6 +447,7 @@ export default {
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
+        seatingPosition: this.queryCondition.seatingPosition // 坐落位置
       }
       this.$api.ownership.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -556,7 +597,29 @@ export default {
       }, res => {
         this.$message.error(res.data.message)
       })
-    }
+    },
+  // 权证批量删除
+  delBatch () {
+    let _this = this
+        this.$confirm({
+          title: '提示',
+          content: '确认要批量注销选中权证吗？',
+          onOk() {
+          let obj = {
+            warrantIdList: _this.idArr
+          }
+          _this.$api.ownership.warrantDeleteBatch(obj).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.$message.info('注销成功')
+              _this.query()
+            } else {
+              _this.$message.error(res.data.message)
+            }
+            window.location.reload()
+          })
+          }
+        })
+  }
   },
   created () {
   },

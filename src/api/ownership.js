@@ -70,13 +70,17 @@ export function warrantTotal (data) {
 export function warrantSaveOrUpdate (data) {
   return axiosPost(ownership.authorityCardManagement.warrantSaveOrUpdate, data)
 }
-// 权证查询
+// 权证查询warrantDeleteBatch
 export function warrantList (data) {
   return axiosPost(ownership.authorityCardManagement.warrantList, data)
 }
 // 权证注销
 export function warrantDelete (data) {
   return axiosGet(ownership.authorityCardManagement.warrantDelete, data)
+}
+// 权证批量注销
+export function warrantDeleteBatch (data) {
+  return axiosPost(ownership.authorityCardManagement.warrantDeleteBatch, data)
 }
 // 查询权证详情
 export function warrantDetail (data) {

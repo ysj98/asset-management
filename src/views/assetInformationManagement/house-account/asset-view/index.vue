@@ -157,6 +157,7 @@
             { title: '丘地号', dataIndex: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area' },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
+            { title: '地理位置', dataIndex: 'address', width: 300 },
             { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
             { title: '单元', dataIndex: 'unitName' },
             { title: '楼层', dataIndex: 'floor' },
@@ -313,7 +314,7 @@
         let api = { exportHouseBtn: 'exportAssetViewHouseExcel', exportAssetBtn: 'exportAssetViewExcel' }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType,
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType, address,
           tableObj: { columns }, current
         } = this
         let form = type === 'exportHouseBtn' ? {

@@ -46,6 +46,16 @@ export const accessCard = [
     required: false
   },
   {
+    label: '使用面积(㎡)',
+    attrCode: 'useArea',
+    formType: 'inputNumber',
+    attrValue: '',
+    min: 0,
+    precision: 2,
+    max: 9999999.99,
+    required: false
+  },
+  {
     label: '分摊面积(㎡)',
     attrCode: 'apportionArea',
     formType: 'inputNumber',
@@ -181,6 +191,14 @@ export const accessCard = [
 
 // 权证类型：不动产权证列表展示
 export const titleDeed = [
+  {
+    label: '权利类型',
+    attrCode: 'typeOfRight',
+    chooseArray: [],
+    formType: 'selcet',
+    attrValue: '',
+    required: false
+  },
   {
     label: '丘地号',
     attrCode: 'lotNo',

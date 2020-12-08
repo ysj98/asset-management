@@ -586,6 +586,8 @@ export const ownership = {
     warrantList: '/ams/ownerShipUser/warrant/list',
     // 权证注销
     warrantDelete: '/ams/ownerShipUser/warrant/delete',
+    // 权证批量注销
+    warrantDeleteBatch: '/ams/ownerShipUser/warrant/deleteBatch',
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
     // 权证统计

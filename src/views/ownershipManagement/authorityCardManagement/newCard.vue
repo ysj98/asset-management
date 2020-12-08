@@ -117,6 +117,7 @@
               <SG-UploadFile
                 v-model="newCardData.files"
                 type="all"
+                :maxSize="10240"
               />
             </a-form-item>
           </a-col>
@@ -148,7 +149,7 @@
           </template>
           <template slot="percent" slot-scope="text, record">
             <a-input-number placeholder="占有比例"
-              :min="1" :max="100" :step="1.00" :precision="0" v-model="record.percent"
+              :min="0" :max="100" :step="1.00" :precision="2" v-model="record.percent"
             />
           </template>
           <template slot="operation" slot-scope="text, record">
@@ -446,6 +447,7 @@ export default {
             talkTotalPrice: conditionalJudgment.includes(values.talkTotalPrice) ? '' : values.talkTotalPrice,     // 议价租金总价(使用权证所有)
             rentPayDate: conditionalJudgment.includes(values.rentPayDate) ? '' : values.rentPayDate,              // 租金缴纳期限(使用权证所有)
             antenatal: conditionalJudgment.includes(values.antenatal) ? '' : values.antenatal,                    // 产别(使用权证所有)
+            useArea: conditionalJudgment.includes(values.useArea) ? '' : values.useArea,                          // 使用面积(使用权证所有)
             landNumber: conditionalJudgment.includes(values.landNumber) ? '' : values.landNumber,                 // 地号
             picNumber: conditionalJudgment.includes(values.picNumber) ? '' : values.picNumber,                    // 图号
             landCategory: conditionalJudgment.includes(values.landCategory) ? '' : values.landCategory,           // 地类(用途)
@@ -523,7 +525,8 @@ export default {
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
           })
-          this.kindOfRightData = arr
+          let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}] // 临时本地模拟数据
+          this.kindOfRightData = arr.length < 2 ? temp : arr
         }
         // 权属用途
         if (+res[2].data.code === 0) {
