@@ -159,6 +159,7 @@
           {title: '资产总数', key: 'total', value: 0, fontColor: '#324057'},
           {title: '资产原值(元)', key: 'originalValue', value: 0, fontColor: '#324057'},
           {title: '首次成本法估值(元)', key: 'assetValuation', value: 0, fontColor: '#324057'},
+          {title: '首次市场法估值(元)', key: 'firstMarketValue', value: 0, fontColor: '#324057'},
           {title: '最新价值(元)', key: 'marketValue', value: 0, fontColor: '#324057'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
@@ -292,17 +293,19 @@
           let original = 0
           let asset = 0
           let assetNew = 0
+          
           dataSource.forEach(m => {
-            const { marketValue, originalValue, assetValuation, assessmentValue } = m
-            market += marketValue ? Number(marketValue) : 0
+            const { firstMarketValue, originalValue, assetValuation, assessmentValue } = m
+            market += firstMarketValue ? Number(firstMarketValue) : 0
             original += originalValue ? Number(originalValue) : 0
             asset += assetValuation ? Number(assetValuation) : 0
             assetNew += assessmentValue ? Number(assessmentValue) : 0
           })
           this.tableObj.dataSource = dataSource.concat({
             assetId: '-1111', projectName: '合计：',
-            marketValue: market, originalValue: original, assetValuation: asset, assessmentValue: assetNew
+            firstMarketValue: market, originalValue: original, assetValuation: asset, assessmentValue: assetNew
           })
+          console.log(this.tableObj.dataSource)
         }
       }
     },

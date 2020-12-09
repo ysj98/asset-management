@@ -242,6 +242,7 @@ export default {
       newCardData: utils.deepClone(newCardData),
       newCard: '',
       kindOfRightsData: [],
+      typeOfRightData:[],      // 权利类型
       show: false,
       organId: '',
       formItemTextarea: {
@@ -324,6 +325,7 @@ export default {
         this.typeJudgment = ''
       }
       this.platformDictFn()  // 字段表获取数据
+      this.organDictFn()     // 字段表获取数据
     },
     // 权证类型
     kindOfRightChange (val) {
@@ -526,7 +528,7 @@ export default {
             arr.push({ value: item.value, label: item.name })
           })
           let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}] // 临时本地模拟数据
-          this.kindOfRightData = arr.length < 2 ? temp : arr
+          this.kindOfRightData = arr.length < 3 ? temp : arr
         }
         // 权属用途
         if (+res[2].data.code === 0) {
@@ -579,6 +581,29 @@ export default {
             item.chooseArray = this.structureData
           }
         })
+      })
+    },
+    // 机构字典获取数据
+    organDictFn () {
+      this.$api.assets.organDict({code: 'AMS_RIGHT_TYPE'}).then(res => {
+        console.log(res)
+        if (res.data.code == 0) {
+          let data = res.data.data
+          let arr = []
+          let temp = [{ value: 1, label: '国有建设用地使用权/房屋所有权' }, {value: 2, label: '-/房屋所有权'}, {value: 3, label: '国有建设用地使用权/-' }]
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.titleDeed.forEach(item => {
+            if(item.attrCode === 'typeOfRight'){
+                if(arr.length < 3){
+                  item.chooseArray = temp
+                }else{
+                  item.chooseArray = arr
+                }
+            }
+          }) 
+        }
       })
     },
     // 权属人
