@@ -117,7 +117,7 @@
               <SG-UploadFile
                 v-model="newCardData.files"
                 type="all"
-                :maxSize="10240"
+                :maxSize="5120"
               />
             </a-form-item>
           </a-col>

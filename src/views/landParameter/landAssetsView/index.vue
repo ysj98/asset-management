@@ -29,7 +29,14 @@
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
               <a-select-option v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
+            <a-row :gutter="12" style="margin-right: -78px">
+          <a-col :span="18" style="padding-left: 60px">
             <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+          </a-col>
+          <a-col :span="5" style="padding-top: 13px; padding-left: 0">
+            <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
+          </a-col>
+        </a-row>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -141,7 +148,8 @@ const queryCondition =  {
   statuss: '',        // 资产状态(多选)
   useType: '',        // 用途
   pageNum: 1,         // 当前页
-  pageSize: 10        // 每页显示记录数
+  pageSize: 10,       // 每页显示记录数
+  address: ''         // 地理位置
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
@@ -175,6 +183,7 @@ export default {
       columns: columnsData,
       organName: '',
       organId: '',
+      address: '',
       tableData: [],
       approvalStatusData: [...approvalStatusData],
       queryCondition: {...queryCondition},
@@ -430,7 +439,8 @@ export default {
         projectId: this.alljudge(this.queryCondition.projectId),            // 项目id
         statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
         pageNum: this.queryCondition.pageNum,          // 当前页
-        pageSize: this.queryCondition.pageSize         // 每页显示记录数
+        pageSize: this.queryCondition.pageSize,         // 每页显示记录数
+        address: this.address           // 详细地址
       }
       this.$api.land.assetView(obj).then(res => {
         if (Number(res.data.code) === 0) {

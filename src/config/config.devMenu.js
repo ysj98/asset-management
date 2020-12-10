@@ -248,6 +248,15 @@ export default [
     ]
   },
   {
+    title: '资产领用',
+    children: [
+      { title: '领用登记', path: '/applyRegister' },
+      { title: '资产领用一览表', path: '/assetApplyView' },
+      { title: '归还登记', path: '/returnRegister' },
+      { title: '资产归还一览表', path: '/assetReturnView' }
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {

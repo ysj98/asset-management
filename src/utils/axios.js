@@ -66,6 +66,10 @@ axiosX.interceptors.response.use(
           if (error.response.status === 404 && error.response.config.url === '/charging-api/rest-api/v1/assets/getAcctItemPageList') {
             return
           }
+          if (error.response.status === 504) {
+            SG_Message.error({content: '请求超时，请重试!'})
+            return
+          }
           SG_Message.error()
         }
       }

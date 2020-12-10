@@ -82,7 +82,7 @@
       <a-row>
         <a-col :span="colSpan === 12 ? 24 : 24">
           <a-form-item label="附件" :label-col="{span: colSpan === 12 ? 4 : 3}" :wrapper-col="{span: colSpan === 12 ? 19 : 21}">
-            <SG-UploadFile v-if="isEdit || attachment.length" type="all" :show="!isEdit" v-model="attachment" :maxSize="10240" />
+            <SG-UploadFile v-if="isEdit || attachment.length" type="all" :show="!isEdit" v-model="attachment" :maxSize="5120" />
             <span v-else style="margin-left: 12px">无</span>
           </a-form-item>
         </a-col>

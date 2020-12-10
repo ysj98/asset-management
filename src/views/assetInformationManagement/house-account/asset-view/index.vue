@@ -75,7 +75,7 @@
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="详细地址" v-model="address"/>
+            <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
           </a-col>
         </a-row>
       </div>
@@ -255,13 +255,13 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, useType
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, useType, address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
           organId, buildIdList, projectIdList, pageSize: pageLength,
-          province, city, region, assetName, pageNum: pageNo,
+          province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
@@ -321,11 +321,14 @@
           assetHouseId: buildIdList.join(',')
         } : {
           organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
-          province, city, region, assetName, status: status || null,
+          province, city, region, assetName, status: status || null, address,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),
         }
-        this.$api.assets[api[type]](form).then(res => {
+        if(type === 'exportAssetBtn'){
+          this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
+            if(+res1.data.code === 0){      
+          this.$api.assets[api[type]](form).then(res => {
           this[type] = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
@@ -341,6 +344,28 @@
           this[type] = false
           this.$message.error(err || '导出失败')
         })
+            }
+            
+          } )
+        }else{
+            this.$api.assets[api[type]](form).then(res => {
+          this[type] = false
+          if (res.status === 200 && res.data && res.data.size) {
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(new Blob([res.data]))
+            a.download = `${type === 'exportHouseExcel' ? '房屋卡片' : '资产视图'}导出列表.xls`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            return a.remove()
+          }
+          throw res.message || '导出失败'
+        }).catch(err => {
+          this[type] = false
+          this.$message.error(err || '导出失败')
+        })
+        }
+        
       },
       
       // 转物业、转运营

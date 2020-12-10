@@ -821,5 +821,30 @@ let proRouter = [{
     name: '资产交付记录',
     component: () => import('@/views/usePlanning/assetDeliveryRecord/index')
   },
+  {
+    path: '/assetApply',
+    name: '资产领用',
+    component: () => import('@/views/assetApply/applyRegister/index')
+  },
+  {
+    path: '/applyRegister',
+    name: '领用登记',
+    component: () => import('@/views/assetApply/applyRegister/index')
+  },
+  {
+    path: '/assetApplyView',
+    name: '资产领用一览表',
+    component: () => import('@/views/assetApply/assetApplyView/index')
+  },
+  {
+    path: '/returnRegister',
+    name: '归还登记',
+    component: () => import('@/views/assetApply/returnRegister/index')
+  },
+  {
+    path: '/assetReturnView',
+    name: '资产归还一览表',
+    component: () => import('@/views/assetApply/assetReturnView/index')
+  }
 ]
 export default proRouter

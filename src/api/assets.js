@@ -481,6 +481,10 @@ export function exportAssetViewHouseExcel (data) {
 export function exportAssetViewExcel (data) {
   return axiosPost(assets.assetView.exportAssetExcel, data, false, false, {responseType: 'blob'})
 }
+// 导出资产视图校验
+export function exportAssetViewExcelExam (data) {
+  return axiosPost(assets.assetView.exportAssetExcelExam, data,)
+}
 // 资产编辑保存
 export function saveAssetViewHouseInfo (data) {
   return axiosPost(assets.assetView.saveHouseInfo, data)

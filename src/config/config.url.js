@@ -367,10 +367,10 @@ export const assets = {
     queryAssetViewPage: '/ams/asset-house/house/page',
     // 导出房屋卡片
     exportHouseExcel: '/ams/asset-house/card',
-    // 导出资产视图（旧）
+    // 导出资产视图
     exportAssetExcel: '/ams/asset-house/house/excel',
-    // 导出资产视图（新）
-    //exportAssetExcel: '/ams/asset-house/house/isExcel',
+    // 导出资产视图（校验）
+    exportAssetExcelExam: '/ams/asset-house/house/isExcel',
     // 资产编辑保存
     saveHouseInfo: '/ams/asset-house',
     // 查询组织机构下的员工
@@ -378,9 +378,9 @@ export const assets = {
     // 资产详情-其他信息Tab-查询权属信息
     queryOwnDetail: '/ams/ownerShip/asset/owner/detail',
     // 资产详情-其他信息Tab-接管信息（旧）
-    queryTakeOverDetail: '/ams/assetChange/assetTakeOverInfo',
+    //queryTakeOverDetail: '/ams/assetChange/assetTakeOverInfo',
     // 资产详情-其他信息Tab-接管信息（新/暂未部署上线）
-    //queryTakeOverDetail: 'ams/deliveryDetail/assetTakeOverInfo',
+    queryTakeOverDetail: 'ams/deliveryDetail/assetTakeOverInfo',
     // 资产详情-其他信息Tab-变动信息
     queryChangeDetail: '/ams/assetChange/assetChangeInfo',
     // 资产详情-其他信息Tab-账面信息
