@@ -1021,3 +1021,27 @@ export const delivery = {
   // 资产交付记录汇总
   getTotalDeliveryArea: '/ams/deliveryDetail/getTotalDeliveryArea'
 }
+
+// 使用管理
+export const useManage = {
+  // 资产领用-列表汇总
+  getReceiveSum: '/ams/assetReceive/getReceiveSum',
+  // 资产领用-列表汇总
+  getReceivePage: '/ams/assetReceive/getReceivePage',
+  // 资产领用-删除
+  deleteReceive: '/ams/assetReceive/deleteReceive',
+  // 资产领用-导出
+  exportReceive: '/ams/assetReceive/exportReceive',
+  // 资产领用-新增编辑保存
+  submitReceive: '/ams/assetReceive/submitReceive',
+  // 资产领用-详情
+  getReceiveInfo: '/ams/assetReceive/getReceiveInfo',
+  // 资产领用一览表-分页列表
+  getReceiveDetailPage: '/ams/assetReceive/getReceiveDetailPage',
+  // 资产领用一览表-列表汇总
+  getReceiveDetailSum: '/ams/assetReceive/getReceiveDetailSum',
+  // 资产领用一览表-导出
+  exportReceiveDetail: '/ams/assetReceive/exportReceiveDetail',
+  // 资产领用一览表-详情
+  getReceiveDetailInfo: '/ams/assetReceive/getReceiveDetailInfo'
+}

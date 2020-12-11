@@ -5,8 +5,8 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn">领用登记</SG-Button>
-        <div class="box"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="newApply">领用登记</SG-Button>
+        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部领用部门" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
@@ -18,7 +18,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.receiveName" placeholder="领用单名称/编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -36,10 +36,10 @@
           @select="changeAssetClassify"
         ></a-select>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="提交日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="提交日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -81,62 +81,63 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const approvalStatusData = [
-  { name: '全部状态', value: '' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
+  { name: '全部状态', value: '' }, { name: '草稿', value: '4' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
 ]
 
 const columns = [
   {
-    title: '入库单明细id',
-    dataIndex: 'relId',
-    width: 120
+    title: '领用单ID',
+    dataIndex: 'receiveId',
+    width: 100
   },
   {
-    title: '资产名称',
-    dataIndex: 'assetName'
+    title: '所属机构',
+    dataIndex: 'organName'
   },
   {
-    title: '资产编码',
-    dataIndex: 'assetCode'
+    title: '领用单名称',
+    dataIndex: 'receiveName'
+  },
+  {
+    title: '资产项目',
+    dataIndex: 'projectName'
   },
   {
     title: '资产类型',
     dataIndex: 'assetTypeName'
   },
   {
-    title: '资产分类',
-    dataIndex: 'objectTypeName'
+    title: '领用日期',
+    dataIndex: 'receiveDate'
   },
   {
-    title: '管理机构',
-    dataIndex: 'organName'
+    title: '领用部门',
+    dataIndex: 'receiveOrganName'
   },
   {
-    title: '资产项目名称',
-    dataIndex: 'projectName'
+    title: '领用人',
+    dataIndex: 'receiveUserName'
   },
   {
-    title: '入库单编号',
-    dataIndex: 'storeCode'
+    title: '资产数量',
+    dataIndex: 'receiveCount'
   },
   {
-    title: '资产面积(㎡)',
-    dataIndex: 'area'
+    title: '领用面积（㎡）',
+    dataIndex: 'receiveArea',
+    width: 120
   },
   {
-    title: '资产位置',
-    dataIndex: 'location'
+    title: '提交人',
+    dataIndex: 'createByName'
   },
   {
-    title: '入库日期',
-    dataIndex: 'createDate'
-  },
-  {
-    title: '入库人',
-    dataIndex: 'createUserName'
+    title: '提交时间',
+    dataIndex: 'createTime'
   },
   {
     title: '状态',
-    dataIndex: 'storeStatusName'
+    dataIndex: 'approvalStatusName'
   },
   {
     title: '操作',
@@ -157,26 +158,39 @@ export default {
       organId: '',
       allStyle: 'width: 150px; margin-right: 10px;',
       approvalStatusData: [...approvalStatusData],
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      applyValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      createValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       tableData: [],
       count: '',
       noPageTools: false,
       queryCondition: {
+        
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
-        projectId: undefined,             // 资产项目Id
+        projectList: [],             // 资产项目Id
         organId:1,                 // 组织机构id
-        assetType: [''],           // 资产类型id(多个用，分割)
-        approvalStatus: '',        // 状态
-        assetNameCode: '',         // 资产名称/编码
-        assetClassify: [''],        // 资产分类
-        registerOrderNameOrId: ''     // 登记单编号
+        receiveOrganId:'',         // 领用部门id
+        assetTypeList: [''],           // 资产类型id(多个用，分割)
+        approvalStatusList: [],        // 状态
+        receiveName: '',            // 领用单名称/编号
+        startReceiveDate: '',        // 领用开始日期
+        endReceiveDate: '',          // 领用结束如期
+        startCreateDate: '',         // 提交开始日期
+        endCreateDate: '',           // 提交结束日期
+        assetType: ''                // 资产类型
       },
+      organProjectType: {
+          organId: 1,
+          organName: '',
+          projectId: [],
+          assetType: []
+        }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
       numList: [
-        {title: '全部', key: 'assetTotal', value: 0, fontColor: '#324057'},
-        {title: '待审批', key: 'awaitTotal', value: 0, bgColor: '#4BD288'},
-        {title: '已驳回', key: 'refuseTotal', value: 0, bgColor: '#1890FF'},
-        {title: '已审批', key: 'finishTotal', value: 0, bgColor: '#DD81E6'},
+        {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
+        {title: '草稿', key: 'draftCount', value: 0, bgColor: '#FFA500'},
+        {title: '待审批', key: 'pendingCount', value: 0, bgColor: '#4BD288'},
+        {title: '已驳回', key: 'rejectCount', value: 0, bgColor: '#1890FF'},
+        {title: '已审批', key: 'approvedCount', value: 0, bgColor: '#DD81E6'},
         {title: '已取消', key: 'cancelTotal', value: 0, bgColor: '#FD7474'}
       ],  // 概览数字数据, title 标题，value 数值，bgColor 背景色
       assetClassifyOptions: [{label: '全部资产分类', value: ''}],
@@ -199,26 +213,30 @@ export default {
     this.platformDictFn('asset_type')
   },
   methods: {
+    newApply () {
+       // 新建领用登记单
+        const {organProjectType: {organId}} = this
+        organId ? this.$router.push({path: './applyRegister/new', query: {organId}}) : this.$message.warn('请选择组织机构')
+    },
     exportFn () {
       let obj = {
-        pageNum: 1,
-        pageSize: 1,
-        statusList: this.alljudge(this.queryCondition.approvalStatus),      // 入库单状态
+        receiveOrganId: this.alljudge(this.queryCondition.receiveOrganId), //领用部门ID
+        approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 领用单状态
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        assetName: this.queryCondition.assetNameCode,         // 资产名称/编码
-        minDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        maxDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        storeName: this.queryCondition.registerOrderNameOrId                                // 入库单编码
+        assetTypeList: this.alljudge(this.queryCondition.assetTypeList),  // 资产类型id(多个用，分割)
+        receiveName: this.queryCondition.receiveName,         // 领用单名称/编号
+        startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始领用日期
+        endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束领用日期
+        startCreateDate: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始提交日期
+        endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束提交日期
       }
-      this.$api.assets.getGeneralSurveyExport(obj).then(res => {
+      this.$api.useManage.exportReceive(obj).then(res => {
         console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = '资产入库一览表.xls'
+        a.download = '领用登记.xls'
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()
@@ -230,42 +248,41 @@ export default {
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = undefined
-      this.getAssetClassifyOptions()
       this.query()
-      this.getObjectKeyValueByOrganIdFn()
     },
     query () {
       this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        statusList: this.alljudge(this.queryCondition.approvalStatus),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        assetName: this.queryCondition.assetNameCode,         // 资产名称/编码
-        minDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        maxDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        storeName: this.queryCondition.registerOrderNameOrId                                // 入库单编码
+        startCreateDate: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 提交开始日期
+        endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 提交结束日期
+        startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
+        endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
+        receiveName: this.queryCondition.receiveName                              // 领用单名称/编号
       }
-      this.$api.assets.assetInGetGeneralSurvey(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
-          data.forEach((item, index) => {
-            item.key = index
-          })
-          this.tableData = data
-          this.count = res.data.data.count
-          this.loading = false
-          if (this.queryCondition.pageNum === 1) {
-            this.pageListStatistics(obj)
-          }
-        } else {
-          this.$message.error(res.data.message)
-          this.loading = false
-        }
-      })
+    //   this.$api.useManage.getReceivePage(obj).then(res => {
+    //     console.log(res)
+    //     if (Number(res.data.code) === 0) {
+    //       let data = res.data.data.data
+    //       data.forEach((item, index) => {
+    //         item.key = index
+    //       })
+    //       this.tableData = data
+    //       this.count = res.data.data.count
+    //       this.loading = false
+    //       if (this.queryCondition.pageNum === 1) {
+    //         this.pageListStatistics(obj)
+    //       }
+    //     } else {
+    //       this.$message.error(res.data.message)
+    //       this.loading = false
+    //     }
+    //   })
     },
     allQuery () {
       this.queryCondition.pageNum = 1
@@ -291,7 +308,7 @@ export default {
     },
     // 查询统计信息
     pageListStatistics (form) {
-      this.$api.assets.getGeneralSurveyTotal(form).then(r => {
+      this.$api.useManage.getReceiveSum(form).then(r => {
         let res = r.data
         if (res && String(res.code) === '0') {
           let { numList } = this

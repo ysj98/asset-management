@@ -27,6 +27,7 @@ import * as tableManage from './tableManage'
 import * as land from './land'
 import * as delivery from './delivery'
 import * as publicCode from './publicCode'
+import * as useManage from './useManage'
 const API = {
   auth,
   global,
@@ -42,7 +43,8 @@ const API = {
   tableManage,
   land,
   delivery,
-  publicCode
+  publicCode,
+  useManage
 }
 export default {
   install (Vue) {
