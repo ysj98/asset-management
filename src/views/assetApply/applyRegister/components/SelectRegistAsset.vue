@@ -6,12 +6,15 @@
   <div class="select_detail">
     <a-row :gutter="8" style="margin-bottom: 10px">
       <a-col :span="3">
-        <div style="line-height: 32px; font-weight: bold">待选列表</div>
+        <SG-Button style="line-height: 32px; font-weight: bold" type="primary">选择全部</SG-Button>
       </a-col>
       <a-col :span="15" style="text-align: right">
+        <a-select  style="width: 160px" placeholder="全部资产分类" :options="typeOptions" @change="changeSelect"
+                v-decorator="['assetType', {rules: [{required: true, message: '请选择资产类型'}]}]"
+              />
         <a-input-search
           v-model.trim="registerOrderName"
-          style="width: 220px"
+          style="width: 200px; margin-left: 20px"
           @search="fetchData"
           @pressEnter="fetchData"
           placeholder="请输入登记单名称"
@@ -78,14 +81,14 @@
         selectedRowKeys: [], // Table选中项
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: true },
         columns: [
-          { title: '登记单编号', dataIndex: 'registerOrderId', fixed: 'left', width: 120 },
-          { title: '登记单名称', dataIndex: 'registerOrderName' },
+          { title: '资产编码', dataIndex: 'assetId', fixed: 'left', width: 120 },
+          { title: '资产名称', dataIndex: 'assetName' },
           { title: '所属机构', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产数量', dataIndex: 'assetNum' },
-          { title: '创建人', dataIndex: 'createByName' },
-          { title: '创建日期', dataIndex: 'createTime' }
+          { title: '资产分类', dataIndex: 'assetSort' },
+          { title: '所在位置', dataIndex: 'address' },
+          { title: '资产状态', dataIndex: 'assetStatus' }
         ]
       }
     },

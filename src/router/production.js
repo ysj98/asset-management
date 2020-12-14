@@ -886,5 +886,25 @@ let proRouter = [{
     name: '维修登记',
     component: () => import('@/views/assetRepair/index')
   },
+  {
+    path: '/applyRegister/new',
+    name: '领用登记新增',
+    component: () => import('@/views/assetApply/applyRegister/DetailPage')
+  },
+  {
+    path: '/applyRegister/detail',
+    name: '领用登记详情',
+    component: () => import('@/views/assetApply/applyRegister/DetailPage')
+  },
+  {
+    path: '/applyRegister/edit',
+    name: '领用登记编辑',
+    component: () => import('@/views/assetApply/applyRegister/DetailPage')
+  },
+  {
+    path: '/applyRegister/approval',
+    name: '领用登记审批',
+    component: () => import('@/views/assetApply/applyRegister/DetailPage')
+  },
 ]
 export default proRouter
