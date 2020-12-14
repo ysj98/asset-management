@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-11-02 17:23:13
+ * @LastEditTime: 2020-12-14 11:19:24
  * @Description: 土地资产视图
 -->
 <template>
@@ -138,7 +138,7 @@ const queryCondition =  {
   objectTypes: '',    // 资产分类(多选)
   organId: '',        // 组织机构id
   projectId: '',      //类型：String  必有字段  备注：项目id
-  statuss: '',        // 资产状态(多选)
+  statuss: ['0', '1', '2', '3', '4', '7'],        // 资产状态(多选)
   useType: '',        // 用途
   pageNum: 1,         // 当前页
   pageSize: 10        // 每页显示记录数
