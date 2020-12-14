@@ -79,7 +79,7 @@
       </a-form>
       <!--资产明细-->
     <SG-Title title="资产明细"/>
-    <div class="box"><div class="left" style="margin-top: 8px">已选择资产数量：{{ 6 }}，合计领用面积：{{ 480 }}㎡</div><div class="right" style="margin-bottom: 8px"><SG-Button icon="plus" type="primary" style="margin-right: 8px">添加资产</SG-Button><SG-Button >删除</SG-Button></div></div>
+    <div class="box"><div class="left" style="margin-top: 8px">已选择资产数量：{{ 6 }}，合计领用面积：{{ 480 }}㎡</div><div class="right" style="margin-bottom: 8px"><SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="modalObj.isShow=true">添加资产</SG-Button><SG-Button >删除</SG-Button></div></div>
     <a-table v-bind="tableObj" :scroll="{ x: 1000, y: 300 }" class="custom-table td-pd10" bordered >
       <!--<span slot="registerOrderId" slot-scope="text, record">-->
         <!--<router-link-->

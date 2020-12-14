@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="newApply">领用登记</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="handleBtnAction({type: 'add'})">领用登记</SG-Button>
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -56,7 +56,31 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <router-link :to="{ path: '/assetStorageView/detail', query: { storeId: record.storeId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
+          <div class="opt">
+            <a-popconfirm
+          okText="确定"
+          cancelText="取消"
+          title="确定要删除该资产项目吗?"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
+          @confirm="confirmDelete(record.registerId)"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
+        >
+          <span class="action_text">删除</span>
+        </a-popconfirm>
+          <router-link :to="{name: '领用登记详情', params: {registerId: record.registerId, type: 'detail'}}" class="action_text">详情</router-link>
+                 <router-link
+          class="action_text"
+          v-if="Number(record.approvalStatus) === 2"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
+          :to="{name: '领用登记审批', params: {registerId: record.registerId, type: 'approval'}}"
+        >审批</router-link>
+        <router-link
+          class="action_text"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
+          :to="{name: '领用登记编辑', params: {registerId: record.registerId, type: 'edit'}}"
+        >编辑</router-link>
+          </div>
         </template>
       </a-table>
     </div>
@@ -160,7 +184,7 @@ export default {
       approvalStatusData: [...approvalStatusData],
       applyValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       createValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
-      tableData: [],
+      tableData: [{receiveId:123,organName:'财务部',receiveName:'审计处',projectName:'投控D5办公楼',assetTypeName:'办公楼',receiveDate:'2020-12-14',receiveOrganName:'财务部',receiveUserName:'正男',receiveCount:'一套',receiveArea:'50㎡',createByName:'妮妮',createTime:'2020-12-14',approvalStatusName:'待审批',approvalStatus:0},{receiveId:123,organName:'财务部',receiveName:'审计处',projectName:'投控D5办公楼',assetTypeName:'办公楼',receiveDate:'2020-12-14',receiveOrganName:'财务部',receiveUserName:'正男',receiveCount:'一套',receiveArea:'50㎡',createByName:'妮妮',createTime:'2020-12-14',approvalStatusName:'待审批',approvalStatus:2}],
       count: '',
       noPageTools: false,
       queryCondition: {
@@ -187,7 +211,7 @@ export default {
         }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
       numList: [
         {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
-        {title: '草稿', key: 'draftCount', value: 0, bgColor: '#FFA500'},
+        {title: '草稿', key: 'draftCount', value: 10, bgColor: '#FFA500'},
         {title: '待审批', key: 'pendingCount', value: 0, bgColor: '#4BD288'},
         {title: '已驳回', key: 'rejectCount', value: 0, bgColor: '#1890FF'},
         {title: '已审批', key: 'approvedCount', value: 0, bgColor: '#DD81E6'},
@@ -213,11 +237,11 @@ export default {
     this.platformDictFn('asset_type')
   },
   methods: {
-    newApply () {
-       // 新建领用登记单
-        const {organProjectType: {organId}} = this
-        organId ? this.$router.push({path: './applyRegister/new', query: {organId}}) : this.$message.warn('请选择组织机构')
-    },
+      // 控制跳转至新增领用单页面
+      handleBtnAction ({id, type}) {
+          const { organProjectType: { organId, organName } } = this
+          this.$router.push({ name: '领用登记新增', params: { organId, organName, type: 'add' }})
+      },
     exportFn () {
       let obj = {
         receiveOrganId: this.alljudge(this.queryCondition.receiveOrganId), //领用部门ID
@@ -251,7 +275,7 @@ export default {
       this.query()
     },
     query () {
-      this.loading = true
+      //this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
@@ -265,25 +289,39 @@ export default {
         endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
         receiveName: this.queryCondition.receiveName                              // 领用单名称/编号
       }
-    //   this.$api.useManage.getReceivePage(obj).then(res => {
-    //     console.log(res)
-    //     if (Number(res.data.code) === 0) {
-    //       let data = res.data.data.data
-    //       data.forEach((item, index) => {
-    //         item.key = index
-    //       })
-    //       this.tableData = data
-    //       this.count = res.data.data.count
-    //       this.loading = false
-    //       if (this.queryCondition.pageNum === 1) {
-    //         this.pageListStatistics(obj)
-    //       }
-    //     } else {
-    //       this.$message.error(res.data.message)
-    //       this.loading = false
-    //     }
-    //   })
+      this.$api.useManage.getReceiveSum(obj).then(res => {
+        if(res.code == 0){
+          this.numList.map(item => {
+            item.value = res.data[item.key]
+          })
+          this.$api.useManage.getReceivePage(obj).then(r => {
+            if(r.code == 0){
+              this.tableData = r.data.data
+              this.count = r.count
+            }
+          })
+        }
+
+      })
     },
+     // 删除项目
+      confirmDelete (registerId) {
+        this.tableObj.loading = true
+        this.$api.worthRegister.updateStatus({registerId, approvalStatus: 4}).then(r => {
+          this.tableObj.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$message.success('删除成功')
+            // 更新列表
+            const { pageNo, pageLength } = this.paginationObj
+            return this.queryTableData({pageNo, pageLength})
+          }
+          throw res.message || '删除失败'
+        }).catch(err => {
+          this.tableObj.loading = false
+          this.$message.error(err || '删除失败')
+        })
+      },
     allQuery () {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
@@ -437,6 +475,11 @@ export default {
 
 <style lang="less" scoped>
 .assetRegister {
+  .opt{
+    display: flex;
+    justify-content: space-evenly;
+    width: 90px;
+  }
   .box {
     display: inline-block;
     // vertical-align: middle;

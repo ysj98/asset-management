@@ -7,7 +7,7 @@ import { useManage } from '../config/config.url'
 export function getReceiveSum (data) {
     return axiosPost(useManage.getReceiveSum, data)
   }
-// 资产领用-列表汇总
+// 资产领用-分页列表
 export function getReceivePage (data) {
     return axiosPost(useManage.getReceivePage, data)
   }

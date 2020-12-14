@@ -7,6 +7,7 @@
   <div class="form-footer" :class="{'absolute': location === 'absolute', 'fixed': location === 'fixed'}">
     <slot>
       <a-button v-if="showSave" type="primary" :style="buttonStyle" @click="$emit('save')">{{leftButtonName}}</a-button>
+      <a-button v-if="showDarft" type="primary" :style="buttonStyle" @click="$emit('darft')">{{midButtonName}}</a-button>
       <a-button v-if="showCancel" :type="rightButtonType" :style="buttonStyle" @click="$emit('cancel')">{{rightButtonName}}</a-button>
     </slot>
   </div>
@@ -31,6 +32,14 @@ export default {
     leftButtonName: {
       type: String,
       default: '提交'
+    },
+    midButtonName: {
+      type: String,
+      default: '保存草稿'
+    },
+    showDarft: {
+      type: Boolean,
+      default: false
     },
     showSave: {
       type: Boolean,
