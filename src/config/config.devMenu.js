@@ -241,6 +241,49 @@ export default [
     ]
   },
   {
+    title: '资产出租',
+    children: [
+      {
+        title: '出租登记',
+        path: '/rentRegister'
+      },
+      {
+        title: '出租收益登记',
+        path: '/rentGainsRegister'
+      },
+      {
+        title: '资产出租一览表',
+        path: '/assetRentView'
+      }
+    ]
+  },
+  {
+    title: '资产投资',
+    children: [
+      {
+        title: '投资登记',
+        path: '/investRegister'
+      },
+      {
+        title: '投资收益登记',
+        path: '/investGainsRegister'
+      },
+      {
+        title: '资产投资一览表',
+        path: '/assetPaymentView'
+      }
+    ]
+  },
+  {
+    title: '资产维修',
+    children: [
+      {
+        title: '维修登记',
+        path: '/repairRegister'
+      }
+    ]
+  },
+  {
     title: '使用规划',
     children: [
       { title: '资产交付管理', path: '/assetDelivery' },

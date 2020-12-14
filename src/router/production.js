@@ -850,6 +850,41 @@ let proRouter = [{
     path: '/applyRegister/new',
     name: '新增',
     component: () => import('@/views/assetApply/applyRegister/newApply')
-  }
+  },
+  {
+    path: '/assetRentView',
+    name: '资产出租一览表',
+    component: () => import('@/views/assetRent/assetRentView')
+  },
+  {
+    path: '/rentRegister',
+    name: '出租登记',
+    component: () => import('@/views/assetRent/rentRegister/index')
+  },
+  {
+    path: '/rentGainsRegister',
+    name: '出租收益登记',
+    component: () => import('@/views/assetRent/rentGainsRegister/index')
+  },
+  {
+    path: '/assetPaymentView',
+    name: '资产投资一览表',
+    component: () => import('@/views/assetInvest/assetPaymentView')
+  },
+  {
+    path: '/investRegister',
+    name: '投资登记',
+    component: () => import('@/views/assetInvest/investRegister/index')
+  },
+  {
+    path: '/investGainsRegister',
+    name: '投资收益登记',
+    component: () => import('@/views/assetInvest/investGainsRegister/index')
+  },
+  {
+    path: '/repairRegister',
+    name: '维修登记',
+    component: () => import('@/views/assetRepair/index')
+  },
 ]
 export default proRouter
