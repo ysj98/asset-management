@@ -1045,3 +1045,9 @@ export const useManage = {
   // 资产领用一览表-详情
   getReceiveDetailInfo: '/ams/assetReceive/getReceiveDetailInfo'
 }
+
+// 资产出租
+export const assetRent = {
+  // 出租登记-分页查询出租单列表
+  getLeaseOrderPageList: '/ams/leaseOrder/getLeaseOrderPageList'
+}
