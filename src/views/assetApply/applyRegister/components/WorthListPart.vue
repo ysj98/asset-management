@@ -14,11 +14,11 @@
       <a-table
         v-bind="tableObj"
         class="custom-tables"
-        :scroll="{ x: 1000, y: 300 }" 
+        
         bordered
       >
         <template slot="assetName" slot-scope="text">
-          <tooltip-text width="250" :text="text"/>
+          <tooltip-text width="50" :text="text"/>
         </template>
         <template slot="assetCode" slot-scope="text">
         <tooltip-text width="150" :text="text"/>
@@ -235,36 +235,36 @@
       },
 
       // 查询汇总数据
-      queryTotalData (total) {
-        // type === 'approval' || type === 'detail'时后端计算求和数据
-        const { registerId } = this
-        if (!registerId) { return this.$message.info('登记Id不存在') }
-        this.$api.worthRegister.queryListSum({ registerId }).then(r => {
-          this.tableObj.loading = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            let temp = { ...res.data, total }
-            return this.numList = this.numList.map(m => {
-              return { ...m, value: temp[m.key] || 0 }
-            })
-          }
-          throw res.message || '查询登记资产汇总接口出错'
-        }).catch(err => {
-          this.tableObj.loading = false
-          this.$message.error(err || '查询登记资产汇总接口出错')
-        })
-      },
-
+      // queryTotalData (total) {
+      //   // type === 'approval' || type === 'detail'时后端计算求和数据
+      //   const { registerId } = this
+      //   if (!registerId) { return this.$message.info('登记Id不存在') }
+      //   this.$api.worthRegister.queryListSum({ registerId }).then(r => {
+      //     this.tableObj.loading = false
+      //     let res = r.data
+      //     if (res && String(res.code) === '0') {
+      //       let temp = { ...res.data, total }
+      //       return this.numList = this.numList.map(m => {
+      //         return { ...m, value: temp[m.key] || 0 }
+      //       })
+      //     }
+      //     throw res.message || '查询登记资产汇总接口出错'
+      //   }).catch(err => {
+      //     this.tableObj.loading = false
+      //     this.$message.error(err || '查询登记资产汇总接口出错')
+      //   })
+      // },
       // 根据登记Id查询资产详情的列表数据--分页
       queryAssetListByRegisterId ({pageNo = 1, pageLength = 10, type}) {
         const { registerId } = this
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
-        this.$api.worthRegister.queryRelPageList({ registerId, pageSize: pageLength, pageNum: pageNo }).then(r => {
+        this.$api.useManage.getReceiveAssetDetailPage({ receiveId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
+          console.log(r)
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            const { count, data } = res.data
+            const { data, count } = res.data
             this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
             Object.assign(this.paginationObj, {
               totalCount: count,
@@ -278,6 +278,29 @@
           this.$message.error(err || '查询登记资产接口出错')
         })
       },
+      // 根据登记Id查询资产详情的列表数据--分页
+      // queryAssetListByRegisterId ({pageNo = 1, pageLength = 10, type}) {
+      //   const { registerId } = this
+      //   if (!registerId) { return this.$message.info('登记Id不存在') }
+      //   this.tableObj.loading = true
+      //   this.$api.worthRegister.queryRelPageList({ registerId, pageSize: pageLength, pageNum: pageNo }).then(r => {
+      //     this.tableObj.loading = false
+      //     let res = r.data
+      //     if (res && String(res.code) === '0') {
+      //       const { count, data } = res.data
+      //       this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
+      //       Object.assign(this.paginationObj, {
+      //         totalCount: count,
+      //         pageNo, pageLength
+      //       })
+      //       return type === 'init' ? this.queryTotalData(count) : ''
+      //     }
+      //     throw res.message || '查询登记资产接口出错'
+      //   }).catch(err => {
+      //     this.tableObj.loading = false
+      //     this.$message.error(err || '查询登记资产接口出错')
+      //   })
+      // },
       
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {

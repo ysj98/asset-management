@@ -11,7 +11,7 @@
     <a-row :gutter="24">
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
         <a-form-item label="领用单编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input v-model="organName" disabled/>
+          <a-input  v-decorator="[ 'receiveId']" disabled/>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -19,7 +19,7 @@
           <a-input
             placeholder="请填写领用登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'registerName', { rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'receiveName', { rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
@@ -64,9 +64,9 @@
           <a-date-picker
             style="width: 100%"
             placeholder="请选择领用时间"
-            @change="(date, dateString) => setData(dateString, 'assessmenBaseDate')"
+            @change="(date, dateString) => setData(dateString, 'receiveDate')"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="['assessmenBaseDate', { rules: [{ required: true, message: '请选择领用时间' }] }]"
+            v-decorator="['receiveDate', { rules: [{ required: true, message: '请选择领用时间' }] }]"
           />
         </a-form-item>
       </a-col>
@@ -75,17 +75,18 @@
           <a-date-picker
             style="width: 100%"
             placeholder="请选择预计归还时间"
-            @change="(date, dateString) => setData(dateString, 'assessmenBaseDate')"
+            @change="(date, dateString) => setData(dateString, 'returnDate')"
             :disabled="type == 'approval' || type == 'detail'"
+             v-decorator="[ 'returnDate']"
           />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门">
           <a-select
-            v-decorator="['assessmentOrgan', { rules: [{ required: true, message: '请选择领用部门' }] }]"
+            v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'assessmentOrganName')"
+            @change="setData($event, 'receiveOrganName')"
             placeholder="请选择领用部门"
             :options="organOptions"
           />
@@ -94,9 +95,9 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用人">
           <a-select
-            v-decorator="['assessmentOrgan', { rules: [{ required: true, message: '请选择领用人' }] }]"
+            v-decorator="['receiveUserName', { rules: [{ required: true, message: '请选择领用人' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'assessmentOrganName')"
+            @change="setData($event, 'receiveUserName')"
             placeholder="请选择领用人"
             :options="organOptions"
           />
@@ -104,12 +105,12 @@
       </a-col>
        <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交人">
-          <a-input v-model="organName" disabled/>
+          <a-input v-decorator="[ 'createByName']" disabled/>
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间">
-          <a-input v-model="organName" disabled/>
+          <a-input v-decorator="[ 'createTime']"  disabled/>
         </a-form-item>
       </a-col>
       </a-row>
@@ -172,6 +173,10 @@
         form: this.$form.createForm(this),
         methodOptions: [], // 评估方法选项
         projectOptions: [], // 资产项目选项
+        createTime: '', // 提交时间
+        createByName: '', // 提交人
+        receiveId: ''
+
       }
     },
 
@@ -200,31 +205,31 @@
       // 渲染数据
       renderDetail () {
         const {type, details} = this
+        console.log(details)
         const {
-          approvalStatusName, createByName, registerName, createTime,
-          organName, assessmenBaseDate, remark, attachmentList, assetTypeName, assessmentMethod,
-          assessmentMethodName, assessmentOrganName, projectId, assetType, assessmentOrgan, projectName
+          approvalStatusName,  assetType,  assetTypeName, attachmentList, createByName, createTime,
+          detaList, organId, organName, projectId,  projectName, receiveArea, receiveDate, receiveId, 
+          receiveName, receiveOrganId, receiveOrganName, receiveUserName, remark, returnDate
         } = details
         let attachArr = (attachmentList || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { registerName, assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD') }
-        !assessmenBaseDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'assessmenBaseDate')
+        console.log(attachArr)
+        let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
+        !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
           formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
             projectId: projectName,
             assetType: assetTypeName,
-            // assessmentTask: assessmentTaskName,
-            assessmentOrgan: assessmentOrganName,
-            assessmentMethod: assessmentMethodName,
-            createByName, approvalStatusName, createTime
+            receiveId,
+            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '', projectId, assetType, assessmentOrgan, assessmentMethod
+            remark: remark || '', projectId, assetType
           })
         }
         return this.form.setFieldsValue({ ...formatDetails })
