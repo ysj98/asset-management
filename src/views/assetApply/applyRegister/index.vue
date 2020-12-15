@@ -9,13 +9,13 @@
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部领用部门" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
             <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.receiveName" placeholder="领用单名称/编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
@@ -25,16 +25,7 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select
-          :maxTagCount="1"
-          mode="multiple"
-          :tokenSeparators="[',']"
-          placeholder="全部资产分类"
-          v-model="queryCondition.assetClassify"
-          :options="assetClassifyOptions"
-          style="width: 190px; margin-right: 10px;"
-          @select="changeAssetClassify"
-        ></a-select>
+        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle"></treeSelect>
         <div class="box">
             <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
@@ -62,23 +53,23 @@
           cancelText="取消"
           title="确定要删除该资产项目吗?"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
-          @confirm="confirmDelete(record.registerId)"
+          @confirm="confirmDelete(record.receiveId)"
           v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
         >
           <span class="action_text">删除</span>
         </a-popconfirm>
-          <router-link :to="{name: '领用登记详情', params: {registerId: record.registerId, type: 'detail'}}" class="action_text">详情</router-link>
+          <router-link :to="{name: '领用登记详情', params: {registerId: record.receiveId, type: 'detail', organId, organName}}" class="action_text">详情</router-link>
                  <router-link
           class="action_text"
           v-if="Number(record.approvalStatus) === 2"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '领用登记审批', params: {registerId: record.registerId, type: 'approval'}}"
+          :to="{name: '领用登记审批', params: {registerId: record.receiveId, type: 'approval'}}"
         >审批</router-link>
         <router-link
           class="action_text"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
           v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-          :to="{name: '领用登记编辑', params: {registerId: record.registerId, type: 'edit'}}"
+          :to="{name: '领用登记编辑', params: {registerId: record.receiveId, type: 'edit'}}"
         >编辑</router-link>
           </div>
         </template>
@@ -184,16 +175,15 @@ export default {
       approvalStatusData: [...approvalStatusData],
       applyValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       createValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
-      tableData: [{receiveId:123,organName:'财务部',receiveName:'审计处',projectName:'投控D5办公楼',assetTypeName:'办公楼',receiveDate:'2020-12-14',receiveOrganName:'财务部',receiveUserName:'正男',receiveCount:'一套',receiveArea:'50㎡',createByName:'妮妮',createTime:'2020-12-14',approvalStatusName:'待审批',approvalStatus:0},{receiveId:123,organName:'财务部',receiveName:'审计处',projectName:'投控D5办公楼',assetTypeName:'办公楼',receiveDate:'2020-12-14',receiveOrganName:'财务部',receiveUserName:'正男',receiveCount:'一套',receiveArea:'50㎡',createByName:'妮妮',createTime:'2020-12-14',approvalStatusName:'待审批',approvalStatus:2}],
+      tableData: [],
       count: '',
       noPageTools: false,
       queryCondition: {
-        
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
         organId:1,                 // 组织机构id
-        receiveOrganId:'',         // 领用部门id
+        receiveOrganId:1,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -246,7 +236,7 @@ export default {
       let obj = {
         receiveOrganId: this.alljudge(this.queryCondition.receiveOrganId), //领用部门ID
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 领用单状态
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
+        projectIdList: this.queryCondition.projectList ? this.queryCondition.projectList : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetTypeList),  // 资产类型id(多个用，分割)
         receiveName: this.queryCondition.receiveName,         // 领用单名称/编号
@@ -256,7 +246,7 @@ export default {
         endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束提交日期
       }
       this.$api.useManage.exportReceive(obj).then(res => {
-        console.log(res)
+        window.console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -272,7 +262,12 @@ export default {
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = undefined
+      this.getObjectKeyValueByOrganIdFn()
       this.query()
+    },
+    changeLeaf (value) {
+      this.queryCondition.receiveOrganId = value
+      console.log(value)
     },
     query () {
       //this.loading = true
@@ -290,14 +285,16 @@ export default {
         receiveName: this.queryCondition.receiveName                              // 领用单名称/编号
       }
       this.$api.useManage.getReceiveSum(obj).then(res => {
-        if(res.code == 0){
-          this.numList.map(item => {
-            item.value = res.data[item.key]
+        if(res.data.code == 0){
+          console.log(res)
+          this.numList.map((item,index) => {
+            this.numList[index].value = res.data.data[item.key]
           })
           this.$api.useManage.getReceivePage(obj).then(r => {
-            if(r.code == 0){
-              this.tableData = r.data.data
-              this.count = r.count
+            if(r.data.code == 0){
+              console.log(r)
+              this.tableData = r.data.data.data
+              this.count = r.data.data.count
             }
           })
         }
@@ -326,6 +323,7 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
+      console.log(123)
     },
     alljudge (val) {
       if (val.length !== 0) {
@@ -410,6 +408,7 @@ export default {
         organId: this.queryCondition.organId,
         projectName: ''
       }
+      console.log(obj)
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data

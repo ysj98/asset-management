@@ -17,7 +17,7 @@ export function deleteReceive (data) {
   }
 // 资产领用-导出
 export function exportReceive (data) {
-    return axiosPost(useManage.exportReceive, data)
+    return axiosPost(useManage.exportReceive, data, false, false, {responseType: 'blob'})
   }
 // 资产领用-新增编辑保存
 export function submitReceive (data) {
@@ -37,9 +37,13 @@ export function getReceiveDetailSum (data) {
   }
 // 资产领用一览表-导出
 export function exportReceiveDetail (data) {
-    return axiosGet(useManage.exportReceiveDetail, data)
+    return axiosGet(useManage.exportReceiveDetail, data, false, false, {responseType: 'blob'})
   }
 // 资产领用一览表-详情
 export function getReceiveDetailInfo (data) {
     return axiosGet(useManage.getReceiveDetailInfo, data)
   }
+// 资产领用-详情资产明细分页
+export function getReceiveAssetDetailPage (data) {
+  return axiosPost(useManage.getReceiveAssetDetailPage, data)
+}

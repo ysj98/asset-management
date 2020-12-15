@@ -108,9 +108,11 @@
       queryDetailById (registerId) {
         this.spinning = true
         const { details } = this
-        this.$api.worthRegister.queryDetail({registerId}).then(r => {
+        console.log(details)
+        this.$api.useManage.getReceiveInfo({receiveId: registerId}).then(r => {
           this.spinning = false
           let res = r.data
+          console.log(res)
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
@@ -121,12 +123,12 @@
               assessmentMethodName: others.assessmentMethodName,
               projectId: others.projectId
             }
-            return Object.assign(this, { stepList, details: { ...details, ...others } })
+            return Object.assign(this, { stepList, details: { ...details, ...res.data} })
           }
-          throw res.message || '查询价值登记详情出错'
+          throw res.message || '查询领用登记详情出错'
         }).catch(err => {
           this.spinning = false
-          this.$message.error(err || '查询价值登记详情出错')
+          this.$message.error(err || '查询领用登记详情出错')
         })
       },
       

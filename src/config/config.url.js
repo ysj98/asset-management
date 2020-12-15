@@ -1043,7 +1043,9 @@ export const useManage = {
   // 资产领用一览表-导出
   exportReceiveDetail: '/ams/assetReceive/exportReceiveDetail',
   // 资产领用一览表-详情
-  getReceiveDetailInfo: '/ams/assetReceive/getReceiveDetailInfo'
+  getReceiveDetailInfo: '/ams/assetReceive/getReceiveDetailInfo',
+  // 资产领用-详情资产明细分页
+  getReceiveAssetDetailPage: '/ams/assetReceive/getReceiveAssetDetailPage'
 }
 
 // 资产出租
