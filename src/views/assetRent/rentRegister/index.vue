@@ -216,64 +216,64 @@ const columns = [
   {
     title: "出租单ID",
     width: 100,
-    dataIndex: "assetId",
+    dataIndex: "investOrderId",
   },
   {
     title: "所属机构",
-    dataIndex: "assetName",
-  },
-  {
-    title: "出租单名称",
-    dataIndex: "assetCode",
-  },
-  {
-    title: "资产项目",
-    dataIndex: "assetTypeName",
-  },
-  {
-    title: "资产类型",
-    dataIndex: "objectTypeName",
-  },
-  {
-    title: "承租人",
     dataIndex: "organName",
   },
   {
-    title: "资产数量",
+    title: "出租单名称",
+    dataIndex: "leaseName",
+  },
+  {
+    title: "资产项目",
     dataIndex: "projectName",
+  },
+  {
+    title: "资产类型",
+    dataIndex: "assetTypeName",
+  },
+  {
+    title: "承租人",
+    dataIndex: "lesseeName",
+  },
+  {
+    title: "资产数量",
+    dataIndex: "assetSum",
   },
   {
     title: "出租面积(㎡)",
     width: 100,
-    dataIndex: "registerOrderId",
+    dataIndex: "leaseArea",
   },
   {
     title: "起租日期",
-    dataIndex: "area",
+    dataIndex: "startLeaseDate",
   },
   {
     title: "止租日期",
-    dataIndex: "pasitionString",
+    dataIndex: "endLeaseDate",
   },
   {
     title: "租金单价",
-    dataIndex: "createTime",
+    dataIndex: "rentPrice",
   },
   {
     title: "合同编号",
-    dataIndex: "createByName",
+    dataIndex: "contractCode",
   },
   {
     title: "合同状态",
-    dataIndex: "verifierTime",
+    dataIndex: "contractStatusName",
   },
   {
     title: "签订日期",
-    dataIndex: "verifierByName",
+    dataIndex: "signingDate",
   },
   {
     title: "审批状态",
-    dataIndex: "storageTime",
+    dataIndex: "approvalStatusName",
   },
   {
     title: "操作",
@@ -414,7 +414,7 @@ export default {
     },
     // 出租登记
     registerFn() {
-      console.log("出租登记");
+      this.$router.push('/rentRegister/rentAdd')
     },
     //
     changeTree(value, label) {
