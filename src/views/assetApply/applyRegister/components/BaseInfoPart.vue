@@ -83,13 +83,15 @@
       </a-col>
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门">
-          <a-select
+          <!-- <a-select
             v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'receiveOrganName')"
             placeholder="请选择领用部门"
             :options="organOptions"
-          />
+          /> -->
+          <treeSelect @changeTree="setData($event, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
+            :disabled="type == 'approval' || type == 'detail'"></treeSelect>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -99,17 +101,17 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'receiveUserName')"
             placeholder="请选择领用人"
-            :options="organOptions"
+            :options="staffList"
           />
         </a-form-item>
       </a-col>
        <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交人">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交人" v-if="type == 'approval' || type == 'detail'">
           <a-input v-decorator="[ 'createByName']" disabled/>
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间" v-if="type == 'approval' || type == 'detail'">
           <a-input v-decorator="[ 'createTime']"  disabled/>
         </a-form-item>
       </a-col>
@@ -155,9 +157,11 @@
 
 <script>
   import moment from 'moment'
+  import TreeSelect from '../../../common/treeSelect'
   export default {
     name: 'BaseInfoPart',
     props: ['type', 'details'],
+    components: {TreeSelect},
     data () {
       return {
         formItemLayout: {
@@ -175,8 +179,8 @@
         projectOptions: [], // 资产项目选项
         createTime: '', // 提交时间
         createByName: '', // 提交人
-        receiveId: ''
-
+        receiveId: '', // 领用单Id
+        staffList: [] // 部门人员列表
       }
     },
 
@@ -215,7 +219,6 @@
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        console.log(attachArr)
         let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
         !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
         // 展示状态下转换数据
@@ -229,7 +232,11 @@
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '', projectId, assetType
+            remark: remark || '', 
+            projectId: projectName,
+            assetType: assetTypeName,
+            receiveId,
+            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         }
         return this.form.setFieldsValue({ ...formatDetails })
@@ -298,14 +305,14 @@
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
-        if (type === 'assessmenBaseDate' || type === 'assetType' || type === 'projectId') {
+        if (type === 'receiveDate' || type === 'assetType' || type === 'projectId' || type === 'returnDate') {
           value = val
-        } else if (type === 'assessmentOrganName') {
+        } else if (type === 'receiveOrganName') {
           const { organOptions } = this
           value = organOptions.filter(m => m.key === val)[0]['title']
-        } else if (type === 'assessmentMethodName') {
-          const { methodOptions } = this
-          value = methodOptions.filter(m => m.key === val)[0]['title']
+        } else if (type === 'receiveUserName') {
+          const { staffList } = this
+          value = staffList.filter(m => m.key === val)[0]['title']
         }
         this.$emit('setData', { [type]: value})
       },
@@ -315,15 +322,25 @@
         this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
           this.$message.warn('请先选择数据')
         })
-      }
+      },
+
+      // 查询部门人员
+      queryStaff() {
+        this.$api.basics.queryUserPageList({organId: this.details.organId, pageNo:1, pageLength:5}).then(res => {
+          console.log(res.data.data)
+          this.staffList = res.data.data.map(r => {
+            return {key: r.userId, title:r.name}
+          })
+        })
+      } 
     },
-    
     mounted () {
       this.renderDetail()
       if (this.type == 'add' || this.type == 'edit') {
         this.queryDict()
         this.queryOrganOptions()
         this.queryProjectOptions()
+        this.queryStaff()
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }

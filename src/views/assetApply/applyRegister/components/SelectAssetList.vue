@@ -9,26 +9,6 @@
       <a-col :span="3">
         <div style="line-height: 32px; font-weight: bold">待选资产</div>
       </a-col>
-      <!--<a-col :span="4">-->
-        <!--<a-select-->
-          <!--style="width: 100%"-->
-          <!--v-model="projectId"-->
-          <!--@change="fetchData"-->
-          <!--:options="projectOptions"-->
-          <!--placeholder="请选择资产项目"-->
-        <!--/>-->
-      <!--</a-col>-->
-      <!--<a-col :span="5">-->
-        <!--&lt;!&ndash;mode="multiple"&ndash;&gt;-->
-        <!--&lt;!&ndash;:maxTagCount="2"&ndash;&gt;-->
-        <!--<a-select-->
-          <!--style="width: 100%"-->
-          <!--v-model="assetType"-->
-          <!--@change="fetchData"-->
-          <!--:options="assetTypeOptions"-->
-          <!--placeholder="请选择资产类型"-->
-        <!--/>-->
-      <!--</a-col>-->
       <a-col :span="6">
         <a-select
           style="width: 100%"
@@ -237,10 +217,11 @@
     },
     mounted () {
       const {allAttrs, value, assetType} = this
-      // this.queryProjectByOrganId() 外层props传入，改前
-      // this.queryAssetTypeDict()
-      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) // 改后
-      this.queryObjectType(assetType)
+      
+      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) 
+      console.log(this.objectTypeOptions)
+      this.queryObjectType(String(assetType))
+      console.log(this.objectTypeOptions)
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
         let arr = this.$refs.footerPagination.pageLists
