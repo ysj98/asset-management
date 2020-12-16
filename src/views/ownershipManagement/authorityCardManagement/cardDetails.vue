@@ -15,6 +15,7 @@
         <a-col class="playground-col" :span="12" v-for="(item, index) in basicDate" :key="index">
           {{item.text}}：{{conditionalJudgment.includes(particularsData[item.value]) ? '--' : particularsData[item.value]}}
         </a-col>
+        <a-col class="playground-col" :span="24">附记：{{particularsData.excursus || '--'}}</a-col>
         <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">

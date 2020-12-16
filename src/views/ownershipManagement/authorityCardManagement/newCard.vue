@@ -1,4 +1,4 @@
-<!-- 
+<!--
   选择权证
   organId: 组织机构id
   projectId: 项目id
@@ -96,6 +96,20 @@
               :style="allWidth"
               :placeholder="`请选择${item.label}`"
               v-decorator="[item.attrCode, {rules: [{type: 'object', required: item.required, message: `请选择${item.label}`}], initialValue: item.attrValue || undefined}]"/>
+            </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="24">
+            <a-form-item v-bind="formItemTextarea" :colon="false">
+              <label slot="label">附记：</label>
+              <a-textarea
+                placeholder="请输入附记"
+                :style="widthBox"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :maxLength="200"
+                v-decorator="['excursus',
+                  {rules: [{required: false, max: 200, message: '请输入附记(不超过200字符)'}], initialValue: newCardData.excursus}
+                ]"
+              />
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="24">
@@ -268,11 +282,11 @@ export default {
   watch: {
     'show' (val) {
       if (val === false) {
-        this.handleCancel()  
+        this.handleCancel()
       }
     },
     'typeJudgment' () {
-      if (this.newData === 'new') {        
+      if (this.newData === 'new') {
         if (this.typeJudgment) {
           let arr = []
           if (this.typeJudgment === '1') {
@@ -297,6 +311,7 @@ export default {
             warrantNbr: '',  // 权证号
             ownerType: undefined,      // 权属形式
             kindOfRight: undefined, // 权证类型
+            excursus: '', // 附记
             remark: ''  // 备注
           })
           this.newCardData = utils.deepClone(newCardData)
@@ -435,6 +450,7 @@ export default {
             rigisterDate: conditionalJudgment.includes(values.rigisterDate) ? '' : `${values.rigisterDate.format('YYYY-MM-DD')}`,                // 登记日期
             organId: this.organId,                                                 // 组织机构
             remark: conditionalJudgment.includes(values.remark) ? '' : values.remark,                            // 备注
+            excursus: conditionalJudgment.includes(values.excursus) ? '' : values.excursus,                      // 附记
             handoverDate: conditionalJudgment.includes(values.handoverDate) ? '' : `${values.handoverDate.format('YYYY-MM-DD')}`,  // 交接日期
             houseOwner: conditionalJudgment.includes(values.houseOwner) ? '' : values.houseOwner,                // 房屋所有权人(使用权证所有)
             tenant: conditionalJudgment.includes(values.tenant) ? '' : values.tenant,                            // (使用权证所有)
@@ -602,7 +618,7 @@ export default {
                   item.chooseArray = arr
                 }
             }
-          }) 
+          })
         }
       })
     },
@@ -726,6 +742,7 @@ export default {
               ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
               kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权证类型
               remark: data.amsOwnershipWarrant.remark,  // 备注
+              excursus: data.amsOwnershipWarrant.excursus,  // 附记
               exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,  // 专有建筑面积
               apportionArea: data.amsOwnershipWarrant.apportionArea,  // 分摊面积
               ownershipUse: conditionalJudgment.includes(data.amsOwnershipWarrant.ownershipUse) ? undefined : String(data.amsOwnershipWarrant.ownershipUse),  // 权属用途
