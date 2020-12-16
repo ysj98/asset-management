@@ -28,6 +28,7 @@ import * as land from './land'
 import * as delivery from './delivery'
 import * as publicCode from './publicCode'
 import * as useManage from './useManage'
+import * as assetRent from './assetRent'
 const API = {
   auth,
   global,
@@ -44,7 +45,8 @@ const API = {
   land,
   delivery,
   publicCode,
-  useManage
+  useManage,
+  assetRent
 }
 export default {
   install (Vue) {

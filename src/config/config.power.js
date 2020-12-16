@@ -415,6 +415,10 @@ export const ASSET_MANAGEMENT = {
    * 资产交付记录
    */
   ASSET_DELIVERY_RECORD: 'asset_delivery_record',                   // 资产交付记录导出
+    /**
+   * 2.0.7 资产出租
+   */
+  ASSET_RENT_REGISTER: 'asset_rent-register'       // 出租登记
 }
 
 
