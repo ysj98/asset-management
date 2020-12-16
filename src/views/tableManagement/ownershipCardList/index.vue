@@ -111,7 +111,8 @@
             { title: '交接日期', dataIndex: 'handoverDate', width: 100 },
             { title: '状态', dataIndex: 'statusName' },
             { title: '使用权合同期限', dataIndex: 'contractData', width: 120 },
-            { title: '附记', dataIndex: 'remark', width: 200 }
+            { title: '附记', dataIndex: 'excursus', width: 200 },
+            { title: '备注', dataIndex: 'remark', width: 200 }
           ]
         },
       }
