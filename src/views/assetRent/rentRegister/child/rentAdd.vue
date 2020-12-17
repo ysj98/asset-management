@@ -202,6 +202,12 @@
             />
           </a-form-item>
         </a-col>
+        <a-col :span="24">
+          <a-form-item :colon="false" v-bind="formItemTextarea">
+            <label slot="label">附&emsp;&emsp;件：</label>
+            <SG-UploadFile type="all" />
+          </a-form-item>
+        </a-col>
       </a-row>
     </a-form>
     <!--选择承租人Modal-->
