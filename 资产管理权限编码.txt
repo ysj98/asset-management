@@ -254,3 +254,7 @@ zcgl_asset_acm_export           权证管理-导出
 
 导出附属配套
 asset_export_subsi      导出附属配套
+
+V2.0.7
+资产出租
+asset_rent_view_export  出租登记一览表导出
