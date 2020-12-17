@@ -159,7 +159,7 @@
         this.receiveAreaSum = num.toFixed(2)
         // 返回给上层组件,用于保存
         this.$emit('backAssetList', data, this.receiveAreaSum)
-        console.log(data)
+        console.log(this.receiveAreaSum)
       },
 
       // 批量删除资产
@@ -249,10 +249,12 @@
             })
             let num = 0
              this.tableObj.dataSource.map(item => {
-        return num += item.receiveArea
+            return num += item.receiveArea
       })
-      this.receiveAreaSum = num
+            this.receiveAreaSum = num
+            
             return type === 'init' ? this.queryTotalData(count) : ''
+            
           }
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
@@ -356,15 +358,15 @@
     },
     
     created () {
+      
       const { type } = this
       if (type === 'add' || type === 'edit') {
+        
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
         type === 'edit' && this.queryAssetListByAssetId([], 'init')
-        this.queryAssetListByRegisterId({type: 'init'}).then( () => {
-         
-        })
+        this.queryAssetListByRegisterId({type: 'init'})
       } else {
         // type === 'approval' || type === 'detail'时
         // 列表查询结果分页，且后端计算求和数据
