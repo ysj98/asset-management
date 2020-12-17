@@ -33,7 +33,7 @@
             :min="0"
             step="0.01"
             :precision="2"
-            :max="999999999.99"
+            :max="record.area"
             style="width: 120px"
             v-model="record.receiveArea"
             @change="calcSum(tableObj.dataSource)"
@@ -136,7 +136,7 @@
 
     methods: {
       // 计算最后一行求和数据及上浮比例
-      calcSum (data = []) {
+      calcSum (data) {
         let assessmentValue = 0
         let originalValue = 0
         let assetValuation = 0
@@ -150,8 +150,16 @@
           firstMarketValue += m.firstMarketValue ? Number(m.firstMarketValue) : 0
           return m
         })
+        let num = 0
+        this.tableObj.dataSource.map(item => {
+          if(item.receiveArea){
+           return num += item.receiveArea
+          } 
+        })
+        this.receiveAreaSum = num.toFixed(2)
         // 返回给上层组件,用于保存
-        this.$emit('backAssetList', data)
+        this.$emit('backAssetList', data, this.receiveAreaSum)
+        console.log(data)
       },
 
       // 批量删除资产
@@ -239,6 +247,11 @@
               totalCount: count,
               pageNo, pageLength
             })
+            let num = 0
+             this.tableObj.dataSource.map(item => {
+        return num += item.receiveArea
+      })
+      this.receiveAreaSum = num
             return type === 'init' ? this.queryTotalData(count) : ''
           }
           throw res.message || '查询登记资产接口出错'
@@ -349,16 +362,15 @@
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
         type === 'edit' && this.queryAssetListByAssetId([], 'init')
-        this.queryAssetListByRegisterId({type: 'init'})
+        this.queryAssetListByRegisterId({type: 'init'}).then( () => {
+         
+        })
       } else {
         // type === 'approval' || type === 'detail'时
         // 列表查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({type: 'init'})
       }
-      this.receiveAreaSum = this.tableObj.dataSource.map(res => {
-        return receiveAreaSum += res.receiveArea
-      })
-      console.log(this.receiveAreaSum)
+      
     },
     
     watch: {

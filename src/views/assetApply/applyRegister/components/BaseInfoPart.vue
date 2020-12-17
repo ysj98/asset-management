@@ -198,8 +198,9 @@
               return { attachmentPath, oldAttachmentName }
             }) // 处理附件格式
             // 转换日期格式为string
-            let date = values.assessmenBaseDate ? moment(values.assessmenBaseDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachmentList: attachArr, organId, assessmenBaseDate: date})
+            let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
+            let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate })
             return resolve(form)
           }
           reject('数据不完整')
