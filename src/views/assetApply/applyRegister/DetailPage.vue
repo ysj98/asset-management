@@ -39,6 +39,7 @@
     components: { ApprovalFlowPart, WorthListPart, BaseInfoPart, FormFooter },
     data () {
       return {
+        receiveAreaTotal: 0, // 总领用资产面积
         registerId: '', // 登记Id
         stepList: [], // 审批轨迹
         details: {}, // 基础信息数据
@@ -61,13 +62,14 @@
       },
 
       // 获取资产关联对象数据
-      getAssetList (list) {
+      getAssetList (list, receiveAreaSum) {
         this.assetList = list
+        this.receiveAreaTotal = receiveAreaSum
       },
 
       // 提交
       handleSubmit () {
-        const { type, registerId, assetList, dynamicData } = this
+        const { type, registerId, assetList, dynamicData, receiveAreaTotal } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)
@@ -80,15 +82,15 @@
           // }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
-          this.spinning = true
-          let registerValueRelList = []
+          //this.spinning = true
+          let detailList = []
           assetList.forEach(m => {
-            const { assetId, assessmentValue } = m
-            registerValueRelList.push({ assetId, assessmentValue })
+            const { assetId, receiveArea, assetObjectId, remark } = m
+            detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
-          let form = type === 'edit' ? { ...data, registerValueRelList, receiveId: registerId, approvalStatus: 2, 
-          ...dynamicData} : { ...data, registerValueRelList }
-          console.log(form,data, registerValueRelList)
+          let form = type === 'edit' ? { ...data, detailList, receiveId: registerId, approvalStatus: 2, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
+          ...dynamicData} : { ...data, detailList }
+          console.log(form,data, detailList)
           // this.$api.useManage.submitReceive(form).then(r => {
           //   this.spinning = false
           //   let res = r.data
