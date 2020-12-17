@@ -5,7 +5,7 @@
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
-          <div class="left" style="height: 100%">已选择资产数量：{{ 6 }}，合计领用面积：{{ 480 }}㎡</div><div class="right" style="margin-bottom: 8px">
+          <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
           <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
           <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
         </div>
@@ -14,14 +14,13 @@
       <a-table
         v-bind="tableObj"
         class="custom-tables"
-        
         bordered
       >
+      <template slot="assetCode" slot-scope="text">
+        <tooltip-text width="150" :text="text"/>
+        </template>
         <template slot="assetName" slot-scope="text">
           <tooltip-text width="50" :text="text"/>
-        </template>
-        <template slot="assetCode" slot-scope="text">
-        <tooltip-text width="150" :text="text"/>
         </template>
         <template slot="organName" slot-scope="text">
           <tooltip-text width="250" :text="text"/>
@@ -29,40 +28,31 @@
         <template slot="assessmentOrganName" slot-scope="text">
           <tooltip-text width="150" :text="text"/>
         </template>
-        <template slot="applyArea" slot-scope="text, record">
+        <template slot="receiveArea" slot-scope="text, record">
           <a-input-number
             :min="0"
             step="0.01"
             :precision="2"
-            :max="999999999.99"
+            :max="record.area"
             style="width: 120px"
-            v-model="record.assessmentValue"
+            v-model="record.receiveArea"
             @change="calcSum(tableObj.dataSource)"
             v-if="type == 'add' || type == 'edit'"
           />
           <span v-else>{{text}}</span>
         </template>
-        <template slot="applyArea" slot-scope="text, record">
-          <a-input-number
-            :min="0"
-            step="0.01"
-            :precision="2"
-            :max="999999999.99"
-            style="width: 120px"
-            v-model="record.assessmentValue"
-            @change="calcSum(tableObj.dataSource)"
-            v-if="type == 'add' || type == 'edit'"
-          />
+        <template slot="remark" slot-scope="text, record">
+          <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" />
           <span v-else>{{text}}</span>
         </template>
-        <template slot="applyArea" slot-scope="text, record">
+        <template slot="address" slot-scope="text, record">
           <a-input-number
             :min="0"
             step="0.01"
             :precision="2"
             :max="999999999.99"
             style="width: 120px"
-            v-model="record.assessmentValue"
+            v-model="record.address"
             @change="calcSum(tableObj.dataSource)"
             v-if="type == 'add' || type == 'edit'"
           />
@@ -108,7 +98,7 @@
   export default {
     name: 'WorthListPart',
     components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText },
-    props: ['type', 'registerId', 'organId', 'dynamicData'],
+    props: ['type', 'registerId', 'organId', 'dynamicData', 'details'],
     data () {
       return {
         tableObj: {
@@ -122,8 +112,8 @@
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
             { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
-            { title: '领用面积(㎡)', dataIndex: 'applyArea' },{ title: '备注', dataIndex: 'remark' },
+            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
+            { title: '领用面积(㎡)', dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' } },{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
           ]
         },
         exportBtnLoading: false, // 导出按钮loading
@@ -140,12 +130,13 @@
           isShow: false
         },
         isEditAll: false, // 批量修改本次估值列
+        receiveAreaSum: 0
       }
     },
 
     methods: {
       // 计算最后一行求和数据及上浮比例
-      calcSum (data = []) {
+      calcSum (data) {
         let assessmentValue = 0
         let originalValue = 0
         let assetValuation = 0
@@ -157,12 +148,18 @@
           assetValuation += m.assetValuation ? Number(m.assetValuation) : 0
           lastAssessmentValue += m.lastAssessmentValue ? Number(m.lastAssessmentValue) : 0
           firstMarketValue += m.firstMarketValue ? Number(m.firstMarketValue) : 0
-          // 上浮比例=本次评估/上次估值*100%-100%
-          m.upRate = (m.lastAssessmentValue && m.lastAssessmentValue!== '0.00') ? `${((Number(m.assessmentValue || 0) / Number(m.lastAssessmentValue) -1) * 100).toFixed(2) }%` : '--'
           return m
         })
+        let num = 0
+        this.tableObj.dataSource.map(item => {
+          if(item.receiveArea){
+           return num += item.receiveArea
+          } 
+        })
+        this.receiveAreaSum = num.toFixed(2)
         // 返回给上层组件,用于保存
-        this.$emit('backAssetList', data)
+        this.$emit('backAssetList', data, this.receiveAreaSum)
+        console.log(data)
       },
 
       // 批量删除资产
@@ -234,26 +231,6 @@
         }
       },
 
-      // 查询汇总数据
-      // queryTotalData (total) {
-      //   // type === 'approval' || type === 'detail'时后端计算求和数据
-      //   const { registerId } = this
-      //   if (!registerId) { return this.$message.info('登记Id不存在') }
-      //   this.$api.worthRegister.queryListSum({ registerId }).then(r => {
-      //     this.tableObj.loading = false
-      //     let res = r.data
-      //     if (res && String(res.code) === '0') {
-      //       let temp = { ...res.data, total }
-      //       return this.numList = this.numList.map(m => {
-      //         return { ...m, value: temp[m.key] || 0 }
-      //       })
-      //     }
-      //     throw res.message || '查询登记资产汇总接口出错'
-      //   }).catch(err => {
-      //     this.tableObj.loading = false
-      //     this.$message.error(err || '查询登记资产汇总接口出错')
-      //   })
-      // },
       // 根据登记Id查询资产详情的列表数据--分页
       queryAssetListByRegisterId ({pageNo = 1, pageLength = 10, type}) {
         const { registerId } = this
@@ -270,6 +247,11 @@
               totalCount: count,
               pageNo, pageLength
             })
+            let num = 0
+             this.tableObj.dataSource.map(item => {
+        return num += item.receiveArea
+      })
+      this.receiveAreaSum = num
             return type === 'init' ? this.queryTotalData(count) : ''
           }
           throw res.message || '查询登记资产接口出错'
@@ -278,29 +260,6 @@
           this.$message.error(err || '查询登记资产接口出错')
         })
       },
-      // 根据登记Id查询资产详情的列表数据--分页
-      // queryAssetListByRegisterId ({pageNo = 1, pageLength = 10, type}) {
-      //   const { registerId } = this
-      //   if (!registerId) { return this.$message.info('登记Id不存在') }
-      //   this.tableObj.loading = true
-      //   this.$api.worthRegister.queryRelPageList({ registerId, pageSize: pageLength, pageNum: pageNo }).then(r => {
-      //     this.tableObj.loading = false
-      //     let res = r.data
-      //     if (res && String(res.code) === '0') {
-      //       const { count, data } = res.data
-      //       this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
-      //       Object.assign(this.paginationObj, {
-      //         totalCount: count,
-      //         pageNo, pageLength
-      //       })
-      //       return type === 'init' ? this.queryTotalData(count) : ''
-      //     }
-      //     throw res.message || '查询登记资产接口出错'
-      //   }).catch(err => {
-      //     this.tableObj.loading = false
-      //     this.$message.error(err || '查询登记资产接口出错')
-      //   })
-      // },
       
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
@@ -403,21 +362,25 @@
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
         type === 'edit' && this.queryAssetListByAssetId([], 'init')
+        this.queryAssetListByRegisterId({type: 'init'}).then( () => {
+         
+        })
       } else {
         // type === 'approval' || type === 'detail'时
         // 列表查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({type: 'init'})
       }
+      
     },
     
     watch: {
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
-        let {tableObj: {dataSource}, type, numList} = this
+        let {tableObj: {dataSource}, type, numList, details} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
-          if ((assetType && String(assetType) !== String(dataSource[0].assetType)) || (String(projectId) !== String(dataSource[0].projectId))) {
+          if ((assetType && String(assetType) !== String(details.assetType)) || (String(projectId) !== String(details.projectId))) {
             // 重置selectedRowKeys
             this.tableObj.selectedRowKeys = []
             this.tableObj.dataSource = []
@@ -430,6 +393,7 @@
           })
         }
       }
+
     }
   }
 </script>

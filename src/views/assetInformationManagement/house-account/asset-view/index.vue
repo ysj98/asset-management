@@ -34,6 +34,7 @@
           <a-col :span="5">
             <a-select
               v-model="status"
+              @change="statusChange"
               mode="multiple"
               :maxTagCount="1"
               style="width: 100%"
@@ -49,6 +50,7 @@
               v-model="categoryId"
               placeholder="请选择资产分类"
               :options="categoryOptions"
+              @change="categoryChange"
             />
           </a-col>
           <a-col :span="5">
@@ -132,7 +134,7 @@
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
         address:'',  // 查询条件-资产地址
-        status: [], // 查询条件-资产状态值
+        status: ['0', '1', '2', '3', '4', '7'], // 查询条件-资产状态值
         categoryId: [], // 查询条件-资产分类
         categoryOptions: [], // 查询条件-资产分类选项
         statusOptions: [
@@ -209,6 +211,16 @@
       useTypeChange (value) {
         let lastIndex = value.length - 1
         this.useType = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+      },
+      // 全选与其他选项资产状态
+      statusChange (value) {
+        let lastIndex = value.length - 1
+        this.status = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+      },
+      // 全选与其他选项资产分类
+      categoryChange (value) {
+        let lastIndex = value.length - 1
+        this.categoryId = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
       },
       // 点击总览数据块
       handleClickOverview ({i}) {
@@ -412,17 +424,17 @@
       },
 
       // 全选与其他选项互斥处理
-      status: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
-          this.status = ['all']
-        }
-      },
+      // status: function (val) {
+      //   if (val && val.length !== 1 && val.includes('all')) {
+      //     this.status = ['all']
+      //   }
+      // },
 
-      categoryId: function (val) {
-        if (val && val.length !== 1 && val.includes('all')) {
-          this.categoryId = ['all']
-        }
-      }
+      // categoryId: function (val) {
+      //   if (val && val.length !== 1 && val.includes('all')) {
+      //     this.categoryId = ['all']
+      //   }
+      // }
     }
   }
 </script>

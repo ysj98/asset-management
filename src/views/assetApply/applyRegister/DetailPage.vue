@@ -8,6 +8,7 @@
         <worth-list-part
           v-if="type"
           :type="type"
+          :details="details"
           :dynamicData="dynamicData"
           :organId="details.organId"
           :registerId="registerId"
@@ -38,6 +39,7 @@
     components: { ApprovalFlowPart, WorthListPart, BaseInfoPart, FormFooter },
     data () {
       return {
+        receiveAreaTotal: 0, // 总领用资产面积
         registerId: '', // 登记Id
         stepList: [], // 审批轨迹
         details: {}, // 基础信息数据
@@ -60,45 +62,48 @@
       },
 
       // 获取资产关联对象数据
-      getAssetList (list) {
+      getAssetList (list, receiveAreaSum) {
         this.assetList = list
+        this.receiveAreaTotal = receiveAreaSum
       },
 
       // 提交
       handleSubmit () {
-        const { type, registerId, assetList } = this
+        const { type, registerId, assetList, dynamicData, receiveAreaTotal } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)
         }).then(data => {
           // 校验关联资产
-          if (!assetList.length) {
-            return this.$message.warn('请选择关联资产数据')
-          } else if(this.validateAssetList(assetList)) {
-            return this.$message.warn('资产价值清单本次估值数据为必填')
-          }
+          // if (!assetList.length) {
+          //   return this.$message.warn('请选择关联资产数据')
+          // } else if(this.validateAssetList(assetList)) {
+          //   return this.$message.warn('资产价值清单本次估值数据为必填')
+          // }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
-          this.spinning = true
-          let registerValueRelList = []
+          //this.spinning = true
+          let detailList = []
           assetList.forEach(m => {
-            const { assetId, assessmentValue, upRate } = m
-            registerValueRelList.push({ assetId, assessmentValue, upRate: upRate === '--' ? 0 : upRate })
+            const { assetId, receiveArea, assetObjectId, remark } = m
+            detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
-          let form = type === 'edit' ? { ...data, registerValueRelList, registerId, approvalStatus: 2 } : { ...data, registerValueRelList }
-          this.$api.worthRegister[api[type]](form).then(r => {
-            this.spinning = false
-            let res = r.data
-            if (res && String(res.code) === '0') {
-              this.$message.success(`${tip}成功`)
-              // 跳回列表路由
-              return this.$router.push({ name: '价值登记', params: { refresh: true } })
-            }
-            throw res.message || `${tip}失败`
-          }).catch(err => {
-            this.spinning = false
-            this.$message.error(err || `${tip}失败`)
-          })
+          let form = type === 'edit' ? { ...data, detailList, receiveId: registerId, approvalStatus: 2, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
+          ...dynamicData} : { ...data, detailList }
+          console.log(form,data, detailList)
+          // this.$api.useManage.submitReceive(form).then(r => {
+          //   this.spinning = false
+          //   let res = r.data
+          //   if (res && String(res.code) === '0') {
+          //     this.$message.success(`${tip}成功`)
+          //     // 跳回列表路由
+          //     return this.$router.push({ name: '资产领用', params: { refresh: true } })
+          //   }
+          //   throw res.message || `${tip}失败`
+          // }).catch(err => {
+          //   this.spinning = false
+          //   this.$message.error(err || `${tip}失败`)
+          // })
         }).catch(() => {
           this.spinning = false
         })
@@ -108,7 +113,6 @@
       queryDetailById (registerId) {
         this.spinning = true
         const { details } = this
-        console.log(details)
         this.$api.useManage.getReceiveInfo({receiveId: registerId}).then(r => {
           this.spinning = false
           let res = r.data
@@ -117,11 +121,12 @@
             const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
             this.dynamicData = {
-              assetType: others.assetType,
-              assessmenBaseDate: others.assessmenBaseDate,
-              assessmentOrganName: others.assessmentOrganName,
-              assessmentMethodName: others.assessmentMethodName,
-              projectId: others.projectId
+              assetType: res.data.assetType,
+              receiveOrganName: res.data.receiveOrganName,
+              receiveUserName: res.data.receiveUserName,
+              projectId: res.data.projectId,
+              receiveDate: res.data.receiveDate,
+              returnDate: res.data.returnDate
             }
             return Object.assign(this, { stepList, details: { ...details, ...res.data} })
           }
@@ -168,6 +173,7 @@
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
         this.dynamicData = Object.assign({}, this.dynamicData, obj)
+        console.log(this.dynamicData.receiveDate)
       },
       
       // 校验资产价值清单本次估值项非空
