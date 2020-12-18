@@ -211,11 +211,12 @@
       </a-row>
     </a-form>
     <!--选择承租人Modal-->
-    <select-staff
+<!--     <select-staff
       ref="selectTenant"
       @change="getTenant"
       :selectOptList="tenantList"
-    />
+    /> -->
+    <TenantModal></TenantModal>
   </a-spin>
 </template>
 
@@ -225,7 +226,7 @@ import {
   filterOption,
   queryAssetTypeList,
 } from "src/views/common/commonQueryApi";
-import SelectStaff from "@/views/common/selectStaffOrPost";
+import TenantModal from "../../component/tenantModal";
 export default {
   data() {
     return {
@@ -248,7 +249,7 @@ export default {
       },
     };
   },
-  components: { SelectStaff },
+  components: { TenantModal },
   watch: {
     // 自定义必填项校验
     tenantList: function(val) {
@@ -283,17 +284,17 @@ export default {
       });
     },
     // 获取选中的审核人
-    getTenant(list = []) {
+/*     getTenant(list = []) {
       this.tenantList = list;
-    },
-    // 删除、选择承租人
+    }, */
+/*     // 删除、选择承租人
     handleTenant(m) {
       if (m) {
         this.tenantList = this.tenantList.filter((v) => v.id !== m.id);
       } else {
         this.$refs.selectTenant.visible = true;
       }
-    },
+    }, */
     signDateFn(value, mode) {
       console.log(value, mode);
     },

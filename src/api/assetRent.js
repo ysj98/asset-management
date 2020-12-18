@@ -5,3 +5,8 @@ import { assetRent } from '../config/config.url'
 export function getLeaseOrderPageList(data) {
   return axiosPost(assetRent.getLeaseOrderPageList, data)
 }
+
+// 出租登记-查询列表表头统计
+export function getLeaseOrderStatistics(data) {
+  return axiosPost(assetRent.getLeaseOrderStatistics, data)
+}
