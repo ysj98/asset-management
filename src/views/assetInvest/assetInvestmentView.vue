@@ -1,11 +1,11 @@
-<!--资产出租-资产出租一览表-->
+<!--资产投资-资产投资一览表-->
 <template>
-  <div class="rent_view">
+  <div class="investment_view">
     <!--查询条件-->
     <search-container size="fold" background="white" v-model="toggle">
       <div slot="headerBtns">
         <SG-Button icon="import" type="primary" :loading='exportBtnLoading'
-           @click="handleExport" v-power="ASSET_MANAGEMENT.ASSET_RENT_VIEW_EXPORT"
+          @click="handleExport" v-power="ASSET_MANAGEMENT.ASSET_INVEST_VIEW_EXPORT"
         >导出</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 32px">
@@ -19,8 +19,8 @@
             />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.contractStatusList" :options="contractStatusOptions"
-              v-bind="selectProperty" placeholder="请选择合同状态"
+            <a-select v-model="queryObj.investStatusList" :options="investStatusOptions"
+              v-bind="selectProperty" placeholder="请选择投资状态"
             />
           </a-col>
           <a-col :span="3">
@@ -44,10 +44,10 @@
             />
           </a-col>
           <a-col :span="7">
-            <a-range-picker @change="changeDate" style="width: 100%" :placeholder="['开始出租日期', '结束出租日期']"/>
+            <a-range-picker @change="changeDate" style="width: 100%" :placeholder="['开始投资日期', '结束投资日期']"/>
           </a-col>
           <a-col :span="4">
-            <a-input v-model.trim="queryObj.leaseNameOrId" placeholder="出租单名称/合同编号"/>
+            <a-input v-model.trim="queryObj.investNameOrId" placeholder="投资单名称/编号"/>
           </a-col>
         </a-row>
       </div>
@@ -67,7 +67,7 @@
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { queryCategoryList, queryAssetTypeList, exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
-    name: 'assetRentView',
+    name: 'assetInvestmentView',
     components: {noDataTips, SearchContainer, OrganProject},
     data () {
       return {
@@ -75,7 +75,7 @@
         tableObj: {
           pagination: false,
           scroll: { x: 2400 },
-          rowKey: 'leaseDetailId',
+          rowKey: 'investDetailId',
           class: 'custom-table td-pd10'
         },
         selectProperty: {
@@ -89,15 +89,15 @@
           objectTypeList: ['-1'], // 资产分类
           assetNameOrCode: '', // 资产名称或编码
           assetTypeList: ['-1'], // 资产类型值,多选
-          startLeaseDateEnd: undefined, // 结束时间,
-          startLeaseDateStart: undefined, // 开始时间
-          contractStatusList: ['-1'], // 合同状态
+          startInvestDateEnd: undefined, // 结束时间,
+          startInvestDateStart: undefined, // 开始时间
+          investStatusList: ['-1'], // 投资状态
           approvalStatusList: ['-1'], // 审批状态
-          leaseNameOrId: '', // 出租单名称/合同编号
+          investNameOrId: '', // 投资单名称/投资编号
         }, // 查询条件
         exportBtnLoading: false, // 导出按钮loading
         columns: [
-          { title: '出租ID', dataIndex: 'leaseDetailId', fixed: 'left', width: 120 },
+          { title: '投资ID', dataIndex: 'investDetailId', fixed: 'left', width: 120 },
           { title: '资产名称', dataIndex: 'assetName', width: 120 },
           { title: '资产编码', dataIndex: 'assetCode', width: 120 },
           { title: '资产类型', dataIndex: 'assetTypeName', width: 120 },
@@ -106,15 +106,14 @@
           { title: '资产项目', dataIndex: 'projectName', width: 180 },
           { title: '资产面积(㎡)', dataIndex: 'assetArea' },
           { title: '规格型号', dataIndex: 'specificationTypeName' },
-          { title: '出租单ID', dataIndex: 'leaseOrderId' },
-          { title: '出租单名称', dataIndex: 'leaseName' },
-          { title: '承租人', dataIndex: 'lesseeName', width: 120 },
-          { title: '出租面积(㎡)', dataIndex: 'leaseArea' },
-          { title: '起租日期', dataIndex: 'startLeaseDate', width: 80 },
-          { title: '止租日期', dataIndex: 'endLeaseDate', width: 80 },
-          { title: '租金单价', dataIndex: 'rentPrice' },
-          { title: '合同编号', dataIndex: 'contractCode', width: 150 },
-          { title: '合同状态', dataIndex: 'contractStatusName' },
+          { title: '投资单ID', dataIndex: 'investOrderId' },
+          { title: '投资单名称', dataIndex: 'investName', width: 120  },
+          { title: '投资项目', dataIndex: 'investProject', width: 120 },
+          { title: '投资面积(㎡)', dataIndex: 'investArea' },
+          { title: '起投日期', dataIndex: 'startInvestDate', width: 80 },
+          { title: '止投日期', dataIndex: 'endInvestDate', width: 80 },
+          { title: '投资编号', dataIndex: 'investCode', width: 150 },
+          { title: '投资状态', dataIndex: 'investStatusName' },
           { title: '签订日期', dataIndex: 'signingDate', width: 100 },
           { title: '审批状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 60 }
         ], // Table columns
@@ -125,11 +124,11 @@
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
         objectTypeOptions: [{ title: '全部资产分类', key: '-1' }], // 查询条件-资产分类选项,主数据字典
         assetTypeOptions: [{ title: '全部资产类型', key: '-1' }], // 查询条件-资产类型选项，平台字典
-        contractStatusOptions: [
-          { title: '全部合同状态', key: '-1' }, { title: '未生效', key: '0' },
+        investStatusOptions: [
+          { title: '全部投资状态', key: '-1' }, { title: '未生效', key: '0' },
           { title: '待执行', key: '1' }, { title: '执行中', key: '2' },
           { title: '已终止', key: '3' }, { title: '已作废', key: '4' }
-        ], // 查询条件-合同状态选项
+        ], // 查询条件-投资状态选项
         approveStatusOptions: [
           { title: '全部审批状态', key: '-1' }, { title: '草稿', key: '0' },
           { title: '待审批', key: '2' }, { title: '已驳回', key: '3' },
@@ -141,8 +140,8 @@
     methods: {
       // 处理接管时间
       changeDate (date, dateString) {
-        this.queryObj.startLeaseDateStart = dateString[0]
-        this.queryObj.startLeaseDateEnd = dateString[1]
+        this.queryObj.startInvestDateStart = dateString[0]
+        this.queryObj.startInvestDateEnd = dateString[1]
       },
 
       // 根据资产类型查资产分类列表
@@ -169,12 +168,12 @@
       changePage ({ pageNo, pageLength }) {
         this.queryTableData({ pageNum: pageNo, pageSize: pageLength })
       },
-      
+
       // 查询数据源
       queryTableData ({ pageNum = 1, pageSize = 10, actionType }) {
         const { organProjectValue: { organId, projectId }, queryObj } = this
         // 过滤掉 -1
-        let arr = ['assetTypeList', 'contractStatusList', 'objectTypeList', 'approvalStatusList']
+        let arr = ['assetTypeList', 'investStatusList', 'objectTypeList', 'approvalStatusList']
         arr.forEach(k =>
           queryObj[k] = queryObj[k].filter(n => n !== '-1')
         )
@@ -182,16 +181,16 @@
         // 用于导出及查询汇总接口入参
         if (actionType) { return obj }
         this.loading = true
-        this.$api.assetRent.queryRentViewPage({
-            pageNum, pageSize, ...obj
-          }).then(({data: {data: {data, count}, code, msg}}) => {
-            this.loading = false
-            if (String(code) === '0') {
-              Object.assign(this, {
-                pageNo: pageNum,
-                tableData: data || [],
-                pageTotalCount: Number(count)
-              })
+        this.$api.assetInvest.queryInvestViewPage({
+          pageNum, pageSize, ...obj
+        }).then(({data: {data: {data, count}, code, msg}}) => {
+          this.loading = false
+          if (String(code) === '0') {
+            Object.assign(this, {
+              pageNo: pageNum,
+              tableData: data || [],
+              pageTotalCount: Number(count)
+            })
             return this.queryTotalInfo(obj)
           }
           throw msg
@@ -201,12 +200,12 @@
           this.loading = false
         )
       },
-      
+
       // 查询汇总
       queryTotalInfo (obj) {
         if (this.tableData.length) {
           this.loading = true
-          this.$api.assetRent.queryRentViewTotal(obj).then(({data: {data: {totalLeaseArea}, code, msg}}) => {
+          this.$api.assetInvest.queryInvestViewTotal(obj).then(({data: {data: {totalInvestArea}, code, msg}}) => {
             this.loading = false
             if (String(code) === '0') {
               let [item] = this.tableData
@@ -214,9 +213,9 @@
               Object.keys(item).forEach(k => temp[k] = '')
               return this.tableData.push({
                 ...temp,
-                lesseeName: '出租总面积:',
-                leaseArea: totalLeaseArea,
-                // leaseDetailId: Date.now()
+                investProject: '投资总面积:',
+                investArea: totalInvestArea,
+                // investDetailId: Date.now()
               })
             }
             throw msg
@@ -234,7 +233,7 @@
         this.exportBtnLoading = true
         exportDataAsExcel(
           this.queryTableData({actionType: 'export'}),
-          this.$api.assetRent.exportRentView, '资产出租一览表.xlsx',
+          this.$api.assetInvest.exportInvestView, '资产投资一览表.xlsx',
           this
         ).then(() =>
           this.exportBtnLoading = false
@@ -273,10 +272,10 @@
           this.queryObj.objectTypeList = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
         }
       },
-      'queryObj.contractStatusList': function (value) {
+      'queryObj.investStatusList': function (value) {
         if (value.length > 1 && value.includes('-1')) {
           let lastIndex = value.length - 1
-          this.queryObj.contractStatusList = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
+          this.queryObj.investStatusList = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
         }
       },
       'queryObj.approvalStatusList': function (value) {
@@ -286,11 +285,11 @@
         }
       }
     }
-  }
+}
 </script>
 
 <style lang="less" scoped>
-  .rent_view {
+  .investment_view {
     .custom-table {
       margin-bottom: 55px;
       & /deep/ .ant-table {

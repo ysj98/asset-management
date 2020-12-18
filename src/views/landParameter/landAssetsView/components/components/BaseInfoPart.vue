@@ -35,14 +35,14 @@
         spinning: false,
         baseInfoKeys: [
           {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产类型', key: 'assetType'},
-          {title: '资产分类', key: 'objectType'}, {title: '土地面积', key: 'landArea'}, {title: '宗地号', key: 'theNo'},
-          {title: '批准日期', key: 'takeOverDate'}, {title: '计容面积(㎡)', key: 'buildStruct'}, {title: '资产用途', key: 'landuse'},
-          {title: '容积率', key: 'area'}, {title: '资产状态', key: 'completionDate'}, {title: '使用年限', key: 'repair'},
-          {title: '有限期限', key: 'statusName'}, {title: '土地性质', key: 'desc', span: 16}
+          {title: '资产分类', key: 'landType'}, {title: '土地面积', key: 'landArea'}, {title: '宗地号', key: 'theNo'},
+          {title: '批准日期', key: 'approvalDate'}, {title: '计容面积(㎡)', key: 'acreage'}, {title: '资产用途', key: 'landuse'},
+          {title: '容积率', key: 'landRate'}, {title: '资产状态', key: 'statusName'}, {title: '使用年限', key: 'validPeriod'},
+          {title: '有限期限', key: 'endDate'}, {title: '土地性质', key: 'landuseType ', span: 16}
         ], // 基本信息字段
         spaceInfoKeys: [
-          {title: '运营项目', key: 'projectName'}, {title: '土地位置', key: 'buildName'}, {title: '用地红线图', key: 'unitName'},
-          {title: '土地备注', key: 'floor'}
+          {title: '运营项目', key: 'projectName'}, {title: '土地位置', key: 'location'}, {title: '用地红线图', key: 'redMap'},
+          {title: '土地备注', key: 'desc'}
         ], // 空间位置字段
         infoData: {}, // 信息数据
         details: {}, // 编辑基本信息数据
@@ -70,7 +70,7 @@
             this.numList = this.numList.map(m => {
               return { ...m, value: `${temp[m.key] ? temp[m.key].toFixed(2) : 0}` }
             })
-            return this.infoData = temp
+            return this.infoData = { ...temp, assetType: '土地' }
           }
           throw res.message || '查询接口出错'
         }).catch(err => {
