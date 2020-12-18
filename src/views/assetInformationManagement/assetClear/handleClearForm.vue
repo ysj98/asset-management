@@ -382,14 +382,11 @@ export default {
         this.$message.info('请先选择资产类型')
         return
       }
-      console.log(this.form.getFieldValue('assetType'))
       this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), this.form.getFieldValue('assetType'), this.dataSource)
       this.$refs.assetBundlePopover.show = true
     },
     // 资产变动时
     status (val, data) {
-      console.log(val)
-      console.log(data)
       this.checkedData = [...val]
       data.forEach((item, index) => {
         item.key = index.toString()
@@ -455,7 +452,6 @@ export default {
             arr.push(obj)
           })
           form.assetDetailList = arr
-          console.log(form)
           if (this.pageType === 'edit') {
             form.cleaningOrderId = this.cleaningOrderId
           }
@@ -492,7 +488,6 @@ export default {
       }
       this.$api.assets.getCleanupInfo(form).then(res => {
         if (res.data.code === '0') {
-          console.log(res)
           let data = res.data.data
           this.detail = data
           this.organId = data.organId
@@ -509,7 +504,6 @@ export default {
             checkedData.push(item.assetId)
           })
           this.checkedData = checkedData
-          console.log(this.detail)
           this.dataSource = this.detail.assetDetailList
         }
       })
@@ -520,7 +514,6 @@ export default {
       }
       this.$api.assets.getCleanupDetail(form).then(res => {
         if (res.data.code === '0') {
-          console.log(res)
           let data = res.data.data
           this.organName = data.organName
           this.detail = data

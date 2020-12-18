@@ -1,4 +1,4 @@
-<!-- 
+<!--
   organId: 组织机构id
   projectId: 项目id
   queryType: 查询类型 1 资产变动，2 资产清理 3权属登记
@@ -36,6 +36,7 @@
       <div class="tab-nav">
         <div class="table-border table-layout-fixed">
           <a-table
+            rowKey="assetId"
             :scroll="{y: 450 }"
             :rowSelection="rowSelection"
             :loading="loading"
