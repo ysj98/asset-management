@@ -1051,5 +1051,11 @@ export const useManage = {
 // 资产出租
 export const assetRent = {
   // 出租登记-分页查询出租单列表
-  getLeaseOrderPageList: '/ams/leaseOrder/getLeaseOrderPageList'
+  getLeaseOrderPageList: '/ams/leaseOrder/getLeaseOrderPageList',
+  // 资产出租一览表-列表分页查询
+  queryRentViewPage: '/ams/leaseDetail/getLeaseDetailGlancePageList',
+  // 资产出租一览表-导出
+  exportRentView: '/ams/leaseDetail/exportLeaseDetailGlanceList',
+  // 资产出租一览表-查询列表表头统计
+  queryRentViewTotal: '/ams/leaseDetail/getLeaseDetailGlanceStatistics'
 }

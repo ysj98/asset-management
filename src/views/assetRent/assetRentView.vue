@@ -31,7 +31,7 @@
           </a-col>
         </a-row>
       </div>
-      <div slot="contentForm">
+      <div slot="contentForm" style="margin-top: 18px">
         <a-row :gutter="8">
           <a-col :span="4">
             <a-select v-model="queryObj.objectTypeList" :options="objectTypeOptions"
@@ -54,7 +54,7 @@
     </search-container>
     <!--表格-->
     <a-table :loading="loading" :columns="columns" :dataSource="tableData" v-bind="tableObj"/>
-    <SG-FooterPagination v-if="tableData.length" :totalCount="pageTotalCount" @change="changePage" location="fixed"/>
+    <SG-FooterPagination v-if="tableData.length" :totalCount="pageTotalCount" :pageNo="pageNo" @change="changePage" location="fixed"/>
     <!--缺省图-->
     <no-data-tips v-else/>
   </div>
@@ -74,7 +74,7 @@
         toggle: false,
         tableObj: {
           pagination: false,
-          scroll: { x: true },
+          scroll: { x: 2400 },
           rowKey: 'leaseDetailId',
           class: 'custom-table td-pd10'
         },
@@ -98,28 +98,29 @@
         exportBtnLoading: false, // 导出按钮loading
         columns: [
           { title: '出租ID', dataIndex: 'leaseDetailId', fixed: 'left', width: 120 },
-          { title: '资产名称', dataIndex: 'assetName' },
-          { title: '资产编码', dataIndex: 'assetCode' },
-          { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产分类', dataIndex: 'objectTypeName' },
-          { title: '所属机构', dataIndex: 'organName' },
-          { title: '资产项目', dataIndex: 'projectName' },
+          { title: '资产名称', dataIndex: 'assetName', width: 120 },
+          { title: '资产编码', dataIndex: 'assetCode', width: 120 },
+          { title: '资产类型', dataIndex: 'assetTypeName', width: 120 },
+          { title: '资产分类', dataIndex: 'objectTypeName', width: 120 },
+          { title: '所属机构', dataIndex: 'organName', width: 180 },
+          { title: '资产项目', dataIndex: 'projectName', width: 180 },
           { title: '资产面积(㎡)', dataIndex: 'assetArea' },
           { title: '规格型号', dataIndex: 'specificationTypeName' },
           { title: '出租单ID', dataIndex: 'leaseOrderId' },
           { title: '出租单名称', dataIndex: 'leaseName' },
-          { title: '承租人', dataIndex: 'lesseeName' },
+          { title: '承租人', dataIndex: 'lesseeName', width: 120 },
           { title: '出租面积(㎡)', dataIndex: 'leaseArea' },
-          { title: '起租日期', dataIndex: 'startLeaseDate' },
-          { title: '止租日期', dataIndex: 'endLeaseDate' },
+          { title: '起租日期', dataIndex: 'startLeaseDate', width: 80 },
+          { title: '止租日期', dataIndex: 'endLeaseDate', width: 80 },
           { title: '租金单价', dataIndex: 'rentPrice' },
-          { title: '合同编号', dataIndex: 'contractCode' },
+          { title: '合同编号', dataIndex: 'contractCode', width: 150 },
           { title: '合同状态', dataIndex: 'contractStatus' },
-          { title: '签订日期', dataIndex: 'signingDate' },
-          { title: '审批状态', dataIndex: 'approvalStatus' }
+          { title: '签订日期', dataIndex: 'signingDate', width: 100 },
+          { title: '审批状态', dataIndex: 'approvalStatus', fixed: 'right', width: 60 }
         ], // Table columns
         loading: false, // Table loading
         tableData: [], // Table DataSource
+        pageNo: 1, // 分页器第N页
         pageTotalCount: 0, // 分页器总条数
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
         objectTypeOptions: [{ title: '全部资产分类', key: '-1' }], // 查询条件-资产分类选项,主数据字典
@@ -157,6 +158,8 @@
 
       // 查询资产类型--平台字典
       queryAssetType () {
+        // 清空资产分类数据
+        this.objectTypeOptions = []
         queryAssetTypeList().then(list => {
           this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}].concat(list)
         })
@@ -179,15 +182,16 @@
         // 用于导出及查询汇总接口入参
         if (actionType) { return obj }
         this.loading = true
-          Promise.reject({
+        this.$api.assetRent.queryRentViewPage({
             pageNum, pageSize, ...obj
-          }).then(({data: {data, count}, code, msg}) => {
+          }).then(({data: {data: {data, count}, code, msg}}) => {
             this.loading = false
-          if (String(code) === '0') {
-            Object.assign(this, {
-              pageTotalCount: count,
-              tableData: data || []
-            })
+            if (String(code) === '0') {
+              Object.assign(this, {
+                pageNo: pageNum,
+                tableData: data || [],
+                pageTotalCount: Number(count)
+              })
             return this.queryTotalInfo(obj)
           }
           throw msg
@@ -202,12 +206,18 @@
       queryTotalInfo (obj) {
         if (this.tableData.length) {
           this.loading = true
-          Promise.reject(obj).then(({data: {totalLeaseArea}, code, msg}) => {
+          this.$api.assetRent.queryRentViewTotal(obj).then(({data: {data: {totalLeaseArea}, code, msg}}) => {
             this.loading = false
             if (String(code) === '0') {
               let [item] = this.tableData
-              Object.keys(item).forEach(k => item[k] = (k === 'leaseArea') ? totalLeaseArea : '')
-              return this.tableData.push(item)
+              let temp = {}
+              Object.keys(item).forEach(k => temp[k] = '')
+              return this.tableData.push({
+                ...temp,
+                lesseeName: '出租总面积:',
+                leaseArea: totalLeaseArea,
+                // leaseDetailId: Date.now()
+              })
             }
             throw msg
           }).catch(err =>
@@ -220,11 +230,11 @@
 
       // 导出
       handleExport () {
-        if (!this.tableObj.dataSource.length) { return this.$message.info('暂无导出数据') }
+        if (!this.tableData.length) { return this.$message.info('暂无导出数据') }
         this.exportBtnLoading = true
         exportDataAsExcel(
           this.queryTableData({actionType: 'export'}),
-          this.$api.tableManage.exportOwnershipCardList, '资产出租一览表.xls',
+          this.$api.assetRent.exportRentView, '资产出租一览表.xlsx',
           this
         ).then(() =>
           this.exportBtnLoading = false
@@ -254,6 +264,7 @@
         if (value.length > 1 && value.includes('-1')) {
           let lastIndex = value.length - 1
           this.queryObj.assetTypeList = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
+          this.queryCategoryOptions()
         }
       },
       'queryObj.objectTypeList': function (value) {
@@ -281,6 +292,7 @@
 <style lang="less" scoped>
   .rent_view {
     .custom-table {
+      margin-bottom: 55px;
       & /deep/ .ant-table {
         th {
           white-space: nowrap;
