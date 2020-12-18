@@ -424,7 +424,12 @@ export const ASSET_MANAGEMENT = {
   RENT_FORM_DETAIL: 'rent_form_detail',  // 出租单详情
   RENT_FORM_APPROVE: 'rent_form_approve',  // 出租单审批
   RENT_FORM_REVERSE_AUDIT: 'rent_form_reverse_audit',  // 出租单反审核
-  ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export'       // 出租登记一览表导出
+  ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export',       // 出租登记一览表导出
+
+  /**
+   * 2.0.7 资产投资
+   */
+  ASSET_INVEST_VIEW_EXPORT: 'asset_invest_view_export'       // 资产投资一览表导出
 }
 
 

@@ -1053,5 +1053,21 @@ export const assetRent = {
   // 出租登记-分页查询出租单列表
   getLeaseOrderPageList: '/ams/leaseOrder/getLeaseOrderPageList',
   // 出租登记-查询列表表头统计
-  getLeaseOrderStatistics: '/ams/leaseOrder/getLeaseOrderStatistics'
+  getLeaseOrderStatistics: '/ams/leaseOrder/getLeaseOrderStatistics',
+  // 资产出租一览表-列表分页查询
+  queryRentViewPage: '/ams/leaseDetail/getLeaseDetailGlancePageList',
+  // 资产出租一览表-导出
+  exportRentView: '/ams/leaseDetail/exportLeaseDetailGlanceList',
+  // 资产出租一览表-查询列表表头统计
+  queryRentViewTotal: '/ams/leaseDetail/getLeaseDetailGlanceStatistics'
+}
+
+// 资产投资
+export const assetInvest = {
+  // 资产出租一览表-列表分页查询
+  queryInvestViewPage: '/ams/investDetail/getInvestDetailGlancePageList',
+  // 资产出租一览表-导出
+  exportInvestView: '/ams/investDetail/exportInvestDetailGlanceList',
+  // 资产出租一览表-查询列表表头统计
+  queryInvestViewTotal: '/ams/investDetail/getInvestDetailGlanceStatistics'
 }

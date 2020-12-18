@@ -81,17 +81,10 @@
           />
         </a-form-item>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="8" >
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门">
-          <!-- <a-select
-            v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
-            :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'receiveOrganName')"
-            placeholder="请选择领用部门"
-            :options="organOptions"
-          /> -->
           <treeSelect @changeTree="setData(arguments, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
-            :disabled="type == 'approval' || type == 'detail'"></treeSelect>
+            :disabled="type == 'approval' || type == 'detail'" ></treeSelect>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -143,6 +136,7 @@
           <SG-UploadFile
             type="all"
             v-model="attachment"
+            :maxSize="5120"
             :show="type == 'approval' || type == 'detail'"
             v-if="type == 'edit' || type == 'add' || attachment.length"
           />
@@ -160,7 +154,7 @@
   import TreeSelect from '../../../common/treeSelect'
   export default {
     name: 'BaseInfoPart',
-    props: ['type', 'details'],
+    props: ['type', 'details', 'defaultOrganName'],
     components: {TreeSelect},
     data () {
       return {
@@ -180,7 +174,8 @@
         createTime: '', // 提交时间
         createByName: '', // 提交人
         receiveId: '', // 领用单Id
-        staffList: [] // 部门人员列表
+        staffList: [], // 部门人员列表
+        receiveUserId: ''// 领用人id
       }
     },
 
@@ -200,7 +195,7 @@
             // 转换日期格式为string
             let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
             let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate })
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate, returnDate:returnDate, receiveUserId: this.receiveUserId })
             return resolve(form)
           }
           reject('数据不完整')
@@ -305,27 +300,29 @@
       
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
-        console.log(val)
         let value = ''
         let id = ''
         if (type === 'receiveDate' || type === 'assetType' || type === 'projectId' || type === 'returnDate') {
           value = val
+          this.form.setFieldsValue({ [type]: value })
           this.$emit('setData', { [type]: value})
         } else if (type === 'receiveOrganName') {
           const { organOptions } = this
           value = val[1]
           id = val[0]
+         this.form.setFieldsValue({ receiveOrganName: value })
+         this.receiveUserId = id
           // value = organOptions.filter(m => m.key === val)[0]['title']
           // id = organOptions.filter(m => m.key === val)[0]['key']
           this.queryStaff(id)
-          this.$emit('setData', { [type]: value}, {receiveOrganId: id} )
+          this.$emit('setData', { [type]: value, receiveOrganId: +id} )
         } else if (type === 'receiveUserName') {
           const { staffList } = this
           value = staffList.filter(m => m.key === val)[0]['title']
           id = staffList.filter(m => m.key === val)[0]['key']
-          this.$emit('setData', { [type]: value,}, {receiveUserId: id})
+          this.form.setFieldsValue({ receiveUserName: value, receiveUserId: id })
+          this.$emit('setData', { [type]: value, receiveUserId: +id})
         }
-       
         
       },
       
@@ -342,7 +339,8 @@
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          console.log(this.staffList)
+          console.log(this.staffList[0].title)
+          return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 
     },
@@ -367,7 +365,11 @@
           this.queryOrganOptions()
           this.queryProjectOptions()
         }
-      }
+      },
+
+    },
+    create() {
+      this.organName = this.defaultOrganName
     }
   }
 </script>

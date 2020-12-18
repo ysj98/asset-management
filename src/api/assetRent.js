@@ -10,3 +10,17 @@ export function getLeaseOrderPageList(data) {
 export function getLeaseOrderStatistics(data) {
   return axiosPost(assetRent.getLeaseOrderStatistics, data)
 }
+// 资产出租一览表-列表分页查询
+export function queryRentViewPage (data) {
+  return axiosPost(assetRent.queryRentViewPage, data)
+}
+
+// 资产出租一览表-查询列表表头统计
+export function queryRentViewTotal (data) {
+  return axiosPost(assetRent.queryRentViewTotal, data)
+}
+
+// 资产出租一览表-导出
+export function exportRentView (data) {
+  return axiosPost(assetRent.exportRentView, data, false, false, { responseType: 'blob'})
+}

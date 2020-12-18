@@ -29,6 +29,7 @@ import * as delivery from './delivery'
 import * as publicCode from './publicCode'
 import * as useManage from './useManage'
 import * as assetRent from './assetRent'
+import * as assetInvest from './assetInvest'
 const API = {
   auth,
   global,
@@ -46,7 +47,8 @@ const API = {
   delivery,
   publicCode,
   useManage,
-  assetRent
+  assetRent,
+  assetInvest
 }
 export default {
   install (Vue) {
