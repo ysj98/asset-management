@@ -270,7 +270,7 @@ export default [
       },
       {
         title: '资产投资一览表',
-        path: '/assetPaymentView'
+        path: '/assetInvestmentView'
       }
     ]
   },

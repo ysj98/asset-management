@@ -419,7 +419,12 @@ export const ASSET_MANAGEMENT = {
    * 2.0.7 资产出租
    */
   ASSET_RENT_REGISTER: 'asset_rent-register',       // 出租登记
-  ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export'       // 出租登记一览表导出
+  ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export',       // 出租登记一览表导出
+
+  /**
+   * 2.0.7 资产投资
+   */
+  ASSET_INVEST_VIEW_EXPORT: 'asset_invest_view_export'       // 资产投资一览表导出
 }
 
 

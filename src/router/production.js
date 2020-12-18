@@ -902,9 +902,9 @@ let proRouter = [{
     component: () => import('@/views/assetRent/rentGainsRegister/child/gainsDetail')
   },
   {
-    path: '/assetPaymentView',
+    path: '/assetInvestmentView',
     name: '资产投资一览表',
-    component: () => import('@/views/assetInvest/assetPaymentView')
+    component: () => import('@/views/assetInvest/assetInvestmentView')
   },
   {
     path: '/investRegister',

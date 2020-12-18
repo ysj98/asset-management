@@ -1059,3 +1059,13 @@ export const assetRent = {
   // 资产出租一览表-查询列表表头统计
   queryRentViewTotal: '/ams/leaseDetail/getLeaseDetailGlanceStatistics'
 }
+
+// 资产投资
+export const assetInvest = {
+  // 资产出租一览表-列表分页查询
+  queryInvestViewPage: '/ams/investDetail/getInvestDetailGlancePageList',
+  // 资产出租一览表-导出
+  exportInvestView: '/ams/investDetail/exportInvestDetailGlanceList',
+  // 资产出租一览表-查询列表表头统计
+  queryInvestViewTotal: '/ams/investDetail/getInvestDetailGlanceStatistics'
+}
