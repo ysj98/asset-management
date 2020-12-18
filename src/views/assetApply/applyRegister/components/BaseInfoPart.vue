@@ -11,7 +11,7 @@
     <a-row :gutter="24">
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
         <a-form-item label="领用单编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input  v-decorator="[ 'receiveId']" disabled/>
+          <a-input  v-decorator="['receiveId']" disabled/>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -90,7 +90,7 @@
             placeholder="请选择领用部门"
             :options="organOptions"
           /> -->
-          <treeSelect @changeTree="setData($event, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
+          <treeSelect @changeTree="setData(arguments, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
             :disabled="type == 'approval' || type == 'detail'"></treeSelect>
         </a-form-item>
       </a-col>
@@ -210,11 +210,10 @@
       // 渲染数据
       renderDetail () {
         const {type, details} = this
-        console.log(details)
         const {
           approvalStatusName,  assetType,  assetTypeName, attachmentList, createByName, createTime,
           detaList, organId, organName, projectId,  projectName, receiveArea, receiveDate, receiveId, 
-          receiveName, receiveOrganId, receiveOrganName, receiveUserName, remark, returnDate
+          receiveName, receiveOrganId, receiveOrganName, receiveUserName, remark, returnDate, receiveUserId
         } = details
         let attachArr = (attachmentList || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
@@ -240,12 +239,12 @@
             createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         }
-        return this.form.setFieldsValue({ ...formatDetails })
+          return this.form.setFieldsValue({ ...formatDetails })
       },
 
-      // 查询平台字典
-      queryDict () {
-        const list = [
+      // 查询平台字典      
+        queryDict () {
+          const list = [
           { code: 'asset_type', tip: '资产类型', optionName: 'typeOptions' },
           { code: 'ASSESSMENT_METHOD', tip: '评估方法', optionName: 'methodOptions' }
         ]
@@ -264,6 +263,7 @@
           })
         })
       },
+  
 
       // 查询评估机构-机构字典
       queryOrganOptions () {
@@ -305,17 +305,28 @@
       
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
+        console.log(val)
         let value = ''
+        let id = ''
         if (type === 'receiveDate' || type === 'assetType' || type === 'projectId' || type === 'returnDate') {
           value = val
+          this.$emit('setData', { [type]: value})
         } else if (type === 'receiveOrganName') {
           const { organOptions } = this
-          value = organOptions.filter(m => m.key === val)[0]['title']
+          value = val[1]
+          id = val[0]
+          // value = organOptions.filter(m => m.key === val)[0]['title']
+          // id = organOptions.filter(m => m.key === val)[0]['key']
+          this.queryStaff(id)
+          this.$emit('setData', { [type]: value}, {receiveOrganId: id} )
         } else if (type === 'receiveUserName') {
           const { staffList } = this
           value = staffList.filter(m => m.key === val)[0]['title']
+          id = staffList.filter(m => m.key === val)[0]['key']
+          this.$emit('setData', { [type]: value,}, {receiveUserId: id})
         }
-        this.$emit('setData', { [type]: value})
+       
+        
       },
       
       // 单独校验资产项目是否选择
@@ -326,12 +337,12 @@
       },
 
       // 查询部门人员
-      queryStaff() {
-        this.$api.basics.queryUserPageList({organId: this.details.organId, pageNo:1, pageLength:5}).then(res => {
-          console.log(res.data.data)
+      queryStaff(id) {
+        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:5}).then(res => {
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
+          console.log(this.staffList)
         })
       } 
     },
@@ -341,14 +352,16 @@
         this.queryDict()
         this.queryOrganOptions()
         this.queryProjectOptions()
-        this.queryStaff()
+        this.queryStaff(this.details.organId)
+        
+        
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }
       }
     },
     watch: {
-      'details': function () {
+      details: function () {
         this.renderDetail()
         if (this.type == 'add' || this.type == 'edit') {
           this.queryOrganOptions()

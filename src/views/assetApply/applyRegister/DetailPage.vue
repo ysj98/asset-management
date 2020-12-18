@@ -51,7 +51,8 @@
           edit: { leftButtonName: '提交审批', rightButtonName: '取消', midButtonName: '保存草稿', showDarft: true},
           approval: { leftButtonName: '审批通过', rightButtonName: '驳回' }
         }, // 页面底部操作按钮
-        dynamicData: {} // 资产价值清单联动数据
+        dynamicData: {}, // 资产价值清单联动数据
+        saveType: 1 // 提交类型 1:提交审核 0：暂存草稿
       }
     },
 
@@ -64,49 +65,50 @@
       // 获取资产关联对象数据
       getAssetList (list, receiveAreaSum) {
         this.assetList = list
-        this.receiveAreaTotal = receiveAreaSum
+        console.log(receiveAreaSum)
+        this.receiveAreaTotal = +receiveAreaSum
       },
 
       // 提交
-      handleSubmit () {
+      handleSubmit (saveWays) {
         const { type, registerId, assetList, dynamicData, receiveAreaTotal } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)
         }).then(data => {
-          // 校验关联资产
-          // if (!assetList.length) {
-          //   return this.$message.warn('请选择关联资产数据')
-          // } else if(this.validateAssetList(assetList)) {
-          //   return this.$message.warn('资产价值清单本次估值数据为必填')
-          // }
+          校验关联资产
+          if (!assetList.length) {
+            return this.$message.warn('请选择关联资产数据')
+          } else if(this.validateAssetList(assetList)) {
+            return this.$message.warn('资产价值清单资产对应的房屋土地id、领用面积、备注为有项')
+          }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
-          //this.spinning = true
+          this.spinning = true
           let detailList = []
           assetList.forEach(m => {
             const { assetId, receiveArea, assetObjectId, remark } = m
             detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
           let form = type === 'edit' ? { ...data, detailList, receiveId: registerId, approvalStatus: 2, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
-          ...dynamicData} : { ...data, detailList }
+          ...dynamicData, saveType: saveWays} : { ...data, detailList }
           console.log(form,data, detailList)
-          // this.$api.useManage.submitReceive(form).then(r => {
-          //   this.spinning = false
-          //   let res = r.data
-          //   if (res && String(res.code) === '0') {
-          //     this.$message.success(`${tip}成功`)
-          //     // 跳回列表路由
-          //     return this.$router.push({ name: '资产领用', params: { refresh: true } })
-          //   }
-          //   throw res.message || `${tip}失败`
-          // }).catch(err => {
-          //   this.spinning = false
-          //   this.$message.error(err || `${tip}失败`)
-          // })
-        }).catch(() => {
-          this.spinning = false
-        })
+        //   this.$api.useManage.submitReceive(form).then(r => {
+        //     this.spinning = false
+        //     let res = r.data
+        //     if (res && String(res.code) === '0') {
+        //       this.$message.success(`${tip}成功`)
+        //       // 跳回列表路由
+        //       return this.$router.push({ name: '资产领用', params: { refresh: true } })
+        //     }
+        //     throw res.message || `${tip}失败`
+        //   }).catch(err => {
+        //     this.spinning = false
+        //     this.$message.error(err || `${tip}失败`)
+        //   })
+        // }).catch(() => {
+        //   this.spinning = false
+         })
       },
 
       // 查询详情
@@ -126,7 +128,9 @@
               receiveUserName: res.data.receiveUserName,
               projectId: res.data.projectId,
               receiveDate: res.data.receiveDate,
-              returnDate: res.data.returnDate
+              returnDate: res.data.returnDate,
+              receiveUserId: res.data.receiveUserId,
+              receiveOrganId: res.data.receiveOrganId
             }
             return Object.assign(this, { stepList, details: { ...details, ...res.data} })
           }
@@ -139,11 +143,12 @@
       
       // 处理底部按钮事件
       handleFooterBtn (sign) {
-        const { type } = this
+        const { type, saveType } = this
         if (sign === 'left') {
-          type === 'approval' ? this.handleApprove('left') : this.handleSubmit()
+          type === 'approval' ? this.handleApprove('left') : this.handleSubmit(saveType)
         } else if(sign === 'mid'){
-          type === 'approval' ? this.handleApprove('mid') : this.handleSubmit()
+           saveType = 0
+           this.handleSubmit(saveType)
         }else {
           type === 'approval' ? this.handleApprove() : this.$router.go(-1)
         }
@@ -173,12 +178,11 @@
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
         this.dynamicData = Object.assign({}, this.dynamicData, obj)
-        console.log(this.dynamicData.receiveDate)
       },
       
-      // 校验资产价值清单本次估值项非空
+      // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        let arr = list.filter(m => m.assessmentValue === '' || m.assessmentValue === null || m.assessmentValue === undefined)
+        let arr = list.filter(m => m.assetObjectId === '' || m.receiveArea === 0 || m.remark === '')
         return arr.length
       }
     },
