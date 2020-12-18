@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="handleBtnAction({type: 'add'})">领用登记</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="handleBtnAction({type: 'add'})" v-if="organName.length > 0">领用登记</SG-Button>
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -25,7 +25,7 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="false"></treeSelect>
         <div class="box">
             <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
@@ -229,7 +229,7 @@ export default {
   methods: {
       // 控制跳转至新增领用单页面
       handleBtnAction ({id, type}) {
-          const { organProjectType: { organId, organName } } = this
+          const { organProjectType: { organId }, organName } = this
           this.$router.push({ name: '领用登记新增', params: { organId, organName, type: 'add' }})
       },
     exportFn () {
@@ -303,19 +303,20 @@ export default {
     },
      // 删除项目
       confirmDelete (registerId) {
-        this.tableObj.loading = true
-        this.$api.worthRegister.updateStatus({registerId, approvalStatus: 4}).then(r => {
-          this.tableObj.loading = false
+        this.loading = true
+        this.$api.useManage.deleteReceive({receiveId: registerId}).then(r => {
+          this.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             this.$message.success('删除成功')
             // 更新列表
             const { pageNo, pageLength } = this.paginationObj
-            return this.queryTableData({pageNo, pageLength})
+            return this.query()
+            //return this.queryTableData({pageNo, pageLength})
           }
           throw res.message || '删除失败'
         }).catch(err => {
-          this.tableObj.loading = false
+          this.loading = false
           this.$message.error(err || '删除失败')
         })
       },

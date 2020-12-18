@@ -76,7 +76,7 @@
       // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{assetId: 'UID001'}],
       value: { type: Array, default: () => [] },
       // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
-      queryType: { type: [Number, String], default: () => 1 },
+      queryType: { type: [Number, String], default: () => 2 },
       // 资产项目projectId
       proId: { type: [Number, String], default: () => '' },
       // 资产类型
