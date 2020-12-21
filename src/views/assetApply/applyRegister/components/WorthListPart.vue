@@ -120,7 +120,7 @@
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         initList: [], // 选择资产Modal初始选中值
         selectedList: [], // 选择资产Modal选中值
-        queryType: 1, // 1 资产变动，2 资产清理 3 权属登记,
+        queryType: 2, // 1 资产变动，2 资产清理 3 权属登记,
         modalObj: {
           width: 1000, // Modal宽度
           height: 450, // Modal高度
@@ -234,6 +234,9 @@
       // 根据登记Id查询资产详情的列表数据--分页
       queryAssetListByRegisterId ({pageNo = 1, pageLength = 10, type}) {
         const { registerId } = this
+        if(this.type == 'add'){
+          return false
+        }
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
         this.$api.useManage.getReceiveAssetDetailPage({ receiveId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
@@ -252,7 +255,7 @@
             return num += item.receiveArea
       })
             this.receiveAreaSum = num
-            
+            this.calcSum(this.tableObj.dataSource)
             return type === 'init' ? this.queryTotalData(count) : ''
             
           }
@@ -384,8 +387,11 @@
           // 如果切换资产项目\资产类型，则清空Table dataSource
           if ((assetType && String(assetType) !== String(details.assetType)) || (String(projectId) !== String(details.projectId))) {
             // 重置selectedRowKeys
+            this.details.assetType = assetType
+            this.details.projectId = projectId
             this.tableObj.selectedRowKeys = []
             this.tableObj.dataSource = []
+            this.receiveAreaSum = 0
             return this.numList = numList.map(m => {
               return { ...m, value:  0 }
             })

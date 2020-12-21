@@ -37,6 +37,11 @@
             v-model="queryCondition.projectId"
             :showSearch="true"
             :filterOption="filterOption"
+            :getPopupContainer="
+              (triggerNode) => {
+                return triggerNode.parentNode;
+              }
+            "
           >
             <a-select-option
               v-for="(item, index) in projectData"
@@ -136,9 +141,9 @@
         class="custom-table td-pd10"
         :pagination="false"
       >
-        <!--  <template slot="operation" slot-scope="text, record">
-          <router-link :to="{ path: '/assetCheckInView/detail', query: { registerOrderId: record.registerOrderId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
-        </template> -->
+          <template slot="operation" slot-scope="text, record">
+            <OperationPopover :operationData="record.operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
+          </template>
       </a-table>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -160,6 +165,7 @@ import TreeSelect from "../../common/treeSelect";
 import moment from "moment";
 import noDataTips from "@/components/noDataTips";
 import OverviewNumber from "src/views/common/OverviewNumber";
+import OperationPopover from '@/components/OperationPopover'
 const approvalStatusData = [
   {
     name: "全部审批状态",
@@ -277,11 +283,12 @@ const columns = [
   },
   {
     title: "操作",
-    dataIndex: "storageByName",
+    dataIndex: "operation",
+    scopedSlots: { customRender: "operation" },
   },
 ];
 export default {
-  components: { segiIcon, TreeSelect, noDataTips, OverviewNumber },
+  components: { segiIcon, TreeSelect, noDataTips, OverviewNumber, OperationPopover },
   data() {
     return {
       ASSET_MANAGEMENT,
@@ -320,26 +327,21 @@ export default {
       ],
       tableData: [],
       numList: [
-        { title: "全部", key: "whole", value: 0, fontColor: "#3d91f9" },
-        { title: "草稿", key: "notVerified", value: 0, bgColor: "#e47e60" },
-        { title: "待审批", key: "waitStorage", value: 0, bgColor: "#00d58e" },
-        { title: "已驳回", key: "alreadyReject", value: 0, bgColor: "#0092ff" },
+        { title: "全部", key: "total", value: 0, fontColor: "#3d91f9" },
+        { title: "草稿", key: "draft", value: 0, bgColor: "#e47e60" },
+        { title: "待审批", key: "await", value: 0, bgColor: "#00d58e" },
+        { title: "已驳回", key: "reject", value: 0, bgColor: "#0092ff" },
         {
           title: "已审批",
-          key: "alreadyApproval",
+          key: "complete",
           value: 0,
           bgColor: "#ed7ce3",
         },
-        { title: "已取消", key: "alreadyCancel", value: 0, bgColor: "#ff6a6b" },
+        { title: "已取消", key: "cancel", value: 0, bgColor: "#ff6a6b" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
-  watch: {
-    "queryCondition.assetType"() {
-      console.log("queryCondition.assetType", this.queryCondition.assetType);
-      this.getAssetClassifyOptions();
-    },
-  },
+  watch: {},
   mounted() {
     this.platformDictFn("asset_type");
   },
@@ -363,11 +365,12 @@ export default {
         startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
       };
       this.$api.assetRent.getLeaseOrderPageList(obj).then((res) => {
-        console.log('resres',res);
+        console.log("resres", res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
           data.forEach((item, index) => {
             item.key = index;
+            item.operationDataBtn = this.createOperationBtn(item.approvalStatus)
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -414,11 +417,17 @@ export default {
     },
     // 出租登记
     registerFn() {
-      this.$router.push('/rentRegister/rentAdd')
+      this.$router.push("/rentRegister/rentAdd");
     },
     //
     changeTree(value, label) {
-      console.log(value, label);
+      // console.log(value, label);
+      this.organName = label;
+      this.queryCondition.organId = value;
+      this.queryCondition.pageNum = 1;
+      this.queryCondition.projectId = undefined;
+      this.query();
+      this.getObjectKeyValueByOrganIdFn();
     },
     filterOption(input, option) {
       return (
@@ -505,9 +514,10 @@ export default {
     },
     // 查询统计信息
     pageListStatistics(form) {
-      this.$api.assets
-        .assetRegSta(form)
+      this.$api.assetRent
+        .getLeaseOrderStatistics(form)
         .then((r) => {
+          console.log("rrrrrrrr", r);
           let res = r.data;
           if (res && String(res.code) === "0") {
             let { numList } = this;
@@ -543,6 +553,67 @@ export default {
         return [];
       }
     },
+        // 生成操作按钮
+    createOperationBtn (type) {
+      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4  
+      let arr = []
+      // 草稿 已驳回
+      if (['0', '3'].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
+          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
+          arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+        }
+      }
+      // 待审批
+      if (['2'].includes(type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
+          arr.push({iconType: 'edit', text: '审批', editType: 'approval'})
+        }
+      }
+      // 已审批
+      if (['1'].includes(type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
+          arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+        }
+      }
+      arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
+      return arr
+    },
+        // 操作事件函数
+    operationFun (type, record) {
+  /*     console.log('操作事件', type, record)
+      if (['edit', 'detail', 'approval', 'readApproval'].includes(type)) {
+        this.goPage(type, record)
+      }
+      if (['delete', 'readApproval'].includes(type)) {
+        let label = labelTypeMap[type]['name']
+        let approvalStatus = labelTypeMap[type]['approvalStatus']
+        this.$SG_Modal.confirm({
+          title: `确定${label}该计划吗?`,
+          okText: '确定',
+          cancelText: '再想想',
+          onOk: () => {
+            let loadingName = this.SG_Loding(label + '中...')
+            this.$api.building.updateCheckPlanStatus({approvalStatus, planId: record.planId}).then(res => {
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === '0') {
+                  this.$SG_Message.success(label + '成功!')
+                  this.query();
+                } else {
+                  this.$message.error(res.data.message)
+                }
+              })
+            }).catch(() => {
+              this.DE_Loding(loadingName).then(res => {
+                this.$SG_Message.error(label + '失败！')
+              })
+            })
+          }
+        })
+      } */
+    },
   },
   created() {
     this.getObjectKeyValueByOrganIdFn();
@@ -563,6 +634,9 @@ export default {
       position: relative;
       height: 32px;
     }
+  }
+  /deep/.ant-table-body {
+    margin-bottom: 90px;
   }
 }
 </style>

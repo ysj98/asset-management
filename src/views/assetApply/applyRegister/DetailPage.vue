@@ -3,7 +3,7 @@
     <div class="detail_page">
       <a-spin :spinning="spinning" style="padding-bottom: 75px;">
         <!--基础信息-->
-        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData"/>
+        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData" :defaultOrganName="organName"/>
         <!--资产价值清单-->
         <worth-list-part
           v-if="type"
@@ -52,7 +52,8 @@
           approval: { leftButtonName: '审批通过', rightButtonName: '驳回' }
         }, // 页面底部操作按钮
         dynamicData: {}, // 资产价值清单联动数据
-        saveType: 1 // 提交类型 1:提交审核 0：暂存草稿
+        saveType: 1, // 提交类型 1:提交审核 0：暂存草稿
+        organName: '' // 组织机构名称
       }
     },
 
@@ -71,16 +72,17 @@
 
       // 提交
       handleSubmit (saveWays) {
-        const { type, registerId, assetList, dynamicData, receiveAreaTotal } = this
+        console.log(123)
+        const { type, registerId, assetList, dynamicData, receiveAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)
         }).then(data => {
-          校验关联资产
+          //校验关联资产
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
           } else if(this.validateAssetList(assetList)) {
-            return this.$message.warn('资产价值清单资产对应的房屋土地id、领用面积、备注为有项')
+            return this.$message.warn('领用面积为必有项')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
@@ -90,24 +92,25 @@
             const { assetId, receiveArea, assetObjectId, remark } = m
             detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
-          let form = type === 'edit' ? { ...data, detailList, receiveId: registerId, approvalStatus: 2, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
+          let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
           ...dynamicData, saveType: saveWays} : { ...data, detailList }
           console.log(form,data, detailList)
-        //   this.$api.useManage.submitReceive(form).then(r => {
-        //     this.spinning = false
-        //     let res = r.data
-        //     if (res && String(res.code) === '0') {
-        //       this.$message.success(`${tip}成功`)
-        //       // 跳回列表路由
-        //       return this.$router.push({ name: '资产领用', params: { refresh: true } })
-        //     }
-        //     throw res.message || `${tip}失败`
-        //   }).catch(err => {
-        //     this.spinning = false
-        //     this.$message.error(err || `${tip}失败`)
-        //   })
-        // }).catch(() => {
-        //   this.spinning = false
+          this.$api.useManage.submitReceive(form).then(r => {
+            this.spinning = false
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              this.$message.success(`${tip}成功`)
+              // 跳回列表路由
+              return this.$router.push({ name: '资产领用', params: { refresh: true } })
+            }
+            throw res.message || `${tip}失败`
+          }).catch(err => {
+            this.spinning = false
+            this.$message.error(err || `${tip}失败`)
+          })
+        }).catch((err) => {
+          console.log(err)
+          this.spinning = false
          })
       },
 
@@ -143,7 +146,8 @@
       
       // 处理底部按钮事件
       handleFooterBtn (sign) {
-        const { type, saveType } = this
+        const { type } = this
+        let {saveType} = this
         if (sign === 'left') {
           type === 'approval' ? this.handleApprove('left') : this.handleSubmit(saveType)
         } else if(sign === 'mid'){
@@ -182,7 +186,8 @@
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        let arr = list.filter(m => m.assetObjectId === '' || m.receiveArea === 0 || m.remark === '')
+        console.log(list,123)
+        let arr = list.filter(m => +m.receiveArea === 0)
         return arr.length
       }
     },
@@ -190,6 +195,8 @@
     created () {
       const { params : { type, organId, organName, registerId } } = this.$route
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
+      this.organName = organName
+      console.log(this.organName)
       registerId && this.queryDetailById(registerId)
     }
   }
