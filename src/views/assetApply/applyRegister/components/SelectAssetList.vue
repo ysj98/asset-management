@@ -124,6 +124,7 @@
         }
         return this.$api.assets.assetListPage(form).then(r => {
           let res = r.data
+          console.log(res)
           if (res && res.code.toString() === '0') {
             this.loading = false
             const {count, data} = res.data

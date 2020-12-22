@@ -1045,7 +1045,27 @@ export const useManage = {
   // 资产领用一览表-详情
   getReceiveDetailInfo: '/ams/assetReceive/getReceiveDetailInfo',
   // 资产领用-详情资产明细分页
-  getReceiveAssetDetailPage: '/ams/assetReceive/getReceiveAssetDetailPage'
+  getReceiveAssetDetailPage: '/ams/assetReceive/getReceiveAssetDetailPage',
+  // 资产归还-分页列表
+  getReturnPage: '/ams/assetReturn/getReturnPage',
+  // 资产归还-列表汇总
+  getReturnSum: '/ams/assetReturn/getReturnSum',
+  // 资产归还-删除
+  deleteReturn: '/ams/assetReturn/deleteReturn',
+  // 资产归还-导出
+  exportReturn: '/ams/assetReturn/exportReturn',
+  // 资产归还-新增编辑保存
+  submitReturn: '/ams/assetReturn/submitReturn',
+  // 资产归还-详情
+  getReturnInfo: '/ams/assetReturn/getReturnInfo',
+  // 资产归还-详情明细分页
+  getReturnAssetDetailPage: '/ams/assetReturn/getReturnAssetDetailPage',
+  // 资产归还一览表-分页列表
+  getReturnDetailPage: '/ams/assetReturn/getReturnDetailPage',
+  // 资产归还一览表-导出
+  exportReturnDetail: '/ams/assetReturn/exportReturnDetail',
+  // 资产归还一览表-详情
+  getReturnDetailInfo: '/ams/assetReturn/getReturnDetailInfo',
 }
 
 // 资产出租

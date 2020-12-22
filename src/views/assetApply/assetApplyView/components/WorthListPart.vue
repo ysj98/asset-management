@@ -3,6 +3,8 @@
   <div class="worth_list">
     <SG-Title title="资产明细"/>
     <div style="margin-left: 40px">
+      <!--数据总览-->
+      <overview-number :numList="numList" style="margin-bottom: 8px"  />
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
           <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
@@ -66,38 +68,15 @@
         @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
       />
     </div>
-    <SG-Modal
-      v-bind="modalObj"
-      v-model="modalObj.isShow"
-      @cancel="handleAction('')"
-      @ok="handleAction('ok')"
-      v-if="type == 'add' || type == 'edit'"
-    >
-      <!-- 选择资产 -->
-      <select-asset-list
-        v-if="!isEditAll"
-        :organId="organId"
-        :queryType="queryType"
-        v-model="selectedList"
-        :height="modalObj.height"
-        :assetType="dynamicData.assetType"
-        :proId="dynamicData.projectId"
-        :key="`${dynamicData.projectId}${dynamicData.assetType}`"
-      />
-      <!--快捷录入资产估值-->
-      <set-asset v-else ref="setAsset" :assetType="dynamicData.assetType"/>
-    </SG-Modal>
   </div>
 </template>
 
 <script>
-  import SelectAssetList from './SelectAssetList'
-  import SetAsset from './SetAssetValue'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import TooltipText from "src/views/common/TooltipText";
   export default {
     name: 'WorthListPart',
-    components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText },
+    components: {  OverviewNumber,  TooltipText },
     props: ['type', 'registerId', 'organId', 'dynamicData', 'details'],
     data () {
       return {
@@ -130,7 +109,13 @@
           isShow: false
         },
         isEditAll: false, // 批量修改本次估值列
-        receiveAreaSum: 0
+        receiveAreaSum: 0,
+        numList: [
+          {title: '领用面积（m²）', key: 'receiveArea', value: 0, fontColor: '#324057'},
+          {title: '已归还面积（m²）', key: 'returnArea', value: 0, fontColor: '#324057'},
+          {title: '未归还面积（m²）', key: 'unReturnArea', value: 0, fontColor: '#324057'},
+        ] // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        
       }
     },
 
@@ -255,6 +240,12 @@
       })
             this.receiveAreaSum = num
             this.calcSum(this.tableObj.dataSource)
+            this.numList.map((item,index) => {
+            if(!this.details[item.key]){
+              return this.numList[index].value = 0
+            }
+            this.numList[index].value = this.details[item.key]
+          })
             return false
           }
           throw res.message || '查询登记资产接口出错'
@@ -359,11 +350,9 @@
       }
     },
     
-    created () {
-      
+    created () {     
       const { type } = this
-      if (type === 'add' || type === 'edit') {
-        
+      if (type === 'add' || type === 'edit') {       
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
@@ -373,11 +362,20 @@
         // type === 'approval' || type === 'detail'时
         // 列表查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({type: 'init'})
-      }
-      
-    },
+          
     
+      }
+    },
+
     watch: {
+      details: function (val) {
+            this.numList.map((item,index) => {
+            if(!this.details[item.key]){
+              return this.numList[index].value = 0
+            }
+            this.numList[index].value = this.details[item.key]
+          })
+      },
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
         let {tableObj: {dataSource}, type, numList, details} = this

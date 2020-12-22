@@ -138,6 +138,10 @@
       }
     },
 
+    mounted () {
+      this.queryAssetType()
+    },
+
     methods: {
       // 处理接管时间
       changeDate (date, dateString) {

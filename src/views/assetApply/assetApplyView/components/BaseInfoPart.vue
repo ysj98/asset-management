@@ -1,7 +1,66 @@
 <!--价值登记页面--资产价值登记详情页面--基础信息组件-->
 <template>
   <div class="base_info_form">
-    <SG-Title title="基础信息"/>
+    <SG-Title title="资产信息"/>
+    <a-form 
+    :form="assetForm"
+    :class="{'disabled_form': type == 'approval' || type == 'detail'}"
+    :layout="type == 'approval' || type == 'detail' ? 'inline' : 'horizontal'"
+    :style="`margin-left: ${(type == 'approval' || type == 'detail') ? '40px' : '20px'}`"
+    >
+      <a-row :gutter="24">
+        <a-col :span="8">
+        <a-form-item label="资产编码" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['assetCode']" disabled/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="资产名称" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['assetName']" disabled/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="资产状态" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['approvalStatus']" disabled/>
+        </a-form-item>
+      </a-col>
+      </a-row>
+      <a-row :gutter="24">
+        <a-col :span="8">
+        <a-form-item label="管理机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['organName']" disabled/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="资产项目" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['projectName']" disabled/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="资产类型" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['assetTypeName']" disabled/>
+        </a-form-item>
+      </a-col>
+      </a-row>
+      <a-row :gutter="24">
+        <a-col :span="8">
+        <a-form-item label="资产分类" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['objectTypeName']" disabled/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="资产面积" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['area']" disabled/>
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="资产位置" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['address']" disabled/>
+        </a-form-item>
+      </a-col>
+      </a-row>
+    </a-form>
+    <SG-Title title="领用信息"/>
     <a-form
       :form="form"
       :class="{'disabled_form': type == 'approval' || type == 'detail'}"
@@ -10,56 +69,56 @@
     >
     <a-row :gutter="24">
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
-        <a-form-item label="领用单编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input  v-decorator="['receiveId']" disabled/>
+        <a-form-item label="领用编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['receiveDetailId']" disabled/>
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="领用单名称" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-input
             placeholder="请填写领用登记单名称"
-            :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'receiveName', { initialValue: 123, rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            disabled
+            v-decorator="[ 'receiveName']"
           />
         </a-form-item>
       </a-col>
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用单编号">
+          <a-input v-decorator="['receiveId']" :disabled="true"/>
+        </a-form-item>
+        </a-col>
+    </a-row>
+    <a-row :gutter="24">
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用单状态">
           <a-input v-decorator="['approvalStatusName']" :disabled="true"/>
         </a-form-item>
         </a-col>
+        <a-col :span="8">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属组织机构">
+          <a-input
+            v-decorator="['organName']" disabled
+          ></a-input>
+        </a-form-item>
+      </a-col>
       <a-col :span="8">
-        <a-form-item label="所属组织机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input v-model="organName" disabled/>
-          <!--<span style="margin-left: 12px">{{organName}}</span>-->
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产项目">
+          <a-input
+            v-decorator="['projectName']"
+            disabled
+          ></a-input>
+        </a-form-item>
+      </a-col>
+    </a-row>
+       
+    <a-row :gutter="24">
+      <a-col :span="8" >
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产类型">
+          <a-input style="width: 100%" v-decorator="['assetTypeName']"
+            disabled ></a-input>
         </a-form-item>
       </a-col>
        <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产项目">
-          <a-select
-            showSearch
-            :filterOption="filterOption"
-            v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
-            :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'projectId')"
-            placeholder="请选择资产项目"
-            :options="projectOptions"
-          />
-        </a-form-item>
-      </a-col>
-
-      <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产类型">
-          <a-select
-            v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
-            :disabled="type == 'approval' || type == 'detail'"
-            placeholder="请选择资产类型"
-            :options="typeOptions"
-            @change="value => setData(value, 'assetType')"
-          />
-        </a-form-item>
-      </a-col>
-      <a-col :span="8">
         <a-form-item label="领用时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-date-picker
             style="width: 100%"
@@ -81,21 +140,20 @@
           />
         </a-form-item>
       </a-col>
-      <a-col :span="8" >
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门">
-          <treeSelect @changeTree="setData(arguments, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
-            :disabled="type == 'approval' || type == 'detail'" ></treeSelect>
+    </a-row>
+      
+      <a-row :gutter="24">
+        <a-col :span="8">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门" v-if="type == 'approval' || type == 'detail'">
+          <a-input v-decorator="[ 'receiveOrganName']"  disabled/>
         </a-form-item>
       </a-col>
-      <a-col :span="8">
+          <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用人">
-          <a-select
-            v-decorator="['receiveUserName', { rules: [{ required: true, message: '请选择领用人' }] }]"
-            :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'receiveUserName')"
-            placeholder="请选择领用人"
-            :options="staffList"
-          />
+          <a-input
+            v-decorator="['receiveUserName']"
+            disabled
+          ></a-input>
         </a-form-item>
       </a-col>
        <a-col :span="8">
@@ -103,14 +161,15 @@
           <a-input v-decorator="[ 'createByName']" disabled/>
         </a-form-item>
       </a-col>
-      <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间" v-if="type == 'approval' || type == 'detail'">
-          <a-input v-decorator="[ 'createTime']"  disabled/>
-        </a-form-item>
-      </a-col>
       </a-row>
+      
     <a-row>
       <a-col :span="24">
+        <a-col :span="8">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间" v-if="type == 'approval' || type == 'detail'">
+          <a-input v-decorator="[ 'createTime']"   disabled/>
+        </a-form-item>
+      </a-col>
         <a-form-item
           label="领用说明"
           :label-col="type == 'approval' || type == 'detail' ? {span: 1} : {span: 2}"
@@ -143,7 +202,7 @@
           <span v-else style="margin-left: 12px">无</span>
         </a-form-item>
       </a-col>
-    </a-row>
+ </a-row>
     
   </a-form>
   </div>
@@ -151,11 +210,9 @@
 
 <script>
   import moment from 'moment'
-  import TreeSelect from '../../../common/treeSelect'
   export default {
     name: 'BaseInfoPart',
     props: ['type', 'details', 'defaultOrganName', 'defaultOrganId'],
-    components: {TreeSelect},
     data () {
       return {
         formItemLayout: {
@@ -169,6 +226,7 @@
         taskOptions: [],  // 评估任务选项
         organOptions: [], // 评估机构选项
         form: this.$form.createForm(this),
+        assetForm: this.$form.createForm(this),
         methodOptions: [], // 评估方法选项
         projectOptions: [], // 资产项目选项
         createTime: '', // 提交时间
@@ -206,24 +264,24 @@
       renderDetail () {
         const {type, details} = this
         const {
-          approvalStatusName,  assetType,  assetTypeName, attachmentList, createByName, createTime,
-          detaList, organId, organName, projectId,  projectName, receiveArea, receiveDate, receiveId, 
-          receiveName, receiveOrganId, receiveOrganName, receiveUserName, remark, returnDate, receiveUserId
+          approvalStatusName,  assetInfo, assetTypeName, attachment, createByName, createTime,
+          organName,  projectName, receiveArea, receiveDate, receiveDetailId, receiveId, receiveName, receiveOrganName,
+          receiveUserName, remark, returnArea, returnDate, returnList, unreturnArea
         } = details
-        let attachArr = (attachmentList || []).map(m => {
+        let attachArr = (attachment || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
-        !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
+        // let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
+        // !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
+        let formatDetails = {}
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
-        let  formatDetails = Object.assign({}, formatDetails, {
+           formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
-            projectId: projectName,
-            assetType: assetTypeName,
-            receiveId,
-            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
+            projectName,
+            receiveId, receiveDetailId, organName, assetTypeName,
+            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName,receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
@@ -234,7 +292,11 @@
             createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         }
+          
+
+              this.assetForm.setFieldsValue({ ...details.assetInfo })
           return this.form.setFieldsValue({ ...formatDetails })
+         
       },
 
       // 查询平台字典      
@@ -345,7 +407,7 @@
       } 
     },
     mounted () {
-      this.renderDetail()
+        this.renderDetail()
       if (this.type == 'add' || this.type == 'edit') {
         this.queryDict()
         this.queryOrganOptions()
@@ -371,7 +433,6 @@
     created() {
       this.organName = this.defaultOrganName
       this.organId = +this.defaultOrganId
-      console.log(this.details)
     }
   }
 </script>

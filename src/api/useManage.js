@@ -33,11 +33,11 @@ export function getReceiveDetailPage (data) {
   }
 // 资产领用一览表-列表汇总
 export function getReceiveDetailSum (data) {
-    return axiosGet(useManage.getReceiveDetailSum, data)
+    return axiosPost(useManage.getReceiveDetailSum, data)
   }
 // 资产领用一览表-导出
 export function exportReceiveDetail (data) {
-    return axiosGet(useManage.exportReceiveDetail, data, false, false, {responseType: 'blob'})
+    return axiosPost(useManage.exportReceiveDetail, data, false, false, {responseType: 'blob'})
   }
 // 资产领用一览表-详情
 export function getReceiveDetailInfo (data) {
@@ -46,4 +46,44 @@ export function getReceiveDetailInfo (data) {
 // 资产领用-详情资产明细分页
 export function getReceiveAssetDetailPage (data) {
   return axiosPost(useManage.getReceiveAssetDetailPage, data)
+}
+// 资产归还-分页列表
+export function getReturnPage (data) {
+  return axiosPost(useManage.getReturnPage, data)
+}
+// 资产归还-列表汇总
+export function getReturnSum (data) {
+  return axiosPost(useManage.getReturnSum, data)
+}
+// 资产归还-删除
+export function deleteReturn (data) {
+  return axiosPost(useManage.deleteReturn, data)
+}
+// 资产归还-导出
+export function exportReturn (data) {
+  return axiosPost(useManage.exportReturn, data, false, false, {responseType: 'blob'})
+}
+// 资产归还-新增编辑保存
+export function submitReturn (data) {
+  return axiosPost(useManage.submitReturn, data)
+}
+// 资产归还-详情
+export function getReturnInfo (data) {
+  return axiosGet(useManage.getReturnInfo, data)
+}
+// 资产归还-详情明细分页
+export function getReturnAssetDetailPage (data) {
+  return axiosPost(useManage.getReturnAssetDetailPage, data)
+}
+// 资产归还一览表-分页列表
+export function getReturnDetailPage(data) {
+  return axiosPost(useManage.getReturnDetailPage, data)
+}
+// 资产归还一览表-导出
+export function exportReturnDetail (data) {
+  return axiosPost(useManage.exportReturnDetail, data, false, false, {responseType: 'blob'})
+}
+// 资产归还一览表-详情
+export function getReturnDetailInfo (data) {
+  return axiosGet(useManage.getReturnDetailInfo, data)
 }

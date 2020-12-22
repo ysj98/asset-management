@@ -941,5 +941,15 @@ let proRouter = [{
     name: '领用登记审批',
     component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
+  {
+    path: '/assetApplyView/detail',
+    name: '资产领用一览表详情',
+    component: () => import('@/views/assetApply/assetApplyView/DetailPage')
+  },
+  {
+    path: '/assetReturnView/detail',
+    name: '资产归还一览表详情',
+    component: () => import('@/views/assetApply/assetReturnView/DetailPage')
+  }
 ]
 export default proRouter
