@@ -24,3 +24,8 @@ export function queryRentViewTotal (data) {
 export function exportRentView (data) {
   return axiosPost(assetRent.exportRentView, data, false, false, { responseType: 'blob'})
 }
+
+// 资产出租-选客户
+export function queryCustUserInPageList(data) {
+  return axiosPost(assetRent.queryCustUserInPageList, data)
+}

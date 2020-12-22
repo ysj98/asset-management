@@ -14,6 +14,9 @@
       :disabled="disabled"
       :treeCheckable="treeCheckable"
       :treeDefaultExpandAll="treeDefaultExpandAll"
+      :getPopupContainer="(triggerNode) =>{
+        return triggerNode.parentNode
+      }"
       @change="changeTree">
     </a-tree-select>
     <div class="default-organ-name" v-show="showDefaultOrganName">{{defaultOrganName}}</div>
@@ -110,7 +113,6 @@ export default {
     // 第一次进来获取组织机构
     initDepartment () {
       this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: this.typeFilter}).then(res => {
-        console.log(res)
         if (Number(res.data.code) === 0) {
           this.treeData = this.mapTreeNodes(res.data.data)
           if (this.default) {

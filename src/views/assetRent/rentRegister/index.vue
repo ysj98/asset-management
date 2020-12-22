@@ -291,6 +291,7 @@ export default {
   components: { segiIcon, TreeSelect, noDataTips, OverviewNumber, OperationPopover },
   data() {
     return {
+      organID: '',
       ASSET_MANAGEMENT,
       loading: false,
       columns,
@@ -365,7 +366,6 @@ export default {
         startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
       };
       this.$api.assetRent.getLeaseOrderPageList(obj).then((res) => {
-        console.log("resres", res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
           data.forEach((item, index) => {
@@ -417,11 +417,14 @@ export default {
     },
     // 出租登记
     registerFn() {
-      this.$router.push("/rentRegister/rentAdd");
+      this.$router.push({
+        path: `/rentRegister/rentAdd/${this.organID}`
+      });
     },
     //
     changeTree(value, label) {
       // console.log(value, label);
+      this.organID = value
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
@@ -517,7 +520,6 @@ export default {
       this.$api.assetRent
         .getLeaseOrderStatistics(form)
         .then((r) => {
-          console.log("rrrrrrrr", r);
           let res = r.data;
           if (res && String(res.code) === "0") {
             let { numList } = this;

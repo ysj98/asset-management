@@ -1059,7 +1059,9 @@ export const assetRent = {
   // 资产出租一览表-导出
   exportRentView: '/ams/leaseDetail/exportLeaseDetailGlanceList',
   // 资产出租一览表-查询列表表头统计
-  queryRentViewTotal: '/ams/leaseDetail/getLeaseDetailGlanceStatistics'
+  queryRentViewTotal: '/ams/leaseDetail/getLeaseDetailGlanceStatistics',
+  // 选客户
+  queryCustUserInPageList: '/ams/customerApi/queryCustUserInPageList',
 }
 
 // 资产投资

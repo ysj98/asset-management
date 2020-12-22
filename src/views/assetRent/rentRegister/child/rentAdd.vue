@@ -1,8 +1,8 @@
 <!--出租单新建-->
 <template>
   <a-spin :spinning="spinning" class="edit_page">
-    <SG-Title title="基础信息" />
     <a-form :form="form">
+      <SG-Title title="基础信息" />
       <a-row>
         <a-col :span="8">
           <a-form-item
@@ -45,7 +45,7 @@
               :options="projectOptions"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
-              @change="changeSelect"
+              @change="projectSelect"
               v-decorator="[
                 'projectId',
                 { rules: [{ required: true, message: '请选择资产项目' }] },
@@ -65,7 +65,7 @@
               style="width: 100%;"
               placeholder="请选择资产类型"
               :options="typeOptions"
-              @change="changeSelect"
+              @change="assetTypeSelect"
               v-decorator="[
                 'assetType',
                 { rules: [{ required: true, message: '请选择资产类型' }] },
@@ -95,11 +95,11 @@
               <a-tag
                 closable
                 v-for="m in tenantList"
-                :key="m.id"
+                :key="m.extCustId"
                 style="background: #fff;"
                 @close="handleTenant(m)"
               >
-                {{ m.name }}
+                {{ m.custName }}
               </a-tag>
               <a-tag color="#108ee9" @click="handleTenant('')">
                 <a-icon type="user-add" style="margin-right: 3px" />选择
@@ -209,18 +209,101 @@
           </a-form-item>
         </a-col>
       </a-row>
+      <SG-Title title="资产明细" />
+      <a-form-item label="">
+        <div class="assetInfo">
+          <div class="text">
+            <div class="leftInfo">
+              资产数量： 6个，&emsp; 出租面积： 600㎡
+            </div>
+            <SG-Button
+              icon="plus"
+              type="primary"
+              ghost
+              @click="handleAddModal(true)"
+              >添加资产</SG-Button
+            >
+          </div>
+          <!-- 资产表格部分 -->
+          <a-table
+            :columns="columns"
+            :data-source="tableData"
+            :pagination="false"
+            :bordered="true"
+          >
+            <template slot="operation"
+              ><!--  slot-scope="text, record" -->
+              <a>删除</a>
+            </template>
+          </a-table>
+        </div>
+      </a-form-item>
     </a-form>
-    <!--选择承租人Modal-->
-<!--     <select-staff
-      ref="selectTenant"
-      @change="getTenant"
-      :selectOptList="tenantList"
-    /> -->
-    <TenantModal></TenantModal>
+
+    <!-- 承租人组件 -->
+    <TenantModal
+      v-model="close"
+      v-if="close"
+      ref="TenantModal"
+      @getTenantList="getTenantList"
+    ></TenantModal>
   </a-spin>
 </template>
 
 <script>
+const columns = [
+  {
+    title: "序号",
+    dataIndex: "index",
+    align: "center",
+  },
+  {
+    title: "资产编码",
+    dataIndex: "assetCode",
+    align: "center",
+  },
+  {
+    title: "资产名称",
+    dataIndex: "assetName",
+    align: "center",
+  },
+  {
+    title: "资产类型",
+    dataIndex: "assetTypeName",
+    align: "center",
+  },
+  {
+    title: "资产分类",
+    dataIndex: "assetCategoryName",
+    align: "center",
+  },
+  {
+    title: "规格型号",
+    dataIndex: "specifications",
+    // scopedSlots: { customRender: "operation" },
+    align: "center",
+  },
+  {
+    title: "资产面积(㎡)",
+    dataIndex: "assetArea",
+    align: "center",
+  },
+  {
+    title: "出租面积(㎡)",
+    dataIndex: "rentOutArea",
+    align: "center",
+  },
+  {
+    title: "备注",
+    dataIndex: "remark",
+    align: "center",
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    align: "center",
+  },
+];
 import {
   queryProjectListByOrganId,
   filterOption,
@@ -230,7 +313,9 @@ import TenantModal from "../../component/tenantModal";
 export default {
   data() {
     return {
-      organId: "1300",
+      close,
+      columns,
+      organId: 1,
       spinning: false, // 页面加载状态
       form: this.$form.createForm(this), // 注册form
       labelCol: { span: 8 },
@@ -247,6 +332,11 @@ export default {
           sm: { span: 3 },
         },
       },
+      dynamicData: {
+        assetType: "",
+        projectId: "",
+      },
+      tableData: [],
     };
   },
   components: { TenantModal },
@@ -262,9 +352,19 @@ export default {
     // 下拉搜索筛选
     filterOption,
     // 改变资产项目或资产类型，清空关联的登记单
-    changeSelect() {
+    changeSelect(val) {
+      console.log(val);
+      this.dynamicData.assetType = val;
       /*  this.selectedList = []
         this.tableObj.dataSource = [] */
+    },
+    // 资产项目选择
+    projectSelect(val) {
+      this.dynamicData.projectId = val;
+    },
+    // 资产类型选择
+    assetTypeSelect(val) {
+      this.dynamicData.assetType = val;
     },
     // 根据organId查询资产项目
     queryProjectByOrganId(organId) {
@@ -283,18 +383,35 @@ export default {
           : this.$message.error("查询资产类型失败");
       });
     },
+    // 接收子组件承租人
+    getTenantList(val) {
+      let hash = {};
+      this.tenantList.push(val);
+      this.tenantList = this.tenantList.reduce(function(item, next) {
+        hash[next.extCustId]
+          ? ""
+          : (hash[next.extCustId] = true && item.push(next));
+        return item;
+      }, []);
+      // console.log("我收到了", this.tenantList);
+    },
     // 获取选中的审核人
-/*     getTenant(list = []) {
+    /*     getTenant(list = []) {
       this.tenantList = list;
     }, */
-/*     // 删除、选择承租人
+    // 删除、选择承租人
     handleTenant(m) {
       if (m) {
-        this.tenantList = this.tenantList.filter((v) => v.id !== m.id);
+        this.tenantList = this.tenantList.filter(
+          (v) => v.extCustId !== m.extCustId
+        );
       } else {
-        this.$refs.selectTenant.visible = true;
+        this.close = true;
+        this.$nextTick(() => {
+          this.$refs.TenantModal.show = true;
+        });
       }
-    }, */
+    },
     signDateFn(value, mode) {
       console.log(value, mode);
     },
@@ -304,6 +421,10 @@ export default {
     endDateFn(value, mode) {
       console.log(value, mode);
     },
+  },
+  created() {
+    // 页面一加载储存organId
+    this.organId = this.$route.params.id;
   },
   mounted() {
     // 获取当前用户信息
@@ -323,6 +444,24 @@ export default {
   & /deep/ .ant-table-placeholder {
     display: block;
     border-bottom: 1px solid #e8e8e8;
+  }
+  .assetInfo {
+    .text {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px 0 70px;
+      height: 34px;
+      margin-bottom: 13px;
+      .leftInfo {
+        position: relative;
+        top: 6px;
+      }
+    }
+  }
+}
+/deep/.ant-table-thead {
+  th div {
+    text-align: center;
   }
 }
 </style>
