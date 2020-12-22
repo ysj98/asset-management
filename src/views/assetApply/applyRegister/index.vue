@@ -158,6 +158,11 @@ const columns = [
     title: '操作',
     dataIndex: 'operation',
     scopedSlots: { customRender: 'operation' },
+  },
+  {
+    title: 'key值',
+    dataIndex: 'key',
+    width: 0
   }
 ]
 
@@ -195,7 +200,7 @@ export default {
       },
       organProjectType: {
           organId: 1,
-          organName: '',
+          organName: this.organName,
           projectId: [],
           assetType: []
         }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
@@ -219,7 +224,6 @@ export default {
   },
   watch: {
     'queryCondition.assetType' () {
-      console.log('queryCondition.assetType', this.queryCondition.assetType)
       this.getAssetClassifyOptions()
     }
   },
@@ -230,7 +234,7 @@ export default {
       // 控制跳转至新增领用单页面
       handleBtnAction ({id, type}) {
           const { organProjectType: { organId }, organName } = this
-          this.$router.push({ name: '领用登记新增', params: { organId, organName, type: 'add' }})
+          this.$router.push({ name: '领用登记新增', params: { organId:this.queryCondition.organId, organName, type: 'add' }})
       },
     exportFn () {
       let obj = {
@@ -286,13 +290,15 @@ export default {
       }
       this.$api.useManage.getReceiveSum(obj).then(res => {
         if(res.data.code == 0){
-          console.log(res)
           this.numList.map((item,index) => {
             this.numList[index].value = res.data.data[item.key]
           })
           this.$api.useManage.getReceivePage(obj).then(r => {
             if(r.data.code == 0){
               console.log(r)
+              r.data.data.data.map((item,index) => {
+                r.data.data.data[index].key = item.receiveId
+              })
               this.tableData = r.data.data.data
               this.count = r.data.data.count
             }
