@@ -1,6 +1,6 @@
 <!--价值登记页面--资产价值登记详情页面--基础信息组件-->
 <template>
-  <div class="base_info_form">
+  <div class="base_info_form" >
     <SG-Title title="归还信息"/>
     <a-form
       :form="returnForm"
@@ -31,12 +31,11 @@
     <a-row :gutter="24">
       <a-col :span="8">
         <a-form-item label="归还时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-input
             style="width: 100%"
-            @change="(date, dateString) => setData(dateString, 'returnDate')"
             :disabled="type == 'approval' || type == 'detail'"
              v-decorator="[ 'returnDate']"
-          />
+          ></a-input>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -183,24 +182,22 @@
     <a-row :gutter="24">
       <a-col :span="8">
         <a-form-item label="领用时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-input
             style="width: 100%"
             placeholder="请选择领用时间"
-            @change="(date, dateString) => setData(dateString, 'receiveDate')"
             :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['receiveDate', { rules: [{ required: true, message: '请选择领用时间' }] }]"
-          />
+          ></a-input>
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="预计归还时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-input
             style="width: 100%"
             placeholder="请选择预计归还时间"
-            @change="(date, dateString) => setData(dateString, 'returnDate')"
             :disabled="type == 'approval' || type == 'detail'"
              v-decorator="[ 'returnDate']"
-          />
+          ></a-input>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -276,7 +273,8 @@
         createByName: '', // 提交人
         receiveId: '', // 领用单Id
         staffList: [], // 部门人员列表
-        receiveUserId: ''// 领用人id
+        receiveUserId: '',// 领用人id
+        condition: 0
       }
     },
 
@@ -306,6 +304,7 @@
       // 渲染数据
       renderDetail () {
         const {type, details} = this
+        console.log(details)
         const {
           receiveAttachment, assetInfo, returnList, returnDetail, returnAttachment, receiveDetail
         } = details
@@ -324,10 +323,13 @@
             
             
           }
+          
+          
+          // let returnDate = moment(returnDetail.returnDate || new Date(), 'YYYY-MM-DD')
+          // returnDetail.returnDate = moment(returnDetail.returnDate || new Date(), 'YYYY-MM-DD')
               this.assetForm.setFieldsValue({ ...assetInfo })
-              this.returnForm.setFieldsValue({ ...returnDetail, returnDate: moment(returnDetail.returnDate || new Date(), 'YYYY-MM-DD') })
-          return this.receiveForm.setFieldsValue({ receiveDetailId: receiveDetail.receiveDetailId,
-            receiveId:receiveDetail.receiveId, receiveName:receiveDetail.receiveName, receiveUserName: receiveDetail.receiveUserName, receiveOrganName: receiveDetail.receiveOrganName,remark: receiveDetail.remark || '无', returnDate: moment(receiveDetail.returnDate || new Date(), 'YYYY-MM-DD'),  receiveDate: moment(receiveDetail.receiveDate || new Date(), 'YYYY-MM-DD') })
+              this.returnForm.setFieldsValue({ ...returnDetail})
+          return this.receiveForm.setFieldsValue({ ...receiveDetail})
          
       },
 
@@ -439,7 +441,12 @@
       } 
     },
     mounted () {
+      
+        // delete this.details.receiveDetail.receiveArea
+        //   delete this.details.receiveDetail.returnArea
+        //   delete this.details.receiveDetail.unReturnArea
         this.renderDetail()
+      
       if (this.type == 'add' || this.type == 'edit') {
         this.queryDict()
         this.queryOrganOptions()
@@ -453,7 +460,10 @@
       }
     },
     watch: {
-      details: function () {
+      details: function (val) {
+          delete this.details.receiveDetail.receiveArea
+          delete this.details.receiveDetail.returnArea
+          delete this.details.receiveDetail.unReturnArea
         this.renderDetail()
         if (this.type == 'add' || this.type == 'edit') {
           this.queryOrganOptions()
@@ -465,6 +475,7 @@
     created() {
       this.organName = this.defaultOrganName
       this.organId = +this.defaultOrganId
+      this.condition = Object.keys(this.details).length
     }
   }
 </script>
