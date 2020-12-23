@@ -72,6 +72,7 @@
 
       // 提交
       handleSubmit (saveWays) {
+        console.log(123)
         const { type, registerId, assetList, dynamicData, receiveAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
@@ -115,28 +116,25 @@
       // 查询详情
       queryDetailById (registerId) {
         this.spinning = true
-        this.$api.useManage.getReturnDetailInfo({returnDetailId: registerId}).then(r => {
+        const { details } = this
+        this.$api.useManage.getReceiveInfo({receiveId: registerId}).then(r => {
           this.spinning = false
-          let receiveArea = r.data.data.receiveDetail.receiveArea
-          let returnArea = r.data.data.receiveDetail.returnArea
-          let unReturnArea = r.data.data.receiveDetail.unReturnArea
           let res = r.data
-          console.log(r.data)
-          console.log(receiveArea,returnArea,unReturnArea)
+          console.log(res)
           if (res && String(res.code) === '0') {
-            const { data } = res
+            const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
-            // this.dynamicData = {
-            //   assetType: res.data.assetType,
-            //   receiveOrganName: res.data.receiveOrganName,
-            //   receiveUserName: res.data.receiveUserName,
-            //   projectId: res.data.projectId,
-            //   receiveDate: res.data.receiveDate,
-            //   returnDate: res.data.returnDate,
-            //   receiveUserId: res.data.receiveUserId,
-            //   receiveOrganId: res.data.receiveOrganId
-            // }
-            return Object.assign(this, { details: { ...data, receiveArea, returnArea, unReturnArea} })
+            this.dynamicData = {
+              assetType: res.data.assetType,
+              receiveOrganName: res.data.receiveOrganName,
+              receiveUserName: res.data.receiveUserName,
+              projectId: res.data.projectId,
+              receiveDate: res.data.receiveDate,
+              returnDate: res.data.returnDate,
+              receiveUserId: res.data.receiveUserId,
+              receiveOrganId: res.data.receiveOrganId
+            }
+            return Object.assign(this, { stepList, details: { ...details, ...res.data} })
           }
           throw res.message || '查询领用登记详情出错'
         }).catch(err => {
@@ -187,6 +185,7 @@
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
+        console.log(list,123)
         let arr = list.filter(m => +m.receiveArea === 0)
         return arr.length
       }
@@ -197,6 +196,7 @@
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
       this.organName = organName
       this. organId = organId
+      console.log(this.organId)
       registerId && this.queryDetailById(registerId)
     }
   }
