@@ -41,7 +41,7 @@
           >
             <a-select
               showSearch
-              style="width: 100%;"
+              style="width: 100%"
               :options="projectOptions"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
@@ -62,7 +62,7 @@
             :wrapper-col="wrapperCol"
           >
             <a-select
-              style="width: 100%;"
+              style="width: 100%"
               placeholder="请选择资产类型"
               :options="typeOptions"
               @change="assetTypeSelect"
@@ -96,7 +96,7 @@
                 closable
                 v-for="m in tenantList"
                 :key="m.extCustId"
-                style="background: #fff;"
+                style="background: #fff"
                 @close="handleTenant(m)"
               >
                 {{ m.custName }}
@@ -177,7 +177,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            --
+            <span class="pubText">{{rentOutArea? rentOutArea : 0}}㎡</span>
           </a-form-item>
         </a-col>
         <a-col :span="24">
@@ -214,7 +214,7 @@
         <div class="assetInfo">
           <div class="text">
             <div class="leftInfo">
-              资产数量： 6个，&emsp; 出租面积： 600㎡
+              资产数量： <span class="pubText">{{selectedList.length === 0? 0 : selectedList.length}}</span>&nbsp;&nbsp;个，&emsp; 出租面积： <span class="pubText">{{rentOutArea? rentOutArea : 0}}㎡</span>
             </div>
             <SG-Button
               icon="plus"
@@ -227,13 +227,23 @@
           <!-- 资产表格部分 -->
           <a-table
             :columns="columns"
-            :data-source="tableData"
+            :data-source="selectedList"
             :pagination="false"
             :bordered="true"
           >
-            <template slot="operation"
-              ><!--  slot-scope="text, record" -->
-              <a>删除</a>
+            <template slot="operation" slot-scope="text, record">
+              <a style="color: #ff0000" @click="remove(record)">删除</a>
+            </template>
+            <template slot="rentOutArea" slot-scope="text, record">
+              <a-input-number
+                id="inputNumber"
+                v-model="record.rentOutArea"
+                :step="1.0"
+                :precision="2"
+                :min="0"
+                :max="+record.assetArea"
+                @change="rentOutAreaChange"
+              />
             </template>
           </a-table>
         </div>
@@ -247,6 +257,15 @@
       ref="TenantModal"
       @getTenantList="getTenantList"
     ></TenantModal>
+    <!-- 资产列表组件 -->
+    <AssetListMoal
+      ref="AssetListMoal"
+      :proId="dynamicData.projectId"
+      :assetType="dynamicData.assetType"
+      :organId="organId"
+      :queryType="6"
+      v-model="selectedList"
+    ></AssetListMoal>
   </a-spin>
 </template>
 
@@ -279,7 +298,7 @@ const columns = [
   },
   {
     title: "规格型号",
-    dataIndex: "specifications",
+    dataIndex: "model",
     // scopedSlots: { customRender: "operation" },
     align: "center",
   },
@@ -291,6 +310,7 @@ const columns = [
   {
     title: "出租面积(㎡)",
     dataIndex: "rentOutArea",
+    scopedSlots: { customRender: "rentOutArea" },
     align: "center",
   },
   {
@@ -301,6 +321,7 @@ const columns = [
   {
     title: "操作",
     dataIndex: "operation",
+    scopedSlots: { customRender: "operation" },
     align: "center",
   },
 ];
@@ -309,7 +330,9 @@ import {
   filterOption,
   queryAssetTypeList,
 } from "src/views/common/commonQueryApi";
-import TenantModal from "../../component/tenantModal";
+import TenantModal from "../../component/tenantModal"; // 承租人组件
+import AssetListMoal from "../../component/assetListModal";
+import { calc, debounce } from "@/utils/utils";
 export default {
   data() {
     return {
@@ -336,13 +359,14 @@ export default {
         assetType: "",
         projectId: "",
       },
-      tableData: [],
+      selectedList: [], // 添加资产列表
+      rentOutArea: "", // 出租面积
     };
   },
-  components: { TenantModal },
+  components: { TenantModal, AssetListMoal },
   watch: {
     // 自定义必填项校验
-    tenantList: function(val) {
+    tenantList: function (val) {
       if (val.length) {
         this.validateTenant = false;
       }
@@ -387,7 +411,7 @@ export default {
     getTenantList(val) {
       let hash = {};
       this.tenantList.push(val);
-      this.tenantList = this.tenantList.reduce(function(item, next) {
+      this.tenantList = this.tenantList.reduce(function (item, next) {
         hash[next.extCustId]
           ? ""
           : (hash[next.extCustId] = true && item.push(next));
@@ -420,6 +444,40 @@ export default {
     },
     endDateFn(value, mode) {
       console.log(value, mode);
+    },
+    handleAddModal() {
+      if (!this.dynamicData.projectId && !this.dynamicData.assetType) {
+        this.form.validateFieldsAndScroll(["projectId", "assetType"], () => {
+          this.$message.warn("请先选择数据");
+          return;
+        });
+      } else {
+        this.$refs.AssetListMoal.show = true;
+      }
+    },
+    // 删除资产行
+    remove(val) {
+      console.log(val);
+    },
+
+    // 监听输入的值
+    rentOutAreaChange() {
+      this.debounceMothed();
+    },
+    // 防抖函数计算交付面积总计
+    debounceMothed: debounce(function () {
+      this.calcFn();
+    }, 200),
+    // 每次再次计算统计的值
+    calcFn() {
+      if (this.selectedList.length > 0) {
+        this.rentOutArea = this.selectedList.reduce(
+          (sun, current) => calc.add(sun, current.rentOutArea || 0),
+          0
+        );
+      } else {
+        this.rentOutArea = 0;
+      }
     },
   },
   created() {
@@ -458,6 +516,10 @@ export default {
       }
     }
   }
+}
+.pubText {
+  font-size: 14px;
+  font-weight: bold;
 }
 /deep/.ant-table-thead {
   th div {

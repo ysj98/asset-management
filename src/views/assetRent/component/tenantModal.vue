@@ -3,7 +3,7 @@
   <SG-Modal
     v-model="show"
     :width="960"
-    wrapClassName="newMember"
+    wrapClassName="tenantModal"
     :noPadding="true"
     :maskClosable="false"
     :footer="null"
@@ -210,7 +210,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.newMember {
+.tenantModal {
   .content {
     padding: 0 15px;
     padding-bottom: 55px;
