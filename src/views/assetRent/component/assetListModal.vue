@@ -42,7 +42,7 @@
         />
         <div class="ml10">
           已选:&emsp;<span style="font-size: 14px; font-weight: bold">{{
-            selectedList.length
+            selectedList.length === 0? 0 : selectedList.length
           }}</span>
         </div>
       </div>
