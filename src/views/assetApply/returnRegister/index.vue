@@ -49,39 +49,37 @@
         <template slot="operation" slot-scope="text, record">
           <a-popover placement="bottom">
         <template slot="content">
-          <p><a-icon type="form"></a-icon>编辑</p>
-          <p><a-icon type="setting" theme="filled"></a-icon>审批</p>
-          <p><a-icon type="delete"></a-icon>删除</p>
-          <p><router-link :to="{name: '领用登记详情', params: {registerId: record.returnId, type: 'detail', organId, organName}}" class="action_text"><a-icon type="setting" theme="filled"></a-icon>详情</router-link></p>
-          <p v-if="false">{{ record.returnId }}</p>
-        </template>
-        <a-button type="link"><a-icon type="ellipsis" /></a-button>
-      </a-popover>
-          <!-- <div class="opt">
-            <a-popconfirm
+          <p><router-link
+          class="action_text"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
+          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
+          :to="{name: '领用登记编辑', params: {registerId: record.returnId, type: 'edit'}}"
+        ><a-icon type="form"></a-icon>编辑</router-link></p>
+          <p><router-link
+          class="action_text"
+          v-if="Number(record.approvalStatus) === 2"
+          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
+          :to="{name: '领用登记审批', params: {registerId: record.returnId, type: 'approval'}}"
+        ><a-icon type="setting" theme="filled"></a-icon>审批</router-link></p>
+          <p><a-popconfirm
           okText="确定"
           cancelText="取消"
           title="确定要删除该资产项目吗?"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
           @confirm="confirmDelete(record.receiveId)"
           v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-        >
-          <span class="action_text">删除</span>
-        </a-popconfirm>
-          <router-link :to="{name: '领用登记详情', params: {registerId: record.returnId, type: 'detail', organId, organName}}" class="action_text">详情</router-link>
-                 <router-link
-          class="action_text"
-          v-if="Number(record.approvalStatus) === 2"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '领用登记审批', params: {registerId: record.returnId, type: 'approval'}}"
-        >审批</router-link>
-        <router-link
-          class="action_text"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-          :to="{name: '领用登记编辑', params: {registerId: record.returnId, type: 'edit'}}"
-        >编辑</router-link>
-          </div> -->
+        ><a-icon type="delete"></a-icon>删除
+        </a-popconfirm></p>
+          <p><router-link :to="{name: '归还登记详情', params: {registerId: record.returnId, type: 'detail', organId, organName, queryType:1}}" class="action_text opts" tag="div" ><a-icon type="setting" theme="filled"></a-icon>详情</router-link></p>
+          <p v-if="false">{{ record.returnId }}</p>
+        </template>
+        <a-button ><a-icon type="ellipsis" /></a-button>
+      </a-popover>
+        </template>
+        <template slot="key" slot-scope="text, record">
+          <div v-if="false">
+            {{record.returnId}}
+          </div>
         </template>
       </a-table>
     </div>
@@ -245,7 +243,7 @@ export default {
       // 控制跳转至新增领用单页面
       handleBtnAction ({id, type}) {
           const { organProjectType: { organId }, organName } = this
-          this.$router.push({ name: '领用登记新增', params: { organId:this.queryCondition.organId, organName, type: 'add' }})
+          this.$router.push({ name: '归还登记新增', params: { organId:this.queryCondition.organId, organName, type: 'add' }})
       },
     exportFn () {
       let obj = {
@@ -508,11 +506,7 @@ export default {
   }
   .action_text{
     color: black !important;
-  }
-  .router-link-active {
-    text-decoration: none;
-    color: black !important;
-}
+  }  
   .nav {
     display: inline-block;
     vertical-align: middle;

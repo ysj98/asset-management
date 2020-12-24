@@ -950,6 +950,16 @@ let proRouter = [{
     path: '/assetReturnView/detail',
     name: '资产归还一览表详情',
     component: () => import('@/views/assetApply/assetReturnView/DetailPage')
-  }
+  },
+  {
+    path: '/returnRegister/detail',
+    name: '归还登记详情',
+    component: () => import('@/views/assetApply/returnRegister/DetailPage')
+  },
+  {
+    path: '/returnRegister/new',
+    name: '归还登记新增',
+    component: () => import('@/views/assetApply/returnRegister/DetailPage')
+  },
 ]
 export default proRouter

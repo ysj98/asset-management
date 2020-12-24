@@ -20,7 +20,16 @@
       </a-col>
       <a-col :span="6">
         <a-input-search
-          v-model.trim="assetNameCode"
+          v-model.trim="receiveDetailId"
+          style="width: 100%"
+          @search="fetchData"
+          @pressEnter="fetchData"
+          placeholder="请输入领用编号"
+        />
+      </a-col>
+      <a-col :span="6">
+        <a-input-search
+          v-model.trim="assetName"
           style="width: 100%"
           @search="fetchData"
           @pressEnter="fetchData"
@@ -84,7 +93,9 @@
     },
     data () {
       return {
-        assetNameCode: '', // 资产名
+        list: '', // 回传数据列表
+        receiveDetailId: '', // 领用编号
+        assetName: '', // 资产名
         // assetType: undefined, // 类型
         // assetTypeOptions: [], // 类型选项
         projectId: undefined, // 资产项目
@@ -97,14 +108,16 @@
         selectedRowKeys: [], // Table选中项
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: false },
         columns: [
-          { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 120 },
+          { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
+          { title: '资产编码', dataIndex: 'assetCode' },
           { title: '资产名称', dataIndex: 'assetName' },
-          { title: '所属机构', dataIndex: 'organName' },
-          { title: '资产项目', dataIndex: 'projectName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产分类', dataIndex: 'assetCategoryName' },
-          { title: '位置', dataIndex: 'address' },
-          { title: '状态', dataIndex: 'assetStatusName' }
+          { title: '领用日期', dataIndex: 'receiveDate' },
+          { title: '领用人', dataIndex: 'receiveUserName' },
+          { title: '领用面积（㎡）', dataIndex: 'receiveArea' },
+          { title: '已归还面积(㎡)', dataIndex: 'returnArea' },
+          { title: '未归还面积(㎡)', dataIndex: 'unReturnArea' }
         ]
       }
     },
@@ -112,21 +125,32 @@
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
-        const {objectType, assetNameCode, assetType, proId: projectId, queryType, organId} = this
+        const {objectType, assetName, assetType, proId: projectId, queryType, organId, receiveDetailId} = this
         if (!projectId) { return this.$message.warn('资产项目Id不存在')}
         this.loading = true
         let form = {
-          queryType, assetNameCode, projectId, organId,
+          queryType, assetName, projectId, organId, receiveDetailId,
           // projectId: projectId === '-1' ? '' : projectId, 改前
           assetType: assetType === '-1' ? '' : assetType,
           objectType: objectType === '-1' ? '' : objectType,
           pageSize: pageLength, pageNum: pageNo
         }
-        return this.$api.assets.assetListPage(form).then(r => {
+        return this.$api.useManage.getReceiveRecordPage(form).then(r => {
           let res = r.data
-          console.log(res)
+          console.log(res.data)
           if (res && res.code.toString() === '0') {
             this.loading = false
+            res.data.data.map((item,index) => {
+              if(!item.returnArea){
+                res.data.data[index].returnArea = 0
+              }
+              if(!item.unReturnArea){
+                res.data.data[index].unReturnArea = 0
+              }
+              if(!item.receiveArea){
+                res.data.data[index].receiveArea = 0
+              }
+            })
             const {count, data} = res.data
             this.dataSource = data
             Object.assign(this.paginationObj, {
@@ -246,6 +270,10 @@
         })
         let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
         this.selectedList = primaryList.concat(newList)
+        // this.dataSource.map((item,index) => {
+        //   if(item == this.selectedList.assetId)
+        //     return this.dataSource
+        // })
         this.$emit('input', allAttrs ? selectedList : keys)
       },
 

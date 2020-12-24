@@ -54,7 +54,8 @@
         dynamicData: {}, // 资产价值清单联动数据
         saveType: 1, // 提交类型 1:提交审核 0：暂存草稿
         organName: '', // 组织机构名称
-        organId: ''  // 组织机构id
+        organId: '',  // 组织机构id
+        queryType: 1 // 资产明细是否分页，0分，1不分
       }
     },
 
@@ -116,8 +117,8 @@
       // 查询详情
       queryDetailById (registerId) {
         this.spinning = true
-        const { details } = this
-        this.$api.useManage.getReceiveInfo({receiveId: registerId}).then(r => {
+        const { details,queryType } = this
+        this.$api.useManage.getReturnInfo({returnId: registerId, queryType}).then(r => {
           this.spinning = false
           let res = r.data
           console.log(res)
@@ -193,6 +194,12 @@
 
     created () {
       const { params : { type, organId, organName, registerId } } = this.$route
+      if(type == 'edit'){
+        this.queryType = 1
+      }
+      if(type == 'detail' || type == 'approval') {
+        this.queryType = 0
+      }
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
       this.organName = organName
       this. organId = organId
