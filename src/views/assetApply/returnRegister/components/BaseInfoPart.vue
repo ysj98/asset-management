@@ -10,28 +10,27 @@
     >
     <a-row :gutter="24">
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
-        <a-form-item label="领用单编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input  v-decorator="['receiveId']" disabled/>
+        <a-form-item label="归还单编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['returnId']" disabled  />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="领用单名称" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+        <a-form-item label="归还单名称" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
           <a-input
-            placeholder="请填写领用登记单名称"
+            placeholder="请填写归还登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'receiveName', { initialValue: 123, rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'returnName', { rules: [{ required: true, message: '请填写归还登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用单状态">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还单状态">
           <a-input v-decorator="['approvalStatusName']" :disabled="true"/>
         </a-form-item>
         </a-col>
       <a-col :span="8">
         <a-form-item label="所属组织机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-input v-model="organName" disabled/>
-          <!--<span style="margin-left: 12px">{{organName}}</span>-->
         </a-form-item>
       </a-col>
        <a-col :span="8">
@@ -45,6 +44,7 @@
             placeholder="请选择资产项目"
             :options="projectOptions"
           />
+          <!-- <a-input v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
 
@@ -57,45 +57,40 @@
             :options="typeOptions"
             @change="value => setData(value, 'assetType')"
           />
+          <!-- <a-input v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="领用时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+        <a-form-item label="归还时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-date-picker
             style="width: 100%"
-            placeholder="请选择领用时间"
-            @change="(date, dateString) => setData(dateString, 'receiveDate')"
-            :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="['receiveDate', { rules: [{ required: true, message: '请选择领用时间' }] }]"
-          />
-        </a-form-item>
-      </a-col>
-      <a-col :span="8">
-        <a-form-item label="预计归还时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
-            style="width: 100%"
-            placeholder="请选择预计归还时间"
+            placeholder="请选择归还时间"
             @change="(date, dateString) => setData(dateString, 'returnDate')"
             :disabled="type == 'approval' || type == 'detail'"
-             v-decorator="[ 'returnDate']"
+            v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"
           />
+          <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8" >
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门">
-          <treeSelect @changeTree="setData(arguments, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
-            :disabled="type == 'approval' || type == 'detail'" ></treeSelect>
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还部门">
+          <treeSelect @changeTree="setData(arguments, 'returnOrganName')"  placeholder='请选择归还部门' :allowClear="false" style="width: 100%" v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }], initialValue: '123' }]"
+            :disabled="type == 'approval' || type == 'detail'" v-if="type=='edit' || type=='add'" :default="false"></treeSelect>
+            <!-- <a-input v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]" disabled ></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用人">
-          <a-select
-            v-decorator="['receiveUserName', { rules: [{ required: true, message: '请选择领用人' }] }]"
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还人">
+          <!-- <a-select
+            v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'receiveUserName')"
-            placeholder="请选择领用人"
+            @change="setData($event, 'returnUserName')"
+            placeholder="请选择归还人"
             :options="staffList"
-          />
+          /> -->
+          <a-input v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]" :disabled="type == 'approval' || type == 'detail'">
+
+          </a-input>
         </a-form-item>
       </a-col>
        <a-col :span="8">
@@ -112,14 +107,14 @@
     <a-row>
       <a-col :span="24">
         <a-form-item
-          label="领用说明"
+          label="归还说明"
           :label-col="type == 'approval' || type == 'detail' ? {span: 1} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {span: 23} : {span: 21}"
         >
           <a-textarea
             :rows="type == 'approval' || type == 'detail' ? '' : 4"
             style="resize: none"
-            placeholder="请输入领用说明"
+            placeholder="请输入归还说明"
             :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['remark', { rules: [{max: 200, message: '最多200个字符'}] }]"
           />
@@ -175,7 +170,10 @@
         createByName: '', // 提交人
         receiveId: '', // 领用单Id
         staffList: [], // 部门人员列表
-        receiveUserId: ''// 领用人id
+        receiveUserId: '', // 领用人id
+        rules: {
+          returnName: [{ required: true, message: '请选择资产项目' }] , projectId: [{ required: true, message: '请选择资产项目' }] 
+      }
       }
     },
 
@@ -184,56 +182,57 @@
         return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
       // 提交数据
-      handleSubmit (resolve, reject) {
-        this.form.validateFieldsAndScroll((err, values) => {
-          if (!err) {
-            const { attachment, details: { organId } } = this
-            let attachArr = attachment.map(m => {
-              const { url: attachmentPath, name: oldAttachmentName } = m
-              return { attachmentPath, oldAttachmentName }
-            }) // 处理附件格式
-            // 转换日期格式为string
-            let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
-            let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate, returnDate:returnDate, receiveUserId: this.receiveUserId })
-            return resolve(form)
-          }
-          reject('数据不完整')
-        })
-      },
+      // handleSubmit (resolve, reject) {
+      //   this.form.validateFieldsAndScroll((err, values) => {
+      //     if (!err) {
+      //       const { attachment, details: { organId } } = this
+      //       let attachArr = attachment.map(m => {
+      //         const { url: attachmentPath, name: oldAttachmentName } = m
+      //         return { attachmentPath, oldAttachmentName }
+      //       }) // 处理附件格式
+      //       // 转换日期格式为string
+      //       let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
+      //       let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
+      //       let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate, returnDate:returnDate, receiveUserId: this.receiveUserId })
+      //       return resolve(form)
+      //     }
+      //     reject('数据不完整')
+      //   })
+      // },
       
       // 渲染数据
       renderDetail () {
         const {type, details} = this
         const {
-          approvalStatusName,  assetType,  assetTypeName, attachmentList, createByName, createTime,
-          detaList, organId, organName, projectId,  projectName, receiveArea, receiveDate, receiveId, 
-          receiveName, receiveOrganId, receiveOrganName, receiveUserName, remark, returnDate, receiveUserId
+          approvalStatusName,  assetType,  assetTypeName, attachment, createByName, createTime,
+          detaList, organId, organName, projectId,  projectName, remark,  returnDate, returnId, 
+          returnName, returnOrganId, returnOrganName, returnUserName, returnUserId
         } = details
-        let attachArr = (attachmentList || []).map(m => {
+        let attachArr = (attachment || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
-        !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
+        let formatDetails = { returnName,returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
+        !returnDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
-        let  formatDetails = Object.assign({}, formatDetails, {
+          formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
             projectId: projectName,
             assetType: assetTypeName,
-            receiveId,
-            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
+            returnId,
+            createByName, approvalStatusName, createTime, returnUserName, returnOrganName
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '', 
             projectId: projectName,
             assetType: assetTypeName,
-            receiveId,
-            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
+            returnId,
+            createByName, approvalStatusName, createTime, returnUserName, returnOrganName
           })
         }
+        console.log(formatDetails)
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
@@ -302,26 +301,26 @@
       setData (val, type) {
         let value = ''
         let id = ''
-        if (type === 'receiveDate' || type === 'assetType' || type === 'projectId' || type === 'returnDate') {
+        if (type === 'returnDate' || type === 'assetType' || type === 'projectId' || type === 'returnDate') {
           value = val
           this.form.setFieldsValue({ [type]: value })
           this.$emit('setData', { [type]: value})
-        } else if (type === 'receiveOrganName') {
+        } else if (type === 'returnOrganName') {
           const { organOptions } = this
           value = val[1]
           id = val[0]
-         this.form.setFieldsValue({ receiveOrganName: value })
+         //this.form.setFieldsValue({ returnOrganName: value })
          this.receiveUserId = id
           // value = organOptions.filter(m => m.key === val)[0]['title']
           // id = organOptions.filter(m => m.key === val)[0]['key']
           this.queryStaff(id)
-          this.$emit('setData', { [type]: value, receiveOrganId: +id} )
-        } else if (type === 'receiveUserName') {
+          //this.$emit('setData', { [type]: value, returnOrganId: +id} )
+        } else if (type === 'returnUserName') {
           const { staffList } = this
           value = staffList.filter(m => m.key === val)[0]['title']
           id = staffList.filter(m => m.key === val)[0]['key']
-          this.form.setFieldsValue({ receiveUserName: value, receiveUserId: id })
-          this.$emit('setData', { [type]: value, receiveUserId: +id})
+          this.form.setFieldsValue({ returnUserName: value, returnUserId: id })
+          this.$emit('setData', { [type]: value, returnUserId: +id})
         }
         
       },
@@ -340,7 +339,7 @@
             return {key: r.userId, title:r.name}
           })
           console.log(this.staffList[0].title)
-          return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
+          return //this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 
     },

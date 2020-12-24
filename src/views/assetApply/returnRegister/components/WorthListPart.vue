@@ -4,8 +4,8 @@
     <SG-Title title="资产明细"/>
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
-        <div v-if="type == 'add' || type == 'edit'" class="box">
-          <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
+        <div class="box">
+          <div class="left" style="height: 100%">领用记录：{{ tableObj.dataSource.length }}，归还总面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
           <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
           <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
         </div>
@@ -109,11 +109,13 @@
           rowKey: 'assetId',
           selectedRowKeys: [], // Table选中的key数据
           columns: [
+            { title: '领用ID', dataIndex: 'receiveDetailId' },
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
-            { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
-            { title: '领用面积(㎡)', dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' } },{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '领用面积(㎡)', dataIndex: 'receiveArea' },{ title: '领用日期', dataIndex: 'receiveDate' },
+            { title: '领用部门', dataIndex: 'receiveOrganName'},{ title: '已归还面积(㎡)', dataIndex: 'totalReturnArea' },
+            { title: '本次归还面积(㎡)', dataIndex: 'returnArea', scopedSlots: { customRender: 'returnArea' } },{ title: '剩余归还面积(㎡)', dataIndex: 'unReturnArea' },
+            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
           ]
         },
         exportBtnLoading: false, // 导出按钮loading
@@ -238,7 +240,7 @@
         }
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
-        this.$api.useManage.getReceiveAssetDetailPage({ receiveId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
+        this.$api.useManage.getReturnAssetDetailPage({ returnId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
           console.log(r)
           this.tableObj.loading = false
           let res = r.data
@@ -266,6 +268,7 @@
       
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
+        console.log(selectedRows)
         let form = {}
         let { registerId, tableObj: { dataSource }, dynamicData, selectedList } = this
         if (status === 'init') {

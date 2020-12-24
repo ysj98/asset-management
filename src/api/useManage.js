@@ -87,3 +87,7 @@ export function exportReturnDetail (data) {
 export function getReturnDetailInfo (data) {
   return axiosGet(useManage.getReturnDetailInfo, data)
 }
+// 资产领用-资产归还选择领用记录分页列表
+export function getReceiveRecordPage (data) {
+  return axiosPost(useManage.getReceiveRecordPage, data)
+}
