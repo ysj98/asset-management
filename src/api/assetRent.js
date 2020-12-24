@@ -29,3 +29,13 @@ export function exportRentView (data) {
 export function queryCustUserInPageList(data) {
   return axiosPost(assetRent.queryCustUserInPageList, data)
 }
+
+// 出租登记-新增or修改保存出租单
+export function saveUpdateLeaseOrder(data) {
+  return axiosPost(assetRent.saveUpdateLeaseOrder, data)
+}
+
+// 出租登记-查询出租单
+export function getLeaseOrder(data) {
+  return axiosPost(assetRent.getLeaseOrder, data)
+}

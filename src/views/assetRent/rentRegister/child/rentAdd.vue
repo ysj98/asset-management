@@ -12,6 +12,7 @@
           >
             <a-input
               placeholder="请输入出租单名称"
+              @change="nameChange"
               v-decorator="[
                 'rentName',
                 {
@@ -30,7 +31,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            xx集团<!-- {{particularsData.changeOrderId || '--'}} -->
+            {{ organName }}
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -79,7 +80,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入合同编号" />
+            <a-input placeholder="请输入合同编号" v-model="contractNum"/>
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -168,7 +169,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入租金单价" />
+            <a-input placeholder="请输入租金单价" v-model="rentPrice" />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -177,7 +178,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <span class="pubText">{{rentOutArea? rentOutArea : 0}}㎡</span>
+            <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
           </a-form-item>
         </a-col>
         <a-col :span="24">
@@ -214,7 +215,12 @@
         <div class="assetInfo">
           <div class="text">
             <div class="leftInfo">
-              资产数量： <span class="pubText">{{selectedList.length === 0? 0 : selectedList.length}}</span>&nbsp;&nbsp;个，&emsp; 出租面积： <span class="pubText">{{rentOutArea? rentOutArea : 0}}㎡</span>
+              资产数量：
+              <span class="pubText">{{
+                selectedList.length === 0 ? 0 : selectedList.length
+              }}</span
+              >&nbsp;&nbsp;个，&emsp; 出租面积：
+              <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
             </div>
             <SG-Button
               icon="plus"
@@ -232,12 +238,15 @@
             :bordered="true"
           >
             <template slot="operation" slot-scope="text, record">
-              <a style="color: #ff0000" @click="remove(record)">删除</a>
+              <a style="color: #ff0000" @click="removeRent(record)">删除</a>
             </template>
-            <template slot="rentOutArea" slot-scope="text, record">
+            <template slot="leaseArea">
+              <span class="icon-red">出租面积(㎡)</span>
+            </template>
+            <template slot="leaseArea" slot-scope="text, record">
               <a-input-number
                 id="inputNumber"
-                v-model="record.rentOutArea"
+                v-model="record.leaseArea"
                 :step="1.0"
                 :precision="2"
                 :min="0"
@@ -245,11 +254,32 @@
                 @change="rentOutAreaChange"
               />
             </template>
+            <template slot="remark" slot-scope="text, record">
+              <a-input
+                placeholder="请输入备注"
+                :max="200"
+                v-model="record.remark"
+                style="width: 150px"
+              />
+            </template>
           </a-table>
         </div>
       </a-form-item>
     </a-form>
-
+    <!-- 页脚 -->
+    <FormFooter style="border: none" location="fixed">
+      <div>
+        <SG-Button type="primary" @click="save('save')">提交审批</SG-Button>
+        <SG-Button
+          style="margin-left: 12px"
+          type="primary"
+          weaken
+          @click="save()"
+          >保存草稿</SG-Button
+        >
+        <SG-Button @click="cancel">取消</SG-Button>
+      </div>
+    </FormFooter>
     <!-- 承租人组件 -->
     <TenantModal
       v-model="close"
@@ -265,6 +295,7 @@
       :organId="organId"
       :queryType="6"
       v-model="selectedList"
+      @areaChange="areaChange"
     ></AssetListMoal>
   </a-spin>
 </template>
@@ -273,8 +304,8 @@
 const columns = [
   {
     title: "序号",
-    dataIndex: "index",
     align: "center",
+    customRender: (text, record, index) => `${index + 1}`,
   },
   {
     title: "资产编码",
@@ -299,7 +330,6 @@ const columns = [
   {
     title: "规格型号",
     dataIndex: "model",
-    // scopedSlots: { customRender: "operation" },
     align: "center",
   },
   {
@@ -308,14 +338,15 @@ const columns = [
     align: "center",
   },
   {
-    title: "出租面积(㎡)",
-    dataIndex: "rentOutArea",
-    scopedSlots: { customRender: "rentOutArea" },
+    slots: { title: "leaseArea" },
+    dataIndex: "leaseArea",
+    scopedSlots: { customRender: "leaseArea" },
     align: "center",
   },
   {
     title: "备注",
     dataIndex: "remark",
+    scopedSlots: { customRender: "remark" },
     align: "center",
   },
   {
@@ -333,11 +364,13 @@ import {
 import TenantModal from "../../component/tenantModal"; // 承租人组件
 import AssetListMoal from "../../component/assetListModal";
 import { calc, debounce } from "@/utils/utils";
+import FormFooter from "@/components/FormFooter";
 export default {
   data() {
     return {
       close,
       columns,
+      organName: "",
       organId: 1,
       spinning: false, // 页面加载状态
       form: this.$form.createForm(this), // 注册form
@@ -360,10 +393,16 @@ export default {
         projectId: "",
       },
       selectedList: [], // 添加资产列表
-      rentOutArea: "", // 出租面积
+      leaseArea: "", // 出租面积
+      rentFormName: "", // 投资单名称
+      signingDate: "", // 签约日期
+      startLeaseDate: "", // 起租日期
+      endLeaseDate: "", // 止租日期
+      contractNum: '', // 合同编号
+      rentPrice: '', // 租金单价
     };
   },
-  components: { TenantModal, AssetListMoal },
+  components: { TenantModal, AssetListMoal, FormFooter },
   watch: {
     // 自定义必填项校验
     tenantList: function (val) {
@@ -437,13 +476,13 @@ export default {
       }
     },
     signDateFn(value, mode) {
-      console.log(value, mode);
+      this.signingDate = mode;
     },
     startDateFn(value, mode) {
-      console.log(value, mode);
+      this.startLeaseDate = mode;
     },
     endDateFn(value, mode) {
-      console.log(value, mode);
+      this.endLeaseDate = mode;
     },
     handleAddModal() {
       if (!this.dynamicData.projectId && !this.dynamicData.assetType) {
@@ -456,10 +495,32 @@ export default {
       }
     },
     // 删除资产行
-    remove(val) {
-      console.log(val);
+    removeRent(val) {
+      let _this = this;
+      this.$confirm({
+        title: "提示",
+        content: "确认要删除吗？",
+        onOk() {
+          let arr = [];
+          let area = 0;
+          _this.selectedList.forEach((item, index) => {
+            if (item.assetId === val.assetId) {
+              _this.selectedList.splice(index, 1);
+            }
+          });
+          _this.selectedList.forEach((j) => {
+            arr.push(j.assetId);
+          });
+          _this.$refs.AssetListMoal.selectedRowKeys = arr; // 删除组件中的项
+        },
+      });
     },
-
+    areaChange() {
+      this.debounceMothed();
+    },
+    nameChange(e) {
+      this.rentFormName = e.target.value;
+    },
     // 监听输入的值
     rentOutAreaChange() {
       this.debounceMothed();
@@ -471,18 +532,78 @@ export default {
     // 每次再次计算统计的值
     calcFn() {
       if (this.selectedList.length > 0) {
-        this.rentOutArea = this.selectedList.reduce(
-          (sun, current) => calc.add(sun, current.rentOutArea || 0),
+        this.leaseArea = this.selectedList.reduce(
+          (sun, current) => calc.add(sun, current.leaseArea || 0),
           0
         );
       } else {
-        this.rentOutArea = 0;
+        this.leaseArea = 0;
       }
+    },
+
+    // 保存/修改请求
+    saveUpdateLeaseOrder() {
+      // 过滤承租人
+      let arr = [];
+      this.tenantList.map((item) => {
+        arr.push(item.extCustId);
+      });
+      let str = arr.toString();
+      // 过滤资产列表
+      let newArr = [];
+      for (let i = 0; i < this.selectedList.length; i++) {
+        let newObj = {};
+        newObj.assetId = this.selectedList[i].assetId;
+        newObj.leaseArea = this.selectedList[i].leaseArea;
+        newArr.push(newObj);
+      }
+
+      let saveObj = {
+        leaseName: this.rentFormName,
+        organId: this.organId,
+        projectId: this.dynamicData.projectId,
+        assetType: this.dynamicData.assetType,
+        approvalStatus: 1,
+        lesseeId: str,
+        signingDate: this.signingDate,
+        startLeaseDate: this.startLeaseDate,
+        endLeaseDate: this.endLeaseDate,
+        leaseArea: this.leaseArea,
+        assetSum: this.selectedList.length,
+        leaseDetail: newArr,
+        contractCode: this.contractNum,
+        rentPrice: this.rentPrice
+      };
+      this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
+        // console.log(res);
+        if (+res.data.code === 0) {
+          this.$message.success(`提交审批成功`);
+          this.$router.push("/rentRegister");
+        }
+      });
+    },
+    // 页脚保存/草稿
+    save(val) {
+      if (val) {
+        this.validateTenant = !this.tenantList.length;
+        this.form.validateFields((err, values) => {
+          if (!err && this.tenantList.length) {
+            this.saveUpdateLeaseOrder();
+          }
+        });
+      } else {
+        console.log("caogao", newArr);
+      }
+    },
+    // 页脚取消
+    cancel() {
+      console.log("quxiao");
     },
   },
   created() {
     // 页面一加载储存organId
     this.organId = this.$route.params.id;
+    this.organName = this.$route.params.organName;
   },
   mounted() {
     // 获取当前用户信息

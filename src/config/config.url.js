@@ -1082,6 +1082,10 @@ export const assetRent = {
   queryRentViewTotal: '/ams/leaseDetail/getLeaseDetailGlanceStatistics',
   // 选客户
   queryCustUserInPageList: '/ams/customerApi/queryCustUserInPageList',
+  // 出租登记-新增or修改保存出租单
+  saveUpdateLeaseOrder: '/ams/leaseOrder/saveUpdateLeaseOrder',
+  // 出租登记-查询出租单
+  getLeaseOrder: '/ams/leaseOrder/getLeaseOrder'
 }
 
 // 资产投资

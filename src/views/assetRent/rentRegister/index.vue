@@ -418,7 +418,7 @@ export default {
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/rentRegister/rentAdd/${this.organID}`
+        path: `/rentRegister/rentAdd/${this.organID}/${this.organName}`
       });
     },
     //
@@ -585,6 +585,13 @@ export default {
     },
         // 操作事件函数
     operationFun (type, record) {
+      console.log(record);
+      // 编辑
+      if(['edit'].includes(type)) {
+        this.$router.push({
+          path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
+        });
+      }
   /*     console.log('操作事件', type, record)
       if (['edit', 'detail', 'approval', 'readApproval'].includes(type)) {
         this.goPage(type, record)

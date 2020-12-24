@@ -42,7 +42,7 @@
         />
         <div class="ml10">
           已选:&emsp;<span style="font-size: 14px; font-weight: bold">{{
-            selectedList.length === 0? 0 : selectedList.length
+            selectedList.length === 0 ? 0 : selectedList.length
           }}</span>
         </div>
       </div>
@@ -226,8 +226,8 @@ export default {
           res.data.data.forEach((item, index) => {
             item.key = item.assetId;
             item.model = "/";
-            item.index = index + 1;
-            item.rentOutArea = item.assetArea;
+            item.leaseArea = item.assetArea;
+            item.remark = "";
           });
           if (res && res.code.toString() === "0") {
             this.loading = false;
@@ -276,6 +276,7 @@ export default {
     submitAdd() {
       this.show = false;
       this.$emit("input", this.selectedList);
+      this.$emit('areaChange')
     },
 
     // 根据资产类型查资产分类列表

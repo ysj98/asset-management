@@ -862,12 +862,12 @@ let proRouter = [{
     component: () => import('@/views/assetRent/rentRegister/index')
   },
   {
-    path: '/rentRegister/rentAdd/:id?',
+    path: '/rentRegister/rentAdd/:id?/:organName?',
     name: '出租单新建',
     component: () => import('@/views/assetRent/rentRegister/child/rentAdd')
   },
   {
-    path: '/rentRegister/rentEdit',
+    path: '/rentRegister/rentEdit/:id?',
     name: '出租单编辑',
     component: () => import('@/views/assetRent/rentRegister/child/rentEdit')
   },
