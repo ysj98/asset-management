@@ -74,23 +74,23 @@
       </a-col>
       <a-col :span="8" >
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还部门">
-          <treeSelect @changeTree="setData(arguments, 'returnOrganName')"  placeholder='请选择归还部门' :allowClear="false" style="width: 100%" v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }], initialValue: '123' }]"
+          <treeSelect @changeTree="setData(arguments, 'returnOrganName')"  placeholder='请选择归还部门' :allowClear="false" style="width: 100%" v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]"
             :disabled="type == 'approval' || type == 'detail'" v-if="type=='edit' || type=='add'" :default="false"></treeSelect>
             <!-- <a-input v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]" disabled ></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还人">
-          <!-- <a-select
+          <a-select
             v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'returnUserName')"
             placeholder="请选择归还人"
             :options="staffList"
-          /> -->
-          <a-input v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]" :disabled="type == 'approval' || type == 'detail'">
+          />
+          <!-- <a-input v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]" :disabled="type == 'approval' || type == 'detail'">
 
-          </a-input>
+          </a-input> -->
         </a-form-item>
       </a-col>
        <a-col :span="8">
@@ -170,7 +170,8 @@
         createByName: '', // 提交人
         receiveId: '', // 领用单Id
         staffList: [], // 部门人员列表
-        receiveUserId: '', // 领用人id
+        returnUserId: '', // 领用人id
+        returnOrganId: '', // 归还部门id
         rules: {
           returnName: [{ required: true, message: '请选择资产项目' }] , projectId: [{ required: true, message: '请选择资产项目' }] 
       }
@@ -182,23 +183,23 @@
         return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
       // 提交数据
-      // handleSubmit (resolve, reject) {
-      //   this.form.validateFieldsAndScroll((err, values) => {
-      //     if (!err) {
-      //       const { attachment, details: { organId } } = this
-      //       let attachArr = attachment.map(m => {
-      //         const { url: attachmentPath, name: oldAttachmentName } = m
-      //         return { attachmentPath, oldAttachmentName }
-      //       }) // 处理附件格式
-      //       // 转换日期格式为string
-      //       let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
-      //       let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
-      //       let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate, returnDate:returnDate, receiveUserId: this.receiveUserId })
-      //       return resolve(form)
-      //     }
-      //     reject('数据不完整')
-      //   })
-      // },
+      handleSubmit (resolve, reject) {
+        this.form.validateFieldsAndScroll((err, values) => {
+          if (!err) {
+            const { attachment, details: { organId } } = this
+            let attachArr = attachment.map(m => {
+              const { url: attachmentPath, name: oldAttachmentName } = m
+              return { attachmentPath, oldAttachmentName }
+            }) // 处理附件格式
+            // 转换日期格式为string
+            let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
+            let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId,  receiveDate:receiveDate, returnDate:returnDate, returnUserId: this.returnUserId, returnOrganId: this.returnOrganId })
+            return resolve(form)
+          }
+          reject('数据不完整')
+        })
+      },
       
       // 渲染数据
       renderDetail () {
@@ -310,11 +311,12 @@
           value = val[1]
           id = val[0]
          //this.form.setFieldsValue({ returnOrganName: value })
-         this.receiveUserId = id
+         this.returnUserId = id
           // value = organOptions.filter(m => m.key === val)[0]['title']
           // id = organOptions.filter(m => m.key === val)[0]['key']
           this.queryStaff(id)
-          //this.$emit('setData', { [type]: value, returnOrganId: +id} )
+          this.form.setFieldsValue({ returnOrganName: value })
+          this.$emit('setData', { [type]: value, returnOrganId: +id} )
         } else if (type === 'returnUserName') {
           const { staffList } = this
           value = staffList.filter(m => m.key === val)[0]['title']

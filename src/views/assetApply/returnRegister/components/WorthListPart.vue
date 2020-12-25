@@ -5,9 +5,9 @@
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
         <div class="box">
-          <div class="left" style="height: 100%">领用记录：{{ tableObj.dataSource.length }}，归还总面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
-          <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
-          <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
+          <div class="left" style="height: 100%">领用记录：{{ tableObj.dataSource.length }}，归还总面积：{{ returnAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
+          <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px" v-if="type=='add' || type=='edit'">添加资产</SG-Button>
+          <SG-Button icon="delete" type="primary" ghost @click="handleDelete" v-if="type=='add' || type=='edit'">删除</SG-Button>
         </div>
         </div>
       </div>
@@ -28,14 +28,17 @@
         <template slot="assessmentOrganName" slot-scope="text">
           <tooltip-text width="150" :text="text"/>
         </template>
-        <template slot="receiveArea" slot-scope="text, record">
+        <template slot="returnArea">
+              <span class="icon-red">本次归还面积(㎡)</span>
+            </template>
+        <template slot="returnArea" slot-scope="text, record">
           <a-input-number
             :min="0"
             step="0.01"
             :precision="2"
             :max="record.area"
             style="width: 120px"
-            v-model="record.receiveArea"
+            v-model="record.returnArea"
             @change="calcSum(tableObj.dataSource)"
             v-if="type == 'add' || type == 'edit'"
           />
@@ -83,6 +86,7 @@
         :assetType="dynamicData.assetType"
         :proId="dynamicData.projectId"
         :key="`${dynamicData.projectId}${dynamicData.assetType}`"
+        @getReturnAssetInfo="getReturnAssetInfo"
       />
       <!--快捷录入资产估值-->
       <set-asset v-else ref="setAsset" :assetType="dynamicData.assetType"/>
@@ -113,8 +117,8 @@
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '领用面积(㎡)', dataIndex: 'receiveArea' },{ title: '领用日期', dataIndex: 'receiveDate' },
-            { title: '领用部门', dataIndex: 'receiveOrganName'},{ title: '已归还面积(㎡)', dataIndex: 'totalReturnArea' },
-            { title: '本次归还面积(㎡)', dataIndex: 'returnArea', scopedSlots: { customRender: 'returnArea' } },{ title: '剩余归还面积(㎡)', dataIndex: 'unReturnArea' },
+            { title: '领用部门', dataIndex: 'organName'},{ title: '已归还面积(㎡)', dataIndex: 'totalReturnArea' },
+            { slots: { title: "returnArea" }, dataIndex: 'returnArea', scopedSlots: { customRender: 'returnArea' } },{ title: '剩余归还面积(㎡)', dataIndex: 'unReturnArea' },
             { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
           ]
         },
@@ -132,7 +136,8 @@
           isShow: false
         },
         isEditAll: false, // 批量修改本次估值列
-        receiveAreaSum: 0
+        returnAreaSum: 0,
+        assetList: []
       }
     },
 
@@ -154,13 +159,13 @@
         })
         let num = 0
         this.tableObj.dataSource.map(item => {
-          if(item.receiveArea){
-           return num += item.receiveArea
+          if(item.returnArea){
+           return num += item.returnArea
           } 
         })
-        this.receiveAreaSum = num.toFixed(2)
+        this.returnAreaSum = num.toFixed(2)
         // 返回给上层组件,用于保存
-        this.$emit('backAssetList', data, this.receiveAreaSum)
+        this.$emit('backAssetList', data, this.returnAreaSum)
       },
 
       // 批量删除资产
@@ -214,7 +219,7 @@
       
       // 获取选中的资产数据
       getAssetList () {
-        let {selectedList} = this
+        let {selectedList, assetList} = this
         if (!selectedList.length) { return this.$message.warn('请选择资产数据') }
         this.modalObj.isShow = !selectedList.length
         // 去重处理，比较arr 与 tableObj.dataSource
@@ -223,10 +228,14 @@
           this.initList = [...selectedList]
           let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
           if (newList.length) {
-            this.queryAssetListByAssetId(newList)
+            //this.queryAssetListByAssetId(newList)
+            dataSource = assetList
+            console.log(selectedList,123)
+             return this.calcSum(dataSource)
           } else {
             // 过滤列表中被取消选中的数据
-            dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
+            //dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
+            dataSource = assetList
             return this.calcSum(dataSource)
           }
         }
@@ -255,7 +264,7 @@
              this.tableObj.dataSource.map(item => {
             return num += item.receiveArea
       })
-            this.receiveAreaSum = num
+            this.returnAreaSum = num
             this.calcSum(this.tableObj.dataSource)
             return false
           }
@@ -268,7 +277,6 @@
       
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
-        console.log(selectedRows)
         let form = {}
         let { registerId, tableObj: { dataSource }, dynamicData, selectedList } = this
         if (status === 'init') {
@@ -278,20 +286,23 @@
           form.assetId = selectedRows.join(',')
         }
         this.tableObj.loading = true
-        this.$api.worthRegister.queryRelList(form).then(r => {
+        this.$api.useManage.getReturnInfo({returnId:registerId, queryType:1}).then(r => {
           this.tableObj.loading = false
           let res = r.data
+          console.log(res)
           if (res && String(res.code) === '0') {
-            let addData = res.data.data || []
+            let addData = res.data.detailList || []
+            console.log(addData)
             if (!addData.length) { return false }
             if (status === 'init') {
               dataSource = addData
             } else {
+              
               dataSource.push(...addData)
               // 过滤列表中被取消选中的数据
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
-            let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData, area: +m.assetArea, objectTypeName: m.assetCategoryName}))
+            let list = dataSource.map((m, i) => ({...m, index: i + 1}))
             console.log(list)
             return this.calcSum(list)
           }
@@ -359,8 +370,17 @@
           }
         }
         this.calcSum(list)
-      }
+      },
+      getReturnAssetInfo(assetList) {
+         console.log(assetList,456)
+         this.assetList = assetList
+         this.assetList.map(item => {
+           item.totalReturnArea = item.returnArea
+           item.returnArea = item.unReturnArea
+         })
     },
+    },
+    
     
     created () {
       
@@ -370,7 +390,7 @@
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
-        type === 'edit' && this.queryAssetListByAssetId([], 'init')
+        type === 'edit' &&  this.queryAssetListByAssetId([], 'init')
         this.queryAssetListByRegisterId({type: 'init'})
       } else {
         // type === 'approval' || type === 'detail'时
@@ -381,6 +401,11 @@
     },
     
     watch: {
+      details: function (val) {
+         if(this.details.detailList){
+           this.queryAssetListByAssetId([], 'init')
+         }
+      },
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
         let {tableObj: {dataSource}, type, numList, details} = this
@@ -393,7 +418,7 @@
             this.details.projectId = projectId
             this.tableObj.selectedRowKeys = []
             this.tableObj.dataSource = []
-            this.receiveAreaSum = 0
+            this.returnAreaSum = 0
             return this.numList = numList.map(m => {
               return { ...m, value:  0 }
             })

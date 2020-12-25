@@ -60,8 +60,8 @@
         </div>
       </a-col>
       <a-col :span="6">
-        <div class="col_div" :style="`overflow-y: auto; height: ${height}px; max-height: ${height}px`">
-          <div class="item_div" v-for="item in selectedList" :key="item.assetId">
+        <div class="col_div" :style="`overflow-y: auto; height: ${height}px; max-height: ${height}px`" >
+          <div class="item_div" v-for="item in selectedList" :key="item.assetId" >
             {{item.assetName}}
             <a-icon type="close" class="remove_icon" @click="removeItem(item.assetId)"/>
           </div>
@@ -93,7 +93,7 @@
     },
     data () {
       return {
-        list: '', // 回传数据列表
+        list: [], // 回传数据列表
         receiveDetailId: '', // 领用编号
         assetName: '', // 资产名
         // assetType: undefined, // 类型
@@ -169,13 +169,20 @@
       },
 
       // 处理选中的数据
-      handleSelectChange (selectedRowKeys) {
+      handleSelectChange (selectedRowKeys, selectedRows) {
         this.selectedRowKeys = selectedRowKeys
+        this.list.push(selectedRows)
+        console.log(selectedRows)
       },
 
       // 移除选中的人员
       removeItem (id) {
         this.selectedRowKeys = this.selectedRowKeys.filter(i => i !== id)
+        this.list = this.list.map((item) => {
+          if(item.assId != id) {
+            return item
+          }
+        })
       },
 
       // 平台字典获取资产类型
@@ -238,6 +245,10 @@
         }).catch(err => {
           this.$message.error(err || '查询资产类别失败')
         })
+      },
+      // 向父组件传值
+      getReturnAssetInfo() {
+        this.$emit('getReturnAssetInfo', this.selectedList)
       }
     },
     mounted () {
@@ -259,27 +270,36 @@
       value: function (value) {
         this.selectedRowKeys = this.allAttrs ? value.map(i => i.assetId) : value
       },
- 
+      
       selectedRowKeys: function (keys) {
-        let {dataSource, allAttrs, selectedList} = this
+        let {dataSource, allAttrs, selectedList, list} = this
         let primaryKeys = []
         let primaryList = selectedList.filter(n => {
+          // let flag = []
+          // if(keys.includes(n.assetId)){
+          //   flag.push(n)
+          // }
           let flag = keys.includes(n.assetId)
           flag && primaryKeys.push(n.assetId)
           return flag
         })
+        console.log(primaryList)
+        console.log(dataSource)
         let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
-        this.selectedList = primaryList.concat(newList)
-        // this.dataSource.map((item,index) => {
-        //   if(item == this.selectedList.assetId)
-        //     return this.dataSource
+        // let newList = []
+        // if(dataSource.length){
+        //    newList = dataSource.map(i => {
+        //   if (primaryKeys.includes(i.assetId) && !keys.includes(i.assetId)) {
+        //     return i
+        //   }
         // })
+        // }
+        this.selectedList = primaryList.concat(newList)
+        console.log(this.selectedList,keys)
         this.$emit('input', allAttrs ? selectedList : keys)
+        this.getReturnAssetInfo()
+        //this.$emit('input', selectedList)
       },
-
-      // assetType: function (assetType) {
-      //   this.queryObjectType(assetType)
-      // }
     }
   }
 </script>

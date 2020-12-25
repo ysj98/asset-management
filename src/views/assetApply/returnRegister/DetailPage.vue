@@ -39,7 +39,7 @@
     components: { ApprovalFlowPart, WorthListPart, BaseInfoPart, FormFooter },
     data () {
       return {
-        receiveAreaTotal: 0, // 总领用资产面积
+        returnAreaTotal: 0, // 总领用资产面积
         registerId: '', // 登记Id
         stepList: [], // 审批轨迹
         details: {}, // 基础信息数据
@@ -66,15 +66,15 @@
       },
 
       // 获取资产关联对象数据
-      getAssetList (list, receiveAreaSum) {
+      getAssetList (list, returnAreaSum) {
         this.assetList = list
-        this.receiveAreaTotal = +receiveAreaSum
+        this.returnAreaTotal = +returnAreaSum
       },
 
       // 提交
       handleSubmit (saveWays) {
         console.log(123)
-        const { type, registerId, assetList, dynamicData, receiveAreaTotal, saveType } = this
+        const { type, registerId, assetList, dynamicData, returnAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)
@@ -90,18 +90,23 @@
           this.spinning = true
           let detailList = []
           assetList.forEach(m => {
-            const { assetId, receiveArea, assetObjectId, remark } = m
-            detailList.push({ assetId, receiveArea, assetObjectId, remark })
+            const { receiveDetailId, returnArea, remark } = m
+            detailList.push({ receiveDetailId, returnArea, remark })
           })
-          let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
-          ...dynamicData, saveType: saveWays} : { ...data, detailList }
-          this.$api.useManage.submitReceive(form).then(r => {
+          let form = type === 'edit' || type === 'add' ? { ...data, detailList, returnId: registerId ? registerId : '', returnArea: returnAreaTotal, 
+          ...dynamicData, saveType: saveWays, returnCount:assetList.length, } : { ...data, detailList }
+          console.log(form)
+          delete form.receiveDate
+          delete form.receiveUserId
+          delete form.returnOrganName
+          delete form.returnUserName
+          this.$api.useManage.submitReturn(form).then(r => {
             this.spinning = false
             let res = r.data
             if (res && String(res.code) === '0') {
               this.$message.success(`${tip}成功`)
               // 跳回列表路由
-              return this.$router.push({ name: '资产领用', params: { refresh: true } })
+              return this.$router.push({ name: '归还登记', params: { refresh: true } })
             }
             throw res.message || `${tip}失败`
           }).catch(err => {
@@ -121,19 +126,20 @@
         this.$api.useManage.getReturnInfo({returnId: registerId, queryType}).then(r => {
           this.spinning = false
           let res = r.data
-          console.log(res)
+          console.log(res,998)
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
             this.dynamicData = {
               assetType: res.data.assetType,
-              receiveOrganName: res.data.receiveOrganName,
-              receiveUserName: res.data.receiveUserName,
+              // receiveOrganName: res.data.receiveOrganName,
+              // receiveUserName: res.data.receiveUserName,
               projectId: res.data.projectId,
-              receiveDate: res.data.receiveDate,
+              // receiveDate: res.data.receiveDate,
               returnDate: res.data.returnDate,
-              receiveUserId: res.data.receiveUserId,
-              receiveOrganId: res.data.receiveOrganId
+              returnUserId: res.data.returnUserId,
+              returnOrganId: res.data.returnOrganId,
+             
             }
             return Object.assign(this, { stepList, details: { ...details, ...res.data} })
           }
