@@ -1087,7 +1087,11 @@ export const assetRent = {
   // 出租登记-新增or修改保存出租单
   saveUpdateLeaseOrder: '/ams/leaseOrder/saveUpdateLeaseOrder',
   // 出租登记-查询出租单
-  getLeaseOrder: '/ams/leaseOrder/getLeaseOrder'
+  getLeaseOrder: '/ams/leaseOrder/getLeaseOrder',
+  // 出租登记-查询出租明细列表
+  getLeaseDetailList: '/ams/leaseDetail/getLeaseDetailList',
+  // 出租登记-查询出租明细分页列表
+  getLeaseDetailPageList: '/ams/leaseDetail/getLeaseDetailPageList',
 }
 
 // 资产投资
