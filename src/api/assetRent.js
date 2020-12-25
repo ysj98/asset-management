@@ -37,5 +37,15 @@ export function saveUpdateLeaseOrder(data) {
 
 // 出租登记-查询出租单
 export function getLeaseOrder(data) {
-  return axiosPost(assetRent.getLeaseOrder, data)
+  return axiosGet(assetRent.getLeaseOrder, data)
+}
+
+// 出租登记-查询出租明细列表
+export function getLeaseDetailList(data) {
+  return axiosGet(assetRent.getLeaseDetailList, data)
+}
+
+// 出租登记-查询出租明细分页列表
+export function getLeaseDetailPageList(data) {
+  return axiosPost(assetRent.getLeaseDetailPageList, data)
 }
