@@ -1092,6 +1092,12 @@ export const assetRent = {
   getLeaseDetailList: '/ams/leaseDetail/getLeaseDetailList',
   // 出租登记-查询出租明细分页列表
   getLeaseDetailPageList: '/ams/leaseDetail/getLeaseDetailPageList',
+  // 资产出租/投资收益登记-分页查询收益明细
+  getIncomeDetailPageList: '/ams/income/getIncomeDetailPageList',
+  // 资产出租/投资收益登记-查询收益明细合计
+  getIncomeDetailStatistics: '/ams/income/getIncomeDetailStatistics',
+  // 资产出租/投资收益登记-分页查询收益单列表
+  getIncomePageList: '/ams/income/getIncomePageList',
 }
 
 // 资产投资

@@ -49,3 +49,18 @@ export function getLeaseDetailList(data) {
 export function getLeaseDetailPageList(data) {
   return axiosPost(assetRent.getLeaseDetailPageList, data)
 }
+
+// 资产出租/投资收益登记-分页查询收益明细
+export function getIncomeDetailPageList(data) {
+  return axiosPost(assetRent.getIncomeDetailPageList, data)
+}
+
+// 资产出租/投资收益登记-查询收益明细合计
+export function getIncomeDetailStatistics(data) {
+  return axiosPost(assetRent.getIncomeDetailStatistics, data)
+}
+
+// 资产出租/投资收益登记-分页查询收益单列表
+export function getIncomePageList(data) {
+  return axiosPost(assetRent.getIncomePageList, data)
+}
