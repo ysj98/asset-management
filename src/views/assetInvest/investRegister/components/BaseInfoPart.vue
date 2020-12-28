@@ -10,21 +10,21 @@
     >
     <a-row :gutter="24">
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
-        <a-form-item label="归还单编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-input  v-decorator="['returnId']" disabled  />
+        <a-form-item label="投资单ID" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-input  v-decorator="['investOrderId']" disabled  />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="归还单名称" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+        <a-form-item label="投资单名称" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
           <a-input
-            placeholder="请填写归还登记单名称"
+            placeholder="请填写投资登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'returnName', { rules: [{ required: true, message: '请填写归还登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'investName', { rules: [{ required: true, message: '请填写投资登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还单状态">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="投资单状态">
           <a-input v-decorator="['approvalStatusName']" :disabled="true"/>
         </a-form-item>
         </a-col>
@@ -60,46 +60,99 @@
           <!-- <a-input v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
+      <a-col :span="8" v-if="type == 'add' || type == 'edit'">
+        <a-form-item label="投资项目" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+          <a-input
+            placeholder="请输入投资项目名称"
+            v-decorator="[ 'investProject', { rules: [{ required: true, message: '请填写投资登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+          />
+        </a-form-item>
+      </a-col>
       <a-col :span="8">
-        <a-form-item label="归还时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+        <a-form-item label="合同编号" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+          <a-input
+            placeholder="请输入合同编号"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="[ 'contractCode', { rules: [{ required: true, message: '请输入合同编号' }, {max: 30, message: '最多30个字符'}] } ]"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item label="投资项目" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+          <a-input
+            placeholder="请输入投资项目名称"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="[ 'investProject', { rules: [{ required: true, message: '请填写投资登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="签约日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-date-picker
             style="width: 100%"
-            placeholder="请选择归还时间"
-            @change="(date, dateString) => setData(dateString, 'returnDate')"
+            placeholder="请选择签约日期"
+            @change="(date, dateString) => setData(dateString, 'signingDate')"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"
+            v-decorator="['signingDate', { rules: [{ required: true, message: '请选择签约日期' }] }]"
           />
           <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
-      <a-col :span="8" >
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还部门">
-          <treeSelect @changeTree="setData(arguments, 'returnOrganName')"  placeholder='请选择归还部门' :allowClear="false" style="width: 100%" v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]"
-            :disabled="type == 'approval' || type == 'detail'" v-if="type=='edit' || type=='add'" :default="false"></treeSelect>
-            <!-- <a-input v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]" disabled ></a-input> -->
+      <a-col :span="8">
+        <a-form-item label="起投日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-date-picker
+            style="width: 100%"
+            placeholder="请选择起投日期"
+            @change="(date, dateString) => setData(dateString, 'startInvestDate')"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="['startInvestDate', { rules: [{ required: true, message: '请选择起投日期' }] }]"
+          />
+          <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="归还人">
-          <a-select
-            v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]"
+        <a-form-item label="止投日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-date-picker
+            style="width: 100%"
+            placeholder="请选择止投日期"
+            @change="(date, dateString) => setData(dateString, 'endInvestDate')"
             :disabled="type == 'approval' || type == 'detail'"
-            @change="setData($event, 'returnUserName')"
-            placeholder="请选择归还人"
-            :options="staffList"
+            v-decorator="['endInvestDate', { rules: [{ required: true, message: '请选择止投日期' }] }]"
           />
-          <!-- <a-input v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]" :disabled="type == 'approval' || type == 'detail'">
-
-          </a-input> -->
+          <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
-       <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交人" v-if="type == 'approval' || type == 'detail'">
+      <a-col :span="8" v-if="type == 'add' || type == 'edit'">
+        <a-form-item label="资产数量（个）" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+          <a-input
+            :disabled="type == 'add' || type == 'edit'"
+            v-decorator="[ 'assetSum' ]"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8" v-if="type == 'add' || type == 'edit'">
+        <a-form-item label="资产面积（㎡）" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+          <a-input
+            :disabled="type == 'add' || type == 'edit'"
+            v-decorator="[ 'assetArea']"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item label="投资面积" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
+          <a-input
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="[ 'investArea']"
+          />
+        </a-form-item>
+      </a-col>
+       <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="创建人" v-if="type == 'approval' || type == 'detail'">
           <a-input v-decorator="[ 'createByName']" disabled/>
         </a-form-item>
       </a-col>
-      <a-col :span="8">
-        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="提交时间" v-if="type == 'approval' || type == 'detail'">
+      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="创建时间" v-if="type == 'approval' || type == 'detail'">
           <a-input v-decorator="[ 'createTime']"  disabled/>
         </a-form-item>
       </a-col>
@@ -149,7 +202,7 @@
   import TreeSelect from '../../../common/treeSelect'
   export default {
     name: 'BaseInfoPart',
-    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId'],
+    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId', 'investOrderId'],
     components: {TreeSelect},
     data () {
       return {
@@ -194,43 +247,65 @@
             // 转换日期格式为string
             let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
             let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachment: attachArr, organId,  receiveDate:receiveDate, returnDate:returnDate, returnUserId: this.returnUserId, returnOrganId: this.returnOrganId })
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId,  receiveDate:receiveDate, returnDate:returnDate, returnUserId: this.returnUserId, returnOrganId: this.returnOrganId })
             return resolve(form)
           }
           reject('数据不完整')
         })
       },
+      // 查询投资单附件
+      getAttachmentList(id) {
+         if(!id){return false}
+         this.$api.basics.attachment({objectId: id, objectType: 20}).then(res => {
+           if(res.code == 0){
+             console.log(res.data)
+             return this.acttachment = res.data
+           }
+         })
+      },
       
       // 渲染数据
       renderDetail () {
-        const {type, details} = this
+        const {type, details, attachment} = this
         const {
-          approvalStatusName,  assetType,  assetTypeName, attachment, createByName, createTime,
-          detaList, organId, organName, projectId,  projectName, remark,  returnDate, returnId, 
-          returnName, returnOrganId, returnOrganName, returnUserName, returnUserId
+          investName,  approvalStatus,  approvalStatusName, createByName, createTime,
+          organId,  organName, projectId,  projectName, remark,  assetType, investOrderId, 
+          assetTypeName, contractCode, investProject, signingDate, startInvestDate, endInvestDate, 
+          investArea, assetArea, assetSum, attachmentList
         } = details
-        let attachArr = (attachment || []).map(m => {
+        let attachArr = (attachmentList || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
+        console.log(attachArr)
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { returnName,returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
-        !returnDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
+        let formatDetails = { investName,signingDate: moment(signingDate || new Date(), 'YYYY-MM-DD'), startInvestDate: moment(startInvestDate || new Date(), 'YYYY-MM-DD'),  endInvestDate: moment(endInvestDate || new Date(), 'YYYY-MM-DD')}
+        !signingDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'signingDate')
+        !startInvestDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'startInvestDate')
+        !endInvestDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'endInvestDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
           formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
-            projectId: projectName,
+            projectId,
             assetType: assetTypeName,
-            returnId,
-            createByName, approvalStatusName, createTime, returnUserName, returnOrganName
+            investOrderId,
+            investProject,
+            contractCode,
+            investProject,
+            assetSum, assetArea,
+            createByName, approvalStatusName, createTime, investArea
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '', 
-            projectId: projectName,
+            remark: remark || '无',
+            projectId,
             assetType: assetTypeName,
-            returnId,
-            createByName, approvalStatusName, createTime, returnUserName, returnOrganName
+            investOrderId,
+            investProject,
+            contractCode,
+            investProject,
+            assetSum, assetArea,
+            createByName, approvalStatusName, createTime, investArea
           })
         }
         console.log(formatDetails)
@@ -361,6 +436,8 @@
     },
     watch: {
       details: function () {
+        this.getAttachmentList(this.details.investOrderId)
+        console.log(this.acttachment)
         this.renderDetail()
         if (this.type == 'add' || this.type == 'edit') {
           this.queryOrganOptions()
@@ -372,7 +449,8 @@
     created() {
       this.organName = this.defaultOrganName
       this.organId = +this.defaultOrganId
-      console.log(this.details)
+      this.getAttachmentList(this.details.investOrderId)
+      
     }
   }
 </script>

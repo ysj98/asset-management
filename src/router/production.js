@@ -946,5 +946,15 @@ let proRouter = [{
     name: '归还登记新增',
     component: () => import('@/views/assetApply/returnRegister/DetailPage')
   },
+  {
+    path: '/investRegister/new',
+    name: '投资登记新增',
+    component: () => import('@/views/assetInvest/investRegister/DetailPage')
+  },
+  {
+    path: '/investRegister/detail',
+    name: '投资登记详情',
+    component: () => import('@/views/assetInvest/investRegister/DetailPage')
+  },
 ]
 export default proRouter

@@ -316,8 +316,9 @@ export default {
           if (res && String(res.code) === '0') {
             this.$message.success('删除成功')
             // 更新列表
-            const { pageNo, pageLength } = this.paginationObj
-            return this.query()
+            return this.allQuery()
+            // const { pageNo, pageLength } = this.paginationObj
+            // return this.query()
             //return this.queryTableData({pageNo, pageLength})
           }
           throw res.message || '删除失败'

@@ -54,12 +54,14 @@
           v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
           v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
           :to="{name: '归还登记详情', params: {registerId: record.returnId, type: 'edit'}}"
+          tag="div"
         ><a-icon type="form"></a-icon>编辑</router-link></p>
           <p><router-link
           class="action_text"
           v-if="Number(record.approvalStatus) === 2"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
           :to="{name: '归还登记审批', params: {registerId: record.returnId, type: 'approval'}}"
+          tag="div"
         ><a-icon type="setting" theme="filled"></a-icon>审批</router-link></p>
           <p><a-popconfirm
           okText="确定"
@@ -322,14 +324,15 @@ export default {
      // 删除项目
       confirmDelete (registerId) {
         this.loading = true
-        this.$api.useManage.deleteReturn({receiveId: registerId}).then(r => {
+        this.$api.useManage.deleteReturn({returnId: registerId}).then(r => {
           this.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             this.$message.success('删除成功')
             // 更新列表
-            const { pageNo, pageLength } = this.paginationObj
-            return this.query()
+            return this.allQuery()
+            // const { pageNo, pageLength } = this.paginationObj
+            // return this.query()
             //return this.queryTableData({pageNo, pageLength})
           }
           throw res.message || '删除失败'

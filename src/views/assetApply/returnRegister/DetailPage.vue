@@ -193,7 +193,7 @@
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
         console.log(list,123)
-        let arr = list.filter(m => +m.receiveArea === 0)
+        let arr = list.filter(m => +m.receiveArea === 0 || !m.receiveArea)
         return arr.length
       }
     },
