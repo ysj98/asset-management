@@ -28,6 +28,9 @@
         <template slot="assessmentOrganName" slot-scope="text">
           <tooltip-text width="150" :text="text"/>
         </template>
+        <template slot="receiveArea">
+              <span class="icon-red">领用面积(㎡)</span>
+            </template>
         <template slot="receiveArea" slot-scope="text, record">
           <a-input-number
             :min="0"
@@ -113,7 +116,7 @@
             { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
-            { title: '领用面积(㎡)', dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' } },{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+            { slots: { title: "receiveArea" }, dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' }},{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
           ]
         },
         exportBtnLoading: false, // 导出按钮loading
@@ -268,6 +271,9 @@
       queryAssetListByAssetId (selectedRows = [], status) {
         let form = {}
         let { registerId, tableObj: { dataSource }, dynamicData, selectedList } = this
+        if(!registerId){
+          return false
+        }
         if (status === 'init') {
           form.registerId = registerId
         } else {
@@ -275,7 +281,9 @@
           form.assetId = selectedRows.join(',')
         }
         this.tableObj.loading = true
+                  
         this.$api.worthRegister.queryRelList(form).then(r => {
+          console.log(r)
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -288,14 +296,15 @@
               // 过滤列表中被取消选中的数据
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
-            let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData, area: +m.assetArea, objectTypeName: m.assetCategoryName}))
-            console.log(list)
+            console.log(dataSource)
+            let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData, area: m.assetArea ? +m.assetArea : m.area, objectTypeName: m.assetCategoryName}))
+            console.log(list,dataSource)
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(err || '查询登记资产接口出错')
+          this.$message.error(1 || '查询登记资产接口出错')
         })
       },
 
@@ -363,11 +372,11 @@
       
       const { type } = this
       if (type === 'add' || type === 'edit') {
-        
+        console.log(this.registerId)
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
-        type === 'edit' && this.queryAssetListByAssetId([], 'init')
+        //type === 'edit' && this.queryAssetListByAssetId([], 'init')
         this.queryAssetListByRegisterId({type: 'init'})
       } else {
         // type === 'approval' || type === 'detail'时

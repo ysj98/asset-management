@@ -19,7 +19,7 @@
           <a-input
             placeholder="请填写领用登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'receiveName', { initialValue: 123, rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'receiveName', {  rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
@@ -218,7 +218,7 @@
         !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
-        let  formatDetails = Object.assign({}, formatDetails, {
+         formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
             projectId: projectName,
             assetType: assetTypeName,
@@ -226,7 +226,7 @@
             createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         } else {
-          formatDetails = Object.assign({}, formatDetails, {
+         formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '', 
             projectId: projectName,
             assetType: assetTypeName,
@@ -234,6 +234,7 @@
             createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         }
+        console.log(formatDetails)
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
@@ -339,7 +340,7 @@
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          console.log(this.staffList[0].title)
+          console.log(res)
           return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 
