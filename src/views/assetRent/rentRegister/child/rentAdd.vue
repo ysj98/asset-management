@@ -594,7 +594,7 @@ export default {
         contractCode: this.contractNum,
         rentPrice: this.rentPrice,
         remark: this.note,
-        attachmentList: upList
+        attachmentList: upList,
       };
       this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
         // console.log(res);

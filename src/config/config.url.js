@@ -1098,6 +1098,8 @@ export const assetRent = {
   getIncomeDetailStatistics: '/ams/income/getIncomeDetailStatistics',
   // 资产出租/投资收益登记-分页查询收益单列表
   getIncomePageList: '/ams/income/getIncomePageList',
+  // 资产出租/投资收益登记-新增or修改保存收益单
+  saveUpdateIncome: '/ams/income/saveUpdateIncome',
 }
 
 // 资产投资
