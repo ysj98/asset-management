@@ -877,7 +877,7 @@ let proRouter = [{
     component: () => import('@/views/assetRent/rentRegister/child/rentApproval')
   },
   {
-    path: '/rentRegister/rentDetail',
+    path: '/rentRegister/rentDetail/:id?',
     name: '出租单详情',
     component: () => import('@/views/assetRent/rentRegister/child/rentDetail')
   },
@@ -885,21 +885,6 @@ let proRouter = [{
     path: '/rentGainsRegister',
     name: '出租收益登记',
     component: () => import('@/views/assetRent/rentGainsRegister/index')
-  },
-  {
-    path: '/rentGainsRegister/gainsAdd',
-    name: '出租收益新建',
-    component: () => import('@/views/assetRent/rentGainsRegister/child/gainsAdd')
-  },
-  {
-    path: '/rentGainsRegister/gainsEdit',
-    name: '出租收益编辑',
-    component: () => import('@/views/assetRent/rentGainsRegister/child/gainsEdit')
-  },
-  {
-    path: '/rentGainsRegister/gainsDetail',
-    name: '出租收益详情',
-    component: () => import('@/views/assetRent/rentGainsRegister/child/gainsDetail')
   },
   {
     path: '/assetInvestmentView',

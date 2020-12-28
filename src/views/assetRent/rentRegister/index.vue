@@ -21,7 +21,7 @@
           @click="exportFn"
           ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
         >
-        <div style="position:absolute;top: 20px;right: 76px;display:flex;">
+        <div style="position: absolute; top: 20px; right: 76px; display: flex">
           <treeSelect
             @changeTree="changeTree"
             placeholder="请选择组织机构"
@@ -68,7 +68,7 @@
           </a-select>
           <a-select
             :maxTagCount="1"
-            style="width: 160px; margin-right: 10px;"
+            style="width: 160px; margin-right: 10px"
             mode="multiple"
             placeholder="全部审批状态"
             :tokenSeparators="[',']"
@@ -86,7 +86,7 @@
             v-model="queryCondition.assetNameCode"
             placeholder="出租单名称/合同编号"
             maxlength="30"
-            style="width: 160px; height: 32px; margin-right: 10px;"
+            style="width: 160px; height: 32px; margin-right: 10px"
             @search="allQuery"
           />
         </div>
@@ -97,11 +97,11 @@
       <div slot="form" class="formCon">
         <a-select
           :maxTagCount="1"
-          style="width: 160px; margin-right: 10px;"
+          style="width: 160px; margin-right: 10px"
           mode="multiple"
           placeholder="全部合同状态"
           :tokenSeparators="[',']"
-          @select="approvalStatusFn"
+          @select="contractStatusListFn"
           v-model="queryCondition.contractStatus"
         >
           <a-select-option
@@ -114,7 +114,7 @@
         <SG-DatePicker
           :allowClear="false"
           label="签订日期"
-          style="width: 200px;"
+          style="width: 200px"
           pickerType="RangePicker"
           v-model="signDate"
           format="YYYY-MM-DD"
@@ -141,9 +141,12 @@
         class="custom-table td-pd10"
         :pagination="false"
       >
-          <template slot="operation" slot-scope="text, record">
-            <OperationPopover :operationData="record.operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
-          </template>
+        <template slot="operation" slot-scope="text, record">
+          <OperationPopover
+            :operationData="record.operationDataBtn"
+            @operationFun="operationFun($event, record)"
+          ></OperationPopover>
+        </template>
       </a-table>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -165,7 +168,7 @@ import TreeSelect from "../../common/treeSelect";
 import moment from "moment";
 import noDataTips from "@/components/noDataTips";
 import OverviewNumber from "src/views/common/OverviewNumber";
-import OperationPopover from '@/components/OperationPopover'
+import OperationPopover from "@/components/OperationPopover";
 const approvalStatusData = [
   {
     name: "全部审批状态",
@@ -288,10 +291,16 @@ const columns = [
   },
 ];
 export default {
-  components: { segiIcon, TreeSelect, noDataTips, OverviewNumber, OperationPopover },
+  components: {
+    segiIcon,
+    TreeSelect,
+    noDataTips,
+    OverviewNumber,
+    OperationPopover,
+  },
   data() {
     return {
-      organID: '',
+      organID: "",
       ASSET_MANAGEMENT,
       loading: false,
       columns,
@@ -370,7 +379,9 @@ export default {
           let data = res.data.data.data;
           data.forEach((item, index) => {
             item.key = index;
-            item.operationDataBtn = this.createOperationBtn(item.approvalStatus)
+            item.operationDataBtn = this.createOperationBtn(
+              item.approvalStatus
+            );
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -418,13 +429,13 @@ export default {
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/rentRegister/rentAdd/${this.organID}/${this.organName}`
+        path: `/rentRegister/rentAdd/${this.organID}/${this.organName}`,
       });
     },
     //
     changeTree(value, label) {
       // console.log(value, label);
-      this.organID = value
+      this.organID = value;
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
@@ -497,7 +508,7 @@ export default {
     },
     // 资产类型变化
     assetTypeDataFn(value) {
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(
           value,
           this.queryCondition.assetType,
@@ -507,11 +518,21 @@ export default {
     },
     // 状态发生变化
     approvalStatusFn(value) {
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         this.queryCondition.approvalStatus = this.handleMultipleSelectValue(
           value,
           this.queryCondition.approvalStatus,
           this.approvalStatusData
+        );
+      });
+    },
+    // 状态发生变化
+    contractStatusListFn(value) {
+      this.$nextTick(function () {
+        this.queryCondition.contractStatus = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.contractStatus,
+          this.contractStatusList
         );
       });
     },
@@ -555,73 +576,51 @@ export default {
         return [];
       }
     },
-        // 生成操作按钮
-    createOperationBtn (type) {
-      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4  
-      let arr = []
+    // 生成操作按钮
+    createOperationBtn(type) {
+      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
+      let arr = [];
       // 草稿 已驳回
-      if (['0', '3'].includes(String(type))) {
+      if (["0", "3"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
-          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
-          arr.push({iconType: 'delete', text: '删除', editType: 'delete'})
+          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
         }
       }
       // 待审批
-      if (['2'].includes(type)) {
+      if (["2"].includes(type)) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
-          arr.push({iconType: 'edit', text: '审批', editType: 'approval'})
+          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
       }
       // 已审批
-      if (['1'].includes(type)) {
+      if (["1"].includes(type)) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
-          arr.push({iconType: 'edit', text: '反审核', editType: 'readApproval'})
+          arr.push({
+            iconType: "edit",
+            text: "反审核",
+            editType: "readApproval",
+          });
         }
       }
-      arr.push({iconType: 'file-text', text: '详情', editType: 'detail'})
-      return arr
+      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      return arr;
     },
-        // 操作事件函数
-    operationFun (type, record) {
+    // 操作事件函数
+    operationFun(type, record) {
       console.log(record);
       // 编辑
-      if(['edit'].includes(type)) {
+      if (["edit"].includes(type)) {
         this.$router.push({
           path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
         });
+      } else if (["detail"].includes(type)) {
+        this.$router.push({
+          path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+        });
       }
-  /*     console.log('操作事件', type, record)
-      if (['edit', 'detail', 'approval', 'readApproval'].includes(type)) {
-        this.goPage(type, record)
-      }
-      if (['delete', 'readApproval'].includes(type)) {
-        let label = labelTypeMap[type]['name']
-        let approvalStatus = labelTypeMap[type]['approvalStatus']
-        this.$SG_Modal.confirm({
-          title: `确定${label}该计划吗?`,
-          okText: '确定',
-          cancelText: '再想想',
-          onOk: () => {
-            let loadingName = this.SG_Loding(label + '中...')
-            this.$api.building.updateCheckPlanStatus({approvalStatus, planId: record.planId}).then(res => {
-              this.DE_Loding(loadingName).then(() => {
-                if (res.data.code === '0') {
-                  this.$SG_Message.success(label + '成功!')
-                  this.query();
-                } else {
-                  this.$message.error(res.data.message)
-                }
-              })
-            }).catch(() => {
-              this.DE_Loding(loadingName).then(res => {
-                this.$SG_Message.error(label + '失败！')
-              })
-            })
-          }
-        })
-      } */
     },
   },
   created() {
