@@ -1100,6 +1100,8 @@ export const assetRent = {
   getIncomePageList: '/ams/income/getIncomePageList',
   // 资产出租/投资收益登记-新增or修改保存收益单
   saveUpdateIncome: '/ams/income/saveUpdateIncome',
+  // 资产出租/投资收益登记-查询收益
+  getIncome: '/ams/income/getIncome',
 }
 
 // 资产投资

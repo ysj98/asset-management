@@ -133,10 +133,10 @@
         :pagination="false"
       >
         <template slot="operation" slot-scope="text, record">
-          <!-- <OperationPopover
+          <OperationPopover
             :operationData="record.operationDataBtn"
             @operationFun="operationFun($event, record)"
-          ></OperationPopover> -->
+          ></OperationPopover>
         </template>
       </a-table>
     </div>
@@ -151,10 +151,14 @@
     />
     <!-- 新建 -->
     <gainsAdd
+      v-model="close"
+      v-if="close"
       ref="gainsAdd"
       :organId="organID"
       :organName="organName"
     ></gainsAdd>
+    <gainsDetail ref="gainsDetail" :organId="organID" :organName="organName">
+    </gainsDetail>
   </div>
 </template>
 
@@ -243,10 +247,19 @@ import moment from "moment";
 import OperationPopover from "@/components/OperationPopover";
 import noDataTips from "@/components/noDataTips";
 import gainsAdd from "./child/gainsAdd";
+import gainsDetail from "./child/gainsDetail";
 export default {
-  components: { segiIcon, TreeSelect, OperationPopover, noDataTips, gainsAdd },
+  components: {
+    segiIcon,
+    TreeSelect,
+    OperationPopover,
+    noDataTips,
+    gainsAdd,
+    gainsDetail,
+  },
   data() {
     return {
+      close,
       columns,
       toggle: false,
       ASSET_MANAGEMENT,
@@ -311,9 +324,9 @@ export default {
             item.status === 1
               ? (item.status = "有效")
               : (item.status = "已作废");
-            /* item.operationDataBtn = this.createOperationBtn(
+            item.operationDataBtn = this.createOperationBtn(
               item.approvalStatus
-            ); */
+            );
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -335,7 +348,10 @@ export default {
     },
     // 收益登记新建
     registerFn() {
-      this.$refs.gainsAdd.show = true;
+      this.close = true;
+      this.$nextTick(() => {
+        this.$refs.gainsAdd.show = true;
+      });
     },
     // 导出
     exportFn() {
@@ -523,9 +539,26 @@ export default {
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
       return arr;
     },
+    // 操作事件函数
+    operationFun(type, record) {
+      console.log(record);
+      // 编辑
+      if (["edit"].includes(type)) {
+        this.$router.push({
+          path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
+        });
+      } else if (["detail"].includes(type)) {
+        this.$router.push({
+          path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+        });
+      }
+    },
   },
   mounted() {
     this.platformDictFn("asset_type");
+  },
+  created() {
+    this.query()
   },
 };
 </script>

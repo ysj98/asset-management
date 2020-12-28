@@ -69,3 +69,8 @@ export function getIncomePageList(data) {
 export function saveUpdateIncome(data) {
   return axiosPost(assetRent.saveUpdateIncome, data)
 }
+
+// 资产出租/投资收益登记-查询收益
+export function getIncome(data) {
+  return axiosGet(assetRent.getIncome, data)
+}
