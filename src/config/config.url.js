@@ -1109,5 +1109,21 @@ export const assetInvest = {
   // 资产出租一览表-导出
   exportInvestView: '/ams/investDetail/exportInvestDetailGlanceList',
   // 资产出租一览表-查询列表表头统计
-  queryInvestViewTotal: '/ams/investDetail/getInvestDetailGlanceStatistics'
+  queryInvestViewTotal: '/ams/investDetail/getInvestDetailGlanceStatistics',
+  // 投资登记-修改状态
+  updateInvestOrderStatus: '/ams/investOrder/updateInvestOrderStatus',
+  // 投资登记-分页查询投资单列表
+  getInvestOrderPageList: '/ams/investOrder/getInvestOrderPageList',
+  // 投资登记-导出
+  exportInvestOrder: '/ams/investOrder/exportInvestOrder',
+  // 投资登记-新增or修改保存投资单
+  saveUpdateInvestOrder: '/ams/investOrder/saveUpdateInvestOrder',
+  // 投资登记-查询列表表头统计
+  getInvestOrderStatistics: '/ams/investOrder/getInvestOrderStatistics',
+  // 投资登记-查询投资单
+  getInvestOrder: '/ams/investOrder/getInvestOrder',
+  // 投资登记-查询投资明细分页列表
+  getInvestDetailPageList: '/ams/investDetail/getInvestDetailPageList',
+  // 投资登记-查询投资明细列表
+  getInvestDetailList: '/ams/investDetail/getInvestDetailList'
 }
