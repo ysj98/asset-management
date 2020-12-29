@@ -426,7 +426,8 @@ export const ASSET_MANAGEMENT = {
   RENT_FORM_APPROVE: 'rent_form_approve',  // 出租单审批
   RENT_FORM_REVERSE_AUDIT: 'rent_form_reverse_audit',  // 出租单反审核
   ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export',       // 出租登记一览表导出
-
+  RENT_INCOME_EDIT: 'rent_income_edit', // 出租收益编辑
+  RENT_INCOME_DELETE: 'rent_income_delete', // 出租收益作废
   /**
    * 2.0.7 资产投资
    */

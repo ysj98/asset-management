@@ -265,6 +265,8 @@ rent_form_approve          出租单审批
 rent_form_detail           出租单详情
 rent_form_delete            出租单删除
 rent_form_reverse_audit      出租单反审核
+rent_income_edit         出租收益编辑
+rent_income_delete       出租收益作废
 
 
 资产投资

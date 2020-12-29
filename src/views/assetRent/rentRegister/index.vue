@@ -397,7 +397,6 @@ export default {
     },
     // 高级搜索控制
     searchContainerFn(val) {
-      console.log(val);
       this.toggle = val;
     },
     // 导出
@@ -610,7 +609,6 @@ export default {
     },
     // 操作事件函数
     operationFun(type, record) {
-      console.log(record);
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({
@@ -619,6 +617,26 @@ export default {
       } else if (["detail"].includes(type)) {
         this.$router.push({
           path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+        });
+      } else {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要作废此出租单吗？",
+          onOk() {
+            that.$api.assetRent
+              .updateLeaseOrderStatus({
+                leaseOrderId: record.leaseOrderId,
+                approvalStatus: 4,
+              })
+              .then((res) => {
+                if (+res.data.code !== 0) {
+                  that.$message.error(res.data.message);
+                } else {
+                  that.allQuery()
+                }
+              });
+          },
         });
       }
     },

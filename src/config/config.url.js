@@ -1102,6 +1102,12 @@ export const assetRent = {
   saveUpdateIncome: '/ams/income/saveUpdateIncome',
   // 资产出租/投资收益登记-查询收益
   getIncome: '/ams/income/getIncome',
+  // 资产出租/投资收益登记-查询列表表头统计
+  getIncomeStatistics: '/ams/income/getIncomeStatistics',
+  // 出租登记-修改状态
+  updateLeaseOrderStatus: '/ams/leaseOrder/updateLeaseOrderStatus',
+  // 资产出租/投资收益登记-修改状态
+  updateIncomeStatus: '/ams/income/updateIncomeStatus',
 }
 
 // 资产投资

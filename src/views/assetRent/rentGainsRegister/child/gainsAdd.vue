@@ -460,24 +460,24 @@ export default {
         organId: this.organId,
         projectId: this.projectId,
         assetType: this.assetType,
-        customerId: this.custList[0].custId,
+        customerId: this.custList[0].extCustId,
         orderType: 1,
         orderId: this.rentList[0].leaseOrderId,
         orderName: this.rentList[0].leaseName,
         status: 1,
-        accountingPeriod: this.mouthNum,
+        accountingPeriod: this.mouthNum+'-01',
         amount: this.incomeNum,
         feeSubject: this.billOption,
         remark: this.note,
         attachmentList: upList,
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then(res=>{
-        console.log('res',res);
+        this.show = false
+        this.$emit('childrenSubmit')
       })
     },
     // 提交this.
     submitFn() {
-      console.log(this.rentList[0]);
       this.validateTenant = !this.custList.length;
       this.validateRent = !this.rentList.length;
       this.form.validateFields((err, values) => {
