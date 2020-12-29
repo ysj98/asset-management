@@ -88,11 +88,7 @@
           >
         </a-select>
         <a-select
-          :maxTagCount="1"
-          mode="multiple"
           placeholder="全部状态"
-          :tokenSeparators="[',']"
-          @select="contractStatusFn"
           v-model="queryCondition.contractStatus"
         >
           <a-select-option
@@ -139,6 +135,12 @@
           ></OperationPopover>
         </template>
       </a-table>
+      <div class="sum" v-if="totalCount">
+        全部合计：
+        <span style="font-size: 16px; font-weight: bold">{{
+          totalCount > 0 ? totalCount : 0
+        }}</span>
+      </div>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
@@ -156,9 +158,10 @@
       ref="gainsAdd"
       :organId="organID"
       :organName="organName"
+      @childrenSubmit="allQuery"
     ></gainsAdd>
-    <gainsDetail ref="gainsDetail" :organId="organID" :organName="organName">
-    </gainsDetail>
+    <gainsEdit ref="gainsEdit" :organId="organID" @childrenSubmit="allQuery"></gainsEdit>
+    <gainsDetail ref="gainsDetail"></gainsDetail>
   </div>
 </template>
 
@@ -247,6 +250,7 @@ import moment from "moment";
 import OperationPopover from "@/components/OperationPopover";
 import noDataTips from "@/components/noDataTips";
 import gainsAdd from "./child/gainsAdd";
+import gainsEdit from "./child/gainsEdit";
 import gainsDetail from "./child/gainsDetail";
 export default {
   components: {
@@ -255,6 +259,7 @@ export default {
     OperationPopover,
     noDataTips,
     gainsAdd,
+    gainsEdit,
     gainsDetail,
   },
   data() {
@@ -295,6 +300,7 @@ export default {
       tableData: [],
       noPageTools: false,
       count: "", // 总数
+      totalCount: undefined, // 全部合计
     };
   },
   methods: {
@@ -316,17 +322,29 @@ export default {
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 1,
       };
+      let obj2 = {
+        organId: Number(this.queryCondition.organId), // 组织机构id
+        projectIdList: this.queryCondition.projectId
+          ? this.queryCondition.projectId
+          : [], // 资产项目Id
+        accountingPeriodStart: moment(this.signDate[0]).format("YYYY-MM-DD"),
+        accountingPeriodEnd: moment(this.signDate[1]).format("YYYY-MM-DD"),
+        incomeNameOrId: this.queryCondition.assetNameCode,
+        assetTypeList: this.alljudge(this.queryCondition.assetType),
+        status: this.queryCondition.contractStatus,
+        feeSubject: this.queryCondition.billOption,
+        orderNameOrId: this.queryCondition.rentNameCode,
+        orderType: 1,
+      };
       this.$api.assetRent.getIncomePageList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
           data.forEach((item, index) => {
             item.key = index;
+            item.operationDataBtn = this.createOperationBtn(item.status);
             item.status === 1
               ? (item.status = "有效")
               : (item.status = "已作废");
-            item.operationDataBtn = this.createOperationBtn(
-              item.approvalStatus
-            );
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -334,6 +352,13 @@ export default {
         } else {
           this.$message.error(res.data.message);
           this.loading = false;
+        }
+      });
+      this.$api.assetRent.getIncomeStatistics(obj2).then((res) => {
+        if (+res.data.code === 0) {
+          this.totalCount = res.data.data.totalAmount;
+        } else {
+          this.$message.error(res.data.message);
         }
       });
     },
@@ -480,21 +505,11 @@ export default {
         );
       });
     },
-    // 资产状态变化
-    contractStatusFn(value) {
-      this.$nextTick(function () {
-        this.queryCondition.contractStatus = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.contractStatus,
-          this.contractStatusData
-        );
-      });
-    },
     // 分页查询
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
-      // this.query();
+      this.query();
     },
     alljudge(val) {
       if (val.length !== 0) {
@@ -511,23 +526,17 @@ export default {
     createOperationBtn(type) {
       // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
       let arr = [];
-      // 草稿 已驳回
-      if (["0", "3"].includes(String(type))) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
+      // 有效
+      if (["1"].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_INCOME_EDIT)) {
           arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
-          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
-        }
-      }
-      // 待审批
-      if (["2"].includes(type)) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
-          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_INCOME_DELETE)) {
+          arr.push({ iconType: "delete", text: "作废", editType: "delete" });
         }
       }
       // 已审批
-      if (["1"].includes(type)) {
+      /* if (["1"].includes(type)) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
           arr.push({
             iconType: "edit",
@@ -535,21 +544,38 @@ export default {
             editType: "readApproval",
           });
         }
-      }
+      } */
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
       return arr;
     },
     // 操作事件函数
     operationFun(type, record) {
-      console.log(record);
       // 编辑
       if (["edit"].includes(type)) {
-        this.$router.push({
-          path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
-        });
+        this.$refs.gainsEdit.show = true;
+        this.$refs.gainsEdit.incomeId = record.incomeId;
       } else if (["detail"].includes(type)) {
-        this.$router.push({
-          path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+        this.$refs.gainsDetail.show = true;
+        this.$refs.gainsDetail.incomeId = record.incomeId;
+      } else {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要作废此收益单吗？",
+          onOk() {
+            that.$api.assetRent
+              .updateIncomeStatus({
+                incomeId: record.incomeId,
+                status: 0,
+              })
+              .then((res) => {
+                if (+res.data.code !== 0) {
+                  that.$message.error(res.data.message);
+                } else {
+                  that.allQuery();
+                }
+              });
+          },
         });
       }
     },
@@ -558,13 +584,14 @@ export default {
     this.platformDictFn("asset_type");
   },
   created() {
-    this.query()
+    this.query();
   },
 };
 </script>
 
 <style lang="less" scoped>
 .rentGainsRegister {
+  padding-bottom: 60px;
   .formCon {
     display: flex;
     width: 100%;
@@ -576,6 +603,13 @@ export default {
       position: relative;
       height: 32px;
     }
+  }
+  .sum {
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
   }
 }
 </style>

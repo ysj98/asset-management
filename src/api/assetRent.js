@@ -74,3 +74,18 @@ export function saveUpdateIncome(data) {
 export function getIncome(data) {
   return axiosGet(assetRent.getIncome, data)
 }
+
+// 资产出租/投资收益登记-查询列表表头统计
+export function getIncomeStatistics(data) {
+  return axiosPost(assetRent.getIncomeStatistics, data)
+}
+
+// 出租登记-修改状态
+export function updateLeaseOrderStatus(data) {
+  return axiosPost(assetRent.updateLeaseOrderStatus, data)
+}
+
+// 资产出租/投资收益登记-修改状态
+export function updateIncomeStatus(data) {
+  return axiosPost(assetRent.updateIncomeStatus, data)
+}
