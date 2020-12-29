@@ -19,12 +19,12 @@
         />
       </a-col>
       <a-col :span="6">
-        <a-input-search
-          v-model.trim="receiveDetailId"
+        <a-select
           style="width: 100%"
-          @search="fetchData"
-          @pressEnter="fetchData"
-          placeholder="请输入领用编号"
+          v-model="assetStatus"
+          @change="fetchData"
+          :options="assetStatusOptions"
+          placeholder="请选择资产状态"
         />
       </a-col>
       <a-col :span="6">
@@ -102,22 +102,23 @@
         projectOptions: [], // 资产项目选项
         objectType: undefined, // 资产类别
         objectTypeOptions: [], // 类别选项
+        assetStatus: undefined, // 资产状态
+        assetStatusOptions: [{key:'0', title:'未生效'},   {key:'1', title:'正常'},  {key:'2', title:'报废'},   {key:'3', title:'转让'},   {key:'4', title:'报损'},   {key:'5', title:'已出库'},  {key:'6', title:'已取消'}, {key:'7', title:'入库中'},], // 类别选项
         dataSource: [], // Table数据源
         loading: false, // Table loading
         selectedList: [], // 选中人员list
         selectedRowKeys: [], // Table选中项
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: false },
         columns: [
-          { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
-          { title: '资产编码', dataIndex: 'assetCode' },
+          { title: '资产编码', dataIndex: 'assetCode', fixed: 'left' },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产分类', dataIndex: 'assetCategoryName' },
-          { title: '领用日期', dataIndex: 'receiveDate' },
-          { title: '领用人', dataIndex: 'receiveUserName' },
-          { title: '领用面积（㎡）', dataIndex: 'receiveArea' },
-          { title: '已归还面积(㎡)', dataIndex: 'returnArea' },
-          { title: '未归还面积(㎡)', dataIndex: 'unReturnArea' }
+          { title: '资产项目', dataIndex: 'projectName' },
+          { title: '资产面积', dataIndex: 'assetArea' },
+          { title: '规格型号', dataIndex: 'specificationTypeName' },
+          { title: '资产位置', dataIndex: 'address' },
+          { title: '资产状态', dataIndex: 'assetStatusName' }
         ]
       }
     },
@@ -125,17 +126,17 @@
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
-        const {objectType, assetName, assetType, proId: projectId, queryType, organId, receiveDetailId} = this
+        const {objectType, assetName, assetType, proId: projectId, queryType, organId, receiveDetailId, assetStatus} = this
         if (!projectId) { return this.$message.warn('资产项目Id不存在')}
         this.loading = true
         let form = {
-          queryType, assetName, projectId, organId, receiveDetailId,
+          queryType:7, assetNameCode:assetName, projectId, organId,
           // projectId: projectId === '-1' ? '' : projectId, 改前
           assetType: assetType === '-1' ? '' : assetType,
-          objectType: objectType === '-1' ? '' : objectType,
+          objectType: objectType === '-1' ? '' : objectType,multiStatus:assetStatus,
           pageSize: pageLength, pageNum: pageNo
         }
-        return this.$api.useManage.getReceiveRecordPage(form).then(r => {
+        return this.$api.assets.assetListPage(form).then(r => {
           let res = r.data
           console.log(res.data)
           if (res && res.code.toString() === '0') {
@@ -238,6 +239,7 @@
               key: m.professionCode
             }))
             list.unshift({ title: '全部资产分类', key: '-1' })
+            console.log(list)
             this.objectTypeOptions = list
             return false
           }

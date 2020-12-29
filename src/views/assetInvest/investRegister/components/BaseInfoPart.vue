@@ -202,7 +202,7 @@
   import TreeSelect from '../../../common/treeSelect'
   export default {
     name: 'BaseInfoPart',
-    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId', 'investOrderId'],
+    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId', 'investOrderId', 'investAreaTotal', 'investCount'],
     components: {TreeSelect},
     data () {
       return {
@@ -257,9 +257,9 @@
       getAttachmentList(id) {
          if(!id){return false}
          this.$api.basics.attachment({objectId: id, objectType: 20}).then(res => {
-           if(res.code == 0){
+           if(res.data.code == 0){
              console.log(res.data)
-             return this.acttachment = res.data
+             return this.acttachment = res.data.data
            }
          })
       },
@@ -415,7 +415,6 @@
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          console.log(this.staffList[0].title)
           return //this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 
@@ -435,6 +434,16 @@
       }
     },
     watch: {
+      investAreaTotal: function (val) {
+            
+            this.form.setFieldsValue({assetArea: val})
+            
+      },
+      investCount: function (val) {
+        
+            this.form.setFieldsValue({assetSum: val})
+            console.log('0')
+      },
       details: function () {
         this.getAttachmentList(this.details.investOrderId)
         console.log(this.acttachment)
