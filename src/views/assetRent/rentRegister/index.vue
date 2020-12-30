@@ -300,7 +300,8 @@ export default {
   },
   data() {
     return {
-      organID: "",
+      organID: 0,
+      organName: "",
       ASSET_MANAGEMENT,
       loading: false,
       columns,
@@ -640,9 +641,6 @@ export default {
         });
       }
     },
-  },
-  created() {
-    this.getObjectKeyValueByOrganIdFn();
   },
 };
 </script>

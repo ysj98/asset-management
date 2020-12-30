@@ -907,6 +907,21 @@ let proRouter = [{
     component: () => import('@/views/assetRepair/index')
   },
   {
+    path: '/repairRegister/repairAdd',
+    name: '维修新建',
+    component: () => import('@/views/assetRepair/child/repairAdd')
+  },
+  {
+    path: '/repairRegister/repairEdit',
+    name: '维修编辑',
+    component: () => import('@/views/assetRepair/child/repairEdit')
+  },
+  {
+    path: '/repairRegister/repairDetail',
+    name: '维修详情',
+    component: () => import('@/views/assetRepair/child/repairDetail')
+  },
+  {
     path: '/applyRegister/new',
     name: '领用登记新增',
     component: () => import('@/views/assetApply/applyRegister/DetailPage')

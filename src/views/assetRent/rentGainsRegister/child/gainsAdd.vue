@@ -472,6 +472,7 @@ export default {
         attachmentList: upList,
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then(res=>{
+        this.$message.success('出租收益登记成功！')
         this.show = false
         this.$emit('childrenSubmit')
       })

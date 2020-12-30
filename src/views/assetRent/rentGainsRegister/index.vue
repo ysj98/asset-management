@@ -135,7 +135,7 @@
           ></OperationPopover>
         </template>
       </a-table>
-      <div class="sum" v-if="totalCount">
+      <div class="sum" v-if="tableData.length!==0">
         全部合计：
         <span style="font-size: 16px; font-weight: bold">{{
           totalCount > 0 ? totalCount : 0
@@ -524,7 +524,7 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn(type) {
-      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
+    // 审批状态  0已作废 1有效
       let arr = [];
       // 有效
       if (["1"].includes(String(type))) {
