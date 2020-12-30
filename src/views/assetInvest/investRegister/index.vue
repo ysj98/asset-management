@@ -18,7 +18,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.returnName" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.investName" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -49,6 +49,12 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
+          <OperationPopover
+            :operationData="record.operationDataBtn"
+            @operationFun="operationFun($event, record)"
+          ></OperationPopover>
+        </template>
+        <!-- <template slot="operation" slot-scope="text, record">
           <a-popover placement="bottom">
         <template slot="content">
           <p><router-link
@@ -79,7 +85,7 @@
         </template>
         <a-button ><a-icon type="ellipsis" /></a-button>
       </a-popover>
-        </template>
+        </template> -->
         <template slot="key" slot-scope="text, record">
           <div v-if="false">
             {{record.investOrderId}}
@@ -106,6 +112,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import OperationPopover from "@/components/OperationPopover"
 
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '草稿', value: '0' }, { name: '待审批', value: '2' }, { name: '已驳回', value: '3' }, { name: '已审批', value: '1' }, { name: '已取消', value: '4' }
@@ -152,11 +159,11 @@ const columns = [
   },
   {
     title: '起投日期',
-    dataIndex: 'returnDate'
+    dataIndex: 'startInvestDate'
   },
   {
     title: '止投日期',
-    dataIndex: 'startInvestDate'
+    dataIndex: 'endInvestDate'
   },
   {
     title: '合同编号',
@@ -188,7 +195,7 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, OperationPopover},
   data () {
     return {
       ASSET_MANAGEMENT,
@@ -219,7 +226,8 @@ export default {
         startInvestDateStart: '',         // 开始投资日期
         startInvestDateEnd: '',           // 结束投资日期
         assetType: '',                // 资产类型
-        investStatusList: []            // 投资状态
+        investStatusList: [],            // 投资状态
+        investName: ''               // 投资单名称
       },
       organProjectType: {
           organId: 1,
@@ -254,10 +262,76 @@ export default {
     this.platformDictFn('asset_type')
   },
   methods: {
+    // 生成操作按钮
+    createOperationBtn(type) {
+      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
+      let arr = [];
+      // 草稿 已驳回
+      if (["0", "3"].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
+          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
+          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+        }
+      }
+      // 待审批
+      if (["2"].includes(type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
+          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+        }
+      }
+      // 已审批
+      if (["1"].includes(type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
+          arr.push({
+            iconType: "edit",
+            text: "反审核",
+            editType: "readApproval",
+          });
+        }
+      }
+      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      return arr;
+    },
+    // 操作事件函数
+    operationFun(type, record) {
+      // 编辑
+      if (["edit"].includes(type)) {
+        this.$router.push({name: '投资登记编辑', params: {registerId: record.investOrderId, type: 'edit'}});
+      } else if (["detail"].includes(type)) {
+        this.$router.push({
+          name: '投资登记详情', params: {registerId: record.investOrderId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
+        });
+      } else {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要作废此投资单吗？",
+          onOk() {
+             this.loading = true
+        this.$api.assetInvest.updateInvestOrderStatus({investOrderId: record.investOrderId, approvalStatus:4}).then(r => {
+          this.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$message.success('删除成功')
+            // 更新列表
+            return this.allQuery ()
+          }
+          throw res.message || '删除失败'
+        }).catch(err => {
+          this.loading = false
+          console.log(err)
+          this.$message.error(123 || '删除失败')
+        })
+          },
+        });
+      }
+    },
       // 控制跳转至新增领用单页面
       handleBtnAction ({id, type}) {
           const { organProjectType: { organId }, organName } = this
-          this.$router.push({ name: '归还登记新增', params: { organId:this.queryCondition.organId, organName, type: 'add' }})
+          this.$router.push({ name: '投资登记新增', params: { organId:this.queryCondition.organId, organName, type: 'add' }})
       },
     exportFn () {
       let obj = {
@@ -318,6 +392,9 @@ export default {
               console.log(r)
               r.data.data.data.map((item,index) => {
                 r.data.data.data[index].key = item.investOrderId
+                item.operationDataBtn = this.createOperationBtn(
+              item.approvalStatus
+            );
               })
               this.tableData = r.data.data.data
               this.count = r.data.data.count
@@ -338,9 +415,6 @@ export default {
             this.$message.success('删除成功')
             // 更新列表
             return this.allQuery ()
-            // const { pageNo, pageLength } = this.paginationObj
-            // return this.query()
-            //return this.queryTableData({pageNo, pageLength})
           }
           throw res.message || '删除失败'
         }).catch(err => {

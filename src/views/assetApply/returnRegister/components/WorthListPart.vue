@@ -36,7 +36,7 @@
             :min="0"
             step="0.01"
             :precision="2"
-            :max="record.area"
+            :max="record.receiveArea"
             style="width: 120px"
             v-model="record.returnArea"
             @change="calcSum(tableObj.dataSource)"
@@ -110,7 +110,7 @@
           loading: false,
           pagination: false,
           scroll: { x: 3200 },
-          rowKey: 'assetId',
+          rowKey: 'receiveDetailId',
           selectedRowKeys: [], // Table选中的key数据
           columns: [
             { title: '领用ID', dataIndex: 'receiveDetailId' },
@@ -174,7 +174,7 @@
         if (!selectedRowKeys.length) {
           return this.$message.warn('请选择数据')
         }
-        let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
+        let data = dataSource.filter(m => !selectedRowKeys.includes(m.receiveDetailId))
         if (!data.length) {
           this.tableObj.dataSource = []
           this.selectedRowKeys = []
@@ -190,7 +190,7 @@
           if (!assetType || !projectId) {
             return this.$emit('validateProject')
           }
-          let list = dataSource.map(m => Number(m.assetId))
+          let list = dataSource.map(m => Number(m.receiveDetailId))
           Object.assign(this, {
             modalObj: { width: 1000, height: 450, title: '选择资产', okText: '确定选择', cancelText: '取消', isShow: false },
             isEditAll: false,
@@ -226,16 +226,26 @@
         if (selectedList.length) {
           let { tableObj: { dataSource } } = this
           this.initList = [...selectedList]
-          let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
+          let newList = selectedList.filter(m => !dataSource.some(n => String(n.receiveDetailId) === String(m)))
           if (newList.length) {
             //this.queryAssetListByAssetId(newList)
-            dataSource = assetList
-            console.log(selectedList,123)
+            // dataSource = assetList
+            // console.log(selectedList,123)
+            assetList.map(item => {
+              if(newList.includes(item.receiveDetailId)){
+                this.tableObj.dataSource.push(item)
+                this.tableObj.dataSource.map((i,d) => {
+                  if(i.receiveDetailId==item.receiveDetailId){
+                    i.index = d + 1
+                  }
+                })
+              }
+            })
              return this.calcSum(dataSource)
           } else {
             // 过滤列表中被取消选中的数据
-            //dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
-            dataSource = assetList
+            dataSource = dataSource.filter(n => selectedList.includes(Number(n.receiveDetailId))).map((m, i) => ({...m, index: i + 1}))
+            //dataSource = assetList
             return this.calcSum(dataSource)
           }
         }
@@ -283,7 +293,7 @@
           form.registerId = registerId
         } else {
           if (!selectedRows.length) { return false }
-          form.assetId = selectedRows.join(',')
+          form.selectedList = selectedRows.join(',')
         }
         this.tableObj.loading = true
         this.$api.useManage.getReturnInfo({returnId:registerId, queryType:1}).then(r => {
@@ -300,7 +310,7 @@
               
               dataSource.push(...addData)
               // 过滤列表中被取消选中的数据
-              dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
+              dataSource = dataSource.filter(n => selectedList.includes(Number(n.receiveDetailId)))
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1}))
             console.log(list)

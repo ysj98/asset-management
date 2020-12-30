@@ -28,11 +28,12 @@
         <template slot="assessmentOrganName" slot-scope="text">
           <tooltip-text width="150" :text="text"/>
         </template>
-        <template slot="receiveArea">
-              <span class="icon-red">领用面积(㎡)</span>
+        <template slot="receiveArea" slot-scope="text, record">
+              <span class="icon-red" v-if=" record.assetTypeName == '车场' || record.assetTypeName == '土地'">领用面积(㎡)</span>
             </template>
         <template slot="receiveArea" slot-scope="text, record">
-          <a-input-number
+          <div v-if="record.assetTypeName == '车场' || record.assetTypeName == '土地'">
+                 <a-input-number
             :min="0"
             step="0.01"
             :precision="2"
@@ -43,6 +44,7 @@
             v-if="type == 'add' || type == 'edit'"
           />
           <span v-else>{{text}}</span>
+          </div>
         </template>
         <template slot="remark" slot-scope="text, record">
           <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" />
@@ -86,6 +88,7 @@
         :assetType="dynamicData.assetType"
         :proId="dynamicData.projectId"
         :key="`${dynamicData.projectId}${dynamicData.assetType}`"
+        @getReceiveAssetInfo="getReceiveAssetInfo"
       />
       <!--快捷录入资产估值-->
       <set-asset v-else ref="setAsset" :assetType="dynamicData.assetType"/>
@@ -108,16 +111,16 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: 3200 },
+          scroll: { x: 1600 },
           rowKey: 'assetId',
           selectedRowKeys: [], // Table选中的key数据
-          columns: [
+          columns:  [
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
             { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
-            { slots: { title: "receiveArea" }, dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' }},{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
-          ]
+            { slots: { title: "receiveArea" }, dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' }, width: 0},{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+          ] 
         },
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
@@ -133,7 +136,8 @@
           isShow: false
         },
         isEditAll: false, // 批量修改本次估值列
-        receiveAreaSum: 0
+        receiveAreaSum: 0,
+        assetList: []
       }
     },
 
@@ -215,7 +219,25 @@
       
       // 获取选中的资产数据
       getAssetList () {
-        let {selectedList} = this
+
+        // let {selectedList} = this
+        // if (!selectedList.length) { return this.$message.warn('请选择资产数据') }
+        // this.modalObj.isShow = !selectedList.length
+        // // 去重处理，比较arr 与 tableObj.dataSource
+        // if (selectedList.length) {
+        //   let { tableObj: { dataSource } } = this
+        //   this.initList = [...selectedList]
+        //   let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
+        //   console.log(newList)
+        //   if (newList.length) {
+        //     this.queryAssetListByAssetId(newList)
+        //   } else {
+        //     // 过滤列表中被取消选中的数据
+        //     dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
+        //     return this.calcSum(dataSource)
+        //   }
+        // }
+        let {selectedList, assetList} = this
         if (!selectedList.length) { return this.$message.warn('请选择资产数据') }
         this.modalObj.isShow = !selectedList.length
         // 去重处理，比较arr 与 tableObj.dataSource
@@ -224,10 +246,24 @@
           this.initList = [...selectedList]
           let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
           if (newList.length) {
-            this.queryAssetListByAssetId(newList)
+            //this.queryAssetListByAssetId(newList)
+            // dataSource = assetList
+            // console.log(selectedList,123)
+            assetList.map(item => {
+              if(newList.includes(item.assetId)){
+                this.tableObj.dataSource.push(item)
+                this.tableObj.dataSource.map((i,d) => {
+                  if(i.assetId==item.assetId){
+                    i.index = d + 1
+                  }
+                })
+              }
+            })
+             return this.calcSum(dataSource)
           } else {
             // 过滤列表中被取消选中的数据
             dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
+            //dataSource = assetList
             return this.calcSum(dataSource)
           }
         }
@@ -268,43 +304,82 @@
       },
       
       // 根据资产id查询资产详情的列表数据--不分页
+      // queryAssetListByAssetId (selectedRows = [], status) {
+      //   let form = {}
+      //   let { registerId, tableObj: { dataSource }, dynamicData, selectedList } = this
+
+      //   if(!registerId){
+      //     return false
+      //   }
+      //   if (status === 'init') {
+      //     form.registerId = registerId
+          
+      //   } else {
+          
+      //     if (!selectedRows.length) { return false }
+      //     form.assetId = selectedRows.join(',')
+      //   }
+      //   this.tableObj.loading = true
+                  
+      //   this.$api.worthRegister.queryRelList(form).then(r => {
+      //     console.log(r)
+      //     this.tableObj.loading = false
+      //     let res = r.data
+      //     if (res && String(res.code) === '0') {
+      //       let addData = res.data.data || []
+      //       if (!addData.length) { return false }
+      //       if (status === 'init') {
+      //         dataSource = addData
+      //       } else {
+      //         dataSource.push(...addData)
+      //         // 过滤列表中被取消选中的数据
+      //         dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
+      //       }
+      //       console.log(dataSource)
+      //       let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData, area: m.assetArea ? +m.assetArea : m.area, objectTypeName: m.assetCategoryName}))
+      //       console.log(list,dataSource)
+      //       return this.calcSum(list)
+      //     }
+      //     throw res.message || '查询登记资产接口出错'
+      //   }).catch(err => {
+      //     this.tableObj.loading = false
+      //     this.$message.error(1 || '查询登记资产接口出错')
+      //   })
+      // },
       queryAssetListByAssetId (selectedRows = [], status) {
         let form = {}
         let { registerId, tableObj: { dataSource }, dynamicData, selectedList } = this
-        if(!registerId){
-          return false
-        }
         if (status === 'init') {
           form.registerId = registerId
         } else {
           if (!selectedRows.length) { return false }
-          form.assetId = selectedRows.join(',')
+          form.selectedList = selectedRows.join(',')
         }
         this.tableObj.loading = true
-                  
-        this.$api.worthRegister.queryRelList(form).then(r => {
-          console.log(r)
+        this.$api.useManage.getReceiveInfo({receiveId:registerId, queryType:1}).then(r => {
           this.tableObj.loading = false
           let res = r.data
+          console.log(res)
           if (res && String(res.code) === '0') {
-            let addData = res.data.data || []
+            let addData = res.data.detailList || []
+            console.log(addData)
             if (!addData.length) { return false }
             if (status === 'init') {
               dataSource = addData
             } else {
+              
               dataSource.push(...addData)
               // 过滤列表中被取消选中的数据
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
-            console.log(dataSource)
-            let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData, area: m.assetArea ? +m.assetArea : m.area, objectTypeName: m.assetCategoryName}))
-            console.log(list,dataSource)
+            let list = dataSource.map((m, i) => ({...m, index: i + 1}))
+            console.log(list)
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(1 || '查询登记资产接口出错')
+          this.$message.error(err || '查询登记资产接口出错')
         })
       },
 
@@ -365,7 +440,15 @@
           }
         }
         this.calcSum(list)
-      }
+      },
+       getReceiveAssetInfo(assetList) {
+         console.log(assetList,456)
+         this.assetList = assetList
+         this.assetList.map((item,index) => {
+           this.assetList[index].area = item.assetArea
+           this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
+         })
+    },
     },
     
     created () {
@@ -376,7 +459,7 @@
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
-        //type === 'edit' && this.queryAssetListByAssetId([], 'init')
+        type === 'edit' && this.queryAssetListByAssetId([], 'init')
         this.queryAssetListByRegisterId({type: 'init'})
       } else {
         // type === 'approval' || type === 'detail'时
@@ -387,6 +470,11 @@
     },
     
     watch: {
+      details: function (val) {
+         if(this.details.detailList){
+           this.queryAssetListByAssetId([], 'init')
+         }
+      },
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
         let {tableObj: {dataSource}, type, numList, details} = this

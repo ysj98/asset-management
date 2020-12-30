@@ -230,8 +230,7 @@
             remark: remark || '', 
             projectId: projectName,
             assetType: assetTypeName,
-            receiveId,
-            createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
+             receiveUserName, receiveOrganName
           })
         }
         console.log(formatDetails)
@@ -340,8 +339,7 @@
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          console.log(res)
-          return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
+           return //this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 
     },

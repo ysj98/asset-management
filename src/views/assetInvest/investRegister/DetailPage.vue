@@ -93,27 +93,28 @@
           let tip = type === 'add' ? '新增': '保存'
           this.spinning = true
           let investDetail = []
+          console.log(assetList)
           assetList.forEach(m => {
             const { investDetailId, investArea, remark, assetId } = m
             investDetail.push({ investDetailId, investArea, remark, assetId })
           })
           let form = type === 'edit' || type === 'add' ? { ...data, investDetail, investOrderId: registerId ? registerId : '', investArea: investAreaTotal, 
-          ...dynamicData, investCount:assetList.length, } : { ...data, detailList }
+          ...dynamicData, approvalStatus: saveWays } : { ...data, detailList }
           console.log(form)
-  
-          // this.$api.useManage.saveUpdateInvestOrder(form).then(r => {
-          //   this.spinning = false
-          //   let res = r.data
-          //   if (res && String(res.code) === '0') {
-          //     this.$message.success(`${tip}成功`)
-          //     // 跳回列表路由
-          //     return this.$router.push({ name: '归还登记', params: { refresh: true } })
-          //   }
-          //   throw res.message || `${tip}失败`
-          // }).catch(err => {
-          //   this.spinning = false
-          //   this.$message.error(err || `${tip}失败`)
-          // })
+          delete form.assetArea
+          this.$api.assetInvest.saveUpdateInvestOrder(form).then(r => {
+            this.spinning = false
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              this.$message.success(`${tip}成功`)
+              // 跳回列表路由
+              return this.$router.push({ name: '投资登记', params: { refresh: true } })
+            }
+            throw res.message || `${tip}失败`
+          }).catch(err => {
+            this.spinning = false
+            this.$message.error(err || `${tip}失败`)
+          })
         }).catch((err) => {
           console.log(err)
           this.spinning = false

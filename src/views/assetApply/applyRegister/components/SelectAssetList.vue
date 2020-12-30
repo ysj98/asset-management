@@ -110,6 +110,10 @@
     },
 
     methods: {
+      // 向父组件传值
+      getReceiveAssetInfo() {
+        this.$emit('getReceiveAssetInfo', this.selectedList)
+      },
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {
         const {objectType, assetNameCode, assetType, proId: projectId, queryType, organId} = this
@@ -237,16 +241,31 @@
       },
  
       selectedRowKeys: function (keys) {
-        let {dataSource, allAttrs, selectedList} = this
+        // let {dataSource, allAttrs, selectedList} = this
+        // let primaryKeys = []
+        // let primaryList = selectedList.filter(n => {
+        //   let flag = keys.includes(n.assetId)
+        //   flag && primaryKeys.push(n.assetId)
+        //   return flag
+        // })
+        // let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
+        // this.selectedList = primaryList.concat(newList)
+        // this.$emit('input', allAttrs ? selectedList : keys)
+        // this.getReturnAssetInfo()
+        let {dataSource, allAttrs, selectedList, list} = this
         let primaryKeys = []
         let primaryList = selectedList.filter(n => {
           let flag = keys.includes(n.assetId)
           flag && primaryKeys.push(n.assetId)
           return flag
         })
+        console.log(primaryList)
+        console.log(dataSource)
         let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
         this.selectedList = primaryList.concat(newList)
+        console.log(this.selectedList,keys)
         this.$emit('input', allAttrs ? selectedList : keys)
+        this.getReceiveAssetInfo()
       },
 
       // assetType: function (assetType) {

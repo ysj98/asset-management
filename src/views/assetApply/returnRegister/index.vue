@@ -47,36 +47,10 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <a-popover placement="bottom">
-        <template slot="content">
-          <p><router-link
-          class="action_text"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-          :to="{name: '归还登记详情', params: {registerId: record.returnId, type: 'edit'}}"
-          tag="div"
-        ><a-icon type="form"></a-icon>编辑</router-link></p>
-          <p><router-link
-          class="action_text"
-          v-if="Number(record.approvalStatus) === 2"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '归还登记审批', params: {registerId: record.returnId, type: 'approval'}}"
-          tag="div"
-        ><a-icon type="setting" theme="filled"></a-icon>审批</router-link></p>
-          <p><a-popconfirm
-          okText="确定"
-          cancelText="取消"
-          title="确定要删除该资产项目吗?"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
-          @confirm="confirmDelete(record.receiveId)"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-        ><a-icon type="delete"></a-icon>删除
-        </a-popconfirm></p>
-          <p><router-link :to="{name: '归还登记详情', params: {registerId: record.returnId, type: 'detail', organId, organName, queryType:1}}" class="action_text opts" tag="div" ><a-icon type="setting" theme="filled"></a-icon>详情</router-link></p>
-          <p v-if="false">{{ record.returnId }}</p>
-        </template>
-        <a-button ><a-icon type="ellipsis" /></a-button>
-      </a-popover>
+          <OperationPopover
+            :operationData="record.operationDataBtn"
+            @operationFun="operationFun($event, record)"
+          ></OperationPopover>
         </template>
         <template slot="key" slot-scope="text, record">
           <div v-if="false">
@@ -104,6 +78,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import OperationPopover from "@/components/OperationPopover"
 
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '草稿', value: '4' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
@@ -177,7 +152,7 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, OperationPopover},
   data () {
     return {
       ASSET_MANAGEMENT,
@@ -242,6 +217,72 @@ export default {
     this.platformDictFn('asset_type')
   },
   methods: {
+    // 生成操作按钮
+    createOperationBtn(type) {
+      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
+      let arr = [];
+      // 草稿 已驳回
+      if (["0", "3"].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
+          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
+          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+        }
+      }
+      // 待审批
+      if (["2"].includes(type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
+          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+        }
+      }
+      // 已审批
+      if (["1"].includes(type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
+          arr.push({
+            iconType: "edit",
+            text: "反审核",
+            editType: "readApproval",
+          });
+        }
+      }
+      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      return arr;
+    },
+    // 操作事件函数
+    operationFun(type, record) {
+      // 编辑
+      if (["edit"].includes(type)) {
+        this.$router.push({name: '归还登记编辑', params: {registerId: record.returnId, type: 'edit'}});
+      } else if (["detail"].includes(type)) {
+        this.$router.push({
+          name: '归还登记详情', params: {registerId: record.returnId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
+        });
+      } else {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要作废此归还单吗？",
+          onOk() {
+             this.loading = true
+        this.$api.useManage.deleteReturn({returnId: record.returnId}).then(r => {
+          this.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            this.$message.success('删除成功')
+            // 更新列表
+            return this.allQuery ()
+          }
+          throw res.message || '删除失败'
+        }).catch(err => {
+          this.loading = false
+          console.log(err)
+          this.$message.error(123 || '删除失败')
+        })
+          },
+        });
+      }
+    },
       // 控制跳转至新增领用单页面
       handleBtnAction ({id, type}) {
           const { organProjectType: { organId }, organName } = this
@@ -310,7 +351,10 @@ export default {
             if(r.data.code == 0){
               console.log(r)
               r.data.data.data.map((item,index) => {
-                r.data.data.data[index].key = item.receiveId
+                r.data.data.data[index].key = item.returnId
+                 item.operationDataBtn = this.createOperationBtn(
+              item.approvalStatus
+            );
               })
               this.tableData = r.data.data.data
               this.count = r.data.data.count

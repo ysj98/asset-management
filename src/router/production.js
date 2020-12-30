@@ -847,11 +847,6 @@ let proRouter = [{
     component: () => import('@/views/assetApply/assetReturnView/index')
   },
   {
-    path: '/applyRegister/new',
-    name: '新增',
-    component: () => import('@/views/assetApply/applyRegister/newApply')
-  },
-  {
     path: '/assetRentView',
     name: '资产出租一览表',
     component: () => import('@/views/assetRent/assetRentView')
@@ -960,6 +955,11 @@ let proRouter = [{
     path: '/investRegister/edit',
     name: '投资登记编辑',
     component: () => import('@/views/assetInvest/investRegister/DetailPage')
+  },
+  {
+    path: '/returnRegister/edit',
+    name: '归还登记编辑',
+    component: () => import('@/views/assetApply/returnRegister/DetailPage')
   },
 ]
 export default proRouter

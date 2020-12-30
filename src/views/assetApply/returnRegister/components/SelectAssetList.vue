@@ -46,7 +46,7 @@
           <div :style="`overflow-y: auto; height: ${height - 51}px; max-height: ${height - 51}px`">
             <a-table
               size="small"
-              rowKey="assetId"
+              rowKey="receiveDetailId"
               :columns="columns"
               :loading="loading"
               :pagination="false"
@@ -61,9 +61,9 @@
       </a-col>
       <a-col :span="6">
         <div class="col_div" :style="`overflow-y: auto; height: ${height}px; max-height: ${height}px`" >
-          <div class="item_div" v-for="item in selectedList" :key="item.assetId" >
+          <div class="item_div" v-for="item in selectedList" :key="item.receiveDetailId" >
             {{item.assetName}}
-            <a-icon type="close" class="remove_icon" @click="removeItem(item.assetId)"/>
+            <a-icon type="close" class="remove_icon" @click="removeItem(item.receiveDetailId)"/>
           </div>
         </div>
       </a-col>
@@ -172,7 +172,6 @@
       handleSelectChange (selectedRowKeys, selectedRows) {
         this.selectedRowKeys = selectedRowKeys
         this.list.push(selectedRows)
-        console.log(selectedRows)
       },
 
       // 移除选中的人员
@@ -254,7 +253,7 @@
     mounted () {
       const {allAttrs, value, assetType} = this
       
-      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) 
+      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.receiveDetailId) : value) 
       console.log(this.objectTypeOptions)
       this.queryObjectType(String(assetType))
       console.log(this.objectTypeOptions)
@@ -268,7 +267,7 @@
     },
     watch: {
       value: function (value) {
-        this.selectedRowKeys = this.allAttrs ? value.map(i => i.assetId) : value
+        this.selectedRowKeys = this.allAttrs ? value.map(i => i.receiveDetailId) : value
       },
       
       selectedRowKeys: function (keys) {
@@ -279,13 +278,13 @@
           // if(keys.includes(n.assetId)){
           //   flag.push(n)
           // }
-          let flag = keys.includes(n.assetId)
-          flag && primaryKeys.push(n.assetId)
+          let flag = keys.includes(n.receiveDetailId)
+          flag && primaryKeys.push(n.receiveDetailId)
           return flag
         })
         console.log(primaryList)
         console.log(dataSource)
-        let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
+        let newList = dataSource.filter(i => !primaryKeys.includes(i.receiveDetailId) && keys.includes(i.receiveDetailId))
         // let newList = []
         // if(dataSource.length){
         //    newList = dataSource.map(i => {

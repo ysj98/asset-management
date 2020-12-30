@@ -68,6 +68,7 @@
       // 获取资产关联对象数据
       getAssetList (list, returnAreaSum) {
         this.assetList = list
+        console.log(this.assetList)
         this.returnAreaTotal = +returnAreaSum
       },
 

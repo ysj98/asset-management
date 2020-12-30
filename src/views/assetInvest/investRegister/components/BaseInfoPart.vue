@@ -221,10 +221,7 @@
         projectOptions: [], // 资产项目选项
         createTime: '', // 提交时间
         createByName: '', // 提交人
-        receiveId: '', // 领用单Id
         staffList: [], // 部门人员列表
-        returnUserId: '', // 领用人id
-        returnOrganId: '', // 归还部门id
         rules: {
           returnName: [{ required: true, message: '请选择资产项目' }] , projectId: [{ required: true, message: '请选择资产项目' }] 
       }
@@ -238,16 +235,18 @@
       // 提交数据
       handleSubmit (resolve, reject) {
         this.form.validateFieldsAndScroll((err, values) => {
+          console.log(values)
           if (!err) {
-            const { attachment, details: { organId } } = this
+            const { attachment, details: { organId, investOrderId } } = this
             let attachArr = attachment.map(m => {
               const { url: attachmentPath, name: oldAttachmentName } = m
               return { attachmentPath, oldAttachmentName }
             }) // 处理附件格式
             // 转换日期格式为string
-            let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
-            let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachmentList: attachArr, organId,  receiveDate:receiveDate, returnDate:returnDate, returnUserId: this.returnUserId, returnOrganId: this.returnOrganId })
+            let signingDate = values.signingDate ? moment(values.signingDate).format('YYYY-MM-DD') : ''
+            let startInvestDate = values.startInvestDate? moment(values.startInvestDate).format('YYYY-MM-DD') : ''
+            let endInvestDate = values.endInvestDate? moment(values.endInvestDate).format('YYYY-MM-DD') : ''
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId,  signingDate, startInvestDate , endInvestDate})
             return resolve(form)
           }
           reject('数据不完整')
@@ -286,26 +285,23 @@
         if (type === 'approval' || type === 'detail') {
           formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
-            projectId,
+            projectId: projectName,
             assetType: assetTypeName,
             investOrderId,
             investProject,
             contractCode,
             investProject,
-            assetSum, assetArea,
             createByName, approvalStatusName, createTime, investArea
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
             remark: remark || '无',
-            projectId,
+            projectId: projectName,
             assetType: assetTypeName,
-            investOrderId,
             investProject,
             contractCode,
             investProject,
-            assetSum, assetArea,
-            createByName, approvalStatusName, createTime, investArea
+            assetSum, assetArea
           })
         }
         console.log(formatDetails)
@@ -446,7 +442,6 @@
       },
       details: function () {
         this.getAttachmentList(this.details.investOrderId)
-        console.log(this.acttachment)
         this.renderDetail()
         if (this.type == 'add' || this.type == 'edit') {
           this.queryOrganOptions()
