@@ -1,14 +1,78 @@
-<!--出租收益-->
+<!--出租收益详情-->
 <template>
   <SG-Modal
     v-model="show"
     :width="800"
     wrapClassName="gainsDetail"
-    :noPadding="true"
+    :footer="null"
   >
     <template #title>
       <div style="font-size: 16px">出租收益详情</div>
     </template>
+    <a-row class="a_row" style="margin-top: 20px">
+      <a-col :span="9" :offset="3">
+        <div>收益编号： {{ incomeInfo.incomeId }}</div>
+      </a-col>
+      <a-col :span="10" :offset="2">
+        <div>收益名称： {{ incomeInfo.incomeName }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="9" :offset="3">
+        <div>所属组织机构： {{ incomeInfo.organName }}</div>
+      </a-col>
+      <a-col :span="10" :offset="2">
+        <div>状态： {{ incomeInfo.statusName }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="9" :offset="3">
+        <div>资产项目： {{ incomeInfo.projectName }}</div>
+      </a-col>
+      <a-col :span="10" :offset="2">
+        <div>资产类型： {{ incomeInfo.assetTypeName }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="9" :offset="3">
+        <div>客户名称： {{ incomeInfo.customerName }}</div>
+      </a-col>
+      <a-col :span="10" :offset="2">
+        <div>收益账期： {{ incomeInfo.accountingPeriod }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="9" :offset="3">
+        <div>所属出租单： {{ incomeInfo.orderName }}</div>
+      </a-col>
+      <a-col :span="10" :offset="2">
+        <div>费用科目： {{ incomeInfo.feeSubjectName }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="21" :offset="3">
+        <div>收益金额（元）： {{ incomeInfo.amount }}元</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="9" :offset="3">
+        <div>创建人： {{ incomeInfo.createByName }}</div>
+      </a-col>
+      <a-col :span="10" :offset="2">
+        <div>创建时间： {{ incomeInfo.createTime }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="21" :offset="3">
+        <div>备注： {{ incomeInfo.remark }}</div>
+      </a-col>
+    </a-row>
+    <a-row class="a_row">
+      <a-col :span="21" :offset="3">
+        <div>附件：</div>
+        <SG-UploadFile type="all" v-model="uploadList" :show="true" />
+      </a-col>
+    </a-row>
   </SG-Modal>
 </template>
 
@@ -81,5 +145,8 @@ export default {
 
 <style lang="less" scoped>
 .gainsDetail {
+  .a_row {
+    margin-bottom: 22px;
+  }
 }
 </style>

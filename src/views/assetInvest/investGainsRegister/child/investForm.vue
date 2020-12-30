@@ -1,3 +1,4 @@
+<!--投资单模块-->
 <template>
   <SG-Modal
     v-model="show"
@@ -8,7 +9,7 @@
     :footer="null"
   >
     <template #title>
-      <div style="font-size: 16px">选择资产出租单</div>
+      <div style="font-size: 16px">选择投资单</div>
     </template>
     <div class="content">
       <!-- 输入框 -->
@@ -17,7 +18,7 @@
           :maxTagCount="1"
           style="width: 150px; margin: 0 20px 0 250px"
           mode="multiple"
-          placeholder="全部合同状态"
+          placeholder="全部投资状态"
           :tokenSeparators="[',']"
           v-model="contractStatus"
           @change="contractStatusListFn"
@@ -31,7 +32,7 @@
         </a-select>
         <SG-DatePicker
           :allowClear="false"
-          label="出租日期"
+          label="投资日期"
           style="width: 200px; margin-right: 20px"
           pickerType="RangePicker"
           v-model="rentDate"
@@ -40,7 +41,7 @@
           @change="dateChange"
         ></SG-DatePicker>
         <a-input-search
-          placeholder="出租单名称/ID/合同编号"
+          placeholder="投资单名称/ID/合同编号"
           v-model="rentNameOrId"
           style="width: 175px"
           @pressEnter="onPressEnter()"
@@ -79,15 +80,15 @@
 <script>
 const columns = [
   {
-    title: "出租单ID",
-    dataIndex: "leaseOrderId",
+    title: "投资单ID",
+    dataIndex: "investOrderId",
     fixed: "left",
     align: "center",
     width: 120,
   },
   {
-    title: "出租单名称",
-    dataIndex: "leaseName",
+    title: "投资单名称",
+    dataIndex: "investName",
     fixed: "left",
     width: 120,
     align: "center",
@@ -103,8 +104,8 @@ const columns = [
     align: "center",
   },
   {
-    title: "承租人",
-    dataIndex: "lesseeName",
+    title: "投资项目",
+    dataIndex: "investProject",
     align: "center",
   },
   {
@@ -113,19 +114,19 @@ const columns = [
     align: "center",
   },
   {
-    title: "出租面积(㎡)",
+    title: "投资面积(㎡)",
     width: 100,
-    dataIndex: "leaseArea",
+    dataIndex: "investArea",
     align: "center",
   },
   {
-    title: "起租日期",
-    dataIndex: "startLeaseDate",
+    title: "起投日期",
+    dataIndex: "startInvestDate",
     align: "center",
   },
   {
-    title: "止租日期",
-    dataIndex: "endLeaseDate",
+    title: "止投日期",
+    dataIndex: "endInvestDate",
     align: "center",
   },
   {
@@ -134,8 +135,8 @@ const columns = [
     align: "center",
   },
   {
-    title: "合同状态",
-    dataIndex: "contractStatusName",
+    title: "投资状态",
+    dataIndex: "investStatusName",
     align: "center",
   },
   {
@@ -149,7 +150,7 @@ const columns = [
 ];
 const contractStatusList = [
   {
-    name: "全部合同状态",
+    name: "全部投资状态",
     value: "",
   },
   {
@@ -174,7 +175,7 @@ const contractStatusList = [
   },
 ];
 import moment from "moment";
-import TooltipText from "../../common/TooltipText";
+import TooltipText from "@/views/common/TooltipText";
 export default {
   data() {
     return {
@@ -183,7 +184,7 @@ export default {
       loading: false,
       contractStatusList: [...contractStatusList], // 合同状态列表
       contractStatus: [""], // 当前合同状态
-      rentNameOrId: "", // 出租单名称/ID/合同编号
+      rentNameOrId: "", // 投资单名称/ID/合同编号
       rentDate: [
         moment(new Date() - 24 * 1000 * 60 * 60 * 90),
         moment(new Date()),
@@ -208,23 +209,20 @@ export default {
     },
   },
   methods: {
-    /* contractStatusListFn() {
-      this.$nextTick(()=>{
-        console.log(this.contractStatus);
-      })
-    } */
     query() {
+      console.log(this.contractStatus);
       this.loading = true;
       let obj = {
         pageNum: this.pagination.pageNo, // 当前页
         pageSize: this.pagination.pageLength, // 每页显示记录数
         organId: Number(this.organId), // 组织机构id
-        leaseNameOrId: this.rentNameOrId,
-        contractStatusList: this.contractStatus[0] === "" ? [] : this.contractStatus,
-        startleaseDateStart: moment(this.rentDate[0]).format("YYYY-MM-DD"),
-        startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
+        investNameOrId: this.rentNameOrId,
+        investStatusList:
+          this.contractStatus[0] === "" ? [] : this.contractStatus,
+        startInvestDateStart: moment(this.rentDate[0]).format("YYYY-MM-DD"),
+        startInvestDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
       };
-      this.$api.assetRent.getLeaseOrderPageList(obj).then((res) => {
+      this.$api.assetInvest.getInvestOrderPageList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
           data.forEach((item, index) => {
@@ -284,7 +282,7 @@ export default {
           this.contractStatus,
           this.contractStatusList
         );
-        this.query()
+        this.query();
       });
     },
     // 日期改变

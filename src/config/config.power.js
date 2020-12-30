@@ -419,7 +419,8 @@ export const ASSET_MANAGEMENT = {
    * 2.0.7 资产出租
    */
   ASSET_RENT_REGISTER: 'asset_rent_register',       // 出租登记导出
-  ASSET_EARNINGS_REGISTER: 'asset_earnings_register',       // 收益登记导出
+  ASSET_EARNINGS_REGISTER: 'asset_earnings_register',       // 出租收益登记导出
+  INVEST_EARNINGS_REGISTER: 'invest_earnings_register',       // 投资收益登记导出
   RENT_FORM_EDIT: 'rent_form_edit',  // 出租单编辑
   RENT_FORM_DELETE: 'rent_form_delete',  // 出租单删除
   RENT_FORM_DETAIL: 'rent_form_detail',  // 出租单详情
@@ -428,6 +429,9 @@ export const ASSET_MANAGEMENT = {
   ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export',       // 出租登记一览表导出
   RENT_INCOME_EDIT: 'rent_income_edit', // 出租收益编辑
   RENT_INCOME_DELETE: 'rent_income_delete', // 出租收益作废
+  INVEST_INCOME_EDIT: 'invest_income_edit', // 投资收益编辑
+  INVEST_INCOME_DELETE: 'invest_income_delete', // 投资收益作废
+  ASSET_REPAIR_REGISTER: 'asset_repair_register', // 维修登记导出
   /**
    * 2.0.7 资产投资
    */

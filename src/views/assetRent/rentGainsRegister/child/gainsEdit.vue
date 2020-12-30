@@ -532,6 +532,7 @@ export default {
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then((res) => {
         if (+res.data.code === 0) {
+          this.$message.success('出租收益编辑成功！')
           this.show = false;
           this.$emit("childrenSubmit");
         } else {

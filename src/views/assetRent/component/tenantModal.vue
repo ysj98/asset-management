@@ -46,6 +46,7 @@
         :data-source="tableData"
         :pagination="false"
         :bordered="true"
+        size="small"
       >
         <template slot="operation" slot-scope="text, record">
           <a @click="chose(record)">选择</a>
@@ -122,7 +123,7 @@ export default {
       },
       pagination: {
         pageLength: 10,
-        totalCount: 100,
+        totalCount: 0,
         pageNo: "1",
       },
     };
@@ -143,7 +144,7 @@ export default {
     }, */
     show(newVal) {
       if (newVal === false) {
-        this.$emit('input',newVal)
+        this.$emit("input", newVal);
       }
     },
   },
