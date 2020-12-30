@@ -971,5 +971,10 @@ let proRouter = [{
     name: '投资登记详情',
     component: () => import('@/views/assetInvest/investRegister/DetailPage')
   },
+  {
+    path: '/investRegister/edit',
+    name: '投资登记编辑',
+    component: () => import('@/views/assetInvest/investRegister/DetailPage')
+  },
 ]
 export default proRouter

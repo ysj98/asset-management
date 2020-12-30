@@ -3,7 +3,7 @@
     <div class="detail_page">
       <a-spin :spinning="spinning" style="padding-bottom: 75px;">
         <!--基础信息-->
-        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData" :defaultOrganName="organName" :defaultOrganId="organId"/>
+        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData" :defaultOrganName="organName" :defaultOrganId="organId" :investAreaTotal="investAreaTotal" :investCount="investCount"/>
         <!--资产价值清单-->
         <worth-list-part
           v-if="type"
@@ -34,12 +34,14 @@
   import BaseInfoPart from './components/BaseInfoPart'
   import WorthListPart from './components/WorthListPart'
   import ApprovalFlowPart from './components/ApprovalFlowPart'
+  
   export default {
     name: 'DetailPage',
     components: { ApprovalFlowPart, WorthListPart, BaseInfoPart, FormFooter },
     data () {
       return {
-        returnAreaTotal: 0, // 总领用资产面积
+        investAreaTotal: 0, // 总投资资产面积
+        investCount: 0,  // 总投资数量
         registerId: '', // 登记Id
         stepList: [], // 审批轨迹
         details: {}, // 基础信息数据
@@ -66,15 +68,17 @@
       },
 
       // 获取资产关联对象数据
-      getAssetList (list, returnAreaSum) {
+      getAssetList (list, investAreaSum) {
         this.assetList = list
-        this.returnAreaTotal = +returnAreaSum
+        this.investAreaTotal = +investAreaSum
+        this.investCount = list.length
+        console.log(this.investAreaTotal,this.investCount )
       },
 
       // 提交
       handleSubmit (saveWays) {
         console.log(123)
-        const { type, registerId, assetList, dynamicData, returnAreaTotal, saveType } = this
+        const { type, registerId, assetList, dynamicData, investAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)
@@ -83,36 +87,33 @@
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
           } else if(this.validateAssetList(assetList)) {
-            return this.$message.warn('领用面积为必有项')
+            return this.$message.warn('投资面积为必有项')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
           this.spinning = true
-          let detailList = []
+          let investDetail = []
           assetList.forEach(m => {
-            const { receiveDetailId, returnArea, remark } = m
-            detailList.push({ receiveDetailId, returnArea, remark })
+            const { investDetailId, investArea, remark, assetId } = m
+            investDetail.push({ investDetailId, investArea, remark, assetId })
           })
-          let form = type === 'edit' || type === 'add' ? { ...data, detailList, returnId: registerId ? registerId : '', returnArea: returnAreaTotal, 
-          ...dynamicData, saveType: saveWays, returnCount:assetList.length, } : { ...data, detailList }
+          let form = type === 'edit' || type === 'add' ? { ...data, investDetail, investOrderId: registerId ? registerId : '', investArea: investAreaTotal, 
+          ...dynamicData, investCount:assetList.length, } : { ...data, detailList }
           console.log(form)
-          delete form.receiveDate
-          delete form.receiveUserId
-          delete form.returnOrganName
-          delete form.returnUserName
-          this.$api.useManage.submitReturn(form).then(r => {
-            this.spinning = false
-            let res = r.data
-            if (res && String(res.code) === '0') {
-              this.$message.success(`${tip}成功`)
-              // 跳回列表路由
-              return this.$router.push({ name: '归还登记', params: { refresh: true } })
-            }
-            throw res.message || `${tip}失败`
-          }).catch(err => {
-            this.spinning = false
-            this.$message.error(err || `${tip}失败`)
-          })
+  
+          // this.$api.useManage.saveUpdateInvestOrder(form).then(r => {
+          //   this.spinning = false
+          //   let res = r.data
+          //   if (res && String(res.code) === '0') {
+          //     this.$message.success(`${tip}成功`)
+          //     // 跳回列表路由
+          //     return this.$router.push({ name: '归还登记', params: { refresh: true } })
+          //   }
+          //   throw res.message || `${tip}失败`
+          // }).catch(err => {
+          //   this.spinning = false
+          //   this.$message.error(err || `${tip}失败`)
+          // })
         }).catch((err) => {
           console.log(err)
           this.spinning = false
@@ -199,7 +200,7 @@
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
         console.log(list,123)
-        let arr = list.filter(m => +m.receiveArea === 0)
+        let arr = list.filter(m => +m.investArea === 0 || !m.investArea)
         return arr.length
       }
     },

@@ -55,14 +55,14 @@
           class="action_text"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
           v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-          :to="{name: '归还登记详情', params: {registerId: record.investOrderId, type: 'edit'}}"
+          :to="{name: '投资登记编辑', params: {registerId: record.investOrderId, type: 'edit'}}"
           tag="div"
         ><a-icon type="form"></a-icon>编辑</router-link></p>
           <p><router-link
           class="action_text"
           v-if="Number(record.approvalStatus) === 2"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '归还登记审批', params: {registerId: record.investOrderId, type: 'approval'}}"
+          :to="{name: '投资登记审批', params: {registerId: record.investOrderId, type: 'approval'}}"
           tag="div"
         ><a-icon type="setting" theme="filled"></a-icon>审批</router-link></p>
           <p><a-popconfirm

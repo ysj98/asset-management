@@ -5,7 +5,7 @@
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
         <div class="box">
-          <div class="left" style="height: 100%">领用记录：{{ tableObj.dataSource.length }}，归还总面积：{{ returnAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
+          <div class="left" style="height: 100%">资产数量：{{ tableObj.dataSource.length }}，投资面积：{{ investAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
           <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px" v-if="type=='add' || type=='edit'">添加资产</SG-Button>
           <SG-Button icon="delete" type="primary" ghost @click="handleDelete" v-if="type=='add' || type=='edit'">删除</SG-Button>
         </div>
@@ -51,24 +51,61 @@
           <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" />
           <span v-else>{{text}}</span>
         </template>
-         <template slot="opt" slot-scope="text, record">
+         <template slot="opt" slot-scope="text, record" >
           <a-popconfirm
           okText="确定"
           cancelText="取消"
           title="确定要删除该资产项目吗?"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
-          @confirm="handleDelete(record.investOrderId)"
+          @confirm="deleteOpt(record.assetId)"
           v-if="type == 'add' || type == 'edit'"
-        ><a-icon type="delete"></a-icon>删除
+        ><a href="javascript:void(0);" >删除</a>
         </a-popconfirm>
         </template>
       </a-table>
+     
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px">暂无数据</div>
       <SG-FooterPagination
         v-bind="paginationObj"
         v-if="(type == 'approval' || type == 'detail') && tableObj.dataSource.length"
         @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
       />
+    </div>
+    <div v-if="type == 'detail'">
+    <SG-Title title="收益明细"/>
+    <div style="margin-left: 40px">
+      <div style="margin-bottom: 8px;text-align: right">
+        
+        <div class="box">
+          <div class="left" style="height: 100%">总收益：{{ profitSum }}</div><div class="right" style="margin-bottom: 8px">
+        </div>
+        </div>
+      
+      <a-table
+        v-bind="profitTableObj"
+        class="custom-tables"
+        bordered
+      >
+      <template slot="assetCode" slot-scope="text">
+        <tooltip-text width="150" :text="text"/>
+        </template>
+        <template slot="assetName" slot-scope="text">
+          <tooltip-text width="50" :text="text"/>
+        </template>
+        <template slot="organName" slot-scope="text">
+          <tooltip-text width="250" :text="text"/>
+        </template>
+        <template slot="assessmentOrganName" slot-scope="text">
+          <tooltip-text width="150" :text="text"/>
+        </template>
+      </a-table>
+     </div>
+      <div v-if="!profitTableObj.dataSource.length" style="text-align: center; margin-top: 25px">暂无数据</div>
+      <SG-FooterPagination
+        v-bind="profitPaginationObj"
+        v-if="(type == 'approval' || type == 'detail') && profitTableObj.dataSource.length"
+        @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
+      />
+    </div> 
     </div>
     <SG-Modal
       v-bind="modalObj"
@@ -110,20 +147,42 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: 3200 },
+          scroll: { x: 1600 },
           rowKey: 'assetId',
           selectedRowKeys: [], // Table选中的key数据
-          columns: [
+          columns: (this.type == 'add' || this.type == 'edit') ? [
             { title: '序号', dataIndex: 'index' },
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'assetObjectTypeName' }, { title: '规格型号', dataIndex: 'specificationTypeName' },
             { title: '资产面积(㎡)', dataIndex: 'assetArea' }, 
             { slots: { title: "investArea" }, dataIndex: 'investArea', scopedSlots: { customRender: 'investArea' } },
-            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },{ title: '操作', dataIndex: 'opt' }
+            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },{ title: '操作', dataIndex: 'opt', scopedSlots: { customRender: 'opt' } }
+          ] : [
+            { title: '序号', dataIndex: 'index' },
+            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
+            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'assetObjectTypeName' }, { title: '规格型号', dataIndex: 'specificationTypeName' },
+            { title: '资产面积(㎡)', dataIndex: 'assetArea' }, 
+            { title: '投资面积(㎡)', dataIndex: 'investArea', scopedSlots: { customRender: 'investArea' } },
+            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } }
           ]
+        },
+        profitTableObj: {
+          dataSource: [],
+          loading: false,
+          pagination: false,
+          scroll: { x: 1000 },
+          rowKey: 'assetId',
+          selectedRowKeys: [], // Table选中的key数据
+          columns: [
+            { title: '序号', dataIndex: 'index' },
+            { title: '收入编号', dataIndex: 'incomeId' },{ title: '费用科目', dataIndex: 'feeSubjectName' }, 
+            { title: '账期', dataIndex: 'accountingPeriod' }, { title: '收益金额(元)', dataIndex: 'amount' },
+            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } }
+          ] 
         },
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
+        profitPaginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         initList: [], // 选择资产Modal初始选中值
         selectedList: [], // 选择资产Modal选中值
         queryType: 2, // 1 资产变动，2 资产清理 3 权属登记,
@@ -136,7 +195,8 @@
           isShow: false
         },
         isEditAll: false, // 批量修改本次估值列
-        returnAreaSum: 0,
+        investAreaSum: 0,
+        profitSum: 0,
         assetList: []
       }
     },
@@ -149,23 +209,31 @@
         let assetValuation = 0
         let firstMarketValue = 0
         let lastAssessmentValue = 0
-        this.tableObj.dataSource = data.map(m => {
-          assessmentValue += m.assessmentValue ? Number(m.assessmentValue) : 0
-          originalValue += m.originalValue ? Number(m.originalValue) : 0
-          assetValuation += m.assetValuation ? Number(m.assetValuation) : 0
-          lastAssessmentValue += m.lastAssessmentValue ? Number(m.lastAssessmentValue) : 0
-          firstMarketValue += m.firstMarketValue ? Number(m.firstMarketValue) : 0
-          return m
-        })
+        // this.tableObj.dataSource = data.map(m => {
+        //   assessmentValue += m.assessmentValue ? Number(m.assessmentValue) : 0
+        //   originalValue += m.originalValue ? Number(m.originalValue) : 0
+        //   assetValuation += m.assetValuation ? Number(m.assetValuation) : 0
+        //   lastAssessmentValue += m.lastAssessmentValue ? Number(m.lastAssessmentValue) : 0
+        //   firstMarketValue += m.firstMarketValue ? Number(m.firstMarketValue) : 0
+        //   return m
+        // })
         let num = 0
         this.tableObj.dataSource.map(item => {
-          if(item.returnArea){
-           return num += item.returnArea
+          if(item.investArea){
+           return num += item.investArea
           } 
         })
-        this.returnAreaSum = num.toFixed(2)
+        let num1 = 0
+        this.profitTableObj.dataSource.map(i => {
+          if(i.amount){
+            return num1 += i.amount
+          }
+        })
+        this.profitSum = num1
+        this.investAreaSum = num.toFixed(2)
+        console.log(data, this.investAreaSum)
         // 返回给上层组件,用于保存
-        this.$emit('backAssetList', data, this.returnAreaSum)
+        this.$emit('backAssetList', data, this.investAreaSum)
       },
 
       // 批量删除资产
@@ -178,6 +246,22 @@
         if (!data.length) {
           this.tableObj.dataSource = []
           this.selectedRowKeys = []
+        }
+        this.calcSum(data)
+      },
+      // 单个删除资产
+      deleteOpt (assetId) {
+          let data = []
+          this.tableObj.dataSource.map(i => {
+            if(i.assetId != assetId){
+              data.push(i)
+            } 
+          })
+          if (!data.length) {
+          this.tableObj.dataSource = []
+          this.selectedRowKeys = []
+        }else{
+          this.tableObj.dataSource = data
         }
         this.calcSum(data)
       },
@@ -227,15 +311,24 @@
           let { tableObj: { dataSource } } = this
           this.initList = [...selectedList]
           let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
+          console.log(newList)
           if (newList.length) {
             //this.queryAssetListByAssetId(newList)
-            dataSource = assetList
-            console.log(selectedList,123)
+              assetList.map(item => {
+              if(newList.includes(item.assetId)){
+                this.tableObj.dataSource.push(item)
+                this.tableObj.dataSource.map((i,d) => {
+                  if(i.assetId==item.assetId){
+                    i.index = d + 1
+                  }
+                })
+              }
+            })
              return this.calcSum(dataSource)
           } else {
             // 过滤列表中被取消选中的数据
-            //dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
-            dataSource = assetList
+            this.tableObj.dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
+           
             return this.calcSum(dataSource)
           }
         }
@@ -249,8 +342,9 @@
         }
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
-        this.$api.useManage.getReturnAssetDetailPage({ returnId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
-          console.log(r)
+        this.profitTableObj.loading = true
+        this.$api.assetInvest.getInvestDetailPageList({ investOrderId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
+           console.log(r)
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -264,10 +358,34 @@
              this.tableObj.dataSource.map(item => {
             return num += item.receiveArea
       })
-            this.returnAreaSum = num
+            this.investAreaSum = num
             this.calcSum(this.tableObj.dataSource)
-            return false
+            
           }
+          if(type=='detail'){
+            this.$api.assetRent.getIncomeDetailPageList({pageNum:pageNo, pageSize:pageLength, orderId:registerId, orderType: 2, status: 1}).then(result => {
+          this.profitTableObj.loading = false
+          let re = result.data
+          if (re && String(re.code) === '0') {
+            const { data, count } = re.data
+            this.profitTableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
+            console.log(this.profitTableObj.dataSource)
+            Object.assign(this.profitPaginationObj, {
+              totalCount: count,
+              pageNo, pageLength
+            })
+            let num1 = 0
+             this.profitTableObj.dataSource.map(it => {
+            return num1 += it.amount
+      })
+            this.profitSum = num1
+            return this.calcSum(this.profitTableObj.dataSource)
+            
+          }
+          })
+          }
+          
+          return
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
           this.tableObj.loading = false
@@ -286,13 +404,12 @@
           form.assetId = selectedRows.join(',')
         }
         this.tableObj.loading = true
-        this.$api.useManage.getReturnInfo({returnId:registerId, queryType:1}).then(r => {
+        this.$api.worthRegister.queryRelList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           console.log(res)
           if (res && String(res.code) === '0') {
             let addData = res.data.detailList || []
-            console.log(addData)
             if (!addData.length) { return false }
             if (status === 'init') {
               dataSource = addData
@@ -303,7 +420,6 @@
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1}))
-            console.log(list)
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
@@ -372,12 +488,7 @@
         this.calcSum(list)
       },
       getReturnAssetInfo(assetList) {
-         console.log(assetList,456)
          this.assetList = assetList
-         this.assetList.map(item => {
-           item.totalReturnArea = item.returnArea
-           item.returnArea = item.unReturnArea
-         })
     },
     },
     
@@ -390,7 +501,7 @@
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
-        type === 'edit' &&  this.queryAssetListByAssetId([], 'init')
+        //type === 'edit' &&  this.queryAssetListByAssetId([], 'init')
         this.queryAssetListByRegisterId({type: 'init'})
       } else {
         // type === 'approval' || type === 'detail'时
@@ -401,6 +512,10 @@
     },
     
     watch: {
+      'tableObj.dataSource': function (val) {
+        console.log(val)
+             this.calcSum(val)
+      },
       details: function (val) {
          if(this.details.detailList){
            this.queryAssetListByAssetId([], 'init')
@@ -418,7 +533,7 @@
             this.details.projectId = projectId
             this.tableObj.selectedRowKeys = []
             this.tableObj.dataSource = []
-            this.returnAreaSum = 0
+            this.investAreaSum = 0
             return this.numList = numList.map(m => {
               return { ...m, value:  0 }
             })
