@@ -56,7 +56,7 @@
             mode="multiple"
             placeholder="全部资产类型"
             :tokenSeparators="[',']"
-            @select="assetTypeDataFn"
+            @change="assetTypeDataFn"
             v-model="queryCondition.assetType"
           >
             <a-select-option
@@ -66,11 +66,11 @@
               >{{ item.name }}</a-select-option
             >
           </a-select>
-          <!-- <a-select
+          <a-select
             :maxTagCount="1"
             style="width: 160px; margin-right: 10px"
             mode="multiple"
-            placeholder="全部审批状态"
+            placeholder="全部状态"
             :tokenSeparators="[',']"
             @select="approvalStatusFn"
             v-model="queryCondition.approvalStatus"
@@ -84,60 +84,47 @@
           </a-select>
           <a-input-search
             v-model="queryCondition.assetNameCode"
-            placeholder="出租单名称/合同编号"
+            placeholder="维修单名称/编号"
             maxlength="30"
             style="width: 160px; height: 32px; margin-right: 10px"
             @search="allQuery"
-          /> -->
+          />
         </div>
       </div>
-      <!-- <div slot="btns">
+      <div slot="btns">
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
-      </div> -->
-      <!-- <div slot="form" class="formCon">
+      </div>
+      <div slot="form" class="formCon">
         <a-select
+          showSearch
+          allowClear
+          placeholder="全部资产分类"
+          optionFilterProp="children"
           :maxTagCount="1"
-          style="width: 160px; margin-right: 10px"
           mode="multiple"
-          placeholder="全部合同状态"
+          v-model="queryCondition.objectTypeList"
           :tokenSeparators="[',']"
-          @select="contractStatusListFn"
-          v-model="queryCondition.contractStatus"
-        >
-          <a-select-option
-            v-for="(item, index) in contractStatusList"
-            :key="index"
-            :value="item.value"
-            >{{ item.name }}</a-select-option
-          >
-        </a-select>
+          :options="assetTypeList"
+          @select="assetClassifyDataFn"
+        ></a-select>
         <SG-DatePicker
           :allowClear="false"
-          label="签订日期"
+          label="维修日期"
           style="width: 200px"
           pickerType="RangePicker"
-          v-model="signDate"
+          v-model="repairDate"
           format="YYYY-MM-DD"
         ></SG-DatePicker>
-        <SG-DatePicker
-          :allowClear="false"
-          label="出租日期"
-          style="width: 200px; float: right"
-          pickerType="RangePicker"
-          v-model="rentDate"
-          format="YYYY-MM-DD"
-        ></SG-DatePicker>
-      </div> -->
+      </div>
     </SG-SearchContainer>
     <!--数据总览-->
-    <!-- <overview-number :numList="numList" /> -->
-    <!-- <div class="table-layout-fixed">
+    <overview-number :numList="numList" />
+    <div class="table-layout-fixed">
       <a-table
         :loading="loading"
         :columns="columns"
-        :dataSource="tableData"
-        class="custom-table td-pd10"
-        :pagination="false"
+        :data-source="tableData"
+        v-bind="tableObj"
       >
         <template slot="operation" slot-scope="text, record">
           <OperationPopover
@@ -146,53 +133,248 @@
           ></OperationPopover>
         </template>
       </a-table>
-    </div> -->
-    <!-- <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+    </div>
+    <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
-      :pageLength="queryCondition.pageSize"
+      :pageLength="queryCondition.pageLength"
       :totalCount="count"
       location="absolute"
       :noPageTools="noPageTools"
       v-model="queryCondition.pageNum"
       @change="handleChange"
-    /> -->
+    />
   </div>
 </template>
 
 <script>
+const columns = [
+  {
+    title: "维修编号",
+    dataIndex: "maintainId",
+    // fixed: 'left',
+    // width: 100
+  },
+  {
+    title: "所属机构",
+    dataIndex: "organName",
+    // fixed: 'left',
+    // width: 100
+  },
+  {
+    title: "维修单名称",
+    dataIndex: "maintainName",
+  },
+  {
+    title: "资产名称",
+    dataIndex: "assetName",
+  },
+  {
+    title: "资产编码",
+    dataIndex: "assetCode",
+  },
+  {
+    title: "资产项目",
+    dataIndex: "projectName",
+  },
+  {
+    title: "资产类型",
+    dataIndex: "assetTypeName",
+  },
+  {
+    title: "资产分类",
+    dataIndex: "objectTypeName",
+  },
+  {
+    title: "维修说明",
+    dataIndex: "remark",
+  },
+  {
+    title: "开始日期",
+    dataIndex: "startDate",
+  },
+  {
+    title: "完成日期",
+    dataIndex: "completeDate",
+  },
+  {
+    title: "维修人",
+    dataIndex: "maintainUserId",
+  },
+  {
+    title: "维修费用（元）",
+    dataIndex: "maintainCost",
+  },
+  {
+    title: "提交人",
+    dataIndex: "createByName",
+  },
+  {
+    title: "提交时间",
+    dataIndex: "createTime",
+  },
+  {
+    title: "状态",
+    dataIndex: "approvalStatus",
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    scopedSlots: { customRender: "operation" },
+    // fixed: 'right',
+    // width: 100
+  },
+];
+const approvalStatusData = [
+  {
+    name: "全部状态",
+    value: "",
+  },
+  {
+    name: "草稿",
+    value: "0",
+  },
+  {
+    name: "待审批",
+    value: "2",
+  },
+  {
+    name: "已驳回",
+    value: "3",
+  },
+  {
+    name: "已审批",
+    value: "1",
+  },
+  {
+    name: "已取消",
+    value: "4",
+  },
+];
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import segiIcon from "@/components/segiIcon.vue";
 import TreeSelect from "../common/treeSelect";
+import moment from "moment";
+import OverviewNumber from "src/views/common/OverviewNumber";
+import OperationPopover from "@/components/OperationPopover";
+import noDataTips from "@/components/noDataTips";
 export default {
   data() {
     return {
+      columns,
       toggle: false,
+      loading: false,
+      noPageTools: false,
       ASSET_MANAGEMENT,
       organID: 0,
       organName: "",
+      count: 0,
+      tableData: [],
+      tableObj: {
+        pagination: false,
+        // scroll: { x: 1400 },
+        class: "custom-table td-pd10",
+      },
       queryCondition: {
-        organId: 0, // 组织机构id
+        pageLength: 10, // 页容量
         pageNum: 1, // 当前页
+        organId: 0, // 组织机构id
         projectId: undefined, // 资产项目id
         assetType: [""], // 全部资产类型id(多个用，分割)
+        approvalStatus: "", // 状态
+        assetNameCode: "", // 维修单名称/编号
+        objectTypeList: [""], // 资产分类
       },
-      assetTypeData: [],
+      assetTypeData: [], // 资产类型列表
+      assetTypeList: [
+        {
+          label: "全部资产分类",
+          value: "",
+        },
+      ], // 资产分类列表
       allStyle: "width: 150px; margin-right: 10px;",
       projectData: [], // 资产项目列表
+      approvalStatusData: [...approvalStatusData],
+      repairDate: [
+        moment(new Date() - 24 * 1000 * 60 * 60 * 30),
+        moment(new Date()),
+      ],
+      numList: [
+        { title: "全部", key: "total", value: 0, fontColor: "#3d91f9" },
+        { title: "草稿", key: "draftCount", value: 0, bgColor: "#e47e60" },
+        { title: "待审批", key: "pendingCount", value: 0, bgColor: "#00d58e" },
+        { title: "已驳回", key: "rejectCount", value: 0, bgColor: "#0092ff" },
+        { title: "已审批", key: "approvedCount", value: 0, bgColor: "#ed7ce3" },
+        { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#ff6a6b" },
+      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
   components: {
     segiIcon,
     TreeSelect,
+    OverviewNumber,
+    OperationPopover,
+    noDataTips,
   },
   methods: {
+    query() {
+      this.loading = true;
+      let obj = {
+        pageNum: this.queryCondition.pageNum, // 当前页
+        pageSize: this.queryCondition.pageLength, // 每页显示记录数
+        organId: Number(this.queryCondition.organId), // 组织机构id
+        projectIdList: this.queryCondition.projectId
+          ? this.queryCondition.projectId
+          : [], // 资产项目Id
+        objectTypeList:
+          this.queryCondition.objectTypeList[0] === ""
+            ? []
+            : this.queryCondition.objectTypeList,
+        assetTypeList: this.alljudge(this.queryCondition.assetType),
+        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),
+        maintainName: this.queryCondition.assetNameCode,
+        startMaintainDate: moment(this.repairDate[0]).format("YYYY-MM-DD"),
+        endMaintainDate: moment(this.repairDate[1]).format("YYYY-MM-DD"),
+      };
+      this.$api.assetRent.getMaintainPage(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data;
+          data.forEach((item, index) => {
+            item.key = index;
+            item.operationDataBtn = this.createOperationBtn(
+              item.approvalStatus
+            );
+            if (item.approvalStatus === 0) {
+              item.approvalStatus = "草稿";
+            } else if (item.approvalStatus === 1) {
+              item.approvalStatus = "已审批";
+            } else if (item.approvalStatus === 2) {
+              item.approvalStatus = "待审批";
+            } else if (item.approvalStatus === 3) {
+              item.approvalStatus = "已驳回";
+            } else if (item.approvalStatus === 4) {
+              item.approvalStatus = "已取消";
+            }
+          });
+          this.tableData = data;
+          this.count = res.data.data.count;
+          this.loading = false;
+          if (this.queryCondition.pageNum === 1) {
+            this.pageListStatistics(obj);
+          }
+        } else {
+          this.$message.error(res.data.message);
+          this.loading = false;
+        }
+      });
+    },
     changeTree(value, label) {
       this.organID = value;
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
       this.queryCondition.projectId = undefined;
-      // this.query();
+      this.query();
+      this.getListFn();
       this.getObjectKeyValueByOrganIdFn();
     },
     // 导出
@@ -220,6 +402,11 @@ export default {
         a.click()
         a.remove()
       }) */
+    },
+    allQuery() {
+      this.queryCondition.pageNum = 1;
+      this.queryCondition.pageSize = 10;
+      this.query();
     },
     // 高级搜索控制
     searchContainerFn(val) {
@@ -254,10 +441,36 @@ export default {
         }
       });
     },
+    // 查询资产分类列表
+    getListFn() {
+      let obj = {
+        organId: this.queryCondition.organId,
+        assetType: this.queryCondition.assetType.join(","),
+      };
+      this.queryCondition.objectTypeList = [""];
+      if (!obj.assetType) {
+        return;
+      }
+      this.$api.assets.getList(obj).then((res) => {
+        if (+res.data.code === 0) {
+          let arr = [{ label: "全部资产分类", value: "" }];
+          res.data.data.forEach((item) => {
+            let obj = {
+              label: item.professionName,
+              value: item.professionCode,
+            };
+            arr.push(obj);
+          });
+          this.assetTypeList = arr;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/repairRegister/repairAdd/` /* ${this.organID}/${this.organName} */,
+        path: `/repairRegister/repairAdd/${this.organName}/${this.organID}`,
       });
     },
     // 平台字典获取变动类型
@@ -270,6 +483,7 @@ export default {
           let data = res.data.data;
           if (str === "asset_type") {
             this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
+            this.getListFn();
           }
         } else {
           this.$message.error(res.data.message);
@@ -302,7 +516,125 @@ export default {
           this.queryCondition.assetType,
           this.assetTypeData
         );
+        this.getListFn();
       });
+    },
+    // 全部资产分类
+    assetClassifyDataFn(value) {
+      this.$nextTick(() => {
+        this.queryCondition.objectTypeList = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.objectTypeList,
+          this.assetTypeList
+        );
+      });
+    },
+    // 状态发生变化
+    approvalStatusFn(value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.approvalStatus,
+          this.approvalStatusData
+        );
+      });
+    },
+    // 查询表头统计
+    pageListStatistics(form) {
+      this.$api.assetRent
+        .getMaintainSum(form)
+        .then((r) => {
+          let res = r.data;
+          if (res && String(res.code) === "0") {
+            let { numList } = this;
+            return (this.numList = numList.map((m) => {
+              return { ...m, value: (res.data || {})[m.key] };
+            }));
+          }
+          throw res.message;
+        })
+        .catch((err) => {
+          this.$message.error(err || "查询统计信息出错");
+        });
+    },
+    alljudge(val) {
+      if (val.length !== 0) {
+        if (val[0] === "") {
+          return [];
+        } else {
+          return val;
+        }
+      } else {
+        return [];
+      }
+    },
+    // 生成操作按钮
+    createOperationBtn(type) {
+      console.log("type======", type);
+      console.log("type======", typeof type);
+      // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
+      let arr = [];
+      // 草稿 已驳回
+      if (["0", "3", "2"].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_EDIT)) {
+          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_DELETE)) {
+          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+        }
+      }
+      // 已审批
+      if (["1"].includes(String(type))) {
+        console.log("this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_REVERSE_AUDIT)", this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_REVERSE_AUDIT))
+        if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_REVERSE_AUDIT)) {
+          arr.push({
+            iconType: "edit",
+            text: "反审核",
+            editType: "readApproval",
+          });
+        }
+      }
+      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      return arr;
+    },
+    // 操作按钮函数
+    operationFun(type, record) {
+      // 编辑
+      if (["edit"].includes(type)) {
+        this.$router.push({
+          path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
+        });
+      } else if (["detail"].includes(type)) {
+        this.$router.push({
+          path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+        });
+      } else {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要作废此出租单吗？",
+          onOk() {
+            that.$api.assetRent
+              .updateLeaseOrderStatus({
+                leaseOrderId: record.leaseOrderId,
+                approvalStatus: 4,
+              })
+              .then((res) => {
+                if (+res.data.code !== 0) {
+                  that.$message.error(res.data.message);
+                } else {
+                  that.allQuery();
+                }
+              });
+          },
+        });
+      }
+    },
+    // 分页查询
+    handleChange(data) {
+      this.queryCondition.pageNum = data.pageNo;
+      this.queryCondition.pageLength = data.pageLength;
+      this.query();
     },
   },
   mounted() {
@@ -313,5 +645,20 @@ export default {
 
 <style lang="less" scoped>
 .assetRepair {
+  .formCon {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    > * {
+      margin-right: 12px;
+      margin-bottom: 10px;
+      position: relative;
+      height: 32px;
+    }
+  }
+  /deep/.ant-table-body {
+    margin-bottom: 90px;
+  }
 }
 </style>

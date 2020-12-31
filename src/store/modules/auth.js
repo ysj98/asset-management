@@ -76,6 +76,7 @@ const actions = {
         let powerArray = Array.isArray(res.data.data) ? res.data.data : []
         let powerCode = JSON.stringify(powerArray)
         window.sessionStorage.setItem('b083aa5461ace946', powerCode)
+        console.log("powerArray store===========", powerArray);
         commit('setPower', powerArray)
       }
     })

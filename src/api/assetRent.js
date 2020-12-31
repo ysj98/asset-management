@@ -1,5 +1,5 @@
 import { axiosPost, axiosGet  } from '../utils/axios'
-import { assetRent } from '../config/config.url'
+import { assetRent, assetRepair } from '../config/config.url'
 // 资产出租相关
 // 出租登记-分页查询出租单列表
 export function getLeaseOrderPageList(data) {
@@ -88,4 +88,14 @@ export function updateLeaseOrderStatus(data) {
 // 资产出租/投资收益登记-修改状态
 export function updateIncomeStatus(data) {
   return axiosPost(assetRent.updateIncomeStatus, data)
+}
+
+// 资产维修-列表汇总
+export function getMaintainSum (data) {
+  return axiosPost(assetRepair.getMaintainSum, data)
+}
+
+// 资产维修-分页列表
+export function getMaintainPage (data) {
+  return axiosPost(assetRepair.getMaintainPage, data)
 }

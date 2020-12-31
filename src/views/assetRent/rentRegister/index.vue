@@ -581,18 +581,12 @@ export default {
       // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
       let arr = [];
       // 草稿 已驳回
-      if (["0", "3"].includes(String(type))) {
+      if (["0", "3", "2"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
           arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
           arr.push({ iconType: "delete", text: "删除", editType: "delete" });
-        }
-      }
-      // 待审批
-      if (["2"].includes(type)) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
-          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
       }
       // 已审批
@@ -634,7 +628,7 @@ export default {
                 if (+res.data.code !== 0) {
                   that.$message.error(res.data.message);
                 } else {
-                  that.allQuery()
+                  that.allQuery();
                 }
               });
           },

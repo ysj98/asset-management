@@ -48,7 +48,7 @@ const API = {
   publicCode,
   useManage,
   assetRent,
-  assetInvest
+  assetInvest,
 }
 export default {
   install (Vue) {
