@@ -18,7 +18,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.investName" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.investNameOrId" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -276,13 +276,13 @@ export default {
         }
       }
       // 待审批
-      if (["2"].includes(type)) {
+      if (["2"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
           arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
       }
       // 已审批
-      if (["1"].includes(type)) {
+      if (["1"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
           arr.push({
             iconType: "edit",
@@ -296,6 +296,7 @@ export default {
     },
     // 操作事件函数
     operationFun(type, record) {
+      console.log(type)
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({name: '投资登记编辑', params: {registerId: record.investOrderId, type: 'edit'}});
@@ -303,26 +304,49 @@ export default {
         this.$router.push({
           name: '投资登记详情', params: {registerId: record.investOrderId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
         });
-      } else {
+      } else if (["readApproval"].includes(type)){
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要驳回此投资单吗？",
+          onOk() {
+             that.loading = true
+        that.$api.assetInvest.updateInvestOrderStatus({investOrderId: record.investOrderId, approvalStatus:0}).then(r => {
+          that.loading = false
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            that.$message.success('驳回成功')
+            // 更新列表
+            return that.allQuery ()
+          }
+          throw res.message || '驳回失败'
+        }).catch(err => {
+          that.loading = false
+          console.log(err)
+          that.$message.error(123 || '驳回失败')
+        })
+          },
+        });
+      }else {
         let that = this;
         this.$confirm({
           title: "提示",
           content: "确认要作废此投资单吗？",
           onOk() {
-             this.loading = true
-        this.$api.assetInvest.updateInvestOrderStatus({investOrderId: record.investOrderId, approvalStatus:4}).then(r => {
-          this.loading = false
+             that.loading = true
+        that.$api.assetInvest.updateInvestOrderStatus({investOrderId: record.investOrderId, approvalStatus:4}).then(r => {
+          that.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.$message.success('删除成功')
+            that.$message.success('删除成功')
             // 更新列表
-            return this.allQuery ()
+            return that.allQuery ()
           }
           throw res.message || '删除失败'
         }).catch(err => {
-          this.loading = false
+          that.loading = false
           console.log(err)
-          this.$message.error(123 || '删除失败')
+          that.$message.error(123 || '删除失败')
         })
           },
         });
@@ -372,7 +396,7 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
+        projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
@@ -389,7 +413,6 @@ export default {
           })
           this.$api.assetInvest.getInvestOrderPageList(obj).then(r => {
             if(r.data.code == 0){
-              console.log(r)
               r.data.data.data.map((item,index) => {
                 r.data.data.data[index].key = item.investOrderId
                 item.operationDataBtn = this.createOperationBtn(
@@ -502,7 +525,7 @@ export default {
     // 投资状态发生变化
     investStatusFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.investStatus = this.handleMultipleSelectValue(value, this.queryCondition.investStatusList, this.investStatusData)
+        this.queryCondition.investStatusList = this.handleMultipleSelectValue(value, this.queryCondition.investStatusList, this.investStatusData)
       })
     },
     // 资产类型变化

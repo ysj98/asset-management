@@ -4,7 +4,7 @@
     <SG-Title title="资产明细"/>
     <div style="margin-left: 40px">
       <!--数据总览-->
-      <overview-number :numList="numList" style="margin-bottom: 8px"  />
+      <overview-number :numList="numList" style="margin-bottom: 8px" v-if="isShow"  />
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
           <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
@@ -88,11 +88,10 @@
           rowKey: 'assetId',
           selectedRowKeys: [], // Table选中的key数据
           columns: [
-            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
-            { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
-            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
-            { title: '领用面积(㎡)', dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' } },{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+            { title: '归还ID', dataIndex: 'returnDetailId' },{ title: '归还日期', dataIndex: 'returnDate' }, 
+            { title: '归还面积（㎡）', dataIndex: 'returnArea' },{ title: '归还部门', dataIndex: 'returnOrganName' },
+            { title: '提交人', dataIndex: 'createByName' }, { title: '提交日期', dataIndex: 'createTime' },
+            { title: '备注', dataIndex: 'remark' }
           ]
         },
         exportBtnLoading: false, // 导出按钮loading
@@ -110,6 +109,7 @@
         },
         isEditAll: false, // 批量修改本次估值列
         receiveAreaSum: 0,
+        isShow: false,
         numList: [
           {title: '领用面积（m²）', key: 'receiveArea', value: 0, fontColor: '#324057'},
           {title: '已归还面积（m²）', key: 'returnArea', value: 0, fontColor: '#324057'},
@@ -216,30 +216,13 @@
       },
 
       // 根据登记Id查询资产详情的列表数据--分页
-      queryAssetListByRegisterId ({pageNo = 1, pageLength = 10, type}) {
-        const { registerId } = this
-        if(this.type == 'add'){
-          return false
-        }
-        if (!registerId) { return this.$message.info('登记Id不存在') }
+      queryAssetListByRegisterId () {
+        const { registerId, details } = this
+        if (!details.returnList) { return  false }//this.$message.info('无归还记录') 
         this.tableObj.loading = true
-        this.$api.useManage.getReceiveAssetDetailPage({ receiveId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
-          console.log(r)
           this.tableObj.loading = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            const { data, count } = res.data
-            this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
-            Object.assign(this.paginationObj, {
-              totalCount: count,
-              pageNo, pageLength
-            })
-            let num = 0
-             this.tableObj.dataSource.map(item => {
-            return num += item.receiveArea
-      })
-            this.receiveAreaSum = num
-            this.calcSum(this.tableObj.dataSource)
+            this.tableObj.dataSource = (details.returnList || []).map((m, i) => ({...m, index: i + 1}))
+            this.paginationObj.totalCount = details.returnList.length
             this.numList.map((item,index) => {
             if(!this.details[item.key]){
               return this.numList[index].value = 0
@@ -247,12 +230,42 @@
             this.numList[index].value = this.details[item.key]
           })
             return false
-          }
-          throw res.message || '查询登记资产接口出错'
-        }).catch(err => {
-          this.tableObj.loading = false
-          this.$message.error(123 || '查询登记资产接口出错')
-        })
+      //   const { registerId } = this
+      //   if(this.type == 'add'){
+      //     return false
+      //   }
+      //   if (!registerId) { return this.$message.info('登记Id不存在') }
+      //   this.tableObj.loading = true
+      //   this.$api.useManage.getReceiveDetailInfo({ receiveId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
+      //     console.log(r)
+      //     this.tableObj.loading = false
+      //     let res = r.data
+      //     if (res && String(res.code) === '0') {
+      //       const { data, count } = res.data
+      //       this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
+      //       Object.assign(this.paginationObj, {
+      //         totalCount: count,
+      //         pageNo, pageLength
+      //       })
+      //       let num = 0
+      //        this.tableObj.dataSource.map(item => {
+      //       return num += item.receiveArea
+      // })
+      //       this.receiveAreaSum = num
+      //       this.calcSum(this.tableObj.dataSource)
+      //       this.numList.map((item,index) => {
+      //       if(!this.details[item.key]){
+      //         return this.numList[index].value = 0
+      //       }
+      //       this.numList[index].value = this.details[item.key]
+      //     })
+      //       return false
+      //     }
+      //     throw res.message || '查询登记资产接口出错'
+      //   }).catch(err => {
+      //     this.tableObj.loading = false
+      //     this.$message.error(123 || '查询登记资产接口出错')
+      //   })
       },
       
       // 根据资产id查询资产详情的列表数据--不分页
@@ -369,12 +382,16 @@
 
     watch: {
       details: function (val) {
+            console.log(this.details)
+            if(this.details.assetTypeName == '房屋' || this.details.assetTypeName == '土地' || this.details.assetTypeName == '车场' ){this.isShow=true}
             this.numList.map((item,index) => {
             if(!this.details[item.key]){
               return this.numList[index].value = 0
             }
             this.numList[index].value = this.details[item.key]
           })
+          this.queryAssetListByRegisterId()
+      
       },
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {

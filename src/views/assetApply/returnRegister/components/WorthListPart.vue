@@ -29,7 +29,7 @@
           <tooltip-text width="150" :text="text"/>
         </template>
         <template slot="returnArea">
-              <span class="icon-red">本次归还面积(㎡)</span>
+              <span :class="(type == 'add' || type == 'edit') ? 'icon-red' : ''">本次归还面积(㎡)</span>
             </template>
         <template slot="returnArea" slot-scope="text, record">
           <a-input-number
@@ -109,7 +109,7 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: 3200 },
+          scroll: { x: 2200 },
           rowKey: 'receiveDetailId',
           selectedRowKeys: [], // Table选中的key数据
           columns: [
@@ -266,6 +266,7 @@
           if (res && String(res.code) === '0') {
             const { data, count } = res.data
             this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
+            this.assetList = this.tableObj.dataSource 
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -313,6 +314,7 @@
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.receiveDetailId)))
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1}))
+            this.assetList = list
             console.log(list)
             return this.calcSum(list)
           }
@@ -411,6 +413,19 @@
     },
     
     watch: {
+      assetList: function () {
+        console.log(this.assetList[0].assetTypeName)
+        if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
+           this.tableObj.columns = [
+            { title: '领用ID', dataIndex: 'receiveDetailId' },
+            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
+            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
+            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '领用日期', dataIndex: 'receiveDate' },
+            { title: '领用部门', dataIndex: 'organName'},
+            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+          ] 
+        }
+      },
       details: function (val) {
          if(this.details.detailList){
            this.queryAssetListByAssetId([], 'init')

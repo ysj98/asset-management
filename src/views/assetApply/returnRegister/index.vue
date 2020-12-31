@@ -81,7 +81,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OperationPopover from "@/components/OperationPopover"
 
 const approvalStatusData = [
-  { name: '全部状态', value: '' }, { name: '草稿', value: '4' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
+  { name: '全部状态', value: '' }, { name: '草稿', value: 0 }, { name: '待审批', value: 2 }, { name: '已驳回', value: 3 }, { name: '已审批', value: 1 }, { name: '已取消', value: 4 }
 ]
 
 const columns = [
@@ -322,7 +322,7 @@ export default {
       this.query()
     },
     changeLeaf (value) {
-      this.queryCondition.receiveOrganId = value
+      this.queryCondition.returnOrganId = value
       console.log(value)
     },
     query () {
@@ -331,7 +331,7 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
+        projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         startCreateDate: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 提交开始日期

@@ -40,7 +40,7 @@
         </div>
         <div class="box">
             <a-input placeholder="归还单编号" v-model="queryCondition.receiveName"></a-input>
-            <a-input placeholder="领用单编号" v-model="queryCondition.receiveName" class="box-right"></a-input>
+            <a-input placeholder="领用单编号" v-model="queryCondition.returnName" class="box-right"></a-input>
         </div>
       </div>
     </SG-SearchContainer>
@@ -81,7 +81,7 @@ import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 const approvalStatusData = [
-  { name: '全部状态', value: '' }, { name: '草稿', value: 4 }, { name: '待审批', value: 0 }, { name: '已驳回', value: 1 }, { name: '已审批', value: 2 }, { name: '已取消', value: 3 }
+  { name: '全部状态', value: '' }, { name: '草稿', value: 0 }, { name: '待审批', value: 2 }, { name: '已驳回', value: 3 }, { name: '已审批', value: 1 }, { name: '已取消', value: 4 }
 ]
 
 const columns = [
@@ -188,7 +188,7 @@ export default {
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
         organId:1300,                 // 组织机构id
-        receiveOrganId:67,         // 领用部门id
+        returnOrganId:67,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -233,7 +233,7 @@ export default {
       // },
     exportFn () {
       let obj = {
-        receiveOrganId: this.alljudge(this.queryCondition.receiveOrganId), //领用部门ID
+        returnOrganId: this.alljudge(this.queryCondition.returnOrganId), //领用部门ID
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 领用单状态
         projectIdList: this.queryCondition.projectList ? this.queryCondition.projectList : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
@@ -265,7 +265,7 @@ export default {
       this.query()
     },
     changeLeaf (value) {
-      this.queryCondition.receiveOrganId = value
+      this.queryCondition.returnOrganId = value
     },
     query () {
       //this.loading = true
@@ -273,13 +273,13 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
+        projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         startReturnDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
         endReturnDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
         receiveName: this.queryCondition.receiveName,                              // 领用单名称/编号
-        returnOrganId: Number(this.queryCondition.organId),        // 领用部门id
+        returnOrganId: Number(this.queryCondition.returnOrganId),        // 领用部门id
         objectTypeList: this.alljudge(this.queryCondition.objectTypeList), // 资产分类
         assetName: this.queryCondition.assetName,                   // 资产名称/编号
         returnName: this.queryCondition.returnName                 // 归还单名称/编号

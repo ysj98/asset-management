@@ -8,7 +8,7 @@
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
+          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectIdList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
@@ -84,7 +84,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 
   const approvalStatusData = [
-  { name: '全部状态', value: '' }, { name: '草稿', value: '4' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
+  { name: '全部状态', value: '' }, { name: '领用中', value: '0' }, { name: '使用中', value: '1' }, { name: '已归还', value: '2' }
 ]
 
 
@@ -183,7 +183,7 @@ export default {
       queryCondition: {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
-        projectList: [],             // 资产项目Id
+        projectIdList: [],             // 资产项目Id
         organId:1300,                 // 组织机构id
         receiveOrganId:67,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
@@ -236,7 +236,7 @@ export default {
       let obj = {
         receiveOrganId: this.alljudge(this.queryCondition.receiveOrganId), //领用部门ID
         statusList: this.alljudge(this.queryCondition.approvalStatusList),      // 领用单状态
-        projectIdList: this.queryCondition.projectList ? this.queryCondition.projectList : [],            // 资产项目Id
+        projectIdList: this.alljudge(this.queryCondition.projectIdList),         // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetTypeList),  // 资产类型id(多个用，分割)
         receiveName: this.queryCondition.receiveName,         // 领用单名称/编号
@@ -273,14 +273,14 @@ export default {
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        statusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
+        receiveStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        projectIdList: this.alljudge(this.queryCondition.projectIdList),            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
         endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
         receiveName: this.queryCondition.receiveName,                              // 领用单名称/编号
-        receiveOrganId: Number(this.queryCondition.organId),        // 领用部门id
+        receiveOrganId: Number(this.queryCondition.receiveOrganId),        // 领用部门id
         objectTypeList: this.alljudge(this.queryCondition.objectTypeList), // 资产分类
         assetName: this.queryCondition.assetName                    // 资产名称/编号
 
@@ -399,7 +399,7 @@ export default {
     // 状态发生变化
     approvalStatusFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
+        this.queryCondition.approvalStatusList = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatusList, this.approvalStatusData)
       })
     },
     // 资产类型变化
@@ -480,11 +480,11 @@ export default {
 
 <style lang="less" scoped>
 .assetRegister {
-  .opt{
-    display: flex;
-    justify-content: space-evenly;
-    width: 90px;
-  }
+  // .opt{
+  //   display: flex;
+  //   justify-content: space-evenly;
+  //   width: 90px;
+  // }
   .box {
     display: inline-block;
     // vertical-align: middle;

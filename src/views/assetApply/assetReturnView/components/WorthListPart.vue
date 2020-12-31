@@ -4,7 +4,7 @@
     <SG-Title title="历史归还记录"/>
     <div style="margin-left: 40px">
       <!--数据总览-->
-      <overview-number :numList="numList" style="margin-bottom: 8px"  />
+      <overview-number :numList="numList" style="margin-bottom: 8px" v-if="isShow" />
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
           <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
@@ -114,7 +114,9 @@
           {title: '领用面积（m²）', key: 'receiveArea', value: 0, fontColor: '#324057'},
           {title: '已归还面积（m²）', key: 'returnArea', value: 0, fontColor: '#324057'},
           {title: '未归还面积（m²）', key: 'unReturnArea', value: 0, fontColor: '#324057'},
-        ] // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        assetList: [],
+        isShow: false
         
       }
     },
@@ -201,6 +203,7 @@
         this.tableObj.loading = true
           this.tableObj.loading = false
             this.tableObj.dataSource = (details.returnList || []).map((m, i) => ({...m, index: i + 1}))
+            this.assetList = this.tableObj.dataSource
             this.numList.map((item,index) => {
             if(!this.details[item.key]){
               return this.numList[index].value = 0
@@ -325,6 +328,7 @@
     watch: {
       details: function () {
             console.log(this.details)
+            if(this.details.assetInfo.assetTypeName == '房屋' || this.details.assetInfo.assetTypeName == '土地' || this.details.assetInfo.assetTypeName == '车场' ){this.isShow=true}
             this.numList.map((item,index) => {
             if(!this.details[item.key]){
               return this.numList[index].value = 0

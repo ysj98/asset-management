@@ -28,11 +28,10 @@
         <template slot="assessmentOrganName" slot-scope="text">
           <tooltip-text width="150" :text="text"/>
         </template>
-        <template slot="receiveArea" slot-scope="text, record">
-              <span class="icon-red" v-if=" record.assetTypeName == '车场' || record.assetTypeName == '土地'">领用面积(㎡)</span>
+        <template slot="receiveArea" >
+              <span :class="(type == 'add' || type == 'edit') ? 'icon-red' : ''">领用面积(㎡)</span>
             </template>
         <template slot="receiveArea" slot-scope="text, record">
-          <div v-if="record.assetTypeName == '车场' || record.assetTypeName == '土地'">
                  <a-input-number
             :min="0"
             step="0.01"
@@ -44,7 +43,6 @@
             v-if="type == 'add' || type == 'edit'"
           />
           <span v-else>{{text}}</span>
-          </div>
         </template>
         <template slot="remark" slot-scope="text, record">
           <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" />
@@ -119,7 +117,7 @@
             { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
-            { slots: { title: "receiveArea" }, dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' }, width: 0},{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+            { slots: { title: "receiveArea" }, dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' }},{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
           ] 
         },
         exportBtnLoading: false, // 导出按钮loading
@@ -284,6 +282,7 @@
           if (res && String(res.code) === '0') {
             const { data, count } = res.data
             this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
+            this.assetList = this.tableObj.dataSource 
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -373,6 +372,7 @@
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1}))
+            this.assetList = list
             console.log(list)
             return this.calcSum(list)
           }
@@ -470,6 +470,18 @@
     },
     
     watch: {
+      assetList: function () {
+        console.log(this.assetList[0].assetTypeName)
+        if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
+           this.tableObj.columns = [
+            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
+            { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
+            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
+            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
+            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+          ] 
+        }
+      },
       details: function (val) {
          if(this.details.detailList){
            this.queryAssetListByAssetId([], 'init')
