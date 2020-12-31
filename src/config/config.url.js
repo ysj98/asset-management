@@ -1135,3 +1135,11 @@ export const assetInvest = {
   // 投资登记-查询投资明细列表
   getInvestDetailList: '/ams/investDetail/getInvestDetailList'
 }
+
+// 资产维修
+export const assetRepair = {
+  // 资产维修-列表汇总(表头统计)
+  getMaintainSum: '/ams/assetMaintain/getMaintainSum',
+  // 资产维修-分页列表
+  getMaintainPage: '/ams/assetMaintain/getMaintainPage',
+}

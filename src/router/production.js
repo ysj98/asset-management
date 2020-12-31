@@ -902,7 +902,7 @@ let proRouter = [{
     component: () => import('@/views/assetRepair/index')
   },
   {
-    path: '/repairRegister/repairAdd',
+    path: '/repairRegister/repairAdd/:organName?/:id?',
     name: '维修新建',
     component: () => import('@/views/assetRepair/child/repairAdd')
   },
