@@ -276,3 +276,27 @@ repair_form_reverse_audit      维修单反审核
 
 资产投资
 asset_invest_view_export  资产投资一览表导出
+asset_invest_register            投资登记导出
+invest_form_new                投资单新建
+invest_form_detail             投资单详情
+invest_form_delete             投资单删除
+invest_form_edit               投资单编辑
+invest_form_reverse_audit      投资单反审核
+
+
+
+
+
+资产领用
+asset_apply_view_export  资产领用一览表导出
+asset_apply_register            领用登记导出
+apply_form_new               领用单新建
+apply_form_detail             领用单详情
+apply_form_delete             领用单删除
+apply_form_edit               领用单编辑
+asset_return_view_export  资产归还一览表导出
+asset_return_register             归还登记导出
+return_form_new                归还单新建
+return_form_detail             归还单详情
+return_form_delete             归还单删除
+return_form_edit               归还单编辑

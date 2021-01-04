@@ -233,7 +233,6 @@
              receiveUserName, receiveOrganName
           })
         }
-        console.log(formatDetails)
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
@@ -370,7 +369,6 @@
     created() {
       this.organName = this.defaultOrganName
       this.organId = +this.defaultOrganId
-      console.log(this.details)
     }
   }
 </script>

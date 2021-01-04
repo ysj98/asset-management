@@ -72,12 +72,10 @@
         this.assetList = list
         this.investAreaTotal = +investAreaSum
         this.investCount = list.length
-        console.log(this.investAreaTotal,this.investCount )
       },
 
       // 提交
       handleSubmit (saveWays) {
-        console.log(123)
         const { type, registerId, assetList, dynamicData, investAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
@@ -93,14 +91,12 @@
           let tip = type === 'add' ? '新增': '保存'
           this.spinning = true
           let investDetail = []
-          console.log(assetList)
           assetList.forEach(m => {
             const { investDetailId, investArea, remark, assetId } = m
             investDetail.push({ investDetailId, investArea, remark, assetId })
           })
           let form = type === 'edit' || type === 'add' ? { ...data, investDetail, investOrderId: registerId ? registerId : '', investArea: investAreaTotal, 
           ...dynamicData, approvalStatus: saveWays } : { ...data, detailList }
-          console.log(form)
           delete form.assetArea
           this.$api.assetInvest.saveUpdateInvestOrder(form).then(r => {
             this.spinning = false
@@ -116,7 +112,6 @@
             this.$message.error(err || `${tip}失败`)
           })
         }).catch((err) => {
-          console.log(err)
           this.spinning = false
          })
       },
@@ -153,7 +148,6 @@
           throw res.message || '查询领用登记详情出错'
         }).catch(err => {
           this.spinning = false
-          console.log(err)
           this.$message.error(123 || '查询领用登记详情出错')
         })
       },
@@ -200,7 +194,6 @@
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        console.log(list,123)
         let arr = list.filter(m => +m.investArea === 0 || !m.investArea)
         return arr.length
       }
@@ -217,7 +210,6 @@
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
       this.organName = organName
       this. organId = organId
-      console.log(this.organId)
       registerId && this.queryDetailById(registerId)
     }
   }

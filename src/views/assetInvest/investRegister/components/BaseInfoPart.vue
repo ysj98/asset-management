@@ -235,7 +235,6 @@
       // 提交数据
       handleSubmit (resolve, reject) {
         this.form.validateFieldsAndScroll((err, values) => {
-          console.log(values)
           if (!err) {
             const { attachment, details: { organId, investOrderId } } = this
             let attachArr = attachment.map(m => {
@@ -257,7 +256,6 @@
          if(!id){return false}
          this.$api.basics.attachment({objectId: id, objectType: 20}).then(res => {
            if(res.data.code == 0){
-             console.log(res.data)
              return this.acttachment = res.data.data
            }
          })
@@ -275,7 +273,6 @@
         let attachArr = (attachmentList || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
-        console.log(attachArr)
         Object.assign(this, { attachment: attachArr, organName })
         let formatDetails = { investName,signingDate: moment(signingDate || new Date(), 'YYYY-MM-DD'), startInvestDate: moment(startInvestDate || new Date(), 'YYYY-MM-DD'),  endInvestDate: moment(endInvestDate || new Date(), 'YYYY-MM-DD')}
         !signingDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'signingDate')
@@ -304,7 +301,6 @@
             assetSum, assetArea
           })
         }
-        console.log(formatDetails)
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
@@ -438,7 +434,6 @@
       investCount: function (val) {
         
             this.form.setFieldsValue({assetSum: val})
-            console.log('0')
       },
       details: function () {
         this.getAttachmentList(this.details.investOrderId)

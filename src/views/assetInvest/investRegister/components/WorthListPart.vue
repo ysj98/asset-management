@@ -231,7 +231,6 @@
         })
         this.profitSum = num1
         this.investAreaSum = num.toFixed(2)
-        console.log(data, this.investAreaSum)
         // 返回给上层组件,用于保存
         this.$emit('backAssetList', data, this.investAreaSum)
       },
@@ -246,6 +245,8 @@
         if (!data.length) {
           this.tableObj.dataSource = []
           this.selectedRowKeys = []
+        }else{
+          this.tableObj.dataSource = data
         }
         this.calcSum(data)
       },
@@ -311,7 +312,6 @@
           let { tableObj: { dataSource } } = this
           this.initList = [...selectedList]
           let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
-          console.log(newList)
           if (newList.length) {
             //this.queryAssetListByAssetId(newList)
               assetList.map(item => {
@@ -344,7 +344,6 @@
         this.tableObj.loading = true
         this.profitTableObj.loading = true
         this.$api.assetInvest.getInvestDetailPageList({ investOrderId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
-           console.log(r)
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -369,7 +368,6 @@
           if (re && String(re.code) === '0') {
             const { data, count } = re.data
             this.profitTableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
-            console.log(this.profitTableObj.dataSource)
             Object.assign(this.profitPaginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -407,7 +405,6 @@
         this.$api.worthRegister.queryRelList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
-          console.log(res)
           if (res && String(res.code) === '0') {
             let addData = res.data.detailList || []
             if (!addData.length) { return false }
@@ -513,7 +510,6 @@
     
     watch: {
       'tableObj.dataSource': function (val) {
-        console.log(val)
              this.calcSum(val)
       },
       details: function (val) {

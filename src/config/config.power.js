@@ -437,7 +437,30 @@ export const ASSET_MANAGEMENT = {
   /**
    * 2.0.7 资产投资
    */
-  ASSET_INVEST_VIEW_EXPORT: 'asset_invest_view_export'       // 资产投资一览表导出
+  ASSET_INVEST_VIEW_EXPORT: 'asset_invest_view_export',       // 资产投资一览表导出
+  INVEST_FORM_NEW: 'invest_form_new',  // 投资单新建
+  INVEST_FORM_EDIT: 'invest_form_edit',  // 投资单编辑
+  INVEST_FORM_DELETE: 'invest_form_delete',  // 投资单删除
+  INVEST_FORM_DETAIL: 'invest_form_detail',  // 投资单详情
+  INVEST_FORM_REVERSE_AUDIT: 'invest_form_reverse_audit',  // 投资单反审核
+  ASSET_INVEST_REGISTER: 'asset_invest_register',       // 投资登记导出
+
+
+   /**
+   * 2.0.7 资产领用
+   */
+  APPLY_FORM_NEW: 'apply_form_new',  // 领用单新建
+  APPLY_FORM_EDIT: 'apply_form_edit',  // 领用单编辑
+  APPLY_FORM_DELETE: 'apply_form_delete',  // 领用单删除
+  APPLY_FORM_DETAIL: 'apply_form_detail',  // 领用单详情
+  ASSET_APPLY_REGISTER: 'asset_apply_register',  // 领用登记导出
+  RETURN_FORM_NEW: 'return_form_new',  // 归还单新建
+  RETURN_FORM_EDIT: 'return_form_edit',  // 归还单编辑
+  RETURN_FORM_DELETE: 'return_form_delete',  // 归还单删除
+  RETURN_FORM_DETAIL: 'return_form_detail',  // 归还单详情
+  ASSET_RETURN_REGISTER: 'asset_return_register',  // 归还登记导出
+  ASSET_APPLY_VIEW_EXPORT: 'asset_apply_view_export',       // 资产领用一览表导出
+  ASSET_RETURN_VIEW_EXPORT: 'asset_return_view_export',       // 资产归还一览表导出
 }
 
 

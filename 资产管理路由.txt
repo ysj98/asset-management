@@ -74,6 +74,9 @@ V2.0.7
 /asset-management/#/assetRentView            资产出租一览表
 
 /asset-management/#/investRegister           投资登记
+/asset-management/#/investRegister/new       新增投资登记
+/asset-management/#/investRegister/detail    投资登记详情
+/asset-management/#/investRegister/edit      投资登记编辑
 /asset-management/#/investGainsRegister      投资收益登记
 /asset-management/#/assetInvestmentView      资产投资一览表
 
@@ -83,6 +86,13 @@ V2.0.7
 /asset-management/#/applyRegister/new        新增领用登记
 /asset-management/#/applyRegister/detail     领用登记详情
 /asset-management/#/applyRegister/edit       领用登记编辑
-/asset-management/#/applyRegister/approval   领用登记审批
+/asset-management/#/assetApplyView           资产领用一览表
+
+/asset-management/#/returnRegister            归还登记
+/asset-management/#/returnRegister/new        新增归还登记
+/asset-management/#/returnRegister/detail     归还登记详情
+/asset-management/#/returnRegister/edit       归还登记编辑
+/asset-management/#/assetReturnView           资产归还一览表
+
 
 

@@ -304,7 +304,6 @@
       // 渲染数据
       renderDetail () {
         const {type, details} = this
-        console.log(details)
         const {
           receiveAttachment, assetInfo, returnList, returnDetail, returnAttachment, receiveDetail
         } = details
@@ -435,7 +434,6 @@
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          console.log(this.staffList[0].title)
           return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 

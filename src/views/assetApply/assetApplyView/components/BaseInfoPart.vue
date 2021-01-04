@@ -401,7 +401,6 @@
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          console.log(this.staffList[0].title)
           return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
       } 
