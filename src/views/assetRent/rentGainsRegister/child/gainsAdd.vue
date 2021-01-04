@@ -259,6 +259,7 @@
       v-if="close2"
       ref="AssetRentForm"
       :organId="organId"
+      :assetType="assetType"
       @getRentList="getRentList"
     >
     </AssetRentForm>

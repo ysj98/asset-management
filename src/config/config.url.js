@@ -1142,4 +1142,6 @@ export const assetRepair = {
   getMaintainSum: '/ams/assetMaintain/getMaintainSum',
   // 资产维修-分页列表
   getMaintainPage: '/ams/assetMaintain/getMaintainPage',
+  // 资产维修-新增编辑保存
+  submitMaintain: '/ams/assetMaintain/submitMaintain',
 }

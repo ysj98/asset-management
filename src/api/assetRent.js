@@ -99,3 +99,8 @@ export function getMaintainSum (data) {
 export function getMaintainPage (data) {
   return axiosPost(assetRepair.getMaintainPage, data)
 }
+
+// 资产维修-分页列表
+export function submitMaintain (data) {
+  return axiosPost(assetRepair.submitMaintain, data)
+}

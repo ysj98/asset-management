@@ -570,8 +570,6 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn(type) {
-      console.log("type======", type);
-      console.log("type======", typeof type);
       // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
       let arr = [];
       // 草稿 已驳回
@@ -585,7 +583,6 @@ export default {
       }
       // 已审批
       if (["1"].includes(String(type))) {
-        console.log("this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_REVERSE_AUDIT)", this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_REVERSE_AUDIT))
         if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_REVERSE_AUDIT)) {
           arr.push({
             iconType: "edit",

@@ -93,7 +93,11 @@
               >
                 {{ m.assetName }}
               </a-tag>
-              <a-tag color="#108ee9" @click="handleAsset('')">
+              <a-tag
+                color="#108ee9"
+                @click="handleAsset('')"
+                v-if="selectedList.length !== 1"
+              >
                 <a-icon type="home" style="margin-right: 3px" />选择
               </a-tag>
             </span>
@@ -105,7 +109,10 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            - -
+            <span v-if="selectedList.length > 0">{{
+              selectedList[0].assetCode
+            }}</span>
+            <span v-else>- -</span>
           </a-form-item>
         </a-col>
       </a-row>
@@ -116,7 +123,10 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            - -
+            <span v-if="selectedList.length > 0">{{
+              selectedList[0].assetCategoryName
+            }}</span>
+            <span v-else>- -</span>
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -125,7 +135,10 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            - -
+            <span v-if="selectedList.length > 0">{{
+              selectedList[0].address
+            }}</span>
+            <span v-else>- -</span>
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -178,6 +191,15 @@
             />
           </a-form-item>
         </a-col>
+        <a-col :span="8">
+          <a-form-item
+            label="维修费用"
+            :label-col="labelCol"
+            :wrapper-col="wrapperCol"
+          >
+            <a-input placeholder="请输入维修费用" v-model="fixPayment" />
+          </a-form-item>
+        </a-col>
       </a-row>
       <a-row>
         <a-col :span="24">
@@ -223,39 +245,71 @@
             :pagination="false"
             :columns="columns"
             :dataSource="dataSource"
+            :bordered="true"
           >
             <template slot="payee">
               <div class="icon-red">收款人(单位)</div>
             </template>
-            <template slot="assetName">
-              <a-select></a-select>
+            <template slot="payee" slot-scope="text, record">
+              <a-input
+                placeholder="请输入收款人（单位）"
+                v-model="record.payee"
+              />
+            </template>
+            <template slot="costId" slot-scope="text, record">
+              <a-select
+                show-search
+                :placeholder="'请选择费用科目'"
+                optionFilterProp="children"
+                :options="billConfigOptions"
+                :allowClear="true"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+                v-model="record.costId"
+              />
             </template>
             <template slot="paymentAmount">
               <span class="icon-red">付款金额(元)</span>
             </template>
+            <template slot="paymentAmount" slot-scope="text, record">
+              <a-input
+                placeholder="请输入付款金额"
+                v-model="record.paymentAmount"
+              />
+            </template>
             <template slot="paymentDate">
               <span class="icon-red">付款时间</span>
             </template>
-            <template slot="followUpUser">
-              <a-select></a-select>
+            <template slot="paymentDate" slot-scope="text, record">
+              <a-date-picker v-model="record.paymentDate" />
+            </template>
+            <template slot="followUpUser" slot-scope="text, record">
+              <a-input
+                placeholder="请输入跟进人"
+                v-model="record.followUpUser"
+              />
             </template>
             <template slot="remark" slot-scope="text, record">
               <a-input
                 placeholder="请输入备注"
                 :max="200"
                 v-model="record.remark"
-                style="width: 150px"
               />
             </template>
-            <template slot="operation" slot-scope="text, record">
-              <a style="color: #ff0000" @click="removeRent(record)">删除</a>
+            <template slot="operation" slot-scope="text, record, index">
+              <a style="color: #ff0000" @click="removeRent(index)">删除</a>
             </template>
           </a-table>
+          <div class="mt15 tc">
+            <a-button icon="plus" type="dashed" block @click="pushTableLine"
+              >添加付款计划</a-button
+            >
+          </div>
         </div>
       </a-form-item>
     </a-form>
     <!-- 页脚 -->
-    <!-- <FormFooter style="border: none" location="fixed">
+    <FormFooter style="border: none" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交审批</SG-Button>
         <SG-Button
@@ -267,17 +321,17 @@
         >
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
-    </FormFooter> -->
+    </FormFooter>
 
     <!-- 资产列表组件 -->
-    <rent-list-modal
+    <assetModal
       ref="AssetListMoal"
       :proId="projectId"
       :assetType="assetType"
       :organId="organId"
       :queryType="6"
-      v-model="selectedList"
-    ></rent-list-modal>
+      @getAsset="getAsset"
+    ></assetModal>
   </a-spin>
 </template>
 
@@ -285,38 +339,44 @@
 const columns = [
   {
     title: "编号",
+    dataIndex: "order",
     align: "center",
-    customRender: (text, record, index) => `${index + 1}`,
+    width: "7%",
   },
   {
     slots: { title: "payee" },
     dataIndex: "payee",
     scopedSlots: { customRender: "payee" },
     align: "center",
+    width: "15%",
   },
   {
     title: "费用科目",
-    dataIndex: "assetName",
-    scopedSlots: { customRender: "assetName" },
+    dataIndex: "costId",
+    scopedSlots: { customRender: "costId" },
     align: "center",
+    width: "13%",
   },
   {
     slots: { title: "paymentAmount" },
     scopedSlots: { customRender: "paymentAmount" },
     dataIndex: "paymentAmount",
     align: "center",
+    width: "10%",
   },
   {
     slots: { title: "paymentDate" },
     scopedSlots: { customRender: "paymentDate" },
     dataIndex: "paymentDate",
     align: "center",
+    width: "17%",
   },
   {
     title: "跟进人",
     dataIndex: "followUpUser",
     scopedSlots: { customRender: "followUpUser" },
     align: "center",
+    width: "10%",
   },
   {
     title: "备注",
@@ -329,6 +389,7 @@ const columns = [
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
     align: "center",
+    width: "7%",
   },
 ];
 import {
@@ -336,9 +397,12 @@ import {
   filterOption,
   queryAssetTypeList,
 } from "src/views/common/commonQueryApi";
-import rentListModal from "./rentListModal.vue";
+import assetModal from "./assetModal";
+import moment from "moment";
+import FormFooter from "@/components/FormFooter.vue";
+import { utils } from "@/utils/utils";
 export default {
-  components: { rentListModal },
+  components: { assetModal, FormFooter },
   data() {
     return {
       columns,
@@ -355,12 +419,13 @@ export default {
       repairFormName: "", // 维修单名称
       organName: "", // 所属组织机构
       projectOptions: [], // 资产项目
-      projectId: 0, // 资产项目ID
-      assetType: 0, // 资产类型
+      projectId: "", // 资产项目ID
+      assetType: "", // 资产类型
       typeOptions: [], // 资产类型选项
       validateRent: false, // 自定义校验auditUsers标志
       rentList: [],
       fixMan: "", // 维修人名称
+      fixPayment: "", // 维修费用
       allWidth: "width: 214px",
       endOpen: false,
       startDate: null, // 开始时间
@@ -368,8 +433,20 @@ export default {
       explain: "", // 维修说明
       uploadList: [], // 上传列表
       loading: false,
-      dataSource: [],
+      dataSource: [
+        {
+          payee: "",
+          costId: undefined,
+          paymentAmount: "",
+          paymentDate: moment(Date.now()),
+          followUpUser: "",
+          remark: "",
+          order: 1,
+          remark: "",
+        },
+      ],
       selectedList: [],
+      billConfigOptions: [], // 费用科目
     };
   },
   watch: {
@@ -385,7 +462,6 @@ export default {
     filterOption,
     // 维修单名称
     nameChange(e) {
-      console.log(this.selectedList);
       this.repairFormName = e.target.value;
     },
     // 根据organId查询资产项目
@@ -423,7 +499,6 @@ export default {
         this.selectedList.forEach((j) => {
           arr.push(j.assetId);
         });
-        this.$refs.AssetListMoal.selectedRowKeys = arr; // 删除组件中的项
       } else {
         // this.close = true;
         if (!this.projectId && !this.assetType) {
@@ -472,8 +547,155 @@ export default {
     explainChange(e) {
       this.explain = e.target.value;
     },
+    getAsset(val) {
+      this.selectedList = [val];
+    },
     // 删除付款计划
-    removeRent(val) {},
+    removeRent(index) {
+      if (this.dataSource.length === 1) {
+        this.$message.error("请至少保留一行数据!");
+        return;
+      }
+      this.$SG_Modal.confirm({
+        title: `确认要删除吗？?`,
+        okText: "确定",
+        cancelText: "再想想",
+        onOk: () => {
+          this.dataSource.splice(index, 1);
+        },
+      });
+    },
+    // 费用科目
+    getFeeTypeList() {
+      this.$api.assets.getFeeTypeList({ organId: this.organId }).then((res) => {
+        if (+res.data.code === 0) {
+          let arr = [];
+          res.data.data.forEach((item) => {
+            let obj = {
+              label: item.feeTypeName,
+              value: item.feeTypeId,
+            };
+            arr.push(obj);
+          });
+          this.billConfigOptions = arr;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
+    pushTableLine() {
+      let o = {
+        key: Date.now(),
+        order: this.dataSource.length + 1,
+        payee: "",
+        costId: undefined,
+        paymentAmount: "",
+        paymentDate: moment(Date.now()),
+        followUpUser: "",
+        remark: "",
+      };
+      this.dataSource.push(o);
+    },
+    validateFrom(values) {
+      // 验证下方表格数据
+      let flag = true;
+      utils.each(this.dataSource, (item, i) => {
+        if (!item.payee) {
+          this.$message.error(
+            `请填写付款计划第 ${item.order} 行，收款人（单位）!`
+          );
+          flag = false;
+          return false;
+        }
+        if (!item.costId) {
+          this.$message.error(`请选择付款计划第 ${item.order} 行, 费用科目!`);
+          flag = false;
+          return false;
+        }
+        if (!item.paymentAmount) {
+          this.$message.error(`请填写付款计划第 ${item.order} 行, 付款金额!`);
+          flag = false;
+          return false;
+        }
+        if (!item.paymentDate) {
+          this.$message.error(`请选择付款计划第 ${item.order} 行, 付款时间!`);
+          flag = false;
+          return false;
+        }
+        if (!item.followUpUser) {
+          this.$message.error(`请填写付款计划第 ${item.order} 行, 跟进人!`);
+          flag = false;
+          return false;
+        }
+      });
+      return flag;
+    },
+    // 保存/草稿
+    submitMaintain(val) {
+      // 修改上传数组对象字段
+      let upList = [];
+      this.uploadList.map((value, index, arry) => {
+        upList.push({
+          oldAttachmentName: value.name,
+          attachmentPath: value.url,
+        });
+      });
+      let arr = utils.deepClone(this.dataSource);
+      arr.forEach((item) => {
+        item.paymentDate = moment(item.paymentDate).format("YYYY-MM-DD");
+      });
+      let obj = {
+        organId: this.organId,
+        maintainName: this.repairFormName,
+        projectId: this.projectId,
+        assetType: this.assetType,
+        assetObjectId: this.selectedList[0].assetObjectId,
+        assetId: this.selectedList[0].assetId,
+        maintainUserId: this.fixMan,
+        maintainCost: +this.fixPayment,
+        startDate: moment(this.startDate).format("YYYY-MM-DD"),
+        completeDate: moment(this.endDate).format("YYYY-MM-DD"),
+        remark: this.explain,
+        saveType: val === "submit" ? 1 : 0,
+        attachmentList: upList,
+        detailList: arr,
+      };
+      this.$api.assetRent.submitMaintain(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
+          this.$message.success(
+            `${val === "submit" ? "提交审批" : "保存草稿"}成功`
+          );
+          this.$router.push("/repairRegister");
+        }
+      });
+    },
+    save(val) {
+      if (val) {
+        this.validateRent = !this.selectedList.length;
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            if (!this.validateFrom(values)) {
+              return;
+            }
+            this.submitMaintain("submit");
+          }
+        });
+      } else {
+        this.validateRent = !this.selectedList.length;
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            if (!this.validateFrom(values)) {
+              return;
+            }
+            console.log(123);
+            this.submitMaintain("");
+          }
+        });
+      }
+    },
+    cancel() {
+      console.log("quxiao");
+    },
   },
   created() {
     this.organId = this.$route.params.id;
@@ -483,6 +705,7 @@ export default {
     // 获取当前用户信息
     this.queryProjectByOrganId(this.organId);
     this.queryAssetType();
+    this.getFeeTypeList();
   },
 };
 </script>
