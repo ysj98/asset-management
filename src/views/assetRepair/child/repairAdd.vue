@@ -86,12 +86,12 @@
             <span>
               <a-tag
                 closable
-                v-for="m in rentList"
-                :key="m.extCustId"
+                v-for="m in selectedList"
+                :key="m.assetId"
                 style="background: #fff"
                 @close="handleAsset(m)"
               >
-                {{ m.custName }}
+                {{ m.assetName }}
               </a-tag>
               <a-tag color="#108ee9" @click="handleAsset('')">
                 <a-icon type="home" style="margin-right: 3px" />选择
@@ -105,7 +105,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-          - -
+            - -
           </a-form-item>
         </a-col>
       </a-row>
@@ -116,7 +116,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-          - -
+            - -
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -125,7 +125,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-          - -
+            - -
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -138,41 +138,65 @@
           </a-form-item>
         </a-col>
       </a-row>
-      <!-- <a-row>
+      <a-row>
         <a-col :span="8">
           <a-form-item
-            label="租金单价"
+            label="开始日期"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入租金单价" v-model="rentPrice" />
+            <a-date-picker
+              :style="allWidth"
+              placeholder="请选择开始日期"
+              v-decorator="[
+                'startDate',
+                { rules: [{ required: true, message: '请选择开始日期' }] },
+              ]"
+              v-model="startDate"
+              @openChange="handleStartOpenChange"
+              :disabled-date="disabledStartDate"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item
-            label="出租面积(㎡)"
+            label="完成日期"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
+            <a-date-picker
+              :style="allWidth"
+              placeholder="请选择完成日期"
+              v-decorator="[
+                'endDate',
+                { rules: [{ required: true, message: '请选择完成日期' }] },
+              ]"
+              :open="endOpen"
+              v-model="endDate"
+              @openChange="handleEndOpenChange"
+              :disabled-date="disabledEndDate"
+            />
           </a-form-item>
         </a-col>
+      </a-row>
+      <a-row>
         <a-col :span="24">
           <a-form-item :colon="false" v-bind="formItemTextarea">
-            <label slot="label">备&emsp;&emsp;注：</label>
+            <label slot="label">维修说明</label>
             <a-textarea
-              placeholder="请输入备注"
-              :style="widthBox"
+              placeholder="请输入维修说明"
+              style="width: 70%"
               :autosize="{ minRows: 2, maxRows: 4 }"
-              @change="noteChange"
+              explain
+              @change="explainChange"
               v-decorator="[
-                'remark',
+                'explain',
                 {
                   rules: [
                     {
-                      required: false,
+                      required: true,
                       max: 200,
-                      message: '请输入问题备注(不超过200字符)',
+                      message: '请输入维修说明(不超过200字符)',
                     },
                   ],
                 },
@@ -180,56 +204,40 @@
             />
           </a-form-item>
         </a-col>
+      </a-row>
+      <a-row>
         <a-col :span="24">
           <a-form-item :colon="false" v-bind="formItemTextarea">
             <label slot="label">附&emsp;&emsp;件：</label>
             <SG-UploadFile type="all" v-model="uploadList" />
           </a-form-item>
         </a-col>
-      </a-row> -->
+      </a-row>
       <SG-Title title="付款计划" />
       <a-form-item label="">
         <div class="assetInfo">
-          <!-- <div class="text">
-            <div class="leftInfo">
-              资产数量：
-              <span class="pubText">{{
-                selectedList.length === 0 ? 0 : selectedList.length
-              }}</span
-              >&nbsp;&nbsp;个，&emsp; 出租面积：
-              <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
-            </div>
-            <SG-Button
-              icon="plus"
-              type="primary"
-              ghost
-              @click="handleAddModal(true)"
-              >添加资产</SG-Button
-            >
-          </div> -->
           <!-- 资产表格部分 -->
-          <!-- <a-table
-            :columns="columns"
-            :data-source="selectedList"
+          <a-table
+            class="custom-table td-pd10"
+            :loading="loading"
             :pagination="false"
-            :bordered="true"
+            :columns="columns"
+            :dataSource="dataSource"
           >
-            <template slot="operation" slot-scope="text, record">
-              <a style="color: #ff0000" @click="removeRent(record)">删除</a>
+            <template slot="payee">
+              <div class="icon-red">收款人(单位)</div>
             </template>
-            <template slot="leaseArea">
-              <span class="icon-red">出租面积(㎡)</span>
+            <template slot="assetName">
+              <a-select></a-select>
             </template>
-            <template slot="leaseArea" slot-scope="text, record">
-              <a-input-number
-                id="inputNumber"
-                v-model="record.leaseArea"
-                :step="1.0"
-                :precision="2"
-                :min="0"
-                :max="+record.assetArea"
-                @change="rentOutAreaChange"
-              />
+            <template slot="paymentAmount">
+              <span class="icon-red">付款金额(元)</span>
+            </template>
+            <template slot="paymentDate">
+              <span class="icon-red">付款时间</span>
+            </template>
+            <template slot="followUpUser">
+              <a-select></a-select>
             </template>
             <template slot="remark" slot-scope="text, record">
               <a-input
@@ -239,7 +247,10 @@
                 style="width: 150px"
               />
             </template>
-          </a-table> -->
+            <template slot="operation" slot-scope="text, record">
+              <a style="color: #ff0000" @click="removeRent(record)">删除</a>
+            </template>
+          </a-table>
         </div>
       </a-form-item>
     </a-form>
@@ -257,39 +268,90 @@
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter> -->
-    <!-- 承租人组件 -->
-    <!-- <TenantModal
-      v-model="close"
-      v-if="close"
-      ref="TenantModal"
-      @getTenantList="getTenantList"
-    ></TenantModal> -->
+
     <!-- 资产列表组件 -->
-    <!-- <AssetListMoal
+    <rent-list-modal
       ref="AssetListMoal"
-      :proId="dynamicData.projectId"
-      :assetType="dynamicData.assetType"
+      :proId="projectId"
+      :assetType="assetType"
       :organId="organId"
       :queryType="6"
       v-model="selectedList"
-      @areaChange="areaChange"
-    ></AssetListMoal> -->
+    ></rent-list-modal>
   </a-spin>
 </template>
 
 <script>
+const columns = [
+  {
+    title: "编号",
+    align: "center",
+    customRender: (text, record, index) => `${index + 1}`,
+  },
+  {
+    slots: { title: "payee" },
+    dataIndex: "payee",
+    scopedSlots: { customRender: "payee" },
+    align: "center",
+  },
+  {
+    title: "费用科目",
+    dataIndex: "assetName",
+    scopedSlots: { customRender: "assetName" },
+    align: "center",
+  },
+  {
+    slots: { title: "paymentAmount" },
+    scopedSlots: { customRender: "paymentAmount" },
+    dataIndex: "paymentAmount",
+    align: "center",
+  },
+  {
+    slots: { title: "paymentDate" },
+    scopedSlots: { customRender: "paymentDate" },
+    dataIndex: "paymentDate",
+    align: "center",
+  },
+  {
+    title: "跟进人",
+    dataIndex: "followUpUser",
+    scopedSlots: { customRender: "followUpUser" },
+    align: "center",
+  },
+  {
+    title: "备注",
+    dataIndex: "remark",
+    scopedSlots: { customRender: "remark" },
+    align: "center",
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    scopedSlots: { customRender: "operation" },
+    align: "center",
+  },
+];
 import {
   queryProjectListByOrganId,
   filterOption,
   queryAssetTypeList,
 } from "src/views/common/commonQueryApi";
+import rentListModal from "./rentListModal.vue";
 export default {
+  components: { rentListModal },
   data() {
     return {
+      columns,
       spinning: false, // 页面加载状态
       form: this.$form.createForm(this), // 注册form
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
+      formItemTextarea: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 3 },
+        },
+      },
       repairFormName: "", // 维修单名称
       organName: "", // 所属组织机构
       projectOptions: [], // 资产项目
@@ -299,6 +361,15 @@ export default {
       validateRent: false, // 自定义校验auditUsers标志
       rentList: [],
       fixMan: "", // 维修人名称
+      allWidth: "width: 214px",
+      endOpen: false,
+      startDate: null, // 开始时间
+      endDate: null, // 结束时间
+      explain: "", // 维修说明
+      uploadList: [], // 上传列表
+      loading: false,
+      dataSource: [],
+      selectedList: [],
     };
   },
   watch: {
@@ -314,6 +385,7 @@ export default {
     filterOption,
     // 维修单名称
     nameChange(e) {
+      console.log(this.selectedList);
       this.repairFormName = e.target.value;
     },
     // 根据organId查询资产项目
@@ -341,19 +413,67 @@ export default {
           : this.$message.error("查询资产类型失败");
       });
     },
-    // 删除、选择承租人
+    // 删除、选择资产
     handleAsset(m) {
       if (m) {
-        this.rentList = this.rentList.filter(
-          (v) => v.extCustId !== m.extCustId
+        let arr = [];
+        this.selectedList = this.selectedList.filter(
+          (v) => v.assetId !== m.assetId
         );
+        this.selectedList.forEach((j) => {
+          arr.push(j.assetId);
+        });
+        this.$refs.AssetListMoal.selectedRowKeys = arr; // 删除组件中的项
       } else {
         // this.close = true;
-        this.$nextTick(() => {
-          // this.$refs.TenantModal.show = true;
-        });
+        if (!this.projectId && !this.assetType) {
+          this.form.validateFieldsAndScroll(["projectId", "assetType"], () => {
+            this.$message.warn("请先选择数据");
+            return;
+          });
+        } else {
+          this.$nextTick(() => {
+            this.$refs.AssetListMoal.show = true;
+          });
+        }
       }
     },
+    startDateFn(value, mode) {
+      this.startDate = mode;
+      console.log(this.startDate);
+    },
+    endDateFn(value, mode) {
+      this.endDate = mode;
+      console.log(this.endDate);
+    },
+    disabledStartDate(startValue) {
+      const endValue = this.endDate;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf();
+    },
+    disabledEndDate(endValue) {
+      const startValue = this.startDate;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return startValue.valueOf() >= endValue.valueOf();
+    },
+    handleStartOpenChange(open) {
+      if (!open) {
+        this.endOpen = true;
+      }
+    },
+    handleEndOpenChange(open) {
+      this.endOpen = open;
+    },
+    // 维修说明
+    explainChange(e) {
+      this.explain = e.target.value;
+    },
+    // 删除付款计划
+    removeRent(val) {},
   },
   created() {
     this.organId = this.$route.params.id;
