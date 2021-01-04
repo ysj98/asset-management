@@ -138,7 +138,6 @@
         }
         return this.$api.assets.assetListPage(form).then(r => {
           let res = r.data
-          console.log(res.data)
           if (res && res.code.toString() === '0') {
             this.loading = false
             res.data.data.map((item,index) => {
@@ -173,7 +172,6 @@
       handleSelectChange (selectedRowKeys, selectedRows) {
         this.selectedRowKeys = selectedRowKeys
         this.list.push(selectedRows)
-        console.log(selectedRows)
       },
 
       // 移除选中的人员
@@ -239,7 +237,6 @@
               key: m.professionCode
             }))
             list.unshift({ title: '全部资产分类', key: '-1' })
-            console.log(list)
             this.objectTypeOptions = list
             return false
           }
@@ -257,9 +254,7 @@
       const {allAttrs, value, assetType} = this
       
       this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) 
-      console.log(this.objectTypeOptions)
       this.queryObjectType(String(assetType))
-      console.log(this.objectTypeOptions)
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
         let arr = this.$refs.footerPagination.pageLists
@@ -285,8 +280,6 @@
           flag && primaryKeys.push(n.assetId)
           return flag
         })
-        console.log(primaryList)
-        console.log(dataSource)
         let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
         // let newList = []
         // if(dataSource.length){
@@ -297,7 +290,6 @@
         // })
         // }
         this.selectedList = primaryList.concat(newList)
-        console.log(this.selectedList,keys)
         this.$emit('input', allAttrs ? selectedList : keys)
         this.getReturnAssetInfo()
         //this.$emit('input', selectedList)

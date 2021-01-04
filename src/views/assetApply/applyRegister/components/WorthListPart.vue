@@ -276,7 +276,6 @@
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
         this.$api.useManage.getReceiveAssetDetailPage({ receiveId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
-          console.log(r)
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -358,10 +357,8 @@
         this.$api.useManage.getReceiveInfo({receiveId:registerId, queryType:1}).then(r => {
           this.tableObj.loading = false
           let res = r.data
-          console.log(res)
           if (res && String(res.code) === '0') {
             let addData = res.data.detailList || []
-            console.log(addData)
             if (!addData.length) { return false }
             if (status === 'init') {
               dataSource = addData
@@ -373,7 +370,6 @@
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1}))
             this.assetList = list
-            console.log(list)
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
@@ -442,7 +438,6 @@
         this.calcSum(list)
       },
        getReceiveAssetInfo(assetList) {
-         console.log(assetList,456)
          this.assetList = assetList
          this.assetList.map((item,index) => {
            this.assetList[index].area = item.assetArea
@@ -455,7 +450,6 @@
       
       const { type } = this
       if (type === 'add' || type === 'edit') {
-        console.log(this.registerId)
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
@@ -471,7 +465,6 @@
     
     watch: {
       assetList: function () {
-        console.log(this.assetList[0].assetTypeName)
         if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
            this.tableObj.columns = [
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 

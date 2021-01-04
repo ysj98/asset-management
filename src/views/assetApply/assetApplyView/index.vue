@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
+        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_APPLY_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectIdList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
@@ -245,7 +245,6 @@ export default {
         assetName: this.queryCondition.assetName            // 资产名称
       }
       this.$api.useManage.exportReceiveDetail(obj).then(res => {
-        window.console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -266,10 +265,9 @@ export default {
     },
     changeLeaf (value) {
       this.queryCondition.receiveOrganId = value
-      console.log(value)
     },
     query () {
-      //this.loading = true
+      this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
@@ -295,13 +293,13 @@ export default {
           })
           this.$api.useManage.getReceiveDetailPage(obj).then(r => {
             if(r.data.code == 0){
-              console.log(r)
               r.data.data.data.map((item,index) => {
                 r.data.data.data[index].key = item.receiveDetailId
               })
               this.tableData = r.data.data.data
               this.count = r.data.data.count
-            }
+            }     
+           this.loading = false
           })
         }
 
@@ -414,7 +412,6 @@ export default {
         organId: this.queryCondition.organId,
         projectName: ''
       }
-      console.log(obj)
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data

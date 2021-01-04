@@ -5,8 +5,8 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="handleBtnAction({type: 'add'})" v-if="organName.length > 0">新建投资单</SG-Button>
-        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.INVEST_FORM_NEW" @click="handleBtnAction({type: 'add'})" v-if="organName.length > 0">新建投资单</SG-Button>
+        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_INVEST_REGISTER" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
@@ -268,22 +268,22 @@ export default {
       let arr = [];
       // 草稿 已驳回
       if (["0", "3"].includes(String(type))) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
+        if (this.$power.has(ASSET_MANAGEMENT.INVEST_FORM_EDIT)) {
           arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
+        if (this.$power.has(ASSET_MANAGEMENT.INVEST_FORM_DELETE)) {
           arr.push({ iconType: "delete", text: "删除", editType: "delete" });
         }
       }
       // 待审批
       if (["2"].includes(String(type))) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
+        if (this.$power.has(ASSET_MANAGEMENT.INVEST_FORM_APPROVE)) {
           arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
       }
       // 已审批
       if (["1"].includes(String(type))) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
+        if (this.$power.has(ASSET_MANAGEMENT.INVEST_FORM_REVERSE_AUDIT)) {
           arr.push({
             iconType: "edit",
             text: "反审核",
@@ -296,7 +296,6 @@ export default {
     },
     // 操作事件函数
     operationFun(type, record) {
-      console.log(type)
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({name: '投资登记编辑', params: {registerId: record.investOrderId, type: 'edit'}});
@@ -322,7 +321,6 @@ export default {
           throw res.message || '驳回失败'
         }).catch(err => {
           that.loading = false
-          console.log(err)
           that.$message.error(123 || '驳回失败')
         })
           },
@@ -345,7 +343,6 @@ export default {
           throw res.message || '删除失败'
         }).catch(err => {
           that.loading = false
-          console.log(err)
           that.$message.error(123 || '删除失败')
         })
           },
@@ -371,7 +368,6 @@ export default {
         investNameOrId: this.queryCondition.investNameOrId                              // 投资单名称/编号
       }
       this.$api.assetInvest.exportInvestOrder(obj).then(res => {
-        window.console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -422,11 +418,12 @@ export default {
               this.tableData = r.data.data.data
               this.count = r.data.data.count
             }
+            this.loading = false
           })
         }
 
       })
-      this.loading = false
+      
     },
      // 删除项目
       confirmDelete (registerId) {
@@ -442,7 +439,6 @@ export default {
           throw res.message || '删除失败'
         }).catch(err => {
           this.loading = false
-          console.log(err)
           this.$message.error(123 || '删除失败')
         })
       },
@@ -540,7 +536,6 @@ export default {
         organId: this.queryCondition.organId,
         projectName: ''
       }
-      console.log(obj)
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data

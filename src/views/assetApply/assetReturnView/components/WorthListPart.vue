@@ -327,7 +327,6 @@
 
     watch: {
       details: function () {
-            console.log(this.details)
             if(this.details.assetInfo.assetTypeName == '房屋' || this.details.assetInfo.assetTypeName == '土地' || this.details.assetInfo.assetTypeName == '车场' ){this.isShow=true}
             this.numList.map((item,index) => {
             if(!this.details[item.key]){

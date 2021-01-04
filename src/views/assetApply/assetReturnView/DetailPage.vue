@@ -107,7 +107,6 @@
             this.$message.error(err || `${tip}失败`)
           })
         }).catch((err) => {
-          console.log(err)
           this.spinning = false
          })
       },
@@ -121,8 +120,6 @@
           let returnArea = r.data.data.receiveDetail.returnArea
           let unReturnArea = r.data.data.receiveDetail.unReturnArea
           let res = r.data
-          console.log(r.data)
-          console.log(receiveArea,returnArea,unReturnArea)
           if (res && String(res.code) === '0') {
             const { data } = res
             // 初始化，用于资产价值清单组件

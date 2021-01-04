@@ -107,7 +107,6 @@
             this.$message.error(err || `${tip}失败`)
           })
         }).catch((err) => {
-          console.log(err)
           this.spinning = false
          })
       },
@@ -119,7 +118,6 @@
         this.$api.useManage.getReceiveDetailInfo({receiveDetailId: registerId}).then(r => {
           this.spinning = false
           let res = r.data
-          console.log(res)
           if (res && String(res.code) === '0') {
             const { data } = res
             // 初始化，用于资产价值清单组件

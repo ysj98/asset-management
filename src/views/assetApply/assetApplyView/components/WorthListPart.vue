@@ -293,7 +293,6 @@
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1, ...dynamicData, area: +m.assetArea, objectTypeName: m.assetCategoryName}))
-            console.log(list)
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
@@ -382,7 +381,6 @@
 
     watch: {
       details: function (val) {
-            console.log(this.details)
             if(this.details.assetTypeName == '房屋' || this.details.assetTypeName == '土地' || this.details.assetTypeName == '车场' ){this.isShow=true}
             this.numList.map((item,index) => {
             if(!this.details[item.key]){

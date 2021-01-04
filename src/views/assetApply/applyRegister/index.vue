@@ -5,8 +5,8 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="handleBtnAction({type: 'add'})" v-if="organName.length > 0">领用登记</SG-Button>
-        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.APPLY_FORM_NEW" @click="handleBtnAction({type: 'add'})" v-if="organName.length > 0">领用登记</SG-Button>
+        <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_APPLY_REGISTER" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
@@ -244,22 +244,22 @@ export default {
       let arr = [];
       // 草稿 已驳回
       if (["0", "3"].includes(String(type))) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
+        if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_EDIT)) {
           arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
+        if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_DELETE)) {
           arr.push({ iconType: "delete", text: "删除", editType: "delete" });
         }
       }
       // 待审批
       if (["2"].includes(type)) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
+        if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_APPROVE)) {
           arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
       }
       // 已审批
       if (["1"].includes(type)) {
-        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
+        if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_REVERSE_AUDIT)) {
           arr.push({
             iconType: "edit",
             text: "反审核",
@@ -297,7 +297,6 @@ export default {
           throw res.message || '删除失败'
         }).catch(err => {
           this.loading = false
-          console.log(err)
           this.$message.error(123 || '删除失败')
         })
           },
@@ -323,7 +322,6 @@ export default {
         endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束提交日期
       }
       this.$api.useManage.exportReceive(obj).then(res => {
-        window.console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -344,10 +342,9 @@ export default {
     },
     changeLeaf (value) {
       this.queryCondition.receiveOrganId = value
-      console.log(value)
     },
     query () {
-      //this.loading = true
+      this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
@@ -369,7 +366,6 @@ export default {
           })
           this.$api.useManage.getReceivePage(obj).then(r => {
             if(r.data.code == 0){
-              console.log(r)
               r.data.data.data.map((item,index) => {
                 r.data.data.data[index].key = item.receiveId
                 item.operationDataBtn = this.createOperationBtn(
@@ -379,9 +375,9 @@ export default {
               this.tableData = r.data.data.data
               this.count = r.data.data.count
             }
+                  this.loading = false
           })
         }
-
       })
     },
      // 删除项目
@@ -408,7 +404,6 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
-      console.log(123)
     },
     alljudge (val) {
       if (val.length !== 0) {
@@ -493,7 +488,6 @@ export default {
         organId: this.queryCondition.organId,
         projectName: ''
       }
-      console.log(obj)
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data

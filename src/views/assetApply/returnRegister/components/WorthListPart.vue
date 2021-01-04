@@ -260,7 +260,6 @@
         if (!registerId) { return this.$message.info('登记Id不存在') }
         this.tableObj.loading = true
         this.$api.useManage.getReturnAssetDetailPage({ returnId:registerId, pageNum:pageNo, pageSize:pageLength }).then(r => {
-          console.log(r)
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -300,10 +299,8 @@
         this.$api.useManage.getReturnInfo({returnId:registerId, queryType:1}).then(r => {
           this.tableObj.loading = false
           let res = r.data
-          console.log(res)
           if (res && String(res.code) === '0') {
             let addData = res.data.detailList || []
-            console.log(addData)
             if (!addData.length) { return false }
             if (status === 'init') {
               dataSource = addData
@@ -315,7 +312,6 @@
             }
             let list = dataSource.map((m, i) => ({...m, index: i + 1}))
             this.assetList = list
-            console.log(list)
             return this.calcSum(list)
           }
           throw res.message || '查询登记资产接口出错'
@@ -384,7 +380,6 @@
         this.calcSum(list)
       },
       getReturnAssetInfo(assetList) {
-         console.log(assetList,456)
          this.assetList = assetList
          this.assetList.map(item => {
            item.totalReturnArea = item.returnArea
@@ -414,7 +409,6 @@
     
     watch: {
       assetList: function () {
-        console.log(this.assetList[0].assetTypeName)
         if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
            this.tableObj.columns = [
             { title: '领用ID', dataIndex: 'receiveDetailId' },

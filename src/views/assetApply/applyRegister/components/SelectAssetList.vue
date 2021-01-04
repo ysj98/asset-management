@@ -128,7 +128,6 @@
         }
         return this.$api.assets.assetListPage(form).then(r => {
           let res = r.data
-          console.log(res)
           if (res && res.code.toString() === '0') {
             this.loading = false
             const {count, data} = res.data
@@ -224,9 +223,7 @@
       const {allAttrs, value, assetType} = this
       
       this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) 
-      console.log(this.objectTypeOptions)
       this.queryObjectType(String(assetType))
-      console.log(this.objectTypeOptions)
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
         let arr = this.$refs.footerPagination.pageLists
@@ -259,11 +256,8 @@
           flag && primaryKeys.push(n.assetId)
           return flag
         })
-        console.log(primaryList)
-        console.log(dataSource)
         let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
         this.selectedList = primaryList.concat(newList)
-        console.log(this.selectedList,keys)
         this.$emit('input', allAttrs ? selectedList : keys)
         this.getReceiveAssetInfo()
       },

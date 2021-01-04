@@ -137,7 +137,6 @@
         }
         return this.$api.useManage.getReceiveRecordPage(form).then(r => {
           let res = r.data
-          console.log(res.data)
           if (res && res.code.toString() === '0') {
             this.loading = false
             res.data.data.map((item,index) => {
@@ -254,9 +253,7 @@
       const {allAttrs, value, assetType} = this
       
       this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.receiveDetailId) : value) 
-      console.log(this.objectTypeOptions)
       this.queryObjectType(String(assetType))
-      console.log(this.objectTypeOptions)
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
         let arr = this.$refs.footerPagination.pageLists
@@ -282,8 +279,6 @@
           flag && primaryKeys.push(n.receiveDetailId)
           return flag
         })
-        console.log(primaryList)
-        console.log(dataSource)
         let newList = dataSource.filter(i => !primaryKeys.includes(i.receiveDetailId) && keys.includes(i.receiveDetailId))
         // let newList = []
         // if(dataSource.length){
@@ -294,7 +289,6 @@
         // })
         // }
         this.selectedList = primaryList.concat(newList)
-        console.log(this.selectedList,keys)
         this.$emit('input', allAttrs ? selectedList : keys)
         this.getReturnAssetInfo()
         //this.$emit('input', selectedList)

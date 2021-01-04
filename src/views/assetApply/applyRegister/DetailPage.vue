@@ -73,7 +73,6 @@
 
       // 提交
       handleSubmit (saveWays) {
-        console.log(123)
         const { type, registerId, assetList, dynamicData, receiveAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
@@ -98,7 +97,6 @@
           delete form.receiveOrganName
           delete form.receiveUserName
           this.$api.useManage.submitReceive(form).then(r => {
-            console.log(form,r)
             this.spinning = false
             let res = r.data
             if (res && String(res.code) === '0') {
@@ -108,12 +106,10 @@
             }
             throw res.message || `${tip}失败`
           }).catch(err => {
-            console.log(err)
             this.spinning = false
             this.$message.error(err || `${tip}失败`)
           })
         }).catch((err) => {
-          console.log(err)
           this.spinning = false
          })
       },
@@ -125,7 +121,6 @@
         this.$api.useManage.getReceiveInfo({receiveId: registerId,queryType}).then(r => {
           this.spinning = false
           let res = r.data
-          console.log(res)
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
@@ -190,7 +185,6 @@
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        console.log(list,123)
         let arr = list.filter(m => +m.receiveArea === 0 || !m.receiveArea)
         return arr.length
       }
@@ -207,7 +201,6 @@
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
       this.organName = organName
       this. organId = organId
-      console.log(this.organId)
       registerId && this.queryDetailById(registerId)
     }
   }

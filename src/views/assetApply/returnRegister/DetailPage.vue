@@ -68,13 +68,11 @@
       // 获取资产关联对象数据
       getAssetList (list, returnAreaSum) {
         this.assetList = list
-        console.log(this.assetList)
         this.returnAreaTotal = +returnAreaSum
       },
 
       // 提交
       handleSubmit (saveWays) {
-        console.log(123)
         const { type, registerId, assetList, dynamicData, returnAreaTotal, saveType } = this
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
@@ -96,7 +94,6 @@
           })
           let form = type === 'edit' || type === 'add' ? { ...data, detailList, returnId: registerId ? registerId : '', returnArea: returnAreaTotal, 
           ...dynamicData, saveType: saveWays, returnCount:assetList.length, } : { ...data, detailList }
-          console.log(form)
           delete form.receiveDate
           delete form.receiveUserId
           delete form.returnOrganName
@@ -115,7 +112,6 @@
             this.$message.error(err || `${tip}失败`)
           })
         }).catch((err) => {
-          console.log(err)
           this.spinning = false
          })
       },
@@ -127,7 +123,6 @@
         this.$api.useManage.getReturnInfo({returnId: registerId, queryType}).then(r => {
           this.spinning = false
           let res = r.data
-          console.log(res,998)
           if (res && String(res.code) === '0') {
             const { stepList, ...others } = res.data
             // 初始化，用于资产价值清单组件
@@ -193,7 +188,6 @@
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        console.log(list,123)
         let arr = list.filter(m => +m.receiveArea === 0 || !m.receiveArea)
         return arr.length
       }
@@ -210,7 +204,6 @@
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
       this.organName = organName
       this. organId = organId
-      console.log(this.organId)
       registerId && this.queryDetailById(registerId)
     }
   }
