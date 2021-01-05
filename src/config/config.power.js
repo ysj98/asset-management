@@ -422,16 +422,22 @@ export const ASSET_MANAGEMENT = {
   ASSET_EARNINGS_REGISTER: 'asset_earnings_register',       // 出租收益登记导出
   INVEST_EARNINGS_REGISTER: 'invest_earnings_register',       // 投资收益登记导出
   RENT_FORM_EDIT: 'rent_form_edit',  // 出租单编辑
+  RENT_FORM_NEW: 'rent_form_new',  // 出租单新建
   RENT_FORM_DELETE: 'rent_form_delete',  // 出租单删除
   RENT_FORM_DETAIL: 'rent_form_detail',  // 出租单详情
+  RENT_FORM_APPROVE: 'rent_form_approve',  // 出租单审批
   RENT_FORM_REVERSE_AUDIT: 'rent_form_reverse_audit',  // 出租单反审核
   ASSET_RENT_VIEW_EXPORT: 'asset_rent_view_export',       // 出租登记一览表导出
   RENT_INCOME_EDIT: 'rent_income_edit', // 出租收益编辑
+  RENT_INCOME_NEW: 'rent_income_new', // 出租收益新建
   RENT_INCOME_DELETE: 'rent_income_delete', // 出租收益作废
+  INVEST_INCOME_NEW: 'invest_income_new', // 投资收益新建
   INVEST_INCOME_EDIT: 'invest_income_edit', // 投资收益编辑
   INVEST_INCOME_DELETE: 'invest_income_delete', // 投资收益作废
   ASSET_REPAIR_REGISTER: 'asset_repair_register', // 维修登记导出
+  REPAIR_FORM_NEW: 'repair_form_new',  // 维修单新建
   REPAIR_FORM_DELETE: 'repair_form_delete',  // 维修单删除
+  REPAIR_FORM_APPROVE: 'repair_form_approve',  // 维修单审批
   REPAIR_FORM_REVERSE_AUDIT: 'repair_form_reverse_audit',  // 维修单反审核
   REPAIR_FORM_EDIT: 'repair_form_edit',  // 维修单编辑
   /**

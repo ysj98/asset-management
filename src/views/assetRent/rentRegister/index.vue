@@ -13,13 +13,15 @@
           style="margin-right: 20px"
           type="primary"
           @click="registerFn"
+          v-power="ASSET_MANAGEMENT.RENT_FORM_NEW"
           >出租登记</SG-Button
         >
         <SG-Button
-          type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_RENT_REGISTER"
+          icon="export"
+          :loading="exportBtnLoading"
           @click="exportFn"
-          ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
+          v-power="ASSET_MANAGEMENT.ASSET_RENT_REGISTER"
+          >导出</SG-Button
         >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
           <treeSelect
@@ -304,6 +306,7 @@ export default {
       organName: "",
       ASSET_MANAGEMENT,
       loading: false,
+      exportBtnLoading: false, // 导出按钮loading
       columns,
       toggle: false,
       allStyle: "width: 150px; margin-right: 10px;",
@@ -357,8 +360,7 @@ export default {
     this.platformDictFn("asset_type");
   },
   methods: {
-    query() {
-      this.loading = true;
+    query(type) {
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
@@ -375,6 +377,10 @@ export default {
         startleaseDateStart: moment(this.rentDate[0]).format("YYYY-MM-DD"),
         startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
       };
+      if (type === "export") {
+        return obj;
+      }
+      this.loading = true;
       this.$api.assetRent.getLeaseOrderPageList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
@@ -402,29 +408,26 @@ export default {
     },
     // 导出
     exportFn() {
-      console.log("导出");
-      /*       let obj = {
-        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.contractStatus),  // 资产分类id(多个用，分割)
-        assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId                                // 登记单编码
-      }
-      this.$api.assets.assetRegListPageExport(obj).then(res => {
-        console.log(res)
-        let blob = new Blob([res.data])
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = '资产登记一览表.xls'
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      }) */
+      this.exportBtnLoading = true;
+      let data = this.query("export");
+      this.$api.assetRent
+        .exportLeaseOrder(data)
+        .then((res) => {
+          if (res.status === 200) {
+            let blob = new Blob([res.data]);
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "出租登记表.xls";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+          this.exportBtnLoading = false;
+        })
+        .catch((err) => {
+          context.$message.error(err || "操作失败");
+        });
     },
     // 出租登记
     registerFn() {
@@ -581,7 +584,7 @@ export default {
       // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
       let arr = [];
       // 草稿 已驳回
-      if (["0", "3", "2"].includes(String(type))) {
+      if (["0", "3"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
           arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
@@ -589,8 +592,14 @@ export default {
           arr.push({ iconType: "delete", text: "删除", editType: "delete" });
         }
       }
+      // 待审批
+      if (["2"].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
+          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+        }
+      }
       // 已审批
-      if (["1"].includes(type)) {
+      if (["1"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
           arr.push({
             iconType: "edit",
@@ -613,11 +622,31 @@ export default {
         this.$router.push({
           path: `rentRegister/rentDetail/${record.leaseOrderId}`,
         });
-      } else {
+      } else if (["readApproval"].includes(type)) {
         let that = this;
         this.$confirm({
           title: "提示",
           content: "确认要作废此出租单吗？",
+          onOk() {
+            that.$api.assetRent
+              .updateLeaseOrderStatus({
+                leaseOrderId: record.leaseOrderId,
+                approvalStatus: 0,
+              })
+              .then((res) => {
+                if (+res.data.code !== 0) {
+                  that.$message.error(res.data.message);
+                } else {
+                  that.allQuery();
+                }
+              });
+          },
+        });
+      } else if (["delete"].includes(type)) {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要删除此出租单吗？",
           onOk() {
             that.$api.assetRent
               .updateLeaseOrderStatus({

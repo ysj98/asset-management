@@ -80,6 +80,16 @@ export function getIncomeStatistics(data) {
   return axiosPost(assetRent.getIncomeStatistics, data)
 }
 
+// 资产出租/投资收益登记-导出
+export function exportIncome(data) {
+  return axiosPost(assetRent.exportIncome, data, false, false, { responseType: 'blob'})
+}
+
+// 出租登记-导出
+export function exportLeaseOrder(data) {
+  return axiosPost(assetRent.exportLeaseOrder, data, false, false, { responseType: 'blob'})
+}
+
 // 出租登记-修改状态
 export function updateLeaseOrderStatus(data) {
   return axiosPost(assetRent.updateLeaseOrderStatus, data)
@@ -103,4 +113,24 @@ export function getMaintainPage (data) {
 // 资产维修-分页列表
 export function submitMaintain (data) {
   return axiosPost(assetRepair.submitMaintain, data)
+}
+
+// 资产维修-详情
+export function getMaintainInfo (data) {
+  return axiosGet(assetRepair.getMaintainInfo, data)
+}
+
+// 资产维修-反审核
+export function opposeApproveMaintain (data) {
+  return axiosPost(assetRepair.opposeApproveMaintain, data)
+}
+
+// 资产维修-删除
+export function deleteMaintain (data) {
+  return axiosPost(assetRepair.deleteMaintain, data)
+}
+
+// 资产维修-导出
+export function exportMaintain (data) {
+  return axiosPost(assetRepair.exportMaintain, data, false, false, { responseType: 'blob'})
 }

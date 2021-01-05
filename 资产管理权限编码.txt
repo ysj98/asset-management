@@ -260,10 +260,12 @@ V2.0.7
 asset_rent_view_export  出租登记一览表导出
 asset_rent_register     出租登记导出
 invest_earnings_register  收益登记导出
-rent_form_add          出租单新建
+rent_form_new          出租单新建
 rent_form_detail           出租单详情
 rent_form_delete            出租单删除
+rent_form_approve           出租单审批
 rent_form_reverse_audit      出租单反审核
+rent_income_new           出租收益新建
 rent_income_edit         出租收益编辑
 rent_income_delete       出租收益作废
 invest_income_edit         投资收益编辑
@@ -272,6 +274,8 @@ asset_repair_register  维修登记导出
 repair_form_edit            维修单编辑
 repair_form_delete            维修单删除
 repair_form_reverse_audit      维修单反审核
+repair_form_approve           维修单审批
+repair_form_new               维修单新建
 
 
 资产投资

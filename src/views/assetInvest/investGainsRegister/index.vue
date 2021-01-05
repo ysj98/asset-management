@@ -13,13 +13,15 @@
           style="margin-right: 20px"
           type="primary"
           @click="registerFn"
+          v-power="ASSET_MANAGEMENT.INVEST_INCOME_NEW"
           >收益登记</SG-Button
-        >
+        >INVEST_EARNINGS_REGISTER
         <SG-Button
-          type="primary"
-          v-power="ASSET_MANAGEMENT.INVEST_EARNINGS_REGISTER"
+          icon="export"
+          :loading="exportBtnLoading"
           @click="exportFn"
-          ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
+          v-power="ASSET_MANAGEMENT.INVEST_EARNINGS_REGISTER"
+          >导出</SG-Button
         >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
           <treeSelect
@@ -135,7 +137,7 @@
           ></OperationPopover>
         </template>
       </a-table>
-      <div class="sum" v-if="tableData.length!==0">
+      <div class="sum" v-if="loading === false">
         全部合计：
         <span style="font-size: 16px; font-weight: bold">{{
           totalCount > 0 ? totalCount : 0
@@ -160,7 +162,11 @@
       :organName="organName"
       @childrenSubmit="allQuery"
     ></gainsAdd>
-    <gainsEdit ref="gainsEdit" :organId="organID" @childrenSubmit="allQuery"></gainsEdit>
+    <gainsEdit
+      ref="gainsEdit"
+      :organId="organID"
+      @childrenSubmit="allQuery"
+    ></gainsEdit>
     <gainsDetail ref="gainsDetail"></gainsDetail>
   </div>
 </template>
@@ -265,6 +271,7 @@ export default {
       toggle: false,
       ASSET_MANAGEMENT,
       loading: false,
+      exportBtnLoading: false, // 导出按钮loading
       organID: 0,
       organName: "",
       queryCondition: {
@@ -300,8 +307,7 @@ export default {
     };
   },
   methods: {
-    query() {
-      this.loading = true;
+    query(type) {
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
@@ -332,6 +338,10 @@ export default {
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 2,
       };
+      if (type === "export") {
+        return obj2;
+      }
+      this.loading = true;
       this.$api.assetRent.getIncomePageList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
@@ -376,29 +386,26 @@ export default {
     },
     // 导出
     exportFn() {
-      console.log("导出");
-      /*       let obj = {
-        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.contractStatus),  // 资产分类id(多个用，分割)
-        assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId                                // 登记单编码
-      }
-      this.$api.assets.assetRegListPageExport(obj).then(res => {
-        console.log(res)
-        let blob = new Blob([res.data])
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = '资产登记一览表.xls'
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      }) */
+      this.exportBtnLoading = true;
+      let data = this.query("export");
+      this.$api.assetRent
+        .exportIncome(data)
+        .then((res) => {
+          if (res.status === 200) {
+            let blob = new Blob([res.data]);
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "投资收益登记表.xls";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+          this.exportBtnLoading = false;
+        })
+        .catch((err) => {
+          context.$message.error(err || "操作失败");
+        });
     },
     changeTree(value, label) {
       this.organID = value;

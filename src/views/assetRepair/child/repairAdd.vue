@@ -475,10 +475,12 @@ export default {
     },
     // 资产项目选择
     projectSelect(val) {
+      this.selectedList = []
       this.projectId = val;
     },
     // 资产类型选择
     assetTypeSelect(val) {
+      this.selectedList = []
       this.assetType = val;
     },
     // 查询资产类型--平台字典
@@ -652,7 +654,7 @@ export default {
         assetObjectId: this.selectedList[0].assetObjectId,
         assetId: this.selectedList[0].assetId,
         maintainUserId: this.fixMan,
-        maintainCost: +this.fixPayment,
+        maintainCost: Number(this.fixPayment),
         startDate: moment(this.startDate).format("YYYY-MM-DD"),
         completeDate: moment(this.endDate).format("YYYY-MM-DD"),
         remark: this.explain,
@@ -694,7 +696,7 @@ export default {
       }
     },
     cancel() {
-      console.log("quxiao");
+      this.$router.push("/repairRegister");
     },
   },
   created() {

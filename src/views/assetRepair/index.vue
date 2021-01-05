@@ -12,15 +12,16 @@
           class="fl"
           style="margin-right: 20px"
           type="primary"
+          v-power="ASSET_MANAGEMENT.REPAIR_FORM_NEW"
           @click="registerFn"
           >维修登记</SG-Button
         >
         <SG-Button
-          type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_REPAIR_REGISTER"
+          icon="export"
+          :loading="exportBtnLoading"
           @click="exportFn"
-          ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
-        >
+          v-power="ASSET_MANAGEMENT.ASSET_REPAIR_REGISTER"
+        >导出</SG-Button>
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
           <treeSelect
             @changeTree="changeTree"
@@ -263,9 +264,10 @@ export default {
       columns,
       toggle: false,
       loading: false,
+      exportBtnLoading: false, // 导出按钮loading
       noPageTools: false,
       ASSET_MANAGEMENT,
-      organID: 0,
+      organId: 0,
       organName: "",
       count: 0,
       tableData: [],
@@ -316,8 +318,30 @@ export default {
     noDataTips,
   },
   methods: {
-    query() {
-      this.loading = true;
+        // 导出
+    exportFn() {
+      this.exportBtnLoading = true;
+      let data = this.query("export");
+      this.$api.assetRent
+        .exportMaintain(data)
+        .then((res) => {
+          if (res.status === 200) {
+            let blob = new Blob([res.data]);
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "维修登记表.xls";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+          this.exportBtnLoading = false;
+        })
+        .catch((err) => {
+          context.$message.error(err || "操作失败");
+        });
+    },
+    query(type) {
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageLength, // 每页显示记录数
@@ -335,6 +359,10 @@ export default {
         startMaintainDate: moment(this.repairDate[0]).format("YYYY-MM-DD"),
         endMaintainDate: moment(this.repairDate[1]).format("YYYY-MM-DD"),
       };
+      if (type === "export") {
+        return obj;
+      }
+      this.loading = true;
       this.$api.assetRent.getMaintainPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
@@ -368,7 +396,7 @@ export default {
       });
     },
     changeTree(value, label) {
-      this.organID = value;
+      this.organId = value;
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
@@ -376,32 +404,6 @@ export default {
       this.query();
       this.getListFn();
       this.getObjectKeyValueByOrganIdFn();
-    },
-    // 导出
-    exportFn() {
-      console.log("导出");
-      /*       let obj = {
-        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.contractStatus),  // 资产分类id(多个用，分割)
-        assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId                                // 登记单编码
-      }
-      this.$api.assets.assetRegListPageExport(obj).then(res => {
-        console.log(res)
-        let blob = new Blob([res.data])
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = '资产登记一览表.xls'
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      }) */
     },
     allQuery() {
       this.queryCondition.pageNum = 1;
@@ -470,7 +472,7 @@ export default {
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/repairRegister/repairAdd/${this.organName}/${this.organID}`,
+        path: `/repairRegister/repairAdd/${this.organName}/${this.organId}`,
       });
     },
     // 平台字典获取变动类型
@@ -573,12 +575,18 @@ export default {
       // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
       let arr = [];
       // 草稿 已驳回
-      if (["0", "3", "2"].includes(String(type))) {
+      if (["0", "3"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_EDIT)) {
           arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
         }
         if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_DELETE)) {
           arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+        }
+      }
+      // 待审批
+      if (["2"].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.REPAIR_FORM_APPROVE)) {
+          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
       }
       // 已审批
@@ -599,22 +607,40 @@ export default {
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({
-          path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
+          path: `/repairRegister/repairEdit/${record.maintainId}/${this.organId}`,
         });
       } else if (["detail"].includes(type)) {
         this.$router.push({
-          path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+          path: `/repairRegister/repairDetail/${record.maintainId}`,
         });
-      } else {
+      } else if (["readApproval"].includes(type)) {
         let that = this;
         this.$confirm({
           title: "提示",
-          content: "确认要作废此出租单吗？",
+          content: "确认要作废该维修单吗？",
           onOk() {
             that.$api.assetRent
-              .updateLeaseOrderStatus({
-                leaseOrderId: record.leaseOrderId,
-                approvalStatus: 4,
+              .opposeApproveMaintain({
+                maintainId: record.maintainId,
+              })
+              .then((res) => {
+                if (+res.data.code !== 0) {
+                  that.$message.error(res.data.message);
+                } else {
+                  that.allQuery();
+                }
+              });
+          },
+        });
+      } else if (["delete"].includes(type)) {
+        let that = this;
+        this.$confirm({
+          title: "提示",
+          content: "确认要删除该维修单吗？",
+          onOk() {
+            that.$api.assetRent
+              .deleteMaintain({
+                maintainId: record.maintainId,
               })
               .then((res) => {
                 if (+res.data.code !== 0) {

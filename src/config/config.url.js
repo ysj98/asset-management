@@ -1108,6 +1108,10 @@ export const assetRent = {
   updateLeaseOrderStatus: '/ams/leaseOrder/updateLeaseOrderStatus',
   // 资产出租/投资收益登记-修改状态
   updateIncomeStatus: '/ams/income/updateIncomeStatus',
+  // 资产出租/投资收益登记-导出
+  exportIncome: '/ams/income/exportIncome',
+  // 出租登记-导出
+  exportLeaseOrder: '/ams/leaseOrder/exportLeaseOrder',
 }
 
 // 资产投资
@@ -1144,4 +1148,12 @@ export const assetRepair = {
   getMaintainPage: '/ams/assetMaintain/getMaintainPage',
   // 资产维修-新增编辑保存
   submitMaintain: '/ams/assetMaintain/submitMaintain',
+  // 资产维修-详情
+  getMaintainInfo: '/ams/assetMaintain/getMaintainInfo',
+  // 资产维修-反审核
+  opposeApproveMaintain: '/ams/assetMaintain/opposeApproveMaintain',
+  // 资产维修-删除
+  deleteMaintain: '/ams/assetMaintain/deleteMaintain',
+  // 资产维修-导出
+  exportMaintain: '/ams/assetMaintain/exportMaintain',
 }
