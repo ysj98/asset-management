@@ -120,7 +120,7 @@ const keys = {
   disposeInfo: {
     title: '资产处置',
     details: {
-      cleaningOrderId: '出库单单编号',
+      cleaningOrderId: '出库单编号',
       createTime: '出库时间',
       cleanupTypeName: '出库原因'
     },

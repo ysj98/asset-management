@@ -44,6 +44,11 @@
             @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
             :options="projectOptions"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
         </a-form-item>
       </a-col>
@@ -56,6 +61,11 @@
             placeholder="请选择资产类型"
             :options="typeOptions"
             @change="value => setData(value, 'assetType')"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
         </a-form-item>
       </a-col>
@@ -84,7 +94,7 @@
       <a-col :span="8" >
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门">
           <treeSelect @changeTree="setData(arguments, 'receiveOrganName')"  placeholder='请选择领用部门' :allowClear="false" style="width: 100%" v-decorator="['receiveOrganName', { rules: [{ required: true, message: '请选择领用部门' }] }]"
-            :disabled="type == 'approval' || type == 'detail'" ></treeSelect>
+            :disabled="type == 'approval' || type == 'detail'" :default="false"></treeSelect>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -95,6 +105,11 @@
             @change="setData($event, 'receiveUserName')"
             placeholder="请选择领用人"
             :options="staffList"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
         </a-form-item>
       </a-col>
@@ -335,10 +350,14 @@
       // 查询部门人员
       queryStaff(id) {
         this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:5}).then(res => {
+          if(res.data.data.length == 0){
+            this.staffList = []
+            return this.form.setFieldsValue({ receiveUserName: ''})
+          }
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-           return //this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
+           return this.form.setFieldsValue({ receiveUserName: '' })
         })
       } 
     },
@@ -348,7 +367,9 @@
         this.queryDict()
         this.queryOrganOptions()
         this.queryProjectOptions()
-        this.queryStaff(this.details.organId)
+        if(this.type == 'edit'){
+                this.queryStaff(this.details.organId)
+        }
         
         
       } else {

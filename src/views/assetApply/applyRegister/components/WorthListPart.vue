@@ -5,12 +5,13 @@
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
-          <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
+          <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }} <span v-if="type=='add'">，合计领用面积：{{ receiveAreaSum }}㎡</span></div><div class="right" style="margin-bottom: 8px">
           <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
           <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
         </div>
-        </div>
+        </div>      
       </div>
+      <div class="sum" style="margin-left: 980px" v-if="type=='detail'">合计：{{ receiveAreaSum }}㎡</div>
       <a-table
         v-bind="tableObj"
         class="custom-tables"
@@ -69,6 +70,7 @@
         @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
       />
     </div>
+    <p style="margin-left: 1160px" v-if="type=='edit'">合计：{{ receiveAreaSum }}㎡</p>
     <SG-Modal
       v-bind="modalObj"
       v-model="modalObj.isShow"

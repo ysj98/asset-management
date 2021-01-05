@@ -16,6 +16,11 @@
           @change="fetchData"
           :options="objectTypeOptions"
           placeholder="请选择资产类别"
+          :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
         />
       </a-col>
       <a-col :span="6">
