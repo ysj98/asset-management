@@ -16,6 +16,11 @@
           @change="fetchData"
           :options="objectTypeOptions"
           placeholder="请选择资产类别"
+          :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
         />
       </a-col>
       <a-col :span="6">
@@ -135,6 +140,7 @@
           objectType: objectType === '-1' ? '' : objectType,
           pageSize: pageLength, pageNum: pageNo
         }
+        console.log(123)
         return this.$api.useManage.getReceiveRecordPage(form).then(r => {
           let res = r.data
           if (res && res.code.toString() === '0') {
@@ -150,6 +156,8 @@
                 res.data.data[index].receiveArea = 0
               }
             })
+            console.log(res)
+            if(this.assetType != '房屋' && this.assetType != '土地' && this.assetType != '车场' ){}
             const {count, data} = res.data
             this.dataSource = data
             Object.assign(this.paginationObj, {
@@ -251,7 +259,17 @@
     },
     mounted () {
       const {allAttrs, value, assetType} = this
-      
+      if(this.assetType != 1 && this.assetType != 2 && this.assetType != 4 ) {
+               this.columns = [
+          { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
+          { title: '资产编码', dataIndex: 'assetCode' },
+          { title: '资产名称', dataIndex: 'assetName' },
+          { title: '资产类型', dataIndex: 'assetTypeName' },
+          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '领用日期', dataIndex: 'receiveDate' },
+          { title: '领用人', dataIndex: 'receiveUserName' },
+        ]
+          }
       this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.receiveDetailId) : value) 
       this.queryObjectType(String(assetType))
       // 添加可以选择不同数量分页
@@ -263,6 +281,20 @@
       })
     },
     watch: {
+      assetType: function () {
+          if(this.assetType != 1 && this.assetType != 2 && this.assetType != 4 ) {
+            
+               this.columns = [
+          { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
+          { title: '资产编码', dataIndex: 'assetCode' },
+          { title: '资产名称', dataIndex: 'assetName' },
+          { title: '资产类型', dataIndex: 'assetTypeName' },
+          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '领用日期', dataIndex: 'receiveDate' },
+          { title: '领用人', dataIndex: 'receiveUserName' },
+        ]
+          }
+      },
       value: function (value) {
         this.selectedRowKeys = this.allAttrs ? value.map(i => i.receiveDetailId) : value
       },

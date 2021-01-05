@@ -43,6 +43,11 @@
             @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
             :options="projectOptions"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
           <!-- <a-input v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"></a-input> -->
         </a-form-item>
@@ -56,6 +61,11 @@
             placeholder="请选择资产类型"
             :options="typeOptions"
             @change="value => setData(value, 'assetType')"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
           <!-- <a-input v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"></a-input> -->
         </a-form-item>

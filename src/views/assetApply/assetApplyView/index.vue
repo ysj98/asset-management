@@ -8,14 +8,38 @@
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_APPLY_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectIdList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectIdList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
+            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
+            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
+            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
@@ -33,6 +57,11 @@
           :options="assetClassifyOptions"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
+          :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
         ></a-select>
         <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="false"></treeSelect>
         <div class="box">

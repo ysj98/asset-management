@@ -43,6 +43,11 @@
             @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
             :options="projectOptions"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
           <!-- <a-input v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"></a-input> -->
         </a-form-item>
@@ -56,6 +61,11 @@
             placeholder="请选择资产类型"
             :options="typeOptions"
             @change="value => setData(value, 'assetType')"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
           <!-- <a-input v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"></a-input> -->
         </a-form-item>
@@ -87,6 +97,11 @@
             @change="setData($event, 'returnUserName')"
             placeholder="请选择归还人"
             :options="staffList"
+            :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "
           />
           <!-- <a-input v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]" :disabled="type == 'approval' || type == 'detail'">
 
@@ -335,11 +350,14 @@
       // 查询部门人员
       queryStaff(id) {
         this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:5}).then(res => {
+          if(res.data.data.length == 0){
+            this.staffList = []
+            return this.form.setFieldsValue({ returnUserName: ''})
+          }
           this.staffList = res.data.data.map(r => {
             return {key: r.userId, title:r.name}
           })
-          //console.log(this.staffList[0].title)
-          return //this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
+          return this.form.setFieldsValue({ returnUserName: '' })
         })
       } 
     },
@@ -349,7 +367,10 @@
         this.queryDict()
         this.queryOrganOptions()
         this.queryProjectOptions()
-        this.queryStaff(this.details.organId)
+        if(this.type == 'edit'){
+                this.queryStaff(this.details.organId)
+        }
+        
         
         
       } else {

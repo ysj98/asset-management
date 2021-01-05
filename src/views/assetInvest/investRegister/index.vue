@@ -9,13 +9,33 @@
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_INVEST_REGISTER" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
+            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
+            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList">
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.investNameOrId" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
@@ -25,7 +45,11 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部投资状态" :tokenSeparators="[',']"  @select="investStatusFn"  v-model="queryCondition.investStatusList">
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部投资状态" :tokenSeparators="[',']"  @select="investStatusFn"  v-model="queryCondition.investStatusList" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
             <a-select-option v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         <div class="box">

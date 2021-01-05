@@ -3,7 +3,11 @@
     <a-row style="margin: 24px 0 32px">
       <a-col :span="12">
         <span>估值类型：</span>
-        <a-select v-model="typeValue" style="width: 250px;" :options="typeOptions" @change="changeType"/>
+        <a-select v-model="typeValue" style="width: 250px;" :options="typeOptions" @change="changeType" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          "/>
       </a-col>
       <a-col :sapn="12">
         <span>估值金额(元)：</span>

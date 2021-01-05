@@ -105,6 +105,7 @@
     props: ['type', 'registerId', 'organId', 'dynamicData', 'details'],
     data () {
       return {
+        assetTypeName:'',
         tableObj: {
           dataSource: [],
           loading: false,
@@ -409,6 +410,8 @@
     
     watch: {
       assetList: function () {
+        if(this.assetList.length == 0){return}
+        this.assetTypeName = this.assetList[0].assetTypeName 
         if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
            this.tableObj.columns = [
             { title: '领用ID', dataIndex: 'receiveDetailId' },
