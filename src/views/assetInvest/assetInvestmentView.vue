@@ -97,7 +97,7 @@
         }, // 查询条件
         exportBtnLoading: false, // 导出按钮loading
         columns: [
-          { title: '投资ID', dataIndex: 'investDetailId', fixed: 'left', width: 120 },
+          { title: '投资编号', dataIndex: 'investDetailId', fixed: 'left', width: 120 },
           { title: '资产名称', dataIndex: 'assetName', width: 120 },
           { title: '资产编码', dataIndex: 'assetCode', width: 120 },
           { title: '资产类型', dataIndex: 'assetTypeName', width: 120 },
