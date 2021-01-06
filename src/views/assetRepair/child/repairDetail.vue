@@ -144,7 +144,6 @@ export default {
         this.$api.assetRent
           .getMaintainInfo({ maintainId: this.maintainId })
           .then((res) => {
-            console.log(res);
             if (+res.data.code === 0) {
               this.repairInfo = res.data.data;
               this.dataSource = res.data.data.detailList;
@@ -167,7 +166,7 @@ export default {
     },
   },
   created() {
-    this.maintainId = this.$route.params.id;
+    this.maintainId = this.$route.query.maintainId;
   },
   mounted() {
     // 获取详情

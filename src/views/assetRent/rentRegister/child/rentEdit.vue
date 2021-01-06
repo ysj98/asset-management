@@ -444,7 +444,6 @@ export default {
               }
             });
           });
-          // console.log(arr);
           this.assetInfo = res.data.data;
           let r = res.data.data;
           this.rentFormName = r.leaseName;
@@ -466,6 +465,32 @@ export default {
           });
           this.note = r.remark;
           this.queryProjectByOrganId(this.organId);
+        });
+    },
+        // 查询附件
+    getAttachmentList(id) {
+      if (!id) {
+        return false;
+      }
+      this.$api.basics
+        .attachment({ objectId: id, objectType: 19 })
+        .then((res) => {
+          if (+res.data.code === 0) {
+            let attachment = [];
+            res.data.data.forEach((item) => {
+              let obj = {
+                url: item.attachmentPath,
+                name: item.oldAttachmentName,
+              };
+              attachment.push(obj);
+              this.uploadList = attachment;
+            });
+          } else {
+            this.$error({
+              title: "提示",
+              content: res.data.message,
+            });
+          }
         });
     },
     // 出租登记-查询出租明细列表
@@ -516,6 +541,7 @@ export default {
       if (+val === +this.projectId) {
         this.projectId = val;
       } else {
+        this.projectId = val;
         this.selectedList = [];
         this.leaseArea = 0;
         this.$refs.AssetListMoal.selectedRowKeys = [];
@@ -526,6 +552,7 @@ export default {
       if (+val === +this.assetType) {
         this.assetType = val;
       } else {
+        this.assetType = val;
         this.selectedList = [];
         this.leaseArea = 0;
         this.$refs.AssetListMoal.selectedRowKeys = [];
@@ -645,8 +672,8 @@ export default {
           attachmentPath: value.url,
         });
       });
-
       let saveObj = {
+        leaseOrderId: +this.leaseOrderId,
         leaseName: this.rentFormName,
         organId: this.organId,
         projectId: this.projectId,
@@ -665,7 +692,6 @@ export default {
         attachmentList: upList
       };
       this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
-        // console.log(res);
         if (+res.data.code === 0) {
           this.$message.success(`${type === "" ? "提交审批" : "保存草稿"}成功`);
           this.$router.push("/rentRegister");
@@ -701,13 +727,13 @@ export default {
   },
   // 赋值出租单ID
   created() {
-    this.leaseOrderId = this.$route.params.id;
+    this.leaseOrderId = this.$route.query.leaseOrderId;
     this.getLeaseOrder();
+    this.getAttachmentList(this.leaseOrderId)
   },
   mounted() {
     // 获取资产项目/资产类型mounted
     this.getLeaseDetailList();
-
     this.queryAssetType();
   },
 };

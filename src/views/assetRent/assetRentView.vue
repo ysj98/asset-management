@@ -47,7 +47,7 @@
             <a-range-picker @change="changeDate" style="width: 100%" :placeholder="['开始出租日期', '结束出租日期']"/>
           </a-col>
           <a-col :span="4">
-            <a-input v-model.trim="queryObj.leaseNameOrId" placeholder="出租单名称/合同编号"/>
+            <a-input v-model.trim="queryObj.leaseNameOrId" placeholder="出租单名称/编号"/>
           </a-col>
         </a-row>
       </div>
@@ -93,11 +93,11 @@
           startLeaseDateStart: undefined, // 开始时间
           contractStatusList: ['-1'], // 合同状态
           approvalStatusList: ['-1'], // 审批状态
-          leaseNameOrId: '', // 出租单名称/合同编号
+          leaseNameOrId: '', // 出租单名称/编号
         }, // 查询条件
         exportBtnLoading: false, // 导出按钮loading
         columns: [
-          { title: '出租ID', dataIndex: 'leaseDetailId', fixed: 'left', width: 120 },
+          { title: '出租编号', dataIndex: 'leaseDetailId', fixed: 'left', width: 120 },
           { title: '资产名称', dataIndex: 'assetName', width: 120 },
           { title: '资产编码', dataIndex: 'assetCode', width: 120 },
           { title: '资产类型', dataIndex: 'assetTypeName', width: 120 },

@@ -43,7 +43,7 @@
         <div>止租日期： {{ assetInfo.endLeaseDate }}</div>
       </a-col>
       <a-col :span="7" :offset="1">
-        <div>租金单价： {{ assetInfo.rentPrice }}元/月</div>
+        <div>租金单价： {{ assetInfo.rentPrice }}</div>
       </a-col>
     </a-row>
     <a-row class="a_row">
@@ -64,7 +64,7 @@
     </a-row>
     <a-row class="a_row">
       <a-col :span="22" :offset="2">
-        <div>附件：</div>
+        <div>附件：<SG-UploadFile type="all" v-model="uploadList" :show="true" /></div>
       </a-col>
     </a-row>
     <SG-Title title="资产明细" />
@@ -75,6 +75,7 @@
       <a-table
         :columns="columns"
         :data-source="dataSource"
+        :loading="loading"
         bordered
         :pagination="false"
         size="middle"
@@ -100,6 +101,7 @@
       <a-table
         :columns="columns2"
         :data-source="dataSource2"
+        :loading2="loading2"
         bordered
         :pagination="false"
         size="middle"
@@ -210,11 +212,14 @@ export default {
       columns,
       columns2,
       leaseOrderId: "",
+      loading: false,
+      loading2: false,
       assetInfo: {}, // 资产详情
       dataSource: [], // 资产明细数据源
       dataSource2: [], // 收益明细数据源
       rentOutArea: 0, // 出租总面积
-      earnings: 0, // 总收益
+      earnings: 0, // 
+      uploadList: [], // 附件列表
       pagination: {
         pageLength: 10,
         totalCount: 0,
@@ -226,14 +231,14 @@ export default {
         pageNo: 1,
       },
       rentOutObj: {
-        leaseOrderId: +this.$route.params.id,
+        leaseOrderId: +this.$route.query.leaseOrderId,
         pageNum: 1,
         pageSize: 10,
       },
       earningsObj: {
         pageNum: 1,
         pageSize: 10,
-        orderId: +this.$route.params.id,
+        orderId: +this.$route.query.leaseOrderId,
         orderType: 1,
         status: 1,
       },
@@ -253,6 +258,7 @@ export default {
     // 查询出租明细分页列表
     getLeaseDetailPageList() {
       if (this.leaseOrderId) {
+        this.loading = true;
         this.$api.assetRent
           .getLeaseDetailPageList(this.rentOutObj)
           .then((res) => {
@@ -264,16 +270,20 @@ export default {
               this.rentOutArea += item.leaseArea;
             });
             this.dataSource = r;
+            this.loading = false;
           });
       }
     },
     // 资产出租/投资收益登记-分页查询收益明细
     getIncomeDetailPageList() {
       if (this.leaseOrderId) {
+        this.loading2 = true;
         this.$api.assetRent
           .getIncomeDetailPageList(this.earningsObj)
           .then((res) => {
+            this.pagination2.totalCount = res.data.data.count;
             this.dataSource2 = res.data.data.data;
+            this.loading2 = false;
           });
       }
     },
@@ -301,13 +311,41 @@ export default {
       this.earningsObj.pageNum = page.pageNo;
       this.getIncomeDetailPageList();
     },
+    // 查询附件
+    getAttachmentList(id) {
+      console.log(123);
+      if (!id) {
+        return false;
+      }
+      this.$api.basics
+        .attachment({ objectId: id, objectType: 19 })
+        .then((res) => {
+          if (+res.data.code === 0) {
+            let attachment = [];
+            res.data.data.forEach((item) => {
+              let obj = {
+                url: item.attachmentPath,
+                name: item.oldAttachmentName,
+              };
+              attachment.push(obj);
+              this.uploadList = attachment;
+            });
+          } else {
+            this.$error({
+              title: "提示",
+              content: res.data.message,
+            });
+          }
+        });
+    },
   },
   created() {
-    this.leaseOrderId = this.$route.params.id;
+    this.leaseOrderId = this.$route.query.leaseOrderId;
     this.getLeaseOrder(); // 获取资产明细
     this.getLeaseDetailPageList(); // 获取资产明细列表
     this.getIncomeDetailPageList(); // 获取收益明细列表
     this.getIncomeDetailStatistics(); // 获取收益明细合计
+    this.getAttachmentList(this.leaseOrderId)
   },
 };
 </script>

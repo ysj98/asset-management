@@ -21,7 +21,8 @@
           :loading="exportBtnLoading"
           @click="exportFn"
           v-power="ASSET_MANAGEMENT.ASSET_REPAIR_REGISTER"
-        >导出</SG-Button>
+          >导出</SG-Button
+        >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
           <treeSelect
             @changeTree="changeTree"
@@ -120,7 +121,7 @@
     </SG-SearchContainer>
     <!--数据总览-->
     <overview-number :numList="numList" />
-    <div class="table-layout-fixed">
+    <div class="table-layout-fixed pr mb50">
       <a-table
         :loading="loading"
         :columns="columns"
@@ -134,6 +135,12 @@
           ></OperationPopover>
         </template>
       </a-table>
+      <div class="sum pa" v-if="loading === false">
+        全部合计：
+        <span style="font-size: 16px; font-weight: bold">{{
+          totalCount > 0 ? totalCount : 0
+        }}</span>
+      </div>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
     <SG-FooterPagination
@@ -270,6 +277,7 @@ export default {
       organId: 0,
       organName: "",
       count: 0,
+      totalCount: 0, // 全部合计
       tableData: [],
       tableObj: {
         pagination: false,
@@ -318,7 +326,7 @@ export default {
     noDataTips,
   },
   methods: {
-        // 导出
+    // 导出
     exportFn() {
       this.exportBtnLoading = true;
       let data = this.query("export");
@@ -342,6 +350,7 @@ export default {
         });
     },
     query(type) {
+      this.totalCount = 0;
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageLength, // 每页显示记录数
@@ -382,6 +391,7 @@ export default {
             } else if (item.approvalStatus === 4) {
               item.approvalStatus = "已取消";
             }
+            this.totalCount += item.maintainCost;
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -472,7 +482,8 @@ export default {
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/repairRegister/repairAdd/${this.organName}/${this.organId}`,
+        path: "/repairRegister/repairAdd",
+        query: { organName: this.organName, organId: this.organId },
       });
     },
     // 平台字典获取变动类型
@@ -607,11 +618,13 @@ export default {
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({
-          path: `/repairRegister/repairEdit/${record.maintainId}/${this.organId}`,
+          path: "/repairRegister/repairEdit",
+          query: { maintainId: record.maintainId, organId: this.organId },
         });
       } else if (["detail"].includes(type)) {
         this.$router.push({
-          path: `/repairRegister/repairDetail/${record.maintainId}`,
+          path: "/repairRegister/repairDetail",
+          query: { maintainId: record.maintainId },
         });
       } else if (["readApproval"].includes(type)) {
         let that = this;
@@ -679,6 +692,14 @@ export default {
       position: relative;
       height: 32px;
     }
+  }
+  .sum {
+    bottom: 22px;
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
   }
   /deep/.ant-table-body {
     margin-bottom: 90px;
