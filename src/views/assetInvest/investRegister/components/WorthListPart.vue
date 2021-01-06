@@ -361,10 +361,11 @@
             this.calcSum(this.tableObj.dataSource)
             
           }
-          if(type=='detail'){
+          if(this.type=='detail'){
             this.$api.assetRent.getIncomeDetailPageList({pageNum:pageNo, pageSize:pageLength, orderId:registerId, orderType: 2, status: 1}).then(result => {
           this.profitTableObj.loading = false
           let re = result.data
+          console.log(re)
           if (re && String(re.code) === '0') {
             const { data, count } = re.data
             this.profitTableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
@@ -485,7 +486,12 @@
         this.calcSum(list)
       },
       getReturnAssetInfo(assetList) {
+         assetList.map((item,index) => {
+           assetList[index].assetObjectTypeName = item.assetCategoryName
+         })
          this.assetList = assetList
+         console.log(this.assetList)
+         this.tableObj.dataSource = assetList
     },
     },
     

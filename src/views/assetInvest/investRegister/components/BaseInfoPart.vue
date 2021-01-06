@@ -166,18 +166,51 @@
           <a-input v-decorator="[ 'createTime']"  disabled/>
         </a-form-item>
       </a-col>
-      </a-row>
-    <a-row>
       <a-col :span="24">
         <a-form-item
-          label="归还说明"
+          label="备注"
+          :label-col="type == 'approval' || type == 'detail' ? {span: 1} : {span: 2}"
+          :wrapper-col="type == 'approval' || type == 'detail' ? {span: 23} : {span: 21}"
+          :style="{marginLeft: (type=='detail')?'50px':0}"
+        >
+          <a-textarea
+            :rows="type == 'approval' || type == 'detail' ? '' : 4"
+            style="resize: none"
+            placeholder="请输入备注信息"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="['remark', { rules: [{max: 200, message: '最多200个字符'}] }]"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="24">
+        <a-form-item
+          label="附件"
+          :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
+          :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
+          :style="{marginLeft: (type=='detail')?'70px':0}"
+        >
+          <SG-UploadFile
+            type="all"
+            v-model="attachment"
+            :maxSize="5120"
+            :show="type == 'approval' || type == 'detail'"
+            v-if="type == 'edit' || type == 'add' || attachment.length"
+          />
+          <span v-else style="margin-left: 12px">无</span>
+        </a-form-item>
+      </a-col>
+      </a-row>
+    <!-- <a-row>
+      <a-col :span="24">
+        <a-form-item
+          label="        备注"
           :label-col="type == 'approval' || type == 'detail' ? {span: 1} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {span: 23} : {span: 21}"
         >
           <a-textarea
             :rows="type == 'approval' || type == 'detail' ? '' : 4"
             style="resize: none"
-            placeholder="请输入归还说明"
+            placeholder="请输入备注信息"
             :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['remark', { rules: [{max: 200, message: '最多200个字符'}] }]"
           />
@@ -201,7 +234,7 @@
           <span v-else style="margin-left: 12px">无</span>
         </a-form-item>
       </a-col>
-    </a-row>
+    </a-row> -->
     
   </a-form>
   </div>
@@ -508,5 +541,9 @@
         }
       }
     }
+    
   }
+  .detailStyle{
+      margin-left: 50px;
+    }
 </style>
