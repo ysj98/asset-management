@@ -15,7 +15,7 @@
           @click="registerFn"
           v-power="ASSET_MANAGEMENT.INVEST_INCOME_NEW"
           >收益登记</SG-Button
-        >INVEST_EARNINGS_REGISTER
+        >
         <SG-Button
           icon="export"
           :loading="exportBtnLoading"
