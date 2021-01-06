@@ -231,14 +231,14 @@ export default {
         pageNo: 1,
       },
       rentOutObj: {
-        leaseOrderId: +this.$route.params.id,
+        leaseOrderId: +this.$route.query.leaseOrderId,
         pageNum: 1,
         pageSize: 10,
       },
       earningsObj: {
         pageNum: 1,
         pageSize: 10,
-        orderId: +this.$route.params.id,
+        orderId: +this.$route.query.leaseOrderId,
         orderType: 1,
         status: 1,
       },
@@ -340,7 +340,7 @@ export default {
     },
   },
   created() {
-    this.leaseOrderId = this.$route.params.id;
+    this.leaseOrderId = this.$route.query.leaseOrderId;
     this.getLeaseOrder(); // 获取资产明细
     this.getLeaseDetailPageList(); // 获取资产明细列表
     this.getIncomeDetailPageList(); // 获取收益明细列表

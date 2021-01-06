@@ -351,7 +351,6 @@ export default {
     },
     query(type) {
       this.totalCount = 0;
-      console.log("totalCount", this.totalCount);
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageLength, // 每页显示记录数
@@ -483,7 +482,8 @@ export default {
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/repairRegister/repairAdd/${this.organName}/${this.organId}`,
+        path: "/repairRegister/repairAdd",
+        query: { organName: this.organName, organId: this.organId },
       });
     },
     // 平台字典获取变动类型
@@ -618,11 +618,13 @@ export default {
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({
-          path: `/repairRegister/repairEdit/${record.maintainId}/${this.organId}`,
+          path: "/repairRegister/repairEdit",
+          query: { maintainId: record.maintainId, organId: this.organId },
         });
       } else if (["detail"].includes(type)) {
         this.$router.push({
-          path: `/repairRegister/repairDetail/${record.maintainId}`,
+          path: "/repairRegister/repairDetail",
+          query: { maintainId: record.maintainId },
         });
       } else if (["readApproval"].includes(type)) {
         let that = this;

@@ -700,8 +700,8 @@ export default {
     },
   },
   created() {
-    this.organId = this.$route.params.id;
-    this.organName = this.$route.params.organName;
+    this.organId = this.$route.query.organId;
+    this.organName = this.$route.query.organName;
   },
   mounted() {
     // 获取当前用户信息

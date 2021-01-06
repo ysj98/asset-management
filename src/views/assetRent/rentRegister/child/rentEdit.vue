@@ -444,7 +444,6 @@ export default {
               }
             });
           });
-          // console.log(arr);
           this.assetInfo = res.data.data;
           let r = res.data.data;
           this.rentFormName = r.leaseName;
@@ -693,7 +692,6 @@ export default {
         attachmentList: upList
       };
       this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
-        // console.log(res);
         if (+res.data.code === 0) {
           this.$message.success(`${type === "" ? "提交审批" : "保存草稿"}成功`);
           this.$router.push("/rentRegister");
@@ -729,7 +727,7 @@ export default {
   },
   // 赋值出租单ID
   created() {
-    this.leaseOrderId = this.$route.params.id;
+    this.leaseOrderId = this.$route.query.leaseOrderId;
     this.getLeaseOrder();
     this.getAttachmentList(this.leaseOrderId)
   },

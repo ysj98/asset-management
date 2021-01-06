@@ -857,12 +857,12 @@ let proRouter = [{
     component: () => import('@/views/assetRent/rentRegister/index')
   },
   {
-    path: '/rentRegister/rentAdd/:id?/:organName?',
+    path: '/rentRegister/rentAdd',
     name: '出租单新建',
     component: () => import('@/views/assetRent/rentRegister/child/rentAdd')
   },
   {
-    path: '/rentRegister/rentEdit/:id?',
+    path: '/rentRegister/rentEdit',
     name: '出租单编辑',
     component: () => import('@/views/assetRent/rentRegister/child/rentEdit')
   },
@@ -872,7 +872,7 @@ let proRouter = [{
     component: () => import('@/views/assetRent/rentRegister/child/rentApproval')
   },
   {
-    path: '/rentRegister/rentDetail/:id?',
+    path: '/rentRegister/rentDetail',
     name: '出租单详情',
     component: () => import('@/views/assetRent/rentRegister/child/rentDetail')
   },
@@ -902,17 +902,17 @@ let proRouter = [{
     component: () => import('@/views/assetRepair/index')
   },
   {
-    path: '/repairRegister/repairAdd/:organName?/:id?',
+    path: '/repairRegister/repairAdd',
     name: '维修新建',
     component: () => import('@/views/assetRepair/child/repairAdd')
   },
   {
-    path: '/repairRegister/repairEdit/:id?/:organId?',
+    path: '/repairRegister/repairEdit',
     name: '维修编辑',
     component: () => import('@/views/assetRepair/child/repairEdit')
   },
   {
-    path: '/repairRegister/repairDetail/:id?',
+    path: '/repairRegister/repairDetail',
     name: '维修详情',
     component: () => import('@/views/assetRepair/child/repairDetail')
   },

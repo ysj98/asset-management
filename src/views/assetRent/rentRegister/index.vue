@@ -432,7 +432,8 @@ export default {
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: `/rentRegister/rentAdd/${this.organID}/${this.organName}`,
+        path: "/rentRegister/rentAdd",
+        query: { organId: this.organID, organName: this.organName },
       });
     },
     //
@@ -616,11 +617,13 @@ export default {
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({
-          path: `/rentRegister/rentEdit/${record.leaseOrderId}`,
+          path: "/rentRegister/rentEdit",
+          query: { leaseOrderId: record.leaseOrderId },
         });
       } else if (["detail"].includes(type)) {
         this.$router.push({
-          path: `rentRegister/rentDetail/${record.leaseOrderId}`,
+          path: "/rentRegister/rentDetail",
+          query: { leaseOrderId: record.leaseOrderId },
         });
       } else if (["readApproval"].includes(type)) {
         let that = this;

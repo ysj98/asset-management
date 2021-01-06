@@ -751,9 +751,8 @@ export default {
     },
   },
   created() {
-    this.organId = this.$route.params.organId;
-    this.organName = this.$route.params.organName;
-    this.maintainId = this.$route.params.id;
+    this.organId = this.$route.query.organId;
+    this.maintainId = this.$route.query.maintainId;
   },
   mounted() {
     // 获取当前用户信息

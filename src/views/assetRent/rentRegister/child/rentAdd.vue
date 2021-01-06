@@ -633,8 +633,8 @@ export default {
   },
   created() {
     // 页面一加载储存organId
-    this.organId = this.$route.params.id;
-    this.organName = this.$route.params.organName;
+    this.organId = this.$route.query.id;
+    this.organName = this.$route.query.organName;
   },
   mounted() {
     // 获取当前用户信息
