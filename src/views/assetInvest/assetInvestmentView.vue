@@ -151,6 +151,7 @@
       // 根据资产类型查资产分类列表
       queryCategoryOptions () {
         this.objectTypeOptions = [{title: '全部资产分类', key: '-1'}]
+        this.queryObj.objectTypeList = ['-1']
         const { organProjectValue: { organId }, queryObj: { assetTypeList } } = this
         if (!organId || !assetTypeList.length || assetTypeList.includes('-1') || assetTypeList.length > 1) { return false }
         queryCategoryList({ assetType: assetTypeList.join(','), organId }).then(list => {
@@ -162,6 +163,8 @@
       queryAssetType () {
         // 清空资产分类数据
         this.objectTypeOptions = [{title: '全部资产分类', key: '-1'}]
+        this.queryObj.objectTypeList = ['-1']
+        this.queryObj.assetTypeList = ['-1']
         queryAssetTypeList().then(list => {
           this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}].concat(list)
         })
@@ -177,10 +180,11 @@
         const { organProjectValue: { organId, projectId }, queryObj } = this
         // 过滤掉 -1
         let arr = ['assetTypeList', 'investStatusList', 'objectTypeList', 'approvalStatusList']
+        let temp = {}
         arr.forEach(k =>
-          queryObj[k] = queryObj[k].filter(n => n !== '-1')
+          temp[k] = queryObj[k].filter(n => n !== '-1')
         )
-        let obj = { organId, projectIdList: projectId || [], ...queryObj }
+        let obj = { organId, projectIdList: projectId || [], ...queryObj, ...temp }
         // 用于导出及查询汇总接口入参
         if (actionType) { return obj }
         this.loading = true
