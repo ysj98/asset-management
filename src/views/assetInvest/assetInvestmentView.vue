@@ -150,11 +150,10 @@
 
       // 根据资产类型查资产分类列表
       queryCategoryOptions () {
-        this.objectTypeOptions = []
+        this.objectTypeOptions = [{title: '全部资产分类', key: '-1'}]
         const { organProjectValue: { organId }, queryObj: { assetTypeList } } = this
-        if (!organId || !assetTypeList.length) { return false }
-        let assetVal = assetTypeList.includes('-1') ? '' : assetTypeList.join(',')
-        queryCategoryList({ assetType: assetVal, organId }).then(list => {
+        if (!organId || !assetTypeList.length || assetTypeList.includes('-1') || assetTypeList.length > 1) { return false }
+        queryCategoryList({ assetType: assetTypeList.join(','), organId }).then(list => {
           this.objectTypeOptions = [{title: '全部资产分类', key: '-1'}].concat(list)
         })
       },
@@ -162,7 +161,7 @@
       // 查询资产类型--平台字典
       queryAssetType () {
         // 清空资产分类数据
-        this.objectTypeOptions = []
+        this.objectTypeOptions = [{title: '全部资产分类', key: '-1'}]
         queryAssetTypeList().then(list => {
           this.assetTypeOptions = [{title: '全部资产类型', key: '-1'}].concat(list)
         })
@@ -267,8 +266,8 @@
         if (value.length > 1 && value.includes('-1')) {
           let lastIndex = value.length - 1
           this.queryObj.assetTypeList = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1')
-          this.queryCategoryOptions()
         }
+        this.queryCategoryOptions()
       },
       'queryObj.objectTypeList': function (value) {
         if (value.length > 1 && value.includes('-1')) {
