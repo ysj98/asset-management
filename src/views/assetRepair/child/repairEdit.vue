@@ -499,7 +499,7 @@ export default {
               r.attachmentList.forEach((item) => {
                 let obj = {
                   url: item.attachmentPath,
-                  name: item.oldAttachmentName,
+                  name: item.newAttachmentName,
                 };
                 attachment.push(obj);
                 this.uploadList = attachment;

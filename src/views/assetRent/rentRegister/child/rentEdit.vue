@@ -468,6 +468,32 @@ export default {
           this.queryProjectByOrganId(this.organId);
         });
     },
+        // 查询附件
+    getAttachmentList(id) {
+      if (!id) {
+        return false;
+      }
+      this.$api.basics
+        .attachment({ objectId: id, objectType: 19 })
+        .then((res) => {
+          if (+res.data.code === 0) {
+            let attachment = [];
+            res.data.data.forEach((item) => {
+              let obj = {
+                url: item.attachmentPath,
+                name: item.oldAttachmentName,
+              };
+              attachment.push(obj);
+              this.uploadList = attachment;
+            });
+          } else {
+            this.$error({
+              title: "提示",
+              content: res.data.message,
+            });
+          }
+        });
+    },
     // 出租登记-查询出租明细列表
     getLeaseDetailList() {
       this.$api.assetRent
@@ -516,6 +542,7 @@ export default {
       if (+val === +this.projectId) {
         this.projectId = val;
       } else {
+        this.projectId = val;
         this.selectedList = [];
         this.leaseArea = 0;
         this.$refs.AssetListMoal.selectedRowKeys = [];
@@ -526,6 +553,7 @@ export default {
       if (+val === +this.assetType) {
         this.assetType = val;
       } else {
+        this.assetType = val;
         this.selectedList = [];
         this.leaseArea = 0;
         this.$refs.AssetListMoal.selectedRowKeys = [];
@@ -645,8 +673,8 @@ export default {
           attachmentPath: value.url,
         });
       });
-
       let saveObj = {
+        leaseOrderId: +this.leaseOrderId,
         leaseName: this.rentFormName,
         organId: this.organId,
         projectId: this.projectId,
@@ -703,11 +731,11 @@ export default {
   created() {
     this.leaseOrderId = this.$route.params.id;
     this.getLeaseOrder();
+    this.getAttachmentList(this.leaseOrderId)
   },
   mounted() {
     // 获取资产项目/资产类型mounted
     this.getLeaseDetailList();
-
     this.queryAssetType();
   },
 };

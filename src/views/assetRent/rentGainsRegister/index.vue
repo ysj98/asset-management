@@ -280,7 +280,7 @@ export default {
       queryCondition: {
         pageNum: 1, // 当前页
         pageSize: 10, // 每页显示记录数
-        organId: 1, // 组织机构id
+        organId: "", // 组织机构id
         projectId: undefined, // 资产项目Id
         assetType: [""], // 全部资产类型id(多个用，分割)
         approvalStatus: "", // 审批状态
@@ -416,7 +416,7 @@ export default {
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
       this.queryCondition.projectId = undefined;
-      // this.query();
+      this.query();
       this.getObjectKeyValueByOrganIdFn();
       this.getFeeTypeList();
     },
@@ -588,9 +588,6 @@ export default {
   },
   mounted() {
     this.platformDictFn("asset_type");
-  },
-  created() {
-    this.query();
   },
 };
 </script>
