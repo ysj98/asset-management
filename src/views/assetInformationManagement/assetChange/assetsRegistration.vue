@@ -301,6 +301,7 @@ export default {
     this.platformDictFn("asset_change_type");
     // 获取资产类型
     this.platformDictFn("asset_type");
+    this.query();
   },
   methods: {
     moment,

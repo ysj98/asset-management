@@ -907,6 +907,11 @@ export default {
     originalValueChange(val) {
       this.originalValue = val;
       this.computedEqually();
+      if(val==0){
+        this.tableData.map((item,index) => {
+          item.newOriginalValue = 0
+        })
+      }
     },
     // 资产类型改变
     assetTypeChange(val) {
