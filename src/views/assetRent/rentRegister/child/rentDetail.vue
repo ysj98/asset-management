@@ -64,7 +64,7 @@
     </a-row>
     <a-row class="a_row">
       <a-col :span="22" :offset="2">
-        <div>附件：<SG-UploadFile type="all" v-model="uploadList" :show="true" /></div>
+        <div>附件：<SG-UploadFile type="all" v-model="uploadList" :show="true" class="mt20"/></div>
       </a-col>
     </a-row>
     <SG-Title title="资产明细" />
