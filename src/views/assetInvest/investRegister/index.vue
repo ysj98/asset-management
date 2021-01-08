@@ -78,38 +78,6 @@
             @operationFun="operationFun($event, record)"
           ></OperationPopover>
         </template>
-        <!-- <template slot="operation" slot-scope="text, record">
-          <a-popover placement="bottom">
-        <template slot="content">
-          <p><router-link
-          class="action_text"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-          :to="{name: '投资登记编辑', params: {registerId: record.investOrderId, type: 'edit'}}"
-          tag="div"
-        ><a-icon type="form"></a-icon>编辑</router-link></p>
-          <p><router-link
-          class="action_text"
-          v-if="Number(record.approvalStatus) === 2"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '投资登记审批', params: {registerId: record.investOrderId, type: 'approval'}}"
-          tag="div"
-        ><a-icon type="setting" theme="filled"></a-icon>审批</router-link></p>
-          <p><a-popconfirm
-          okText="确定"
-          cancelText="取消"
-          title="确定要删除该资产项目吗?"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
-          @confirm="confirmDelete(record.investOrderId)"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-        ><a-icon type="delete"></a-icon>删除
-        </a-popconfirm></p>
-          <p><router-link :to="{name: '投资登记详情', params: {registerId: record.investOrderId, type: 'detail', organId, organName, queryType:1}}" class="action_text opts" tag="div" ><a-icon type="setting" theme="filled"></a-icon>详情</router-link></p>
-          <p v-if="false">{{ record.investOrderId }}</p>
-        </template>
-        <a-button ><a-icon type="ellipsis" /></a-button>
-      </a-popover>
-        </template> -->
         <template slot="key" slot-scope="text, record">
           <div v-if="false">
             {{record.investOrderId}}
