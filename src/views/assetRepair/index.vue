@@ -121,7 +121,7 @@
     </SG-SearchContainer>
     <!--数据总览-->
     <overview-number :numList="numList" />
-    <div class="table-layout-fixed pr mb50">
+    <div class="pr mb50">
       <a-table
         :loading="loading"
         :columns="columns"
@@ -159,104 +159,46 @@ const columns = [
   {
     title: "维修编号",
     dataIndex: "maintainId",
-    // fixed: 'left',
-    // width: 100
+    fixed: "left",
+    width: 150,
+    align: "center",
   },
   {
     title: "所属机构",
     dataIndex: "organName",
-    // fixed: 'left',
-    // width: 100
+    fixed: "left",
+    width: 140,
+    align: "center",
   },
-  {
-    title: "维修单名称",
-    dataIndex: "maintainName",
-  },
-  {
-    title: "资产名称",
-    dataIndex: "assetName",
-  },
-  {
-    title: "资产编码",
-    dataIndex: "assetCode",
-  },
-  {
-    title: "资产项目",
-    dataIndex: "projectName",
-  },
-  {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-  },
-  {
-    title: "资产分类",
-    dataIndex: "objectTypeName",
-  },
-  {
-    title: "维修说明",
-    dataIndex: "remark",
-  },
-  {
-    title: "开始日期",
-    dataIndex: "startDate",
-  },
-  {
-    title: "完成日期",
-    dataIndex: "completeDate",
-  },
-  {
-    title: "维修人",
-    dataIndex: "maintainUserId",
-  },
-  {
-    title: "维修费用（元）",
-    dataIndex: "maintainCost",
-  },
-  {
-    title: "提交人",
-    dataIndex: "createByName",
-  },
-  {
-    title: "提交时间",
-    dataIndex: "createTime",
-  },
-  {
-    title: "状态",
-    dataIndex: "approvalStatus",
-  },
+  { title: "维修单名称", dataIndex: "maintainName", align: "center" },
+  { title: "资产名称", dataIndex: "assetName", align: "center" },
+  { title: "资产编码", dataIndex: "assetCode", align: "center" },
+  { title: "资产项目", dataIndex: "projectName", align: "center" },
+  { title: "资产类型", dataIndex: "assetTypeName", align: "center" },
+  { title: "资产分类", dataIndex: "objectTypeName", align: "center" },
+  { title: "维修说明", dataIndex: "remark", align: "center" },
+  { title: "开始日期", dataIndex: "startDate", align: "center" },
+  { title: "完成日期", dataIndex: "completeDate", align: "center" },
+  { title: "维修人", dataIndex: "maintainUserId", align: "center" },
+  { title: "维修费用（元）", dataIndex: "maintainCost", align: "center" },
+  { title: "提交人", dataIndex: "createByName", align: "center" },
+  { title: "提交时间", dataIndex: "createTime", align: "center" },
+  { title: "状态", dataIndex: "approvalStatus", align: "center" },
   {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    // fixed: 'right',
-    // width: 100
+    fixed: "right",
+    width: 90,
   },
 ];
 const approvalStatusData = [
-  {
-    name: "全部状态",
-    value: "",
-  },
-  {
-    name: "草稿",
-    value: "0",
-  },
-  {
-    name: "待审批",
-    value: "2",
-  },
-  {
-    name: "已驳回",
-    value: "3",
-  },
-  {
-    name: "已审批",
-    value: "1",
-  },
-  {
-    name: "已取消",
-    value: "4",
-  },
+  { name: "全部状态", value: "" },
+  { name: "草稿", value: "0" },
+  { name: "待审批", value: "2" },
+  { name: "已驳回", value: "3" },
+  { name: "已审批", value: "1" },
+  { name: "已取消", value: "4" },
 ];
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import segiIcon from "@/components/segiIcon.vue";
@@ -281,7 +223,7 @@ export default {
       tableData: [],
       tableObj: {
         pagination: false,
-        // scroll: { x: 1400 },
+        scroll: { x: 2400 },
         class: "custom-table td-pd10",
       },
       queryCondition: {

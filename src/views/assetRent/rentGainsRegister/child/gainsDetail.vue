@@ -70,7 +70,7 @@
     <a-row class="a_row">
       <a-col :span="21" :offset="3">
         <div>附件：</div>
-        <SG-UploadFile type="all" v-model="uploadList" :show="true" />
+        <SG-UploadFile type="all" v-model="uploadList" :show="true" class="mt20" />
       </a-col>
     </a-row>
   </SG-Modal>
