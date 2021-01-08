@@ -257,47 +257,73 @@ asset_export_subsi      导出附属配套
 
 V2.0.7
 资产出租
-asset_rent_view_export  出租登记一览表导出
-asset_rent_register     出租登记导出
-invest_earnings_register  收益登记导出
-rent_form_new          出租单新建
-rent_form_detail           出租单详情
+rent_form_new             出租单新建
+asset_rent_register       出租登记导出
+rent_form_edit            出租单编辑
 rent_form_delete            出租单删除
 rent_form_approve           出租单审批
 rent_form_reverse_audit      出租单反审核
+
+V2.0.7
+出租收益登记
 rent_income_new           出租收益新建
+asset_earnings_register   出租收益登记导出
 rent_income_edit         出租收益编辑
 rent_income_delete       出租收益作废
-invest_income_edit         投资收益编辑
-invest_income_delete       投资收益作废
-asset_repair_register  维修登记导出
-repair_form_edit            维修单编辑
-repair_form_delete            维修单删除
-repair_form_reverse_audit      维修单反审核
-repair_form_approve           维修单审批
-repair_form_new               维修单新建
 
+V2.0.7
+出租登记一览表
+asset_rent_view_export  出租登记一览表导出
 
-资产投资
-asset_invest_view_export  资产投资一览表导出
-asset_invest_register            投资登记导出
+V2.0.7
+资产投资-投资登记
 invest_form_new                投资单新建
-invest_form_delete             投资单删除
+asset_invest_register            投资登记导出
 invest_form_edit               投资单编辑
+invest_form_delete             投资单删除
+invest_form_approve             投资单审批
 invest_form_reverse_audit      投资单反审核
 
+V2.0.7
+投资收益登记
+invest_income_new              投资收益新建
+invest_earnings_register       投资收益登记导出
+invest_income_edit             投资收益编辑
+invest_income_delete           投资收益作废
 
+V2.0.7
+资产投资一览表
+asset_invest_view_export  资产投资一览表导出
 
+V2.0.7
+资产维修
+repair_form_new               维修单新建
+asset_repair_register        维修登记导出
+repair_form_edit            维修单编辑
+repair_form_delete            维修单删除
+repair_form_approve           维修单审批
+repair_form_reverse_audit      维修单反审核
 
-
-资产领用
-asset_apply_view_export  资产领用一览表导出
-asset_apply_register            领用登记导出
+V2.0.7
+资产领用-领用登记
 apply_form_new               领用单新建
-apply_form_delete             领用单删除
+asset_apply_register            领用登记导出
 apply_form_edit               领用单编辑
-asset_return_view_export  资产归还一览表导出
-asset_return_register             归还登记导出
+apply_form_delete             领用单删除
+apply_form_approve             领用单审批
+
+V2.0.7
+资产领用一览表
+asset_apply_view_export  资产领用一览表导出
+
+V2.0.7
+资产归还
 return_form_new                归还单新建
-return_form_delete             归还单删除
+asset_return_register             归还登记导出
 return_form_edit               归还单编辑
+return_form_delete             归还单删除
+
+V2.0.7
+资产归还一览表
+asset_return_view_export  资产归还一览表导出
+

@@ -69,33 +69,6 @@
             @operationFun="operationFun($event, record)"
           ></OperationPopover>
         </template>
-        <!-- <template slot="operation" slot-scope="text, record">
-          <div class="opt">
-            <a-popconfirm
-          okText="确定"
-          cancelText="取消"
-          title="确定要删除该资产项目吗?"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_DELETE"
-          @confirm="confirmDelete(record.receiveId)"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-        >
-          <span class="action_text">删除</span>
-        </a-popconfirm>
-          <router-link :to="{name: '领用登记详情', params: {registerId: record.receiveId, type: 'detail', organId, organName}}" class="action_text">详情</router-link>
-                 <router-link
-          class="action_text"
-          v-if="Number(record.approvalStatus) === 2"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '领用登记审批', params: {registerId: record.receiveId, type: 'approval'}}"
-        >审批</router-link>
-        <router-link
-          class="action_text"
-          v-power="ASSET_MANAGEMENT.ASSET_AWR_EDIT"
-          v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
-          :to="{name: '领用登记编辑', params: {registerId: record.receiveId, type: 'edit'}}"
-        >编辑</router-link>
-          </div>
-        </template> -->
       </a-table>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -272,16 +245,6 @@ export default {
       if (["2"].includes(type)) {
         if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_APPROVE)) {
           arr.push({ iconType: "edit", text: "审批", editType: "approval" });
-        }
-      }
-      // 已审批
-      if (["1"].includes(type)) {
-        if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_REVERSE_AUDIT)) {
-          arr.push({
-            iconType: "edit",
-            text: "反审核",
-            editType: "readApproval",
-          });
         }
       }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
