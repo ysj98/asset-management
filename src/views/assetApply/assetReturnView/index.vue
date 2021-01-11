@@ -3,6 +3,7 @@
 -->
 <template>
   <div class="assetRegister">
+    <keep-alive>
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RETURN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
@@ -65,6 +66,7 @@
         </div>
       </div>
     </SG-SearchContainer>
+    </keep-alive>
     <!--数据总览-->
     <div class="table-layout-fixed">
       <!-- ref="table_box" -->
@@ -209,7 +211,7 @@ export default {
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
         organId:1300,                 // 组织机构id
-        returnOrganId:67,         // 领用部门id
+        returnOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -241,7 +243,16 @@ export default {
   watch: {
     'queryCondition.assetType' () {
       this.getAssetClassifyOptions()
-    }
+    },
+    // 'queryCondition.projectList' () {
+    //   sessionStorage.setItem('returnViewProjectList', this.queryCondition.projectList)
+    // },
+    // 'queryCondition.assetType' () {
+    //   sessionStorage.setItem('returnViewAssetType', this.queryCondition.assetType)
+    // },
+    // 'queryCondition.approvalStatusList' () {
+    //   sessionStorage.setItem('returnViewApprovalStatusList', this.queryCondition.approvalStatusList)
+    // },
   },
   mounted () {
     this.platformDictFn('asset_type')
@@ -284,6 +295,8 @@ export default {
       this.queryCondition.projectId = undefined
       this.getObjectKeyValueByOrganIdFn()
       this.query()
+      // sessionStorage.setItem('returnViewOrgan', label)
+      // sessionStorage.setItem('returnViewOrganId', value)
     },
     changeLeaf (value) {
       this.queryCondition.returnOrganId = value
@@ -300,7 +313,7 @@ export default {
         startReturnDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
         endReturnDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
         receiveName: this.queryCondition.receiveName,                              // 领用单名称/编号
-        returnOrganId: Number(this.queryCondition.returnOrganId),        // 领用部门id
+        returnOrganId: this.queryCondition.returnOrganId,        // 领用部门id
         objectTypeList: this.alljudge(this.queryCondition.objectTypeList), // 资产分类
         assetName: this.queryCondition.assetName,                   // 资产名称/编号
         returnName: this.queryCondition.returnName                 // 归还单名称/编号
@@ -436,6 +449,7 @@ export default {
             })
           })
           this.projectData = arr
+          console.log(this.projectData)
         } else {
           this.$message.error(res.data.message)
         }

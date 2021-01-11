@@ -1,5 +1,5 @@
 <!--
-  领用登记
+  领用登记一览表
 -->
 <template>
   <div class="assetRegister">
@@ -144,6 +144,14 @@ const columns = [
     dataIndex: 'assetTypeName'
   },
   {
+    title: '资产分类',
+    dataIndex: 'objectTypeName'
+  },
+  {
+    title: '资产面积（㎡）',
+    dataIndex: 'area'
+  },
+  {
     title: '领用单号',
     dataIndex: 'receiveId'
   },
@@ -214,7 +222,7 @@ export default {
         pageSize: 10,              // 每页显示记录数
         projectIdList: [],             // 资产项目Id
         organId:1300,                 // 组织机构id
-        receiveOrganId:67,         // 领用部门id
+        //receiveOrganId:'',         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号

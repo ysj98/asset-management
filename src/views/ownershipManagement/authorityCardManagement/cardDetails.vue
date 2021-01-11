@@ -206,10 +206,12 @@ export default {
           })
         }
         this.files = files
+        console.log(data.amsOwnershipWarrantObligeeList[0].percent.toFixed(2))
         // 权属人信息
         data.amsOwnershipWarrantObligeeList.forEach((list, index) => {
           list.key = index
           list.obligeeId = list.obligeeName
+          data.amsOwnershipWarrantObligeeList[index].percent = list.percent.toFixed(2)
         })
         this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
         // 抵押信息

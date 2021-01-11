@@ -288,19 +288,19 @@ export default {
           title: "提示",
           content: "确认要作废此归还单吗？",
           onOk() {
-             this.loading = true
-        this.$api.useManage.deleteReturn({returnId: record.returnId}).then(r => {
-          this.loading = false
+             that.loading = true
+        that.$api.useManage.deleteReturn({returnId: record.returnId}).then(r => {
+          that.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.$message.success('删除成功')
+            that.$message.success('删除成功')
             // 更新列表
-            return this.allQuery ()
+            return that.allQuery ()
           }
           throw res.message || '删除失败'
         }).catch(err => {
-          this.loading = false
-          this.$message.error(123 || '删除失败')
+          that.loading = false
+         that.$message.error(123 || '删除失败')
         })
           },
         });

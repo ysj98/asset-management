@@ -443,7 +443,8 @@
          this.assetList = assetList
          this.assetList.map((item,index) => {
            this.assetList[index].area = item.assetArea
-           this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
+           //this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
+           this.assetList[index].receiveArea = 0
          })
     },
     },
@@ -467,6 +468,9 @@
     
     watch: {
       assetList: function () {
+        if(this.assetList.length==0){
+          return
+        }
         if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
            this.tableObj.columns = [
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 

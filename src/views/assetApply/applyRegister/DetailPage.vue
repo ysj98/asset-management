@@ -92,6 +92,7 @@
             const { assetId, receiveArea, assetObjectId, remark } = m
             detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
+          console.log(data,detailList,dynamicData)
           let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
           ...dynamicData, saveType: saveWays} : { ...data, detailList }
           delete form.receiveOrganName
@@ -181,11 +182,12 @@
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
         this.dynamicData = Object.assign({}, this.dynamicData, obj)
+        console.log(this.dynamicData)
       },
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        let arr = list.filter(m => +m.receiveArea === 0 || !m.receiveArea)
+        let arr = list.filter(m => m.receiveArea == undefined)
         return arr.length
       }
     },
@@ -202,6 +204,7 @@
       this.organName = organName
       this. organId = organId
       registerId && this.queryDetailById(registerId)
+      console.log(this.dynamicData)
     }
   }
 </script>
