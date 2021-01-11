@@ -325,7 +325,7 @@ export default {
             if (m.key === 'landCount') {    // 土地数量需要两位小数
               val = temp[m.key] || 0
             } else {
-              val = temp[m.key].toFixed(2) || 0
+              val = Number(temp[m.key] || 0).toFixed(2) || 0
             }
             return {...m, value: val}
           })

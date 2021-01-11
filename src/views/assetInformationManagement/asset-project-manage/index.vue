@@ -53,6 +53,12 @@
         <!--<a-progress :percent="text || 0" :format="a => a" size="small"/>-->
       <!--</span>-->
       <span slot="takeOver" slot-scope="text">{{text ? "已接管": "未接管" }}</span>
+      <template slot="organName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
+      <template slot="projectName" slot-scope="text">
+        <tooltip-text :text="text"/>
+      </template>
       <span slot="action" slot-scope="text, record">
         <a-popconfirm
           okText="确定"
@@ -118,6 +124,7 @@
 
 <script>
   import NoDataTip from 'src/components/noDataTips'
+  import TooltipText from 'src/views/common/TooltipText'
   import TreeSelect from 'src/views/common/treeSelect'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import BaseInfo from './components/components/BaseInfoPart'
@@ -127,7 +134,7 @@
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
     name: 'index',
-    components: { BaseInfo, SearchContainer, OverviewNumber, TreeSelect, NoDataTip, BatchImport },
+    components: { BaseInfo, SearchContainer, OverviewNumber, TreeSelect, NoDataTip, BatchImport, TooltipText },
     data () {
       return {
         fold: true, // 查询条件折叠
@@ -167,9 +174,9 @@
           rowKey: 'projectId',
           scroll: { x: 1800 },
           columns: [
-            { title: '管理机构', dataIndex: 'organName', width: 150, fixed: 'left' },
-            { title: '资产项目名称', dataIndex: 'projectName',width: 150, fixed: 'left' },
-            { title: '资产项目编码', dataIndex: 'projectCode' },
+            { title: '管理机构', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 150, fixed: 'left' },
+            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 150, fixed: 'left' },
+            { title: '资产项目编码', dataIndex: 'projectCode', width: 150 },
             { title: '来源方式', dataIndex: 'sourceTypeName' },
             { title: '来源渠道', dataIndex: 'souceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum' },
