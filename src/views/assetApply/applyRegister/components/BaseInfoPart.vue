@@ -85,7 +85,6 @@
           <a-date-picker v-if="type != 'add'"
             style="width: 100%"
             :placeholder="type=='edit' ? '请选择预计归还时间' : ''"
-            
             @change="(date, dateString) => setData(dateString, 'returnDate')"
             :disabled="type == 'approval' || type == 'detail'"
              v-decorator="[ 'returnDate']"
@@ -237,7 +236,7 @@
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: returnDate ? moment(returnDate, 'YYYY-MM-DD') : ''  }
+        let formatDetails = type != 'add' ? { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: returnDate ? moment(returnDate, 'YYYY-MM-DD') : ''  } : { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD') }
         !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
         !returnDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'returnDate')
         // 展示状态下转换数据

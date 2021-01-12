@@ -82,7 +82,7 @@
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
           } else if(this.validateAssetList(assetList)) {
-            return this.$message.warn('领用面积为必有项')
+            return this.$message.warn('领用面积为必有项且不能为0')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
@@ -187,7 +187,7 @@
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        let arr = list.filter(m => m.receiveArea == undefined)
+        let arr = list.filter(m => m.receiveArea == undefined || +m.receiveArea == 0)
         return arr.length
       }
     },

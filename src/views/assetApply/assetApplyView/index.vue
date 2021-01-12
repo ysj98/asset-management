@@ -113,7 +113,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 
   const approvalStatusData = [
-  { name: '全部状态', value: '' }, { name: '领用中', value: '0' }, { name: '使用中', value: '1' }, { name: '已归还', value: '2' }
+  { name: '全部状态', value: '' }, { name: '领用中', value: '0' }, { name: '未归还', value: '1' }, { name: '已归还', value: '2' }
 ]
 
 
@@ -234,6 +234,23 @@ export default {
         objectTypeList: [],           // 资产分类
         assetName: '',                // 资产名称/编号
       },
+      queryInit: {
+        pageNum: 1,                // 当前页
+        pageSize: 10,              // 每页显示记录数
+        projectIdList: [],             // 资产项目Id
+        organId:1300,                 // 组织机构id
+        //receiveOrganId:'',         // 领用部门id
+        assetTypeList: [''],           // 资产类型id(多个用，分割)
+        approvalStatusList: [],        // 状态
+        receiveName: '',            // 领用单名称/编号
+        startReceiveDate: '',        // 领用开始日期
+        endReceiveDate: '',          // 领用结束如期
+        startCreateDate: '',         // 提交开始日期
+        endCreateDate: '',           // 提交结束日期
+        assetType: '' ,               // 资产类型
+        objectTypeList: [],           // 资产分类
+        assetName: '',                // 资产名称/编号
+      },
       organProjectType: {
           organId: 1,
           organName: this.organName,
@@ -271,7 +288,7 @@ export default {
       },
     exportFn () {
       let obj = {
-        receiveOrganId: this.alljudge(this.queryCondition.receiveOrganId), //领用部门ID
+        receiveOrganId: this.queryCondition.receiveOrganId, //领用部门ID
         statusList: this.alljudge(this.queryCondition.approvalStatusList),      // 领用单状态
         projectIdList: this.alljudge(this.queryCondition.projectIdList),         // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
@@ -281,7 +298,8 @@ export default {
         endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束领用日期
         assetName: this.queryCondition.assetName            // 资产名称
       }
-      this.$api.useManage.exportReceiveDetail(obj).then(res => {
+      console.log(33)
+      this.$api.useManage.exportReceiveDetail(obj).then(res => {    
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

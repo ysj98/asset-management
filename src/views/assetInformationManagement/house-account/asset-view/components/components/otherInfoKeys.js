@@ -18,12 +18,12 @@ const keys = {
     table: {
       rowKey: 'changeOrderDetailId',
       columns: [
-        { title: '编号', dataIndex: 'changeOrderDetailId' },
-        { title: '交付类型', dataIndex: 'changeTypeName' },
-        { title: '交付时间', dataIndex: 'changeDate' },
-        { title: '交付面积(㎡)', dataIndex: 'deliverArea' },
+        { title: '编号', dataIndex: 'deliveryDetailId' },
+        { title: '交付类型', dataIndex: 'deliveryTypeName' },
+        { title: '交付时间', dataIndex: 'deliveryDate' },
+        { title: '交付面积(㎡)', dataIndex: 'deliveryArea' },
         { title: '接收单位', dataIndex: 'deliveryCompany' },
-        { title: '终止日期', dataIndex: 'expiryDate' }
+        { title: '终止日期', dataIndex: 'endDate' }
       ]
     }
   },

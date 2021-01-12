@@ -87,6 +87,7 @@ const accessCard = [
   { text: '承租人', value: 'tenantIdName' },
   { text: '委托管理单位', value: 'entrustOrganization' },
   { text: '建筑面积(㎡)', value: 'buildArea' },
+  { text: '使用面积(㎡)', value: 'useArea' },
   { text: '专有建筑面积(㎡)', value: 'exclusiveBuildArea' },
   { text: '分摊面积(㎡)', value: 'apportionArea' },
   { text: '坐落位置', value: 'seatingPosition' },

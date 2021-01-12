@@ -54,6 +54,7 @@
         :row-selection="rowSelection"
         class="custom-table td-pd10"
         :pagination="false"
+        :rowKey='record=>record.warrantId'
         >
         <template slot="obligeeName" slot-scope="text, record">
           <span>{{record.obligeeName || '--'}}</span>

@@ -25,7 +25,7 @@
         <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm">
-        <div style="width: 55%; float: right; margin-right: 8px">
+        <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
           <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false"/>
         </div>
       </div>
@@ -339,6 +339,7 @@
         }
         if(type === 'exportAssetBtn'){
           this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
+            if(+res1.data.code === -1){ return this.$message.error(res.message) }  
             if(+res1.data.code === 0){      
           this.$api.assets[api[type]](form).then(res => {
           this[type] = false
@@ -361,6 +362,7 @@
           } )
         }else{
             this.$api.assets[api[type]](form).then(res => {
+          if(+res1.data.code === -1){ return this.$message.error(res.message) }    
           this[type] = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')

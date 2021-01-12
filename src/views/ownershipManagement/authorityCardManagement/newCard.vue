@@ -776,7 +776,8 @@ export default {
                 talkUnitPrice: data.amsOwnershipWarrant.talkUnitPrice,
                 talkTotalPrice: data.amsOwnershipWarrant.talkTotalPrice,
                 rentPayDate: data.amsOwnershipWarrant.rentPayDate,
-                antenatal: data.amsOwnershipWarrant.antenatal
+                antenatal: data.amsOwnershipWarrant.antenatal,
+                useArea: data.amsOwnershipWarrant.useArea
               })
             } else if (this.typeJudgment === '3') {
               this.form.setFieldsValue({

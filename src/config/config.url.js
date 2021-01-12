@@ -379,8 +379,8 @@ export const assets = {
     queryOwnDetail: '/ams/ownerShip/asset/owner/detail',
     // 资产详情-其他信息Tab-接管信息（旧）
     //queryTakeOverDetail: '/ams/assetChange/assetTakeOverInfo',
-    // 资产详情-其他信息Tab-接管信息（新/暂未部署上线）
-    queryTakeOverDetail: 'ams/deliveryDetail/assetTakeOverInfo',
+    // 资产详情-其他信息Tab-接管信息(新)
+    queryTakeOverDetail: '/ams/deliveryDetail/assetTakeOverInfo',
     // 资产详情-其他信息Tab-变动信息
     queryChangeDetail: '/ams/assetChange/assetChangeInfo',
     // 资产详情-其他信息Tab-账面信息

@@ -208,6 +208,21 @@ export default {
         endCreateDate: '',           // 提交结束日期
         assetType: ''                // 资产类型
       },
+      queryInitCondition: {
+        pageNum: 1,                // 当前页
+        pageSize: 10,              // 每页显示记录数
+        projectList: [],             // 资产项目Id
+        organId:1,                 // 组织机构id
+        returnOrganId:'',         // 领用部门id
+        assetTypeList: [''],           // 资产类型id(多个用，分割)
+        approvalStatusList: [],        // 状态
+        returnName: '',            // 领用单名称/编号
+        startReturnDate: '',        // 领用开始日期
+        endReturnDate: '',          // 领用结束如期
+        startCreateDate: '',         // 提交开始日期
+        endCreateDate: '',           // 提交结束日期
+        assetType: ''                // 资产类型
+      },
       organProjectType: {
           organId: 1,
           organName: this.organName,
@@ -229,13 +244,24 @@ export default {
           value: ''
         }
       ],
-      projectData: []
+      projectData: [],
+      refreshKey: 0, // 更新记录key
+      refreshIndex: 0 // 更新记录index
     }
   },
   watch: {
     'queryCondition.assetType' () {
       this.getAssetClassifyOptions()
-    }
+    },
+    // 刷新页面
+      refreshKey: function (key, preKey) {
+
+        key !== preKey && this.allQueryInit()
+      },
+      refreshIndex: function (key, preKey) {
+
+        key !== preKey && this.allQuery()
+      }
   },
   mounted () {
     this.platformDictFn('asset_type')
@@ -346,6 +372,44 @@ export default {
     changeLeaf (value) {
       this.queryCondition.returnOrganId = value
     },
+    queryInit() {
+      this.loading = true
+      let obj = {
+        pageNum: this.queryInitCondition.pageNum,                // 当前页
+        pageSize: this.queryInitCondition.pageSize,              // 每页显示记录数
+        approvalStatusList: this.alljudge(this.queryInitCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        projectIdList: this.alljudge(this.queryInitCondition.projectList),            // 资产项目Id
+        organId: Number(this.queryInitCondition.organId),        // 组织机构id
+        assetTypeList: this.alljudge(this.queryInitCondition.assetType),  // 资产类型id(多个用，分割)
+        startCreateDate: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 提交开始日期
+        endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 提交结束日期
+        startReturnDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 归还开始日期
+        endReturnDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 归还结束日期
+        returnName: this.queryInitCondition.returnName,
+        returnOrganId: this.queryInitCondition.returnOrganId                              // 领用单名称/编号
+      }
+      this.$api.useManage.getReturnSum(obj).then(res => {
+        if(res.data.code == 0){
+          this.numList.map((item,index) => {
+            this.numList[index].value = res.data.data[item.key]
+          })
+          this.$api.useManage.getReturnPage(obj).then(r => {
+            if(r.data.code == 0){
+              r.data.data.data.map((item,index) => {
+                r.data.data.data[index].key = item.returnId
+                 item.operationDataBtn = this.createOperationBtn(
+              item.approvalStatus
+            );
+              })
+              this.tableData = r.data.data.data
+              this.count = r.data.data.count
+            }
+            this.loading = false
+          })
+        }
+
+      })
+    },
     query () {
       this.loading = true
       let obj = {
@@ -409,6 +473,11 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
+    },
+    allQueryInit () {
+      this.queryInitCondition.pageNum = 1
+      this.queryInitCondition.pageSize = 10
+      this.queryInit()
     },
     alljudge (val) {
       if (val.length !== 0) {
@@ -552,7 +621,21 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-  }
+  },
+  // 路由卫士，用于审批及提交成功后刷新列表
+    beforeRouteEnter (to, from, next) {
+      const { name } = from
+      const { params: { refresh } } = to
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        if (name === '归还登记新增' && refresh) {
+          vm.refreshKey = new Date().getTime()
+        }
+        if (name === '归还登记编辑' && refresh) {
+          vm.refreshIndex = new Date().getTime()
+        }
+      })
+    }
 }
 </script>
 

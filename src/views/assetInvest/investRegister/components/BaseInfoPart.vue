@@ -98,36 +98,54 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="签约日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-date-picker v-if="type != 'add'"
+            style="width: 100%"
+            :placeholder="type=='edit' ? '请选择签约日期' : ''"
+            @change="(date, dateString) => setData(dateString, 'signingDate')"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="['signingDate', { rules: [{ required: true, message: '请选择签约日期' }] }]"
+          />
+          <a-date-picker v-else
             style="width: 100%"
             placeholder="请选择签约日期"
             @change="(date, dateString) => setData(dateString, 'signingDate')"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="['signingDate', { rules: [{ required: true, message: '请选择签约日期' }] }]"
           />
           <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="起投日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-date-picker v-if="type != 'add'"
+            style="width: 100%"
+            :placeholder="type=='edit' ? '请选择起投日期' : ''"
+            @change="(date, dateString) => setData(dateString, 'startInvestDate')"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="['startInvestDate', { rules: [{ required: true, message: '请选择起投日期' }] }]"
+          />
+          <a-date-picker v-else
             style="width: 100%"
             placeholder="请选择起投日期"
             @change="(date, dateString) => setData(dateString, 'startInvestDate')"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="['startInvestDate', { rules: [{ required: true, message: '请选择起投日期' }] }]"
           />
           <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="止投日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-date-picker v-if="type != 'add'"
+            style="width: 100%"
+            :placeholder="type=='edit' ? '请选择止投日期' : ''"
+            @change="(date, dateString) => setData(dateString, 'endInvestDate')"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="['endInvestDate', { rules: [{ required: true, message: '请选择止投日期' }] }]"
+          />
+          <a-date-picker v-else
             style="width: 100%"
             placeholder="请选择止投日期"
             @change="(date, dateString) => setData(dateString, 'endInvestDate')"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="['endInvestDate', { rules: [{ required: true, message: '请选择止投日期' }] }]"
           />
           <!-- <a-input v-decorator="['returnDate', { rules: [{ required: true, message: '请选择归还时间' }] }]"></a-input> -->
         </a-form-item>
@@ -317,7 +335,9 @@
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { investName,signingDate: moment(signingDate || new Date(), 'YYYY-MM-DD'), startInvestDate: moment(startInvestDate || new Date(), 'YYYY-MM-DD'),  endInvestDate: moment(endInvestDate || new Date(), 'YYYY-MM-DD')}
+
+          let formatDetails = type!='add'?{ investName,signingDate: moment(signingDate || new Date(), 'YYYY-MM-DD'), startInvestDate: moment(startInvestDate || new Date(), 'YYYY-MM-DD'),  endInvestDate: moment(endInvestDate || new Date(), 'YYYY-MM-DD')}:{}
+
         !signingDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'signingDate')
         !startInvestDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'startInvestDate')
         !endInvestDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'endInvestDate')
@@ -333,9 +353,13 @@
             investProject,
             createByName, approvalStatusName, createTime, investArea
           })
-        } else {
+        } else if(type === 'add') {
           formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '无',
+            remark: remark || '',
+          })
+        }else{
+          formatDetails = Object.assign({}, formatDetails, {
+            remark: remark || '',
             projectId: projectName,
             assetType: assetTypeName,
             investProject,
@@ -344,6 +368,7 @@
             assetSum, assetArea
           })
         }
+        console.log(formatDetails)
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
@@ -412,7 +437,7 @@
       setData (val, type) {
         let value = ''
         let id = ''
-        if (type === 'returnDate' || type === 'assetType' || type === 'projectId' || type === 'returnDate') {
+        if (type === 'signingDate' || type === 'assetType' || type === 'projectId' || type === 'startInvestDate' || type === 'endInvestDate') {
           value = val
           this.form.setFieldsValue({ [type]: value })
           this.$emit('setData', { [type]: value})
