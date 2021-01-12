@@ -197,7 +197,16 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入维修费用" v-model="fixPayment" />
+            <a-input
+              placeholder="请输入维修费用"
+              v-model="fixPayment"
+              v-decorator="[
+                'incomeNum',
+                {
+                  rules: [{ pattern: /^\d+$/, message: '只能输入数字' }],
+                },
+              ]"
+            />
           </a-form-item>
         </a-col>
       </a-row>
@@ -475,12 +484,12 @@ export default {
     },
     // 资产项目选择
     projectSelect(val) {
-      this.selectedList = []
+      this.selectedList = [];
       this.projectId = val;
     },
     // 资产类型选择
     assetTypeSelect(val) {
-      this.selectedList = []
+      this.selectedList = [];
       this.assetType = val;
     },
     // 查询资产类型--平台字典
