@@ -432,6 +432,7 @@ export default {
           }
           let obj = {
             warrantId: this.warrantId,                                                                          // 权证id
+            rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,         // 权利类型                                                           
             warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,               // 权证号
             ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                  // 权属形式
             kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,            // 权证类型
@@ -601,7 +602,7 @@ export default {
     },
     // 机构字典获取数据
     organDictFn () {
-      this.$api.assets.organDict({code: 'AMS_RIGHT_TYPE'}).then(res => {
+      this.$api.assets.organDict({code: 'AMS_RIGHT_TYPE', organId:1300}).then(res => {
         console.log(res)
         if (res.data.code == 0) {
           let data = res.data.data
@@ -611,7 +612,7 @@ export default {
             arr.push({ value: item.value, label: item.name })
           })
           this.titleDeed.forEach(item => {
-            if(item.attrCode === 'typeOfRight'){
+            if(item.attrCode === 'rightTypeName'){
                 if(arr.length < 3){
                   item.chooseArray = temp
                 }else{
@@ -760,6 +761,7 @@ export default {
                 totalSuite: data.amsOwnershipWarrant.totalSuite,
                 qualityOfRight: conditionalJudgment.includes(data.amsOwnershipWarrant.qualityOfRight) ? undefined : String(data.amsOwnershipWarrant.qualityOfRight),
                 useLimitDate: data.amsOwnershipWarrant.useLimitDate,
+                rightTypeName: data.amsOwnershipWarrant.rightTypeName
               })
             } else if (this.typeJudgment === '2') {
               this.form.setFieldsValue({

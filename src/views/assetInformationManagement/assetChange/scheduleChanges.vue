@@ -13,7 +13,7 @@
           <segiIcon type="#icon-ziyuan10" class="icon-right"/>导出
         </SG-Button>
       </div>
-      <div slot="headerForm">
+      <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>

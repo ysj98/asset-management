@@ -12,7 +12,7 @@
           @click="handleModalOpen('add', new Date().getTime())"
         >新增资产项目</SG-Button>
       </div>
-      <div slot="contentForm">
+      <div slot="contentForm" style="text-align: left">
         <a-row :gutter="8">
           <a-col :span="6">
             <tree-select @changeTree="changeTree" style="width: 100%;"/>

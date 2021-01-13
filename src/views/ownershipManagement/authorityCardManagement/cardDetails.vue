@@ -64,6 +64,7 @@ const titleDeed = [
   { text: '权证号', value: 'warrantNbr' },
   { text: '权属形式', value: 'ownerTypeName' },
   { text: '权证类型', value: 'kindOfRightName' },
+  { text: '权利类型', value: 'rightTypeName' },
   { text: '不动产单元号', value: 'estateUnitCode' },
   { text: '丘地号', value: 'lotNo' },
   { text: '坐落位置', value: 'seatingPosition' },
@@ -197,6 +198,7 @@ export default {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
         this.particularsData = data.amsOwnershipWarrant
+        console.log(this.particularsData)
         let files = []
         if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
             data.amsAttachmentList.forEach(item => {
@@ -207,7 +209,6 @@ export default {
           })
         }
         this.files = files
-        console.log(data.amsOwnershipWarrantObligeeList[0].percent.toFixed(2))
         // 权属人信息
         data.amsOwnershipWarrantObligeeList.forEach((list, index) => {
           list.key = index

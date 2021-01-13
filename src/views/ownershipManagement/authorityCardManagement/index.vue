@@ -15,7 +15,7 @@
       <div slot="headerForm">
       </div>
       <div slot="contentForm" class="search-content-box">
-        <div class="search-from-box">
+        <div class="search-from-box" style="float: right; text-align: left">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权证类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
             <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>

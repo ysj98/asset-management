@@ -10,7 +10,7 @@
       <div slot="headerBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
-      <div slot="headerForm">
+      <div slot="headerForm" style="text-align: left; float: right">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
           <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>

@@ -336,10 +336,12 @@
           province, city, region, assetName, status: status || null, address,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),
+          objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(',')
         }
+        console.log(form)
         if(type === 'exportAssetBtn'){
           this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
-            if(+res1.data.code === -1){ return this.$message.error(res.message) }  
+            if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res1.data.message) }  
             if(+res1.data.code === 0){      
           this.$api.assets[api[type]](form).then(res => {
           this[type] = false
@@ -362,7 +364,7 @@
           } )
         }else{
             this.$api.assets[api[type]](form).then(res => {
-          if(+res1.data.code === -1){ return this.$message.error(res.message) }    
+          if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res.data.message) }    
           this[type] = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
