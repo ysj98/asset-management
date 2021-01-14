@@ -245,11 +245,11 @@ export default {
         }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
       numList: [
         {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
-        {title: '草稿', key: 'draft', value: 10, bgColor: '#FFA500'},
-        {title: '待审批', key: 'await', value: 0, bgColor: '#4BD288'},
-        {title: '已驳回', key: 'reject', value: 0, bgColor: '#1890FF'},
-        {title: '已审批', key: 'complete', value: 0, bgColor: '#DD81E6'},
-        {title: '已取消', key: 'cancel', value: 0, bgColor: '#FD7474'}
+        {title: '草稿', key: 'draft', value: 10, bgColor: '#1890FF'},
+        {title: '待审批', key: 'await', value: 0, bgColor: '#DD81E6'},
+        {title: '已驳回', key: 'reject', value: 0, bgColor: '#FD7474'},
+        {title: '已审批', key: 'complete', value: 0, bgColor: '#4BD288'},
+        {title: '已取消', key: 'cancel', value: 0, bgColor: 'gray'}
       ],  // 概览数字数据, title 标题，value 数值，bgColor 背景色
       assetClassifyOptions: [{label: '全部资产分类', value: ''}],
       assetTypeData: [
@@ -322,7 +322,9 @@ export default {
         this.$router.push({
           name: '投资登记详情', params: {registerId: record.investOrderId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
         });
-      } else if (["readApproval"].includes(type)){
+      } else if (["approval"].includes(type)){
+         this.$router.push({name: '投资登记审核', params: {registerId: record.investOrderId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
+      }else if (["readApproval"].includes(type)){
         let that = this;
         this.$confirm({
           title: "提示",
@@ -664,7 +666,7 @@ export default {
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if (name === '投资登记新增' && refresh) {
+        if ((name === '投资登记新增' || name === '投资登记审批') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
         if (name === '投资登记编辑' && refresh) {

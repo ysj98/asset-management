@@ -174,12 +174,20 @@
         if (!selectedRowKeys.length) {
           return this.$message.warn('请选择数据')
         }
-        let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
+         this.$SG_Message.confirmDelete({
+          onConfirm: () => {
+            let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
         if (!data.length) {
           this.tableObj.dataSource = []
           this.selectedRowKeys = []
         }
         this.calcSum(data)
+          },
+          onCancel: () => {
+            return 
+          }
+        })
+        
       },
 
       // 添加资产
@@ -299,7 +307,7 @@
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(123 || '查询登记资产接口出错')
+          this.$message.error(err || '查询登记资产接口出错')
         })
       },
       
@@ -444,7 +452,8 @@
          this.assetList.map((item,index) => {
            this.assetList[index].area = item.assetArea
            //this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
-           this.assetList[index].receiveArea = 0
+           this.assetList[index].receiveArea = item.assetArea
+           this.assetList[index].objectTypeName = item.assetCategoryName
          })
     },
     },

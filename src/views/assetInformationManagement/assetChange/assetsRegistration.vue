@@ -11,7 +11,7 @@
           v-power="ASSET_MANAGEMENT.ASSET_CHANGE_NEW"
           @click="newChangeSheetFn"
         >新建变更单</a-button>
-        <div style="position:absolute;top: 20px;right: 76px;display:flex;">
+        <div style="position:absolute;top: 20px;right: 98px;display:flex;">
           <treeSelect
             @changeTree="changeTree"
             placeholder="请选择组织机构"

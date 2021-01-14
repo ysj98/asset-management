@@ -946,11 +946,11 @@ let proRouter = [{
     name: '领用登记编辑',
     component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
-  {
-    path: '/applyRegister/approval',
-    name: '领用登记审批',
-    component: () => import('@/views/assetApply/applyRegister/DetailPage')
-  },
+  // {
+  //   path: '/applyRegister/approval',
+  //   name: '领用登记审批',
+  //   component: () => import('@/views/assetApply/applyRegister/DetailPage')
+  // },
   {
     path: '/assetApplyView/detail',
     name: '资产领用一览表详情',
@@ -990,6 +990,21 @@ let proRouter = [{
     path: '/returnRegister/edit',
     name: '归还登记编辑',
     component: () => import('@/views/assetApply/returnRegister/DetailPage')
+  },
+  {
+    path: '/investRegister/approval',
+    name: '投资登记审核',
+    component: () => import('@/views/assetInvest/investRegister/DetailPage')
+  },
+  {
+    path: '/returnRegister/approval',
+    name: '归还登记审核',
+    component: () => import('@/views/assetApply/returnRegister/DetailPage')
+  },
+  {
+    path: '/applyRegister/approval',
+    name: '领用登记审核',
+    component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
 ]
 export default proRouter

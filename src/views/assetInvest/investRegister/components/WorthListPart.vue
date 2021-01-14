@@ -39,7 +39,7 @@
             :min="0"
             step="0.01"
             :precision="2"
-            :max="record.area"
+            :max="record.assetArea"
             style="width: 120px"
             v-model="record.investArea"
             @change="calcSum(tableObj.dataSource)"

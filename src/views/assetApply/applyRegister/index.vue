@@ -42,7 +42,8 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="false"></treeSelect>
+        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="true">
+        </treeSelect>
         <div class="box">
             <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
@@ -167,6 +168,7 @@ export default {
   components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, OperationPopover},
   data () {
     return {
+      door: false,
       ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
@@ -253,6 +255,7 @@ export default {
   },
   mounted () {
     this.platformDictFn('asset_type')
+    this.queryCondition.receiveOrganId = null
   },
   methods: {
     // 生成操作按钮
@@ -269,7 +272,7 @@ export default {
         }
       }
       // 待审批
-      if (["2"].includes(type)) {
+      if (["2"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.APPLY_FORM_APPROVE)) {
           arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
@@ -282,7 +285,9 @@ export default {
       // 编辑
       if (["edit"].includes(type)) {
         this.$router.push({name: '领用登记编辑', params: {registerId: record.receiveId, type: 'edit'}});
-      } else if (["detail"].includes(type)) {
+      } else if (["approval"].includes(type)){
+         this.$router.push({name: '领用登记审核', params: {registerId: record.receiveId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
+      }else if (["detail"].includes(type)) {
         this.$router.push({
           name: '领用登记详情', params: {registerId: record.receiveId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
         });
@@ -348,7 +353,7 @@ export default {
       this.query()
     },
     changeLeaf (value) {
-      this.queryCondition.receiveOrganId = value
+      this.queryCondition.receiveOrganId = (typeof value == 'undefined') ? null : value
     },
     queryInit() {
       this.loading = true
@@ -364,7 +369,7 @@ export default {
         startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
         endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
         receiveName: this.queryInitCondition.receiveName,                              // 领用单名称/编号
-        receiveOrganId: +this.queryInitCondition.receiveOrganId                        // 领用部门
+        receiveOrganId: this.queryInitCondition.receiveOrganId                        // 领用部门
       }
       this.$api.useManage.getReceiveSum(obj).then(res => {
         if(res.data.code == 0){
@@ -401,7 +406,7 @@ export default {
         startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
         endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
         receiveName: this.queryCondition.receiveName,                              // 领用单名称/编号
-        receiveOrganId: +this.queryCondition.receiveOrganId                        // 领用部门
+        receiveOrganId: this.queryCondition.receiveOrganId                        // 领用部门
       }
       this.$api.useManage.getReceiveSum(obj).then(res => {
         if(res.data.code == 0){
@@ -603,7 +608,7 @@ export default {
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if (name === '领用登记新增' && refresh) {
+        if ((name === '领用登记新增' || name === '领用登记审核') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
         if (name === '领用登记编辑' && refresh) {

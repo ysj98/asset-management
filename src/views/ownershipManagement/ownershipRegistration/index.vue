@@ -3,16 +3,18 @@
 -->
 <template>
   <div class="ownershipRegistration">
-    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}" style=" position: relative">
       <div slot="headerBtns">
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
       </div>
-      <div slot="contentForm" class="search-content-box">
-        <div class="search-from-box">
+      <div slot="contentForm" class="search-content-box" style="position: absolute" >
+        <div class="search-from-box" >
           <a-checkbox :style="checkboxAllStyle" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
-          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <div class="box" style="positon:absolute">
+            <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          </div>
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>

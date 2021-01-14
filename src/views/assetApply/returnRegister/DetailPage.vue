@@ -166,13 +166,13 @@
         const { registerId } = this
         let tip = sign === 'left' ? '审批': '驳回'
         let approvalStatus = sign === 'left' ? '1' : '3'
-        this.$api.worthRegister.updateStatus({ approvalStatus, registerId }).then(r => {
+        this.$api.useManage.approveReturn({ approvalStatus, returnId: registerId }).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
             this.$message.success(`${tip}成功`)
             // 跳回列表路由
-            return this.$router.push({ name: '价值登记', params: { refresh: true } })
+            return this.$router.push({ name: '归还登记', params: { refresh: true } })
           }
           throw res.message || `${tip}失败`
         }).catch(err => {

@@ -54,7 +54,7 @@
           approval: { leftButtonName: '审批通过', rightButtonName: '驳回' }
         }, // 页面底部操作按钮
         dynamicData: {}, // 资产价值清单联动数据
-        saveType: 1, // 提交类型 1:提交审核 0：暂存草稿
+        saveType: 2, // 提交类型 2:提交审核 0：暂存草稿
         organName: '', // 组织机构名称
         organId: '',  // 组织机构id
         queryType: 1 // 资产明细是否分页，0分，1不分
@@ -172,13 +172,13 @@
         const { registerId } = this
         let tip = sign === 'left' ? '审批': '驳回'
         let approvalStatus = sign === 'left' ? '1' : '3'
-        this.$api.worthRegister.updateStatus({ approvalStatus, registerId }).then(r => {
+        this.$api.assetInvest.updateInvestOrderStatus({ approvalStatus, investOrderId: registerId }).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
             this.$message.success(`${tip}成功`)
             // 跳回列表路由
-            return this.$router.push({ name: '价值登记', params: { refresh: true } })
+            return this.$router.push({ name: '投资登记', params: { refresh: true } })
           }
           throw res.message || `${tip}失败`
         }).catch(err => {

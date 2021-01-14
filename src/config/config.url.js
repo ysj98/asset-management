@@ -1067,7 +1067,11 @@ export const useManage = {
   // 资产归还一览表-详情
   getReturnDetailInfo: '/ams/assetReturn/getReturnDetailInfo',
   // 资产领用-资产归还选择领用记录分页列表
-  getReceiveRecordPage: '/ams/assetReceive/getReceiveRecordPage'
+  getReceiveRecordPage: '/ams/assetReceive/getReceiveRecordPage',
+  // 资产领用-审批
+  approveReceive: '/ams/assetReceive/approveReceive',
+  // 资产归还-审批
+  approveReturn: '/ams/assetReturn/approveReturn'
 }
 
 // 资产出租
