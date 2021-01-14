@@ -182,39 +182,18 @@ export default {
     },
         // 审批/驳回请求
     approveMaintain(type) {
-      console.log(type);
-      /* // 过滤资产列表
-      let newArr = [];
-      for (let i = 0; i < this.dataSource.length; i++) {
-        let newObj = {};
-        newObj.assetId = this.dataSource[i].assetId;
-        newObj.leaseArea = this.dataSource[i].leaseArea;
-        newArr.push(newObj);
-      }
-      let data = this.assetInfo;
-      let saveObj = {
-        leaseOrderId: +this.leaseOrderId,
-        leaseName: data.leaseName,
-        organId: data.organId,
-        projectId: data.projectId,
-        assetType: data.assetType,
+      let obj = {
+        maintainId: this.maintainId,
         approvalStatus: type === "reject" ? 3 : 1,
-        lesseeId: data.lesseeId,
-        signingDate: data.signingDate,
-        startLeaseDate: data.startLeaseDate,
-        endLeaseDate: data.endLeaseDate,
-        leaseArea: data.leaseArea,
-        assetSum: data.assetSum,
-        leaseDetail: newArr,
       };
-      this.$api.assetRent.approveMaintain(saveObj).then((res) => {
-        if (+res.data.code === 0) {
+      this.$api.assetRent.approveMaintain(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
           this.$message.success(
-            `${type === "reject" ? "驳回成功" : "审批通过"}`
+            `${type === "reject" ? "驳回成功！" : "审批通过！"}`
           );
-          this.$router.push("/rentRegister");
+          this.$router.push("/repairRegister");
         }
-      }); */
+      });
     },
     // 审批通过 / 驳回
     approval(type) {
