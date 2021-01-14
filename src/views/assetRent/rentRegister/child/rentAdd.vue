@@ -440,6 +440,7 @@ export default {
     },
     // 根据organId查询资产项目
     queryProjectByOrganId(organId) {
+      console.log('organId',organId);
       organId &&
         queryProjectListByOrganId(organId).then((list) =>
           list
@@ -583,7 +584,7 @@ export default {
         organId: this.organId,
         projectId: this.dynamicData.projectId,
         assetType: this.dynamicData.assetType,
-        approvalStatus: type === "draft" ? 0 : 1,
+        approvalStatus: type === "draft" ? 0 : 2,
         lesseeId: str,
         signingDate: this.signingDate,
         startLeaseDate: this.startLeaseDate,
@@ -633,7 +634,7 @@ export default {
   },
   created() {
     // 页面一加载储存organId
-    this.organId = this.$route.query.id;
+    this.organId = this.$route.query.organId;
     this.organName = this.$route.query.organName;
   },
   mounted() {

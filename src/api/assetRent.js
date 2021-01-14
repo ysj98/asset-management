@@ -120,6 +120,11 @@ export function getMaintainInfo (data) {
   return axiosGet(assetRepair.getMaintainInfo, data)
 }
 
+// 资产维修-审批
+export function approveMaintain (data) {
+  return axiosPost(assetRepair.approveMaintain, data)
+}
+
 // 资产维修-反审核
 export function opposeApproveMaintain (data) {
   return axiosPost(assetRepair.opposeApproveMaintain, data)

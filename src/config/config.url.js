@@ -1152,6 +1152,8 @@ export const assetRepair = {
   getMaintainPage: '/ams/assetMaintain/getMaintainPage',
   // 资产维修-新增编辑保存
   submitMaintain: '/ams/assetMaintain/submitMaintain',
+  // 资产维修-审批
+  approveMaintain: '/ams/assetMaintain/approveMaintain',
   // 资产维修-详情
   getMaintainInfo: '/ams/assetMaintain/getMaintainInfo',
   // 资产维修-反审核

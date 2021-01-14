@@ -342,16 +342,16 @@ export default {
       tableData: [],
       numList: [
         { title: "全部", key: "total", value: 0, fontColor: "#3d91f9" },
-        { title: "草稿", key: "draft", value: 0, bgColor: "#e47e60" },
-        { title: "待审批", key: "await", value: 0, bgColor: "#00d58e" },
-        { title: "已驳回", key: "reject", value: 0, bgColor: "#0092ff" },
+        { title: "草稿", key: "draft", value: 0, bgColor: "#0092ff" },
+        { title: "待审批", key: "await", value: 0, bgColor: "#ed7ce3" },
+        { title: "已驳回", key: "reject", value: 0, bgColor: "#ff6a6b" },
         {
           title: "已审批",
           key: "complete",
           value: 0,
-          bgColor: "#ed7ce3",
+          bgColor: "#00d58e",
         },
-        { title: "已取消", key: "cancel", value: 0, bgColor: "#ff6a6b" },
+        { title: "已取消", key: "cancel", value: 0, bgColor: "#bbc8d6" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
@@ -664,6 +664,11 @@ export default {
                 }
               });
           },
+        });
+      } else if (["approval"].includes(type)) {
+        this.$router.push({
+          path: "/rentRegister/rentApproval",
+          query: { leaseOrderId: record.leaseOrderId },
         });
       }
     },
