@@ -932,6 +932,11 @@ let proRouter = [{
     component: () => import('@/views/assetRepair/child/repairDetail')
   },
   {
+    path: '/repairRegister/repairApproval',
+    name: '维修单审批',
+    component: () => import('@/views/assetRepair/child/repairApproval')
+  },
+  {
     path: '/applyRegister/new',
     name: '领用登记新增',
     component: () => import('@/views/assetApply/applyRegister/DetailPage')

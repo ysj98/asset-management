@@ -183,7 +183,13 @@ const columns = [
   { title: "维修费用（元）", dataIndex: "maintainCost", align: "center" },
   { title: "提交人", dataIndex: "createByName", align: "center" },
   { title: "提交时间", dataIndex: "createTime", align: "center" },
-  { title: "状态", dataIndex: "approvalStatus", align: "center" },
+  {
+    title: "状态",
+    dataIndex: "approvalStatus",
+    align: "center",
+    fixed: "right",
+    width: 90,
+  },
   {
     title: "操作",
     dataIndex: "operation",
@@ -252,11 +258,11 @@ export default {
       ],
       numList: [
         { title: "全部", key: "total", value: 0, fontColor: "#3d91f9" },
-        { title: "草稿", key: "draftCount", value: 0, bgColor: "#e47e60" },
-        { title: "待审批", key: "pendingCount", value: 0, bgColor: "#00d58e" },
-        { title: "已驳回", key: "rejectCount", value: 0, bgColor: "#0092ff" },
-        { title: "已审批", key: "approvedCount", value: 0, bgColor: "#ed7ce3" },
-        { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#ff6a6b" },
+        { title: "草稿", key: "draftCount", value: 0, bgColor: "#0092ff" },
+        { title: "待审批", key: "pendingCount", value: 0, bgColor: "#ed7ce3" },
+        { title: "已驳回", key: "rejectCount", value: 0, bgColor: "#ff6a6b" },
+        { title: "已审批", key: "approvedCount", value: 0, bgColor: "#00d58e" },
+        { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#bbc8d6" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
@@ -605,6 +611,11 @@ export default {
                 }
               });
           },
+        });
+      } else if (["approval"].includes(type)) {
+        this.$router.push({
+          path: "/repairRegister/repairApproval",
+          query: { maintainId: record.maintainId },
         });
       }
     },

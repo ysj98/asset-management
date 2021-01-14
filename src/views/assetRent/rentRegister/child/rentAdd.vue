@@ -584,7 +584,7 @@ export default {
         organId: this.organId,
         projectId: this.dynamicData.projectId,
         assetType: this.dynamicData.assetType,
-        approvalStatus: type === "draft" ? 0 : 1,
+        approvalStatus: type === "draft" ? 0 : 2,
         lesseeId: str,
         signingDate: this.signingDate,
         startLeaseDate: this.startLeaseDate,
