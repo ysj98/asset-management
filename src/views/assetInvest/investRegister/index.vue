@@ -53,10 +53,10 @@
             <a-select-option v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>

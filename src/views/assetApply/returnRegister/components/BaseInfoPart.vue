@@ -19,7 +19,7 @@
           <a-input
             placeholder="请填写归还登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'returnName', { rules: [{ required: true, message: '请填写归还登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'returnName', { rules: [{required: true, max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>

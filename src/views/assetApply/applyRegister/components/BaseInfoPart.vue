@@ -19,7 +19,7 @@
           <a-input
             placeholder="请填写领用登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'receiveName', {  rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'receiveName', {  rules: [{required: true, max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
