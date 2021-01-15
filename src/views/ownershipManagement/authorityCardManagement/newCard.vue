@@ -480,6 +480,13 @@ export default {
             amsOwnershipWarrantObligeeList: amsOwnershipWarrantObligeeList,
             amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList
           }
+         if(values.rightTypeName=='国有建设用地使用权/房屋所有权'){
+            obj.rightType = 1
+          }else if(values.rightTypeName=='房屋所有权'){
+            obj.rightType = 2
+          }else {
+            obj.rightType = 3
+          }
           console.log(obj)
           let loadingName = this.SG_Loding('保存中...')
           this.$api.ownership.warrantSaveOrUpdate(obj).then(res => {
@@ -618,6 +625,7 @@ export default {
                 }else{
                   item.chooseArray = arr
                 }
+                console.log(item.chooseArray )
             }
           })
         }

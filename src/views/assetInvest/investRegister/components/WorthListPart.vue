@@ -488,6 +488,7 @@
       getReturnAssetInfo(assetList) {
          assetList.map((item,index) => {
            assetList[index].assetObjectTypeName = item.assetCategoryName
+           assetList[index].investArea = item.assetArea
          })
          this.assetList = assetList
          console.log(this.assetList)

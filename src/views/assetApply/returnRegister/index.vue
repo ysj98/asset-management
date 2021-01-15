@@ -281,7 +281,7 @@ export default {
         }
       }
       // 待审批
-      if (["2"].includes(type)) {
+      if (["2"].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RETURN_FORM_APPROVE)) {
           arr.push({ iconType: "edit", text: "审批", editType: "approval" });
         }
@@ -305,7 +305,7 @@ export default {
       if (["edit"].includes(type)) {
         this.$router.push({name: '归还登记编辑', params: {registerId: record.returnId, type: 'edit'}});
       } else if (["approval"].includes(type)){
-         this.$router.push({name: '归还登记审核', params: {registerId: record.returnId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
+         this.$router.push({name: '归还登记审批', params: {registerId: record.returnId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
       }else if (["detail"].includes(type)) {
         this.$router.push({
           name: '归还登记详情', params: {registerId: record.returnId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
@@ -630,7 +630,7 @@ export default {
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if ((name === '归还登记新增' || name === '归还登记审核') && refresh) {
+        if ((name === '归还登记新增' || name === '归还登记审批') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
         if (name === '归还登记编辑' && refresh) {

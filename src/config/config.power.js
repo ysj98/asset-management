@@ -463,6 +463,7 @@ export const ASSET_MANAGEMENT = {
   RETURN_FORM_NEW: 'return_form_new',  // 归还单新建
   RETURN_FORM_EDIT: 'return_form_edit',  // 归还单编辑
   RETURN_FORM_DELETE: 'return_form_delete',  // 归还单删除
+  RETURN_FORM_APPROVE: 'return_form_approve', // 归还单审批
   ASSET_RETURN_REGISTER: 'asset_return_register',  // 归还登记导出
   ASSET_APPLY_VIEW_EXPORT: 'asset_apply_view_export',       // 资产领用一览表导出
   ASSET_RETURN_VIEW_EXPORT: 'asset_return_view_export',       // 资产归还一览表导出
