@@ -286,7 +286,7 @@ export default {
       if (["edit"].includes(type)) {
         this.$router.push({name: '领用登记编辑', params: {registerId: record.receiveId, type: 'edit'}});
       } else if (["approval"].includes(type)){
-         this.$router.push({name: '领用登记审核', params: {registerId: record.receiveId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
+         this.$router.push({name: '领用登记审批', params: {registerId: record.receiveId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
       }else if (["detail"].includes(type)) {
         this.$router.push({
           name: '领用登记详情', params: {registerId: record.receiveId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
@@ -608,7 +608,7 @@ export default {
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if ((name === '领用登记新增' || name === '领用登记审核') && refresh) {
+        if ((name === '领用登记新增' || name === '领用登记审批') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
         if (name === '领用登记编辑' && refresh) {

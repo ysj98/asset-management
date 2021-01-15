@@ -998,17 +998,17 @@ let proRouter = [{
   },
   {
     path: '/investRegister/approval',
-    name: '投资登记审核',
+    name: '投资登记审批',
     component: () => import('@/views/assetInvest/investRegister/DetailPage')
   },
   {
     path: '/returnRegister/approval',
-    name: '归还登记审核',
+    name: '归还登记审批',
     component: () => import('@/views/assetApply/returnRegister/DetailPage')
   },
   {
     path: '/applyRegister/approval',
-    name: '领用登记审核',
+    name: '领用登记审批',
     component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
 ]

@@ -323,7 +323,7 @@ export default {
           name: '投资登记详情', params: {registerId: record.investOrderId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
         });
       } else if (["approval"].includes(type)){
-         this.$router.push({name: '投资登记审核', params: {registerId: record.investOrderId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
+         this.$router.push({name: '投资登记审批', params: {registerId: record.investOrderId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
       }else if (["readApproval"].includes(type)){
         let that = this;
         this.$confirm({

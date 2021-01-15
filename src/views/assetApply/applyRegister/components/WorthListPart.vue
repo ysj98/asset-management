@@ -174,19 +174,12 @@
         if (!selectedRowKeys.length) {
           return this.$message.warn('请选择数据')
         }
-         this.$SG_Message.confirmDelete({
-          onConfirm: () => {
             let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
         if (!data.length) {
           this.tableObj.dataSource = []
           this.selectedRowKeys = []
         }
         this.calcSum(data)
-          },
-          onCancel: () => {
-            return 
-          }
-        })
         
       },
 
