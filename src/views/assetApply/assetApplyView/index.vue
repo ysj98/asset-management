@@ -252,7 +252,7 @@ export default {
         assetName: '',                // 资产名称/编号
       },
       organProjectType: {
-          organId: 1,
+          organId: 1300,
           organName: this.organName,
           projectId: [],
           assetType: []

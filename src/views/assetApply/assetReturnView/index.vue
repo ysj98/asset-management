@@ -61,8 +61,8 @@
             <SG-DatePicker :allowClear="false" label="归还日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <a-input placeholder="归还单编号" v-model="queryCondition.receiveName"></a-input>
-            <a-input placeholder="领用单编号" v-model="queryCondition.returnName" class="box-right"></a-input>
+            <a-input placeholder="归还单编号" v-model="queryCondition.returnName"></a-input>
+            <a-input placeholder="领用单编号" v-model="queryCondition.receiveName" class="box-right"></a-input>
         </div>
       </div>
     </SG-SearchContainer>
@@ -133,6 +133,10 @@ const columns = [
   {
     title: '资产类型',
     dataIndex: 'assetTypeName'
+  },
+  {
+    title: '资产面积',
+    dataIndex: 'area'
   },
   {
     title: '归还单号',
@@ -225,7 +229,7 @@ export default {
         returnName: '',               // 归还单名称/编号
       },
       organProjectType: {
-          organId: 1,
+          organId: 1300,
           organName: this.organName,
           projectId: [],
           assetType: []

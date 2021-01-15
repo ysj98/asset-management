@@ -186,8 +186,8 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
-        receiveOrganId:1,         // 领用部门id
+        organId:1300,                 // 组织机构id
+        receiveOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -201,8 +201,8 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
-        receiveOrganId:1,         // 领用部门id
+        organId:1300,                 // 组织机构id
+        receiveOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -213,18 +213,18 @@ export default {
         assetType: ''                // 资产类型
       },
       organProjectType: {
-          organId: 1,
+          organId: 1300,
           organName: this.organName,
           projectId: [],
           assetType: []
         }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
       numList: [
         {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
-        {title: '草稿', key: 'draftCount', value: 10, bgColor: '#FFA500'},
-        {title: '待审批', key: 'pendingCount', value: 0, bgColor: '#4BD288'},
-        {title: '已驳回', key: 'rejectCount', value: 0, bgColor: '#1890FF'},
-        {title: '已审批', key: 'approvedCount', value: 0, bgColor: '#DD81E6'},
-        {title: '已取消', key: 'cancelTotal', value: 0, bgColor: '#FD7474'}
+        {title: '草稿', key: 'draftCount', value: 10, bgColor: '#1890FF'},
+        {title: '待审批', key: 'pendingCount', value: 0, bgColor: '#DD81E6'},
+        {title: '已驳回', key: 'rejectCount', value: 0, bgColor: '#FD7474'},
+        {title: '已审批', key: 'approvedCount', value: 0, bgColor: '#4BD288'},
+        {title: '已取消', key: 'cancelTotal', value: 0, bgColor: 'gray'}
       ],  // 概览数字数据, title 标题，value 数值，bgColor 背景色
       assetClassifyOptions: [{label: '全部资产分类', value: ''}],
       assetTypeData: [
