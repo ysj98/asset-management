@@ -288,6 +288,8 @@ export default {
             document.body.appendChild(a);
             a.click();
             a.remove();
+          } else {
+            this.$message.error(res.data.message);
           }
           this.exportBtnLoading = false;
         })
@@ -509,6 +511,8 @@ export default {
             return (this.numList = numList.map((m) => {
               return { ...m, value: (res.data || {})[m.key] };
             }));
+          } else {
+            this.$message.error(r.data.message);
           }
           throw res.message;
         })

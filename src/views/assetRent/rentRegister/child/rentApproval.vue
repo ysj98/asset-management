@@ -365,6 +365,8 @@ export default {
             `${type === "reject" ? "驳回成功" : "审批通过"}`
           );
           this.$router.push("/rentRegister");
+        } else {
+          this.$message.error(res.data.message);
         }
       });
     },

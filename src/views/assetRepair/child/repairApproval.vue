@@ -176,11 +176,13 @@ export default {
                 attachment.push(obj);
                 this.uploadList = attachment;
               });
+            } else {
+              this.$message.error(res.data.message);
             }
           });
       }
     },
-        // 审批/驳回请求
+    // 审批/驳回请求
     approveMaintain(type) {
       let obj = {
         maintainId: this.maintainId,
@@ -192,6 +194,8 @@ export default {
             `${type === "reject" ? "驳回成功！" : "审批通过！"}`
           );
           this.$router.push("/repairRegister");
+        } else {
+          this.$message.error(res.data.message);
         }
       });
     },

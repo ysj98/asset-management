@@ -68,7 +68,13 @@
     <a-row class="a_row">
       <a-col :span="22" :offset="2">
         <div>
-          附件： <SG-UploadFile type="all" v-model="uploadList" :show="true" class="mt20"/>
+          附件：
+          <SG-UploadFile
+            type="all"
+            v-model="uploadList"
+            :show="true"
+            class="mt20"
+          />
         </div>
       </a-col>
     </a-row>
@@ -147,9 +153,9 @@ export default {
             if (+res.data.code === 0) {
               this.repairInfo = res.data.data;
               this.dataSource = res.data.data.detailList;
-              this.dataSource.forEach((item,index)=>{
-                item.key = item.costId
-              })
+              this.dataSource.forEach((item, index) => {
+                item.key = item.costId;
+              });
               // 附件列表处理
               let attachment = [];
               res.data.data.attachmentList.forEach((item) => {
@@ -160,6 +166,8 @@ export default {
                 attachment.push(obj);
                 this.uploadList = attachment;
               });
+            } else {
+              this.$message.error(res.data.message);
             }
           });
       }

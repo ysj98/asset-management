@@ -17,6 +17,7 @@
                 'repairFormName',
                 {
                   rules: [
+                    { required: true, message: '请输入维修单名称' },
                     { max: 30, message: '最多30个字符' },
                   ],
                 },
@@ -226,7 +227,11 @@
                 'explain',
                 {
                   rules: [
-                    { max: 200, message: '维修说明最多200个字符' },
+                    {
+                      required: true,
+                      max: 200,
+                      message: '请输入维修说明(不超过200个字符)',
+                    },
                   ],
                 },
               ]"
@@ -254,6 +259,9 @@
             :dataSource="dataSource"
             :bordered="true"
           >
+            <template slot="payee">
+              <div class="icon-red">收款人(单位)</div>
+            </template>
             <template slot="payee" slot-scope="text, record">
               <a-input
                 placeholder="请输入收款人（单位）"
@@ -351,7 +359,7 @@ const columns = [
     width: "7%",
   },
   {
-    title: "收款人(单位)",
+    slots: { title: "payee" },
     dataIndex: "payee",
     scopedSlots: { customRender: "payee" },
     align: "center",
@@ -516,6 +524,8 @@ export default {
                 item.paymentDate = moment(item.paymentDate);
                 item.order = 1;
               });
+            } else {
+              this.$message.error(res.data.message);
             }
           });
       }
@@ -660,6 +670,18 @@ export default {
       // 验证下方表格数据
       let flag = true;
       utils.each(this.dataSource, (item, i) => {
+        if (!item.payee) {
+          this.$message.error(
+            `请填写付款计划第 ${item.order} 行，收款人（单位）!`
+          );
+          flag = false;
+          return false;
+        }
+        /* if (!item.costId) {
+          this.$message.error(`请选择付款计划第 ${item.order} 行, 费用科目!`);
+          flag = false;
+          return false;
+        } */
         if (!item.paymentAmount) {
           this.$message.error(`请填写付款计划第 ${item.order} 行, 付款金额!`);
           flag = false;
@@ -670,6 +692,11 @@ export default {
           flag = false;
           return false;
         }
+        /* if (!item.followUpUser) {
+          this.$message.error(`请填写付款计划第 ${item.order} 行, 跟进人!`);
+          flag = false;
+          return false;
+        } */
       });
       return flag;
     },
@@ -710,6 +737,8 @@ export default {
             `${val === "submit" ? "提交审批" : "保存草稿"}成功`
           );
           this.$router.push("/repairRegister");
+        } else {
+          this.$message.error(res.data.message);
         }
       });
     },

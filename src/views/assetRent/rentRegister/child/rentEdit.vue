@@ -714,6 +714,8 @@ export default {
         if (+res.data.code === 0) {
           this.$message.success(`${type === "" ? "提交审批" : "保存草稿"}成功`);
           this.$router.push("/rentRegister");
+        } else {
+          this.$message.error(res.data.message)
         }
       });
     },

@@ -400,6 +400,8 @@ export default {
             document.body.appendChild(a);
             a.click();
             a.remove();
+          } else {
+            this.$message.error(res.data.message);
           }
           this.exportBtnLoading = false;
         })

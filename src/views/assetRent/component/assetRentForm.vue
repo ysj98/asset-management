@@ -219,7 +219,7 @@ export default {
         pageNum: this.pagination.pageNo, // 当前页
         pageSize: this.pagination.pageLength, // 每页显示记录数
         organId: Number(this.organId), // 组织机构id
-        leaseNameOrId: this.rentNameOrId,
+        leaseNameOrIdOrContractCode: this.rentNameOrId,
         contractStatusList: this.contractStatus[0] === "" ? [] : this.contractStatus,
         startleaseDateStart: moment(this.rentDate[0]).format("YYYY-MM-DD"),
         startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),

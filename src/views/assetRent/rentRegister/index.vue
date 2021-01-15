@@ -370,7 +370,7 @@ export default {
           : [], // 资产项目Id
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),
-        leaseNameOrId: this.queryCondition.assetNameCode,
+        leaseNameOrIdOrContractCode: this.queryCondition.assetNameCode,
         contractStatusList: this.alljudge(this.queryCondition.contractStatus),
         signingDateStart: moment(this.signDate[0]).format("YYYY-MM-DD"),
         signingDateEnd: moment(this.signDate[1]).format("YYYY-MM-DD"),
@@ -422,6 +422,8 @@ export default {
             document.body.appendChild(a);
             a.click();
             a.remove();
+          } else {
+            this.$message.error(res.data.message);
           }
           this.exportBtnLoading = false;
         })
