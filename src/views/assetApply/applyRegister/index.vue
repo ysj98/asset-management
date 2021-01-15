@@ -186,8 +186,8 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
-        receiveOrganId:1,         // 领用部门id
+        organId:1300,                 // 组织机构id
+        receiveOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -201,8 +201,8 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
-        receiveOrganId:1,         // 领用部门id
+        organId:1300,                 // 组织机构id
+        receiveOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         receiveName: '',            // 领用单名称/编号
@@ -213,7 +213,7 @@ export default {
         assetType: ''                // 资产类型
       },
       organProjectType: {
-          organId: 1,
+          organId: 1300,
           organName: this.organName,
           projectId: [],
           assetType: []

@@ -209,10 +209,10 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
+        organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: '',            // 投资单名称/投资单编号
+        investNameOrId: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -225,10 +225,10 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
+        organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: '',            // 投资单名称/投资单编号
+        investNameOrId: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -238,7 +238,7 @@ export default {
         investName: ''               // 投资单名称
       },
       organProjectType: {
-          organId: 1,
+          organId: 1300,
           organName: this.organName,
           projectId: [],
           assetType: []
