@@ -87,7 +87,16 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入合同编号" v-model="contractNum" />
+            <a-input
+              placeholder="请输入合同编号"
+              v-model="contractNum"
+              v-decorator="[
+                'contractNum',
+                {
+                  rules: [{ max: 30, message: '最多30个字符' }],
+                },
+              ]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -176,7 +185,16 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入租金单价" v-model="rentPrice" />
+            <a-input
+              placeholder="请输入租金单价"
+              v-model="rentPrice"
+              v-decorator="[
+                'rentPrice',
+                {
+                  rules: [{ max: 30, message: '最多30个字符' }],
+                },
+              ]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -214,7 +232,7 @@
         <a-col :span="24">
           <a-form-item :colon="false" v-bind="formItemTextarea">
             <label slot="label">附&emsp;&emsp;件：</label>
-            <SG-UploadFile type="all" v-model="uploadList"/>
+            <SG-UploadFile type="all" v-model="uploadList" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -268,6 +286,7 @@
                 :max="200"
                 v-model="record.remark"
                 style="width: 150px"
+                maxLength="200"
               />
             </template>
           </a-table>
@@ -410,7 +429,7 @@ export default {
       note: "", // 备注
       contractNum: "", // 合同编号
       rentPrice: "", // 租金单价
-      uploadList: [] // 上传列表
+      uploadList: [], // 上传列表
     };
   },
   watch: {
@@ -467,7 +486,7 @@ export default {
           this.queryProjectByOrganId(this.organId);
         });
     },
-        // 查询附件
+    // 查询附件
     getAttachmentList(id) {
       if (!id) {
         return false;
@@ -631,7 +650,7 @@ export default {
       let _this = this;
       this.$confirm({
         title: "提示",
-        content: "确认要删除吗？",
+        content: "确认要删除该记录吗？",
         onOk() {
           let arr = [];
           let area = 0;
@@ -689,7 +708,7 @@ export default {
         contractCode: this.contractNum,
         rentPrice: this.rentPrice,
         remark: this.note,
-        attachmentList: upList
+        attachmentList: upList,
       };
       this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
         if (+res.data.code === 0) {
@@ -729,7 +748,7 @@ export default {
   created() {
     this.leaseOrderId = this.$route.query.leaseOrderId;
     this.getLeaseOrder();
-    this.getAttachmentList(this.leaseOrderId)
+    this.getAttachmentList(this.leaseOrderId);
   },
   mounted() {
     // 获取资产项目/资产类型mounted

@@ -354,32 +354,12 @@ export default {
         });
     },
     // 审批/驳回请求
-    saveUpdateLeaseOrder(type) {
-      // 过滤资产列表
-      let newArr = [];
-      for (let i = 0; i < this.dataSource.length; i++) {
-        let newObj = {};
-        newObj.assetId = this.dataSource[i].assetId;
-        newObj.leaseArea = this.dataSource[i].leaseArea;
-        newArr.push(newObj);
-      }
-      let data = this.assetInfo;
+    updateLeaseOrderStatus(type) {
       let saveObj = {
         leaseOrderId: +this.leaseOrderId,
-        leaseName: data.leaseName,
-        organId: data.organId,
-        projectId: data.projectId,
-        assetType: data.assetType,
         approvalStatus: type === "reject" ? 3 : 1,
-        lesseeId: data.lesseeId,
-        signingDate: data.signingDate,
-        startLeaseDate: data.startLeaseDate,
-        endLeaseDate: data.endLeaseDate,
-        leaseArea: data.leaseArea,
-        assetSum: data.assetSum,
-        leaseDetail: newArr,
       };
-      this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
+      this.$api.assetRent.updateLeaseOrderStatus(saveObj).then((res) => {
         if (+res.data.code === 0) {
           this.$message.success(
             `${type === "reject" ? "驳回成功" : "审批通过"}`
@@ -391,9 +371,9 @@ export default {
     // 审批通过 / 驳回
     approval(type) {
       if (type === "") {
-        this.saveUpdateLeaseOrder(type);
+        this.updateLeaseOrderStatus(type);
       } else {
-        this.saveUpdateLeaseOrder(type);
+        this.updateLeaseOrderStatus(type);
       }
     },
   },

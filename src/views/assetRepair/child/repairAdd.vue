@@ -14,12 +14,9 @@
               placeholder="请输入申请单名称"
               @change="nameChange"
               v-decorator="[
-                'rentName',
+                'repairFormName',
                 {
-                  rules: [
-                    { required: true, message: '请输入维修单名称' },
-                    { max: 30, message: '最多30个字符' },
-                  ],
+                  rules: [{ max: 30, message: '最多30个字符' }],
                 },
               ]"
             />
@@ -143,7 +140,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-item
-            label="维修人"
+            label="维修人（单位）"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
@@ -193,7 +190,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-item
-            label="维修费用"
+            label="维修费用（元）"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
@@ -201,9 +198,12 @@
               placeholder="请输入维修费用"
               v-model="fixPayment"
               v-decorator="[
-                'incomeNum',
+                'fixPayment',
                 {
-                  rules: [{ pattern: /^\d+$/, message: '只能输入数字' }],
+                  rules: [
+                    { pattern: /^\d+$/, message: '只能输入数字' },
+                    { max: 13, message: '最多13个字符' },
+                  ],
                 },
               ]"
             />
@@ -224,11 +224,7 @@
                 'explain',
                 {
                   rules: [
-                    {
-                      required: true,
-                      max: 200,
-                      message: '请输入维修说明(不超过200字符)',
-                    },
+                    { max: 200, message: '维修说明最多200个字符' },
                   ],
                 },
               ]"
@@ -256,13 +252,11 @@
             :dataSource="dataSource"
             :bordered="true"
           >
-            <template slot="payee">
-              <div class="icon-red">收款人(单位)</div>
-            </template>
             <template slot="payee" slot-scope="text, record">
               <a-input
                 placeholder="请输入收款人（单位）"
                 v-model="record.payee"
+                maxLength="200"
               />
             </template>
             <template slot="costId" slot-scope="text, record">
@@ -284,6 +278,7 @@
               <a-input
                 placeholder="请输入付款金额"
                 v-model="record.paymentAmount"
+                maxLength="13"
               />
             </template>
             <template slot="paymentDate">
@@ -296,12 +291,13 @@
               <a-input
                 placeholder="请输入跟进人"
                 v-model="record.followUpUser"
+                maxLength="30"
               />
             </template>
             <template slot="remark" slot-scope="text, record">
               <a-input
                 placeholder="请输入备注"
-                :max="200"
+                maxLength="200"
                 v-model="record.remark"
               />
             </template>
@@ -353,7 +349,7 @@ const columns = [
     width: "7%",
   },
   {
-    slots: { title: "payee" },
+    title: "收款人(单位)",
     dataIndex: "payee",
     scopedSlots: { customRender: "payee" },
     align: "center",
@@ -611,18 +607,6 @@ export default {
       // 验证下方表格数据
       let flag = true;
       utils.each(this.dataSource, (item, i) => {
-        if (!item.payee) {
-          this.$message.error(
-            `请填写付款计划第 ${item.order} 行，收款人（单位）!`
-          );
-          flag = false;
-          return false;
-        }
-        if (!item.costId) {
-          this.$message.error(`请选择付款计划第 ${item.order} 行, 费用科目!`);
-          flag = false;
-          return false;
-        }
         if (!item.paymentAmount) {
           this.$message.error(`请填写付款计划第 ${item.order} 行, 付款金额!`);
           flag = false;
@@ -630,11 +614,6 @@ export default {
         }
         if (!item.paymentDate) {
           this.$message.error(`请选择付款计划第 ${item.order} 行, 付款时间!`);
-          flag = false;
-          return false;
-        }
-        if (!item.followUpUser) {
-          this.$message.error(`请填写付款计划第 ${item.order} 行, 跟进人!`);
           flag = false;
           return false;
         }
