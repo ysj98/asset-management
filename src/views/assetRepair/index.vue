@@ -166,8 +166,6 @@ const columns = [
   {
     title: "所属机构",
     dataIndex: "organName",
-    fixed: "left",
-    width: 140,
     align: "center",
   },
   { title: "维修单名称", dataIndex: "maintainName", align: "center" },
@@ -229,7 +227,7 @@ export default {
       tableData: [],
       tableObj: {
         pagination: false,
-        scroll: { x: 2400 },
+        scroll: { x: 2500 },
         class: "custom-table td-pd10",
       },
       queryCondition: {

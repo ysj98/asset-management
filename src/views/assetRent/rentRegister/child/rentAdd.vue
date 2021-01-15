@@ -133,7 +133,6 @@
                 { rules: [{ required: true, message: '请选择签约日期' }] },
               ]"
               @change="signDateFn"
-              :defaultValue="moment(Date.now())"
             />
           </a-form-item>
         </a-col>
@@ -417,7 +416,7 @@ export default {
       selectedList: [], // 添加资产列表
       leaseArea: "", // 出租面积
       rentFormName: "", // 投资单名称
-      signingDate: "", // 签约日期
+      signingDate: moment(Date.now()), // 签约日期
       startLeaseDate: "", // 起租日期
       endLeaseDate: "", // 止租日期
       contractNum: "", // 合同编号
@@ -506,6 +505,7 @@ export default {
       }
     },
     signDateFn(value, mode) {
+      console.log(mode);
       this.signingDate = mode;
     },
     startDateFn(value, mode) {
@@ -665,6 +665,7 @@ export default {
     // organId && this.queryProjectByOrganId(organId)
     this.queryProjectByOrganId(this.organId);
     this.queryAssetType();
+    this.form.setFieldsValue({ signDate: moment(Date.now()) })
   },
 };
 </script>
