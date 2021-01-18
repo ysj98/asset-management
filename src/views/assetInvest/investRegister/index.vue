@@ -31,7 +31,7 @@
           }
           ">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部审批状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -45,7 +45,7 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部投资状态" :tokenSeparators="[',']"  @select="investStatusFn"  v-model="queryCondition.investStatusList" :getPopupContainer="
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部合同状态" :tokenSeparators="[',']"  @select="investStatusFn"  v-model="queryCondition.investStatusList" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }

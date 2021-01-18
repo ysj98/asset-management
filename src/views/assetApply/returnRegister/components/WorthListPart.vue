@@ -36,7 +36,7 @@
             :min="0"
             step="0.01"
             :precision="2"
-            :max="record.receiveArea"
+            :max="record.unReturnArea"
             style="width: 120px"
             v-model="record.returnArea"
             @change="calcSum(tableObj.dataSource)"
@@ -303,6 +303,13 @@
           if (res && String(res.code) === '0') {
             let addData = res.data.detailList || []
             if (!addData.length) { return false }
+            if(this.type == 'edit'){
+              addData.map((item,index) => {
+              addData[index].unReturnArea = item.returnArea + item.unReturnArea
+              addData[index].totalReturnArea = item.totalReturnArea - item.returnArea
+            })
+            }
+            
             if (status === 'init') {
               dataSource = addData
             } else {
