@@ -320,7 +320,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 2,
       };
@@ -334,7 +334,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 2,
       };

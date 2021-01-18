@@ -114,7 +114,7 @@
           >
         </a-select>
         <SG-DatePicker
-          :allowClear="false"
+          :allowClear="true"
           label="签订日期"
           style="width: 200px"
           pickerType="RangePicker"
@@ -122,7 +122,7 @@
           format="YYYY-MM-DD"
         ></SG-DatePicker>
         <SG-DatePicker
-          :allowClear="false"
+          :allowClear="true"
           label="出租日期"
           style="width: 200px; float: right"
           pickerType="RangePicker"
@@ -332,11 +332,11 @@ export default {
         },
       ],
       signDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 90),
+        moment(new Date() - 24 * 1000 * 60 * 60 * 180),
         moment(new Date()),
       ],
       rentDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 90),
+        moment(new Date() - 24 * 1000 * 60 * 60 * 180),
         moment(new Date()),
       ],
       tableData: [],

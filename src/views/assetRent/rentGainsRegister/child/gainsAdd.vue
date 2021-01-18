@@ -201,8 +201,8 @@
                   {
                     rules: [
                       { required: true, message: '请输入收益金额' },
-                      { max: 30, message: '最多30个字符' },
-                      { pattern: /^\d+$/, message: '只能输入数字' },
+                      { max: 14, message: '最多14个字符' },
+                      { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: '只能输入数字' },
                     ],
                   },
                 ]"
@@ -240,7 +240,7 @@
           <a-col :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&emsp;件：</label>
-              <SG-UploadFile type="all" v-model="uploadList" />
+              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120"/>
             </a-form-item>
           </a-col>
         </a-row>

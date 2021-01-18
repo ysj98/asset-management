@@ -57,7 +57,7 @@
             style="width: 200px; margin-right: 10px"
             pickerType="RangePicker"
             v-model="signDate"
-            format="YYYY-MM-DD"
+            format="YYYY-MM"
             :placeholder="['起', '止']"
           ></SG-DatePicker>
           <a-input-search
@@ -80,6 +80,7 @@
           :tokenSeparators="[',']"
           @select="assetTypeDataFn"
           v-model="queryCondition.assetType"
+          style="width: 170px"
         >
           <a-select-option
             v-for="(item, index) in assetTypeData"
@@ -100,9 +101,13 @@
           >
         </a-select>
         <a-select
+          :maxTagCount="1"
+          mode="multiple"
+          :tokenSeparators="[',']"
+          @select="billOptionFn"
           show-search
           :placeholder="'请选择费用科目'"
-          style="width: 150px"
+          style="width: 200px"
           optionFilterProp="children"
           :options="billConfigOptions"
           :allowClear="true"
@@ -323,7 +328,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 1,
       };
@@ -337,7 +342,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 1,
       };
@@ -508,6 +513,16 @@ export default {
           value,
           this.queryCondition.assetType,
           this.assetTypeData
+        );
+      });
+    },
+    // 资产类型变化
+    billOptionFn(value) {
+      this.$nextTick(function () {
+        this.queryCondition.billOption = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.billOption,
+          this.billConfigOptions
         );
       });
     },
