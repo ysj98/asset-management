@@ -249,7 +249,7 @@ const contractStatusData = [
     value: 1,
   },
   {
-    name: "已作废",
+    name: "无效",
     value: 0,
   },
 ];
@@ -358,7 +358,7 @@ export default {
             item.operationDataBtn = this.createOperationBtn(item.status);
             item.status === 1
               ? (item.status = "有效")
-              : (item.status = "已作废");
+              : (item.status = "无效");
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -545,7 +545,7 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn(type) {
-      // 审批状态  0已作废 1有效
+      // 审批状态  0无效 1有效
       let arr = [];
       // 有效
       if (["1"].includes(String(type))) {
