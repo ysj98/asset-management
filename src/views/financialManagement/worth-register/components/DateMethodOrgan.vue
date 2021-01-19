@@ -30,7 +30,7 @@
           @change="changeConfirmDate"
           class="date_picker_style"
           format="YYYY-MM-DD" style="margin-left: 69px"
-          :defaultValue="[beginDate ? moment(beginDate, 'YYYY-MM-DD') : null, endDate ? moment(endDate, 'YYYY-MM-DD') : null]"
+          :defaultValue="defaultValue"
         />
       </a-col>
       <a-col :span="8">
@@ -81,6 +81,7 @@
     data () {
       return {
         properties: {}, // 属性值
+        defaultValue: [], // 默认值
         organOptions: [], // 评估机构选项,
         // methodOptions: [], // 评估方法选项
         beginDate: null, // 提交日期开始日期
@@ -105,17 +106,13 @@
       // 获取日期
       changeConfirmDate (date, dateStrings) {
         const { assessmentOrgan, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod } = this
-        let confirmDate = date.length ? {
-          beginDate: dateStrings[0], endDate: dateStrings[1]
-        } : {}
+        let confirmDate = { beginDate: dateStrings[0], endDate: dateStrings[1] }
         Object.assign(this, confirmDate)
         this.$emit('input', { assessmentOrgan, beginAssessmenBaseDate, endAssessmenBaseDate, assessmentMethod, ...confirmDate})
       },
       changeAssessDate (date, dateStrings) {
         const { assessmentOrgan, beginDate, endDate, assessmentMethod } = this
-        let assessDate = dateStrings.length ? {
-          beginAssessmenBaseDate: dateStrings[0], endAssessmenBaseDate: dateStrings[1]
-        } : {}
+        let assessDate = { beginAssessmenBaseDate: dateStrings[0], endAssessmenBaseDate: dateStrings[1] }
         Object.assign(this, assessDate)
         this.$emit('input', { assessmentOrgan, beginDate, endDate, assessmentMethod, ...assessDate})
       },
@@ -170,6 +167,10 @@
       mode === 'multiple' ? properties.maxTagCount = 1 : '' // 多选模式防止换行
       this.properties = properties
       Object.assign(this, { ...value })
+      this.defaultValue = [
+        value.beginDate ? moment(value.beginDate, 'YYYY-MM-DD') : null,
+        value.endDate ? moment(value.endDate, 'YYYY-MM-DD') : null
+      ]
       // this.queryDict()
     },
 
