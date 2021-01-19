@@ -39,7 +39,7 @@
             :min="0"
             step="0.01"
             :precision="2"
-            :max="record.area"
+            :max="record.assetArea"
             style="width: 120px"
             v-model="record.investArea"
             @change="calcSum(tableObj.dataSource)"
@@ -488,6 +488,7 @@
       getReturnAssetInfo(assetList) {
          assetList.map((item,index) => {
            assetList[index].assetObjectTypeName = item.assetCategoryName
+           assetList[index].investArea = item.assetArea
          })
          this.assetList = assetList
          console.log(this.assetList)

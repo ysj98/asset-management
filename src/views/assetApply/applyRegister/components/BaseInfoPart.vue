@@ -19,7 +19,7 @@
           <a-input
             placeholder="请填写领用登记单名称"
             :disabled="type == 'approval' || type == 'detail'"
-            v-decorator="[ 'receiveName', {  rules: [{ required: true, message: '请填写领用登记单名称' }, {max: 30, message: '最多30个字符'}] } ]"
+            v-decorator="[ 'receiveName', {  rules: [{required: true, max: 30, message: '最多30个字符'}] } ]"
           />
         </a-form-item>
       </a-col>
@@ -82,12 +82,18 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="预计归还时间" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker
+          <a-date-picker v-if="type != 'add'"
+            style="width: 100%"
+            :placeholder="type=='edit' ? '请选择预计归还时间' : ''"
+            @change="(date, dateString) => setData(dateString, 'returnDate')"
+            :disabled="type == 'approval' || type == 'detail'"
+             v-decorator="[ 'returnDate']"
+          />
+          <a-date-picker v-else
             style="width: 100%"
             placeholder="请选择预计归还时间"
             @change="(date, dateString) => setData(dateString, 'returnDate')"
             :disabled="type == 'approval' || type == 'detail'"
-             v-decorator="[ 'returnDate']"
           />
         </a-form-item>
       </a-col>
@@ -210,6 +216,7 @@
             // 转换日期格式为string
             let receiveDate = values.receiveDate ? moment(values.receiveDate).format('YYYY-MM-DD') : ''
             let returnDate = values.returnDate ? moment(values.returnDate).format('YYYY-MM-DD') : ''
+            console.log(returnDate)
             let form = Object.assign({}, values, { attachmentList: attachArr, organId, receiveDate: receiveDate, receiveDate:receiveDate, returnDate:returnDate, receiveUserId: this.receiveUserId })
             return resolve(form)
           }
@@ -229,8 +236,9 @@
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: moment(returnDate || new Date(), 'YYYY-MM-DD')  }
+        let formatDetails = type != 'add' ? { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: returnDate ? moment(returnDate, 'YYYY-MM-DD') : ''  } : { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD') }
         !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
+        !returnDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'returnDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
          formatDetails = Object.assign({}, formatDetails, {
@@ -320,6 +328,7 @@
           value = val
           this.form.setFieldsValue({ [type]: value })
           this.$emit('setData', { [type]: value})
+          console.log(2222,type)
         } else if (type === 'receiveOrganName') {
           const { organOptions } = this
           value = val[1]

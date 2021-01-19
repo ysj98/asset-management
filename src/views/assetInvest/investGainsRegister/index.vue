@@ -320,7 +320,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 2,
       };
@@ -334,7 +334,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 2,
       };
@@ -400,6 +400,8 @@ export default {
             document.body.appendChild(a);
             a.click();
             a.remove();
+          } else {
+            this.$message.error(res.data.message);
           }
           this.exportBtnLoading = false;
         })

@@ -52,11 +52,12 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="loading"
-          :scroll="{ x: 1200 }"
+          :scroll="{ x: 2000 }"
           size="small"
           :pagination="false"
           class="custom-table td-pd10"
           :row-selection="{ selectedRowKeys, onChange: onSelectChange }"
+          tableLayout="fixed"
         >
         </a-table>
       </div>
@@ -123,8 +124,6 @@ const columns = [
     title: "资产编码",
     align: "center",
     dataIndex: "assetCode",
-    fixed: "left",
-    width: 120,
   },
   { title: "资产名称", align: "center", dataIndex: "assetName" },
   { title: "资产类型", align: "center", dataIndex: "assetTypeName" },

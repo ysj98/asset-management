@@ -12,7 +12,7 @@
       <div slot="headerBtns">
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zzjgst_dc">导出</SG-Button>
       </div>
-      <div slot="headerForm">
+      <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-select 
             :maxTagCount="1"

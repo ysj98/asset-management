@@ -59,7 +59,7 @@
 
 <script>
 const columns = [
-    {
+  {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
@@ -130,24 +130,23 @@ export default {
         pageSize: this.pagination.pageLength,
         pageNum: this.pagination.pageNo,
         objectType: Number(this.objectType),
-        assetNameCode: this.assetNameCode
+        assetNameCode: this.assetNameCode,
       };
-      return this.$api.assets
-        .assetListPage(form)
-        .then((r) => {
-          console.log(r);
-          let res = r.data;
-          res.data.data.forEach((item, index) => {
-            item.key = item.assetId;
-            item.model = "/";
-          });
-          if (res && res.code.toString() === "0") {
-            this.loading = false;
-            const { count, data } = res.data;
-            this.tableData = data;
-            this.count = count
-          }
-        })
+      return this.$api.assets.assetListPage(form).then((r) => {
+        let res = r.data;
+        res.data.data.forEach((item, index) => {
+          item.key = item.assetId;
+          item.model = "/";
+        });
+        if (res && res.code.toString() === "0") {
+          this.loading = false;
+          const { count, data } = res.data;
+          this.tableData = data;
+          this.count = count;
+        } else {
+          this.$message.error(r.data.message);
+        }
+      });
     },
     // 搜索回车
     onPressEnter() {
@@ -188,6 +187,8 @@ export default {
             list.unshift({ title: "全部资产分类", key: "-1" });
             this.objectTypeOptions = list;
             return false;
+          } else {
+            this.$message.error(res.data.message);
           }
           throw res.message || "查询资产类别失败";
         })
@@ -196,9 +197,9 @@ export default {
         });
     },
     objectTypeChange(val) {
-      this.objectType = val
-      this.query()
-    }
+      this.objectType = val;
+      this.query();
+    },
   },
 };
 </script>

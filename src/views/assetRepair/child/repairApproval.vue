@@ -81,12 +81,20 @@
     <SG-Title title="付款计划" />
     <a-table
       class="ml50 mr50"
+      style="margin-bottom: 74px"
       :columns="columns"
       :data-source="dataSource"
       bordered
       :pagination="false"
       size="middle"
     ></a-table>
+    <!-- 页脚 -->
+    <FormFooter style="border: none" location="fixed">
+      <div>
+        <SG-Button type="primary" @click="approval('')">审批通过</SG-Button>
+        <SG-Button @click="approval('reject')">驳回</SG-Button>
+      </div>
+    </FormFooter>
   </div>
 </template>
 
@@ -134,6 +142,7 @@ const columns = [
     align: "center",
   },
 ];
+import FormFooter from "@/components/FormFooter";
 export default {
   data() {
     return {
@@ -144,6 +153,7 @@ export default {
       repairInfo: {},
     };
   },
+  components: { FormFooter },
   methods: {
     getMaintainInfo() {
       if (this.maintainId) {
@@ -170,6 +180,31 @@ export default {
               this.$message.error(res.data.message);
             }
           });
+      }
+    },
+    // 审批/驳回请求
+    approveMaintain(type) {
+      let obj = {
+        maintainId: this.maintainId,
+        approvalStatus: type === "reject" ? 3 : 1,
+      };
+      this.$api.assetRent.approveMaintain(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
+          this.$message.success(
+            `${type === "reject" ? "驳回成功！" : "审批通过！"}`
+          );
+          this.$router.push("/repairRegister");
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
+    // 审批通过 / 驳回
+    approval(type) {
+      if (type === "") {
+        this.approveMaintain(type);
+      } else {
+        this.approveMaintain(type);
       }
     },
   },

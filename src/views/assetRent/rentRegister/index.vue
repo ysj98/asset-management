@@ -86,9 +86,9 @@
           </a-select>
           <a-input-search
             v-model="queryCondition.assetNameCode"
-            placeholder="出租单名称/合同编号"
+            placeholder="出租单名称/出租单ID/合同编号"
             maxlength="30"
-            style="width: 160px; height: 32px; margin-right: 10px"
+            style="width: 210px; height: 32px; margin-right: 10px"
             @search="allQuery"
           />
         </div>
@@ -114,7 +114,7 @@
           >
         </a-select>
         <SG-DatePicker
-          :allowClear="false"
+          :allowClear="true"
           label="签订日期"
           style="width: 200px"
           pickerType="RangePicker"
@@ -122,7 +122,7 @@
           format="YYYY-MM-DD"
         ></SG-DatePicker>
         <SG-DatePicker
-          :allowClear="false"
+          :allowClear="true"
           label="出租日期"
           style="width: 200px; float: right"
           pickerType="RangePicker"
@@ -332,26 +332,26 @@ export default {
         },
       ],
       signDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 90),
+        moment(new Date() - 24 * 1000 * 60 * 60 * 180),
         moment(new Date()),
       ],
       rentDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 90),
+        moment(new Date() - 24 * 1000 * 60 * 60 * 180),
         moment(new Date()),
       ],
       tableData: [],
       numList: [
         { title: "全部", key: "total", value: 0, fontColor: "#3d91f9" },
-        { title: "草稿", key: "draft", value: 0, bgColor: "#e47e60" },
-        { title: "待审批", key: "await", value: 0, bgColor: "#00d58e" },
-        { title: "已驳回", key: "reject", value: 0, bgColor: "#0092ff" },
+        { title: "草稿", key: "draft", value: 0, bgColor: "#0092ff" },
+        { title: "待审批", key: "await", value: 0, bgColor: "#ed7ce3" },
+        { title: "已驳回", key: "reject", value: 0, bgColor: "#ff6a6b" },
         {
           title: "已审批",
           key: "complete",
           value: 0,
-          bgColor: "#ed7ce3",
+          bgColor: "#00d58e",
         },
-        { title: "已取消", key: "cancel", value: 0, bgColor: "#ff6a6b" },
+        { title: "已取消", key: "cancel", value: 0, bgColor: "#bbc8d6" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
@@ -370,7 +370,7 @@ export default {
           : [], // 资产项目Id
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),
-        leaseNameOrId: this.queryCondition.assetNameCode,
+        leaseNameOrIdOrContractCode: this.queryCondition.assetNameCode,
         contractStatusList: this.alljudge(this.queryCondition.contractStatus),
         signingDateStart: moment(this.signDate[0]).format("YYYY-MM-DD"),
         signingDateEnd: moment(this.signDate[1]).format("YYYY-MM-DD"),
@@ -422,6 +422,8 @@ export default {
             document.body.appendChild(a);
             a.click();
             a.remove();
+          } else {
+            this.$message.error(res.data.message);
           }
           this.exportBtnLoading = false;
         })
@@ -664,6 +666,11 @@ export default {
                 }
               });
           },
+        });
+      } else if (["approval"].includes(type)) {
+        this.$router.push({
+          path: "/rentRegister/rentApproval",
+          query: { leaseOrderId: record.leaseOrderId },
         });
       }
     },

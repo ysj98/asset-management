@@ -109,13 +109,14 @@
           let table2Data = []
           if (res && String(res.code) === '0') {
             const info = res.data
+            console.log(info)
             if (type === 'ownInfo') {
               let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = info
               detailData = { ownerTypeName, ownershipStatusName }
               tableData = ownershipInfo
               table2Data = transactionList
             } else if (type === 'receiveInfo') {
-              let { deliverList, ...others } = info
+              let { deliveryDetailList, ...others } = info
               let { infoKeys: { receiveInfo: { details } } } = this
               // 是否转运营
               if (!others.transferTime) {
@@ -132,7 +133,7 @@
                 this.infoKeys.receiveInfo.details = { ...details, transferOperationTime: '转运营日期' }
               }
               detailData = others
-              tableData = deliverList
+              tableData = deliveryDetailList
             } else if (type === 'changeInfo' || type === 'accessoryInfo') {
               tableData = info
             } else if (type === 'billInfo') {

@@ -322,6 +322,7 @@ return_form_new                归还单新建
 asset_return_register             归还登记导出
 return_form_edit               归还单编辑
 return_form_delete             归还单删除
+return_form_approve            归还单审批
 
 V2.0.7
 资产归还一览表

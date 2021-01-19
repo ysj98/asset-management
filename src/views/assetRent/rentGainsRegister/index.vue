@@ -57,7 +57,7 @@
             style="width: 200px; margin-right: 10px"
             pickerType="RangePicker"
             v-model="signDate"
-            format="YYYY-MM-DD"
+            format="YYYY-MM"
             :placeholder="['起', '止']"
           ></SG-DatePicker>
           <a-input-search
@@ -80,6 +80,7 @@
           :tokenSeparators="[',']"
           @select="assetTypeDataFn"
           v-model="queryCondition.assetType"
+          style="width: 170px"
         >
           <a-select-option
             v-for="(item, index) in assetTypeData"
@@ -100,9 +101,13 @@
           >
         </a-select>
         <a-select
+          :maxTagCount="1"
+          mode="multiple"
+          :tokenSeparators="[',']"
+          @select="billOptionFn"
           show-search
           :placeholder="'请选择费用科目'"
-          style="width: 150px"
+          style="width: 200px"
           optionFilterProp="children"
           :options="billConfigOptions"
           :allowClear="true"
@@ -244,7 +249,7 @@ const contractStatusData = [
     value: 1,
   },
   {
-    name: "已作废",
+    name: "无效",
     value: 0,
   },
 ];
@@ -323,7 +328,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 1,
       };
@@ -337,7 +342,7 @@ export default {
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
-        feeSubject: this.queryCondition.billOption,
+        feeSubjectList: this.queryCondition.billOption,
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 1,
       };
@@ -353,7 +358,7 @@ export default {
             item.operationDataBtn = this.createOperationBtn(item.status);
             item.status === 1
               ? (item.status = "有效")
-              : (item.status = "已作废");
+              : (item.status = "无效");
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -511,6 +516,16 @@ export default {
         );
       });
     },
+    // 资产类型变化
+    billOptionFn(value) {
+      this.$nextTick(function () {
+        this.queryCondition.billOption = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.billOption,
+          this.billConfigOptions
+        );
+      });
+    },
     // 分页查询
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
@@ -530,7 +545,7 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn(type) {
-      // 审批状态  0已作废 1有效
+      // 审批状态  0无效 1有效
       let arr = [];
       // 有效
       if (["1"].includes(String(type))) {

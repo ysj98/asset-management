@@ -143,7 +143,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-item
-            label="维修人"
+            label="维修人（单位）"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
@@ -193,11 +193,23 @@
         </a-col>
         <a-col :span="8">
           <a-form-item
-            label="维修费用"
+            label="维修费用（元）"
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入维修费用" v-model="fixPayment" />
+            <a-input
+              placeholder="请输入维修费用"
+              v-model="fixPayment"
+              v-decorator="[
+                'fixPayment',
+                {
+                  rules: [
+                    { pattern: /^\d+$/, message: '只能输入数字' },
+                    { max: 13, message: '最多13个字符' },
+                  ],
+                },
+              ]"
+            />
           </a-form-item>
         </a-col>
       </a-row>
@@ -218,7 +230,7 @@
                     {
                       required: true,
                       max: 200,
-                      message: '请输入维修说明(不超过200字符)',
+                      message: '请输入维修说明(不超过200个字符)',
                     },
                   ],
                 },
@@ -254,6 +266,7 @@
               <a-input
                 placeholder="请输入收款人（单位）"
                 v-model="record.payee"
+                maxLength="200"
               />
             </template>
             <template slot="costId" slot-scope="text, record">
@@ -275,6 +288,7 @@
               <a-input
                 placeholder="请输入付款金额"
                 v-model="record.paymentAmount"
+                maxLength="13"
               />
             </template>
             <template slot="paymentDate">
@@ -287,12 +301,13 @@
               <a-input
                 placeholder="请输入跟进人"
                 v-model="record.followUpUser"
+                maxLength="30"
               />
             </template>
             <template slot="remark" slot-scope="text, record">
               <a-input
                 placeholder="请输入备注"
-                :max="200"
+                maxLength="200"
                 v-model="record.remark"
               />
             </template>
@@ -504,11 +519,13 @@ export default {
                 attachment.push(obj);
                 this.uploadList = attachment;
               });
-              this.dataSource = utils.deepClone(r.detailList)
-              this.dataSource.forEach(item=>{
-                item.paymentDate = moment(item.paymentDate)
-                item.order = 1
-              })
+              this.dataSource = utils.deepClone(r.detailList);
+              this.dataSource.forEach((item) => {
+                item.paymentDate = moment(item.paymentDate);
+                item.order = 1;
+              });
+            } else {
+              this.$message.error(res.data.message);
             }
           });
       }
@@ -660,11 +677,11 @@ export default {
           flag = false;
           return false;
         }
-        if (!item.costId) {
+        /* if (!item.costId) {
           this.$message.error(`请选择付款计划第 ${item.order} 行, 费用科目!`);
           flag = false;
           return false;
-        }
+        } */
         if (!item.paymentAmount) {
           this.$message.error(`请填写付款计划第 ${item.order} 行, 付款金额!`);
           flag = false;
@@ -675,11 +692,11 @@ export default {
           flag = false;
           return false;
         }
-        if (!item.followUpUser) {
+        /* if (!item.followUpUser) {
           this.$message.error(`请填写付款计划第 ${item.order} 行, 跟进人!`);
           flag = false;
           return false;
-        }
+        } */
       });
       return flag;
     },
@@ -720,6 +737,8 @@ export default {
             `${val === "submit" ? "提交审批" : "保存草稿"}成功`
           );
           this.$router.push("/repairRegister");
+        } else {
+          this.$message.error(res.data.message);
         }
       });
     },

@@ -193,7 +193,7 @@ export const accessCard = [
 export const titleDeed = [
   {
     label: '权利类型',
-    attrCode: 'typeOfRight',
+    attrCode: 'rightTypeName',
     chooseArray: [],
     formType: 'selcet',
     attrValue: '',

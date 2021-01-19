@@ -11,8 +11,8 @@
           v-power="ASSET_MANAGEMENT.WORTH_REGISTER_RECORD_EXPORT"
         >导出</SG-Button>
       </div>
-      <div slot="headerForm">
-        <tree-select @changeTree="changeTree" style="width: 180px"/>
+      <div slot="headerForm" style="float: right; text-align: left">
+        <tree-select @changeTree="changeTree" style="width: 180px; text-align: left"/>
         <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 180px; margin: 0 10px"/>
       </div>
       <div slot="contentForm">

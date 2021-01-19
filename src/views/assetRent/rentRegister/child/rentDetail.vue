@@ -313,7 +313,6 @@ export default {
     },
     // 查询附件
     getAttachmentList(id) {
-      console.log(123);
       if (!id) {
         return false;
       }

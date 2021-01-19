@@ -129,7 +129,7 @@
           // projectId: projectId === '-1' ? '' : projectId, 改前
           assetType: assetType === '-1' ? '' : assetType,
           objectType: objectType === '-1' ? '' : objectType,
-          pageSize: pageLength, pageNum: pageNo
+          pageSize: pageLength, pageNum: pageNo, areaType: 1
         }
         return this.$api.assets.assetListPage(form).then(r => {
           let res = r.data

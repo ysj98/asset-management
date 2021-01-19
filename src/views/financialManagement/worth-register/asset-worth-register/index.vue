@@ -25,7 +25,7 @@
           v-power="ASSET_MANAGEMENT.ASSET_AWR_IMPORT"
         >批量导入</SG-Button>
       </div>
-      <div slot="headerForm">
+      <div slot="headerForm" style="float: right; text-align: left">
         <tree-select @changeTree="changeTree" style="width: 180px"/>
         <a-input placeholder="请输入登记名称" @pressEnter="queryTableData" v-model.trim="registerName" style="width: 180px; margin: 0 10px"/>
       </div>

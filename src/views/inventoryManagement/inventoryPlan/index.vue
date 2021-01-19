@@ -8,7 +8,7 @@
     <div class="search-box">
       <div class="search-left">
         <SG-Button v-power="ASSET_MANAGEMENT.zcgl_plan_create" icon="plus" @click="goPage('create')" type="primary"
-          >新增盘点计划</SG-Button
+          >新增盘点计划123</SG-Button
         >
       </div>
       <div class="search-right">
@@ -113,7 +113,7 @@ const allStyle = {
   marginRight: "10px",
   "margin-top": "20px",
   height: "32px",
-  overflow: "hidden"
+  //overflow: "hidden"
 }
 const allWidth = { width: "150px", marginRight: "10px" }
 // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4   

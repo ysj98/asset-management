@@ -9,7 +9,7 @@
           导出
         </SG-Button>
       </div>
-      <div slot="headerForm" style="margin-right: 8px">
+      <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8">
           <a-col :span="13" :offset="1">
             <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>

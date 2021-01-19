@@ -10,7 +10,7 @@
           <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
         </SG-Button>
       </div>
-      <div slot="headerForm">
+      <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect
           @changeTree="changeTree"
           placeholder="请选择组织机构"

@@ -3,7 +3,7 @@
 -->
 <template>
   <div class="ownershipRegistration">
-    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}" style=" position: relative">
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
@@ -14,8 +14,8 @@
       </div>
       <div slot="headerForm">
       </div>
-      <div slot="contentForm" class="search-content-box">
-        <div class="search-from-box">
+      <div slot="contentForm" class="search-content-box" style=" position: absolute">
+        <div class="search-from-box" style="float: right; text-align: left">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权证类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
             <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -54,6 +54,7 @@
         :row-selection="rowSelection"
         class="custom-table td-pd10"
         :pagination="false"
+        :rowKey='record=>record.warrantId'
         >
         <template slot="obligeeName" slot-scope="text, record">
           <span>{{record.obligeeName || '--'}}</span>

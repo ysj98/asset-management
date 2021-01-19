@@ -64,6 +64,7 @@ const titleDeed = [
   { text: '权证号', value: 'warrantNbr' },
   { text: '权属形式', value: 'ownerTypeName' },
   { text: '权证类型', value: 'kindOfRightName' },
+  { text: '权利类型', value: 'rightTypeName' },
   { text: '不动产单元号', value: 'estateUnitCode' },
   { text: '丘地号', value: 'lotNo' },
   { text: '坐落位置', value: 'seatingPosition' },
@@ -87,6 +88,7 @@ const accessCard = [
   { text: '承租人', value: 'tenantIdName' },
   { text: '委托管理单位', value: 'entrustOrganization' },
   { text: '建筑面积(㎡)', value: 'buildArea' },
+  { text: '使用面积(㎡)', value: 'useArea' },
   { text: '专有建筑面积(㎡)', value: 'exclusiveBuildArea' },
   { text: '分摊面积(㎡)', value: 'apportionArea' },
   { text: '坐落位置', value: 'seatingPosition' },
@@ -196,6 +198,7 @@ export default {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
         this.particularsData = data.amsOwnershipWarrant
+        console.log(this.particularsData)
         let files = []
         if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
             data.amsAttachmentList.forEach(item => {
@@ -210,6 +213,7 @@ export default {
         data.amsOwnershipWarrantObligeeList.forEach((list, index) => {
           list.key = index
           list.obligeeId = list.obligeeName
+          data.amsOwnershipWarrantObligeeList[index].percent = list.percent.toFixed(2)
         })
         this.amsOwnershipWarrantObligeeList = data.amsOwnershipWarrantObligeeList
         // 抵押信息

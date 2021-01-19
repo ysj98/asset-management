@@ -8,7 +8,7 @@
           @click="handleExport" v-power="ASSET_MANAGEMENT.ASSET_INVEST_VIEW_EXPORT"
         >导出</SG-Button>
       </div>
-      <div slot="headerForm" style="margin-right: 32px">
+      <div slot="headerForm" style="margin-right: 32px; text-align: left">
         <a-row :gutter="8">
           <a-col :span="9" :offset="2">
             <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>

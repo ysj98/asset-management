@@ -31,7 +31,7 @@
           }
           ">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部审批状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -45,7 +45,7 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部投资状态" :tokenSeparators="[',']"  @select="investStatusFn"  v-model="queryCondition.investStatusList" :getPopupContainer="
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部合同状态" :tokenSeparators="[',']"  @select="investStatusFn"  v-model="queryCondition.investStatusList" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -53,10 +53,10 @@
             <a-select-option v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -105,7 +105,6 @@ import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OperationPopover from "@/components/OperationPopover"
-
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '草稿', value: '0' }, { name: '待审批', value: '2' }, { name: '已驳回', value: '3' }, { name: '已审批', value: '1' }, { name: '已取消', value: '4' }
 ]
@@ -203,16 +202,33 @@ export default {
       createValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       tableData: [],
       count: '',
+      organProjectBuildingValue:'',
       noPageTools: false,
       listData: [{label:'编辑', value:''}],
       queryCondition: {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1,                 // 组织机构id
+        organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: '',            // 投资单名称/投资单编号
+        investNameOrId: null,            // 投资单名称/投资单编号
+        signingDateStart: '',        // 开始签订日期
+        endReturnDate: '',          // 结束签订日期
+        startInvestDateStart: '',         // 开始投资日期
+        startInvestDateEnd: '',           // 结束投资日期
+        assetType: '',                // 资产类型
+        investStatusList: [],            // 投资状态
+        investName: ''               // 投资单名称
+      },
+      queryInitCondition: {
+        pageNum: 1,                // 当前页
+        pageSize: 10,              // 每页显示记录数
+        projectList: [],             // 资产项目Id
+        organId:1300,                 // 组织机构id
+        assetTypeList: [''],           // 资产类型id(多个用，分割)
+        approvalStatusList: [],        // 状态
+        investNameOrId: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -222,18 +238,18 @@ export default {
         investName: ''               // 投资单名称
       },
       organProjectType: {
-          organId: 1,
+          organId: 1300,
           organName: this.organName,
           projectId: [],
           assetType: []
         }, // 查询条件：组织机构-资产项目-资产类型 { organId, projectId, assetType }
       numList: [
         {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
-        {title: '草稿', key: 'draft', value: 10, bgColor: '#FFA500'},
-        {title: '待审批', key: 'await', value: 0, bgColor: '#4BD288'},
-        {title: '已驳回', key: 'reject', value: 0, bgColor: '#1890FF'},
-        {title: '已审批', key: 'complete', value: 0, bgColor: '#DD81E6'},
-        {title: '已取消', key: 'cancel', value: 0, bgColor: '#FD7474'}
+        {title: '草稿', key: 'draft', value: 10, bgColor: '#1890FF'},
+        {title: '待审批', key: 'await', value: 0, bgColor: '#DD81E6'},
+        {title: '已驳回', key: 'reject', value: 0, bgColor: '#FD7474'},
+        {title: '已审批', key: 'complete', value: 0, bgColor: '#4BD288'},
+        {title: '已取消', key: 'cancel', value: 0, bgColor: 'gray'}
       ],  // 概览数字数据, title 标题，value 数值，bgColor 背景色
       assetClassifyOptions: [{label: '全部资产分类', value: ''}],
       assetTypeData: [
@@ -242,13 +258,24 @@ export default {
           value: ''
         }
       ],
-      projectData: []
+      projectData: [],
+      refreshKey: 0, // 更新记录key
+      refreshIndex: 0 // 更新记录index
     }
   },
   watch: {
     'queryCondition.assetType' () {
       this.getAssetClassifyOptions()
-    }
+    },
+    // 刷新页面
+      refreshKey: function (key, preKey) {
+
+        key !== preKey && this.allQueryInit()
+      },
+      refreshIndex: function (key, preKey) {
+
+        key !== preKey && this.allQuery()
+      }
   },
   mounted () {
     this.platformDictFn('asset_type')
@@ -295,7 +322,9 @@ export default {
         this.$router.push({
           name: '投资登记详情', params: {registerId: record.investOrderId, type: 'detail',organId: record.organId, organName: record.organName, queryType:1},
         });
-      } else if (["readApproval"].includes(type)){
+      } else if (["approval"].includes(type)){
+         this.$router.push({name: '投资登记审批', params: {registerId: record.investOrderId, type: 'approval',organId: record.organId, organName: record.organName, queryType:1}});
+      }else if (["readApproval"].includes(type)){
         let that = this;
         this.$confirm({
           title: "提示",
@@ -378,6 +407,44 @@ export default {
       this.getObjectKeyValueByOrganIdFn()
       this.query()
     },
+        queryInit() {
+       this.loading = true
+      let obj = {
+        pageNum: this.queryInitCondition.pageNum,                // 当前页
+        pageSize: this.queryInitCondition.pageSize,              // 每页显示记录数
+        approvalStatusList: this.alljudge(this.queryInitCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        projectIdList: this.alljudge(this.queryInitCondition.projectList),            // 资产项目Id
+        organId: Number(this.queryInitCondition.organId),        // 组织机构id
+        assetTypeList: this.alljudge(this.queryInitCondition.assetType),  // 资产类型id(多个用，分割)
+        signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
+        signingDateEnd: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束签订日期
+        startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
+        startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
+        investStatusList: this.alljudge(this.queryInitCondition.investStatusList),        // 投资状态列表
+        investNameOrId: this.queryInitCondition.investNameOrId                              // 投资单名称/编号
+      }
+      this.$api.assetInvest.getInvestOrderStatistics(obj).then(res => {
+        if(res.data.code == 0){
+          this.numList.map((item,index) => {
+            this.numList[index].value = res.data.data[item.key]
+          })
+          this.$api.assetInvest.getInvestOrderPageList(obj).then(r => {
+            if(r.data.code == 0){
+              r.data.data.data.map((item,index) => {
+                r.data.data.data[index].key = item.investOrderId
+                item.operationDataBtn = this.createOperationBtn(
+              item.approvalStatus
+            );
+              })
+              this.tableData = r.data.data.data
+              this.count = r.data.data.count
+            }
+            this.loading = false
+          })
+        }
+
+      })
+    },
     query () {
       this.loading = true
       let obj = {
@@ -438,6 +505,11 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.pageSize = 10
       this.query()
+    },
+        allQueryInit () {
+      this.queryInitCondition.pageNum = 1
+      this.queryInitCondition.pageSize = 10
+      this.queryInit()
     },
     alljudge (val) {
       if (val.length !== 0) {
@@ -587,7 +659,21 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
-  }
+  },
+    // 路由卫士，用于审批及提交成功后刷新列表
+    beforeRouteEnter (to, from, next) {
+      const { name } = from
+      const { params: { refresh } } = to
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        if ((name === '投资登记新增' || name === '投资登记审批') && refresh) {
+          vm.refreshKey = new Date().getTime()
+        }
+        if (name === '投资登记编辑' && refresh) {
+          vm.refreshIndex = new Date().getTime()
+        }
+      })
+    }
 }
 </script>
 

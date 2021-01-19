@@ -80,7 +80,16 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入合同编号" v-model="contractNum" />
+            <a-input
+              placeholder="请输入合同编号"
+              v-model="contractNum"
+              v-decorator="[
+                'contractNum',
+                {
+                  rules: [{ max: 30, message: '最多30个字符' }],
+                },
+              ]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -169,7 +178,16 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
           >
-            <a-input placeholder="请输入租金单价" v-model="rentPrice" />
+            <a-input
+              placeholder="请输入租金单价"
+              v-model="rentPrice"
+              v-decorator="[
+                'rentPrice',
+                {
+                  rules: [{ max: 30, message: '最多30个字符' }],
+                },
+              ]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -261,6 +279,7 @@
                 :max="200"
                 v-model="record.remark"
                 style="width: 150px"
+                maxLength="200"
               />
             </template>
           </a-table>
@@ -366,6 +385,7 @@ import TenantModal from "../../component/tenantModal"; // 承租人组件
 import AssetListMoal from "../../component/assetListModal"; // 资产列表组件
 import { calc, debounce } from "@/utils/utils";
 import FormFooter from "@/components/FormFooter";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -396,7 +416,7 @@ export default {
       selectedList: [], // 添加资产列表
       leaseArea: "", // 出租面积
       rentFormName: "", // 投资单名称
-      signingDate: "", // 签约日期
+      signingDate: moment(Date.now()), // 签约日期
       startLeaseDate: "", // 起租日期
       endLeaseDate: "", // 止租日期
       contractNum: "", // 合同编号
@@ -415,11 +435,11 @@ export default {
     },
   },
   methods: {
+    moment,
     // 下拉搜索筛选
     filterOption,
     // 改变资产项目或资产类型，清空关联的登记单
     changeSelect(val) {
-      console.log(val);
       this.dynamicData.assetType = val;
       /*  this.selectedList = []
         this.tableObj.dataSource = [] */
@@ -485,6 +505,7 @@ export default {
       }
     },
     signDateFn(value, mode) {
+      console.log(mode);
       this.signingDate = mode;
     },
     startDateFn(value, mode) {
@@ -508,7 +529,7 @@ export default {
       let _this = this;
       this.$confirm({
         title: "提示",
-        content: "确认要删除吗？",
+        content: "确认要删除该记录吗？",
         onOk() {
           let arr = [];
           let area = 0;
@@ -583,7 +604,7 @@ export default {
         organId: this.organId,
         projectId: this.dynamicData.projectId,
         assetType: this.dynamicData.assetType,
-        approvalStatus: type === "draft" ? 0 : 1,
+        approvalStatus: type === "draft" ? 0 : 2,
         lesseeId: str,
         signingDate: this.signingDate,
         startLeaseDate: this.startLeaseDate,
@@ -601,6 +622,8 @@ export default {
         if (+res.data.code === 0) {
           this.$message.success(`${type === "" ? "提交审批" : "保存草稿"}成功`);
           this.$router.push("/rentRegister");
+        } else {
+          this.$message.error(res.data.message);
         }
       });
     },
@@ -633,7 +656,7 @@ export default {
   },
   created() {
     // 页面一加载储存organId
-    this.organId = this.$route.query.id;
+    this.organId = this.$route.query.organId;
     this.organName = this.$route.query.organName;
   },
   mounted() {
@@ -644,6 +667,7 @@ export default {
     // organId && this.queryProjectByOrganId(organId)
     this.queryProjectByOrganId(this.organId);
     this.queryAssetType();
+    this.form.setFieldsValue({ signDate: moment(Date.now()) });
   },
 };
 </script>

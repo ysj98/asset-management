@@ -379,8 +379,8 @@ export const assets = {
     queryOwnDetail: '/ams/ownerShip/asset/owner/detail',
     // 资产详情-其他信息Tab-接管信息（旧）
     //queryTakeOverDetail: '/ams/assetChange/assetTakeOverInfo',
-    // 资产详情-其他信息Tab-接管信息（新/暂未部署上线）
-    queryTakeOverDetail: 'ams/deliveryDetail/assetTakeOverInfo',
+    // 资产详情-其他信息Tab-接管信息(新)
+    queryTakeOverDetail: '/ams/deliveryDetail/assetTakeOverInfo',
     // 资产详情-其他信息Tab-变动信息
     queryChangeDetail: '/ams/assetChange/assetChangeInfo',
     // 资产详情-其他信息Tab-账面信息
@@ -1067,7 +1067,11 @@ export const useManage = {
   // 资产归还一览表-详情
   getReturnDetailInfo: '/ams/assetReturn/getReturnDetailInfo',
   // 资产领用-资产归还选择领用记录分页列表
-  getReceiveRecordPage: '/ams/assetReceive/getReceiveRecordPage'
+  getReceiveRecordPage: '/ams/assetReceive/getReceiveRecordPage',
+  // 资产领用-审批
+  approveReceive: '/ams/assetReceive/approveReceive',
+  // 资产归还-审批
+  approveReturn: '/ams/assetReturn/approveReturn'
 }
 
 // 资产出租
@@ -1148,6 +1152,8 @@ export const assetRepair = {
   getMaintainPage: '/ams/assetMaintain/getMaintainPage',
   // 资产维修-新增编辑保存
   submitMaintain: '/ams/assetMaintain/submitMaintain',
+  // 资产维修-审批
+  approveMaintain: '/ams/assetMaintain/approveMaintain',
   // 资产维修-详情
   getMaintainInfo: '/ams/assetMaintain/getMaintainInfo',
   // 资产维修-反审核

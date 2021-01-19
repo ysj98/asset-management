@@ -82,7 +82,7 @@
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
           } else if(this.validateAssetList(assetList)) {
-            return this.$message.warn('领用面积为必有项')
+            return this.$message.warn('领用面积为必有项且不能为0')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
           let tip = type === 'add' ? '新增': '保存'
@@ -92,6 +92,7 @@
             const { assetId, receiveArea, assetObjectId, remark } = m
             detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
+          console.log(data,detailList,dynamicData)
           let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
           ...dynamicData, saveType: saveWays} : { ...data, detailList }
           delete form.receiveOrganName
@@ -163,13 +164,13 @@
         const { registerId } = this
         let tip = sign === 'left' ? '审批': '驳回'
         let approvalStatus = sign === 'left' ? '1' : '3'
-        this.$api.worthRegister.updateStatus({ approvalStatus, registerId }).then(r => {
+        this.$api.useManage.approveReceive({ approvalStatus, receiveId: registerId }).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
             this.$message.success(`${tip}成功`)
             // 跳回列表路由
-            return this.$router.push({ name: '价值登记', params: { refresh: true } })
+            return this.$router.push({ name: '领用登记', params: { refresh: true } })
           }
           throw res.message || `${tip}失败`
         }).catch(err => {
@@ -181,11 +182,12 @@
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
         this.dynamicData = Object.assign({}, this.dynamicData, obj)
+        console.log(this.dynamicData)
       },
       
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
-        let arr = list.filter(m => +m.receiveArea === 0 || !m.receiveArea)
+        let arr = list.filter(m => m.receiveArea == undefined || +m.receiveArea == 0)
         return arr.length
       }
     },
@@ -202,6 +204,7 @@
       this.organName = organName
       this. organId = organId
       registerId && this.queryDetailById(registerId)
+      console.log(this.dynamicData)
     }
   }
 </script>

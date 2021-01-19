@@ -70,6 +70,7 @@
     <a-row class="a_row">
       <a-col :span="21" :offset="3">
         <div>附件：</div>
+        <div v-if="uploadList.length === 0" class="mt20">无</div>
         <SG-UploadFile type="all" v-model="uploadList" :show="true" class="mt20" />
       </a-col>
     </a-row>
@@ -118,9 +119,11 @@ export default {
       if (!id) {
         return false;
       }
+      this.uploadList = []
       this.$api.basics
         .attachment({ objectId: id, objectType: 21 })
         .then((res) => {
+          console.log(res);
           if (+res.data.code === 0) {
             let attachment = [];
             res.data.data.forEach((item) => {

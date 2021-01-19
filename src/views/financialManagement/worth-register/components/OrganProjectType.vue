@@ -4,7 +4,7 @@
   <div class="container_style">
     <a-row :gutter="8">
       <a-col :span="16">
-        <organ-project-building v-model="organProjectBuildingValue" :isShowBuilding="false"/>
+        <organ-project-building v-model="organProjectBuildingValue" :isShowBuilding="false" />
       </a-col>
       <a-col :span="8">
         <a-select

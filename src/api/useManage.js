@@ -91,3 +91,11 @@ export function getReturnDetailInfo (data) {
 export function getReceiveRecordPage (data) {
   return axiosPost(useManage.getReceiveRecordPage, data)
 }
+// 资产领用-审批
+export function approveReceive (data) {
+  return axiosPost(useManage.approveReceive, data)
+}
+// 资产归还-审批
+export function approveReturn (data) {
+  return axiosPost(useManage.approveReturn, data)
+}

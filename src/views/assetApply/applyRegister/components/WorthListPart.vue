@@ -174,12 +174,13 @@
         if (!selectedRowKeys.length) {
           return this.$message.warn('请选择数据')
         }
-        let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
+            let data = dataSource.filter(m => !selectedRowKeys.includes(m.assetId))
         if (!data.length) {
           this.tableObj.dataSource = []
           this.selectedRowKeys = []
         }
         this.calcSum(data)
+        
       },
 
       // 添加资产
@@ -299,7 +300,7 @@
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(123 || '查询登记资产接口出错')
+          this.$message.error(err || '查询登记资产接口出错')
         })
       },
       
@@ -443,7 +444,9 @@
          this.assetList = assetList
          this.assetList.map((item,index) => {
            this.assetList[index].area = item.assetArea
-           this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
+           //this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
+           this.assetList[index].receiveArea = item.assetArea
+           this.assetList[index].objectTypeName = item.assetCategoryName
          })
     },
     },
@@ -467,6 +470,9 @@
     
     watch: {
       assetList: function () {
+        if(this.assetList.length==0){
+          return
+        }
         if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
            this.tableObj.columns = [
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
