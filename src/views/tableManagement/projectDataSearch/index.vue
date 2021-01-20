@@ -60,9 +60,12 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <span slot="projectName" slot-scope="text, record">
-        <router-link :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
+        <router-link v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
           {{text}}
         </router-link>
+        <span v-else>
+          {{text}}
+        </span>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
@@ -170,6 +173,19 @@
           {title: '占用(㎡)', key: 'occupationAreaCount', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', key: 'otherAreaCount', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据，title 标题，value 数值，color 背景色
+        totalField: {
+          buildCount: '',       // 楼栋数
+          assetBuildCount: '',  // 整栋楼接管数量
+          area: '',             // 建筑面积
+          operationArea: '',    // 运营
+          selfUserArea: '',     // 自用
+          idleArea: '',         // 闲置
+          otherArea: '',        // 其他
+          originalValue: '',    // 资产原值
+          marketValue: '',      // 资产估值
+          rentedArea: '',       // 已租面积
+          unRentedArea: '',     // 未租面积
+        }
       }
     },
 
@@ -235,6 +251,7 @@
               let transferToOperationName = String(transferToOperation) === '1' ? '已转运营' : '未转运营'
               return { ...m, takeOverName, transferToOperationName, ownershipStatusName, isPropertyName }
             })
+            this.totalFn()
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -247,7 +264,10 @@
         // 查询统计数据
         if (type === 'search') { this.queryStatisticsInfo(form) }
       },
-
+    // 合计汇总合并
+      totalFn () {
+        this.tableObj.dataSource.push({projectName: '所有页-合计', projectId: 'projectId', ...this.totalField})
+      },
       // 查询统计数据
       queryStatisticsInfo (form) {
         this.overviewNumSpinning = true

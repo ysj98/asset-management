@@ -126,6 +126,7 @@
             <span><i>*</i>资产项目：</span>
             <a-select
               showSearch
+              mode="multiple"
               placeholder="请选择资产项目"
               optionFilterProp="children"
               :style="allStyle"

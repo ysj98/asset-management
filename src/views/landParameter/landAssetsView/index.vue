@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-12-14 11:19:24
+ * @LastEditTime: 2021-01-20 15:50:25
  * @Description: 土地资产视图
 -->
 <template>
@@ -58,7 +58,7 @@
         :pagination="false"
         >
         <span slot="action" slot-scope="text, record">
-          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+          <span v-if="record.assetName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
         </span>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -121,7 +121,7 @@ const columnsData = [
   { title: '财务卡片编码', dataIndex: 'cardCode', width: 150 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-  { title: ' 批准日期', dataIndex: 'approvalDate', width: 150 },
+  { title: '批准日期', dataIndex: 'approvalDate', width: 150 },
   { title: '资产状态', dataIndex: 'statusName', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 70}
 ]
@@ -211,7 +211,17 @@ export default {
           name: '全部用途',
           value: ''
         }
-      ]
+      ],
+      totalField: {
+        landArea: '',               // 土地面积
+        acreage: '',                // 计容面积
+        transferOperationArea: '',  // 运营
+        selfUserArea: '',           // 自用
+        idleArea: '',               // 闲置
+        otherArea: '',              // 其他
+        originalValue: '',          // 资产原值
+        marketValue: ''             // 最新估值
+      }
     }
   },
   computed: {
@@ -452,6 +462,7 @@ export default {
             })
             this.tableData = data
             this.count = res.data.data.count
+            this.totalFn()
           } else {
             this.tableData = []
             this.count = 0
@@ -465,6 +476,10 @@ export default {
           this.loading = false
         }
       })
+    },
+    // 合计汇总合并
+    totalFn () {
+      this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
     },
     // 资产登记-详情明细统计
     assetViewTotal (obj) {

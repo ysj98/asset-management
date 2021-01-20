@@ -92,7 +92,7 @@
         <tooltip-text :text="text"/>
       </template>
       <span slot="action" slot-scope="text, record">
-        <router-link :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
+        <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
@@ -202,7 +202,19 @@
         exportAssetBtn: false, // 导出资产视图button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
-        current: null // 当前选中的概览区域下标，与后台入参一一对应
+        current: null, // 当前选中的概览区域下标，与后台入参一一对应
+        totalField: {
+          area: '',                    // 建筑面积
+          transferOperationArea: '',   // 运营
+          selfUserArea: '',            // 自用
+          idleArea: '',                // 闲置
+          occupationArea: '',          // 占用
+          otherArea: '',               // 其他
+          originalValue: '',           // 资产原值
+          marketValue: '',             // 最新估值
+          rentedArea: '',              // 已租面积
+          unRentedArea: ''             // 未租面积
+        }
       }
     },
 
@@ -284,6 +296,7 @@
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
             this.tableObj.dataSource = data
+            this.totalFn()
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -298,7 +311,12 @@
         // 查询楼栋面积统计数据
         if (type === 'search') { this.queryAssetAreaInfo(form) }
       },
-
+      // 合计汇总合并
+      totalFn () {
+        // totalFieldz
+        this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
+        console.log(this.tableObj.dataSource, 'this.tableObj.dataSourcethis.tableObj.dataSource')
+      },
       // 查询楼栋视图面积概览数据
       queryAssetAreaInfo (form) {
         this.overviewNumSpinning = true
