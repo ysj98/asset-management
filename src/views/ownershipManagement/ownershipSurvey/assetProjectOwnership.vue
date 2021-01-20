@@ -211,6 +211,27 @@ let columns = [
       }
     ],
   },
+  {
+    title: "暂无权属",
+    dataIndex: "zwPrice",
+    children: [
+      {
+        title: "总数",
+        dataIndex: "zweShipCount",
+        width: 100
+      },
+      {
+        title: "无证",
+        width: 100,
+        dataIndex: "zweShipNoCount",
+      },
+      {
+        title: "待办证",
+        width: 100,
+        dataIndex: "zweShipWaitCount",
+      }
+    ],
+  },
   // {
   //   title: "有证资产数",
   //   dataIndex: "ownershipCount",

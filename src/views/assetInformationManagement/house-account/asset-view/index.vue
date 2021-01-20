@@ -156,7 +156,7 @@
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
-            { title: '丘地号', dataIndex: 'addressNo' },
+            { title: '宗地号', dataIndex: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area' },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
             { title: '地理位置', dataIndex: 'address', width: 300 },

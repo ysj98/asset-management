@@ -208,7 +208,7 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-item label="丘地号" v-bind="formItemLayout">
+                  <a-form-item label="宗地号" v-bind="formItemLayout">
                     <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
