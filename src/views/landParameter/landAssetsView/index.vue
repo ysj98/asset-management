@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2021-01-20 15:50:25
+ * @LastEditTime: 2021-01-25 18:31:59
  * @Description: 土地资产视图
 -->
 <template>
@@ -462,7 +462,7 @@ export default {
             })
             this.tableData = data
             this.count = res.data.data.count
-            this.totalFn()
+            this.totalFn(obj)
           } else {
             this.tableData = []
             this.count = 0
@@ -478,8 +478,23 @@ export default {
       })
     },
     // 合计汇总合并
-    totalFn () {
-      this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
+    totalFn (obj) {
+      this.$api.land.assetViewListTotal(obj).then(res => {
+        if (String(res.data.code) === '0') {
+          let data = res.data.data
+          this.totalField.landArea = data.area,               // 土地面积
+          this.totalField.acreage = data.acreageTotal,                // 计容面积
+          this.totalField.transferOperationArea = data.transferOperationArea,  // 运营
+          this.totalField.selfUserArea = data.selfUserArea,           // 自用
+          this.totalField.idleArea = data.idleArea,               // 闲置
+          this.totalField.otherArea = data.otherArea,              // 其他
+          this.totalField.originalValue = data.originalValue,          // 资产原值
+          this.totalField.marketValue = data.marketValue             // 最新估值
+          this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
     // 资产登记-详情明细统计
     assetViewTotal (obj) {

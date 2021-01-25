@@ -40,6 +40,10 @@ export function exportDetailExcel (data) {
 }
 
 // 资产项目数据查询
+// 资产项目数据查询汇总
+export function projectAssetTotal (data) {
+  return axiosPost(tableManage.projectAssetTotal, data)
+}
 // 资产项目导出
 export function exportAssetProject (data) {
   return axiosPost(tableManage.exportAssetProject, data, false, false, {responseType: 'blob'})

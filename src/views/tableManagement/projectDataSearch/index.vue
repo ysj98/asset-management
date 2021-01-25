@@ -251,7 +251,7 @@
               let transferToOperationName = String(transferToOperation) === '1' ? '已转运营' : '未转运营'
               return { ...m, takeOverName, transferToOperationName, ownershipStatusName, isPropertyName }
             })
-            this.totalFn()
+            this.totalFn(form)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -265,8 +265,29 @@
         if (type === 'search') { this.queryStatisticsInfo(form) }
       },
     // 合计汇总合并
-      totalFn () {
-        this.tableObj.dataSource.push({projectName: '所有页-合计', projectId: 'projectId', ...this.totalField})
+      totalFn (form) {
+        this.$api.tableManage.projectAssetTotal(form).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            let data = res.data
+            this.totalField.buildCount = data.buildCountTotal             // 楼栋数
+            this.totalField.assetBuildCount = data.assetBuildCountTotal   // 整栋楼接管数量
+            this.totalField.area = data.areaTotal                         // 建筑面积
+            this.totalField.operationArea = data.operationAreaTotal       // 运营
+            this.totalField.selfUserArea = data.selfUserAreaTotal         // 自用
+            this.totalField.idleArea = data.idleAreaTotal                 // 闲置
+            this.totalField.otherArea = data.otherAreaTotal               // 其他
+            this.totalField.originalValue = data.originalValueTotal       // 资产原值
+            this.totalField.marketValue = data.marketValueTotal           // 资产估值
+            this.totalField.rentedArea = data.rentedAreaTotal             // 已租面积
+            this.totalField.unRentedArea = data.unRentedAreaTotal         // 未租面积
+            this.tableObj.dataSource.push({projectName: '所有页-合计', projectId: 'projectId', ...this.totalField})
+          } else {
+            this.$message.error(res.message)
+          }
+        }).catch(err => {
+          this.$message.error(err || '查询统计出错')
+        })
       },
       // 查询统计数据
       queryStatisticsInfo (form) {

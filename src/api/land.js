@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-24 17:33:50
- * @LastEditTime: 2020-09-08 18:07:00
+ * @LastEditTime: 2021-01-25 18:15:46
  * @Description: 土地
  */ 
 import { axiosPost, axiosGet } from '../utils/axios'
@@ -74,4 +74,9 @@ export function mapData (data) {
 // 资产地图- 资产详情
 export function mapDetail (data) {
   return axiosGet(land.mapDetail, data)
+}
+
+// 土地台账资产视图汇总
+export function assetViewListTotal (data) {
+  return axiosPost(land.assetViewListTotal, data)
 }
