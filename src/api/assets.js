@@ -453,6 +453,10 @@ export function queryBuildingViewRoomArea (data) {
 }
 
 // 房屋台账 - 资产视图
+// 房屋台账资产视图汇总
+export function assetHousePageTotal (data) {
+  return axiosPost(assets.assetView.assetHousePageTotal, data)
+}
 // 房屋资产基本信息查询
 export function queryAssetViewBaseInfo (data) {
   return axiosGet(assets.assetView.queryHouseInfo, data)

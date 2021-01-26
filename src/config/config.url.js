@@ -405,6 +405,8 @@ export const assets = {
     exportHouseCard: '/ams/asset-house/exportById',
     // 资产入账分页查询汇总
     queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
+    // 房屋台账资产视图汇总
+    assetHousePageTotal: '/ams/asset-house/assetHousePageTotal'
   },
   // 资产项目管理
   projectManage: {

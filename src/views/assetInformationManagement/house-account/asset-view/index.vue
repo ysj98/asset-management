@@ -294,13 +294,15 @@
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
+            console.log('ssss')
             const { count, data } = res.data
             this.tableObj.dataSource = data
-            this.totalFn()
+            console.log('3434')
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
             })
+            this.totalFn(form)
             return false
           }
           throw res.message || '查询接口出错'
@@ -312,10 +314,27 @@
         if (type === 'search') { this.queryAssetAreaInfo(form) }
       },
       // 合计汇总合并
-      totalFn () {
-        // totalFieldz
-        this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
-        console.log(this.tableObj.dataSource, 'this.tableObj.dataSourcethis.tableObj.dataSource')
+      totalFn (form) {
+        console.log('dddddddd')
+        this.$api.assets.assetHousePageTotal(form).then(res => {
+          console.log(res, 'ssssssnnnnnnn')
+          if (String(res.data.code) === '0') {
+            let data = res.data.data
+            this.totalField.area = data.totalArea                            // 建筑面积
+            this.totalField.transferOperationArea = data.totalOperationArea  // 运营
+            this.totalField.selfUserArea = data.totalSelfUserArea            // 自用
+            this.totalField.idleArea = data.totalIdleArea                    // 闲置
+            this.totalField.occupationArea = data.totalOccupationArea        // 占用
+            this.totalField.otherArea = data.totalOtherArea                  // 其他
+            this.totalField.originalValue = data.totalOriginalValue          // 资产原值
+            this.totalField.marketValue = data.totalMarketValue              // 最新估值
+            this.totalField.rentedArea = data.rentedArea                     // 已租面积
+            this.totalField.unRentedArea = data.unRentedArea                  // 未租面积
+            this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
+          } else {
+            this.$message.error(res.message)
+          }
+        })
       },
       // 查询楼栋视图面积概览数据
       queryAssetAreaInfo (form) {
