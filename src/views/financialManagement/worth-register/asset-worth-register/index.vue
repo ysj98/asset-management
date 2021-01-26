@@ -165,7 +165,7 @@
       return {
         visibleShow: false,
         allStyle: allStyle,
-        fileProjectId: undefined,
+        fileProjectId: [],
         ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         registerName: '', // 查询条件-登记名称
@@ -301,13 +301,13 @@
       },
       // 下载导入模板文件
       downTemplate () {
-        if (this.fileProjectId === '' || this.fileProjectId === undefined) {
+        if (this.fileProjectId.length === 0 || this.fileProjectId === undefined) {
           this.$SG_Message.error('请选择资产项目')
           return false
         }
         let obj = {
           organId: this.organProjectType.organId,
-          projectId: this.fileProjectId
+          projectIdList: this.fileProjectId
         }
         exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '价值登记批量导入模板.xls', this)
       },
@@ -317,7 +317,7 @@
       },
       // 批量导入
       uploadFile (file) {
-        if (this.fileProjectId === '' || this.fileProjectId === undefined) {
+        if (this.fileProjectId.length === 0 || this.fileProjectId === undefined) {
           this.$SG_Message.error('请选择资产项目')
           return false
         }
@@ -325,7 +325,7 @@
         let fileData = new FormData()
         fileData.append('file', file)
         fileData.append('organId', this.organProjectType.organId)
-        fileData.append('projectId', this.fileProjectId || '')
+        fileData.append('projectIdList', this.fileProjectId || [])
         this.$api.worthRegister.importValueTemplate(fileData).then(r => {
           this.$SG_Message.destroy(name)
           let res = r.data
