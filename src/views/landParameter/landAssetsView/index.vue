@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2021-01-25 18:31:59
+ * @LastEditTime: 2021-01-26 18:16:23
  * @Description: 土地资产视图
 -->
 <template>
@@ -14,29 +14,30 @@
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.landCategory" placeholder="权属用途" maxlength="20" style="width: 140px; margin-right: 10px;" @search="allQuery"/>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.statuss">
-              <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption" @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
-              <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
-              <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
-              <a-select-option v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-row :gutter="12" style="margin-right: -78px">
-          <a-col :span="18" style="padding-left: 60px">
-            <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
-          </a-col>
-          <a-col :span="5" style="padding-top: 13px; padding-left: 0">
-            <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
-          </a-col>
-        </a-row>
+            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption" @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
+            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
+            <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
+            <a-select-option v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-row :gutter="12" style="margin-right: -78px">
+            <a-col :span="18" style="padding-left: 60px">
+              <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+            </a-col>
+            <a-col :span="5" style="padding-top: 13px; padding-left: 0">
+              <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
+            </a-col>
+          </a-row>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -106,6 +107,7 @@ const columnsData = [
   { title: '宗地位置', dataIndex: 'location', width: 150 },
   { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150 },
   { title: '资产项目名称', dataIndex: 'projectName', width: 150 },
+  { title: '权属用途', dataIndex: 'landCategory', width: 150 },
   { title: '土地类型', dataIndex: 'landType', width: 150 },
   { title: '土地用途', dataIndex: 'landuse', width: 150 },
   { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150 },
@@ -149,7 +151,8 @@ const queryCondition =  {
   useType: '',        // 用途
   pageNum: 1,         // 当前页
   pageSize: 10,       // 每页显示记录数
-  address: ''         // 地理位置
+  address: '',         // 地理位置
+  landCategory: ''
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
@@ -450,6 +453,7 @@ export default {
         statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize,         // 每页显示记录数
+        landCategory: this.queryCondition.landCategory,
         address: this.address           // 详细地址
       }
       this.$api.land.assetView(obj).then(res => {

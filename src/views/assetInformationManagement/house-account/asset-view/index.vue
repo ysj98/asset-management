@@ -79,6 +79,16 @@
           <a-col :span="5">
             <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
           </a-col>
+          </a-row>
+          <a-row :gutter="12" style="margin-top: 14px">
+            <a-col :span="5">
+              <a-select
+                v-model="ownershipUse"
+                style="width: 100%"
+                :options="ownershipUseOPt"
+                placeholder="权属用途"
+              />
+            </a-col>
         </a-row>
       </div>
     </search-container>
@@ -128,6 +138,8 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
+        ownershipUseOPt: [],
+        ownershipUse: '',
         useType: [],           // 用途
         useTypeOptions: [],    // 用途
         fold: true,
@@ -165,6 +177,7 @@
             { title: '楼层', dataIndex: 'floor' },
             { title: '层高', dataIndex: 'floorHeight' },
             { title: '分类', dataIndex: 'objectTypeName' },
+            { title: '权属用途', dataIndex: 'ownershipUseName' },
             { title: '用途', dataIndex: 'useType' },
             { title: '资产形态', dataIndex: 'typeName' },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
@@ -279,7 +292,7 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, useType, address
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, useType, address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -287,6 +300,7 @@
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
+          ownershipUse,
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
         }
@@ -294,10 +308,8 @@
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            console.log('ssss')
             const { count, data } = res.data
             this.tableObj.dataSource = data
-            console.log('3434')
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -315,9 +327,7 @@
       },
       // 合计汇总合并
       totalFn (form) {
-        console.log('dddddddd')
         this.$api.assets.assetHousePageTotal(form).then(res => {
-          console.log(res, 'ssssssnnnnnnn')
           if (String(res.data.code) === '0') {
             let data = res.data.data
             this.totalField.area = data.totalArea                            // 建筑面积
@@ -446,9 +456,29 @@
           }
         })
       },
+      // 机构字典
+      organDict (code) {
+        this.$api.assets.organDict({ organId: this.organId, code }).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || [];
+            let arr = result.map(item => ({ label: item.name, value: item.value }));
+            // 附属信息类型
+            if (code === "OWNERSHIP_USE") {
+              this.ownershipUseOPt = []
+              this.ownershipUseOPt = [
+                ...arr
+              ];
+              this.ownershipUseOPt.unshift({label: '全部用途', value: ''})
+            }
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+      },
     },
     mounted () {
       this.queryNodesByRootCode()
+      this.organDict('OWNERSHIP_USE')
     },
     created () {
       // 初始化Table列头
