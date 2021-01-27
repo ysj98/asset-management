@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2021-01-26 18:16:23
+ * @LastEditTime: 2021-01-27 10:30:32
  * @Description: 土地资产视图
 -->
 <template>
@@ -554,6 +554,11 @@ export default {
   }
   .custom-table {
     padding-bottom: 60px;
+    & /deep/ table {
+      tr:last-child, tr:nth-last-child(1) {
+        font-weight: bold;
+      }
+    }
   }
   .overflowX{
     /deep/ .ant-table-scroll {

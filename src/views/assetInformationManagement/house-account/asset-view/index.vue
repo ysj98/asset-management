@@ -520,5 +520,10 @@
         white-space: nowrap;
       }
     }
+    & /deep/ table {
+      tr:last-child, tr:nth-last-child(1) {
+        font-weight: bold;
+      }
+    }
   }
 </style>

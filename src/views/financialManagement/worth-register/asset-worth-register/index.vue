@@ -127,6 +127,7 @@
             <a-select
               showSearch
               mode="multiple"
+              :maxTagCount="3"
               placeholder="请选择资产项目"
               optionFilterProp="children"
               :style="allStyle"
@@ -312,7 +313,7 @@
         exportDataAsExcel(obj, this.$api.worthRegister.downloadValueTemplate, '价值登记批量导入模板.xls', this)
       },
       hideModalFn () {
-        this.fileProjectId = undefined
+        this.fileProjectId = []
         this.visibleShow = false
       },
       // 批量导入
