@@ -99,6 +99,18 @@ let columns = [
     dataIndex: "contractRentTotalAmount",
   },
   {
+    title: "租赁用途",
+    dataIndex: "leaseUse",
+  },
+    {
+    title: "房屋ID",
+    dataIndex: "houseId",
+  },
+    {
+    title: "合同状态",
+    dataIndex: "contractStatus",
+  },
+  {
     title: "备注",
     dataIndex: "remark",
   },

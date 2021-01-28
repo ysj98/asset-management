@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-11-17 14:16:46
+ * @LastEditTime: 2021-01-28 14:19:30
  -->
 <template>
   <div>
@@ -278,6 +278,21 @@ let columns = [
   {
     title: "呈报方式",
     dataIndex: "taskTypeName",
+    width: '160px',
+  },
+  {
+    title: "租赁用途",
+    dataIndex: "leaseUse",
+    width: '160px',
+  },
+  {
+    title: "房屋ID",
+    dataIndex: "houseId",
+    width: '160px',
+  },
+  {
+    title: "合同状态",
+    dataIndex: "contractStatus",
     width: '160px',
   },
   {

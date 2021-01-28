@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2020-11-17 17:32:21
+ * @LastEditTime: 2021-01-28 10:29:17
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -378,6 +378,36 @@
                 </span>
                 <span>：</span>
                 <span class="label-value" >{{reportInfo.objId || reportInfo.objectId || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  租赁用途
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.leaseUse || reportInfo.leaseUse || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  房屋ID
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.houseId || reportInfo.houseId || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  合同状态
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.contractStatus || reportInfo.contractStatus || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
