@@ -468,7 +468,7 @@
               this.ownershipUseOPt = [
                 ...arr
               ];
-              this.ownershipUseOPt.unshift({label: '全部用途', value: ''})
+              this.ownershipUseOPt.unshift({label: '全部权属用途', value: ''})
             }
           } else {
             this.$message.error(res.data.message);
