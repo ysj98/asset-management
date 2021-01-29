@@ -481,6 +481,8 @@ export default {
             startDate: r.startLeaseDate ? moment(r.startLeaseDate) : "",
             endDate: r.endLeaseDate ? moment(r.endLeaseDate) : "",
             remark: r.remark,
+            contractNum: r.contractCode,
+            rentPrice: r.rentPrice,
           });
           this.note = r.remark;
           this.queryProjectByOrganId(this.organId);
