@@ -86,6 +86,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import EditTableHeader from './EditTableHeader'
   import moment from 'moment'
+  const judgment = [undefined, null, '']
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, OrganProject, NoDataTip },
@@ -179,6 +180,7 @@
           area: '',             // 建筑面积
           operationArea: '',    // 运营
           selfUserArea: '',     // 自用
+          occupationArea: '',   // 占用
           idleArea: '',         // 闲置
           otherArea: '',        // 其他
           originalValue: '',    // 资产原值
@@ -270,17 +272,18 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             let data = res.data
-            this.totalField.buildCount = data.buildCountTotal             // 楼栋数
-            this.totalField.assetBuildCount = data.assetBuildCountTotal   // 整栋楼接管数量
-            this.totalField.area = data.areaTotal                         // 建筑面积
-            this.totalField.operationArea = data.operationAreaTotal       // 运营
-            this.totalField.selfUserArea = data.selfUserAreaTotal         // 自用
-            this.totalField.idleArea = data.idleAreaTotal                 // 闲置
-            this.totalField.otherArea = data.otherAreaTotal               // 其他
-            this.totalField.originalValue = data.originalValueTotal       // 资产原值
-            this.totalField.marketValue = data.marketValueTotal           // 资产估值
-            this.totalField.rentedArea = data.rentedAreaTotal             // 已租面积
-            this.totalField.unRentedArea = data.unRentedAreaTotal         // 未租面积
+            this.totalField.buildCount = judgment.includes(data.buildCountTotal) ? 0 : data.buildCountTotal          // 楼栋数
+            this.totalField.assetBuildCount = judgment.includes(data.assetBuildCountTotal) ? 0 : data.assetBuildCountTotal   // 整栋楼接管数量
+            this.totalField.area = judgment.includes(data.areaTotal) ? 0 : data.areaTotal                          // 建筑面积
+            this.totalField.operationArea = judgment.includes(data.operationAreaTotal) ? 0 : data.operationAreaTotal      // 运营
+            this.totalField.selfUserArea = judgment.includes(data.selfUserAreaTotal) ? 0 : data.selfUserAreaTotal         // 自用
+            this.totalField.occupationArea = judgment.includes(data.occupationAreaTotal) ? 0 : data.occupationAreaTotal  // 占用
+            this.totalField.idleArea = judgment.includes(data.idleAreaTotal) ? 0 : data.idleAreaTotal                 // 闲置
+            this.totalField.otherArea = judgment.includes(data.otherAreaTotal) ? 0 : data.otherAreaTotal               // 其他
+            this.totalField.originalValue = judgment.includes(data.originalValueTotal) ? 0 : data.originalValueTotal       // 资产原值
+            this.totalField.marketValue = judgment.includes(data.marketValueTotal) ? 0 : data.marketValueTotal         // 资产估值
+            this.totalField.rentedArea = judgment.includes(data.rentedAreaTotal) ? 0 : data.rentedAreaTotal            // 已租面积
+            this.totalField.unRentedArea = judgment.includes(data.unRentedAreaTotal) ? 0 : data.unRentedAreaTotal        // 未租面积
             this.tableObj.dataSource.push({projectName: '所有页-合计', projectId: 'projectId', ...this.totalField})
           } else {
             this.$message.error(res.message)

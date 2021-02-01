@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2021-01-27 10:30:32
+ * @LastEditTime: 2021-02-01 17:41:10
  * @Description: 土地资产视图
 -->
 <template>
@@ -98,6 +98,7 @@ import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
+const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
   { title: '资产名称', dataIndex: 'assetName', width: 150, disabled: true },
@@ -486,14 +487,14 @@ export default {
       this.$api.land.assetViewListTotal(obj).then(res => {
         if (String(res.data.code) === '0') {
           let data = res.data.data
-          this.totalField.landArea = data.area,               // 土地面积
-          this.totalField.acreage = data.acreageTotal,                // 计容面积
-          this.totalField.transferOperationArea = data.transferOperationArea,  // 运营
-          this.totalField.selfUserArea = data.selfUserArea,           // 自用
-          this.totalField.idleArea = data.idleArea,               // 闲置
-          this.totalField.otherArea = data.otherArea,              // 其他
-          this.totalField.originalValue = data.originalValue,          // 资产原值
-          this.totalField.marketValue = data.marketValue             // 最新估值
+          this.totalField.landArea = judgment.includes(data.area) ? 0 : data.area               // 土地面积
+          this.totalField.acreage = judgment.includes(data.acreageTotal) ? 0 : data.acreageTotal                // 计容面积
+          this.totalField.transferOperationArea = judgment.includes(data.transferOperationArea) ? 0 : data.transferOperationArea  // 运营
+          this.totalField.selfUserArea = judgment.includes(data.selfUserArea) ? 0 : data.selfUserArea           // 自用
+          this.totalField.idleArea = judgment.includes(data.idleArea) ? 0 : data.idleArea               // 闲置
+          this.totalField.otherArea = judgment.includes(data.otherArea) ? 0 : data.otherArea              // 其他
+          this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : data.originalValue          // 资产原值
+          this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : data.marketValue             // 最新估值
           this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
         } else {
           this.$message.error(res.message)

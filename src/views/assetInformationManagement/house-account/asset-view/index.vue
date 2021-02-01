@@ -83,6 +83,8 @@
           <a-row :gutter="12" style="margin-top: 14px">
             <a-col :span="5">
               <a-select
+                :filter-option="filterOption"
+                show-search
                 v-model="ownershipUse"
                 style="width: 100%"
                 :options="ownershipUseOPt"
@@ -133,6 +135,7 @@
   import tooltipText from 'src/views/common/TooltipText'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
+  const judgment = [undefined, null, '']
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
@@ -232,6 +235,11 @@
     },
 
     methods: {
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
       // 全选与其他选项互斥处理
       useTypeChange (value) {
         let lastIndex = value.length - 1
@@ -330,16 +338,16 @@
         this.$api.assets.assetHousePageTotal(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
-            this.totalField.area = data.totalArea                            // 建筑面积
-            this.totalField.transferOperationArea = data.totalOperationArea  // 运营
-            this.totalField.selfUserArea = data.totalSelfUserArea            // 自用
-            this.totalField.idleArea = data.totalIdleArea                    // 闲置
-            this.totalField.occupationArea = data.totalOccupationArea        // 占用
-            this.totalField.otherArea = data.totalOtherArea                  // 其他
-            this.totalField.originalValue = data.totalOriginalValue          // 资产原值
-            this.totalField.marketValue = data.totalMarketValue              // 最新估值
-            this.totalField.rentedArea = data.rentedArea                     // 已租面积
-            this.totalField.unRentedArea = data.unRentedArea                  // 未租面积
+            this.totalField.area = judgment.includes(data.totalArea) ? 0 : data.totalArea                            // 建筑面积
+            this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
+            this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
+            this.totalField.idleArea = judgment.includes(data.totalIdleArea) ? 0 : data.totalIdleArea                    // 闲置
+            this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : data.totalOccupationArea        // 占用
+            this.totalField.otherArea = judgment.includes(data.totalOtherArea) ? 0 : data.totalOtherArea                  // 其他
+            this.totalField.originalValue = judgment.includes(data.totalOriginalValue) ? 0 : data.totalOriginalValue          // 资产原值
+            this.totalField.marketValue = judgment.includes(data.totalMarketValue) ? 0 : data.totalMarketValue              // 最新估值
+            this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
+            this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
             this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
           } else {
             this.$message.error(res.message)
