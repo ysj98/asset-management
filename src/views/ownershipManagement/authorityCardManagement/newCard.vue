@@ -478,16 +478,9 @@ export default {
             tenantId: conditionalJudgment.includes(values.tenantId) ? '' : values.tenantId,                       // 承租人id
             amsAttachmentList: files,                        // 附件
             amsOwnershipWarrantObligeeList: amsOwnershipWarrantObligeeList,
-            amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList
+            amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList,
+            rightType: values.rightTypeName
           }
-         if(values.rightTypeName=='国有建设用地使用权/房屋所有权'){
-            obj.rightType = 1
-          }else if(values.rightTypeName=='房屋所有权'){
-            obj.rightType = 2
-          }else {
-            obj.rightType = 3
-          }
-          console.log(obj)
           let loadingName = this.SG_Loding('保存中...')
           this.$api.ownership.warrantSaveOrUpdate(obj).then(res => {
           if (Number(res.data.code) === 0) {
