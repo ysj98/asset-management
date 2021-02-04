@@ -53,10 +53,10 @@
             <a-select-option v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="true" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="true" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -574,23 +574,27 @@ export default {
     changeAssetClassify (value) {
       this.$nextTick(function () {
         this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyOptions)
+        
       })
     },
     // 状态发生变化
     approvalStatusFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatusList, this.approvalStatusData)
+        console.log(this.queryCondition.approvalStatusList, this.approvalStatusData)
+        this.queryCondition.approvalStatusList = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatusList, this.approvalStatusData)
       })
     },
     // 投资状态发生变化
     investStatusFn (value) {
       this.$nextTick(function () {
+        console.log(this.queryCondition.investStatusList, this.investStatusData)
         this.queryCondition.investStatusList = this.handleMultipleSelectValue(value, this.queryCondition.investStatusList, this.investStatusData)
       })
     },
     // 资产类型变化
     assetTypeDataFn (value) {
       this.$nextTick(function () {
+                console.log(this.queryCondition.assetType, this.assetTypeData)
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
       })
     },
@@ -631,6 +635,7 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+      
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {
