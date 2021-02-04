@@ -38,7 +38,7 @@
           ">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.investNameOrId" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.investNameOrId" placeholder="投资单名称/投资单编号/合同编号" maxlength="30" style="width: 220px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
