@@ -38,7 +38,7 @@
           ">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.investNameOrId" placeholder="投资单名称/投资单编号/合同编号" maxlength="30" style="width: 220px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.investNameOrIdOrContractCode" placeholder="投资单名称/投资单编号/合同编号" maxlength="30" style="width: 220px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -212,7 +212,7 @@ export default {
         organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: null,            // 投资单名称/投资单编号
+        investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -228,7 +228,7 @@ export default {
         organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: null,            // 投资单名称/投资单编号
+        investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -386,7 +386,7 @@ export default {
         startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
         startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
         investStatusList: this.alljudge(this.queryCondition.investStatusList),        // 投资状态列表
-        investNameOrId: this.queryCondition.investNameOrId                              // 投资单名称/编号
+        investNameOrIdOrContractCode: this.queryCondition.investNameOrIdOrContractCode                              // 投资单名称/编号
       }
       this.$api.assetInvest.exportInvestOrder(obj).then(res => {
         let blob = new Blob([res.data])
@@ -421,7 +421,7 @@ export default {
         startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
         startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
         investStatusList: this.alljudge(this.queryInitCondition.investStatusList),        // 投资状态列表
-        investNameOrId: this.queryInitCondition.investNameOrId                              // 投资单名称/编号
+        investNameOrIdOrContractCode: this.queryInitCondition.investNameOrIdOrContractCode                             // 投资单名称/编号
       }
       this.$api.assetInvest.getInvestOrderStatistics(obj).then(res => {
         if(res.data.code == 0){
@@ -459,7 +459,7 @@ export default {
         startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
         startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
         investStatusList: this.alljudge(this.queryCondition.investStatusList),        // 投资状态列表
-        investNameOrId: this.queryCondition.investNameOrId                              // 投资单名称/编号
+        investNameOrIdOrContractCode: this.queryCondition.investNameOrIdOrContractCode                              // 投资单名称/编号
       }
       this.$api.assetInvest.getInvestOrderStatistics(obj).then(res => {
         if(res.data.code == 0){
