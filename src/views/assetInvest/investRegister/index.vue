@@ -110,7 +110,7 @@ const approvalStatusData = [
 ]
 
 const investStatusData = [
-  { name: '全部状态', value: '' }, { name: '未生效', value: '0' }, { name: '待执行', value: '2' }, { name: '执行中', value: '3' }, { name: '已终止', value: '1' }, { name: '已作废', value: '4' }
+  { name: '全部状态', value: '' }, { name: '未生效', value: '0' }, { name: '待执行', value: '1' }, { name: '执行中', value: '2' }, { name: '已终止', value: '3' }, { name: '已作废', value: '4' }
 ]
 
 const columns = [
