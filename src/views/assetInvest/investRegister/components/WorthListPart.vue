@@ -197,7 +197,8 @@
         isEditAll: false, // 批量修改本次估值列
         investAreaSum: 0,
         profitSum: 0,
-        assetList: []
+        assetList: [],
+        tempList: []
       }
     },
 
@@ -218,6 +219,7 @@
         //   return m
         // })
         let num = 0
+        console.log(this.tableObj.dataSource)
         this.tableObj.dataSource.map(item => {
           if(item.investArea){
            return num += item.investArea
@@ -269,13 +271,14 @@
 
       // 添加资产
       handleAddModal (bool) {
-        if (bool) {
+        if (!bool) {
           const { tableObj: { dataSource }, dynamicData: { projectId, assetType } } = this
           // 校验是否已选择资产项目
           if (!assetType || !projectId) {
             return this.$emit('validateProject')
           }
           let list = dataSource.map(m => Number(m.assetId))
+          console.log(list)
           Object.assign(this, {
             modalObj: { width: 1000, height: 450, title: '选择资产', okText: '确定选择', cancelText: '取消', isShow: false },
             isEditAll: false,
@@ -284,8 +287,10 @@
           })
         } else {
           // 取消时selectedList恢复初始值
+          console.log(this.tableObj.dataSource)
           this.selectedList = this.initList
-        }
+          console.log(this.selectedList)
+        }  
         this.modalObj.isShow = bool
       },
       
@@ -304,7 +309,8 @@
       
       // 获取选中的资产数据
       getAssetList () {
-        let {selectedList, assetList} = this
+        let {selectedList, assetList, tempList} = this
+        assetList = tempList 
         if (!selectedList.length) { return this.$message.warn('请选择资产数据') }
         this.modalObj.isShow = !selectedList.length
         // 去重处理，比较arr 与 tableObj.dataSource
@@ -312,6 +318,7 @@
           let { tableObj: { dataSource } } = this
           this.initList = [...selectedList]
           let newList = selectedList.filter(m => !dataSource.some(n => String(n.assetId) === String(m)))
+          console.log(selectedList,newList,dataSource )
           if (newList.length) {
             //this.queryAssetListByAssetId(newList)
               assetList.map(item => {
@@ -430,6 +437,7 @@
       // 处理Modal关闭/保存
       handleAction (type) {
         let { isEditAll } = this
+        console.log(type,isEditAll)
         if (type) {
           isEditAll ? this.handleAssetValueAll() : this.getAssetList()
         } else {
@@ -486,13 +494,18 @@
         this.calcSum(list)
       },
       getReturnAssetInfo(assetList) {
+        console.log(assetList)
          assetList.map((item,index) => {
            assetList[index].assetObjectTypeName = item.assetCategoryName
-           assetList[index].investArea = item.assetArea
+           if(!assetList[index].investArea){
+                 assetList[index].investArea = item.assetArea
+           }
+           
          })
-         this.assetList = assetList
-         console.log(this.assetList)
-         this.tableObj.dataSource = assetList
+         this.tempList = assetList
+         //this.assetList = assetList
+         console.log(this.assetList,123,this.tableObj.dataSource,this.tempList)
+         //this.tableObj.dataSource = assetList
     },
     },
     
