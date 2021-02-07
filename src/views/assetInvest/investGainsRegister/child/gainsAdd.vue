@@ -153,6 +153,7 @@
               :wrapper-col="wrapperCol"
             >
               <SG-DatePicker
+                :defaultValue="moment(new Date(), 'YYYY-MM')" 
                 placeholder="请选择月份"
                 pickerType="MonthPicker"
                 @change="monthChange"
@@ -201,8 +202,8 @@
                   {
                     rules: [
                       { required: true, message: '请输入收益金额' },
-                      { max: 30, message: '最多30个字符' },
-                      { pattern: /^\d+$/, message: '只能输入数字' },
+                      { max: 14, message: '最多14个字符' },
+                      { pattern: /^(\-|\+?)\d+(\.\d+)?$/, message: '只能输入数字' },
                     ],
                   },
                 ]"
@@ -240,7 +241,7 @@
           <a-col :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&emsp;件：</label>
-              <SG-UploadFile type="all" v-model="uploadList" />
+              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -273,9 +274,11 @@ import {
 } from "src/views/common/commonQueryApi";
 import TenantModal from "@/views/assetRent/component/tenantModal"; // 客户组件
 import InvestForm from "./investForm"; // 投资单组件
+import moment from "moment";
 export default {
   data() {
     return {
+      moment,
       close,
       close2: false,
       show: false,
