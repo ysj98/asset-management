@@ -206,9 +206,11 @@
                     rules: [
                       { required: true, message: '请输入收益金额' },
                       { max: 14, message: '最多14个字符' },
-                      { pattern: /^(\-|\+?)\d+(\.\d+)?$/, message: '只能输入数字' },
+                      {
+                        pattern: /(^([-]?)[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^([-]?)(0){1}$)|(^([-]?)[0-9]\.[0-9]([0-9])?$)/,
+                        message: '只能输入数字，小数点后保留两位',
+                      },
                     ],
-                    initialValue: incomeInfo.amount,
                   },
                 ]"
               >
@@ -245,7 +247,7 @@
           <a-col :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&emsp;件：</label>
-              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120"/>
+              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -370,6 +372,7 @@ export default {
               this.billOption = data.feeSubject;
               this.note = data.remark;
               this.form.setFieldsValue({
+                incomeNum: data.amount,
                 incomeName: data.incomeName,
                 projectId: data.projectId,
                 assetType: data.assetTypeName,
@@ -533,7 +536,7 @@ export default {
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then((res) => {
         if (+res.data.code === 0) {
-          this.$message.success('投资收益编辑成功！')
+          this.$message.success("投资收益编辑成功！");
           this.show = false;
           this.$emit("childrenSubmit");
         } else {
