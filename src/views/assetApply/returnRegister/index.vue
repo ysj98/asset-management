@@ -255,11 +255,11 @@ export default {
     },
     // 刷新页面
       refreshKey: function (key, preKey) {
-
+        this.queryInitCondition.organId = this.$route.params.organId
         key !== preKey && this.allQueryInit()
       },
       refreshIndex: function (key, preKey) {
-
+        this.queryCondition.organId = this.$route.params.organId
         key !== preKey && this.allQuery()
       }
   },

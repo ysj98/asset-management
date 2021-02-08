@@ -209,7 +209,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1300,                 // 组织机构id
+        organId:'',                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
@@ -225,7 +225,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1300,                 // 组织机构id
+        organId:'',                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
@@ -238,7 +238,7 @@ export default {
         investName: ''               // 投资单名称
       },
       organProjectType: {
-          organId: 1300,
+          organId: '',
           organName: this.organName,
           projectId: [],
           assetType: []
@@ -269,11 +269,11 @@ export default {
     },
     // 刷新页面
       refreshKey: function (key, preKey) {
-
+        this.queryInitCondition.organId = this.$route.params.organId
         key !== preKey && this.allQueryInit()
       },
       refreshIndex: function (key, preKey) {
-
+        this.queryCondition.organId = this.$route.params.organId
         key !== preKey && this.allQuery()
       }
   },
@@ -400,6 +400,8 @@ export default {
       })
     },
     changeTree (value, label) {
+      this.organId = value
+      console.log(this.organId)
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
@@ -414,7 +416,7 @@ export default {
         pageSize: this.queryInitCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryInitCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.alljudge(this.queryInitCondition.projectList),            // 资产项目Id
-        organId: Number(this.queryInitCondition.organId),        // 组织机构id
+        organId: this.queryInitCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryInitCondition.assetType),  // 资产类型id(多个用，分割)
         signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
         signingDateEnd: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束签订日期
@@ -452,7 +454,7 @@ export default {
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
+        organId: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
         signingDateEnd: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束签订日期

@@ -103,7 +103,7 @@
             if (res && String(res.code) === '0') {
               this.$message.success(`${tip}成功`)
               // 跳回列表路由
-              return this.$router.push({ name: '领用登记', params: { refresh: true } })
+              return this.$router.push({ name: '领用登记', params: { refresh: true, organId: this.organId } })
             }
             throw res.message || `${tip}失败`
           }).catch(err => {
