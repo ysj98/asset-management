@@ -364,10 +364,10 @@ export default {
         projectIdList: this.alljudge(this.queryInitCondition.projectList),            // 资产项目Id
         organId: Number(this.queryInitCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryInitCondition.assetType),  // 资产类型id(多个用，分割)
-        startCreateDate: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 提交开始日期
-        endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 提交结束日期
-        startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
-        endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
+        startCreateDate: this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 提交开始日期
+        endCreateDate: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 提交结束日期
+        startReceiveDate: this.applyValue[0] ? moment(this.applyValue[0]).format('YYYY-MM-DD') : null,         // 领用开始日期
+        endReceiveDate: this.applyValue[1] ? moment(this.applyValue[1]).format('YYYY-MM-DD') : null,          // 领用结束日期
         receiveName: this.queryInitCondition.receiveName,                              // 领用单名称/编号
         receiveOrganId: this.queryInitCondition.receiveOrganId                        // 领用部门
       }
@@ -401,10 +401,10 @@ export default {
         projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        startCreateDate: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 提交开始日期
-        endCreateDate: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 提交结束日期
-        startReceiveDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
-        endReceiveDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
+        startCreateDate: this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 提交开始日期
+        endCreateDate: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 提交结束日期
+        startReceiveDate: this.applyValue[0] ? moment(this.applyValue[0]).format('YYYY-MM-DD') : null,         // 领用开始日期
+        endReceiveDate: this.applyValue[1] ? moment(this.applyValue[1]).format('YYYY-MM-DD') : null,          // 领用结束日期
         receiveName: this.queryCondition.receiveName,                              // 领用单名称/编号
         receiveOrganId: this.queryCondition.receiveOrganId                        // 领用部门
       }

@@ -381,10 +381,10 @@ export default {
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
-        signingDateEnd: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束签订日期
-        startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
-        startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
+        signingDateStart: this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 开始签订日期
+        signingDateEnd: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 结束签订日期
+        startInvestDateStart: this.createValue[0] ? moment(this.applyValue[0]).format('YYYY-MM-DD') : null,         // 开始投资日期
+        startInvestDateEnd: this.createValue[1] ? moment(this.applyValue[1]).format('YYYY-MM-DD') : null,          // 结束投资日期
         investStatusList: this.alljudge(this.queryCondition.investStatusList),        // 投资状态列表
         investNameOrIdOrContractCode: this.queryCondition.investNameOrIdOrContractCode                              // 投资单名称/编号
       }
@@ -418,10 +418,10 @@ export default {
         projectIdList: this.alljudge(this.queryInitCondition.projectList),            // 资产项目Id
         organId: this.queryInitCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryInitCondition.assetType),  // 资产类型id(多个用，分割)
-        signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
-        signingDateEnd: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束签订日期
-        startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
-        startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
+        signingDateStart:this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 开始签订日期
+        signingDateEnd: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 结束签订日期
+        startInvestDateStart: this.createValue[0] ? moment(this.applyValue[0]).format('YYYY-MM-DD') : null,         // 开始投资日期
+        startInvestDateEnd: this.createValue[1] ? moment(this.applyValue[1]).format('YYYY-MM-DD') : null,          // 结束投资日期
         investStatusList: this.alljudge(this.queryInitCondition.investStatusList),        // 投资状态列表
         investNameOrIdOrContractCode: this.queryInitCondition.investNameOrIdOrContractCode                             // 投资单名称/编号
       }
@@ -456,10 +456,10 @@ export default {
         projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
         organId: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        signingDateStart: moment(this.createValue[0]).format('YYYY-MM-DD'),         // 开始签订日期
-        signingDateEnd: moment(this.createValue[1]).format('YYYY-MM-DD'),          // 结束签订日期
-        startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
-        startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
+        signingDateStart: this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 开始签订日期
+        signingDateEnd: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 结束签订日期
+        startInvestDateStart: this.createValue[0] ? moment(this.applyValue[0]).format('YYYY-MM-DD') : null,         // 开始投资日期
+        startInvestDateEnd: this.createValue[1] ? moment(this.applyValue[1]).format('YYYY-MM-DD') : null,          // 结束投资日期
         investStatusList: this.alljudge(this.queryCondition.investStatusList),        // 投资状态列表
         investNameOrIdOrContractCode: this.queryCondition.investNameOrIdOrContractCode                              // 投资单名称/编号
       }
