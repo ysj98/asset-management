@@ -55,7 +55,7 @@
         :data-source="tableData"
         :pagination="false"
         :bordered="true"
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: 2200 }"
         size="middle"
       >
         <template slot="operation" slot-scope="text, record">
@@ -89,8 +89,6 @@ const columns = [
   {
     title: "投资单名称",
     dataIndex: "investName",
-    fixed: "left",
-    width: 120,
     align: "center",
   },
   {
@@ -102,6 +100,7 @@ const columns = [
     title: "资产类型",
     dataIndex: "assetTypeName",
     align: "center",
+    width: 125
   },
   {
     title: "投资项目",
@@ -112,6 +111,7 @@ const columns = [
     title: "资产数量",
     dataIndex: "assetSum",
     align: "center",
+    width: 70
   },
   {
     title: "投资面积(㎡)",
@@ -123,11 +123,13 @@ const columns = [
     title: "起投日期",
     dataIndex: "startInvestDate",
     align: "center",
+    width: 150,
   },
   {
     title: "止投日期",
     dataIndex: "endInvestDate",
     align: "center",
+    width: 150,
   },
   {
     title: "合同编号",
@@ -138,6 +140,7 @@ const columns = [
     title: "投资状态",
     dataIndex: "investStatusName",
     align: "center",
+    width: 100,
   },
   {
     title: "操作",

@@ -81,6 +81,7 @@
           :tokenSeparators="[',']"
           @select="assetTypeDataFn"
           v-model="queryCondition.assetType"
+          style="width: 170px"
         >
           <a-select-option
             v-for="(item, index) in assetTypeData"
@@ -101,9 +102,13 @@
           >
         </a-select>
         <a-select
+          :maxTagCount="1"
+          mode="multiple"
+          :tokenSeparators="[',']"
+          @select="billOptionFn"
           show-search
           :placeholder="'请选择费用科目'"
-          style="width: 150px"
+          style="width: 200px"
           optionFilterProp="children"
           :options="billConfigOptions"
           :allowClear="true"
@@ -176,6 +181,10 @@ const columns = [
   {
     title: "收益编号",
     dataIndex: "incomeId",
+  },
+  {
+    title: "收益名称",
+    dataIndex: "incomeName",
   },
   {
     title: "所属机构",
@@ -288,7 +297,12 @@ export default {
       },
       allStyle: "width: 150px; margin-right: 10px;",
       projectData: [],
-      billConfigOptions: [], // 费用科目
+      billConfigOptions: [
+        {
+          name: "全部费用科目",
+          value: undefined,
+        },
+      ], // 费用科目
       signDate: [
         moment(new Date() - 24 * 1000 * 60 * 60 * 90),
         moment(new Date()),
@@ -510,6 +524,17 @@ export default {
         );
       });
     },
+
+    // 费用科目变化
+    billOptionFn(value) {
+      this.$nextTick(function () {
+        this.queryCondition.billOption = this.handleMultipleSelectValue(
+          value,
+          this.queryCondition.billOption,
+          this.billConfigOptions
+        );
+      });
+    },
     // 分页查询
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
@@ -566,7 +591,7 @@ export default {
         let that = this;
         this.$confirm({
           title: "提示",
-          content: "确认要作废此收益单吗？",
+          content: "确认要作废该投资收益吗",
           onOk() {
             that.$api.assetRent
               .updateIncomeStatus({

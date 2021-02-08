@@ -505,7 +505,6 @@ export default {
       }
     },
     signDateFn(value, mode) {
-      console.log(mode);
       this.signingDate = mode;
     },
     startDateFn(value, mode) {

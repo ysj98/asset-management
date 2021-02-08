@@ -516,7 +516,7 @@ export default {
         );
       });
     },
-    // 资产类型变化
+    // 费用科目变化
     billOptionFn(value) {
       this.$nextTick(function () {
         this.queryCondition.billOption = this.handleMultipleSelectValue(
@@ -582,7 +582,7 @@ export default {
         let that = this;
         this.$confirm({
           title: "提示",
-          content: "确认要作废此收益单吗？",
+          content: "确认要作废该出租收益吗？",
           onOk() {
             that.$api.assetRent
               .updateIncomeStatus({
