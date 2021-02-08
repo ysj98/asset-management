@@ -112,7 +112,7 @@
           { title: '投资面积(㎡)', dataIndex: 'investArea' },
           { title: '起投日期', dataIndex: 'startInvestDate', width: 80 },
           { title: '止投日期', dataIndex: 'endInvestDate', width: 80 },
-          { title: '投资编号', dataIndex: 'investCode', width: 150 },
+          { title: '合同编号', dataIndex: 'contractCode', width: 150 },
           { title: '投资状态', dataIndex: 'investStatusName' },
           { title: '签订日期', dataIndex: 'signingDate', width: 100 },
           { title: '审批状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 60 }
@@ -134,6 +134,7 @@
           { title: '待审批', key: '2' }, { title: '已驳回', key: '3' },
           { title: '已审批', key: '1' }, { title: '已取消', key: '4' }
         ], // 查询条件-审核状态选项
+        timeoutId: 0 // 用于清除超字数提示
       }
     },
 
@@ -260,8 +261,17 @@
 
       'queryObj.assetNameOrCode': function (val) {
         if (val.length > 30) {
-          this.queryObj.assetName = val.slice(0, 30)
-          return this.$message.warn('最大支持30个字符')
+          this.queryObj.assetNameOrCode = val.slice(0, 30)
+          clearTimeout(this.timeoutId)
+          this.timeoutId = setTimeout(() => this.$message.warn('最大支持30个字符'), 500)
+        }
+      },
+
+      'queryObj.investNameOrId': function (val) {
+        if (val.length > 30) {
+          this.queryObj.investNameOrId = val.slice(0, 30)
+          clearTimeout(this.timeoutId)
+          this.timeoutId = setTimeout(() => this.$message.warn('最大支持30个字符'), 500)
         }
       },
 
