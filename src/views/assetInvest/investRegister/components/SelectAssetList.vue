@@ -290,6 +290,7 @@
         // })
         // }
         this.selectedList = primaryList.concat(newList)
+        console.log(allAttrs,selectedList,keys)
         this.$emit('input', allAttrs ? selectedList : keys)
         this.getReturnAssetInfo()
         //this.$emit('input', selectedList)

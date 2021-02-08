@@ -92,6 +92,7 @@
             { title: '所属机构', dataIndex: 'organName', width: 200 },
             { title: '资产项目', dataIndex: 'projectName', width: 150 },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
+            { title: '房屋所有权人', dataIndex: 'houseOwner' },
             { title: '权属人/承租人', dataIndex: 'obligeeName', width: 150 },
             { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
             { title: '房屋号/丘地号/不动产单元号', dataIndex: 'combinationCode', width: 200 },

@@ -211,6 +211,27 @@ let columns = [
       }
     ],
   },
+  {
+    title: "暂无权属",
+    dataIndex: "temporary",
+    children: [
+      {
+        title: "总数",
+        dataIndex: "temporaryCount",
+        width: 100
+      },
+      {
+        title: "无证",
+        width: 100,
+        dataIndex: "temporaryNoCount",
+      },
+      {
+        title: "待办证",
+        width: 100,
+        dataIndex: "temporaryWaitCount",
+      }
+    ],
+  },
   // {
   //   title: "有证资产数",
   //   dataIndex: "ownershipCount",

@@ -405,6 +405,8 @@ export const assets = {
     exportHouseCard: '/ams/asset-house/exportById',
     // 资产入账分页查询汇总
     queryCardPageListSum: '/ams/assetCard/queryCardPageListSum',
+    // 房屋台账资产视图汇总
+    assetHousePageTotal: '/ams/asset-house/assetHousePageTotal'
   },
   // 资产项目管理
   projectManage: {
@@ -873,6 +875,8 @@ export const tableManage = {
   // 资产处置一览表导出
   exportDetailExcel: '/ams/disposeRegister/exportDetailExcel',
   // 资产项目数据查询
+  // 资产项目数据查询汇总
+  projectAssetTotal: '/ams/statistics/projectAssetTotal',
   // 资产价值导出
   exportAssetValue: '/ams/statistics/exportAssetValue',
   // 资产价值数据报表
@@ -991,7 +995,9 @@ export const land = {
   // 资产地图- 资产全量数据
   mapData: '/ams/asset/map/list',
   // 资产地图- 资产详情
-  mapDetail: '/ams/asset/map/detail'
+  mapDetail: '/ams/asset/map/detail',
+  // 土地台账资产视图汇总
+  assetViewListTotal: '/ams/assetLand/view/asset/assetViewListTotal'
 }
 
 // 交付管理

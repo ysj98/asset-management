@@ -526,7 +526,8 @@ export default {
     },
     // 下载导入模板文件
     downTemplate () {
-      exportDataAsExcel('import_template_qszj.xlsx', this.$api.tableManage.downloadTemplate, '权证导入模板.xlsx', this)
+      if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
+      exportDataAsExcel(`import_template_qszj.xlsx?organId=${this.queryCondition.organId}`, this.$api.tableManage.downloadTemplate, '权证导入模板.xlsx', this)
     },
     // 批量导入
     uploadFile (file) {

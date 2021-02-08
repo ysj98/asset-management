@@ -60,9 +60,12 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <span slot="projectName" slot-scope="text, record">
-        <router-link :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
+        <router-link v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
           {{text}}
         </router-link>
+        <span v-else>
+          {{text}}
+        </span>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
@@ -83,6 +86,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import EditTableHeader from './EditTableHeader'
   import moment from 'moment'
+  const judgment = [undefined, null, '']
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, OrganProject, NoDataTip },
@@ -170,6 +174,20 @@
           {title: '占用(㎡)', key: 'occupationAreaCount', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', key: 'otherAreaCount', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据，title 标题，value 数值，color 背景色
+        totalField: {
+          buildCount: '',       // 楼栋数
+          assetBuildCount: '',  // 整栋楼接管数量
+          area: '',             // 建筑面积
+          operationArea: '',    // 运营
+          selfUserArea: '',     // 自用
+          occupationArea: '',   // 占用
+          idleArea: '',         // 闲置
+          otherArea: '',        // 其他
+          originalValue: '',    // 资产原值
+          marketValue: '',      // 资产估值
+          rentedArea: '',       // 已租面积
+          unRentedArea: '',     // 未租面积
+        }
       }
     },
 
@@ -235,6 +253,7 @@
               let transferToOperationName = String(transferToOperation) === '1' ? '已转运营' : '未转运营'
               return { ...m, takeOverName, transferToOperationName, ownershipStatusName, isPropertyName }
             })
+            this.totalFn(form)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -247,7 +266,32 @@
         // 查询统计数据
         if (type === 'search') { this.queryStatisticsInfo(form) }
       },
-
+    // 合计汇总合并
+      totalFn (form) {
+        this.$api.tableManage.projectAssetTotal(form).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            let data = res.data
+            this.totalField.buildCount = judgment.includes(data.buildCountTotal) ? 0 : data.buildCountTotal          // 楼栋数
+            this.totalField.assetBuildCount = judgment.includes(data.assetBuildCountTotal) ? 0 : data.assetBuildCountTotal   // 整栋楼接管数量
+            this.totalField.area = judgment.includes(data.areaTotal) ? 0 : data.areaTotal                          // 建筑面积
+            this.totalField.operationArea = judgment.includes(data.operationAreaTotal) ? 0 : data.operationAreaTotal      // 运营
+            this.totalField.selfUserArea = judgment.includes(data.selfUserAreaTotal) ? 0 : data.selfUserAreaTotal         // 自用
+            this.totalField.occupationArea = judgment.includes(data.occupationAreaTotal) ? 0 : data.occupationAreaTotal  // 占用
+            this.totalField.idleArea = judgment.includes(data.idleAreaTotal) ? 0 : data.idleAreaTotal                 // 闲置
+            this.totalField.otherArea = judgment.includes(data.otherAreaTotal) ? 0 : data.otherAreaTotal               // 其他
+            this.totalField.originalValue = judgment.includes(data.originalValueTotal) ? 0 : data.originalValueTotal       // 资产原值
+            this.totalField.marketValue = judgment.includes(data.marketValueTotal) ? 0 : data.marketValueTotal         // 资产估值
+            this.totalField.rentedArea = judgment.includes(data.rentedAreaTotal) ? 0 : data.rentedAreaTotal            // 已租面积
+            this.totalField.unRentedArea = judgment.includes(data.unRentedAreaTotal) ? 0 : data.unRentedAreaTotal        // 未租面积
+            this.tableObj.dataSource.push({projectName: '所有页-合计', projectId: 'projectId', ...this.totalField})
+          } else {
+            this.$message.error(res.message)
+          }
+        }).catch(err => {
+          this.$message.error(err || '查询统计出错')
+        })
+      },
       // 查询统计数据
       queryStatisticsInfo (form) {
         this.overviewNumSpinning = true
@@ -322,6 +366,11 @@
     & /deep/ .ant-table {
       .ant-table-thead th {
         white-space: nowrap;
+      }
+    }
+    & /deep/ table {
+      tr:last-child, tr:nth-last-child(1) {
+        font-weight: bold;
       }
     }
   }

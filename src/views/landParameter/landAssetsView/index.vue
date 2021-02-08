@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2020-12-14 11:19:24
+ * @LastEditTime: 2021-02-01 17:41:10
  * @Description: 土地资产视图
 -->
 <template>
@@ -14,29 +14,30 @@
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
         <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.landCategory" placeholder="权属用途" maxlength="20" style="width: 140px; margin-right: 10px;" @search="allQuery"/>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.statuss">
-              <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption" @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
-              <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
-              <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
-              <a-select-option v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-row :gutter="12" style="margin-right: -78px">
-          <a-col :span="18" style="padding-left: 60px">
-            <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
-          </a-col>
-          <a-col :span="5" style="padding-top: 13px; padding-left: 0">
-            <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
-          </a-col>
-        </a-row>
+            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption" @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
+            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
+            <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
+            <a-select-option v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-row :gutter="12" style="margin-right: -78px">
+            <a-col :span="18" style="padding-left: 60px">
+              <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+            </a-col>
+            <a-col :span="5" style="padding-top: 13px; padding-left: 0">
+              <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
+            </a-col>
+          </a-row>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -58,7 +59,7 @@
         :pagination="false"
         >
         <span slot="action" slot-scope="text, record">
-          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+          <span v-if="record.assetName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
         </span>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -97,6 +98,7 @@ import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
+const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
   { title: '资产名称', dataIndex: 'assetName', width: 150, disabled: true },
@@ -106,6 +108,7 @@ const columnsData = [
   { title: '宗地位置', dataIndex: 'location', width: 150 },
   { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150 },
   { title: '资产项目名称', dataIndex: 'projectName', width: 150 },
+  { title: '权属用途', dataIndex: 'landCategory', width: 150 },
   { title: '土地类型', dataIndex: 'landType', width: 150 },
   { title: '土地用途', dataIndex: 'landuse', width: 150 },
   { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150 },
@@ -121,7 +124,7 @@ const columnsData = [
   { title: '财务卡片编码', dataIndex: 'cardCode', width: 150 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-  { title: ' 批准日期', dataIndex: 'approvalDate', width: 150 },
+  { title: '批准日期', dataIndex: 'approvalDate', width: 150 },
   { title: '资产状态', dataIndex: 'statusName', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 70}
 ]
@@ -149,7 +152,8 @@ const queryCondition =  {
   useType: '',        // 用途
   pageNum: 1,         // 当前页
   pageSize: 10,       // 每页显示记录数
-  address: ''         // 地理位置
+  address: '',         // 地理位置
+  landCategory: ''
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
@@ -211,7 +215,17 @@ export default {
           name: '全部用途',
           value: ''
         }
-      ]
+      ],
+      totalField: {
+        landArea: '',               // 土地面积
+        acreage: '',                // 计容面积
+        transferOperationArea: '',  // 运营
+        selfUserArea: '',           // 自用
+        idleArea: '',               // 闲置
+        otherArea: '',              // 其他
+        originalValue: '',          // 资产原值
+        marketValue: ''             // 最新估值
+      }
     }
   },
   computed: {
@@ -440,6 +454,7 @@ export default {
         statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize,         // 每页显示记录数
+        landCategory: this.queryCondition.landCategory,
         address: this.address           // 详细地址
       }
       this.$api.land.assetView(obj).then(res => {
@@ -452,6 +467,7 @@ export default {
             })
             this.tableData = data
             this.count = res.data.data.count
+            this.totalFn(obj)
           } else {
             this.tableData = []
             this.count = 0
@@ -463,6 +479,25 @@ export default {
         } else {
           this.$message.error(res.data.message)
           this.loading = false
+        }
+      })
+    },
+    // 合计汇总合并
+    totalFn (obj) {
+      this.$api.land.assetViewListTotal(obj).then(res => {
+        if (String(res.data.code) === '0') {
+          let data = res.data.data
+          this.totalField.landArea = judgment.includes(data.area) ? 0 : data.area               // 土地面积
+          this.totalField.acreage = judgment.includes(data.acreageTotal) ? 0 : data.acreageTotal                // 计容面积
+          this.totalField.transferOperationArea = judgment.includes(data.transferOperationArea) ? 0 : data.transferOperationArea  // 运营
+          this.totalField.selfUserArea = judgment.includes(data.selfUserArea) ? 0 : data.selfUserArea           // 自用
+          this.totalField.idleArea = judgment.includes(data.idleArea) ? 0 : data.idleArea               // 闲置
+          this.totalField.otherArea = judgment.includes(data.otherArea) ? 0 : data.otherArea              // 其他
+          this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : data.originalValue          // 资产原值
+          this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : data.marketValue             // 最新估值
+          this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -520,6 +555,11 @@ export default {
   }
   .custom-table {
     padding-bottom: 60px;
+    & /deep/ table {
+      tr:last-child, tr:nth-last-child(1) {
+        font-weight: bold;
+      }
+    }
   }
   .overflowX{
     /deep/ .ant-table-scroll {

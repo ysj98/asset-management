@@ -445,7 +445,9 @@
          this.assetList.map((item,index) => {
            this.assetList[index].area = item.assetArea
            //this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
-           this.assetList[index].receiveArea = item.assetArea
+           if(!this.assetList[index].receiveArea){
+             this.assetList[index].receiveArea = item.assetArea
+           }
            this.assetList[index].objectTypeName = item.assetCategoryName
          })
     },

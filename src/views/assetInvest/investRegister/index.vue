@@ -38,7 +38,7 @@
           ">
             <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.investNameOrId" placeholder="投资单名称/合同编号" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.investNameOrIdOrContractCode" placeholder="投资单名称/投资单编号/合同编号" maxlength="30" style="width: 220px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -53,10 +53,10 @@
             <a-select-option v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="true" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="true" label="投资日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -110,7 +110,7 @@ const approvalStatusData = [
 ]
 
 const investStatusData = [
-  { name: '全部状态', value: '' }, { name: '未生效', value: '0' }, { name: '待执行', value: '2' }, { name: '执行中', value: '3' }, { name: '已终止', value: '1' }, { name: '已作废', value: '4' }
+  { name: '全部状态', value: '' }, { name: '未生效', value: '0' }, { name: '待执行', value: '1' }, { name: '执行中', value: '2' }, { name: '已终止', value: '3' }, { name: '已作废', value: '4' }
 ]
 
 const columns = [
@@ -212,7 +212,7 @@ export default {
         organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: null,            // 投资单名称/投资单编号
+        investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -228,7 +228,7 @@ export default {
         organId:1300,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
-        investNameOrId: null,            // 投资单名称/投资单编号
+        investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
         signingDateStart: '',        // 开始签订日期
         endReturnDate: '',          // 结束签订日期
         startInvestDateStart: '',         // 开始投资日期
@@ -386,7 +386,7 @@ export default {
         startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
         startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
         investStatusList: this.alljudge(this.queryCondition.investStatusList),        // 投资状态列表
-        investNameOrId: this.queryCondition.investNameOrId                              // 投资单名称/编号
+        investNameOrIdOrContractCode: this.queryCondition.investNameOrIdOrContractCode                              // 投资单名称/编号
       }
       this.$api.assetInvest.exportInvestOrder(obj).then(res => {
         let blob = new Blob([res.data])
@@ -421,7 +421,7 @@ export default {
         startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
         startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
         investStatusList: this.alljudge(this.queryInitCondition.investStatusList),        // 投资状态列表
-        investNameOrId: this.queryInitCondition.investNameOrId                              // 投资单名称/编号
+        investNameOrIdOrContractCode: this.queryInitCondition.investNameOrIdOrContractCode                             // 投资单名称/编号
       }
       this.$api.assetInvest.getInvestOrderStatistics(obj).then(res => {
         if(res.data.code == 0){
@@ -459,7 +459,7 @@ export default {
         startInvestDateStart: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 开始投资日期
         startInvestDateEnd: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 结束投资日期
         investStatusList: this.alljudge(this.queryCondition.investStatusList),        // 投资状态列表
-        investNameOrId: this.queryCondition.investNameOrId                              // 投资单名称/编号
+        investNameOrIdOrContractCode: this.queryCondition.investNameOrIdOrContractCode                              // 投资单名称/编号
       }
       this.$api.assetInvest.getInvestOrderStatistics(obj).then(res => {
         if(res.data.code == 0){
@@ -574,23 +574,27 @@ export default {
     changeAssetClassify (value) {
       this.$nextTick(function () {
         this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyOptions)
+        
       })
     },
     // 状态发生变化
     approvalStatusFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatusList, this.approvalStatusData)
+        console.log(this.queryCondition.approvalStatusList, this.approvalStatusData)
+        this.queryCondition.approvalStatusList = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatusList, this.approvalStatusData)
       })
     },
     // 投资状态发生变化
     investStatusFn (value) {
       this.$nextTick(function () {
+        console.log(this.queryCondition.investStatusList, this.investStatusData)
         this.queryCondition.investStatusList = this.handleMultipleSelectValue(value, this.queryCondition.investStatusList, this.investStatusData)
       })
     },
     // 资产类型变化
     assetTypeDataFn (value) {
       this.$nextTick(function () {
+                console.log(this.queryCondition.assetType, this.assetTypeData)
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
       })
     },
@@ -631,6 +635,7 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+      
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {

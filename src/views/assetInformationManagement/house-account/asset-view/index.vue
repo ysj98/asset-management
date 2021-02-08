@@ -79,6 +79,18 @@
           <a-col :span="5">
             <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
           </a-col>
+          </a-row>
+          <a-row :gutter="12" style="margin-top: 14px">
+            <a-col :span="5">
+              <a-select
+                :filter-option="filterOption"
+                show-search
+                v-model="ownershipUse"
+                style="width: 100%"
+                :options="ownershipUseOPt"
+                placeholder="权属用途"
+              />
+            </a-col>
         </a-row>
       </div>
     </search-container>
@@ -92,7 +104,7 @@
         <tooltip-text :text="text"/>
       </template>
       <span slot="action" slot-scope="text, record">
-        <router-link :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
+        <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
@@ -123,11 +135,14 @@
   import tooltipText from 'src/views/common/TooltipText'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
+  const judgment = [undefined, null, '']
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
+        ownershipUseOPt: [],
+        ownershipUse: '',
         useType: [],           // 用途
         useTypeOptions: [],    // 用途
         fold: true,
@@ -156,7 +171,7 @@
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left' },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
-            { title: '丘地号', dataIndex: 'addressNo' },
+            { title: '宗地号', dataIndex: 'addressNo' },
             { title: '建筑面积(㎡)', dataIndex: 'area' },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
             { title: '地理位置', dataIndex: 'address', width: 300 },
@@ -165,6 +180,7 @@
             { title: '楼层', dataIndex: 'floor' },
             { title: '层高', dataIndex: 'floorHeight' },
             { title: '分类', dataIndex: 'objectTypeName' },
+            { title: '权属用途', dataIndex: 'ownershipUseName' },
             { title: '用途', dataIndex: 'useType' },
             { title: '资产形态', dataIndex: 'typeName' },
             { title: '权属类型', dataIndex: 'kindOfRightName' },
@@ -202,11 +218,28 @@
         exportAssetBtn: false, // 导出资产视图button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
-        current: null // 当前选中的概览区域下标，与后台入参一一对应
+        current: null, // 当前选中的概览区域下标，与后台入参一一对应
+        totalField: {
+          area: '',                    // 建筑面积
+          transferOperationArea: '',   // 运营
+          selfUserArea: '',            // 自用
+          idleArea: '',                // 闲置
+          occupationArea: '',          // 占用
+          otherArea: '',               // 其他
+          originalValue: '',           // 资产原值
+          marketValue: '',             // 最新估值
+          rentedArea: '',              // 已租面积
+          unRentedArea: ''             // 未租面积
+        }
       }
     },
 
     methods: {
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )
+      },
       // 全选与其他选项互斥处理
       useTypeChange (value) {
         let lastIndex = value.length - 1
@@ -267,7 +300,7 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, useType, address
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, useType, address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -275,6 +308,7 @@
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
+          ownershipUse,
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
         }
@@ -288,6 +322,7 @@
               totalCount: count,
               pageNo, pageLength
             })
+            this.totalFn(form)
             return false
           }
           throw res.message || '查询接口出错'
@@ -298,7 +333,27 @@
         // 查询楼栋面积统计数据
         if (type === 'search') { this.queryAssetAreaInfo(form) }
       },
-
+      // 合计汇总合并
+      totalFn (form) {
+        this.$api.assets.assetHousePageTotal(form).then(res => {
+          if (String(res.data.code) === '0') {
+            let data = res.data.data
+            this.totalField.area = judgment.includes(data.totalArea) ? 0 : data.totalArea                            // 建筑面积
+            this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
+            this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
+            this.totalField.idleArea = judgment.includes(data.totalIdleArea) ? 0 : data.totalIdleArea                    // 闲置
+            this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : data.totalOccupationArea        // 占用
+            this.totalField.otherArea = judgment.includes(data.totalOtherArea) ? 0 : data.totalOtherArea                  // 其他
+            this.totalField.originalValue = judgment.includes(data.totalOriginalValue) ? 0 : data.totalOriginalValue          // 资产原值
+            this.totalField.marketValue = judgment.includes(data.totalMarketValue) ? 0 : data.totalMarketValue              // 最新估值
+            this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
+            this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
+            this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      },
       // 查询楼栋视图面积概览数据
       queryAssetAreaInfo (form) {
         this.overviewNumSpinning = true
@@ -409,9 +464,29 @@
           }
         })
       },
+      // 机构字典
+      organDict (code) {
+        this.$api.assets.organDict({ organId: this.organId, code }).then(res => {
+          if (res.data.code === "0") {
+            let result = res.data.data || [];
+            let arr = result.map(item => ({ label: item.name, value: item.value }));
+            // 附属信息类型
+            if (code === "OWNERSHIP_USE") {
+              this.ownershipUseOPt = []
+              this.ownershipUseOPt = [
+                ...arr
+              ];
+              this.ownershipUseOPt.unshift({label: '全部权属用途', value: ''})
+            }
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+      },
     },
     mounted () {
       this.queryNodesByRootCode()
+      this.organDict('OWNERSHIP_USE')
     },
     created () {
       // 初始化Table列头
@@ -451,6 +526,11 @@
     & /deep/ .ant-table {
       .ant-table-thead th {
         white-space: nowrap;
+      }
+    }
+    & /deep/ table {
+      tr:last-child, tr:nth-last-child(1) {
+        font-weight: bold;
       }
     }
   }

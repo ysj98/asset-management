@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2020-11-13 18:25:49
+ * @LastEditTime: 2021-01-29 13:57:03
  * @Description: 资产明细
 -->
 <template>
@@ -17,11 +17,16 @@
           mode="multiple"
           :maxTagCount="1"
           v-model="queryCondition.projectId"
-          :options="projectData"
           placeholder="请选择资产项目"
           :filterOption="filterOption"
           :loading="loading && !projectData.length"
-        ></a-select>
+        >
+        <a-select-option
+          v-for="(item, index) in projectData"
+          :key="index" :value="item.value">
+          {{item.title}}
+          </a-select-option>
+        </a-select>
         <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="40" :style="allStyle" @search="allQuery" />
         <SG-Button type="primary" style="margin-right: 10px;" @click="allQuery">查询</SG-Button>
       </div>
