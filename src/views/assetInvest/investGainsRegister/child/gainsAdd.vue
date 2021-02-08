@@ -152,8 +152,8 @@
               :label-col="labelCol"
               :wrapper-col="wrapperCol"
             >
-              <SG-DatePicker
-                :defaultValue="moment(new Date(), 'YYYY-MM')" 
+              <!-- :defaultValue="moment(Date.now())" -->
+              <a-month-picker
                 placeholder="请选择月份"
                 pickerType="MonthPicker"
                 @change="monthChange"
@@ -161,7 +161,7 @@
                   'monthNum',
                   { rules: [{ required: true, message: '请选择月份' }] },
                 ]"
-              ></SG-DatePicker>
+              />
             </a-form-item>
           </a-col>
         </a-row>
@@ -203,7 +203,10 @@
                     rules: [
                       { required: true, message: '请输入收益金额' },
                       { max: 14, message: '最多14个字符' },
-                      { pattern: /^(\-|\+?)\d+(\.\d+)?$/, message: '只能输入数字' },
+                      {
+                        pattern: /(^([-]?)[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^([-]?)(0){1}$)|(^([-]?)[0-9]\.[0-9]([0-9])?$)/,
+                        message: '只能输入数字，小数点后保留两位',
+                      },
                     ],
                   },
                 ]"
@@ -241,7 +244,7 @@
           <a-col :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&emsp;件：</label>
-              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120"/>
+              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -300,7 +303,9 @@ export default {
       assetType: 0, // 资产类型
       custList: [], // 客户列表
       rentList: [], // 投资单列表
-      mouthNum: {}, // 月份
+      monthNum: {
+        /* moment(Date.now()) */
+      }, // 月份
       billConfigOptions: [], // 费用科目
       billOption: undefined, // 已选费用科目
       incomeNum: 0, // 收益金额
@@ -446,7 +451,8 @@ export default {
     },
     // 月份改变
     monthChange(val, date) {
-      this.mouthNum = date;
+      console.log("date", date);
+      this.monthNum = date;
     },
     // 保存收益单api
     saveUpdateIncome() {
@@ -468,14 +474,14 @@ export default {
         orderId: this.rentList[0].investOrderId,
         orderName: this.rentList[0].investName,
         status: 1,
-        accountingPeriod: this.mouthNum + "-01",
+        accountingPeriod: this.monthNum + "-01",
         amount: this.incomeNum,
         feeSubject: this.billOption,
         remark: this.note,
         attachmentList: upList,
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then((res) => {
-        this.$message.success('投资收益登记成功！')
+        this.$message.success("投资收益登记成功！");
         this.show = false;
         this.$emit("childrenSubmit");
       });
@@ -494,6 +500,7 @@ export default {
   mounted() {
     this.queryProjectByOrganId(this.organId);
     this.queryAssetType();
+    this.form.setFieldsValue({ monthNum: moment(Date.now()) });
   },
 };
 </script>
