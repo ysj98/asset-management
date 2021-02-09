@@ -205,7 +205,11 @@
                   {
                     rules: [
                       { required: true, message: '请输入收益金额' },
-                      { pattern: /^\d+$/, message: '只能输入数字' },
+                      { max: 14, message: '最多14个字符' },
+                      {
+                        pattern: /(^([-]?)[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^([-]?)(0){1}$)|(^([-]?)[0-9]\.[0-9]([0-9])?$)/,
+                        message: '只能输入数字，小数点后保留两位',
+                      },
                     ],
                     initialValue: incomeInfo.amount,
                   },
@@ -532,7 +536,7 @@ export default {
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then((res) => {
         if (+res.data.code === 0) {
-          this.$message.success('出租收益编辑成功！')
+          this.$message.success("出租收益编辑成功！");
           this.show = false;
           this.$emit("childrenSubmit");
         } else {
@@ -558,6 +562,7 @@ export default {
       if (!id) {
         return false;
       }
+      this.uploadList = [];
       this.$api.basics
         .attachment({ objectId: id, objectType: 21 })
         .then((res) => {

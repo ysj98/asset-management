@@ -144,9 +144,7 @@
       </a-table>
       <div class="sum" v-if="loading === false">
         全部合计：
-        <span style="font-size: 16px; font-weight: bold">{{
-          totalCount > 0 ? totalCount : 0
-        }}</span>
+        <span style="font-size: 16px; font-weight: bold">{{ totalCount }}</span>
       </div>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>

@@ -21,7 +21,8 @@
           :loading="exportBtnLoading"
           @click="exportFn"
           v-power="ASSET_MANAGEMENT.ASSET_EARNINGS_REGISTER"
-        >导出</SG-Button>
+          >导出</SG-Button
+        >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
           <treeSelect
             @changeTree="changeTree"
@@ -143,9 +144,7 @@
       </a-table>
       <div class="sum" v-if="loading === false">
         全部合计：
-        <span style="font-size: 16px; font-weight: bold">{{
-          totalCount > 0 ? totalCount : 0
-        }}</span>
+        <span style="font-size: 16px; font-weight: bold">{{ totalCount }}</span>
       </div>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -356,9 +355,7 @@ export default {
           data.forEach((item, index) => {
             item.key = index;
             item.operationDataBtn = this.createOperationBtn(item.status);
-            item.status === 1
-              ? (item.status = "有效")
-              : (item.status = "无效");
+            item.status === 1 ? (item.status = "有效") : (item.status = "无效");
           });
           this.tableData = data;
           this.count = res.data.data.count;
