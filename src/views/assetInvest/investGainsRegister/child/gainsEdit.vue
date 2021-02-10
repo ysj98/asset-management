@@ -561,6 +561,7 @@ export default {
       if (!id) {
         return false;
       }
+      this.uploadList = [];
       this.$api.basics
         .attachment({ objectId: id, objectType: 21 })
         .then((res) => {

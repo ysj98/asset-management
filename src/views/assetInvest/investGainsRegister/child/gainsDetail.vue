@@ -90,7 +90,6 @@ export default {
   watch: {
     show(newVal) {
       if (newVal === true) {
-        console.log(this.incomeId);
         this.getAttachmentList(this.incomeId);
         this.getIncome();
       }
@@ -117,8 +116,9 @@ export default {
     // 查询附件列表
     getAttachmentList(id) {
       if (!id) {
-        return false;
+        return;
       }
+      this.uploadList = [];
       this.$api.basics
         .attachment({ objectId: id, objectType: 21 })
         .then((res) => {
