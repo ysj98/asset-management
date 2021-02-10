@@ -46,7 +46,7 @@
           <span v-else>{{text}}</span>
         </template>
         <template slot="remark" slot-scope="text, record">
-          <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" />
+          <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" :maxLength="200" />
           <span v-else>{{text}}</span>
         </template>
         <template slot="address" slot-scope="text, record">
@@ -115,6 +115,7 @@
           rowKey: 'assetId',
           selectedRowKeys: [], // Table选中的key数据
           columns:  [
+            { title: '序号', dataIndex: 'index' },
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
             { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },

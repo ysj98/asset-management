@@ -268,14 +268,14 @@ export default {
       this.getAssetClassifyOptions()
     },
     // 刷新页面
-      refreshKey: function (key, preKey) {
-        this.queryInitCondition.organId = this.$route.params.organId
-        key !== preKey && this.allQueryInit()
-      },
-      refreshIndex: function (key, preKey) {
-        this.queryCondition.organId = this.$route.params.organId
-        key !== preKey && this.allQuery()
-      }
+      // refreshKey: function (key, preKey) {
+      //   this.queryInitCondition.organId = this.$route.params.organId
+      //   key !== preKey && this.allQueryInit()
+      // },
+      // refreshIndex: function (key, preKey) {
+      //   this.queryCondition.organId = this.$route.params.organId
+      //   key !== preKey && this.allQuery()
+      // }
   },
   mounted () {
     this.platformDictFn('asset_type')

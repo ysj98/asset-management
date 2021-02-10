@@ -238,7 +238,7 @@
         Object.assign(this, { attachment: attachArr, organName })
         let formatDetails = type != 'add' ? { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD'), returnDate: returnDate ? moment(returnDate, 'YYYY-MM-DD') : ''  } : { receiveName, receiveDate: moment(receiveDate || new Date(), 'YYYY-MM-DD') }
         !receiveDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'receiveDate')
-        !returnDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'returnDate')
+        //!returnDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'returnDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
          formatDetails = Object.assign({}, formatDetails, {

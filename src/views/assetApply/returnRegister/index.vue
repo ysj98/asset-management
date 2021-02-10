@@ -381,7 +381,7 @@ export default {
         pageSize: this.queryInitCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryInitCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.alljudge(this.queryInitCondition.projectList),            // 资产项目Id
-        organId: Number(this.queryInitCondition.organId),        // 组织机构id
+        organId: this.queryInitCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryInitCondition.assetType),  // 资产类型id(多个用，分割)
         startCreateDate: this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 提交开始日期
         endCreateDate: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 提交结束日期
@@ -419,7 +419,7 @@ export default {
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
+        organId: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         startCreateDate: this.createValue[0] ? moment(this.createValue[0]).format('YYYY-MM-DD') : null,         // 提交开始日期
         endCreateDate: this.createValue[1] ? moment(this.createValue[1]).format('YYYY-MM-DD') : null,          // 提交结束日期
