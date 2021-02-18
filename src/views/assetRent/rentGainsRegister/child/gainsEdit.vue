@@ -211,7 +211,6 @@
                         message: '只能输入数字，小数点后保留两位',
                       },
                     ],
-                    initialValue: incomeInfo.amount,
                   },
                 ]"
               >
@@ -381,6 +380,7 @@ export default {
                   : "",
                 billOption: data.feeSubject,
                 remark: data.remark,
+                incomeNum: data.amount
               });
             } else {
               this.$error({
