@@ -204,7 +204,7 @@
                 'fixPayment',
                 {
                   rules: [
-                    { pattern: /^\d+$/, message: '只能输入数字' },
+                    { pattern: /^([1-9]\d*|0)(\.\d{1,2})?$/, message: '只能输入正数，小数点后保留两位' },
                     { max: 13, message: '最多13个字符' },
                   ],
                 },
