@@ -380,7 +380,7 @@ export default {
                   : "",
                 billOption: data.feeSubject,
                 remark: data.remark,
-                incomeNum: data.amount
+                incomeNum: data.amount + ''
               });
             } else {
               this.$error({
