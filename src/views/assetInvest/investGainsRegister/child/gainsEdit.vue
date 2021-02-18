@@ -372,7 +372,7 @@ export default {
               this.billOption = data.feeSubject;
               this.note = data.remark;
               this.form.setFieldsValue({
-                incomeNum: data.amount,
+                incomeNum: data.amount + "", // 此处因金额文本框需要验证  所以必须为字符串类型
                 incomeName: data.incomeName,
                 projectId: data.projectId,
                 assetType: data.assetTypeName,
@@ -547,8 +547,9 @@ export default {
         }
       });
     },
-    // 提交this.
+    // 提交
     submitFn() {
+      console.log("submit");
       this.validateTenant = !this.custList.length;
       this.validateRent = !this.rentList.length;
       this.form.validateFields((err, values) => {
