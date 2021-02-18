@@ -248,7 +248,7 @@
           <a-col :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&emsp;件：</label>
-              <SG-UploadFile type="all" v-model="uploadList" />
+              <SG-UploadFile type="all" v-model="uploadList" :maxSize="5120" />
             </a-form-item>
           </a-col>
         </a-row>
