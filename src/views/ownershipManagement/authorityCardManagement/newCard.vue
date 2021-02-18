@@ -479,7 +479,7 @@ export default {
             amsAttachmentList: files,                        // 附件
             amsOwnershipWarrantObligeeList: amsOwnershipWarrantObligeeList,
             amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList,
-            rightType: values.rightTypeName
+            rightType: !isNaN(Number(values.rightTypeName)) ? values.rightTypeName : (values.rightTypeName == '国有建设用地使用权' ? 3 : (values.rightTypeName == '房屋所有权' ? 2 : 1))
           }
           let loadingName = this.SG_Loding('保存中...')
           this.$api.ownership.warrantSaveOrUpdate(obj).then(res => {
