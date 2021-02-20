@@ -217,6 +217,7 @@ export default {
         objectType: objectType === "-1" ? "" : objectType,
         pageSize: pageLength,
         pageNum: pageNo,
+        areaType: 1
       };
       return this.$api.assets
         .assetListPage(form)

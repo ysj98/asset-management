@@ -868,7 +868,10 @@ let proRouter = [{
   {
     path: '/rentRegister',
     name: '出租登记',
-    component: () => import('@/views/assetRent/rentRegister/index')
+    component: () => import('@/views/assetRent/rentRegister/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/rentRegister/rentAdd',
@@ -916,7 +919,10 @@ let proRouter = [{
   {
     path: '/repairRegister',
     name: '维修登记',
-    component: () => import('@/views/assetRepair/index')
+    component: () => import('@/views/assetRepair/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/repairRegister/repairAdd',
