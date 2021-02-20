@@ -430,6 +430,7 @@ export default {
       contractNum: "", // 合同编号
       rentPrice: "", // 租金单价
       uploadList: [], // 上传列表
+      pass: true,
     };
   },
   watch: {
@@ -717,12 +718,13 @@ export default {
           this.$message.success(`${type === "" ? "提交审批" : "保存草稿"}成功`);
           this.$router.push("/rentRegister");
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
       });
     },
     // 页脚保存/草稿
     save(val) {
+      this.pass = true;
       if (val) {
         this.validateTenant = !this.tenantList.length;
         this.form.validateFields((err, values) => {
@@ -730,6 +732,16 @@ export default {
             if (this.selectedList.length === 0) {
               this.$message.error("请添加资产");
             } else {
+              this.selectedList.forEach((item) => {
+                if (+item.leaseArea <= 0) {
+                  this.pass = false;
+                  return;
+                }
+              });
+              if (this.pass === false) {
+                this.$message.error("出租面积必须大于1㎡");
+                return;
+              }
               this.saveUpdateLeaseOrder("");
             }
           }
@@ -738,6 +750,16 @@ export default {
         this.validateTenant = !this.tenantList.length;
         this.form.validateFields((err, values) => {
           if (!err && this.tenantList.length) {
+            this.selectedList.forEach((item) => {
+              if (+item.leaseArea <= 0) {
+                this.pass = false;
+                return;
+              }
+            });
+            if (this.pass === false) {
+              this.$message.error("出租面积必须大于1㎡");
+              return;
+            }
             this.saveUpdateLeaseOrder("draft");
           }
         });
