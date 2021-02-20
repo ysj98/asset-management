@@ -209,7 +209,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:'',                 // 组织机构id
+        organId:null,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
@@ -225,7 +225,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:'',                 // 组织机构id
+        organId:null,                 // 组织机构id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
         investNameOrIdOrContractCode: null,            // 投资单名称/投资单编号
@@ -238,7 +238,7 @@ export default {
         investName: ''               // 投资单名称
       },
       organProjectType: {
-          organId: '',
+          organId: null,
           organName: this.organName,
           projectId: [],
           assetType: []
@@ -268,10 +268,11 @@ export default {
       this.getAssetClassifyOptions()
     },
     // 刷新页面
-      // refreshKey: function (key, preKey) {
-      //   this.queryInitCondition.organId = this.$route.params.organId
-      //   key !== preKey && this.allQueryInit()
-      // },
+      refreshKey: function (key, preKey) {
+        this.queryInitCondition.organId = this.organId
+        console.log(this.queryInitCondition.organId)
+        key !== preKey && this.allQueryInit()
+      },
       // refreshIndex: function (key, preKey) {
       //   this.queryCondition.organId = this.$route.params.organId
       //   key !== preKey && this.allQuery()
@@ -370,7 +371,7 @@ export default {
         });
       }
     },
-      // 控制跳转至新增领用单页面
+      // 控制跳转至新增投资单页面
       handleBtnAction ({id, type}) {
           const { organProjectType: { organId }, organName } = this
           this.$router.push({ name: '投资登记新增', params: { organId:this.queryCondition.organId, organName, type: 'add' }})
@@ -672,13 +673,14 @@ export default {
       const { name } = from
       const { params: { refresh } } = to
       next(vm => {
+        console.log(name,refresh)
         // 通过 `vm` 访问组件实例
-        if ((name === '投资登记新增' || name === '投资登记审批') && refresh) {
+        if ((name === '投资登记新增' || name === '投资登记审批' || name === '投资登记编辑') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
-        if (name === '投资登记编辑' && refresh) {
-          vm.refreshIndex = new Date().getTime()
-        }
+        // if (name === '投资登记编辑' && refresh) {
+        //   vm.refreshIndex = new Date().getTime()
+        // }
       })
     }
 }

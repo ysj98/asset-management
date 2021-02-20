@@ -830,6 +830,9 @@ let proRouter = [{
     path: '/applyRegister',
     name: '领用登记',
     component: () => import('@/views/assetApply/applyRegister/index'),
+    meta: {
+      keepAlive: true
+    }
 
   },
   {
@@ -844,6 +847,9 @@ let proRouter = [{
     path: '/returnRegister',
     name: '归还登记',
     component: () => import('@/views/assetApply/returnRegister/index'),
+    meta: {
+      keepAlive: true
+    }
 
   },
   {
@@ -898,6 +904,9 @@ let proRouter = [{
     path: '/investRegister',
     name: '投资登记',
     component: () => import('@/views/assetInvest/investRegister/index'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/investGainsRegister',

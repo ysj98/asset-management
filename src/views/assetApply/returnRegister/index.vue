@@ -255,13 +255,13 @@ export default {
     },
     // 刷新页面
       refreshKey: function (key, preKey) {
-        this.queryInitCondition.organId = this.$route.params.organId
+        this.queryInitCondition.organId = this.organId
         key !== preKey && this.allQueryInit()
       },
-      refreshIndex: function (key, preKey) {
-        this.queryCondition.organId = this.$route.params.organId
-        key !== preKey && this.allQuery()
-      }
+      // refreshIndex: function (key, preKey) {
+      //   this.queryCondition.organId = this.$route.params.organId
+      //   key !== preKey && this.allQuery()
+      // }
   },
   mounted () {
     this.platformDictFn('asset_type')
@@ -364,6 +364,7 @@ export default {
       })
     },
     changeTree (value, label) {
+      this.organId = value
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
@@ -630,12 +631,12 @@ export default {
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if ((name === '归还登记新增' || name === '归还登记审批') && refresh) {
+        if ((name === '归还登记新增' || name === '归还登记审批' || name === '归还登记编辑') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
-        if (name === '归还登记编辑' && refresh) {
-          vm.refreshIndex = new Date().getTime()
-        }
+        // if (name === '归还登记编辑' && refresh) {
+        //   vm.refreshIndex = new Date().getTime()
+        // }
       })
     }
 }

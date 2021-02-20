@@ -42,7 +42,7 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="true">
+        <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="false">
         </treeSelect>
         <div class="box">
             <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
@@ -186,7 +186,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1300,                 // 组织机构id
+        organId:null,                 // 组织机构id
         receiveOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
@@ -201,7 +201,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectList: [],             // 资产项目Id
-        organId:1300,                 // 组织机构id
+        organId:null,                 // 组织机构id
         receiveOrganId:null,         // 领用部门id
         assetTypeList: [''],           // 资产类型id(多个用，分割)
         approvalStatusList: [],        // 状态
@@ -213,7 +213,7 @@ export default {
         assetType: ''                // 资产类型
       },
       organProjectType: {
-          organId: 1300,
+          organId: null,
           organName: this.organName,
           projectId: [],
           assetType: []
@@ -244,13 +244,14 @@ export default {
     },
     // 刷新页面
       refreshKey: function (key, preKey) {
-        this.queryInitCondition.organId = this.$route.params.organId
+        console.log(this.organId)
+        this.queryInitCondition.organId = this.organId
         key !== preKey && this.allQueryInit()
       },
-      refreshIndex: function (key, preKey) {
-        this.queryCondition.organId = this.$route.params.organId
-        key !== preKey && this.allQuery()
-      }
+      // refreshIndex: function (key, preKey) {
+      //   this.queryCondition.organId = this.$route.params.organId
+      //   key !== preKey && this.allQuery()
+      // }
 
   },
   mounted () {
@@ -345,6 +346,7 @@ export default {
       })
     },
     changeTree (value, label) {
+      this.organId = value
       this.organName = label
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
@@ -608,12 +610,12 @@ export default {
       const { params: { refresh } } = to
       next(vm => {
         // 通过 `vm` 访问组件实例
-        if ((name === '领用登记新增' || name === '领用登记审批') && refresh) {
+        if ((name === '领用登记新增' || name === '领用登记审批' || name === '领用登记编辑') && refresh) {
           vm.refreshKey = new Date().getTime()
         }
-        if (name === '领用登记编辑' && refresh) {
-          vm.refreshIndex = new Date().getTime()
-        }
+        // if (name === '领用登记编辑' && refresh) {
+        //   vm.refreshIndex = new Date().getTime()
+        // }
       })
     }
 }
