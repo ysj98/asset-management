@@ -485,7 +485,6 @@ export default {
           : (hash[next.extCustId] = true && item.push(next));
         return item;
       }, []);
-      // console.log("我收到了", this.tenantList);
     },
     // 获取选中的审核人
     /*     getTenant(list = []) {
