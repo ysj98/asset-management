@@ -67,6 +67,7 @@
 
       // 获取资产关联对象数据
       getAssetList (list, returnAreaSum) {
+        console.log(list)
         this.assetList = list
         this.returnAreaTotal = +returnAreaSum
       },
@@ -74,6 +75,7 @@
       // 提交
       handleSubmit (saveWays) {
         const { type, registerId, assetList, dynamicData, returnAreaTotal, saveType } = this
+        console.log(assetList)
         // 编辑或新增时保存
         new Promise((resolve, reject) => {
           this.$refs['baseInfo'].handleSubmit(resolve, reject)

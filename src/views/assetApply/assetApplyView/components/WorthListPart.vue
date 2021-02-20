@@ -393,6 +393,7 @@
       },
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
+        
         let {tableObj: {dataSource}, type, numList, details} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
@@ -407,6 +408,7 @@
             return this.numList = numList.map(m => {
               return { ...m, value:  0 }
             })
+           
           }
           this.tableObj.dataSource = dataSource.map(m => {
             return Object.assign(m, data)

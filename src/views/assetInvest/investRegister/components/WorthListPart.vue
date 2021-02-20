@@ -538,7 +538,11 @@
          }
       },
       // 基础信息组件传递的数据，更新Table相关项
-      dynamicData: function (data) {
+      dynamicData: function (data, oldData) {
+        console.log(data,oldData)
+        if(data.endInvestDate != oldData.endInvestDate || data.signingDate != oldData.signingDate || data.startInvestDate != oldData.startInvestDate){
+          return 
+        }
         let {tableObj: {dataSource}, type, numList, details} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
@@ -550,6 +554,7 @@
             this.tableObj.selectedRowKeys = []
             this.tableObj.dataSource = []
             this.investAreaSum = 0
+            this.$emit('backAssetList',this.tableObj.dataSource,0)
             return this.numList = numList.map(m => {
               return { ...m, value:  0 }
             })

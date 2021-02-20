@@ -492,25 +492,35 @@
          }
       },
       // 基础信息组件传递的数据，更新Table相关项
-      dynamicData: function (data) {
+      dynamicData: function (data, oldData) {
+        console.log(data,oldData)
+        if(data.receiveOrganId != oldData.receiveOrganId || data.receiveUserId != oldData.receiveUserId || data.receiveDate != oldData.receiveDate || data.returnDate != oldData.returnDate){
+          return 
+        }
         let {tableObj: {dataSource}, type, numList, details} = this
+        console.log(type,dataSource.length)
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
-          if ((assetType && String(assetType) !== String(details.assetType)) || (String(projectId) !== String(details.projectId))) {
+          console.log(assetType,details.assetType,projectId,details.projectId)
+          if ((assetType && String(assetType) !== String(oldData.assetType)) || (String(projectId) !== String(details.projectId))) {
             // 重置selectedRowKeys
             this.details.assetType = assetType
             this.details.projectId = projectId
             this.tableObj.selectedRowKeys = []
             this.tableObj.dataSource = []
             this.receiveAreaSum = 0
-            return this.numList = numList.map(m => {
+            this.$emit('backAssetList',this.tableObj.dataSource,0)
+             this.numList = numList.map(m => {
               return { ...m, value:  0 }
             })
+            return console.log(this.numList)
           }
-          this.tableObj.dataSource = dataSource.map(m => {
+          else{
+            this.tableObj.dataSource = dataSource.map(m => {
             return Object.assign(m, data)
           })
+          }
         }
       }
 
