@@ -8,7 +8,7 @@
     <div class="search-box">
       <div class="search-left">
         <SG-Button v-power="ASSET_MANAGEMENT.zcgl_plan_create" icon="plus" @click="goPage('create')" type="primary"
-          >新增盘点计划123</SG-Button
+          >新增盘点计划</SG-Button
         >
       </div>
       <div class="search-right">

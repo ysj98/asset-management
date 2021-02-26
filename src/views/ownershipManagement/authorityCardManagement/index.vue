@@ -136,7 +136,7 @@ const columns = [
     scopedSlots: { customRender: 'ownerTypeName' }
   },
   {
-    title: '房屋号/丘地号/不动产单元号',
+    title: '房屋号/宗地号/不动产单元号',
     dataIndex: 'lotNoEstateUnitCode'
   },
   {

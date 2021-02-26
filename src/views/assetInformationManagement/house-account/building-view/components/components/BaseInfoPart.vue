@@ -41,7 +41,7 @@
             {title: '房屋数量', key: 'roomNum'}, {title: '地下层数', key: 'downFloorNum'}, {title: '建筑结构', key: 'buildStruct'}
           ], // 列2
           [
-            {title: '建筑年代', key: 'years'}, {title: '丘地号', key: 'addressNo'}, {title: '楼高', key: 'buildHeight'},
+            {title: '建筑年代', key: 'years'}, {title: '宗地号', key: 'addressNo'}, {title: '楼高', key: 'buildHeight'},
             {title: '总层数', key: 'floorNum'}, {title: '权属形式', key: 'ownText'}, {title: '资产原值', key: 'originalValue'}
           ] // 列3
         ],

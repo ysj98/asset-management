@@ -19,7 +19,7 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">丘地号：</span
+                  <span class="detail-label">宗地号：</span
                   ><span class="detail-main">{{detailInfo.addressNo | filterNullValue}}</span>
                 </div>
               </a-col>

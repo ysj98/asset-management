@@ -66,7 +66,7 @@ const titleDeed = [
   { text: '权证类型', value: 'kindOfRightName' },
   { text: '权利类型', value: 'rightTypeName' },
   { text: '不动产单元号', value: 'estateUnitCode' },
-  { text: '丘地号', value: 'lotNo' },
+  { text: '宗地号', value: 'lotNo' },
   { text: '坐落位置', value: 'seatingPosition' },
   { text: '土地面积 (㎡)', value: 'landArea' },
   { text: '权属用途', value: 'ownershipUseName' },

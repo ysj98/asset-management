@@ -358,7 +358,7 @@
 
       // 查询部门人员
       queryStaff(id) {
-        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:5}).then(res => {
+        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:100000}).then(res => {
           if(res.data.data.length == 0){
             this.staffList = []
             return this.form.setFieldsValue({ receiveUserName: ''})

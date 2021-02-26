@@ -200,7 +200,7 @@ export const titleDeed = [
     required: false
   },
   {
-    label: '丘地号',
+    label: '宗地号',
     attrCode: 'lotNo',
     formType: 'input',
     attrValue: '',

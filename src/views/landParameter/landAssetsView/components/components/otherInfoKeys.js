@@ -42,7 +42,7 @@ const keys = {
         { title: '权证号', dataIndex: 'warrantNbr' },
         { title: '权属人', dataIndex: 'obligeeNames' },
         { title: '证件号码', dataIndex: 'certificateNos' },
-        { title: '丘地号', dataIndex: 'lotNo' },
+        { title: '宗地号', dataIndex: 'lotNo' },
         { title: '不动产单元号', dataIndex: 'estateUnitCode' },
         { title: '坐落位置', dataIndex: 'seatingPosition' },
         { title: '用途', dataIndex: 'ownershipUseName' }
