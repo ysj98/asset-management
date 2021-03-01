@@ -137,7 +137,7 @@
           m = 12
           break
         case 3:
-          if (this.judgeLeapYear(date.getFullYear())) {
+          if (judgeLeapYear(date.getFullYear())) {
             if (d > 29) {
               d = 29
             }
