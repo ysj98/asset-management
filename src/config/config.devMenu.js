@@ -210,15 +210,15 @@ export default [
     title: '土地台账',
     children: [
       {
-        title: '资产视图',
+        title: '土地资产视图',
         path: '/landAssetsView'
       },
       {
-        title: '组织机构视图',
+        title: '土地机构视图',
         path: '/landOrganView'
       },
       {
-        title: '资产项目视图',
+        title: '土地项目视图',
         path: '/landProjectView'
       },
       {

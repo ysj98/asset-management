@@ -739,7 +739,7 @@ let proRouter = [{
   },
   {
     path: '/landOrganView',
-    name: '组织机构视图',
+    name: '土地机构视图',
     component: () => import('@/views/landParameter/landOrganView/index'),
     meta: {
       keepAlive: true
@@ -752,7 +752,7 @@ let proRouter = [{
   },
   {
     path: '/landProjectView',
-    name: '资产项目视图',
+    name: '土地项目视图',
     component: () => import('@/views/landParameter/landProjectView/index'),
     meta: {
       keepAlive: true

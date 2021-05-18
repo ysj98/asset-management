@@ -68,6 +68,10 @@ let columns = [
     dataIndex: "contractRentTotalAmount",
   },
   {
+    title: "出租方",
+    dataIndex: "出租方字段待定",
+  },
+  {
     title: "备注",
     dataIndex: "remark",
   },
