@@ -71,6 +71,11 @@
                     <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
+                  <a-col v-bind="formSpan">
+                  <a-form-item label="套内面积(㎡)" v-bind="formItemLayout">
+                    <a-input-number :precision="4" :min="0" :style="allWidth" v-decorator="['innerArea', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="楼栋类型" v-bind="formItemLayout">
                     <a-select

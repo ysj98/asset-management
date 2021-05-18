@@ -131,6 +131,16 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :span="8">
+                <a-form-item label="阳台面积" v-bind="formItemLayout">
+                  <a-input-number
+                    :precision="4"
+                    :min="0"
+                    :style="allWidth"
+                    v-decorator="['balconyArea', {initialValue: '' || undefined }]"
+                  />
+                </a-form-item>
+              </a-col>
             </a-row>
           </div>
         </div>
