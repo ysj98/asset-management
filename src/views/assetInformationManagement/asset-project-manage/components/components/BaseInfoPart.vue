@@ -68,6 +68,14 @@
             />
           </a-form-item>
         </a-col>
+        <a-col :span="colSpan">
+          <a-form-item label="第三方编码" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入第三方编码"
+              v-decorator="['thirdPartyCode', {initialValue, rules: [{required: false, message: '请输入第三方编码'}, {max: 50, message: '最多50个字符'}]}]"
+            />
+          </a-form-item>
+        </a-col>
       </a-row>
       <a-row>
         <a-col :span="24">
@@ -214,6 +222,25 @@
           </a-form-item>
         </a-col>
       </a-row>
+      <!--当来源方式为 代管 字典值5-->
+      <a-row v-else-if="sourceType === '5'">
+        <a-col :span="colSpan">
+          <a-form-item label="代管开始日期" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-date-picker
+              :disabled="!isEdit" style="width: 100%" :placeholder="isEdit ? '请选择代管开始日期' : ''"
+              v-decorator="['escrowStartDate']"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="colSpan">
+          <a-form-item label="代管结束日期" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-date-picker
+              :disabled="!isEdit" style="width: 100%" :placeholder="isEdit ? '请选择代管结束日期' : ''"
+              v-decorator="['escrowEndDate']"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
       <a-row>
         <a-col :span="24">
           <a-form-item label="权属办理中存在问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
@@ -271,7 +298,8 @@
         ],
         2: ['purchaseDate'],
         3: ['deliveryDate', 'completionDate'],
-        4: ['leaseInStartDate', 'leaseInEndDate']
+        4: ['leaseInStartDate', 'leaseInEndDate'],
+        5: ['escrowStartDate', 'escrowEndDate']
       }, // 根据来源方式动态展示的日期格式的字段,用于处理详情和提交操作中格式转换
     }
   },
