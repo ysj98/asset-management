@@ -156,7 +156,7 @@ let proRouter = [{
   },
   {
     path: '/organView',
-    name: '组织机构视图',
+    name: '房屋机构视图',
     component: () => import('@/views/assetInformationManagement/house-account/organ-view/index.vue'),
     meta: {
       keepAlive: true
@@ -169,7 +169,7 @@ let proRouter = [{
   },
   {
     path: '/assetProjectView',
-    name: '资产项目视图',
+    name: '房屋项目视图',
     component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewList.vue'),
     meta: {
       keepAlive: true
@@ -177,12 +177,12 @@ let proRouter = [{
   },
   {
     path: '/houseStandingBook/assetProjectViewDetail',
-    name: '资产项目视图详情',
+    name: '房屋项目视图详情',
     component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail')
   },
   {
     path: '/assetView',
-    name: '资产视图',
+    name: '房屋资产视图',
     component: () => import('@/views/assetInformationManagement/house-account/asset-view/index.vue'),
     meta: {
       keepAlive: true
@@ -190,7 +190,7 @@ let proRouter = [{
   },
   {
     path: '/assetView/assetViewDetail',
-    name: '资产视图详情',
+    name: '房屋资产视图详情',
     component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
   },
   {

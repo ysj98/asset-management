@@ -123,7 +123,18 @@
           <span class="label-value">{{detail.leaseInContractNo || '--'}}</span>
         </div>
       </div>
-      <div class="edit-box-content" :style="['1', '2', '3', '4'].includes(sourceType) ? 'margin-top: 0' : ''">
+      <!--当来源方式为 代管 字典值5-->
+      <div class="edit-box-content" v-else-if="sourceType === '5'">
+        <div class="edit-box-content-item">
+          <span class="label-name">代管开始日期：</span>
+          <span class="label-value">{{formatDate(detail.escrowStartDate) || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">代管结束日期：</span>
+          <span class="label-value">{{formatDate(detail.escrowEndDate) || '--'}}</span>
+        </div>
+      </div>
+      <div class="edit-box-content" :style="['1', '2', '3', '4', '5'].includes(sourceType) ? 'margin-top: 0' : ''">
         <div class="edit-box-content-item">
           <span class="label-name">权属办理中存在问题：</span>
           <span class="label-value">{{detail.ownershipHandleProblems || '--'}}</span>

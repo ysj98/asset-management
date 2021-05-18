@@ -106,9 +106,13 @@ let columns = [
     title: "房屋ID",
     dataIndex: "houseId",
   },
-    {
+  {
     title: "合同状态",
     dataIndex: "contractStatus",
+  },
+  {
+    title: "出租方",
+    dataIndex: "出租方待定",
   },
   {
     title: "备注",

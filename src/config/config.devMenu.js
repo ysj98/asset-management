@@ -61,15 +61,15 @@ export default [
     title: '房屋台账',
     children: [
       {
-        title: '组织机构视图',
+        title: '房屋机构视图',
         path: '/organView'
       },
       {
-        title: '资产项目视图',
+        title: '房屋项目视图',
         path: '/assetProjectView'
       },
       {
-        title: '资产视图',
+        title: '房屋资产视图',
         path: '/assetView'
       },
       {
