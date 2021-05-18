@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2020-11-18 11:47:54
+ * @LastEditTime: 2021-05-18 16:34:59
  * @Description: 房屋名称
 -->
 <template>
@@ -107,7 +107,11 @@ const columns = [
   { title: '楼层', dataIndex: 'floorName' },
   { title: '房号', dataIndex: 'roomNo' },
   { title: '房间面积(㎡)', dataIndex: 'area' },
-  { title: '房间状态', dataIndex: 'statusName' }
+  { title: '房间状态', dataIndex: 'statusName' },
+  { title: '项目名称', dataIndex: 'communityName' },
+  { title: '资源状态', dataIndex: '资源状态待定'},
+  { title: '出租甲方', dataIndex: '出租方待定'},
+  { title: '实际用途', dataIndex: 'leaseUse' }
 ]
 export default {
   components: {noDataTips},

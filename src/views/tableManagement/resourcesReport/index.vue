@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2020-11-24 10:26:20
+ * @LastEditTime: 2021-05-18 16:08:42
  * @Description: 资源报表
 -->
 <template>
@@ -64,6 +64,7 @@ const columnsData = [
   { title: '楼栋数量', dataIndex: 'buildNum', width: 150 },
   { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
   { title: '房屋总面积(㎡)', dataIndex: 'houseTotalArea', width: 150 },
+  { title: '已租面积(㎡)', dataIndex: 'rentedArea', width: 150 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 100}
@@ -104,7 +105,8 @@ export default {
         {title: '资产面积(㎡)', key: 'assetArea', value: 0, bgColor: '#4BD288'},
         {title: '楼栋数量', key: 'buildNum', value: 0, bgColor: '#1890FF'},
         {title: '房屋数量', key: 'houseNum', value: 0, bgColor: '#DD81E6'},
-        {title: '房屋面积(㎡)', key: 'houseTotalArea', value: 0, bgColor: '#FD7474'}
+        {title: '房屋面积(㎡)', key: 'houseTotalArea', value: 0, bgColor: '#FD7474'},
+        {title: '已租面积(㎡)', key: 'rentedArea', value: 0, bgColor: '#FE0974'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       loading: false,
       noPageTools: false,

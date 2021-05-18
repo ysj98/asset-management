@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2021-01-29 13:57:03
+ * @LastEditTime: 2021-05-18 16:18:55
  * @Description: 资产明细
 -->
 <template>
@@ -69,21 +69,25 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import housingDetails from './housingDetails'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 const columnsData = [
-  { title: '管理机构', dataIndex: 'organName'},
-  { title: '项目名称', dataIndex: 'projectName'},
-  { title: '资产名称', dataIndex: 'assetName'},
-  { title: '资产编码', dataIndex: 'assetCode' },
-  { title: '资产分类', dataIndex: 'objectTypeName' },
-  { title: '资产用途', dataIndex: 'useTypeName' },
-  { title: '资产形态', dataIndex: 'typeName' },
-  { title: '楼栋名称', dataIndex: 'buildName' },
-  { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
-  { title: '最新估值(元)', dataIndex: 'marketValue', width: 100 },
-  { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 100 },
-  { title: '房屋数量', dataIndex: 'houseNum' },
-  { title: '房屋总面积(㎡)', dataIndex: 'houseTotalArea', width: 100 },
-  { title: '资产状态', dataIndex: 'assetStatusName' },
-  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 100}
+  { title: '管理机构', dataIndex: 'organName', width: 150 },
+  { title: '项目名称', dataIndex: 'projectName', width: 150 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150  },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 150  },
+  { title: '资产用途', dataIndex: 'useTypeName', width: 150  },
+  { title: '资产形态', dataIndex: 'typeName', width: 150  },
+  { title: '楼栋名称', dataIndex: 'buildName', width: 150  },
+  { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
+  { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+  { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
+  { title: '权证号', dataIndex: 'warrant_nbr', width: 150 },
+  { title: '产权人', dataIndex: 'obligeeAndPercent', width: 150 },
+  { title: '权属用途', dataIndex: 'ownershipUse', width: 150 },
+  { title: '已租面积(㎡)', dataIndex: 'rentedArea', width: 150 },
+  { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
+  { title: '房屋总面积(㎡)', dataIndex: 'houseTotalArea', width: 150 },
+  { title: '资产状态', dataIndex: 'assetStatusName', width: 150  },
+  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150}
 ]
 const queryCondition =  {
   organId: '',        // 组织机构id
@@ -108,7 +112,8 @@ export default {
         {title: '资产面积(㎡)', key: 'assetArea', value: 0, bgColor: '#4BD288'},
         {title: '楼栋数量', key: 'buildNum', value: 0, bgColor: '#1890FF'},
         {title: '房屋数量', key: 'houseNum', value: 0, bgColor: '#DD81E6'},
-        {title: '房屋面积(㎡)', key: 'houseTotalArea', value: 0, bgColor: '#FD7474'}
+        {title: '房屋面积(㎡)', key: 'houseTotalArea', value: 0, bgColor: '#FD7474'},
+        {title: '已租面积(㎡)', key: 'rentedArea', value: 0, bgColor: '#FE0974'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       loading: false,
       noPageTools: false,

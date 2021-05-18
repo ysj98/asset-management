@@ -230,7 +230,7 @@
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">存放地点<i></i></span><span>：</span></div>
-            <a-form-item>
+            <!-- <a-form-item>
               <a-select
                 allowClear
                 placeholder="请选择存放地点"
@@ -241,7 +241,18 @@
                 v-if="editable"
               ></a-select>
               <span class="label-value" v-else>{{detail.storagePathName || '--'}}</span>
-            </a-form-item>
+            </a-form-item> -->
+              <a-form-item>
+                <a-input
+                  placeholder="请输入存放地点"
+                  :style="allStyle"
+                  :max="30"
+                  v-if="editable"
+                  v-decorator="['storagePath',
+                  {rules: [{required: false, max: 50, whitespace: true, message: '请输入存放地点不超过50字符)'}], initialValue: detail.storagePathName}
+                ]"/>
+                <span class="label-value" v-else>{{detail.storagePathName || '--'}}</span>
+              </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">规格型号<i></i></span><span>：</span></div>
@@ -700,7 +711,7 @@ export default {
         assetSource: undefined,
         assetSourceName: '',
         getTime: undefined,
-        storagePath: undefined,
+        storagePath: '',
         storagePathName: '',
         specification: '',
         assetSubject: undefined,
@@ -736,7 +747,7 @@ export default {
       unitOptions: [],
       assetPurposeOptions: [],
       assetSourceOptions: [],
-      storagePathOptions: [],
+      // storagePathOptions: [],
       assetSubjectOptions: [],
       depreciationMethodOptions: [],
       associateAssetsOptions: [],
@@ -1127,28 +1138,28 @@ export default {
       })
     },
     // 获取存放地点下拉列表
-    getStoragePathOptions () {
-      let form = {
-        code: 'STORAGE_PATH',
-        organId: this.organId
-      }
-      this.$api.basics.organDict(form).then(res => {
-        console.log(res, '获取存放地点下拉列表')
-        if (res.data.code === '0') {
-          let arr = []
-          res.data.data.forEach(item => {
-            let obj = {
-              label: item.name,
-              value: item.value
-            }
-            arr.push(obj)
-          })
-          this.storagePathOptions = arr
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
+    // getStoragePathOptions () {
+    //   let form = {
+    //     code: 'STORAGE_PATH',
+    //     organId: this.organId
+    //   }
+    //   this.$api.basics.organDict(form).then(res => {
+    //     console.log(res, '获取存放地点下拉列表')
+    //     if (res.data.code === '0') {
+    //       let arr = []
+    //       res.data.data.forEach(item => {
+    //         let obj = {
+    //           label: item.name,
+    //           value: item.value
+    //         }
+    //         arr.push(obj)
+    //       })
+    //       this.storagePathOptions = arr
+    //     } else {
+    //       this.$message.error(res.data.message)
+    //     }
+    //   })
+    // },
     // 获取资产科目下拉列表
     getAssetSubjectList () {
       let form = {
@@ -1274,7 +1285,7 @@ export default {
             this.detail.getTime = this.detail.getTime ? moment(this.detail.getTime, 'YYYY-MM-DD') : undefined
           }
           this.detail.assetSource = this.detail.assetSource === null ? undefined : this.detail.assetSource
-          this.detail.storagePath = this.detail.storagePath === null ? undefined : this.detail.storagePath
+          // this.detail.storagePath = this.detail.storagePath === null ? undefined : this.detail.storagePath
           let attachment = []
           this.detail.attachmentList.forEach(item => {
             let obj = {
@@ -1337,7 +1348,7 @@ export default {
       this.getAssetCategoryOptions()
       this.getUnitOptions()
       this.getAssetSourceOptions()
-      this.getStoragePathOptions()
+      // this.getStoragePathOptions()
       this.getAssetSubjectList()
       this.getDepreciationMethodOptions()
     }
