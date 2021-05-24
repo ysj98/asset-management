@@ -112,7 +112,7 @@ let columns = [
   },
   {
     title: "出租方",
-    dataIndex: "出租方待定",
+    dataIndex: "firstName",
   },
   {
     title: "备注",

@@ -66,8 +66,8 @@ class Proxy {
 // 实例化 Proxy 类
 const proxy = new Proxy()
  proxy.addUrls(proxyURL, localhost, target)
-// proxy.addUrls(['/basic-data-api/'], localhost, 'http://192.168.3.72:8181')
-// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.69:8081')
+proxy.addUrls(['/basic-data-api/'], localhost, 'http://192.168.3.31:8080')
+proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.31:8081')
 
 // 配置
 module.exports = {
