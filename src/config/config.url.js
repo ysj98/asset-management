@@ -474,6 +474,8 @@ export const assets = {
 export const building = {
   // 房屋列表
   queryHouseByPage: '/basic-data-api/rest-api/v1/ams/houseApi/queryHouseByPage',
+  // 房屋资产&资源统计表 资产明细 房间详情
+  queryHouseByPageV2: '/ams/houseApi/queryHouseByPageV2',
   // 修改房屋
   updateHouse: '/basic-data-api/rest-api/v1/ams/houseApi/updateHouse',
   // 新增房屋

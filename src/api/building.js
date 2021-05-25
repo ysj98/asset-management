@@ -14,6 +14,10 @@ import { building, inventory} from '../config/config.url'
 export function queryHouseByPage (data) {
   return axiosPost(building.queryHouseByPage, data)
 }
+// 房屋资产&资源统计表 资产明细 房间详情
+export function queryHouseByPageV2 (data) {
+  return axiosPost(building.queryHouseByPageV2, data)
+}
 // 修改房屋
 export function updateHouse (data) {
   return axiosPost(building.updateHouse, data)
