@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2021-05-25 13:57:13
+ * @LastEditTime: 2021-05-25 14:45:09
  * @Description: 房屋名称
 -->
 <template>
@@ -209,14 +209,14 @@ export default {
       }
       this.$api.building.queryHouseByPageV2(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data.data
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
               item.statusName = +item.status === 0 ? '无效' : '有效'
             })
             this.tableData = data
-            this.count = res.data.paginator.totalCount
+            this.count = res.data.data.count
           } else {
             this.tableData = []
             this.count = 0
