@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2021-05-18 16:18:55
+ * @LastEditTime: 2021-05-26 11:31:13
  * @Description: 资产明细
 -->
 <template>
@@ -80,7 +80,7 @@ const columnsData = [
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
   { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
-  { title: '权证号', dataIndex: 'warrant_nbr', width: 150 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '产权人', dataIndex: 'obligeeAndPercent', width: 150 },
   { title: '权属用途', dataIndex: 'ownershipUse', width: 150 },
   { title: '已租面积(㎡)', dataIndex: 'rentedArea', width: 150 },
