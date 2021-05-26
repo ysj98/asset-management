@@ -384,7 +384,7 @@
           let {
             attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
             takeoverAssetStatus, takeOver, ownershipHandleProblems, remark, houseTransferHisProblem,
-            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, ...others
+            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, thirdPartyCode, ...others
           } = res.data
           // 处理附件格式
           let attachArr = attachment.map(m => {
@@ -404,7 +404,7 @@
             ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : ownershipHandleProblems,
             houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : houseTransferHisProblem,
             projectName, sourceType: type === 'show' ? sourceTypeName : sourceType,
-            takeOver, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode
+            takeOver, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode, thirdPartyCode
           }
           if (takeOver === '1') {
             formData.takeoverAssetStatus = type === 'show' ? (takeoverAssetStatusName || '无') : String(takeoverAssetStatus || '')
