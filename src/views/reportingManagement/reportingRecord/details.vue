@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2021-01-28 10:29:17
+ * @LastEditTime: 2021-05-26 17:47:48
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -408,6 +408,16 @@
                 </span>
                 <span>：</span>
                 <span class="label-value" >{{reportInfo.contractStatus || reportInfo.contractStatus || '-'}}</span>
+              </div>
+            </div>
+            <div class="edit-box-content-item mb24">
+              <div class="label-name-box">
+                <span class="label-name label-space-between">
+                  出租方
+                  <i></i>
+                </span>
+                <span>：</span>
+                <span class="label-value" >{{reportInfo.firstName || '-'}}</span>
               </div>
             </div>
             <div class="edit-box-content-item mb24">
