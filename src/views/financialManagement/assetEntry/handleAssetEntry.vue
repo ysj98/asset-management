@@ -240,7 +240,7 @@
                 {rules: [], initialValue: detail.storagePath}]"
                 v-if="editable"
               ></a-select>
-              <span class="label-value" v-else>{{detail.storagePathName || '--'}}</span>
+              <span class="label-value" v-else>{{detail.storagePath || '--'}}</span>
             </a-form-item> -->
               <a-form-item>
                 <a-input
@@ -249,9 +249,9 @@
                   :max="30"
                   v-if="editable"
                   v-decorator="['storagePath',
-                  {rules: [{required: false, max: 50, whitespace: true, message: '请输入存放地点不超过50字符)'}], initialValue: detail.storagePathName}
+                  {rules: [{required: false, max: 50, whitespace: true, message: '请输入存放地点不超过50字符)'}], initialValue: detail.storagePath}
                 ]"/>
-                <span class="label-value" v-else>{{detail.storagePathName || '--'}}</span>
+                <span class="label-value" v-else>{{detail.storagePath || '--'}}</span>
               </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -712,7 +712,7 @@ export default {
         assetSourceName: '',
         getTime: undefined,
         storagePath: '',
-        storagePathName: '',
+        storagePath: '',
         specification: '',
         assetSubject: undefined,
         assetSubjectName: '',
