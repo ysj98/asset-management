@@ -68,8 +68,8 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="colSpan">
-          <a-form-item label="第三方编码" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-col :span="24">
+          <a-form-item label="第三方编码" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
             <a-input
               :disabled="!isEdit" placeholder="请输入第三方编码"
               v-decorator="['thirdPartyCode', {initialValue, rules: [{required: false, message: '请输入第三方编码'}, {max: 50, message: '最多50个字符'}]}]"
