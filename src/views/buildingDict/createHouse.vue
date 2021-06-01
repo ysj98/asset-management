@@ -515,7 +515,8 @@ export default {
         description: data.description || undefined,
         code: data.code || undefined,
         deliveryTime: data.deliveryTime || undefined,
-        repairTime: data.repairTime || undefined
+        repairTime: data.repairTime || undefined,
+        balconyArea: data.balconyArea || undefined
       });
       // 处理图片
       if (data.planeFigurePath) {
