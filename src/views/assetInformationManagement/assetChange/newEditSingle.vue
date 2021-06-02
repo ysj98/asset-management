@@ -268,7 +268,7 @@
           :class="{'table-border': tableData.length != 0}"
         >
           <a-table
-            :scroll="{y: 450}"
+            :scroll="scroll"
             :columns="columns"
             :dataSource="tableData"
             class="custom-table td-pd10"
@@ -507,6 +507,7 @@ export default {
   data() {
     return {
       changeOrderId: "",
+      scroll: {y: 450, x: 1600},
       organId: "",
       enitData: "", // 路由带入传入
       // 表单已有值start
@@ -576,6 +577,11 @@ export default {
       } else if (val === "9") {
         this.columns = assetSize;      // 资产面积
       }
+      console.log(this.columns)
+      this.columns.forEach(item => {
+        item.width = 150
+      })
+      this.scroll.x = this.columns.length * 150
     },
   },
   created() {
