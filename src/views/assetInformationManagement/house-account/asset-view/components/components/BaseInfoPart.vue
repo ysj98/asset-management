@@ -6,7 +6,7 @@
     <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <span style="margin-left: 9px; color: #49505E">{{judgingCondition.includes(infoData[key]) ? '无' : infoData[key]}}</span>
         <!--<a-icon-->
           <!--type="edit"-->
           <!--v-if="key==='assetName'"-->
@@ -49,6 +49,7 @@
     props: ['assetHouseId'],
     data () {
       return {
+        judgingCondition: [undefined, null, ''],
         spinning: false,
         baseInfoKeys: [
           {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'},
