@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2021-01-28 14:19:30
+ * @LastEditTime: 2021-06-03 14:20:36
  -->
 <template>
   <div>
@@ -102,7 +102,7 @@
           class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{x:3400}"
+          :scroll="{x:4500}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -257,6 +257,10 @@ let columns = [
   {
     title: "外部ID",
     dataIndex: "objId",
+  },
+  {
+    title: "出租方",
+    dataIndex: "firstName",
   },
   {
     title: "备注",
