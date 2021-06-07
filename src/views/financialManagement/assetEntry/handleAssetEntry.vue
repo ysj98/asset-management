@@ -712,7 +712,6 @@ export default {
         assetSourceName: '',
         getTime: undefined,
         storagePath: '',
-        storagePath: '',
         specification: '',
         assetSubject: undefined,
         assetSubjectName: '',

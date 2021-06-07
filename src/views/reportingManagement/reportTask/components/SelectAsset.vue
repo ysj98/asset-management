@@ -98,7 +98,7 @@
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产分类', dataIndex: 'assetCategoryName' },
           { title: '入账日期', dataIndex: 'accountEntryTime' },
-          { title: '存放地点', dataIndex: 'storagePathName' },
+          { title: '存放地点', dataIndex: 'storagePath' },
           { title: '入账原值(元)', dataIndex: 'purchaseValue' },
           { title: '累计折旧(元)', dataIndex: 'cumulativeDepreciation' },
           { title: '净值(元)', dataIndex: 'netValue' },

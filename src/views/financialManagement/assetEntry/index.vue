@@ -163,7 +163,7 @@
     },
     {
       title: '存放地点',
-      dataIndex: 'storagePathName',
+      dataIndex: 'storagePath',
       width: 120
     },
     {
