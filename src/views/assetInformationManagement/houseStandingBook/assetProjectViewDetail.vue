@@ -35,6 +35,10 @@
           <span class="label-value">{{formatDate(detail.takeOverDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
+          <span class="label-name">接管人：</span>
+          <span class="label-value">{{detail.receiver || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
           <span class="label-name">接管时资产状态：</span>
           <span class="label-value">{{detail.takeoverAssetStatusName || '--'}}</span>
         </div>
@@ -132,6 +136,18 @@
         <div class="edit-box-content-item">
           <span class="label-name">代管结束日期：</span>
           <span class="label-value">{{formatDate(detail.escrowEndDate) || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">托管面积(㎡)：</span>
+          <span class="label-value">{{detail.trusteeshipArea || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">实际接收面积(㎡)：</span>
+          <span class="label-value">{{detail.actualReceiveArea || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">实际可用面积(㎡)：</span>
+          <span class="label-value">{{detail.actualUsableArea || '--'}}</span>
         </div>
       </div>
       <div class="edit-box-content" :style="['1', '2', '3', '4', '5'].includes(sourceType) ? 'margin-top: 0' : ''">
