@@ -389,6 +389,10 @@ export const assets = {
     queryDisposeDetail: '/ams/disposeRegister/getListByAssetId',
     // 资产详情-其他信息Tab-附属&配套
     queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId',
+    // 资产详情-其他信息Tab-巡查记录
+    queryPatrolDetail: '/ams/inspectionTaskRecord/getListPageByAsssetId',
+    // 资产详情-其他信息Tab-档案文件
+    queryArchiveDetail: 'ams/archive-info/page',
     // 资产视图费用相关
     assetExpenseInfo: '/ams/operationContract/assetExpenseInfo',
     // 资产登记一览表-相关费用统计

@@ -1,5 +1,5 @@
 <!--
-  资产项目视图列表页-戚思婷
+  资产项目视图列表页-戚四停
 -->
 <template>
   <div class="asset-project-view-list" style="overflow-x: hidden">
@@ -112,6 +112,11 @@ const columns = [
   {
     title: '接管时间',
     dataIndex: 'takeOverDate',
+    width: 130
+  },
+  {
+    title: '接管人',
+    dataIndex: 'receiver',
     width: 130
   },
   {

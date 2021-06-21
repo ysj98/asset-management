@@ -12,23 +12,29 @@
     <!--空间位置-->
     <SG-Title title="空间位置" noMargin/>
     <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
-      <a-col v-for="{title, key, span} in spaceInfoKeys" :span="span || 8" :key="key">
+      <a-col v-for="{title, key, type, span} in spaceInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <span v-if="type === 'text'" style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <div class="img-icon" v-else-if="type === 'img' && infoData[key] && infoData[key].length">
+          <img v-for="(url, index) in infoData[key]" :src="getUrl(url)" @click="openBigImg(infoData[key], index)" alt="" :key="index">
+        </div>
+        <span v-else>无</span>
       </a-col>
     </a-row>
     <!--资产使用方向-->
     <SG-Title title="资产使用方向" noMargin/>
     <overview-number :numList="numList" class="title_div" style="margin-top: 21px"/>
+    <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex='bigImg.imgIndex' :list="bigImg.list"></preview-images>
   </a-spin>
 </template>
 
 <script>
   import EditAssetDetail from './EditLandDetail'
+  import PreviewImages from 'components/PreviewImages.vue'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   export default {
     name: 'BaseInfoPart',
-    components: { EditAssetDetail, OverviewNumber },
+    components: { EditAssetDetail, OverviewNumber, PreviewImages },
     props: ['assetHouseId', 'assetLandId'],
     data () {
       return {
@@ -41,8 +47,9 @@
           {title: '有限期限', key: 'endDate'}, {title: '土地性质', key: 'landuseType ', span: 16}
         ], // 基本信息字段
         spaceInfoKeys: [
-          {title: '运营项目', key: 'projectName'}, {title: '土地位置', key: 'location'}, {title: '用地红线图', key: 'redMap'},
-          {title: '土地备注', key: 'desc'}
+          {title: '运营项目', key: 'projectName', type: 'text'}, {title: '土地位置', key: 'location', type: 'text'}, {title: '用地红线图', key: 'redMap', type: 'img'},
+          {title: '资产范围', key: 'isEncloseWall', type: 'text'}, {title: '围墙图片', key: 'encloseWallPic', type: 'img'}, {title: '现状图片', key: 'nowPic', type: 'img'},
+          {title: '土地备注', key: 'desc', type: 'text'}
         ], // 空间位置字段
         infoData: {}, // 信息数据
         details: {}, // 编辑基本信息数据
@@ -53,6 +60,11 @@
           {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
           {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
+        bigImg: { // 查看大图所需数据
+          show: false,
+          list: [],
+          imgIndex: 0
+        }
       }
     },
 
@@ -70,6 +82,10 @@
             this.numList = this.numList.map(m => {
               return { ...m, value: `${temp[m.key] ? temp[m.key].toFixed(2) : 0}` }
             })
+            temp.redMap = 'https://www.baidu.com/img/flexible/logo/pc/result.png,https://www.51zxw.net/Contents/Images/logo.png,https://www.51zxw.net/Contents/Images/logo.png,https://www.51zxw.net/Contents/Images/logo.png,https://www.51zxw.net/Contents/Images/logo.png'
+            temp.redMap = temp.redMap ? temp.redMap.split(',') : []
+            temp.encloseWallPic = temp.encloseWallPic ? temp.encloseWallPic.split(',') : []
+            temp.nowPic = temp.nowPic ? temp.nowPic.split(',') : []
             return this.infoData = { ...temp, assetType: '土地' }
           }
           throw res.message || '查询接口出错'
@@ -77,6 +93,25 @@
           this.spinning = false
           this.$message.error(err || '查询接口出错')
         })
+      },
+      // 获取图片可展示路径
+      getUrl (url) {
+        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + option
+        return urlShow
+      },
+      openBigImg (lists, index) {
+        this.bigImg.imgIndex = index
+        this.bigImg.list = []
+        lists.forEach(item => {
+          this.bigImg.list.push({
+            url: item,
+            title: ''
+          })
+        })
+        this.bigImg.show = true
+      },
+      hideImg () {
+        this.bigImg.show = false
       }
     },
 
@@ -87,5 +122,20 @@
 </script>
 
 <style lang='less' scoped>
-
+.img-icon{
+  vertical-align: text-top;
+  display: inline-block;
+  overflow: hidden;
+  width: auto;
+  max-width: 240px;
+  height: 50px;
+  img{
+    cursor: pointer;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+    max-width: 50px;
+    max-height: 50px;
+  }
+}
 </style>

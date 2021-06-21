@@ -162,6 +162,50 @@ const keys = {
       ]
     }
   },
+  // 巡查记录
+  patrolRecord : {
+    title: '巡查记录',
+    details: {
+    },
+    table: {
+      rowKey: 'recordId',
+      pagination: true,
+      columns: [
+        { title: '巡查编号', dataIndex: 'recordId' },
+        { title: '巡查类型', dataIndex: 'inspectionTypeName' },
+        { title: '巡查日期', dataIndex: 'actualInspectionDate' },
+        { title: '巡查人', dataIndex: 'userName' },
+        { title: '问题描述', dataIndex: 'problemDescription' },
+        { title: '巡查图片', dataIndex: 'picList', scopedSlots: { customRender: 'picList' } },
+        { title: '现场处理措施', dataIndex: 'sceneHandleMeasure' },
+        { title: '整改后图片', dataIndex: 'afterRectificationPicList', scopedSlots: { customRender: 'afterRectificationPicList' } },
+        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
+      ]
+    }
+  },
+  // 档案文件
+  archive : {
+    title: '档案文件',
+    details: {
+    },
+    table: {
+      rowKey: 'archiveId',
+      pagination: true,
+      columns: [
+        { title: '文档编号', dataIndex: 'archiveId' },
+        { title: '文档名称', dataIndex: 'archiveName' },
+        { title: '类型', dataIndex: 'typeName' },
+        { title: '密级', dataIndex: 'secretLevelName' },
+        { title: '纸质档案(实物)', dataIndex: 'hasPaper' },
+        { title: '电子档', dataIndex: 'hasElectronic' },
+        { title: '建档日期', dataIndex: 'filingDate' },
+        { title: '建档人', dataIndex: 'createByName' },
+        { title: '存放位置', dataIndex: 'positionName' },
+        { title: '备注', dataIndex: 'description' },
+        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
+      ]
+    }
+  }
 }
 
 export default keys

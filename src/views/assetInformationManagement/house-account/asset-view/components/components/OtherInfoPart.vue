@@ -15,12 +15,21 @@
         <div v-if="item['table']['tableTitle']" style="color: #49505E; margin: 15px 0; font-weight: bold">{{item['table']['tableTitle']}}</div>
         <a-table
           class="custom-table td-pd10 table-border"
-          v-if="item['table']['rowKey']"
-          :rowKey="item['table']['rowKey']"
           :columns="item['table']['columns']"
           :dataSource="tableData"
-          :pagination="false"
-        />
+          :pagination="false">
+          <span slot="operation" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="checkDetail(record)">详情</span>
+          <span class="img-icon" slot="picList" slot-scope="text, record">
+            <img v-if="record.picList.length" :src="getUrl(record.picList[0].attachmentPath)" alt="" @click="openBigImg(record.picList)">
+            <span v-if="record.picList.length" class="ing-mum">{{record.picList.length}}</span>
+            <span v-else>--</span>
+          </span>
+          <span class="img-icon" slot="afterRectificationPicList" slot-scope="text, record">
+            <img v-if="record.picList.length" :src="getUrl(record.afterRectificationPicList[0].attachmentPath)" alt="" @click="openBigImg(record.afterRectificationPicList)">
+            <span v-if="record.picList.length" class="ing-mum">{{record.picList.length}}</span>
+            <span v-else>--</span>
+          </span>
+        </a-table>
         <SG-FooterPagination
           v-if="item['table']['pagination']"
           :pageLength="pagination.pageSize"
@@ -44,11 +53,15 @@
         <operationInformation :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
       </a-tab-pane>
     </a-tabs>
+    <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex='bigImg.imgIndex' :list="bigImg.list"></preview-images>
   </div>
 </template>
 
 <script>
   import infoKeys from './otherInfoKeys'
+  import datadata from './haha.json'
+  import dataJson from './heihei.json'
+  import PreviewImages from 'components/PreviewImages.vue'
   import operationInformation from './operationInformation'
   let getUuid = ((uuid = 1) => () => ++uuid)();
   // let 2 收入，3费用
@@ -69,7 +82,7 @@
     name: 'OtherInfoPart',
     props: ['assetHouseId', 'assetId', 'transferOperationArea', 'transferOperationTime'],
     components: {
-      operationInformation
+      operationInformation, PreviewImages
     },
     data () {
       return {
@@ -85,10 +98,17 @@
           receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId' }, // 接管信息
           changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId' }, // 变动记录
           billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId' }, // 账面信息
+          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId' }, // 账面信息
           accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId' }, // 附属&配套
           disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId' }, // 资产处置
           relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true}, // 相关费用
-        } // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
+          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId' } // 账面信息
+        }, // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
+        bigImg: { // 查看大图所需数据
+          show: false,
+          list: [],
+          imgIndex: 0
+        }
       }
     },
 
@@ -102,21 +122,20 @@
           queryData.pageNum = this.pagination.pageNum
           queryData.pageSize = this.pagination.pageSize
         }
-        this.$api.assets[api](queryData).then(r => {
-          let res = r.data
+        if (type === 'archive' || type === 'patrolRecord') {
+          let res = type === 'archive' ? datadata : dataJson
           let detailData = {}
           let tableData = []
           let table2Data = []
           if (res && String(res.code) === '0') {
             const info = res.data
-            console.log(info)
             if (type === 'ownInfo') {
               let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = info
               detailData = { ownerTypeName, ownershipStatusName }
               tableData = ownershipInfo
               table2Data = transactionList
             } else if (type === 'receiveInfo') {
-              let { deliveryDetailList, ...others } = info
+              let { deliverList, ...others } = info
               let { infoKeys: { receiveInfo: { details } } } = this
               // 是否转运营
               if (!others.transferTime) {
@@ -133,7 +152,7 @@
                 this.infoKeys.receiveInfo.details = { ...details, transferOperationTime: '转运营日期' }
               }
               detailData = others
-              tableData = deliveryDetailList
+              tableData = deliverList
             } else if (type === 'changeInfo' || type === 'accessoryInfo') {
               tableData = info
             } else if (type === 'billInfo') {
@@ -144,6 +163,12 @@
               let { list, ...others } = info
               detailData = others
               tableData = list
+            } else if (type === 'archive') {
+              tableData = info.data
+              this.pagination.totalCount = Number(info.count)
+            } else if (type === 'patrolRecord') {
+              tableData = info.data
+              this.pagination.totalCount = Number(info.count)
             }
             // 相关费用
             if (type === 'relatedExpenses') {
@@ -161,22 +186,119 @@
               })
               this.pagination.totalCount = Number(res.data.count)
             }
+            tableData.forEach((item, index) => {
+              item.key = index
+            })
             // 缓存数据
             let obj = type === 'ownInfo' ? { detailData, tableData, table2Data } : { detailData, tableData }
-            obj = type === 'relatedExpenses' ? { detailData, tableData, pagination: {...this.pagination}} : obj
+            obj = type === 'archive' || type === 'relatedExpenses' || type === 'patrolRecord' ? { detailData, tableData, pagination: {...this.pagination}} : obj
             this.cacheDataObj[type] = obj
-            return Object.assign(this, obj)
+            Object.assign(this, obj)
           }
-          throw res.message || `查询${tip}错误`
-        }).catch(err => {
-          this.$message.error(err || `查询${tip}错误`)
-        })
+        } else {
+          this.$api.assets[api](queryData).then(r => {
+            let res = r.data
+            let detailData = {}
+            let tableData = []
+            let table2Data = []
+            if (res && String(res.code) === '0') {
+              const info = res.data
+              console.log(info)
+              if (type === 'ownInfo') {
+                let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = info
+                detailData = { ownerTypeName, ownershipStatusName }
+                tableData = ownershipInfo
+                table2Data = transactionList
+              } else if (type === 'receiveInfo') {
+                let { deliveryDetailList, ...others } = info
+                let { infoKeys: { receiveInfo: { details } } } = this
+                // 是否转运营
+                if (!others.transferTime) {
+                  others.isTransfer = '否'
+                } else {
+                  others.isTransfer = '是'
+                  this.infoKeys.receiveInfo.details = { ...details, transferTime: '转物业日期' }
+                }
+                // 是否转物业
+                if (!others.transferOperationTime) {
+                  others.isTransferOperation = '否'
+                } else {
+                  others.isTransferOperation = '是'
+                  this.infoKeys.receiveInfo.details = { ...details, transferOperationTime: '转运营日期' }
+                }
+                detailData = others
+                tableData = deliveryDetailList
+              } else if (type === 'changeInfo' || type === 'accessoryInfo') {
+                tableData = info
+              } else if (type === 'billInfo') {
+                let { data, ...others } = info
+                detailData = others
+                tableData = data.map((m, i) => ({ ...m, index: i + 1 }))
+              } else if (type === 'disposeInfo') {
+                let { list, ...others } = info
+                detailData = others
+                tableData = list
+              }
+              // 相关费用
+              if (type === 'relatedExpenses') {
+                tableData = res.data.data.map(m => {
+                  m.reportBillIdName = m.reportBillId ? reportBillIdNameMap[String(m.reportBillId)] : '/'
+                  m.settleUpName = m.settleUp || m.settleUp===0 ? settleUpMap[String(m.settleUp)] : '/'
+                  m.amount = m.amount || '/'
+                  m.unitPrice = m.unitPrice || '/'
+                  m.readNumber = m.readNumber || '/'
+                  m.useLevel = m.useLevel || '/'
+                  return {
+                    keyId: getUuid(),
+                    ...m,
+                  }
+                })
+                this.pagination.totalCount = Number(res.data.count)
+              }
+              // 缓存数据
+              let obj = type === 'ownInfo' ? { detailData, tableData, table2Data } : { detailData, tableData }
+              obj = type === 'relatedExpenses' ? { detailData, tableData, pagination: {...this.pagination}} : obj
+              this.cacheDataObj[type] = obj
+              return Object.assign(this, obj)
+            }
+            throw res.message || `查询${tip}错误`
+          }).catch(err => {
+            this.$message.error(err || `查询${tip}错误`)
+          })
+        }
       },
 
       handleChange(data) {
         this.pagination.pageNum = data.pageNo;
         this.pagination.pageSize = data.pageLength;
         this.queryDetail(this.tabKey)
+      },
+      openBigImg (lists) {
+        this.bigImg.imgIndex = 0
+        this.bigImg.list = []
+        lists.forEach(item => {
+          this.bigImg.list.push({
+            url: item.attachmentPath,
+            title: item.oldAttachmentName
+          })
+        })
+        this.bigImg.show = true
+      },
+      hideImg () {
+        this.bigImg.show = false
+      },
+      // 获取图片可展示路径
+      getUrl (url) {
+        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + option
+        return urlShow
+      },
+      // 查看详情
+      checkDetail (item) {
+        if (this.tabKey === 'archive') {
+          // window.parent.openPortalMenu('/consultantFile/details?type=detail&archiveId=' + item.recordId)
+        } else if (this.tabKey === 'patrolRecord') {
+          // window.parent.openPortalMenu('./')
+        }
       }
     },
     
@@ -219,6 +341,33 @@
         .ant-table-thead th {
           white-space: nowrap;
         }
+      }
+    }
+    .img-icon{
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      width: 60px;
+      height: 40px;
+      img{
+        cursor: pointer;
+        max-width: 60px;
+        max-height: 40px;
+      }
+      .ing-mum{
+        width: auto;
+        height: 16px;
+        background: #4BD288;
+        position:absolute;
+        top: 0px;
+        right: 0px;
+        line-height: 16px;
+        font-weight: 600px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 8px;
+        text-align: center;
+        padding: 0 3px;
       }
     }
     margin-bottom: 35px;

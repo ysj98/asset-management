@@ -1,0 +1,139 @@
+{
+  "code": "0",
+  "message": "查询成功！",
+  "data": {
+    "count": "5",
+    "pages": "1",
+    "data": [{
+      "recordId": "111",
+      "inspectionType": "巡查类型",
+      "inspectionTypeName": "巡查类型名称",
+      "inspectionDate": "计划巡查日期",
+      "actualInspectionDate": "实际巡查日期",
+      "userId": "巡查人Id",
+      "userName": "巡查人名称",
+      "problemDescription": "巡查问题描述",
+      "sceneHandleMeasure": "现场处理措施",
+      "inspectionStatus": "巡查状态",
+      "inspectionStatusName": "巡查状态名称",
+      "picList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }],
+      "afterRectificationPicList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }]
+    }, {
+      "recordId": "222",
+      "inspectionType": "巡查类型",
+      "inspectionTypeName": "巡查类型名称",
+      "inspectionDate": "计划巡查日期",
+      "actualInspectionDate": "实际巡查日期",
+      "userId": "巡查人Id",
+      "userName": "巡查人名称",
+      "problemDescription": "巡查问题描述",
+      "sceneHandleMeasure": "现场处理措施",
+      "inspectionStatus": "巡查状态",
+      "inspectionStatusName": "巡查状态名称",
+      "picList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }],
+      "afterRectificationPicList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }]
+    }, {
+      "recordId": "333",
+      "inspectionType": "巡查类型",
+      "inspectionTypeName": "巡查类型名称",
+      "inspectionDate": "计划巡查日期",
+      "actualInspectionDate": "实际巡查日期",
+      "userId": "巡查人Id",
+      "userName": "巡查人名称",
+      "problemDescription": "巡查问题描述",
+      "sceneHandleMeasure": "现场处理措施",
+      "inspectionStatus": "巡查状态",
+      "inspectionStatusName": "巡查状态名称",
+      "picList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }],
+      "afterRectificationPicList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }]
+    }, {
+      "recordId": "444",
+      "inspectionType": "巡查类型",
+      "inspectionTypeName": "巡查类型名称",
+      "inspectionDate": "计划巡查日期",
+      "actualInspectionDate": "实际巡查日期",
+      "userId": "巡查人Id",
+      "userName": "巡查人名称",
+      "problemDescription": "巡查问题描述",
+      "sceneHandleMeasure": "现场处理措施",
+      "inspectionStatus": "巡查状态",
+      "inspectionStatusName": "巡查状态名称",
+      "picList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }],
+      "afterRectificationPicList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }]
+    }, {
+      "recordId": "555",
+      "inspectionType": "巡查类型",
+      "inspectionTypeName": "巡查类型名称",
+      "inspectionDate": "计划巡查日期",
+      "actualInspectionDate": "实际巡查日期",
+      "userId": "巡查人Id",
+      "userName": "巡查人名称",
+      "problemDescription": "巡查问题描述",
+      "sceneHandleMeasure": "现场处理措施",
+      "inspectionStatus": "巡查状态",
+      "inspectionStatusName": "巡查状态名称",
+      "picList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }],
+      "afterRectificationPicList": [{
+        "oldAttachmentName": "百度一下",
+        "attachmentPath": "https://www.baidu.com/img/flexible/logo/pc/result.png"
+      }, {
+        "oldAttachmentName": "51自学网",
+        "attachmentPath": "https://www.51zxw.net/Contents/Images/logo.png"
+      }]
+    }]
+  }
+}
