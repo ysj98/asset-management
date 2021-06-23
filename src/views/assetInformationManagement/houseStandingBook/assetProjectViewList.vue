@@ -105,6 +105,11 @@ const columns = [
     width: 100
   },
   {
+    title: '接管人',
+    dataIndex: 'receiver',
+    width: 100
+  },
+  {
     title: '建筑面积(㎡)',
     dataIndex: 'area',
     width: 100
