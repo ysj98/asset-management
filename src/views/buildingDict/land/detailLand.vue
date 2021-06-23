@@ -115,17 +115,47 @@
                 <div class="item-content">{{blankInfo.endDate || '-'}}</div>
               </div>
             </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">红线面积(㎡)：</div>
+                <div class="item-content">{{blankInfo.redlineArea || '-'}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">有无围墙：</div>
+                <div class="item-content">{{blankInfo.isEncloseWall || '-'}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">围墙图片：</div>
+                <div class="item-content">
+                  <SG-UploadFile v-if="encloseWallPic.length" :show="true" v-model="encloseWallPic" />
+                  <span v-else>-</span>
+                </div>
+              </div>
+            </a-col>
             <a-col :span="24">
               <div class="detail-item">
                 <div class="item-label">备注：</div>
                 <div class="item-content">{{blankInfo.blankDesc || '-'}}</div>
               </div>
             </a-col>
-            <a-col :span="24">
+            <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">用地红线图：</div>
                 <div class="item-content">
                   <SG-UploadFile v-if="redMap.length" :show="true" v-model="redMap" />
+                  <span v-else>-</span>
+                </div>
+              </div>
+            </a-col>
+            <a-col :span="16">
+              <div class="detail-item">
+                <div class="item-label">现状图片：</div>
+                <div class="item-content">
+                  <SG-UploadFile v-if="nowPic.length" :show="true" v-model="nowPic" />
                   <span v-else>-</span>
                 </div>
               </div>
@@ -152,6 +182,8 @@ export default {
       blankInfo: {},
       routeQuery: {},
       redMap: [], // 平面图
+      encloseWallPic: [], // 围墙图片
+      nowPic: [], // 现状图片
       filePath: [], // 附件
       landTypeOpt: [], // 土地类型
       landuseOpt: [], // 土地用途类型
@@ -198,11 +230,29 @@ export default {
               (item) => item.value === data.landuse
             );
             data.landuseName = landuse ? landuse.label : "";
+            this.blankInfo.isEncloseWall = data.isEncloseWall === '1' ? '有围墙' : '无围墙';
             // 处理平面图
             if (data.redMap) {
               this.redMap = [{ url: data.redMap, name: "" }];
             }
-
+            // 处理围墙图片
+            if (data.encloseWallPic) {
+              let arr = data.encloseWallPic.split(',')
+              if (arr.length > 0) {
+                arr.forEach(item => {
+                  this.encloseWallPic.push({ url: item, name: "" })
+                })
+              }
+            }
+            // 处理现状图片
+            if (data.nowPic) {
+              let arr = data.nowPic.split(',')
+              if (arr.length > 0) {
+                arr.forEach(item => {
+                  this.nowPic.push({ url: item, name: "" })
+                })
+              }
+            }
             // 处理附件
             if (data.filePath) {
               let filePath = data.filePath.split(",");
