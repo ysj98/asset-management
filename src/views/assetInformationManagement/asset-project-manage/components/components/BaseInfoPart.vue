@@ -263,9 +263,9 @@
         </a-col>
         <a-col :span="colSpan">
           <a-form-item label="代管结束日期" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-input
-              :disabled="!isEdit" placeholder="请选择代管结束日期"
-              v-decorator="['leaseInContractNo', {initialValue, rules: [{message: '请输入租入合同编号'}, {max: 30, message: '最多30个字符'}]}]"
+            <a-date-picker
+              :disabled="!isEdit" style="width: 100%" :placeholder="isEdit ? '请选择代管结束日期' : ''"
+              v-decorator="['escrowEndDate']"
             />
           </a-form-item>
         </a-col>
@@ -445,7 +445,7 @@
             ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : ownershipHandleProblems,
             houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : houseTransferHisProblem,
             projectName, sourceType: type === 'show' ? sourceTypeName : sourceType,
-            takeOver, receiver: type === 'show' ? (receiver || '无') : receiver, trusteeshipArea: type === 'show' ? (receiver || '无') : receiver, actualReceiveArea: type === 'show' ? (actualReceiveArea || '无') : actualReceiveArea, actualUsableArea: type === 'show' ? (actualUsableArea || '无') : actualUsableArea, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode, thirdPartyCode: type === 'show' ? (thirdPartyCode || '无') : thirdPartyCode
+            takeOver, receiver: type === 'show' ? (receiver || '无') : receiver, trusteeshipArea: type === 'show' ? (trusteeshipArea || '无') : trusteeshipArea, actualReceiveArea: type === 'show' ? (actualReceiveArea || '无') : actualReceiveArea, actualUsableArea: type === 'show' ? (actualUsableArea || '无') : actualUsableArea, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode, thirdPartyCode: type === 'show' ? (thirdPartyCode || '无') : thirdPartyCode
           }
           if (takeOver === '1') {
             formData.takeoverAssetStatus = type === 'show' ? (takeoverAssetStatusName || '无') : String(takeoverAssetStatus || '')
