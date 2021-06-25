@@ -228,6 +228,7 @@ export default {
           return
         }
         this.queryCondition.city = value
+        this.$emit('selectCity', label)
       }
       this.query()
     },

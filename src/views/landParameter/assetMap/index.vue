@@ -10,7 +10,7 @@
       <div class="asset-map-box" :id="mapDomId"></div>
       <!-- 搜索弹窗 -->
       <div class="suspensionRightBlock">
-        <suspensionRightBlock @search="handleSearchMap"></suspensionRightBlock>
+        <suspensionRightBlock @search="handleSearchMap" @selectCity="selectCity"></suspensionRightBlock>
       </div>
       <!-- 显示弹窗 -->
       <div class="show-map-detail" v-show="showDetailModal">
@@ -166,6 +166,11 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+    // 选择城市地图对应放大
+    selectCity(value) {
+      let city = value
+      this.map.centerAndZoom(city,11)
     },
     // 移除所有标注
     removeMarker() {
