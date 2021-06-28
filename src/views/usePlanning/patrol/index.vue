@@ -174,7 +174,7 @@ export default {
         pageSize: 10,               // 每页显示记录数
         projectIdList: undefined,              // 资产项目Id
         organId: '',                // 组织机构id
-        inspectionTypeList: '',           // 交付类型
+        inspectionTypeList: [],           // 巡查类型
         assetTypeList: '',              // 资产类型，多个用，分隔
         inspectionDateStart: '',   // 开始创建日期
         inspectionDateEnd: '',            // 结束创建日期
@@ -410,9 +410,9 @@ export default {
         inspectionTypeList: this.queryCondition.inspectionTypeList,           // 巡查类型
         inspectionStatusList: this.alljudge(this.queryCondition.inspectionStatusList) // 巡查状态
       }
-      this.$api.useManage.getListPage(obj).then(ress => {
-        console.log('ress', ress)
-        let res ={data: datadata}
+      this.$api.useManage.getListPage(obj).then(res => {
+        // console.log('ress', ress)
+        // let res ={data: datadata}
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || [];
           this.tableData = data.map((item, index) => {
