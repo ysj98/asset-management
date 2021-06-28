@@ -390,9 +390,9 @@ export const assets = {
     // 资产详情-其他信息Tab-附属&配套
     queryAccessoryDetail: '/ams/subsidiaryMatching/getMatchingListByAssetId',
     // 资产详情-其他信息Tab-巡查记录
-    queryPatrolDetail: '/ams/inspectionTaskRecord/getListPageByAsssetId',
+    getListPageByAssetId: '/ams/inspectionTaskRecord/getListPageByAssetId',
     // 资产详情-其他信息Tab-档案文件
-    queryArchiveDetail: 'ams/archive-info/page',
+    queryArchiveDetail: '/ams/asset/archive-info/page',
     // 资产视图费用相关
     assetExpenseInfo: '/ams/operationContract/assetExpenseInfo',
     // 资产登记一览表-相关费用统计
@@ -1083,7 +1083,21 @@ export const useManage = {
   // 资产领用-审批
   approveReceive: '/ams/assetReceive/approveReceive',
   // 资产归还-审批
-  approveReturn: '/ams/assetReturn/approveReturn'
+  approveReturn: '/ams/assetReturn/approveReturn',
+  // 巡查记录-分页列表
+  getListPage: '/ams/inspectionTaskRecord/getListPage',
+  // 巡查记录-新增编辑保存
+  addOrUpdateInspectionRecord: '/ams/inspectionTaskRecord/addOrUpdateInspectionRecord',
+  // 巡查记录-导出1
+  exportRecordList: '/ams/inspectionTaskRecord/exportRecordList',
+  // 巡查记录-导出2
+  exportList: '/ams/inspectionTaskRecord/exportList',
+  // 巡查记录-详情
+  getInspectionTaskRecord: '/ams/inspectionTaskRecord/getInspectionTaskRecord',
+  // 巡查记录-分页查询检查项列表
+  getInspectionCheckItemPageList: '/ams/inspectionCheckItem/getInspectionCheckItemPageList',
+  // 巡查记录-不分页查询检查项列表
+  getInspectionCheckItemList: '/ams/inspectionCheckItem/getInspectionCheckItemList'
 }
 
 // 资产出租
@@ -1175,3 +1189,4 @@ export const assetRepair = {
   // 资产维修-导出
   exportMaintain: '/ams/assetMaintain/exportMaintain',
 }
+

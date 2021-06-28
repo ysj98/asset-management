@@ -287,7 +287,8 @@ export default [
     title: '使用规划',
     children: [
       { title: '资产交付管理', path: '/assetDelivery' },
-      { title: '资产交付记录', path: '/assetDeliveryRecord' }
+      { title: '资产交付记录', path: '/assetDeliveryRecord' },
+      { title: '巡查记录', path: '/patrolRecord' },
     ]
   },
   {

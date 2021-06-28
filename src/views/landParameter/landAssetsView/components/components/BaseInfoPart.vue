@@ -82,7 +82,6 @@
             this.numList = this.numList.map(m => {
               return { ...m, value: `${temp[m.key] ? temp[m.key].toFixed(2) : 0}` }
             })
-            temp.redMap = 'https://www.baidu.com/img/flexible/logo/pc/result.png,https://www.51zxw.net/Contents/Images/logo.png,https://www.51zxw.net/Contents/Images/logo.png,https://www.51zxw.net/Contents/Images/logo.png,https://www.51zxw.net/Contents/Images/logo.png'
             temp.redMap = temp.redMap ? temp.redMap.split(',') : []
             temp.encloseWallPic = temp.encloseWallPic ? temp.encloseWallPic.split(',') : []
             temp.nowPic = temp.nowPic ? temp.nowPic.split(',') : []

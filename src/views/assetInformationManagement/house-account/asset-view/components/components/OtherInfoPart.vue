@@ -59,8 +59,6 @@
 
 <script>
   import infoKeys from './otherInfoKeys'
-  import datadata from './haha.json'
-  import dataJson from './heihei.json'
   import PreviewImages from 'components/PreviewImages.vue'
   import operationInformation from './operationInformation'
   let getUuid = ((uuid = 1) => () => ++uuid)();
@@ -98,11 +96,11 @@
           receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId' }, // 接管信息
           changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId' }, // 变动记录
           billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId' }, // 账面信息
-          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId' }, // 账面信息
+          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true }, // 巡查记录
           accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId' }, // 附属&配套
           disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId' }, // 资产处置
-          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true}, // 相关费用
-          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId' } // 账面信息
+          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true }, // 相关费用
+          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId', pagination: true } // 档案文件
         }, // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
         bigImg: { // 查看大图所需数据
           show: false,
@@ -122,8 +120,11 @@
           queryData.pageNum = this.pagination.pageNum
           queryData.pageSize = this.pagination.pageSize
         }
-        if (type === 'archive' || type === 'patrolRecord') {
-          let res = type === 'archive' ? datadata : dataJson
+        if (type === 'patrolRecord') {
+          queryData.inspectionStatus = '1'
+        }
+        this.$api.assets[api](queryData).then(r => {
+          let res = r.data
           let detailData = {}
           let tableData = []
           let table2Data = []
@@ -195,77 +196,10 @@
             this.cacheDataObj[type] = obj
             Object.assign(this, obj)
           }
-        } else {
-          this.$api.assets[api](queryData).then(r => {
-            let res = r.data
-            let detailData = {}
-            let tableData = []
-            let table2Data = []
-            if (res && String(res.code) === '0') {
-              const info = res.data
-              console.log(info)
-              if (type === 'ownInfo') {
-                let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = info
-                detailData = { ownerTypeName, ownershipStatusName }
-                tableData = ownershipInfo
-                table2Data = transactionList
-              } else if (type === 'receiveInfo') {
-                let { deliveryDetailList, ...others } = info
-                let { infoKeys: { receiveInfo: { details } } } = this
-                // 是否转运营
-                if (!others.transferTime) {
-                  others.isTransfer = '否'
-                } else {
-                  others.isTransfer = '是'
-                  this.infoKeys.receiveInfo.details = { ...details, transferTime: '转物业日期' }
-                }
-                // 是否转物业
-                if (!others.transferOperationTime) {
-                  others.isTransferOperation = '否'
-                } else {
-                  others.isTransferOperation = '是'
-                  this.infoKeys.receiveInfo.details = { ...details, transferOperationTime: '转运营日期' }
-                }
-                detailData = others
-                tableData = deliveryDetailList
-              } else if (type === 'changeInfo' || type === 'accessoryInfo') {
-                tableData = info
-              } else if (type === 'billInfo') {
-                let { data, ...others } = info
-                detailData = others
-                tableData = data.map((m, i) => ({ ...m, index: i + 1 }))
-              } else if (type === 'disposeInfo') {
-                let { list, ...others } = info
-                detailData = others
-                tableData = list
-              }
-              // 相关费用
-              if (type === 'relatedExpenses') {
-                tableData = res.data.data.map(m => {
-                  m.reportBillIdName = m.reportBillId ? reportBillIdNameMap[String(m.reportBillId)] : '/'
-                  m.settleUpName = m.settleUp || m.settleUp===0 ? settleUpMap[String(m.settleUp)] : '/'
-                  m.amount = m.amount || '/'
-                  m.unitPrice = m.unitPrice || '/'
-                  m.readNumber = m.readNumber || '/'
-                  m.useLevel = m.useLevel || '/'
-                  return {
-                    keyId: getUuid(),
-                    ...m,
-                  }
-                })
-                this.pagination.totalCount = Number(res.data.count)
-              }
-              // 缓存数据
-              let obj = type === 'ownInfo' ? { detailData, tableData, table2Data } : { detailData, tableData }
-              obj = type === 'relatedExpenses' ? { detailData, tableData, pagination: {...this.pagination}} : obj
-              this.cacheDataObj[type] = obj
-              return Object.assign(this, obj)
-            }
-            throw res.message || `查询${tip}错误`
-          }).catch(err => {
-            this.$message.error(err || `查询${tip}错误`)
-          })
-        }
+          throw res.message || `查询${tip}错误`
+        }).catch(err => {
+          this.$message.error(err || `查询${tip}错误`)
+        })
       },
 
       handleChange(data) {

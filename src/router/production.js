@@ -821,6 +821,29 @@ let proRouter = [{
     name: '资产交付记录',
     component: () => import('@/views/usePlanning/assetDeliveryRecord/index')
   },
+  {
+    path: '/patrolRecord',
+    name: '巡查记录',
+    component: () => import('@/views/usePlanning/patrol/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/patrolRecord/newEditor',
+    name: '新增',
+    component: () => import('@/views/usePlanning/patrol/child/newEditor')
+  },
+  {
+    path: '/patrolRecord/edit',
+    name: '编辑',
+    component: () => import('@/views/usePlanning/patrol/child/edit')
+  },
+  {
+    path: '/patrolRecord/details',
+    name: '详情',
+    component: () => import('@/views/usePlanning/patrol/child/details')
+  },
   // {
   //   path: '/assetApply',
   //   name: '资产领用',

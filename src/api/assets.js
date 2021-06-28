@@ -519,7 +519,7 @@ export function queryAssetViewAccessoryDetail (data) {
 }
 // 资产视图-其他信息Tab-查询巡查记录
 export function queryAssetViewPatrolDetail (data) {
-  return axiosPost(assets.assetView.queryPatrolDetail, data)
+  return axiosPost(assets.assetView.getListPageByAssetId, data)
 }
 // 资产视图-其他信息Tab-查询档案文件
 export function queryAssetViewArchiveDetail (data) {

@@ -388,9 +388,7 @@
       </a-table>
     </div>
     <div class="mt15 tc ml40" v-if="editable">
-      <a-button icon="plus" type="dashed" block @click="pushTableLine"
-        >新建</a-button
-      >
+      <a-button icon="plus" type="dashed" block @click="pushTableLine">新建</a-button>
     </div>
     <!-- 执行记录 -->
     <div v-if="['detail'].includes(pageType)">

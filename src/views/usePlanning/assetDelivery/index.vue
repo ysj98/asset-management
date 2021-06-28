@@ -40,19 +40,6 @@
           :filterOption="filterOption"
           :loading="loading && !projectData.length"
         ></a-select>
-        <!-- <a-select
-          :style="allStyle"
-          placeholder="全部资产项目"
-          v-model="queryCondition.projectId"
-          :showSearch="true"
-          :filterOption="filterOption"
-        >
-          <a-select-option
-            v-for="(item, index) in projectData"
-            :key="index"
-            :value="item.value"
-          >{{item.name}}</a-select-option>
-        </a-select> -->
         <a-select
           :maxTagCount="1"
           :style="allStyle"
@@ -340,7 +327,6 @@ export default {
               value: data[item.key]
             };
           });
-          console.log('this.numList', this.numList)
         } else {
           this.$message.error(res.data.message);
           this.overviewNumSpinning = false;

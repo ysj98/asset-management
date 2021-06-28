@@ -99,3 +99,31 @@ export function approveReceive (data) {
 export function approveReturn (data) {
   return axiosPost(useManage.approveReturn, data)
 }
+// 巡查记录-分页列表
+export function getListPage (data) {
+  return axiosPost(useManage.getListPage, data)
+}
+// 巡查记录-新增编辑
+export function addOrUpdateInspectionRecord (data) {
+  return axiosPost(useManage.addOrUpdateInspectionRecord, data)
+}
+// 巡查记录-导出1
+export function exportRecordList (data) {
+  return axiosPost(useManage.exportRecordList, data)
+}
+// 巡查记录-导出2
+export function exportList (data) {
+  return axiosPost(useManage.exportList, data)
+}
+// 巡查记录-详情
+export function getInspectionTaskRecord (data) {
+  return axiosGet(useManage.getInspectionTaskRecord, data)
+}
+// 巡查记录-分页查询检查项列表
+export function getInspectionCheckItemPageList (data) {
+  return axiosPost(useManage.getInspectionCheckItemPageList, data)
+}
+// 巡查记录-不分页查询检查项列表
+export function getInspectionCheckItemList (data) {
+  return axiosPost(useManage.getInspectionCheckItemList, data)
+}
