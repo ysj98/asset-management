@@ -5,10 +5,10 @@
         <a-button
           icon="plus"
           type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_NEW"
+          v-power="ASSET_MANAGEMENT.PATROL_RECORD_NEW"
           @click="newChangeSheetFn"
         >巡查登记</a-button>
-        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_EXPORT" class="ml10" type="primary" @click="downloadFn">导出</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.PATROL_RECORD_EXPORT" class="ml10" type="primary" @click="downloadFn">导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect
             @changeTree="changeTree"
@@ -125,7 +125,6 @@ import SegiRangePicker from "@/components/SegiRangePicker";
 import TreeSelect from "../../common/treeSelect";
 import OperationPopover from "@/components/OperationPopover";
 import moment from "moment";
-import datadata from './haha.json'
 import noDataTips from "@/components/noDataTips";
 
 const patrolStatusData = [
@@ -144,7 +143,7 @@ const columns = [
   { title: "巡查类型", dataIndex: "inspectionTypeName" },
   { title: "计划巡查日期", dataIndex: "inspectionDate" },
   { title: "实际巡查日期", dataIndex: "actualInspectionDate" },
-  { title: "巡查人", dataIndex: "userName" },
+  { title: "巡查人", dataIndex: "userNames" },
   { title: "巡查问题描述", dataIndex: "problemDescription" },
   { title: "现场处理措施", dataIndex: "sceneHandleMeasure" },
   { title: "巡查状态", dataIndex: "inspectionStatusName" },
@@ -160,6 +159,7 @@ export default {
   },
   data() {
     return {
+      moment,
       loading: false,
       toggle: false,
       ASSET_MANAGEMENT,
@@ -197,19 +197,28 @@ export default {
       ]
     }
   },
+  watch: {
+    $route() {
+      if (
+        this.$route.path === "/patrolRecord" &&
+        this.$route.query.refresh
+      ) {
+        this.queryCondition.pageNum = 1;
+        this.queryCondition.pageSize = 10;
+        this.query();
+      }
+    }
+  },
   mounted() {
     // 获取资产类型
     this.platformDictFn("asset_type");
     // 获取巡查类型
-    this.platformDictFn("inspection_type");
+    this.queryOrganOptions();
   },
   methods: {
-    moment,
       // 导出
     downloadFn () {
-      let obj = {
-        pageNum: '',                                              // 当前页
-        pageSize: '',                                             // 每页显示记录数
+      let obj = {                                         // 每页显示记录数
         organId: this.queryCondition.organId,                     // 组织机构id
         projectIdList: this.queryCondition.projectIdList === undefined ? [] : this.queryCondition.projectIdList,            // 项目id
         assetTypeList: this.alljudge(this.queryCondition.assetTypeList),       // 巡查类型id(多个用，分割)
@@ -263,13 +272,23 @@ export default {
           if (str === "asset_type") {
             this.assetTypeData = [{ name: "全部资产类型", value: '' }, ...data];
           }
-          if (str === 'inspection_type') {
-            this.changeTypeData = [{ name: "全部巡查类型", value: '' }, ...data]
-          }
         } else {
           this.$message.error(res.data.message);
         }
       });
+    },
+    // 查询巡查类型-机构字典
+    queryOrganOptions () {
+      this.$api.basics.organDict({ code: 'inspection_type', organId: '1' }).then(r => {
+        let res = r.data
+        if (res && res.code + '' === '0') {
+          this.changeTypeData = [{ name: "全部巡查类型", value: '' }, ...res.data]
+        } else {
+          this.$message.error(err || '查询巡查类型失败')
+        }
+      }).catch(err => {
+        this.$message.error(err || '查询巡查类型失败')
+      })
     },
     // 资产类型发生变化
     changeAssetType(value) {
@@ -310,9 +329,10 @@ export default {
         content: obj.content,
         onOk() {
           let o = {
-            recordId: id
+            recordId: id + '',
+            status: '2'
           };
-          _this.$api.delivery.updateStatus(o).then(res => {
+          _this.$api.useManage.updateStatusOrDelete(o).then(res => {
             if (Number(res.data.code) === 0) {
               _this.$message.info(obj.info);
               _this.query();
@@ -411,13 +431,15 @@ export default {
         inspectionStatusList: this.alljudge(this.queryCondition.inspectionStatusList) // 巡查状态
       }
       this.$api.useManage.getListPage(obj).then(res => {
-        // console.log('ress', ress)
-        // let res ={data: datadata}
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || [];
           this.tableData = data.map((item, index) => {
             // 处理按钮权限
             item.operationData = this.handleBtn(item)
+            let date1 = item.inspectionDate ? new Date(item.inspectionDate) : ''
+            let date2 = item.actualInspectionDate ? new Date(item.actualInspectionDate) : ''
+            item.inspectionDate = date1 ? `${date1.getFullYear()}-${date1.getMonth() + 1}-${date1.getDate()}` : ''
+            item.actualInspectionDate = date2 ? `${date2.getFullYear()}-${date2.getMonth() + 1}-${date2.getDate()}` : ''
             return {
               ...item,
               key: index
@@ -436,10 +458,10 @@ export default {
       let arr = [];
       // 0草稿   2待审批、已驳回3、已审批1  已取消4
       // 编辑权限
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_EDIT)) {
+      if (this.$power.has(ASSET_MANAGEMENT.PATROL_RECORD_EDIT)) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_DELETE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.PATROL_RECORD_DELETE)) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       arr.push({
@@ -453,10 +475,9 @@ export default {
     operationFun(val, str) {
       // 详情
       if (["particulars"].includes(str)) {
-        let particularsData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetDelivery/details",
-          query: { record: particularsData, setType: 'details' }
+          path: "/patrolRecord/details",
+          query: { recordId: val.recordId, setType: 'details' }
         });
       }
       // 删除
@@ -467,7 +488,7 @@ export default {
       if (["edit"].includes(str)) {
         let recordData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetDelivery/editDelivery",
+          path: "/patrolRecord/edit",
           query: { record: recordData, setType: "edit" }
         });
       }

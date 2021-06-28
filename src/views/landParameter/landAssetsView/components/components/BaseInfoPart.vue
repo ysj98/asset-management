@@ -85,9 +85,11 @@
             temp.redMap = temp.redMap ? temp.redMap.split(',') : []
             temp.encloseWallPic = temp.encloseWallPic ? temp.encloseWallPic.split(',') : []
             temp.nowPic = temp.nowPic ? temp.nowPic.split(',') : []
+            temp.isEncloseWall = temp.isEncloseWall + '' === '0' ? '否' : '是'
             return this.infoData = { ...temp, assetType: '土地' }
+          } else {
+            this.$message.error(res.message || '查询接口出错')
           }
-          throw res.message || '查询接口出错'
         }).catch(err => {
           this.spinning = false
           this.$message.error(err || '查询接口出错')
@@ -95,7 +97,7 @@
       },
       // 获取图片可展示路径
       getUrl (url) {
-        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + option
+        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + url
         return urlShow
       },
       openBigImg (lists, index) {

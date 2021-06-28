@@ -325,10 +325,7 @@ export default {
       allWidth: 'width: 160px',
       widthBox: 'width: 80%',
       // 巡查类型
-      inspectionTypeOption: [
-        {value: '1', label: '巡查类型1'},
-        {value: '2', label: '巡查类型2'}
-      ], // 巡查状态选项
+      inspectionTypeOption: [], // 巡查状态选项
       inspectionStatusOption: [
         {value: '0', label: '未完成'},
         {value: '1', label: '已完成'}
@@ -371,12 +368,13 @@ export default {
     }
     this.getObjectKeyValueByOrganIdFn()                     // 获取资产项目
     this.platformDictFn('asset_type')                       // 获取资产类型
-    this.platformDictFn('inspection_type')     // 获取巡查类型
+    this.queryOrganOptions('')     // 获取巡查类型
   },
   methods: {
     // 监听选人弹窗改变事件
     changeSelectStaffOrPost (selectOptList = []) {
       this.userNames = selectOptList.map((item => item.name)).join(',')
+      console.log('selectOptList', selectOptList)
       this.newEditSingleData.userIdList = selectOptList
     },
     // 选择巡查人
@@ -442,51 +440,44 @@ export default {
     },
     // 编辑回填基础信息
     editFn () {
-      this.$api.useManage.getInspectionTaskRecord({recordId: this.recordId}).then((res) => {
+      this.$api.useManage.getInspectionTaskRecord({recordId: Number(this.recordId)}).then((res) => {
         if (Number(res.data.code) === 0) {
           let obj = res.data.data
-          let o = {
-            recordId: '', // 记录Id(修改必填)
-            organId: '', // 所属机构ID
-            inspectionType: '', // 巡查类型
-            inspectionDate: undefined, // 计划巡查日期
-            userIdList: [], // 巡查人
-            inspectionStatus: '', // 巡查状态
-            projectId: '', // 资产项目ID
-            assetType: undefined,     // 资产类型
-            assetId: '', // 资产信息ID
-            actualInspectionDate: undefined, // 实际巡查日期
-            problemDescription: '', // 巡查问题描述
-            sceneHandleMeasure: '', // 现场处理措施
-            agoFiles: [], // 现场图片
-            afterFiles: [], // 整改后图片
-            remark: '' // 备注-------------------------------
+          this.newEditSingleData.inspectionType = obj.inspectionType + ''
+          this.newEditSingleData.inspectionDate = obj.inspectionDate ? moment(obj.inspectionDate, "YYYY-MM-DD") : undefined
+          let userIdList = []
+          for (const key in obj.userMap) {
+            userIdList.push({
+              name: obj.userMap[key],
+              userId: key
+            })
           }
-          for(var key in o){
-            if (['userIdList'].includes(key)) {
-              o[key] = obj.userMap
-              this.userNames = obj.userMap.map(item => item.userName).join(',')
-            } else if (['inspectionDate', 'actualInspectionDate'].includes(key)) {
-              o[key] = obj[key] ? moment(obj[key], "YYYY-MM-DD") : undefined
-            } else if (['agoFiles', 'afterFiles'].includes(key)) {
-              console.log('渲染图片')
-            } else  {
-              o[key] = obj[key]
-            }
-          }
-          this.form.setFieldsValue(o)
+          this.newEditSingleData.userIdList = userIdList
+          this.userNames = obj.userNames
+          this.newEditSingleData.assetType = obj.assetType + ''
+          this.newEditSingleData.inspectionStatus = obj.inspectionStatus + ''
+          this.newEditSingleData.projectId = obj.projectId + ''
           this.assetName = obj.assetName
-          this.organName = obj.organName
-          let keyArrar = ['objectTypeName', 'assetName', 'position']
-          for (const key in keyArrar) {
-            this.selectObj[keyArrar[key]] = obj[keyArrar[key]]
-          }
+          this.newEditSingleData.actualInspectionDate = obj.actualInspectionDate ? moment(obj.actualInspectionDate, "YYYY-MM-DD") : undefined
+          this.newEditSingleData.problemDescription = obj.problemDescription || ''
+          this.newEditSingleData.sceneHandleMeasure = obj.sceneHandleMeasure || ''
+          this.newEditSingleData.agoFiles = obj.attachmentList.map(item => {
+            return {name: item.oldAttachmentName, url: item.attachmentPath}
+          })
+          this.newEditSingleData.afterFiles = obj.rectifyAttachmentList.map(item => {
+            return {name: item.oldAttachmentName, url: item.attachmentPath}
+          })
+          this.newEditSingleData.remark = obj.remark || ''
+          this.selectObj.assetCategoryName = obj.objectTypeName
+          this.selectObj.address = obj.position
+          this.selectObj.assetCode = obj.assetCode
+          this.selectObj.assetId = obj.assetId + ''
         } else {
           this.$message.error(res.data.message)
         }
       })
     },
-    // 查资产明细
+    // 查询巡查项
     getInspectionCheckItemList () {
       this.$api.useManage.getInspectionCheckItemList({recordId: this.recordId}).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -502,6 +493,7 @@ export default {
           if (this.tableData.length <= 0) {
             this.pushTableLine()
           }
+          this.confirmIndex()
         } else {
           this.$message.error(res.data.message)
         }
@@ -519,7 +511,6 @@ export default {
             this.$message.info("请选择资产");
             return
           }
-          console.log('values.actualInspectionDate', values.actualInspectionDate, `${values.actualInspectionDate.format('YYYY-MM-DD')}`)
           if (!values.actualInspectionDate && values.inspectionStatus + '' === '1') {
             this.$message.info("请选实际巡查日期");
             return
@@ -612,18 +603,25 @@ export default {
             this.assetTypeData = data.map(item => {
               return {label: item.name, value: item.value, key: item.value, name: item.name}
             })
-          } else if (str === 'inspection_type') {
-            this.inspectionTypeOption = data.map(item => {
-              return {label: item.name, value: item.value, key: item.value}
-            })
-            this.inspectionTypeOption = [
-              {value: '1', label: '巡查类型1'},
-              {value: '2', label: '巡查类型2'}
-            ]
           }
         } else {
           this.$message.error(res.data.message)
         }
+      })
+    },
+    // 查询巡查类型-机构字典
+    queryOrganOptions () {
+      this.$api.basics.organDict({ code: 'inspection_type', organId: '1' }).then(r => {
+        let res = r.data
+        if (res && String(res.code) === '0') {
+          this.inspectionTypeOption = res.data.map(item => {
+            return {label: item.name, value: item.value, key: item.value}
+          })
+        } else {
+          this.$message.error(err || '查询巡查类型失败')
+        }
+      }).catch(err => {
+        this.$message.error(err || '查询巡查类型失败')
       })
     },
     // 资产项目

@@ -174,11 +174,11 @@ const keys = {
         { title: '巡查编号', dataIndex: 'recordId' },
         { title: '巡查类型', dataIndex: 'inspectionTypeName' },
         { title: '巡查日期', dataIndex: 'actualInspectionDate' },
-        { title: '巡查人', dataIndex: 'userName' },
+        { title: '巡查人', dataIndex: 'userNames' },
         { title: '问题描述', dataIndex: 'problemDescription' },
-        { title: '巡查图片', dataIndex: 'picList', scopedSlots: { customRender: 'picList' } },
+        { title: '巡查图片', dataIndex: 'attachmentList', scopedSlots: { customRender: 'attachmentList' } },
         { title: '现场处理措施', dataIndex: 'sceneHandleMeasure' },
-        { title: '整改后图片', dataIndex: 'afterRectificationPicList', scopedSlots: { customRender: 'afterRectificationPicList' } },
+        { title: '整改后图片', dataIndex: 'rectifyAttachmentList', scopedSlots: { customRender: 'rectifyAttachmentList' } },
         { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
       ]
     }

@@ -1,9 +1,9 @@
 <!--资产视图业务-资产视图详情页面-其它信息组件-->
 <template>
-  <div class="other_info" v-if="Object.keys(infoKeys).length">
+  <div class="other_info" v-if="Object.keys(infoKeys).length && isPageShow">
     <SG-Title title="其他信息"/>
     <a-tabs defaultActiveKey="receive" v-model="tabKey" class="title_div">
-      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" :key="itemKey">
+      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="ASSET_MANAGEMENT[item.prower]" :key="itemKey">
         <!--散列信息-->
         <a-row v-if="Object.keys(item.details).length">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
@@ -19,14 +19,14 @@
           :dataSource="tableData"
           :pagination="false">
           <span slot="operation" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="checkDetail(record)">详情</span>
-          <span class="img-icon" slot="picList" slot-scope="text, record">
-            <img v-if="record.picList.length" :src="getUrl(record.picList[0].attachmentPath)" alt="" @click="openBigImg(record.picList)">
-            <span v-if="record.picList.length" class="ing-mum">{{record.picList.length}}</span>
+          <span class="img-icon" slot="attachmentList" slot-scope="text, record">
+            <img v-if="record.attachmentList.length" :src="getUrl(record.attachmentList[0].attachmentPath)" alt="" @click="openBigImg(record.attachmentList)">
+            <span v-if="record.attachmentList.length" class="ing-mum">{{record.attachmentList.length}}</span>
             <span v-else>--</span>
           </span>
-          <span class="img-icon" slot="afterRectificationPicList" slot-scope="text, record">
-            <img v-if="record.picList.length" :src="getUrl(record.afterRectificationPicList[0].attachmentPath)" alt="" @click="openBigImg(record.afterRectificationPicList)">
-            <span v-if="record.picList.length" class="ing-mum">{{record.picList.length}}</span>
+          <span class="img-icon" slot="rectifyAttachmentList" slot-scope="text, record">
+            <img v-if="record.rectifyAttachmentList.length" :src="getUrl(record.rectifyAttachmentList[0].attachmentPath)" alt="" @click="openBigImg(record.rectifyAttachmentList)">
+            <span v-if="record.rectifyAttachmentList.length" class="ing-mum">{{record.rectifyAttachmentList.length}}</span>
             <span v-else>--</span>
           </span>
         </a-table>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+  import { ASSET_MANAGEMENT } from "@/config/config.power";
   import infoKeys from './otherInfoKeys'
   import PreviewImages from 'components/PreviewImages.vue'
   import operationInformation from './operationInformation'
@@ -84,6 +85,8 @@
     },
     data () {
       return {
+        ASSET_MANAGEMENT, // tab页签的权限
+        isPageShow: false, //  根据是否存在拥有至少一个tab页签的权限来控制其它信息是否展示
         infoKeys, // 所有Tab的展示字段
         tabKey: 'receiveInfo', // 默认展示第一个Tab-接管信息
         detailData: {}, // 散列信息
@@ -92,15 +95,15 @@
         cacheDataObj: {}, // 缓存信息
         pagination: { ...pagination}, // 缓存分页一
         apiObj: {
-          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId' }, // 权属信息
-          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId' }, // 接管信息
-          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId' }, // 变动记录
-          billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId' }, // 账面信息
-          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true }, // 巡查记录
-          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId' }, // 附属&配套
-          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId' }, // 资产处置
-          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true }, // 相关费用
-          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId', pagination: true } // 档案文件
+          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId', prower: 'power_ownInfo' }, // 权属信息
+          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId', prower: 'power_receiveInfo' }, // 接管信息
+          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId', prower: 'power_changeInfo' }, // 变动记录
+          billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId', prower: 'power_billInfo' }, // 账面信息
+          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_patrolRecord' }, // 巡查记录
+          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId', prower: 'power_accessoryInfo' }, // 附属&配套
+          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId', prower: 'power_disposeInfo' }, // 资产处置
+          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_relatedExpenses' }, // 相关费用
+          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_archive' } // 档案文件
         }, // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
         bigImg: { // 查看大图所需数据
           show: false,
@@ -223,15 +226,15 @@
       },
       // 获取图片可展示路径
       getUrl (url) {
-        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + option
+        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + url
         return urlShow
       },
       // 查看详情
       checkDetail (item) {
         if (this.tabKey === 'archive') {
-          // window.parent.openPortalMenu('/consultantFile/details?type=detail&archiveId=' + item.recordId)
+          window.parent.openPortalMenu('/asset-management/#/consultantFile/details?type=detail&archiveId=' + item.recordId)
         } else if (this.tabKey === 'patrolRecord') {
-          // window.parent.openPortalMenu('./')
+          window.parent.openPortalMenu('/asset-management/#/patrolRecord/details?type=detail&archiveId=' + item.recordId)
         }
       }
     },
@@ -239,7 +242,13 @@
     created () {
       this.queryDetail(this.tabKey)
     },
-
+    mounted () {
+      for (const key in this.apiObj) {
+        if (this.$power.has(ASSET_MANAGEMENT[this.apiObj[key]['prower']])) {
+          this.isPageShow = true
+        }
+      }
+    },
     watch: {
       tabKey (key) {
         // 如果是运营管理退出

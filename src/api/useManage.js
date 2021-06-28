@@ -117,7 +117,7 @@ export function exportList (data) {
 }
 // 巡查记录-详情
 export function getInspectionTaskRecord (data) {
-  return axiosGet(useManage.getInspectionTaskRecord, data)
+  return axiosPost(useManage.getInspectionTaskRecord, data)
 }
 // 巡查记录-分页查询检查项列表
 export function getInspectionCheckItemPageList (data) {
@@ -126,4 +126,8 @@ export function getInspectionCheckItemPageList (data) {
 // 巡查记录-不分页查询检查项列表
 export function getInspectionCheckItemList (data) {
   return axiosPost(useManage.getInspectionCheckItemList, data)
+}
+// 巡查记录-删除巡查记录
+export function updateStatusOrDelete (data) {
+  return axiosPost(useManage.updateStatusOrDelete, data)
 }

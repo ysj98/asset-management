@@ -1097,7 +1097,9 @@ export const useManage = {
   // 巡查记录-分页查询检查项列表
   getInspectionCheckItemPageList: '/ams/inspectionCheckItem/getInspectionCheckItemPageList',
   // 巡查记录-不分页查询检查项列表
-  getInspectionCheckItemList: '/ams/inspectionCheckItem/getInspectionCheckItemList'
+  getInspectionCheckItemList: '/ams/inspectionCheckItem/getInspectionCheckItemList',
+  // 巡查记录-删除巡查记录
+  updateStatusOrDelete: '/ams/inspectionTaskRecord/updateStatusOrDelete'
 }
 
 // 资产出租

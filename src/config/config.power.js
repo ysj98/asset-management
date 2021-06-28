@@ -467,6 +467,25 @@ export const ASSET_MANAGEMENT = {
   ASSET_RETURN_REGISTER: 'asset_return_register',  // 归还登记导出
   ASSET_APPLY_VIEW_EXPORT: 'asset_apply_view_export',       // 资产领用一览表导出
   ASSET_RETURN_VIEW_EXPORT: 'asset_return_view_export',       // 资产归还一览表导出
+  /**
+   * 2.0.7 资产领用
+   */
+  PATROL_RECORD_NEW: 'patrol_record_new',  // 巡查记录单新建
+  PATROL_RECORD_EDIT: 'patrol_record_edit',  // 巡查记录单编辑
+  PATROL_RECORD_DELETE: 'patrol_record_delete',  // 巡查记录单删除
+  PATROL_RECORD_EXPORT: 'patrol_record_export',
+  /**
+   * 2.0.7 资产信息详情中的其它信息tab页签权限管理
+   */
+  power_ownInfo: 'power_ownInfo', // 权属信息页签
+  power_receiveInfo: 'power_receiveInfo', // 接管信息页签
+  power_changeInfo: 'power_changeInfo', // 权属信息页签
+  power_billInfo: 'power_billInfo', // 账面信息页签
+  power_patrolRecord: 'power_patrolRecord', // 巡查记录页签
+  power_accessoryInfo: 'power_accessoryInfo', // 附属&配套页签
+  power_disposeInfo: 'power_disposeInfo', // 资产信息页签
+  power_relatedExpenses: 'power_relatedExpenses', // 相关费用页签
+  power_archive: 'power_archive' // 档案文件页签
 }
 
 
