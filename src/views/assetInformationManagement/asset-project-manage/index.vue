@@ -180,11 +180,12 @@
             { title: '来源方式', dataIndex: 'sourceTypeName' },
             { title: '来源渠道', dataIndex: 'souceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum' },
-            { title: '资产项目状态', dataIndex: 'approvalStatusName' },
-            { title: '创建人', dataIndex: 'createByName' },
-            { title: '创建日期', dataIndex: 'createTime' },
             { title: '是否接管', dataIndex: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
             { title: '接管日期', dataIndex: 'takeOverDate' },
+            { title: '接管人', dataIndex: 'receiver' },
+            { title: '创建人', dataIndex: 'createByName' },
+            { title: '创建日期', dataIndex: 'createTime' },
+            { title: '资产项目状态', dataIndex: 'approvalStatusName' },
             // { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 }
           ]

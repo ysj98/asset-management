@@ -61,6 +61,14 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan" v-if="takeOver === '1'">
+          <a-form-item label="接管人" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入接管名称"
+              v-decorator="['receiver', {initialValue, rules: [{required: false, message: '请输入接管人'}, {max: 50, message: '最多50个字符'}]}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="colSpan" v-if="takeOver === '1'">
           <a-form-item label="接管时资产状态" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择资产状态' : ''"
@@ -68,8 +76,8 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="24">
-          <a-form-item label="第三方编码" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
+        <a-col :span="colSpan">
+          <a-form-item label="第三方编码" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
               :disabled="!isEdit" placeholder="请输入第三方编码"
               v-decorator="['thirdPartyCode', {initialValue, rules: [{required: false, message: '请输入第三方编码'}, {max: 50, message: '最多50个字符'}]}]"
@@ -98,6 +106,27 @@
     </div>
     <SG-Title title="其他信息" noMargin/>
     <div :class="{'title_div': !type || type == 'approval'}" style="margin-top: 10px; margin-bottom: 15px">
+      <a-row>
+        <a-col :span="24">
+          <a-form-item label="权属办理中存在问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
+            <a-textarea
+              :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入权属办理中存在问题"
+              v-decorator="['ownershipHandleProblems', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label="历史遗留问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
+            <a-textarea
+              :disabled="!isEdit"
+              style="resize: none"
+              :autosize="{maxRows: 3}"
+              placeholder="请输入历史遗留问题"
+              v-decorator="['houseTransferHisProblem', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
       <!--当来源方式为 划转 字典值1-->
       <a-row v-if="sourceType === '1'">
         <a-col :span="colSpan">
@@ -240,28 +269,32 @@
             />
           </a-form-item>
         </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="24">
-          <a-form-item label="权属办理中存在问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
-            <a-textarea
-              :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入权属办理中存在问题"
-              v-decorator="['ownershipHandleProblems', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
+        <a-col :span="colSpan">
+          <a-form-item label="托管面积(㎡)" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入托管面积"
+              v-decorator="['trusteeshipArea', {initialValue, rules: [{pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/, message: '请输入0-99999999.99的数值'}]}]"
             />
           </a-form-item>
         </a-col>
-        <a-col :span="24">
-          <a-form-item label="历史遗留问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
-            <a-textarea
-              :disabled="!isEdit"
-              style="resize: none"
-              :autosize="{maxRows: 3}"
-              placeholder="请输入历史遗留问题"
-              v-decorator="['houseTransferHisProblem', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
+        <a-col :span="colSpan">
+          <a-form-item label="实际接收面积(㎡)" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入实际接收面积"
+              v-decorator="['actualReceiveArea', {initialValue, rules: [{pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/, message: '请输入0-99999999.99的数值'}]}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="colSpan">
+          <a-form-item label="实际可用面积(㎡)" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入实际可用面积"
+              v-decorator="['actualUsableArea', {initialValue, rules: [{pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/, message: '请输入0-99999999.99的数值'}]}]"
             />
           </a-form-item>
         </a-col>
       </a-row>
+      
     </div>
   </a-form>
   </a-spin>
@@ -287,6 +320,10 @@
       organName: '', // 管理机构
       organKey: '', // 管理机构
       takeOver: '', // 是否接管，否 0，是 1
+      receiver: '', // 接管人
+      trusteeshipArea: '', //托管面积
+      actualReceiveArea: '', //实际接收面积
+      actualUsableArea: '', //实际可用面积
       sourceType: '', // 来源方式字典值，其他 99，租入 4，自建 3，外购 2，划转 1
       typeOptions: (this.sourceTypeOptions || []).slice(1), // 删除"全部"的选项
       takeOverOptions: [{title: '是', key: '1'}, {title: '否', key: '0'}], // 是否接管的选项
@@ -337,7 +374,7 @@
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver } = this
+          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, receiver } = this
           // 转换日期格式为string
           let dateKeys = objBySourceType[sourceType] || []
           dateKeys.forEach(key => {
@@ -383,7 +420,7 @@
         if (res && String(res.code) === '0') {
           let {
             attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
-            takeoverAssetStatus, takeOver, ownershipHandleProblems, remark, houseTransferHisProblem,
+            takeoverAssetStatus, takeOver, receiver, trusteeshipArea, actualReceiveArea, actualUsableArea, ownershipHandleProblems, remark, houseTransferHisProblem,
             sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, thirdPartyCode, ...others
           } = res.data
           // 处理附件格式
@@ -394,6 +431,10 @@
           sourceType = String(sourceType)
           Object.assign(this, {
             takeOver,
+            receiver,
+            trusteeshipArea, 
+            actualReceiveArea, 
+            actualUsableArea,
             sourceType,
             attachment: attachArr,
             organKey: organId, // 保存管理机构id
@@ -404,7 +445,7 @@
             ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : ownershipHandleProblems,
             houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : houseTransferHisProblem,
             projectName, sourceType: type === 'show' ? sourceTypeName : sourceType,
-            takeOver, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode, thirdPartyCode: type === 'show' ? (thirdPartyCode || '无') : thirdPartyCode
+            takeOver, receiver: type === 'show' ? (receiver || '无') : receiver, trusteeshipArea: type === 'show' ? (trusteeshipArea || '无') : trusteeshipArea, actualReceiveArea: type === 'show' ? (actualReceiveArea || '无') : actualReceiveArea, actualUsableArea: type === 'show' ? (actualUsableArea || '无') : actualUsableArea, remark: type === 'show' ? (remark || '无') : remark, souceChannelType, projectCode, thirdPartyCode: type === 'show' ? (thirdPartyCode || '无') : thirdPartyCode
           }
           if (takeOver === '1') {
             formData.takeoverAssetStatus = type === 'show' ? (takeoverAssetStatusName || '无') : String(takeoverAssetStatus || '')

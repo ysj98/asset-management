@@ -346,6 +346,44 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :span="8">
+                <a-form-item label="有无围墙" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    :getPopupContainer="getPopupContainer"
+                    placeholder="请选择有无围墙"
+                    showSearch
+                    optionFilterProp="children"
+                    :options="wallTypeOpt"
+                    :allowClear="false"
+                    :filterOption="filterOption"
+                    notFoundContent="没有查询到数据"
+                    v-decorator="[
+                      'isEncloseWall',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            whitespace: true,
+                            message: '请选择有无围墙',
+                          },
+                        ],
+                        initialValue: '0'
+                      },
+                    ]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item label="围墙图片" v-bind="formItemLayout2">
+                  <SG-UploadFile
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
+                    v-model="encloseWallPic"
+                    :max="3"
+                  />
+                </a-form-item>
+              </a-col>
               <a-col :span="24">
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
@@ -362,6 +400,16 @@
                     :customUpload="customUpload"
                     v-model="redMap"
                     :max="1"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item label="现状图片" v-bind="formItemLayout2">
+                  <SG-UploadFile
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
+                    v-model="nowPic"
+                    :max="5"
                   />
                 </a-form-item>
               </a-col>
@@ -429,8 +477,11 @@ export default {
       communityIdOpt: [], // 选择项目
       landTypeOpt: [], // 土地类型
       landuseTypeOpt: [], // 土地用途分类
+      wallTypeOpt: [{value:"1",label:"有围墙"}, {value:"0",label:"无围墙"}], // 有无围墙
       landuseOpt: [], // 土地用途
       redMap: [], // 用地红线图
+      encloseWallPic: [], // 围墙图片
+      nowPic: [], // 现状图片
       filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
@@ -507,6 +558,30 @@ export default {
           // 处理平面图
           if (this.redMap.length > 0) {
             data.redMap = this.redMap[0].url
+          }
+          // 处理围墙图片
+          if (this.encloseWallPic.length > 0) {
+            let str = ''
+            this.encloseWallPic.forEach((item, index) => {
+              if (index === this.encloseWallPic.length - 1) {
+                str = str + item.url
+              } else {
+                str = str + item.url + ','
+              }
+            })
+            data.encloseWallPic = str
+          }
+          // 处理现状图片
+          if (this.nowPic.length > 0) {
+            let str = ''
+            this.nowPic.forEach((item, index) => {
+              if (index === this.nowPic.length - 1) {
+                str = str + item.url
+              } else {
+                str = str + item.url + ','
+              }
+            })
+            data.nowPic = str
           }
           // 处理附件
           if (this.filePath.length > 0) {
@@ -608,6 +683,26 @@ export default {
             // 处理平面图
             if (data.redMap) {
               this.redMap = [{ url: data.redMap, name: "" }]
+            }
+            // 处理围墙图片
+            if (data.encloseWallPic) {
+              let arr = data.encloseWallPic.split(',')
+              console.log('arr', arr)
+              if (arr.length > 0) {
+                arr.forEach(item => {
+                  this.encloseWallPic.push({url: item,name: ''})
+                })
+              }
+            }
+            // 处理现状图片
+            if (data.nowPic) {
+              let arr = data.nowPic.split(',')
+              console.log('arr', arr)
+              if (arr.length > 0) {
+                arr.forEach(item => {
+                  this.nowPic.push({url: item,name: ''})
+                })
+              }
             }
             // 处理附件
             if (data.filePath) {
