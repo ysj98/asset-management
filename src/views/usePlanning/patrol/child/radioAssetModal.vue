@@ -128,13 +128,13 @@ export default {
       type: Array,
       default: () => []
     },
-    objectTypeDataTemp: {
+    projectDataTemp: {
       type: Array,
       default: () => []
     },
     selectObj: {
       type: [Object],
-      default: {}
+      default: () => {}
     }
   },
   data () {
@@ -144,9 +144,9 @@ export default {
       objectType: '',  // 资产类别
       assetNameCode: '',  // 资产名称/编码
       projectId: '',  // 资产项目ID
-      projectData: [],
-      assetTypeData: [],
-      objectTypeData: [],
+      projectData: [], // 资产项目选项
+      assetTypeData: [], // 资产类型选项
+      objectTypeData: [], // 资产类别选项
       allStyle: 'width: 140px; margin-right: 10px;',
       columns,
       dataSource: [],
@@ -357,11 +357,15 @@ export default {
       this.assetType = this.assetTypeTemp
     }
     // 资产类型
-    if (this.objectTypeDataTemp.length <= 0) {
+    if (this.projectDataTemp.length <= 0) {
       this.platformDictFn('asset_type')
     } else {
-      this.projectData = this.objectTypeDataTemp
+      this.projectData = this.projectDataTemp
       this.projectId = this.projectIdTemp
+      this.getListFn()
+    }
+    if (this.selectObj && this.selectObj.assetId) {
+      this.selectedRowKeys = [this.selectObj.assetId]
     }
   }
 }

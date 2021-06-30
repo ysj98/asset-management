@@ -28,10 +28,10 @@
                 showSearch
                 :style="allWidth"
                 placeholder="请选择巡查类型"
-                v-decorator="['inspectionType',{ rules: [{required: true, message: '请选择资产项目'}], initialValue: newEditSingleData.inspectionType }]"
+                v-decorator="['inspectionType',{ rules: [{required: true, message: '请选择资产类型'}], initialValue: newEditSingleData.inspectionType }]"
                 :allowClear="false"
                 :options="inspectionTypeOption"
-                notFoundContent="没有查询到资产项目"
+                notFoundContent="没有查询到资产类型"
                 >
               </a-select>
             </a-form-item>
@@ -39,7 +39,7 @@
           <a-col class="playground-col" :span="8">
             <a-form-item :colon="false" v-bind="formItemLayout">
               <label slot="label">计划巡查日期：</label>
-              <a-date-picker v-decorator="['inspectionDate', {rules: [{required: true, message: '请选择交付日期'}], initialValue: newEditSingleData.inspectionDate}]" />
+              <a-date-picker :style="allWidth" v-decorator="['inspectionDate', {rules: [{required: true, message: '请选择计划巡查日期'}], initialValue: newEditSingleData.inspectionDate}]" />
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
@@ -131,7 +131,7 @@
           <a-col class="playground-col" :span="8">
             <a-form-item :colon="false" v-bind="formItemLayout">
               <label slot="label">资产位置：</label>
-              <a-input placeholder="请输入资产位置"
+              <a-textarea placeholder="请输入资产位置"
               :style="allWidth"
               :disabled="true"
               v-decorator="['address',
@@ -148,7 +148,7 @@
             <a-col class="playground-col" :span="8">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label"><span class="icon-red"></span>实际巡查日期：</label>
-                <a-date-picker v-decorator="['actualInspectionDate', {rules: [{required: false, message: '请选择实际巡查日期'}], initialValue: newEditSingleData.actualInspectionDate}]" />
+                <a-date-picker :style="allWidth" v-decorator="['actualInspectionDate', {rules: [{required: false, message: '请选择实际巡查日期'}], initialValue: newEditSingleData.actualInspectionDate}]" />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="24">
@@ -238,7 +238,7 @@
       </div>
     </FormFooter>
     <!-- 选择资产 -->
-    <RadioAssetModal v-if="newEditSingleData.projectId && newEditSingleData.assetType" :selectObj="selectObj" :assetTypeDataTemp="assetTypeData" :objectTypeDataTemp="projectIdData" :projectIdTemp="newEditSingleData.projectId" :assetTypeTemp="newEditSingleData.assetType" ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @select="assetChange"></RadioAssetModal>
+    <RadioAssetModal v-if="newEditSingleData.projectId && newEditSingleData.assetType" :selectObj="selectObj" :assetTypeDataTemp="assetTypeData" :projectDataTemp="projectIdData" :projectIdTemp="newEditSingleData.projectId" :assetTypeTemp="newEditSingleData.assetType" ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @select="assetChange"></RadioAssetModal>
     <!-- 选人 -->
     <SelectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="newEditSingleData.userIdList"/>
   </div>
@@ -288,7 +288,7 @@ const newEditSingleData = {
   inspectionType: '', // 巡查类型
   inspectionDate: undefined, // 计划巡查日期
   userIdList: [], // 巡查人
-  inspectionStatus: '', // 巡查状态
+  inspectionStatus: '1', // 巡查状态
   projectId: '', // 资产项目ID
   assetType: undefined,     // 资产类型
   assetId: '', // 资产信息ID
@@ -322,7 +322,7 @@ export default {
       newEditSingleData: {...newEditSingleData}, // form表单字段
       // 检查项
       form: this.$form.createForm(this),
-      allWidth: 'width: 160px',
+      allWidth: 'width: 220px',
       widthBox: 'width: 80%',
       // 巡查类型
       inspectionTypeOption: [], // 巡查状态选项
@@ -374,7 +374,6 @@ export default {
     // 监听选人弹窗改变事件
     changeSelectStaffOrPost (selectOptList = []) {
       this.userNames = selectOptList.map((item => item.name)).join(',')
-      console.log('selectOptList', selectOptList)
       this.newEditSingleData.userIdList = selectOptList
     },
     // 选择巡查人
@@ -383,6 +382,7 @@ export default {
     },
     // 资产选择变动
     assetChange (row) {
+      console.log('row', row)
       this.assetName = row.assetName
       this.selectObj = row
     },
@@ -449,14 +449,22 @@ export default {
           for (const key in obj.userMap) {
             userIdList.push({
               name: obj.userMap[key],
-              userId: key
+              userId: key,
+              id: key
             })
           }
+          console.log('userIdList', userIdList)
+          this.newEditSingleData.remark = obj.remark || ''
+          this.selectObj.assetCategoryName = obj.objectTypeName
+          this.selectObj.address = obj.position
+          this.selectObj.assetCode = obj.assetCode
+          this.selectObj.assetId =  Number(obj.assetId)
+          this.selectObj.assetObjectId = Number(obj.assetId)
           this.newEditSingleData.userIdList = userIdList
           this.userNames = obj.userNames
           this.newEditSingleData.assetType = obj.assetType + ''
           this.newEditSingleData.inspectionStatus = obj.inspectionStatus + ''
-          this.newEditSingleData.projectId = obj.projectId + ''
+          this.newEditSingleData.projectId = Number(obj.projectId)
           this.assetName = obj.assetName
           this.newEditSingleData.actualInspectionDate = obj.actualInspectionDate ? moment(obj.actualInspectionDate, "YYYY-MM-DD") : undefined
           this.newEditSingleData.problemDescription = obj.problemDescription || ''
@@ -467,11 +475,7 @@ export default {
           this.newEditSingleData.afterFiles = obj.rectifyAttachmentList.map(item => {
             return {name: item.oldAttachmentName, url: item.attachmentPath}
           })
-          this.newEditSingleData.remark = obj.remark || ''
-          this.selectObj.assetCategoryName = obj.objectTypeName
-          this.selectObj.address = obj.position
-          this.selectObj.assetCode = obj.assetCode
-          this.selectObj.assetId = obj.assetId + ''
+          console.log('this.selectObj', this.selectObj)
         } else {
           this.$message.error(res.data.message)
         }
@@ -652,13 +656,21 @@ export default {
     inspectionStatusFn (val) {
       this.newEditSingleData.inspectionStatus = val
     },
-    // 项目监听
+    // 资产项目监听
     projectIdFn (val) {
+      console.log('this.newEditSingleData.projectId', this.newEditSingleData.projectId)
       this.newEditSingleData.projectId = val
+      this.removeAsset()
     },
     // 资产类型监听
     assetTypeFn (val) {
       this.newEditSingleData.assetType = val
+      this.removeAsset()
+    },
+    // 清空资产名称的值
+    removeAsset () {
+      this.assetName = ''
+      this.selectObj = {...selectObj}
     }
   }
 }

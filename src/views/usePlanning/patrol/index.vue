@@ -24,7 +24,6 @@
             v-model="queryCondition.projectIdList"
             :options="projectData"
             placeholder="全部资产项目"
-            :filterOption="filterOption"
             :loading="loading && !projectData.length"
           ></a-select>
           <a-select
@@ -36,13 +35,13 @@
             @select="changeAssetType"
             v-model="queryCondition.assetTypeList"
           >
-          <a-select-option
-            v-for="(item, index) in assetTypeData"
-            :key="index"
-            :value="item.value"
-          >{{item.name}}</a-select-option>
-        </a-select>
-        <a-input-search v-model="queryCondition.assetNameOrCode" placeholder="交付单号/名称" maxlength="30" :style="assetTypeList" @search="allQuery" />
+            <a-select-option
+              v-for="(item, index) in assetTypeData"
+              :key="index"
+              :value="item.value"
+            >{{item.name}}</a-select-option>
+          </a-select>
+        <a-input-search v-model="queryCondition.assetNameOrCode" placeholder="资产名称/编码" maxlength="30" :style="assetTypeList" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -82,7 +81,7 @@
         <div class="box">
           <segi-range-picker
             :disabledDateType="false"
-            label="交付日期"
+            label="巡查日期"
             :defaultValue="undefined"
             :allowClear="true"
             :canSelectToday="true"
@@ -164,7 +163,7 @@ export default {
       toggle: false,
       ASSET_MANAGEMENT,
       patrolStatusData: [...patrolStatusData],
-      assetTypeList: "width: 170px; margin-right: 10px;",
+      assetTypeList: "width: 170px; max-height: 30px; margin-right: 10px;",
       location: "absolute",
       noPageTools: false,
       queryCondition: {
@@ -354,19 +353,13 @@ export default {
           let data = res.data.data;
           let arr = [];
           data.forEach(item => {
-            arr.push({title: item.projectName, value: item.projectIdList, key: item.projectIdList,})
+            arr.push({title: item.projectName, value: item.projectId, key: item.projectId,})
           })
           this.projectData = arr
         } else {
           this.$message.error(res.data.message)
         }
       });
-    },
-    // 选择框搜索
-    filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      )
     },
     // 分页查询
     handleChange(data) {
@@ -427,7 +420,7 @@ export default {
         assetNameOrCode: this.queryCondition.assetNameOrCode,   // 巡查名称/编码
         inspectionDateStart: this.queryCondition.inspectionDateStart,    // 开始创建日期
         inspectionDateEnd: this.queryCondition.inspectionDateEnd,       // 结束创建日期
-        inspectionTypeList: this.queryCondition.inspectionTypeList,           // 巡查类型
+        inspectionTypeList: this.alljudge(this.queryCondition.inspectionTypeList),           // 巡查类型
         inspectionStatusList: this.alljudge(this.queryCondition.inspectionStatusList) // 巡查状态
       }
       this.$api.useManage.getListPage(obj).then(res => {
