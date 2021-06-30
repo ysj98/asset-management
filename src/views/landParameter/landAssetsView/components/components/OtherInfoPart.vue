@@ -95,15 +95,15 @@
         cacheDataObj: {}, // 缓存信息
         pagination: { ...pagination}, // 缓存分页一
         apiObj: {
-          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId', prower: 'power_receiveInfo' }, // 接管信息
-          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId', prower: 'power_ownInfo' }, // 权属信息
-          billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId', prower: 'power_billInfo' }, // 账面信息
-          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_patrolRecord' }, // 巡查记录
-          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId', prower: 'power_accessoryInfo' }, // 附属&配套
-          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId', prower: 'power_changeInfo' }, // 变动记录
-          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId', prower: 'power_disposeInfo' }, // 资产处置
-          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_relatedExpenses' }, // 相关费用
-          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_archive' } // 档案文件
+          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId', prower: 'power_land_receiveInfo' }, // 接管信息
+          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId', prower: 'power_land_ownInfo' }, // 权属信息
+          billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId', prower: 'power_land_billInfo' }, // 账面信息
+          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_land_patrolRecord' }, // 巡查记录
+          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId', prower: 'power_land_accessoryInfo' }, // 附属&配套
+          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId', prower: 'power_land_changeInfo' }, // 变动记录
+          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId', prower: 'power_land_disposeInfo' }, // 资产处置
+          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_land_relatedExpenses' }, // 相关费用
+          archive: { api: 'queryAssetViewArchiveDetail', tip: '档案文件', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_land_archive' } // 档案文件
         }, // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
         bigImg: { // 查看大图所需数据
           show: false,
@@ -201,7 +201,7 @@
           }
           throw res.message || `查询${tip}错误`
         }).catch(err => {
-          this.$message.error(err || `查询${tip}错误`)
+          // this.$message.error(err || `查询${tip}错误`)
         })
       },
       // 由于会出现多个接口查询

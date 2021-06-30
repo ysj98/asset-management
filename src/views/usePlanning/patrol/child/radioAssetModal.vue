@@ -366,6 +366,8 @@ export default {
     }
     if (this.selectObj && this.selectObj.assetId) {
       this.selectedRowKeys = [this.selectObj.assetId]
+    } else {
+      this.selectedRowKeys = []
     }
   }
 }

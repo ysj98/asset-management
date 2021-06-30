@@ -468,14 +468,14 @@ export const ASSET_MANAGEMENT = {
   ASSET_APPLY_VIEW_EXPORT: 'asset_apply_view_export',       // 资产领用一览表导出
   ASSET_RETURN_VIEW_EXPORT: 'asset_return_view_export',       // 资产归还一览表导出
   /**
-   * 2.0.7 资产领用
+   * 资产领用
    */
   PATROL_RECORD_NEW: 'patrol_record_new',  // 巡查记录单新建
   PATROL_RECORD_EDIT: 'patrol_record_edit',  // 巡查记录单编辑
   PATROL_RECORD_DELETE: 'patrol_record_delete',  // 巡查记录单删除
   PATROL_RECORD_EXPORT: 'patrol_record_export',
   /**
-   * 2.0.7 资产信息详情中的其它信息tab页签权限管理
+   * 房屋资产信息详情中的其它信息tab页签权限管理
    */
   power_ownInfo: 'power_ownInfo', // 权属信息页签
   power_receiveInfo: 'power_receiveInfo', // 接管信息页签
@@ -485,7 +485,19 @@ export const ASSET_MANAGEMENT = {
   power_accessoryInfo: 'power_accessoryInfo', // 附属&配套页签
   power_disposeInfo: 'power_disposeInfo', // 资产信息页签
   power_relatedExpenses: 'power_relatedExpenses', // 相关费用页签
-  power_archive: 'power_archive' // 档案文件页签
+  power_archive: 'power_archive', // 档案文件页签
+  /**
+   * 土地资产信息详情中的其它信息tab页签权限管理
+   */
+   power_land_ownInfo: 'power_land_ownInfo', // 权属信息页签
+   power_land_receiveInfo: 'power_land_receiveInfo', // 接管信息页签
+   power_land_changeInfo: 'power_land_changeInfo', // 权属信息页签
+   power_land_billInfo: 'power_land_billInfo', // 账面信息页签
+   power_land_patrolRecord: 'power_land_patrolRecord', // 巡查记录页签
+   power_land_accessoryInfo: 'power_land_accessoryInfo', // 附属&配套页签
+   power_land_disposeInfo: 'power_land_disposeInfo', // 资产信息页签
+   power_land_relatedExpenses: 'power_land_relatedExpenses', // 相关费用页签
+   power_land_archive: 'power_land_archive' // 档案文件页签
 }
 
 

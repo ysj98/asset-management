@@ -238,7 +238,7 @@
       </div>
     </FormFooter>
     <!-- 选择资产 -->
-    <RadioAssetModal v-if="newEditSingleData.projectId && newEditSingleData.assetType" :selectObj="selectObj" :assetTypeDataTemp="assetTypeData" :projectDataTemp="projectIdData" :projectIdTemp="newEditSingleData.projectId" :assetTypeTemp="newEditSingleData.assetType" ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @select="assetChange"></RadioAssetModal>
+    <RadioAssetModal v-if="newEditSingleData.projectId && newEditSingleData.assetType" :key="`${newEditSingleData.projectId + newEditSingleData.assetType}`" :selectObj="selectObj" :assetTypeDataTemp="assetTypeData" :projectDataTemp="projectIdData" :projectIdTemp="newEditSingleData.projectId" :assetTypeTemp="newEditSingleData.assetType" ref="radioAssetModal" :organId="organId" :organName="organName" queryType="5" :judgeInstitutions="false" @select="assetChange"></RadioAssetModal>
     <!-- 选人 -->
     <SelectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="newEditSingleData.userIdList"/>
   </div>
