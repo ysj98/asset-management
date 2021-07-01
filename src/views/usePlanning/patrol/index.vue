@@ -227,7 +227,7 @@ export default {
         inspectionDateEnd: this.queryCondition.inspectionDateEnd,       // 结束创建日期
         inspectionStatusList: this.alljudge(this.queryCondition.inspectionStatusList) // 巡查状态
       }
-      this.$api.useManage.exportRecordList(obj).then(res => {
+      this.$api.useManage.exportList(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

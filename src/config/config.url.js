@@ -1088,9 +1088,9 @@ export const useManage = {
   getListPage: '/ams/inspectionTaskRecord/getListPage',
   // 巡查记录-新增编辑保存
   addOrUpdateInspectionRecord: '/ams/inspectionTaskRecord/addOrUpdateInspectionRecord',
-  // 巡查记录-导出1
+  // 巡查记录-导出详情
   exportRecordList: '/ams/inspectionTaskRecord/exportRecordList',
-  // 巡查记录-导出2
+  // 巡查记录-导出记录列表
   exportList: '/ams/inspectionTaskRecord/exportList',
   // 巡查记录-详情
   getInspectionTaskRecord: '/ams/inspectionTaskRecord/getInspectionTaskRecord',

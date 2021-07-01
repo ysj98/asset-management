@@ -107,13 +107,13 @@ export function getListPage (data) {
 export function addOrUpdateInspectionRecord (data) {
   return axiosPost(useManage.addOrUpdateInspectionRecord, data)
 }
-// 巡查记录-导出1
+// 巡查记录-导出详情
 export function exportRecordList (data) {
-  return axiosPost(useManage.exportRecordList, data)
+  return axiosPost(useManage.exportRecordList, data, false, false, {responseType: 'blob'})
 }
-// 巡查记录-导出2
+// 巡查记录-导出记录列表
 export function exportList (data) {
-  return axiosPost(useManage.exportList, data)
+  return axiosPost(useManage.exportList, data, false, false, {responseType: 'blob'})
 }
 // 巡查记录-详情
 export function getInspectionTaskRecord (data) {
