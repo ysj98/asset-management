@@ -126,6 +126,9 @@
         if (type === 'patrolRecord') {
           queryData.inspectionStatus = '1'
         }
+        if (type === 'relatedExpenses') {
+          queryData.sourceType = '3'
+        }
         this.$api.assets[api](queryData).then(r => {
           let res = r.data
           let detailData = {}
