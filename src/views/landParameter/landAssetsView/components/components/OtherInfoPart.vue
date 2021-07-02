@@ -3,7 +3,7 @@
   <div class="other_info" v-if="Object.keys(infoKeys).length && isPageShow">
     <SG-Title title="其他信息"/>
     <a-tabs defaultActiveKey="receive" v-model="tabKey" class="title_div">
-      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="ASSET_MANAGEMENT[item.prower]" :key="itemKey">
+      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="ASSET_MANAGEMENT[apiObj[tabKey].prower]" :key="itemKey">
         <!--散列信息-->
         <a-row v-if="Object.keys(item.details).length">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
@@ -198,8 +198,9 @@
             obj = type === 'archive' || type === 'relatedExpenses' || type === 'patrolRecord' ? { detailData, tableData, pagination: {...this.pagination}} : obj
             this.cacheDataObj[type] = obj
             Object.assign(this, obj)
+          } else {
+            this.$message.error(`查询${tip}错误`)
           }
-          throw res.message || `查询${tip}错误`
         }).catch(err => {
           // this.$message.error(err || `查询${tip}错误`)
         })
@@ -234,27 +235,29 @@
       },
       // 获取图片可展示路径
       getUrl (url) {
-        let urlShow = /^http|https/.test(url) ? url : window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092' + url
+        let urlShow = /^http|https/.test(url) ? url : window.__configs ? (window.__configs.hostImg + url) : ('http://192.168.1.11:8092' + url)
         return urlShow
       },
       // 查看详情
       checkDetail (item) {
         if (this.tabKey === 'archive') {
-          window.parent.openPortalMenu('/consultantFile/details?type=detail&archiveId=' + item.recordId)
+          window.parent.openPortalMenu('/archives-management/#/consultantFile/details?type=detail&archiveId=' + item.archiveId)
         } else if (this.tabKey === 'patrolRecord') {
-          window.parent.openPortalMenu('/asset-management/#/patrolRecord/details?type=detail&archiveId=' + item.recordId)
+          window.parent.openPortalMenu('/asset-management/#/patrolRecord/details?type=detail&recordId=' + item.recordId)
         }
       }
     },
     
     created () {
-      this.queryDetail(this.tabKey)
-    },
-    mounted () {
       for (const key in this.apiObj) {
         if (this.$power.has(ASSET_MANAGEMENT[this.apiObj[key]['prower']])) {
           this.isPageShow = true
         }
+      }
+    },
+    mounted () {
+      if (this.isPageShow) {
+        this.queryDetail(this.tabKey)
       }
     },
     watch: {
