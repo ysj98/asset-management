@@ -128,7 +128,8 @@ export default {
     // 移动图片到固定位置
     moveTo (x, y) {
       let imgShow = document.getElementById('imgShow')
-      imgShow.onmousedown = function (ev) {
+      if (imgShow) {
+        imgShow.onmousedown = function (ev) {
         var oEvent = ev
         // 浏览器有一些图片的默认事件,这里要阻止
         oEvent.preventDefault()
@@ -153,6 +154,7 @@ export default {
         imgShow.onmouseup = function () {
           imgShow.onmousemove = null
           imgShow.onmouseup = null
+          }
         }
       }
     },

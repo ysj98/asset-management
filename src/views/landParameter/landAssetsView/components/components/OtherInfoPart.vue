@@ -3,7 +3,7 @@
   <div class="other_info" v-if="Object.keys(infoKeys).length && isPageShow">
     <SG-Title title="其他信息"/>
     <a-tabs defaultActiveKey="receive" v-model="tabKey" class="title_div">
-      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="ASSET_MANAGEMENT[apiObj[tabKey].prower]" :key="itemKey">
+      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="apiObj[tabKey] && ASSET_MANAGEMENT[apiObj[tabKey].prower]" :key="itemKey">
         <!--散列信息-->
         <a-row v-if="Object.keys(item.details).length">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
@@ -169,7 +169,7 @@
               tableData = list
             } else if (type === 'archive') {
               tableData = info.data
-              this.pagination.totalCount = Number(info.count)
+              this.pagination.totalCount = Number(info.total)
             } else if (type === 'patrolRecord') {
               tableData = info.data
               this.pagination.totalCount = Number(info.count)
