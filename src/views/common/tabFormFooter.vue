@@ -5,11 +5,11 @@
 -->
 <template>
   <div class="form-footer" :class="{'absolute': location === 'absolute', 'fixed': location === 'fixed'}">
-    <slot>
+    <!-- <slot> -->
       <a-button v-if="showSave" type="primary" :style="buttonStyle" @click="$emit('save')">{{leftButtonName}}</a-button>
       <a-button v-if="showCancel" :type="separateCancel" :style="buttonStyle" @click="$emit('cancel')" :disabled="rightButtonDisabled">{{rightButtonName}}</a-button>
       <a-button v-if="showAloneCancel" :type="separateCancel" :style="buttonStyle" @click="$emit('aloneCancel')" :disabled="aloneCancelDisabled">{{aloneCancelName}}</a-button>
-    </slot>
+    <!-- </slot> -->
   </div>
 </template>
 
