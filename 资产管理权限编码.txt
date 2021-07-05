@@ -333,7 +333,9 @@ asset_return_view_export  资产归还一览表导出
     patrol_record_new              巡查记录单新建
     patrol_record_edit              巡查记录单编辑
     patrol_record_delete              巡查记录单删除
-    patrol_record_export
+    patrol_record_export             巡查记录导出
+    patrol_detail_export             巡查记录导出
+
 资产管理V2.1.2     
 房屋资产信息详情中的其它信息tab页签权限管理
     power_ownInfo             权属信息页签

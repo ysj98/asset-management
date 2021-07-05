@@ -473,7 +473,8 @@ export const ASSET_MANAGEMENT = {
   PATROL_RECORD_NEW: 'patrol_record_new',  // 巡查记录单新建
   PATROL_RECORD_EDIT: 'patrol_record_edit',  // 巡查记录单编辑
   PATROL_RECORD_DELETE: 'patrol_record_delete',  // 巡查记录单删除
-  PATROL_RECORD_EXPORT: 'patrol_record_export',
+  PATROL_RECORD_EXPORT: 'patrol_record_export',   // 巡查记录导出
+  PATROL_DETAIL_EXPORT: 'patrol_detail_export',   // 巡查记录导出
   /**
    * 房屋资产信息详情中的其它信息tab页签权限管理
    */
