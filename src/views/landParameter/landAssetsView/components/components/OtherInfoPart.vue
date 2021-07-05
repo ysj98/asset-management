@@ -3,7 +3,7 @@
   <div class="other_info" v-if="Object.keys(infoKeys).length && isPageShow">
     <SG-Title title="其他信息"/>
     <a-tabs defaultActiveKey="receive" v-model="tabKey" class="title_div">
-      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="apiObj[tabKey] && ASSET_MANAGEMENT[apiObj[tabKey].prower]" :key="itemKey">
+      <a-tab-pane v-for="(item, itemKey) in infoKeys" :tab="item.title" v-power="tabKey !== 'operationInformation' && ASSET_MANAGEMENT[apiObj[tabKey].prower]" :key="itemKey">
         <!--散列信息-->
         <a-row v-if="Object.keys(item.details).length">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
@@ -49,7 +49,7 @@
           />
         </div>
       </a-tab-pane>
-      <a-tab-pane tab="运营信息" key="operationInformation">
+      <a-tab-pane tab="运营信息" key="operationInformation" v-power="ASSET_MANAGEMENT.power_land_operationInformation">
         <operationInformation :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
       </a-tab-pane>
     </a-tabs>
@@ -254,6 +254,8 @@
     created () {
       for (const key in this.apiObj) {
         if (this.$power.has(ASSET_MANAGEMENT[this.apiObj[key]['prower']])) {
+          this.isPageShow = true
+        } else if (this.$power.has(ASSET_MANAGEMENT.power_land_operationInformation)) {
           this.isPageShow = true
         }
       }

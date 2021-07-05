@@ -486,6 +486,7 @@ export const ASSET_MANAGEMENT = {
   power_disposeInfo: 'power_disposeInfo', // 资产信息页签
   power_relatedExpenses: 'power_relatedExpenses', // 相关费用页签
   power_archive: 'power_archive', // 档案文件页签
+  power_operationInformation: 'power_operationInformation', // 运营信息页签
   /**
    * 土地资产信息详情中的其它信息tab页签权限管理
    */
@@ -497,7 +498,8 @@ export const ASSET_MANAGEMENT = {
    power_land_accessoryInfo: 'power_land_accessoryInfo', // 附属&配套页签
    power_land_disposeInfo: 'power_land_disposeInfo', // 资产信息页签
    power_land_relatedExpenses: 'power_land_relatedExpenses', // 相关费用页签
-   power_land_archive: 'power_land_archive' // 档案文件页签
+   power_land_archive: 'power_land_archive', // 档案文件页签
+   power_land_operationInformation: 'power_land_operationInformation' // 运营信息页签
 }
 
 
