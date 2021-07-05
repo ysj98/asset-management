@@ -334,7 +334,6 @@ asset_return_view_export  资产归还一览表导出
     patrol_record_edit              巡查记录单编辑
     patrol_record_delete              巡查记录单删除
     patrol_record_export             巡查记录导出
-    patrol_detail_export             巡查记录导出
 
 资产管理V2.1.2     
 房屋资产信息详情中的其它信息tab页签权限管理
@@ -347,7 +346,7 @@ asset_return_view_export  资产归还一览表导出
     power_disposeInfo             资产信息页签
     power_relatedExpenses             相关费用页签
     power_archive             档案文件页签
-    power_operationInformation             档案文件页签
+    power_operationInformation             运营信息页签
 土地资产信息详情中的其它信息tab页签权限管理
     power_land_ownInfo             权属信息页签
     power_land_receiveInfo             接管信息页签
@@ -358,4 +357,4 @@ asset_return_view_export  资产归还一览表导出
     power_land_disposeInfo             资产信息页签
     power_land_relatedExpenses             相关费用页签
     power_land_archive             档案文件页签
-    power_land_operationInformation             档案文件页签
+    power_land_operationInformation             运营信息页签

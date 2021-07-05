@@ -244,9 +244,9 @@
       // 查看详情
       checkDetail (item) {
         if (this.tabKey === 'archive') {
-          window.parent.openPortalMenu('/archives-management/#/consultantFile/details?type=detail&archiveId=' + item.archiveId)
+          window.parent.openPortalMenu('/archives-management/#/consultantFile/details?type=detail&archiveId=' + item.archiveId, '档案文件详情')
         } else if (this.tabKey === 'patrolRecord') {
-          window.parent.openPortalMenu('/asset-management/#/patrolRecord/details?type=detail&recordId=' + item.recordId)
+          window.parent.openPortalMenu('/asset-management/#/patrolRecord/details?type=detail&recordId=' + item.recordId, '巡查记录详情')
         }
       }
     },

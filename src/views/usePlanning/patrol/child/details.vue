@@ -9,7 +9,7 @@
   <div class="particulars">
     <div class="particulars-nav">
       <span class="section-title blue">基本信息</span>
-      <SG-Button v-power="ASSET_MANAGEMENT.PATROL_DETAIL_EXPORT" size="small" style="float:right" type="primary" @click="downloadFn">导出巡查记录表</SG-Button>
+      <SG-Button size="small" style="float:right" type="primary" @click="downloadFn">导出巡查记录表</SG-Button>
       <div class="particulars-obj">
         <a-row class="playground-row">
           <a-col class="playground-col"
@@ -115,14 +115,12 @@ const resultsData = [
   { name: '现场处理措施', key: 'sceneHandleMeasure'},
   { name: '备注', key: 'remark'}
 ]
-import { ASSET_MANAGEMENT } from "@/config/config.power";
 export default {
   components: {},
   props: {},
   data() {
     return {
       spinning: false,
-      ASSET_MANAGEMENT,
       recordId: '',           // 交付单id
       basicData, // 渲染基础信息
       resultsData, // 渲染巡查结果
