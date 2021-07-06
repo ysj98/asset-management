@@ -1089,7 +1089,7 @@ export const useManage = {
   // 巡查记录-新增编辑保存
   addOrUpdateInspectionRecord: '/ams/inspectionTaskRecord/addOrUpdateInspectionRecord',
   // 巡查记录-导出详情
-  exportRecordList: '/ams/inspectionTaskRecord/exportRecordList',
+  exportDetail: '/ams/inspectionTaskRecord/exportDetail',
   // 巡查记录-导出记录列表
   exportList: '/ams/inspectionTaskRecord/exportList',
   // 巡查记录-详情

@@ -108,8 +108,8 @@ export function addOrUpdateInspectionRecord (data) {
   return axiosPost(useManage.addOrUpdateInspectionRecord, data)
 }
 // 巡查记录-导出详情
-export function exportRecordList (data) {
-  return axiosPost(useManage.exportRecordList, data, false, false, {responseType: 'blob'})
+export function exportDetail (data) {
+  return axiosPost(useManage.exportDetail, data, false, false, {responseType: 'blob'})
 }
 // 巡查记录-导出记录列表
 export function exportList (data) {

@@ -120,6 +120,7 @@ export default {
   props: {},
   data() {
     return {
+      organId: '',
       spinning: false,
       recordId: '',           // 交付单id
       basicData, // 渲染基础信息
@@ -145,8 +146,10 @@ export default {
   methods: {
       // 导出详情
     downloadFn () {
-      let obj = {recordId: this.recordId}
-      this.$api.useManage.exportList(obj).then(res => {
+      let obj = {
+        recordId: this.recordId
+      }
+      this.$api.useManage.exportDetail(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
