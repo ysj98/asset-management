@@ -15,7 +15,10 @@
       </div>
       <div class="search-icon-box" v-if="type==='fold'" @click="toggleFold">
         <slot name="toggleIcon">
-          <a-icon class="search-icon" :class="[value&&'active']" type="double-right" />
+          <!-- <a-icon class="search-icon" :class="[value&&'active']" type="double-right" /> -->
+          <span class="search-icon" :class="[value&&'active']">
+            <SG-Icon color="#666" size="15px" type="icon-doubleleft"></SG-Icon>
+          </span>
         </slot>
       </div>
     </div>
@@ -115,8 +118,10 @@ export default {
       &.off-content{
         height: 0;
         padding: 0;
+        display: none;
       }
       .content-icon{
+        // display: block;
         padding:0 70px 0 76px;
         .search-icon{
           display: inline-block;
