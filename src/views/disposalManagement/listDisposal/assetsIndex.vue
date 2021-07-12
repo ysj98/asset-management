@@ -1,8 +1,8 @@
 <!--
  * @Author: LW
  * @Date: 2019-12-20 10:00:20
- * @LastEditTime : 2020-01-09 13:43:10
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2021-07-12 16:49:27
+ * @LastEditors: Please set LastEditors
  * @Description: 资产处置一览表
  * @FilePath: \asset-management\src\views\disposalManagement\listDisposal\index.vue
  -->
@@ -13,7 +13,7 @@
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zcst_dc">导出</SG-Button>
       </div>
       <div slot="headerForm">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px; text-align: left"></treeSelect>
         <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div> 
       <div slot="contentForm" class="search-content-box">

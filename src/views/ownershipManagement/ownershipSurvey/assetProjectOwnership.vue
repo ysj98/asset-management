@@ -11,7 +11,7 @@
           <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
         </SG-Button>
       </div>
-      <div slot="headerForm">
+      <div slot="headerForm" style="float: right; text-align: left">
         <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产项目</a-checkbox>
         <treeSelect
           @changeTree="changeTree"

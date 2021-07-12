@@ -5,14 +5,15 @@
  -->
  <template>
   <div>
-    <div class="pb70">
+    <div class="pb70 content-active-box">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
         <div slot="headerBtns">
           <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_OPT_EXPORT" class="mr10" @click="openExport"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         </div>
-        <div slot="contentForm" class="search-content-box">
+        <div slot="contentForm" class="search-content-box" style="text-align: left; position: absolute;">
+          <!-- style="text-align: left;width: 100%; position: absolute" -->
           <div class="search-from-box">
-            <treeSelect
+              <treeSelect
               @changeTree="changeTree"
               placeholder="请选择组织机构"
               :allowClear="false"
@@ -615,6 +616,15 @@ export default {
   .two-row-box {
     padding-top: 14px;
     flex: 0 0 190px;
+  }
+}
+</style>
+
+<style lang="less">
+.content-active-box {
+  position: relative;
+  .search-content {
+    height: 170px !important;
   }
 }
 </style>
