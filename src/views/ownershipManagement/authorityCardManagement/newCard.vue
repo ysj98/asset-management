@@ -156,10 +156,13 @@
               v-model="record.obligeeId === '' ? record.obligeeId = undefined : record.obligeeId"
               optionFilterProp="children"
               @change="obligeeNameChange(record)"
-              :options="obligeeIdData"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
-              />
+            >
+              <a-select-option v-for="item in obligeeIdData" :key="item.value" :value="item.value" :title="item.label">
+                {{item.label}}
+              </a-select-option>
+            </a-select>
           </template>
           <template slot="percent" slot-scope="text, record">
             <a-input-number placeholder="占有比例"
@@ -432,7 +435,7 @@ export default {
           }
           let obj = {
             warrantId: this.warrantId,                                                                          // 权证id
-            rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,         // 权利类型                                                           
+            rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,         // 权利类型
             warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,               // 权证号
             ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                  // 权属形式
             kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,            // 权证类型
