@@ -35,21 +35,19 @@ import houseMapDetail from "./component/houseMapDetail"
 var markerMap = {
   "1": {
     name: "楼栋: ",
-    color: "#13C2C2",
-    backgroundColor: "#fff",
-    boxShadow: "3px 3px 4px 0px rgba(4, 117, 221, 0.23)",
+    color: "#ffffff",
+    backgroundColor: "rgba(0,0,0,.8)",
+    boxShadow: "3px 3px 3px 3px rgba(4, 117, 221, 0.23)",
     markerIcon: mapHouseIcon,
     tipIcon: mapHouseTipIcon,
-    border: "1px solid #13C2C2",
   },
   "2": {
     name: "土地: ",
-    color: "#FD7474",
-    backgroundColor: "#fff",
-    boxShadow: "3px 3px 4px 0px rgba(4, 117, 221, 0.23)",
+    color: "#ffffff",
+    backgroundColor: "rgba(0,0,0,.8)",
+    boxShadow: "3px 3px 3px 3px rgba(4, 117, 221, 0.23)",
     markerIcon: mapLandIcon,
     tipIcon: mapLandTipIcon,
-    border: "1px solid #FD7474",
   },
 }
 export default {
@@ -236,20 +234,6 @@ export default {
         img.src = configOpt.markerIcon
         div.appendChild(img)
 
-        // 创建圆环
-        var divRing = document.createElement("div")
-        var divRingStyle = {
-          position: "absolute",
-          width: "6px",
-          height: "6px",
-          background: "#FFFFFF",
-          borderRadius: "50%",
-          top: '9px',
-          left: '9px',
-        }
-        for (let key in divRingStyle) divRing.style[key] = divRingStyle[key]
-        div.appendChild(divRing)
-
         // 创建提示容器
         var tipDiv = document.createElement("div")
         var tipDivStyle = {
@@ -264,23 +248,10 @@ export default {
           boxShadow: configOpt.boxShadow,
           color: configOpt.color,
           border: configOpt.border,
-          borderTopLeftRadius: "15px",
-          borderBottomLeftRadius: "15px",
-          borderTopRightRadius: "5px",
-          borderBottomRightRadius: "5px",
+          borderRadius: "15px",
           padding: "5px 15px",
         }
         for (let key in tipDivStyle) tipDiv.style[key] = tipDivStyle[key]
-        // 创建提示icon
-        var imgIcon = document.createElement("img")
-        imgIcon.src = configOpt.tipIcon
-        var imgIconStyle = {
-          width: "16px",
-          height: "16px",
-          marginRight: "10px",
-        }
-        for (let key in imgIconStyle) imgIcon.style[key] = imgIconStyle[key]
-        tipDiv.appendChild(imgIcon)
         tipDiv.appendChild(
           document.createTextNode(configOpt.name + this.opt.resourceName)
         )
@@ -292,7 +263,7 @@ export default {
           left: "50%",
           transform: "translateX(-50%)",
           bottom: "-17px",
-          borderColor: "#fff transparent transparent transparent",
+          borderColor: "rgba(0,0,0,0.6) transparent transparent transparent",
         }
         for (let key in arrowStyle) arrow.style[key] = arrowStyle[key]
         tipDiv.appendChild(arrow)
