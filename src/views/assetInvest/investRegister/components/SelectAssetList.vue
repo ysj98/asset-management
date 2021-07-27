@@ -14,7 +14,7 @@
           style="width: 100%"
           v-model="objectType"
           @change="fetchData"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
           placeholder="请选择资产类别"
         />
       </a-col>
@@ -23,7 +23,7 @@
           style="width: 100%"
           v-model="assetStatus"
           @change="fetchData"
-          :options="assetStatusOptions"
+          :options="$addTitle(assetStatusOptions)"
           placeholder="请选择资产状态"
         />
       </a-col>
@@ -252,8 +252,8 @@
     },
     mounted () {
       const {allAttrs, value, assetType} = this
-      
-      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value) 
+
+      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value)
       this.queryObjectType(String(assetType))
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
@@ -267,7 +267,7 @@
       value: function (value) {
         this.selectedRowKeys = this.allAttrs ? value.map(i => i.assetId) : value
       },
-      
+
       selectedRowKeys: function (keys) {
         let {dataSource, allAttrs, selectedList, list} = this
         let primaryKeys = []

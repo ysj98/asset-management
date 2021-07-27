@@ -15,7 +15,7 @@
         </div>
         <div class="nav">
           <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
-            <a-select-option v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.checkName" placeholder="盘点单名称" maxlength="60" @search="onSearch" />
           <SG-Button type="primary" @click="query">查询</SG-Button>

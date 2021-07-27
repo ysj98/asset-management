@@ -25,7 +25,7 @@
           optionFilterProp="children"
           :style="allStyle"
           v-model="assetProject"
-          :options="assetProjectOptions"
+          :options="$addTitle(assetProjectOptions)"
           :filterOption="filterOption"
         ></a-select>
         <a-select
@@ -35,7 +35,7 @@
           :tokenSeparators="[',']"
           placeholder="全部状态"
           v-model="approvalStatus"
-          :options="approvalStatusData"
+          :options="$addTitle(approvalStatusData)"
           @select="changeStatus"
         ></a-select>
         <a-select
@@ -44,7 +44,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产类型"
           v-model="assetType"
-          :options="assetTypeOptions"
+          :options="$addTitle(assetTypeOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetType"
         ></a-select>
@@ -54,7 +54,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产分类"
           v-model="assetClassify"
-          :options="assetClassifyOptions"
+          :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
         ></a-select>
@@ -64,7 +64,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产科目"
           v-model="assetSubject"
-          :options="assetSubjectOptions"
+          :options="$addTitle(assetSubjectOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetSubject"
         ></a-select>

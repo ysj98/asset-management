@@ -1,4 +1,4 @@
-<!-- 
+<!--
   选择权证
   organId: 组织机构id
   projectId: 项目id
@@ -22,7 +22,7 @@
           <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
             <div slot="col-r">
             <a-select :style="allStyle" placeholder="全部权证类型" v-model="selecData.kindOfRights">
-              <a-select-option v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+              <a-select-option :title="item.name" v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码"/>
             <SG-Button type="primary" @click="query">查询</SG-Button>

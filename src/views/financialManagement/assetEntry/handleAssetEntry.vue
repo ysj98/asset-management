@@ -51,7 +51,7 @@
                 placeholder="请选择资产项目"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="projectIdOptions"
+                :options="$addTitle(projectIdOptions)"
                 :filterOption="filterOption"
                 @change="changeProjectId"
                 v-decorator="['projectId',
@@ -95,7 +95,7 @@
                 :style="allStyle"
                 placeholder="请选择关联资产"
                 :open="showAssociateAssetModal"
-                :options="associateAssetsOptions"
+                :options="$addTitle(associateAssetsOptions)"
                 @dropdownVisibleChange="dropdownVisibleChange"
                 v-decorator="['assetIds',
                 {rules: [{required: true, message: '请选择关联资产'}], initialValue: detail.assetIds}]"
@@ -114,7 +114,7 @@
                 placeholder="请选择资产类型"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="assetTypeOptions"
+                :options="$addTitle(assetTypeOptions)"
                 :filterOption="filterOption"
                 @change="changeAssetType"
                 v-decorator="['assetType',
@@ -129,7 +129,7 @@
             <a-form-item>
               <a-select
                 placeholder="请选择资产分类"
-                :options="assetCategoryOptions"
+                :options="$addTitle(assetCategoryOptions)"
                 :style="allStyle"
                 :filterOption="filterOption"
                 @change="changeAssetCategory"
@@ -163,7 +163,7 @@
                 allowClear
                 placeholder="请选择计量单位"
                 :style="allStyle"
-                :options="unitOptions"
+                :options="$addTitle(unitOptions)"
                 v-decorator="['unitOfMeasurement',
                 {rules: [{required: true, message: '请选择计量单位'}], initialValue: detail.unitOfMeasurement}]"
                 v-if="editable"
@@ -192,7 +192,7 @@
                 allowClear
                 placeholder="请选择资产用途"
                 :style="allStyle"
-                :options="assetPurposeOptions"
+                :options="$addTitle(assetPurposeOptions)"
                 v-decorator="['assetPurpose',
                 {rules: [{required: true, message: '请选择资产用途'}], initialValue: detail.assetPurpose}]"
                 v-if="editable"
@@ -207,7 +207,7 @@
                 allowClear
                 placeholder="请选择资产来源"
                 :style="allStyle"
-                :options="assetSourceOptions"
+                :options="$addTitle(assetSourceOptions)"
                 v-decorator="['assetSource',
                 {rules: [], initialValue: detail.assetSource}]"
                 v-if="editable"
@@ -235,7 +235,7 @@
                 allowClear
                 placeholder="请选择存放地点"
                 :style="allStyle"
-                :options="storagePathOptions"
+                :options="$addTitle(storagePathOptions")
                 v-decorator="['storagePath',
                 {rules: [], initialValue: detail.storagePath}]"
                 v-if="editable"
@@ -274,7 +274,7 @@
                 allowClear
                 placeholder="请选择资产科目"
                 :style="allStyle"
-                :options="assetSubjectOptions"
+                :options="$addTitle(assetSubjectOptions)"
                 v-decorator="['assetSubject',
                 {rules: [{required: true, message: '请选择资产科目'}], initialValue: detail.assetSubject}]"
                 v-if="editable"
@@ -289,7 +289,7 @@
                 allowClear
                 placeholder="请选择贷方科目"
                 :style="allStyle"
-                :options="assetSubjectOptions"
+                :options="$addTitle(assetSubjectOptions)"
                 v-decorator="['lenderSubject',
                 {rules: [{required: true, message: '请选择贷方科目'}], initialValue: detail.lenderSubject}]"
                 v-if="editable"
@@ -304,7 +304,7 @@
                 allowClear
                 placeholder="请选择累计折旧科目"
                 :style="allStyle"
-                :options="assetSubjectOptions"
+                :options="$addTitle(assetSubjectOptions)"
                 v-decorator="['cumulativeDepreciationSubject',
                 {rules: [{required: true, message: '请选择累计折旧科目'}], initialValue: detail.cumulativeDepreciationSubject}]"
                 v-if="editable"
@@ -319,7 +319,7 @@
                 allowClear
                 placeholder="请选择减值准备科目"
                 :style="allStyle"
-                :options="assetSubjectOptions"
+                :options="$addTitle(assetSubjectOptions)"
                 v-decorator="['impairmentReadySubject',
                 {rules: [{required: true, message: '请选择减值准备科目'}], initialValue: detail.impairmentReadySubject}]"
                 v-if="editable"
@@ -560,7 +560,7 @@
                 dropdownClassName="dropdown-class-depreciation"
                 placeholder="请选择折旧方法"
                 :style="allStyle"
-                :options="depreciationMethodOptions"
+                :options="$addTitle(depreciationMethodOptions)"
                 v-decorator="['depreciationMethod',
                 {rules: [{required: true, message: '请选择折旧方法'}], initialValue: detail.depreciationMethod}]"
                 v-if="editable"

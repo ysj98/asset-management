@@ -1,5 +1,5 @@
 <!--
- * @Description: 
+ * @Description:
  * @Date: 2020-02-26 12:45:49
  * @LastEditTime: 2020-04-29 17:42:56
  -->
@@ -27,7 +27,7 @@
               v-model="queryCondition.projectId"
               optionFilterProp="children"
               :style="allStyle"
-              :options="projectIdOpt"
+              :options="$addTitle(projectIdOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -42,7 +42,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allStyle"
-              :options="billTypeOpt"
+              :options="$addTitle(billTypeOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -67,7 +67,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allWidth"
-              :options="assetTypeOpt"
+              :options="$addTitle(assetTypeOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -82,7 +82,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allWidth"
-              :options="taskTypeOpt"
+              :options="$addTitle(taskTypeOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -97,7 +97,7 @@
               v-model="queryCondition.taskStatus"
               optionFilterProp="children"
               :style="allWidth"
-              :options="taskStatusOpt"
+              :options="$addTitle(taskStatusOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -217,7 +217,7 @@ let columns = [
   {
     title: "所属机构",
     dataIndex: "organName",
-    
+
     width: 100
   },
   {

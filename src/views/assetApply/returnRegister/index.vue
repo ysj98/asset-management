@@ -14,7 +14,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -25,7 +25,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -36,7 +36,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -450,7 +450,7 @@ export default {
         }
 
       })
-      
+
     },
      // 删除项目
       confirmDelete (registerId) {
@@ -653,11 +653,11 @@ export default {
     display: inline-block;
     // vertical-align: middle;
     margin-right: 10px;
-    
+
   }
   .action_text{
     color: black !important;
-  }  
+  }
   .nav {
     display: inline-block;
     vertical-align: middle;

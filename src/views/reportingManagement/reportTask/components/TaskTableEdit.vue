@@ -139,7 +139,7 @@
                 <a-select
                   showSearch
                   allowClear
-                  :options="m.options"
+                  :options="$addTitle(m.options)"
                   style="width: 100%"
                   :placeholder="`请选择${m.columnDesc}`"
                   v-decorator="[`${m.columnName}_${record.key}`, {
@@ -210,7 +210,7 @@
         allowClear
         style="width: 100%"
         v-model="sameCellValue"
-        :options="selectOptions"
+        :options="$addTitle(selectOptions)"
         v-else-if="columnType === 4"
         :placeholder="`请选择${columnName}`"
       />
@@ -329,7 +329,7 @@
         this.tableObj.dataSource.push(temp)
         this.dataSourceKeys.push(key)
       },
-      
+
       // 删除一条Table记录
       deleteTableItem (key) {
         this.tableObj.dataSource = this.tableObj.dataSource.filter(m => m.key !== key)
@@ -410,7 +410,7 @@
           this.$message.error(err || '查询填报数据出错')
         })
       },
-      
+
       // 提交填报数据
       handleSubmit (resolve) {
         // 校验必填项
@@ -454,7 +454,7 @@
           }
         })
       },
-      
+
       // 导出模板
       exportTemplate () {
         event.stopPropagation()
@@ -484,7 +484,7 @@
           return false
         }
       },
-      
+
       // 批量导入数据
       importBatchData ({file}) {
         const { taskInfo: { reportBillId, organId, projectId } } = this
@@ -519,7 +519,7 @@
           return this.$message.error(err || '批量导入失败')
         })
       },
-      
+
       // 选择资产或卡片Modal
       handleSelectAsset (key) {
         const {projectId} = this.taskInfo
@@ -578,12 +578,12 @@
           this.form.setFieldsValue(obj)
         }
       },
-      
+
       // 根据billId加载Table列头字段
       'taskInfo.reportBillId': function () {
         this.queryColumns()
       },
-      
+
       // 填报说明限制200字
       resultRemark: function (val) {
         if (val.length > 200) {

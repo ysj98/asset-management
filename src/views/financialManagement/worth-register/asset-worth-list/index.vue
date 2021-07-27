@@ -20,7 +20,7 @@
           <a-col :span="6">
             <a-select
               v-bind="properties"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               v-model="organProjectType.projectId"
@@ -31,7 +31,7 @@
               mode="multiple"
               v-bind="properties"
               placeholder="请选择资产类型"
-              :options="assetTypeOptions"
+              :options="$addTitle(assetTypeOptions)"
               :filterOption="filterOption"
               v-model="organProjectType.assetType"
             />
@@ -42,7 +42,7 @@
               v-bind="properties"
               @change="queryTableData"
               v-model="assetCategoryId"
-              :options="categoryOptions"
+              :options="$addTitle(categoryOptions)"
               placeholder="请选择资产分类"
             />
           </a-col>
@@ -252,7 +252,7 @@
           this.originalValue = record.originalValue
         }
       },
-      
+
       // 查询统计信息
       querySumInfo (form) {
         this.$api.worthRegister.queryPageListSum(form).then(r => {
@@ -284,7 +284,7 @@
           list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
       },
-      
+
       // 汇总当前页数据
       calcTotal () {
         const { tableObj: { dataSource } } = this
@@ -293,7 +293,7 @@
           let original = 0
           let asset = 0
           let assetNew = 0
-          
+
           dataSource.forEach(m => {
             const { firstMarketValue, originalValue, assetValuation, assessmentValue } = m
             market += firstMarketValue ? Number(firstMarketValue) : 0

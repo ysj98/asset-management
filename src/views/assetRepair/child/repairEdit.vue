@@ -43,7 +43,7 @@
             <a-select
               showSearch
               style="width: 100%"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               @change="projectSelect"
@@ -65,7 +65,7 @@
             <a-select
               style="width: 100%"
               placeholder="请选择资产类型"
-              :options="typeOptions"
+              :options="$addTitle(typeOptions)"
               @change="assetTypeSelect"
               v-decorator="[
                 'assetType',
@@ -274,7 +274,7 @@
                 show-search
                 :placeholder="'请选择费用科目'"
                 optionFilterProp="children"
-                :options="billConfigOptions"
+                :options="$addTitle(billConfigOptions)"
                 :allowClear="true"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"

@@ -15,19 +15,19 @@
       </div>
       <div slot="form" class="formCon">
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部呈报表单" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.reportBillId">
-          <a-select-option v-for="(item, index) in reportBillIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name"  v-for="(item, index) in reportBillIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <!-- <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部任务类型" :tokenSeparators="[',']"  @select="taskTypeStatus" v-model="queryCondition.taskType">
-          <a-select-option v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select> -->
         <a-select :style="allStyle" placeholder="全部任务类型" v-model="queryCondition.taskType">
-          <a-select-option v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
           <!-- <segi-range-picker label="执行日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" @dateChange="onDateChange"></segi-range-picker> -->
@@ -185,15 +185,15 @@ export default {
       taskTypeData: [
         {
           name: '全部任务类型',
-          value: '' 
+          value: ''
         },
         {
           name: '临时任务',
-          value: '1' 
+          value: '1'
         },
         {
           name: '固定任务',
-          value: '2' 
+          value: '2'
         },
       ],
       projectData: [
@@ -211,7 +211,7 @@ export default {
     // 统计查询
     getTaskStat () {
       let data = {
-        action: 'jg',            // 
+        action: 'jg',            //
         beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),  // 开始时间
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),      // 结束时间
         organId: this.queryCondition.organId,
@@ -360,7 +360,7 @@ export default {
     query () {
       this.loading = true
       let obj = {
-        action: 'jg',            // 
+        action: 'jg',            //
         beginDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),  // 开始时间
         endDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),      // 结束时间
         organId: this.queryCondition.organId,

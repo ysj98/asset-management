@@ -30,7 +30,7 @@
                 placeholder="请选择巡查类型"
                 v-decorator="['inspectionType',{ rules: [{required: true, message: '请选择资产类型'}], initialValue: newEditSingleData.inspectionType }]"
                 :allowClear="false"
-                :options="inspectionTypeOption"
+                :options="$addTitle(inspectionTypeOption)"
                 notFoundContent="没有查询到资产类型"
                 >
               </a-select>
@@ -60,7 +60,7 @@
                 :allowClear="false"
                 :filterOption="filterOption"
                 @change="inspectionStatusFn"
-                :options="inspectionStatusOption"
+                :options="$addTitle(inspectionStatusOption)"
                 >
               </a-select>
             </a-form-item>
@@ -75,7 +75,7 @@
                 v-decorator="['projectId',{ rules: [{required: true, message: '请选择资产项目'}], initialValue: newEditSingleData.projectId }]"
                 :allowClear="false"
                 :filterOption="filterOption"
-                :options="projectIdData"
+                :options="$addTitle(projectIdData)"
                 @change="projectIdFn"
                 notFoundContent="没有查询到资产项目"
                 >
@@ -91,7 +91,7 @@
                 placeholder="请选择资产类型"
                 v-decorator="['assetType',{ rules: [{required: true, message: '请选择资产类型'}], initialValue: newEditSingleData.assetType}]"
                 :allowClear="false"
-                :options="assetTypeData"
+                :options="$addTitle(assetTypeData)"
                 :filterOption="filterOption"
                 @change="assetTypeFn"
                 notFoundContent="没有查询到资产类型"
@@ -700,11 +700,11 @@ export default {
     display: inline-block;
     line-height: 22px;
     max-width: 180px;
-    white-space:nowrap;/* 规定文本是否折行 */  
+    white-space:nowrap;/* 规定文本是否折行 */
     overflow: hidden;/* 规定超出内容宽度的元素隐藏 */
     text-overflow: ellipsis;
     &:hover{
-      white-space:normal;/* 规定文本是否折行 */  
+      white-space:normal;/* 规定文本是否折行 */
     }
   }
   .btn-delete {

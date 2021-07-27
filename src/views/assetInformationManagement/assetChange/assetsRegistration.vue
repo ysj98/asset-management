@@ -37,6 +37,7 @@
           :filterOption="filterOption"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in projectData"
             :key="index"
             :value="item.value"
@@ -55,6 +56,7 @@
             v-for="(item, index) in assetTypeData"
             :key="index"
             :value="item.value"
+            :title="item.name"
           >{{item.name}}</a-select-option>
         </a-select>
         <a-select
@@ -70,6 +72,7 @@
             v-for="(item, index) in changeTypeData"
             :key="index"
             :value="item.value"
+            :title="item.name"
           >{{item.name}}</a-select-option>
         </a-select>
         <a-select
@@ -85,6 +88,7 @@
             v-for="(item, index) in approvalStatusData"
             :key="index"
             :value="item.value"
+            :title="item.name"
           >{{item.name}}</a-select-option>
         </a-select>
         <!-- <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker> -->

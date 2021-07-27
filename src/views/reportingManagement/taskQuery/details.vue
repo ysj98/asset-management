@@ -19,7 +19,7 @@
 							placeholder="请选择呈报表单"
 							style="width: 200px"
 							v-model="reportBillId"
-							:options="chargePersonOpt"
+							:options="$addTitle(chargePersonOpt)"
 							:filterOption="filterOption"
 						>
 						</a-select>

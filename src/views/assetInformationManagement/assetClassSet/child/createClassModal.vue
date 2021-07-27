@@ -113,7 +113,7 @@
                   allowClear
                   placeholder="请选择计量单位"
                   :style="allStyle"
-                  :options="unitOptions"
+                  :options="$addTitle(unitOptions)"
                   v-decorator="['unit',
                 {initialValue: detail.unit}]"
                 ></a-select>
@@ -135,7 +135,7 @@
                   allowClear
                   placeholder="请选择折旧方法"
                   :style="allStyle"
-                  :options="depreciationMethodOptions"
+                  :options="$addTitle(depreciationMethodOptions)"
                   v-decorator="['depreciationMethod',
                 {rules: [{required: true, message: '请选择折旧方法'}], initialValue: detail.depreciationMethod}]"
                 ></a-select>

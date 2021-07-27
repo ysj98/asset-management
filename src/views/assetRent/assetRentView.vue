@@ -14,12 +14,12 @@
             <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.assetTypeList" :options="assetTypeOptions"
+            <a-select v-model="queryObj.assetTypeList" :options="$addTitle(assetTypeOptions)"
               v-bind="selectProperty" placeholder="请选择资产类型"
             />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.contractStatusList" :options="contractStatusOptions"
+            <a-select v-model="queryObj.contractStatusList" :options="$addTitle(contractStatusOptions)"
               v-bind="selectProperty" placeholder="请选择合同状态"
             />
           </a-col>
@@ -34,12 +34,12 @@
       <div slot="contentForm" style="margin-top: 18px">
         <a-row :gutter="8">
           <a-col :span="4">
-            <a-select v-model="queryObj.objectTypeList" :options="objectTypeOptions"
+            <a-select v-model="queryObj.objectTypeList" :options="$addTitle(objectTypeOptions)"
               v-bind="selectProperty" placeholder="请选择资产分类"
             />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.approvalStatusList" :options="approveStatusOptions"
+            <a-select v-model="queryObj.approvalStatusList" :options="$addTitle(approveStatusOptions)"
               v-bind="selectProperty" placeholder="请选择审批状态"
             />
           </a-col>
@@ -176,7 +176,7 @@
       changePage ({ pageNo, pageLength }) {
         this.queryTableData({ pageNum: pageNo, pageSize: pageLength })
       },
-      
+
       // 查询数据源
       queryTableData ({ pageNum = 1, pageSize = 10, actionType }) {
         const { organProjectValue: { organId, projectId }, queryObj } = this
@@ -209,7 +209,7 @@
           this.loading = false
         )
       },
-      
+
       // 查询汇总
       queryTotalInfo (obj) {
         if (this.tableData.length) {

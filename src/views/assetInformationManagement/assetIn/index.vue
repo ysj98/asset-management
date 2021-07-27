@@ -22,7 +22,7 @@
             <a-select
               mode="multiple"
               v-bind="properties"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               v-model="organProjectType.projectId"
@@ -33,7 +33,7 @@
               mode="multiple"
               v-bind="properties"
               placeholder="请选择资产类型"
-              :options="assetTypeOptions"
+              :options="$addTitle(assetTypeOptions)"
               :filterOption="filterOption"
               v-model="organProjectType.assetType"
             />
@@ -43,7 +43,7 @@
               mode="multiple"
               v-bind="properties"
               v-model="status"
-              :options="statusOptions"
+              :options="$addTitle(statusOptions)"
               @change="queryTableData"
               placeholder="请选择入库单状态"
             />
@@ -182,13 +182,13 @@
     methods: {
       // 下拉搜索筛选
       filterOption,
-      
+
       // 新建入库登记单
       newAsset () {
         const {organProjectType: {organId}} = this
         organId ? this.$router.push({path: './assetIn/edit', query: {organId}}) : this.$message.warn('请选择组织机构')
       },
-      
+
       // 查询统计数据
       queryStatistics (form) {
         this.overviewNumSpinning = true

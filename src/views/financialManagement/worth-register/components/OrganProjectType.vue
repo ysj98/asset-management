@@ -12,7 +12,7 @@
           v-bind="properties"
           class="asset_type_style"
           placeholder="请选择资产类型"
-          :options="assetTypeOptions"
+          :options="$addTitle(assetTypeOptions)"
           :filterOption="filterOption"
           :loading="loading && !assetTypeOptions.length"
         ></a-select>

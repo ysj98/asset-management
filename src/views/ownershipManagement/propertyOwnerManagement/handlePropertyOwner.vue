@@ -56,7 +56,7 @@
                 allowClear
                 placeholder="请选择权属人类型"
                 :style="allStyle"
-                :options="obligeeTypeOptions"
+                :options="$addTitle(obligeeTypeOptions)"
                 v-decorator="['obligeeType',
                 {rules: [{required: true,  message: '请选择权属人类型'}], initialValue: detail.obligeeType}]"
                 v-if="editable"
@@ -72,7 +72,7 @@
                 allowClear
                 placeholder="请选择证件类型"
                 :style="allStyle"
-                :options="certificateTypeOptions"
+                :options="$addTitle(certificateTypeOptions)"
                 @change="changeCertificateType"
                 v-decorator="['certificateType',
                 {rules: [{required: true,  message: '请选择证件类型'}], initialValue: detail.certificateType}]"

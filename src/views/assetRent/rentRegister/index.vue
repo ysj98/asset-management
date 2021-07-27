@@ -46,6 +46,7 @@
             "
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in projectData"
               :key="index"
               :value="item.value"
@@ -62,6 +63,7 @@
             v-model="queryCondition.assetType"
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in assetTypeData"
               :key="index"
               :value="item.value"
@@ -78,6 +80,7 @@
             v-model="queryCondition.approvalStatus"
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in approvalStatusData"
               :key="index"
               :value="item.value"
@@ -107,6 +110,7 @@
           v-model="queryCondition.contractStatus"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in contractStatusList"
             :key="index"
             :value="item.value"

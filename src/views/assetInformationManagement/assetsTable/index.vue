@@ -28,7 +28,7 @@
                             :tokenSeparators="[',']"
                             :style="allStyle"
                             v-model="queryData.projectIdList"
-                            :options="assetProjectOptions"
+                            :options="$addTitle(assetProjectOptions)"
                             @select="filterOption"
                     ></a-select>
                     <a-select
@@ -37,7 +37,7 @@
                             :tokenSeparators="[',']"
                             placeholder="全部资产类型"
                             v-model="queryData.assetTypeList"
-                            :options="assetTypeOptions"
+                            :options="$addTitle(assetTypeOptions)"
                             style="width: 190px; margin-right: 10px;"
                             @select="changeAssetType"
                     ></a-select>
@@ -48,7 +48,7 @@
                             :tokenSeparators="[',']"
                             placeholder="全部状态"
                             v-model="queryData.approvalStatusList"
-                            :options="approvalStatusData"
+                            :options="$addTitle(approvalStatusData)"
                             @select="changeStatus"
                     ></a-select>
                     <a-input
@@ -73,7 +73,7 @@
                         mode="multiple"
                         v-model="queryData.cleanupTypeList"
                         :tokenSeparators="[',']"
-                        :options="cleanupTypeData"
+                        :options="$addTitle(cleanupTypeData)"
                         @select="changeCleanupType"
                 ></a-select>
                 <a-select
@@ -86,7 +86,7 @@
                         mode="multiple"
                         v-model="queryData.objectTypeList"
                         :tokenSeparators="[',']"
-                        :options="assetClassifyData"
+                        :options="$addTitle(assetClassifyData)"
                         @select="assetClassifyDataFn"
                 ></a-select>
                 <SG-DatePicker

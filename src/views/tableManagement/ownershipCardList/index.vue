@@ -13,10 +13,10 @@
         <SG-Button type="primary" @click="queryTableData">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select v-model="queryObj.kindOfRight" :style="allStyle" placeholder="请选择权属类型" :options="typeOptions"/>
-        <a-select v-model="queryObj.obligeeId" allowClear :style="allStyle" placeholder="请选择权属人" :options="ownerOptions"/>
-        <a-select v-model="queryObj.status" :style="allStyle" placeholder="请选择权属状态" :options="statusOptions"/>
-        <a-select v-model="queryObj.ownerFlag" :style="allStyle" placeholder="请选择权证归属" :options="ownerFlagOptions"/>
+        <a-select v-model="queryObj.kindOfRight" :style="allStyle" placeholder="请选择权属类型" :options="$addTitle(typeOptions)"/>
+        <a-select v-model="queryObj.obligeeId" allowClear :style="allStyle" placeholder="请选择权属人" :options="$addTitle(ownerOptions)"/>
+        <a-select v-model="queryObj.status" :style="allStyle" placeholder="请选择权属状态" :options="$addTitle(statusOptions)"/>
+        <a-select v-model="queryObj.ownerFlag" :style="allStyle" placeholder="请选择权证归属" :options="$addTitle(ownerFlagOptions)"/>
         <a-input v-model.trim="queryObj.warrantNbr" :style="allStyle" placeholder="请输入权证号"/>
       </div>
     </SG-SearchContainer>
@@ -118,7 +118,7 @@
         },
       }
     },
-    
+
     created () {
       this.queryType()
     },
@@ -212,7 +212,7 @@
         if (!searchType) { this.queryStatisticsInfo(form) }
       }
     },
-    
+
     watch: {
       organProjectValue: function (val, pre) {
         val.organId !== pre.organId && this.queryOwner(val.organId)

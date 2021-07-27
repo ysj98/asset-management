@@ -14,7 +14,7 @@
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <a-select 
+        <a-select
             :maxTagCount="1"
             :style="allStyle"
             mode="multiple"
@@ -22,7 +22,7 @@
             :tokenSeparators="[',']"
             @select="approvalStatusFn"
             v-model="queryCondition.approvalStatusList">
-          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select
             :maxTagCount="1"
@@ -32,17 +32,17 @@
             :tokenSeparators="[',']"
             @select="changeStatus"
             v-model="queryCondition.disposeTypeList">
-          <a-select-option v-for="(item, index) in disposeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in disposeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select
-            :maxTagCount="1" 
-            :style="allStyle" 
-            mode="multiple" 
-            placeholder="全部资产类型" 
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部资产类型"
             :tokenSeparators="[',']"
             @select="assetTypeDataFn"
             v-model="queryCondition.assetTypeList" >
-          <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
       </div>
       <div slot="contentForm" class="search-content-box">
@@ -50,12 +50,12 @@
           <a-select
               :maxTagCount="1"
               :style="allStyle"
-              mode="multiple" 
-              placeholder="全部处置方式" 
-              :tokenSeparators="[',']"  
-              @select="disposeModeDataFn" 
+              mode="multiple"
+              placeholder="全部处置方式"
+              :tokenSeparators="[',']"
+              @select="disposeModeDataFn"
               v-model="queryCondition.disposeModeList">
-            <a-select-option v-for="(item, index) in disposeModeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in disposeModeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <div class="box sg-datePicker" :style="dateWidth">
             <SG-DatePicker label="处置日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>

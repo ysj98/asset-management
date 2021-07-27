@@ -11,14 +11,14 @@
     <Cephalosome :rightCol="18" :leftCol="6">
 			<div slot="col-l">
 				<div class="nav">
-					<SG-Button icon="plus" type="primary" style="margin-right: 10px;" @click="newChangeSheetFn">新建呈报表单</SG-Button>			  
+					<SG-Button icon="plus" type="primary" style="margin-right: 10px;" @click="newChangeSheetFn">新建呈报表单</SG-Button>
 					<SG-Button type="primary" @click="downloadFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
 				</div>
 			</div>
       <div slot="col-r">
         <div class="nav">
           <a-select style="width: 160px; margin-right: 10px;" placeholder="全部状态" v-model="queryCondition.taskStatus">
-            <a-select-option v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="表单名称/编码" maxlength="30" @search="onSearch" />
           <SG-Button type="primary" @click="query">查询</SG-Button>

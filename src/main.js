@@ -1,6 +1,6 @@
 /*
  * @Date: 2019-11-01 09:42:51
- * @Description: 
+ * @Description:
  */
 import Vue from 'vue'
 // import App from './App.vue'
@@ -37,6 +37,12 @@ Vue.use(Directive)
 
 Vue.prototype.$importf = importf
 
+Vue.prototype.$addTitle = function (options){
+  options.forEach(ele=>{
+    ele.title = ele.title || ele.label
+  })
+  return options
+}
 Vue.config.productionTip = false
 
 new Vue({

@@ -28,7 +28,7 @@
           mode="multiple"
           :maxTagCount="1"
           :style="allStyle"
-          :options="approvalStatusOpt"
+          :options="$addTitle(approvalStatusOpt)"
           :allowClear="false"
           :filterOption="filterOption"
           notFoundContent="没有查询到数据"
@@ -116,7 +116,7 @@ const allStyle = {
   //overflow: "hidden"
 }
 const allWidth = { width: "150px", marginRight: "10px" }
-// 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4   
+// 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
 let approvalStatusOpt = [
   { label: "全部状态", key: "" },
   { label: "草稿", key: "0" },
@@ -248,7 +248,7 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn (type) {
-      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4  
+      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
       let arr = []
       // 草稿 已驳回
       if (['0', '3'].includes(String(type))) {

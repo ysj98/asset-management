@@ -21,7 +21,7 @@
           optionFilterProp="children"
           :style="allStyle"
           v-model="assetProject"
-          :options="assetProjectOptions"
+          :options="$addTitle(assetProjectOptions)"
           :filterOption="filterOption"
         ></a-select>
         <a-select
@@ -30,7 +30,7 @@
           v-model="status"
           :style="allStyle"
           @change="statusChange"
-          :options="statusOptions"
+          :options="$addTitle(statusOptions)"
           placeholder="请选择资产状态"
         />
         <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>

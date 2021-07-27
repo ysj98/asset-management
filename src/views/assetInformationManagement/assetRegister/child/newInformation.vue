@@ -3,7 +3,7 @@
  * @Date: 2020-07-10 16:13:27
  * @LastEditTime: 2020-11-10 18:08:34
  * @Description: 新增信息
---> 
+-->
 <template>
   <div class="newInformation">
     <div class="newInformation-nav">
@@ -38,6 +38,7 @@
                 notFoundContent="没有查询到资产项目"
                 >
                 <a-select-option
+                  :title="item.name"
                   v-for="(item) in projectIdData"
                   :key="item.value"
                   :value='item.value'>
@@ -63,6 +64,7 @@
                 notFoundContent="没有查询到资产类型"
                 >
                 <a-select-option
+                  :title="item.name"
                   v-for="(item) in assetTypeData"
                   :key="item.value"
                   :value='item.value'>

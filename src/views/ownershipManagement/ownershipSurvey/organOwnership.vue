@@ -27,7 +27,7 @@
           @select="changeAssetType"
           :tokenSeparators="[',']"
           v-model="queryCondition.assetType"
-          :options="assetTypeData"
+          :options="$addTitle(assetTypeData)"
           :allowClear="false"
           :filterOption="filterOption"
           notFoundContent="没有查询到数据"

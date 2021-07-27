@@ -18,7 +18,7 @@
           style="width: 140px; margin-left: 200px"
           v-model="objectType"
           @change="fetchData"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
           placeholder="请选择资产类别"
         />
         <a-select
@@ -27,6 +27,7 @@
           placeholder="请选择资产状态"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in assetStatus"
             :key="index"
             :value="item.value"

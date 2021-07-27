@@ -38,7 +38,7 @@
 										placeholder="请选择呈报表单"
 										style="width: 200px"
 										v-model="reportBillId"
-										:options="chargePersonOpt"
+										:options="$addTitle(chargePersonOpt)"
 										:filterOption="filterOption"
 									>
 									</a-select>
@@ -225,7 +225,7 @@ let oneHasYear = {
     '3': '每年第3个月',
     '4': '每年第4个月',
     '5': '每年第5个月',
-    '6': '每年第6个月',    
+    '6': '每年第6个月',
     '7': '每年第7个月',
     '8': '每年第8个月',
     '9': '每年第9个月',
@@ -429,13 +429,13 @@ export default {
           break;
         case '5':
            this.particularsData.taskStartTime = `${this.oneQuarter[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
-					break; 
+					break;
 			  case '6':
           this.particularsData.taskStartTime = `${this.halfYear[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
 					break;
 				case '7':
           this.particularsData.taskStartTime = `${this.oneHasYear[this.particularsData.beginMonth]}${this.particularsData.beginDay}日`
-          break;     
+          break;
       }
     },
     // 查询详情

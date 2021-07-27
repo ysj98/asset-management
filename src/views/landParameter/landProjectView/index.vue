@@ -23,7 +23,7 @@
           optionFilterProp="children"
           :style="allStyle"
           v-model="assetProject"
-          :options="assetProjectOptions"
+          :options="$addTitle(assetProjectOptions)"
           :filterOption="filterOption"
         ></a-select>
       </a-col>
@@ -34,7 +34,7 @@
           :maxTagCount="1"
           style="width: 100%"
           placeholder="请选择资产状态"
-          :options="statusListOpt"
+          :options="$addTitle(statusListOpt)"
         />
       </a-col>
       <a-col :span="4">

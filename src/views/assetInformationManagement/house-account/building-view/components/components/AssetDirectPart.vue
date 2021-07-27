@@ -11,7 +11,7 @@
             <span style="line-height: 32px; font-weight: bold; color: #49505E; font-size: 14px">楼栋列表</span>
           </a-col>
           <a-col :span="12" style="text-align: right" v-if="unitOptions.length">
-            <a-select v-model="unitId" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择" :options="unitOptions"/>
+            <a-select v-model="unitId" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择" :options="$addTitle(unitOptions)"/>
           </a-col>
         </a-row>
         <div class="building_style" v-if="buildingList.length">
@@ -101,7 +101,7 @@
         // })
         this.maxTotalArea = Math.max(...totalList)
       },
-      
+
       // 鼠标移入房间区域内
       handleMouseMove (e, bool, roomId, roomNo) {
         let _this = this

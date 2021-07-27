@@ -36,7 +36,7 @@
         </div>
         <div slot="col-r" class="nav">
           <a-select style="width: 170px; margin-right: 10px;" placeholder="全部状态" @change="checkStatusChange" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
-            <a-select-option v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search style="width: 170px;" v-model="queryCondition.name" placeholder="资产名称/编码" maxlength="30" @search="onSearch" />
         </div>
@@ -80,7 +80,7 @@
         <div slot="col-r">
           <div class="nav">
             <a-select style="width: 160px;" placeholder="全部异常状态" @change="checkResultsChange" v-model="condition.checkResults">
-              <a-select-option v-for="(item, index) in checkResultsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+              <a-select-option :title="item.name" v-for="(item, index) in checkResultsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
           </div>
         </div>

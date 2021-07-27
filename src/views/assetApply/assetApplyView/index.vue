@@ -13,7 +13,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -24,7 +24,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -35,7 +35,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -54,7 +54,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产分类"
           v-model="queryCondition.objectTypeList"
-          :options="assetClassifyOptions"
+          :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
           :getPopupContainer="
@@ -299,7 +299,7 @@ export default {
         assetName: this.queryCondition.assetName            // 资产名称
       }
       console.log(33)
-      this.$api.useManage.exportReceiveDetail(obj).then(res => {    
+      this.$api.useManage.exportReceiveDetail(obj).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -344,7 +344,7 @@ export default {
             let count = `${item.key}` + 'Count'
             let area = `${item.key}` + 'Area'
             this.numList[index].value = res.data.data[count] + '/' + res.data.data[area]
-            
+
           })
           this.$api.useManage.getReceiveDetailPage(obj).then(r => {
             if(r.data.code == 0){
@@ -353,7 +353,7 @@ export default {
               })
               this.tableData = r.data.data.data
               this.count = r.data.data.count
-            }     
+            }
            this.loading = false
           })
         }
@@ -541,7 +541,7 @@ export default {
     display: inline-block;
     // vertical-align: middle;
     margin-right: 10px;
-    
+
   }
   .nav {
     display: inline-block;

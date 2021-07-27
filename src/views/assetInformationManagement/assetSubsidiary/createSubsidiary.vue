@@ -187,7 +187,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="matchingTypeOpt"
+                :options="$addTitle(matchingTypeOpt)"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -304,7 +304,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="unitOfMeasurementOpt"
+                :options="$addTitle(unitOfMeasurementOpt)"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>

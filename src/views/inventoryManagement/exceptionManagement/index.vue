@@ -26,14 +26,14 @@
           optionFilterProp="children"
           :style="allStyle"
           v-model="assetProject"
-          :options="assetProjectOptions"
+          :options="$addTitle(assetProjectOptions)"
           :filterOption="filterOption"
         ></a-select>
         <a-select
           :style="allStyle"
           placeholder="全部状态"
           v-model="status"
-          :options="statusOptions"
+          :options="$addTitle(statusOptions)"
         ></a-select>
         <a-select
           :maxTagCount="1"
@@ -41,7 +41,7 @@
           :tokenSeparators="[',']"
           placeholder="全部异常类型"
           v-model="exceptionType"
-          :options="exceptionTypeOptions"
+          :options="$addTitle(exceptionTypeOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeExceptionType"
         ></a-select>
@@ -51,7 +51,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产类型"
           v-model="assetType"
-          :options="assetTypeOptions"
+          :options="$addTitle(assetTypeOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetType"
         ></a-select>
@@ -61,7 +61,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产分类"
           v-model="assetClassify"
-          :options="assetClassifyOptions"
+          :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
         ></a-select>

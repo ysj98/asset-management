@@ -14,7 +14,7 @@
           <!--style="width: 100%"-->
           <!--v-model="projectId"-->
           <!--@change="fetchData"-->
-          <!--:options="projectOptions"-->
+          <!--:options="$addTitle(projectOptions)"-->
           <!--placeholder="请选择资产项目"-->
         <!--/>-->
       <!--</a-col>-->
@@ -25,7 +25,7 @@
           <!--style="width: 100%"-->
           <!--v-model="assetType"-->
           <!--@change="fetchData"-->
-          <!--:options="assetTypeOptions"-->
+          <!--:options="$addTitle(assetTypeOptions)"-->
           <!--placeholder="请选择资产类型"-->
         <!--/>-->
       <!--</a-col>-->
@@ -34,7 +34,7 @@
           style="width: 100%"
           v-model="objectType"
           @change="fetchData"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
           placeholder="请选择资产类别"
         />
       </a-col>
@@ -253,7 +253,7 @@
       value: function (value) {
         this.selectedRowKeys = this.allAttrs ? value.map(i => i.assetId) : value
       },
- 
+
       selectedRowKeys: function (keys) {
         let {dataSource, allAttrs, selectedList} = this
         let primaryKeys = []

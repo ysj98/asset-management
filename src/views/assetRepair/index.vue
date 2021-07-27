@@ -46,6 +46,7 @@
             "
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in projectData"
               :key="index"
               :value="item.value"
@@ -62,6 +63,7 @@
             v-model="queryCondition.assetType"
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in assetTypeData"
               :key="index"
               :value="item.value"
@@ -78,6 +80,7 @@
             v-model="queryCondition.approvalStatus"
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in approvalStatusData"
               :key="index"
               :value="item.value"
@@ -106,7 +109,7 @@
           mode="multiple"
           v-model="queryCondition.objectTypeList"
           :tokenSeparators="[',']"
-          :options="assetTypeList"
+          :options="$addTitle(assetTypeList)"
           @select="assetClassifyDataFn"
         ></a-select>
         <SG-DatePicker

@@ -24,7 +24,7 @@
               v-model="queryCondition.projectId"
               optionFilterProp="children"
               :style="allStyle"
-              :options="projectIdOpt"
+              :options="$addTitle(projectIdOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -52,7 +52,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allWidth"
-              :options="taskTypeOpt"
+              :options="$addTitle(taskTypeOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -64,7 +64,7 @@
               v-model="queryCondition.taskStatus"
               optionFilterProp="children"
               :style="allWidth"
-              :options="taskStatusOpt"
+              :options="$addTitle(taskStatusOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -347,7 +347,7 @@ export default {
         data.beginDate = moment(this.defaultValue[0]).format('YYYY-MM-DD')
         data.endDate = moment(this.defaultValue[1]).format('YYYY-MM-DD')
       }
-      
+
       this.table.loading = true;
       this.$api.reportManage.queryAssetOperationPageList(data).then(
         res => {
@@ -470,7 +470,7 @@ export default {
     //   this.queryCondition.taskStatus = '';
     //   this.queryCondition.contractCode = ''
     //   this.queryCondition.customerName = ''
-    //   this.queryCondition.endCreateDate = getNowMonthDate()  
+    //   this.queryCondition.endCreateDate = getNowMonthDate()
     // },
 
     goPage(type, record) {

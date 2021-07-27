@@ -95,7 +95,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="exePreOpt"
+                :options="$addTitle(exePreOpt)"
                 notFoundContent="没有查询到数据"
               />
               <span class="label-value" v-else>{{detail.exePreName || '--'}}</span>
@@ -191,7 +191,7 @@
                 optionFilterProp="children"
                 :style="{ width: '120px', marginRight: '10px' }"
                 class="mr10"
-                :options="beginMonthOpt"
+                :options="$addTitle(beginMonthOpt)"
                 notFoundContent="没有查询到数据"
               />
               <a-select
@@ -211,7 +211,7 @@
                 ]"
                 optionFilterProp="children"
                 :style="{ width: '70px'}"
-                :options="beginDayOpt"
+                :options="$addTitle(beginDayOpt)"
                 notFoundContent="没有查询到数据"
               />
               <span class="label-value" v-else>{{detail.beginMonthbeginDay || '--'}}</span>
@@ -299,13 +299,13 @@
                 ]"
                 optionFilterProp="children"
                 :style="twoInputStyle"
-                :options="preUnitOpt"
+                :options="$addTitle(preUnitOpt)"
                 notFoundContent="没有查询到数据"
               />
               <span class="label-value" v-else>{{detail.preNumpreUnit || '--'}}</span>
             </a-form-item>
           </div>
-          
+
           <div class="edit-box-content-item total-width">
             <div class="label-name-box">
               <span class="label-name label-space-between">备注<i></i></span
@@ -362,7 +362,7 @@
                 placeholder="请选择负责人"
                 :open="false"
                 :style="{width: '100%'}"
-                :options="record.chargePersonOpt"
+                :options="$addTitle(record.chargePersonOpt)"
                 @dropdownVisibleChange="selectPerson(record,index)"
                 v-model="record.chargePerson"
               >
@@ -430,7 +430,7 @@
        <selectStaffOrPost ref="selectStaffOrPost" :selectType="selectType" @change="changeSelectStaffOrPost" :selectOptList="selectOptList"/>
     </div>
   </div>
- </a-spin> 
+ </a-spin>
 </template>
 <script>
 import moment from "moment"
@@ -663,7 +663,7 @@ export default {
             chargePersonOpt: [{label: chargePersonNameList, key: chargePerson}],
             chargePersonArr: item.chargePersonList.map(v => {
               return {...v, label: v.userName, key: v.userId, id: v.userId, name: v.userName}
-            }) 
+            })
           }
           console.log('ssssss', o)
           this.table.dataSource.push(o)
@@ -897,7 +897,7 @@ export default {
         })
       })
     },
-    // 频次变化 () 
+    // 频次变化 ()
     exePreSelectChange (e) {
       console.log('2222222', e)
       this.showBeginMonth = e === '1'? false : true
@@ -916,7 +916,7 @@ export default {
           break;
         case '5':
           this.beginMonthOpt = oneHasYear
-          break;      
+          break;
       }
     },
     // 取平台字典表

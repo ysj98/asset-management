@@ -43,7 +43,7 @@
                   placeholder="请选择负责人"
                   :open="false"
                   :style="allWidth"
-                  :options="chargePersonOpt"
+                  :options="$addTitle(chargePersonOpt)"
                   @dropdownVisibleChange="selectPerson"
                   v-decorator="['chargePerson', {rules: [{required: true, whitespace: true, message: '请选择负责人'}], initialValue: newCardData.chargePerson}]"
                 >
@@ -117,7 +117,7 @@
               placeholder="请选择负责人"
               :open="false"
               :style="{width: '100%'}"
-              :options="record.chargePersonOpt"
+              :options="$addTitle(record.chargePersonOpt)"
               @dropdownVisibleChange="tabSelectPerson(record,index)"
               v-model="record.chargePerson"
             >
@@ -287,7 +287,7 @@ export default {
       let endDateNew = moment(this.form.getFieldValue('defaultValue')[1]).format('YYYY-MM-DD')
       let valDate = valDate = moment(val).format('YYYY-MM-DD')
       if (beginDateNew > valDate || valDate > endDateNew) {
-        str === 'beginDate' ? this.table.dataSource[index].beginDate = this.form.getFieldValue('defaultValue')[0] : this.table.dataSource[index].endDate = this.form.getFieldValue('defaultValue')[1] 
+        str === 'beginDate' ? this.table.dataSource[index].beginDate = this.form.getFieldValue('defaultValue')[0] : this.table.dataSource[index].endDate = this.form.getFieldValue('defaultValue')[1]
         this.$message.info(`${str === 'beginDate' ? '开始' : '结束'}时间在执行时间范围内`)
       }
     },
@@ -553,7 +553,7 @@ export default {
             chargePerson: obj.key
           })
         })                                  // 表单插入的数据
-        this.chargePersonArrOpt = opt       // 编辑给回去的数据 
+        this.chargePersonArrOpt = opt       // 编辑给回去的数据
       }
       // 表格的
       if (this.tabType === 'tab') {

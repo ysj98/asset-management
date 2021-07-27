@@ -37,7 +37,7 @@
                   :filterOption="filterOption"
                   notFoundContent="没有查询到资产项目"
                   >
-                  <a-select-option v-for="(item) in projectIdData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                  <a-select-option :title="item.name" v-for="(item) in projectIdData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -53,7 +53,7 @@
                   :filterOption="filterOption"
                   notFoundContent="没有查询到资产类型"
                   >
-                  <a-select-option v-for="(item) in assetTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                  <a-select-option :title="item.name" v-for="(item) in assetTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -68,7 +68,7 @@
                   :filterOption="filterOption"
                   notFoundContent="没有查询到处置类型"
                   >
-                  <a-select-option v-for="(item) in disposeTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                  <a-select-option :title="item.name" v-for="(item) in disposeTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -83,7 +83,7 @@
                   :filterOption="filterOption"
                   notFoundContent="没有查询到处置方式"
                   >
-                  <a-select-option v-for="(item) in disposeModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                  <a-select-option :title="item.name" v-for="(item) in disposeModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -143,7 +143,7 @@
                   :filterOption="filterOption"
                   notFoundContent="没有查询到费用分摊方式"
                   >
-                  <a-select-option v-for="(item) in costSharingModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
+                  <a-select-option :title="item.name" v-for="(item) in costSharingModeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col> -->
@@ -248,7 +248,7 @@
                 :defaultValue="record.receivecostType === '' ? undefined : record.receivecostType"
                 v-model="record.receivecostType === '' ? record.receivecostType = undefined : record.receivecostType"
                 optionFilterProp="children"
-                :options="receiptPayment"
+                :options="$addTitle(receiptPayment)"
                 :allowClear="true"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"
@@ -271,7 +271,7 @@
                 :defaultValue="record.feeSubject === '' ? undefined : record.feeSubject"
                 v-model="record.feeSubject === '' ? record.feeSubject = undefined : record.feeSubject"
                 optionFilterProp="children"
-                :options="billConfigOptions"
+                :options="$addTitle(billConfigOptions)"
                 :allowClear="true"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"
@@ -341,6 +341,7 @@
           <span class="icon-red" v-show="quickInfo.type === '2'">处置收入对象： </span>
           <a-select v-model="quickInfo.select" style="width: 150px">
             <a-select-option
+                    :title="item.label"
                     v-for="item in quickInfo.options"
                     :key="item.value"
                     :value="item.value"

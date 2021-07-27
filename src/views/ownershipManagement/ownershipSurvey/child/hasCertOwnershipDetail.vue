@@ -21,7 +21,7 @@
             :style="{width: '100%'}"
             @change="watchSettingMethodChange($event,record)"
             optionFilterProp="children"
-            :options="seletOpt"
+            :options="$addTitle(seletOpt)"
             :allowClear="false"
             v-model="record.settingMethod"
           />

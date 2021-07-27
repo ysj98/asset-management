@@ -3,7 +3,7 @@
  * @Date: 2020-07-14 14:43:17
  * @LastEditTime: 2020-10-10 10:52:42
  * @Description: 新增附属配套
---> 
+-->
 <template>
   <div class="basicDownload">
     <SG-Modal
@@ -25,7 +25,7 @@
                     <a-select
                       :placeholder="'请选择资产名称'" :style="allWidth"
                       showSearch
-                      :options="examine.projectIdData"
+                      :options="$addTitle(examine.projectIdData)"
                       :allowClear="true"
                       @change="assetFn"
                       optionFilterProp="children"
@@ -74,7 +74,7 @@
                 <a-select
                   :placeholder="'请选择类型'" :style="allWidth"
                   showSearch
-                  :options="matchingTypeData"
+                  :options="$addTitle(matchingTypeData)"
                   :allowClear="true"
                   :filterOption="filterOption"
                   v-decorator="['matchingType',
@@ -122,7 +122,7 @@
                 <a-select
                   :placeholder="'请选择计量单位'" :style="allWidth"
                   showSearch
-                  :options="unitOfMeasurementOpt"
+                  :options="$addTitle(unitOfMeasurementOpt)"
                   :allowClear="true"
                   :filterOption="filterOption"
                   v-decorator="['unitOfMeasurement',

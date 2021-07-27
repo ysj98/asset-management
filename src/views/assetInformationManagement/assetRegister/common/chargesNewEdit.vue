@@ -3,7 +3,7 @@
  * @Date: 2020-07-16 13:57:58
  * @LastEditTime: 2020-07-30 14:26:35
  * @Description: 新增相关费用
---> 
+-->
 <template>
   <div class="basicDownload">
     <SG-Modal
@@ -25,7 +25,7 @@
                 <a-select
                   :placeholder="'请选择资产名称'" :style="allWidth"
                   showSearch
-                  :options="examine.projectIdData"
+                  :options="$addTitle(examine.projectIdData)"
                   :allowClear="true"
                   @change="assetFn"
                   optionFilterProp="children"
@@ -54,7 +54,7 @@
                 <a-select
                   :placeholder="'请选择类别'" :style="allWidth"
                   showSearch
-                  :options="categoryData"
+                  :options="$addTitle(categoryData)"
                   :allowClear="true"
                   :filterOption="filterOption"
                   v-decorator="['category',

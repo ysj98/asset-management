@@ -30,7 +30,7 @@
                 placeholder="请选择资产项目"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="projectIdOptions"
+                :options="$addTitle(projectIdOptions)"
                 :filterOption="filterOption"
                 @change="changeProjectId"
                 v-decorator="['projectId',
@@ -49,7 +49,7 @@
                 placeholder="请选择资产类型"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="assetTypeOptions"
+                :options="$addTitle(assetTypeOptions)"
                 :filterOption="filterOption"
                 @change="changeAssetType"
                 v-decorator="['assetType',
@@ -68,7 +68,7 @@
                 placeholder="请选择出库原因"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="cleanupTypeOptions"
+                :options="$addTitle(cleanupTypeOptions)"
                 :filterOption="filterOption"
                 v-decorator="['cleanupType',
                 {rules: [{required: true,  message: '请选择出库原因'}], initialValue: detail.cleanupType}]"

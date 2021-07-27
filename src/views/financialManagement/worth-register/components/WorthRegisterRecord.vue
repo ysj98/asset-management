@@ -20,7 +20,7 @@
           <a-col :span="5">
             <a-select
               v-bind="properties"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               v-model="organProjectType.projectId"
@@ -31,7 +31,7 @@
               mode="multiple"
               v-bind="properties"
               placeholder="请选择资产类型"
-              :options="assetTypeOptions"
+              :options="$addTitle(assetTypeOptions)"
               :filterOption="filterOption"
               v-model="organProjectType.assetType"
             />
@@ -41,7 +41,7 @@
               mode="multiple"
               v-bind="properties"
               v-model="approvalStatus"
-              :options="statusOptions"
+              :options="$addTitle(statusOptions)"
               @change="queryTableData"
               placeholder="请选择登记状态"
             />
@@ -50,7 +50,7 @@
             <a-select
               mode="multiple"
               v-bind="properties"
-              :options="methodOptions"
+              :options="$addTitle(methodOptions)"
               class="assess_method_style"
               placeholder="请选择评估方法"
               :filterOption="filterOption"

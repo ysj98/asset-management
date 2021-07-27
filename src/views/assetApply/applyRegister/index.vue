@@ -15,7 +15,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -26,14 +26,14 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value" >{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value" >{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.receiveName" placeholder="领用单名称/编码" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
@@ -632,7 +632,7 @@ export default {
     display: inline-block;
     // vertical-align: middle;
     margin-right: 10px;
-    
+
   }
   .nav {
     display: inline-block;

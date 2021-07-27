@@ -37,6 +37,7 @@
                 notFoundContent="没有查询到所属机构"
                 >
                 <a-select-option
+                  :title="item.name"
                   v-for="(item) in organIdData"
                   :key="item.value"
                   :value='item.value'>
@@ -63,6 +64,7 @@
                 notFoundContent="没有查询到登记类型"
                 >
                 <a-select-option
+                  :title="item.name"
                   v-for="(item) in changeTypeData"
                   :key="item.value"
                   :value='item.value'>
@@ -88,6 +90,7 @@
                 notFoundContent="没有查询到资产项目"
                 >
                 <a-select-option
+                  :title="item.name"
                   v-for="(item) in projectIdData"
                   :key="item.value"
                   :value='item.value'>
@@ -113,6 +116,7 @@
                 notFoundContent="没有查询到资产类型"
                 >
                 <a-select-option
+                  :title="item.name"
                   v-for="(item) in assetTypeData"
                   :key="item.value"
                   :value='item.value'>
@@ -169,7 +173,7 @@
                 style="width: 150px"
                 placeholder="请选择关联资产"
                 :open="false"
-                :options="record.warrantNbrData"
+                :options="$addTitle(record.warrantNbrData)"
                 @dropdownVisibleChange="handleChange(record)"
                 v-model="record.warrantNbr"
               >

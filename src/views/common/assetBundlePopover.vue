@@ -18,16 +18,16 @@
       <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
         <div slot="col-r">
         <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
-          <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
-          <a-select-option v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
-          <a-select-option v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select> -->
         <a-input :style="allStyle" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
         <SG-Button type="primary" @click="query">查询</SG-Button>
@@ -215,7 +215,7 @@ export default {
         // 存着全部数据
         this.overallData = arrData
       }
-      
+
       let flag = false // 搜索条件有变化
       // 项目变化
       if (this.selecData.projectId !== projectId) {

@@ -42,7 +42,7 @@
                 v-decorator="['projectId',{ rules: [{required: true, message: '请选择资产项目'}], initialValue: newEditSingleData.projectId }]"
                 :allowClear="false"
                 :filterOption="filterOption"
-                :options="projectIdData"
+                :options="$addTitle(projectIdData)"
                 @change="projectIdFn"
                 notFoundContent="没有查询到资产项目"
                 >
@@ -58,7 +58,7 @@
                 placeholder="请选择资产类型"
                 v-decorator="['assetType',{ rules: [{required: true, message: '请选择资产类型'}], initialValue: newEditSingleData.assetType}]"
                 :allowClear="false"
-                :options="assetTypeData"
+                :options="$addTitle(assetTypeData)"
                 :filterOption="filterOption"
                 @change="assetTypeFn"
                 notFoundContent="没有查询到资产类型"
@@ -75,7 +75,7 @@
                 placeholder="请选择交付类型"
                 v-decorator="['deliveryType',{ rules: [{required: true, message: '请选择交付类型'}], initialValue: newEditSingleData.deliveryType}]"
                 :allowClear="false"
-                :options="deliveryTypeOpt"
+                :options="$addTitle(deliveryTypeOpt)"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到交付类型"
                 >

@@ -18,10 +18,10 @@
             <tree-select @changeTree="changeTree" style="width: 100%;" placeholder='请选择组织机构' :allowClear="false"/>
           </a-col>
           <a-col :span="6"  style="text-align: left; width: 20%">
-            <a-select v-model="approvalStatusList" mode="multiple" :maxTagCount="2" :options="statusOptions" placeholder="请选择项目状态" style="width: 100%;"/>
+            <a-select v-model="approvalStatusList" mode="multiple" :maxTagCount="2" :options="$addTitle(statusOptions)" placeholder="请选择项目状态" style="width: 100%;"/>
           </a-col>
           <a-col :span="6" style="text-align: left; width: 20%">
-            <a-select v-model="sourceTypeList" mode="multiple" :maxTagCount="1" placeholder="请选择来源方式" style="width: 100%;" :options="sourceTypeOptions"/>
+            <a-select v-model="sourceTypeList" mode="multiple" :maxTagCount="1" placeholder="请选择来源方式" style="width: 100%;" :options="$addTitle(sourceTypeOptions)"/>
           </a-col>
           <a-col :span="6" style="text-align: left; width: 10%">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
@@ -30,10 +30,10 @@
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
           <a-col :span="6" style="text-align: left; width: 20%">
-            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 100%;" :options="takeOverOptions"/>
+            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 100%;" :options="$addTitle(takeOverOptions)"/>
           </a-col>
           <a-col :span="6" style="text-align: left; width: 20%">
-            <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 100%;" :options="operateOptions"/>
+            <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 100%;" :options="$addTitle(operateOptions)"/>
           </a-col>
           <a-col :span="6" style="text-align: left; width: 20%">
             <a-input placeholder="请输入资产项目名称" v-model="projectName"/>
@@ -198,7 +198,7 @@
         }
       }
     },
-    
+
     methods: {
       // 处理是否选中仅当前机构
       changeChecked (e) {
@@ -414,13 +414,13 @@
           this.$message.error(err || '查询资产项目统计信息出错')
         })
       },
-      
+
       // 打开批量导入Modal
       openImportModal () {
         if (!this.organId) { return this.$message.info('请选择组织机构') }
         this.$refs.batchImport.visible = true
       },
-      
+
       // 下载导入模板文件
       downTemplate () {
         exportDataAsExcel('import_template_zcxm.xlsx', this.$api.tableManage.downloadTemplate, '资产项目批量导入模板.xlsx', this)

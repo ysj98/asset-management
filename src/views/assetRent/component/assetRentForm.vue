@@ -23,6 +23,7 @@
           @change="contractStatusListFn"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in contractStatusList"
             :key="index"
             :value="item.value"

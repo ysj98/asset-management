@@ -3,7 +3,7 @@
  * @Date: 2020-07-10 17:32:58
  * @LastEditTime: 2020-07-28 11:27:10
  * @Description: 基本下载
---> 
+-->
 <template>
   <div class="basicDownload">
     <SG-Modal
@@ -28,7 +28,7 @@
         v-model="positionIds"
         @search="handleSearch"
         optionFilterProp="children"
-        :options="positionNameData"
+        :options="$addTitle(positionNameData)"
         :allowClear="true"
         :filterOption="false"
         notFoundContent="没有查询到数据"

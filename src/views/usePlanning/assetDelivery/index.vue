@@ -35,7 +35,7 @@
           mode="multiple"
           :maxTagCount="1"
           v-model="queryCondition.projectId"
-          :options="projectData"
+          :options="$addTitle(projectData)"
           placeholder="请选择资产项目"
           :filterOption="filterOption"
           :loading="loading && !projectData.length"
@@ -50,6 +50,7 @@
           v-model="queryCondition.assetType"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in assetTypeData"
             :key="index"
             :value="item.value"
@@ -61,6 +62,7 @@
           v-model="queryCondition.deliveryType"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in changeTypeData"
             :key="index"
             :value="item.value"
@@ -76,6 +78,7 @@
           v-model="queryCondition.approvalStatus"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in approvalStatusData"
             :key="index"
             :value="item.value"

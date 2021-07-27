@@ -15,10 +15,10 @@
             <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
           </a-col>
           <a-col :span="3">
-            <a-select v-model="queryObj.sourceType" style="width: 100%" placeholder="请选择来源方式" :options="sourceTypeOptions"/>
+            <a-select v-model="queryObj.sourceType" style="width: 100%" placeholder="请选择来源方式" :options="$addTitle(sourceTypeOptions)"/>
           </a-col>
           <a-col :span="3">
-            <a-select v-model="queryObj.takeOver" style="width: 100%" placeholder="请选择接管状态" :options="takeOverOptions"/>
+            <a-select v-model="queryObj.takeOver" style="width: 100%" placeholder="请选择接管状态" :options="$addTitle(takeOverOptions)"/>
           </a-col>
           <a-col :span="4">
             <a-select
@@ -28,7 +28,7 @@
               style="width: 100%"
               placeholder="请选择项目状态"
               @change="projectStatusChange"
-              :options="projectStatusOptions"
+              :options="$addTitle(projectStatusOptions)"
             />
           </a-col>
         </a-row>
@@ -36,13 +36,13 @@
       <div slot="contentForm" style="margin-top: 15px">
         <a-row :gutter="8" style="width: 100%">
           <a-col :span="4" :offset="3">
-            <a-select v-model="queryObj.transferToOperation" style="width: 100%" placeholder="请选择转运营状态" :options="operateOptions"/>
+            <a-select v-model="queryObj.transferToOperation" style="width: 100%" placeholder="请选择转运营状态" :options="$addTitle(operateOptions)"/>
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.propertyOperation" style="width: 100%" placeholder="请选择转物业状态" :options="propertyOptions"/>
+            <a-select v-model="queryObj.propertyOperation" style="width: 100%" placeholder="请选择转物业状态" :options="$addTitle(propertyOptions)"/>
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.ownershipStatus" style="width: 100%" placeholder="请选择权属情况" :options="ownershipOptions"/>
+            <a-select v-model="queryObj.ownershipStatus" style="width: 100%" placeholder="请选择权属情况" :options="$addTitle(ownershipOptions)"/>
           </a-col>
           <a-col :span="7">
             <a-range-picker @change="changeDate" style="width: 100%" :placeholder="['开始接管时间', '结束接管时间']"/>

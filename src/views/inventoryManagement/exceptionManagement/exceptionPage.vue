@@ -16,7 +16,7 @@
                 placeholder="请选择处理方式"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="handleWayOptions"
+                :options="$addTitle(handleWayOptions)"
                 :filterOption="filterOption"
                 v-decorator="['handleWay',
                 {rules: [{required: true,  message: '请选择处理方式'}], initialValue: detail.handleWay}]"

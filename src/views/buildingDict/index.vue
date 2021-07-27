@@ -10,7 +10,7 @@
     <div class="custom-tabs">
       <!-- 公司 -->
       <div class="top-select">
-        <topOrganByUser v-if="showKey==='building'" @change="organIdChange" :formStyle="allWidth" v-model="organId" :hasAll="false" :selectFirst="true"/>
+        <treeSelect v-if="showKey==='building'" @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
         <a-tab-pane tab="楼栋信息" key="building">
@@ -30,14 +30,14 @@
 import buildingInfo from './buildingInfo'
 import houseInfo from './houseInfo'
 import landInfo from './land/landInfo'
-import topOrganByUser from '@/views/common/topOrganByUser'
+import TreeSelect from '../common/treeSelect'
 const allWidth = {width: '185px'}
 export default {
   components: {
     buildingInfo,
     houseInfo,
-    topOrganByUser,
-    landInfo
+    landInfo,
+    TreeSelect
   },
   data () {
     return {
@@ -69,7 +69,8 @@ export default {
       console.log(v)
       this.showKey = v
     },
-    organIdChange () {
+    organIdChange (value) {
+      this.organId = value
     },
   }
 }

@@ -14,21 +14,21 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatusList" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -47,7 +47,7 @@
           :tokenSeparators="[',']"
           placeholder="全部资产分类"
           v-model="queryCondition.objectTypeList"
-          :options="assetClassifyOptions"
+          :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
           :getPopupContainer="
@@ -321,7 +321,7 @@ export default {
         objectTypeList: this.alljudge(this.queryCondition.objectTypeList), // 资产分类
         assetName: this.queryCondition.assetName,                   // 资产名称/编号
         returnName: this.queryCondition.returnName                 // 归还单名称/编号
-        
+
 
       }
       this.$api.useManage.getReturnDetailPage(obj).then(r => {
@@ -521,7 +521,7 @@ export default {
     .box-right{
       margin-left: 10px;
     }
-    
+
   }
   .nav {
     display: inline-block;

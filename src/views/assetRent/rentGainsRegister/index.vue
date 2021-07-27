@@ -46,6 +46,7 @@
             "
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in projectData"
               :key="index"
               :value="item.value"
@@ -84,6 +85,7 @@
           style="width: 170px"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in assetTypeData"
             :key="index"
             :value="item.value"
@@ -95,6 +97,7 @@
           v-model="queryCondition.contractStatus"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in contractStatusData"
             :key="index"
             :value="item.value"
@@ -110,7 +113,7 @@
           :placeholder="'请选择费用科目'"
           style="width: 200px"
           optionFilterProp="children"
-          :options="billConfigOptions"
+          :options="$addTitle(billConfigOptions)"
           :allowClear="true"
           :filterOption="filterOption"
           v-model="queryCondition.billOption"

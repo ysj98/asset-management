@@ -22,7 +22,7 @@
             mode="multiple"
             :maxTagCount="1"
             v-model="queryCondition.projectIdList"
-            :options="projectData"
+            :options="$addTitle(projectData)"
             placeholder="全部资产项目"
             :loading="loading && !projectData.length"
           ></a-select>
@@ -36,6 +36,7 @@
             v-model="queryCondition.assetTypeList"
           >
             <a-select-option
+              :title="item.name"
               v-for="(item, index) in assetTypeData"
               :key="index"
               :value="item.value"
@@ -58,6 +59,7 @@
           v-model="queryCondition.inspectionTypeList"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in changeTypeData"
             :key="index"
             :value="item.value"
@@ -73,6 +75,7 @@
           v-model="queryCondition.inspectionStatusList"
         >
           <a-select-option
+            :title="item.name"
             v-for="(item, index) in patrolStatusData"
             :key="index"
             :value="item.value"
@@ -168,7 +171,7 @@ export default {
       noPageTools: false,
       queryCondition: {
         assetNameOrCode: '',       // 资产类型/编码
-        inspectionStatusList: '',         // 巡查状态 
+        inspectionStatusList: '',         // 巡查状态
         pageNum: 1,                 // 当前页
         pageSize: 10,               // 每页显示记录数
         projectIdList: undefined,              // 资产项目Id

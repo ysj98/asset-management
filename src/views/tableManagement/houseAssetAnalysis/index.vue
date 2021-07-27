@@ -14,7 +14,7 @@
           v-model="objectType"
           @change="objectTypeChange"
           placeholder="请选择资产分类"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
         />
       </a-col>
       <a-col :span="9">
@@ -90,7 +90,7 @@
         }
         this.key = Date.now()
       },
-      
+
       // 根据organId查询资产分类数据
       queryObjectTypeByOrganId (organId) {
         queryCategoryList({assetType: '1', organId}).then(list => {

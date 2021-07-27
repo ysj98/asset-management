@@ -20,7 +20,7 @@
           <a-select
             showSearch
             style="width: 100%"
-            :options="organOptions"
+            :options="$addTitle(organOptions)"
             @change="queryBuildingList"
             :filterOption="filterOption"
             placeholder="请选择组织机构"
@@ -35,7 +35,7 @@
             :maxTagCount="1"
             style="width: 100%"
             placeholder="请选择楼栋"
-            :options="buildingOptions"
+            :options="$addTitle(buildingOptions)"
             :filterOption="filterOption"
             v-model="organProjectBuildingValue.buildingId"
           ></a-select>
@@ -47,7 +47,7 @@
             :maxTagCount="1"
             style="width: 100%"
             placeholder="请选择资产状态"
-            :options="statusListOpt"
+            :options="$addTitle(statusListOpt)"
           />
         </a-col>
         <a-col :span="2">
@@ -266,7 +266,7 @@
           this.$message.error(err || '查询楼栋失败')
         })
       },
-      
+
       // 查询一级组织机构
       queryOrganList () {
         this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: ''}).then(res => {
@@ -289,7 +289,7 @@
         })
       }
     },
-    
+
     created () {
       this.queryOrganList()
     },

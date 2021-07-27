@@ -37,7 +37,7 @@
               <label slot="label">权属形式：</label>
               <a-select :style="allWidth" showSearch placeholder="请选择权属形式"
               optionFilterProp="children"
-              :options="ownerTypeData"
+              :options="$addTitle(ownerTypeData)"
               :allowClear="true"
               :filterOption="false"
               notFoundContent="没有查询到数据"
@@ -50,7 +50,7 @@
               <a-select :style="allWidth" showSearch placeholder="请选择权证类型"
               :disabled="setType === 'edit'"
               optionFilterProp="children"
-              :options="kindOfRightData"
+              :options="$addTitle(kindOfRightData)"
                @change="kindOfRightChange"
               :allowClear="true"
               :filterOption="false"
@@ -158,11 +158,8 @@
               @change="obligeeNameChange(record)"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
-            >
-              <a-select-option v-for="item in obligeeIdData" :key="item.value" :value="item.value" :title="item.label">
-                {{item.label}}
-              </a-select-option>
-            </a-select>
+              :options="$addTitle(obligeeIdData)"
+            />
           </template>
           <template slot="percent" slot-scope="text, record">
             <a-input-number placeholder="占有比例"

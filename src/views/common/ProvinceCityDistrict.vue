@@ -9,7 +9,7 @@
         <a-select
           v-model="province"
           v-bind="properties"
-          :options="provinces"
+          :options="$addTitle(provinces)"
           class="province_style"
           placeholder="请选择省份"
           :filterOption="filterOption"
@@ -20,7 +20,7 @@
         <a-select
           v-model="city"
           v-bind="properties"
-          :options="cities"
+          :options="$addTitle(cities)"
           class="city_style"
           placeholder="请选择城市"
           :filterOption="filterOption"
@@ -31,7 +31,7 @@
         <a-select
           v-model="district"
           v-bind="properties"
-          :options="districts"
+          :options="$addTitle(districts)"
           class="district_style"
           placeholder="请选择地区"
           :filterOption="filterOption"
@@ -117,7 +117,7 @@
         this.province = undefined
       }
     },
-    
+
     created () {
       const { allowClear, size, showSearch, value } = this
       this.properties = { allowClear, size, showSearch }

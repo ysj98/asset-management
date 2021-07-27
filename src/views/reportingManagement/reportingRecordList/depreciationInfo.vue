@@ -18,17 +18,17 @@
       </div>
       <div slot="form" class="formCon">
         <a-select :style="allStyle" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
-          <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部呈报方式" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.taskType">
-          <a-select-option v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
-          <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-month-picker v-model="month"  placeholder="所属月份" />
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状数据状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-          <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
           <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
@@ -178,19 +178,19 @@ export default {
       taskTypeData: [
         {
           name: '全部呈报方式',
-          value: '' 
+          value: ''
         },
         {
           name: '临时任务',
-          value: '1' 
+          value: '1'
         },
         {
           name: '固定任务',
-          value: '2' 
+          value: '2'
         },
         {
           name: '数据接口',
-          value: '3' 
+          value: '3'
         },
       ],
       projectData: [

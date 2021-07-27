@@ -24,7 +24,7 @@
           :hasAll="false"
           :selectFirst="true"
         />
-        <a-select :style="allStyle" v-model="status" :options="statusOptions" @change="queryClick"></a-select>
+        <a-select :style="allStyle" v-model="status" :options="$addTitle(statusOptions)" @change="queryClick"></a-select>
         <a-input-search
           placeholder="类别名称/编码"
           :style="allStyle"

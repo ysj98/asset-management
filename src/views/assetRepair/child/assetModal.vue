@@ -17,7 +17,7 @@
           style="width: 140px; margin-left: 600px"
           v-model="objectType"
           @change="objectTypeChange"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
           placeholder="全部资产分类"
         />
         <a-input-search

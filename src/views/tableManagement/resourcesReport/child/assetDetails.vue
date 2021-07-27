@@ -22,6 +22,7 @@
           :loading="loading && !projectData.length"
         >
         <a-select-option
+          :title="item.title"
           v-for="(item, index) in projectData"
           :key="index" :value="item.value">
           {{item.title}}

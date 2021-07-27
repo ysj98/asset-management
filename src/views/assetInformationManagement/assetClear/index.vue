@@ -24,7 +24,7 @@
             optionFilterProp="children"
             :style="allStyle"
             v-model="queryCondition.assetProject"
-            :options="assetProjectOptions"
+            :options="$addTitle(assetProjectOptions)"
             :filterOption="filterOption"
           ></a-select>
           <a-select
@@ -33,7 +33,7 @@
             :tokenSeparators="[',']"
             placeholder="全部资产类型"
             v-model="queryCondition.assetType"
-            :options="assetTypeOptions"
+            :options="$addTitle(assetTypeOptions)"
             style="width: 190px; margin-right: 10px;"
             @select="changeAssetType"
           ></a-select>
@@ -59,7 +59,7 @@
           mode="multiple"
           v-model="queryCondition.cleanupType"
           :tokenSeparators="[',']"
-          :options="cleanupTypeData"
+          :options="$addTitle(cleanupTypeData)"
           @select="changeCleanupType"
         ></a-select>
         <a-select
@@ -69,7 +69,7 @@
           :tokenSeparators="[',']"
           placeholder="全部状态"
           v-model="queryCondition.approvalStatus"
-          :options="approvalStatusData"
+          :options="$addTitle(approvalStatusData)"
           @select="changeStatus"
         ></a-select>
         <segi-range-picker

@@ -42,6 +42,7 @@
                   v-for="(item) in organIdData"
                   :key="item.value"
                   :value="item.value"
+                  :title="item.name"
                 >{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -66,6 +67,7 @@
                   v-for="(item) in projectIdData"
                   :key="item.value"
                   :value="item.value"
+                  :title="item.name"
                 >{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -93,6 +95,7 @@
                   v-for="(item) in assetTypeData"
                   :key="item.value"
                   :value="item.value"
+                  :title="item.name"
                 >{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -118,6 +121,7 @@
                   v-for="(item) in changeTypeData"
                   :key="item.value"
                   :value="item.value"
+                  :title="item.name"
                 >{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -156,6 +160,7 @@
                     v-for="(item) in originalObjectTypeData"
                     :key="item.value"
                     :value="item.value"
+                    :title="item.name"
                   >{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
@@ -181,6 +186,7 @@
                       v-for="(item) in originalObjectIdData"
                       :key="item.value"
                       :value="item.value"
+                      :title="item.name"
                     >{{item.name}}</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -224,6 +230,7 @@
                       v-for="(item) in shareWayData"
                       :key="item.value"
                       :value="item.value"
+                      :title="item.name"
                     >{{item.name}}</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -374,7 +381,7 @@
                 :defaultValue="record.changeProjectId === '' ? undefined : record.changeProjectId"
                 v-model="record.changeProjectId === '' ? record.changeProjectId = undefined : record.changeProjectId"
                 optionFilterProp="children"
-                :options="projectIdData"
+                :options="$addTitle(projectIdData)"
                 :allowClear="true"
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"

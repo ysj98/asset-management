@@ -42,7 +42,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
-            :options="projectOptions"
+            :options="$addTitle(projectOptions)"
             :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
@@ -59,7 +59,7 @@
             v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             placeholder="请选择资产类型"
-            :options="typeOptions"
+            :options="$addTitle(typeOptions)"
             @change="value => setData(value, 'assetType')"
             :getPopupContainer="
           (triggerNode) => {
@@ -98,7 +98,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="签约日期" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
-          <a-date-picker 
+          <a-date-picker
             style="width: 100%"
             :placeholder="type=='edit' ? '请选择签约日期' : ''"
             @change="(date, dateString) => setData(dateString, 'signingDate')"
@@ -255,7 +255,7 @@
         </a-form-item>
       </a-col>
     </a-row> -->
-    
+
   </a-form>
   </div>
 </template>
@@ -286,7 +286,7 @@
         createByName: '', // 提交人
         staffList: [], // 部门人员列表
         rules: {
-          returnName: [{ required: true, message: '请选择资产项目' }] , projectId: [{ required: true, message: '请选择资产项目' }] 
+          returnName: [{ required: true, message: '请选择资产项目' }] , projectId: [{ required: true, message: '请选择资产项目' }]
       }
       }
     },
@@ -323,14 +323,14 @@
            }
          })
       },
-      
+
       // 渲染数据
       renderDetail () {
         const {type, details, attachment} = this
         const {
           investName,  approvalStatus,  approvalStatusName, createByName, createTime,
-          organId,  organName, projectId,  projectName, remark,  assetType, investOrderId, 
-          assetTypeName, contractCode, investProject, signingDate, startInvestDate, endInvestDate, 
+          organId,  organName, projectId,  projectName, remark,  assetType, investOrderId,
+          assetTypeName, contractCode, investProject, signingDate, startInvestDate, endInvestDate,
           investArea, assetArea, assetSum, attachmentList
         } = details
         let attachArr = (attachmentList || []).map(m => {
@@ -374,7 +374,7 @@
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
-      // 查询平台字典      
+      // 查询平台字典
         queryDict () {
           const list = [
           { code: 'asset_type', tip: '资产类型', optionName: 'typeOptions' },
@@ -395,7 +395,7 @@
           })
         })
       },
-  
+
 
       // 查询评估机构-机构字典
       queryOrganOptions () {
@@ -434,7 +434,7 @@
           this.$message.error(err || '查询资产项目失败')
         })
       },
-      
+
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
@@ -461,9 +461,9 @@
           this.form.setFieldsValue({ returnUserName: value, returnUserId: id })
           this.$emit('setData', { [type]: value, returnUserId: +id})
         }
-        
+
       },
-      
+
       // 单独校验资产项目是否选择
       validateProject () {
         this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
@@ -479,7 +479,7 @@
           })
           return //this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
-      } 
+      }
     },
     mounted () {
       this.renderDetail()
@@ -488,8 +488,8 @@
         this.queryOrganOptions()
         this.queryProjectOptions()
         this.queryStaff(this.details.organId)
-        
-        
+
+
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }
@@ -497,12 +497,12 @@
     },
     watch: {
       investAreaTotal: function (val) {
-            
+
             this.form.setFieldsValue({assetArea: val})
-            
+
       },
       investCount: function (val) {
-        
+
             this.form.setFieldsValue({assetSum: val})
       },
       details: function () {
@@ -519,7 +519,7 @@
       this.organName = this.defaultOrganName
       this.organId = +this.defaultOrganId
       this.getAttachmentList(this.details.investOrderId)
-      
+
     }
   }
 </script>
@@ -568,7 +568,7 @@
         }
       }
     }
-    
+
   }
   .detailStyle{
       margin-left: 50px;

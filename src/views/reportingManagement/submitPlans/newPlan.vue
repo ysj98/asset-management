@@ -40,6 +40,7 @@
 									notFoundContent="没有查询到所属机构"
 									>
 									<a-select-option
+                    :title="item.name"
 										v-for="(item) in organIdData"
 										:key="item.value"
 										:value='item.value'>
@@ -90,7 +91,7 @@
 										placeholder="请选择呈报表单"
 										style="width: 200px"
 										v-model="reportBillId"
-										:options="reportBillData"
+										:options="$addTitle(reportBillData)"
 										:filterOption="filterOption"
                     @change="reportBillChange"
 									>
@@ -125,7 +126,7 @@
                 optionFilterProp="children"
 								@change="exePreSelectChange"
                 :style="allWidth"
-                :options="exePreData"
+                :options="$addTitle(exePreData)"
                 notFoundContent="没有查询到数据"
               />
 						</a-form-item>
@@ -138,14 +139,14 @@
 									optionFilterProp="children"
 									:style="{ width: '120px', marginRight: '10px' }"
 									class="mr10"
-									:options="beginMonthOpt"
+									:options="$addTitle(beginMonthOpt)"
 									notFoundContent="没有查询到数据"
 								/>
               <a-select showSearch placeholder="日"
                 v-decorator="['beginDay',{rules: [{required: true}], initialValue: '1'}]"
                 optionFilterProp="children"
                 :style="{ width: '70px'}"
-                :options="beginDayOpt"
+                :options="$addTitle(beginDayOpt)"
                 notFoundContent="没有查询到数据"
               />
             </a-form-item>
@@ -159,7 +160,7 @@
                 v-decorator="[ 'dayData',{ rules: [{required: true, message: '请输入任务执行期限'}], initialValue: dayData}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
-                :options="dayOpt"
+                :options="$addTitle(dayOpt)"
                 notFoundContent="没有查询到数据"
               />
 						</a-form-item>
@@ -173,7 +174,7 @@
                 v-decorator="[ 'preUnit',{ rules: [{required: true, message: '请输入提前生成任务时间'}],initialValue: preUnit}]"
                 optionFilterProp="children"
                 :style="{width: '95px'}"
-                :options="preUnitOpt"
+                :options="$addTitle(preUnitOpt)"
                 notFoundContent="没有查询到数据"
               />
 						</a-form-item>
@@ -198,8 +199,7 @@
 									placeholder="请选择填报人"
 									:open="false"
 									:style="{width: '100%'}"
-									:options="record.informantOpt"
-									@dropdownVisibleChange="tabSelectPerson(record, index, 'informant')"
+                  record.informantOpt									@dropdownVisibleChange="tabSelectPerson(record, index, 'informant')"
 									v-model="record.informant"
 								>
 									<div slot="dropdownRender" slot-scope="menu"></div>
@@ -215,7 +215,7 @@
 									placeholder="请选择审核人"
 									:open="false"
 									:style="{width: '100%'}"
-									:options="record.auditorOpt"
+									:options="$addTitle(record.auditorOpt)"
 									@dropdownVisibleChange="tabSelectPerson(record, index, 'auditor')"
 									v-model="record.auditor"
 								>
@@ -459,7 +459,7 @@ export default {
     // 呈报表单监听
     reportBillChange (value) {
       this.reportBillId = value
-      // 选择之前编辑的就用计划id查！切换别的就不穿计划id 
+      // 选择之前编辑的就用计划id查！切换别的就不穿计划id
       if (this.backupsReportBillId === value) {
         this.queryReportBillColumn(value, 'edit')
       } else {
@@ -551,7 +551,7 @@ export default {
         case '5':
           this.beginMonthOpt = oneQuarter
           this.beginDayOpt = beginDayOpt
-					break; 
+					break;
 			  case '6':
           this.beginMonthOpt = halfYear
           this.beginDayOpt = beginDayOpt
@@ -559,7 +559,7 @@ export default {
 				case '7':
           this.beginMonthOpt = oneHasYear
           this.beginDayOpt = beginDayOpt
-          break;     
+          break;
       }
       this.$nextTick(() => {
         if (str !== 'edit') {

@@ -14,7 +14,7 @@
           style="width: 100%"
           v-model="objectType"
           @change="fetchData"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
           placeholder="请选择资产类别"
           :getPopupContainer="
           (triggerNode) => {
@@ -270,7 +270,7 @@
           { title: '领用人', dataIndex: 'receiveUserName' },
         ]
           }
-      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.receiveDetailId) : value) 
+      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.receiveDetailId) : value)
       this.queryObjectType(String(assetType))
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
@@ -283,7 +283,7 @@
     watch: {
       assetType: function () {
           if(this.assetType != 1 && this.assetType != 2 && this.assetType != 4 ) {
-            
+
                this.columns = [
           { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
           { title: '资产编码', dataIndex: 'assetCode' },
@@ -298,7 +298,7 @@
       value: function (value) {
         this.selectedRowKeys = this.allAttrs ? value.map(i => i.receiveDetailId) : value
       },
-      
+
       selectedRowKeys: function (keys) {
         let {dataSource, allAttrs, selectedList, list} = this
         let primaryKeys = []

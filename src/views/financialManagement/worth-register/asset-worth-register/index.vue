@@ -34,7 +34,7 @@
           <a-col :span="6">
             <a-select
               v-bind="properties"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               v-model="organProjectType.projectId"
@@ -45,7 +45,7 @@
               mode="multiple"
               v-bind="properties"
               placeholder="请选择资产类型"
-              :options="assetTypeOptions"
+              :options="$addTitle(assetTypeOptions)"
               :filterOption="filterOption"
               v-model="organProjectType.assetType"
             />
@@ -56,7 +56,7 @@
               v-bind="properties"
               @change="queryTableData"
               v-model="approvalStatus"
-              :options="statusOptions"
+              :options="$addTitle(statusOptions)"
               placeholder="请选择登记单状态"
               :filterOption="filterOption"
             />
@@ -65,7 +65,7 @@
             <a-select
               mode="multiple"
               v-bind="properties"
-              :options="methodOptions"
+              :options="$addTitle(methodOptions)"
               class="assess_method_style"
               placeholder="请选择评估方法"
               :filterOption="filterOption"
@@ -132,7 +132,7 @@
               optionFilterProp="children"
               :style="allStyle"
               v-model="fileProjectId"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               :filterOption="filterOption"></a-select>
           </div>
           <div class="left-title">下载模板文件：</div>
@@ -252,7 +252,7 @@
         this.queryProjectByOrganId(organId)
         organId && this.queryTableData({})
       },
-      
+
       // 根据organId查询资产项目
       queryProjectByOrganId (organId) {
         organId && queryProjectListByOrganId(organId).then(list =>
@@ -399,7 +399,7 @@
         })
       },
     },
-    
+
     created () {
       this.queryAssetType()
       this.queryAssetMethod()
@@ -456,7 +456,7 @@
         key !== preKey && this.queryTableData ({pageNo, pageLength})
       }
     }
-    
+
   }
 </script>
 

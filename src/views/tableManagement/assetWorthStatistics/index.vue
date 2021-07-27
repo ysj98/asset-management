@@ -24,13 +24,13 @@
               :maxTagCount="1"
               style="width: 100%"
               @change="assetTypeChange"
-              :options="assetTypeOptions"
+              :options="$addTitle(assetTypeOptions)"
               v-model="queryObj.assetType"
               placeholder="请选择资产类型"
             />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.objectType" style="width: 100%" placeholder="请选择资产分类" :options="objectTypeOptions"/>
+            <a-select v-model="queryObj.objectType" style="width: 100%" placeholder="请选择资产分类" :options="$addTitle(objectTypeOptions)"/>
           </a-col>
         </a-row>
       </div>
@@ -42,19 +42,19 @@
               :maxTagCount="1"
               style="width: 100%"
               @change="statusChange"
-              :options="statusOptions"
+              :options="$addTitle(statusOptions)"
               v-model="queryObj.status"
               placeholder="请选择资产状态"
             />
           </a-col>
           <a-col :span="3">
-            <a-select v-model="queryObj.queryType" style="width: 100%" placeholder="请选择统计方式" :options="queryTypeOptions"/>
+            <a-select v-model="queryObj.queryType" style="width: 100%" placeholder="请选择统计方式" :options="$addTitle(queryTypeOptions)"/>
           </a-col>
           <a-col :span="3">
-            <a-select v-model="queryObj.startTime" style="width: 100%" placeholder="请选择开始时间" :options="startTimeOptions"/>
+            <a-select v-model="queryObj.startTime" style="width: 100%" placeholder="请选择开始时间" :options="$addTitle(startTimeOptions)"/>
           </a-col>
           <a-col :span="3" v-if="queryObj.queryType !== '0'">
-            <a-select v-model="queryObj.endTime" style="width: 100%" placeholder="请选择结束时间" :options="endTimeOptions"/>
+            <a-select v-model="queryObj.endTime" style="width: 100%" placeholder="请选择结束时间" :options="$addTitle(endTimeOptions)"/>
           </a-col>
           <a-col :span="3">
             <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="资产名称或编码"/>
@@ -68,7 +68,7 @@
             <a-select
               style="width: 100%"
               @change="generateSortFunc"
-              :options="dimensionOptions"
+              :options="$addTitle(dimensionOptions)"
               v-model="queryObj.dimension"
               placeholder="请选择统计维度"
             />
@@ -191,7 +191,7 @@
           this.objectTypeOptions = [{title: '全部资产分类', key: ''}].concat(list)
         })
       },
-      
+
       // 根据统计方式和统计维度生成列
       generateColumns ({queryType, startTime, endTime, dimension}, data) {
         const { columnsByAsset, fixedColumns, sortFunc, columnsByOrgan } = this
@@ -337,7 +337,7 @@
           this.$message.error(err || '查询统计出错')
         })
       },
-      
+
       // 生成结束时间选项
       generateEndTimeOption () {
         const { queryObj: {queryType, startTime, endTime} } = this
@@ -425,11 +425,11 @@
         },
         deep: true
       },
-      
+
       'queryObj.queryType': function () {
         this.generateEndTimeOption()
       },
-      
+
       'queryObj.startTime': function () {
         this.generateEndTimeOption()
       },

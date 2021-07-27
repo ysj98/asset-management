@@ -1,11 +1,11 @@
 <!--
  * 组织机构-资产项目-楼栋-联动组件
- 
+
  * 需求背景描述
    1>组织机构：加载当前用户所拥有的组织机构权限，默认展示最高层级的组织机构，可点击进行修改，单选
    2>资产项目：可多选，取值所选组织机构下所有的资产项目，支持按照资产项目名称模糊搜索，默认全部资产项目，可修改，展示格式：$资产项目名称$+（$资产项目编码$），如资产项目001（ZCXM001）
    3>楼栋名称：可多选，取值所选组织机构对应的企业（一级物业公司）下所有的楼栋，支持按照楼栋名称模糊搜索，默认全部楼栋
-   
+
  * 外层组件可通过定义在省控件上的class[.organ_style, .project_style, .building_style]用 /deep/ 控制布局样式
 -->
 <template>
@@ -20,7 +20,7 @@
           v-model="projectId"
           v-bind="properties"
           class="project_style"
-          :options="projectOptions"
+          :options="$addTitle(projectOptions)"
           placeholder="请选择资产项目"
           :filterOption="filterOption"
           :loading="loading && !projectOptions.length"
@@ -32,7 +32,7 @@
           v-bind="properties"
           class="building_style"
           placeholder="请选择楼栋"
-          :options="buildingOptions"
+          :options="$addTitle(buildingOptions)"
           :filterOption="filterOption"
           :loading="loading && !buildingOptions.length"
         ></a-select>

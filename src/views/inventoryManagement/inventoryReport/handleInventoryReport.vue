@@ -14,7 +14,7 @@
                 :style="allStyle"
                 placeholder="请选择盘点任务"
                 :open="showInventoryTaskModal"
-                :options="inventoryTaskOptions"
+                :options="$addTitle(inventoryTaskOptions)"
                 @dropdownVisibleChange="dropdownVisibleChange"
                 v-if="editable"
                 v-decorator="['taskId',

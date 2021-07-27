@@ -39,7 +39,7 @@
               :maxTagCount="1"
               style="width: 100%"
               placeholder="请选择资产状态"
-              :options="statusOptions"
+              :options="$addTitle(statusOptions)"
             />
           </a-col>
           <a-col :span="5">
@@ -49,7 +49,7 @@
               style="width: 100%"
               v-model="categoryId"
               placeholder="请选择资产分类"
-              :options="categoryOptions"
+              :options="$addTitle(categoryOptions)"
               @change="categoryChange"
             />
           </a-col>
@@ -63,7 +63,7 @@
               v-model="useType"
               style="width: 100%"
               @change="useTypeChange"
-              :options="useTypeOptions"
+              :options="$addTitle(useTypeOptions)"
               placeholder="请选择用途"
             />
           </a-col>
@@ -87,7 +87,7 @@
                 show-search
                 v-model="ownershipUse"
                 style="width: 100%"
-                :options="ownershipUseOPt"
+                :options="$addTitle(ownershipUseOPt)"
                 placeholder="权属用途"
               />
             </a-col>
@@ -396,8 +396,8 @@
         console.log(form)
         if(type === 'exportAssetBtn'){
           this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
-            if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res1.data.message) }  
-            if(+res1.data.code === 0){      
+            if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res1.data.message) }
+            if(+res1.data.code === 0){
           this.$api.assets[api[type]](form).then(res => {
           this[type] = false
           if (res.status === 200 && res.data && res.data.size) {
@@ -415,11 +415,11 @@
           this.$message.error(err || '导出失败')
         })
             }
-            
+
           } )
         }else{
             this.$api.assets[api[type]](form).then(res => {
-          if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res.data.message) }    
+          if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res.data.message) }
           this[type] = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
@@ -436,9 +436,9 @@
           this.$message.error(err || '导出失败')
         })
         }
-        
+
       },
-      
+
       // 转物业、转运营
       handleTransform (type) {
         // type && this.$router.push('www.baidu.com')

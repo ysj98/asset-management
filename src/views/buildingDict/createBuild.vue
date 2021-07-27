@@ -28,7 +28,7 @@
                         placeholder="请选择项目"
                         showSearch
                         optionFilterProp="children"
-                        :options="communityIdOpt"
+                        :options="$addTitle(communityIdOpt)"
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
@@ -84,7 +84,7 @@
                         placeholder="请选择楼栋类型"
                         showSearch
                         optionFilterProp="children"
-                        :options="buildTypeOpt"
+                        :options="$addTitle(buildTypeOpt)"
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
@@ -100,7 +100,7 @@
                         placeholder="请选择楼栋用途"
                         showSearch
                         optionFilterProp="children"
-                        :options="useTypeOpt"
+                        :options="$addTitle(useTypeOpt)"
                         :allowClear="true"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
@@ -126,7 +126,7 @@
                         placeholder="请选择建筑结构"
                         showSearch
                         optionFilterProp="children"
-                        :options="buildStructOpt"
+                        :options="$addTitle(buildStructOpt)"
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
@@ -158,7 +158,7 @@
                         :getPopupContainer="getPopupContainer"
                         showSearch
                         optionFilterProp="children"
-                        :options="provinceOpt"
+                        :options="$addTitle(provinceOpt)"
                         :allowClear="false"
                         @change="cityOrRegionChange($event, 'province')"
                         :filterOption="filterOption"
@@ -171,7 +171,7 @@
                         :getPopupContainer="getPopupContainer"
                         showSearch
                         optionFilterProp="children"
-                        :options="cityOpt"
+                        :options="$addTitle(cityOpt)"
                         v-model="city"
                         :allowClear="false"
                         @change="cityOrRegionChange($event, 'city')"
@@ -186,7 +186,7 @@
                         optionFilterProp="children"
                         v-model="region"
                         @change="cityOrRegionChange($event, 'region')"
-                        :options="regionOpt"
+                        :options="$addTitle(regionOpt)"
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
@@ -263,7 +263,7 @@
                       <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" type="all" v-model="filepaths"/>
                     </a-form-item>
                   </a-col>
-            </a-row>  
+            </a-row>
           </a-form>
         </div>
     </div>
@@ -473,7 +473,7 @@ export default {
                   this.$message.error(res.data.message)
                 }
               })
-              
+
             }, () => {
               this.DE_Loding(loadingName).then(res => {
                 this.$SG_Message.error('新增失败！')
@@ -494,7 +494,7 @@ export default {
                 } else {
                   this.$message.error(res.data.message)
                 }
-              }) 
+              })
             }, () => {
               this.DE_Loding(loadingName).then(res => {
                 this.$SG_Message.error('编辑失败！')

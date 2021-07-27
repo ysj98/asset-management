@@ -20,7 +20,7 @@
         <a-select
           v-bind="properties"
           v-model="reportBillId"
-          :options="billList"
+          :options="$addTitle(billList)"
           placeholder="呈报表单"
           :filterOption="filterOption"
         />
@@ -29,7 +29,7 @@
         <a-select
           v-bind="properties"
           v-model="taskType"
-          :options="typeOptions"
+          :options="$addTitle(typeOptions)"
           placeholder="任务类型"
           :filterOption="filterOption"
         />
@@ -38,7 +38,7 @@
         <a-select
           v-bind="properties"
           v-model="taskStatus"
-          :options="statusOptions"
+          :options="$addTitle(statusOptions)"
           placeholder="任务状态"
           :filterOption="filterOption"
         />

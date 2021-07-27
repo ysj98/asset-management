@@ -47,7 +47,7 @@
       <a-select
         allowClear
         showSearch
-        :options="userOptions"
+        :options="$addTitle(userOptions)"
         placeholder="请选择使用人"
         v-decorator="['ownerUser']"
         :filterOption="filterOption"
@@ -113,7 +113,7 @@
         this.ownerOrgan = organId
         this.queryUser(organId)
       },
-      
+
       // 提交数据
       handleSubmit (resolve, reject) {
         const { ownerOrgan, details: {assetHouseId} } = this

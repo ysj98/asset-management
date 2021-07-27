@@ -18,7 +18,7 @@
           :tokenSeparators="[',']"
           placeholder="全部状态"
           v-model="queryCondition.approvalStatus"
-          :options="approvalStatusData"
+          :options="$addTitle(approvalStatusData)"
           @select="changeStatus"
         ></a-select>
         <a-input-search placeholder="报告名称" :style="allStyle" v-model="queryCondition.reportName" @search="queryClick" />

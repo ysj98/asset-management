@@ -13,7 +13,7 @@
           </a-col>
           <a-col :span="8">
             <a-form-item label="资产项目" :label-col="labelCol" :wrapper-col="wrapperCol">
-              <a-select showSearch style="width: 100%;" :options="projectOptions"
+              <a-select showSearch style="width: 100%;" :options="$addTitle(projectOptions)"
                 placeholder="请选择资产项目" :filterOption="filterOption" @change="changeSelect"
                 v-decorator="['projectId', {rules: [{required: true, message: '请选择资产项目'}]}]"
               />
@@ -21,7 +21,7 @@
           </a-col>
           <a-col :span="8">
             <a-form-item label="资产类型" :label-col="labelCol" :wrapper-col="wrapperCol">
-              <a-select style="width: 100%;" placeholder="请选择资产类型" :options="typeOptions" @change="changeSelect"
+              <a-select style="width: 100%;" placeholder="请选择资产类型" :options="$addTitle(typeOptions)" @change="changeSelect"
                 v-decorator="['assetType', {rules: [{required: true, message: '请选择资产类型'}]}]"
               />
             </a-form-item>
@@ -155,7 +155,7 @@
     methods: {
       // 下拉搜索筛选
       filterOption,
-      
+
       // 改变资产项目或资产类型，清空关联的登记单
       changeSelect () {
         this.selectedList = []
@@ -199,7 +199,7 @@
           }
         }
       },
-      
+
       // 根据资产登记单查询资产明细
       queryAssetByRegistId ({pageNo = 1, pageLength = 10}) {
         const { selectedList } = this

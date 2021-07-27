@@ -9,7 +9,7 @@
         <SG-Button style="line-height: 32px; font-weight: bold" type="primary">选择全部</SG-Button>
       </a-col>
       <a-col :span="15" style="text-align: right">
-        <a-select  style="width: 160px" placeholder="全部资产分类" :options="typeOptions" @change="changeSelect"
+        <a-select  style="width: 160px" placeholder="全部资产分类" :options="$addTitle(typeOptions)" @change="changeSelect"
                 v-decorator="['assetType', {rules: [{required: true, message: '请选择资产类型'}]}]"
               />
         <a-input-search

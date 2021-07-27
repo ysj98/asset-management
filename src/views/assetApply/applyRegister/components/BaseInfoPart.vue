@@ -43,7 +43,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
-            :options="projectOptions"
+            :options="$addTitle(projectOptions)"
             :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
@@ -59,7 +59,7 @@
             v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             placeholder="请选择资产类型"
-            :options="typeOptions"
+            :options="$addTitle(typeOptions)"
             @change="value => setData(value, 'assetType')"
             :getPopupContainer="
           (triggerNode) => {
@@ -110,7 +110,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'receiveUserName')"
             placeholder="请选择领用人"
-            :options="staffList"
+            :options="$addTitle(staffList)"
             :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
@@ -165,7 +165,7 @@
         </a-form-item>
       </a-col>
     </a-row>
-    
+
   </a-form>
   </div>
 </template>
@@ -223,13 +223,13 @@
           reject('数据不完整')
         })
       },
-      
+
       // 渲染数据
       renderDetail () {
         const {type, details} = this
         const {
           approvalStatusName,  assetType,  assetTypeName, attachmentList, createByName, createTime,
-          detaList, organId, organName, projectId,  projectName, receiveArea, receiveDate, receiveId, 
+          detaList, organId, organName, projectId,  projectName, receiveArea, receiveDate, receiveId,
           receiveName, receiveOrganId, receiveOrganName, receiveUserName, remark, returnDate, receiveUserId
         } = details
         let attachArr = (attachmentList || []).map(m => {
@@ -250,7 +250,7 @@
           })
         } else {
          formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '', 
+            remark: remark || '',
             projectId: projectName,
             assetType: assetTypeName,
              receiveUserName, receiveOrganName
@@ -259,7 +259,7 @@
           return this.form.setFieldsValue({ ...formatDetails })
       },
 
-      // 查询平台字典      
+      // 查询平台字典
         queryDict () {
           const list = [
           { code: 'asset_type', tip: '资产类型', optionName: 'typeOptions' },
@@ -280,7 +280,7 @@
           })
         })
       },
-  
+
 
       // 查询评估机构-机构字典
       queryOrganOptions () {
@@ -319,7 +319,7 @@
           this.$message.error(err || '查询资产项目失败')
         })
       },
-      
+
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
@@ -346,9 +346,9 @@
           this.form.setFieldsValue({ receiveUserName: value, receiveUserId: id })
           this.$emit('setData', { [type]: value, receiveUserId: +id})
         }
-        
+
       },
-      
+
       // 单独校验资产项目是否选择
       validateProject () {
         this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
@@ -368,7 +368,7 @@
           })
            return this.form.setFieldsValue({ receiveUserName: '' })
         })
-      } 
+      }
     },
     mounted () {
       this.renderDetail()
@@ -379,8 +379,8 @@
         if(this.type == 'edit'){
                 this.queryStaff(this.details.organId)
         }
-        
-        
+
+
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }

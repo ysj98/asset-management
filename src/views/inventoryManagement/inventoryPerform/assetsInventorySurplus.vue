@@ -33,14 +33,16 @@
             <a-col class="playground-col" :span="12">
               <a-form-item v-bind="formItemLayout" label="资产类型：">
                 <a-select :style="allWidth" placeholder="请选择资产类型" v-model="newCardData.assetType" @change="assetTypeFn">
-                  <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+                  <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
            <a-col class="playground-col" :span="12">
               <a-form-item v-bind="formItemLayout" label="资产分类">
                   <a-select :style="allWidth" placeholder="请选择资产分类" v-model="newCardData.assetClassify">
-                    <a-select-option v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+                    <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">
+                      {{item.name}}
+                    </a-select-option>
                   </a-select>
               </a-form-item>
             </a-col>
@@ -79,7 +81,7 @@
         </a-row>
     </div>
   </div>
-  </SG-Modal>  
+  </SG-Modal>
   </div>
 </template>
 

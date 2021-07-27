@@ -25,7 +25,7 @@
         :defaultActiveFirstOption="false"
         :dropdownMatchSelectWidth="false"
         :style="inputStyple"
-        :options="organOpt"
+        :options="$addTitle(organOpt)"
         :allowClear="false"
         :filterOption="filterOption"
         notFoundContent="没有查询到数据"
@@ -40,12 +40,12 @@
         @search="handleSearch"
         optionFilterProp="children"
         :style="inputStyple"
-        :options="buildOpt"
+        :options="$addTitle(buildOpt)"
         :allowClear="true"
         :filterOption="false"
         notFoundContent="没有查询到数据"
         />
-        </div> 
+        </div>
         <div class="export-item">
         <!-- 单元 -->
         <a-select
@@ -54,7 +54,7 @@
         v-model="unitId"
         optionFilterProp="children"
         :style="inputStyple"
-        :options="unitOpt"
+        :options="$addTitle(unitOpt)"
         :allowClear="true"
         :filterOption="filterOption"
         notFoundContent="没有查询到数据"

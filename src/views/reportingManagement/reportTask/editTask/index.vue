@@ -27,7 +27,7 @@
         <a-select
           v-bind="properties"
           v-model="reportBillId"
-          :options="billList"
+          :options="$addTitle(billList)"
           placeholder="呈报表单"
           :filterOption="filterOption"
         />
@@ -36,7 +36,7 @@
         <a-select
           v-bind="properties"
           v-model="taskType"
-          :options="typeOptions"
+          :options="$addTitle(typeOptions)"
           placeholder="任务类型"
           :filterOption="filterOption"
         />
@@ -45,7 +45,7 @@
         <a-select
           v-bind="properties"
           v-model="taskStatus"
-          :options="statusOptions"
+          :options="$addTitle(statusOptions)"
           placeholder="任务状态"
           :filterOption="filterOption"
         />
@@ -144,7 +144,7 @@
         properties: { mode: 'multiple', allowClear: true, showSearch: true, maxTagCount: 1, style: 'width: 100%' } // 查询表单控件公共属性
       }
     },
-    
+
     mounted () {
       // 初始化计划开始及结束日期值, 默认最近60天数据
       Object.assign(this, {
@@ -156,7 +156,7 @@
 
     methods: {
       moment,
-      
+
       // 查询统计信息
       queryStatistics (form) {
         this.$api.reportManage.queryTaskStatistics(form).then(r => {
@@ -235,7 +235,7 @@
           this.taskStatus = val[0] === 'all' ? val.filter(m => m !== 'all') : 'all'
         }
       },
-      
+
       reportBillId: function (val) {
         const {billList} = this
         if (val.length === billList.length || (val.length === billList.length - 1 && !val.includes('all'))) {

@@ -6,7 +6,7 @@
         <!--全选-->
       <!--</a-checkbox>-->
     <!--</div>-->
-    <a-checkbox-group :options="options" v-model="checkedList"/>
+    <a-checkbox-group :options="$addTitle(options)" v-model="checkedList"/>
   </div>
 </template>
 
@@ -33,7 +33,7 @@
     //     })
     //   },
     // },
-    
+
     // watch: {
     //   // 处理单项选择
     //   checkedList (list) {
@@ -41,7 +41,7 @@
     //     this.indeterminate = !!list.length && list.length < this.options.length;
     //   },
     // },
-    
+
     computed: {
       options: function () {
         return this.columns.map(item => {
@@ -55,7 +55,7 @@
         }).filter(m => m.value !== 'action')
       }
     },
-    
+
     mounted () {
       // 初始化值
       const {checkedArr} = this

@@ -23,7 +23,7 @@
                     showSearch
                     @change="watchOrganChange"
                     optionFilterProp="children"
-                    :options="organOpt"
+                    :options="$addTitle(organOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -43,7 +43,7 @@
                     @search="handleSearch"
                     showSearch
                     optionFilterProp="children"
-                    :options="buildOpt"
+                    :options="$addTitle(buildOpt)"
                     :allowClear="false"
                     :filterOption="false"
                     notFoundContent="没有查询到数据"
@@ -62,7 +62,7 @@
                     :disabled="type==='edit'"
                     showSearch
                     optionFilterProp="children"
-                    :options="unitOpt"
+                    :options="$addTitle(unitOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -79,7 +79,7 @@
                     placeholder="请选择楼层"
                     showSearch
                     optionFilterProp="children"
-                    :options="floorOpt"
+                    :options="$addTitle(floorOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -159,7 +159,7 @@
                     showSearch
                     @change="watchHouseCategory"
                     optionFilterProp="children"
-                    :options="houseCategoryOpt"
+                    :options="$addTitle(houseCategoryOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -176,7 +176,7 @@
                     placeholder="请选择房间类型"
                     showSearch
                     optionFilterProp="children"
-                    :options="houseTypeOpt"
+                    :options="$addTitle(houseTypeOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -193,7 +193,7 @@
                     placeholder="请选择房间用途"
                     showSearch
                     optionFilterProp="children"
-                    :options="resTypeOpt"
+                    :options="$addTitle(resTypeOpt)"
                     :allowClear="true"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"

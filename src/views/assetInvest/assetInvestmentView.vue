@@ -14,12 +14,12 @@
             <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.assetTypeList" :options="assetTypeOptions"
+            <a-select v-model="queryObj.assetTypeList" :options="$addTitle(assetTypeOptions)"
               v-bind="selectProperty" placeholder="请选择资产类型"
             />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.investStatusList" :options="investStatusOptions"
+            <a-select v-model="queryObj.investStatusList" :options="$addTitle(investStatusOptions)"
               v-bind="selectProperty" placeholder="请选择投资状态"
             />
           </a-col>
@@ -34,12 +34,12 @@
       <div slot="contentForm" style="margin-top: 18px">
         <a-row :gutter="8">
           <a-col :span="4">
-            <a-select v-model="queryObj.objectTypeList" :options="objectTypeOptions"
+            <a-select v-model="queryObj.objectTypeList" :options="$addTitle(objectTypeOptions)"
               v-bind="selectProperty" placeholder="请选择资产分类"
             />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="queryObj.approvalStatusList" :options="approveStatusOptions"
+            <a-select v-model="queryObj.approvalStatusList" :options="$addTitle(approveStatusOptions)"
               v-bind="selectProperty" placeholder="请选择审批状态"
             />
           </a-col>

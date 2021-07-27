@@ -15,7 +15,7 @@
           style="width: 100%"
           v-model="assetType"
           @change="queryData()"
-          :options="assetTypeOptions"
+          :options="$addTitle(assetTypeOptions)"
           placeholder="请选择资产类型"
         />
       </a-col>
@@ -24,7 +24,7 @@
           style="width: 100%"
           v-model="objectType"
           @change="queryData()"
-          :options="objectTypeOptions"
+          :options="$addTitle(objectTypeOptions)"
           placeholder="请选择资产类别"
         />
       </a-col>

@@ -29,7 +29,7 @@
           <!--<a-select-->
             <!--v-decorator="['assessmentTask', { rules: [{ required: true, message: '请选择所属评估任务' }] }]"-->
             <!--placeholder="请选择所属评估任务"-->
-            <!--:options="taskOptions"-->
+            <!--:options="$addTitle(taskOptions)"-->
           <!--/>-->
         <!--</a-form-item>-->
       <!--</a-col>-->
@@ -44,7 +44,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'projectId')"
             placeholder="请选择资产项目"
-            :options="projectOptions"
+            :options="$addTitle(projectOptions)"
           />
         </a-form-item>
       </a-col>
@@ -56,7 +56,7 @@
             v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             placeholder="请选择资产类型"
-            :options="typeOptions"
+            :options="$addTitle(typeOptions)"
             @change="value => setData(value, 'assetType')"
           />
         </a-form-item>
@@ -81,7 +81,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'assessmentMethodName')"
             placeholder="请选择评估方法"
-            :options="methodOptions"
+            :options="$addTitle(methodOptions)"
           />
         </a-form-item>
       </a-col>
@@ -94,7 +94,7 @@
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'assessmentOrganName')"
             placeholder="请选择评估机构"
-            :options="organOptions"
+            :options="$addTitle(organOptions)"
           />
         </a-form-item>
       </a-col>
@@ -197,7 +197,7 @@
           reject('数据不完整')
         })
       },
-      
+
       // 渲染数据
       renderDetail () {
         const {type, details} = this
@@ -290,7 +290,7 @@
           this.$message.error(err || '查询资产项目失败')
         })
       },
-      
+
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
@@ -305,7 +305,7 @@
         }
         this.$emit('setData', { [type]: value})
       },
-      
+
       // 单独校验资产项目是否选择
       validateProject () {
         this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
@@ -313,7 +313,7 @@
         })
       }
     },
-    
+
     mounted () {
       this.renderDetail()
       if (this.type == 'add' || this.type == 'edit') {

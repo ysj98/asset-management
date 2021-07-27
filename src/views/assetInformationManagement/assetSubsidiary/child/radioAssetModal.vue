@@ -19,13 +19,13 @@
           <treeSelect v-if="!organId" @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input v-else :style="allStyle" :disabled="true" :value="organName" placeholder="组织机构"/>
           <a-select :getPopupContainer="getPopupContainer" :style="allStyle" placeholder="全部资产项目" v-model="projectId">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :getPopupContainer="getPopupContainer" :style="allStyle" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :getPopupContainer="getPopupContainer" :style="allStyle" placeholder="全部资产类别" v-model="objectType">
-            <a-select-option v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input :style="allStyle" v-model="assetNameCode" placeholder="资产名称/编码"/>
           <SG-Button type="primary" @click="queryClick">查询</SG-Button>
@@ -52,7 +52,7 @@
           />
         </div>
       </div>
-    </div>  
+    </div>
   </SG-Modal>
 </template>
 <script>
@@ -287,7 +287,7 @@ export default {
         assetType: this.assetType,   // 资产类型
         objectType: this.objectType,  // 资产类别
         assetNameCode: this.assetNameCode,  // 资产名称/编码
-        queryType: Number(this.queryType),   // 查询类型 1 资产变动，2 资产清理 3 权属登记，4资产处置登记 5附属配套 
+        queryType: Number(this.queryType),   // 查询类型 1 资产变动，2 资产清理 3 权属登记，4资产处置登记 5附属配套
         pageSize: this.paginator.pageLength,
         pageNum: this.paginator.pageNo
       }

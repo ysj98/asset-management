@@ -14,7 +14,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -25,7 +25,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
           }
@@ -36,7 +36,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.investNameOrIdOrContractCode" placeholder="投资单名称/投资单编号/合同编号" maxlength="30" style="width: 220px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
@@ -50,7 +50,7 @@
             return triggerNode.parentNode || document.body
           }
           ">
-            <a-select-option v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            <a-select-option :title="item.name" v-for="(item, index) in investStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         <div class="box">
             <SG-DatePicker :allowClear="true" label="签订日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
@@ -160,7 +160,7 @@ const columns = [
     title: '合同编号',
     dataIndex: 'contractCode'
   },
-  
+
   {
     title: '合同状态',
     dataIndex: 'investStatusName'
@@ -485,7 +485,7 @@ export default {
         }
 
       })
-      
+
     },
      // 删除项目
       confirmDelete (registerId) {
@@ -577,7 +577,7 @@ export default {
     changeAssetClassify (value) {
       this.$nextTick(function () {
         this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyOptions)
-        
+
       })
     },
     // 状态发生变化
@@ -638,7 +638,7 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-      
+
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {
@@ -697,11 +697,11 @@ export default {
     display: inline-block;
     // vertical-align: middle;
     margin-right: 10px;
-    
+
   }
   .action_text{
     color: black !important;
-  }  
+  }
   .nav {
     display: inline-block;
     vertical-align: middle;

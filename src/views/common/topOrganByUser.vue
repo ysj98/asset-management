@@ -16,6 +16,7 @@
       :placeholder="hasAll?'全部公司': '所选公司'"
       >
         <a-select-option
+          :title="item.name"
           v-for="(item) in options"
           :key="item.value"
           :value='item.value'>

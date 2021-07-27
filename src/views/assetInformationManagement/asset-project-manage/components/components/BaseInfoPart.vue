@@ -38,7 +38,7 @@
           <a-form-item label="来源方式" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择来源方式' : ''"
-              :options="typeOptions" @change="getSourceType"
+              :options="$addTitle(typeOptions)" @change="getSourceType"
               v-decorator="['sourceType', {initialValue: undefined, rules: [{required: true, message: '请选择来源方式'}]}]"
             />
           </a-form-item>
@@ -47,7 +47,7 @@
           <a-form-item label="是否接管" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择是否接管' : ''"
-              :options="takeOverOptions" @change="getTakeOver"
+              :options="$addTitle(takeOverOptions)" @change="getTakeOver"
               v-decorator="['takeOver', {initialValue: undefined, rules: [{required: true, message: '请选择是否接管'}]}]"
             />
           </a-form-item>
@@ -72,7 +72,7 @@
           <a-form-item label="接管时资产状态" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择资产状态' : ''"
-              :options="takeOverStatusOptions" v-decorator="['takeoverAssetStatus', {initialValue: undefined}]"
+              :options="$addTitle(takeOverStatusOptions)" v-decorator="['takeoverAssetStatus', {initialValue: undefined}]"
             />
           </a-form-item>
         </a-col>
@@ -294,7 +294,7 @@
           </a-form-item>
         </a-col>
       </a-row>
-      
+
     </div>
   </a-form>
   </a-spin>
@@ -340,7 +340,7 @@
       }, // 根据来源方式动态展示的日期格式的字段,用于处理详情和提交操作中格式转换
     }
   },
-  
+
   methods: {
     // 查询编码规则
     getProjectCode () {
@@ -432,8 +432,8 @@
           Object.assign(this, {
             takeOver,
             receiver,
-            trusteeshipArea, 
-            actualReceiveArea, 
+            trusteeshipArea,
+            actualReceiveArea,
             actualUsableArea,
             sourceType,
             attachment: attachArr,
@@ -474,7 +474,7 @@
         this.$message.error(err || '查询资产项目详情出错')
       })
     },
-    
+
     // 初始化复制
     initAction (type) {
       if (!type) { return false }
@@ -511,7 +511,7 @@
     this.initAction(this.type || 'show')
     queryPlatformDict('TAKEOVER_ASSET_STATUS').then(list => this.takeOverStatusOptions = list)
   },
-  
+
   watch: {
     // 防止审核和编辑操作权限同时存在时切换页面不刷新编辑状态
     type: function (type) {

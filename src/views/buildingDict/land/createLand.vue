@@ -69,7 +69,7 @@
                     placeholder="请选择项目"
                     showSearch
                     optionFilterProp="children"
-                    :options="communityIdOpt"
+                    :options="$addTitle(communityIdOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -121,7 +121,7 @@
                       :getPopupContainer="getPopupContainer"
                       showSearch
                       optionFilterProp="children"
-                      :options="provinceOpt"
+                      :options="$addTitle(provinceOpt)"
                       :allowClear="false"
                       @change="cityOrRegionChange($event, 'province')"
                       :filterOption="filterOption"
@@ -142,7 +142,7 @@
                       :getPopupContainer="getPopupContainer"
                       showSearch
                       optionFilterProp="children"
-                      :options="cityOpt"
+                      :options="$addTitle(cityOpt)"
                       v-model="city"
                       :allowClear="false"
                       @change="cityOrRegionChange($event, 'city')"
@@ -157,7 +157,7 @@
                       optionFilterProp="children"
                       v-model="region"
                       @change="cityOrRegionChange($event, 'region')"
-                      :options="regionOpt"
+                      :options="$addTitle(regionOpt)"
                       :allowClear="false"
                       :filterOption="filterOption"
                       notFoundContent="没有查询到数据"
@@ -206,7 +206,7 @@
                     placeholder="请选择土地类型"
                     showSearch
                     optionFilterProp="children"
-                    :options="landTypeOpt"
+                    :options="$addTitle(landTypeOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -233,7 +233,7 @@
                     placeholder="请选择土地用途分类"
                     showSearch
                     optionFilterProp="children"
-                    :options="landuseTypeOpt"
+                    :options="$addTitle(landuseTypeOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -260,7 +260,7 @@
                     placeholder="请选择土地用途"
                     showSearch
                     optionFilterProp="children"
-                    :options="landuseOpt"
+                    :options="$addTitle(landuseOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
@@ -354,7 +354,7 @@
                     placeholder="请选择有无围墙"
                     showSearch
                     optionFilterProp="children"
-                    :options="wallTypeOpt"
+                    :options="$addTitle(wallTypeOpt)"
                     :allowClear="false"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"

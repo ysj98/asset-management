@@ -1,5 +1,5 @@
 <!--
- * @Description: 
+ * @Description:
  * @Date: 2020-02-17 18:49:15
  * @LastEditTime: 2020-03-11 09:59:25
  -->
@@ -29,7 +29,7 @@
               v-model="queryCondition.projectId"
               optionFilterProp="children"
               :style="allStyle"
-              :options="projectIdOpt"
+              :options="$addTitle(projectIdOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -44,7 +44,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allStyle"
-              :options="assetTypeListOpt"
+              :options="$addTitle(assetTypeListOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -69,7 +69,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allWidth"
-              :options="assetStatusListOpt"
+              :options="$addTitle(assetStatusListOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -84,7 +84,7 @@
               mode="multiple"
               :maxTagCount="1"
               :style="allWidth"
-              :options="matchingTypeListOpt"
+              :options="$addTitle(matchingTypeListOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -96,7 +96,7 @@
               v-model="queryCondition.status"
               optionFilterProp="children"
               :style="allWidth"
-              :options="statusOpt"
+              :options="$addTitle(statusOpt)"
               :allowClear="false"
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
@@ -152,7 +152,7 @@
             optionFilterProp="children"
             :style="allStyle"
             v-model="upLoadInfo.projectId"
-            :options="assetProjectOptions"
+            :options="$addTitle(assetProjectOptions)"
             :filterOption="filterOption"></a-select>
         </div>
         <div class="upLoad-content-li">
@@ -161,7 +161,7 @@
           <a-select
             placeholder="请选择资产类型"
             v-model="upLoadInfo.assetType"
-            :options="assetTypeOptions"
+            :options="$addTitle(assetTypeOptions)"
             :style="allStyle"></a-select>
         </div>
         <div class="left-title">下载模板文件：</div>
@@ -366,7 +366,7 @@ export default {
       assetTypeOptions: []
     };
   },
-  
+
   watch: {
     '$route' () {
       if (this.$route.path === '/subsidiary' && this.$route.query.refresh) {
@@ -407,7 +407,7 @@ export default {
       data.assetTypeList = utils.deepClone(data.assetTypeList).filter(item => item !== '')
       data.assetStatusList = utils.deepClone(data.assetStatusList).filter(item => item !== '')
       data.matchingTypeList = utils.deepClone(data.matchingTypeList).filter(item => item !== '')
-      
+
       this.table.loading = true;
       this.$api.subsidiary.getListPage(data).then(
         res => {
@@ -439,7 +439,7 @@ export default {
     },
     // 生成操作按钮
     createOperationBtn (record) {
-      // 审批状态   
+      // 审批状态
       let arr = []
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_EDIT_SUBSI)) {
         arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
@@ -630,7 +630,7 @@ export default {
       this.$api.assets.downBatchModle(params).then(res => {
         this.$SG_Message.destroy(loadingName)
         // if (Number(res.data.code) === 0) {
-          
+
         // } else {
         //   this.$SG_Message.error(res.data.message)
         // }
@@ -662,7 +662,7 @@ export default {
             this.$refs.eportAndDownFile.visible = false
             this.$SG_Message.success('导入成功！')
             this.query()
-          }) 
+          })
         } else {
           this.DE_Loding(loadingName).then(() => {
             this.$refs.eportAndDownFile.visible = true

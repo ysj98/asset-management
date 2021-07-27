@@ -30,7 +30,7 @@
             <a-select
               showSearch
               style="width: 100%;"
-              :options="projectOptions"
+              :options="$addTitle(projectOptions)"
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               @change="getId($event, 'projectId')"
@@ -45,7 +45,7 @@
             <a-select
               style="width: 100%;"
               placeholder="请选择表单"
-              :options="billOptions"
+              :options="$addTitle(billOptions)"
               @change="getId($event, 'reportBillId')"
               v-decorator="['reportBillId', {rules: [{required: true, message: '请选择表单'}]}]"
             />
@@ -249,7 +249,7 @@
           })
         })
       },
-      
+
       // 校验必填项
       validateFields (resolve) {
         this.form.validateFieldsAndScroll((err, values) => {

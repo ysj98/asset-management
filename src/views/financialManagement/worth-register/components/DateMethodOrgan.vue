@@ -7,7 +7,7 @@
         <!--<a-select-->
           <!--v-bind="properties"-->
           <!--v-model="assessmentMethod"-->
-          <!--:options="methodOptions"-->
+          <!--:options="$addTitle(methodOptions)"-->
           <!--class="assess_method_style"-->
           <!--placeholder="请选择评估方法"-->
           <!--:filterOption="filterOption"-->
@@ -18,7 +18,7 @@
         <a-select
           v-bind="properties"
           v-model="assessmentOrgan"
-          :options="organOptions"
+          :options="$addTitle(organOptions)"
           class="assess_organ_style"
           placeholder="请选择评估机构"
           :filterOption="filterOption"
