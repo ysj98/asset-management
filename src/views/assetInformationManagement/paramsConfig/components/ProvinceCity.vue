@@ -5,9 +5,9 @@
 <template>
   <div class="choose_area">
     <a-row :gutter="8">
-      <a-col :span="8">
+      <a-col :span="4">
         <a-select
-          :disabled="!isValid"
+          @change="handleChangeProvince"
           v-model="province"
           v-bind="properties"
           :options="$addTitle(provinces)"
@@ -17,9 +17,8 @@
           :loading="loading && !provinces.length"
         ></a-select>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="4">
         <a-select
-          :disabled="!isValid"
           v-model="city"
           v-bind="properties"
           :options="$addTitle(cities)"
@@ -37,14 +36,19 @@
 export default {
   name: "ProvinceCity",
   props: {
-    isValid: {
-      type: Number,
-      default: 0
-    },
-    // 支持v-model,向外传递一个对象 { province, city }
-    valueObj: {
+    test: {
       type: Object,
-      default: () => ({})
+      default() {
+        return {};
+      }
+    },
+    paramKey: {
+      type: String,
+      default: ""
+    },
+    subKey: {
+      type: String,
+      default: ""
     },
     // 是否可搜索
     showSearch: {
@@ -64,6 +68,7 @@ export default {
   },
   data() {
     return {
+      isChange: false,
       loading: false, // 加载状态
       province: undefined,
       provinces: [],
@@ -74,6 +79,10 @@ export default {
   },
 
   methods: {
+    handleChangeProvince() {
+      console.log("change");
+      this.isChange = true;
+    },
     // 搜索过滤选项
     filterOption(input, option) {
       return (
@@ -85,28 +94,35 @@ export default {
 
     // 查询省市区接口
     queryData(type, parentRegionId) {
-      this.loading = true;
-      const api = {
-        provinces: "queryProvinceList",
-        cities: "queryCityAndAreaList"
-      };
-      let form = type === "provinces" ? {} : { parentRegionId };
-      this.$api.basics[api[type]](form)
-        .then(r => {
-          this.loading = false;
-          let res = r.data;
-          if (res && String(res.code) === "0") {
-            this[type] = (res.data || []).map(item => {
-              return { key: item.regionId, title: item.name };
-            });
-            return false;
-          }
-          throw res.message || "区域查询失败";
-        })
-        .catch(err => {
-          this.loading = false;
-          this.$message.error(err || "区域查询失败");
-        });
+      return new Promise((resolve, reject) => {
+        this.loading = true;
+        const api = {
+          provinces: "queryProvinceList",
+          cities: "queryCityAndAreaList"
+        };
+        let form = type === "provinces" ? {} : { parentRegionId };
+        this.$api.basics[api[type]](form)
+          .then(r => {
+            this.loading = false;
+            let res = r.data;
+            if (res && String(res.code) === "0") {
+              this[type] = (res.data || []).map(item => {
+                return { key: item.regionId, title: item.name };
+              });
+              resolve();
+              return false;
+            }
+            let errorMsg = res.message || "区域查询失败";
+            reject(errorMsg);
+            throw errorMsg;
+          })
+          .catch(err => {
+            let errorMsg = err || "区域查询失败";
+            this.loading = false;
+            this.$message.error(errorMsg);
+            reject(errorMsg);
+          });
+      });
     },
     // 外层控制主动清除
     allClearFn() {
@@ -135,21 +151,22 @@ export default {
   },
 
   created() {
-    console.log("created阶段");
-    const { allowClear, size, showSearch, valueObj, subKey, paramKey } = this;
+    const { allowClear, size, showSearch, subKey, paramKey } = this;
     this.properties = { allowClear, size, showSearch };
-
-    this.city = subKey;
-    this.province = paramKey;
-    Object.assign(this, { ...valueObj });
-    this.queryData("provinces");
+    this.queryData("provinces").then(() => {
+      this.city = subKey || undefined;
+      this.province = paramKey || undefined;
+    });
   },
   watch: {
     province: function(province) {
-      Object.assign(this, {
-        city: undefined,
-        cities: []
-      });
+      // 如果没有 paramKey 则说明不需要回显（此时是否清空 city 无所谓），如果有则需要回显，如果有但是 isChange 已经改变 此时也是需要清空 city 的
+      if (!this.paramKey || this.isChange) {
+        Object.assign(this, {
+          city: undefined,
+          cities: []
+        });
+      }
       province && this.queryData("cities", province);
     }
   }

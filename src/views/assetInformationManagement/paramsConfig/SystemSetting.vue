@@ -31,11 +31,11 @@
       <!-- 参数值 -->
       <template #value="text,record,index">
         <component
-          :ref="record.serviceType"
           v-if="record.isValid"
+          :ref="record.serviceType"
           :is="serviceTypeAll[record.serviceType].component"
           @sendData="handleSendData(record, $event)"
-          v-bind="record"
+          v-bind="record.customServiceParamSet"
           :isValid="record.isValid"
         ></component>
       </template>
@@ -88,7 +88,7 @@ export default {
   },
   watch: {},
   methods: {
-    async getTableData(test) {
+    async getTableData() {
       // let responseData = await this.$api.paramsConfig.querySysSet({
       //   organId: this.organId
       // });
@@ -130,7 +130,7 @@ export default {
       }
       return this.tData.map(ele => {
         const { isValid, serviceType } = ele;
-        let keyTitle = "deaultServiceParamSet";
+        let keyTitle = "defaultServiceParamSet";
         if (isValid) keyTitle = "customServiceParamSet";
         // 现在就这几个 key
         return {
@@ -144,7 +144,7 @@ export default {
   },
   mounted() {
     console.log("加载");
-    this.getTableData();
+    // this.getTableData();
   }
 };
 </script>
