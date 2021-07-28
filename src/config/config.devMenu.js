@@ -89,6 +89,10 @@ export default [
         title: '资产分类设置',
         path: '/assetClassSet'
       },
+      {
+        title: '其他参数',
+        path: '/paramsConfig'
+      },
     ]
   },
   {

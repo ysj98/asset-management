@@ -30,6 +30,7 @@ import * as publicCode from './publicCode'
 import * as useManage from './useManage'
 import * as assetRent from './assetRent'
 import * as assetInvest from './assetInvest'
+import * as paramsConfig from './paramsConfig'
 const API = {
   auth,
   global,
@@ -49,6 +50,7 @@ const API = {
   useManage,
   assetRent,
   assetInvest,
+  paramsConfig
 }
 export default {
   install (Vue) {

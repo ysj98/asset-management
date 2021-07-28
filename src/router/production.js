@@ -142,6 +142,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/paramsConfig',
+    name: '其他参数',
+    component: () => import('@/views/assetInformationManagement/paramsConfig/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/assetProjectManage',
     name: '资产项目管理',
     component: () => import('@/views/assetInformationManagement/asset-project-manage'),
@@ -1036,6 +1044,11 @@ let proRouter = [{
     path: '/returnRegister/approval',
     name: '归还登记审批',
     component: () => import('@/views/assetApply/returnRegister/DetailPage')
+  },
+  {
+    path: '/applyRegister/approval',
+    name: '领用登记审批',
+    component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
   {
     path: '/applyRegister/approval',

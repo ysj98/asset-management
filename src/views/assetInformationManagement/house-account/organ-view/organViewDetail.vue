@@ -37,7 +37,7 @@
       />
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
-        :pageLength="queryCondition.pageSize"
+        :pageLength="querytDataCondition.pageSize"
         :totalCount="table.totalCount"
         :location="footerOpt.location"
         :noPageTools="footerOpt.noPageTools"

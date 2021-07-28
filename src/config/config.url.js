@@ -1192,3 +1192,10 @@ export const assetRepair = {
   exportMaintain: '/ams/assetMaintain/exportMaintain',
 }
 
+// 参数配置
+export const paramsConfig = {
+  // 组织机构系统设置查询
+  querySysSet: '/mock/ams/basicSettings/querySysSet',
+  // 组织机构系统设置查询
+  paramsSave: '/mock/ams/basicSettings/save',
+}
