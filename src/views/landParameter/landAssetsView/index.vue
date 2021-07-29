@@ -18,6 +18,19 @@
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
+          <a-select
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部来源方式"
+            :tokenSeparators="[',']"
+            @select="changeSource"
+            v-model="queryCondition.source"
+          >
+            <a-select-option :title="item.name" v-for="(item) in sourceOptions" :key="item.key" :value="item.key">
+              {{ item.title }}
+            </a-select-option>
+          </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.statuss">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -98,6 +111,7 @@ import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
+import {querySourceType} from "@/views/common/commonQueryApi";
 const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
@@ -115,6 +129,7 @@ const columnsData = [
   { title: '容积率', dataIndex: 'landRate', width: 150 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 150 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '来源方式', dataIndex: 'source', width: 150, defaultHide: true },
   { title: '使用期限', dataIndex: 'validPeriod', width: 150 },
   { title: '接管日期', dataIndex: 'takeOverDate', width: 150 },
   { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
@@ -153,7 +168,8 @@ const queryCondition =  {
   pageNum: 1,         // 当前页
   pageSize: 10,       // 每页显示记录数
   address: '',         // 地理位置
-  landCategory: ''
+  landCategory: '',
+  source:''            // 来源方式
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
@@ -197,6 +213,12 @@ export default {
         '1': '有证',
         '2': '待办',
       },
+      sourceOptions:[
+        {
+          key: '',
+          title: '全部来源方式'
+        }
+      ],
       projectData: [
         {
           name: '全部资产项目',
@@ -281,7 +303,8 @@ export default {
     },
     // 列表设置
     listSet () {
-      this.listValue = this.columns.map(item => {
+      // 默认不显示来源方式,
+      this.listValue = this.columns.filter(ele=>!ele.defaultHide).map(item => {
         return item.dataIndex
       })
       this.modalShow = true
@@ -290,6 +313,8 @@ export default {
       let arr = []
       columnsData.forEach(item => {
         if (this.listValue.includes(item.dataIndex)) {
+          // 当做过列表设置确定操作之后,判断默认不展示的属性删除掉,按照旧有逻辑进行
+          delete item.defaultHide
           arr.push(item)
         }
       })
@@ -306,6 +331,7 @@ export default {
       this.queryCondition.objectTypes = ''
       this.queryCondition.useType = ''
       this.getObjectKeyValueByOrganIdFn()
+      this.getSourceOptions()
       this.getListFn()
       this.allQuery()
       this.queryLandUseList()
@@ -347,6 +373,14 @@ export default {
         }
       })
     },
+    async getSourceOptions(){
+      let organId = this.queryCondition.organId
+      this.sourceOptions = []
+      this.queryCondition.source = ''
+      querySourceType(organId, this).then(list => {
+        return this.sourceOptions = [{ key: '', title: '全部来源方式' }].concat(list)
+      })
+    },
     // 资产分类列表
     getListFn () {
       if (!this.queryCondition.organId) {
@@ -386,6 +420,12 @@ export default {
     projectIdFn (value) {
       this.$nextTick(function () {
         this.queryCondition.projectId = this.handleMultipleSelectValue(value, this.queryCondition.projectId, this.projectData)
+      })
+    },
+    // 来源方式
+    changeSource(value){
+      this.$nextTick(function () {
+        this.queryCondition.source = this.handleMultipleSelectValue(value, this.queryCondition.source, this.sourceOptions)
       })
     },
     // 状态发生变化
@@ -455,7 +495,8 @@ export default {
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize,         // 每页显示记录数
         landCategory: this.queryCondition.landCategory,
-        address: this.address           // 详细地址
+        address: this.address,           // 详细地址
+        source: this.alljudge(this.queryCondition.source)
       }
       this.$api.land.assetView(obj).then(res => {
         if (Number(res.data.code) === 0) {
