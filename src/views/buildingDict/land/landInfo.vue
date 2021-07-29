@@ -21,16 +21,9 @@
           </SG-Button>
         </div>
 
-        <div>
+        <div style="overflow: visible">
           <!-- 公司 -->
-          <topOrganByUser
-            @change="organIdChange"
-            :formStyle="allWidth"
-            v-model="queryCondition.organId"
-            :hasAll="false"
-            :selectFirst="true"
-          />
-
+          <treeSelect  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
           <!-- 全部运营项目-->
           <a-select
             showSearch
@@ -118,26 +111,24 @@ import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from "@/components/segiIcon.vue";
 import { utils } from "@/utils/utils";
-import topOrganByUser from "@/views/common/topOrganByUser";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
 import {
   operationTypes,
   allStyle,
-  allWidth,
   columns,
   queryCondition,
   communityIdOpt,
   landTypeOpt,
   landuseOpt,
 } from "./dict.js";
+const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
     TreeSelect,
     noDataTips,
     segiIcon,
     OperationPopover,
-    topOrganByUser,
   },
   data() {
     return {
@@ -290,12 +281,13 @@ export default {
       });
     },
     // orangId改变
-    organIdChange(o) {
-      console.log("一级物业改变", o);
-      this.organName = o.name;
-      if (!o.value) {
+    organIdChange(organId,organName) {
+      console.log("一级物业改变", organId);
+      this.organName = organName;
+      if (!organId) {
         return;
       }
+      this.queryCondition.organId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
       if (this.landTypeOpt.length === 1) {

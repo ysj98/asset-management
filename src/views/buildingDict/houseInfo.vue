@@ -5,7 +5,7 @@
  -->
 <template>
   <div class="houseInfo-page pb70">
-    <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
+    <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0, overflow: 'visible'}">
       <div slot="headerBtns">
         <SG-Button
           class="mr10"
@@ -33,13 +33,7 @@
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <!-- 公司 -->
-          <topOrganByUser
-            @change="organIdChange"
-            :formStyle="allWidth"
-            v-model="queryCondition.organId"
-            :hasAll="false"
-            :selectFirst="true"
-          />
+          <treeSelect  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
           <!-- 楼栋 -->
           <a-select
             showSearch
@@ -196,7 +190,7 @@ import houseDataImport from "./child/houseDataImport.vue";
 import downErrorFile from "@/views/common/downErrorFile";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
-
+import TreeSelect from '../common/treeSelect'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const allWidth = {
   width: "170px",
@@ -300,7 +294,8 @@ export default {
     eportAndDownFile,
     houseDataImport,
     downErrorFile,
-    noDataTips
+    noDataTips,
+    TreeSelect
   },
   data() {
     return {
@@ -476,17 +471,17 @@ export default {
       this.queryCondition.resType = "";
       this.queryCondition.status = "";
     },
-    // orangId改变
-    organIdChange(o) {
+    // organId改变
+    organIdChange(organId,organName) {
       // 如果第一次进来为子页面
       if (this.formChildPage) {
         this.formChildPage = false;
         return;
       }
-      console.log("一级物业改变", o);
-      this.organName = o.name;
-      if (o.value) {
-        this.watchOrganChange(o.value);
+      this.organName = organName;
+      if (organId) {
+        this.queryCondition.organId = organId
+        this.watchOrganChange(organId);
         this.searchQuery();
       }
     },

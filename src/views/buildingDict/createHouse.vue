@@ -14,7 +14,8 @@
           </div>
           <div class="form-content">
             <a-row>
-              <a-col :span="8">
+              <!-- 新建房屋 取消选择公司名称的功能 -->
+              <a-col v-if="type==='edit'" :span="8">
                 <a-form-item label="公司名称" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
