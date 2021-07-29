@@ -3,7 +3,7 @@
  * @Date: 2020-07-10 17:11:45
  * @LastEditTime: 2020-11-10 15:53:45
  * @Description: file content
- */ 
+ */
 
 //  -------- 房屋 ----------------------------------
 // 房屋列表
@@ -17,6 +17,7 @@ export const columnsData = [
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '来源方式', dataIndex: 'source', width: 150 },
   { title: '装修情况', dataIndex: 'decorationSituation', width: 200 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
@@ -47,13 +48,13 @@ export const judgmentData = [
   { title: '装修情况', dataIndex: 'decorationSituation', required: true, fontLength: 30 },
   { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float132' },
   { title: '市场价值', dataIndex: 'marketValue', required: false, type: 'float' },
-  { title: '转运营日期', dataIndex: 'transferOperationTime', required: false, date: true },   //  type: 'number', 
+  { title: '转运营日期', dataIndex: 'transferOperationTime', required: false, date: true },   //  type: 'number',
   { title: '转运营面积', dataIndex: 'transferOperationArea', required: true, type: 'float' },
   { title: '闲置面积', dataIndex: 'idleArea', required: true, type: 'float' },
   { title: '自用面积', dataIndex: 'selfUserArea', required: true, type: 'float' },
   { title: '占用面积', dataIndex: 'occupationArea', required: true, type: 'float' },
   { title: '其他面积', dataIndex: 'otherArea', required: true, type: 'float' },
-  { title: '转物业日期', dataIndex: 'transferTime', required: false, date: true }, //  type: 'number', 
+  { title: '转物业日期', dataIndex: 'transferTime', required: false, date: true }, //  type: 'number',
   { title: '转物业面积', dataIndex: 'transferArea', required: false, type: 'float' },
   { title: '使用期限(月)', dataIndex: 'validPeriod', required: false, type: 'number' },
   { title: '开始使用日期', dataIndex: 'startDate', required: false, date: true },  // type: 'number',
@@ -80,13 +81,13 @@ export const landCheck = [
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float132' },
   { title: '市场价值', dataIndex: 'marketValue', required: false, type: 'float' },
-  { title: '转运营日期', dataIndex: 'transferOperationTime', required: false, date: true },   //  type: 'number', 
+  { title: '转运营日期', dataIndex: 'transferOperationTime', required: false, date: true },   //  type: 'number',
   { title: '转运营面积', dataIndex: 'transferOperationArea', required: true, type: 'float' },
   { title: '闲置面积', dataIndex: 'idleArea', required: true, type: 'float' },
   { title: '自用面积', dataIndex: 'selfUserArea', required: true, type: 'float' },
   { title: '占用面积', dataIndex: 'occupationArea', required: true, type: 'float' },
   { title: '其他面积', dataIndex: 'otherArea', required: true, type: 'float' },
-  { title: '转物业日期', dataIndex: 'transferTime', required: false, date: true }, //  type: 'number', 
+  { title: '转物业日期', dataIndex: 'transferTime', required: false, date: true }, //  type: 'number',
   { title: '转物业面积', dataIndex: 'transferArea', required: false, type: 'float' },
   { title: '使用期限(月)', dataIndex: 'validPeriod', required: false, type: 'number' },
   { title: '开始使用日期', dataIndex: 'startDate', required: false, date: true },  // type: 'number',
@@ -110,6 +111,7 @@ export const landData = [
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
+  { title: '来源方式', dataIndex: 'source', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}

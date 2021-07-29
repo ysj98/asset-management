@@ -315,6 +315,9 @@ export const baseChangeTwo = [{
   title: '装修',
   dataIndex: 'oldDecorationSituation',
 }, {
+  title: '来源方式',
+  dataIndex: 'oldSource',
+}, {
   title: '变更后资产名称',
   dataIndex: 'newAssetName',
   align: 'center',
@@ -333,6 +336,12 @@ export const baseChangeTwo = [{
   scopedSlots: { customRender: 'newDecorationSituation' },
   width: 120
 }, {
+  title: '变更后来源方式',
+  dataIndex: 'newSource',
+  align: 'center',
+  scopedSlots: { customRender: 'newSource' },
+  width: 120
+},{
   title: '操作',
   dataIndex: 'operation',
   align: 'center',

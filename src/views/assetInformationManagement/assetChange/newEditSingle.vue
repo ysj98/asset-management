@@ -401,6 +401,14 @@
             >
               <a-input size="small" maxlength="200" v-model="record.newDecorationSituation" />
             </template>
+            <template v-if="changeType === '7'" slot="newSource" slot-scope="text, record">
+              <a-select
+                style="width: 100%"
+                v-model="record.newSource"
+                placeholder="请选择资产来源方式"
+                :options="$addTitle(sourceOptions)"
+              />
+            </template>
             <!-- 债权债务 -->
             <template v-if="changeType === '8'" slot="newCreditorAmount" slot-scope="text, record">
               <a-input-number
@@ -479,6 +487,7 @@ import { utils, calc, debounce } from "@/utils/utils.js";
 
 import moment from "moment";
 import { columns } from '../../buildingDict/land/dict';
+import {querySourceType} from "@/views/common/commonQueryApi";
 const newEditSingleData = {
   title: "", // 登记单名称
   changeType: undefined, // 变更类型
@@ -513,6 +522,7 @@ export default {
   props: {},
   data() {
     return {
+      sourceOptions:[], // 来源方式
       changeOrderId: "",
       scroll: {y: 450, x: 1600},
       organId: "",
@@ -597,6 +607,7 @@ export default {
     this.setType = this.$route.query.setType;
   },
   mounted() {
+    this.getSourceOptions()
     this.getObjectKeyValueByOrganIdFn();
     this.platformDictFn("asset_change_type");
     this.platformDictFn("asset_type");
@@ -611,6 +622,17 @@ export default {
     }
   },
   methods: {
+    /*
+    * 获取来源方式
+    * */
+    async getSourceOptions(){
+      let organId = this.organId
+      this.sourceOptions = []
+      this.source = []
+      querySourceType(organId, this).then(list => {
+        return this.sourceOptions = list
+      })
+    },
     // 编辑获取接口
     editFn() {
       let obj = {
@@ -778,6 +800,10 @@ export default {
                 this.$message.info("变更后资产编码");
                 return;
               }
+              if (!this.tableData[i].newSource) {
+                this.$message.info("变更后来源方式");
+                return;
+              }
             } else if (String(this.changeType) === "8") {
               if (!this.tableData[i].newCreditorAmount) {
                 this.$message.info("请选择变更后债权金额");
@@ -825,6 +851,8 @@ export default {
                 String(this.changeType) === "7" ? item.newAssetName : "", // 变更后资产名称
               newAssetCode:
                 String(this.changeType) === "7" ? item.newAssetCode : "", // 变更后资产编码
+              newSource:
+                String(this.changeType) === "7" ? item.newSource : "", // 变更后来源方式
               decorationSituation:
                 String(this.changeType) === "7" &&
                 ["1"].includes(String(this.assetType))
