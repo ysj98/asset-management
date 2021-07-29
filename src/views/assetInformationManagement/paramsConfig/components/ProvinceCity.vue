@@ -141,7 +141,6 @@ export default {
     sendData() {
       if (this.handleValidate()) {
         const { province, city } = this;
-        console.log("province, city", province, city);
         this.$emit("sendData", { paramKey: province, subKey: city });
       } else {
         // console.log("校验未通过,请选择省市");

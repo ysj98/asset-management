@@ -5,6 +5,7 @@
       :data-source="tData"
       :rowKey="record => record.serviceType"
       :pagination="false"
+      :loading="loadingFlag"
     >
       <!-- 序号 -->
       <template #index="row,record,index">
@@ -81,6 +82,7 @@ export default {
   name: "SystemSetting",
   data() {
     return {
+      loadingFlag: true, // table loadingFlag
       serviceTypeAll,
       columns,
       tData: []
@@ -97,10 +99,12 @@ export default {
       //   this.tData = [];
       //   return null;
       // }
+      this.loadingFlag = true;
       let res = mockData.filter(ele => {
         return approveServiceType.includes(ele.serviceType);
       });
       this.tData = utils.deepClone(res);
+      this.loadingFlag = false;
     },
     /*
      * payload {subKey:city,paramKey:province}
@@ -144,7 +148,7 @@ export default {
   },
   mounted() {
     console.log("加载");
-    // this.getTableData();
+    this.getTableData();
   }
 };
 </script>

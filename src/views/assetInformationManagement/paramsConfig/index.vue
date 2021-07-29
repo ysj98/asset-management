@@ -99,9 +99,10 @@ export default {
     // 点击树节点改变
     checkTreeChange(value) {
       this.organId = value.organId;
-      this.$refs.tab.forEach(ele => {
-        ele.getTableData("test");
-      });
+      //TODO: 在这里 对table绑定的数据进行初始化就不会加载出来内容,暂时不知道为什么
+      // this.$refs.tab.forEach(ele => {
+      //   ele.getTableData("test");
+      // });
     }
   }
 };
