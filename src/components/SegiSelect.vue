@@ -30,7 +30,6 @@ export default {
   },
   methods: {
     handleSelectValue(one, two) {
-      debugger;
       console.log(one, two);
       this.$emit("input");
     }
