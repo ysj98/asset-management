@@ -1,12 +1,7 @@
-<!--
- * @Date: 2019-11-08 17:40:33
- * @Author: chen han
- * @Description: 建筑物位置->楼栋，单元，楼层，选择组件
- -->
 <template>
   <div class="custom-tree building-tree">
     <div class="tree-search" v-if="searchAble">
-      <a-input placeholder="请输入建筑物进行查询" v-model="searchValueInput" @input="onChange">
+      <a-input placeholder="请输入组织机构" v-model="searchValueInput" @input="onChange">
         <a-icon slot="suffix" style="cursor: pointer;" type="search" @click="onChange"/>
       </a-input>
     </div>
@@ -33,10 +28,6 @@
 </template>
 <script>
 import {utils} from '@/utils/utils'
-// 位置类型，1：建筑类，2：公共区域，3：停车场 4 土地
-// 当位置类型为2时，0：表示公共区域，1：公共区域位置
-// 当位置类型为3时，0：表示车场，1：表示车场区域，2：停车位
-// 当位置类型为4时，0：表示土地
 
 let getUuid = ((uuid = 1) => () => ++uuid)()
 // 递归找到对应的id 挂在子节点
@@ -53,15 +44,6 @@ function fetchItem(data = [], id, type){
   }
   return false
 }
-// 写死顶层项
-const topItem = {
-  key: getUuid(),
-  type: 'top',
-  id: ' ',
-  organId: '-1',
-  title: '楼栋列表',
-  scopedSlots: { title: 'title' }
-}
 export default {
   props: {
     // 是否可搜索
@@ -69,11 +51,15 @@ export default {
       type: Boolean,
       default: true
     },
+    typeFilter:{
+      type: String,
+      default: ''
+    }
   },
   watch: {
   },
   mounted () {
-    this.positionSelectAsyn()
+    this.queryAsynOrganByUserId()
   },
   data () {
     return {
@@ -162,7 +148,7 @@ export default {
     },
     // 重新加载
     resetLoad () {
-      this.positionSelectAsyn()
+      this.queryAsynOrganByUserId()
     },
     hanldSelect () {
     },
@@ -179,12 +165,11 @@ export default {
       console.log(treeNode)
       let data = {
         parentOrganId: treeNode.dataRef.id,
+        typeFilter: this.typeFilter
       }
-      return this.queryPositionListByParId(data, treeNode.dataRef.key)
+      return this.queryAsynOrganByUserIdSon(data, treeNode.dataRef.key)
     },
-    // 一级机构id 请求楼栋
-    positionSelectAsyn () {
-      // this.emptyTreeData()
+    queryAsynOrganByUserId () {
       let data = {
         parentOrganId: '',
       }
@@ -211,8 +196,7 @@ export default {
         }
       })
     },
-    // 根据位置id请求位置
-    queryPositionListByParId (data = {}, key) {
+    queryAsynOrganByUserIdSon (data = {}, key) {
       return this.$api.assets.queryAsynOrganByUserId(data).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []

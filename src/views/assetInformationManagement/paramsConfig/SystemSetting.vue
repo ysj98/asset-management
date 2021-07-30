@@ -48,8 +48,6 @@
 // 显示在当前tab的 approveServiceType
 const approveServiceType = [1001, 1003];
 import { serviceTypeAll } from "./serviceTypeAll";
-import { mockData } from "./data";
-import { utils } from "@/utils/utils.js";
 const columns = [
   {
     key: "index",
@@ -80,6 +78,12 @@ export default {
    * 系统设置 tab
    * */
   name: "SystemSetting",
+  props:{
+    organId:{
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       loadingFlag: true, // table loadingFlag
@@ -91,19 +95,12 @@ export default {
   watch: {},
   methods: {
     async getTableData() {
-      // let responseData = await this.$api.paramsConfig.querySysSet({
-      //   organId: this.organId
-      // });
-      // console.log("responseData", responseData);
-      // if (test === "test") {
-      //   this.tData = [];
-      //   return null;
-      // }
       this.loadingFlag = true;
-      let res = mockData.filter(ele => {
-        return approveServiceType.includes(ele.serviceType);
+      let responseData = await this.$api.paramsConfig.querySysSet({
+        organId: this.organId
       });
-      this.tData = utils.deepClone(res);
+      console.log("responseData", responseData);
+      this.tData = responseData.data.data
       this.loadingFlag = false;
     },
     /*
@@ -120,7 +117,8 @@ export default {
       // 过滤掉 不在approveServiceType 中的  ref
       let resObj = {};
       approveServiceType.forEach(ele => {
-        if (ele in this.$refs) {
+        // $refs 不是响应式的,过滤掉 ref 为 undefined 的
+        if ((ele in this.$refs) && this.$refs[ele] ) {
           resObj[ele] = this.$refs[ele];
         }
       });

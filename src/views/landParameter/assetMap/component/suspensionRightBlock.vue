@@ -92,7 +92,6 @@ import organTreeSelect from "./organTreeSelect"
 import {
   columns,
   arrkeys,
-  dataIndexs,
   getColumns,
   getDataIndexs,
 } from "../lib/dict.js"
@@ -151,8 +150,8 @@ export default {
       console.log("provinceLabel", provinceLabel, cityLabel)
       return [
         this.queryCondition.organName,
-        provinceLabel.label,
-        cityLabel.label,
+        provinceLabel && provinceLabel.label,
+        cityLabel && cityLabel.label,
       ]
     },
   },
@@ -161,6 +160,43 @@ export default {
     this.queryProvinceList()
   },
   methods: {
+    /*
+    * 省市 code 转成 label
+    * 301 => 北京
+    * */
+    codeToLabel(type, code) {
+      let res = null
+      if (type === 'province') {
+        res = this.provinceOpt.find(
+          (item) => item.value === code
+        )
+      }
+      if (type === 'city') {
+        res = this.cityOpt.find(
+          (item) => item.value === code
+        )
+      }
+      return res && res.label
+    },
+    // 获取默认位置
+    async getDefaultLocation(organId){
+      let { data: { data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        // 参考 serviceTypeAll.js 文件
+        serviceType: 1001,
+        organId,
+      })
+      let defaultProvince = {
+        label: this.codeToLabel('province',data.paramKey),
+        value: data.paramKey
+      }
+      await this.handleSelectAdress('province',defaultProvince)
+      let defaultCity = {
+        label:  this.codeToLabel('city',data.subKey),
+        value: data.subKey
+      }
+      await this.handleSelectAdress('city',defaultCity)
+      console.log('responseData', data)
+    },
     query() {
       let data = {
         ...this.queryCondition,
@@ -207,7 +243,8 @@ export default {
     },
     // 拼接处导航栏
     // 选择省市区
-    handleSelectAdress(type, item) {
+    async handleSelectAdress(type, item) {
+
       let { label, value } = item
       console.log("选择省市区", type, item)
       if (type === "province") {
@@ -219,8 +256,8 @@ export default {
           province: value,
           city: "",
         })
-        ;(this.cityOpt = [{ ...cityOptFrist }]),
-          this.queryCityAndAreaList(value, type)
+        this.cityOpt = [{...cityOptFrist}]
+        await this.queryCityAndAreaList(value, type)
       }
       if (type === "city") {
         let flag = this.queryCondition.city === value
@@ -244,13 +281,14 @@ export default {
       this.query()
     },
     // 获取选择的组织机构
-    changeTree(organId, organName) {
+    async changeTree(organId, organName) {
       Object.assign(this.queryCondition, {
         organName,
         organId,
       })
       console.log("没有进来吗=>", organId, organName)
-      this.query()
+      await this.getDefaultLocation(organId)
+      await this.query()
     },
     // 平台字典
     platformDict(code) {
@@ -290,19 +328,23 @@ export default {
       })
     },
     // 请求市区
-    queryCityAndAreaList(parentRegionId, type) {
-      this.$api.basics.queryCityAndAreaList({ parentRegionId }).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data || []
-          let result = data.map((item) => {
-            return { label: item.name, value: item.regionId }
-          })
-          // 市
-          if (type === "province") {
-            this.cityOpt = result
-            this.cityOpt.unshift({ ...cityOptFrist })
+    async queryCityAndAreaList(parentRegionId, type) {
+      return new Promise(resolve => {
+        console.log('args',...arguments)
+        this.$api.basics.queryCityAndAreaList({ parentRegionId }).then((res) => {
+          if (res.data.code === "0") {
+            let data = res.data.data || []
+            let result = data.map((item) => {
+              return { label: item.name, value: item.regionId }
+            })
+            // 市
+            if (type === "province") {
+              this.cityOpt = result
+              this.cityOpt.unshift({ ...cityOptFrist })
+            }
+            resolve()
           }
-        }
+        })
       })
     },
   },

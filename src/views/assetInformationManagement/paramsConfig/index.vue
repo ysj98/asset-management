@@ -11,7 +11,12 @@
         <span class="top-title top-title-left">组织机构树</span>
       </div>
       <div class="tree-content">
-        <OrganTree @change="checkTreeChange" ref="positionTree" />
+        <!-- 过滤 部门 小组 -->
+        <OrganTree
+          type-filter="7,33"
+          @change="checkTreeChange"
+          ref="positionTree"
+        />
       </div>
     </div>
     <!-- 右边表格 -->
@@ -79,9 +84,9 @@ export default {
   },
   mounted() {},
   methods: {
-    doSave() {
-      let req = {
-        organId: "",
+    async doSave() {
+      let requestData = {
+        organId: this.organId,
         paramList: []
       };
       let tempArr = [];
@@ -91,9 +96,17 @@ export default {
       });
       // 保证每一个子组件都通过校验并返回了数据
       if (tempArr.every(ele => ele)) {
-        req.paramList = tempArr.flat();
+        requestData.paramList = tempArr.flat();
       } else {
         return null;
+      }
+      let {
+        data: { code, message }
+      } = await this.$api.paramsConfig.paramsSave(requestData);
+      if (code === "0") {
+        this.$message.success("保存成功");
+      } else {
+        this.$message.error(message||'保存失败');
       }
     },
     // 点击树节点改变
