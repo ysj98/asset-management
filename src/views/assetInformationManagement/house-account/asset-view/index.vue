@@ -36,7 +36,7 @@
                 mode="multiple"
                 :maxTagCount="1"
                 style="width: 100%"
-                v-model="source"
+                v-model="sourceModes"
                 placeholder="请选择资产分类"
                 :options="$addTitle(sourceOptions)"
                 @change="changeSource"
@@ -153,7 +153,7 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
-        source:[],  // 查询条件-来源方式
+        sourceModes:[],  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
         useType: [],           // 用途
@@ -199,7 +199,7 @@
             { title: '权属类型', dataIndex: 'kindOfRightName' },
             { title: '权属状态', dataIndex: 'ownershipStatusName' },
             { title: '权证号', dataIndex: 'warrantNbr' },
-            { title: '来源方式', dataIndex: 'source', width: 150, defaultHide: true },
+            { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
             { title: '接管时间', dataIndex: 'startDate' },
             { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
             { title: '自用(㎡)', dataIndex: 'selfUserArea' },
@@ -269,7 +269,7 @@
       changeSource(value){
         console.log('value', value)
         let lastIndex = value.length - 1
-        this.source = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+        this.sourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
       },
       // 全选与其他选项资产分类
       categoryChange (value) {
@@ -299,7 +299,7 @@
       // 根据organId查询来源方式
       async getSourceOptions(organId){
         this.sourceOptions = []
-        this.source = []
+        this.sourceModes = []
         querySourceType(organId, this).then(list => {
           return this.sourceOptions = [{ key: 'all', title: '全部来源方式' }].concat(list)
         })
@@ -329,7 +329,7 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId,
-          useType,source, address
+          useType,sourceModes, address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -340,7 +340,7 @@
           ownershipUse,
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
-          source: source.includes('all') ? '' : source.join(','),
+          sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
@@ -422,7 +422,7 @@
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
-          source: this.source.includes('all') ? '' : this.source.join(','),
+          sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
         }
         console.log(form)
         if(type === 'exportAssetBtn'){
@@ -523,6 +523,8 @@
       // 初始化Table列头
       let{ columns } = this.tableObj
       this.tableObj.initColumns = columns
+      // 默认不展示xx表头
+      this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
       // 初始化被选中的列头数据
       this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action')
     },

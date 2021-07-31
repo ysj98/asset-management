@@ -25,7 +25,7 @@
             placeholder="全部来源方式"
             :tokenSeparators="[',']"
             @select="changeSource"
-            v-model="queryCondition.source"
+            v-model="queryCondition.sourceModes"
           >
             <a-select-option :title="item.name" v-for="(item) in sourceOptions" :key="item.key" :value="item.key">
               {{ item.title }}
@@ -129,7 +129,7 @@ const columnsData = [
   { title: '容积率', dataIndex: 'landRate', width: 150 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 150 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
-  { title: '来源方式', dataIndex: 'source', width: 150, defaultHide: true },
+  { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
   { title: '使用期限', dataIndex: 'validPeriod', width: 150 },
   { title: '接管日期', dataIndex: 'takeOverDate', width: 150 },
   { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
@@ -169,7 +169,7 @@ const queryCondition =  {
   pageSize: 10,       // 每页显示记录数
   address: '',         // 地理位置
   landCategory: '',
-  source:''            // 来源方式
+  sourceModes:''            // 来源方式
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
@@ -304,7 +304,7 @@ export default {
     // 列表设置
     listSet () {
       // 默认不显示来源方式,
-      this.listValue = this.columns.filter(ele=>!ele.defaultHide).map(item => {
+      this.listValue = columnsData.filter(ele=>!ele.defaultHide).map(item => {
         return item.dataIndex
       })
       this.modalShow = true
@@ -376,7 +376,7 @@ export default {
     async getSourceOptions(){
       let organId = this.queryCondition.organId
       this.sourceOptions = []
-      this.queryCondition.source = ''
+      this.queryCondition.sourceModes = ''
       querySourceType(organId, this).then(list => {
         return this.sourceOptions = [{ key: '', title: '全部来源方式' }].concat(list)
       })
@@ -425,7 +425,7 @@ export default {
     // 来源方式
     changeSource(value){
       this.$nextTick(function () {
-        this.queryCondition.source = this.handleMultipleSelectValue(value, this.queryCondition.source, this.sourceOptions)
+        this.queryCondition.sourceModes = this.handleMultipleSelectValue(value, this.queryCondition.sourceModes, this.sourceOptions)
       })
     },
     // 状态发生变化
@@ -496,7 +496,7 @@ export default {
         pageSize: this.queryCondition.pageSize,         // 每页显示记录数
         landCategory: this.queryCondition.landCategory,
         address: this.address,           // 详细地址
-        source: this.alljudge(this.queryCondition.source)
+        sourceModes: this.alljudge(this.queryCondition.sourceModes)
       }
       this.$api.land.assetView(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -580,6 +580,7 @@ export default {
   created () {
   },
   mounted () {
+    this.columns = this.columns.filter(ele=>!ele.defaultHide)
   }
 }
 </script>
