@@ -29,7 +29,10 @@ export const Global = {
   // 文件上传
   fileUpload: '/uhomecp-app/common/oneFileUpload.json'
 }
-
+export const dataCenter = {
+  // 调用数据中心接口
+  dataCenter: '/ams/admin/common/dataCenter',
+}
 // 基础数据接口
 export const basics = {
   common: {
@@ -1195,7 +1198,9 @@ export const assetRepair = {
 // 参数配置
 export const paramsConfig = {
   // 组织机构系统设置查询
-  querySysSet: '/mock/ams/basicSettings/querySysSet',
+  querySysSet: '/ams/basicSettings/querySysSet',
   // 组织机构系统设置查询
-  paramsSave: '/mock/ams/basicSettings/save',
+  paramsSave: '/ams/basicSettings/save',
+  // 组织机构系统设置统一查询接口
+  queryParamsConfigDetail: '/ams/basicSettings/detail'
 }
