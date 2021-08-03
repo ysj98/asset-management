@@ -264,6 +264,10 @@ export const baseChange = [{
   title: '资产编码',
   dataIndex: 'assetCode',
   width: '10%'
+}, {
+  title: '来源方式',
+  dataIndex: 'oldSourceModeName',
+  width: '10%'
 },{
   title: '资产类型',
   dataIndex: 'assetTypeName',
@@ -288,6 +292,12 @@ export const baseChange = [{
   width: '10%',
   align: 'center',
   scopedSlots: { customRender: 'newAssetCode' }
+}, {
+  title: '变更后来源方式',
+  dataIndex: 'newSourceModeName',
+  align: 'center',
+  scopedSlots: { customRender: 'newSourceMode' },
+  width: 120
 }, {
   title: '操作',
   dataIndex: 'operation',
@@ -316,7 +326,7 @@ export const baseChangeTwo = [{
   dataIndex: 'oldDecorationSituation',
 }, {
   title: '来源方式',
-  dataIndex: 'oldSource',
+  dataIndex: 'oldSourceModeName',
 }, {
   title: '变更后资产名称',
   dataIndex: 'newAssetName',
@@ -337,9 +347,9 @@ export const baseChangeTwo = [{
   width: 120
 }, {
   title: '变更后来源方式',
-  dataIndex: 'newSource',
+  dataIndex: 'newSourceModeName',
   align: 'center',
-  scopedSlots: { customRender: 'newSource' },
+  scopedSlots: { customRender: 'newSourceMode' },
   width: 120
 },{
   title: '操作',

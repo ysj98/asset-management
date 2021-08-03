@@ -2,8 +2,8 @@
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
  * @LastEditTime: 2020-07-30 14:26:59
- * @Description: 登记单新建编辑
---> 
+ * @Description: 登记单新建编辑 新建登记单
+-->
 <template>
   <div class="newEditSingle">
     <!-- 登记单第一步信息 -->

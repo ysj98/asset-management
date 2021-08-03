@@ -1,6 +1,7 @@
 <!--
   新增: new
   编辑: edit
+  新建变更单
 -->
 <template>
   <div class="newEditSingle">
@@ -401,10 +402,11 @@
             >
               <a-input size="small" maxlength="200" v-model="record.newDecorationSituation" />
             </template>
-            <template v-if="changeType === '7'" slot="newSource" slot-scope="text, record">
+            <template v-if="changeType === '7'" slot="newSourceMode" slot-scope="text, record">
               <a-select
+                size="small"
                 style="width: 100%"
-                v-model="record.newSource"
+                v-model="record.newSourceMode"
                 placeholder="请选择资产来源方式"
                 :options="$addTitle(sourceOptions)"
               />
@@ -483,10 +485,9 @@ import {
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips";
-import { utils, calc, debounce } from "@/utils/utils.js";
+import {  calc, debounce } from "@/utils/utils.js";
 
 import moment from "moment";
-import { columns } from '../../buildingDict/land/dict';
 import {querySourceType} from "@/views/common/commonQueryApi";
 const newEditSingleData = {
   title: "", // 登记单名称
@@ -541,7 +542,8 @@ export default {
       tableData: [],
       organIdData: [], // 组织机构写死
       changeTypeData: [], // 变更类型
-      projectIdData: [], // 资产项目
+      projectList:[], // 资产项目 集合
+      projectIdData: [], // 资产项目id 集合
       assetTypeData: [], // 资产类型
       originalObjectTypeData, // 原值对象类型
       originalObjectIdData: [], // 原值对象值
@@ -710,7 +712,13 @@ export default {
               }
             }
             this.checkedData = [...checkedData];
-            this.tableData = data.assetDetailList;
+            this.tableData = data.assetDetailList.map(ele=>{
+              return {
+                ...ele,
+                // select 组件 数字 value 匹配不上,需转换 string 类型
+                newSourceMode: String(ele.newSourceMode)
+              }
+            });
             console.log(this.tableData, "拿到的数据");
           });
         } else {
@@ -800,7 +808,7 @@ export default {
                 this.$message.info("变更后资产编码");
                 return;
               }
-              if (!this.tableData[i].newSource) {
+              if (!this.tableData[i].newSourceMode) {
                 this.$message.info("变更后来源方式");
                 return;
               }
@@ -851,8 +859,8 @@ export default {
                 String(this.changeType) === "7" ? item.newAssetName : "", // 变更后资产名称
               newAssetCode:
                 String(this.changeType) === "7" ? item.newAssetCode : "", // 变更后资产编码
-              newSource:
-                String(this.changeType) === "7" ? item.newSource : "", // 变更后来源方式
+              newSourceMode:
+                String(this.changeType) === "7" ? item.newSourceMode : "", // 变更后来源方式
               decorationSituation:
                 String(this.changeType) === "7" &&
                 ["1"].includes(String(this.assetType))
@@ -904,9 +912,18 @@ export default {
     // 确定拿到数据
     status(val, data) {
       this.checkedData = [...val];
-      data.forEach((item, index) => {
+      data.forEach((item) => {
+        // 默认 取 资产项目的来源方式 如果需要在弹窗中展示 来源方式,这个就要后端去做了
+        let sourceModeName = item.sourceModeName
+        if(!sourceModeName){
+          let sourceType = this.projectList.find(ele=>ele.projectId === this.projectId).sourceType
+          sourceModeName = this.sourceOptions.find(ele=>ele.key === String(sourceType)).title
+        }
+
         item.key = item.assetId;
         item.oldDecorationSituation = item.decorationSituation;
+        // 弹窗中返回的是 sourceModeName 但是 columns 中绑定的是 oldSourceModeName,因为草稿状态 回显的时候需要这样
+        item.oldSourceModeName = sourceModeName
       });
       this.tableData = data;
       console.log("有走这里=>", this.tableData);
@@ -1330,6 +1347,7 @@ export default {
             });
           });
           this.projectIdData = [...arr];
+          this.projectList = data
         } else {
           this.$message.error(res.data.message);
         }

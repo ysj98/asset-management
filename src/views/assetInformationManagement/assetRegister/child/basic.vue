@@ -3,7 +3,7 @@
  * @Date: 2020-07-10 16:50:51
  * @LastEditTime: 2020-11-10 15:59:02
  * @Description: 房屋土地
---> 
+-->
 <template>
   <div class="sg-child-house">
     <!--数据总览-->
@@ -55,6 +55,7 @@ import noDataTips from '@/components/noDataTips'
 import {columnsData, judgmentData, landData, landCheck} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import bridge from './center'
+import {querySourceType} from "@/views/common/commonQueryApi";
 let getUuid = (() => {
   let uuid = 1
   return () => {
@@ -74,11 +75,13 @@ export default {
     },
     assetTypeId: {
       type: [String, Number],
-      default: '' 
+      default: ''
     }
   },
   data () {
     return {
+      sourceType: '',
+      sourceOptions:[], // 用来匹配 value
       keyUuid: getUuid(),
       count: '',
       footer: {
@@ -108,6 +111,7 @@ export default {
   created () {
   },
   mounted () {
+    this.getSourceOptions()
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
     this.assetType = String(this.assetTypeId)
@@ -130,6 +134,16 @@ export default {
     this.ownershipFn()
   },
   methods: {
+    /*
+    * 获取来源方式
+    * */
+    async getSourceOptions() {
+      let organId = this.organId
+      this.sourceOptions = []
+      querySourceType(organId, this).then(list => {
+        return this.sourceOptions = list
+      })
+    },
     // 分页查询添加后和详情使用
     handleChange (data) {
       this.footer.pageNum = data.pageNo
@@ -164,7 +178,7 @@ export default {
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index
-            }) 
+            })
           }
           if (this.columns[0].dataIndex !== 'assetId') {
             this.columns.unshift({title: '资产ID', dataIndex: 'assetId', width: 150})
@@ -200,7 +214,7 @@ export default {
     },
     // 切换资产类型时！切换所有数据
     bridgeFn:function(){
-      bridge.$on("assetType",(val, type)=>{
+      bridge.$on("assetType",(val, type, sourceType)=>{
         //val值    type：project项目  asset资产类型
         // 房屋
         if (type === 'asset' && val === '1') {
@@ -218,6 +232,7 @@ export default {
         // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
+          this.sourceType = sourceType
         }
         // 切换总的统计数据的值为0
         if (!type && this.tableData.length === 0) {
@@ -339,7 +354,7 @@ export default {
                 return
               }
             }
-            arrData[i].key = i + getUuid() 
+            arrData[i].key = i + getUuid()
             arrData[i].area = arrData[i].area ? arrData[i].area : 0
             arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
           }
@@ -363,7 +378,19 @@ export default {
             }, [])
             publicData = landCheck
           }
-          this.tableData = resData
+          this.tableData = resData.map(ele => {
+            // 默认取 资产项目 来源方式
+            let sourceModeName = ele.sourceModeName
+            if (!ele.sourceModeName) {
+              // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
+              let sourceModeObj = this.sourceOptions.find(sourceItem => sourceItem.key === String(this.sourceType))
+              sourceModeName = sourceModeObj ? sourceModeObj.title : ''
+            }
+            return {
+              ...ele,
+              sourceModeName,
+            }
+          })
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -376,7 +403,7 @@ export default {
         }
       }, () => {
         e.target.value = ''
-        this.DE_Loding(loadingName).then(res => {
+        this.DE_Loding(loadingName).then(() => {
           this.$SG_Message.error('导入失败！')
         })
       })
@@ -533,7 +560,7 @@ export default {
         }
       }, () => {
         e.target.value = ''
-        this.DE_Loding(loadingName).then(res => {
+        this.DE_Loding(loadingName).then(() => {
           this.$SG_Message.error('导入失败！')
         })
       })
@@ -582,9 +609,12 @@ export default {
       }
       let data = utils.deepClone(this.tableData)
       data.forEach(item => {
+        // 传 来源方式 对应的 枚举值
+        let sourceModeObj = this.sourceOptions.find(ele => item.sourceModeName === ele.title)
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
         item.kindOfRight = this.ownershipData[item.kindOfRightName]
-      })
+        item.sourceMode = sourceModeObj ? sourceModeObj.key : ''
+      },this)
       console.log(data, '-=-=-=')
       this.basicData = data
     }

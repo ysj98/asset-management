@@ -107,7 +107,8 @@ export default {
     return {
       saveValues: '',
       assetTypeData: [],     // 资产类型
-      projectIdData: [],     // 资产项目
+      projectList: [],       // 资产项目列表
+      projectIdData: [],     // 资产项目 ID
       newEditSingleData: {...newEditSingleData},
       form: this.$form.createForm(this),
       allWidth: 'width: 160px',
@@ -204,6 +205,7 @@ export default {
               value: item.projectId
             })
           })
+          this.projectList = data
           this.projectIdData = [...arr]
           this.$nextTick(() => {
             this.projectIdFn(this.jupeProjectId)   // 主动调一下
@@ -215,7 +217,10 @@ export default {
     },
     // 项目监听
     projectIdFn (val) {
-      bridge.$emit('assetType', val, 'project')
+      let selectedProject = this.projectList.find(ele=>ele.projectId === val)
+      let sourceType = selectedProject ? selectedProject.sourceType : ''
+      // sourceType 为了 来源方式 默认取 资产项目的来源方式
+      bridge.$emit('assetType', val, 'project', sourceType)
     },
     // 资产类型监听
     assetTypeFn (val) {
