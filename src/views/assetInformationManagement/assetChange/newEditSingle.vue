@@ -914,16 +914,16 @@ export default {
       this.checkedData = [...val];
       data.forEach((item) => {
         // 默认 取 资产项目的来源方式 如果需要在弹窗中展示 来源方式,这个就要后端去做了
-        let sourceModeName = item.sourceModeName
-        if(!sourceModeName){
+        let oldSourceModeName = item.sourceModeName || item.oldSourceModeName
+        if(!oldSourceModeName){
           let sourceType = this.projectList.find(ele=>ele.projectId === this.projectId).sourceType
-          sourceModeName = this.sourceOptions.find(ele=>ele.key === String(sourceType)).title
+          oldSourceModeName = this.sourceOptions.find(ele=>ele.key === String(sourceType)).title
         }
 
         item.key = item.assetId;
         item.oldDecorationSituation = item.decorationSituation;
         // 弹窗中返回的是 sourceModeName 但是 columns 中绑定的是 oldSourceModeName,因为草稿状态 回显的时候需要这样
-        item.oldSourceModeName = sourceModeName
+        item.oldSourceModeName = oldSourceModeName
       });
       this.tableData = data;
       console.log("有走这里=>", this.tableData);
@@ -1079,8 +1079,15 @@ export default {
     // 当为基础信息变动， 并且为房屋或者车场，资产类型
     handleBaseAndHuse() {
       console.log("会进到这里来2", this.changeType, "www", this.assetType);
-      if (this.changeType === "7" && ["1"].includes(this.assetType)) {
-        this.columns = baseChangeTwo;
+      if (this.changeType === "7") {
+        // 房屋
+        if (["1"].includes(this.assetType)) {
+          this.columns = baseChangeTwo;
+        }
+        // 土地
+        if (['4'].includes(this.assetType)) {
+          this.columns = baseChange;
+        }
       }
     },
     // 资产类型改变清空值
