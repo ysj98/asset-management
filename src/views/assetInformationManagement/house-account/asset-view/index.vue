@@ -37,7 +37,7 @@
                 :maxTagCount="1"
                 style="width: 100%"
                 v-model="sourceModes"
-                placeholder="请选择资产分类"
+                placeholder="请选择来源方式"
                 :options="$addTitle(sourceOptions)"
                 @change="changeSource"
             />
