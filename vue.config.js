@@ -32,7 +32,8 @@ const proxyURL = [
   '/common-api',
   '/uis/',
   '/ams/',
-  '/charging-api/'
+  '/charging-api/',
+  '/datacachesvr-api-netty/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接
