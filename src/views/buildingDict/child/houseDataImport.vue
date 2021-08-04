@@ -24,17 +24,26 @@
          </div>
          <div :style="inputStyple">
            <!-- 公司 -->
-          <topOrganByUser  @change="organIdChange" :formStyle="inputStyple" v-model="organId" :hasAll="false" :selectFirst="true"/>
+           <treeSelect
+             :default="false"
+             :defaultOrganName="defaultOrganName"
+             :value="organId"
+             @changeTree="changeTree"
+             placeholder='请选择公司'
+             :allowClear="false"
+             :style="inputStyple"
+           >
+           </treeSelect>
          </div>
        </div>
        <!-- 中间内容 -->
        <div class="data-box">
-           <div class="not_data" v-if="!fileName">  
+           <div class="not_data" v-if="!fileName">
              <div class="not_data_img">
               </div>
               <div class="tip">
                 暂无数据
-              </div> 
+              </div>
            </div>
            <div class="data-item" v-else>
              <span>{{fileName}}</span>
@@ -49,18 +58,22 @@
 </SG-Modal>
 </template>
 <script>
-import topOrganByUser from '@/views/common/topOrganByUser'
 import downErrorFile from '@/views/common/downErrorFile'
+import TreeSelect from "@/views/common/treeSelect";
 // let getUuid = ((uuid = 1) => () => ++uuid)()
 export default {
   props: {
     organIdCopy: {
       default: ''
+    },
+    defaultOrganName:{
+      type: String,
+      default: ''
     }
   },
   components: {
-    topOrganByUser,
-    downErrorFile
+    downErrorFile,
+    TreeSelect
   },
   created () {
     if (this.organIdCopy) {
@@ -72,7 +85,6 @@ export default {
       // uuid: getUuid(),
       visible: false,
       organId: '',
-      organName: '',
       upErrorInfo: '',
       inputStyple: {width: '165px'},
       fileName: '',
@@ -92,9 +104,8 @@ export default {
       console.log('2', nv)
       if (nv) {
         this.organId = nv
-        // this.uuid = getUuid()
       }
-    }
+    },
   },
   methods: {
     hiddeModal () {
@@ -104,8 +115,8 @@ export default {
       this.$refs.fileUpload.value = ''
     },
     // orangId改变
-    organIdChange (o) {
-      this.organName = o.name
+    changeTree (value) {
+      this.organId = value
     },
     handleSave () {
       if (this.formData === null) {
@@ -118,7 +129,7 @@ export default {
             this.$SG_Message.success('导入成功！')
             this.visible = false
             this.$emit('success')
-          }) 
+          })
         } else {
           this.DE_Loding(loadingName).then(() => {
             this.$refs.downErrorFile.visible = true
@@ -181,7 +192,6 @@ export default {
             let blob = new Blob([res.data])
             let a = document.createElement('a')
             a.href = URL.createObjectURL(blob)
-            // ${this.organName}
             a.download = `房间资料模板.xls`
             a.style.display = 'none'
             document.body.appendChild(a)

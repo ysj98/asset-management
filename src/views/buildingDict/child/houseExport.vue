@@ -17,56 +17,41 @@
   >
    <div class="export-box">
      <div class="export-item">
-     <a-select
-        showSearch
-        placeholder="请选择公司"
-        v-model="organId"
-        optionFilterProp="children"
-        :defaultActiveFirstOption="false"
-        :dropdownMatchSelectWidth="false"
-        :style="inputStyple"
-        :options="$addTitle(organOpt)"
-        :allowClear="false"
-        :filterOption="filterOption"
-        notFoundContent="没有查询到数据"
-        />
-       </div>
-       <div class="export-item">
-        <!-- 楼栋、 -->
-        <a-select
-        showSearch
-        placeholder="请选择楼栋"
-        v-model="buildId"
-        @search="handleSearch"
-        optionFilterProp="children"
-        :style="inputStyple"
-        :options="$addTitle(buildOpt)"
-        :allowClear="true"
-        :filterOption="false"
-        notFoundContent="没有查询到数据"
-        />
-        </div>
-        <div class="export-item">
-        <!-- 单元 -->
-        <a-select
-        showSearch
-        placeholder="请选择单元"
-        v-model="unitId"
-        optionFilterProp="children"
-        :style="inputStyple"
-        :options="$addTitle(unitOpt)"
-        :allowClear="true"
-        :filterOption="filterOption"
-        notFoundContent="没有查询到数据"
-        />
-        </div>
-        <div class="clearfix">
-          <a-button class="fr" @click="exportHouse" type="primary">导出</a-button>
-        </div>
+       <!-- 公司 -->
+       <treeSelect
+         :default="false"
+         :defaultOrganName="defaultOrganName"
+         :value="organId"
+         @changeTree="changeTree"
+         placeholder='请选择公司'
+         :allowClear="false"
+         :style="inputStyple"
+       >
+       </treeSelect>
+     </div>
+     <div class="export-item">
+       <!-- 楼栋、 -->
+       <a-select
+         showSearch
+         placeholder="请选择楼栋"
+         v-model="buildId"
+         @search="handleSearch"
+         optionFilterProp="children"
+         :style="inputStyple"
+         :options="$addTitle(buildOpt)"
+         :allowClear="true"
+         :filterOption="false"
+         notFoundContent="没有查询到数据"
+       />
+     </div>
+     <div class="clearfix">
+       <a-button class="fr" @click="exportHouse" type="primary">导出</a-button>
+     </div>
    </div>
 </SG-Modal>
 </template>
 <script>
+import TreeSelect from "@/views/common/treeSelect";
 import {utils, debounce} from '@/utils/utils'
 // let getUuid = ((uuid = 1) => () => ++uuid)()
 let fintItem = (data, value) => {
@@ -76,8 +61,13 @@ let fintItem = (data, value) => {
   return data.find(item => item.value === value)
 }
 export default {
+  components:{ TreeSelect },
   props: {
     organIdCopy: {
+      default: ''
+    },
+    defaultOrganName:{
+      type: String,
       default: ''
     }
   },
@@ -89,16 +79,19 @@ export default {
       organName: '',
       organId: undefined,
       buildId: undefined,
-      unitId: undefined,
       organOpt: [],
       buildOpt: [],
-      unitOpt: []
     }
   },
   watch: {
     organIdCopy (nv) {
       if (nv) {
         this.organId = nv
+      }
+    },
+    defaultOrganName(newValue){
+      if (newValue){
+        this.organName = newValue
       }
     },
     visible (newVal) {
@@ -108,54 +101,22 @@ export default {
     },
     organId (newVal) {
       this.buildId = undefined
-      this.unitId = undefined
       this.buildOpt = []
-      this.unitOpt = []
       if (newVal) {
         this.queryBuildList(newVal)
       }
     },
-    buildId (newVal) {
-      this.unitId = undefined
-      this.unitOpt = []
-      if (newVal) {
-        this.getOptions('getUnitByBuildId', newVal)
-      }
-    }
   },
-  created () {
-    if (this.organIdCopy) {
-      console.log('ssss')
-      this.organId = this.organIdCopy
-    }
-  },
-  mounted () {
-    this.queryAllTopOrganByUser()
-  },
+  created () {},
+  mounted () {},
   methods: {
+    changeTree(value, organName){
+      this.organId = value
+      this.organName = organName
+    },
     // 隐藏弹窗
     hiddeModal () {
       this.buildId = undefined
-      this.unitId = undefined
-      this.unitOpt = []
-    },
-    // 请求一级物业
-    queryAllTopOrganByUser () {
-      this.$api.basics.queryAllTopOrganByUser({}).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          this.organOpt = result.map(item => {
-            return {label: item.organName, value: item.organId}
-          })
-          // 默认选中第一个
-          if (this.organId) {
-            return
-          }
-          if (this.organOpt.length) {
-            this.organId = this.organOpt[0].value
-          }
-        }
-      })
     },
     // 请求楼栋列表默认20条
     queryBuildList (organId, buildName) {
@@ -165,34 +126,6 @@ export default {
           this.buildOpt = result.map(item => {
             return {label: item.buildName, value: item.buildId}
           })
-        }
-      })
-    },
-    // 请求单元楼层
-    getOptions (type, value = '') {
-      if (!type) {
-        return
-      }
-      let PARAMS = ''
-      let resetArr = []
-      // 请求单元
-      if (type === 'getUnitByBuildId') {
-        PARAMS = '#BUILD_ID:' + value
-        this.unitOpt = resetArr
-      }
-      let data = {
-        SQL_CODE: type,
-        PARAMS: PARAMS
-      }
-      this.$api.basics.getOptions(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          resetArr.push(...result.map(item => {
-            return {
-              label: item.C_TEXT,
-              value: item.C_VALUE
-            }
-          }))
         }
       })
     },
@@ -208,12 +141,11 @@ export default {
     exportHouse () {
       let data = {
         organId: this.organId || '',
-        unitId: this.unitId || '',
         buildId: this.buildId || ''
       }
-      let organName = fintItem(this.organOpt, data.organId).label
+      let organName = this.organName
       let buildName = fintItem(this.buildOpt, data.buildId).label
-      let unitName = fintItem(this.unitOpt, data.unitId).label
+      let fileName = `${organName + buildName }房间.xls`
       let loadingName = this.SG_Loding('导出中...')
       this.$api.building.exportHouse(data).then(res => {
         this.DE_Loding(loadingName).then(() => {
@@ -221,8 +153,7 @@ export default {
           let blob = new Blob([res.data])
             let a = document.createElement('a')
             a.href = URL.createObjectURL(blob)
-            // ${this.organName}
-            a.download = `${organName + buildName + unitName}房间.xls`
+            a.download = fileName
             a.style.display = 'none'
             document.body.appendChild(a)
             a.click()

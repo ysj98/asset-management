@@ -171,10 +171,11 @@
     <houseDataImport
       ref="houseDataImport"
       :organIdCopy="queryCondition.organId"
+      :defaultOrganName="selectedOrganName"
       @success="houseDataImportSuccess"
     />
     <!-- 房间导出 -->
-    <houseExport :organIdCopy="queryCondition.organId" ref="houseExport" />
+    <houseExport :organIdCopy="queryCondition.organId" :defaultOrganName="selectedOrganName" ref="houseExport" />
     <!-- 批量更新 -->
     <eportAndDownFile
       @upload="uploadHouseFile"
@@ -311,6 +312,7 @@ export default {
   },
   data() {
     return {
+      selectedOrganName: '', // 当前所选 组织名称 导出弹窗回显使用
       typeFilter,
       ASSET_MANAGEMENT,
       upErrorInfo: "", // 导入文件错误提示
@@ -488,6 +490,7 @@ export default {
         return;
       }
       this.organName = organName;
+      this.selectedOrganName = organName || ''
       if (organId) {
         this.queryCondition.organId = organId
         this.watchOrganChange(organId);

@@ -103,22 +103,25 @@ export default {
     value (val) {
       this.organId = val
     },
-    defaultOrganName (val) {
-      if (val) {
-        this.showDefaultOrganName = true
-      }
+    defaultOrganName:{
+      handler: function (newValue){
+        if (newValue) {
+          this.showDefaultOrganName = true
+        }
+      },
+      immediate: true
     }
   },
   methods: {
     // 第一次进来获取组织机构
     initDepartment ( organTopId ) {
-      this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: this.typeFilter}).then(res => {
+      this.$api.assets.queryAsynOrganByUserId({parentOrganId: organTopId || '', typeFilter: this.typeFilter}).then(res => {
         if (Number(res.data.code) === 0) {
           let resultData = res.data.data
-          if( organTopId ){
-            // 过滤同一 一级机构
-            resultData = resultData.filter(ele=>ele.organId === String(organTopId))
-          }
+          // if( organTopId ){
+          //   // 过滤同一 一级机构
+          //   resultData = resultData.filter(ele=>ele.organId === String(organTopId))
+          // }
           this.treeData = this.mapTreeNodes(resultData)
           if (this.default) {
             this.organId = this.treeData[0].organId
