@@ -753,9 +753,10 @@ export default {
       }
       this.SET_ROUTE_QUERY(this.$route.path, o);
       let query = { type };
+      query.organId = this.queryCondition.organId
+      query.selectedOrganName = this.selectedOrganName
       if (["edit", "copy", "detail"].includes(type)) {
-        (query.houseId = record.houseId),
-          (query.organId = this.queryCondition.organId);
+        query.houseId = record.houseId
         query.searchBuildName = this.searchBuildName || "";
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });

@@ -15,23 +15,19 @@
           <div class="form-content">
             <a-row>
               <!-- 新建房屋 取消选择公司名称的功能 -->
-              <a-col v-if="type==='edit'" :span="8">
-                <a-form-item label="公司名称" v-bind="formItemLayout">
-                  <a-select
+              <a-col  :span="8">
+                <a-form-item :required="true" label="所属机构" v-bind="formItemLayout">
+                  <treeSelect
+                    ref="organTopRef"
+                    :default="false"
+                    @changeTree="changeTree"
+                    placeholder='请选择所属机构'
+                    :defaultOrganName="defaultOrganName"
                     :style="allWidth"
-                    placeholder="请选择公司"
-                    :disabled="type==='edit'"
-                    showSearch
-                    @change="watchOrganChange"
-                    optionFilterProp="children"
-                    :options="$addTitle(organOpt)"
-                    :allowClear="false"
-                    :filterOption="filterOption"
-                    notFoundContent="没有查询到数据"
-                    v-decorator="['organId',
-                      { rules: [{required: true, message: '请选择所属公司'}]}
-                    ]"
-                  />
+                    :value="organId"
+                    :top-level="true"
+                  >
+                  </treeSelect>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -304,7 +300,7 @@ import FormFooter from "@/components/FormFooter.vue";
 import { utils, debounce } from "@/utils/utils";
 import dictMixin from "./dictMixin.js";
 import moment from "moment";
-let getUuid = ((uuid = 1) => () => ++uuid)();
+import TreeSelect from "@/views/common/treeSelect";
 const allWidth = { width: "100%" };
 // 页面跳转
 const operationTypes = {
@@ -312,15 +308,17 @@ const operationTypes = {
 };
 export default {
   components: {
-    FormFooter
+    FormFooter,
+    TreeSelect
   },
   mixins: [dictMixin],
   data() {
     return {
+      organId: '',
+      defaultOrganName: '',
       bussType: "houseMct",
       type: "",
       allWidth,
-      organOpt: [],
       buildOpt: [],
       unitOpt: [],
       floorOpt: [],
@@ -355,20 +353,20 @@ export default {
     this.queryNodesByRootCode("20");
     this.queryNodesByRootCode("60");
     this.type = this.$route.query.type;
+    this.organId = this.$route.query.organId || ""
     // 如果是新增
     if (this.type === "create") {
-      this.queryAllTopOrganByUser();
+      this.defaultOrganName = this.$route.query.selectedOrganName
+      this.queryBuildList(this.organId)
     }
     // 如果是编辑
     if (this.type === "edit") {
       this.houseId = this.$route.query.houseId || "";
       this.organName = this.$route.query.organName || "";
-      this.organId = this.$route.query.organId || "";
       this.queryHouseDetailById();
     }
     // 如果是复制
     if (this.type === "copy") {
-      this.organId = this.$route.query.organId || "";
       this.houseId = this.$route.query.houseId || "";
       this.searchBuildName = this.$route.query.searchBuildName || "";
       this.queryHouseDetailById();
@@ -378,7 +376,11 @@ export default {
     this.form = this.$form.createForm(this);
   },
   methods: {
-    handleSave() {
+     handleSave() {
+      if(!this.organId){
+        this.$message.error('请选择所属机构')
+        return null;
+      }
       this.form.validateFields((err, values) => {
         console.log("得到值=>", values);
         if (!err) {
@@ -403,73 +405,52 @@ export default {
           }
           // 新增房间
           if (this.type === "create" || this.type === "copy") {
-            // 新增时需用楼栋id 请求楼栋详情是否有项目id
-            this.$api.building
-              .queryBuildDetail({ buildId: values.buildId })
-              .then(resData => {
-                if (resData.data.code !== "0") {
-                  this.$message.error(resData.data.message);
-                }
-                return resData.data.data.communityId;
-              })
-              .then(communityId => {
-                if (communityId && communityId !== "-1") {
-                  data.communityId = communityId;
-                }
-                let loadingName = this.SG_Loding("新增中...");
-                this.$api.building.addHouse(data).then(
-                  res => {
-                    this.DE_Loding(loadingName).then(() => {
-                      if (res.data.code === "0") {
-                        this.$SG_Message.success(`新增房间成功`);
-                        this.goPage("index", true);
-                      } else {
-                        this.$message.error(res.data.message);
-                      }
-                    });
-                  },
-                  () => {
-                    this.DE_Loding(loadingName).then(res => {
-                      this.$SG_Message.error("新增失败！");
-                    });
+            if (this.organId) {
+              data.communityId = this.organId;
+            }
+            let loadingName = this.SG_Loding("新增中...");
+            this.$api.building.addHouse(data).then(
+              res => {
+                this.DE_Loding(loadingName).then(() => {
+                  if (res.data.code === "0") {
+                    this.$SG_Message.success(`新增房间成功`);
+                    this.goPage("index", true);
+                  } else {
+                    this.$message.error(res.data.message);
                   }
-                );
-              });
+                });
+              },
+              () => {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.error("新增失败！");
+                });
+              }
+            );
           }
           // 编辑房间
           if (this.type === "edit") {
             data.houseId = this.houseId;
-            this.$api.building
-              .queryBuildDetail({ buildId: values.buildId })
-              .then(resData => {
-                if (resData.data.code !== "0") {
-                  this.$message.error(resData.data.message);
-                }
-                return resData.data.data.communityId;
-              })
-              .then(communityId => {
-                if (communityId && communityId !== "-1") {
-                  data.communityId = communityId;
-                }
-                let loadingName = this.SG_Loding("编辑中...");
-                this.$api.building.updateHouse(data).then(
-                  res => {
-                    this.DE_Loding(loadingName).then(() => {
-                      if (res.data.code === "0") {
-                        this.$SG_Message.success("编辑房间成功");
-                        this.goPage("index", true);
-                      } else {
-                        this.$message.error(res.data.message);
-                      }
-                    });
-                  },
-                  () => {
-                    this.DE_Loding(loadingName).then(res => {
-                      this.$SG_Message.error("编辑失败！");
-                    });
+            if (this.organId) {
+              data.communityId = this.organId;
+            }
+            let loadingName = this.SG_Loding("编辑中...");
+            this.$api.building.updateHouse(data).then(
+              res => {
+                this.DE_Loding(loadingName).then(() => {
+                  if (res.data.code === "0") {
+                    this.$SG_Message.success("编辑房间成功");
+                    this.goPage("index", true);
+                  } else {
+                    this.$message.error(res.data.message);
                   }
-                );
-              });
+                });
+              },
+              () => {
+                this.DE_Loding(loadingName).then(() => {
+                  this.$SG_Message.error("编辑失败！");
+                });
+              }
+            );
           }
         }
       });
@@ -499,8 +480,8 @@ export default {
       if (data.deliveryTime) {
         data.deliveryTime = moment(data.deliveryTime, "YYYY-MM-DD");
       }
+      this.organId = data.organId
       this.form.setFieldsValue({
-        organId: this.organId,
         buildId: data.buildId || undefined,
         unitId: data.unitId || undefined,
         floorId: data.floorId || undefined,
@@ -532,13 +513,11 @@ export default {
       }
       // 如果是编辑
       if (this.type === "edit") {
-        this.organOpt = [{ label: data.organName, value: this.organId }];
         this.buildOpt = [{ label: data.buildName, value: data.buildId }];
         this.unitOpt = [{ label: data.unitName, value: data.unitId }];
       }
       // 处理请求
       if (this.type === "copy") {
-        this.queryAllTopOrganByUser(); // 公司
         this.queryBuildList(this.organId, this.searchBuildName); // 请求楼栋
         this.getOptions("getUnitByBuildId", data.buildId); // 请求单元
       }
@@ -551,7 +530,7 @@ export default {
       this.queryChildNodesById(data.houseCategoryId); // 请求房间类型
     },
     // 监听一级物业改变
-    watchOrganChange(organId) {
+    changeTree(organId) {
       this.form.setFieldsValue({
         buildId: undefined,
         unitId: undefined,
@@ -702,25 +681,6 @@ export default {
         }
       });
     },
-    // 请求一级物业
-    queryAllTopOrganByUser() {
-      this.$api.basics.queryAllTopOrganByUser({}).then(res => {
-        if (res.data.code === "0") {
-          let result = res.data.data || [];
-          this.organOpt = result.map(item => {
-            return { label: item.organName, value: item.organId };
-          });
-          console.log("一级组织机构=>", this.organOpt);
-          // 默认选中第一个
-          if (this.organOpt.length) {
-            if (this.type !== "copy") {
-              this.form.setFieldsValue({ organId: this.organOpt[0].value });
-              this.queryBuildList(this.organOpt[0].value);
-            }
-          }
-        }
-      });
-    },
     // 请求楼栋列表默认20条
     queryBuildList(organId, buildName) {
       this.$api.basics
@@ -751,7 +711,7 @@ export default {
     },
     // 防抖函数后台请求楼栋数据
     debounceMothed: debounce(function() {
-      let organId = this.form.getFieldsValue(["organId"]);
+      let organId = this.organId;
       this.queryBuildList(organId.organId || "", this.searchBuildName || "");
     }, 300),
     filterOption(input, option) {
