@@ -32,8 +32,18 @@
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
+          <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
+            仅当前机构下房屋
+          </a-checkbox>
           <!-- 公司 -->
-          <treeSelect  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
+          <treeSelect
+            :typeFilter="typeFilter"
+            @changeTree="organIdChange"
+            placeholder='请选择组织机构'
+            :allowClear="false"
+            :style="allWidth"
+          >
+          </treeSelect>
           <!-- 楼栋 -->
           <a-select
             showSearch
@@ -191,6 +201,7 @@ import downErrorFile from "@/views/common/downErrorFile";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from '../common/treeSelect'
+import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const allWidth = {
   width: "170px",
@@ -215,7 +226,8 @@ let queryCondition = {
   houseCategory: "", //建筑形态
   houseType: "", //房间类型
   resType: "", // 房间用途
-  status: "" // 房间状态
+  status: "", // 房间状态
+  isCurrent: 0,
 };
 const statusMap = {
   "1": "有效",
@@ -299,6 +311,7 @@ export default {
   },
   data() {
     return {
+      typeFilter,
       ASSET_MANAGEMENT,
       upErrorInfo: "", // 导入文件错误提示
       allWidth,
@@ -380,6 +393,10 @@ export default {
     this.queryNodesByRootCode("60");
   },
   methods: {
+    // 处理是否选中仅当前机构
+    changeChecked (e) {
+      this.queryCondition.isCurrent = Number(e.target.checked)
+    },
     // 查询房屋列表
     query() {
       this.queryConditionStore = { ...this.queryCondition };
@@ -454,15 +471,6 @@ export default {
     },
     // 重置查询条件
     restQuery() {
-      let queryCondition = {
-        buildId: "",
-        unitId: "",
-        houseId: "",
-        houseCategory: "", //建筑形态
-        houseType: "", //房间类型
-        resType: "", // 房间用途
-        status: "" // 房间状态
-      };
       this.queryCondition.buildId = "";
       this.queryCondition.unitId = "";
       this.queryCondition.houseId = "";
@@ -470,6 +478,7 @@ export default {
       this.queryCondition.houseType = "";
       this.queryCondition.resType = "";
       this.queryCondition.status = "";
+      this.queryCondition.isCurrent = false
     },
     // organId改变
     organIdChange(organId,organName) {
@@ -775,6 +784,8 @@ export default {
   display: flex;
   justify-content: space-between;
   .search-from-box {
+    display: flex;
+    align-items: center;
     flex: 1;
   }
   .two-row-box {

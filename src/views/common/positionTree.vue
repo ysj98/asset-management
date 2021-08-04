@@ -28,7 +28,7 @@
           </div>
         </template>
       </a-tree>
-    </div>  
+    </div>
   </div>
 </template>
 <script>
@@ -67,6 +67,10 @@ const topItem = {
 }
 export default {
   props: {
+    isCurrent:{
+      type: Number,
+      default: 0,
+    },
     organId: {
       type: [String, Number],
       default: ''
@@ -83,6 +87,9 @@ export default {
         this.positionSelectAsyn(nv)
       }
     },
+    isCurrent(){
+      this.positionSelectAsyn()
+    }
   },
   mounted () {
     if (this.organId) {
@@ -119,7 +126,7 @@ export default {
         return Object.keys(this.store)
       }
     },
-  },  
+  },
   methods: {
     emptyTreeData () {
       this.gData = [{...topItem}]
@@ -228,6 +235,7 @@ export default {
       this.emptyTreeData()
       let data = {
         organId: this.organId,
+        isCurrent:this.isCurrent,
         upPositionId: '-1',
         positionType: '1'
       }
@@ -286,7 +294,7 @@ export default {
       }, () => {
       })
     },
-    
+
   },
 }
 </script>

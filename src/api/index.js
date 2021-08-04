@@ -31,6 +31,7 @@ import * as useManage from './useManage'
 import * as assetRent from './assetRent'
 import * as assetInvest from './assetInvest'
 import * as paramsConfig from './paramsConfig'
+import * as dataCenter from './dataCenter'
 const API = {
   auth,
   global,
@@ -50,7 +51,8 @@ const API = {
   useManage,
   assetRent,
   assetInvest,
-  paramsConfig
+  paramsConfig,
+  dataCenter
 }
 export default {
   install (Vue) {

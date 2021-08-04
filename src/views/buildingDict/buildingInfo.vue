@@ -18,7 +18,7 @@
        </div>
      </div>
      <div class="tree-content">
-       <positionTree @change="checkTreeChange" ref="positionTree" :organId="organId"/>
+       <positionTree @change="checkTreeChange" ref="positionTree" :isCurrent="isCurrent" :organId="organId"/>
      </div>
     </div>
     <!-- 新增内容部分 -->
@@ -64,6 +64,10 @@ export default {
   props: {
     organId: {
       default: ''
+    },
+    isCurrent:{
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -71,7 +75,7 @@ export default {
       ASSET_MANAGEMENT,
       activeType: '', // -2楼栋列表，0楼栋, 1单元, 2楼层
       pageType: '', // create新增， edit编辑，
-      createType: '', // unit新建单元，build新建楼栋，floor新建楼层 
+      createType: '', // unit新建单元，build新建楼栋，floor新建楼层
       activeItem: {},
       childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
       upErrorInfo: '',
@@ -82,19 +86,22 @@ export default {
       if (nv) {
         this.resetInit()
       }
+    },
+    isCurrent(){
+      this.resetInit()
     }
   },
   computed: {
     showCreateBuild () {
-      return (this.activeType==='0' && this.createType === '') 
+      return (this.activeType==='0' && this.createType === '')
              || (this.activeType==='-2'&&this.createType==='build')
     },
     showCreateUnit () {
-      return (this.activeType==='1' && this.createType === '') 
+      return (this.activeType==='1' && this.createType === '')
              || (this.activeType==='0' && this.createType==='unit')
     },
     showCreateFloor () {
-      return (this.activeType==='2' && this.createType === '') 
+      return (this.activeType==='2' && this.createType === '')
              || (this.activeType==='0' && this.createType === 'floor')
              || (this.activeType==='1'&&this.createType === 'floor')
     },
@@ -108,7 +115,7 @@ export default {
     },
     // 显示楼层按钮
     showCreateFloorBtn () {
-      return (this.activeType==='0'&&['0', '2'].includes(this.childNodeType) 
+      return (this.activeType==='0'&&['0', '2'].includes(this.childNodeType)
              || this.activeType==='1')&&this.$power.has(ASSET_MANAGEMENT.ASSET_FLOOR_ADD)
     }
   },
@@ -125,7 +132,7 @@ export default {
         this.activeType = '' // -2楼栋列表，0楼栋, 1单元, 2楼层
       }
       this.pageType = '' // create新增， edit编辑，
-      this.createType = '' // unit新建单元，build新建楼栋，floor新建楼层 
+      this.createType = '' // unit新建单元，build新建楼栋，floor新建楼层
       this.activeItem = {}
       this.childNodeType = '' // 0可新建楼栋, 1单元， 2楼层
     },
@@ -190,7 +197,7 @@ export default {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
             this.$refs.positionTree.resetLoad()
-          }) 
+          })
         } else {
           this.DE_Loding(loadingName).then(() => {
             this.$refs.downErrorFile.visible = true

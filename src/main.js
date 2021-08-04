@@ -45,10 +45,11 @@ Vue.prototype.$addTitle = function (options){
 }
 Vue.config.productionTip = false
 
-new Vue({
+const vueInstance = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
 // 初始化用户数据
 store.dispatch('auth/getUserInfo')
+export default vueInstance

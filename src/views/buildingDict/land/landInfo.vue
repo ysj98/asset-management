@@ -22,8 +22,11 @@
         </div>
 
         <div style="overflow: visible">
+          <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
+            仅当前机构下土地
+          </a-checkbox>
           <!-- 公司 -->
-          <treeSelect  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
+          <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
           <!-- 全部运营项目-->
           <a-select
             showSearch
@@ -113,6 +116,7 @@ import segiIcon from "@/components/segiIcon.vue";
 import { utils } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
+import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
 import {
   operationTypes,
   allStyle,
@@ -132,6 +136,7 @@ export default {
   },
   data() {
     return {
+      typeFilter,
       ASSET_MANAGEMENT,
       hasPowerExport: false, // 导出按钮权限
       allStyle,
@@ -168,6 +173,10 @@ export default {
     this.handlePower();
   },
   methods: {
+    // 处理是否选中仅当前机构
+    changeChecked (e) {
+      this.queryCondition.isCurrent = Number(e.target.checked)
+    },
     query() {
       let data = {
         ...this.queryCondition,

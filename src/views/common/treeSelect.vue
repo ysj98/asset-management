@@ -85,10 +85,10 @@ export default {
       default: function () {
         return {
           maxHeight: '400px',
-          overflow: 'auto' 
+          overflow: 'auto'
         }
       }
-    }
+    },
   },
   data () {
     return {
@@ -111,10 +111,15 @@ export default {
   },
   methods: {
     // 第一次进来获取组织机构
-    initDepartment () {
+    initDepartment ( organTopId ) {
       this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: this.typeFilter}).then(res => {
         if (Number(res.data.code) === 0) {
-          this.treeData = this.mapTreeNodes(res.data.data)
+          let resultData = res.data.data
+          if( organTopId ){
+            // 过滤同一 一级机构
+            resultData = resultData.filter(ele=>ele.organId === String(organTopId))
+          }
+          this.treeData = this.mapTreeNodes(resultData)
           if (this.default) {
             this.organId = this.treeData[0].organId
             this.organName = this.treeData[0].name
@@ -174,6 +179,7 @@ export default {
   created () {
   },
   mounted () {
+    console.log('treeSelect-mounted加载')
     this.organId = this.value
     this.initDepartment()
   }

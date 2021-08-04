@@ -10,11 +10,21 @@
     <div class="custom-tabs">
       <!-- 公司 -->
       <div class="top-select">
-        <treeSelect v-if="showKey==='building'" @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
+        <a-checkbox v-if="showKey==='building'" :checked="Boolean(isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;">
+          仅当前机构下楼栋
+        </a-checkbox>
+        <treeSelect
+          v-if="showKey==='building'"
+          @changeTree="organIdChange"
+          :typeFilter="typeFilter"
+          placeholder='请选择组织机构'
+          :allowClear="false"
+          :style="allWidth"
+        ></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
         <a-tab-pane tab="楼栋信息" key="building">
-          <buildingInfo :organId="organId"/>
+          <buildingInfo :isCurrent="isCurrent" :organId="organId"/>
         </a-tab-pane>
         <a-tab-pane tab="房间信息" key="house">
           <houseInfo />
@@ -31,6 +41,7 @@ import buildingInfo from './buildingInfo'
 import houseInfo from './houseInfo'
 import landInfo from './land/landInfo'
 import TreeSelect from '../common/treeSelect'
+import { typeFilter } from './buildingDictConfig'
 const allWidth = {width: '185px'}
 export default {
   components: {
@@ -41,6 +52,8 @@ export default {
   },
   data () {
     return {
+      typeFilter,
+      isCurrent: 0, // 查询条件-是否仅当前机构
       showKey: 'building',
       allWidth,
       organId: ''
@@ -65,6 +78,10 @@ export default {
   //   next()
   // },
   methods: {
+    // 处理是否选中仅当前机构
+    changeChecked (e) {
+      this.isCurrent = Number(e.target.checked)
+    },
     tabChange (v) {
       console.log(v)
       this.showKey = v

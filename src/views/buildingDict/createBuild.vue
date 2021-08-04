@@ -14,6 +14,22 @@
           <a-form :form="form" @submit="handleSave" layout="horizontal">
             <a-row>
                 <a-col v-bind="formSpan">
+                  <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
+                    <treeSelect
+                      ref="organTopRef"
+                      :default="false"
+                      :typeFilter="typeFilter"
+                      @changeTree="changeTree"
+                      placeholder='请选择所属机构'
+                      :defaultOrganName="organNameMain"
+                      :style="allStyle"
+                      :value="organIdMain"
+                      :top-level="true"
+                    >
+                    </treeSelect>
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼栋名称" v-bind="formItemLayout">
                     <a-input :style="allWidth" v-decorator="['name', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请输入楼栋名称'}]}]"/>
                   </a-form-item>
@@ -281,13 +297,18 @@ import utils from '@/utils/utils'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import dictMixin from './dictMixin.js'
+import TreeSelect from "@/views/common/treeSelect";
+import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
+import { queryTopOrganByOrganID} from "./publicFn";
+
 const allWidth = {width: '100%'}
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 const allWidth2 = {width: '250px', flex: 1}
 export default {
   components: {
     FormFooter,
-    selectLngAndLat
+    selectLngAndLat,
+    TreeSelect
   },
   mixins: [dictMixin],
   props: {
@@ -306,9 +327,6 @@ export default {
     type () {
       this.init()
     },
-    organId () {
-      this.queryCommunityListByOrganId()
-    },
     // 监听id变化
     objectData () {
       this.init()
@@ -316,6 +334,10 @@ export default {
   },
   data () {
     return {
+      allStyle: 'width: 100%;',
+      organIdMain:'', // 所属机构
+      organNameMain:'', // 所属机构名称
+      typeFilter,
       bussType: 'buildDir',
       ASSET_MANAGEMENT,
       hasUpdatePower: false,
@@ -382,10 +404,23 @@ export default {
     this.platformDictFn()
     this.init()
     this.handleBtn()
-    this.queryCommunityListByOrganId()
   },
   methods: {
-    init () {
+    async changeTree(value){
+      this.organIdMain = value || ''
+      // 有值 且 非禁用状态
+      if (value && !this.communityIdDisabled){
+        let organTopId  = await queryTopOrganByOrganID(
+          {
+            nOrgId: value,
+            nOrganId: value,
+          }
+        )
+        await this.queryCommunityListByOrganId(organTopId)
+        this.form.resetFields(['communityId'])
+      }
+    },
+    async init () {
       this.resetAll()
       if (this.type === 'edit') {
         this.queryBuildDetail(this.objectData.positionId)
@@ -410,25 +445,33 @@ export default {
       console.log('得到值', name, '2',communityName)
     },
     // 请求项目
-    queryCommunityListByOrganId () {
-       let data = {
-        organId: this.organId
-      }
-      this.$api.basics.queryCommunityListByOrganId(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          let resultArr = result.map(item => {
-            return {
-              label: item.name,
-              value: item.communityId,
-              ...item
-            }
-          })
-          this.communityIdOpt = resultArr
+    queryCommunityListByOrganId (organTopId) {
+      return new Promise((resolve, reject) => {
+        let data = {
+          organId: organTopId || this.organIdMain
         }
+        this.$api.basics.queryCommunityListByOrganId(data).then(res => {
+          if (res.data.code === '0') {
+            let result = res.data.data || []
+            let resultArr = result.map(item => {
+              return {
+                label: item.name,
+                value: item.communityId,
+                ...item
+              }
+            })
+            this.communityIdOpt = resultArr
+            resolve()
+          }
+          reject()
+        })
       })
     },
     handleSave () {
+      if (!this.organIdMain){
+        this.$message.error('请选择所属机构')
+        return null;
+      }
       this.form.validateFields((err, values) => {
         console.log('得到值=>', values)
         if (!err) {
@@ -460,7 +503,8 @@ export default {
           delete data.lngAndlat
           // 新增楼栋
           if (this.type === 'create') {
-            data.organId = this.organId
+            // TODO:改成所属机构
+            data.organId = this.organIdMain
             data.upPositionId = this.objectData.positionId
             let loadingName = this.SG_Loding('新增中...')
             this.$api.building.addBuild(data).then(res => {
@@ -482,7 +526,8 @@ export default {
           }
           // 编辑楼栋
           if (this.type === 'edit') {
-            data.organId = this.organId
+            // TODO:改成所属机构
+            data.organId = this.organIdMain
             data.buildId = this.objectData.positionId // 当前节点
             data.upPositionId = this.objectData.upPositionId // 上级节点
             let loadingName = this.SG_Loding('编辑中...')
@@ -513,7 +558,7 @@ export default {
             let data = {
               buildId: this.objectData.positionId
             }
-            data.organId = this.organId
+            data.organId = this.organIdMain
             this.$api.building.deleteBuild(data).then(res => {
               if (res.data.code === '0') {
                this.$SG_Message.success(`删除成功`)
@@ -542,7 +587,8 @@ export default {
       })
     },
     // 处理编辑数据
-    handleEdit (data) {
+    async handleEdit (data) {
+      console.log('test')
       // 处理时间类型
       if (data.completionDate) {
         data.completionDate = moment(data.completionDate, 'YYYY-MM-DD')
@@ -571,12 +617,23 @@ export default {
       this.city = data.city
       this.region = data.region
       this.address = data.address
+      this.queryCityAndAreaList(data.province, 'province')
+      this.queryCityAndAreaList(data.city, 'city')
+      this.organNameMain = data.organName
+      let organTopId  = await queryTopOrganByOrganID(
+        {
+          nOrgId: data.organId,
+          nOrganId: data.organId,
+        }
+      )
+      this.organIdMain = data.organId
+      this.$refs.organTopRef.initDepartment(organTopId)
+      // 在获取 所属机构id 之后 获取项目 暂时和所属机构一样只能选同一 一级机构下的
+      await this.queryCommunityListByOrganId(organTopId)
       // 处理项目是否可以选择
       console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false
       data.communityId = data.communityId && data.communityId !== '-1' ? data.communityId : ''
-      this.queryCityAndAreaList(data.province, 'province')
-      this.queryCityAndAreaList(data.city, 'city')
       // end
       let o = this.form.getFieldsValue()
       console.log('表单数据=>', o)

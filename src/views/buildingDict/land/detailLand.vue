@@ -1,7 +1,7 @@
 <!--
  * @Date: 2020-07-16 15:29:25
  * @Description: 土地详情
---> 
+-->
  <template>
   <div class="detailHouse-page">
     <!-- 基础信息 -->
@@ -16,7 +16,7 @@
             <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">所属机构：</div>
-                <div class="item-content">{{routeQuery.organName || '-'}}</div>
+                <div class="item-content">{{organNameMain || '-'}}</div>
               </div>
             </a-col>
             <a-col :span="8">
@@ -188,97 +188,103 @@ export default {
       landTypeOpt: [], // 土地类型
       landuseOpt: [], // 土地用途类型
       landusetypeOpt: [], // 土地用途分类
+      organIdMain: '', // 所属机构 id
+      organNameMain:'', // 所属机构
     };
   },
   mounted() {
-    let { organId, blankId, organName } = this.$route.query;
-    Object.assign(this.routeQuery, { organId, blankId, organName });
-    Promise.all([
-      this.queryLandType(),
-      this.queryLandUseList(),
-      this.queryLandUseTypeList(),
-    ]).then((res) => {
-      this.blankApiDetail();
-    });
+    let {blankId} = this.$route.query;
+    Object.assign(this.routeQuery, {blankId});
+    this.init()
   },
   methods: {
+    async initOptions() {
+      return Promise.all([this.queryLandType(), this.queryLandUseList(), this.queryLandUseTypeList()])
+    },
+    async init() {
+      await this.blankApiDetail()
+    },
     // 请求土地详情
-    blankApiDetail() {
+    async blankApiDetail() {
       let data = {
         blankId: this.routeQuery.blankId,
       };
       this.loading = true;
-      this.$api.building.blankApiDetail(data).then(
-        (res) => {
-          this.loading = false;
-          if (res.data.code === "0") {
-            let data = res.data.data;
-            // 处理图片
-            this.blankInfo = data;
-            // 处理字段
-            let landType = this.landTypeOpt.find(
-              (item) => item.value === data.landType
-            );
-            data.landTypeName = landType ? landType.label : "";
+      try {
+        let res = await this.$api.building.blankApiDetail(data)
+        this.loading = false;
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          // 处理图片
+          this.blankInfo = data;
+          // 处理所处机构
+          this.organIdMain = data.organId
+          this.organNameMain = data.organName
+          // 下面几个查询需要 先获得 所属机构id
+          await this.initOptions()
+          // 处理字段
+          let landType = this.landTypeOpt.find(
+            (item) => item.value === data.landType
+          );
+          data.landTypeName = landType ? landType.label : "";
+          let landuseType = this.landusetypeOpt.find(
+            (item) => item.value === data.landuseType
+          );
+          data.landuseTypeName = landuseType ? landuseType.label : "";
 
-            let landuseType = this.landusetypeOpt.find(
-              (item) => item.value === data.landuseType
-            );
-            data.landuseTypeName = landuseType ? landuseType.label : "";
-
-            let landuse = this.landuseOpt.find(
-              (item) => item.value === data.landuse
-            );
-            data.landuseName = landuse ? landuse.label : "";
-            this.blankInfo.isEncloseWall = data.isEncloseWall === '1' ? '有围墙' : '无围墙';
-            // 处理地址
-            this.blankInfo.address = data.provinceName + data.cityName + data.regionName + data.address;
-            // 处理平面图
-            if (data.redMap) {
-              this.redMap = [{ url: data.redMap, name: "" }];
-            }
-            // 处理围墙图片
-            if (data.encloseWallPic) {
-              let arr = data.encloseWallPic.split(',')
-              if (arr.length > 0) {
-                arr.forEach(item => {
-                  this.encloseWallPic.push({ url: item, name: "" })
-                })
-              }
-            }
-            // 处理现状图片
-            if (data.nowPic) {
-              let arr = data.nowPic.split(',')
-              if (arr.length > 0) {
-                arr.forEach(item => {
-                  this.nowPic.push({ url: item, name: "" })
-                })
-              }
-            }
-            // 处理附件
-            if (data.filePath) {
-              let filePath = data.filePath.split(",");
-              this.filePath = filePath.map((url) => {
-                return { url, name: url.substring(url.lastIndexOf("/") + 1) };
-              });
-            }
-          } else {
-            this.$message.error(res.data.message);
+          let landuse = this.landuseOpt.find(
+            (item) => item.value === data.landuse
+          );
+          data.landuseName = landuse ? landuse.label : "";
+          this.blankInfo.isEncloseWall = data.isEncloseWall === '1' ? '有围墙' : '无围墙';
+          // 处理地址
+          this.blankInfo.address = data.provinceName + data.cityName + data.regionName + data.address;
+          // 处理平面图
+          if (data.redMap) {
+            this.redMap = [{url: data.redMap, name: ""}];
           }
-        },
-        () => {
-          this.loading = false;
+          // 处理围墙图片
+          if (data.encloseWallPic) {
+            let arr = data.encloseWallPic.split(',')
+            if (arr.length > 0) {
+              arr.forEach(item => {
+                this.encloseWallPic.push({url: item, name: ""})
+              })
+            }
+          }
+          // 处理现状图片
+          if (data.nowPic) {
+            let arr = data.nowPic.split(',')
+            if (arr.length > 0) {
+              arr.forEach(item => {
+                this.nowPic.push({url: item, name: ""})
+              })
+            }
+          }
+          // 处理附件
+          if (data.filePath) {
+            let filePath = data.filePath.split(",");
+            this.filePath = filePath.map((url) => {
+              return {url, name: url.substring(url.lastIndexOf("/") + 1)};
+            });
+          }
+        } else {
+          this.$message.error(res.data.message);
         }
-      );
+        return Promise.resolve()
+      }catch (error){
+        this.loading = false;
+        return Promise.reject()
+      }
     },
     // 查询土地类别
     queryLandType() {
       let data = {
         dictCode: "OCM_LAND_TYPE",
         dictFlag: "1",
-        groupId: this.routeQuery.organId,
+        groupId: this.organIdMain,
         code: "OCM_LAND_TYPE",
-        organId: this.routeQuery.organId,
+        organId: this.organIdMain,
       };
       return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
@@ -297,9 +303,9 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE",
         dictFlag: "1",
-        groupId: this.routeQuery.organId,
+        groupId: this.organIdMain,
         code: "OCM_LANDUSE",
-        organId: this.routeQuery.organId,
+        organId: this.organIdMain,
       };
       return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
@@ -318,9 +324,9 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE_TYPE",
         dictFlag: "1",
-        groupId: this.routeQuery.organId,
+        groupId: this.organIdMain,
         code: "OCM_LANDUSE_TYPE",
-        organId: this.routeQuery.organId,
+        organId: this.organIdMain,
       };
       return this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
