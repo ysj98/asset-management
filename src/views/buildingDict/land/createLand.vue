@@ -547,7 +547,7 @@ export default {
       this.organIdMain = value || ''
       if (value) {
         this.initPreData();
-        let organTopId = await queryTopOrganByOrganID(
+        let {organId:organTopId} = await queryTopOrganByOrganID(
           {
             nOrgId: value,
             nOrganId: value,
@@ -758,13 +758,13 @@ export default {
                 }
               })
               this.organIdMain = data.organId
-              let organTopId = await queryTopOrganByOrganID(
+              let {organId:organTopId, organName:organTopName} = await queryTopOrganByOrganID(
                 {
                   nOrgId: data.organId,
                   nOrganId: data.organId,
                 }
               )
-              this.$refs.organTopRef.initDepartment(organTopId)
+              this.$refs.organTopRef.initDepartment(organTopId, organTopName)
               await this.queryCommunityListByOrganId(organTopId)
               this.organNameMain = data.organName
               this.form.setFieldsValue(values)

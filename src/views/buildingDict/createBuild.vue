@@ -410,13 +410,13 @@ export default {
       this.organIdMain = value || ''
       // 有值 且 非禁用状态
       if (value && !this.communityIdDisabled){
-        let organTopId  = await queryTopOrganByOrganID(
+        let {organId:organTopId, organName:organTopName}  = await queryTopOrganByOrganID(
           {
             nOrgId: value,
             nOrganId: value,
           }
         )
-        await this.queryCommunityListByOrganId(organTopId)
+        await this.queryCommunityListByOrganId(organTopId, organTopName)
         this.form.resetFields(['communityId'])
       }
     },
@@ -620,14 +620,14 @@ export default {
       this.queryCityAndAreaList(data.province, 'province')
       this.queryCityAndAreaList(data.city, 'city')
       this.organNameMain = data.organName
-      let organTopId  = await queryTopOrganByOrganID(
+      let {organId:organTopId, organName:organTopName}  = await queryTopOrganByOrganID(
         {
           nOrgId: data.organId,
           nOrganId: data.organId,
         }
       )
       this.organIdMain = data.organId
-      this.$refs.organTopRef.initDepartment(organTopId)
+      this.$refs.organTopRef.initDepartment(organTopId, organTopName)
       // 在获取 所属机构id 之后 获取项目 暂时和所属机构一样只能选同一 一级机构下的
       await this.queryCommunityListByOrganId(organTopId)
       // 处理项目是否可以选择

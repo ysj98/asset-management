@@ -114,14 +114,17 @@ export default {
   },
   methods: {
     // 第一次进来获取组织机构
-    initDepartment ( organTopId ) {
-      this.$api.assets.queryAsynOrganByUserId({parentOrganId: organTopId || '', typeFilter: this.typeFilter}).then(res => {
+    initDepartment ( organTopId,organTopName ) {
+      this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: this.typeFilter}).then(res => {
         if (Number(res.data.code) === 0) {
           let resultData = res.data.data
-          // if( organTopId ){
-          //   // 过滤同一 一级机构
-          //   resultData = resultData.filter(ele=>ele.organId === String(organTopId))
-          // }
+          // TODO: 过滤同一 一级机构, 这种通过 外部 ref 调用内部方法 传参 区分过滤 的写法 不太优雅,有时间优化一下
+          if( organTopId && organTopName ){
+            resultData = [{
+              organId: organTopId,
+              name: organTopName
+            }]
+          }
           this.treeData = this.mapTreeNodes(resultData)
           if (this.default) {
             this.organId = this.treeData[0].organId

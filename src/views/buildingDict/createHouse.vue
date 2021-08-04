@@ -406,7 +406,9 @@ export default {
           // 新增房间
           if (this.type === "create" || this.type === "copy") {
             if (this.organId) {
+              // 新增房间 没有关联项目的概念了,改成 所属机构
               data.communityId = this.organId;
+              data.organId = this.organId
             }
             let loadingName = this.SG_Loding("新增中...");
             this.$api.building.addHouse(data).then(
@@ -432,6 +434,7 @@ export default {
             data.houseId = this.houseId;
             if (this.organId) {
               data.communityId = this.organId;
+              data.organId = this.organId
             }
             let loadingName = this.SG_Loding("编辑中...");
             this.$api.building.updateHouse(data).then(
@@ -531,6 +534,7 @@ export default {
     },
     // 监听一级物业改变
     changeTree(organId) {
+      this.organId = organId
       this.form.setFieldsValue({
         buildId: undefined,
         unitId: undefined,
@@ -712,7 +716,7 @@ export default {
     // 防抖函数后台请求楼栋数据
     debounceMothed: debounce(function() {
       let organId = this.organId;
-      this.queryBuildList(organId.organId || "", this.searchBuildName || "");
+      this.queryBuildList(organId || "", this.searchBuildName || "");
     }, 300),
     filterOption(input, option) {
       return (

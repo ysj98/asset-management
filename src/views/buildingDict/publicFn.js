@@ -20,7 +20,9 @@ export function queryTopOrganByOrganID({nOrgId, nOrganId}) {
       if (!res.data.data.organId) {
         vueInstance.$message.error(res.data.message || "获取组织机构失败");
       }
-      resolve(String(res.data.data.organId))
+      let resultData = res.data.data
+      resultData.organId = String(resultData.organId)
+      resolve(resultData)
     });
   })
 }
