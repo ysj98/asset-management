@@ -24,7 +24,7 @@
                     :defaultOrganName="organNameMain"
                     :style="allStyle"
                     v-model="organIdMain"
-                    :top-level="true"
+                    :allowClear="false"
                   >
                   </treeSelect>
                 </a-form-item>

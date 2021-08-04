@@ -24,7 +24,7 @@
                       :defaultOrganName="organNameMain"
                       :style="allStyle"
                       :value="organIdMain"
-                      :top-level="true"
+                      :allowClear="false"
                     >
                     </treeSelect>
                   </a-form-item>
