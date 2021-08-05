@@ -234,6 +234,7 @@ asset_ownership_opt_export     权属概况-资产权属属列表-导出
 土地台账导出
 land_project_export  土地台账资产项目列表导出
 land_organ_export 土地台账组织机构列表导出
+land_asset_view_export 土地台账 资产视图列表导出
 
 楼盘字典中的土地 导出按钮
 asset_buildland_export // 楼盘字典中的土地导出按钮
@@ -335,7 +336,7 @@ asset_return_view_export  资产归还一览表导出
     patrol_record_delete              巡查记录单删除
     patrol_record_export             巡查记录导出
 
-资产管理V2.1.2     
+资产管理V2.1.2
 房屋资产信息详情中的其它信息tab页签权限管理
     power_ownInfo             权属信息页签
     power_receiveInfo             接管信息页签

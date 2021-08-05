@@ -386,7 +386,8 @@ export const ASSET_MANAGEMENT = {
    * V2.0.2土地台账
    */
   LAND_PROJECT_EXPORT: 'land_project_export', // 土地台账资产项目列表导出
-  LAND_ORGAN_EXPORT: 'land_organ_export', // 土地台账资产项目列表导出
+  LAND_ORGAN_EXPORT: 'land_organ_export', // 土地台账资产项目列表导出,
+  LAND_ASSET_VIEW_EXPORT: 'land_asset_view_export',  //土地台账 资产视图列表导出
   /**
    * 2.0.2
    */

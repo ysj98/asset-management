@@ -8,8 +8,9 @@
   <div class="landAssetsView">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <!-- <SG-Button type="primary" @click="downloadFn">导出</SG-Button> -->
-        <SG-Button type="primary" @click="listSet">列表设置</SG-Button>
+<!--   v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT"     -->
+        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport" >导出资产视图</SG-Button>
+        <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
@@ -176,6 +177,7 @@ export default {
   props: {},
   data () {
     return {
+      exportBtnLoading: false,
       modalShow: false,
       overviewNumSpinning: false,
       current: '',
@@ -253,21 +255,52 @@ export default {
   computed: {
   },
   methods: {
-    // 导出（暂无）
-    // downloadFn () {
-    //   let obj = {}
-    //   this.$api.assets.exportChangeScheduleList(obj).then(res => {
-    //     console.log(res)
-    //     let blob = new Blob([res.data])
-    //     let a = document.createElement('a')
-    //     a.href = URL.createObjectURL(blob)
-    //     a.download = '资产视图.xls'
-    //     a.style.display = 'none'
-    //     document.body.appendChild(a)
-    //     a.click()
-    //     a.remove()
-    //   })
-    // },
+    // 查询和导出使用
+    initQueryReqParams(){
+      return {
+        city: this.provinces.city ? this.provinces.city : '',               // 市
+        province: this.provinces.province ? this.provinces.province : '',   // 省
+        region: this.provinces.district ? this.provinces.district : '',     // 区
+        flag: this.current,                                                 // 类型：0运营；1闲置；2自用；3占用；4其他
+        landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
+        objectTypes: this.alljudge(this.queryCondition.objectTypes),        // 资产分类(多选)
+        useTypes: this.alljudge(this.queryCondition.useType),               // 用途(多选)
+        organId: this.queryCondition.organId,                               // 组织机构id
+        projectId: this.alljudge(this.queryCondition.projectId),            // 项目id
+        statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
+        pageNum: this.queryCondition.pageNum,          // 当前页
+        pageSize: this.queryCondition.pageSize,         // 每页显示记录数
+        landCategory: this.queryCondition.landCategory,
+        address: this.address,           // 详细地址
+        sourceModes: this.alljudge(this.queryCondition.sourceModes)
+      }
+    },
+    // 导出数据
+    handleExport() {
+      this.exportBtnLoading = true;
+      // 这里导出的参数 与搜索条件 实时同步(参照之前的风格)
+      let obj = this.initQueryReqParams()
+      let filename = '土地资产视图导出列表'
+      this.$api.land
+        .viewGetAssetLandExport(obj)
+        .then((res) => {
+          this.exportBtnLoading = false;
+          if (res.status === 200 && res.data && res.data.size) {
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([res.data]));
+            a.download = `${filename}.xls`;
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            return a.remove();
+          }
+          throw res.message || "导出土地资产视图列表失败";
+        })
+        .catch((err) => {
+          this.exportBtnLoading = false;
+          this.$message.error(err || "导出土地资产视图列表失败");
+        });
+    },
     // 查看土地资产视图详情
     handleViewDetail ({assetLandId, assetId}) {
       this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId, assetId }})
@@ -481,23 +514,7 @@ export default {
     // 查询
     query (str) {
       this.loading = true
-      let obj = {
-        city: this.provinces.city ? this.provinces.city : '',               // 市
-        province: this.provinces.province ? this.provinces.province : '',   // 省
-        region: this.provinces.district ? this.provinces.district : '',     // 区
-        flag: this.current,                                                 // 类型：0运营；1闲置；2自用；3占用；4其他
-        landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
-        objectTypes: this.alljudge(this.queryCondition.objectTypes),        // 资产分类(多选)
-        useTypes: this.alljudge(this.queryCondition.useType),               // 用途(多选)
-        organId: this.queryCondition.organId,                               // 组织机构id
-        projectId: this.alljudge(this.queryCondition.projectId),            // 项目id
-        statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
-        pageNum: this.queryCondition.pageNum,          // 当前页
-        pageSize: this.queryCondition.pageSize,         // 每页显示记录数
-        landCategory: this.queryCondition.landCategory,
-        address: this.address,           // 详细地址
-        sourceModes: this.alljudge(this.queryCondition.sourceModes)
-      }
+      let obj = this.initQueryReqParams()
       this.$api.land.assetView(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
