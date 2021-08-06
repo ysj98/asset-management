@@ -88,23 +88,6 @@
               <span class="label-value" v-else>{{detail.accountEntryTime || '--'}}</span>
             </a-form-item>
           </div>
-          <div class="edit-box-content-item" v-if="editable">
-            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">关联资产<i></i></span><span>：</span></div>
-            <a-form-item>
-              <a-select
-                :style="allStyle"
-                placeholder="请选择关联资产"
-                :open="showAssociateAssetModal"
-                :options="$addTitle(associateAssetsOptions)"
-                @dropdownVisibleChange="dropdownVisibleChange"
-                v-decorator="['assetIds',
-                {rules: [{required: true, message: '请选择关联资产'}], initialValue: detail.assetIds}]"
-              >
-                <div slot="dropdownRender" slot-scope="menu"></div>
-                <a-icon slot="suffixIcon" type="plus-circle" />
-              </a-select>
-            </a-form-item>
-          </div>
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产类型<i></i></span><span>：</span></div>
             <a-form-item>
@@ -122,6 +105,23 @@
                 v-if="editable"
               ></a-select>
               <span class="label-value" v-else>{{detail.assetTypeName || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item" v-if="editable">
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">关联资产<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-select
+                :style="allStyle"
+                placeholder="请选择关联资产"
+                :open="showAssociateAssetModal"
+                :options="$addTitle(associateAssetsOptions)"
+                @dropdownVisibleChange="dropdownVisibleChange"
+                v-decorator="['assetIds',
+                {rules: [{required: true, message: '请选择关联资产'}], initialValue: detail.assetIds}]"
+              >
+                <div slot="dropdownRender" slot-scope="menu"></div>
+                <a-icon slot="suffixIcon" type="plus-circle" />
+              </a-select>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
