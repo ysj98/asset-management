@@ -17,7 +17,11 @@
               <!-- 新建房屋 取消选择公司名称的功能 -->
               <a-col  :span="8">
                 <a-form-item :required="true" label="所属机构" v-bind="formItemLayout">
+                  <div v-if="isEditCom" >
+                    {{defaultOrganName}}
+                  </div>
                   <treeSelect
+                    v-else
                     ref="organTopRef"
                     :default="false"
                     @changeTree="changeTree"
@@ -349,6 +353,11 @@ export default {
       }
     };
   },
+  computed:{
+    isEditCom(){
+      return this.$route.query.type === 'edit'
+    }
+  },
   mounted() {
     this.queryNodesByRootCode("20");
     this.queryNodesByRootCode("60");
@@ -360,9 +369,8 @@ export default {
       this.queryBuildList(this.organId)
     }
     // 如果是编辑
-    if (this.type === "edit") {
+    if (this.isEditCom) {
       this.houseId = this.$route.query.houseId || "";
-      this.organName = this.$route.query.organName || "";
       this.queryHouseDetailById();
     }
     // 如果是复制
@@ -484,6 +492,7 @@ export default {
         data.deliveryTime = moment(data.deliveryTime, "YYYY-MM-DD");
       }
       this.organId = data.organId
+      this.defaultOrganName = data.organName
       this.form.setFieldsValue({
         buildId: data.buildId || undefined,
         unitId: data.unitId || undefined,
