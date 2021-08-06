@@ -3,7 +3,7 @@
  * @Date: 2020-07-24 17:33:50
  * @LastEditTime: 2021-01-25 18:15:46
  * @Description: 土地
- */ 
+ */
 import { axiosPost, axiosGet } from '../utils/axios'
 import { land } from '../config/config.url'
 
@@ -60,6 +60,12 @@ export function viewLandDetailsPage(data) {
 // 土地台账--资产项目视图导出
 export function viewGetAssetLandExport(data) {
   return axiosPost(land.viewGetAssetLandExport, data, false, false, {
+    responseType: 'blob'
+  })
+}
+// 土地资产视图 导出
+export function exportAssetLandViewList(data) {
+  return axiosPost(land.exportAssetLandViewList, data, false, false, {
     responseType: 'blob'
   })
 }

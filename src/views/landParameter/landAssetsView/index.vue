@@ -8,8 +8,7 @@
   <div class="landAssetsView">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-<!--   v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT"     -->
-        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport" >导出资产视图</SG-Button>
+        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT"      >导出资产视图</SG-Button>
         <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
@@ -256,7 +255,10 @@ export default {
   },
   methods: {
     // 查询和导出使用
-    initQueryReqParams(){
+    initQueryReqParams(options){
+      // 选择导出的列名
+      let obj = {}
+      if (options) obj = options;
       return {
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省
@@ -272,17 +274,20 @@ export default {
         pageSize: this.queryCondition.pageSize,         // 每页显示记录数
         landCategory: this.queryCondition.landCategory,
         address: this.address,           // 详细地址
-        sourceModes: this.alljudge(this.queryCondition.sourceModes)
+        sourceModes: this.alljudge(this.queryCondition.sourceModes),
+        ...obj
       }
     },
     // 导出数据
     handleExport() {
       this.exportBtnLoading = true;
       // 这里导出的参数 与搜索条件 实时同步(参照之前的风格)
-      let obj = this.initQueryReqParams()
+      let obj = this.initQueryReqParams({
+        display: this.columns.filter(col => col.key !== 'action').map(m => m.dataIndex)
+      })
       let filename = '土地资产视图导出列表'
       this.$api.land
-        .viewGetAssetLandExport(obj)
+        .exportAssetLandViewList(obj)
         .then((res) => {
           this.exportBtnLoading = false;
           if (res.status === 200 && res.data && res.data.size) {

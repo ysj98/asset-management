@@ -975,6 +975,8 @@ export const assetIn = {
 export const land = {
   // 土地台账--资产视图
   assetView: '/ams/assetLand/view/asset/assetView',
+  // 土地资产视图 导出
+  exportAssetLandViewList:'/ams/assetLand/view/asset/excel',
   // 土地台账--资产视图汇总
   assetViewTotal: '/ams/assetLand/view/asset/assetViewTotal',
   // 土地台账--资产视图详情
