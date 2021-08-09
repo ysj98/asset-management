@@ -8,7 +8,7 @@
   <div class="landAssetsView">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT"      >导出资产视图</SG-Button>
+        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT">导出资产视图</SG-Button>
         <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
