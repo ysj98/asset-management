@@ -112,6 +112,7 @@ import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
 import {querySourceType} from "@/views/common/commonQueryApi";
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
@@ -176,6 +177,7 @@ export default {
   props: {},
   data () {
     return {
+      ASSET_MANAGEMENT,
       exportBtnLoading: false,
       modalShow: false,
       overviewNumSpinning: false,
