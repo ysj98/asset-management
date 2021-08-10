@@ -24,11 +24,18 @@
     <!-- 新增内容部分 -->
     <div class="create-content">
       <!-- 新建楼栋 -->
-      <createBuild :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem"  v-if="showCreateBuild"/>
+      <createBuild
+        :type="pageType"
+        @success="handleBuildSucc"
+        @handleOrganIdOwn="handleOrganIdOwn"
+        :organId="organId"
+        :objectData="activeItem"
+        v-if="showCreateBuild"
+      />
       <!-- 新建单元 -->
-      <createUnit :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem" v-if="showCreateUnit"/>
+      <createUnit :type="pageType" @success="handleBuildSucc" :organId="organIdOwn" :objectData="activeItem" v-if="showCreateUnit"/>
       <!-- 新建楼层 -->
-      <createFloor :type="pageType" @success="handleBuildSucc" :organId="organId" :objectData="activeItem" v-if="showCreateFloor"/>
+      <createFloor :type="pageType" @success="handleBuildSucc" :organId="organIdOwn" :objectData="activeItem" v-if="showCreateFloor"/>
       <!-- 无页面 -->
       <div v-if="!pageType" class="no_page">
         <div class="img-box"></div>
@@ -72,6 +79,7 @@ export default {
   },
   data () {
     return {
+      organIdOwn:'',  // 所属机构ID
       ASSET_MANAGEMENT,
       activeType: '', // -2楼栋列表，0楼栋, 1单元, 2楼层
       pageType: '', // create新增， edit编辑，
@@ -126,6 +134,13 @@ export default {
     // })
   },
   methods: {
+    /**
+     * createBuild 带出来的所属机构ID
+     * @param id
+     */
+    handleOrganIdOwn(id) {
+      if (id) this.organIdOwn = id
+    },
     // 初始化数据
     resetInit () {
       if (this.activeType !== '-2') {

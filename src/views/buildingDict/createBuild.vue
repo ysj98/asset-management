@@ -589,6 +589,8 @@ export default {
     // 处理编辑数据
     async handleEdit (data) {
       console.log('test')
+      // 把楼栋的 organId 传出去供 单元和楼层使用
+      this.$emit('handleOrganIdOwn',data.organId)
       // 处理时间类型
       if (data.completionDate) {
         data.completionDate = moment(data.completionDate, 'YYYY-MM-DD')
