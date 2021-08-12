@@ -257,7 +257,9 @@ export default {
           city: "",
         })
         this.cityOpt = [{...cityOptFrist}]
-        await this.queryCityAndAreaList(value, type)
+        if (label !== '全国'){
+          await this.queryCityAndAreaList(value, type)
+        }
       }
       if (type === "city") {
         let flag = this.queryCondition.city === value
@@ -342,8 +344,8 @@ export default {
               this.cityOpt = result
               this.cityOpt.unshift({ ...cityOptFrist })
             }
-            resolve()
           }
+          resolve()
         })
       })
     },
