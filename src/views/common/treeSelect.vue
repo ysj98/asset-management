@@ -195,6 +195,7 @@ export default {
   .select-organ-container {
     position: relative;
     display: inline-block;
+    text-align: left;
     .tree-select {
       width: 100%;
     }
