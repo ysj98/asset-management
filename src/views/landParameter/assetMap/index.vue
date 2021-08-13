@@ -217,8 +217,8 @@ export default {
         var style = {
           position: "absolute",
           zIndex: "-1",
-          width: "20px",
-          height: "25px",
+          width: "28px",
+          height: "35px",
           cursor: "pointer",
         }
         for (let key in style) div.style[key] = style[key]
