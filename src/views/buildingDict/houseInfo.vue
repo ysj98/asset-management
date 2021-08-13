@@ -790,6 +790,7 @@ export default {
   .search-from-box {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     flex: 1;
   }
   .two-row-box {
