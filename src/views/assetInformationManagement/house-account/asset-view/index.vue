@@ -496,8 +496,10 @@
         })
       },
       // 机构字典
-      organDict (code) {
-        this.$api.assets.organDict({ organId: this.organId, code }).then(res => {
+      organDict (code,organId) {
+        this.ownershipUse = ''
+        this.ownershipUseOPt = []
+        this.$api.assets.organDict({ organId: organId, code }).then(res => {
           if (res.data.code === "0") {
             let result = res.data.data || [];
             let arr = result.map(item => ({ label: item.name, value: item.value }));
@@ -517,7 +519,6 @@
     },
     mounted () {
       this.queryNodesByRootCode()
-      this.organDict('OWNERSHIP_USE')
     },
     created () {
       // 初始化Table列头
@@ -535,6 +536,7 @@
         if(val.organId !== pre.organId){
           this.queryCategoryOptions(val.organId)
           this.getSourceOptions(val.organId)
+          this.organDict('OWNERSHIP_USE',val.organId)
         }
       },
 
