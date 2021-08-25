@@ -76,7 +76,7 @@ module.exports = {
   // 部署应用包时的基本 URL
   publicPath: './',
   // build后文件名
-  outputDir: 'asset-management',
+  outputDir: 'dist',
   // 引用的静态文件
   assetsDir: './static',
   filenameHashing: true,
