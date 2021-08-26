@@ -33,7 +33,7 @@
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
-        v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId"
+        v-show="['detail', 'edit', 'new'].includes(setType) && registerOrderId"
         :pageLength="footer.pageSize"
         :totalCount="count"
         location="static"
