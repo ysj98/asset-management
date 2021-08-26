@@ -37,6 +37,7 @@
                 :maxTagCount="1"
                 style="width: 100%"
                 v-model="sourceModes"
+                option-filter-prop="title"
                 placeholder="请选择来源方式"
                 :options="$addTitle(sourceOptions)"
                 @change="changeSource"
@@ -59,6 +60,7 @@
               :maxTagCount="1"
               style="width: 100%"
               v-model="categoryId"
+              option-filter-prop="title"
               placeholder="请选择资产分类"
               :options="$addTitle(categoryOptions)"
               @change="categoryChange"
@@ -74,6 +76,7 @@
               v-model="useType"
               style="width: 100%"
               @change="useTypeChange"
+              option-filter-prop="title"
               :options="$addTitle(useTypeOptions)"
               placeholder="请选择用途"
             />
