@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-07-16 11:25:27
- * @Description: 
- */ 
+ * @Description:
+ */
 // 页面跳转
 export const operationTypes = {
   create: "/buildingDict/createLand",
@@ -27,7 +27,8 @@ export const queryCondition = {
   landuse: '', // 土地用途
   status: '', // 土地名称/编码/宗地号
   pageNum: 1,
-  pageSize: 10
+  pageSize: 10,
+  isCurrent: 0
 };
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
