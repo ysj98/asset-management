@@ -193,6 +193,8 @@
               })
               this.pagination.totalCount = Number(res.data.count)
             }
+            // 给 tableData 默认值
+            tableData = tableData || []
             tableData.forEach((item, index) => {
               item.key = index
             })
@@ -205,6 +207,7 @@
             this.$message.error(`查询${tip}错误`)
           }
         }).catch(err => {
+          console.error(err)
           // this.$message.error(err || `查询${tip}错误`)
         })
       },
@@ -242,7 +245,7 @@
         }
       }
     },
-    
+
     created () {
       let temp = {}
       for (const key in this.apiObj) {
