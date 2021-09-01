@@ -275,7 +275,8 @@
               checkedNames.push(element.assetName)
               rowsData.push(element)
               if (this.judgeInstitutions) {
-                extraData.originalValueSum = utils.accAdd(parseFloat(extraData.originalValueSum).toFixed(2), parseFloat(element.originalValue).toFixed(2))
+                extraData.originalValueSum = utils.accAdd(parseFloat(extraData.originalValueSum).toFixed(2),
+                  parseFloat(element.originalValue || '0' ).toFixed(2))
               }
               if (index === 0) {
                 extraData.assetType = element.assetType
@@ -492,7 +493,7 @@
       // 选择项目
       if (this.judgeInstitutions) {
         this.getObjectKeyValueByOrganIdFn()
-      } 
+      }
       // 资产类型
       this.platformDictFn('asset_type')
     }
