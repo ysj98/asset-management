@@ -384,12 +384,27 @@ export default {
     this.form = this.$form.createForm(this);
   },
   methods: {
-     handleSave() {
-      if(!this.organId){
-        this.$message.error('请选择所属机构')
+    async queryBuildDetail(buildId){
+      if (!buildId) throw new Error('请传入Id')
+      return new Promise((resolve,) => {
+        this.$api.building
+          .queryBuildDetail({ buildId})
+          .then(resData => {
+            if (resData.data.code !== "0") {
+              this.$message.error(resData.data.message);
+            }
+            resolve(resData.data.data.communityId);
+          })
+      })
+
+    },
+
+    async handleSave() {
+      if (!this.organId) {
+        this.$message.error("请选择所属机构");
         return null;
       }
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async (err, values) => {
         console.log("得到值=>", values);
         if (!err) {
           let data = {};
@@ -411,58 +426,43 @@ export default {
           if (this.filepaths.length) {
             data.filepaths = this.filepaths.map(item => item.url).join(",");
           }
-          // 新增房间
-          if (this.type === "create" || this.type === "copy") {
-            if (this.organId) {
-              // 新增房间 没有关联项目的概念了,改成 所属机构
-              data.communityId = this.organId;
-              data.organId = this.organId
-            }
-            let loadingName = this.SG_Loding("新增中...");
-            this.$api.building.addHouse(data).then(
-              res => {
-                this.DE_Loding(loadingName).then(() => {
-                  if (res.data.code === "0") {
-                    this.$SG_Message.success(`新增房间成功`);
-                    this.goPage("index", true);
-                  } else {
-                    this.$message.error(res.data.message);
-                  }
-                });
-              },
-              () => {
-                this.DE_Loding(loadingName).then(() => {
-                  this.$SG_Message.error("新增失败！");
-                });
-              }
-            );
+          data.organId = this.organId;
+          let communityId = await this.queryBuildDetail(values.buildId);
+          // 如果 为 -1 则传-1
+          if ( communityId ){
+            data.communityId = communityId
           }
+          // 默认 新增/复制
+          let loadingNameText = "新增中...";
+          let success = "新增房间成功";
+          let error = "新增失败！";
+          let  apiFn = this.$api.building.addHouse;
           // 编辑房间
           if (this.type === "edit") {
             data.houseId = this.houseId;
-            if (this.organId) {
-              data.communityId = this.organId;
-              data.organId = this.organId
-            }
-            let loadingName = this.SG_Loding("编辑中...");
-            this.$api.building.updateHouse(data).then(
-              res => {
-                this.DE_Loding(loadingName).then(() => {
-                  if (res.data.code === "0") {
-                    this.$SG_Message.success("编辑房间成功");
-                    this.goPage("index", true);
-                  } else {
-                    this.$message.error(res.data.message);
-                  }
-                });
-              },
-              () => {
-                this.DE_Loding(loadingName).then(() => {
-                  this.$SG_Message.error("编辑失败！");
-                });
-              }
-            );
+            loadingNameText = "编辑中...";
+            success = "编辑房间成功";
+            error = "编辑失败！";
+            apiFn = this.$api.building.updateHouse;
           }
+          let loadingName = this.SG_Loding(loadingNameText);
+          apiFn(data).then(
+            res => {
+              this.DE_Loding(loadingName).then(() => {
+                if (res.data.code === "0") {
+                  this.$SG_Message.success(success);
+                  this.goPage("index", true);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              });
+            },
+            () => {
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.error(error);
+              });
+            }
+          );
         }
       });
     },
