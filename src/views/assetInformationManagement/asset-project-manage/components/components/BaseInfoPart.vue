@@ -7,7 +7,19 @@
       <a-row>
         <a-col :span="colSpan">
           <a-form-item label="管理机构" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <span style="margin-left: 11px">{{organName}}</span>
+            <!-- 公司 -->
+            <treeSelect
+              v-if="['edit'].includes(type)"
+              :default="false"
+              :defaultOrganName="organName"
+              :value="organKey"
+              @changeTree="changeTree"
+              style="width: 100%;"
+              placeholder='请选择组织机构'
+              :allowClear="false"
+            >
+            </treeSelect>
+            <span v-else  style="margin-left: 11px">{{organName}}</span>
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
@@ -303,9 +315,19 @@
 <script>
   import moment from 'moment'
   import { queryPlatformDict } from 'src/views/common/commonQueryApi'
+  import TreeSelect from "@/views/common/treeSelect";
   export default {
   name: 'BaseInfo',
-  props: ['type', 'projectId', 'organTitle', 'organId', 'sourceTypeOptions'],
+    components:{
+      TreeSelect
+    },
+  props: {
+    type:String,
+    projectId:[String,Number],
+    organTitle:String,
+    organId:[String,Number],
+    sourceTypeOptions:Array
+  },
   data () {
     return {
       colSpan: 8,
@@ -342,10 +364,14 @@
   },
 
   methods: {
+    // 获取选择的组织机构
+    changeTree (id) {
+      this.organIdEdit = id
+    },
     // 查询编码规则
-    getProjectCode () {
+    getProjectCode (id) {
       let obj = {
-        organId: this.organId
+        organId: id ||  this.organId
       }
       this.$api.publicCode.getProjectCode(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -374,7 +400,7 @@
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, receiver } = this
+          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, organIdEdit } = this
           // 转换日期格式为string
           let dateKeys = objBySourceType[sourceType] || []
           dateKeys.forEach(key => {
@@ -389,7 +415,10 @@
             return { attachmentPath, attachmentSuffix: suffix || name.split('.')[1], oldAttachmentName: name, newAttachmentName: name }
           }) // 处理附件格式
           let form = Object.assign({}, { attachment: attachArr, organId }, values)
-          type === 'edit' ? form.projectId = projectId : '' // 编辑时传入projectId
+          if (type === 'edit'){
+            form.projectId = projectId // 编辑时传入projectId
+            form.organId = organIdEdit // 编辑时传入organId
+          }
           this.$api.assets[api[type]](form).then(({data: res}) => {
             this.spinning = false
             if (res && String(res.code) === '0') {
@@ -437,8 +466,8 @@
             actualUsableArea,
             sourceType,
             attachment: attachArr,
-            organKey: organId, // 保存管理机构id
-            organName: organName // 展示管理机构名称
+            organKey: String(organId), // 保存管理机构id
+            organName: organName, // 展示管理机构名称
           })
           // 转换日期格式为moment
           let formData = {
