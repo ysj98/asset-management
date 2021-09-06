@@ -98,20 +98,17 @@ const floorOpt = [{ label: "全部楼层", value: "" }]
 const houseOpt = [{ label: "全部房号", value: "" }];
 const houseStatusOpt = [{ label: "全部房屋状态", value: "" }, { label: "有效", value: "1" }, { label: "无效", value: "0" }]
 const columns = [
-  // { title: '资产编码', dataIndex: 'assetCode' },
-  // { title: '资产名称', dataIndex: 'assetName'},
-  // { title: '资产形态', dataIndex: 'typeName'},
-  // { title: '资产面积(㎡)', dataIndex: 'assetArea' },
-  { title: '楼栋名称', dataIndex: 'buildName' },
-  { title: '单元', dataIndex: 'unitName' },
-  { title: '楼层', dataIndex: 'floorName' },
-  { title: '房号', dataIndex: 'roomNo' },
-  { title: '房间面积(㎡)', dataIndex: 'area' },
-  { title: '房间状态', dataIndex: 'statusName' },
-  { title: '项目名称', dataIndex: 'communityName' },
-  { title: '资源状态', dataIndex: 'resTypeName'},
-  { title: '出租甲方', dataIndex: 'firstName'},
-  { title: '实际用途', dataIndex: 'leaseUse' }
+  { title: '项目名称', dataIndex: 'communityName', width: 150 },
+  { title: '楼栋名称', dataIndex: 'buildName', width: 150 },
+  { title: '单元', dataIndex: 'unitName', width: 50 },
+  { title: '楼层', dataIndex: 'floorName', width: 50 },
+  { title: '房号', dataIndex: 'roomNo', width: 50 },
+  { title: '租赁甲方', dataIndex: 'firstName'},
+  { title: '使用方向', dataIndex: 'resTypeName' },
+  { title: '使用状态', dataIndex: 'busiStatus' },
+  { title: '房间面积(㎡)', dataIndex: 'area', width: 100 },
+  { title: '租赁用途', dataIndex: 'leaseUse', width: 80 },
+  { title: '租户名称', dataIndex: 'lessee' }
 ]
 export default {
   components: {noDataTips},
