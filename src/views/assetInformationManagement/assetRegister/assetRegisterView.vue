@@ -25,6 +25,16 @@
       </div>
       <div slot="form" class="formCon">
         <a-select
+          mode="multiple"
+          :maxTagCount="1"
+          style="width: 190px; margin-right: 10px;"
+          v-model="queryCondition.sourceModes"
+          option-filter-prop="title"
+          placeholder="请选择来源方式"
+          :options="$addTitle(sourceOptions)"
+          @select="changeSource"
+        />
+        <a-select
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
@@ -76,6 +86,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {querySourceType} from "@/views/common/commonQueryApi";
 
 const approvalStatusData = [
   {
@@ -138,6 +149,10 @@ const columns = [
     dataIndex: 'pasitionString'
   },
   {
+    title: '来源方式',
+    dataIndex: 'sourceName'
+  },
+  {
     title: '创建日期',
     dataIndex: 'createTime'
   },
@@ -176,6 +191,7 @@ export default {
   components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
   data () {
     return {
+      sourceOptions:[{ value:'', label: '全部来源方式' }],
       ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
@@ -197,7 +213,8 @@ export default {
         approvalStatus: '',        // 状态
         assetNameCode: '',         // 资产名称/编码
         assetClassify: [''],        // 资产分类
-        registerOrderNameOrId: ''     // 登记单编号
+        registerOrderNameOrId: '',     // 登记单编号
+        sourceModes : ['']
       },
       numList: [
         {title: '全部', key: 'whole', value: 0, fontColor: '#324057'},
@@ -225,6 +242,14 @@ export default {
     this.platformDictFn('asset_type')
   },
   methods: {
+    // 根据organId查询来源方式
+    async getSourceOptions(organId){
+      this.sourceOptions = [{ value:'', label: '全部来源方式' }]
+      this.queryCondition.sourceModes = ['']
+      querySourceType(organId, this).then(list => {
+        return this.sourceOptions = [{ value:'', label: '全部来源方式' }].concat(list)
+      })
+    },
     exportFn () {
       let obj = {
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
@@ -235,7 +260,8 @@ export default {
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId                                // 登记单编码
+        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
+        sourceModes:  this.alljudge(this.queryCondition.sourceModes)
       }
       this.$api.assets.assetRegListPageExport(obj).then(res => {
         console.log(res)
@@ -255,6 +281,7 @@ export default {
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = undefined
       this.getAssetClassifyOptions()
+      this.getSourceOptions(value)
       this.query()
       this.getObjectKeyValueByOrganIdFn()
     },
@@ -359,6 +386,12 @@ export default {
     changeAssetClassify (value) {
       this.$nextTick(function () {
         this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyOptions)
+      })
+    },
+    // 来源方式
+    changeSource(value){
+      this.$nextTick(function () {
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.sourceModes, this.sourceOptions)
       })
     },
     // 状态发生变化
