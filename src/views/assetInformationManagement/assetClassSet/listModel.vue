@@ -35,6 +35,7 @@
     </SG-SearchContainer>
     <div>
       <a-table
+        :scroll="{ x: 2360 }"
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"
