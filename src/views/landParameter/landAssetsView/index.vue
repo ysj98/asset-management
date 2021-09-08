@@ -19,6 +19,7 @@
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <a-select
+            optionFilterProp="children"
             :maxTagCount="1"
             :style="allStyle"
             mode="multiple"
@@ -27,28 +28,105 @@
             @select="changeSource"
             v-model="queryCondition.sourceModes"
           >
-            <a-select-option :title="item.name" v-for="(item) in sourceOptions" :key="item.key" :value="item.key">
+            <a-select-option
+              :title="item.name"
+              v-for="item in sourceOptions"
+              :key="item.key"
+              :value="item.key"
+            >
               {{ item.title }}
             </a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.statuss">
-            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部状态"
+            :tokenSeparators="[',']"
+            @select="approvalStatusFn"
+            v-model="queryCondition.statuss"
+          >
+            <a-select-option
+              :title="item.name"
+              v-for="(item, index) in approvalStatusData"
+              :key="index"
+              :value="item.value"
+            >
+              {{ item.name }}
+            </a-select-option>
           </a-select>
-          <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption" @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
-            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select
+            :style="allStyle"
+            :showSearch="true"
+            mode="multiple"
+            :filterOption="filterOption"
+            @select="projectIdFn"
+            :tokenSeparators="[',']"
+            placeholder="全部资产项目"
+            v-model="queryCondition.projectId"
+          >
+            <a-select-option
+              :title="item.name"
+              v-for="(item, index) in projectData"
+              :key="index"
+              :value="item.value"
+            >
+              {{ item.name }}
+            </a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
-            <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部分类"
+            :tokenSeparators="[',']"
+            @select="assetClassifyDataFn"
+            v-model="queryCondition.objectTypes"
+          >
+            <a-select-option
+              :title="item.name"
+              v-for="(item, index) in assetClassifyData"
+              :key="index"
+              :value="item.value"
+            >
+              {{ item.name }}
+            </a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途" :tokenSeparators="[',']"  @select="useTypeChange" v-model="queryCondition.useType">
-            <a-select-option :title="item.name" v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部用途"
+            :tokenSeparators="[',']"
+            @select="useTypeChange"
+            v-model="queryCondition.useType"
+          >
+            <a-select-option
+              :title="item.name"
+              v-for="(item, index) in useTypeOptions"
+              :key="index"
+              :value="item.value"
+            >
+              {{ item.name }}
+            </a-select-option>
           </a-select>
           <a-row :gutter="12" style="margin-right: -78px">
             <a-col :span="18" style="padding-left: 60px">
-              <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+              <ProvinceCityDistrict
+                class="city"
+                ref="ProvinceCityDistrict"
+                v-model="provinces"
+              ></ProvinceCityDistrict>
             </a-col>
             <a-col :span="5" style="padding-top: 13px; padding-left: 0">
-              <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
+              <a-input
+                placeholder="详细地址"
+                v-model="address"
+                :maxLength="20"
+              />
             </a-col>
           </a-row>
         </div>
