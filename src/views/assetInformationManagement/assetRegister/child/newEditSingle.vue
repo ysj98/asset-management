@@ -124,7 +124,12 @@ export default {
         this.assetType = data.assetType
         console.log(this.assetType, 'assetTypeassetTypeassetType')
         if (this.$refs.basicRef.save()) { return }
-        let basicData = this.$refs.basicRef.basicData
+        let basicData = this.$refs.basicRef.basicData.map(ele=>{
+          delete ele.pasitionString
+          return {
+            ...ele
+          }
+        })
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称

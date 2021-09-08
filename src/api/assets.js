@@ -170,6 +170,10 @@ export function getRegisterOrderListPage (data) {
 export function downloadTemplate (data) {
   return axiosPost(assets.assetRegister.downloadTemplate, data, false, false, {responseType: 'blob'})
 }
+// 资产登记新增（修改的批量导出）-再次下载导入模板
+export function downloadTemplateV2 (data) {
+  return axiosPost(assets.assetRegister.downloadTemplateV2, data, false, false, {responseType: 'blob'})
+}
 // 基本信息批量更新（导入）
 export function baseImport (data) {
   return axiosPost(assets.assetRegister.baseImport, data)
@@ -189,6 +193,10 @@ export function getRegisterOrderDetailsStatistics (data) {
 // 资产登记-读取excel模板文件
 export function readExcelModel (data) {
   return axiosPost(assets.assetRegister.readExcelModel, data)
+}
+// 资产登记-读取excel模板文件
+export function readExcelModelV2 (data) {
+  return axiosPost(assets.assetRegister.readExcelModelV2, data)
 }
 // 资产登记-导出数据校验
 export function checkBuildsObjectType (data) {

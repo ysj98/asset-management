@@ -162,6 +162,8 @@ export const assets = {
     getRegisterOrderListPage: '/ams/registerOrder/getRegisterOrderListPage',
     // 资产登记新增-下载导入模板
     downloadTemplate: '/ams/registerOrder/downloadTemplate',
+    // 资产登记新增（修改的批量导出）-再次下载导入模板
+    downloadTemplateV2: '/ams/registerOrder/downloadTemplateV2',
     // 资产登记转运营信息-根据资产项目ID
     getTransferByProjectId: '/ams/registerOrder/getTransferByProjectId',
     // 资产登记明细列表-分页
@@ -172,6 +174,8 @@ export const assets = {
     getRegisterOrderDetailsStatistics: '/ams/registerOrder/getRegisterOrderDetailsStatistics',
     // 资产登记-读取excel模板文件
     readExcelModel: '/ams/registerOrder/readExcelModel',
+    // 资产登记-再次导入读取excel模板文件
+    readExcelModelV2: '/ams/registerOrder/readExcelModelV2',
     // 资产登记-读取excel模板文件
     checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType',
     // 资产登记-附属配套-分页查询列表

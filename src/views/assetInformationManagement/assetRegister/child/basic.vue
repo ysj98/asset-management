@@ -15,7 +15,8 @@
         <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
       </div>
       <div class="buytton-nav" v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId">
-        <SG-Button type="primary" weaken @click="downFn">批量导出</SG-Button>
+        <SG-Button type="primary" weaken @click="handleAddAsset">添加资产导入</SG-Button>
+        <SG-Button class="ml20" type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="batchUpdate">批量更新</SG-Button>
       </div>
     </div>
@@ -43,6 +44,15 @@
       />
     </div>
     <basicDownload ref="basicDownload"></basicDownload>
+    <!--  添加资产导入  -->
+    <AssetImportModal
+      ref="assetImportModalRef"
+      :modalData="modalObj.add"
+      @handleAdditionAsset="handleAdditionAsset"
+      @doClosePop="
+        ()=>{ modalObj.add.flag = false }
+      "
+    />
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <input ref="batchUpload" @change="batchUploadFn($event.target.files, $event)" type="file" style="display:none">
   </div>
@@ -54,6 +64,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import {columnsData, judgmentData, landData, landCheck} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
+import AssetImportModal from "@/views/assetInformationManagement/assetRegister/common/AssetImportModal";
 import bridge from './center'
 import {querySourceType} from "@/views/common/commonQueryApi";
 let getUuid = (() => {
@@ -63,7 +74,7 @@ let getUuid = (() => {
   }
 })()
 export default {
-  components: {OverviewNumber, noDataTips, basicDownload},
+  components: {OverviewNumber, noDataTips, basicDownload, AssetImportModal},
   props: {
     organId: {
       type: [String, Number],
@@ -80,6 +91,19 @@ export default {
   },
   data () {
     return {
+      modalObj: {
+        add: {
+          modalName: "add",
+          flag: false,
+          title: "添加资产导入",
+          // modal中子组件需要的数据
+          params: {
+            organId: "",
+            type: "",
+            registerOrderId:''
+          }
+        }
+      },
       sourceType: '',
       sourceOptions:[], // 用来匹配 value
       keyUuid: getUuid(),
@@ -178,6 +202,7 @@ export default {
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index
+              item.address =  item.pasitionString + item.address || ""
             })
           }
           if (this.columns[0].dataIndex !== 'assetId') {
@@ -280,84 +305,14 @@ export default {
       this.$api.assets.readExcelModel(this.formData).then(res => {
         if (res.data.code === '0') {
           e.target.value = ''
-          let resData = [], arrData =[], publicData = []
+          let resData = [], arrData =[]
           if (this.assetType === '1') {
             arrData = res.data.data.assetHouseList
-            publicData = judgmentData
           } else if (this.assetType === '4') {
             arrData =  res.data.data.assetBlankList
-            publicData = landCheck
           }
           // 遍历判断必填有字段
-          for (let i = 0; i < arrData.length; i++) {
-            for (let j = 0; j < publicData.length; j++) {
-             // 必填字段
-              if (publicData[j].required) {
-                if (!arrData[i][publicData[j].dataIndex]) {
-                  this.DE_Loding(loadingName).then(() => { this.$message.info(`请输入${publicData[j].title}`)})
-                  return
-                }
-              }
-              // 判断只能为数字2小数
-              if (publicData[j].type === 'float') {
-                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持10位数2位小数)`)})
-                  return
-                }
-              }
-              // 判断只能为13位数字2小数
-              if (publicData[j].type === 'float132') {
-                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,13}|\d{1,11}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持13位数2位小数)`)})
-                  return
-                }
-              }
-              // 判断只能为数字4小数
-              if (publicData[j].type === 'float4') {
-                if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}(只支持10位数2位小数)`)})
-                  return
-                }
-              }
-              // 判断只能为整数
-              if (publicData[j].type === 'number') {
-                if (arrData[i][publicData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][publicData[j].dataIndex]))) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`请输入正确${publicData[j].title}`)})
-                  return
-                }
-              }
-              // 判断不超过多少字符
-              if (publicData[j].fontLength) {
-                if (arrData[i][publicData[j].dataIndex] && String(arrData[i][publicData[j].dataIndex]).length > publicData[j].fontLength) {
-                  this.DE_Loding(loadingName).then(() => {this.$message.info(`${publicData[j].title}不超过${publicData[j].fontLength}字符`)})
-                  return
-                }
-              }
-              // 判断时间转换
-              if (publicData[j].date) {
-                if (arrData[i][publicData[j].dataIndex]) {
-                  arrData[i][publicData[j].dataIndex] = utils.xlsxDate(Number(arrData[i][publicData[j].dataIndex]))
-                }
-              }
-            }
-            if (!this.ownershipDataName.includes(arrData[i].kindOfRightName)) {
-              this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属类型`)})
-              return
-            }
-            if (!this.organDictDataName.includes(arrData[i].ownershipStatusName)) {
-              this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属情况`)})
-              return
-            }
-            if (arrData[i].ownershipStatusName === '有证') {
-              if (!arrData[i].warrantNbr) {
-                this.DE_Loding(loadingName).then(() => {this.$message.info('当权属情况为有证时需输入权证号')})
-                return
-              }
-            }
-            arrData[i].key = i + getUuid()
-            arrData[i].area = arrData[i].area ? arrData[i].area : 0
-            arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
-          }
+          if(this.handleValidateExcelData( arrData, loadingName)) return null
           resData = utils.deepClone([...arrData, ...this.tableData])
           // 房屋
           if (this.assetType === '1') {
@@ -367,7 +322,6 @@ export default {
               hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
               return preVal
             }, [])
-            publicData = judgmentData
           } else if (this.assetType === '4') {
             // 土地
             // 数组去重根据objectId
@@ -376,21 +330,13 @@ export default {
               hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
               return preVal
             }, [])
-            publicData = landCheck
           }
-          this.tableData = resData.map(ele => {
-            // 默认取 资产项目 来源方式
-            let sourceModeName = ele.sourceModeName
-            if (!ele.sourceModeName) {
-              // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
-              let sourceModeObj = this.sourceOptions.find(sourceItem => sourceItem.key === String(this.sourceType))
-              sourceModeName = sourceModeObj ? sourceModeObj.title : ''
-            }
-            return {
-              ...ele,
-              sourceModeName,
-            }
-          })
+          this.tableData = this.handleTableDataSourceModeName(
+            resData
+          ).map(ele => ({
+            ...ele,
+            address: ele.pasitionString + ele.address || ""
+          }));
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -408,6 +354,171 @@ export default {
         })
       })
     },
+    /*
+    * 添加默认来源方式
+    * @return Array
+    * */
+    handleTableDataSourceModeName(tableData){
+      return tableData.map(ele => {
+        // 默认取 资产项目 来源方式
+        let sourceModeName = ele.sourceModeName
+        if (!ele.sourceModeName) {
+          // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
+          let sourceModeObj = this.sourceOptions.find(sourceItem => sourceItem.key === String(this.sourceType))
+          sourceModeName = sourceModeObj ? sourceModeObj.title : ''
+        }
+        return {
+          ...ele,
+          sourceModeName,
+        }
+      })
+    },
+    /*
+    * 校验表格数据
+    * @return String 错误信息
+    * */
+    handleValidateExcelData(arrData,loadingName){
+      let publicData = []
+      if (this.assetType === '1') {
+        publicData = judgmentData
+      } else if (this.assetType === '4') {
+        publicData = landCheck
+      }
+      for (let i = 0; i < arrData.length; i++) {
+        for (let j = 0; j < publicData.length; j++) {
+          // 必填字段
+          if (publicData[j].required) {
+            if (!arrData[i][publicData[j].dataIndex]) {
+              let msg = `请输入${publicData[j].title}`
+              this.DE_Loding(loadingName).then(() => { this.$message.info(msg)})
+              return msg
+            }
+          }
+          // 判断只能为数字2小数
+          if (publicData[j].type === 'float') {
+            if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
+              let msg = `请输入正确${publicData[j].title}(只支持10位数2位小数)`
+              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
+              return msg
+            }
+          }
+          // 判断只能为13位数字2小数
+          if (publicData[j].type === 'float132') {
+            if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,13}|\d{1,11}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
+              let msg = `请输入正确${publicData[j].title}(只支持13位数2位小数)`
+              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
+              return msg
+            }
+          }
+          // 判断只能为数字4小数
+          if (publicData[j].type === 'float4') {
+            if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
+              let msg = `请输入正确${publicData[j].title}(只支持10位数2位小数)`
+              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
+              return msg
+            }
+          }
+          // 判断只能为整数
+          if (publicData[j].type === 'number') {
+            if (arrData[i][publicData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][publicData[j].dataIndex]))) {
+              let msg = `请输入正确${publicData[j].title}`
+              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
+              return msg
+            }
+          }
+          // 判断不超过多少字符
+          if (publicData[j].fontLength) {
+            if (arrData[i][publicData[j].dataIndex] && String(arrData[i][publicData[j].dataIndex]).length > publicData[j].fontLength) {
+              let msg = `${publicData[j].title}不超过${publicData[j].fontLength}字符`
+              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
+              return msg
+            }
+          }
+          // 判断时间转换
+          if (publicData[j].date) {
+            if (arrData[i][publicData[j].dataIndex]) {
+              arrData[i][publicData[j].dataIndex] = utils.xlsxDate(Number(arrData[i][publicData[j].dataIndex]))
+            }
+          }
+        }
+        if (!this.ownershipDataName.includes(arrData[i].kindOfRightName)) {
+          this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属类型`)})
+          return
+        }
+        if (!this.organDictDataName.includes(arrData[i].ownershipStatusName)) {
+          this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属情况`)})
+          return
+        }
+        if (arrData[i].ownershipStatusName === '有证') {
+          if (!arrData[i].warrantNbr) {
+            this.DE_Loding(loadingName).then(() => {this.$message.info('当权属情况为有证时需输入权证号')})
+            return
+          }
+        }
+        arrData[i].key = i + getUuid()
+        arrData[i].area = arrData[i].area ? arrData[i].area : 0
+        arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
+      }
+    },
+    /*
+    * 追加 导入
+    * @fileList Array
+    * */
+    async handleAdditionAsset(fileList){
+      if (!fileList.length) { return }
+      let fileData = new FormData()
+      fileData.append('registerOrderModelFile', fileList[0])
+      fileData.append('assetType', this.assetType)
+      fileData.append('registerOrderId', String(this.registerOrderId || ''))
+      if (this.formData === null) {
+        return this.$message.error('请先上传文件!')
+      }
+      let loadingName = this.SG_Loding('导入中...')
+      try {
+        let { data } = await this.$api.assets.readExcelModelV2(fileData)
+        console.log('responseData',data)
+        debugger
+        if(data.code === '0'){
+          let arrData = []
+          switch (this.assetType) {
+            case '1':
+              arrData = data.data.assetHouseList
+              break;
+            case '4':
+              arrData = data.data.assetBlankList
+              break;
+            default:
+              break;
+          }
+          if( this.handleValidateExcelData( arrData, loadingName) ) return null
+          let requestData = this.handleTableDataSourceModeName(arrData)
+          // TODO: 保存接口
+          let { data } = await this.$api.assets.readExcelModelV2(requestData)
+          if (data.code === '0'){
+            this.query()
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.success('导入成功！')
+            })
+            // 导入成功 关闭弹窗
+            this.modalObj.add.flag = false
+          }else {
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.error(data.message)
+            })
+          }
+        }else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(data.message)
+          })
+        }
+      }catch (error){
+        console.error(error)
+        this.DE_Loding(loadingName).then(() => {
+          this.$SG_Message.error('导入失败！')
+        })
+      }
+
+    },
     // 导入资产清单
     addTheAsset () {
       if (this.assetTypeFn()) { return}
@@ -417,6 +528,17 @@ export default {
       if (!this.assetType) {
         this.$message.info('请先选择资产类型')
         return true
+      }
+    },
+    /*
+    * 登记基础信息 添加资产导入
+    * */
+    handleAddAsset(){
+      this.modalObj.add.flag = true
+      this.modalObj.add.params= {
+        organId: this.organId,
+        type: this.assetType,
+        registerOrderId: this.registerOrderId
       }
     },
     // 下载模板
