@@ -59,14 +59,15 @@
 </template>
 
 <script>
-import {utils, calc} from '@/utils/utils'
+import {calc, utils} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData, landData, landCheck} from './../common/registerBasics'
+import {columnsData, judgmentData, landCheck, landData} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import AssetImportModal from "@/views/assetInformationManagement/assetRegister/common/AssetImportModal";
 import bridge from './center'
 import {querySourceType} from "@/views/common/commonQueryApi";
+
 let getUuid = (() => {
   let uuid = 1
   return () => {
@@ -91,6 +92,8 @@ export default {
   },
   data () {
     return {
+      detailData:{},
+      projectList:[],
       modalObj: {
         add: {
           modalName: "add",
@@ -135,37 +138,103 @@ export default {
   created () {
   },
   mounted () {
-    this.getSourceOptions()
-    this.record = JSON.parse(this.$route.query.record)
-    this.setType = this.$route.query.setType
-    this.assetType = String(this.assetTypeId)
-    // 编辑和详情进来的判断
-    if (this.setType === 'detail' || this.setType === 'edit') {
-      let arr = []
-      this.assetType = String(this.record[0].assetType)
-      if (+this.record[0].assetType === 1) {                    // 房屋表头
-        arr = utils.deepClone(columnsData)
-      } else if (+this.record[0].assetType === 4) {             // 土地表头
-        arr = utils.deepClone(landData)
-      }
-      if (this.setType === 'detail') { arr.pop()}
-      this.columns = arr
-      this.query()
-    } else {
-      this.bridgeFn()
-    }
-    this.organDict()
-    this.ownershipFn()
+    this.init()
   },
   methods: {
+    /*
+    * 获取详情 取projectID 用
+    * */
+    getDetail(){
+      return new Promise(resolve => {
+        let obj = {
+          registerOrderId: this.registerOrderId     // 资产登记单ID
+        }
+        this.$api.assets.getRegisterOrderById(obj).then(res => {
+          if (Number(res.data.code) === 0) {
+            this.detailData = res.data.data
+          } else {
+            this.$message.error(res.data.message)
+          }
+          resolve()
+        })
+      })
+    },
+    /*
+    * 编辑 初始化
+    * */
+    async init(){
+      this.record = JSON.parse(this.$route.query.record)
+      this.assetType = String(this.assetTypeId)
+      this.setType = this.$route.query.setType
+
+      let res1 = this.getObjectKeyValueByOrganIdFn()
+      let res2 = this.getSourceOptions()
+      await res1
+      await res2
+      if(['edit'].includes(this.setType)){
+        let res3 = this.getDetail()
+        await res3
+        console.log(this.projectList,this.sourceOptions)
+        this.handleInitDefaultSourceType(this.detailData.projectId)
+      }
+      // 编辑和详情进来的判断
+      if (this.setType === 'detail' || this.setType === 'edit') {
+        let arr = []
+        this.assetType = String(this.record[0].assetType)
+        if (+this.record[0].assetType === 1) {                    // 房屋表头
+          arr = utils.deepClone(columnsData)
+        } else if (+this.record[0].assetType === 4) {             // 土地表头
+          arr = utils.deepClone(landData)
+        }
+        if (this.setType === 'detail') { arr.pop()}
+        this.columns = arr
+        this.query()
+      } else {
+        this.bridgeFn()
+      }
+      this.organDict()
+      this.ownershipFn()
+    },
+    /*
+    * 编辑页面 获取默认来源方式值
+    * */
+    handleInitDefaultSourceType(projectId){
+      let res = this.projectList.find(ele=>ele.projectId === projectId)
+      console.log('res',res)
+      this.sourceType = res ? res.sourceType : ''
+    },
+    /*
+    * 获取项目列表
+    * 初始化来源方式用
+    * */
+    getObjectKeyValueByOrganIdFn () {
+      return new Promise(resolve => {
+        let obj = {
+          organId: this.organId,
+          projectName: ''
+        }
+        this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+          if (Number(res.data.code) === 0) {
+            this.projectList = res.data.data
+          } else {
+            this.$message.error(res.data.message)
+          }
+          resolve()
+        })
+      })
+
+    },
     /*
     * 获取来源方式
     * */
     async getSourceOptions() {
-      let organId = this.organId
-      this.sourceOptions = []
-      querySourceType(organId, this).then(list => {
-        return this.sourceOptions = list
+      return new Promise(resolve => {
+        let organId = this.organId
+        this.sourceOptions = []
+        querySourceType(organId, this).then(list => {
+          resolve()
+          return this.sourceOptions = list
+        })
       })
     },
     // 分页查询添加后和详情使用
@@ -257,6 +326,7 @@ export default {
         // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
+          debugger
           this.sourceType = sourceType
         }
         // 切换总的统计数据的值为0
@@ -312,7 +382,11 @@ export default {
             arrData =  res.data.data.assetBlankList
           }
           // 遍历判断必填有字段
-          if(this.handleValidateExcelData( arrData, loadingName)) return null
+          let validateRes = this.handleValidateExcelData( arrData)
+          if(validateRes){
+            this.$message.info(validateRes)
+            return null
+          }
           resData = utils.deepClone([...arrData, ...this.tableData])
           // 房屋
           if (this.assetType === '1') {
@@ -377,7 +451,7 @@ export default {
     * 校验表格数据
     * @return String 错误信息
     * */
-    handleValidateExcelData(arrData,loadingName){
+    handleValidateExcelData(arrData){
       let publicData = []
       if (this.assetType === '1') {
         publicData = judgmentData
@@ -389,49 +463,37 @@ export default {
           // 必填字段
           if (publicData[j].required) {
             if (!arrData[i][publicData[j].dataIndex]) {
-              let msg = `请输入${publicData[j].title}`
-              this.DE_Loding(loadingName).then(() => { this.$message.info(msg)})
-              return msg
+              return `请输入${publicData[j].title}`
             }
           }
           // 判断只能为数字2小数
           if (publicData[j].type === 'float') {
             if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
-              let msg = `请输入正确${publicData[j].title}(只支持10位数2位小数)`
-              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
-              return msg
+              return `请输入正确${publicData[j].title}(只支持10位数2位小数)`
             }
           }
           // 判断只能为13位数字2小数
           if (publicData[j].type === 'float132') {
             if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,13}|\d{1,11}\.\d{1,2})$/).test(arrData[i][publicData[j].dataIndex])) {
-              let msg = `请输入正确${publicData[j].title}(只支持13位数2位小数)`
-              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
-              return msg
+              return `请输入正确${publicData[j].title}(只支持13位数2位小数)`
             }
           }
           // 判断只能为数字4小数
           if (publicData[j].type === 'float4') {
             if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
-              let msg = `请输入正确${publicData[j].title}(只支持10位数2位小数)`
-              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
-              return msg
+              return `请输入正确${publicData[j].title}(只支持10位数2位小数)`
             }
           }
           // 判断只能为整数
-          if (publicData[j].type === 'number') {
+          if (publicData[j].type === 'num ber') {
             if (arrData[i][publicData[j].dataIndex] && !(/^\d{1,11}$/).test(Number(arrData[i][publicData[j].dataIndex]))) {
-              let msg = `请输入正确${publicData[j].title}`
-              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
-              return msg
+              return `请输入正确${publicData[j].title}`
             }
           }
           // 判断不超过多少字符
           if (publicData[j].fontLength) {
             if (arrData[i][publicData[j].dataIndex] && String(arrData[i][publicData[j].dataIndex]).length > publicData[j].fontLength) {
-              let msg = `${publicData[j].title}不超过${publicData[j].fontLength}字符`
-              this.DE_Loding(loadingName).then(() => {this.$message.info(msg)})
-              return msg
+              return `${publicData[j].title}不超过${publicData[j].fontLength}字符`
             }
           }
           // 判断时间转换
@@ -442,22 +504,54 @@ export default {
           }
         }
         if (!this.ownershipDataName.includes(arrData[i].kindOfRightName)) {
-          this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属类型`)})
-          return
+          return `请选择正确的权属类型`
         }
         if (!this.organDictDataName.includes(arrData[i].ownershipStatusName)) {
-          this.DE_Loding(loadingName).then(() => {this.$message.info(`请选择正确的权属情况`)})
-          return
+          return `请选择正确的权属情况`
         }
         if (arrData[i].ownershipStatusName === '有证') {
           if (!arrData[i].warrantNbr) {
-            this.DE_Loding(loadingName).then(() => {this.$message.info('当权属情况为有证时需输入权证号')})
-            return
+            return '当权属情况为有证时需输入权证号'
           }
         }
         arrData[i].key = i + getUuid()
         arrData[i].area = arrData[i].area ? arrData[i].area : 0
         arrData[i].transferArea = arrData[i].transferArea ? arrData[i].transferArea : 0
+      }
+    },
+    /*
+    * 导入之后 保存
+    * */
+    async handleSaveAsset(basicData){
+      let loadingName = this.SG_Loding("保存中...")
+      let data = this.detailData
+      let requestData = {
+        registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
+        registerOrderName: data.registerOrderName,    // 登记单名称
+        projectId: data.projectId,                    // 资产项目Id
+        assetType: data.assetType,                    // 资产类型Id
+        remark: data.remark,                          // 备注
+        organId: this.organId,                          // 组织机构id
+        assetHouseList: String(data.assetType || '' ) === '1' ? basicData : [],   // 房屋
+        assetBlankList: String(data.assetType || '' ) === '4' ? basicData : []    // 土地
+      }
+      try {
+        let updateRegisterOrderV2ResData = await this.$api.assets.updateRegisterOrderV2(requestData)
+        console.log(updateRegisterOrderV2ResData)
+        if (updateRegisterOrderV2ResData.data.code === '0'){
+          this.query()
+          await this.DE_Loding(loadingName)
+          this.$SG_Message.success('保存成功！')
+          // 导入成功 关闭弹窗
+          this.modalObj.add.flag = false
+        }else {
+          await this.DE_Loding(loadingName)
+          this.$SG_Message.error(updateRegisterOrderV2ResData.data.message)
+        }
+      }catch (error){
+        console.error(error)
+        await this.DE_Loding(loadingName)
+        this.$SG_Message.error('保存失败')
       }
     },
     /*
@@ -473,49 +567,41 @@ export default {
       if (this.formData === null) {
         return this.$message.error('请先上传文件!')
       }
-      let loadingName = this.SG_Loding('导入中...')
+      let loadingName = this.SG_Loding("导入中...")
+      console.log(loadingName)
       try {
-        let { data } = await this.$api.assets.readExcelModelV2(fileData)
-        console.log('responseData',data)
-        debugger
-        if(data.code === '0'){
-          let arrData = []
-          switch (this.assetType) {
-            case '1':
-              arrData = data.data.assetHouseList
-              break;
-            case '4':
-              arrData = data.data.assetBlankList
-              break;
-            default:
-              break;
+        let readExcelModelV2ResData = await this.$api.assets.readExcelModelV2(fileData)
+        if(readExcelModelV2ResData.data.code === '0'){
+          /*
+          * key assetType
+          * value 接口返回的字段名
+          * */
+          const tempObj  = {
+            '1':'assetHouseList',
+            '2':'assetBlankList'
           }
-          if( this.handleValidateExcelData( arrData, loadingName) ) return null
-          let requestData = this.handleTableDataSourceModeName(arrData)
-          // TODO: 保存接口
-          let { data } = await this.$api.assets.readExcelModelV2(requestData)
-          if (data.code === '0'){
-            this.query()
-            this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.success('导入成功！')
-            })
-            // 导入成功 关闭弹窗
-            this.modalObj.add.flag = false
-          }else {
-            this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.error(data.message)
-            })
+          let arrData = readExcelModelV2ResData.data.data[tempObj[this.assetType]]
+          let validateRes = this.handleValidateExcelData( arrData)
+          console.log('validateRes',validateRes)
+          if( validateRes ) {
+            await this.DE_Loding(loadingName)
+            await this.$message.info(validateRes)
+            return null
           }
+          // 追加 默认 sourceMode 信息
+          let basicData = arrData.map(ele=>({...ele,sourceMode: ele.sourceMode !== undefined ? ele.sourceMode : this.sourceType}))
+          await this.DE_Loding(loadingName)
+          await this.handleSaveAsset(basicData)
         }else {
-          this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.error(data.message)
+          await this.DE_Loding(loadingName)
+          this.$SG_Message.error({
+            content: readExcelModelV2ResData.data.message,
+            duration: 5
           })
         }
       }catch (error){
         console.error(error)
-        this.DE_Loding(loadingName).then(() => {
-          this.$SG_Message.error('导入失败！')
-        })
+        this.$SG_Message.error('导入失败！')
       }
 
     },

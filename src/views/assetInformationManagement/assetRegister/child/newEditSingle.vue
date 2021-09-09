@@ -8,7 +8,11 @@
   <div class="newEditSingle">
     <!-- 登记单第一步信息 -->
     <newInformation ref="newInformation" v-if="this.activeStepIndex === 0 && setType === 'new' && registerOrderId === ''"></newInformation>
-    <basicDetails v-if="this.activeStepIndex !== 0 || setType === 'edit' || registerOrderId" :registerOrderId="registerOrderId"></basicDetails>
+    <basicDetails
+      v-if="this.activeStepIndex !== 0 || setType === 'edit' || registerOrderId"
+      :registerOrderId="registerOrderId"
+    >
+    </basicDetails>
     <span class="section-title blue">资产明细</span>
     <div class="newEditSingle-nav">
       <div class="mb15">
@@ -18,7 +22,13 @@
       </div>
       <!-- 房屋 -->
       <keep-alive>
-        <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId" :registerOrderId="registerOrderId" :assetTypeId="assetType"></basic>
+        <basic
+          v-if="this.activeStepIndex === 0"
+          ref="basicRef" :organId="organId"
+          :registerOrderId="registerOrderId"
+          :assetTypeId="assetType"
+        >
+        </basic>
       </keep-alive>
       <!-- 附属配套 -->
       <necessaryCaaessories v-if="this.activeStepIndex === 1" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
