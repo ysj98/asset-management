@@ -10,8 +10,13 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
+        <!-- 防止 v-power 报错 -->
+        <div></div>
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zcst_dc">导出</SG-Button>
+        <!-- 防止 v-power 报错 -->
+        <div></div>
         <SG-Button
+          v-power="ASSET_MANAGEMENT.czyl_zcst_gx"
           :disabled="!selectedRowKeys.length"
           type="primary"
           style="margin-left: 20px;" icon="export" @click="handleOpenPop(selectedRowKeys)"
@@ -103,6 +108,7 @@
         <template #action="text,record">
           <!-- 状态:已审批 办证状态:非已办证 -->
           <span
+            v-power="ASSET_MANAGEMENT.czyl_zcst_gx"
             v-if="record.approvalStatusName==='已审批' && record.certificateStatus === 0" class="action info"
             @click="handleOpenPop([record.disposeRegisterDetailId])">
             更新办证状态
@@ -240,6 +246,7 @@ const columns = [
   {
     title: '操作',
     width: 120,
+    dataIndex: 'action',
     scopedSlots:{
       customRender:'action'
     }

@@ -265,6 +265,7 @@ export const ASSET_MANAGEMENT = {
   */
   czyl_zzjgst_dc: 'czyl_zzjgst_dc', // 组织机构视图导出
   czyl_zcst_dc: 'czyl_zcst_dc', // 资产视图导出
+  czyl_zcst_gx: 'czyl_zcst_gx', // 更新办证状态
   /**
    * 处置登记
    */
