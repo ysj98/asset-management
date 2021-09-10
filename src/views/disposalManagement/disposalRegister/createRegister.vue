@@ -215,6 +215,11 @@
 <!--              <a class="icon-red" @click="openSubjectModal('income')">处置收入(元)</a>-->
               <span class="icon-red">处置收入(元)</span>
             </template>
+            <!-- 是否协助办证 -->
+            <template slot="isAssistAccreditation" slot-scope="text, record">
+              <a-checkbox :checked="Boolean(record.isAssistAccreditation)" @change="handleIsAssistAccreditation($event,record)">
+              </a-checkbox>
+            </template>
             <template slot="disposeReceive" slot-scope="text, record">
               <a-input-number :min="0" :step="1.00" :max="999999999.99" @change="sumDisposeReceive" :precision="2" v-model="record.disposeReceive"/>
             </template>
@@ -501,6 +506,9 @@ export default {
       console.log(amount)
       this.newCardData.disposeReceive = amount
     },
+    handleIsAssistAccreditation(event,record){
+      this.$set(record,'isAssistAccreditation',event.target.checked)
+    },
     // 设置列表金额
     setTableAmount(data){
       let mean = 0
@@ -627,11 +635,11 @@ export default {
       this.$router.push({path: '/disposalRegister'})
     },
     // 项目监听
-    projectFn (val) {
+    projectFn () {
       this.checkedData = []
       this.table.dataSource = []
     },
-    assetTypeFn (val) {
+    assetTypeFn () {
       this.checkedData = []
       this.table.dataSource = []
     },
@@ -657,7 +665,7 @@ export default {
     // 确定拿到数据
     status (val, data) {
       this.checkedData = [...val]
-      data.forEach((item, index) => {
+      data.forEach((item) => {
         item.key = item.assetId
       })
       this.table.dataSource = data
@@ -676,7 +684,7 @@ export default {
       this.$refs.assetBundlePopover.show = true
     },
     // 提交详情
-    save (str) {
+    save () {
       this.form.validateFields((err, values) => {
         if (!err) {
           let tableArr = utils.deepClone(this.table.dataSource)
@@ -745,7 +753,8 @@ export default {
               organId: this.organId,                // 管理机构ID
               disposeCost: item.disposeCost,        // 处置成本(元)
               disposeReceive: item.disposeReceive,  // 处置收入(元)
-              remark: item.remark                   // 备注
+              remark: item.remark ,                  // 备注
+              isAssistAccreditation: Number(Boolean(item.isAssistAccreditation)) // 是否协助办证
             })
           })
           let receivecostPlanList = []
@@ -786,6 +795,7 @@ export default {
             receivecostPlanList: receivecostPlanList, // 计划列表
             approvalStatus: '1'                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
           }
+          // return null
           // 新增提交
           if (this.type === 'create') {
             let loadingName = this.SG_Loding('保存中...')

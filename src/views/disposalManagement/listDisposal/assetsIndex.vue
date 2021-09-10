@@ -11,14 +11,23 @@
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zcst_dc">导出</SG-Button>
+        <SG-Button
+          :disabled="!selectedRowKeys.length"
+          type="primary"
+          style="margin-left: 20px;" icon="export" @click="handleOpenPop(selectedRowKeys)"
+          :loading="exportBtnLoading"
+        >
+          更新办证状态
+        </SG-Button>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px; text-align: left"></treeSelect>
         <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
-      </div> 
+      </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
+          <a-select  :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"
+                     @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
               <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部处置类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.disposeType">
@@ -39,6 +48,25 @@
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部处置方式" :tokenSeparators="[',']"  @select="disposeModeDataFn" v-model="queryCondition.disposeMode">
               <a-select-option :title="item.name" v-for="(item, index) in disposeModeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
+            <a-select
+              :maxTagCount="1"
+              :style="allStyle"
+              mode="multiple"
+              placeholder="全部办证状态"
+              :tokenSeparators="[',']"
+              @select="certificateStatusFn"
+              v-model="queryCondition.certificateStatus"
+            >
+              <a-select-option :title="item.name" v-for="(item, index) in certificateStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
+            <a-input-search
+              :style="allStyle"
+              v-model="queryCondition.disposeRegisterDetailId"
+              placeholder="处置单编号"
+              maxlength="30"
+              style="width: 140px;margin-right: 10px;margin-top: 15px;"
+              @search="onSearch"
+            />
             <div class="box sg-datePicker" :style="dateWidth">
               <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
@@ -55,12 +83,31 @@
     <overview-number :numList="numList" />
     <div class="table-layout-fixed">
       <a-table
+        :rowSelection="{selectedRowKeys, onChange: handleSelectChange,hideDefaultSelections:false,getCheckboxProps:getCheckboxProps}"
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
         class="custom-table td-pd10"
         :pagination="false"
         >
+        <!-- 是否需协助办证 -->
+        <template #isAssistAccreditation="text,record">
+          {{record.isAssistAccreditation?"是":"否"}}
+        </template>
+        <!--办证状态-->
+        <template #certificateStatus="text,record">
+          <!-- 防止 null 数据 -->
+          {{certificateStatusOptions[record.certificateStatus] || '--'}}
+        </template>
+        <!--操作-->
+        <template #action="text,record">
+          <!-- 状态:已审批 办证状态:非已办证 -->
+          <span
+            v-if="record.approvalStatusName==='已审批' && record.certificateStatus === 0" class="action info"
+            @click="handleOpenPop([record.disposeRegisterDetailId])">
+            更新办证状态
+          </span>
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -72,6 +119,24 @@
         @change="handleChange"
       />
     </div>
+    <SG-Modal
+      :title="modalObj.certificateStatus.title"
+      :visible="modalObj.certificateStatus.flag"
+    >
+      <SG-Title title="办证信息" />
+      <div class="modal-body">
+        <span class="validate-required" style="margin-right: 20px;">新办证信息:</span>
+        <div style="display: flex;justify-content: center">
+          <a-select v-model="modalObj.certificateStatus.params.status" style="min-width: 500px;">
+            <a-select-option title="已办证" :value="1" >已办证</a-select-option>
+          </a-select>
+        </div>
+      </div>
+      <div slot="footer">
+        <SG-Button type="primary" @click="handleCertificateStatusPop">保存</SG-Button>
+        <SG-Button style="margin-left: 20px;" @click="()=>{modalObj.certificateStatus.flag = false}">取消</SG-Button>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
@@ -79,11 +144,9 @@
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
-import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
-import {utils, debounce} from '@/utils/utils.js'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
@@ -153,6 +216,16 @@ const columns = [
     dataIndex: 'assetReceiver'
   },
   {
+    title: '是否需协助办证',
+    scopedSlots: { customRender: "isAssistAccreditation" },
+  },
+  {
+    title: '办证状态',
+    scopedSlots:{
+      customRender:'certificateStatus'
+    }
+  },
+  {
     title: '提交人',
     dataIndex: 'createByName'
   },
@@ -163,6 +236,13 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'approvalStatusName'
+  },
+  {
+    title: '操作',
+    width: 120,
+    scopedSlots:{
+      customRender:'action'
+    }
   }
 ]
 const operationData = [
@@ -203,22 +283,30 @@ const queryCondition =  {
     assetType: '',    // 资产类型Id
     assetClassify: '', // 资产分类
     disposeMode: '',    // 处置方式
+    certificateStatus: '',  // 办证状态
     startDate: '',       // 创建日期开始日期
     endDate: '',    // 创建日期结束日期
     changStartDate: '',  // 变动日期开始
     changEndDate: '',   // 变动日期结束
     currentOrganId: '',   // 仅当前机构下资产清理单 0 否 1 是
     assetName: '',    // 资产名称/编码模糊查询
+    disposeRegisterDetailId:'', //处置单编号
     pageNum: 1,     // 当前页
     pageSize: 10    // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips, OverviewNumber},
+  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber},
   props: {},
   data () {
     return {
+      certificateStatusOptions: {
+        "0": "未办证",
+        "1": "已办证",
+        "2": "--"
+      },
       ASSET_MANAGEMENT,
       dateWidth,
+      selectedRowKeys:[],
       // scrollHeight: {y: 0},
       loading: false,
       noPageTools: false,
@@ -248,20 +336,98 @@ export default {
         }
       ],
       disposeModeData: [],
+      certificateStatusData:[{name: '全部办证状态', value: ''}, {name:'已办证',value:'1'},{ name:'未办证',value:'0'}],
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       alterationDate: [],
       exportBtnLoading: false, // 导出按钮loading
       numList: [
-        {title: '资产数量(个)', key: 'assetCount', value: 0, fontColor: '#324057'},
-        {title: '处置面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
-        {title: '处置收入(元)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
-        {title: '处置成本(元)', key: 'idleArea', value: 0, bgColor: '#DD81E6'}
-      ]
+        {title: '资产数量(个)', key: 'dispNum', value: 0, fontColor: '#324057'},
+        {title: '处置面积(㎡)', key: 'dispArea', value: 0, bgColor: '#4BD288'},
+        {title: '处置收入(元)', key: 'disposeReceive', value: 0, bgColor: '#1890FF'},
+        {title: '已办证(个)', key: 'certificated', value: 0, bgColor: '#DD81E6'},
+        {title: '未办证(个)', key: 'noCertificate', value: 0, bgColor: '#FD7474'}
+      ],
+      modalObj:{
+        certificateStatus:{
+          flag:false,
+          title:'更新办证状态',
+          params:{
+            idArr:[],
+            status:''
+          }
+        }
+      }
     }
   },
   computed: {
   },
   methods: {
+    getCheckboxProps(record){
+      return {
+        props: {
+          disabled: record.approvalStatusName !== '已审批' || record.certificateStatus !== 0
+        }
+      }
+    },
+    /*
+    * 选中 表格行
+    * */
+    handleSelectChange(selectedRowKeys){
+      // this.selectedRowKeys = selectedRows.map(ele=>ele.disposeRegisterDetailId)
+      this.selectedRowKeys = selectedRowKeys
+    },
+    /*
+    * 关闭弹窗
+    * */
+    doClosePop(){
+      this.modalObj.certificateStatus.flag = false
+    },
+    /*
+    * 打开 编辑 新办证状态 弹窗
+    * */
+    handleOpenPop(idArr){
+      this.modalObj.certificateStatus.params.idArr = idArr
+      this.modalObj.certificateStatus.flag = true
+    },
+    handleValidateCertificateStatusPop(){
+      if(!this.modalObj.certificateStatus.params.status){
+        return '请选择新办证信息'
+      }
+    },
+    /*
+    * 弹窗 保存按钮 更新办证状态
+    * */
+    async handleCertificateStatusPop(){
+      let errorMsg = this.handleValidateCertificateStatusPop()
+      if(errorMsg) {
+        await this.$message.error(errorMsg)
+        return null
+      }
+      let requestData= {
+        disposeRegisterDtailIdList:this.modalObj.certificateStatus.params.idArr
+      }
+      let loadingName = this.SG_Loding("更新中...");
+      try {
+        let responseData = await this.$api.assets.updateCertificateStatus(requestData)
+        if (responseData.data.code==='0'){
+          await this.DE_Loding(loadingName)
+          this.$message.success('更新成功')
+          // 清空 旧选中数据
+          this.handleSelectChange([])
+          this.doClosePop()
+          this.queryFn()
+        }else {
+          this.DE_Loding(loadingName).then(()=>{
+            this.$message.error(responseData.data.message)
+          })
+        }
+      }catch (error){
+        console.error(error)
+         this.DE_Loding(loadingName).then(()=>{
+           this.$message.error('更新失败');
+         })
+      }
+    },
     // 导出
     handleExport () {
       this.exportBtnLoading = true
@@ -372,6 +538,8 @@ export default {
           })
           this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
         }
+      },(error)=>{
+        console.log(error)
       })
     },
     // 资产类别
@@ -391,8 +559,14 @@ export default {
         this.queryCondition.disposeMode = this.handleMultipleSelectValue(value, this.queryCondition.disposeMode, this.disposeModeData)
       })
     },
+    // 办证状态
+    certificateStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.certificateStatus = this.handleMultipleSelectValue(value, this.queryCondition.certificateStatus, this.certificateStatusData)
+      })
+    },
     // 资产类型变化
-    assetTypeDataFn (value) {
+    assetTypeDataFn () {
       // this.$nextTick(function () {
       //   this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
       // })
@@ -468,11 +642,13 @@ export default {
         submitDateEnd: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',    // 提交时间,结束
         approvalStatusList: this.judgmentMethodFn(this.queryCondition.approvalStatus),        // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         assetNameOrCode: this.queryCondition.assetName,    // 资产名称/编码
+        disposeRegisterDetailId:this.queryCondition.disposeRegisterDetailId,
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',   // 处置日期,开始
         disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',     // 处置日期,结束
         projectId: this.queryCondition.projectId,          // 资产项目Id
         assetTypeList: this.queryCondition.assetType === '' ? [] : [this.queryCondition.assetType],                  //类型：String  可有字段  资产类型Id
-        disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode),              // 处置方式
+        disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode), // 处置方式
+        certificateStatusList: this.judgmentMethodFn(this.queryCondition.certificateStatus), // 办证状态
         objectTypeList: this.judgmentMethodFn(this.queryCondition.assetClassify),             // 资产分类
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType)               // 处置类型(多选)
       }
@@ -487,8 +663,8 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
-            data.forEach((item, index) => {
-              item.key = index
+            data.forEach((item) => {
+              item.key = item.disposeRegisterDetailId
             })
             this.tableData = data
             this.count = res.data.data.count
@@ -504,18 +680,16 @@ export default {
       })
     },
     getDetailAndDisposeListStat () {
-      this.numList[0].value = 0
-      this.numList[1].value = 0
-      this.numList[2].value = 0
-      this.numList[3].value = 0
+      this.numList.forEach(ele=>{
+        ele.value = 0
+      })
       let obj = this.query('statis')
       this.$api.disposalManagement.getDetailAndDisposeListStat(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          this.numList[0].value = data.dispNum ? data.dispNum : 0
-          this.numList[1].value = data.dispArea ? data.dispArea : 0
-          this.numList[2].value = data.disposeReceive ? data.disposeReceive : 0
-          this.numList[3].value = data.disposeCost ? data.disposeCost : 0
+          this.numList.forEach(ele=>{
+            ele.value = data[ele.key] || 0
+          })
         } else {
           this.$message.error(res.data.message)
         }
@@ -563,6 +737,23 @@ export default {
     padding-top: 14px;
     flex: 0 0 190px;
   }
+}
+.action{
+  cursor: pointer;
+}
+.info{
+  color: #0084FF;
+}
+/*校验 必填 样式 红星星*/
+.validate-required::before {
+  content: '*';
+  color: red;
+}
+.modal-body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px;
 }
 </style>
 

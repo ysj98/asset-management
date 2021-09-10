@@ -34,9 +34,15 @@ export const columns = [
   {
     // title: "处置收入(元)",
     slots: {title: 'disposeReceive'},
-    dataIndex: "disposeReceive",
+    dataIndex: "disposeReceive1",
     scopedSlots: { customRender: "disposeReceive" },
     width: '10%'
+  },
+  {
+    title: "是否需协助办证",
+    scopedSlots: { customRender: "isAssistAccreditation" },
+    width: '10%',
+    align: 'center'
   },
   {
     title: "备注",

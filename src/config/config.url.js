@@ -176,6 +176,10 @@ export const assets = {
     readExcelModel: '/ams/registerOrder/readExcelModel',
     // 资产登记-再次导入读取excel模板文件
     readExcelModelV2: '/ams/registerOrder/readExcelModelV2',
+    // 资产登记-再次导入
+    updateRegisterOrderV2: '/ams/registerOrder/updateRegisterOrderV2',
+    // 更新办证状态
+    updateCertificateStatus: '/ams/disposeRegister/updateCertificateStatus',
     // 资产登记-读取excel模板文件
     checkBuildsObjectType: '/ams/registerOrder/checkBuildsObjectType',
     // 资产登记-附属配套-分页查询列表

@@ -48,6 +48,10 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
+            <!-- 是否需协助办证 -->
+            <template #isAssistAccreditation="text,record">
+              {{record.isAssistAccreditation?"是":"否"}}
+            </template>
             <!-- 处置成本 -->
             <template slot="disposeCost">
               <span>处置成本(元)</span>

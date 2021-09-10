@@ -132,10 +132,9 @@
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
-import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
-import {utils, debounce} from '@/utils/utils.js'
+import {utils} from '@/utils/utils.js'
 import OperationPopover from '@/components/OperationPopover'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 let getUuid = ((uuid = 1) => () => ++uuid)();
@@ -149,7 +148,8 @@ const operationTypes  = {
 const allStyle = {
   width: "170px",
   "margin-right": "10px",
-  "margin-top": "14px"
+  "margin-top": "14px",
+  'vertical-align': 'middle'
 };
 const dateWidth = {width: '300px', 'margin-right': '10px', "margin-top": "14px", 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
@@ -253,7 +253,7 @@ const queryCondition =  {
     disposeMode: '',    // 处置方式
   }
 export default {
-  components: {SearchContainer, OperationPopover, TreeSelect, segiIcon, noDataTips},
+  components: {SearchContainer, OperationPopover, TreeSelect, noDataTips},
   props: {},
   data () {
     return {
@@ -378,7 +378,6 @@ export default {
     },
     // 重置查询条件
     restQuery() {
-      let projectId = this.queryCondition.projectId
       this.queryCondition = utils.deepClone(queryCondition)
       this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       this.alterationDate = []
