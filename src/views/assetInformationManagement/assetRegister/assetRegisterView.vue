@@ -26,6 +26,7 @@
       <div slot="form" class="formCon">
         <a-select
           mode="multiple"
+          :tokenSeparators="[',']"
           :maxTagCount="1"
           style="width: 190px; margin-right: 10px;"
           v-model="queryCondition.sourceModes"
@@ -150,7 +151,7 @@ const columns = [
   },
   {
     title: '来源方式',
-    dataIndex: 'sourceName'
+    dataIndex: 'sourceModeName'
   },
   {
     title: '创建日期',
@@ -214,7 +215,7 @@ export default {
         assetNameCode: '',         // 资产名称/编码
         assetClassify: [''],        // 资产分类
         registerOrderNameOrId: '',     // 登记单编号
-        sourceModes : ['']
+        sourceModes : [''],         // 来源方式
       },
       numList: [
         {title: '全部', key: 'whole', value: 0, fontColor: '#324057'},
@@ -247,7 +248,8 @@ export default {
       this.sourceOptions = [{ value:'', label: '全部来源方式' }]
       this.queryCondition.sourceModes = ['']
       querySourceType(organId, this).then(list => {
-        return this.sourceOptions = [{ value:'', label: '全部来源方式' }].concat(list)
+        let listArr = list.map(ele=>({...ele,value:ele.value || ele.key,name:ele.name || ele.title}))
+        return this.sourceOptions = [{ value:'', label: '全部来源方式' }].concat(listArr)
       })
     },
     exportFn () {
@@ -261,7 +263,7 @@ export default {
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
         registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
-        sourceModes:  this.alljudge(this.queryCondition.sourceModes)
+        sourceModeList:  this.alljudge(this.queryCondition.sourceModes)
       }
       this.$api.assets.assetRegListPageExport(obj).then(res => {
         console.log(res)
@@ -295,6 +297,7 @@ export default {
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
+        sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
@@ -391,7 +394,7 @@ export default {
     // 来源方式
     changeSource(value){
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.sourceModes, this.sourceOptions)
+        this.queryCondition.sourceModes = this.handleMultipleSelectValue(value, this.queryCondition.sourceModes, this.sourceOptions)
       })
     },
     // 状态发生变化

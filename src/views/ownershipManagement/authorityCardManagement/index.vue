@@ -17,22 +17,44 @@
       <div slot="contentForm" class="search-content-box" style=" position: absolute">
         <div class="search-from-box" style="float: right; text-align: left">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部权证类型" :tokenSeparators="[',']"  @select="kindOfRightsDataFn" v-model="queryCondition.kindOfRights">
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部权证类型"
+            :tokenSeparators="[',']"
+            @select="kindOfRightsDataFn"
+            v-model="queryCondition.kindOfRights"
+          >
             <a-select-option :title="item.name" v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部权属人" v-model="queryCondition.obligeeId">
             <a-select-option :title="item.name" v-for="(item, index) in obligeeIdData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :style="allStyle" showSearch placeholder="请选择权属形式"
-              optionFilterProp="children"
-              mode="multiple"
-              :options="$addTitle(ownerTypeData)"
-              v-model="queryCondition.ownerTypeList"
-              :allowClear="true"
-              :filterOption="false"
-              notFoundContent="没有查询到数据"
-              v-decorator="['ownerType',{ rules: [{required: true, message: '请选择权属形式'}], initialValue: ''}]"/>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="statusFn" v-model="queryCondition.status">
+          <a-select
+            :style="allStyle"
+            showSearch
+            placeholder="请选择权属形式"
+            optionFilterProp="children"
+            mode="multiple"
+            :options="$addTitle(ownerTypeData)"
+            v-model="queryCondition.ownerTypeList"
+            :allowClear="true"
+            :filterOption="false"
+            notFoundContent="没有查询到数据"
+            v-decorator="['ownerType',{ rules: [{required: true, message: '请选择权属形式'}], initialValue: ''}]"
+          />
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部状态"
+            :tokenSeparators="[',']"
+            @select="statusFn"
+            v-model="queryCondition.status"
+          >
             <a-select-option :title="item.name" v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />

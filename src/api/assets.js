@@ -38,7 +38,7 @@ export function platformDict (data) {
 export function getList (data) {
   // 如果资产类型为空
   if (!data.assetType) {
-    return Promise.reject()
+    return Promise.reject(new Error('资产类型为空'))
   }
   // 如果是多选 删除"" 去第一项值
   let assetType = data.assetType.split(',')
@@ -197,6 +197,14 @@ export function readExcelModel (data) {
 // 资产登记-读取excel模板文件
 export function readExcelModelV2 (data) {
   return axiosPost(assets.assetRegister.readExcelModelV2, data)
+}
+// 资产登记-再次导入
+export function updateRegisterOrderV2 (data) {
+  return axiosPost(assets.assetRegister.updateRegisterOrderV2, data)
+}
+// 更新办证状态
+export function updateCertificateStatus (data) {
+  return axiosPost(assets.assetRegister.updateCertificateStatus, data)
 }
 // 资产登记-导出数据校验
 export function checkBuildsObjectType (data) {
