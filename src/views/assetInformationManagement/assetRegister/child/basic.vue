@@ -271,7 +271,7 @@ export default {
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index
-              item.address =  item.pasitionString + item.address || ""
+              item.pasitionString =  item.pasitionString + item.address || ""
             })
           }
           if (this.columns[0].dataIndex !== 'assetId') {
@@ -326,7 +326,6 @@ export default {
         // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
-          debugger
           this.sourceType = sourceType
         }
         // 切换总的统计数据的值为0
@@ -409,7 +408,7 @@ export default {
             resData
           ).map(ele => ({
             ...ele,
-            address: ele.pasitionString + ele.address || ""
+            pasitionString: ele.pasitionString + ele.address || ""
           }));
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {

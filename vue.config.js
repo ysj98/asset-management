@@ -20,7 +20,7 @@ const getIPAdress = () => {
 const localhost = getIPAdress()
 console.log('IP', localhost)
 
-const target = 'http://192.168.1.11:10080'
+const target = 'http://192.168.1.7:8088'
 // const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
