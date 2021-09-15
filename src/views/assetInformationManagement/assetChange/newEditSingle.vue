@@ -1188,17 +1188,16 @@ export default {
       });
     },
     // 楼栋请求房屋
-    queryAssetViewPage(val) {
+    queryAssetViewPage2(val) {
       let projectId = this.form.getFieldValue("projectId");
       let data = {
         organId: this.organId,
         projectIdList: [projectId],
         buildIdList: [val],
-        type: "2",
       };
-      this.$api.assets.queryAssetViewPage(data).then((res) => {
+      this.$api.assets.queryAssetViewPage2(data).then((res) => {
         if (res.data.code === "0") {
-          let result = res.data.data.data || [];
+          let result = res.data.data || [];
           let keys = [];
           let arr = result.map((element) => {
             keys.push(element.assetId);
@@ -1237,7 +1236,7 @@ export default {
       }
       // 如果原值对象是楼栋，则请求房间
       if (originalObjectType === "2") {
-        this.queryAssetViewPage(val);
+        this.queryAssetViewPage2(val);
       }
     },
     // 项目请求全部资产

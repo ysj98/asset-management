@@ -376,6 +376,8 @@ export const assets = {
     queryAssetArea: '/ams/asset-house/house/area',
     // 分页查询房屋资产信息
     queryAssetViewPage: '/ams/asset-house/house/page',
+    // 不页查询房屋资产信息
+    queryAssetViewPage2: '/ams/asset-house/house/pageV2',
     // 导出房屋卡片
     exportHouseExcel: '/ams/asset-house/card',
     // 导出资产视图
