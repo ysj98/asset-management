@@ -38,6 +38,7 @@ Vue.use(Directive)
 Vue.prototype.$importf = importf
 
 Vue.prototype.$addTitle = function (options){
+  options = options || []
   options.forEach(ele=>{
     ele.title = ele.title || ele.label
   })
