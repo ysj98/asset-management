@@ -10,20 +10,21 @@
   <div class="scheduleChanges">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <!-- 防止 v-power 报错 -->
-        <div></div>
-        <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zcst_dc">导出</SG-Button>
-        <!-- 防止 v-power 报错 -->
-        <div></div>
-        <SG-Button
-          v-power="ASSET_MANAGEMENT.czyl_zcst_gx"
-          :disabled="!selectedRowKeys.length"
-          type="primary"
-          style="margin-left: 20px;" icon="export" @click="handleOpenPop(selectedRowKeys)"
-          :loading="exportBtnLoading"
-        >
-          更新办证状态
-        </SG-Button>
+        <div style="display: flex">
+          <div></div>
+          <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zcst_dc">导出</SG-Button>
+          <!-- 防止 v-power 报错 -->
+          <div></div>
+          <SG-Button
+            v-power="ASSET_MANAGEMENT.czyl_zcst_gx"
+            :disabled="!selectedRowKeys.length"
+            type="primary"
+            style="margin-left: 20px;" icon="export" @click="handleOpenPop(selectedRowKeys)"
+            :loading="exportBtnLoading"
+          >
+            更新办证状态
+          </SG-Button>
+        </div>
       </div>
       <div slot="headerForm">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px; text-align: left"></treeSelect>
@@ -129,10 +130,11 @@
     <SG-Modal
       :title="modalObj.certificateStatus.title"
       :visible="modalObj.certificateStatus.flag"
+      @cancel="()=>{modalObj.certificateStatus.flag = false}"
     >
       <SG-Title title="办证信息" />
       <div class="modal-body">
-        <span class="validate-required" style="margin-right: 20px;">新办证信息:</span>
+        <span class="validate-required" style="margin-right: 20px;">新办证状态:</span>
         <div style="display: flex;justify-content: center">
           <a-select v-model="modalObj.certificateStatus.params.status" style="min-width: 500px;">
             <a-select-option title="已办证" :value="1" >已办证</a-select-option>

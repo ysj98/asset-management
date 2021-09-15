@@ -589,7 +589,14 @@ export default {
             return null
           }
           // 追加 默认 sourceMode 信息
-          let basicData = arrData.map(ele=>({...ele,sourceMode: ele.sourceMode !== undefined ? ele.sourceMode : this.sourceType}))
+          /*
+          * */
+          let basicData = arrData.map(ele => ({
+            ...ele,
+            sourceMode: ele.sourceMode !== undefined ? ele.sourceMode : this.sourceType,
+            kindOfRight: this.ownershipData[ele.kindOfRightName],
+            ownershipStatus: this.organDictData[ele.ownershipStatusName]
+          }));
           await this.DE_Loding(loadingName)
           await this.handleSaveAsset(basicData)
         }else {
@@ -843,17 +850,17 @@ export default {
     }
   }
   .table-borders {
-    border: 1px solid rgba(239,244,249,1)
+    border: 1px solid rgba(239, 244, 249, 1);
   }
   .postAssignment-icon {
     cursor: pointer;
-    color: #0084FF;
+    color: #0084ff;
   }
   .postAssignment-icon:hover {
     color: red;
   }
 }
-.overflowX{
+.overflowX {
   /deep/ .ant-table-scroll {
     overflow-x: auto;
   }
@@ -863,5 +870,3 @@ export default {
   }
 }
 </style>
-
-

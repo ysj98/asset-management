@@ -5,8 +5,6 @@
       width="900px"
       :visible="modalData.flag"
       :title="modalData.title"
-      @ok="commonFn"
-      @cancel="doClose"
     >
       <div class="container">
         <div class="modal-left">
