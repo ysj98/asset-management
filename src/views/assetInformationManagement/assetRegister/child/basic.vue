@@ -383,7 +383,9 @@ export default {
           // 遍历判断必填有字段
           let validateRes = this.handleValidateExcelData( arrData)
           if(validateRes){
-            this.$message.info(validateRes)
+            this.DE_Loding(loadingName).then(() => {
+              this.$message.info(validateRes)
+            })
             return null
           }
           resData = utils.deepClone([...arrData, ...this.tableData])
@@ -581,7 +583,6 @@ export default {
           }
           let arrData = readExcelModelV2ResData.data.data[tempObj[this.assetType]]
           let validateRes = this.handleValidateExcelData( arrData)
-          console.log('validateRes',validateRes)
           if( validateRes ) {
             await this.DE_Loding(loadingName)
             await this.$message.info(validateRes)
