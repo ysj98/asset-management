@@ -67,6 +67,7 @@
             <a-input-search
               :style="allStyle"
               v-model="queryCondition.disposeRegisterDetailId"
+              type="number"
               placeholder="处置单编号"
               maxlength="30"
               style="width: 140px;margin-right: 10px;margin-top: 15px;"
