@@ -1172,7 +1172,6 @@ export default {
       let data = {
         organId: this.organId,
         projectId: this.projectId,
-        type: '1'
       };
       this.$api.assets.organBuild(data).then((res) => {
         if (res.data.code === "0") {
@@ -1194,6 +1193,7 @@ export default {
         organId: this.organId,
         projectIdList: [projectId],
         buildIdList: [val],
+        type: "2",
       };
       this.$api.assets.queryAssetViewPage2(data).then((res) => {
         if (res.data.code === "0") {
