@@ -400,7 +400,7 @@
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, organIdEdit } = this
+          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, organIdEdit, organKey } = this
           // 转换日期格式为string
           let dateKeys = objBySourceType[sourceType] || []
           dateKeys.forEach(key => {
@@ -417,7 +417,8 @@
           let form = Object.assign({}, { attachment: attachArr, organId }, values)
           if (type === 'edit'){
             form.projectId = projectId // 编辑时传入projectId
-            form.organId = organIdEdit // 编辑时传入organId
+            // organIdEdit 未编辑的情况会是 undefined
+            form.organId = organIdEdit || organKey // 编辑时传入organId
           }
           this.$api.assets[api[type]](form).then(({data: res}) => {
             this.spinning = false
