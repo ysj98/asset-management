@@ -98,20 +98,19 @@
         :pagination="false"
         >
         <!-- 是否需协助办证 -->
-        <template #isAssistAccreditation="text,record">
-          {{record.isAssistAccreditation?"是":"否"}}
+        <template #isAssistAccreditationName="text,record">
+          {{record.isAssistAccreditationName}}
         </template>
         <!--办证状态-->
-        <template #certificateStatus="text,record">
-          <!-- 防止 null 数据 -->
-          {{certificateStatusOptions[record.certificateStatus] || '--'}}
+        <template #certificateStatusName="text,record">
+          {{ record.certificateStatusName }}
         </template>
         <!--操作-->
         <template #action="text,record">
           <!-- 状态:已审批 办证状态:非已办证 -->
           <span
             v-power="ASSET_MANAGEMENT.czyl_zcst_gx"
-            v-if="record.approvalStatusName==='已审批' && record.certificateStatus === 0" class="action info"
+            v-if="record.approvalStatusName==='已审批' && record.certificateStatusName === '未办证'" class="action info"
             @click="handleOpenPop([record.disposeRegisterDetailId])">
             更新办证状态
           </span>
@@ -226,12 +225,12 @@ const columns = [
   },
   {
     title: '是否需协助办证',
-    scopedSlots: { customRender: "isAssistAccreditation" },
+    scopedSlots: { customRender: "isAssistAccreditationName" },
   },
   {
     title: '办证状态',
     scopedSlots:{
-      customRender:'certificateStatus'
+      customRender:'certificateStatusName'
     }
   },
   {
@@ -375,7 +374,7 @@ export default {
     getCheckboxProps(record){
       return {
         props: {
-          disabled: record.approvalStatusName !== '已审批' || record.certificateStatus !== 0
+          disabled: record.approvalStatusName !== '已审批' || record.certificateStatusName !== '未办证'
         }
       }
     },
