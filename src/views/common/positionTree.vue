@@ -67,6 +67,10 @@ const topItem = {
 }
 export default {
   props: {
+    organIdOwn: {
+      type:[String,Number],
+      default:''
+    },
     isCurrent:{
       type: Number,
       default: 0,
@@ -84,7 +88,7 @@ export default {
   watch: {
     organId (nv) {
       if (nv) {
-        this.positionSelectAsyn(nv)
+        this.positionSelectAsyn()
       }
     },
     isCurrent(){
@@ -93,7 +97,7 @@ export default {
   },
   mounted () {
     if (this.organId) {
-      this.positionSelectAsyn(this.organId)
+      this.positionSelectAsyn()
     }
   },
   data () {
@@ -207,7 +211,7 @@ export default {
     },
     // 重新加载
     resetLoad () {
-      this.positionSelectAsyn(this.organId)
+      this.positionSelectAsyn()
     },
     hanldSelect () {
     },
@@ -226,15 +230,15 @@ export default {
       let data = {
         upPositionId: treeNode.dataRef.id,
         positionType: '1',
-        organId: this.organId,
+        organId: this.organIdOwn || this.organId,
       }
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
     },
     // 一级机构id 请求楼栋
-    positionSelectAsyn (organId) {
+    positionSelectAsyn () {
       this.emptyTreeData()
       let data = {
-        organId: this.organId,
+        organId: this.organIdOwn || this.organId,
         isCurrent:this.isCurrent,
         upPositionId: '-1',
         positionType: '1'
