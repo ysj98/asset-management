@@ -170,6 +170,7 @@ export default {
             })
           }
         })
+        this.$refs.basicRef.setDetail(obj)
       }  else if (this.activeStepIndex === 4) {
         // 点击完成
         this.$router.push({path: '/assetRegister', query: {refresh: true}})

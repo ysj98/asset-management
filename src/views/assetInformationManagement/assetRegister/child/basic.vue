@@ -142,6 +142,13 @@ export default {
   },
   methods: {
     /*
+    * @public ref调用
+    * 新增 资产登记 第二个页面 添加资产导入 需要 detailData 数据
+    * */
+    setDetail( data={} ){
+      Object.assign(this.detailData,data)
+    },
+    /*
     * 获取详情 取projectID 用
     * */
     getDetail(){
