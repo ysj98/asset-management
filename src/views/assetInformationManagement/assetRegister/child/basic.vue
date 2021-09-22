@@ -579,10 +579,10 @@ export default {
           * */
           const tempObj  = {
             '1':'assetHouseList',
-            '2':'assetBlankList'
+            '4':'assetBlankList'
           }
           let arrData = readExcelModelV2ResData.data.data[tempObj[this.assetType]]
-          let validateRes = this.handleValidateExcelData( arrData)
+          let validateRes = this.handleValidateExcelData( arrData )
           if( validateRes ) {
             await this.DE_Loding(loadingName)
             await this.$message.info(validateRes)
@@ -608,7 +608,9 @@ export default {
         }
       }catch (error){
         console.error(error)
-        this.$SG_Message.error('导入失败！')
+        this.DE_Loding(loadingName).then(() => {
+          this.$SG_Message.error('导入失败！')
+        })
       }
 
     },
