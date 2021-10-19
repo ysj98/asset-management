@@ -167,8 +167,59 @@ export default {
     },
     // 选择城市地图对应放大
     selectCity(value) {
-      let city = value
-      this.map.centerAndZoom(city,11)
+      this.getBoundary(value)
+      // this.map.centerAndZoom(city,11)
+    },
+    getBoundary(address) {
+      const _this = this;
+      let bdary = new BMap.Boundary();
+
+      //定义中国东南西北端点，作为第一层
+      const pNW = { lat: 59.0, lng: 73.0 };
+      const pNE = { lat: 59.0, lng: 136.0 };
+      const pSE = { lat: 3.0, lng: 136.0 };
+      const pSW = { lat: 3.0, lng: 73.0 };
+      //向数组中添加一次闭合多边形，并将西北角再加一次作为之后画闭合区域的起点
+      let pArray = [];
+      pArray.push(pNW);
+      pArray.push(pSW);
+      pArray.push(pSE);
+      pArray.push(pNE);
+      pArray.push(pNW);
+      bdary.get(`${address}`, function(rs) {
+        console.log('address',address)
+        //获取行政区域
+        let count = rs.boundaries.length; //行政区域的点有多少个
+        if (count === 0) {
+          alert("未能获取当前输入行政区域");
+          return;
+        }
+        let pointArray = [];
+        for (let i = 0; i < count; i++) {
+          const ply = new BMap.Polygon(rs.boundaries[i], {
+            strokeWeight: 2,
+            strokeColor: "#ff0000",
+            fillOpacity: 0.01
+          });
+          //建立多边形覆盖物
+          _this.map.addOverlay(ply); //添加覆盖物
+          const path = ply.getPath();
+          pointArray = pointArray.concat(path);
+          // //将闭合区域加到遮蔽层上，每次添加完后要再加一次西北角作为下次添加的起点和最后一次的终点
+          pArray = pArray.concat(path);
+          pArray.push(pArray[0]);
+        }
+        // 添加全国 遮罩层
+        const plyall = new BMap.Polygon(pArray, {
+          strokeOpacity: 0.0000001,
+          strokeColor: "#fff",
+          strokeWeight: 0.00001,
+          fillColor: "#ffffff",
+          fillOpacity: 0.5
+        }); //建立多边形覆盖物
+        _this.map.addOverlay(plyall);
+        _this.map.setViewport(pointArray); //调整视野
+      });
     },
     // 移除所有标注
     removeMarker() {

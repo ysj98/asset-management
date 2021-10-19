@@ -108,6 +108,7 @@ export default {
   },
   data() {
     return {
+      currentProvince: '',
       toggle: true,
       // menus: ["海文花园", "广东省", "深圳市"],
       assetTypeListOpt: [], // 请求资产类型
@@ -189,9 +190,9 @@ export default {
         label: this.codeToLabel('province',data.paramKey),
         value: data.paramKey
       }
-      await this.handleSelectAdress('province',defaultProvince)
+      await this.handleSelectAdress('province',defaultProvince,true)
       let defaultCity = {
-        label:  this.codeToLabel('city',data.subKey),
+        label:  this.codeToLabel('city',data.subKey,true),
         value: data.subKey
       }
       await this.handleSelectAdress('city',defaultCity)
@@ -243,7 +244,7 @@ export default {
     },
     // 拼接处导航栏
     // 选择省市区
-    async handleSelectAdress(type, item) {
+    async handleSelectAdress(type, item, transferFlag) {
 
       let { label, value } = item
       console.log("选择省市区", type, item)
@@ -258,16 +259,24 @@ export default {
         })
         this.cityOpt = [{...cityOptFrist}]
         if (label !== '全国'){
+          this.currentProvince = label
           await this.queryCityAndAreaList(value, type)
+        }
+        if (!transferFlag){
+          this.$emit('selectCity', label)
         }
       }
       if (type === "city") {
+        let address = label
         let flag = this.queryCondition.city === value
         if (flag) {
           return
         }
         this.queryCondition.city = value
-        this.$emit('selectCity', label)
+        if ( label === '全省' ){
+          address = this.currentProvince
+        }
+        this.$emit('selectCity', address)
       }
       this.query()
     },
