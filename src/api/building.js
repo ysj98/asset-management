@@ -170,3 +170,12 @@ export function blankApiDetail (data) {
 export function blankApiInsert (data) {
   return axiosPost(building.blankApiInsert, data)
 }
+
+// 车场列表查询
+export function parkApiList (data) {
+  return axiosPost(building.parkApiPageList, data)
+}
+
+export function parkApiDelete () {
+  return axiosPost(building.parkApiPageList)
+}

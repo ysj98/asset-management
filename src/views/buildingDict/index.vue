@@ -32,6 +32,9 @@
         <a-tab-pane tab="土地信息" key="land">
           <landInfo />
         </a-tab-pane>
+        <a-tab-pane tab="车场信息" key="park">
+           <parkInfo />
+        </a-tab-pane>
       </a-tabs>
     </div>
   </div>
@@ -40,15 +43,17 @@
 import buildingInfo from './buildingInfo'
 import houseInfo from './houseInfo'
 import landInfo from './land/landInfo'
+import parkInfo from './park/ParkInfo'
 import TreeSelect from '../common/treeSelect'
 import { typeFilter } from './buildingDictConfig'
 const allWidth = {width: '185px'}
 export default {
   components: {
-    buildingInfo,
-    houseInfo,
+    parkInfo,
     landInfo,
-    TreeSelect
+    houseInfo,
+    TreeSelect,
+    buildingInfo,
   },
   data () {
     return {

@@ -553,6 +553,8 @@ export const building = {
   blankApiDetail: '/basic-data-api/rest-api/v1/ams/blankApi/detail',
   // 土地新增
   blankApiInsert: '/basic-data-api/rest-api/v1/ams/blankApi/insert',
+  // 车场分页查询
+  parkApiPageList: '/car-parking-api/rest-api/v1/parkingPlaceRestApi/getParkingPlaceList'
 }
 
 // 权属概况

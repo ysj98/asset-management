@@ -42,6 +42,16 @@ let proRouter = [{
     component: () => import('@/views/buildingDict/land/detailLand.vue')
   },
   {
+    path: '/buildingDict/createPark',
+    name: '新建车场',
+    component: () => import('@/views/buildingDict/park/createPark.vue')
+  },
+  {
+    path: '/buildingDict/detailViewPark',
+    name: '查看车场',
+    component: () => import('@/views/buildingDict/park/detailViewPark.vue')
+  },
+  {
     path: '/assetChangeRegister',
     name: '资产变更单',
     component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),

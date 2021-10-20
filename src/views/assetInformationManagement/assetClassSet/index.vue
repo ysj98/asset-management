@@ -12,6 +12,12 @@
         <a-tab-pane tab="土地" key="land">
           <listModel type="land"/>
         </a-tab-pane>
+        <a-tab-pane tab="设施设备" key="facilityAndEquipment">
+          <listModel type="facilityAndEquipment"/>
+        </a-tab-pane>
+        <a-tab-pane tab="车场" key="carFactory">
+          <listModel type="carFactory"/>
+        </a-tab-pane>
       </a-tabs>
     </div>
   </div>
