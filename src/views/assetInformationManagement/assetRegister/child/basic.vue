@@ -7,7 +7,7 @@
 <template>
   <div class="sg-child-house">
     <!--数据总览-->
-    <overview-number :numList="numList"/>
+    <overview-number :numList="numListCom"/>
     <div class="button-box">
       <div class="buytton-nav" v-show="setType === 'new' && !registerOrderId">
         <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
@@ -62,7 +62,15 @@
 import {calc, utils} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData, landCheck, landData} from './../common/registerBasics'
+import {
+  columnsData,
+  directionEquipment,
+  equipment,
+  judgmentData,
+  landCheck,
+  landData,
+  yard
+} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import AssetImportModal from "@/views/assetInformationManagement/assetRegister/common/AssetImportModal";
 import bridge from './center'
@@ -74,6 +82,17 @@ let getUuid = (() => {
     return ++uuid
   }
 })()
+const numList = [
+  {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
+  {title: '建筑面积(㎡)', key: 'areaNum', value: 0, bgColor: '#FD7474', noShow: false},
+  {title: '债权(元)', key: 'debtAmount', value: 0, bgColor: '#1890FF'},
+  {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
+]
+const numListEq = [
+  {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
+  {title: '建筑面积(㎡)', key: 'areaNum', value: 0, bgColor: '#FD7474', noShow: false},
+  {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
+]
 export default {
   components: {OverviewNumber, noDataTips, basicDownload, AssetImportModal},
   props: {
@@ -122,18 +141,24 @@ export default {
       organDictDataName: [],   // 权属情况名称
       fileType: ['xls', 'xlsx'],
       setType: '',
-      numList: [
-        {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
-        {title: '建筑面积(㎡)', key: 'areaNum', value: 0, bgColor: '#FD7474'},
-        {title: '债权(元)', key: 'debtAmount', value: 0, bgColor: '#1890FF'},
-        {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList, // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableData: [],    // 表格内容
       columns: [],      // 表格表头
       assetType: '',    // 资产类型
     }
   },
   computed: {
+    isEquipment(){
+      return this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+      // return true
+    },
+    ASSET_TYPE_CODE(){
+      return this.$store.state.ASSET_TYPE_CODE;
+    },
+
+    numListCom(){
+      return this.numList.filter(ele=>!ele.noShow)
+    }
   },
   created () {
   },
@@ -170,6 +195,11 @@ export default {
     * 编辑 初始化
     * */
     async init(){
+      if (this.isEquipment){
+        this.numList = numListEq
+      }else {
+        this.numList = numList
+      }
       this.record = JSON.parse(this.$route.query.record)
       this.assetType = String(this.assetTypeId)
       this.setType = this.$route.query.setType
@@ -188,10 +218,14 @@ export default {
       if (this.setType === 'detail' || this.setType === 'edit') {
         let arr = []
         this.assetType = String(this.record[0].assetType)
-        if (+this.record[0].assetType === 1) {                    // 房屋表头
+        if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {                    // 房屋表头
           arr = utils.deepClone(columnsData)
-        } else if (+this.record[0].assetType === 4) {             // 土地表头
+        } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {             // 土地表头
           arr = utils.deepClone(landData)
+        } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT) {
+          arr = utils.deepClone(equipment)
+        } else if (this.assetType === this.ASSET_TYPE_CODE.YARD) {
+          arr = utils.deepClone(yard)
         }
         if (this.setType === 'detail') { arr.pop()}
         this.columns = arr
@@ -318,17 +352,40 @@ export default {
       bridge.$on("assetType",(val, type, sourceType)=>{
         //val值    type：project项目  asset资产类型
         // 房屋
-        if (type === 'asset' && val === '1') {
-          this.assetType = '1'
+        // 初始化 nulList 显示状态
+        if (type==='asset'){
+          let resType = ''
+          let resColumns = []
           this.tableData = []
-          this.columns = columnsData
-          this.numList[1].title = '建筑面积'
-        // 土地
-        } else if (type === 'asset' && val === '4') {
-          this.assetType = '4'
-          this.tableData = []
-          this.columns = landData
-          this.numList[1].title = '土地面积'
+          switch (val){
+            case this.ASSET_TYPE_CODE.HOUSE:
+              resType = this.ASSET_TYPE_CODE.HOUSE
+              resColumns = columnsData
+              this.numList[1].title = '建筑面积'
+              break
+            case this.ASSET_TYPE_CODE.LAND:
+              resType = this.ASSET_TYPE_CODE.LAND
+              resColumns = landData
+              this.numList[1].title = '土地面积'
+              break
+            case this.ASSET_TYPE_CODE.YARD:
+              resType = this.ASSET_TYPE_CODE.YARD
+              resColumns = yard
+              this.numList[1].title = '资产面积'
+              break
+            case this.ASSET_TYPE_CODE.EQUIPMENT:
+              resType = this.ASSET_TYPE_CODE.EQUIPMENT
+              resColumns = directionEquipment
+              break
+          }
+          this.assetType = resType
+          this.columns = resColumns
+
+          if (this.isEquipment){
+            this.numList = numListEq
+          }else {
+            this.numList = numList
+          }
         }
         // 项目切换
         if (type === 'project' && val) {

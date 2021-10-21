@@ -31,41 +31,12 @@
           </a-upload>
         </div>
         <div class="modal-right">
-          <div class="modal-nav">
-            <a-radio-group v-model="checkboxAssetType">
-              资产类型：<a-radio
-                v-for="(item, index) in checkboxData"
-                :key="index"
-                disabled
-                :value="item.value"
-                >{{ item.name }}</a-radio
-              >
-            </a-radio-group>
-          </div>
-          {{ title }}：<a-select
-            style="width: 300px"
-            mode="multiple"
-            :maxTagCount="4"
-            showSearch
-            :placeholder="`请选择${title}`"
-            v-model="positionIds"
-            @search="handleSearch"
-            optionFilterProp="children"
-            :options="$addTitle(positionNameData)"
-            :allowClear="true"
-            :filterOption="false"
-            notFoundContent="没有查询到数据"
+          <DownLoadTemplate
+            :organ-id="organId"
+            :checkbox-asset-type="checkboxAssetType"
+            :positionIds.sync="positionIds"
+            :scope.sync="scope"
           />
-          <div class="modal-nav" v-if="checkboxAssetType === '1'">
-            <a-checkbox-group v-model="scope">
-              数据范围：<a-checkbox
-                v-for="(item, index) in scopeData"
-                :key="index"
-                :value="item.value"
-                >{{ item.name }}</a-checkbox
-              >
-            </a-checkbox-group>
-          </div>
           <div class="model-right-footer">
             <SG-Button weaken @click="commonFn">
               下载导入模板
@@ -92,7 +63,8 @@
 </template>
 
 <script>
-import { debounce, looseEqual } from "@/utils/utils";
+import DownLoadTemplate from "@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate";
+import { looseEqual } from "@/utils/utils";
 import noDataTips from "components/noDataTips";
 const checkboxData = [
   {
@@ -115,17 +87,13 @@ const scopeData = [
   }
 ];
 export default {
-  components: { noDataTips },
+  components: { noDataTips, DownLoadTemplate },
   props: {
     modalData: {
       type: Object,
       default() {
         return {};
       }
-    },
-    test: {
-      type: String,
-      default: "默认"
     }
   },
   data() {
@@ -136,12 +104,9 @@ export default {
       scopeData,
       checkboxAssetType: "",
       scope: ["1", "2"],
-      positionNameData: [],
       organId: "",
       modalShow: false,
-      positionIds: [],
-      searchBuildName: "",
-      title: ""
+      positionIds: []
     };
   },
   computed: {
@@ -151,14 +116,14 @@ export default {
   },
   created() {},
   watch: {
-    checkboxAssetType(val) {
-      this.title = val === "1" ? "楼栋名称" : "土地名称";
-    },
     modalDataCom: {
       handler: function(newValue, oldValue) {
         if (newValue && newValue.flag === true) {
           if (!looseEqual(newValue.params, oldValue.params)) {
-            this.typesQueries(newValue.params.organId, String(newValue.params.type));
+            this.typesQueries(
+              newValue.params.organId,
+              String(newValue.params.type)
+            );
           }
         }
       },
@@ -212,44 +177,14 @@ export default {
         if (type === "1") {
           this.checkboxAssetType = "1";
           this.positionIds = [];
-          this.positionApiList(id);
         } else {
           this.checkboxAssetType = "4";
           this.positionIds = [];
-          this.positionApiList(id);
         }
       }
     },
-    // 搜索
-    handleSearch(value) {
-      this.searchBuildName = value;
-      this.debounceMothed();
-    },
-    // 防抖函数后台请求楼栋数据
-    debounceMothed: debounce(function() {
-      this.positionApiList(this.organId, this.searchBuildName || "");
-    }, 200),
-    // 请求列表默认20条
-    positionApiList(organId, aliasName) {
-      this.$api.basics
-        .positionApiList({
-          organId,
-          aliasName: aliasName || "",
-          positionType: this.checkboxAssetType,
-          subPositionType: ""
-        })
-        .then(res => {
-          if (res.data.code === "0") {
-            let result = res.data.data || [];
-            this.positionNameData = result.map(item => {
-              return {
-                name: item.aliasName,
-                value: item.positionId,
-                label: item.aliasName
-              };
-            });
-          }
-        });
+    scopeChange(value) {
+      this.scope = value;
     },
     // 下载模板确认
     commonFn() {

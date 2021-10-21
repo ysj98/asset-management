@@ -169,7 +169,17 @@ export const directionUseData = [
   { title: '其他面积(㎡)', dataIndex: 'otherArea', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
-
+// 使用方向 设备设施
+export const directionEquipment = [
+  { title: '资产ID', dataIndex: 'assetId', width: 100 },
+  { title: '资产名称', dataIndex: 'assetName', width: 200 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
+  { title: '是否转物业', dataIndex: 'buildArea', width: 150 },
+  { title: '转物业时间', dataIndex: 'transferTime', width: 200 },
+  { title: '使用方向', dataIndex: 'transferArea', width: 100 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
+]
 //  -------- 相关费用 ----------------------------------
 export const costData = [
   { title: '相关费用ID', dataIndex: 'correlationExpenseId', width: 100 },
@@ -187,3 +197,42 @@ export const costData = [
   { title: '备注', dataIndex: 'remark', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
+
+// 车场
+export const yard = [
+  { title: '车场名称', dataIndex: 'landName', width: 150},
+  { title: '车场编码', dataIndex: 'landCode', width: 150 },
+  { title: '区域名称', dataIndex: 'assetName', width: 150 },
+  { title: '车位名称', dataIndex: 'assetCode', width: 150 },
+  { title: '车位编码', dataIndex: 'landArea', width: 100 },
+  { title: '坐落位置', dataIndex: 'theNo', width: 100 },
+  { title: '车场类型', dataIndex: 'landTypeName', width: 100 },
+  { title: '建筑面积(㎡)', dataIndex: 'landuseName', width: 100 },
+  { title: '资产名称', dataIndex: 'pasitionString', width: 350 },
+  { title: '资产编码', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '权属类型', dataIndex: 'ownershipStatusName', width: 100 },
+  { title: '权属情况', dataIndex: 'warrantNbr', width: 100 },
+  { title: '权证号', dataIndex: 'sourceModeName', width: 150 },
+  { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
+  { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
+]
+
+// 设备设施
+export const equipment = [
+  { title: '设备设施名称', dataIndex: 'landName', width: 150},
+  { title: '设备设施编码', dataIndex: 'landCode', width: 150 },
+  { title: '设备设施分类', dataIndex: 'assetName', width: 150 },
+  { title: '规格型号', dataIndex: 'assetCode', width: 150 },
+  { title: '运营项目', dataIndex: 'landArea', width: 100 },
+  { title: '资产名称', dataIndex: 'theNo', width: 100 },
+  { title: '资产编码', dataIndex: 'landTypeName', width: 100 },
+  { title: '所在位置', dataIndex: 'landuseName', width: 100 },
+  { title: '权属类型', dataIndex: 'pasitionString', width: 350 },
+  { title: '权属情况', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '权证号', dataIndex: 'ownershipStatusName', width: 100 },
+  { title: '债权金额(元)', dataIndex: 'warrantNbr', width: 100 },
+  { title: '债务金额(元)', dataIndex: 'sourceModeName', width: 150 },
+  { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
+]
+

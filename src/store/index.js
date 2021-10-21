@@ -4,24 +4,59 @@
  * 日期：2019年6月26日
  */
 
-import Vue from 'vue'
-import Vuex from 'vuex'
-import dev from './modules/dev'
-import auth from './modules/auth'
-import pro from './modules/pro'
-import asset from './modules/asset'
+import Vue from "vue";
+import Vuex from "vuex";
+import dev from "./modules/dev";
+import auth from "./modules/auth";
+import pro from "./modules/pro";
+import asset from "./modules/asset";
+import * as apiAsset from "@/api/assets";
 
-Vue.use(Vuex)
-
+Vue.use(Vuex);
+const SET_ASSET_TYPE_CODE = "set_asset_type_code";
+const SET_ASSET_TYPE_OPTIONS = "set_asset_type_options";
 export default new Vuex.Store({
   state: {
-
+    ASSET_TYPE_STRING: {
+      YARD: "车场",
+      LAND: "土地",
+      HOUSE: "房屋",
+      EQUIPMENT: "设备设施"
+    },
+    ASSET_TYPE_CODE: {
+      YARD: "",
+      LAND: "",
+      HOUSE: "",
+      EQUIPMENT: ""
+    },
+    ASSET_TYPE_OPTIONS: {}
   },
   mutations: {
-
+    [SET_ASSET_TYPE_CODE](state, payload) {
+      state.ASSET_TYPE_CODE = payload;
+    },
+    [SET_ASSET_TYPE_OPTIONS](state, payload) {
+      state.ASSET_TYPE_OPTIONS = payload;
+    }
   },
   actions: {
-
+    getAssetType({ commit, state }) {
+      apiAsset.platformDict({ code: "asset_type" }).then(res => {
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          commit(SET_ASSET_TYPE_OPTIONS, data);
+          const assetTypeCode = {};
+          Object.keys(state.ASSET_TYPE_STRING).forEach(ele => {
+            assetTypeCode[ele] = data.filter(
+              item => item.name === state.ASSET_TYPE_STRING[ele]
+            )[0].value;
+          });
+          commit(SET_ASSET_TYPE_CODE, assetTypeCode);
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    }
   },
   modules: {
     auth,
@@ -29,4 +64,4 @@ export default new Vuex.Store({
     pro,
     asset
   }
-})
+});

@@ -24,7 +24,26 @@
           <a-col :span="12" class="playground-col">建筑面积(㎡)：{{examine.buildArea || '--'}}</a-col>
         </a-row>
       <span class="section-title blue">使用方向</span>
-      <div class="mt30 mb30">
+      <div v-if="isEquipment" class="mt30 mb30">
+        <a-col :span="12" class="h-65">
+          <a-form-item label="转物业时间" v-bind="formItemLayout">
+            <a-date-picker
+              :style="allWidth"
+              placeholder="转物业时间"
+              v-decorator="['transferTime',
+                {rules: [{ required: false, message: '转物业时间'}]}
+              ]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12" class="h-65">
+          <a-form-item label="使用方向" v-bind="formItemLayout">
+            <a-select style="width: 200px;"></a-select>
+          </a-form-item>
+
+        </a-col>
+      </div>
+      <div v-else class="mt30 mb30">
         <a-row>
           <a-form :form="form" @submit="handleSubmit">
             <a-col :span="12" class="h-65">
@@ -123,7 +142,7 @@
             </a-col>
           </a-form>
         </a-row>
-        </div>
+      </div>
     </div>
     </SG-Modal>
   </div>
@@ -134,7 +153,12 @@ import moment from 'moment'
 const conditionalJudgment = [undefined, null, '']
 export default {
   components: {},
-  props: {},
+  props: {
+    isEquipment:{
+      type: Boolean,
+      required: true
+    }
+  },
   data () {
     return {
       organId: '67',
@@ -193,15 +217,18 @@ export default {
           this.examine = obj
           this.subData.assetId = obj.assetId
           // 处理表单数据
-          let o = {
-            transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : undefined,                     // 转物业时间
-            transferArea: obj.transferArea,                     // 转物业面积(㎡)
-            transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : undefined,   // 转运营时间
-            transferOperationArea: obj.transferOperationArea,   // 运营面积(㎡)
-            selfUserArea: obj.selfUserArea,                     // 自用面积(㎡)
-            idleArea: obj.idleArea,                             // 闲置面积(㎡)
-            occupationArea: obj.occupationArea,                 // 占用面积(㎡)
-            otherArea: obj.otherArea                            // 其他面积(㎡)
+          let o = {transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : undefined}
+          // 转物业时间
+          if (!this.isEquipment){
+            Object.assign(o,{
+              transferArea: obj.transferArea,                     // 转物业面积(㎡)
+              transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : undefined,   // 转运营时间
+              transferOperationArea: obj.transferOperationArea,   // 运营面积(㎡)
+              selfUserArea: obj.selfUserArea,                     // 自用面积(㎡)
+              idleArea: obj.idleArea,                             // 闲置面积(㎡)
+              occupationArea: obj.occupationArea,                 // 占用面积(㎡)
+              otherArea: obj.otherArea                            // 其他面积(㎡)
+            })
           }
           this.form.setFieldsValue(o)
         } else {
