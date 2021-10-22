@@ -25,11 +25,8 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="楼层顺序" v-bind="formItemLayout">
-                    <a-input-number :style="allWidth" v-decorator="['floorIndex', {initialValue: '' || undefined, 
-                    rules: [
-                    {required: true, message: '请输入楼层顺序'},
-                    {pattern: /^[0-9]*$/, message: '请输入整数'}]}
-                    ]"/>
+                    <a-input-number  :precision="0" :style="allWidth" v-decorator="['floorIndex', {initialValue: '' ||
+                    undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -39,7 +36,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="层高(m)" v-bind="formItemLayout">
-                    <a-input-number :min="0" :max="9999.99" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined, 
+                    <a-input-number :min="0" :max="9999.99" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined,
                     rules: [
                     {required: false, message: '请输入楼层高度'},
                     {pattern: /^(\.*)(\d+)(\.?)(\d{0,2}).*$/, message: '最多保留2位小数'}]}]"/>
@@ -66,9 +63,9 @@
                     <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="planePicPath" :max="1"/>
                   </a-form-item>
                 </a-col>
-            </a-row>    
+            </a-row>
           </a-form>
-         </div>    
+         </div>
      </div>
      <FormFooter>
        <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
@@ -255,9 +252,9 @@ export default {
                   this.$SG_Message.error('新增失败！')
                 })
               })
-              
+
             })
-            
+
           }
           // 编辑楼栋
           if (this.type === 'edit') {
