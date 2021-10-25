@@ -52,7 +52,7 @@ export default {
     },
     value: {
       type: [String, Number],
-      default: ''
+      // default: ''
     },
     // 禁用
     disabled: {
@@ -90,6 +90,10 @@ export default {
       }
     },
   },
+  model: {
+    event: 'change',
+    prop: 'value'
+  },
   data () {
     return {
       showDefaultOrganName: false,
@@ -102,6 +106,11 @@ export default {
   watch: {
     value (val) {
       this.organId = val
+    },
+    organId (nVal,oVal) {
+      // organId和value 互相监听，若不判等，将造成死循环，不建议，也不要这样写，但是组件本身逻辑已完成
+      if(nVal === oVal || !nVal) return
+      this.$emit('change', nVal)
     },
     defaultOrganName:{
       handler: function (newValue){
