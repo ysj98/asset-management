@@ -8,8 +8,8 @@
       <!-- 搜索框 -->
       <div class="top-search-one">
         <div>
-<!--            v-if="createPower"-->
           <SG-Button
+            v-if="createPower"
             @click="goPage('create')"
             class="mr10"
             icon="plus"
