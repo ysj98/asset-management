@@ -14,16 +14,16 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
+<!--                      :defaultOrganName="organNameMain"-->
                   <treeSelect
                       ref="organTopRef"
                       :default="false"
                       :typeFilter="typeFilter"
                       @changeTree="changeTree"
                       placeholder='请选择所属机构'
-                      :defaultOrganName="organNameMain"
                       :style="allStyle"
-                      v-model="formInfo.organId"
                       :allowClear="false"
+                      v-decorator="['organId',{initialValue: '' || undefined, rules: [{required: true, message: '请选择所属机构'}]}]"
                   >
                   </treeSelect>
                 </a-form-item>
@@ -74,10 +74,10 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
+<!--                      @change="communityIdChange"-->
                   <a-select
                       :style="allWidth"
                       :getPopupContainer="getPopupContainer"
-                      @change="communityIdChange"
                       placeholder="请选择项目"
                       showSearch
                       optionFilterProp="children"
@@ -116,105 +116,23 @@
               <a-col :span="16">
                 <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
                   <div class="address-box">
-                    <a-select
-                        :style="allWidth1"
-                        placeholder="省"
-                        :getPopupContainer="getPopupContainer"
-                        showSearch
-                        optionFilterProp="children"
-                        :options="$addTitle(provinceOpt)"
-                        :allowClear="false"
-                        @change="cityOrRegionChange($event, 'province')"
-                        :filterOption="filterOption"
-                        notFoundContent="没有查询到数据"
-                        v-decorator="[
-                        'province',
-                        {
-                          rules: [
-                            { required: true, message: '请选择省' },
-                            { validator: validateAddress },
-                          ],
-                        },
-                      ]"
-                    />
-                    <a-select
-                        :style="allWidth1"
-                        placeholder="市"
-                        :getPopupContainer="getPopupContainer"
-                        showSearch
-                        optionFilterProp="children"
-                        :options="$addTitle(cityOpt)"
-                        v-model="city"
-                        :allowClear="false"
-                        @change="cityOrRegionChange($event, 'city')"
-                        :filterOption="filterOption"
-                        notFoundContent="没有查询到数据"
-                    />
-                    <a-select
-                        :style="allWidth1"
-                        placeholder="区/县"
-                        :getPopupContainer="getPopupContainer"
-                        showSearch
-                        optionFilterProp="children"
-                        v-model="region"
-                        @change="cityOrRegionChange($event, 'region')"
-                        :options="$addTitle(regionOpt)"
-                        :allowClear="false"
-                        :filterOption="filterOption"
-                        notFoundContent="没有查询到数据"
-                    />
                     <a-input
                         :maxLength="100"
-                        @input="getLL"
-                        v-model="address"
                         :style="allWidth2"
                         placeholder="详细地址"
+                        v-decorator="['placeAddr']"
                     />
                   </div>
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
-                <a-form-item label="经纬度" v-bind="formItemLayout">
-                  <a-input
-                      :style="allWidth"
-                      v-decorator="[
-                      'lngAndlat',
-                      {
-                        rules: [
-                          {
-                            required: true,
-                            whitespace: true,
-                            message: '请选择或输入经纬度',
-                          },
-                        ],
-                      },
-                    ]"
-                  >
-                    <a-icon
-                        type="plus"
-                        @click="showSelectMap"
-                        class="pointer"
-                        slot="suffix"
-                    />
-                  </a-input>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
+<!--            </a-row>-->
+<!--            <a-row>-->
               <a-col :span="8">
                 <a-form-item label="车场类型" v-bind="formItemLayout">
-                  <a-select
-                      :style="allWidth"
-                      :getPopupContainer="getPopupContainer"
-                      placeholder="请选择车场类型"
-                      showSearch
-                      optionFilterProp="children"
-                      :options="$addTitle(landTypeOpt)"
-                      :allowClear="false"
-                      :filterOption="filterOption"
-                      notFoundContent="没有查询到数据"
-                      v-decorator="[
-                      'typeId',{rules: [{required: true,message: '请选择土地类型'}]}]"
+                  <dict-select
+                    placeholder="请选择车场类型"
+                    menu-code="PARKING_PLACE_RESOURCE_TYPE"
+                    v-decorator="['typeId',{initialValue: undefined, rules: [{required: true,message: '请选择土地类型'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -236,20 +154,8 @@
                   <SG-UploadFile
                       :customDownload="customDownload"
                       :customUpload="customUpload"
-                      v-model="redMap"
-                      :max="1"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="24">
-                <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
-                      type="all"
-                      v-model="filePath"
+                      v-model="formInfo.otherImg"
+                      :max="10"
                   />
                 </a-form-item>
               </a-col>
@@ -269,32 +175,30 @@
                       <div :key="com.dataIndex">
                         <a-form-item style="margin: -5px;">
                           <a-input
-                            :value="item"
                             :maxLength="30"
                             :style="allWidth"
                             :placeholder="com.placeHolder"
                             v-if="['input'].includes(com.component)"
-                            v-decorator="[`${formInfo.areaArray[index].key+com.dataIndex}`,
+                            v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
                             {initialValue:item ,rules: [{required: com.isRequired,message: com.errMessage}]}]"
                             @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <a-input
-                            :value="item"
                             :maxLength="30"
                             :style="allWidth"
                             :placeholder="com.placeHolder"
                             :key="formInfo.areaArray[index].key"
                             v-else-if="['text'].includes(com.component)"
-                            v-decorator="[`${formInfo.areaArray[index].key+com.dataIndex}`,
+                            v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
                             {initialValue:item ,rules: [{required: com.isRequired,message: com.errMessage}]}]"
                             @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
+<!--                                v-model="formInfo.areaArray[index].areaOtherImg"-->
                             <SG-UploadFile
-                                :show="false"
                                 :customDownload="customDownload"
                                 :customUpload="customUpload"
-                                type="all"
+                                :max="2"
                                 v-model="formInfo.areaArray[index].areaOtherImg"
                             >
                               <span slot="tips"></span>
@@ -319,42 +223,37 @@
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
       <SG-Button @click="handleCancel">取消</SG-Button>
     </FormFooter>
-    <selectLngAndLat
-        :point="point"
-        @change="bMapChange"
-        ref="longitudeAndLatitud"
-    />
   </div>
 </template>
 <script>
 import FormFooter from "@/components/FormFooter.vue"
 import dictMixin from "../dictMixin.js"
-import selectLngAndLat from "@/views/common/selectLngAndLat.vue"
 import TreeSelect from "@/views/common/treeSelect";
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import {areaTitle} from "./dict";
+import DictSelect from "../../common/DictSelect";
 
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
-const allWidth2 = { width: "250px", flex: 1 }
+const allWidth2 = { width: "86%", flex: 1 }
 // 页面跳转
 const operationTypes = {
   index: "/buildingDict",
 }
 const tableDataTemplate = {
-  areaName:'132123', // 名称
-  areaCode:'编码', // 编码
-  areaZone:'1111222', // 面积
-  areaPosiNums: '9999', // 车位数
+  areaName:'', // 名称
+  areaCode:'', // 编码
+  areaZone:'', // 面积
+  areaPosiNums: 50, // 车位数
   areaParkingImg: '', //
   areaOtherImg: [], // 图片
-  areaDescription:'描述' // 描述
+  areaDescription:'' // 描述
 }
 export default {
   components: {
+    DictSelect,
     FormFooter,
-    selectLngAndLat,
     TreeSelect
   },
   mixins: [dictMixin],
@@ -362,59 +261,44 @@ export default {
     return {
       areaTitle, // 区域信息表头
       formInfo: { // 表单
-        organId:'9999', // 组织机构ID
-        communityId: '66666', // 项目Id
-        placeName: '111111', // 车场名称
-        placeCode: '车场编码', // 车场编码
-        placeArea: 11111122,// 车场面积
-        placeAreaUnit: '车场面积单位', // 车场面积单位
-        placeNums: 9999, // 车位数量
-        typeId: '9999', // 车厂类型Id
-        placeAddr: '车厂地址', // 车厂地址
-        carPlaceImg: '', // 车场平面图
+        // organId:'9999', // 组织机构ID
+        // communityId: '66666', // 项目Id
+        // placeName: '111111', // 车场名称
+        // placeCode: '车场编码', // 车场编码
+        // placeArea: 11111122,// 车场面积
+        // placeAreaUnit: '车场面积单位', // 车场面积单位
+        // placeNums: 9999, // 车位数量
+        // typeId: '9999', // 车厂类型Id
+        // placeAddr: '车厂地址', // 车厂地址
+        // carPlaceImg: '', // 车场平面图
         otherImg: '', // 其它图片
-        description: '备注', // 备注
-        areaArray: [{
-          areaName:'132123', // 名称
-          areaCode:'编码', // 编码
-          areaZone:'1111222', // 面积
-          areaPosiNums: '9999', // 车位数
-          areaParkingImg: '', //
-          areaOtherImg: '', // 图片
-          areaDescription:'描述', // 描述
-          key: Math.random()
-        }]
+        // description: '备注', // 备注
+        areaArray: [
+          // {
+          //   areaName:'132123', // 名称
+          //   areaCode:'编码', // 编码
+          //   areaZone:'1111222', // 面积
+          //   areaPosiNums: '9999', // 车位数
+          //   areaParkingImg: '', //
+          //   areaOtherImg: [], // 图片
+          //   areaDescription:'描述', // 描述
+          //   key: Math.random()
+          // }
+        ]
       },
       allStyle: 'width: 100%;',
       typeFilter,
       allWidth,
       allWidth1,
       allWidth2,
-      region: undefined, // 区/县
-      city: undefined, // 市
-      address: "", // 详细地址
-      provinceOpt: [], // 省
-      cityOpt: [], // 市
-      regionOpt: [], // 区/县
-      point: {
-        // 经纬度
-        lng: "",
-        lat: "",
-      },
       communityIdOpt: [], // 选择项目
-      landTypeOpt: [], // 房屋类型
-      redMap: [], // 用地红线图
-      encloseWallPic: [], // 围墙图片
-      nowPic: [], // 现状图片
-      filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
         type: "create", // 页面类型
-        blankId: "",
+        placeId: "",
         organName: "",
         organId: "",
       },
-      bussType: "blankDir",
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -455,8 +339,8 @@ export default {
           sm: { span: 21 },
         },
       },
-      organIdMain:'', // 所属机构
-      organNameMain:'', // 所属机构名称
+      // organIdMain:'', // 所属机构
+      // organNameMain:'', // 所属机构名称
     }
   },
   beforeCreate() {
@@ -464,17 +348,16 @@ export default {
     window.fff = this.form
   },
   mounted() {
-    let { organName, organId, type, blankId } = this.$route.query
+    let { organName, organId, type, placeId } = this.$route.query
     Object.assign(this, {
-      routeQuery: { organName, organId, type, blankId },
+      routeQuery: { organName, organId, type, placeId },
     })
     this.init()
   },
   methods: {
     async changeTree(value){
-      this.organIdMain = value || ''
+      // this.organIdMain = value || ''
       if (value) {
-        this.initPreData();
         let {organId:organTopId} = await queryTopOrganByOrganID(
             {
               nOrgId: value,
@@ -482,47 +365,12 @@ export default {
             }
         )
         this.queryCommunityListByOrganId(organTopId)
-        this.form.resetFields(['communityId', 'landType', 'landuseType', 'landuse'])
+        this.form.resetFields(['communityId', 'typeId', 'landuseType', 'landuse'])
       }
-    },
-    // 确定
-    handleSave() {
-      if (!this.organIdMain){
-        this.$message.error('请选择所属机构')
-        return null;
-      }
-      this.form.validateFields((err, values) => {
-      })
     },
     // 取消
     handleCancel() {
       this.$router.push({ path: "/buildingDict", query: { showKey: "land" } })
-    },
-    // 请求土地详情
-    async blankApiDetail() {
-    },
-    // 查询土地类别
-    queryLandType() {
-      let data = {
-        dictCode: "PARKING_PLACE_RESOURCE_TYPE",
-        dictFlag: "1",
-        groupId: this.organIdMain,
-        code: "PARKING_PLACE_RESOURCE_TYPE",
-        organId: this.organIdMain,
-        // assetType: '4'
-      }
-      // this.$api.assets.getList(data)
-      // this.$api.basics.organDict(data)
-      this.$api.basics.organDict(data).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data
-          this.landTypeOpt = data.map((item) => ({
-            value: item["value"],
-            label: item["name"],
-            // id: item["dictId"]
-          }))
-        }
-      })
     },
     // 请求项目
     queryCommunityListByOrganId(organTopId) {
@@ -544,131 +392,8 @@ export default {
       })
     },
     // 选择项目变化
-    communityIdChange(e) {},
-    bMapChange(point) {
-      console.log("经纬度改变=>", point)
-      let lngAndlat = point.lng + "-" + point.lat
-      this.form.setFieldsValue({ lngAndlat })
-      this.point = { ...point }
-    },
-    // 显示百度地图
-    showSelectMap() {
-      this.$refs.longitudeAndLatitud.visible = true
-    },
-    // 请求省
-    queryProvinceList() {
-      return this.$api.basics.queryProvinceList().then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data || []
-          this.provinceOpt = data.map((item) => {
-            return { label: item.name, value: item.regionId }
-          })
-        }
-      })
-    },
-    // 请求市区
-    queryCityAndAreaList(parentRegionId, type) {
-      this.$api.basics.queryCityAndAreaList({ parentRegionId }).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data || []
-          let result = data.map((item) => {
-            return { label: item.name, value: item.regionId }
-          })
-          // 市
-          if (type === "province") {
-            this.regionOpt = []
-            this.cityOpt = result
-          }
-          // 区
-          if (type === "city") {
-            this.regionOpt = result
-          }
-        }
-      })
-    },
-    // 验证省市区
-    validateAddress(rule, value, callback) {
-      console.log("ss", this.city)
-      if (!value) {
-        callback("请选择省份")
-      } else if (!this.city) {
-        callback("请选择市")
-      } else if (!this.region) {
-        callback("请选择区/县")
-      } else {
-        callback()
-      }
-    },
-    cityOrRegionChange(e, type) {
-      console.log("改变项", e, type)
-      // 如果是区/县 请求经纬度
-      if (type === "region") {
-        this.getLL()
-      }
-      // 市
-      if (type === "province") {
-        this.region = undefined
-        this.city = undefined
-      }
-      // 区
-      if (type === "city") {
-        this.region = undefined
-      }
-      // 触发验证
-      if (["region", "city"].includes(type)) {
-        this.form.validateFields(["province"], { force: true })
-      }
-      // 请求联动数据
-      if (["province", "city"].includes(type)) {
-        this.queryCityAndAreaList(e, type)
-      }
-    },
-    transformProvince() {
-      let value = this.form.getFieldsValue().province
-      let arr = this.provinceOpt.filter(
-          (item) => String(item.value) === String(value)
-      )
-      return arr[0].label
-    },
-    transformCity() {
-      let value = this.city
-      let arr = this.cityOpt.filter(
-          (item) => String(item.value) === String(value)
-      )
-      return arr[0].label
-    },
-    transformArea() {
-      let value = this.region
-      let arr = this.regionOpt.filter(
-          (item) => String(item.value) === String(value)
-      )
-      return arr[0].label
-    },
-    // 请求经纬度坐标
-    getLL() {
-      if (!BMap) return
-      if (!this.region) return
-      var myGeo = new BMap.Geocoder()
-      let self = this
-      let longitude = 0
-      let latitude = 0
-      let transformProvince = this.transformProvince()
-      let transformCity = this.transformCity()
-      let transformArea = this.transformArea()
-      let address = this.address
-      console.log("动态经纬度=>", transformProvince)
-      if (transformProvince && transformCity && transformArea) {
-        myGeo.getPoint(
-            transformProvince + transformCity + transformArea + address,
-            (point) => {
-              if (point) {
-                let lngAndlat = point.lng + "-" + point.lat
-                this.form.setFieldsValue({ lngAndlat })
-              }
-            }
-        )
-      }
-    },
+    // communityIdChange(e) {},
+
     filterOption(input, option) {
       return (
           option.componentOptions.children[0].text
@@ -679,18 +404,11 @@ export default {
     getPopupContainer(e) {
       return e.parentElement
     },
-    // 改变 所属机构时,做部分重置
-    initPreData(){
-      this.queryLandType()
-      this.queryLandUseTypeList()
-      this.queryLandUseList()
-    },
     // 初始化
     async init(){
-      this.form.setFieldsValue(this.formInfo)
+      // this.form.setFieldsValue(this.formInfo)
       if (this.routeQuery.type === "edit") {
-        await this.blankApiDetail()
-        this.initPreData()
+        await this.parkApiDetail()
       }
       this.queryProvinceList()
     },
@@ -715,7 +433,125 @@ export default {
       })
       this.formInfo.areaArray = [...newTable]
       this.formInfo = {...this.formInfo}
-    }
+    },
+    // 确定
+    handleSave() {
+      // if (!this.organIdMain){
+      //   this.$message.error('请选择所属机构')
+      //   return null;
+      // }
+      this.form.validateFields((err, values) => {
+        if(err) return
+        console.log(values)
+        const data = this.beforeSubmit(values)
+        if (this.routeQuery.type === "edit") {
+          this.parkApiInsert(data)
+        } else if(this.routeQuery.type === "edit") {
+          this.parkApiEdit(data)
+        }
+      })
+    },
+    beforeSubmit (value) {
+      debugger
+      let areaArray = this.formInfo.areaArray || []
+      areaArray = areaArray.map(item=>({...item,areaOtherImg: item.areaOtherImg.map(node=>node.url).join(',')}))
+      return {
+        ...value,
+        otherImg:this.formInfo.otherImg.map(node=>node.url).join(','),
+        areaArray: areaArray
+      }
+    },
+
+    /*************接口相关************/
+    afterParkApiDetail (value) {
+      const data = {
+        ...value,
+      }
+      data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
+      // 遍历循环
+      this.formInfo.areaArray = [...data.areaArray]
+      this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      return data
+    },
+    // 详情
+    async parkApiDetail() {
+      return new Promise((resolve, reject) => {
+        let data = {
+          placeId: this.routeQuery.placeId,
+          organId: this.routeQuery.organId
+        }
+        this.loading = true
+        this.$api.building.parkApiDetail(data).then(
+            async (res) => {
+              this.loading = false
+              if (res.data.code === "0") {
+                this.formInfo.areaArray=[]
+                this.form.setFieldsValue(this.afterParkApiDetail(res.data.data))
+              } else {
+                this.$message.error(res.data.message)
+              }
+              resolve()
+            },
+            () => {
+              this.loading = false
+              reject()
+            }
+        )
+      })
+    },
+    parkApiEdit (data) {
+      // parkApiEdit
+      const params = {
+        ...data
+      }
+      let loadingName = this.SG_Loding("编辑中...")
+      this.$api.building.parkApiEdit(params).then(
+          (res) => {
+            this.DE_Loding(loadingName).then(() => {
+              if (res.data.code === "0") {
+                this.$SG_Message.success("编辑车场成功")
+                this.$router.push({
+                  path: "/buildingDict",
+                  query: { showKey: "park", refresh: true },
+                })
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          },
+          () => {
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.error("编辑失败！")
+            })
+          }
+      )
+    },
+    parkApiInsert (data) {
+      const params = {
+        ...data
+      }
+      let loadingName = this.SG_Loding("新增中...")
+      this.$api.building.parkApiInsert(params).then(
+        (res) => {
+          this.DE_Loding(loadingName).then(() => {
+            if (res.data.code === "0") {
+              this.$SG_Message.success("新增车场成功")
+              this.$router.push({
+                path: "/buildingDict",
+                query: { showKey: "park", refresh: true },
+              })
+            } else {
+              this.$message.error(res.data.message)
+            }
+          })
+        },
+        () => {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error("新增失败！")
+          })
+        }
+      )
+    },
   },
 }
 </script>

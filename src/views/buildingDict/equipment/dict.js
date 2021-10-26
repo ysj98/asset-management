@@ -4,9 +4,9 @@
  */
 // 页面跳转
 export const operationTypes = {
-  create: "/buildingDict/createPark",
-  detail: "/buildingDict/detailViewPark",
-  edit: '/buildingDict/editPark'
+  create: "/buildingDict/createEquipment",
+  detail: "/buildingDict/detailViewEquipment",
+  edit: '/buildingDict/editEquipment'
 };
 export const allStyle = {
   width: "170px",
@@ -23,11 +23,12 @@ export const allWidth = {
 export const queryCondition = {
   organId: "", // 机构id
   communityId: [''], // 运营项目
-  typeId: '', // 类型
-  nameOrCode: '', // 土地名称/编码/宗地号
-  pageNo: 1,
-  pageLength: 10,
-  onlyCurrentNode: 0
+  landType: undefined, // 土地类型
+  landuse: '', // 土地用途
+  status: '', // 土地名称/编码/宗地号
+  pageNum: 1,
+  pageSize: 10,
+  isCurrent: 0
 };
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
@@ -37,23 +38,18 @@ export const parkTypeOpt = [
 ]
 export const columns = [
   {
-    title: "车场ID",
-    dataIndex: "placeId",
+    title: "车位ID",
+    dataIndex: "parkingId",
     width: 120
   },
   {
-    title: "车场名称",
+    title: "设备名称",
     dataIndex: "placeName",
     width: 120
   },
   {
-    title: "车场编码",
-    dataIndex: "placeCode",
-    width: 120
-  },
-  {
-    title: "车场面积(㎡)",
-    dataIndex: "placeArea",
+    title: "区域名称",
+    dataIndex: "parkingAreaName",
     width: 120
   },
   {
@@ -62,25 +58,40 @@ export const columns = [
     width: 120
   },
   {
-    title: "车场类型",
-    dataIndex: "typeName",
-    width: 100
-  },
-  {
-    title: "车位数",
-    dataIndex: "placeNums",
-    width: 100
-  },
-  {
-    title: "车场位置",
-    dataIndex: "placeAddr",
+    title: "车位名称",
+    dataIndex: "name",
     width: 120
   },
-  // {
-  //   title: "交付时间",
-  //   dataIndex: "approvalDate",
-  //   width: 120
-  // },
+  {
+    title: "车位编码",
+    dataIndex: "code",
+    width: 100
+  },
+  {
+    title: "车位类型",
+    dataIndex: "parkingType",
+    width: 100
+  },
+  {
+    title: "车位状态",
+    dataIndex: "parkingStatus",
+    width: 120
+  },
+  {
+    title: "建筑面积(㎡)",
+    dataIndex: "parkingAreaUnits",
+    width: 120
+  },
+  {
+    title: "使用面积(㎡)",
+    dataIndex: "useArea",
+    width: 120
+  },
+  {
+    title: "公摊面积(㎡)",
+    dataIndex: "shareArea",
+    width: 120
+  },
   {
     title: "操作",
     dataIndex: "operation",

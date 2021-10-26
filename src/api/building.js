@@ -175,7 +175,19 @@ export function blankApiInsert (data) {
 export function parkApiList (data) {
   return axiosPost(building.parkApiPageList, data)
 }
-
-export function parkApiDelete () {
-  return axiosPost(building.parkApiPageList)
+// 车场 详情
+export function parkApiDetail (data) {
+  return axiosPost(building.parkApiDetail, data)
+}
+// 车场 新增
+export function parkApiInsert (data) {
+  return axiosPost(building.parkApiInsert, data)
+}
+// 车场 编辑
+export function parkApiEdit (data) {
+  return axiosPost(building.parkApiEdit, data)
+}
+// 车场 删除
+export function parkApiDelete (data) {
+  return axiosPost(building.parkApiDelete, data)
 }

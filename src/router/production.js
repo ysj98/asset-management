@@ -47,9 +47,44 @@ let proRouter = [{
     component: () => import('@/views/buildingDict/park/createPark.vue')
   },
   {
+    path: '/buildingDict/editPark',
+    name: '编辑车场',
+    component: () => import('@/views/buildingDict/park/editPark.vue')
+  },
+  {
     path: '/buildingDict/detailViewPark',
     name: '查看车场',
     component: () => import('@/views/buildingDict/park/detailViewPark.vue')
+  },
+  {
+    path: '/buildingDict/createStall',
+    name: '新建车位',
+    component: () => import('@/views/buildingDict/stall/createStall.vue')
+  },
+  {
+    path: '/buildingDict/editStall',
+    name: '编辑车位',
+    component: () => import('@/views/buildingDict/stall/editStall.vue')
+  },
+  {
+    path: '/buildingDict/detailViewStall',
+    name: '查看车位',
+    component: () => import('@/views/buildingDict/stall/detailViewStall.vue')
+  },
+  {
+    path: '/buildingDict/createEquipment',
+    name: '新建设备',
+    component: () => import('@/views/buildingDict/equipment/createEquipment.vue')
+  },
+  {
+    path: '/buildingDict/editEquipment',
+    name: '编辑设备',
+    component: () => import('@/views/buildingDict/equipment/editEquipment.vue')
+  },
+  {
+    path: '/buildingDict/detailViewEquipment',
+    name: '查看设备',
+    component: () => import('@/views/buildingDict/equipment/detailViewEquipment.vue')
   },
   {
     path: '/assetChangeRegister',

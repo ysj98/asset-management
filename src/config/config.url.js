@@ -553,8 +553,16 @@ export const building = {
   blankApiDetail: '/basic-data-api/rest-api/v1/ams/blankApi/detail',
   // 土地新增
   blankApiInsert: '/basic-data-api/rest-api/v1/ams/blankApi/insert',
-  // 车场分页查询
-  parkApiPageList: '/car-parking-api/rest-api/v1/parkingPlaceRestApi/getParkingPlaceList'
+  // 车场 分页查询
+  parkApiPageList: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceList.json',
+  // 车场 新增
+  parkApiInsert: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/addParkingPlace.json',
+  // 车场 删除
+  parkApiDelete: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlace.json',
+  // 车场 编辑
+  parkApiEdit: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/updateParkingPlace.json',
+  // 车场 详情
+  parkApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceById.json'
 }
 
 // 权属概况

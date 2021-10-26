@@ -4,78 +4,97 @@
 -->
 <template>
   <div class="landInfo-page pb70">
-    <div class="create-form">
-      <!-- 搜索框 -->
-      <div class="top-search-one">
-        <div>
-<!--            v-if="createPower"-->
-          <SG-Button
-            @click="goPage('create')"
-            class="mr10"
-            icon="plus"
-            type="primary"
-          >新增</SG-Button>
-          <!-- <SG-Button class="mr10" ><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button> -->
-          <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10">
-            <segiIcon type="#icon-ziyuan10" class="mr10" />导出
-          </SG-Button>
-        </div>
-
-        <div style="overflow: visible">
-          <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-            仅当前机构下土地
-          </a-checkbox>
-          <!-- 公司 -->
-          <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
-          <!-- 全部运营项目-->
-          <a-select
-            showSearch
-            placeholder="请选择运营项目"
-            v-model="queryCondition.communityId"
-            @change="communityIdSelect"
-            mode="multiple"
-            :maxTagCount="1"
-            optionFilterProp="children"
-            :style="allWidth"
-            :options="$addTitle(communityIdOpt)"
-            :allowClear="false"
-            :filterOption="filterOption"
-            notFoundContent="没有查询到数据"
-          />
-          <!-- 全部土地类型 -->
-          <a-select
-            showSearch
-            placeholder="请选择土地类型"
-            v-model="queryCondition.landType"
-            optionFilterProp="children"
-            :style="allStyle"
-            :options="$addTitle(landTypeOpt)"
-            :allowClear="false"
-            :filterOption="filterOption"
-            notFoundContent="没有查询到数据"
-          />
-          <!-- 全部土地用途 -->
-          <a-select
-            showSearch
-            placeholder="请选择土地用途"
-            v-model="queryCondition.landuse"
-            optionFilterProp="children"
-            :style="allStyle"
-            :options="$addTitle(landuseOpt)"
-            :allowClear="false"
-            :filterOption="filterOption"
-            notFoundContent="没有查询到数据"
-          />
-          <!-- 资产名称或编码 -->
-          <a-input
-            :maxLength="30"
-            placeholder="土地名称/编码/宗地号"
-            v-model="queryCondition.queryName"
-            :style="allStyle"
-          />
-          <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+    <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0, overflow: 'visible'}">
+      <div slot="headerForm" class="search-content-box">
+        <div class="top-search-one" style="padding: 0;">
+          <div>
+            <!--            v-if="createPower"-->
+            <SG-Button
+                @click="goPage('create')"
+                class="mr10"
+                icon="plus"
+                type="primary"
+            >新增</SG-Button>
+            <!--              v-if="hasPowerExport" -->
+            <SG-Button
+                @click="exportList"
+                class="mr10">
+              <segiIcon type="#icon-ziyuan10" class="mr10" />导出
+            </SG-Button>
+          </div>
+          <div style="overflow: visible;margin-top:-10px;">
+            <!-- 公司 -->
+            <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
+            <!-- 全部运营项目-->
+            <a-select
+                showSearch
+                placeholder="请选择运营项目"
+                v-model="queryCondition.communityId"
+                @change="communityIdSelect"
+                mode="multiple"
+                :maxTagCount="1"
+                optionFilterProp="children"
+                :style="allWidth"
+                :options="$addTitle(communityIdOpt)"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+            />
+            <!-- 全部土地类型 -->
+            <a-select
+                showSearch
+                placeholder="请选择车场"
+                v-model="queryCondition.landType"
+                optionFilterProp="children"
+                :style="allStyle"
+                :options="$addTitle(parkTypeOpt)"
+                :allowClear="false"
+                :filterOption="filterOption"
+                notFoundContent="没有查询到数据"
+            />
+            <!-- 资产名称或编码 -->
+            <a-input
+                :maxLength="30"
+                placeholder="车位名称/编码"
+                v-model="queryCondition.queryName"
+                :style="allStyle"
+            />
+            <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
+              仅当前机构下土地
+            </a-checkbox>
+            <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+          </div>
         </div>
       </div>
+      <div slot="contentForm">
+        <div class="top-search-one" style="padding: 0;">
+          <div style="overflow: visible;margin-top:-10px;width: 950px;">
+            <!-- 全部土地类型 -->
+            <dict-select
+                :style="allStyle"
+                placeholder="请选择车场"
+                v-model="queryCondition.landType"
+                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+            />
+            <dict-select
+                :style="allStyle"
+                placeholder="请选择车场"
+                v-model="queryCondition.landType"
+                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+            />
+            <dict-select
+                :style="allStyle"
+                placeholder="请选择车场"
+                v-model="queryCondition.landType"
+                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+            />
+          </div>
+        </div>
+      </div>
+    </SearchContainer>
+
+    <div class="create-form">
+      <!-- 搜索框 -->
       <!-- 表格部分 -->
       <div>
         <a-table
@@ -110,6 +129,7 @@
   </div>
 </template>
 <script>
+import SearchContainer from "@/views/common/SearchContainer";
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from "@/components/segiIcon.vue";
@@ -123,16 +143,19 @@ import {
   columns,
   queryCondition,
   communityIdOpt,
-  landTypeOpt,
-  landuseOpt,
+  parkTypeOpt,
 } from "./dict.js";
+import {tablePageList} from './mock'
+import DictSelect from "../../common/DictSelect";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
+    DictSelect,
     TreeSelect,
     noDataTips,
     segiIcon,
     OperationPopover,
+    SearchContainer
   },
   data() {
     return {
@@ -143,8 +166,7 @@ export default {
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
       communityIdOpt: utils.deepClone(communityIdOpt),
-      landTypeOpt: utils.deepClone(landTypeOpt),
-      landuseOpt: utils.deepClone(landuseOpt),
+      parkTypeOpt: utils.deepClone(parkTypeOpt),
       table: {
         columns,
         dataSource: [],
@@ -154,6 +176,7 @@ export default {
       createPower: false, // 新建
       editPower: false, // 编辑
       deletePower: false, // 删除
+      toggle: false
     };
   },
   watch: {
@@ -173,45 +196,28 @@ export default {
     this.handlePower();
   },
   methods: {
-    // 处理是否选中仅当前机构
-    changeChecked (e) {
-      this.queryCondition.isCurrent = Number(e.target.checked)
-    },
     query() {
-      let data = {
-        ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(","),
-      };
+      // let data = {
+      //   ...this.queryCondition,
+      //   communityId: this.queryCondition.communityId.join(","),
+      // };
       this.table.loading = true;
-      this.$api.building.blankApiPageList(data).then(
-        (res) => {
-          this.table.loading = false;
-          if (res.data.code === "0") {
-            let result = res.data.data || [];
-            let btnArr = this.createOperationBtn();
-
-            this.table.dataSource = result.map((item) => {
-              let landuseOptRow =
-                this.landuseOpt.find((v) => v.value === item.landuse) || {};
-              let landTypeOptRow =
-                this.landTypeOpt.find((v) => v.value === item.landType) || {};
-              return {
-                key: utils.getUuid(),
-                ...item,
-                landuseName: landuseOptRow.label,
-                landTypeName: landTypeOptRow.label,
-                operationDataBtn: btnArr,
-              };
-            });
-            this.table.totalCount = res.data.paginator.totalCount || 0;
-          } else {
-            this.$message.error(res.data.message);
-          }
-        },
-        () => {
-          this.table.loading = false;
-        }
-      );
+      let res = {...tablePageList}
+      this.table.loading = false;
+      if (res.code === "0") {
+        let result = res.data.resultList || [];
+        let btnArr = this.createOperationBtn();
+        this.table.dataSource = result.map((item) => {
+          return {
+            key: utils.getUuid(),
+            ...item,
+            operationDataBtn: btnArr,
+          };
+        });
+        this.table.totalCount = res.data.paginator.totalCount || 0;
+      } else {
+        this.$message.error(res.data.message);
+      }
     },
     // 重置分页查询
     searchQuery() {
@@ -221,50 +227,22 @@ export default {
     // 查询土地类别
     queryLandType() {
       let data = {
-        dictCode: "OCM_LAND_TYPE",
-        dictFlag: "1",
-        groupId: this.queryCondition.organId,
-        code: "OCM_LAND_TYPE",
-        organId: this.queryCondition.organId,
-        // assetType: "4",
+        code: "PARKING_PLACE_RESOURCE_TYPE"
       };
-      // this.$api.assets.getList(data)
+      // this.$api.assets.getList(data) PARKING_PLACE_RESOURCE_TYPE
       // this.$api.basics.organDict(data)
-      return this.$api.basics.organDict(data).then((res) => {
+      return this.$api.assets.platformDict(data).then((res) => {
         if (res.data.code === "0") {
           let data = res.data.data;
-          this.landTypeOpt = utils.deepClone(landTypeOpt);
+          this.parkTypeOpt = utils.deepClone(parkTypeOpt);
           data.forEach((item) => {
-            this.landTypeOpt.push({
+            this.parkTypeOpt.push({
               value: item["value"],
               label: item["name"],
               // id: item["dictId"]
             });
           });
-          this.queryCondition.landType = "";
-        }
-      });
-    },
-    // 取全部土地用途
-    queryLandUseList() {
-      let data = {
-        dictCode: "OCM_LANDUSE",
-        dictFlag: "1",
-        groupId: this.queryCondition.organId,
-        code: "OCM_LANDUSE",
-        organId: this.queryCondition.organId,
-      };
-      return this.$api.basics.organDict(data).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data;
-          this.landuseOpt = utils.deepClone(landuseOpt);
-          data.forEach((item) => {
-            this.landuseOpt.push({
-              value: item["value"],
-              label: item["name"],
-            });
-          });
-          this.queryCondition.landuse = "";
+          this.queryCondition.landType = undefined;
         }
       });
     },
@@ -299,8 +277,8 @@ export default {
       this.queryCondition.organId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
-      if (this.landTypeOpt.length === 1) {
-        Promise.all([this.queryLandType(), this.queryLandUseList()]).then(
+      if (this.parkTypeOpt.length === 1) {
+        Promise.all([this.queryLandType()]).then(
           () => {
             this.searchQuery();
           }
@@ -340,10 +318,10 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_EDIT)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_EDIT) || true) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_DELETE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_DELETE) || true) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
@@ -370,13 +348,14 @@ export default {
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `楼盘字典土地信息.xls`;
+        a.download = `楼盘字典车位信息.xls`;
         a.style.display = "none";
         document.body.appendChild(a);
         a.click();
         a.remove();
       });
     },
+    importList () {},
     // 操作事件函数
     operationFun(type, record) {
       console.log("操作事件", type, record);
@@ -385,7 +364,7 @@ export default {
       }
       if (["delete"].includes(type)) {
         this.$SG_Modal.confirm({
-          title: `确定要删除该土地信息吗?`,
+          title: `确定要删除该车位信息吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: () => {
@@ -433,6 +412,9 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
+    },
+    changeChecked (e) {
+      this.queryCondition.isCurrent = Number(e.target.checked)
     },
   },
 };

@@ -21,15 +21,10 @@
               class="mr10">
             <segiIcon type="#icon-ziyuan10" class="mr10" />导出
           </SG-Button>
-          <SG-Button
-              @click="importList"
-              class="mr10">
-            <segiIcon type="#icon-ziyuan10" class="mr10" style="transform: rotate(90deg)" />批量导入
-          </SG-Button>
         </div>
 
         <div style="overflow: visible">
-          <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
+          <a-checkbox :checked="Boolean(queryCondition.onlyCurrentNode)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
             仅当前机构下土地
           </a-checkbox>
           <!-- 公司 -->
@@ -49,23 +44,18 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
-          <!-- 全部土地类型 -->
-          <a-select
-            showSearch
-            placeholder="请选择车场类型"
-            v-model="queryCondition.landType"
-            optionFilterProp="children"
+          <dict-select
             :style="allStyle"
-            :options="$addTitle(parkTypeOpt)"
-            :allowClear="false"
-            :filterOption="filterOption"
-            notFoundContent="没有查询到数据"
+            :dict-options="parkTypeOpt"
+            placeholder="请选择车场类型"
+            menu-code="PARKING_PLACE_RESOURCE_TYPE"
+            v-model="queryCondition.typeId"
           />
           <!-- 资产名称或编码 -->
           <a-input
             :maxLength="30"
             placeholder="车场名称/编码"
-            v-model="queryCondition.queryName"
+            v-model="queryCondition.nameOrCode"
             :style="allStyle"
           />
           <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
@@ -94,10 +84,10 @@
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
-          :pageLength="queryCondition.pageSize"
+          :pageLength="queryCondition.pageLength"
           :totalCount="table.totalCount"
           location="fixed"
-          v-model="queryCondition.pageNum"
+          v-model="queryCondition.pageNo"
           @change="handleChange"
         />
       </div>
@@ -121,9 +111,12 @@ import {
   parkTypeOpt,
 } from "./dict.js";
 import {tablePageList} from './mock'
+import {parkApiList} from "../../../api/building";
+import DictSelect from "../../common/DictSelect";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
+    DictSelect,
     TreeSelect,
     noDataTips,
     segiIcon,
@@ -155,10 +148,10 @@ export default {
       if (
         this.$route.path === "/buildingDict" &&
         this.$route.query.refresh &&
-        this.$route.query.showKey === "land"
+        this.$route.query.showKey === "park"
       ) {
-        this.queryCondition.pageNum = 1;
-        this.queryCondition.pageSize = 10;
+        this.queryCondition.pageNo = 1;
+        this.queryCondition.pageLength = 10;
         this.query();
       }
     },
@@ -168,54 +161,28 @@ export default {
   },
   methods: {
     query() {
-      // let data = {
-      //   ...this.queryCondition,
-      //   communityId: this.queryCondition.communityId.join(","),
-      // };
+      let data = {
+        ...this.queryCondition,
+        communityId: this.queryCondition.communityId.join(","),
+      };
       this.table.loading = true;
-      let res = {...tablePageList}
+      this.$api.building.parkApiList(data).then(({data: res}) => {
+      // let res = {...tablePageList}
       this.table.loading = false;
       if (res.code === "0") {
         let result = res.data.resultList || [];
         let btnArr = this.createOperationBtn();
-        this.table.dataSource = result.map((item) => {
-          return {
-            key: utils.getUuid(),
-            ...item,
-            operationDataBtn: btnArr,
-          };
-        });
-        this.table.totalCount = res.data.paginator.totalCount || 0;
+        this.table.dataSource = result.map((item) => ({key: utils.getUuid(), ...item, operationDataBtn: btnArr}));
+        this.table.totalCount = res.data.Paginator.totalCount || 0;
       } else {
         this.$message.error(res.data.message);
-      }
+      }}
+      )
     },
     // 重置分页查询
     searchQuery() {
-      this.queryCondition.pageNum = 1;
+      this.queryCondition.pageNo = 1;
       this.query();
-    },
-    // 查询土地类别
-    queryLandType() {
-      let data = {
-        code: "PARKING_PLACE_RESOURCE_TYPE"
-      };
-      // this.$api.assets.getList(data) PARKING_PLACE_RESOURCE_TYPE
-      // this.$api.basics.organDict(data)
-      return this.$api.assets.platformDict(data).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data;
-          this.parkTypeOpt = utils.deepClone(parkTypeOpt);
-          data.forEach((item) => {
-            this.parkTypeOpt.push({
-              value: item["value"],
-              label: item["name"],
-              // id: item["dictId"]
-            });
-          });
-          this.queryCondition.landType = "";
-        }
-      });
     },
     queryCommunityListByOrganId() {
       let data = {
@@ -248,15 +215,7 @@ export default {
       this.queryCondition.organId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
-      if (this.parkTypeOpt.length === 1) {
-        Promise.all([this.queryLandType()]).then(
-          () => {
-            this.searchQuery();
-          }
-        );
-      } else {
-        this.searchQuery();
-      }
+      this.searchQuery();
     },
     communityIdSelect(value) {
       this.$nextTick(function () {
@@ -312,14 +271,14 @@ export default {
         ...this.queryCondition,
         communityId: this.queryCondition.communityId.join(","),
       };
-      delete data.pageNum;
-      delete data.pageSize;
+      delete data.pageNo;
+      delete data.pageLength;
       this.$api.building.blankApiExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `楼盘字典土地信息.xls`;
+        a.download = `楼盘字典车场信息.xls`;
         a.style.display = "none";
         document.body.appendChild(a);
         a.click();
@@ -335,15 +294,15 @@ export default {
       }
       if (["delete"].includes(type)) {
         this.$SG_Modal.confirm({
-          title: `确定要删除该土地信息吗?`,
+          title: `确定要删除该车场信息吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: () => {
             let data = {
               organId: this.queryCondition.organId,
-              blankId: record.blankId,
+              placeId: record.placeId,
             };
-            this.$api.building.blankApiDelete(data).then((res) => {
+            this.$api.building.parkApiDelete(data).then((res) => {
               if (res.data.code === "0") {
                 this.$message.success("删除成功!");
                 this.query();
@@ -366,14 +325,14 @@ export default {
       );
       if (["edit", "detail"].includes(type)) {
         Object.assign(query, {
-          blankId: record.blankId,
+          placeId: record.placeId,
         });
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });
     },
     handleChange(data) {
-      this.queryCondition.pageNum = data.pageNo;
-      this.queryCondition.pageSize = data.pageLength;
+      this.queryCondition.pageNo = data.pageNo;
+      this.queryCondition.pageLength = data.pageLength;
       this.query();
     },
     // 搜索
