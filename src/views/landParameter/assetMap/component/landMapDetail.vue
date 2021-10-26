@@ -197,7 +197,7 @@ export default {
   },
   computed: {
     imgSrc () {
-      return this.detailInfo.redMap ? (configs.hostPrime + this.detailInfo.redMap) : ''
+      return this.detailInfo.redMap ? (configs.hostImg + this.detailInfo.redMap) : ''
     }
   },
   filters: {
