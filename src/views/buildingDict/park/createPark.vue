@@ -271,7 +271,7 @@ export default {
         // typeId: '9999', // 车厂类型Id
         // placeAddr: '车厂地址', // 车厂地址
         // carPlaceImg: '', // 车场平面图
-        otherImg: '', // 其它图片
+        otherImg: [], // 其它图片
         // description: '备注', // 备注
         areaArray: [
           // {
@@ -396,9 +396,9 @@ export default {
 
     filterOption(input, option) {
       return (
-          option.componentOptions.children[0].text
-              .toLowerCase()
-              .indexOf(input.toLowerCase()) >= 0
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
       )
     },
     getPopupContainer(e) {
@@ -444,7 +444,7 @@ export default {
         if(err) return
         console.log(values)
         const data = this.beforeSubmit(values)
-        if (this.routeQuery.type === "edit") {
+        if (this.routeQuery.type === "create") {
           this.parkApiInsert(data)
         } else if(this.routeQuery.type === "edit") {
           this.parkApiEdit(data)

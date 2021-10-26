@@ -4,7 +4,7 @@
 <template>
   <div class="landInfo-create-page">
     <div class="create-form">
-      <a-form :form="form" @submit="handleSave" layout="horizontal">
+      <a-form layout="horizontal">
         <!-- 基础信息 -->
         <div class="page-item">
           <div class="mb30">
@@ -14,7 +14,7 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="所属机构"  v-bind="formItemLayout">
-                  {{formInfo.organId}}
+                  {{formInfo.organName}}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -31,7 +31,7 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
-                  {{formInfo.communityId}}
+                  {{formInfo.communityName}}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -49,20 +49,13 @@
               <a-col :span="16">
                 <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
                   <div class="address-box">
-                    {{formInfo.province}}-{{city}}-{{region}}-{{address}}
+                    {{formInfo.placeAddr}}
                   </div>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="经纬度" v-bind="formItemLayout">
-                  {{formInfo.lngAndlat}}
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="8">
                 <a-form-item label="车场类型" v-bind="formItemLayout">
-                  {{formInfo.typeId}}
+                  {{formInfo.typeName}}
                 </a-form-item>
               </a-col>
             </a-row>
@@ -78,19 +71,8 @@
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
-                      :show="true"
-                      v-model="redMap"
-                      :max="1"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="24">
-                <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                      :show="true"
-                      v-model="filePath"
+                    :show="true"
+                    v-model="formInfo.otherImg"
                   />
                 </a-form-item>
               </a-col>
@@ -109,7 +91,7 @@
                           <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
                             <SG-UploadFile
                                 :show="true"
-                                v-model="filePath"
+                                v-model="formInfo.areaArray[index].areaOtherImg"
                             >
                               <span slot="tips"></span>
                             </SG-UploadFile>
@@ -136,62 +118,28 @@ import {areaTitle} from "./dict";
 const operationTypes = {
   index: "/buildingDict",
 }
-const tableDataTemplate = {
-  areaName:'132123', // 名称
-  areaCode:'编码', // 编码
-  areaZone:'1111222', // 面积
-  areaPosiNums: '9999', // 车位数
-  areaParkingImg: '', //
-  areaOtherImg: '', // 图片
-  areaDescription:'描述' // 描述
-}
 export default {
   mixins: [dictMixin],
   data() {
     return {
       areaTitle, // 区域信息表头
       formInfo: { // 表单
-        organId:'9999', // 组织机构ID
-        communityId: '66666', // 项目Id
-        placeName: '111111', // 车场名称
-        placeCode: '车场编码', // 车场编码
-        placeArea: 11111122,// 车场面积
-        placeAreaUnit: '车场面积单位', // 车场面积单位
-        placeNums: 9999, // 车位数量
-        typeId: '9999', // 车厂类型Id
-        placeAddr: '车厂地址', // 车厂地址
+        organId:'', // 组织机构ID
+        communityId: '', // 项目Id
+        placeName: '', // 车场名称
+        placeCode: '', // 车场编码
+        placeArea: 0,// 车场面积
+        placeAreaUnit: '', // 车场面积单位
+        placeNums: 0, // 车位数量
+        typeId: '', // 车厂类型Id
+        placeAddr: '', // 车厂地址
         carPlaceImg: '', // 车场平面图
-        otherImg: '', // 其它图片
-        description: '备注', // 备注
-        areaArray: [{
-          areaName:'132123', // 名称
-          areaCode:'编码', // 编码
-          areaZone:'1111222', // 面积
-          areaPosiNums: '9999', // 车位数
-          areaParkingImg: '', //
-          areaOtherImg: '', // 图片
-          areaDescription:'描述', // 描述
-          key: Math.random()
-        }]
+        otherImg: [], // 其它图片
+        description: '', // 备注
+        areaArray: []
       },
       allStyle: 'width: 100%;',
       typeFilter,
-      region: undefined, // 区/县
-      city: undefined, // 市
-      address: "", // 详细地址
-      provinceOpt: [], // 省
-      cityOpt: [], // 市
-      regionOpt: [], // 区/县
-      point: {
-        // 经纬度
-        lng: "",
-        lat: "",
-      },
-      communityIdOpt: [], // 选择项目
-      landTypeOpt: [], // 房屋类型
-      redMap: [], // 用地红线图
-      encloseWallPic: [], // 围墙图片
-      nowPic: [], // 现状图片
       filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
@@ -245,6 +193,10 @@ export default {
     }
   },
   mounted() {
+    let { organName, organId, type, placeId } = this.$route.query
+    Object.assign(this, {
+      routeQuery: { organName, organId, type, placeId },
+    })
     this.init()
   },
   methods: {
@@ -253,9 +205,48 @@ export default {
     },
     // 初始化
     async init(){
-
+      this.parkApiDetail()
     },
-    /*******************************/
+    /*************接口相关************/
+    afterParkApiDetail (value) {
+      const data = {
+        ...value,
+      }
+      data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
+      // 遍历循环
+      this.formInfo.areaArray = [...data.areaArray]
+      // this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      return {
+        ...data,
+        otherImg: (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      }
+    },
+    // 详情
+    async parkApiDetail() {
+      return new Promise((resolve, reject) => {
+        let data = {
+          placeId: this.routeQuery.placeId,
+          organId: this.routeQuery.organId
+        }
+        this.loading = true
+        this.$api.building.parkApiDetail(data).then(
+            async (res) => {
+              this.loading = false
+              if (res.data.code === "0") {
+                this.formInfo.areaArray=[]
+                this.formInfo = this.afterParkApiDetail(res.data.data)
+              } else {
+                this.$message.error(res.data.message)
+              }
+              resolve()
+            },
+            () => {
+              this.loading = false
+              reject()
+            }
+        )
+      })
+    },
   },
 }
 </script>
