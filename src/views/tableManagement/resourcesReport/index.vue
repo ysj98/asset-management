@@ -65,7 +65,7 @@ const columnsData = [
   { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
   { title: '房屋总面积(㎡)', dataIndex: 'houseTotalArea', width: 150 },
   { title: '已租面积(㎡)', dataIndex: 'rentedArea', width: 150 },
-  { title: '租赁面积(㎡)', dataIndex: 'leaseArea', width: 150 },
+  { title: '待租面积(㎡)', dataIndex: 'leaseArea', width: 150 },
   { title: '自用面积(㎡)', dataIndex: 'oneselfArea', width: 150 },
   { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 150 },
   { title: '销售面积(㎡)', dataIndex: 'sellArea', width: 150 },
