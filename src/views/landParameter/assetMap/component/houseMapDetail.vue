@@ -102,6 +102,7 @@
 
 <script>
 import Tools from '@/utils/utils'
+import configs from '@/config/config.base.js'
 const columns = [
   {
     title: "资产数量(个)",
