@@ -107,7 +107,7 @@
                       :precision="1"
                       step="1"
                       :style="allWidth"
-                      v-decorator="['placeNums', {rules: [{required: true, message: '请输入车位数量'}]}]"
+                      v-decorator="['placeNums', {rules: [{required: true,pattern: new RegExp(/^[0-9]\d*$/,'g'), message: '请输入车位数量,并且是正整数'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -502,7 +502,8 @@ export default {
     parkApiEdit (data) {
       // parkApiEdit
       const params = {
-        ...data
+        ...data,
+        placeId: this.routeQuery.placeId
       }
       let loadingName = this.SG_Loding("编辑中...")
       this.$api.building.parkApiEdit(params).then(

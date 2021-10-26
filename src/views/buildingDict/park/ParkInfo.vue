@@ -344,7 +344,7 @@ export default {
       );
     },
     changeChecked (e) {
-      this.queryCondition.isCurrent = Number(e.target.checked)
+      this.queryCondition.onlyCurrentNode = Number(e.target.checked)
     },
   },
 };
