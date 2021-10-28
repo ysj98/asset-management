@@ -626,3 +626,43 @@ export function looseEqual (a, b) {
     return false
   }
 }
+
+/*
+* 获取一个数组内 某些属性重复的元素 放到一个集合中 返回一个数组
+* @getStrFn 根据 指定属性判断重复 组合得到的字符串当作key来判断
+* */
+export function getArrayRepeat(arr,getStrFn){
+  if (!arr || !arr.length){
+    return []
+  }
+  let resMap = new Map()
+  let resArr = []
+  for (let i = 0; i < arr.length; i++){
+    let keyStr = getStrFn(arr[i],i,arr)
+    if (resMap.has(keyStr)){
+      resMap.get(keyStr).push(arr[i])
+    }else {
+      resMap.set(keyStr, [arr[i]])
+    }
+  }
+  resMap.forEach(ele=>{
+    resArr.push(ele)
+  })
+  return resArr
+}
+
+/*
+ * 值 与 文字 转换
+ * @param value 匹配所需的值 内容可能是 title 也可能是 value
+ * @param list  指定集合匹配使用
+ * @param keyWord ['title','value'] 匹配的关键key 数组，第一个：匹配所用的keyWord，第二个是匹配结果的keyWord
+ * @return value || null 匹配得到的 value 或者 title，匹配不到则返回 null
+ * */
+export function handleEnumerationConversion(value, list, keyWord = ['title', 'value']) {
+  if (!value || !list) {
+    console.trace()
+    throw new Error('缺少入参')
+  }
+  const result = list.filter(ele => ele[keyWord[0]] === value)[0]
+  return result ? result[keyWord[1]] : null
+}
