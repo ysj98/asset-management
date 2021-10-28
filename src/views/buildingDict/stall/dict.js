@@ -23,7 +23,10 @@ export const allWidth = {
 export const queryCondition = {
   organId: "", // 机构id
   communityId: [''], // 运营项目
-  objType: undefined, // 车场类型
+  objType: '', // 车场类型
+  parkingPlaceStr: '',
+  parkingAreaId: '', // 区域
+  objStatus: '',
   placeId: '', // 车场Id
   pageNo: 1,
   pageLength: 10,
@@ -45,11 +48,20 @@ export const carTypeMenu = {
   PROPERTY_PARKING_OBJ_STATUS: 'PROPERTY_PARKING_OBJ_STATUS', // 产权
   PARKING_OBJ_STATUS: 'PARKING_OBJ_STATUS' // 临时/固定
 }
+export const carTypeOptions = [
+  {label:'全部车位类型',value: ''}
+]
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
 ]
 export const parkTypeOpt = [
-  { label: "全部车场类型", value: "" },
+  { label: "全部车场", value: "" },
+]
+export const carStatusOpt = [
+  { label: "全部状态", value: "" },
+]
+export const parkAreaOpt = [
+  { label: "全部区域", value: "" },
 ]
 export const columns = [
   {

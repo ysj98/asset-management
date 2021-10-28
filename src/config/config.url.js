@@ -574,7 +574,7 @@ export const building = {
   // 车位 详情
   stallApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceApiController/parkingPlaceDetail.json',
   // 车位 导出
-  stallApiExport: '/car-batch/rest-api/v1/parkingPlaceBatchApiController/downloadParkingData'
+  stallApiExport: '/car-batch/rest-api/v1/parkingBatchApiController/downloadParkingData'
 }
 
 // 权属概况

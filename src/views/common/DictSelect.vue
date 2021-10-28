@@ -74,8 +74,9 @@ export default {
       this.$emit('change',value,obj)
     },
     async getOptions(){
+
+      this.options = utils.deepClone(this.dictOptions || [])
       if (!this.menuCode) {
-        this.options = utils.deepClone(this.dictOptions)
         return
       }
       this.options = await this.getPlatformDict(this.menuCode)

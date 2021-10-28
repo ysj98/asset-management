@@ -43,16 +43,18 @@
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"
             />
-            <!-- 全部土地类型 -->
+            <!-- 车场 -->
             <a-select
                 showSearch
                 placeholder="请选择车场"
                 v-model="queryCondition.placeId"
                 optionFilterProp="children"
                 :style="allStyle"
-                :options="$addTitle(parkTypeOpt)"
+                :options="parkTypeOpt"
                 :allowClear="false"
                 :filterOption="filterOption"
+                @search="handleSearch"
+                @change="handleParkChange"
                 notFoundContent="没有查询到数据"
             />
             <!-- 资产名称或编码 -->
@@ -68,25 +70,28 @@
       </div>
       <div slot="contentForm">
         <div class="top-search-one" style="padding: 0;">
-          <div style="overflow: visible;margin-top:-10px;width: 1130px;">
+          <div style="overflow: visible;margin-top:-10px;width: 1345px;">
             <!-- 全部土地类型 -->
             <dict-select
                 :style="allStyle"
                 placeholder="请选择车位类型"
+                :dict-options="carTypeOptions"
                 v-model="queryCondition.objType"
-                menu-code="PARKING_OBJ_STATUS"
+                menu-code="PARKING_OBJ_TYPE"
+                @change="handleCarTypeChange"
             />
             <dict-select
                 :style="allStyle"
                 placeholder="请选择车位状态"
+                :dict-options="carStatusOpt"
                 v-model="queryCondition.objStatus"
-                menu-code="PROPERTY_PARKING_OBJ_STATUS"
+                :menu-code="carType"
             />
-            <dict-select
-                :style="allStyle"
-                placeholder="请选择区域"
-                v-model="queryCondition.landType"
-                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+            <a-select
+                :style="allWidth"
+                :options="$addTitle(parkAreaOpt)"
+                :default-active-first-option="false"
+                v-model="queryCondition.parkingAreaId"
             />
           </div>
         </div>
@@ -144,6 +149,8 @@ import {
   queryCondition,
   communityIdOpt,
   parkTypeOpt,
+  carTypeOptions,
+  carTypeMenu, parkAreaOpt,carStatusOpt
 } from "./dict.js";
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
@@ -162,12 +169,17 @@ export default {
     return {
       typeFilter,
       ASSET_MANAGEMENT,
+      carTypeOptions,
+      carTypeMenu,
+      carStatusOpt,
+      carType: '',
       hasPowerExport: false, // 导出按钮权限
       allStyle,
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
       communityIdOpt: utils.deepClone(communityIdOpt),
-      parkTypeOpt: utils.deepClone(parkTypeOpt),
+      parkTypeOpt: utils.deepClone(parkTypeOpt), // 车场
+      parkAreaOpt: utils.deepClone(parkAreaOpt), // 区域
       table: {
         columns,
         dataSource: [],
@@ -202,7 +214,6 @@ export default {
         ...this.queryCondition,
         communityId: this.queryCondition.communityId.join(","),
       };
-      delete data.isOnlyCurrent
       this.table.loading = true;
       this.$api.building.stallApiPageList(data).then(({data: res}) => {
       this.table.loading = false;
@@ -216,7 +227,7 @@ export default {
               operationDataBtn: btnArr,
             };
           });
-          this.table.totalCount = res.data.paginator.totalCount || 0;
+          this.table.totalCount = res.data.Paginator.totalCount || 0;
         } else {
           this.$message.error(res.data.message);
           this.table.loading = false;
@@ -228,7 +239,7 @@ export default {
       this.queryCondition.pageNo = 1;
       this.query();
     },
-    // 查询土地类别
+    // 查询项目
     queryCommunityListByOrganId() {
       let data = {
         organId: this.queryCondition.organId,
@@ -261,6 +272,7 @@ export default {
       this.queryCommunityListByOrganId();
       // 异步接口
       this.searchQuery();
+      this.parkApiList();
 
     },
     communityIdSelect(value) {
@@ -313,6 +325,10 @@ export default {
       }
     },
     exportList() {
+      if(!this.queryCondition.organId) {
+        this.$message.warn("请选择组织机构")
+        return
+      }
       let data = {
         ...this.queryCondition,
         communityId: this.queryCondition.communityId.join(","),
@@ -393,6 +409,75 @@ export default {
     },
     changeChecked (e) {
       this.queryCondition.isOnlyCurrent = Number(e.target.checked)
+    },
+    /* ******************************************************** */
+    // 车场搜索
+    handleSearch (key) {
+      this.parkApiList({nameOrCode: key})
+    },
+    // 查询 车场列表
+    parkApiList(data) {
+      if(!this.queryCondition.organId) {
+        this.$message.error('请选择所属机构');
+        return
+      }
+      this.parkTypeOpt = utils.deepClone(parkTypeOpt)
+      const params = {
+        ...data,
+        organId:  this.queryCondition.organId,
+        pageNo: 1,
+        pageLength:20
+      }
+      this.$api.building.parkApiList(params).then(({data: res}) => {
+        if (res.code === "0") {
+          let result = res.data.resultList || [];
+          this.parkTypeOpt = result.map(item=>({value: item.placeId, label: item.placeName}))
+          this.parkTypeOpt.unshift(...parkTypeOpt)
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
+    // 查询 区域
+    parkAreaApiList (data) {
+      this.$api.building.parkApiDetail(data).then((res) => {
+        this.loading = false
+        if (res.data.code === "0") {
+          this.parkAreaOpt = (res.data.data.areaArray || []).map(item=>({value:item.parkingAreaId, label:item.areaName}))
+          this.parkAreaOpt.unshift(...parkAreaOpt)
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 车场 变化查询区域
+    handleParkChange (ev) {
+      this.queryCondition.parkingAreaId = ''
+      this.parkAreaOpt = utils.deepClone(parkAreaOpt)
+      if (!ev) return
+      const params = {
+        placeId: ev,
+        organId: this.queryCondition.organId
+      }
+      this.parkAreaApiList(params)
+    },
+    handleCarTypeChange (ev) {
+      this.queryCondition.objStatus = ''
+      this.checkCarType(ev)
+    },
+    checkCarType(ev) {
+      switch (String(ev)) {
+        case '0': // 临时
+        case '1': // 固定
+          this.carType = this.carTypeMenu.PARKING_OBJ_STATUS
+          break;
+        case' 2': // 产权
+          this.carType = this.carTypeMenu.PROPERTY_PARKING_OBJ_STATUS
+          break;
+        default:
+          this.carType = undefined
+          return;
+      }
     },
   },
 };

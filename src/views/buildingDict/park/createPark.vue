@@ -365,7 +365,7 @@ export default {
             }
         )
         this.queryCommunityListByOrganId(organTopId)
-        this.form.resetFields(['communityId', 'typeId', 'landuseType', 'landuse'])
+        this.form.resetFields(['communityId'])
       }
     },
     // 取消

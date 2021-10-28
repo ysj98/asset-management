@@ -179,7 +179,7 @@ export default {
               operationDataBtn: btnArr,
             };
           });
-          this.table.totalCount = res.data.paginator.totalCount || 0;
+          this.table.totalCount = res.data.Paginator.totalCount || 0;
         } else {
           this.$message.error(res.data.message);
           this.table.loading = false;

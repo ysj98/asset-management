@@ -213,5 +213,7 @@ export function stallApiDelete (data) {
 }
 // 车位 导出
 export function stallApiExport (data) {
-  return axiosPost(building.stallApiExport, data)
+  return axiosPost(building.stallApiExport, data,false, false, {
+    responseType: 'blob'
+  })
 }

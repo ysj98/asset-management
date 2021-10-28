@@ -301,6 +301,7 @@ export default {
       this.organId = value
       this.organName = title
       this.parkApiList({organId: value})
+      this.placeAreaArr = [] // 清空区域
       this.form.resetFields(['placeId','parkingAreaId'])
     },
     beforeSubmit (value) {
@@ -332,7 +333,7 @@ export default {
     handleSearch (key) {
       this.parkApiList({nameOrCode: key})
     },
-    // 车场 变化查询车位
+    // 车场 变化查询区域
     handleParkChange (ev) {
       const params = {
         placeId: ev,
