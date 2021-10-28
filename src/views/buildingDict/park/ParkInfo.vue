@@ -25,7 +25,7 @@
 
         <div style="overflow: visible">
           <a-checkbox :checked="Boolean(queryCondition.onlyCurrentNode)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-            仅当前机构下土地
+            仅当前机构下车场
           </a-checkbox>
           <!-- 公司 -->
           <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
@@ -168,16 +168,23 @@ export default {
       this.table.loading = true;
       this.$api.building.parkApiList(data).then(({data: res}) => {
       // let res = {...tablePageList}
-      this.table.loading = false;
-      if (res.code === "0") {
-        let result = res.data.resultList || [];
-        let btnArr = this.createOperationBtn();
-        this.table.dataSource = result.map((item) => ({key: utils.getUuid(), ...item, operationDataBtn: btnArr}));
-        this.table.totalCount = res.data.Paginator.totalCount || 0;
-      } else {
-        this.$message.error(res.data.message);
-      }}
-      )
+        this.table.loading = false;
+        if (res.code === "0") {
+          let result = res.data.resultList || [];
+          let btnArr = this.createOperationBtn();
+          this.table.dataSource = result.map((item) => {
+            return {
+              key: utils.getUuid(),
+              ...item,
+              operationDataBtn: btnArr,
+            };
+          });
+          this.table.totalCount = res.data.paginator.totalCount || 0;
+        } else {
+          this.$message.error(res.data.message);
+          this.table.loading = false;
+        }
+      })
     },
     // 重置分页查询
     searchQuery() {

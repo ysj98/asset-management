@@ -23,6 +23,9 @@
             </SG-Button>
           </div>
           <div style="overflow: visible;margin-top:-10px;">
+            <a-checkbox :checked="Boolean(queryCondition.isOnlyCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
+              仅当前机构下车位
+            </a-checkbox>
             <!-- 公司 -->
             <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
             <!-- 全部运营项目-->
@@ -44,7 +47,7 @@
             <a-select
                 showSearch
                 placeholder="请选择车场"
-                v-model="queryCondition.landType"
+                v-model="queryCondition.placeId"
                 optionFilterProp="children"
                 :style="allStyle"
                 :options="$addTitle(parkTypeOpt)"
@@ -56,35 +59,32 @@
             <a-input
                 :maxLength="30"
                 placeholder="车位名称/编码"
-                v-model="queryCondition.queryName"
+                v-model="queryCondition.parkingPlaceStr"
                 :style="allStyle"
             />
-            <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-              仅当前机构下土地
-            </a-checkbox>
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
           </div>
         </div>
       </div>
       <div slot="contentForm">
         <div class="top-search-one" style="padding: 0;">
-          <div style="overflow: visible;margin-top:-10px;width: 950px;">
+          <div style="overflow: visible;margin-top:-10px;width: 1130px;">
             <!-- 全部土地类型 -->
             <dict-select
                 :style="allStyle"
-                placeholder="请选择车场"
-                v-model="queryCondition.landType"
-                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+                placeholder="请选择车位类型"
+                v-model="queryCondition.objType"
+                menu-code="PARKING_OBJ_STATUS"
             />
             <dict-select
                 :style="allStyle"
-                placeholder="请选择车场"
-                v-model="queryCondition.landType"
-                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+                placeholder="请选择车位状态"
+                v-model="queryCondition.objStatus"
+                menu-code="PROPERTY_PARKING_OBJ_STATUS"
             />
             <dict-select
                 :style="allStyle"
-                placeholder="请选择车场"
+                placeholder="请选择区域"
                 v-model="queryCondition.landType"
                 menu-code="PARKING_PLACE_RESOURCE_TYPE"
             />
@@ -121,7 +121,7 @@
           :pageLength="queryCondition.pageSize"
           :totalCount="table.totalCount"
           location="fixed"
-          v-model="queryCondition.pageNum"
+          v-model="queryCondition.pageNo"
           @change="handleChange"
         />
       </div>
@@ -147,6 +147,7 @@ import {
 } from "./dict.js";
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
+import {stallApiDelete, stallApiExport, stallApiPageList} from "../../../api/building";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
@@ -184,10 +185,10 @@ export default {
       if (
         this.$route.path === "/buildingDict" &&
         this.$route.query.refresh &&
-        this.$route.query.showKey === "land"
+        this.$route.query.showKey === "stall"
       ) {
-        this.queryCondition.pageNum = 1;
-        this.queryCondition.pageSize = 10;
+        this.queryCondition.pageNo = 1;
+        this.queryCondition.pageLength = 10;
         this.query();
       }
     },
@@ -197,55 +198,37 @@ export default {
   },
   methods: {
     query() {
-      // let data = {
-      //   ...this.queryCondition,
-      //   communityId: this.queryCondition.communityId.join(","),
-      // };
+      let data = {
+        ...this.queryCondition,
+        communityId: this.queryCondition.communityId.join(","),
+      };
+      delete data.isOnlyCurrent
       this.table.loading = true;
-      let res = {...tablePageList}
+      this.$api.building.stallApiPageList(data).then(({data: res}) => {
       this.table.loading = false;
-      if (res.code === "0") {
-        let result = res.data.resultList || [];
-        let btnArr = this.createOperationBtn();
-        this.table.dataSource = result.map((item) => {
-          return {
-            key: utils.getUuid(),
-            ...item,
-            operationDataBtn: btnArr,
-          };
-        });
-        this.table.totalCount = res.data.paginator.totalCount || 0;
-      } else {
-        this.$message.error(res.data.message);
-      }
+        if (res.code === "0") {
+          let result = res.data.resultList || [];
+          let btnArr = this.createOperationBtn();
+          this.table.dataSource = result.map((item) => {
+            return {
+              key: utils.getUuid(),
+              ...item,
+              operationDataBtn: btnArr,
+            };
+          });
+          this.table.totalCount = res.data.paginator.totalCount || 0;
+        } else {
+          this.$message.error(res.data.message);
+          this.table.loading = false;
+        }
+      })
     },
     // 重置分页查询
     searchQuery() {
-      this.queryCondition.pageNum = 1;
+      this.queryCondition.pageNo = 1;
       this.query();
     },
     // 查询土地类别
-    queryLandType() {
-      let data = {
-        code: "PARKING_PLACE_RESOURCE_TYPE"
-      };
-      // this.$api.assets.getList(data) PARKING_PLACE_RESOURCE_TYPE
-      // this.$api.basics.organDict(data)
-      return this.$api.assets.platformDict(data).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data;
-          this.parkTypeOpt = utils.deepClone(parkTypeOpt);
-          data.forEach((item) => {
-            this.parkTypeOpt.push({
-              value: item["value"],
-              label: item["name"],
-              // id: item["dictId"]
-            });
-          });
-          this.queryCondition.landType = undefined;
-        }
-      });
-    },
     queryCommunityListByOrganId() {
       let data = {
         organId: this.queryCondition.organId,
@@ -277,15 +260,8 @@ export default {
       this.queryCondition.organId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
-      if (this.parkTypeOpt.length === 1) {
-        Promise.all([this.queryLandType()]).then(
-          () => {
-            this.searchQuery();
-          }
-        );
-      } else {
-        this.searchQuery();
-      }
+      this.searchQuery();
+
     },
     communityIdSelect(value) {
       this.$nextTick(function () {
@@ -341,9 +317,9 @@ export default {
         ...this.queryCondition,
         communityId: this.queryCondition.communityId.join(","),
       };
-      delete data.pageNum;
-      delete data.pageSize;
-      this.$api.building.blankApiExport(data).then((res) => {
+      delete data.pageNo;
+      delete data.pageLength;
+      this.$api.building.stallApiExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
@@ -370,9 +346,10 @@ export default {
           onOk: () => {
             let data = {
               organId: this.queryCondition.organId,
-              blankId: record.blankId,
+              placeId: record.placeId,
+              parkingId: record.parkingId
             };
-            this.$api.building.blankApiDelete(data).then((res) => {
+            this.$api.building.stallApiDelete(data).then((res) => {
               if (res.data.code === "0") {
                 this.$message.success("删除成功!");
                 this.query();
@@ -395,14 +372,15 @@ export default {
       );
       if (["edit", "detail"].includes(type)) {
         Object.assign(query, {
-          blankId: record.blankId,
+          placeId: record.placeId,
+          parkingId: record.parkingId
         });
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });
     },
     handleChange(data) {
-      this.queryCondition.pageNum = data.pageNo;
-      this.queryCondition.pageSize = data.pageLength;
+      this.queryCondition.pageNo = data.pageNo;
+      this.queryCondition.pageLength = data.pageLength;
       this.query();
     },
     // 搜索
@@ -414,7 +392,7 @@ export default {
       );
     },
     changeChecked (e) {
-      this.queryCondition.isCurrent = Number(e.target.checked)
+      this.queryCondition.isOnlyCurrent = Number(e.target.checked)
     },
   },
 };

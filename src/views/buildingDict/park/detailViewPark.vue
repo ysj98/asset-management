@@ -63,7 +63,9 @@
               <a-col :span="24">
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
-                  {{formInfo.description}}
+                  <div class="text-box">
+                    {{formInfo.description}}
+                  </div>
                 </a-form-item>
               </a-col>
             </a-row>

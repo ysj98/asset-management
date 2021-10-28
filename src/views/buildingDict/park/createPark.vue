@@ -408,7 +408,12 @@ export default {
     async init(){
       // this.form.setFieldsValue(this.formInfo)
       if (this.routeQuery.type === "edit") {
-        await this.parkApiDetail()
+        let loadingName = this.SG_Loding("加载中...")
+        try {
+          await this.parkApiDetail()
+        } finally {
+          this.DE_Loding(loadingName)
+        }
       }
       this.queryProvinceList()
     },
@@ -568,5 +573,17 @@ export default {
   overflow: hidden;
   overflow-y: auto;
   height: 100%;
+}
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+}
+.text-box {
+  white-space: pre-line;
+  word-break: break-all;
+  word-wrap: break-word;
+  padding-top: 10px;
+  line-height: 16px;
 }
 </style>

@@ -44,6 +44,17 @@ export default {
     event: 'modelEvent',
     prop: 'value'
   },
+  watch: {
+    menuCode: {
+      deep: true,
+      immediate: true,
+      handler: function () {
+        this.$nextTick(()=>{
+          this.getOptions()
+        })
+      }
+    }
+  },
   data: () => ({
     options: [],
   }),

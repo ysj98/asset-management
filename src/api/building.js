@@ -191,3 +191,27 @@ export function parkApiEdit (data) {
 export function parkApiDelete (data) {
   return axiosPost(building.parkApiDelete, data)
 }
+// 车位 列表查询
+export function stallApiPageList (data) {
+  return axiosPost(building.stallApiPageList, data)
+}
+// 车位 详情
+export function stallApiDetail (data) {
+  return axiosGet(building.stallApiDetail, {...data})
+}
+// 车位 新增
+export function stallApiInsert (data) {
+  return axiosPost(building.stallApiInsert, data)
+}
+// 车位 编辑
+export function stallApiEdit (data) {
+  return axiosPost(building.stallApiEdit, data)
+}
+// 车位 删除
+export function stallApiDelete (data) {
+  return axiosGet(building.stallApiDelete, data)
+}
+// 车位 导出
+export function stallApiExport (data) {
+  return axiosPost(building.stallApiExport, data)
+}

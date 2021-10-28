@@ -20,7 +20,7 @@
                       :typeFilter="typeFilter"
                       @changeTree="changeTree"
                       placeholder='请选择所属机构'
-                      :defaultOrganName="formInfo.organId"
+                      :defaultOrganName="organName"
                       :style="allStyle"
                       :allowClear="false"
                       v-decorator="['organId',{initialValue: ''|| undefined, rules: [{ required: true, message: '请选择所属机构' }]}]"
@@ -30,21 +30,14 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车场名称" :required="true" v-bind="formItemLayout">
-                  <a-input
-                      :style="allWidth"
-                      :maxLength="30"
-                      v-decorator="[
-                      'placeId',
-                      {
-                        rules: [
-                          {
-                            required: true,
-                            whitespace: true,
-                            message: '请输入车场名称',
-                          },
-                        ],
-                      },
-                    ]"
+                  <a-select
+                    show-search
+                    :style="allWidth"
+                    @search="handleSearch"
+                    @change="handleParkChange"
+                    :options="$addTitle(placeArr)"
+                    :default-active-first-option="false"
+                    v-decorator="[ 'placeId',{ rules: [{required: true, message: '请选择车场名称'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -52,15 +45,8 @@
                 <a-form-item label="区域名称" v-bind="formItemLayout">
                   <a-select
                       :style="allWidth"
-                      :getPopupContainer="getPopupContainer"
-                      @change="communityIdChange"
-                      placeholder="请选择区域名称"
-                      showSearch
-                      optionFilterProp="children"
-                      :options="$addTitle(communityIdOpt)"
-                      :allowClear="false"
-                      :filterOption="filterOption"
-                      notFoundContent="没有查询到数据"
+                      :options="$addTitle(placeAreaArr)"
+                      :default-active-first-option="false"
                       v-decorator="['parkingAreaId',{rules:[{required:true, message: '请选择区域名称'}]}]"
                   />
                 </a-form-item>
@@ -72,7 +58,7 @@
                   <a-input
                       :style="allWidth"
                       :maxLength="30"
-                      v-decorator="['name', { rules: [{ required: true, whitespace: true, message: '请输入土地名称'}]}]"
+                      v-decorator="['name', { rules: [{ required: true, whitespace: true, message: '请输入车位名称'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -81,7 +67,7 @@
                   <a-input
                       :style="allWidth"
                       :maxLength="30"
-                      v-decorator="['code', {initialValue: '' || undefined, rules: [{ required: true, whitespace: true, message: '请输入土地名称'}]}]"
+                      v-decorator="['code', {initialValue: '', rules: [{ required: true, whitespace: true, message: '请输入车位编码'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -97,10 +83,11 @@
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="8">
+              <a-col :span="8" v-if="routeQuery.type !== 'edit'" >
                 <a-form-item label="车位用途" v-bind="formItemLayout">
                   <dict-select
                     :style="allWidth"
+                    :dict-options="parkingUsageOption"
                     v-decorator="['parkingUsage',{initialValue: ''|| undefined ,rules: [{ required: true, message: '请选择车位用途' }]}]"
                   />
                 </a-form-item>
@@ -109,15 +96,18 @@
                 <a-form-item label="车位类型" v-bind="formItemLayout">
                   <dict-select
                     :style="allWidth"
+                    menu-code="PARKING_OBJ_TYPE"
+                    @change="handleCarTypeChange"
                     v-decorator="['objType',{initialValue: ''|| undefined ,rules: [{ required: true, message: '请选择车位类型' }]}]"
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+              <a-col :span="8" v-if="carType">
                 <a-form-item label="车位状态" v-bind="formItemLayout">
                   <dict-select
                     :style="allWidth"
-                    v-decorator="['objStatus',{initialValue: '' || undefined, rules: [{ required: true, message: '请选择车位状态' }]}]"
+                    :menu-code="carType"
+                    v-decorator="['objStatus',{initialValue: formInfo.objStatus, rules: [{ required: true, message: '请选择车位状态' }]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -171,20 +161,8 @@
                   <SG-UploadFile
                       :customDownload="customDownload"
                       :customUpload="customUpload"
-                      v-model="redMap"
-                      :max="1"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="24">
-                <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
-                      type="all"
-                      v-model="filePath"
+                      v-model="formInfo.parkingImg"
+                      :max="5"
                   />
                 </a-form-item>
               </a-col>
@@ -205,8 +183,9 @@ import dictMixin from "../dictMixin.js"
 import TreeSelect from "@/views/common/treeSelect";
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
-import { parkTypeOpt} from "./dict";
+import {carTypeMenu, parkingUsageOption, parkTypeOpt} from "./dict";
 import DictSelect from "../../common/DictSelect";
+import {stallApiDetail} from "../../../api/building";
 
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
@@ -224,13 +203,18 @@ export default {
   mixins: [dictMixin],
   data() {
     return {
+      parkingUsageOption,
       parkTypeOpt, // 全部车场
+      carTypeMenu, // 车位类型列表
+      carType: undefined, // 车位类型
+      organId: '',
+      organName: '',
       formInfo: { // 表单
         organId: '', // '机构Id',
         placeId: '', // '车场Id',
         name: '', // '车位名称',
         code: '', // '车位编码',
-        deliverDate: '2020-09-09',
+        deliverDate: '',
         objType: '', // '车位类型',
         objStatus: '', // '车位状态',
         parkingUsage: '', //'车位用途',
@@ -238,25 +222,23 @@ export default {
         useArea: '', // 使用面积
         shareArea: '',//'公摊面积',
         propertyArea: '',// '产权面积',
-        parkingImg: '车位图片',
-        description: '备注',
-        parkingAreaUnits: '面积单位'
+        parkingImg: [],
+        description: '',// '备注',
+        // parkingAreaUnits: '' // '面积单位'
       },
+      placeArr: [], // 车场列表
+      placeAreaArr: [], // 区域列表
       allStyle: 'width: 100%;',
       typeFilter,
       allWidth,
       allWidth1,
       allWidth2,
       communityIdOpt: [], // 选择项目
-      landTypeOpt: [], // 房屋类型
-      redMap: [], // 用地红线图
-      encloseWallPic: [], // 围墙图片
-      nowPic: [], // 现状图片
-      filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
         type: "create", // 页面类型
-        blankId: "",
+        placeId: "", // 车场Id
+        parkingId: '', // 车位Id
         organName: "",
         organId: "",
       },
@@ -308,38 +290,76 @@ export default {
     window.fff = this.form
   },
   mounted() {
-    let { organName, organId, type, blankId } = this.$route.query
+    let { organName, organId, type, placeId, parkingId } = this.$route.query
     Object.assign(this, {
-      routeQuery: { organName, organId, type, blankId },
+      routeQuery: { organName, organId, type, placeId, parkingId },
     })
     this.init()
   },
   methods: {
-    async changeTree(value){
-      if (value) {
-        this.initPreData();
-        let {organId:organTopId} = await queryTopOrganByOrganID(
-            {
-              nOrgId: value,
-              nOrganId: value,
-            }
-        )
-        this.queryCommunityListByOrganId(organTopId)
-        this.form.resetFields(['communityId', 'landType', 'landuseType', 'landuse'])
+    async changeTree(value, title){
+      this.organId = value
+      this.organName = title
+      this.parkApiList({organId: value})
+      this.form.resetFields(['placeId','parkingAreaId'])
+    },
+    beforeSubmit (value) {
+      return {
+        ...value,
+        parkingImg:this.formInfo.parkingImg.map(node=>node.url).join(','),
       }
     },
     // 确定
-    handleSave() {
+    handleSave () {
       this.form.validateFields((err, values) => {
+        if (err) {
+          return
+        }
         console.log(values)
+        const data = this.beforeSubmit(values)
+        if (this.routeQuery.type === "create") {
+          this.stallApiInsert(data)
+        } else if(this.routeQuery.type === "edit") {
+          this.stallApiEdit(data)
+        }
       })
     },
     // 取消
-    handleCancel() {
-      this.$router.push({ path: "/buildingDict", query: { showKey: "land" } })
+    handleCancel () {
+      this.$router.push({ path: "/buildingDict", query: { showKey: "stall" } })
     },
-    // 请求土地详情
-    async blankApiDetail() {
+    // 车场搜索
+    handleSearch (key) {
+      this.parkApiList({nameOrCode: key})
+    },
+    // 车场 变化查询车位
+    handleParkChange (ev) {
+      const params = {
+        placeId: ev,
+        organId: this.organId
+      }
+      this.form.resetFields(['parkingAreaId'])
+      this.parkAreaApiList(params)
+    },
+    // 车位类型变化
+    handleCarTypeChange (ev) {
+      this.form.resetFields(['objStatus'])
+      this.formInfo.objStatus = ''
+      this.checkCarType(ev)
+    },
+    checkCarType(ev) {
+      switch (Number(ev)) {
+        case 0: // 临时
+        case 1: // 固定
+          this.carType = this.carTypeMenu.PARKING_OBJ_STATUS
+          break;
+        case 2: // 产权
+          this.carType = this.carTypeMenu.PROPERTY_PARKING_OBJ_STATUS
+          break;
+        default:
+          this.carType = undefined
+          return;
+      }
     },
     // 请求项目
     queryCommunityListByOrganId(organTopId) {
@@ -360,15 +380,6 @@ export default {
         }
       })
     },
-    // 选择项目变化
-    communityIdChange(e) {},
-    filterOption(input, option) {
-      return (
-          option.componentOptions.children[0].text
-              .toLowerCase()
-              .indexOf(input.toLowerCase()) >= 0
-      )
-    },
     getPopupContainer(e) {
       return e.parentElement
     },
@@ -380,10 +391,134 @@ export default {
       this.$nextTick(() => {
         this.form.setFieldsValue(this.formInfo)
       })
-      // if (this.routeQuery.type === "edit") {
-      //   await this.blankApiDetail()
-      //   this.initPreData()
-      // }
+      if (this.routeQuery.type === "edit") {
+        await this.stallApiDetail({placeId: this.routeQuery.placeId, parkingId: this.routeQuery.parkingId})
+      }
+    },
+    /* *****************接口相关**************** */
+    // 查询 车场列表
+    parkApiList(data) {
+      if(!this.organId) {
+        this.$message.error('请选择所属机构');
+        return
+      }
+      this.placeArr = []
+      const params = {
+        ...data,
+        organId:  this.organId,
+        pageNo: 1,
+        pageLength:20
+      }
+      this.$api.building.parkApiList(params).then(({data: res}) => {
+        if (res.code === "0") {
+          let result = res.data.resultList || [];
+          this.placeArr = result.map(item=>({value: item.placeId, label: item.placeName}))
+        } else {
+          this.$message.error(res.data.message);
+        }
+      })
+    },
+    // 查询 区域
+    parkAreaApiList (data) {
+      this.placeAreaArr = []
+        this.$api.building.parkApiDetail(data).then((res) => {
+          this.loading = false
+          if (res.data.code === "0") {
+            this.formInfo.areaArray=[]
+            this.placeAreaArr = (res.data.data.areaArray || []).map(item=>({value:item.parkingAreaId, label:item.areaName}))
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+    },
+    // 查询 车位详情
+    async stallApiDetail (data) {
+      const params = {
+        ...data
+      }
+      let loadingName = this.SG_Loding("加载中...")
+      try {
+        const {data:res} = await stallApiDetail(params)
+        if(res.code === '0') {
+          this.form.setFieldsValue(this.afterStallApiList(res.data))
+        }
+      } finally {
+        this.DE_Loding(loadingName)
+      }
+    },
+    afterStallApiList (data) {
+      this.formInfo.parkingImg = (data.parkingImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      this.placeArr = [{
+        label: data.placeName,
+        value: data.placeId
+      }]
+      this.placeAreaArr =[{
+        label: data.parkingAreaName,
+        value: data.parkingAreaId
+      }]
+      this.organName = data.organName
+      this.organId = data.organId
+      this.formInfo.objStatus = data.objStatus
+      this.checkCarType(data.objType)
+      return {
+        ...data,
+        organId: data.organId,
+        parkingAreaId: data.parkingAreaId,
+        placeId: data.placeId
+      }
+    },
+    stallApiInsert (data) {
+      const params = {
+        ...data
+      }
+      let loadingName = this.SG_Loding("新增中...")
+      this.$api.building.stallApiInsert(params).then(
+          (res) => {
+            this.DE_Loding(loadingName).then(() => {
+              if (res.data.code === "0") {
+                this.$SG_Message.success("新增车位成功")
+                this.$router.push({
+                  path: "/buildingDict",
+                  query: { showKey: "stall", refresh: true },
+                })
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          },
+          () => {
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.error("新增失败！")
+            })
+          }
+      )
+    },
+    stallApiEdit (data) {
+      const params = {
+        ...data,
+        parkingId: this.routeQuery.parkingId
+      }
+      let loadingName = this.SG_Loding("编辑中...")
+      this.$api.building.stallApiEdit(params).then(
+          (res) => {
+            this.DE_Loding(loadingName).then(() => {
+              if (res.data.code === "0") {
+                this.$SG_Message.success("编辑车位成功")
+                this.$router.push({
+                  path: "/buildingDict",
+                  query: { showKey: "stall", refresh: true },
+                })
+              } else {
+                this.$message.error(res.data.message)
+              }
+            })
+          },
+          () => {
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.error("编辑失败！")
+            })
+          }
+      )
     },
   },
 }

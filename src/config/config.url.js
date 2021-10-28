@@ -562,7 +562,19 @@ export const building = {
   // 车场 编辑
   parkApiEdit: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/updateParkingPlace.json',
   // 车场 详情
-  parkApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceById.json'
+  parkApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceById.json',
+  // 车位 分页查询
+  stallApiPageList: '/car-parking-api/rest-api/v1/parkingPlaceApiController/parkingPlaceResult.json',
+  // 车位 新增
+  stallApiInsert: '/car-parking-api/rest-api/v1/parkingPlaceApiController/saveParkingPlace.json',
+  // 车位 删除
+  stallApiDelete: '/car-parking-api/rest-api/v1/parkingPlaceApiController/deleteParkingPlace.json',
+  // 车位 编辑
+  stallApiEdit: '/car-parking-api/rest-api/v1/parkingPlaceApiController/updateParkingPlace.json',
+  // 车位 详情
+  stallApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceApiController/parkingPlaceDetail.json',
+  // 车位 导出
+  stallApiExport: '/car-batch/rest-api/v1/parkingPlaceBatchApiController/downloadParkingData'
 }
 
 // 权属概况

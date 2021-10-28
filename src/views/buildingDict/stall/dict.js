@@ -23,13 +23,28 @@ export const allWidth = {
 export const queryCondition = {
   organId: "", // 机构id
   communityId: [''], // 运营项目
-  landType: undefined, // 土地类型
-  landuse: '', // 土地用途
-  status: '', // 土地名称/编码/宗地号
-  pageNum: 1,
-  pageSize: 10,
-  isCurrent: 0
+  objType: undefined, // 车场类型
+  placeId: '', // 车场Id
+  pageNo: 1,
+  pageLength: 10,
+  isOnlyCurrent: 0
 };
+// 车位用途
+export const parkingUsageOption = [
+  {
+    value: '1',
+    label: '运营车位'
+  },
+  {
+    value: '2',
+    label: '销售车位'
+  }
+]
+// 车位类型
+export const carTypeMenu = {
+  PROPERTY_PARKING_OBJ_STATUS: 'PROPERTY_PARKING_OBJ_STATUS', // 产权
+  PARKING_OBJ_STATUS: 'PARKING_OBJ_STATUS' // 临时/固定
+}
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
 ]

@@ -14,34 +14,34 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
-                  <span>{{formInfo.organId}}</span>
+                  <span>{{formInfo.organName}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车场名称" :required="true" v-bind="formItemLayout">
-                  <span>{{formInfo.placeId}}</span>
+                  <span>{{formInfo.placeName}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="区域名称" v-bind="formItemLayout">
-                  <span>{{formInfo.parkingAreaId}}</span>
+                  <span>{{formInfo.parkingAreaName || '-'}}</span>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
                 <a-form-item label="车位名称" v-bind="formItemLayout">
-                  <span>{{formInfo.name}}</span>
+                  <span>{{formInfo.name || '-'}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车位编码" v-bind="formItemLayout">
-                  <span>{{formInfo.code}}</span>
+                  <p class="text-overflow">{{formInfo.code || '-'}}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="交付时间" v-bind="formItemLayout">
-                  <span>{{formInfo.deliverDate}}</span>
+                  <span>{{formInfo.deliverDate || '-'}}</span>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -53,29 +53,29 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车位类型" v-bind="formItemLayout">
-                  <span>{{formInfo.objType}}</span>
+                  <span>{{formInfo.objTypeName}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车位状态" v-bind="formItemLayout">
-                  <span>{{formInfo.objStatus}}</span>
+                  <span>{{formInfo.objStatusName}}</span>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
                 <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                  <span>{{formInfo.propertyArea}}</span>
+                  <span>{{formInfo.propertyArea || '-'}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
-                  <span>{{formInfo.useArea}}</span>
+                  <span>{{formInfo.useArea || '-'}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="公摊面积(㎡)" v-bind="formItemLayout">
-                  <span>{{formInfo.shareArea}}</span>
+                  <span>{{formInfo.shareArea || '-'}}</span>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -83,7 +83,7 @@
               <a-col :span="24">
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
-                  <span>{{formInfo.description}}</span>
+                  <div class="text-box">{{formInfo.description}}</div>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -94,21 +94,7 @@
                       :show="true"
                       :customDownload="customDownload"
                       :customUpload="customUpload"
-                      v-model="redMap"
-                      :max="1"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="24">
-                <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                      :show="true"
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
-                      type="all"
-                      v-model="filePath"
+                      v-model="formInfo.parkingImg"
                   />
                 </a-form-item>
               </a-col>
@@ -125,6 +111,7 @@ import dictMixin from "../dictMixin.js"
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import { parkTypeOpt} from "./dict";
+import {stallApiDetail} from "../../../api/building";
 
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
@@ -139,21 +126,23 @@ export default {
     return {
       parkTypeOpt, // 全部车场
       formInfo: { // 表单
-        organId:  '机构Id',
-        placeId:  '车场Id',
-        name: '车位名称',
-        code: '车位编码',
-        deliverDate: '2020-09-09',
-        objType: '车位类型',
-        objStatus: '车位状态',
-        parkingUsage: '车位用途',
-        parkingAreaId: '区域Id',
-        useArea: '使用面积',
-        shareArea: '公摊面积',
-        propertyArea: '产权面积',
-        parkingImg: '车位图片',
-        description: '备注',
-        parkingAreaUnits: '面积单位'
+        organId:  '',
+        placeId:  '',
+        name: '',
+        code: '',
+        deliverDate: '',
+        objType: '',
+        objTypeName: '',
+        objStatus: '',
+        objStatusName: '',
+        parkingUsage: '',
+        parkingAreaId: '',
+        useArea: '',
+        shareArea: '',
+        propertyArea: '',
+        parkingImg: '',
+        description: '',
+        parkingAreaUnits: ''
       },
       allStyle: 'width: 100%;',
       typeFilter,
@@ -168,8 +157,9 @@ export default {
       filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
-        type: "create", // 页面类型
-        blankId: "",
+        type: "view", // 页面类型
+        placeId: "",
+        parkingId: '',
         organName: "",
         organId: "",
       },
@@ -221,82 +211,39 @@ export default {
     window.fff = this.form
   },
   mounted() {
-    let { organName, organId, type, blankId } = this.$route.query
+    let { organName, organId, type, placeId, parkingId } = this.$route.query
     Object.assign(this, {
-      routeQuery: { organName, organId, type, blankId },
+      routeQuery: { organName, organId, type, placeId, parkingId },
     })
     this.init()
   },
   methods: {
-    async changeTree(value){
-      if (value) {
-        this.initPreData();
-        let {organId:organTopId} = await queryTopOrganByOrganID(
-            {
-              nOrgId: value,
-              nOrganId: value,
-            }
-        )
-        this.queryCommunityListByOrganId(organTopId)
-        this.form.resetFields(['communityId', 'landType', 'landuseType', 'landuse'])
+    async stallApiDetail (data) {
+      const params = {
+        ...data
+      }
+      const {data:res} = await stallApiDetail(params)
+      if(res.code === '0') {
+        this.formInfo = this.afterStallApiList(res.data)
       }
     },
-    // 确定
-    handleSave() {
-      this.form.validateFields((err, values) => {
-        console.log(values)
-      })
-    },
-    // 取消
-    handleCancel() {
-      this.$router.push({ path: "/buildingDict", query: { showKey: "land" } })
-    },
-    // 请求土地详情
-    async blankApiDetail() {
-    },
-    // 请求项目
-    queryCommunityListByOrganId(organTopId) {
-      let data = {
-        organId: organTopId,
+    afterStallApiList (data) {
+      this.formInfo.parkingImg = (data.parkingImg || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      return {
+        ...data,
+        organId: data.organId,
+        parkingAreaId: data.parkingAreaId,
+        placeId: data.placeId
       }
-      this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
-        if (res.data.code === "0") {
-          let result = res.data.data || []
-          let resultArr = result.map((item) => {
-            return {
-              label: item.name,
-              value: item.communityId,
-              ...item,
-            }
-          })
-          this.communityIdOpt = resultArr
-        }
-      })
-    },
-    // 选择项目变化
-    communityIdChange(e) {},
-    filterOption(input, option) {
-      return (
-          option.componentOptions.children[0].text
-              .toLowerCase()
-              .indexOf(input.toLowerCase()) >= 0
-      )
-    },
-    getPopupContainer(e) {
-      return e.parentElement
-    },
-    // 改变 所属机构时,做部分重置
-    initPreData(){
     },
     // 初始化
     async init(){
-      this.$nextTick(() => {
-        this.form.setFieldsValue(this.formInfo)
-      })
-      // if (this.routeQuery.type === "edit") {
-      //   await this.blankApiDetail()
-      //   this.initPreData()
-      // }
+      let loadingName = this.SG_Loding("加载中...")
+      try {
+        await this.stallApiDetail({placeId: this.routeQuery.placeId, parkingId: this.routeQuery.parkingId})
+      } finally {
+        this.DE_Loding(loadingName)
+      }
     },
   },
 }
@@ -313,5 +260,17 @@ export default {
   overflow: hidden;
   overflow-y: auto;
   height: 100%;
+}
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+}
+.text-box {
+  white-space: pre-line;
+  word-break: break-all;
+  word-wrap: break-word;
+  padding-top: 10px;
+  line-height: 16px;
 }
 </style>
