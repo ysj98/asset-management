@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="modal-nav">
+    <div class="modal-nav container">
+      <span class="title">资产类型：</span>
       <a-radio-group :value="checkboxAssetType">
-        <span>资产类型：</span>
         <a-radio
           v-for="(item, index) in checkboxData"
           :key="index"
@@ -15,14 +15,14 @@
     </div>
     <div
       v-if="checkboxAssetType === ASSET_TYPE_CODE.EQUIPMENT"
-      style="margin: 0 0 20px"
+      style="margin: 0 0 20px;"
+      class="container"
     >
-      <span>所在位置：</span>
-      <TreeSelect :allowClear="false"/>
-      <BuildSelectedTree :organ-id="organId" />
+      <span class="title">所属组织：</span>
+      <TreeSelect style="width: 300px" :allowClear="false"/>
     </div>
-    <div>
-      <span>{{ title }}：</span>
+    <div class="container">
+      <span class="title">{{ title }}：</span>
       <a-select
         style="width: 300px"
         mode="multiple"
@@ -44,13 +44,14 @@
       />
     </div>
     <div
-      class="modal-nav"
+      class="modal-nav container"
       v-if="
         [ASSET_TYPE_CODE.HOUSE, ASSET_TYPE_CODE.YARD].includes(
           checkboxAssetType
         )
       "
     >
+      <span class="title">数据范围：</span>
       <a-checkbox-group
         :value="scope"
         @change="
@@ -59,7 +60,6 @@
           }
         "
       >
-        <span>数据范围：</span>
         <a-checkbox
           v-for="(item, index) in scopeDataCom"
           :key="index"
@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import BuildSelectedTree from "@/views/assetInformationManagement/assetRegister/common/BuildSelectedTree";
 import TreeSelect from '@/views/common/treeSelect'
 import { debounce } from "utils/utils";
 const yardScopeData = [
@@ -99,7 +98,6 @@ const scopeData = [
 export default {
   name: "DownLoadTemplate",
   components: {
-    BuildSelectedTree,
     TreeSelect
   },
   props: {
@@ -199,5 +197,12 @@ export default {
 <style scoped>
 .modal-nav {
   line-height: 60px;
+}
+.title{
+  flex-basis: 100px;
+}
+.container{
+  display: flex;
+  align-items: center;
 }
 </style>
