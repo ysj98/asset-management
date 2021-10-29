@@ -402,6 +402,14 @@ export function update (data) {
 export function updateStatus (data) {
   return axiosPost(assets.assetClassSet.updateStatus, data, false, false)
 }
+// 3.1.1查询设备分类编码列表
+export function getEquipmentCodeList (data) {
+  return axiosPost(assets.assetClassSet.getEquipmentCodeList, data, false, false)
+}
+// 3.1.2根据设备分类ID查询子级设备分类信息
+export function getEquipmentListByUpEquipmentId (data) {
+  return axiosPost(assets.assetClassSet.getEquipmentListByUpEquipmentId, data, false, false)
+}
 // 资产分类设置-获取资产分类详情
 export function getDetail (data) {
   return axiosPost(assets.assetClassSet.getDetail, data, false, false)

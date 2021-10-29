@@ -47,9 +47,17 @@ export default new Vuex.Store({
           commit(SET_ASSET_TYPE_OPTIONS, data);
           const assetTypeCode = {};
           Object.keys(state.ASSET_TYPE_STRING).forEach(ele => {
-            assetTypeCode[ele] = data.filter(
+            const tempRes = data.filter(
               item => item.name === state.ASSET_TYPE_STRING[ele]
-            )[0].value;
+            );
+            if (!tempRes.length) {
+              console.error(
+                "资产类型字典值 对应不上，请查看当前环境平台字典编码 asset_type"
+              );
+              assetTypeCode[ele] = "";
+            } else {
+              assetTypeCode[ele] = tempRes[0].value;
+            }
           });
           commit(SET_ASSET_TYPE_CODE, assetTypeCode);
         } else {
