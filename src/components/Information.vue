@@ -12,6 +12,9 @@ export default {
         return [];
       }
     },
+    formatBasicInfoList: {
+      type: Array
+    },
     rowProps: {
       type: Object,
       default() {
@@ -75,7 +78,7 @@ export default {
       return _h(
         "a-col",
         {
-          props: _this.colProps
+          props: data.colProps || _this.colProps
         },
         [children]
       );
@@ -83,8 +86,13 @@ export default {
     generateBasicInformation() {
       const _this = this;
       const _h = this.$createElement;
-      const resNum = Math.floor(24 / this.colProps.span);
-      const resArr = chunk(this.BasicInfoList, resNum);
+      let resArr = [];
+      if (this.formatBasicInfoList) {
+        resArr = this.formatBasicInfoList;
+      } else {
+        const resNum = Math.floor(24 / this.colProps.span);
+        resArr = chunk(this.BasicInfoList, resNum);
+      }
       const children = resArr.map(groupItem => {
         const rowChildren = groupItem.map(ele => this.generateACol(ele));
         return _h(
@@ -95,7 +103,15 @@ export default {
           rowChildren
         );
       });
-      return _h("div", {}, children);
+      return _h(
+        "div",
+        {
+          style: {
+            lineHeight: "40px"
+          }
+        },
+        children
+      );
     }
   },
   render() {
@@ -107,6 +123,8 @@ export default {
 <style scoped lang="less">
 .title {
   color: rgba(0, 0, 0, 0.8);
+  flex-basis: 80px;
+  text-align: right;
   &::after {
     content: "：";
   }

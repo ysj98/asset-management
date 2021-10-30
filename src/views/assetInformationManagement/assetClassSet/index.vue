@@ -1,7 +1,7 @@
 <!--
  * @Date: 2019-11-09 17:27:17
  * @Description: 资产分类设置
---> 
+-->
 <template>
   <div class="assetClassSet-page">
     <div class="custom-tabs">
@@ -12,8 +12,8 @@
         <a-tab-pane tab="土地" key="land">
           <listModel type="land"/>
         </a-tab-pane>
-        <a-tab-pane tab="设施设备" key="facilityAndEquipment">
-          <listModel type="facilityAndEquipment"/>
+        <a-tab-pane tab="设备设施" key="facilityAndEquipment">
+          <EquipmentKind />
         </a-tab-pane>
         <a-tab-pane tab="车场" key="carPark">
           <listModel type="carPark"/>
@@ -24,13 +24,15 @@
 </template>
 <script>
 import listModel from "./listModel"
+import EquipmentKind from './child/EquipmentKind/index'
 export default {
   components: {
     listModel,
+    EquipmentKind
   },
   data () {
     return {
-      showKey: 'house',
+      showKey: 'facilityAndEquipment',
     }
   },
   created () {
