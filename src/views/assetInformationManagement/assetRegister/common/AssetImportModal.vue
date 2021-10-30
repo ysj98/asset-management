@@ -64,7 +64,12 @@
 
 <script>
 import DownLoadTemplate from "@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate";
-import { handleAssetTypeField } from './share'
+import {
+  checkBuildsObjectTypeFn,
+  commonFn,
+  confirmDownloadTemplate,
+  handleAssetTypeField
+} from "./share";
 import { looseEqual } from "@/utils/utils";
 import noDataTips from "components/noDataTips";
 const checkboxData = [
@@ -116,7 +121,7 @@ export default {
     },
     ASSET_TYPE_CODE() {
       return this.$store.state.ASSET_TYPE_CODE;
-    },
+    }
   },
   created() {},
   watch: {
@@ -175,14 +180,13 @@ export default {
     },
     // 类型查询
     typesQueries(id, type) {
-      console.log("执行了");
       this.organId = id;
       if (type !== this.checkboxAssetType) {
-        this.checkboxAssetType = type
+        this.checkboxAssetType = type;
         this.positionIds = [];
         // 所有 资产类型 枚举值
-        let tempARr = Object.entries(this.ASSET_TYPE_CODE).map(ele=>ele[1])
-        if (tempARr.includes(type)){
+        let tempARr = Object.entries(this.ASSET_TYPE_CODE).map(ele => ele[1]);
+        if (tempARr.includes(type)) {
           this.checkboxAssetType = type;
           this.positionIds = [];
         }
@@ -193,29 +197,7 @@ export default {
     },
     // 下载模板确认
     commonFn() {
-      // 房屋
-      if (this.checkboxAssetType === "1") {
-        if (!this.positionIds || this.positionIds.length === 0) {
-          this.$message.info("请选择楼栋名称");
-          return;
-        }
-        if (this.scope.length < 0) {
-          this.$message.info("请选择数据范围");
-          return;
-        }
-        if (this.scope.includes("1")) {
-          this.checkBuildsObjectTypeFn("1");
-        } else {
-          this.confirmDownloadTemplate();
-        }
-      } else if (this.checkboxAssetType === "4") {
-        if (!this.positionIds || this.positionIds.length === 0) {
-          this.$message.info("请选择土地名称");
-          return;
-        } else {
-          this.checkBuildsObjectTypeFn("4");
-        }
-      }
+      commonFn.call(this);
     },
     // 下载模板
     downloadTemplate() {
@@ -223,38 +205,12 @@ export default {
     },
     // 资产登记-导出数据校验
     checkBuildsObjectTypeFn(val) {
-      let ASSET_TYPE_IDS = handleAssetTypeField(val,'ids')
-      let obj = {
-        [ASSET_TYPE_IDS]: this.positionIds
-      };
-      this.$api.assets.checkBuildsObjectType(obj).then(res => {
-        if (res.data.code === "0") {
-          this.confirmDownloadTemplate();
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+      checkBuildsObjectTypeFn.call(this, val);
     },
     // 模板下载
     confirmDownloadTemplate() {
-      let ASSET_TYPE_IDS = handleAssetTypeField(this.checkboxAssetType,'ids')
-      let obj = {
-        registerOrderId: this.modalData.params.registerOrderId, // 资产登记ID，修改时必填
-        assetType: this.checkboxAssetType, // 资产类型, 1房屋、2土地、3设备
-        scope: this.checkboxAssetType === "1" ? this.scope.join(",") : "", // 1楼栋 2房屋（房屋时必填）
-        organId: this.organId,
-        [ASSET_TYPE_IDS]: this.positionIds
-      };
-      this.$api.assets.downloadTemplateV2(obj).then(res => {
-        let blob = new Blob([res.data]);
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "资产登记模板.xls";
-        a.style.display = "none";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        this.modalShow = false;
+      confirmDownloadTemplate.call(this, this.$api.assets.downloadTemplateV2, {
+        registerOrderId: this.modalData.params.registerOrderId // 资产登记ID，修改时必填
       });
     }
   }

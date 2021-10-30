@@ -120,7 +120,7 @@ export default {
             organId: this.topOrganId,
             upEquipmentId: value
           });
-          treeNode.dataRef.children = this.handlePositionDataToTreeData(data);
+          treeNode.dataRef.children = this.handleDataToTreeData(data);
           resolve();
         } catch (error) {
           reject(error);
@@ -146,7 +146,7 @@ export default {
         }
       });
     },
-    handlePositionDataToTreeData(data) {
+    handleDataToTreeData(data) {
       const resData = data.map(ele => {
         return {
           ...ele,
@@ -162,7 +162,7 @@ export default {
     },
     async init() {
       const data = await this.getPositionData();
-      this.treeData = this.handlePositionDataToTreeData(data);
+      this.treeData = this.handleDataToTreeData(data);
       this.loading = false;
     }
   },

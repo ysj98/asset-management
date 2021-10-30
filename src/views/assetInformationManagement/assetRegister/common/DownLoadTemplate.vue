@@ -19,22 +19,31 @@
       class="container"
     >
       <span class="title">所属组织：</span>
-      <TreeSelect style="width: 300px" :allowClear="false"/>
+      <TreeSelect
+        @change="handleChangeOrgan"
+        style="width: 300px"
+        :allowClear="false"
+      />
     </div>
     <div class="container">
       <span class="title">{{ title }}：</span>
+      <EquipmentSelectTree
+        v-if="[ASSET_TYPE_CODE.EQUIPMENT].includes(checkboxAssetType)"
+        style="width: 300px"
+        :top-organ-id="topOrganId"
+        :multiple="true"
+        :value="positionIds"
+        @change="handlePositionIds"
+      />
       <a-select
+        v-else
         style="width: 300px"
         mode="multiple"
         :maxTagCount="4"
         showSearch
         :placeholder="`请选择${title}`"
         :value="positionIds"
-        @change="
-          value => {
-            $emit('update:positionIds', value);
-          }
-        "
+        @change="handlePositionIds"
         @search="handleSearch"
         optionFilterProp="children"
         :options="$addTitle(positionNameData)"
@@ -73,7 +82,8 @@
 </template>
 
 <script>
-import TreeSelect from '@/views/common/treeSelect'
+import TreeSelect from "@/views/common/treeSelect";
+import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 import { debounce } from "utils/utils";
 const yardScopeData = [
   {
@@ -98,7 +108,8 @@ const scopeData = [
 export default {
   name: "DownLoadTemplate",
   components: {
-    TreeSelect
+    TreeSelect,
+    EquipmentSelectTree
   },
   props: {
     checkboxAssetType: {
@@ -123,7 +134,8 @@ export default {
     return {
       yardScopeData,
       scopeData,
-      positionNameData: []
+      positionNameData: [],
+      topOrganId: ""
     };
   },
   computed: {
@@ -152,6 +164,13 @@ export default {
     }
   },
   methods: {
+    handlePositionIds(value) {
+      this.$emit("update:positionIds", value);
+    },
+    handleChangeOrgan(topOrganId) {
+      this.topOrganId = topOrganId;
+      this.$emit("changeEquipmentOrganId", topOrganId);
+    },
     init() {
       this.debounceMothed();
     },
@@ -198,10 +217,10 @@ export default {
 .modal-nav {
   line-height: 60px;
 }
-.title{
+.title {
   flex-basis: 100px;
 }
-.container{
+.container {
   display: flex;
   align-items: center;
 }
