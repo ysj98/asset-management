@@ -21,6 +21,7 @@
                       :typeFilter="typeFilter"
                       @changeTree="changeTree"
                       placeholder='请选择所属机构'
+                      :defaultOrganName="formInfo.topOrganName"
                       :style="allStyle"
                       :allowClear="false"
                       v-decorator="['topOrganId',{initialValue: ''|| undefined, rules: [{ required: true, message: '请选择所属机构' }]}]"
@@ -139,6 +140,7 @@
                 <a-form-item label="出厂日期" v-bind="formItemLayout">
                    <a-date-picker
                      :style="allWidth"
+                     valueFormat="YYYYMMDD"
                      placeholder="请选择出厂日期"
                      :getPopupContainer="getPopupContainer"
                       v-decorator="['factoryDate',{initialValue: ''}]"
@@ -151,6 +153,7 @@
                 <a-form-item label="报废日期" v-bind="formItemLayout">
                   <a-date-picker
                     :style="allWidth"
+                    valueFormat="YYYYMMDD"
                     placeholder="请选择报废日期"
                     :getPopupContainer="getPopupContainer"
                     v-decorator="['expDate',{initialValue: '', }]"
@@ -161,6 +164,7 @@
                 <a-form-item label="安装日期" v-bind="formItemLayout">
                   <a-date-picker
                     :style="allWidth"
+                    valueFormat="YYYYMMDD"
                     placeholder="请选择安装日期"
                     :getPopupContainer="getPopupContainer"
                     v-decorator="['installDate',{initialValue: ''}]"
@@ -186,8 +190,6 @@
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
                       v-model="formInfo.imgPath"
                       :max="1"
                   />
@@ -198,9 +200,8 @@
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
                   <SG-UploadFile
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
                       type="all"
+                      :customUpload="customUpload "
                       v-model="formInfo.documentPath"
                   />
                 </a-form-item>
@@ -241,7 +242,6 @@ import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import { parkTypeOpt} from "./dict";
 import DictSelect from "../../common/DictSelect";
-import {equipmentApiEdit, getEquipmentCodeList} from "../../../api/building";
 import EquipmentSelect from "../../common/EquipmentSelect";
 
 const allWidth = { width: "100%" }
@@ -263,7 +263,7 @@ export default {
     return {
       parkTypeOpt, // 全部车场
       formInfo: { // 表单
-        organName: '',
+        topOrganName: '',
         imgPath: [], // 图片
         documentPath: [], // 附件
         attrList:[]
@@ -405,14 +405,15 @@ export default {
       try {
         const {data: res} = await this.$api.building.equipmentApiDetail(params)
         if (String(res.code) === "0") {
-          this.form.setFieldsValue(this.afterequipmentApiDetail(res.data));
+          this.form.setFieldsValue(this.afterEquipmentApiDetail(res.data));
         }
       } finally {
         this.DE_Loding(loadingName);
       }
     },
-    afterequipmentApiDetail(data) {
-      this.formInfo.organName = data.organName
+    afterEquipmentApiDetail(data) {
+      this.formInfo.topOrganName = data.topOrganName
+      this.communityIdOpt =[{label: String(data.organName), value: data.organId}]
       return {
         ...data
       }
@@ -430,7 +431,7 @@ export default {
       try {
         const {data: res} = await this.$api.building.equipmentApiEdit(params)
         this.DE_Loding(loadingName).then(() => {
-          if (res.code === "0") {
+          if (String(res.code) === "0") {
             this.$SG_Message.success("编辑车位成功");
             this.$router.push({
               path: "/buildingDict",

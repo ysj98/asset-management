@@ -71,12 +71,12 @@ export default {
         organId: this.organId,
         upEquipmentId: data.value // 上级分类Id
       }
-      // const {data: res} = await this.$api.building.getEquipmentListByUpEquipmentId(params)
-      // debugger
-      // if (String(res.code) === "0") {
-      //   this.afterEquipmentListByUpEquipmentId(res.data.resultList|| [], data)
-      // }
-      this.afterEquipmentListByUpEquipmentId( [], data)
+      const {data: res} = await this.$api.building.getEquipmentListByUpEquipmentId(params)
+      debugger
+      if (String(res.code) === "0") {
+        this.afterEquipmentListByUpEquipmentId(res.data.resultList|| [], data)
+      }
+      // this.afterEquipmentListByUpEquipmentId( [], data)
       return
     },
     afterEquipmentListByUpEquipmentId (value,parentData) {

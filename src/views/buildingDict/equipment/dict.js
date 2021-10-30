@@ -54,52 +54,52 @@ export const columns = [
   },
   {
     title: "分类",
-    dataIndex: "equipmentNames",
+    dataIndex: "equipmentName",
     width: 120
   },
   {
     title: "运营项目",
-    dataIndex: "name",
+    dataIndex: "organName",
     width: 120
   },
   {
     title: "规格型号",
-    dataIndex: "code",
+    dataIndex: "equipmentInstModel",
     width: 100
   },
   {
     title: "品牌",
-    dataIndex: "parkingType",
+    dataIndex: "equipmentInstBrand",
     width: 100
   },
   {
     title: "供应商",
-    dataIndex: "parkingStatus",
+    dataIndex: "equipmentSupplierName",
     width: 120
   },
   {
     title: "生产厂家",
-    dataIndex: "parkingAreaUnits",
+    dataIndex: "equipmentFactory",
     width: 120
   },
   {
     title: "所在位置",
-    dataIndex: "useArea",
+    dataIndex: "equipmentAreaName",
     width: 120
   },
   {
     title: "出厂日期",
-    dataIndex: "shareArea1",
+    dataIndex: "factoryDate",
     width: 120
   },
   {
     title: "安装日期",
-    dataIndex: "shareArea2",
+    dataIndex: "installDate",
     width: 120
   },
   {
     title: "取得日期",
-    dataIndex: "shareArea3",
+    dataIndex: "useStartDate",
     width: 120
   },
   {

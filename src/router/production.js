@@ -87,6 +87,14 @@ let proRouter = [{
     component: () => import('@/views/buildingDict/equipment/detailViewEquipment.vue')
   },
   {
+    path: '/assetCodingRule',
+    name: '资产编码规则',
+    component: () => import('@/views/assetCodingRule/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/assetChangeRegister',
     name: '资产变更单',
     component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),

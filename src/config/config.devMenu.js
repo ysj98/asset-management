@@ -93,6 +93,10 @@ export default [
         title: '其他参数',
         path: '/paramsConfig'
       },
+      {
+        title: '资产编码规则',
+        path: '/assetCodingRule'
+      }
     ]
   },
   {
