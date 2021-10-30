@@ -15,8 +15,8 @@
         <a-tab-pane tab="设施设备" key="facilityAndEquipment">
           <listModel type="facilityAndEquipment"/>
         </a-tab-pane>
-        <a-tab-pane tab="车场" key="carFactory">
-          <listModel type="carFactory"/>
+        <a-tab-pane tab="车场" key="carPark">
+          <listModel type="carPark"/>
         </a-tab-pane>
       </a-tabs>
     </div>

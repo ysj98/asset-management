@@ -574,7 +574,23 @@ export const building = {
   // 车位 详情
   stallApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceApiController/parkingPlaceDetail.json',
   // 车位 导出
-  stallApiExport: '/car-batch/rest-api/v1/parkingBatchApiController/downloadParkingData'
+  stallApiExport: '/car-batch/rest-api/v1/parkingBatchApiController/downloadParkingData',
+  // 设备 分页查询
+  equipmentApiPageList: '/equipment-openapi/equipmentInst/pageEquipmentInst',
+  // 设备 新增
+  equipmentApiInsert: '/equipment-openapi/equipmentInst/addEquipmentInst',
+  // 设备 删除
+  equipmentApiDelete: '/equipment-openapi/equipmentInst/deleteEquipmentInst',
+  // 设备 编辑
+  equipmentApiEdit: '/equipment-openapi/equipmentInst/updateEquipmentInst',
+  // 设备 详情
+  equipmentApiDetail: '/equipment-openapi/equipmentInst/queryEquipmentInstById',
+  // 根据组织机构ID查询供应商
+  getEquipmentSupplierListByOrganId: '/equipment-openapi/equipmentSupplier/getEquipmentSupplierListByOrganId',
+  // 根据组织机构id查询分类编码表
+  getEquipmentCodeList: '/equipment-openapi/equipment/getEquipmentCodeList',
+  // 根据组织机构id查询分类编码表
+  getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId'
 }
 
 // 权属概况

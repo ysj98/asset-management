@@ -38,58 +38,68 @@ export const parkTypeOpt = [
 ]
 export const columns = [
   {
-    title: "车位ID",
-    dataIndex: "parkingId",
+    title: "设备设施ID",
+    dataIndex: "equipmentInstId",
     width: 120
   },
   {
-    title: "设备名称",
-    dataIndex: "placeName",
+    title: "设备设施名称",
+    dataIndex: "equipmentInstName",
     width: 120
   },
   {
-    title: "区域名称",
-    dataIndex: "parkingAreaName",
+    title: "设备设施编码",
+    dataIndex: "equipmentInstCode",
+    width: 120
+  },
+  {
+    title: "分类",
+    dataIndex: "equipmentNames",
     width: 120
   },
   {
     title: "运营项目",
-    dataIndex: "communityName",
-    width: 120
-  },
-  {
-    title: "车位名称",
     dataIndex: "name",
     width: 120
   },
   {
-    title: "车位编码",
+    title: "规格型号",
     dataIndex: "code",
     width: 100
   },
   {
-    title: "车位类型",
+    title: "品牌",
     dataIndex: "parkingType",
     width: 100
   },
   {
-    title: "车位状态",
+    title: "供应商",
     dataIndex: "parkingStatus",
     width: 120
   },
   {
-    title: "建筑面积(㎡)",
+    title: "生产厂家",
     dataIndex: "parkingAreaUnits",
     width: 120
   },
   {
-    title: "使用面积(㎡)",
+    title: "所在位置",
     dataIndex: "useArea",
     width: 120
   },
   {
-    title: "公摊面积(㎡)",
-    dataIndex: "shareArea",
+    title: "出厂日期",
+    dataIndex: "shareArea1",
+    width: 120
+  },
+  {
+    title: "安装日期",
+    dataIndex: "shareArea2",
+    width: 120
+  },
+  {
+    title: "取得日期",
+    dataIndex: "shareArea3",
     width: 120
   },
   {

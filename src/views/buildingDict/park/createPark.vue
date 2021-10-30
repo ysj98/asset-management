@@ -473,9 +473,10 @@ export default {
         ...value,
       }
       data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
-      // 遍历循环
       this.formInfo.areaArray = [...data.areaArray]
       this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      // 营运项目
+      this.communityIdOpt = [{label: value.communityName, value: value.communityId}]
       return data
     },
     // 详情

@@ -60,7 +60,7 @@
                 :style="allStyle"
             />
             <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-              仅当前机构下土地
+              仅当前机构下设备
             </a-checkbox>
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
           </div>
@@ -184,7 +184,7 @@ export default {
       if (
         this.$route.path === "/buildingDict" &&
         this.$route.query.refresh &&
-        this.$route.query.showKey === "land"
+        this.$route.query.showKey === "equipment"
       ) {
         this.queryCondition.pageNum = 1;
         this.queryCondition.pageSize = 10;
@@ -196,28 +196,32 @@ export default {
     this.handlePower();
   },
   methods: {
-    query() {
-      // let data = {
-      //   ...this.queryCondition,
-      //   communityId: this.queryCondition.communityId.join(","),
-      // };
+    async query() {
+      let data = {
+        ...this.queryCondition,
+        communityId: this.queryCondition.communityId.join(","),
+      };
       this.table.loading = true;
-      let res = {...tablePageList}
-      this.table.loading = false;
-      if (res.code === "0") {
-        let result = res.data.resultList || [];
-        let btnArr = this.createOperationBtn();
-        this.table.dataSource = result.map((item) => {
-          return {
-            key: utils.getUuid(),
-            ...item,
-            operationDataBtn: btnArr,
-          };
-        });
-        this.table.totalCount = res.data.paginator.totalCount || 0;
-      } else {
-        this.$message.error(res.data.message);
+      try {
+        const {data:res} = await this.$api.building.equipmentApiPageList(data)
+        if (String(res.code) === "0") {
+          let result = res.data.resultList || [];
+          let btnArr = this.createOperationBtn();
+          this.table.dataSource = result.map((item) => {
+            return {
+              key: utils.getUuid(),
+              ...item,
+              operationDataBtn: btnArr,
+            };
+          });
+          this.table.totalCount = res.data.paginator.totalCount || 0;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      } finally {
+        this.table.loading = false;
       }
+
     },
     // 重置分页查询
     searchQuery() {
@@ -348,7 +352,7 @@ export default {
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `楼盘字典车位信息.xls`;
+        a.download = `楼盘字典设备信息.xls`;
         a.style.display = "none";
         document.body.appendChild(a);
         a.click();
@@ -364,7 +368,7 @@ export default {
       }
       if (["delete"].includes(type)) {
         this.$SG_Modal.confirm({
-          title: `确定要删除该车位信息吗?`,
+          title: `确定要删除该设备信息吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: () => {
@@ -395,7 +399,7 @@ export default {
       );
       if (["edit", "detail"].includes(type)) {
         Object.assign(query, {
-          blankId: record.blankId,
+          equipmentInstId: record.equipmentInstId,
         });
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });

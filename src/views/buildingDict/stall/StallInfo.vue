@@ -273,7 +273,6 @@ export default {
       // 异步接口
       this.searchQuery();
       this.parkApiList();
-
     },
     communityIdSelect(value) {
       this.$nextTick(function () {

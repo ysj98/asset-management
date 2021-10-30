@@ -217,3 +217,38 @@ export function stallApiExport (data) {
     responseType: 'blob'
   })
 }
+// 设备 列表查询
+export function equipmentApiPageList (data) {
+  return axiosPost(building.equipmentApiPageList, data)
+}
+// 设备 详情
+export function equipmentApiDetail (data) {
+  return axiosPost(building.equipmentApiDetail, data)
+}
+// 设备 新增
+export function equipmentApiInsert (data) {
+  return axiosPost(building.equipmentApiInsert, data)
+}
+// 设备 编辑
+export function equipmentApiEdit (data) {
+  return axiosPost(building.equipmentApiEdit, data)
+}
+// 设备 删除
+export function equipmentApiDelete (data) {
+  return axiosPost(building.equipmentApiDelete, data)
+}
+
+// 根据组织机构id查询分类编码表
+export function getEquipmentCodeList (data) {
+  return axiosPost(building.getEquipmentCodeList, data)
+}
+
+// 根据组织机构id查询分类编码id查询子设备信息
+export function getEquipmentListByUpEquipmentId (data) {
+  return axiosPost(building.getEquipmentListByUpEquipmentId, data)
+}
+
+// 根据组织机构id查询供应商
+export function getEquipmentSupplierListByOrganId (data) {
+  return axiosPost(building.getEquipmentSupplierListByOrganId, data)
+}
