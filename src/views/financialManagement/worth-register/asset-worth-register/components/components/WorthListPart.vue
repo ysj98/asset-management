@@ -213,7 +213,7 @@
         }
         this.modalObj.isShow = bool
       },
-      
+
       // 导出
       handleExport () {},
 
@@ -226,7 +226,7 @@
           }
         }
       },
-      
+
       // 获取选中的资产数据
       getAssetList () {
         let {selectedList} = this
@@ -291,7 +291,7 @@
           this.$message.error(err || '查询登记资产接口出错')
         })
       },
-      
+
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
         let form = {}
@@ -335,10 +335,10 @@
           isEditAll ? this.handleEditTableAll(false) : this.handleAddModal(false)
         }
       },
-      
+
       // 批量修改Table本次估值列
       handleEditTableAll (bool) {
-        if (!this.tableObj.dataSource.length) { return this.$message.warn('请先选择资产') }
+        if (!this.tableObj.dataSource.length) { return this.$message.warn('请先添加资产') }
         if (bool) {
           this.isEditAll = true
           Object.assign(this.modalObj, {
@@ -397,7 +397,7 @@
         this.handleEditTableAll(false)
       }
     },
-    
+
     created () {
       const { type } = this
       if (type === 'add' || type === 'edit') {
@@ -411,7 +411,7 @@
         this.queryAssetListByRegisterId({type: 'init'})
       }
     },
-    
+
     watch: {
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {

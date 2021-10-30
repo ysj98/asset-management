@@ -45,6 +45,7 @@
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
         ></a-select>
+
         <div class="box">
           <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
@@ -65,6 +66,10 @@
         >
         <template slot="operation" slot-scope="text, record">
           <router-link :to="{ path: '/assetCheckInView/detail', query: { registerOrderId: record.registerOrderId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
+        </template>
+        <!-- 资产面积 -->
+        <template #area="text,record">
+          {{record.assetType === '设备设施'? '/' : record.area}}
         </template>
       </a-table>
     </div>
@@ -143,7 +148,10 @@ const columns = [
   },
   {
     title: '资产面积(㎡)',
-    dataIndex: 'area'
+    key: 'area',
+    scopedSlots: {
+      customRender: 'area'
+    }
   },
   {
     title: '资产位置',

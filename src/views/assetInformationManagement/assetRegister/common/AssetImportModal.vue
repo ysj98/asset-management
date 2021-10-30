@@ -64,6 +64,7 @@
 
 <script>
 import DownLoadTemplate from "@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate";
+import { handleAssetTypeField } from './share'
 import { looseEqual } from "@/utils/utils";
 import noDataTips from "components/noDataTips";
 const checkboxData = [
@@ -112,7 +113,10 @@ export default {
   computed: {
     modalDataCom() {
       return JSON.parse(JSON.stringify(this.modalData));
-    }
+    },
+    ASSET_TYPE_CODE() {
+      return this.$store.state.ASSET_TYPE_CODE;
+    },
   },
   created() {},
   watch: {
@@ -174,11 +178,12 @@ export default {
       console.log("执行了");
       this.organId = id;
       if (type !== this.checkboxAssetType) {
-        if (type === "1") {
-          this.checkboxAssetType = "1";
-          this.positionIds = [];
-        } else {
-          this.checkboxAssetType = "4";
+        this.checkboxAssetType = type
+        this.positionIds = [];
+        // 所有 资产类型 枚举值
+        let tempARr = Object.entries(this.ASSET_TYPE_CODE).map(ele=>ele[1])
+        if (tempARr.includes(type)){
+          this.checkboxAssetType = type;
           this.positionIds = [];
         }
       }
@@ -218,9 +223,9 @@ export default {
     },
     // 资产登记-导出数据校验
     checkBuildsObjectTypeFn(val) {
+      let ASSET_TYPE_IDS = handleAssetTypeField(val,'ids')
       let obj = {
-        buildIds: val === "1" ? this.positionIds : [],
-        landIds: val === "4" ? this.positionIds : []
+        [ASSET_TYPE_IDS]: this.positionIds
       };
       this.$api.assets.checkBuildsObjectType(obj).then(res => {
         if (res.data.code === "0") {
@@ -232,13 +237,13 @@ export default {
     },
     // 模板下载
     confirmDownloadTemplate() {
+      let ASSET_TYPE_IDS = handleAssetTypeField(this.checkboxAssetType,'ids')
       let obj = {
         registerOrderId: this.modalData.params.registerOrderId, // 资产登记ID，修改时必填
         assetType: this.checkboxAssetType, // 资产类型, 1房屋、2土地、3设备
-        buildIds: this.checkboxAssetType === "1" ? this.positionIds : [], // 楼栋id列表（房屋时必填）
         scope: this.checkboxAssetType === "1" ? this.scope.join(",") : "", // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
-        blankIdList: this.checkboxAssetType === "4" ? this.positionIds : [] // 土地Id列表（土地时必填）
+        [ASSET_TYPE_IDS]: this.positionIds
       };
       this.$api.assets.downloadTemplateV2(obj).then(res => {
         let blob = new Blob([res.data]);
@@ -272,6 +277,7 @@ export default {
   //border-left: 1px solid #cccccc;
   padding-left: 40px;
   //margin-left: 40px;
+  flex: 1;
 }
 .modal-nav {
   width: 60%;

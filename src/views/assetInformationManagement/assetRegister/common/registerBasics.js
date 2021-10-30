@@ -220,19 +220,19 @@ export const yard = [
 
 // 设备设施
 export const equipment = [
-  { title: '设备设施名称', dataIndex: 'landName', width: 150},
-  { title: '设备设施编码', dataIndex: 'landCode', width: 150 },
-  { title: '设备设施分类', dataIndex: 'assetName', width: 150 },
-  { title: '规格型号', dataIndex: 'assetCode', width: 150 },
-  { title: '运营项目', dataIndex: 'landArea', width: 100 },
-  { title: '资产名称', dataIndex: 'theNo', width: 100 },
-  { title: '资产编码', dataIndex: 'landTypeName', width: 100 },
-  { title: '所在位置', dataIndex: 'landuseName', width: 100 },
-  { title: '权属类型', dataIndex: 'pasitionString', width: 350 },
-  { title: '权属情况', dataIndex: 'kindOfRightName', width: 100 },
-  { title: '权证号', dataIndex: 'ownershipStatusName', width: 100 },
-  { title: '债权金额(元)', dataIndex: 'warrantNbr', width: 100 },
-  { title: '债务金额(元)', dataIndex: 'sourceModeName', width: 150 },
+  { title: '设备设施名称', dataIndex: 'equipmentName', width: 150},
+  { title: '设备设施编码', dataIndex: 'equipmentCode', width: 150 },
+  { title: '设备设施分类', dataIndex: 'equipmentTypeName', width: 150 },
+  { title: '规格型号', dataIndex: 'equipmentModel', width: 150 },
+  { title: '运营项目', dataIndex: 'communityId', width: 100 },
+  { title: '资产名称', dataIndex: 'assetName', width: 100 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
+  { title: '所在位置', dataIndex: 'position', width: 100 },
+  { title: '权属类型', dataIndex: 'kindOfRightName', width: 350 },
+  { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
+  { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
+  { title: '债务金额(元)', dataIndex: 'debtAmount', width: 150 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 

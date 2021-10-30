@@ -20,11 +20,26 @@
           @close="closeDetailMap"
         ></component>
       </div>
+      <div class="list-container" v-show="showDetailListModal">
+        <div class="list-container-top">
+          <span>资产列表</span>
+          <a-icon @click="closeDetailListModal" type="close" />
+        </div>
+        <div class="list-container-line"></div>
+        <div class="list-container-content">
+          <a-table v-bind="listTableOptions">
+            <!-- 资产名称 -->
+            <template #resourceName="text,record,index">
+              <a @click="handleAssetItemClick(record)">{{record.resourceName}}</a>
+            </template>
+          </a-table>
+        </div>
+      </div>
     </div>
   </a-spin>
 </template>
 <script>
-import Tools, {calc} from "@/utils/utils"
+import Tools, {calc, getArrayRepeat, handleEnumerationConversion} from "@/utils/utils"
 import suspensionRightBlock from "./component/suspensionRightBlock"
 import mapLandIcon from "./images/map_land.png"
 import mapHouseIcon from "./images/map_house.png"
@@ -32,6 +47,7 @@ import mapLandTipIcon from "./images/map_land_tip.png"
 import mapHouseTipIcon from "./images/map_house_tip.png"
 import landMapDetail from "./component/landMapDetail"
 import houseMapDetail from "./component/houseMapDetail"
+
 var markerMap = {
   "1": {
     name: "楼栋: ",
@@ -59,14 +75,47 @@ export default {
   },
   data() {
     return {
+      listTableOptions:{
+        rowKey: function (record){
+          // return record.resourceId
+          return Math.random()
+        },
+        bordered:true,
+        pagination:{
+          size:'small'
+        },
+        dataSource: [],
+        columns: [
+          {
+            title: '序号',
+            key: 'index',
+            customRender(text,record,index){
+              return index + 1
+            }
+          },
+          {
+            title: '资产大类',
+            customRender:this.generateResourceType,
+            key: 'resourceType'
+          },
+          {
+            title: '资产名称',
+            key:'resourceName',
+            scopedSlots: {
+              customRender: 'resourceName'
+            }
+          }
+        ]
+      },
       mapDomId: "asset-map-box",
       loading: false, // 全局
       loadingDetail: false, // 详情
       map: null,
       markerStore: [],
       ComplexCustomOverlay: null,
-      currentTabComponent: "landMapDetail", // 当前弹窗详情
+      currentTabComponent: landMapDetail, // 当前弹窗详情
       showDetailModal: false, // 当前是否显示地图详情
+      showDetailListModal: false,
       detailInfo: {}, // 土地信息
     }
   },
@@ -74,21 +123,40 @@ export default {
     this.createBaiduMap()
   },
   methods: {
-    // 点击地图标注
-    handleClickMap(obj) {
+    handleAssetItemClick(record){
+      let SOURCE = 'list'
+      this.handleOpenAssetDetail(record,SOURCE)
+    },
+    generateResourceType(text,record){
+      return  handleEnumerationConversion(String(record.resourceType), this.$store.state.ASSET_TYPE_OPTIONS, ['value', 'name'])
+    },
+    // 打开 重复点位 列表
+    handleOpenAssetList(data){
+      this.listTableOptions.dataSource = data
+      this.showDetailListModal = true
+      this.closeDetailMap()
+    },
+    // 打开 地图标注 详情
+    handleOpenAssetDetail(obj,SOURCE) {
       console.log("拿到数据=>", obj)
       let { resourceType } = obj
       let detailMap = {
-        "1": "houseMapDetail",
-        "2": "landMapDetail",
+        "1": houseMapDetail,
+        "2": landMapDetail,
       }
       this.showDetailModal = true
+      if (SOURCE !== 'list'){
+        this.closeDetailListModal()
+      }
       this.currentTabComponent = detailMap[String(resourceType)]
       this.queryMapDetail(obj)
     },
     // 关闭详情弹窗
-    closeDetailMap(type) {
+    closeDetailMap() {
       this.showDetailModal = false
+    },
+    closeDetailListModal(){
+      this.showDetailListModal = false
     },
     // 请求地图详情
     queryMapDetail(obj) {
@@ -141,6 +209,7 @@ export default {
     },
     restMap() {
       Object.assign(this, {
+        showDetailListModal: false,
         showDetailModal: false, // 当前是否显示地图详情
         detailInfo: {}, // 土地信息
       })
@@ -155,6 +224,9 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || []
+            result.push(...result)
+            // result.pop()
+            result = getArrayRepeat(result,(ele)=>(ele.longitude + ele.latitude))
             this.removeMarker()
             this.createIconMarker(result)
           } else {
@@ -229,11 +301,11 @@ export default {
     createIconMarker(result = []) {
       let ComplexCustomOverlay = this.ComplexCustomOverlay
       result.forEach((item) => {
-        let { resourceName, resourceType, longitude, latitude } = item
+        let { resourceName, resourceType, longitude, latitude } = item[0]
         if (longitude && latitude) {
           let myCompOverlay = new ComplexCustomOverlay(
             new BMap.Point(longitude, latitude),
-            { ...item }
+            item
           )
           this.map.addOverlay(myCompOverlay)
         }
@@ -253,13 +325,17 @@ export default {
       // 复杂的自定义覆盖物
       function ComplexCustomOverlay(
         point,
-        opt = { resourceType: "1", resourceName: "" }
+        opt = [{ resourceType: "1", resourceName: "" }]
       ) {
+        // 是否 有重复 点位 的资源
+        this.moreFlag = opt.length && opt.length > 1
+        this.allOpt = opt
         this._point = point // 坐标实例
-        this.opt = opt
+        this.opt = opt[0]
       }
       ComplexCustomOverlay.prototype = new BMap.Overlay()
       ComplexCustomOverlay.prototype.initialize = function(map) {
+        let that = this
         console.log("初始化进来=>", this)
         this._map = map
         // 拿取全局配置
@@ -304,8 +380,12 @@ export default {
           padding: "5px 15px",
         }
         for (let key in tipDivStyle) tipDiv.style[key] = tipDivStyle[key]
+        let tipStr = configOpt.name + this.opt.resourceName
+        if(that.moreFlag){
+          tipStr = '请点击查看资产列表'
+        }
         tipDiv.appendChild(
-          document.createTextNode(configOpt.name + this.opt.resourceName)
+          document.createTextNode(tipStr)
         )
         // 创建箭头
         var arrow = document.createElement("span")
@@ -320,7 +400,6 @@ export default {
         for (let key in arrowStyle) arrow.style[key] = arrowStyle[key]
         tipDiv.appendChild(arrow)
         div.appendChild(tipDiv)
-        var that = this
         div.onmouseover = function() {
           // this这里的this是指dom
           this.style.zIndex = Tools.getUuid()
@@ -331,7 +410,11 @@ export default {
         }
         div.onclick = function() {
           console.log("点击数据")
-          self.handleClickMap({ ...that.opt })
+          if (that.moreFlag){
+            self.handleOpenAssetList(that.allOpt)
+          }else {
+            self.handleOpenAssetDetail({ ...that.opt })
+          }
           return false
         }
         map.getPanes().labelPane.appendChild(div)
@@ -367,5 +450,36 @@ export default {
   position: absolute;
   top: 12px;
   left: 12px;
+}
+.list-container{
+  max-height: 600px;
+  overflow: auto;
+
+  position: absolute;
+  right: 470px;
+  top: 10px;
+
+  max-width: 300px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 1px 2px 2px 0px rgb(0 0 0 / 14%);
+  &-line{
+    height: 1px;
+    //background-color: #fff;
+  }
+  &-top{
+    height: 32px;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 0 20px;
+    //border-bottom: 1px solid #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &-content{
+    padding: 20px;
+    //padding: 15px 0;
+    //background-color: #fff;
+  }
 }
 </style>

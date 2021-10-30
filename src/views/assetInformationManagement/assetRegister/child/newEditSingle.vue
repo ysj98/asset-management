@@ -54,6 +54,7 @@ import valueToRegister from './valueToRegister'
 import directionUse from './directionUse'
 import correlativeCharges from './correlativeCharges'
 import basic from './basic'
+import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
 export default {
   components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
   props: {},
@@ -107,7 +108,7 @@ export default {
     this.setType = this.$route.query.setType
     if (this.setType !== 'new') {
       this.registerOrderId = this.organIdData[0].registerOrderId
-      this.assetType = this.organIdData[0].assetType
+      this.assetType = String(this.organIdData[0].assetType)
       this.activeStepIndex = Number(this.$route.query.activeStepIndex)
       this.$store.commit('pro/updateNav', [{name: '资产管理', path: ''}, {name: '资产登记', path: '/assetRegister'}, {name: `${this.titleData[this.activeStepIndex]}`, path: ''}])
     }
@@ -140,6 +141,7 @@ export default {
             ...ele
           }
         })
+        let ASSET_TYPE_LIST = handleAssetTypeField(data.assetType,'list')
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称
@@ -147,8 +149,7 @@ export default {
           assetType: data.assetType,                    // 资产类型Id
           remark: data.remark,                          // 备注
           organId: this.organId,                          // 组织机构id
-          assetHouseList: data.assetType === '1' ? basicData : [],   // 房屋
-          assetBlankList: data.assetType === '4' ? basicData : []    // 土地
+          [ASSET_TYPE_LIST]: basicData,
         }
         // 新增
         let loadingName = this.SG_Loding('保存中...')

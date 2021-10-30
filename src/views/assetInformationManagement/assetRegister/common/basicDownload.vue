@@ -26,7 +26,7 @@
 
 <script>
 import DownLoadTemplate from "@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate";
-
+import { handleAssetTypeField } from './share'
 export default {
   components: {
     DownLoadTemplate
@@ -104,9 +104,9 @@ export default {
     },
     // 资产登记-导出数据校验
     checkBuildsObjectTypeFn(val) {
+      let ASSET_TYPE_IDS = handleAssetTypeField(val,'ids')
       let obj = {
-        buildIds: val === this.ASSET_TYPE_CODE.HOUSE ? this.positionIds : [],
-        landIds: val === this.ASSET_TYPE_CODE.LAND ? this.positionIds : []
+        [ASSET_TYPE_IDS]: this.positionIds
       };
       this.$api.assets.checkBuildsObjectType(obj).then(res => {
         if (res.data.code === "0") {
@@ -118,12 +118,12 @@ export default {
     },
     // 模板下载
     confirmDownloadTemplate() {
+      let ASSET_TYPE_IDS = handleAssetTypeField(this.checkboxAssetType,'ids')
       let obj = {
         assetType: this.checkboxAssetType, // 资产类型, 1房屋、2土地、3设备
-        buildIds: this.checkboxAssetType === this.ASSET_TYPE_CODE.HOUSE ? this.positionIds : [], // 楼栋id列表（房屋时必填）
         scope: this.checkboxAssetType === this.ASSET_TYPE_CODE.HOUSE ? this.scope.join(",") : "", // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
-        blankIdList: this.checkboxAssetType === this.ASSET_TYPE_CODE.LAND ? this.positionIds : [] // 土地Id列表（土地时必填）
+        [ASSET_TYPE_IDS]: this.positionIds,
       };
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data]);
