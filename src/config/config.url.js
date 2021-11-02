@@ -1266,5 +1266,9 @@ export const codeRule = {
   // 列表接口
   init : '/ams/codeRule/init',
   // 预览
-  getPreview: '/asm/codeRule/getPreview'
+  getPreview: '/ams/codeRule/getPreview',
+  // 保存编码规则
+  save: '/ams/codeRule/save',
+  // 获取编码默认规则
+  default: '/ams/codeRule/default'
 }

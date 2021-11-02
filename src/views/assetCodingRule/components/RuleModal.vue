@@ -27,7 +27,7 @@
             <template v-for="(item,index) of rightList">
               <p
                 :key="index"
-                v-text="item.name"
+                v-text="item.value"
                 @click="handleRightClick(index,item)"
                 :class="{'list-item-active':activeRightIndex === index}"
                 class="list-item"></p>
@@ -70,8 +70,8 @@ export default {
     sequenceFlag: false, // 序列标志位
     activeRightIndex: -1,
     formInfo: {
-      codeLength:0,
-      codeSeq:0
+      codeLength: 4,
+      codeSeq: 1000
     },
     rules:{
       codeLength: [{ required: true, message: '请输入序列长度', trigger: 'change' }],
@@ -127,7 +127,7 @@ export default {
     handleOtherSubmit () {
       this.submit({
         name: this.menuList[this.activeIndex].name,
-        value: this.rightList[this.activeRightIndex].name
+        value: this.rightList[this.activeRightIndex].value
       })
     },
     submit (data) {
@@ -141,7 +141,7 @@ export default {
       this.activeIndex = index
       this.rightList = item.param
       this.sequenceFlag = false
-      if (item.name === '序号') {
+      if (item.name === '序列') {
         this.sequenceFlag = true
       }
     },
@@ -150,6 +150,10 @@ export default {
     },
     /*******************************************/
     async paramInit () {
+      this.activeIndex = -1
+      this.activeRightIndex = -1
+      this.menuList = []
+      this.rightList = []
       try {
         const params = { organId: this.organId }
         const {data: res} = await this.$api.codeRule.paramInit(params)

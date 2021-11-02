@@ -50,9 +50,22 @@ export default {
   }),
   methods: {
     handleTreeChange (val) {
-      console.log('treeChange', val)
-      this.formInfo.organId = val
-      this.getPage()
+      if(this.formInfo.organId != 0 ) {
+        this.$SG_Modal.confirm({
+          title: `即将切换组织机构，请确认自定义编码已保存?`,
+          okText: "确定",
+          cancelText: "关闭",
+          onOk: async () => {
+            console.log('treeChange', val,this.formInfo.organId )
+            this.formInfo.organId = val
+            this.getPage()
+          }
+        })
+      } else {
+        console.log('treeChange', val,this.formInfo.organId )
+        this.formInfo.organId = val
+        this.getPage()
+      }
     },
     async getPage () {
       try {
