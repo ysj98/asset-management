@@ -8,15 +8,15 @@
       <div slot="headerForm" class="search-content-box">
         <div class="top-search-one" style="padding: 0;">
           <div>
-            <!--            v-if="createPower"-->
             <SG-Button
+                v-if="createPower"
                 @click="goPage('create')"
                 class="mr10"
                 icon="plus"
                 type="primary"
             >新增</SG-Button>
-            <!--              v-if="hasPowerExport" -->
             <SG-Button
+                v-if="hasPowerExport && false"
                 @click="exportList"
                 class="mr10">
               <segiIcon type="#icon-ziyuan10" class="mr10" />导出
@@ -305,10 +305,10 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_EDIT) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_STALL_EDIT) || true) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_DELETE) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_STALL_DELETE) || true) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
@@ -316,7 +316,7 @@ export default {
     },
     // 处理按钮权限
     handlePower() {
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_CREATE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_STALL_CREATE)) {
         this.createPower = true;
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {

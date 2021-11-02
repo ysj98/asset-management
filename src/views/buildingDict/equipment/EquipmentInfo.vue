@@ -68,26 +68,9 @@
       </div>
       <div slot="contentForm">
         <div class="top-search-one" style="padding: 0;">
-          <div style="overflow: visible;margin-top:-10px;width: 950px;">
-            <!-- 全部土地类型 -->
-            <dict-select
-                :style="allStyle"
-                placeholder="请选择车场"
-                v-model="queryCondition.landType"
-                menu-code="PARKING_PLACE_RESOURCE_TYPE"
-            />
-            <dict-select
-                :style="allStyle"
-                placeholder="请选择车场"
-                v-model="queryCondition.landType"
-                menu-code="PARKING_PLACE_RESOURCE_TYPE"
-            />
-            <dict-select
-                :style="allStyle"
-                placeholder="请选择车场"
-                v-model="queryCondition.landType"
-                menu-code="PARKING_PLACE_RESOURCE_TYPE"
-            />
+          <div style="overflow: visible;margin-top:-10px;width: 100%;padding-right: 325px;display: flex;flex-width: nowarp;justify-content: flex-end">
+            <SG-DatePicker :allowClear="false" label="安装日期" style="width: 200px;margin-right: 10px;"  pickerType="RangePicker" v-model="installValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" label="报废日期" style="width: 200px;"  pickerType="RangePicker" v-model="expValue" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
         </div>
       </div>
@@ -161,6 +144,8 @@ export default {
     return {
       typeFilter,
       ASSET_MANAGEMENT,
+      installValue: [], // 安装日期
+      expValue: [], // 报废日期
       hasPowerExport: false, // 导出按钮权限
       allStyle,
       allWidth,
@@ -229,28 +214,6 @@ export default {
       this.queryCondition.pageNo = 1;
       this.query();
     },
-    // 查询土地类别
-    queryLandType() {
-      let data = {
-        code: "PARKING_PLACE_RESOURCE_TYPE"
-      };
-      // this.$api.assets.getList(data) PARKING_PLACE_RESOURCE_TYPE
-      // this.$api.basics.organDict(data)
-      return this.$api.assets.platformDict(data).then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data;
-          this.parkTypeOpt = utils.deepClone(parkTypeOpt);
-          data.forEach((item) => {
-            this.parkTypeOpt.push({
-              value: item["value"],
-              label: item["name"],
-              // id: item["dictId"]
-            });
-          });
-          this.queryCondition.landType = undefined;
-        }
-      });
-    },
     queryCommunityListByOrganId() {
       let data = {
         topOrganId: this.queryCondition.topOrganId
@@ -282,15 +245,8 @@ export default {
       this.queryCondition.topOrganId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
-      if (this.parkTypeOpt.length === 1) {
-        Promise.all([this.queryLandType()]).then(
-          () => {
-            this.searchQuery();
-          }
-        );
-      } else {
-        this.searchQuery();
-      }
+      this.searchQuery();
+
     },
     communityIdSelect(value) {
       this.$nextTick(function () {
@@ -411,6 +367,10 @@ export default {
       this.queryCondition.pageLength = data.pageLength;
       this.query();
     },
+    handleInstallChange (valArr,formatValArr) {
+      console.log(arguments)
+    },
+    handleExpChange (valArr,formatValArr) {},
     // 搜索
     filterOption(input, option) {
       return (

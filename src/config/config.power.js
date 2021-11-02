@@ -49,13 +49,13 @@ export const ASSET_MANAGEMENT = {
   ASSET_CLASS_LAND_CHANGE: 'asset_class_land_change',
   // 资产分类-状态删除土地
   ASSET_CLASS_LAND_DELETE: 'asset_class_land_delete',
-  // 资产分类-新增土地
+  // 资产分类-新增车场
   ASSET_CLASS_CAR_PARK_CREATE: 'asset_class_car_park_create',
-  // 资产分类-编辑土地
+  // 资产分类-编辑车场
   ASSET_CLASS_CAR_PARK_EDIT: 'asset_class_car_park_edit',
-  // 资产分类-状态改变土地
+  // 资产分类-状态改变车场
   ASSET_CLASS_CAR_PARK_CHANGE: 'asset_class_car_park_change',
-  // 资产分类-状态删除土地
+  // 资产分类-状态删除车场
   ASSET_CLASS_CAR_PARK_DELETE: 'asset_class_car_park_delete',
   // 2.0.0新增end
   // 楼盘字典-新增房间
@@ -95,6 +95,18 @@ export const ASSET_MANAGEMENT = {
   ASSET_DICT_LAND_EDIT: 'zcgl_dict_land_edit',
   // 楼盘字典-删除土地
   ASSET_DICT_LAND_DELETE: 'zcgl_dict_land_delete',
+  // 楼盘字典-创建车场
+  ASSET_DICT_PARK_CREATE: 'zcgl_dict_park_create',
+  // 楼盘字典-修改车场
+  ASSET_DICT_PARK_EDIT: 'zcgl_dict_park_edit',
+  // 楼盘字典-删除车场
+  ASSET_DICT_PARK_DELETE: 'zcgl_dict_park_delete',
+  // 楼盘字典-创建车位
+  ASSET_DICT_STALL_CREATE: 'zcgl_dict_stall_create',
+  // 楼盘字典-修改车位
+  ASSET_DICT_STALL_EDIT: 'zcgl_dict_stall_edit',
+  // 楼盘字典-删除车位
+  ASSET_DICT_STALL_DELETE: 'zcgl_dict_stall_delete',
   // 2.0.0end
   /**
   * 资产变动

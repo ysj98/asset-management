@@ -594,7 +594,9 @@ export const building = {
   // 根据组织机构id查询分类编码表
   getEquipmentCodeList: '/equipment-openapi/equipment/getEquipmentCodeList',
   // 根据组织机构id查询分类编码表
-  getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId'
+  getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId',
+  // 根据organId和设备分类Id
+  getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId'
 }
 
 // 权属概况

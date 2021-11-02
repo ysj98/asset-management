@@ -31,8 +31,13 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="设备设施分类" :required="true" v-bind="formItemLayout">
+<!--                  {{form.getFieldValue('equipmentId')}}-->
                   <equipment-select-tree
+                      :width="'100%'"
+                      placeholder="请选择设备设施分类"
+                      :default-name="formInfo.equipmentName"
                       :topOrganId="form.getFieldValue('topOrganId') || ''"
+                      @change="handleRquipmentChange"
                       v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
                 </a-form-item>
               </a-col>
@@ -54,13 +59,13 @@
                       :style="allWidth"
                       :maxLength="30"
                       placeholder="请输入设备设施编码"
-                      v-decorator="['equipmentInstCode', { rules: [{ required: true, whitespace: true, message: '请输入土地名称'}]}]"
+                      v-decorator="['equipmentInstCode', { rules: [{ required: true, whitespace: true, message: '请输入设备设施编码'}]}]"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
-                  {{form.getFieldValue('organId')}}
+<!--                  {{form.getFieldValue('organId')}}-->
                   <a-select
                       :style="allWidth"
                       :getPopupContainer="getPopupContainer"
@@ -108,7 +113,7 @@
                   <a-input
                       :style="allWidth"
                       :maxLength="30"
-                      placeholder="请输入供应商"
+                      placeholder="请输入品牌"
                       v-decorator="['equipmentInstBrand',{initialValue: ''|| undefined }]"
                   />
                 </a-form-item>
@@ -117,11 +122,12 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="供应商" v-bind="formItemLayout">
-                  <a-input
-                      :style="allWidth"
-                      :maxLength="30"
-                      placeholder="请输入供应商"
-                      v-decorator="['equipmentSupplierId',{initialValue: ''|| undefined , rules: [{ message: '请选择供应商' }]}]"
+<!--                  {{form.getFieldValue('equipmentSupplierId')}}-->
+                  <a-select
+                    :style="allWidth"
+                    :options="$addTitle(supplierListOpt)"
+                    :default-active-first-option="false"
+                    v-decorator="['equipmentSupplierId']"
                   />
                 </a-form-item>
               </a-col>
@@ -132,7 +138,7 @@
                       style="width: 55.5%;"
                       :maxLength="30"
                       placeholder="请输入生产厂家"
-                      v-decorator="['equipmentFactory', {initialValue: '',}]"
+                      v-decorator="['equipmentFactory', {initialValue: ''}]"
                   />
                 </a-form-item>
               </a-col>
@@ -143,7 +149,7 @@
                      valueFormat="YYYYMMDD"
                      placeholder="请选择出厂日期"
                      :getPopupContainer="getPopupContainer"
-                      v-decorator="['factoryDate',{initialValue: ''}]"
+                      v-decorator="['factoryDate', {initialValue: form.getFieldValue('factoryDate')}]"
                    />
                 </a-form-item>
               </a-col>
@@ -156,7 +162,7 @@
                     valueFormat="YYYYMMDD"
                     placeholder="请选择报废日期"
                     :getPopupContainer="getPopupContainer"
-                    v-decorator="['expDate',{initialValue: '', }]"
+                    v-decorator="['expDate', {initialValue: undefined}]"
                   />
                 </a-form-item>
                 </a-col>
@@ -167,7 +173,7 @@
                     valueFormat="YYYYMMDD"
                     placeholder="请选择安装日期"
                     :getPopupContainer="getPopupContainer"
-                    v-decorator="['installDate',{initialValue: ''}]"
+                    v-decorator="['installDate', {initialValue: undefined}]"
                   />
                 </a-form-item>
               </a-col>
@@ -191,7 +197,7 @@
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
                       v-model="formInfo.imgPath"
-                      :max="1"
+                      :max="5"
                   />
                 </a-form-item>
               </a-col>
@@ -244,6 +250,7 @@ import { parkTypeOpt} from "./dict";
 import DictSelect from "../../common/DictSelect";
 import EquipmentSelect from "../../common/EquipmentSelect";
 import EquipmentSelectTree from "../../common/EquipmentSelectTree";
+import {getEquipmentSupplierListByOrganId, getInfoAttrListByEquipmentId} from "../../../api/building";
 
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
@@ -276,6 +283,7 @@ export default {
       allWidth1,
       allWidth2,
       communityIdOpt: [], // 选择项目
+      supplierListOpt: [], // 供应商
       routeQuery: {
         // 路由传入数据
         type: "create", // 页面类型
@@ -330,13 +338,16 @@ export default {
       if (value) {
         this.initPreData();
         let {organId:organTopId} = await queryTopOrganByOrganID(
-            {
-              nOrgId: value,
-              nOrganId: value,
-            }
+          {
+            nOrgId: value,
+            nOrganId: value,
+          }
         )
         this.queryCommunityListByOrganId(organTopId)
-        this.form.resetFields(['communityId', 'landType', 'landuseType', 'landuse'])
+        this.getEquipmentSupplierListByOrganId(value)
+        // 清除数据
+        this.formInfo.equipmentName = ''
+        this.form.resetFields(['communityId', 'equipmentId', 'equipmentAreaId', 'equipmentAreaId'])
       }
     },
     // 确定
@@ -390,6 +401,11 @@ export default {
     // 改变 所属机构时,做部分重置
     initPreData(){
     },
+    handleRquipmentChange (val) {
+      if(val){
+        this.getInfoAttrListByEquipmentId()
+      }
+    },
     // 初始化
     async init(){
       this.$nextTick(() => {
@@ -420,9 +436,17 @@ export default {
     },
     afterEquipmentApiDetail(data) {
       this.formInfo.topOrganName = data.topOrganName
+      this.formInfo.equipmentName = data.equipmentName
       this.communityIdOpt =[{label: String(data.organName), value: data.organId}]
+      this.supplierListOpt = [{label: data.equipmentSupplierName, value: data.equipmentSupplierId}]
+      this.formInfo.imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
+      this.formInfo.documentPath = (data.documentPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
+      this.formInfo.attrList = data.attrList || []
       return {
-        ...data
+        ...data,
+        factoryDate: String(data.factoryDate),
+        expDate: String(data.expDate),
+        installDate: String(data.installDate)
       }
     },
     beforeEquipment (data) {
@@ -430,7 +454,9 @@ export default {
         ...data,
         equipmentInstId:this.routeQuery.equipmentInstId,
         systemCode:'assets',
-        attrList: this.formInfo.attrList
+        attrList: this.formInfo.attrList,
+        documentPath: (this.formInfo.documentPath || []).map(node => node.url).join(","),
+        imgPath: (this.formInfo.imgPath || []).map(node => node.url).join(",")
       }
     },
     async equipmentApiInsert (params) {
@@ -461,7 +487,6 @@ export default {
       let loadingName = this.SG_Loding("编辑中...");
       try {
         const data = {...params}
-        let api = this.$api.building.equipmentApiInsert
         data.equipmentInstId = this.routeQuery.equipmentInstId
         const {data: res} = await this.$api.building.equipmentApiEdit(data)
         this.DE_Loding(loadingName).then(() => {
@@ -481,6 +506,38 @@ export default {
         });
       } finally {
         this.DE_Loding(loadingName)
+      }
+    },
+    // 获取供应商
+    async getEquipmentSupplierListByOrganId (organId) {
+      const params = {
+        systemCode: 'assets',
+        organId: organId
+      }
+      const {data: res} = await getEquipmentSupplierListByOrganId(params)
+      if (res.code === '0') {
+        this.supplierListOpt = res.data.resultList || []
+      }
+    },
+    // 根据组织机构id和设备分类id查询其它属性
+    async getInfoAttrListByEquipmentId () {
+      try {
+        const organId = this.form.getFieldValue('topOrganId')
+        const equipmentId = this.form.getFieldValue('equipmentId')
+        const params = {
+          organId,
+          equipmentId
+        }
+        this.formInfo.attrList = []
+        const {data: res} = await getInfoAttrListByEquipmentId(params)
+        if (Number(res.code) === 0) {
+          console.log('getInfoAttrListByEquipmentId',res)
+          this.formInfo.attrList = res.data.resultList || []
+          return
+        }
+        this.$SG_Message.error(res.message)
+      } catch {
+        this.$SG_Message.error("系统异常")
       }
     }
 
