@@ -215,6 +215,10 @@ export default {
       };
       this.$api.assets.getPage(form).then(res => {
         if (res.data.code === "0") {
+          if (!res.data || !res.data.data || !res.data.data.data) {
+            this.dataSource = [];
+            this.totalCount = 0;
+          }
           let data = res.data.data.data || [];
           if (data.length === 0) {
             this.showNoDataTips = true;
