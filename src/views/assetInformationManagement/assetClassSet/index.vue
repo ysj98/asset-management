@@ -13,7 +13,7 @@
           <listModel type="land"/>
         </a-tab-pane>
         <a-tab-pane tab="设备设施" key="facilityAndEquipment">
-          <EquipmentKind />
+          <EquipmentCategory />
         </a-tab-pane>
         <a-tab-pane tab="车场" key="carPark">
           <listModel type="carPark"/>
@@ -23,12 +23,13 @@
   </div>
 </template>
 <script>
+import { SET_DEPRECIATION_METHOD } from '@/store/types/platformDictTypes'
 import listModel from "./listModel"
-import EquipmentKind from './child/EquipmentKind/index'
+import EquipmentCategory from './child/EquipmentCategory/index'
 export default {
   components: {
     listModel,
-    EquipmentKind
+    EquipmentCategory
   },
   data () {
     return {
@@ -36,6 +37,10 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('platformDict/getPlatformDict',{
+      code: 'DEPRECIATION_METHOD',
+      type: SET_DEPRECIATION_METHOD
+    })
   },
   methods: {
     tabChange (v) {
@@ -47,6 +52,9 @@ export default {
 <style lang="less" scoped>
   .assetClassSet-page{
     position: relative;
+    .custom-tabs{
+      height: 100%;
+    }
     .copy-left, .copy-right{
       content: '';
       position: absolute;

@@ -65,8 +65,10 @@ import noDataTips from '@/components/noDataTips'
 import {
   columnsData,
   equipment,
-  judgmentData,
-  landCheck,
+  equipmentVerificationList,
+  houseVerificationList,
+  landVerificationList,
+  yardVerificationList,
   landData,
   yard
 } from './../common/registerBasics'
@@ -111,6 +113,10 @@ export default {
   },
   data () {
     return {
+      equipmentVerificationList,
+      houseVerificationList,
+      landVerificationList,
+      yardVerificationList,
       detailData:{},
       projectList:[],
       modalObj: {
@@ -242,7 +248,7 @@ export default {
     handleInitDefaultSourceType(projectId){
       let res = this.projectList.find(ele=>ele.projectId === projectId)
       console.log('res',res)
-      this.sourceType = res ? res.sourceType : ''
+      this.sourceType = res ? Number(res.sourceType) : ''
     },
     /*
     * 获取项目列表
@@ -304,8 +310,8 @@ export default {
       this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = []
-          let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
-          data = res.data.data.data[ASSET_TYPE_LIST]
+          let ASSET_TYPE_PAGE_LIST = handleAssetTypeField(this.assetType,'pageList')
+          data = res.data.data.data[ASSET_TYPE_PAGE_LIST]
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index
@@ -387,7 +393,7 @@ export default {
         // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
-          this.sourceType = sourceType
+          this.sourceType = Number(sourceType)
         }
         // 切换总的统计数据的值为0
         if (!type && this.tableData.length === 0) {
@@ -463,6 +469,15 @@ export default {
               hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
               return preVal
             }, [])
+          } else if (this.assetType === this.ASSET_TYPE_CODE.YARD){
+            debugger
+          } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
+            resData = resData.reduce(function (accumulator, currentValue) {
+              if (accumulator.every(ele=>ele.equipmentId !== currentValue.equipmentId)) {
+                accumulator.push(currentValue)
+              }
+              return accumulator
+            }, [])
           }
           this.tableData = this.handleTableDataSourceModeName(
             resData
@@ -497,7 +512,7 @@ export default {
         let sourceModeName = ele.sourceModeName
         if (!ele.sourceModeName) {
           // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
-          let sourceModeObj = this.sourceOptions.find(sourceItem => sourceItem.key === String(this.sourceType))
+          let sourceModeObj = this.sourceOptions.find(sourceItem => Number(sourceItem.key) === Number(this.sourceType))
           sourceModeName = sourceModeObj ? sourceModeObj.title : ''
         }
         return {
@@ -512,10 +527,9 @@ export default {
     * */
     handleValidateExcelData(arrData){
       let publicData = []
-      if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {
-        publicData = judgmentData
-      } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
-        publicData = landCheck
+      if (Object.keys(this.ASSET_TYPE_CODE).map(e => ([this.ASSET_TYPE_CODE[e]])).includes(this.assetType)){
+        const ASSET_TYPE_VERSIFICATION_LIST = handleAssetTypeField(this.assetType,'verificationList')
+         publicData = this[ASSET_TYPE_VERSIFICATION_LIST]
       }
       for (let i = 0; i < arrData.length; i++) {
         for (let j = 0; j < publicData.length; j++) {
@@ -736,15 +750,22 @@ export default {
         list.value = 0
       })
       if (this.tableData.length > 0) {
-        this.tableData.forEach(item => {
-          if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {
-            this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
-          } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
-            this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
-          }
-          this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
-          this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)
-        })
+        if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
+          this.tableData.forEach(item => {
+            this.numList[1].value = calc.add(this.numList[1].value, item.creditorAmount || 0)
+            this.numList[2].value = calc.add(this.numList[2].value, item.debtAmount || 0)
+          })
+        }else {
+          this.tableData.forEach(item => {
+            if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
+            } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
+            }
+            this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
+            this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)
+          })
+        }
       }
       this.numList[0].value = this.tableData.length
     },
@@ -879,7 +900,7 @@ export default {
         let sourceModeObj = this.sourceOptions.find(ele => item.sourceModeName === ele.title)
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
         item.kindOfRight = this.ownershipData[item.kindOfRightName]
-        item.sourceMode = sourceModeObj ? sourceModeObj.key : ''
+        item.sourceMode = sourceModeObj ? Number(sourceModeObj.key) : ''
       },this)
       console.log(data, '-=-=-=')
       this.basicData = data

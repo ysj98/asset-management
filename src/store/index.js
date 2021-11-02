@@ -10,6 +10,7 @@ import dev from "./modules/dev";
 import auth from "./modules/auth";
 import pro from "./modules/pro";
 import asset from "./modules/asset";
+import platformDict from "./modules/platformDict";
 import * as apiAsset from "@/api/assets";
 
 Vue.use(Vuex);
@@ -70,6 +71,7 @@ export default new Vuex.Store({
     auth,
     dev,
     pro,
-    asset
+    asset,
+    platformDict
   }
 });
