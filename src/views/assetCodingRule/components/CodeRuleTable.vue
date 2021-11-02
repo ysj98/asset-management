@@ -57,7 +57,7 @@ export default {
     async handleReset (record) {
       console.log(record)
       this.$SG_Modal.confirm({
-        title: `确定要回复自定义编码规则吗?`,
+        title: `确定要恢复默认编码规则吗?`,
         okText: "确定",
         cancelText: "关闭",
         onOk: async () => {
