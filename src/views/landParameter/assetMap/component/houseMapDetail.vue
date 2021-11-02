@@ -207,7 +207,7 @@ export default {
   },
   computed: {
     imgSrc () {
-      return this.detailInfo.picPath ? (configs.hostPrime + this.detailInfo.picPath) : ''
+      return this.detailInfo.picPath ? (configs.hostImg + this.detailInfo.picPath) : ''
     }
   },
   filters: {
