@@ -289,7 +289,13 @@ export const assets = {
     // 3.1.1查询设备分类编码列表
     getEquipmentCodeList: '/equipment-openapi/equipment/getEquipmentCodeList',
     // 3.1.2根据设备分类ID查询子级设备分类信息
-    getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId'
+    getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId',
+    // 3.1.5根据设备分类ID查询设备分类台账属性(不分页)
+    getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId',
+    // 删除设施设备分类
+    updateEquipmentStatus: '/ams/categoryCfg/updateEquipmentStatus',
+
+
   },
   // 房屋台账-资产项目视图
   assetProjectView: {

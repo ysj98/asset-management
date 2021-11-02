@@ -6,6 +6,13 @@ import { chunk } from "lodash";
 export default {
   name: "Information",
   props: {
+    titleWidth: {
+      type: String,
+      default: "80px"
+    },
+    data: {
+      type: Object
+    },
     BasicInfoList: {
       type: Array,
       default() {
@@ -38,8 +45,9 @@ export default {
   methods: {
     generateAColChildren(data) {
       const _h = this.$createElement;
+      const resValue = this.data ? this.data[data.key] : data.value;
       // 如果 值为空或者undefined 就显示 --
-      const children = [undefined, "", null].includes(data.value)
+      const children = [undefined, "", null].includes(resValue)
         ? "--"
         : (data.render && data.render(_h, data)) ||
           _h(
@@ -47,7 +55,7 @@ export default {
             {
               class: "content"
             },
-            [data.value]
+            [resValue]
           );
 
       return _h(
@@ -64,7 +72,10 @@ export default {
       const title = _h(
         "span",
         {
-          class: "title"
+          class: "title",
+          style: {
+            flexBasis: _this.titleWidth
+          }
         },
         [data.title]
       );
@@ -123,7 +134,6 @@ export default {
 <style scoped lang="less">
 .title {
   color: rgba(0, 0, 0, 0.8);
-  flex-basis: 80px;
   text-align: right;
   &::after {
     content: "：";

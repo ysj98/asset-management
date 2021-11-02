@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <a-input-search
-      style="width: 100%;height: 50px;"
-      placeholder="Search"
+      style="width: 100%;height: 50px;margin-bottom: 20px;"
+      placeholder="搜索设备设施分类"
       @change="onChange"
     />
     <a-tree
@@ -14,11 +14,12 @@
       :load-data="onLoadData"
       @expand="onExpand"
       option-filter-prop="label"
+      @select="handleSelect"
     >
       <template slot="title" slot-scope="{ title }">
         <span v-if="title.indexOf(searchValue) > -1">
           {{ title.substr(0, title.indexOf(searchValue)) }}
-          <span style="color: #f50">{{ searchValue }}</span>
+          <span style="color: #0084ff">{{ searchValue }}</span>
           {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
         </span>
         <span v-else>{{ title }}</span>
@@ -91,6 +92,12 @@ export default {
     }
   },
   methods: {
+    handleSelect(selectedKeys, e) {
+      const {
+        node: { dataRef }
+      } = e;
+      this.$emit("handleSelect", dataRef);
+    },
     onChange(e) {
       const value = e.target.value;
       const expandedKeys = dataList
@@ -102,11 +109,10 @@ export default {
         })
         .filter((item, i, self) => item && String(self).indexOf(item) === i);
       console.log("expandedKeys", expandedKeys);
-      Object.assign(this, {
-        expandedKeys,
-        searchValue: value,
-        autoExpandParent: true
-      });
+
+      this.searchValue = value
+      this.expandedKeys = expandedKeys
+      this.autoExpandParent = true
     },
     onExpand(expandedKeys) {
       this.expandedKeys = expandedKeys;
@@ -154,6 +160,9 @@ export default {
           value: ele.equipmentId,
           title: ele.equipmentName,
           label: ele.equipmentName,
+          scopedSlots: {
+            title: "title"
+          },
           children: []
         };
       });
@@ -175,9 +184,14 @@ export default {
 <style scoped lang="less">
 .container {
   width: 100%;
-  max-height: 800px;
+  height: calc(100% - 1px);
   overflow: auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px;
+  border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
   .spin {
     position: absolute;
     top: 50%;

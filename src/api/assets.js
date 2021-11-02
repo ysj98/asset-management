@@ -410,6 +410,14 @@ export function getEquipmentCodeList (data) {
 export function getEquipmentListByUpEquipmentId (data) {
   return axiosPost(assets.assetClassSet.getEquipmentListByUpEquipmentId, data, false, false)
 }
+// 3.1.5根据设备分类ID查询设备分类台账属性(不分页)
+export function getInfoAttrListByEquipmentId (data) {
+  return axiosPost(assets.assetClassSet.getInfoAttrListByEquipmentId, data, false, false)
+}
+// 删除设施设备分类
+export function updateEquipmentStatus (data) {
+  return axiosPost(assets.assetClassSet.updateEquipmentStatus, data, false, false)
+}
 // 资产分类设置-获取资产分类详情
 export function getDetail (data) {
   return axiosPost(assets.assetClassSet.getDetail, data, false, false)
