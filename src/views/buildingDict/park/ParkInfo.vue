@@ -181,7 +181,7 @@ export default {
           });
           this.table.totalCount = res.data.Paginator.totalCount || 0;
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.message);
           this.table.loading = false;
         }
       })

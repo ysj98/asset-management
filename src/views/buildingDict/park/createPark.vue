@@ -415,7 +415,6 @@ export default {
           this.DE_Loding(loadingName)
         }
       }
-      this.queryProvinceList()
     },
     /*******************************/
     handleTableInput (value, index, column) {

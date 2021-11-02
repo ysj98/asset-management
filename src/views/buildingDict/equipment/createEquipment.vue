@@ -31,10 +31,9 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="设备设施分类" :required="true" v-bind="formItemLayout">
-                  <equipment-select
-                    :organId="form.getFieldValue('organId')"
-                    v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"
-                  />
+                  <equipment-select-tree
+                      :topOrganId="form.getFieldValue('topOrganId') || ''"
+                      v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -61,6 +60,7 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
+                  {{form.getFieldValue('organId')}}
                   <a-select
                       :style="allWidth"
                       :getPopupContainer="getPopupContainer"
@@ -243,6 +243,7 @@ import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import { parkTypeOpt} from "./dict";
 import DictSelect from "../../common/DictSelect";
 import EquipmentSelect from "../../common/EquipmentSelect";
+import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
@@ -253,6 +254,7 @@ const operationTypes = {
 }
 export default {
   components: {
+    EquipmentSelectTree,
     EquipmentSelect,
     DictSelect,
     FormFooter,
@@ -279,7 +281,7 @@ export default {
         type: "create", // 页面类型
         equipmentInstId: "",
         organName: "",
-        organId: "",
+        topOrganId: "",
       },
       formItemLayout: {
         labelCol: {
@@ -317,9 +319,9 @@ export default {
     this.form = this.$form.createForm(this)
   },
   mounted() {
-    let { organName, organId, type, equipmentInstId } = this.$route.query
+    let { organName, topOrganId, type, equipmentInstId } = this.$route.query
     Object.assign(this, {
-      routeQuery: { organName, organId, type, equipmentInstId },
+      routeQuery: { organName, topOrganId, type, equipmentInstId },
     })
     this.init()
   },
@@ -342,7 +344,11 @@ export default {
       this.form.validateFields((err, values) => {
         if(!err) {
           const params = this.beforeEquipment(values)
-          this.equipmentApiEdit(params)
+          if (this.routeQuery.type == 'edit') {
+            this.equipmentApiEdit(params)
+          } else {
+            this.equipmentApiInsert(params)
+          }
         }
       })
     },
@@ -399,7 +405,8 @@ export default {
     async equipmentApiDetail() {
       const params = {
         equipmentInstId: this.routeQuery.equipmentInstId,
-        organId: this.routeQuery.organId
+        topOrganId: this.routeQuery.topOrganId,
+        systemCode: 'assets'
       }
       let loadingName = this.SG_Loding("加载中...");
       try {
@@ -426,10 +433,37 @@ export default {
         attrList: this.formInfo.attrList
       }
     },
+    async equipmentApiInsert (params) {
+      let loadingName = this.SG_Loding("新增中...");
+      try {
+        const data = {...params}
+        const {data: res} = await this.$api.building.equipmentApiInsert(data)
+        this.DE_Loding(loadingName).then(() => {
+          if (String(res.code) === "0") {
+            this.$SG_Message.success("新增成功");
+            this.$router.push({
+              path: "/buildingDict",
+              query: { showKey: "equipment", refresh: true }
+            });
+          } else {
+            this.$message.error(res.data.message);
+          }
+        });
+      } catch (e) {
+        this.DE_Loding(loadingName).then(() => {
+          this.$SG_Message.error("新增失败！");
+        });
+      } finally {
+        this.DE_Loding(loadingName)
+      }
+    },
     async equipmentApiEdit (params) {
       let loadingName = this.SG_Loding("编辑中...");
       try {
-        const {data: res} = await this.$api.building.equipmentApiEdit(params)
+        const data = {...params}
+        let api = this.$api.building.equipmentApiInsert
+        data.equipmentInstId = this.routeQuery.equipmentInstId
+        const {data: res} = await this.$api.building.equipmentApiEdit(data)
         this.DE_Loding(loadingName).then(() => {
           if (String(res.code) === "0") {
             this.$SG_Message.success("编辑车位成功");

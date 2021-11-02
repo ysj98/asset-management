@@ -1258,3 +1258,13 @@ export const paramsConfig = {
   // 组织机构系统设置统一查询接口
   queryParamsConfigDetail: '/ams/basicSettings/detail'
 }
+
+// 资产编码规则
+export const codeRule = {
+  // 插入参数列表接口
+  paramInit : '/ams/codeRule/paramInit',
+  // 列表接口
+  init : '/ams/codeRule/init',
+  // 预览
+  getPreview: '/asm/codeRule/getPreview'
+}

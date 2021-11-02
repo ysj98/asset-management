@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-table :columns="tableHeader" :data-source="mock" bordered :pagination="false">
+    <a-table :columns="tableHeader" :data-source="data" bordered :pagination="false">
       <template slot="customCode" slot-scope="text, record,index">
         <div style="display: flex;">
           <a-input v-model="record.customCode"  style="display: inline-block"/>
@@ -12,7 +12,7 @@
         <a-button type="link" @click="handleReset(record)">恢复默认</a-button>
       </template>
     </a-table>
-    <rule-modal :visible="ruleVisible" @submit="handleRuleSubmit" @close="handleRuleClose"/>
+    <rule-modal :visible="ruleVisible" :organ-id="organId" @submit="handleRuleSubmit" @close="handleRuleClose"/>
   </div>
 </template>
 <script>
@@ -69,14 +69,31 @@ export default {
         value: `{${data.name}:${data.value}}`
       })
     },
-    handleRequest (data) {
+    async handleRequest (data) {
       const code = this.beforeRequest (data)
-      const center = this.mock[this.selectIndex].customCode.split('-')
+      const center = (this.data[this.selectIndex].customCode || '').split('-').filter(item=>item)
       center.push(code.value)
       const codeStr = center.join('-')
       console.log(codeStr)
-      this.mock[this.selectIndex].customCode = codeStr
-    }
+      this.data[this.selectIndex].customCode = codeStr
+      // 调用预览
+      await this.getPreview(this.beforeGetPreview(this.data[this.selectIndex],data.seq))
+    },
+    beforeGetPreview (data,seq) {
+      return {
+        organId: data.organId,
+        codeString: data.customCode,
+        seq: seq,
+        codeTypeId: data.codeTypeId
+      }
+    },
+    async getPreview(data) {
+      const {data: res} = await this.$api.codeRule.getPreview(data)
+      if(res.code === '0') {
+        return res.data || ""
+      }
+      return ''
+    },
   }
 }
 </script>

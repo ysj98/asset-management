@@ -2,7 +2,7 @@
   <div>
     <a-row style="border-bottom: 1px solid #cccccc66;background: #fff">
       <a-col :span="4" style="padding: 12px 10px 0;">
-        <treeSelect :typeFilter="typeFilter"  v-model="formInfo.organId"  placeholder='请选择组织机构' :allowClear="false" style="width:100%;"></treeSelect>
+        <treeSelect :typeFilter="typeFilter"  v-model="formInfo.organId"  placeholder='请选择组织机构' @changeTree="handleTreeChange" :allowClear="false" style="width:100%;"></treeSelect>
       </a-col>
       <a-col :span="20">
         <div class="top">
@@ -22,11 +22,11 @@
     <div>
       <a-row :offset="1" style="padding:20px;">
         <SG-Title noMargin title="资产编码规则" />
-        <code-rule-table :organ-id="formInfo.organId" style="margin-left: 20px" :data="tableData"/>
+        <code-rule-table :organ-id="formInfo.organId" style="margin-left: 20px" :data="tableData | filterData(1)"/>
       </a-row>
       <a-row :offset="1" style="padding:20px;">
         <SG-Title noMargin title="资产卡片编码规则" />
-        <code-rule-table :organ-id="formInfo.organId" style="margin-left: 20px" :data="tableData"/>
+        <code-rule-table :organ-id="formInfo.organId" style="margin-left: 20px" :data="tableData | filterData(2)"/>
       </a-row>
     </div>
   </div>
@@ -47,7 +47,37 @@ export default {
       organId: '' // 组织机构Id
     },
     tableData: [],
-  })
+  }),
+  methods: {
+    handleTreeChange (val) {
+      console.log('treeChange', val)
+      this.formInfo.organId = val
+      this.getPage()
+    },
+    async getPage () {
+      try {
+        const params = { ...this.formInfo }
+        const {data: res} = await this.$api.codeRule.init(params)
+        if(res.code === '0') {
+          this.tableData = res.data
+        } else {
+          this.$message.error(res.message)
+        }
+      } catch {
+        this.$message.error('系统异常')
+      }
+    }
+  },
+  filters: {
+    filterData (data, val) {
+      switch (Number(val)) {
+        case 1: // 表示资产编码规则
+        return data.filter(item=>Number(item.codeTypeId)< 2000)
+        case 2: // 表示卡片编码规则
+        return data.filter(item=>Number(item.codeTypeId) >= 2000)
+      }
+    }
+  }
 }
 </script>
 <style lang="less">

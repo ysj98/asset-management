@@ -229,7 +229,7 @@ export default {
           });
           this.table.totalCount = res.data.Paginator.totalCount || 0;
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.message);
           this.table.loading = false;
         }
       })
@@ -433,7 +433,7 @@ export default {
           this.parkTypeOpt = result.map(item=>({value: item.placeId, label: item.placeName}))
           this.parkTypeOpt.unshift(...parkTypeOpt)
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.message);
         }
       })
     },
@@ -465,12 +465,13 @@ export default {
       this.checkCarType(ev)
     },
     checkCarType(ev) {
+      console.log(ev)
       switch (String(ev)) {
         case '0': // 临时
         case '1': // 固定
           this.carType = this.carTypeMenu.PARKING_OBJ_STATUS
           break;
-        case' 2': // 产权
+        case '2': // 产权
           this.carType = this.carTypeMenu.PROPERTY_PARKING_OBJ_STATUS
           break;
         default:

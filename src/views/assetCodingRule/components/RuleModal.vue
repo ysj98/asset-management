@@ -51,15 +51,18 @@
   </a-modal>
 </template>
 <script>
-import {menuList} from "./componentDict";
+// import {menuList} from "./componentDict";
 export default {
   props: {
+    organId: {
+      default: ''
+    },
     visible: {
       default: false
     }
   },
   data: () => ({
-    menuList,
+    menuList: [],
     labelCol: { span: 4 },
     wrapperCol: { span: 16 },
     rightList: [],
@@ -75,6 +78,13 @@ export default {
       codeSeq: [{ required: true, message: '请输入开始数值', trigger: 'change' }],
     }
   }),
+  watch: {
+    visible: function (nVal) {
+      if (nVal) {
+        this.paramInit()
+      }
+    }
+  },
   methods: {
     handleSubmit () {
       if(this.sequenceFlag) {
@@ -106,7 +116,7 @@ export default {
           // const code = [this.menuList[this.activeIndex].name,codeSeq.join('')].join(':')
           this.submit({
             name: this.menuList[this.activeIndex].name,
-            codeSeq: codeSeq.join(''),
+            seq: codeSeq.join(''),
             value: codeSeq.join('')
           })
         } else {
@@ -139,6 +149,19 @@ export default {
       this.activeRightIndex = index
     },
     /*******************************************/
+    async paramInit () {
+      try {
+        const params = { organId: this.organId }
+        const {data: res} = await this.$api.codeRule.paramInit(params)
+        if(res.code === '0') {
+          this.menuList = res.data || []
+        } else {
+          this.$message.error(res.message)
+        }
+      } catch {
+        this.$message.error('系统异常')
+      }
+    }
   }
 }
 </script>

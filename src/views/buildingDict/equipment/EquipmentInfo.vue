@@ -118,10 +118,10 @@
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
-          :pageLength="queryCondition.pageSize"
+          :pageLength="queryCondition.pageLength"
           :totalCount="table.totalCount"
           location="fixed"
-          v-model="queryCondition.pageNum"
+          v-model="queryCondition.pageNo"
           @change="handleChange"
         />
       </div>
@@ -186,8 +186,8 @@ export default {
         this.$route.query.refresh &&
         this.$route.query.showKey === "equipment"
       ) {
-        this.queryCondition.pageNum = 1;
-        this.queryCondition.pageSize = 10;
+        this.queryCondition.pageN0 = 1;
+        this.queryCondition.pageLength = 10;
         this.query();
       }
     },
@@ -199,7 +199,8 @@ export default {
     async query() {
       let data = {
         ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(","),
+        // communityId: this.queryCondition.communityId.join(","),
+        systemCode: 'assets'
       };
       this.table.loading = true;
       try {
@@ -216,7 +217,7 @@ export default {
           });
           this.table.totalCount = res.data.paginator.totalCount || 0;
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.message);
         }
       } finally {
         this.table.loading = false;
@@ -225,7 +226,7 @@ export default {
     },
     // 重置分页查询
     searchQuery() {
-      this.queryCondition.pageNum = 1;
+      this.queryCondition.pageNo = 1;
       this.query();
     },
     // 查询土地类别
@@ -252,7 +253,7 @@ export default {
     },
     queryCommunityListByOrganId() {
       let data = {
-        organId: this.queryCondition.organId,
+        topOrganId: this.queryCondition.topOrganId
       };
       this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
         if (res.data.code === "0") {
@@ -278,7 +279,7 @@ export default {
       if (!organId) {
         return;
       }
-      this.queryCondition.organId = organId
+      this.queryCondition.topOrganId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
       if (this.parkTypeOpt.length === 1) {
@@ -345,8 +346,8 @@ export default {
         ...this.queryCondition,
         communityId: this.queryCondition.communityId.join(","),
       };
-      delete data.pageNum;
-      delete data.pageSize;
+      delete data.pageNo;
+      delete data.pageLength;
       this.$api.building.blankApiExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
@@ -373,7 +374,7 @@ export default {
           cancelText: "关闭",
           onOk: () => {
             let data = {
-              organId: this.queryCondition.organId,
+              topOrganId: this.queryCondition.topOrganId,
               blankId: record.blankId,
             };
             this.$api.building.blankApiDelete(data).then((res) => {
@@ -400,13 +401,14 @@ export default {
       if (["edit", "detail"].includes(type)) {
         Object.assign(query, {
           equipmentInstId: record.equipmentInstId,
+          topOrganId: record.topOrganId
         });
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });
     },
     handleChange(data) {
-      this.queryCondition.pageNum = data.pageNo;
-      this.queryCondition.pageSize = data.pageLength;
+      this.queryCondition.pageNo = data.pageNo;
+      this.queryCondition.pageLength = data.pageLength;
       this.query();
     },
     // 搜索

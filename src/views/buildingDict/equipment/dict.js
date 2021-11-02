@@ -21,13 +21,10 @@ export const allWidth = {
   overflow: 'hidden'
 };
 export const queryCondition = {
-  organId: "", // 机构id
-  communityId: [''], // 运营项目
-  landType: undefined, // 土地类型
-  landuse: '', // 土地用途
-  status: '', // 土地名称/编码/宗地号
-  pageNum: 1,
-  pageSize: 10,
+  topOrganId: '', // 所属组织机构
+  equipmentInstNameOrCode: '', // 设备实力名称或编码
+  pageNo: 1,
+  pageLength: 10,
   isCurrent: 0
 };
 export const communityIdOpt = [
