@@ -28,7 +28,6 @@
 <script>
 import DownLoadTemplate from "@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate";
 import {
-  handleAssetTypeField,
   commonFn,
   checkBuildsObjectTypeFn, confirmDownloadTemplate
 } from "./share";
