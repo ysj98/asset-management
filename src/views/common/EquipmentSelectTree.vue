@@ -17,7 +17,7 @@ export default {
   props: {
     placeholder: {
       type: String,
-      default: "请选择位置"
+      default: "请选择分类"
     },
     // 组织机构 id
     topOrganId: {
@@ -66,7 +66,7 @@ export default {
     onLoadData(treeNode) {
       console.log("treeNode", treeNode);
       return new Promise(async (resolve, reject) => {
-        const { value, equipmentOrganRelId } = treeNode;
+        const { value } = treeNode;
         try {
           const data = await this.getPositionData({
             organId: this.topOrganId,
