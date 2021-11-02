@@ -107,6 +107,12 @@ export const ASSET_MANAGEMENT = {
   ASSET_DICT_STALL_EDIT: 'zcgl_dict_stall_edit',
   // 楼盘字典-删除车位
   ASSET_DICT_STALL_DELETE: 'zcgl_dict_stall_delete',
+  // 楼盘字典-创建设备
+  ASSET_DICT_EQUIPMENT_CREATE: 'zcgl_dict_equipment_create',
+  // 楼盘字典-修改设备
+  ASSET_DICT_EQUIPMENT_EDIT: 'zcgl_dict_equipment_edit',
+  // 楼盘字典-删除设备
+  ASSET_DICT_EQUIPMENT_DELETE: 'zcgl_dict_equipment_delete',
   // 2.0.0end
   /**
   * 资产变动

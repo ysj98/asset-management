@@ -23,15 +23,22 @@
             </SG-Button>
           </div>
           <div style="overflow: visible;margin-top:-10px;">
+            <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
+              仅当前机构下设备
+            </a-checkbox>
             <!-- 公司 -->
             <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
-            <!-- 全部运营项目-->
+            <equipment-select-tree
+                style="margin-right: 10px;"
+                placeholder="请选择设备设施分类"
+                :topOrganId="queryCondition.topOrganId"
+                v-model="queryCondition.equipmentId"/>
+<!--                mode="multiple"-->
             <a-select
                 showSearch
                 placeholder="请选择运营项目"
                 v-model="queryCondition.communityId"
                 @change="communityIdSelect"
-                mode="multiple"
                 :maxTagCount="1"
                 optionFilterProp="children"
                 :style="allWidth"
@@ -40,37 +47,14 @@
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"
             />
-            <!-- 全部土地类型 -->
-            <a-select
-                showSearch
-                placeholder="请选择车场"
-                v-model="queryCondition.landType"
-                optionFilterProp="children"
-                :style="allStyle"
-                :options="$addTitle(parkTypeOpt)"
-                :allowClear="false"
-                :filterOption="filterOption"
-                notFoundContent="没有查询到数据"
-            />
-            <!-- 资产名称或编码 -->
             <a-input
                 :maxLength="30"
-                placeholder="车位名称/编码"
-                v-model="queryCondition.queryName"
+                placeholder="设备设施名称/编码"
+                v-model="queryCondition.equipmentInstNameOrCode"
                 :style="allStyle"
             />
-            <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-              仅当前机构下设备
-            </a-checkbox>
+
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-          </div>
-        </div>
-      </div>
-      <div slot="contentForm">
-        <div class="top-search-one" style="padding: 0;">
-          <div style="overflow: visible;margin-top:-10px;width: 100%;padding-right: 325px;display: flex;flex-width: nowarp;justify-content: flex-end">
-            <SG-DatePicker :allowClear="false" label="安装日期" style="width: 200px;margin-right: 10px;"  pickerType="RangePicker" v-model="installValue" format="YYYY-MM-DD"></SG-DatePicker>
-            <SG-DatePicker :allowClear="false" label="报废日期" style="width: 200px;"  pickerType="RangePicker" v-model="expValue" format="YYYY-MM-DD"></SG-DatePicker>
           </div>
         </div>
       </div>
@@ -130,9 +114,11 @@ import {
 } from "./dict.js";
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
+import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
+    EquipmentSelectTree,
     DictSelect,
     TreeSelect,
     noDataTips,
@@ -216,7 +202,7 @@ export default {
     },
     queryCommunityListByOrganId() {
       let data = {
-        topOrganId: this.queryCondition.topOrganId
+        organId: this.queryCondition.topOrganId
       };
       this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
         if (res.data.code === "0") {
@@ -243,6 +229,7 @@ export default {
         return;
       }
       this.queryCondition.topOrganId = organId
+      this.queryCondition.communityId = '' //[""]
       this.queryCommunityListByOrganId();
       // 异步接口
       this.searchQuery();
@@ -279,10 +266,10 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_EDIT) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT) || true) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_DELETE) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_DELETE) || true) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
@@ -290,7 +277,7 @@ export default {
     },
     // 处理按钮权限
     handlePower() {
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_CREATE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_CREATE)) {
         this.createPower = true;
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {

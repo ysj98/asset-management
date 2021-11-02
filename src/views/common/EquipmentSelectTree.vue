@@ -30,8 +30,8 @@ export default {
       required: true
     },
     value: {
-      type: [String, Array],
-      default: ""
+      type: [String, Array, Number],
+      default: undefined
     },
     width:{
       type: String,

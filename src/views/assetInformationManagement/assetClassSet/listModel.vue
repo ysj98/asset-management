@@ -215,7 +215,7 @@ export default {
       };
       this.$api.assets.getPage(form).then(res => {
         if (res.data.code === "0") {
-          let data = res.data.data.data;
+          let data = res.data.data.data || [];
           if (data.length === 0) {
             this.showNoDataTips = true;
           } else {

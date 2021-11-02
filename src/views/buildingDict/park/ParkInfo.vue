@@ -30,12 +30,12 @@
           <!-- 公司 -->
           <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
           <!-- 全部运营项目-->
+<!--            mode="multiple"-->
           <a-select
             showSearch
             placeholder="请选择运营项目"
             v-model="queryCondition.communityId"
             @change="communityIdSelect"
-            mode="multiple"
             :maxTagCount="1"
             optionFilterProp="children"
             :style="allWidth"
@@ -163,7 +163,7 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(","),
+        // communityId: this.queryCondition.communityId.join(","),
       };
       this.table.loading = true;
       this.$api.building.parkApiList(data).then(({data: res}) => {
@@ -220,6 +220,7 @@ export default {
         return;
       }
       this.queryCondition.organId = organId
+      this.queryCondition.communityId = '' // [""]
       this.queryCommunityListByOrganId();
       // 异步接口
       this.searchQuery();
@@ -255,10 +256,10 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_PARK_EDIT) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_PARK_EDIT)) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_PARK_DELETE) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_PARK_DELETE)) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
