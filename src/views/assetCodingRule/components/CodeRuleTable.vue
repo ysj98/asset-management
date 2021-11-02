@@ -12,7 +12,7 @@
         <a-button type="link" @click="handleReset(record)">恢复默认</a-button>
       </template>
     </a-table>
-    <rule-modal :visible="ruleVisible" :organ-id="organId" @submit="handleRuleSubmit" @close="handleRuleClose"/>
+    <rule-modal :visible="ruleVisible" :organ-id="organId" :codeTypeId="codeTypeId" @submit="handleRuleSubmit" @close="handleRuleClose"/>
   </div>
 </template>
 <script>
@@ -36,7 +36,8 @@ export default {
     tableHeader,
     mock,
     selectIndex: -1, // 插入参数的编码规则
-    ruleVisible: false
+    ruleVisible: false,
+    codeTypeId: '',
   }),
   methods: {
     handleSave (record) {
@@ -70,6 +71,7 @@ export default {
     handleInsertValue(record, index){
       console.log(arguments)
       this.selectIndex = index
+      this.codeTypeId = record.codeTypeId
       this.ruleVisible = true
     },
     handleRuleSubmit (data) {

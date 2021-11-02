@@ -57,6 +57,9 @@ export default {
     organId: {
       default: ''
     },
+    codeTypeId: {
+      default: ''
+    },
     visible: {
       default: false
     }
@@ -155,7 +158,7 @@ export default {
       this.menuList = []
       this.rightList = []
       try {
-        const params = { organId: this.organId }
+        const params = { organId: this.organId, codeTypeId: this.codeTypeId }
         const {data: res} = await this.$api.codeRule.paramInit(params)
         if(res.code === '0') {
           this.menuList = res.data || []
