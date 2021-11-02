@@ -310,8 +310,8 @@ export default {
       this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = []
-          let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
-          data = res.data.data.data[ASSET_TYPE_LIST]
+          let ASSET_TYPE_PAGE_LIST = handleAssetTypeField(this.assetType,'pageList')
+          data = res.data.data.data[ASSET_TYPE_PAGE_LIST]
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index

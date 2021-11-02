@@ -11,8 +11,10 @@ export function handleAssetTypeField(assetType, keyStr) {
    *   - /ams/registerOrder/saveRegisterOrder
    * verificationList
    *   - 资产登记 导入模板所得数据进行数据校验
+   * pageList
+   *   - /ams/registerOrder/getRegisterOrderDetailsPageById
    * */
-  const keyArr = ["ids", "list","verificationList"];
+  const keyArr = ["ids", "list", "verificationList", "pageList"];
   if (!keyArr.includes(keyStr)) {
     console.trace();
     throw new Error(`keyStr must in ${keyArr}`);
@@ -24,22 +26,26 @@ export function handleAssetTypeField(assetType, keyStr) {
     [ASSET_TYPE_CODE.HOUSE]: {
       ids: "buildIds",
       list: "assetHouseList",
-      verificationList:'houseVerificationList'
+      pageList: "assetHoseList",
+      verificationList: "houseVerificationList"
     },
     [ASSET_TYPE_CODE.LAND]: {
       ids: "blankIdList",
       list: "assetBlankList",
-      verificationList:'landVerificationList'
+      pageList: "assetLandList",
+      verificationList: "landVerificationList"
     },
     [ASSET_TYPE_CODE.EQUIPMENT]: {
       ids: "equipmentTypeList",
       list: "assetEquipList",
-      verificationList:'equipmentVerificationList'
+      pageList: "equipList",
+      verificationList: "equipmentVerificationList"
     },
     [ASSET_TYPE_CODE.YARD]: {
       ids: "yardIds",
       list: "",
-      verificationList:'yardVerificationList'
+      pageList: "",
+      verificationList: "yardVerificationList"
     }
   };
   return options[assetType][keyStr];
