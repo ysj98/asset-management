@@ -364,6 +364,20 @@ export default {
           this.deletePower = true;
         }
       }
+      if (["carPark"].includes(this.type)) {
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_CAR_PARK_CREATE)) {
+          this.createPower = true;
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_CAR_PARK_EDIT)) {
+          this.editPower = true;
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_CAR_PARK_CHANGE)) {
+          this.changePower = true;
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_CAR_PARK_DELETE)) {
+          this.deletePower = true;
+        }
+      }
     },
     // 页码发生变化
     handlePageChange(page) {

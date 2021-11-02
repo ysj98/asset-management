@@ -49,6 +49,14 @@ export const ASSET_MANAGEMENT = {
   ASSET_CLASS_LAND_CHANGE: 'asset_class_land_change',
   // 资产分类-状态删除土地
   ASSET_CLASS_LAND_DELETE: 'asset_class_land_delete',
+  // 资产分类-新增土地
+  ASSET_CLASS_CAR_PARK_CREATE: 'asset_class_car_park_create',
+  // 资产分类-编辑土地
+  ASSET_CLASS_CAR_PARK_EDIT: 'asset_class_car_park_edit',
+  // 资产分类-状态改变土地
+  ASSET_CLASS_CAR_PARK_CHANGE: 'asset_class_car_park_change',
+  // 资产分类-状态删除土地
+  ASSET_CLASS_CAR_PARK_DELETE: 'asset_class_car_park_delete',
   // 2.0.0新增end
   // 楼盘字典-新增房间
   ASSET_ADD_HOUSE: 'zcgl_add_house',
