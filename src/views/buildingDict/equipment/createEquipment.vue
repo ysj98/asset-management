@@ -74,6 +74,7 @@
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
                     optionFilterProp="children"
+                    @change="handleCommunityIdChange"
                     :getPopupContainer="getPopupContainer"
                     :options="$addTitle(communityIdOpt)"
                   />
@@ -397,7 +398,10 @@ export default {
       })
     },
     // 选择项目变化
-    communityIdChange(e) {},
+    handleCommunityIdChange(e) {
+      this.formInfo.equipmentAreaName = ''
+      this.form.resetFields(['equipmentAreaId'])
+    },
     filterOption(input, option) {
       return (
           option.componentOptions.children[0].text
