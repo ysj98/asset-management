@@ -575,6 +575,9 @@ export default {
       try {
         const organId = this.form.getFieldValue('topOrganId')
         const equipmentId = this.form.getFieldValue('equipmentId')
+        if (!equipmentId || !organId) {
+          return
+        }
         const params = {
           organId,
           equipmentId
