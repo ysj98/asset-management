@@ -16,15 +16,16 @@
                 <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
 <!--                      :defaultOrganName="formInfo.organName"-->
                   <treeSelect
-                      ref="organTopRef"
-                      :default="false"
-                      :typeFilter="typeFilter"
-                      @changeTree="changeTree"
-                      placeholder='请选择所属机构'
-                      :defaultOrganName="formInfo.topOrganName"
-                      :style="allStyle"
-                      :allowClear="false"
-                      v-decorator="['topOrganId',{initialValue: ''|| undefined, rules: [{ required: true, message: '请选择所属机构' }]}]"
+                    ref="organTopRef"
+                    :default="false"
+                    :disabled="routeQuery.type === 'edit'"
+                    :typeFilter="typeFilter"
+                    @changeTree="changeTree"
+                    placeholder='请选择所属机构'
+                    :defaultOrganName="formInfo.topOrganName"
+                    :style="allStyle"
+                    :allowClear="false"
+                    v-decorator="['topOrganId',{initialValue: ''|| undefined, rules: [{ required: true, message: '请选择所属机构' }]}]"
                   >
                   </treeSelect>
                 </a-form-item>
@@ -32,12 +33,12 @@
               <a-col :span="8">
                 <a-form-item label="设备设施分类" :required="true" v-bind="formItemLayout">
                   <equipment-select-tree
-                      :width="'100%'"
-                      placeholder="请选择设备设施分类"
-                      :default-name="formInfo.equipmentName"
-                      :topOrganId="form.getFieldValue('topOrganId') || ''"
-                      @change="handleRquipmentChange"
-                      v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
+                    :width="'100%'"
+                    placeholder="请选择设备设施分类"
+                    :default-name="formInfo.equipmentName"
+                    :topOrganId="form.getFieldValue('topOrganId') || ''"
+                    @change="handleRquipmentChange"
+                    v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -55,10 +56,10 @@
               <a-col :span="8">
                 <a-form-item label="设备设施编码" v-bind="formItemLayout">
                   <a-input
-                      :style="allWidth"
-                      :maxLength="30"
-                      placeholder="请输入设备设施编码"
-                      v-decorator="['equipmentInstCode', { rules: [{ required: true, whitespace: true, message: '请输入设备设施编码'}]}]"
+                    :style="allWidth"
+                    :maxLength="30"
+                    placeholder="请输入设备设施编码"
+                    v-decorator="['equipmentInstCode', { rules: [{ required: true, whitespace: true, message: '请输入设备设施编码'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -66,16 +67,17 @@
                 <a-form-item label="运营项目" v-bind="formItemLayout">
 <!--                  {{form.getFieldValue('organId')}}-->
                   <a-select
-                      showSearch
-                      :style="allWidth"
-                      :allowClear="false"
-                      placeholder="请选择项目"
-                      v-decorator="['communityId']"
-                      :filterOption="filterOption"
-                      notFoundContent="没有查询到数据"
-                      optionFilterProp="children"
-                      :getPopupContainer="getPopupContainer"
-                      :options="$addTitle(communityIdOpt)"
+                    showSearch
+                    :style="allWidth"
+                    :allowClear="false"
+                    :disabled="routeQuery.type === 'edit'"
+                    placeholder="请选择项目"
+                    v-decorator="['communityId']"
+                    :filterOption="filterOption"
+                    notFoundContent="没有查询到数据"
+                    optionFilterProp="children"
+                    :getPopupContainer="getPopupContainer"
+                    :options="$addTitle(communityIdOpt)"
                   />
                 </a-form-item>
               </a-col>
@@ -95,10 +97,10 @@
                 <a-form-item label="所在位置" v-bind="formItemLayoutGeo">
 <!--                  {{form.getFieldValue('communityId')}}-&#45;&#45;-->
                   <equipment-select
-                      placeholder="请选择位置"
-                      :defaultName="formInfo.equipmentAreaName"
-                      :community-id="form.getFieldValue('communityId')"
-                      style="width: 28.5%;margin-right: 2%;"
+                    placeholder="请选择位置"
+                    :defaultName="formInfo.equipmentAreaName"
+                    :community-id="form.getFieldValue('communityId')"
+                    style="width: 28.5%;margin-right: 2%;"
                     v-decorator="['equipmentAreaId']"/>
                   <a-input
                     style="width: 55.5%;"
@@ -111,10 +113,10 @@
               <a-col :span="8">
                 <a-form-item label="品牌" v-bind="formItemLayout">
                   <a-input
-                      :style="allWidth"
-                      :maxLength="30"
-                      placeholder="请输入品牌"
-                      v-decorator="['equipmentInstBrand',{initialValue: ''|| undefined }]"
+                    :style="allWidth"
+                    :maxLength="30"
+                    placeholder="请输入品牌"
+                    v-decorator="['equipmentInstBrand',{initialValue: ''|| undefined }]"
                   />
                 </a-form-item>
               </a-col>
@@ -133,11 +135,11 @@
               <a-col :span="8">
                 <a-form-item label="生产厂家" v-bind="formItemLayout">
                   <a-input
-                      :style="allWidth"
-                      style="width: 55.5%;"
-                      :maxLength="30"
-                      placeholder="请输入生产厂家"
-                      v-decorator="['equipmentFactory', {initialValue: ''}]"
+                    :style="allWidth"
+                    style="width: 55.5%;"
+                    :maxLength="30"
+                    placeholder="请输入生产厂家"
+                    v-decorator="['equipmentFactory', {initialValue: ''}]"
                   />
                 </a-form-item>
               </a-col>
@@ -182,8 +184,8 @@
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
                   <a-textarea
-                      :maxLength="200"
-                      v-decorator="['equipmentInstDesc', { initialValue: ''|| undefined }]"
+                    :maxLength="200"
+                    v-decorator="['equipmentInstDesc', { initialValue: ''|| undefined }]"
                   />
                 </a-form-item>
               </a-col>
@@ -195,8 +197,8 @@
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
-                      v-model="formInfo.imgPath"
-                      :max="5"
+                    v-model="formInfo.imgPath"
+                    :max="5"
                   />
                 </a-form-item>
               </a-col>
@@ -205,9 +207,9 @@
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
                   <SG-UploadFile
-                      type="all"
-                      :customUpload="customUpload "
-                      v-model="formInfo.documentPath"
+                    type="all"
+                    :customUpload="customUpload "
+                    v-model="formInfo.documentPath"
                   />
                 </a-form-item>
               </a-col>
@@ -220,10 +222,10 @@
                 <a-col :span="8" :key="item.attrId">
                   <a-form-item :label="item.attrName" v-bind="formItemLayout">
                     <a-input
-                        :style="allWidth"
-                        :maxLength="30"
-                        :placeholder="'请输入' + item.attrName"
-                        v-model="item.attrValue"
+                      :style="allWidth"
+                      :maxLength="30"
+                      :placeholder="'请输入' + item.attrName"
+                      v-model="item.attrValue"
                     />
                   </a-form-item>
                 </a-col>
