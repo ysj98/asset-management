@@ -525,7 +525,7 @@ export default {
               query: { showKey: "equipment", refresh: true }
             });
           } else {
-            this.$message.error(res.data.message);
+            this.$SG_Message.error(res.message);
           }
         });
       } catch (e) {
