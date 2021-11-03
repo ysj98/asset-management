@@ -93,7 +93,7 @@
             <a-row>
               <a-col :span="16">
                 <a-form-item label="所在位置" v-bind="formItemLayoutGeo">
-                  {{form.getFieldValue('communityId')}}---
+<!--                  {{form.getFieldValue('communityId')}}-&#45;&#45;-->
                   <equipment-select
                       placeholder="请选择位置"
                       :defaultName="formInfo.equipmentAreaName"
@@ -351,6 +351,7 @@ export default {
         this.getEquipmentSupplierListByOrganId(value)
         // 清除数据
         this.formInfo.equipmentName = ''
+        this.formInfo.equipmentAreaName = ''
         this.form.resetFields(['communityId', 'equipmentId', 'equipmentAreaId', 'equipmentAreaId'])
       }
     },
