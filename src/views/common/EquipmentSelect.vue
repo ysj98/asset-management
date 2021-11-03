@@ -1,32 +1,51 @@
 <template>
-  <a-tree-select
-      v-model="valueCmp"
-      tree-data-simple-mode
-      style="width: 100%"
-      placeholder="请选择设备设施分类"
-      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-      :tree-data="treeList"
-      :load-data="onLoadData"
-  />
+  <div class="select-container" :style="{width: width}" >
+    <a-tree-select
+        v-model="valueCmp"
+        :class="{'have-default-name': showDefaultOrganName}"
+        tree-data-simple-mode
+        style="width: 100%"
+        placeholder="请选择设备设施分类"
+        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+        :tree-data="treeList"
+        @change="handleChange"
+        @focus="handleFocus"
+    />
+    <div class="default-name" v-show="showDefaultOrganName">{{defaultName}}</div>
+  </div>
 </template>
 <script>
 
 export default {
   props:{
-    value:undefined,
-    organId: undefined
+    value: '',
+    communityId: {
+      type: [String, Number]
+    },
+    width:{
+      type: String,
+      default: '200px'
+    },
+    defaultName : {
+      type: String,
+      default: ''
+    }
   },
   model: {
     event: 'change',
     prop: 'value'
   },
   watch: {
-    organId: function () {
-      this.getEquipmentCodeList()
+    communityId: function () {
+      this.init()
+    },
+    defaultName: function () {
+      this.showDefaultOrganName = true
     }
   },
   data : ()=>({
-    treeList: []
+    treeList: [],
+    showDefaultOrganName: true // 显示默认值
   }),
   computed:{
     valueCmp: {
@@ -39,23 +58,27 @@ export default {
     }
   },
   methods: {
-    onLoadData (treeNode) {
-      console.log(treeNode.dataRef)
-      return this.getEquipmentListByUpEquipmentId(treeNode.dataRef)
+    handleFocus () {
+      console.log('focus')
+        this.init()
+    },
+    handleChange () {
+      this.showDefaultOrganName = false
     },
     init () {
-      this.getEquipmentCodeList() // 根据组织机构查询设备编码表
+      this.treeList = []
+      this.getEquipmentInstListByTopOrganId() // 根据组织机构查询设备编码表
     },
     // 顶层
-    async getEquipmentCodeList () {
-      if(!this.organId) {
-        // this.$message.error('请选择所属组织机构')
+    async getEquipmentInstListByTopOrganId () {
+      if(!this.communityId) {
         return
       }
       const params = {
-        organId: this.organId
+        systemCode: 'assets',
+        communityId: this.communityId
       }
-      const {data: res} = await this.$api.building.getEquipmentCodeList(params)
+      const {data: res} = await this.$api.building.getEquipmentInstListByTopOrganId(params)
       if (String(res.code) === "0") {
         this.afterEquipmentCodeList(res.data.resultList|| [])
       } else {
@@ -63,27 +86,10 @@ export default {
       }
     },
     afterEquipmentCodeList (value) {
-      // code: '6003', name: '视频监控'
-      this.treeList=value.map(item => ({ id: item.code, pId: 0, value: item.code, title: item.name }))
-    },
-    async getEquipmentListByUpEquipmentId(data) {
-      const params = {
-        organId: this.organId,
-        upEquipmentId: data.value // 上级分类Id
-      }
-      const {data: res} = await this.$api.building.getEquipmentListByUpEquipmentId(params)
-      debugger
-      if (String(res.code) === "0") {
-        this.afterEquipmentListByUpEquipmentId(res.data.resultList|| [], data)
-      }
-      // this.afterEquipmentListByUpEquipmentId( [], data)
-      return
-    },
-    afterEquipmentListByUpEquipmentId (value,parentData) {
-      const list=[
-        { id:"8666", pId: parentData.value, value: '8666', title: '测试子组件' }
-      ]
-      this.treeList.push(...list)
+      this.treeList=value.map(item => {
+        const pId = item.upPositionId // === -1 ? 0 : item.upPositionId
+        return { id: item.positionId, pId: pId, value: item.positionId, title: item.positionName }
+      })
     }
   },
   mounted() {
@@ -91,3 +97,34 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.select-container {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  .tree-select {
+    width: 100%;
+  }
+  .have-default-name {
+    z-index: 100;
+    /deep/ .ant-select-selection-selected-value {
+      opacity: 0;
+    }
+    /deep/ .ant-select-selection {
+      background: transparent;
+    }
+  }
+  .default-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 30px 0 11px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 1;
+  }
+}
+</style>

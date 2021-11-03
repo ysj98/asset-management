@@ -258,25 +258,10 @@ export function getInfoAttrListByEquipmentId (data) {
   return axiosPost(building.getInfoAttrListByEquipmentId, data)
 }
 // 根据组织机构ID查询设备位置
-export function queryTopOrganByOrganID({organId}) {
-  return new Promise((resolve) => {
-    let form = {
-      subUrl: "/datacachesvr-api-netty/queryTopOrganByOrganID",
-      form: {
-        channel: 1,
-        nOrgId: +nOrgId,
-        nOrganId: +nOrganId
-      }
-    };
-    console.log(vueInstance)
-    vueInstance.$api.dataCenter.dataCacheTrans(form).then(res => {
-      if (!res.data.data.organId) {
-        vueInstance.$message.error(res.data.message || "获取组织机构失败");
-      }
-      let resultData = res.data.data
-      resultData.organId = String(resultData.organId)
-      resolve(resultData)
-    });
-  })
+export function getEquipmentInstListByTopOrganId(data) {
+  return axiosGet(building.getEquipmentInstListByTopOrganId,data)
 }
-
+// 根据 communityId 查询 所属机构
+export function queryOrganIdByCommunityId(data) {
+  return axiosGet(building.queryOrganIdByCommunityId,data)
+}

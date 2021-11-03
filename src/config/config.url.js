@@ -602,7 +602,11 @@ export const building = {
   // 根据组织机构id查询分类编码表
   getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId',
   // 根据organId和设备分类Id
-  getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId'
+  getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId',
+  // 根据communityId查询位置
+  getEquipmentInstListByTopOrganId: '/equipment-openapi/common/getPositionListByCommunityId',
+  // 根据 communityId 查询 organId
+  queryOrganIdByCommunityId: '/equipment-openapi/common/queryOrganIdByCommunityId'
 }
 
 // 权属概况

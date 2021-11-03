@@ -31,7 +31,6 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="设备设施分类" :required="true" v-bind="formItemLayout">
-<!--                  {{form.getFieldValue('equipmentId')}}-->
                   <equipment-select-tree
                       :width="'100%'"
                       placeholder="请选择设备设施分类"
@@ -67,16 +66,16 @@
                 <a-form-item label="运营项目" v-bind="formItemLayout">
 <!--                  {{form.getFieldValue('organId')}}-->
                   <a-select
-                      :style="allWidth"
-                      :getPopupContainer="getPopupContainer"
-                      placeholder="请选择项目"
                       showSearch
-                      optionFilterProp="children"
-                      :options="$addTitle(communityIdOpt)"
+                      :style="allWidth"
                       :allowClear="false"
+                      placeholder="请选择项目"
+                      v-decorator="['communityId']"
                       :filterOption="filterOption"
                       notFoundContent="没有查询到数据"
-                      v-decorator="['organId']"
+                      optionFilterProp="children"
+                      :getPopupContainer="getPopupContainer"
+                      :options="$addTitle(communityIdOpt)"
                   />
                 </a-form-item>
               </a-col>
@@ -94,17 +93,18 @@
             <a-row>
               <a-col :span="16">
                 <a-form-item label="所在位置" v-bind="formItemLayoutGeo">
-                  <a-input
-                      style="width: 28.5%;margin-right: 2%;"
-                      :maxLength="30"
+                  {{form.getFieldValue('communityId')}}---
+                  <equipment-select
                       placeholder="请选择位置"
-                      v-decorator="['equipmentAreaId']"
-                  />
+                      :defaultName="formInfo.equipmentAreaName"
+                      :community-id="form.getFieldValue('communityId')"
+                      style="width: 28.5%;margin-right: 2%;"
+                    v-decorator="['equipmentAreaId']"/>
                   <a-input
-                      style="width: 55.5%;"
-                      :maxLength="30"
-                      placeholder="请输入详细地址"
-                      v-decorator="['position']"
+                    style="width: 55.5%;"
+                    :maxLength="30"
+                    placeholder="请输入详细地址"
+                    v-decorator="['position']"
                   />
                 </a-form-item>
               </a-col>
@@ -122,7 +122,6 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="供应商" v-bind="formItemLayout">
-<!--                  {{form.getFieldValue('equipmentSupplierId')}}-->
                   <a-select
                     :style="allWidth"
                     :options="$addTitle(supplierListOpt)"
@@ -250,8 +249,12 @@ import { parkTypeOpt} from "./dict";
 import DictSelect from "../../common/DictSelect";
 import EquipmentSelect from "../../common/EquipmentSelect";
 import EquipmentSelectTree from "../../common/EquipmentSelectTree";
-import {getEquipmentSupplierListByOrganId, getInfoAttrListByEquipmentId} from "../../../api/building";
-
+import {
+  getEquipmentSupplierListByOrganId,
+  getInfoAttrListByEquipmentId,
+} from "../../../api/building";
+import moment from "moment";
+//
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
 const allWidth2 = { width: "250px", flex: 1 }
@@ -275,7 +278,8 @@ export default {
         topOrganName: '',
         imgPath: [], // 图片
         documentPath: [], // 附件
-        attrList:[]
+        attrList:[],
+        equipmentAreaName: '', // 所在位置名称
       },
       allStyle: 'width: 100%;',
       typeFilter,
@@ -352,9 +356,9 @@ export default {
     },
     // 确定
     handleSave() {
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async (err, values) => {
         if(!err) {
-          const params = this.beforeEquipment(values)
+          const params = await this.beforeEquipment(values)
           if (this.routeQuery.type == 'edit') {
             this.equipmentApiEdit(params)
           } else {
@@ -437,26 +441,55 @@ export default {
     afterEquipmentApiDetail(data) {
       this.formInfo.topOrganName = data.topOrganName
       this.formInfo.equipmentName = data.equipmentName
-      this.communityIdOpt =[{label: String(data.organName), value: data.organId}]
+      this.formInfo.equipmentAreaName = data.equipmentAreaName
+      this.communityIdOpt =[{label: String(data.organName), value: data.communityId}]
+
+      if (data.expDate) {
+        data.expDate = moment(data.expDate * 1000).format('YYYYMMDD')
+      }
+      if (data.installDate) {
+        data.installDate = moment(data.installDate * 1000 ).format('YYYYMMDD')
+      }
+      if (data.factoryDate) {
+        data.factoryDate = moment(data.factoryDate*1000).format('YYYYMMDD')
+      }
+
       this.supplierListOpt = [{label: data.equipmentSupplierName, value: data.equipmentSupplierId}]
       this.formInfo.imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
       this.formInfo.documentPath = (data.documentPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
       this.formInfo.attrList = data.attrList || []
       return {
         ...data,
-        factoryDate: String(data.factoryDate),
+        equipmentSupplierId: data.equipmentSupplierId || '',
         expDate: String(data.expDate),
+        factoryDate: String(data.factoryDate),
         installDate: String(data.installDate)
       }
     },
-    beforeEquipment (data) {
+    async beforeEquipment (data) {
+      const organId = await this.queryOrganIdByCommunityId(data.communityId)
+      if (!organId) {
+        return;
+      }
+      debugger
+      const params = Object.assign({},data)
+      if (params.expDate) {
+        params.expDate = moment(params.expDate, '"YYYYMMDD').valueOf() / 1000
+      }
+      if (params.installDate) {
+        params.installDate = moment(params.installDate, 'YYYYMMDD').valueOf() / 1000
+      }
+      if (params.factoryDate) {
+        params.factoryDate = moment(params.factoryDate, 'YYYYMMDD').valueOf() / 1000
+      }
       return {
-        ...data,
-        equipmentInstId:this.routeQuery.equipmentInstId,
+        ...params,
+        organId,
         systemCode:'assets',
         attrList: this.formInfo.attrList,
+        equipmentInstId:this.routeQuery.equipmentInstId,
+        imgPath: (this.formInfo.imgPath || []).map(node => node.url).join(","),
         documentPath: (this.formInfo.documentPath || []).map(node => node.url).join(","),
-        imgPath: (this.formInfo.imgPath || []).map(node => node.url).join(",")
       }
     },
     async equipmentApiInsert (params) {
@@ -491,13 +524,13 @@ export default {
         const {data: res} = await this.$api.building.equipmentApiEdit(data)
         this.DE_Loding(loadingName).then(() => {
           if (String(res.code) === "0") {
-            this.$SG_Message.success("编辑车位成功");
+            this.$SG_Message.success("编辑成功");
             this.$router.push({
               path: "/buildingDict",
               query: { showKey: "equipment", refresh: true }
             });
           } else {
-            this.$message.error(res.data.message);
+            this.$SG_Message.error(res.message);
           }
         });
       } catch (e) {
@@ -507,6 +540,16 @@ export default {
       } finally {
         this.DE_Loding(loadingName)
       }
+    },
+    // 根据组织机构id查询分类编码表
+    async queryOrganIdByCommunityId (communityId) {
+      const {data: res} = await this.$api.building.queryOrganIdByCommunityId({communityId})
+      if (String(res.code) === '0') {
+        return res.data
+      } else {
+        this.$SG_Message.error(res.message)
+      }
+      return false
     },
     // 获取供应商
     async getEquipmentSupplierListByOrganId (organId) {
