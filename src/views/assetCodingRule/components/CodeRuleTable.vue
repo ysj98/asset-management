@@ -46,10 +46,10 @@ export default {
       this.postSave(record)
     },
     async handleBlur (record) {
-      if(!record.customCode) {
-        this.$SG_Message.error('自定义规则不能为空')
-        return
-      }
+      // if(!record.customCode) {
+      //   // this.$SG_Message.error('自定义规则不能为空')
+      //   return
+      // }
       // 调用预览
       const preview  = await this.getPreview(this.beforeGetPreview(record,record.seq))
       record.preview = preview
