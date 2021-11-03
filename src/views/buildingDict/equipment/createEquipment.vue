@@ -475,11 +475,13 @@ export default {
       }
     },
     async beforeEquipment (data) {
-      const organId = await this.queryOrganIdByCommunityId(data.communityId)
-      if (!organId) {
-        return;
+      let organId
+      if (data.communityId) {
+        organId = await this.queryOrganIdByCommunityId(data.communityId)
+        if (!organId) {
+          return;
+        }
       }
-      debugger
       const params = Object.assign({},data)
       if (params.expDate) {
         params.expDate = moment(params.expDate, '"YYYYMMDD').valueOf() / 1000
