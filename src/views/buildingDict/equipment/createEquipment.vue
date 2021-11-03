@@ -126,6 +126,7 @@
                 <a-form-item label="供应商" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
+                    @focus="handleSupplierFocus"
                     :options="$addTitle(supplierListOpt)"
                     :default-active-first-option="false"
                     v-decorator="['equipmentSupplierId']"
@@ -373,6 +374,10 @@ export default {
     // 取消
     handleCancel() {
       this.$router.push({ path: "/buildingDict", query: { showKey: "equipment" } })
+    },
+    // 供应商焦点事件
+    handleSupplierFocus ()  {
+      this.getEquipmentSupplierListByOrganId(this.form.getFieldValue('topOrganId'))
     },
     // 请求项目
     queryCommunityListByOrganId(organTopId) {

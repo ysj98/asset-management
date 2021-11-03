@@ -18,9 +18,9 @@
 
 export default {
   props:{
-    value: '',
+    value: "",
     communityId: {
-      type: [String, Number]
+      type: [String, Number, Object]
     },
     width:{
       type: String,
@@ -45,6 +45,7 @@ export default {
   },
   data : ()=>({
     treeList: [],
+    loading: false,
     showDefaultOrganName: true // 显示默认值
   }),
   computed:{
