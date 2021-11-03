@@ -418,9 +418,19 @@ export function getInfoAttrListByEquipmentId (data) {
 export function updateEquipmentStatus (data) {
   return axiosPost(assets.assetClassSet.updateEquipmentStatus, data, false, false)
 }
+//  保存/更新设施设备分类
+export function updateEquipment (data) {
+  return axiosPost(assets.assetClassSet.updateEquipment, data, false, false)
+}
 // 资产分类设置-获取资产分类详情
 export function getDetail (data) {
   return axiosPost(assets.assetClassSet.getDetail, data, false, false)
+}
+export function batchSaveInfoAttr (data) {
+  return axiosPost(assets.assetClassSet.batchSaveInfoAttr, data, false, false)
+}
+export function deleteInfoAttr (data) {
+  return axiosPost(assets.assetClassSet.deleteInfoAttr, data, false, false)
 }
 
 // 房屋台账-资产项目视图

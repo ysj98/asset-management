@@ -68,13 +68,12 @@ const numList = [
   {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
 ]
 const numListEquipment = [
-  {title: '资产数量', key: 'buildArea', value: 0, fontColor: '#324057'},
-  {title: '转物业数量', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
-  {title: '运营数量', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
-  {title: '自用数量', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-  {title: '占用数量', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
-  {title: '其他数量', key: 'otherArea', value: 0, bgColor: '#BBC8D6'},
-  {title: '闲置数量', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+  {title: '资产数量', key: 'assetNum', value: 0, fontColor: '#324057'},
+  {title: '运营数量', key: 'operateNum', value: 0, bgColor: '#4BD288'},
+  {title: '自用数量', key: 'selfUseNum', value: 0, bgColor: '#DD81E6'},
+  {title: '占用数量', key: 'occupationNum', value: 0, bgColor: '#FD7474'},
+  {title: '其他数量', key: 'otherNum', value: 0, bgColor: '#BBC8D6'},
+  {title: '闲置数量', key: 'idleNum', value: 0, bgColor: '#1890FF'},
 ]
 export default {
   name:'DirectionUse',
@@ -106,7 +105,7 @@ export default {
   },
   computed: {
     isEquipment(){
-      return this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
       // return true
     },
     directionUseDataCom(){
@@ -178,6 +177,7 @@ export default {
       let fileData = new FormData()
       fileData.append('file', files[0])
       fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('assetType',Number(this.assetType))
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -258,6 +258,7 @@ export default {
       }
       this.$api.assets.useForSummary(obj).then(res => {
         if (Number(res.data.code) === 0) {
+          res.data.data.assetNum = this.count
           return this.numList = this.numList.map(m => {
             return { ...m, value: res.data.data[m.key] || 0 }
           })

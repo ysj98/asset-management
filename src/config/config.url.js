@@ -294,6 +294,12 @@ export const assets = {
     getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId',
     // 删除设施设备分类
     updateEquipmentStatus: '/ams/categoryCfg/updateEquipmentStatus',
+    //  保存/更新设施设备分类
+    updateEquipment: '/ams/categoryCfg/updateEquipment',
+    // 3.2.7批量保存设备分类台账属性
+    batchSaveInfoAttr:'/equipment-openapi/equipment/batchSaveInfoAttr',
+    // 3.2.8删除设备分类台账属性
+    deleteInfoAttr:'/equipment-openapi/equipment/deleteInfoAttr'
 
 
   },
