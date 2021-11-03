@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import { SET_DEPRECIATION_METHOD } from '@/store/types/platformDictTypes'
+import { SET_DEPRECIATION_METHOD, SET_EQUIPMENT_CODE_SUB } from '@/store/types/platformDictTypes'
 import listModel from "./listModel"
 import EquipmentCategory from './child/EquipmentCategory/index'
 export default {
@@ -40,6 +40,10 @@ export default {
     this.$store.dispatch('platformDict/getPlatformDict',{
       code: 'DEPRECIATION_METHOD',
       type: SET_DEPRECIATION_METHOD
+    })
+    this.$store.dispatch('platformDict/getPlatformDict',{
+      code: 'EQUIPMENT_CODE_SUB',
+      type: SET_EQUIPMENT_CODE_SUB
     })
   },
   methods: {

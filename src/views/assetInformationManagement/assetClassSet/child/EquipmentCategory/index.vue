@@ -13,14 +13,14 @@
         />
       </div>
     </div>
-    <div class="bottom">
-      <div class="bottom-left">
+    <div class="content">
+      <div class="content-left">
         <EquipmentTree
           :top-organ-id="currentTopOrganId"
           @handleSelect="handleSelect"
         />
       </div>
-      <div class="bottom-right">
+      <div class="content-right">
         <SG-Title :title="selectedKind.equipmentName" />
         <div>
           <Information
@@ -30,7 +30,10 @@
         </div>
         <SG-Title title="下级分类" />
         <SubEquipmentCategoryTable
+          style="height: calc(100% - 320px);overflow:auto;"
+          ref="SubEquipmentCategoryTableRef"
           :up-equipment-id="selectedKind.equipmentId"
+          :up-equipment-name="selectedKind.equipmentName"
           :organ-id="currentTopOrganId"
         />
       </div>
@@ -146,6 +149,7 @@ export default {
 
 <style scoped lang="less">
 .tab-container {
+  position: relative;
   height: calc(100vh - 102px);
   .top {
     height: 60px;
@@ -156,7 +160,7 @@ export default {
     padding: 10px 30px;
     border-bottom: 1px solid #e8e8e8;
   }
-  .bottom {
+  .content {
     display: flex;
     height: calc(100% - 60px);
     &-left {
@@ -165,6 +169,7 @@ export default {
     &-right {
       flex: 1;
       padding: 10px 20px;
+      position: relative;
     }
   }
 }

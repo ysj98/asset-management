@@ -2,7 +2,7 @@
   <div class="container">
     <a-input-search
       style="width: 100%;height: 50px;margin-bottom: 20px;"
-      placeholder="搜索设备设施分类"
+      placeholder="搜索功能 未开发完整 搜索设备设施分类"
       @change="onChange"
     />
     <a-tree
