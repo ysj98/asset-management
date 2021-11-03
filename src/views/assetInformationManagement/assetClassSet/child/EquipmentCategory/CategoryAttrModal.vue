@@ -20,10 +20,14 @@
         <!-- 属性名称 -->
         <template #attrName="text,record">
           <a-input
+            v-if="!record.attrId"
             :max="100"
             v-model="record.attrName"
             placeholder="请输入属性名称"
           ></a-input>
+          <span v-else>
+            {{ record.attrName }}
+          </span>
         </template>
         <!-- 操作 -->
         <template #action="text,record">
@@ -100,28 +104,28 @@ export default {
       });
     },
     async handleSave() {
-      if (!this.tableOptions.dataSource.length) {
+      const tempArr = this.tableOptions.dataSource
+        .filter(ele => !ele.attrId)
+        .map(ele => ({
+          attrName: ele.attrName
+        }));
+      if (!tempArr.length) {
         this.$message.error("请新增最少一条属性");
         return null;
       } else {
         if (
-          !this.tableOptions.dataSource.every(ele => {
+          !tempArr.every(ele => {
             return ele.attrName;
           })
         ) {
           this.$message.error("请输入属性名称");
           return null;
         }
-      }
-      const tempArr = this.tableOptions.dataSource
-        .filter(ele => !ele.attrId)
-        .map(ele => ({
-          attrName: ele.attrName
-        }));
-      if (!tempArr) {
-        this.$message.success("新增成功");
-        this.$emit("doClosePop", this.modalOptions.modalName);
-        return null;
+        const attrNameArr = this.tableOptions.dataSource.map(ele=>ele.attrName)
+        if(attrNameArr.length !== new Set(attrNameArr).size){
+          this.$message.error("属性名称不能重复")
+          return null
+        }
       }
       const requestData = {
         organId: this.organId,

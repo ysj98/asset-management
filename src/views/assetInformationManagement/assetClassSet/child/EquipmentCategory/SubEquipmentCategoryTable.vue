@@ -333,6 +333,11 @@ export default {
         this.$message.error("请输入分类名称");
         return null;
       }
+      const professionNameArr = this.tableOptions.dataSource.map(ele=>ele.professionName)
+      if(professionNameArr.length !== new Set(professionNameArr).size){
+        this.$message.error("分类名称不能重复")
+        return null
+      }
       const keyArr = [
         "equipmentOrganRelId",
         "equipmentName",
