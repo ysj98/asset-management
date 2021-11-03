@@ -328,10 +328,11 @@ export default {
           onOk: () => {
             let data = {
               topOrganId: this.queryCondition.topOrganId,
-              blankId: record.blankId,
+              equipmentInstId: record.equipmentInstId,
+              systemCode: 'assets'
             };
-            this.$api.building.blankApiDelete(data).then((res) => {
-              if (res.data.code === "0") {
+            this.$api.building.equipmentApiDelete(data).then((res) => {
+              if (String(res.data.code) === "0") {
                 this.$message.success("删除成功!");
                 this.query();
               } else {
