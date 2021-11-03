@@ -28,8 +28,8 @@ axiosX.interceptors.request.use(
     config.headers['Trace-Log-Id'] = uuid(32)
     config.headers['AUTHORIZATION'] = localStore.getToken() ?'Bearer ' + localStore.getToken() : ''
     const { url, method } = config
-    // 外部接口不需要此参数
-    const systemCodeList = ["/car-parking-api", "/car-batch", "/equipment-openapi"]
+    // 外部接口需要此参数
+    const systemCodeList = ["/car-batch", "/equipment-openapi"]
     if (systemCodeList.some(urlItem=>url.includes(urlItem))) {
       if (method === 'post') {
         if (Object.prototype.toString.call(config.data) === "[object FormData]"){
