@@ -8,19 +8,19 @@
       <div slot="headerForm" class="search-content-box">
         <div class="top-search-one" style="padding: 0;">
           <div>
-            <!--            v-if="createPower"-->
             <SG-Button
-                @click="goPage('create')"
-                class="mr10"
-                icon="plus"
-                type="primary"
+              v-if="createPower"
+              @click="goPage('create')"
+              class="mr10"
+              icon="plus"
+              type="primary"
             >新增</SG-Button>
-            <!--              v-if="hasPowerExport" -->
-            <SG-Button
-                @click="exportList"
-                class="mr10">
-              <segiIcon type="#icon-ziyuan10" class="mr10" />导出
-            </SG-Button>
+<!--            <SG-Button-->
+<!--                v-if="hasPowerExport" -->
+<!--                @click="exportList"-->
+<!--                class="mr10">-->
+<!--              <segiIcon type="#icon-ziyuan10" class="mr10" />导出-->
+<!--            </SG-Button>-->
           </div>
           <div style="overflow: visible;margin-top:-10px;">
             <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
@@ -115,6 +115,7 @@ import {
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
 import EquipmentSelectTree from "../../common/EquipmentSelectTree";
+import moment from "moment";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
@@ -180,6 +181,15 @@ export default {
           let result = res.data.resultList || [];
           let btnArr = this.createOperationBtn();
           this.table.dataSource = result.map((item) => {
+            if (item.expDate) {
+              item.expDate = moment(item.expDate * 1000).format('YYYYMMDD')
+            }
+            if (item.installDate) {
+              item.installDate = moment(item.installDate * 1000 ).format('YYYYMMDD')
+            }
+            if (item.factoryDate) {
+              item.factoryDate = moment(item.factoryDate*1000).format('YYYYMMDD')
+            }
             return {
               key: utils.getUuid(),
               ...item,
@@ -266,10 +276,10 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_DELETE) || true) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_DELETE)) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
       arr.push({ iconType: "file-text", text: "详情", editType: "detail" });

@@ -18,7 +18,6 @@
                   <treeSelect
                     ref="organTopRef"
                     :default="false"
-                    :disabled="routeQuery.type === 'edit'"
                     :typeFilter="typeFilter"
                     @changeTree="changeTree"
                     placeholder='请选择所属机构'
@@ -70,7 +69,6 @@
                     showSearch
                     :style="allWidth"
                     :allowClear="false"
-                    :disabled="routeQuery.type === 'edit'"
                     placeholder="请选择项目"
                     v-decorator="['communityId']"
                     :filterOption="filterOption"
@@ -492,9 +490,20 @@ export default {
       if (params.factoryDate) {
         params.factoryDate = moment(params.factoryDate, 'YYYYMMDD').valueOf() / 1000
       }
+      debugger
+      const fileList = [
+        ...(this.formInfo.imgPath|| []).map(item => ({...item,fileType: 1})),
+        ...(this.formInfo.documentPath|| []).map(item => ({...item,fileType: 2}))
+      ].map(item => ({
+        fileSize: 0,
+        fileName: item.name,
+        filePath: item.url,
+        fileType: item.fileType
+      }))
       return {
         ...params,
         organId,
+        fileList,
         systemCode:'assets',
         attrList: this.formInfo.attrList,
         equipmentInstId:this.routeQuery.equipmentInstId,
@@ -502,6 +511,7 @@ export default {
         documentPath: (this.formInfo.documentPath || []).map(node => node.url).join(","),
       }
     },
+    // 插入
     async equipmentApiInsert (params) {
       let loadingName = this.SG_Loding("新增中...");
       try {
@@ -526,6 +536,7 @@ export default {
         this.DE_Loding(loadingName)
       }
     },
+    // 编辑
     async equipmentApiEdit (params) {
       let loadingName = this.SG_Loding("编辑中...");
       try {
