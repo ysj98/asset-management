@@ -93,23 +93,23 @@ export const areaTitle = [
   {
     width: 140,
     align: 'center',
-    title: "区域名称",
     dataIndex: "areaName",
     isRequired:true,
     component:'text',
     errMessage: '请输入区域名称',
     placeHolder:'请输入区域名称',
+    slots: { title: 'areaNameTitle'},
     scopedSlots: { customRender: "areaName" }
   },
   {
     width: 140,
     align: 'center',
-    title: "区域编码",
     dataIndex: "areaCode",
     isRequired:true,
     component:'text',
     errMessage: '请输入区域编码',
     placeHolder:'请输入区域编码',
+    slots: { title: 'areaCodeTitle'},
     scopedSlots: { customRender: "areaCode" }
   },
   {
@@ -117,7 +117,6 @@ export const areaTitle = [
     align: 'center',
     title: "区域面积(㎡)",
     dataIndex: "areaZone",
-    isRequired:true,
     component:'input',
     errMessage: '请输入区域面积',
     placeHolder:'请输入区域面积',

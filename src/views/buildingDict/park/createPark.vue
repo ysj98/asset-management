@@ -167,10 +167,16 @@
               <a-col :span="23" :offset="1">
                 <a-form-item label="" v-bind="formItemLayoutTable">
                   <a-table :columns="areaTitle" :pagination="false" bordered :data-source="formInfo.areaArray">
-                      <span slot="operationTitle"
-                        @click="handleTableAppend(index)"
-                        style="color: #0084ff;cursor: pointer;"
-                      >新增</span>
+                    <span slot="areaNameTitle">
+                      <span style="color:red">*</span>
+                      区域名称</span>
+                    <span slot="areaCodeTitle">
+                      <span style="color:red">*</span>
+                      区域编码</span>
+                    <span slot="operationTitle"
+                      @click="handleTableAppend(index)"
+                      style="color: #0084ff;cursor: pointer;"
+                    >新增</span>
                     <template v-for="com in areaTitle" :slot="com.dataIndex" slot-scope="item, record, index">
                       <div :key="com.dataIndex">
                         <a-form-item style="margin: -5px;">
