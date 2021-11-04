@@ -36,6 +36,7 @@
             :checkbox-asset-type="checkboxAssetType"
             :positionIds.sync="positionIds"
             :scope.sync="scope"
+            @changeEquipmentOrganId="changeEquipmentOrganId"
           />
           <div class="model-right-footer">
             <SG-Button weaken @click="commonFn">
@@ -68,7 +69,6 @@ import {
   checkBuildsObjectTypeFn,
   commonFn,
   confirmDownloadTemplate,
-  handleAssetTypeField
 } from "./share";
 import { looseEqual } from "@/utils/utils";
 import noDataTips from "components/noDataTips";
@@ -112,7 +112,8 @@ export default {
       scope: ["1", "2"],
       organId: "",
       modalShow: false,
-      positionIds: []
+      positionIds: [],
+      equipmentOrganId:''
     };
   },
   computed: {
@@ -141,6 +142,10 @@ export default {
   },
   mounted() {},
   methods: {
+    changeEquipmentOrganId(equipmentOrganId) {
+      this.equipmentOrganId = equipmentOrganId;
+      this.positionIds = [];
+    },
     /*
      * 弹窗 导入
      * */
