@@ -110,7 +110,8 @@ export default {
           attrName: ele.attrName
         }));
       if (!tempArr.length) {
-        this.$message.error("请新增最少一条属性");
+        this.$message.success("操做成功");
+        this.$emit("doClosePop", this.modalOptions.modalName);
         return null;
       } else {
         if (

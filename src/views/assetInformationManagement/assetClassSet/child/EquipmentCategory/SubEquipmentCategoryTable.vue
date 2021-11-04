@@ -23,6 +23,7 @@
       <!-- 专业分类 -->
       <template #equipmentCode="text,record,index">
         <a-select
+          :disabled="Boolean(record.professionCode)"
           v-model="record.equipmentCode"
           style="width: 200px;"
           :options="equipmentCodeSubOptions"
@@ -30,11 +31,14 @@
       </template>
       <!-- 净残值率 -->
       <template #netSalvageRate="text,record,index">
-        <a-input
+        <a-input-number
           style="width: 200px;"
           v-model="record.netSalvageRate"
           placeholder="请输入净残值率"
-        ></a-input>
+          :min="0"
+          :max="999.99"
+          :precision="2"
+        ></a-input-number>
       </template>
       <!-- 折旧方式 -->
       <template #depreciationMethod="text,record,index">

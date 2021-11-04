@@ -111,8 +111,8 @@ export default {
     },
     async handleSelect(dataRef) {
       this.selectedKind = dataRef;
-      this.setKindAttrNum(dataRef.attrNum);
       const attrs = await this.getKindAttrs(dataRef);
+      this.setKindAttrNum((attrs||[]).length);
       this.handleKindInfoList({ dataRef, attrs: attrs || [] });
     },
     changeTopOrganId({ value }) {
