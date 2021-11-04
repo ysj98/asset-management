@@ -33,7 +33,7 @@ export default {
   },
   data () {
     return {
-      showKey: 'facilityAndEquipment',
+      showKey: 'house',
     }
   },
   created () {

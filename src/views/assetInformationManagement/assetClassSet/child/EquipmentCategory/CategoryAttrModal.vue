@@ -67,6 +67,8 @@ export default {
       organId: "",
       equipmentId: "",
       tableOptions: {
+        scroll:{x:500,y:400},
+        pagination: false,
         loading: true,
         rowKey: function(record) {
           return record.attrId || record._key;

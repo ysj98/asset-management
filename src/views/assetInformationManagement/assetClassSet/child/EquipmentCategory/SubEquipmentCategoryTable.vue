@@ -133,7 +133,7 @@ export default {
         rowKey: function(record) {
           return record.professionCode || record._key;
         },
-        scroll: { x: 600 },
+        scroll:{ x: 200, y:300},
         pagination: false,
         dataSource: [],
         columns: [
@@ -414,12 +414,10 @@ export default {
   padding: 8px 20px;
 }
 .footer {
+  z-index: 3;
   height: 60px;
   text-align: center;
   line-height: 60px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
   background-color: #fff;
   width: 100%;
 }

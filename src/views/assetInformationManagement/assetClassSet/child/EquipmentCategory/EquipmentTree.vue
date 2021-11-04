@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <a-input-search
-      style="width: 100%;height: 50px;margin-bottom: 20px;"
+      style="display:block;width: 100%;height: 50px;margin-bottom: 20px;"
       placeholder="搜索功能 未开发完整 搜索设备设施分类"
       @change="onChange"
     />
@@ -30,31 +30,32 @@
 </template>
 
 <script>
-const getParentKey = (key, tree) => {
-  let parentKey;
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-    if (node.children) {
-      if (node.children.some(item => item.key === key)) {
-        parentKey = node.key;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
-      }
-    }
-  }
-  return parentKey;
-};
-const dataList = [];
-const generateList = data => {
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
-    const key = node.value;
-    dataList.push({ key, title: key });
-    if (node.children) {
-      generateList(node.children);
-    }
-  }
-};
+import { cloneDeep } from "lodash";
+// const getParentKey = (key, tree) => {
+//   let parentKey;
+//   for (let i = 0; i < tree.length; i++) {
+//     const node = tree[i];
+//     if (node.children) {
+//       if (node.children.some(item => item.key === key)) {
+//         parentKey = node.key;
+//       } else if (getParentKey(key, node.children)) {
+//         parentKey = getParentKey(key, node.children);
+//       }
+//     }
+//   }
+//   return parentKey;
+// };
+// const dataList = [];
+// const generateList = data => {
+//   for (let i = 0; i < data.length; i++) {
+//     const node = data[i];
+//     const key = node.value;
+//     dataList.push({ key, title: key });
+//     if (node.children) {
+//       generateList(node.children);
+//     }
+//   }
+// };
 export default {
   /*
    * 侧边 设备设施分类 树状选择组件
@@ -73,6 +74,7 @@ export default {
   },
   data() {
     return {
+      copyTreeData: [],
       loading: false,
       treeData: [],
       searchValue: "",
@@ -100,24 +102,25 @@ export default {
     },
     onChange(e) {
       const value = e.target.value;
-      const expandedKeys = dataList
-        .map(item => {
-          if (String(item.title).indexOf(value.trim()) > -1) {
-            return getParentKey(item.key, this.treeData);
-          }
-          return null;
-        })
-        .filter((item, i, self) => item && String(self).indexOf(item) === i);
-      console.log("expandedKeys", expandedKeys);
+      // const expandedKeys = dataList
+      //   .map(item => {
+      //     if (String(item.title).indexOf(value.trim()) > -1) {
+      //       return getParentKey(item.key, this.treeData);
+      //     }
+      //     return null;
+      //   })
+      //   .filter((item, i, self) => item && String(self).indexOf(item) === i);
+      this.searchValue = value;
+      // this.expandedKeys = expandedKeys
+      this.copyTreeData = cloneDeep(this.treeData);
 
-      this.searchValue = value
-      this.expandedKeys = expandedKeys
-      this.autoExpandParent = true
+      this.autoExpandParent = true;
     },
     onExpand(expandedKeys) {
       this.expandedKeys = expandedKeys;
       this.autoExpandParent = false;
     },
+    treeDataFilterFn(data) {},
     onLoadData(treeNode) {
       return new Promise(async (resolve, reject) => {
         const { value } = treeNode;
@@ -158,7 +161,7 @@ export default {
           ...ele,
           key: ele.equipmentId,
           value: ele.equipmentId,
-          title: ele.equipmentName,
+          title: ele.equipmentName || "",
           label: ele.equipmentName,
           scopedSlots: {
             title: "title"
@@ -166,7 +169,7 @@ export default {
           children: []
         };
       });
-      generateList(resData);
+      // generateList(resData);
       return resData;
     },
     async init() {
@@ -184,11 +187,9 @@ export default {
 <style scoped lang="less">
 .container {
   width: 100%;
-  height: calc(100% - 1px);
+  height: calc(100vh - 162px);
   overflow: auto;
   position: relative;
-  display: flex;
-  flex-direction: column;
   padding: 20px 20px;
   border-right: 1px solid #e8e8e8;
   border-bottom: 1px solid #e8e8e8;

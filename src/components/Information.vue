@@ -8,7 +8,6 @@ export default {
   props: {
     titleWidth: {
       type: String,
-      default: "80px"
     },
     data: {
       type: Object
@@ -69,13 +68,16 @@ export default {
     generateACol(data) {
       const _this = this;
       const _h = this.$createElement;
+      const style = {
+      }
+      if (_this.titleWidth){
+        style.flexBasis = _this.titleWidth
+      }
       const title = _h(
         "span",
         {
           class: "title",
-          style: {
-            flexBasis: _this.titleWidth
-          }
+          style
         },
         [data.title]
       );
@@ -134,7 +136,7 @@ export default {
 <style scoped lang="less">
 .title {
   color: rgba(0, 0, 0, 0.8);
-  text-align: right;
+  //text-align: right;
   &::after {
     content: "：";
   }

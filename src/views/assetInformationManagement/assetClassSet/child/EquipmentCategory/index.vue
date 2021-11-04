@@ -24,13 +24,11 @@
         <SG-Title :title="selectedKind.equipmentName" />
         <div>
           <Information
-            title-width="100px"
             v-bind="kindInfoListOptions"
           ></Information>
         </div>
         <SG-Title title="下级分类" />
         <SubEquipmentCategoryTable
-          style="height: calc(100% - 320px);overflow:auto;"
           ref="SubEquipmentCategoryTableRef"
           :up-equipment-id="selectedKind.equipmentId"
           :up-equipment-name="selectedKind.equipmentName"
@@ -150,7 +148,7 @@ export default {
 <style scoped lang="less">
 .tab-container {
   position: relative;
-  height: calc(100vh - 102px);
+  //height: calc(100vh - 102px);
   .top {
     height: 60px;
     display: flex;
@@ -162,7 +160,7 @@ export default {
   }
   .content {
     display: flex;
-    height: calc(100% - 60px);
+    min-height: calc(100vh - 162px);
     &-left {
       max-width: 400px;
     }
