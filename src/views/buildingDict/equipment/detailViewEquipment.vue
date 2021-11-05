@@ -143,7 +143,7 @@
 import dictMixin from "../dictMixin.js"
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
-import { parkTypeOpt} from "./dict";
+import {parkTypeOpt, timeStampToFormatDate} from "./dict";
 import moment from "moment";
 
 const allWidth = { width: "100%" }
@@ -255,17 +255,17 @@ export default {
     afterEquipmentApiDetail(data) {
       const fileList = data.fileList || []
       if (data.expDate) {
-        data.expDate = moment(data.expDate * 1000).format('YYYYMMDD')
+        data.expDate = timeStampToFormatDate(data.expDate)
       } else {
         data.expDate = ''
       }
       if (data.installDate) {
-        data.installDate = moment(data.installDate * 1000 ).format('YYYYMMDD')
+        data.installDate = timeStampToFormatDate(data.installDate )
       } else {
         data.installDate = ''
       }
       if (data.factoryDate) {
-        data.factoryDate = moment(data.factoryDate*1000).format('YYYYMMDD')
+        data.factoryDate = timeStampToFormatDate(data.factoryDate)
       } else {
         data.factoryDate = ''
       }
