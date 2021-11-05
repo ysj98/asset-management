@@ -99,18 +99,7 @@ export const landVerificationList = [
 
 // TODO:车场导入校验规则
 export const yardVerificationList = [
-  { title: '对象ID', dataIndex: 'objectId', required: false },
-  { title: '车场id', dataIndex: 'blankId', required: false },
-  { title: '车场编码', dataIndex: 'landCode', required: false },
-  { title: '土地名称', dataIndex: 'landName', required: false },
   { title: '资产名称', dataIndex: 'assetName', required: true, fontLength: 30 },
-  { title: '资产编码', dataIndex: 'assetCode', required: false },
-  { title: '土地面积', dataIndex: 'landArea', required: false },
-  { title: '宗地号', dataIndex: 'theNo', required: false },
-  { title: '土地类型', dataIndex: 'landTypeName', required: false },
-  { title: '土地用途', dataIndex: 'landuseName', required: false },
-  { title: '坐落位置', dataIndex: 'pasitionString', required: false },
-  { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float132' },
@@ -230,7 +219,7 @@ export const directionEquipment = [
   { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
   { title: '是否转物业', dataIndex: 'buildArea', width: 150 },
   { title: '转物业时间', dataIndex: 'transferTime', width: 200 },
-  { title: '使用方向', dataIndex: 'transferArea', width: 100 },
+  { title: '使用方向', dataIndex: 'useDirectionName', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 //  -------- 相关费用 ----------------------------------
@@ -253,19 +242,19 @@ export const costData = [
 
 // 车场
 export const yard = [
-  { title: '车场名称', dataIndex: 'landName', width: 150},
-  { title: '车场编码', dataIndex: 'landCode', width: 150 },
-  { title: '区域名称', dataIndex: 'assetName', width: 150 },
-  { title: '车位名称', dataIndex: 'assetCode', width: 150 },
-  { title: '车位编码', dataIndex: 'landArea', width: 100 },
-  { title: '坐落位置', dataIndex: 'theNo', width: 100 },
-  { title: '车场类型', dataIndex: 'landTypeName', width: 100 },
-  { title: '建筑面积(㎡)', dataIndex: 'landuseName', width: 100 },
-  { title: '资产名称', dataIndex: 'pasitionString', width: 350 },
-  { title: '资产编码', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '车场名称', dataIndex: 'placeName', width: 150},
+  { title: '车场编码', dataIndex: 'placeCode', width: 150 },
+  { title: '区域名称', dataIndex: 'parkingAreaName', width: 150 },
+  { title: '车位名称', dataIndex: 'name', width: 150 },
+  { title: '车位编码', dataIndex: 'code', width: 100 },
+  { title: '坐落位置', dataIndex: 'pasitionString', width: 100 },
+  { title: '车场类型', dataIndex: 'type', width: 100 },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 100 },
+  { title: '资产名称', dataIndex: 'assetName', width: 350 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 100 },
   { title: '权属类型', dataIndex: 'ownershipStatusName', width: 100 },
-  { title: '权属情况', dataIndex: 'warrantNbr', width: 100 },
-  { title: '权证号', dataIndex: 'sourceModeName', width: 150 },
+  { title: '权属情况', dataIndex: 'ownershipStatus', width: 100 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}

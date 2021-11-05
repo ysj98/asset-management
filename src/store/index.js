@@ -25,10 +25,10 @@ export default new Vuex.Store({
       EQUIPMENT: "设备设施"
     },
     ASSET_TYPE_CODE: {
-      YARD: "",
-      LAND: "",
-      HOUSE: "",
-      EQUIPMENT: ""
+      YARD: "5",
+      LAND: "4",
+      HOUSE: "1",
+      EQUIPMENT: "3",
     },
     ASSET_TYPE_OPTIONS: {}
   },

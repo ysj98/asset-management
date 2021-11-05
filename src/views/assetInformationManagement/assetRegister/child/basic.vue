@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {calc, utils} from '@/utils/utils'
+import {calc, utils, getArrayRepeat} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import {
@@ -315,7 +315,7 @@ export default {
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index
-              item.pasitionString = item.allAddress || (item.pasitionString + (item.address || ""))
+              item.pasitionString = item.allAddress || ((item.pasitionString || '') + (item.address || ""))
             })
           }
           if (this.columns[0].dataIndex !== 'assetId') {
@@ -454,36 +454,22 @@ export default {
           }
           resData = utils.deepClone([...arrData, ...this.tableData])
           // 房屋
+          let generateKeyFn = null
           if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {
-            // 数组去重根据type和objectId
-            let hash = {}
-            resData = resData.reduce((preVal, curVal) => {
-              hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
-              return preVal
-            }, [])
+            generateKeyFn = (ele)=> ele.objectId + ele.type
           } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
-            // 土地
-            // 数组去重根据objectId
-            let hash = {}
-            resData = resData.reduce((preVal, curVal) => {
-              hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
-              return preVal
-            }, [])
+            generateKeyFn = (ele)=> ele.landId
           } else if (this.assetType === this.ASSET_TYPE_CODE.YARD){
-            debugger
+            generateKeyFn = (ele)=> ele.placeId
           } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
-            resData = resData.reduce(function (accumulator, currentValue) {
-              if (accumulator.every(ele=>ele.equipmentId !== currentValue.equipmentId)) {
-                accumulator.push(currentValue)
-              }
-              return accumulator
-            }, [])
+            generateKeyFn = (ele)=> ele.equipmentId
           }
+          resData = getArrayRepeat(resData,generateKeyFn).flat()
           this.tableData = this.handleTableDataSourceModeName(
             resData
           ).map(ele => ({
             ...ele,
-            pasitionString: ele.allAddress || (ele.pasitionString + (ele.address || ""))
+            pasitionString: ele.allAddress || ((ele.pasitionString || '') + (ele.address || ""))
           }));
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {

@@ -27,7 +27,7 @@ export function handleAssetTypeField(assetType, keyStr) {
       ids: "buildIds",
       list: "assetHouseList",
       pageList: "assetHoseList",
-      verificationList: "houseVerificationList"
+      verificationList: "houseVerificationList",
     },
     [ASSET_TYPE_CODE.LAND]: {
       ids: "blankIdList",
@@ -42,9 +42,9 @@ export function handleAssetTypeField(assetType, keyStr) {
       verificationList: "equipmentVerificationList"
     },
     [ASSET_TYPE_CODE.YARD]: {
-      ids: "yardIds",
-      list: "",
-      pageList: "",
+      ids: "carParkIds",
+      list: "assetCarParkList",
+      pageList: "carParkList",
       verificationList: "yardVerificationList"
     }
   };
@@ -121,7 +121,7 @@ export function confirmDownloadTemplate(api, otherRequestData) {
   let ASSET_TYPE_IDS = handleAssetTypeField(this.checkboxAssetType, "ids");
   let requestData = {
     assetType: this.checkboxAssetType, // 资产类型, 1房屋、2土地、3设备
-    scope: this.checkboxAssetType === "1" ? this.scope.join(",") : "", // 1楼栋 2房屋（房屋时必填）
+    scope:  [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.YARD].includes(this.checkboxAssetType) ? this.scope.join(",") : "",
     // 如果是 设备设施 类型 就取 设备设施 筛选所用  organId
     organId:
       this.checkboxAssetType === this.ASSET_TYPE_CODE.EQUIPMENT

@@ -172,7 +172,10 @@ export default {
       this.$emit("changeEquipmentOrganId", topOrganId);
     },
     init() {
-      this.debounceMothed();
+      const _tempArr = [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.LAND,this.ASSET_TYPE_CODE.YARD]
+      if (_tempArr.includes(this.checkboxAssetType)){
+        this.debounceMothed();
+      }
     },
     handleChange(value) {
       this.$emit("input", value);
@@ -186,26 +189,48 @@ export default {
       this.positionApiList(this.organId, this.searchBuildName || "");
     }, 200),
     positionApiList(organId, aliasName) {
-      this.$api.basics
-        .positionApiList({
+      if (this.checkboxAssetType === this.ASSET_TYPE_CODE.YARD){
+        const requestData = {
           organId,
-          aliasName: aliasName || "",
-          positionType: this.checkboxAssetType,
-          subPositionType: ""
-        })
-        .then(res => {
-          if (res.data.code === "0") {
-            let result = res.data.data || [];
+          onlyCurrentNode: 1,
+          nameOrCode: aliasName,
+          pageNo: 1,
+          pageLength: 20
+        }
+        this.$api.building.parkApiList(requestData).then(value=>{
+          if (value.data.code === "0") {
+            let result = value.data ? value.data.data.resultList : [];
             this.positionNameData = result.map(item => {
               return {
-                name: item.aliasName,
-                value: item.positionId,
-                label: item.aliasName
+                name: item.placeName,
+                value: item.placeId,
+                label: item.placeName
               };
             });
           }
-        });
-    }
+        })
+      }else {
+        this.$api.basics
+          .positionApiList({
+            organId,
+            aliasName: aliasName || "",
+            positionType: this.checkboxAssetType,
+            subPositionType: ""
+          })
+          .then(res => {
+            if (res.data.code === "0") {
+              let result = res.data.data || [];
+              this.positionNameData = result.map(item => {
+                return {
+                  name: item.aliasName,
+                  value: item.positionId,
+                  label: item.aliasName
+                };
+              });
+            }
+          });
+      }
+      }
   },
   created() {
     this.init();
