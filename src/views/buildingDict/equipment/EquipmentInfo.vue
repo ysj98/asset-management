@@ -183,12 +183,23 @@ export default {
           this.table.dataSource = result.map((item) => {
             if (item.expDate) {
               item.expDate = moment(item.expDate * 1000).format('YYYYMMDD')
+            } else {
+              item.expDate = ''
             }
             if (item.installDate) {
               item.installDate = moment(item.installDate * 1000 ).format('YYYYMMDD')
+            } else {
+              item.installDate = ''
             }
             if (item.factoryDate) {
               item.factoryDate = moment(item.factoryDate*1000).format('YYYYMMDD')
+            } else {
+              item.factoryDate = ''
+            }
+            if (item.useStartDate) {
+              item.useStartDate = moment(item.useStartDate*1000).format('YYYYMMDD')
+            } else {
+              item.useStartDate = ''
             }
             return {
               key: utils.getUuid(),
