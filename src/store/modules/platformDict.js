@@ -13,7 +13,7 @@ const state = {
   DEPRECIATION_METHOD: [],
   // 使用方向
   AMS_USE_DIRECTION: [],
-  // 专业分类
+  // 专业设备
   EQUIPMENT_CODE_SUB: [],
   // 车位分类
   PARKING_OBJ_TYPE:[],

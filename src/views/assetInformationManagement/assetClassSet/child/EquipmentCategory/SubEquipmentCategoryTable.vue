@@ -20,7 +20,7 @@
         </a>
         <span title="请保存成功之后设置属性" v-else>--</span>
       </template>
-      <!-- 专业分类 -->
+      <!-- 专业设备 -->
       <template #equipmentCode="text,record,index">
         <a-select
           :disabled="Boolean(record.professionCode)"
@@ -173,7 +173,7 @@ export default {
             }
           },
           {
-            title: "专业分类",
+            title: "专业设备",
             width: 240,
             key: "equipmentCode",
             scopedSlots: {
