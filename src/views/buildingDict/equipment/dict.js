@@ -3,6 +3,8 @@
  * @Description:
  */
 // 页面跳转
+import moment from "moment";
+
 export const operationTypes = {
   create: "/buildingDict/createEquipment",
   detail: "/buildingDict/detailViewEquipment",
@@ -108,6 +110,11 @@ export const columns = [
     width: 100
   }
 ];
+
+// 时间戳转换格式化时间
+export function timeStampToFormatDate (date) {
+  return moment(date * 1000).format('YYYY-MM-DD')
+}
 
 export const areaTitle = [
   {

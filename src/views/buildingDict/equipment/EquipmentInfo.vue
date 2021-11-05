@@ -110,7 +110,7 @@ import {
   columns,
   queryCondition,
   communityIdOpt,
-  parkTypeOpt,
+  parkTypeOpt, timeStampToFormatDate,
 } from "./dict.js";
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
@@ -182,22 +182,22 @@ export default {
           let btnArr = this.createOperationBtn();
           this.table.dataSource = result.map((item) => {
             if (item.expDate) {
-              item.expDate = moment(item.expDate * 1000).format('YYYYMMDD')
+              item.expDate = timeStampToFormatDate(item.expDate )
             } else {
               item.expDate = ''
             }
             if (item.installDate) {
-              item.installDate = moment(item.installDate * 1000 ).format('YYYYMMDD')
+              item.installDate = timeStampToFormatDate(item.installDate )
             } else {
               item.installDate = ''
             }
             if (item.factoryDate) {
-              item.factoryDate = moment(item.factoryDate*1000).format('YYYYMMDD')
+              item.factoryDate = timeStampToFormatDate(item.factoryDate)
             } else {
               item.factoryDate = ''
             }
             if (item.useStartDate) {
-              item.useStartDate = moment(item.useStartDate*1000).format('YYYYMMDD')
+              item.useStartDate = timeStampToFormatDate(item.useStartDate)
             } else {
               item.useStartDate = ''
             }
@@ -287,9 +287,9 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
+      // if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
-      }
+      // }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_DELETE)) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }
