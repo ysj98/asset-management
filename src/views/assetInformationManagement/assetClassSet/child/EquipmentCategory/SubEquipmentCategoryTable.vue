@@ -133,13 +133,17 @@ export default {
         rowKey: function(record) {
           return record.professionCode || record._key;
         },
-        scroll:{ x: 200, y:300},
+        scroll:{
+          x: 2560,
+          y: 450
+        },
         pagination: false,
         dataSource: [],
         columns: [
           {
             title: "序号",
             key: "index",
+            width: 80,
             customRender(text, record, index) {
               return index + 1;
             }
@@ -147,12 +151,14 @@ export default {
           {
             title: "分类ID",
             key: "professionCode",
+            width: 100,
             customRender(_, record) {
               return record.professionCode || "--";
             }
           },
           {
             title: "分类名称",
+            width: 240,
             key: "professionName",
             scopedSlots: {
               customRender: "professionName"
@@ -168,6 +174,7 @@ export default {
           },
           {
             title: "专业分类",
+            width: 240,
             key: "equipmentCode",
             scopedSlots: {
               customRender: "equipmentCode"
@@ -175,6 +182,7 @@ export default {
           },
           {
             title: "净残值率(%)",
+            width: 240,
             key: "netSalvageRate",
             scopedSlots: {
               customRender: "netSalvageRate"
@@ -182,6 +190,7 @@ export default {
           },
           {
             title: "折旧方式",
+            width: 240,
             key: "depreciationMethod",
             scopedSlots: {
               customRender: "depreciationMethod"
@@ -189,6 +198,7 @@ export default {
           },
           {
             title: "使用年限",
+            width: 180,
             key: "usedAge",
             scopedSlots: {
               customRender: "usedAge"
@@ -196,6 +206,7 @@ export default {
           },
           {
             title: "折旧年限",
+            width: 180,
             key: "depreciationAge",
             scopedSlots: {
               customRender: "depreciationAge"
@@ -206,6 +217,7 @@ export default {
           // },
           {
             title: "操作",
+            width: 100,
             key: "action",
             scopedSlots: {
               customRender: "action"
@@ -224,10 +236,12 @@ export default {
     };
   },
   watch: {
-    upEquipmentId(newValue) {
-      if (newValue) {
-        this.getPage(newValue);
-      }
+    upEquipmentId: {
+      handler: function (newValue) {
+        if (newValue) {
+          this.getPage(newValue);
+        }
+      },
     }
   },
   computed: {

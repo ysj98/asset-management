@@ -49,7 +49,7 @@
 
 <script>
 import { uuid } from "utils/utils";
-
+import Cookies from 'js-cookie'
 export default {
   /*
    * 分类属性
@@ -133,7 +133,7 @@ export default {
       const requestData = {
         organId: this.organId,
         equipmentId: this.equipmentId,
-        userId: "",
+        userId: Cookies.get('aid'),
         attrList: tempArr
       };
       const {
@@ -161,7 +161,7 @@ export default {
             const requestData = {
               organId: _this.organId,
               attrOrganRelId: attrOrganRelId,
-              userId: ""
+              userId: Cookies.get('aid')
             };
             const {
               data: { message, code }

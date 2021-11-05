@@ -6,6 +6,7 @@
       @change="onChange"
     />
     <a-tree
+      :selectedKeys="selectedKeys"
       :expanded-keys="expandedKeys"
       :auto-expand-parent="autoExpandParent"
       :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
@@ -76,9 +77,21 @@ export default {
     return {
       copyTreeData: [],
       loading: false,
-      treeData: [],
+      treeData: [
+        {
+          title: "设备设施管理",
+          label: "设备设施管理",
+          value: -1,
+          key: -1,
+          scopedSlots: {
+            title: "title"
+          },
+          children: []
+        }
+      ],
       searchValue: "",
       expandedKeys: [],
+      selectedKeys:[-1],
       autoExpandParent: true
     };
   },
@@ -98,6 +111,7 @@ export default {
       const {
         node: { dataRef }
       } = e;
+      this.selectedKeys = selectedKeys
       this.$emit("handleSelect", dataRef);
     },
     onChange(e) {
@@ -120,7 +134,6 @@ export default {
       this.expandedKeys = expandedKeys;
       this.autoExpandParent = false;
     },
-    treeDataFilterFn(data) {},
     onLoadData(treeNode) {
       return new Promise(async (resolve, reject) => {
         const { value } = treeNode;
@@ -173,14 +186,12 @@ export default {
       return resData;
     },
     async init() {
-      const data = await this.getPositionData();
-      this.treeData = this.handleDataToTreeData(data);
+      // const data = await this.getPositionData();
+      // this.treeData.children = this.handleDataToTreeData(data);
+      this.expandedKeys = [-1];
       this.loading = false;
     }
   },
-  mounted() {
-    // this.init();
-  }
 };
 </script>
 

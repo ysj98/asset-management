@@ -21,11 +21,11 @@
         />
       </div>
       <div class="content-right">
-        <SG-Title :title="selectedKind.equipmentName" />
-        <div>
-          <Information
-            v-bind="kindInfoListOptions"
-          ></Information>
+        <div v-if="selectedKind.value !== -1">
+          <SG-Title :title="selectedKind.equipmentName" />
+          <div>
+            <Information v-bind="kindInfoListOptions"></Information>
+          </div>
         </div>
         <SG-Title title="下级分类" />
         <SubEquipmentCategoryTable
@@ -67,7 +67,8 @@ export default {
       currentTopOrganId: "",
       selectedKind: {
         equipmentName: "--",
-        equipmentId: ""
+        equipmentId: "",
+        value: ""
       },
       kindInfoListOptions: {
         data: {},
@@ -109,12 +110,18 @@ export default {
     },
     async handleSelect(dataRef) {
       this.selectedKind = dataRef;
+      if (this.selectedKind.value === -1) {
+        this.selectedKind.equipmentId = -1;
+        this.selectedKind.equipmentName = "";
+        return null;
+      }
       const attrs = await this.getKindAttrs(dataRef);
-      this.setKindAttrNum((attrs||[]).length);
+      this.setKindAttrNum((attrs || []).length);
       this.handleKindInfoList({ dataRef, attrs: attrs || [] });
     },
     changeTopOrganId({ value }) {
       this.currentTopOrganId = value;
+      this.handleSelect({ equipmentName: "", equipmentId: -1, value: -1 });
     },
     handleKindInfoList({ dataRef, attrs }) {
       const attrNames = attrs.map(e => e.attrName).join("、");
@@ -159,15 +166,21 @@ export default {
     border-bottom: 1px solid #e8e8e8;
   }
   .content {
-    display: flex;
+    width: 100%;
     min-height: calc(100vh - 162px);
+    position: relative;
+    overflow: auto;
     &-left {
-      max-width: 400px;
+      width: 300px;
     }
     &-right {
-      flex: 1;
+      position: absolute;
+      width: calc(100% - 300px);
+      min-height: 620px;
+      max-height: 800px;
+      left: 300px;
+      top: 0;
       padding: 10px 20px;
-      position: relative;
     }
   }
 }

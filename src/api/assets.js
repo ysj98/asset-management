@@ -416,11 +416,11 @@ export function getInfoAttrListByEquipmentId (data) {
 }
 // 删除设施设备分类
 export function updateEquipmentStatus (data) {
-  return axiosPost(assets.assetClassSet.updateEquipmentStatus, data, false, false)
+  return axiosPost(assets.assetClassSet.updateEquipmentStatus, data, true, false)
 }
 //  保存/更新设施设备分类
 export function updateEquipment (data) {
-  return axiosPost(assets.assetClassSet.updateEquipment, data, false, false)
+  return axiosPost(assets.assetClassSet.updateEquipment, data, true, false)
 }
 // 资产分类设置-获取资产分类详情
 export function getDetail (data) {
