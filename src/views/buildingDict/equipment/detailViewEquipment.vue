@@ -144,6 +144,7 @@ import dictMixin from "../dictMixin.js"
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import { parkTypeOpt} from "./dict";
+import moment from "moment";
 
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
@@ -252,10 +253,26 @@ export default {
       }
     },
     afterEquipmentApiDetail(data) {
+      const fileList = data.fileList || []
+      if (data.expDate) {
+        data.expDate = moment(data.expDate * 1000).format('YYYYMMDD')
+      } else {
+        data.expDate = ''
+      }
+      if (data.installDate) {
+        data.installDate = moment(data.installDate * 1000 ).format('YYYYMMDD')
+      } else {
+        data.installDate = ''
+      }
+      if (data.factoryDate) {
+        data.factoryDate = moment(data.factoryDate*1000).format('YYYYMMDD')
+      } else {
+        data.factoryDate = ''
+      }
       return {
         ...data,
-        imgPath: (data.imgPath || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()})),
-        documentPath: (data.documentPath || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+        imgPath: fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName})),
+        documentPath: fileList.filter(item=>Number(item.fileType) === 2).map(item=>({url:item.filePath,name:item.fileName}))
       }
     },
     // 初始化

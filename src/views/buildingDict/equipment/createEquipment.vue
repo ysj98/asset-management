@@ -449,6 +449,7 @@ export default {
       }
     },
     afterEquipmentApiDetail(data) {
+      const fileList = data.fileList || []
       this.formInfo.topOrganName = data.topOrganName
       this.formInfo.equipmentName = data.equipmentName
       this.formInfo.equipmentAreaName = data.equipmentAreaName
@@ -456,17 +457,26 @@ export default {
 
       if (data.expDate) {
         data.expDate = moment(data.expDate * 1000).format('YYYYMMDD')
+      } else {
+        data.expDate = ''
       }
       if (data.installDate) {
         data.installDate = moment(data.installDate * 1000 ).format('YYYYMMDD')
+      } else {
+        data.installDate = ''
       }
       if (data.factoryDate) {
         data.factoryDate = moment(data.factoryDate*1000).format('YYYYMMDD')
+      } else {
+        data.factoryDate = ''
       }
 
       this.supplierListOpt = [{label: data.equipmentSupplierName, value: data.equipmentSupplierId}]
-      this.formInfo.imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
-      this.formInfo.documentPath = (data.documentPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
+      // this.formInfo.imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
+      // this.formInfo.documentPath = (data.documentPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
+      this.formInfo.imgPath = fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName})),
+      this.formInfo.documentPath = fileList.filter(item=>Number(item.fileType) === 2).map(item=>({url: item.filePath,name: item.fileName}))
+
       this.formInfo.attrList = data.attrList || []
       return {
         ...data,
@@ -494,7 +504,6 @@ export default {
       if (params.factoryDate) {
         params.factoryDate = moment(params.factoryDate, 'YYYYMMDD').valueOf() / 1000
       }
-      debugger
       const fileList = [
         ...(this.formInfo.imgPath|| []).map(item => ({...item,fileType: 1})),
         ...(this.formInfo.documentPath|| []).map(item => ({...item,fileType: 2}))
@@ -504,7 +513,8 @@ export default {
         filePath: item.url,
         fileType: item.fileType
       }))
-      return {
+
+      const returnData = {
         ...params,
         organId,
         fileList,
@@ -514,6 +524,11 @@ export default {
         imgPath: (this.formInfo.imgPath || []).map(node => node.url).join(","),
         documentPath: (this.formInfo.documentPath || []).map(node => node.url).join(","),
       }
+
+      delete returnData.imgPath
+      delete returnData.documentPath
+
+      return returnData
     },
     // 插入
     async equipmentApiInsert (params) {
@@ -583,8 +598,10 @@ export default {
         organId: organId
       }
       const {data: res} = await getEquipmentSupplierListByOrganId(params)
-      if (res.code === '0') {
+      if (String(res.code) === '0') {
         this.supplierListOpt = res.data.resultList || []
+      } else {
+        this.$message.error(res.message)
       }
     },
     // 根据组织机构id和设备分类id查询其它属性
