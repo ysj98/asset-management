@@ -265,3 +265,12 @@ export function getEquipmentInstListByTopOrganId(data) {
 export function queryOrganIdByCommunityId(data) {
   return axiosGet(building.queryOrganIdByCommunityId,data)
 }
+
+// 根据CommunityID查询位置列表
+export function positionSelectByCommunityID(data) {
+  return axiosPost(building.positionSelectByCommunityID,data)
+}
+// 根据communitId和positionType查询具体资源
+export function positionSelectAsynByOwnership(data) {
+  return axiosPost(building.positionSelectAsynByOwnership,data)
+}

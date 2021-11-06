@@ -35,7 +35,7 @@
                     :width="'100%'"
                     placeholder="请选择设备设施分类"
                     :default-name="formInfo.equipmentName"
-                    :topOrganId="form.getFieldValue('topOrganId') || ''"
+                    :topOrganId="topOrganId || ''"
                     @change="handleRquipmentChange"
                     v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
                 </a-form-item>
@@ -69,6 +69,7 @@
                     showSearch
                     :style="allWidth"
                     :allowClear="false"
+                    :loading="communityIdFlag"
                     placeholder="请选择项目"
                     v-decorator="['communityId']"
                     :filterOption="filterOption"
@@ -94,13 +95,17 @@
             <a-row>
               <a-col :span="16">
                 <a-form-item label="所在位置" v-bind="formItemLayoutGeo">
-<!--                  {{form.getFieldValue('communityId')}}-&#45;&#45;-->
-                  <equipment-select
-                    placeholder="请选择位置"
-                    :defaultName="formInfo.equipmentAreaName"
+                  <equipment-position-select-tree
                     :community-id="form.getFieldValue('communityId')"
+                    :defaultName="formInfo.equipmentAreaName"
                     style="width: 28.5%;margin-right: 2%;"
                     v-decorator="['equipmentAreaId']"/>
+<!--                  <equipment-select-->
+<!--                    placeholder="请选择位置"-->
+<!--                    :defaultName="formInfo.equipmentAreaName"-->
+<!--                    :community-id="form.getFieldValue('communityId')"-->
+<!--                    style="width: 28.5%;margin-right: 2%;"-->
+<!--                    v-decorator="['equipmentAreaId']"/>-->
                   <a-input
                     style="width: 55.5%;"
                     :maxLength="30"
@@ -125,6 +130,7 @@
                 <a-form-item label="供应商" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
+                    :loading="supplierLoadingFlag"
                     @focus="handleSupplierFocus"
                     :options="$addTitle(supplierListOpt)"
                     :default-active-first-option="false"
@@ -251,6 +257,7 @@ import { parkTypeOpt} from "./dict";
 import DictSelect from "../../common/DictSelect";
 import EquipmentSelect from "../../common/EquipmentSelect";
 import EquipmentSelectTree from "../../common/EquipmentSelectTree";
+import EquipmentPositionSelectTree from "../../common/EquipmentPositionSelectTree";
 import {
   getEquipmentSupplierListByOrganId,
   getInfoAttrListByEquipmentId,
@@ -270,7 +277,8 @@ export default {
     EquipmentSelect,
     DictSelect,
     FormFooter,
-    TreeSelect
+    TreeSelect,
+    EquipmentPositionSelectTree
   },
   mixins: [dictMixin],
   data() {
@@ -283,12 +291,15 @@ export default {
         attrList:[],
         equipmentAreaName: '', // 所在位置名称
       },
+      topOrganId: '',
       allStyle: 'width: 100%;',
       typeFilter,
       allWidth,
       allWidth1,
       allWidth2,
+      communityIdFlag: false, // 项目刷新
       communityIdOpt: [], // 选择项目
+      supplierLoadingFlag: false, // 查询供应商字典loading
       supplierListOpt: [], // 供应商
       routeQuery: {
         // 路由传入数据
@@ -349,12 +360,13 @@ export default {
             nOrganId: value,
           }
         )
+        this.topOrganId = organTopId
         this.queryCommunityListByOrganId(organTopId)
         this.getEquipmentSupplierListByOrganId(value)
         // 清除数据
         this.formInfo.equipmentName = ''
         this.formInfo.equipmentAreaName = ''
-        this.form.resetFields(['communityId', 'equipmentId', 'equipmentAreaId', 'equipmentAreaId'])
+        this.form.resetFields(['communityId', 'equipmentId', 'equipmentAreaId', 'equipmentAreaId', 'equipmentSupplierId'])
       }
     },
     // 确定
@@ -375,8 +387,20 @@ export default {
       this.$router.push({ path: "/buildingDict", query: { showKey: "equipment" } })
     },
     // 供应商焦点事件
-    handleSupplierFocus ()  {
-      this.getEquipmentSupplierListByOrganId(this.form.getFieldValue('topOrganId'))
+    async handleSupplierFocus ()  {
+      this.supplierLoadingFlag = true
+      try {
+        let organId
+        if (this.form.getFieldValue('communityId')) {
+          organId = await this.queryOrganIdByCommunityId(this.form.getFieldValue('communityId'))
+          if (!organId) {
+            return;
+          }
+        }
+        await this.getEquipmentSupplierListByOrganId(organId)
+      } finally {
+        this.supplierLoadingFlag = false
+      }
     },
     // 请求项目
     queryCommunityListByOrganId(organTopId) {
@@ -400,7 +424,7 @@ export default {
     // 选择项目变化
     handleCommunityIdChange(e) {
       this.formInfo.equipmentAreaName = ''
-      this.form.resetFields(['equipmentAreaId'])
+      this.form.resetFields(['equipmentAreaId', 'equipmentSupplierId'])
     },
     filterOption(input, option) {
       return (
@@ -419,6 +443,17 @@ export default {
       if(val){
         this.getInfoAttrListByEquipmentId()
       }
+    },
+    // 初始化时调用此接口查询运营项目
+    async preGetCommunityIdByOrganId (organId) {
+      let {organId:organTopId} = await queryTopOrganByOrganID(
+          {
+            nOrgId: organId,
+            nOrganId: organId,
+          }
+      )
+      this.topOrganId = organTopId
+      this.queryCommunityListByOrganId(organTopId)
     },
     // 初始化
     async init(){
@@ -453,30 +488,37 @@ export default {
       this.formInfo.topOrganName = data.topOrganName
       this.formInfo.equipmentName = data.equipmentName
       this.formInfo.equipmentAreaName = data.equipmentAreaName
-      this.communityIdOpt =[{label: String(data.organName), value: data.communityId}]
-
-      if (data.expDate) {
-        data.expDate = moment(data.expDate * 1000).format('YYYYMMDD')
-      } else {
-        data.expDate = ''
-      }
-      if (data.installDate) {
-        data.installDate = moment(data.installDate * 1000 ).format('YYYYMMDD')
-      } else {
-        data.installDate = ''
-      }
-      if (data.factoryDate) {
-        data.factoryDate = moment(data.factoryDate*1000).format('YYYYMMDD')
-      } else {
-        data.factoryDate = ''
+      data.communityId = data.communityId || ''
+      // this.communityIdOpt =[{label: String(data.organName), value: data.communityId}]
+      this.preGetCommunityIdByOrganId(data.topOrganId)
+      data.communityId = String (data.communityId)
+      // 转换时间
+      {
+        if (data.expDate) {
+          data.expDate = moment(data.expDate * 1000).format('YYYYMMDD')
+        } else {
+          data.expDate = ''
+        }
+        if (data.installDate) {
+          data.installDate = moment(data.installDate * 1000 ).format('YYYYMMDD')
+        } else {
+          data.installDate = ''
+        }
+        if (data.factoryDate) {
+          data.factoryDate = moment(data.factoryDate*1000).format('YYYYMMDD')
+        } else {
+          data.factoryDate = ''
+        }
       }
 
       this.supplierListOpt = [{label: data.equipmentSupplierName, value: data.equipmentSupplierId}]
       // this.formInfo.imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
       // this.formInfo.documentPath = (data.documentPath || "").split(",").filter(item => item).map(item => ({ url: item, name: item.split("/").pop()}));
-      this.formInfo.imgPath = fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName})),
+      // 转换图片
+      this.formInfo.imgPath = fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName}))
+      // 转换附件
       this.formInfo.documentPath = fileList.filter(item=>Number(item.fileType) === 2).map(item=>({url: item.filePath,name: item.fileName}))
-
+      // 合并数据
       this.formInfo.attrList = data.attrList || []
       return {
         ...data,
@@ -599,7 +641,7 @@ export default {
       }
       const {data: res} = await getEquipmentSupplierListByOrganId(params)
       if (String(res.code) === '0') {
-        this.supplierListOpt = res.data.resultList || []
+        this.supplierListOpt = (res.data.resultList || []).map(item => ({label: item.equipmentSupplierName, value: item.equipmentSupplierId}))
       } else {
         this.$message.error(res.message)
       }
@@ -628,7 +670,6 @@ export default {
         this.$SG_Message.error("系统异常")
       }
     }
-
   },
 }
 </script>

@@ -18,7 +18,7 @@
 
 export default {
   props:{
-    value: "",
+    value: '',
     communityId: {
       type: [String, Number, Object]
     },

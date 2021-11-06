@@ -612,7 +612,11 @@ export const building = {
   // 根据communityId查询位置
   getEquipmentInstListByTopOrganId: '/equipment-openapi/common/getPositionListByCommunityId',
   // 根据 communityId 查询 organId
-  queryOrganIdByCommunityId: '/equipment-openapi/common/queryOrganIdByCommunityId'
+  queryOrganIdByCommunityId: '/equipment-openapi/common/queryOrganIdByCommunityId',
+  // 根据CommunityID查询位置列表
+  positionSelectByCommunityID: '/basic-data-api/rest-api/v1/positionApi/positionSelectByID',
+  // 根据communitId和positionType查询具体资源
+  positionSelectAsynByOwnership: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsynByOwnership'
 }
 
 // 权属概况
