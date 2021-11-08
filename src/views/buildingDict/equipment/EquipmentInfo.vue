@@ -30,6 +30,7 @@
             <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
             <equipment-select-tree
                 style="margin-right: 10px;"
+                :allowClear="true"
                 placeholder="请选择设备设施分类"
                 :topOrganId="queryCondition.topOrganId"
                 v-model="queryCondition.equipmentId"/>

@@ -5,6 +5,7 @@
       :class="{'have-default-name': showDefaultOrganName}"
       :multiple="multiple"
       v-model="valueCom"
+      :allowClear="allowClear"
       :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
       :tree-data="treeData"
       :placeholder="placeholder"
@@ -28,6 +29,10 @@ export default {
     topOrganId: {
       type: [String, Number],
       required: true
+    },
+    // 默认不支持清空
+    allowClear: {
+      default: false
     },
     value: {
       type: [String, Array, Number],
