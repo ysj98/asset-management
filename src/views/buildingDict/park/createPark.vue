@@ -14,13 +14,13 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
-<!--                      :defaultOrganName="organNameMain"-->
                   <treeSelect
                       ref="organTopRef"
                       :default="false"
                       :typeFilter="typeFilter"
                       @changeTree="changeTree"
                       placeholder='请选择所属机构'
+                      :defaultOrganName="organNameMain"
                       :style="allStyle"
                       :allowClear="false"
                       v-decorator="['organId',{initialValue: '' || undefined, rules: [{required: true, message: '请选择所属机构'}]}]"
@@ -345,8 +345,8 @@ export default {
           sm: { span: 21 },
         },
       },
-      // organIdMain:'', // 所属机构
-      // organNameMain:'', // 所属机构名称
+      organIdMain:'', // 所属机构
+      organNameMain:'', // 所属机构名称
     }
   },
   beforeCreate() {
@@ -429,7 +429,24 @@ export default {
       this.formInfo.areaArray = [...newTable]
       this.formInfo = {...this.formInfo}
     },
-    handleTableDelete (index) {
+    // 删除区域数据
+    async handleTableDelete (index) {
+      const tableData = this.formInfo.areaArray[index]
+      console.log(tableData)
+      if (tableData.parkingAreaId) {
+        let delFlag = false
+        this.$SG_Modal.confirm({
+          title: `确定要删除该车场信息吗?`,
+          okText: "确定",
+          cancelText: "关闭",
+          onOk: async () => {
+            delFlag = await this.deleteParkingPlaceArea(this.organIdMain, this.routeQuery.placeId, tableData.parkingAreaId)
+          }
+        })
+        if (!delFlag) {
+          return
+        }
+      }
       const newTable = [...this.formInfo.areaArray]
       newTable.splice(index,1)
       this.formInfo.areaArray = [...newTable]
@@ -477,9 +494,12 @@ export default {
       const data = {
         ...value,
       }
+      data.organId = String(data.organId)
       data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
       this.formInfo.areaArray = [...data.areaArray]
       this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      this.organNameMain = data.organName
+      this.organIdMain = data.organId
       // 营运项目
       this.communityIdOpt = [{label: value.communityName, value: value.communityId}]
       return data
@@ -564,6 +584,35 @@ export default {
         }
       )
     },
+    // 删除区域
+    async deleteParkingPlaceArea (organId, placeId, areaId) {
+      // organId	组织机构ID	Integer	Y	组织机构ID
+      // placeId	车场ID	Integer	Y	车场ID
+      // areaId	区域ID	Integer	Y	区域ID
+      const params = {
+        organId,
+        placeId,
+        areaId
+      }
+      let loadingName = this.SG_Loding("区域删除中")
+      try {
+        const {data: res} = await this.$api.building.deleteParkingPlaceArea(params)
+        if (String(res.code) === "0") {
+          this.$SG_Message.success("删除成功")
+          this.DE_Loding(loadingName)
+          return true
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error("区域删除失败！")
+          })
+        }
+      } catch {
+        this.DE_Loding(loadingName).then(() => {
+          this.$SG_Message.error("区域删除失败！")
+        })
+      }
+      return false
+    }
   },
 }
 </script>

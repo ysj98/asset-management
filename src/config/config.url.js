@@ -575,6 +575,8 @@ export const building = {
   parkApiInsert: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/addParkingPlace.json',
   // 车场 删除
   parkApiDelete: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlace.json',
+  // 区域 删除
+  deleteParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlaceArea.json',
   // 车场 编辑
   parkApiEdit: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/updateParkingPlace.json',
   // 车场 详情

@@ -191,6 +191,10 @@ export function parkApiEdit (data) {
 export function parkApiDelete (data) {
   return axiosPost(building.parkApiDelete, data)
 }
+// 车场 ->区域 删除
+export function deleteParkingPlaceArea (data) {
+  return axiosPost(building.deleteParkingPlaceArea, data)
+}
 // 车位 列表查询
 export function stallApiPageList (data) {
   return axiosPost(building.stallApiPageList, data)
