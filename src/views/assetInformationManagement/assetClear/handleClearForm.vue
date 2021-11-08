@@ -224,7 +224,8 @@ const defaultColumns = [
   },
   {
     title: '面积(㎡)',
-    dataIndex: 'assetArea',
+    key: 'assetArea',
+    customRender: this.generateColumnArea,
     width: '160'
   },
   {
@@ -282,6 +283,13 @@ export default {
     }
   },
   methods: {
+    generateColumnArea(record){
+      if (record.assetType === this.$store.state.ASSET_TYPE_STRING.EQUIPMENT){
+        return '/'
+      }else {
+        return record.assetArea
+      }
+    },
     formatDate (value) {
       if (value) {
         return dateToString(new Date(value), 'yyyy-mm-dd')

@@ -46,6 +46,7 @@ export default {
   },
   created() {
     const { HOUSE, LAND, YARD, EQUIPMENT } = this.ASSET_TYPE_CODE;
+    // TODO: 有哪些信息 不同业态 区别展示
     this.list = [
       {
         keyName: "assetId",
@@ -75,7 +76,8 @@ export default {
       {
         keyName: "area",
         title: "资产面积(㎡)",
-        value: ""
+        value: "",
+        assetType: [HOUSE,LAND,YARD]
       },
       {
         keyName: "buildName",
@@ -90,13 +92,15 @@ export default {
         assetType: [LAND]
       },
       {
+        // TODO: 更改 key 的名字
         keyName: "landName",
         title: "车场名称",
         value: "",
         assetType: [YARD]
       },
       {
-        keyName: "landName",
+        // TODO: 更改 key 的名字
+        keyName: "debugger",
         title: "设备设施名称",
         value: "",
         assetType: [EQUIPMENT]
@@ -121,22 +125,23 @@ export default {
       {
         keyName: "kindOfRightName",
         title: "权属类型",
-        value: ""
+        value: "",
       },
       {
         keyName: "ownershipStatusName",
         title: "权属情况",
-        value: ""
+        value: "",
       },
       {
         keyName: "warrantNbr",
         title: "权证号",
-        value: ""
+        value: "",
       },
       {
         keyName: "decorationSituation",
         title: "装修情况",
-        value: ""
+        value: "",
+        assetType: [HOUSE]
       },
       {
         keyName: "creditorAmount",
