@@ -4,7 +4,7 @@
 <template>
   <div class="landInfo-create-page">
     <div class="create-form">
-      <a-form :form="form" @submit="handleSave" layout="horizontal">
+      <a-form :form="form" layout="horizontal">
         <!-- 基础信息 -->
         <div class="page-item">
           <div class="mb30">
@@ -91,10 +91,8 @@
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
-                      :show="true"
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
-                      v-model="formInfo.parkingImg"
+                    :show="true"
+                    v-model="formInfo.parkingImg"
                   />
                 </a-form-item>
               </a-col>
@@ -140,7 +138,7 @@ export default {
         useArea: '',
         shareArea: '',
         propertyArea: '',
-        parkingImg: '',
+        parkingImg: [],
         description: '',
         parkingAreaUnits: ''
       },
@@ -228,12 +226,12 @@ export default {
       }
     },
     afterStallApiList (data) {
-      this.formInfo.parkingImg = (data.parkingImg || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       return {
         ...data,
         organId: data.organId,
         parkingAreaId: data.parkingAreaId,
-        placeId: data.placeId
+        placeId: data.placeId,
+        parkingImg: (data.parkingImg || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       }
     },
     // 初始化
