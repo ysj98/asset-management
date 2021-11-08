@@ -8,8 +8,8 @@
       <!-- 搜索框 -->
       <div class="top-search-one">
         <div>
-<!--            v-if="createPower"-->
           <SG-Button
+            v-if="createPower"
             @click="goPage('create')"
             class="mr10"
             icon="plus"
@@ -160,6 +160,7 @@ export default {
     this.handlePower();
   },
   methods: {
+    // 查询分页列表
     query() {
       let data = {
         ...this.queryCondition,
@@ -167,7 +168,8 @@ export default {
       };
       this.table.loading = true;
       this.$api.building.parkApiList(data).then(({data: res}) => {
-      // let res = {...tablePageList}
+        this.table.dataSource = []
+        this.table.totalCount = 0
         this.table.loading = false;
         if (res.code === "0") {
           let result = res.data.resultList || [];

@@ -175,6 +175,8 @@ export default {
         // communityId: this.queryCondition.communityId.join(","),
         systemCode: 'assets'
       };
+      this.table.dataSource = []
+      this.table.totalCount = 0
       this.table.loading = true;
       try {
         const {data:res} = await this.$api.building.equipmentApiPageList(data)
