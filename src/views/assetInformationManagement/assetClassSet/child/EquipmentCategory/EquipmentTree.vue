@@ -114,7 +114,6 @@ export default {
       this.$emit('update:selectedKeysDefault',newValue)
     },
     expandedKeys(newValue){
-      debugger
       this.$emit('update:expandedKeysDefault',newValue)
     },
   },
