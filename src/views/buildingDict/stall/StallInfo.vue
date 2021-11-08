@@ -70,7 +70,7 @@
       </div>
       <div slot="contentForm">
         <div class="top-search-one" style="padding: 0;">
-          <div style="overflow: visible;margin-top:-10px;width: 1345px;">
+          <div style="overflow: visible;margin-top:-10px;position: absolute;right: 155px;">
             <!-- 全部土地类型 -->
             <dict-select
                 :style="allStyle"
