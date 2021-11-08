@@ -118,7 +118,7 @@
                 <a-form-item label="交付时间" v-bind="formItemLayout">
                   <a-date-picker
                     :style="allWidth"
-                    placeholder="请选择开始时间"
+                    placeholder="请选择交付时间"
                     :getPopupContainer="getPopupContainer"
                     v-decorator="['deliverDate', { initialValue: '' }]"
                   />
