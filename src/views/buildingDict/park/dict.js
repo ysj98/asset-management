@@ -94,6 +94,7 @@ export const areaTitle = [
     width: 140,
     align: 'center',
     dataIndex: "areaName",
+    maxLength: 64,
     isRequired:true,
     component:'text',
     errMessage: '请输入区域名称',
@@ -104,6 +105,7 @@ export const areaTitle = [
   {
     width: 140,
     align: 'center',
+    maxLength: 64,
     dataIndex: "areaCode",
     isRequired:true,
     component:'text',
@@ -115,16 +117,19 @@ export const areaTitle = [
   {
     width: 140,
     align: 'center',
+    maxLength: 18,
     title: "区域面积(㎡)",
     dataIndex: "areaZone",
-    component:'input',
+    component:'number',
     errMessage: '请输入区域面积',
     placeHolder:'请输入区域面积',
+    rules: [{required: false, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}],
     scopedSlots: { customRender: "areaZone" }
   },
   {
     width: 200,
     align: 'center',
+    maxLength: 128,
     title: "区域车位数",
     component:'input',
     dataIndex: "areaPosiNums",
@@ -135,7 +140,7 @@ export const areaTitle = [
     width: 200,
     title: "描述",
     align: 'center',
-    component:'input',
+    component:'textarea',
     dataIndex: "areaDescription",
     placeHolder:'请输入描述',
     scopedSlots: { customRender: "areaDescription" }

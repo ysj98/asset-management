@@ -32,7 +32,7 @@
                 <a-form-item label="车场名称" :required="true" v-bind="formItemLayout">
                   <a-input
                       :style="allWidth"
-                      :maxLength="30"
+                      :maxLength="128"
                       v-decorator="[
                       'placeName',
                       {
@@ -53,7 +53,7 @@
                 <a-form-item label="车场编码" v-bind="formItemLayout">
                   <a-input
                       :style="allWidth"
-                      :maxLength="30"
+                      :maxLength="64"
                       v-decorator="[
                       'placeCode',
                       {
@@ -93,16 +93,17 @@
                 <a-form-item label="车场面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                       :min="0"
-                      :max="999999.9999"
+                      step="0.0001"
+                      :max="9999999999999.9999"
                       :style="allWidth"
-                      v-decorator="['placeArea',{rules: [{ required: true, message: '请输入车场面积' }]}]"
+                      v-decorator="['placeArea',{rules: [{ required: true, message: '请输入车场面积' },{pattern:new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}]}]"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车位数量" v-bind="formItemLayout">
                   <a-input-number
-                      :max="999999"
+                      :max="99999999999"
                       :min="0"
                       :precision="1"
                       step="1"
@@ -117,7 +118,7 @@
                 <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
                   <div class="address-box">
                     <a-input
-                        :maxLength="100"
+                        :maxLength="128"
                         :style="allWidth2"
                         placeholder="详细地址"
                         v-decorator="['placeAddr', {initialValue: undefined, rules: [{required: true,message: '请输入车场地址'}]}]"
@@ -142,7 +143,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
                   <a-textarea
-                      :maxLength="200"
+                      :maxLength="128"
                       v-decorator="['description', { initialValue: '' }]"
                   />
                 </a-form-item>
@@ -181,16 +182,29 @@
                       <div :key="com.dataIndex">
                         <a-form-item style="margin: -5px;">
                           <a-input
-                            :maxLength="30"
-                            :style="allWidth"
-                            :placeholder="com.placeHolder"
-                            v-if="['input'].includes(com.component)"
-                            v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
-                            {initialValue:item ,rules: [{required: com.isRequired,message: com.errMessage}]}]"
-                            @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
+                              type="textarea"
+                              :maxLength="com.maxLength"
+                              :style="allWidth"
+                              :placeholder="com.placeHolder"
+                              v-if="['textarea'].includes(com.component)"
+                              v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
+                              {initialValue:item ,rules: [{required: com.isRequired,message: com.errMessage}]}]"
+                              @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <a-input
-                            :maxLength="30"
+                              :min="0"
+                              step="0.0001"
+                              :style="allWidth"
+                              :maxLength="com.maxLength"
+                              :key="index+'number'"
+                              :placeholder="com.placeHolder"
+                              v-if="['number'].includes(com.component)"
+                              v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
+                              {initialValue: 0 ,rules: [{required: com.isRequired,message: com.errMessage},...com.rules]}]"
+                              @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
+                          />
+                          <a-input
+                            :maxLength="com.maxLength"
                             :style="allWidth"
                             :placeholder="com.placeHolder"
                             :key="formInfo.areaArray[index].key"
