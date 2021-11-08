@@ -290,17 +290,17 @@ export default {
       let len = data.length;
       // 如果点击全选或者取消全选
       if (data[len - 1] === "" || len === 0) {
-        return (data = [""]);
+        return (data = [""].join(","));
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === dataOptions.length - 1) {
-        return (data = [""]);
+        return (data = [""].join(","));
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
         data.splice(data.indexOf(""), 1);
       }
-      return data;
+      return data.join(",");
     },
     // 生成操作按钮
     createOperationBtn() {
