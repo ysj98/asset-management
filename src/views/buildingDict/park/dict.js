@@ -22,7 +22,7 @@ export const allWidth = {
 };
 export const queryCondition = {
   organId: "", // 机构id
-  communityId: [''], // 运营项目
+  communityId: '', // 运营项目
   typeId: '', // 类型
   nameOrCode: '', // 土地名称/编码/宗地号
   pageNo: 1,
