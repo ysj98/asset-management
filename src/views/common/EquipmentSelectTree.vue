@@ -7,11 +7,12 @@
       v-model="valueCom"
       :allowClear="allowClear"
       :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-      :tree-data="treeData"
+      :tree-data="optionsDataFormat(treeData)"
       :placeholder="placeholder"
       :load-data="onLoadData"
       option-filter-prop="label"
       @change="handleChange"
+      @select="handleSelect"
     />
     <div class="default-name" v-show="showDefaultOrganName">{{defaultName}}</div>
   </div>
@@ -49,6 +50,12 @@ export default {
     defaultName : {
       type: String,
       default: ''
+    },
+    optionsDataFormat: {
+      type: Function,
+      default(data){
+        return data
+      }
     }
   },
   model: {
@@ -85,6 +92,9 @@ export default {
     }
   },
   methods: {
+    handleSelect(...argus){
+      this.$emit('select',...argus)
+    },
     handleChange () {
       this.showDefaultOrganName = false
     },

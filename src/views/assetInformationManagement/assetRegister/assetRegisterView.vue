@@ -35,7 +35,19 @@
           :options="$addTitle(sourceOptions)"
           @select="changeSource"
         />
+        <EquipmentSelectTree
+          v-if="isSelectedEquipment"
+          style="width: 300px"
+          :top-organ-id="queryCondition.organId"
+          :multiple="true"
+          v-model="queryCondition.assetClassify"
+          :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: ''},...data]
+          }"
+          @select="changeAssetClassify"
+        />
         <a-select
+          v-else
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
@@ -45,7 +57,6 @@
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetClassify"
         ></a-select>
-
         <div class="box">
           <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
@@ -93,7 +104,7 @@ import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {querySourceType} from "@/views/common/commonQueryApi";
-
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -197,7 +208,7 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree},
   data () {
     return {
       sourceOptions:[{ value:'', label: '全部来源方式' }],
@@ -239,6 +250,12 @@ export default {
         }
       ],
       projectData: []
+    }
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     }
   },
   watch: {

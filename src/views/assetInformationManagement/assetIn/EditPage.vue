@@ -69,10 +69,6 @@
           <!--:to="{path: '/reportTask/taskDetail', query: {taskId: record.registerOrderId}}"-->
         <!--&gt;{{text}}</router-link>-->
       <!--</span>-->
-      <!-- 资产面积 -->
-      <template #area="text,record">
-        {{record.assetType === '设备设施'? '/' : record.area}}
-      </template>
     </a-table>
     <SG-FooterPagination
       v-if="tableObj.dataSource.length"
@@ -138,7 +134,7 @@
             { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
-            { title: '资产面积(㎡)', key: 'area', scopedSlots: { customRender: 'area'} },
+            { title: '资产面积(㎡)', key: 'area', customRender: this.generateColumnArea},
             { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
             { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
             { title: '核实时间', dataIndex: 'verifierTime' }, { title: '核实人', dataIndex: 'verifierByName' }
@@ -160,7 +156,13 @@
     methods: {
       // 下拉搜索筛选
       filterOption,
-
+      generateColumnArea(record){
+        if (record.assetType === this.$store.state.ASSET_TYPE_STRING.EQUIPMENT){
+          return '/'
+        }else {
+          return record.area
+        }
+      },
       // 改变资产项目或资产类型，清空关联的登记单
       changeSelect () {
         this.selectedList = []
