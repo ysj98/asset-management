@@ -8,8 +8,8 @@
       <div slot="headerForm" class="search-content-box">
         <div class="top-search-one" style="padding: 0;">
           <div>
-              v-if="createPower"
             <SG-Button
+              v-if="createPower"
               @click="goPage('create')"
               class="mr10"
               icon="plus"
