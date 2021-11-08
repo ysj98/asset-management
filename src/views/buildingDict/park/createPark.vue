@@ -120,7 +120,7 @@
                         :maxLength="100"
                         :style="allWidth2"
                         placeholder="详细地址"
-                        v-decorator="['placeAddr']"
+                        v-decorator="['placeAddr', {initialValue: undefined, rules: [{required: true,message: '请输入车场地址'}]}]"
                     />
                   </div>
                 </a-form-item>
