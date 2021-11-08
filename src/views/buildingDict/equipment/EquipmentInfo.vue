@@ -290,9 +290,9 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      // if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
-      // }
+      }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_DELETE)) {
         arr.push({ iconType: "delete", text: "删除", editType: "delete" });
       }

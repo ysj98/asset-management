@@ -108,7 +108,7 @@
 <!--                    v-decorator="['equipmentAreaId']"/>-->
                   <a-input
                     style="width: 55.5%;"
-                    :maxLength="30"
+                    :maxLength="100"
                     placeholder="请输入详细地址"
                     v-decorator="['position']"
                   />
