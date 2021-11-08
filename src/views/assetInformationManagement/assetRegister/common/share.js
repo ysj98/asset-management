@@ -107,7 +107,7 @@ export function checkBuildsObjectTypeFn(val) {
   };
   // 如果时 设备设施 必传 organId
   this.checkboxAssetType === this.ASSET_TYPE_CODE.EQUIPMENT &&
-    (obj.organId = this.equipmentOrganId);
+    (obj.organId = this.userSelectedOrganId);
   this.$api.assets.checkBuildsObjectType(obj).then(res => {
     if (res.data.code === "0") {
       this.confirmDownloadTemplate();
@@ -122,11 +122,8 @@ export function confirmDownloadTemplate(api, otherRequestData) {
   let requestData = {
     assetType: this.checkboxAssetType, // 资产类型, 1房屋、2土地、3设备
     scope:  [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.YARD].includes(this.checkboxAssetType) ? this.scope.join(",") : "",
-    // 如果是 设备设施 类型 就取 设备设施 筛选所用  organId
-    organId:
-      this.checkboxAssetType === this.ASSET_TYPE_CODE.EQUIPMENT
-        ? this.equipmentOrganId
-        : this.organId,
+    // 如果是 设备设施或者车场 类型 就取 筛选所用  organId
+    organId: [this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(this.checkboxAssetType) ? this.userSelectedOrganId : this.organId,
     [ASSET_TYPE_IDS]: this.positionIds
   };
   Object.assign(requestData, otherRequestData);

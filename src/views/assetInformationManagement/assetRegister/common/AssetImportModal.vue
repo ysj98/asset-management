@@ -36,7 +36,7 @@
             :checkbox-asset-type="checkboxAssetType"
             :positionIds.sync="positionIds"
             :scope.sync="scope"
-            @changeEquipmentOrganId="changeEquipmentOrganId"
+            @changeOrganId="changeOrganId"
           />
           <div class="model-right-footer">
             <SG-Button weaken @click="commonFn">
@@ -113,7 +113,7 @@ export default {
       organId: "",
       modalShow: false,
       positionIds: [],
-      equipmentOrganId:''
+      userSelectedOrganId:''
     };
   },
   computed: {
@@ -142,8 +142,8 @@ export default {
   },
   mounted() {},
   methods: {
-    changeEquipmentOrganId(equipmentOrganId) {
-      this.equipmentOrganId = equipmentOrganId;
+    changeOrganId(userSelectedOrganId) {
+      this.userSelectedOrganId = userSelectedOrganId;
       this.positionIds = [];
     },
     /*

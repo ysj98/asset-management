@@ -14,7 +14,7 @@
       </a-radio-group>
     </div>
     <div
-      v-if="checkboxAssetType === ASSET_TYPE_CODE.EQUIPMENT"
+      v-if="[ASSET_TYPE_CODE.EQUIPMENT,ASSET_TYPE_CODE.YARD].includes(checkboxAssetType)"
       style="margin: 0 0 20px;"
       class="container"
     >
@@ -135,7 +135,8 @@ export default {
       yardScopeData,
       scopeData,
       positionNameData: [],
-      topOrganId: ""
+      topOrganId: "",
+      searchName:''
     };
   },
   computed: {
@@ -169,7 +170,8 @@ export default {
     },
     handleChangeOrgan(topOrganId) {
       this.topOrganId = topOrganId;
-      this.$emit("changeEquipmentOrganId", topOrganId);
+      this.$emit("changeOrganId", topOrganId);
+      this.positionApiList(topOrganId,this.searchName)
     },
     init() {
       const _tempArr = [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.LAND,this.ASSET_TYPE_CODE.YARD]
@@ -181,17 +183,17 @@ export default {
       this.$emit("input", value);
     },
     handleSearch(value) {
-      this.searchBuildName = value;
+      this.searchName = value;
       this.debounceMothed();
     },
     // 防抖函数后台请求楼栋数据
     debounceMothed: debounce(function() {
-      this.positionApiList(this.organId, this.searchBuildName || "");
+      this.positionApiList(this.organId, this.searchName || "");
     }, 200),
     positionApiList(organId, aliasName) {
       if (this.checkboxAssetType === this.ASSET_TYPE_CODE.YARD){
         const requestData = {
-          organId,
+          organId: this.topOrganId || organId,
           onlyCurrentNode: 1,
           nameOrCode: aliasName,
           pageNo: 1,

@@ -19,7 +19,7 @@
         :positionIds.sync="positionIds"
         :organ-id="organId"
         :checkbox-asset-type="checkboxAssetType"
-        @changeEquipmentOrganId="changeEquipmentOrganId"
+        @changeOrganId="changeOrganId"
       ></DownLoadTemplate>
     </SG-Modal>
   </div>
@@ -43,7 +43,7 @@ export default {
       organId: "",
       modalShow: false,
       positionIds: [],
-      equipmentOrganId: ""
+      userSelectedOrganId: ""
     };
   },
   computed: {
@@ -52,8 +52,8 @@ export default {
     }
   },
   methods: {
-    changeEquipmentOrganId(equipmentOrganId) {
-      this.equipmentOrganId = equipmentOrganId;
+    changeOrganId(userSelectedOrganId) {
+      this.userSelectedOrganId = userSelectedOrganId;
       this.positionIds = [];
     },
     // 类型查询
