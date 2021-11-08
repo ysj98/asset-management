@@ -41,7 +41,7 @@
                           {
                             required: true,
                             whitespace: true,
-                            message: '请输入土地名称',
+                            message: '请输入车场名称',
                           },
                         ],
                       },
@@ -62,7 +62,7 @@
                           {
                             required: true,
                             whitespace: true,
-                            message: '请输入土地编码',
+                            message: '请输入车场编码',
                           },
                         ],
                       },
@@ -133,7 +133,7 @@
                   <dict-select
                     placeholder="请选择车场类型"
                     menu-code="PARKING_PLACE_RESOURCE_TYPE"
-                    v-decorator="['typeId',{initialValue: undefined, rules: [{required: true,message: '请选择土地类型'}]}]"
+                    v-decorator="['typeId',{initialValue: undefined, rules: [{required: true,message: '请选择车场类型'}]}]"
                   />
                 </a-form-item>
               </a-col>
