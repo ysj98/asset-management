@@ -232,7 +232,7 @@
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="formInfo.parkingImg"
-                    :max="5"
+                    :max="1"
                   />
                 </a-form-item>
               </a-col>
