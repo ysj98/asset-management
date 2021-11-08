@@ -251,7 +251,7 @@ const tableDataTemplate = {
   areaName:'', // 名称
   areaCode:'', // 编码
   areaZone:'', // 面积
-  areaPosiNums: 50, // 车位数
+  areaPosiNums: 0, // 车位数
   areaParkingImg: '', //
   areaOtherImg: [], // 图片
   areaDescription:'' // 描述
