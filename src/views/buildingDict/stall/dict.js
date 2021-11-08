@@ -22,7 +22,7 @@ export const allWidth = {
 };
 export const queryCondition = {
   organId: "", // 机构id
-  communityId: [''], // 运营项目
+  communityId: '', // 运营项目
   objType: '', // 车场类型
   parkingPlaceStr: '',
   parkingAreaId: '', // 区域
