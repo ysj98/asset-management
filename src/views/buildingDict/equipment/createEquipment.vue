@@ -205,7 +205,7 @@
                   <SG-UploadFile
                     :customUpload="customUpload"
                     v-model="formInfo.imgPath"
-                    :max="5"
+                    :max="20"
                   />
                 </a-form-item>
               </a-col>
@@ -215,7 +215,7 @@
                 <a-form-item label="附件" v-bind="formItemLayout2">
                   <SG-UploadFile
                     type="all"
-                    :max="5"
+                    :max="20"
                     :customUpload="customUpload"
                     v-model="formInfo.documentPath"
                   />
