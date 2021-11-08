@@ -205,7 +205,7 @@
                   <SG-UploadFile
                     :customUpload="customUpload"
                     v-model="formInfo.imgPath"
-                    :max="20"
+                    :max="10"
                   />
                 </a-form-item>
               </a-col>
