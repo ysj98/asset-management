@@ -155,7 +155,7 @@
                       :customDownload="customDownload"
                       :customUpload="customUpload"
                       v-model="formInfo.otherImg"
-                      :max="10"
+                      :max="1"
                   />
                 </a-form-item>
               </a-col>
@@ -204,7 +204,7 @@
                             <SG-UploadFile
                                 :customDownload="customDownload"
                                 :customUpload="customUpload"
-                                :max="2"
+                                :max="1"
                                 v-model="formInfo.areaArray[index].areaOtherImg"
                             >
                               <span slot="tips"></span>
