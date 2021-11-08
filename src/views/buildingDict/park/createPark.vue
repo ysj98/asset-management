@@ -442,7 +442,7 @@ export default {
         key: Math.random()
       })
       this.formInfo.areaArray = [...newTable]
-      this.formInfo = {...this.formInfo}
+      // this.formInfo = {...this.formInfo}
     },
     // 确定
     handleSave() {
