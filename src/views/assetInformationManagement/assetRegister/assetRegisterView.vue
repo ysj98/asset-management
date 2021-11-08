@@ -42,7 +42,7 @@
           :multiple="true"
           v-model="queryCondition.assetClassify"
           :options-data-format="(data)=>{
-            return [{label: '全部资产分类', value: ''},...data]
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
           }"
           @select="changeAssetClassify"
         />
