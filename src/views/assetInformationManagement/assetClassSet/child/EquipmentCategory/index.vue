@@ -16,8 +16,11 @@
     <div class="content">
       <div class="content-left">
         <EquipmentTree
-          :top-organ-id="currentTopOrganId"
+          :organId="currentTopOrganId"
           @handleSelect="handleSelect"
+          ref="refEquipmentTree"
+          :selectedKeysDefault.sync="selectedKeysDefault"
+          :expandedKeysDefault.sync="expandedKeysDefault"
         />
       </div>
       <div class="content-right">
@@ -33,6 +36,7 @@
           :up-equipment-id="selectedKind.equipmentId"
           :up-equipment-name="selectedKind.equipmentName"
           :organ-id="currentTopOrganId"
+          @actionSuccess="handleActionSuccess"
         />
       </div>
     </div>
@@ -57,6 +61,8 @@ export default {
   },
   data() {
     return {
+      selectedKeysDefault:[],
+      expandedKeysDefault:[],
       modalList: {
         CategoryAttrModal: {
           modalName: "CategoryAttrModal",
@@ -104,6 +110,9 @@ export default {
     };
   },
   methods: {
+    handleActionSuccess(){
+      this.$refs.refEquipmentTree.resetLoad()
+    },
     setKindAttrNum(num) {
       this.kindInfoListOptions.formatBasicInfoList[1][0].title = `台帐属性(${num ||
         0})`;

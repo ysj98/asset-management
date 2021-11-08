@@ -320,6 +320,7 @@ export default {
                 ele => ele.professionCode === professionCode
               );
               this.$message.success("操作成功");
+              this.$emit('actionSuccess')
               if (idx !== -1) {
                 _this.tableOptions.dataSource.splice(idx, 1);
               }
@@ -332,7 +333,7 @@ export default {
             );
             if (idx !== -1) {
               _this.tableOptions.dataSource.splice(idx, 1);
-              this.$message.success("操作成功");
+              this.$emit('actionSuccess')
             }
           }
         }
@@ -390,6 +391,7 @@ export default {
       if (code === "0") {
         this.$message.success("保存成功");
         this.getPage(this.upEquipmentId);
+        this.$emit('actionSuccess')
       } else {
         this.$message.error(message);
       }
