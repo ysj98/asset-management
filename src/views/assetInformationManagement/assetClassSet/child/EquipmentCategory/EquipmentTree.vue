@@ -134,7 +134,6 @@ export default {
       selectedKeys: [-1],
       activeKey: "",
       expandedKeys: [topItem.key],
-      copyExpandedKeys: [topItem.key],
       autoExpandParent: false,
       gData: [{ ...topItem }],
       copyGdata: [{ ...topItem }],
@@ -173,12 +172,10 @@ export default {
     },
     emptyTreeData() {
       this.gData = [{ ...topItem }];
-      this.expandedKeys = [topItem.key];
       this.dataList = [{ ...topItem }];
       this.selectItem = {};
       this.store = { [topItem.key]: topItem };
       this.copyGdata = utils.deepClone(this.gData);
-      this.copyExpandedKeys = [topItem.key];
       this.searchValueInput = "";
     },
     handleOper(scope) {
@@ -242,9 +239,6 @@ export default {
     },
     onExpand(expandedKeys) {
       this.expandedKeys = expandedKeys;
-      if (!this.searchValueInput) {
-        this.copyExpandedKeys = [...expandedKeys];
-      }
       this.autoExpandParent = false;
     },
     // 异步加载数据
@@ -285,8 +279,6 @@ export default {
               return { ...item };
             });
             this.copyGdata = utils.deepClone(this.gData);
-            // TODO: 默认展示上一次 用户操作结果
-            this.expandedKeys = [topItem.key];
             this.treeUuid = getUuid();
             this.handleOper(this.gData[0]);
           } else {
