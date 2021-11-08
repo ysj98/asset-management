@@ -4,7 +4,7 @@
 <template>
   <div class="landInfo-create-page">
     <div class="create-form">
-      <a-form :form="form" @submit="handleSave" layout="horizontal">
+      <a-form :form="form" layout="horizontal">
         <!-- 基础信息 -->
         <div class="page-item">
           <div class="mb30">
