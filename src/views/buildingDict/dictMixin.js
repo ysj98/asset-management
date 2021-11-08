@@ -45,6 +45,8 @@ export default {
           if (item.data.code === '0' && item.data.data) {
             let url = item.data.data
             lists.push({url, name: url.substring(url.lastIndexOf('/')+1),size: files[0].size})
+          } else {
+            this.$SG_Message.error(item.data.message)
           }
         })
         return {lists}

@@ -203,6 +203,7 @@
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
+                    :customUpload="customUpload"
                     v-model="formInfo.imgPath"
                     :max="5"
                   />
@@ -214,7 +215,8 @@
                 <a-form-item label="附件" v-bind="formItemLayout2">
                   <SG-UploadFile
                     type="all"
-                    :customUpload="customUpload "
+                    :max="5"
+                    :customUpload="customUpload"
                     v-model="formInfo.documentPath"
                   />
                 </a-form-item>
