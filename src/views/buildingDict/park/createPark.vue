@@ -519,8 +519,7 @@ export default {
                 this.formInfo.areaArray=[]
                 this.form.setFieldsValue(this.afterParkApiDetail(res.data.data))
               } else {
-                this.$message.error(res.data.message)
-              }
+                this.$SG_Message.error(res.data.message)              }
               resolve()
             },
             () => {
@@ -573,7 +572,7 @@ export default {
                 query: { showKey: "park", refresh: true },
               })
             } else {
-              this.$message.error(res.data.message)
+              this.$SG_Message.error(res.data.message)
             }
           })
         },
