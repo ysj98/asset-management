@@ -407,8 +407,9 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       );
     },
+    // 仅当先组织机构 1 选中, "" 不选中
     changeChecked (e) {
-      this.queryCondition.isOnlyCurrent = Number(e.target.checked)
+      this.queryCondition.isOnlyCurrent = Number(e.target.checked) ? "1" : ""
     },
     /* ******************************************************** */
     // 车场搜索
