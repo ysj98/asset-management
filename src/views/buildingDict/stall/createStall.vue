@@ -479,9 +479,10 @@ export default {
       this.placeArr = [];
       const params = {
         ...data,
+        onlyCurrentNode: 1,
         organId: this.organId,
         pageNo: 1,
-        pageLength: 20
+        pageLength: 999
       };
       this.$api.building.parkApiList(params).then(({ data: res }) => {
         if (res.code === "0") {
