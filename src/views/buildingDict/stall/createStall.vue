@@ -101,6 +101,7 @@
                     :style="allWidth"
                     :disabled="routeQuery.type === 'edit'"
                     placeholder="请选择车位用途"
+                    @change="handleCarStallUsage"
                     :dict-options="parkingUsageOption"
                     v-model="formInfo.parkingUsage"
                   />
@@ -110,6 +111,8 @@
                 <a-form-model-item label="车位类型" :required="true" prop="objType">
                   <dict-select
                     :style="allWidth"
+                    :disableOptions="carTypeDisabledList"
+                    :refresh="carTypeRefresh"
                     placeholder="请选择车位类型"
                     menu-code="PARKING_OBJ_TYPE"
                     @change="handleCarTypeChange"
@@ -117,7 +120,7 @@
                   />
                 </a-form-model-item>
               </a-col>
-              <a-col :span="8">
+              <a-col :span="8" v-if="carType">
                 <a-form-model-item label="车位状态" :required="true" prop="objStatus">
                   <dict-select
                     placeholder="请选择车位状态"
@@ -231,6 +234,10 @@ export default {
       parkTypeOpt, // 全部车场
       carTypeMenu, // 车位类型列表
       carType: undefined, // 车位类型
+      carTypeDisabledList: [], // 车位筛选列表
+      carTypeMarketList: [3 , '3'], // 销售类型
+      carTypePropertyList:[0, 1, 2, '0', '1', '2'], // 产权类型
+      carTypeRefresh: 0, // 车位手动刷新列表
       organId: "",
       organName: "",
       formInfo: {
@@ -304,46 +311,6 @@ export default {
         organId: ""
       },
       bussType: "blankDir",
-      formItemLayout: {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 6 }
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 12 }
-        }
-      },
-      formItemLayout2: {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 2 }
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 20 }
-        }
-      },
-      formItemLayoutTable: {
-        labelCol: {
-          xs: { span: 0 },
-          sm: { span: 0 }
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 22 }
-        }
-      },
-      formItemLayoutGeo: {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 3 }
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 21 }
-        }
-      }
     };
   },
   beforeCreate() {
@@ -404,6 +371,23 @@ export default {
       this.formInfo.parkingAreaId= undefined
       this.placeAreaArr = [];
       this.parkAreaApiList(params);
+    },
+    // 车位用途发生变化
+    handleCarStallUsage (ev) {
+      console.log(ev)
+      switch (ev) {
+        case 1: // 运营车位
+        case '1':
+        case '运营车位':
+          this.carTypeDisabledList = this.carTypeMarketList
+          break;
+        case 2: // 销售车位
+        case '2':
+        case '销售车位':
+          this.carTypeDisabledList = this.carTypePropertyList
+          break;
+      }
+      this.carTypeRefresh = Math.random()
     },
     // 车位类型变化
     handleCarTypeChange(ev) {
@@ -508,6 +492,9 @@ export default {
         const { data: res } = await stallApiDetail(params);
         if (res.code === "0") {
           this.formInfo = await this.afterStallApiList(res.data);
+          this.$nextTick(()=>{
+            this.handleCarStallUsage(this.formInfo.parkingUsage || '')
+          })
         }
       } finally {
         this.DE_Loding(loadingName);

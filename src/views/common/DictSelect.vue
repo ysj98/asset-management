@@ -15,25 +15,39 @@ import { utils } from "@/utils/utils";
 export default {
   name: "DictSelect",
   props:{
+    // v-model 绑定的值
     value:{
       type: [String,Number,Array],
-      default: ()=>undefined
+      default: () => undefined
     },
+    // 手动触发刷新,可使用随机数 触发
+    refresh: {
+      default: 0
+    },
+    // 可混入列表的列表
     dictOptions:{
       type: Array,
       default: () => [],
     },
+    // 禁用列表
+    disableOptions:{
+      default: () => []
+    },
+    // 空列表展示提示语
     notFoundContent:{
       type: String,
       default: '没有查询到数据'
     },
+    // 提示语
     placeholder: {
       type:String,
       default: '请选择'
     },
+    // 禁用
     disabled:{
       default: false
     },
+    // 模式
     mode: {
       type: String,
       default: ''
@@ -51,6 +65,14 @@ export default {
   watch: {
     menuCode: {
       deep: true,
+      immediate: true,
+      handler: function () {
+        this.$nextTick(()=>{
+          this.getOptions()
+        })
+      }
+    },
+    refresh:{
       immediate: true,
       handler: function () {
         this.$nextTick(()=>{
@@ -97,6 +119,7 @@ export default {
               return res.data.map((item) => ({
                 value: item["value"],
                 label: item["name"],
+                disabled: this.disableOptions.includes(item["value"])
               }));
             }
           }
