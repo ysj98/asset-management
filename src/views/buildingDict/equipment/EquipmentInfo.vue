@@ -173,8 +173,18 @@ export default {
       let data = {
         ...this.queryCondition,
         // communityId: this.queryCondition.communityId.join(","),
-        systemCode: 'assets'
+        systemCode: "assets",
+        organId: ""
       };
+      let organId = ""
+      if(this.queryCondition.communityId){
+        const id = await this.queryOrganIdByCommunityId(this.queryCondition.communityId)
+        if(id) {
+          organId = id
+        }
+      }
+      data.organId = organId
+      delete data.communityId
       this.table.dataSource = []
       this.table.totalCount = 0
       this.table.loading = true;
@@ -393,6 +403,16 @@ export default {
     },
     changeChecked (e) {
       this.queryCondition.isCurrent = Number(e.target.checked)
+    },
+    // 根据communityId查询organId
+    async queryOrganIdByCommunityId (communityId) {
+      const {data: res} = await this.$api.building.queryOrganIdByCommunityId({communityId})
+      if (String(res.code) === '0') {
+        return res.data
+      } else {
+        this.$SG_Message.error(res.message)
+      }
+      return false
     },
   },
 };
