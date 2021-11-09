@@ -258,9 +258,8 @@ import {
   getInfoAttrListByEquipmentId,
 } from "../../../api/building";
 import moment from "moment";
-import {FormModel} from 'ant-design-vue'
 export default {
-  components: {EquipmentSelectTree, EquipmentSelect, EquipmentPositionSelectTree , FormFooter, TreeSelect, AFormModel:FormModel, AFormModelItem: FormModel.Item},
+  components: {EquipmentSelectTree, EquipmentSelect, EquipmentPositionSelectTree , FormFooter, TreeSelect},
   mixins: [dictMixin],
   data:()=>({
     formInfo:{
