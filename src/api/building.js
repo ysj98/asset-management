@@ -195,6 +195,18 @@ export function parkApiDelete (data) {
 export function deleteParkingPlaceArea (data) {
   return axiosPost(building.deleteParkingPlaceArea, data)
 }
+// 车场 ->区域 新增
+export function addParkingPlaceArea (data) {
+  return axiosPost(building.addParkingPlaceArea, data)
+}
+// 车场 ->区域 修改
+export function editParkingPlaceArea (data) {
+  return axiosPost(building.editParkingPlaceArea, data)
+}
+// 车场 ->区域 列表
+export function getParkingPlaceAreasByPlaceId (data) {
+  return axiosPost(building.getParkingPlaceAreasByPlaceId, data)
+}
 // 车位 列表查询
 export function stallApiPageList (data) {
   return axiosPost(building.stallApiPageList, data)

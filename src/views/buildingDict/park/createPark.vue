@@ -11,18 +11,18 @@
         <a-row>
           <a-col :span="8">
             <a-form-model-item :required="true"  label="所属机构" porp="organId">
-                <tree-select
-                    ref="organTopRef"
-                    :default="false"
-                    :typeFilter="typeFilter"
-                    @changeTree="changeTree"
-                    placeholder='请选择所属机构'
-                    :defaultOrganName="organNameMain"
-                    style="width:100%;"
-                    :allowClear="false"
-                    v-model="formInfo.organId"
-                >
-                </tree-select>
+              <tree-select
+                ref="organTopRef"
+                :default="false"
+                :typeFilter="typeFilter"
+                @changeTree="changeTree"
+                placeholder='请选择所属机构'
+                :defaultOrganName="organNameMain"
+                style="width:100%;"
+                :allowClear="false"
+                v-model="formInfo.organId"
+              >
+              </tree-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
@@ -124,12 +124,13 @@
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
             <div style="width: 86%">
               <SG-UploadFile
-                  :customDownload="customDownload"
-                  :customUpload="customUpload"
-                  v-model="formInfo.otherImg"
-                  :max="1"
+                :customDownload="customDownload"
+                :customUpload="customUpload"
+                v-model="formInfo.otherImg"
+                :max="1"
+                :maxSize="2048"
               >
-                <span slot="tips">(注：上传的图片最多为 1 张)</span>
+                <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M,区域信息图片同上)</span>
               </SG-UploadFile>
             </div>
           </a-col>
@@ -234,6 +235,7 @@
                               :customUpload="customUpload"
                               :max="1"
                               v-model="formInfo.areaArray[index].areaOtherImg"
+                              :maxSize="2048"
                           >
                             <span slot="tips"></span>
                           </SG-UploadFile>

@@ -2,6 +2,7 @@
   <a-select
     :mode="mode"
     v-model="valueCmp"
+    :disabled="disabled"
     :placeholder="placeholder"
     :notFoundContent="notFoundContent"
     optionFilterProp="children"
@@ -29,6 +30,9 @@ export default {
     placeholder: {
       type:String,
       default: '请选择'
+    },
+    disabled:{
+      default: false
     },
     mode: {
       type: String,

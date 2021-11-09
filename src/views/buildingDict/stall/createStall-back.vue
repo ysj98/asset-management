@@ -4,7 +4,7 @@
 <template>
   <div class="landInfo-create-page">
     <div class="create-form">
-      <a-form-model ref="form" :model="formInfo" :rules="rules" :label-col="{ span: 5 }" :wrapper-col="{ span: 14 }">
+      <a-form :form="form" @submit="handleSave" layout="horizontal">
         <!-- 基础信息 -->
         <div class="page-item">
           <div class="mb30">
@@ -13,10 +13,10 @@
           <div class="form-content">
             <a-row>
               <a-col :span="8">
-                <a-form-model-item
+                <a-form-item
                   :required="true"
                   label="所属机构"
-                  prop="organId"
+                  v-bind="formItemLayout"
                 >
                   <treeSelect
                     ref="organTopRef"
@@ -27,16 +27,22 @@
                     :defaultOrganName="organName"
                     :style="allStyle"
                     :allowClear="false"
-                    v-model="formInfo.organId"
+                    v-decorator="[
+                      'organId',
+                      {
+                        initialValue: '' || undefined,
+                        rules: [{ required: true, message: '请选择所属机构' }]
+                      }
+                    ]"
                   >
                   </treeSelect>
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item
+                <a-form-item
                   label="车场名称"
                   :required="true"
-                  prop="placeId"
+                  v-bind="formItemLayout"
                 >
                   <a-select
                     show-search
@@ -46,154 +52,199 @@
                     placeholder="请选择车场名称"
                     :options="$addTitle(placeArr)"
                     :default-active-first-option="false"
-                    v-model="formInfo.placeId"
+                    v-decorator="[
+                      'placeId',
+                      { rules: [{ required: true, message: '请选择车场名称' }] }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item label="区域名称" :required="true" prop="parkingAreaId">
+                <a-form-item label="区域名称" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
                     :options="$addTitle(placeAreaArr)"
                     placeholder="请选择区域名称"
                     :default-active-first-option="false"
-                    v-model="formInfo.parkingAreaId"
+                    v-decorator="[
+                      'parkingAreaId',
+                      { initialValue: undefined, rules: [{ required: true, message: '请选择区域名称' }] }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
-                <a-form-model-item label="车位名称" :required="true" prop="name">
+                <a-form-item label="车位名称" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
                     :maxLength="30"
                     placeholder="请输入车位名称"
-                    v-model="formInfo.name"
+                    v-decorator="[
+                      'name',
+                      {
+                        initialValue: undefined,
+                        rules: [
+                          {
+                            required: true,
+                            whitespace: true,
+                            message: '请输入车位名称'
+                          }
+                        ]
+                      }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item label="车位编码" :required="true" prop="code">
+                <a-form-item label="车位编码" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
                     placeholder="请输入车位编码"
                     :maxLength="30"
-                    v-model="formInfo.code"
+                    v-decorator="[
+                      'code',
+                      {
+                        initialValue: undefined,
+                        rules: [
+                          {
+                            required: true,
+                            whitespace: true,
+                            message: '请输入车位编码'
+                          }
+                        ]
+                      }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item label="交付时间" prop="deliverDate">
+                <a-form-item label="交付时间" v-bind="formItemLayout">
                   <a-date-picker
                     :style="allWidth"
                     placeholder="请选择交付时间"
                     :getPopupContainer="getPopupContainer"
-                    v-model="formInfo.deliverDate"
+                    v-decorator="['deliverDate', { initialValue: '' }]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="8">
-                <a-form-model-item label="车位用途" :required="true" prop="parkingUsage">
+              <a-col :span="8" v-if="routeQuery.type !== 'edit'">
+                <a-form-item label="车位用途" v-bind="formItemLayout">
                   <dict-select
                     :style="allWidth"
-                    :disabled="routeQuery.type === 'edit'"
-                    placeholder="请选择车位用途"
                     :dict-options="parkingUsageOption"
-                    v-model="formInfo.parkingUsage"
+                    v-decorator="[
+                      'parkingUsage',
+                      {
+                        initialValue: '' || undefined,
+                        rules: [{ required: true, message: '请选择车位用途' }]
+                      }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item label="车位类型" :required="true" prop="objType">
+                <a-form-item label="车位类型" v-bind="formItemLayout">
                   <dict-select
                     :style="allWidth"
-                    placeholder="请选择车位类型"
                     menu-code="PARKING_OBJ_TYPE"
                     @change="handleCarTypeChange"
-                    v-model="formInfo.objType"
+                    v-decorator="[
+                      'objType',
+                      {
+                        initialValue: '' || undefined,
+                        rules: [{ required: true, message: '请选择车位类型' }]
+                      }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
-              <a-col :span="8">
-                <a-form-model-item label="车位状态" :required="true" prop="objStatus">
+              <a-col :span="8" v-if="carType">
+                <a-form-item label="车位状态" v-bind="formItemLayout">
                   <dict-select
-                    placeholder="请选择车位状态"
                     :style="allWidth"
                     :menu-code="carType"
-                    v-model="formInfo.objStatus"
+                    v-decorator="[
+                      'objStatus',
+                      {
+                        initialValue: formInfo.objStatus,
+                        rules: [{ required: true, message: '请选择车位状态' }]
+                      }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
-                <a-form-model-item label="建筑面积(㎡)" prop="propertyArea">
+                <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :min="0"
-                    placeholder="请输入建筑面积"
                     :max="999999.9999"
                     :style="allWidth"
-                    v-model="formInfo.propertyArea"
+                    v-decorator="[
+                      'propertyArea',
+                      {
+                        initialValue: '' || undefined,
+                        rules: [{ required: true, message: '请输入建筑面积' }]
+                      }
+                    ]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item label="使用面积(㎡)" prop="useArea">
+                <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :min="0"
-                    placeholder="请输入使用面积"
                     :max="999999.9999"
                     :style="allWidth"
-                    v-model="formInfo.useArea"
+                    v-decorator="['useArea', { initialValue: '' || undefined }]"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item label="公摊面积(㎡)" prop="shareArea">
+                <a-form-item label="公摊面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :min="0"
-                    placeholder="请输入公摊面积"
                     :max="999999.9999"
                     :style="allWidth"
-                    v-model="formInfo.shareArea"
+                    v-decorator="['shareArea']"
                   />
-                </a-form-model-item>
+                </a-form-item>
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="24" style="display: flex">
+              <a-col :span="24">
                 <!-- 文本框 -->
-                <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
-                <div style="width: 86%">
-                <a-textarea
-                  :maxLength="200"
-                  v-model="formInfo.description"
-                />
-                </div>
+                <a-form-item label="备注" v-bind="formItemLayout2">
+                  <a-textarea
+                    :maxLength="200"
+                    v-decorator="[
+                      'description',
+                      { initialValue: '' || undefined }
+                    ]"
+                  />
+                </a-form-item>
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="24" style="display: flex;margin-top: 20px">
-                <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
-                <div style="width: 86%">
+              <a-col :span="24">
+                <a-form-item label="图片" v-bind="formItemLayout2">
                   <SG-UploadFile
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="formInfo.parkingImg"
                     :max="1"
-                    :maxSize="2048"
-                  >
-                  <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M)</span>
-                  </SG-UploadFile>
-                </div>
+                  />
+                </a-form-item>
               </a-col>
             </a-row>
           </div>
         </div>
-      </a-form-model>
+      </a-form>
     </div>
     <FormFooter style="border:none;">
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
@@ -235,57 +286,21 @@ export default {
       organName: "",
       formInfo: {
         // 表单
-        organId: undefined, // '机构Id',
-        placeId: undefined, // '车场Id',
-        name: undefined, // '车位名称',
-        code: undefined, // '车位编码',
-        deliverDate: undefined,
-        objType: undefined, // '车位类型',
-        objStatus: undefined, // '车位状态',
-        parkingUsage: undefined, //'车位用途',
-        parkingAreaId: undefined, // '区域Id',
-        useArea: undefined, // 使用面积
-        shareArea: undefined, //'公摊面积',
-        propertyArea: undefined, // '产权面积',
+        organId: "", // '机构Id',
+        placeId: "", // '车场Id',
+        name: "", // '车位名称',
+        code: "", // '车位编码',
+        deliverDate: "",
+        objType: "", // '车位类型',
+        objStatus: "", // '车位状态',
+        parkingUsage: "", //'车位用途',
+        parkingAreaId: "", // '区域Id',
+        useArea: "", // 使用面积
+        shareArea: "", //'公摊面积',
+        propertyArea: "", // '产权面积',
         parkingImg: [],
-        description: undefined // '备注',
+        description: "" // '备注',
         // parkingAreaUnits: '' // '面积单位'
-      },
-      rules:{
-        organId: [
-          { required: true, message: '请选择所属机构' },
-        ],
-        placeId:[
-          { required: true, message: '请选择车场名称' },
-        ],
-        parkingAreaId:[
-          { required: true, message: '请选择区域名称' },
-        ],
-        parkingUsage:[
-          { required: true, message: '请输入车位用途' },
-        ],
-        name:[
-          { required: true, message: '请输入车位名称' },
-        ],
-        code:[
-          { required: true, message: '请输入车位编码' },
-        ],
-        objType:[
-          { required: true, message: '请输入车位类型' },
-        ],
-        objStatus:[
-          { required: true, message: '请输入车位状态' },
-        ],
-        useArea: [
-          {pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
-        ],
-        shareArea: [
-          {pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
-        ],
-        propertyArea:[
-          { required: true, message: '请输入产权面积' },
-          {required: true, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
-        ],
       },
       placeArr: [], // 车场列表
       placeAreaArr: [], // 区域列表
@@ -363,27 +378,26 @@ export default {
       this.organName = title;
       this.parkApiList({ organId: value });
       this.placeAreaArr = []; // 清空区域
-      this.formInfo.placeId=
-      this.formInfo.parkingAreaId= undefined
+      this.form.resetFields(["placeId", "parkingAreaId"]);
     },
     beforeSubmit(value) {
       return {
         ...value,
-        parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(",")
+        parkingImg: this.formInfo.parkingImg.map(node => node.url).join(",")
       };
     },
     // 确定
     handleSave() {
-      this.$refs.form.validate(async (validate) => {
-        if(validate) {
-        const data = this.beforeSubmit(this.formInfo);
+      this.form.validateFields((err, values) => {
+        if (err) {
+          return;
+        }
+        console.log(values);
+        const data = this.beforeSubmit(values);
         if (this.routeQuery.type === "create") {
           this.stallApiInsert(data);
         } else if (this.routeQuery.type === "edit") {
           this.stallApiEdit(data);
-        }
-        } else {
-          return false
         }
       });
     },
@@ -401,13 +415,13 @@ export default {
         placeId: ev,
         organId: this.organId
       };
-      this.formInfo.parkingAreaId= undefined
-      this.placeAreaArr = [];
+      this.form.resetFields(["parkingAreaId"]);
       this.parkAreaApiList(params);
     },
     // 车位类型变化
     handleCarTypeChange(ev) {
-      this.formInfo.objStatus = undefined;
+      this.form.resetFields(["objStatus"]);
+      this.formInfo.objStatus = "";
       this.checkCarType(ev);
     },
     checkCarType(ev) {
@@ -462,7 +476,7 @@ export default {
     },
     /* *****************接口相关**************** */
     // 查询 车场列表
-    async parkApiList(data) {
+    parkApiList(data) {
       if (!this.organId) {
         this.$message.error("请选择所属机构");
         return;
@@ -475,8 +489,8 @@ export default {
         pageNo: 1,
         pageLength: 999
       };
-      const {data: res} = await this.$api.building.parkApiList(params)
-        if (String(res.code) === "0") {
+      this.$api.building.parkApiList(params).then(({ data: res }) => {
+        if (res.code === "0") {
           let result = res.data.resultList || [];
           this.placeArr = result.map(item => ({
             value: item.placeId,
@@ -485,18 +499,23 @@ export default {
         } else {
           this.$message.error(res.data.message);
         }
+      });
     },
     // 查询 区域
-    async parkAreaApiList(data) {
-      const {data: res} = await this.$api.building.parkApiDetail(data)
-        if (String(res.code) === "0") {
-          this.placeAreaArr = (res.data.areaArray || []).map(item => ({
+    parkAreaApiList(data) {
+      this.placeAreaArr = [];
+      this.$api.building.parkApiDetail(data).then(res => {
+        this.loading = false;
+        if (res.data.code === "0") {
+          this.formInfo.areaArray = [];
+          this.placeAreaArr = (res.data.data.areaArray || []).map(item => ({
             value: item.parkingAreaId,
             label: item.areaName
           }));
         } else {
-          this.$message.error(res.message);
+          this.$message.error(res.data.message);
         }
+      });
     },
     // 查询 车位详情
     async stallApiDetail(data) {
@@ -507,40 +526,41 @@ export default {
       try {
         const { data: res } = await stallApiDetail(params);
         if (res.code === "0") {
-          this.formInfo = await this.afterStallApiList(res.data);
+          this.form.setFieldsValue(this.afterStallApiList(res.data));
         }
       } finally {
         this.DE_Loding(loadingName);
       }
     },
-    async afterStallApiList(data) {
-      const parkingImg = (data.parkingImg || "")
+    afterStallApiList(data) {
+      this.formInfo.parkingImg = (data.parkingImg || "")
         .split(",")
         .filter(item => item)
         .map(item => ({
           url: item,
           name: item.split("/").pop()
         }));
-      { // 获取车场
-        this.parkApiList({ organId: data.organId });
-      }
-      { // 获取区域
-        const params = {
-          placeId: data.placeId,
-          organId: data.organId
-        };
-        await this.parkAreaApiList(params);
-      }
+      this.placeArr = [
+        {
+          label: data.placeName,
+          value: data.placeId
+        }
+      ];
+      this.placeAreaArr = [
+        {
+          label: data.parkingAreaName,
+          value: data.parkingAreaId
+        }
+      ];
       this.organName = data.organName;
       this.organId = data.organId;
+      this.formInfo.objStatus = data.objStatus;
       this.checkCarType(data.objType);
       return {
         ...data,
-        parkingImg,
         organId: data.organId,
-        placeId: data.placeId,
-        objStatus: data.objStatus,
         parkingAreaId: data.parkingAreaId,
+        placeId: data.placeId
       };
     },
     stallApiInsert(data) {
