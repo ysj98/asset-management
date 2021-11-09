@@ -3,7 +3,7 @@
  * @Description: 
 --> 
  <script>
-import createEquipment from './createEquipmentNext.vue'
+import createEquipment from './createEquipment.vue'
 export default {
   // 组件名字
   name: 'editEquipment',

@@ -1,243 +1,256 @@
-<!--
- * @Description: 新建 编辑车场
--->
 <template>
   <div class="landInfo-create-page">
     <div class="create-form">
-      <a-form :form="form" @submit="handleSave" layout="horizontal">
+      <a-form-model ref="form" :rules="rules" :model="formInfo" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
         <!-- 基础信息 -->
         <div class="page-item">
           <div class="mb30">
             <SG-Title noMargin title="基础信息" />
           </div>
-          <div class="form-content">
-            <a-row>
-              <a-col :span="8">
-                <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
-                  <treeSelect
-                      ref="organTopRef"
-                      :default="false"
-                      :typeFilter="typeFilter"
-                      @changeTree="changeTree"
-                      placeholder='请选择所属机构'
-                      :defaultOrganName="organNameMain"
-                      :style="allStyle"
-                      :allowClear="false"
-                      v-decorator="['organId',{initialValue: '' || undefined, rules: [{required: true, message: '请选择所属机构'}]}]"
-                  >
-                  </treeSelect>
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item label="车场名称" :required="true" v-bind="formItemLayout">
-                  <a-input
-                      :style="allWidth"
-                      :maxLength="128"
-                      v-decorator="[
-                      'placeName',
-                      {
-                        initialValue: '' || undefined,
-                        rules: [ { required: true, whitespace: true, message: '请输入车场名称'}]}]"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item label="车场编码" v-bind="formItemLayout">
-                  <a-input
-                      :style="allWidth"
-                      :maxLength="64"
-                      v-decorator="[
-                      'placeCode',
-                      {
-                        initialValue: '' || undefined,
-                        rules: [
-                          {
-                            required: true,
-                            whitespace: true,
-                            message: '请输入车场编码',
-                          },
-                        ],
-                      },
-                    ]"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="8">
-                <a-form-item label="运营项目" v-bind="formItemLayout">
-<!--                      @change="communityIdChange"-->
-                  <a-select
-                      :style="allWidth"
-                      :getPopupContainer="getPopupContainer"
-                      placeholder="请选择项目"
-                      showSearch
-                      optionFilterProp="children"
-                      :options="$addTitle(communityIdOpt)"
-                      :allowClear="false"
-                      :filterOption="filterOption"
-                      notFoundContent="没有查询到数据"
-                      v-decorator="['communityId']"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item label="车场面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number
-                      :min="0"
-                      step="0.0001"
-                      :max="9999999999999.9999"
-                      :style="allWidth"
-                      v-decorator="['placeArea',{rules: [{ required: true, message: '请输入车场面积' },{pattern:new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}]}]"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item label="车位数量" v-bind="formItemLayout">
-                  <a-input-number
-                      :max="99999999999"
-                      :min="0"
-                      :precision="1"
-                      step="1"
-                      :style="allWidth"
-                      v-decorator="['placeNums', {rules: [{required: true,pattern: new RegExp(/^[0-9]\d*$/,'g'), message: '请输入车位数量,并且是正整数'}]}]"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="16">
-                <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
-                  <div class="address-box">
-                    <a-input
-                        :maxLength="128"
-                        :style="allWidth2"
-                        placeholder="详细地址"
-                        v-decorator="['placeAddr', {initialValue: undefined, rules: [{required: true,message: '请输入车场地址'}]}]"
-                    />
-                  </div>
-                </a-form-item>
-              </a-col>
-<!--            </a-row>-->
-<!--            <a-row>-->
-              <a-col :span="8">
-                <a-form-item label="车场类型" v-bind="formItemLayout">
-                  <dict-select
-                    placeholder="请选择车场类型"
-                    menu-code="PARKING_PLACE_RESOURCE_TYPE"
-                    v-decorator="['typeId',{initialValue: undefined, rules: [{required: true,message: '请选择车场类型'}]}]"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="24">
-                <!-- 文本框 -->
-                <a-form-item label="备注" v-bind="formItemLayout2">
-                  <a-textarea
-                      :maxLength="128"
-                      v-decorator="['description', { initialValue: '' }]"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="24">
-                <a-form-item label="图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
-                      v-model="formInfo.otherImg"
-                      :max="1"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </div>
-          <div class="mb30">
-            <SG-Title noMargin title="区域信息" />
-            <a-row>
-              <a-col :span="23" :offset="1">
-                <a-form-item label="" v-bind="formItemLayoutTable">
-                  <a-table :columns="areaTitle" :pagination="false" bordered :data-source="formInfo.areaArray">
+        </div>
+        <a-row>
+          <a-col :span="8">
+            <a-form-model-item :required="true"  label="所属机构" porp="organId">
+                <tree-select
+                    ref="organTopRef"
+                    :default="false"
+                    :typeFilter="typeFilter"
+                    @changeTree="changeTree"
+                    placeholder='请选择所属机构'
+                    :defaultOrganName="organNameMain"
+                    style="width:100%;"
+                    :allowClear="false"
+                    v-model="formInfo.organId"
+                >
+                </tree-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item label="车场名称" :required="true" prop="placeName">
+              <a-input
+                style="width: 100%;"
+                :maxLength="128"
+                placeholder="请输入车场名称"
+                v-model="formInfo.placeName"
+                />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item label="车场编码" :required="true" prop="placeCode">
+              <a-input
+                :style="allWidth"
+                :maxLength="64"
+                placeholder="请输入车场编码"
+                v-model="formInfo.placeCode"
+              />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="8">
+            <a-form-model-item label="运营项目" prop="communityId">
+              <a-select
+                  :style="allWidth"
+                  placeholder="请选择项目"
+                  showSearch
+                  :options="$addTitle(communityIdOpt)"
+                  :allowClear="false"
+                  notFoundContent="没有查询到数据"
+                  v-model="formInfo.communityId"
+              />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item label="车场面积(㎡)" :required="true" prop="placeArea">
+              <a-input-number
+                  :min="0"
+                  step="0.0001"
+                  :max="9999999999999.9999"
+                  :style="allWidth"
+                  v-model="formInfo.placeArea"
+              />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item label="车位数量" :required="true" prop="placeNums">
+              <a-input-number
+                  step="1"
+                  :min="0"
+                  :precision="1"
+                  :style="allWidth"
+                  :max="99999999999"
+                  v-model="formInfo.placeNums"
+              />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="16">
+            <a-form-model-item label="地理位置" :label-col="{ span: 2 }" :wrapper-col="{ span: 19 }">
+              <a-input
+                :maxLength="128"
+                :style="allWidth"
+                placeholder="详细地址"
+                v-model="formInfo.placeAddr"
+              />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item label="车场类型" :required="true" prop="typeId">
+              <dict-select
+                placeholder="请选择车场类型"
+                menu-code="PARKING_PLACE_RESOURCE_TYPE"
+                v-model="formInfo.typeId"
+              />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24" style="display: flex">
+            <!-- 文本框 -->
+            <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
+            <div style="width: 86%">
+              <a-textarea
+                  :maxLength="128"
+                  placeholder="请输入备注"
+                  v-model="formInfo.description"
+              />
+            </div>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24" style="display: flex;margin-top: 20px">
+            <!-- 文本框 -->
+            <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
+            <div style="width: 86%">
+              <SG-UploadFile
+                  :customDownload="customDownload"
+                  :customUpload="customUpload"
+                  v-model="formInfo.otherImg"
+                  :max="1"
+              >
+                <span slot="tips">(注：上传的图片最多为 1 张)</span>
+              </SG-UploadFile>
+            </div>
+          </a-col>
+        </a-row>
+        <div class="mb30">
+          <SG-Title noMargin title="区域信息" />
+          <a-row>
+            <a-col :span="24">
+              <a-form-model-item label="" :label-col="{ span: 1 }" :wrapper-col="{ span: 22 }">
+                <a-table :columns="areaTitle"  :pagination="false" bordered :data-source="formInfo.areaArray">
                     <span slot="areaNameTitle">
                       <span style="color:red">*</span>
                       区域名称</span>
-                    <span slot="areaCodeTitle">
+                  <span slot="areaCodeTitle">
                       <span style="color:red">*</span>
                       区域编码</span>
-                    <span slot="operationTitle"
-                      @click="handleTableAppend(index)"
-                      style="color: #0084ff;cursor: pointer;"
-                    >新增</span>
-                    <template v-for="com in areaTitle" :slot="com.dataIndex" slot-scope="item, record, index">
-                      <div :key="com.dataIndex">
-                        <a-form-item style="margin: -5px;">
+                  <span slot="operationTitle"
+                        @click="handleTableAppend(index)"
+                        style="color: #0084ff;cursor: pointer;"
+                  >新增</span>
+                  <template v-for="(com, ind) in areaTitle" :slot="com.dataIndex" slot-scope="item, record, index">
+                    <div :key="com.dataIndex">
+                      <a-form-model-item v-if="['areaDescription'].includes(com.dataIndex)"
+                          style="margin: -5px;"
+                          :label-col="{ span: 0 }"
+                          :wrapper-col="{ span: 24 }">
                           <a-input
+                              :key="'areaDescription'+index+ind"
                               type="textarea"
                               :maxLength="com.maxLength"
                               :style="allWidth"
                               :placeholder="com.placeHolder"
-                              v-if="['textarea'].includes(com.component)"
-                              v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
-                              {initialValue:item ,rules: [{required: com.isRequired,message: com.errMessage}]}]"
-                              @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
+                              v-model="formInfo.areaArray[index].areaDescription"
                           />
-                          <a-input
-                              :maxLength="com.maxLength"
-                              :style="allWidth"
-                              :placeholder="com.placeHolder"
-                              :key="formInfo.areaArray[index].key"
-                              v-else-if="['input'].includes(com.component)"
-                              v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
-                            {initialValue:item ,rules: [{required: false,pattern: new RegExp(/^[0-9]\d*$/,'g'), message: '请输入正整数'}]}]"
-                              @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
-                          />
-                          <a-input
-                              :style="allWidth"
-                              :maxLength="com.maxLength"
-                              :key="index+'number'"
-                              :placeholder="com.placeHolder"
-                              v-if="['number'].includes(com.component)"
-                              v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
-                              {initialValue:Number(item || 0) , rules: [{required: com.isRequired,message: com.errMessage},...com.rules]}]"
-                              @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
-                          />
-                          <a-input
+                        </a-form-model-item>
+                      <a-form-model-item v-else-if="['areaPosiNums'].includes(com.dataIndex)"
+                          :prop="`areaArray[${index}].areaPosiNums`"
+                          style="margin: -5px;"
+                          :label-col="{ span: 0 }"
+                          :wrapper-col="{ span: 24 }"
+                          :rules=" [{required: false,pattern: new RegExp(/^\d{0,13}?$/), message: '请输入车位数量,并且是正整数'}]">
+                        <a-input
+                            :key="'areaPosiNums'+index+ind"
                             :maxLength="com.maxLength"
                             :style="allWidth"
                             :placeholder="com.placeHolder"
-                            :key="formInfo.areaArray[index].key"
-                            v-else-if="['text'].includes(com.component)"
-                            v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
-                            {initialValue:item ,rules: [{required: com.isRequired,message: com.errMessage}]}]"
-                            @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
-                          />
-                          <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
-<!--                                v-model="formInfo.areaArray[index].areaOtherImg"-->
-                            <SG-UploadFile
-                                :customDownload="customDownload"
-                                :customUpload="customUpload"
-                                :max="1"
-                                v-model="formInfo.areaArray[index].areaOtherImg"
-                            >
-                              <span slot="tips"></span>
-                            </SG-UploadFile>
-                          </div>
-                          <span v-else-if="com.dataIndex === 'operation'"
-                            @click="handleTableDelete(index)"
-                            style="color: red;cursor: pointer;"
-                          >删除</span>
-                        </a-form-item>
+                            v-model="formInfo.areaArray[index].areaPosiNums"
+                        />
+                        </a-form-model-item>
+                      <a-form-model-item v-else-if="['areaZone'].includes(com.dataIndex)"
+                        :prop="`areaArray[${index}].areaZone`"
+                        style="margin: -5px;"
+                        :label-col="{ span: 0 }"
+                        :wrapper-col="{ span: 24 }"
+                        :rules="[{required: false, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}]"
+                      >
+                        <a-input
+                          :style="allWidth"
+                          :maxLength="com.maxLength"
+                          :placeholder="com.placeHolder"
+                          v-model="formInfo.areaArray[index].areaZone"
+                        />
+                      </a-form-model-item>
+                      <a-form-model-item v-else-if="['areaName'].includes(com.dataIndex)"
+                        :key="'areaName'+index+ind"
+                        :prop="`areaArray[${index}].areaName`"
+                        style="margin: -5px;"
+                        :label-col="{ span: 0 }"
+                        :wrapper-col="{ span: 24 }"
+                        :rules="[{ required: true, message: '请输入区域名称', trigger: 'blur' }]">
+<!--                        区域名称-->
+                        <a-input
+                          :style="allWidth"
+                          :maxLength="com.maxLength"
+                          :placeholder="com.placeHolder"
+                          v-model="formInfo.areaArray[index].areaName"
+                        />
+                      </a-form-model-item>
+                      <a-form-model-item v-else-if="['areaCode'].includes(com.dataIndex)"
+                          :prop="`areaArray[${index}].areaCode`"
+                          style="margin: -5px;"
+                          :label-col="{ span: 0 }"
+                          :wrapper-col="{ span: 24 }"
+                          :key="'areaCode'+index+ind"
+                          :rules="[{ required: true, message: '请输入区域编码', trigger: 'blur' }]">
+<!--                        区域编码-->
+                        <a-input
+                            :style="allWidth"
+                            :maxLength="com.maxLength"
+                            :placeholder="com.placeHolder"
+                            v-model="formInfo.areaArray[index].areaCode"
+                        />
+                      </a-form-model-item>
+                      <a-form-model-item v-else-if="com.component ==='image'"
+                      style="margin: -5px;"
+                      :label-col="{ span: 0 }"
+                      :wrapper-col="{ span: 24 }"
+                      :rules="{}">
+                        <div style="transform: scale(0.8)" >
+                          <SG-UploadFile
+                              :customDownload="customDownload"
+                              :customUpload="customUpload"
+                              :max="1"
+                              v-model="formInfo.areaArray[index].areaOtherImg"
+                          >
+                            <span slot="tips"></span>
+                          </SG-UploadFile>
                         </div>
-                    </template>
-                  </a-table>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </div>
+                      </a-form-model-item>
+                        <span v-else-if="com.dataIndex === 'operation'"
+                              @click="handleTableDelete(index)"
+                              style="color: red;cursor: pointer;"
+                        >删除</span>
+                    </div>
+                  </template>
+                </a-table>
+              </a-form-model-item>
+            </a-col>
+          </a-row>
         </div>
-      </a-form>
+      </a-form-model>
     </div>
     <FormFooter style="border:none;">
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
@@ -251,178 +264,84 @@ import dictMixin from "../dictMixin.js"
 import TreeSelect from "@/views/common/treeSelect";
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
-import {areaTitle} from "./dict";
+import {areaTitle,} from "./dict";
 import DictSelect from "../../common/DictSelect";
-
-const allWidth = { width: "100%" }
-const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
-const allWidth2 = { width: "86%", flex: 1 }
-// 页面跳转
-const operationTypes = {
-  index: "/buildingDict",
-}
 const tableDataTemplate = {
   areaName:'', // 名称
   areaCode:'', // 编码
   areaZone:'', // 面积
-  areaPosiNums: 0, // 车位数
+  areaPosiNums: '', // 车位数
   areaParkingImg: '', //
   areaOtherImg: [], // 图片
   areaDescription:'' // 描述
 }
 export default {
-  components: {
-    DictSelect,
-    FormFooter,
-    TreeSelect
-  },
+  components: {DictSelect, TreeSelect, FormFooter},
   mixins: [dictMixin],
-  data() {
-    return {
-      areaTitle, // 区域信息表头
-      formInfo: { // 表单
-        // organId:'9999', // 组织机构ID
-        // communityId: '66666', // 项目Id
-        // placeName: '111111', // 车场名称
-        // placeCode: '车场编码', // 车场编码
-        // placeArea: 11111122,// 车场面积
-        // placeAreaUnit: '车场面积单位', // 车场面积单位
-        // placeNums: 9999, // 车位数量
-        // typeId: '9999', // 车厂类型Id
-        // placeAddr: '车厂地址', // 车厂地址
-        // carPlaceImg: '', // 车场平面图
-        otherImg: [], // 其它图片
-        // description: '备注', // 备注
-        areaArray: [
-          // {
-          //   areaName:'132123', // 名称
-          //   areaCode:'编码', // 编码
-          //   areaZone:'1111222', // 面积
-          //   areaPosiNums: '9999', // 车位数
-          //   areaParkingImg: '', //
-          //   areaOtherImg: [], // 图片
-          //   areaDescription:'描述', // 描述
-          //   key: Math.random()
-          // }
-        ]
-      },
-      allStyle: 'width: 100%;',
-      typeFilter,
-      allWidth,
-      allWidth1,
-      allWidth2,
-      communityIdOpt: [], // 选择项目
-      routeQuery: {
-        // 路由传入数据
-        type: "create", // 页面类型
-        placeId: "",
-        organName: "",
-        organId: "",
-      },
-      formItemLayout: {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 6 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 12 },
-        },
-      },
-      formItemLayout2: {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 2 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 20 },
-        },
-      },
-      formItemLayoutTable: {
-        labelCol: {
-          xs: { span: 0 },
-          sm: { span: 0 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 22 },
-        },
-      },
-      formItemLayoutGeo: {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 3 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 21 },
-        },
-      },
-      organIdMain:'', // 所属机构
-      organNameMain:'', // 所属机构名称
-    }
-  },
-  beforeCreate() {
-    this.form = this.$form.createForm(this)
-    window.fff = this.form
-  },
-  mounted() {
-    let { organName, organId, type, placeId } = this.$route.query
-    Object.assign(this, {
-      routeQuery: { organName, organId, type, placeId },
-    })
-    this.init()
-  },
+  data: () =>({
+    areaTitle,
+    typeFilter,
+    allWidth: "width:100%",
+    formInfo: { // 表单
+      organId: undefined, // 组织机构ID
+      communityId: undefined, // 项目Id
+      placeName: undefined, // 车场名称
+      placeCode: undefined, // 车场编码
+      placeArea: undefined,// 车场面积
+      placeAreaUnit: undefined, // 车场面积单位
+      placeNums: undefined, // 车位数量
+      typeId: undefined, // 车厂类型Id
+      placeAddr: undefined, // 车厂地址
+      carPlaceImg: undefined, // 车场平面图
+      otherImg: [], // 其它图片
+      description: undefined, // 备注
+      areaArray: []
+    },
+    rules:{
+      organId: [
+        { required: true, message: '请选择所属机构' },
+      ],
+      placeName: [
+        { required: true, message: '请输入车场名称' },
+      ],
+      placeArea: [
+        { required: true, message: '请输入车场面积' },
+        {required: true, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
+      ],
+      placeCode: [
+        { required: true, message: '请输入车场编码' },
+      ],
+      placeNums:[
+        { required: true, message: '请输入车位数量' },
+        {required: true,pattern: new RegExp(/^[0-9]\d*$/,'g'), message: '请输入车位数量,并且是正整数'}
+      ],
+      typeId: [
+        { required: true, message: '请输入车场类型' },
+      ],
+    },
+    communityIdOpt:[],
+    routeQuery: {
+      // 路由传入数据
+      type: "create", // 页面类型
+      placeId: "",
+      organName: "",
+      organId: "",
+    },
+    organIdMain:'', // 所属机构
+    organNameMain:'', // 所属机构名称
+  }),
   methods: {
     async changeTree(value){
-      // this.organIdMain = value || ''
       if (value) {
         let {organId:organTopId} = await queryTopOrganByOrganID(
-            {
-              nOrgId: value,
-              nOrganId: value,
-            }
+          {
+            nOrgId: value,
+            nOrganId: value,
+          }
         )
         this.queryCommunityListByOrganId(organTopId)
-        this.form.resetFields(['communityId'])
+        this.formInfo.communityId = ''
       }
-    },
-    // 取消
-    handleCancel() {
-      this.$router.push({ path: "/buildingDict", query: { showKey: "land" } })
-    },
-    // 请求项目
-    queryCommunityListByOrganId(organTopId) {
-      let data = {
-        organId: organTopId,
-      }
-      this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
-        if (res.data.code === "0") {
-          let result = res.data.data || []
-          let resultArr = result.map((item) => {
-            return {
-              label: item.name,
-              value: item.communityId,
-              ...item,
-            }
-          })
-          this.communityIdOpt = resultArr
-        }
-      })
-    },
-    // 选择项目变化
-    // communityIdChange(e) {},
-
-    filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      )
-    },
-    getPopupContainer(e) {
-      return e.parentElement
     },
     // 初始化
     async init(){
@@ -436,12 +355,30 @@ export default {
         }
       }
     },
-    /*******************************/
-    handleTableInput (value, index, column) {
-      const newTable = [...this.formInfo.areaArray]
-      newTable[index][column] = value
-      this.formInfo.areaArray = [...newTable]
-      this.formInfo = {...this.formInfo}
+    handleSave () {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          const data = this.beforeSubmit(this.formInfo)
+          if (this.routeQuery.type === "create") {
+            this.parkApiInsert(data)
+          } else if(this.routeQuery.type === "edit") {
+            this.parkApiEdit(data)
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    // 取消
+    handleCancel() {
+      this.$router.push({ path: "/buildingDict", query: { showKey: "land" } })
+    },
+    handleTableAppend () {
+      this.formInfo.areaArray.push({
+        ...tableDataTemplate,
+        key: Math.random()
+      })
+      // this.formInfo = {...this.formInfo}
     },
     // 删除区域数据
     async handleTableDelete (index) {
@@ -455,43 +392,19 @@ export default {
           cancelText: "关闭",
           onOk: async () => {
             delFlag = await this.deleteParkingPlaceArea(this.organIdMain, this.routeQuery.placeId, tableData.parkingAreaId)
+            if (!delFlag) {
+              return
+            }
+            this.formInfo.areaArray.splice(index,1)
           }
         })
         if (!delFlag) {
           return
         }
       }
-      const newTable = [...this.formInfo.areaArray]
-      newTable.splice(index,1)
-      this.formInfo.areaArray = [...newTable]
-      this.formInfo = {...this.formInfo}
+      this.formInfo.areaArray.splice(index,1)
     },
-    handleTableAppend () {
-      const newTable = [...this.formInfo.areaArray]
-      newTable.push({
-        ...tableDataTemplate,
-        key: Math.random()
-      })
-      this.formInfo.areaArray = [...newTable]
-      // this.formInfo = {...this.formInfo}
-    },
-    // 确定
-    handleSave() {
-      // if (!this.organIdMain){
-      //   this.$message.error('请选择所属机构')
-      //   return null;
-      // }
-      this.form.validateFields((err, values) => {
-        if(err) return
-        console.log(values)
-        const data = this.beforeSubmit(values)
-        if (this.routeQuery.type === "create") {
-          this.parkApiInsert(data)
-        } else if(this.routeQuery.type === "edit") {
-          this.parkApiEdit(data)
-        }
-      })
-    },
+    /*************接口相关************/
     beforeSubmit (value) {
       debugger
       let areaArray = this.formInfo.areaArray || []
@@ -502,28 +415,27 @@ export default {
         areaArray: areaArray
       }
     },
-
-    /*************接口相关************/
     async afterParkApiDetail (value) {
       const data = {
         ...value,
       }
       data.organId = String(data.organId)
       data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
-      this.formInfo.areaArray = [...data.areaArray]
-      this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      data.areaArray = [...data.areaArray]
+      data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      data.communityId = String(data.communityId)
       this.organNameMain = data.organName
       this.organIdMain = data.organId
-      data.communityId = Number(data.communityId) === -1 ? '': data.communityId
-      let {organId:organTopId} = await queryTopOrganByOrganID(
-          {
-            nOrgId: data.organId,
-            nOrganId: data.organId,
-          }
-      )
-      this.queryCommunityListByOrganId(organTopId)
+      if (data.organId) {
+        let {organId:organTopId} = await queryTopOrganByOrganID(
+            {
+              nOrgId: data.organId,
+              nOrganId: data.organId,
+            }
+        )
+        await this.queryCommunityListByOrganId(organTopId)
+      }
       // 营运项目
-      // this.communityIdOpt = [{label: value.communityName, value: value.communityId}]
       return data
     },
     // 详情
@@ -539,9 +451,10 @@ export default {
               this.loading = false
               if (res.data.code === "0") {
                 this.formInfo.areaArray=[]
-                this.form.setFieldsValue(await this.afterParkApiDetail(res.data.data))
+                this.formInfo=await this.afterParkApiDetail(res.data.data)
               } else {
-                this.$SG_Message.error(res.data.message)              }
+                this.$SG_Message.error(res.data.message)
+              }
               resolve()
             },
             () => {
@@ -581,6 +494,7 @@ export default {
       )
     },
     parkApiInsert (data) {
+      debugger
       const params = {
         ...data
       }
@@ -607,6 +521,24 @@ export default {
         }
       )
     },
+    // 请求项目
+    async queryCommunityListByOrganId(organTopId) {
+      let data = {
+        organId: organTopId,
+      }
+      const {data: res} = await this.$api.basics.queryCommunityListByOrganId(data)
+      if (String(res.code) === "0") {
+        let result = res.data || []
+        let resultArr = result.map((item) => {
+          return {
+            label: item.name,
+            value: item.communityId,
+            ...item,
+          }
+        })
+        this.communityIdOpt = resultArr
+      }
+    },
     // 删除区域
     async deleteParkingPlaceArea (organId, placeId, areaId) {
       // organId	组织机构ID	Integer	Y	组织机构ID
@@ -626,7 +558,7 @@ export default {
           return true
         } else {
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.error("区域删除失败！")
+            this.$SG_Message.error(res.message)
           })
         }
       } catch {
@@ -635,7 +567,15 @@ export default {
         })
       }
       return false
-    }
+    },
+    /************************************/
+  },
+  mounted() {
+    let { organName, organId, type, placeId } = this.$route.query
+    Object.assign(this, {
+      routeQuery: { organName, organId, type, placeId },
+    })
+    this.init()
   },
 }
 </script>
