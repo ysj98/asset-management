@@ -35,9 +35,6 @@ Vue.use(Dev)
 Vue.use(Power)
 Vue.use(Directive)
 
-import { FormModel } from 'ant-design-vue';
-Vue.use(FormModel);
-
 Vue.prototype.$importf = importf
 
 Vue.prototype.$addTitle = function (options){
