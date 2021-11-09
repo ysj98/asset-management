@@ -64,7 +64,9 @@ export default {
           const data = await this.postDefault(record)
           if(data) {
             record.preview = data.preview
-            record.customCode = data.customCode
+            record.customCode = record.defaultCode
+            const preview  = await this.getPreview(this.beforeGetPreview(record,record.seq))
+            record.preview = preview
           }
         }})
     },
