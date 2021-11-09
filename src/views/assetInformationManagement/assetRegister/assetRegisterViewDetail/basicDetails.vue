@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
+
 export default {
   components: {},
   props: {
@@ -172,13 +174,11 @@ export default {
         assetId: this.assetId
       }
       this.$api.subsidiary.getAssetById(data).then(res => {
-        const {HOUSE,LAND,YARD,EQUIPMENT} = this.ASSET_TYPE_CODE
         if (res.data.code === "0") {
           let obj = res.data.data || {}
           if (this.type === 'getBasicCom') {
-            let keyArr = [[HOUSE,'assetHouse'],[LAND,'assetLand'],[YARD,'assetLand'],[EQUIPMENT,'assetLand']]
-            let resKey = keyArr.filter(ele=>ele[0]===this.assetType)[0][1]
-            const resData = obj[resKey]
+            const ASSET_TYPE_DETAIL = handleAssetTypeField(this.assetType, "detail");
+            const resData = obj[ASSET_TYPE_DETAIL]
             this.getBasicDetail = {...obj}
             for (let key in resData) {
               this.getBasicDetail[key] = resData[key]
