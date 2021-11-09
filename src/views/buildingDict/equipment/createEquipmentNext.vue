@@ -263,9 +263,11 @@ export default {
   data:()=>({
     formInfo:{
       topOrganName: '',
+      equipmentName: '',
       equipmentId: undefined,
       equipmentAreaId: undefined,
       equipmentSupplierId: undefined,
+      equipmentSupplierName: '',
       equipmentAreaName: '',
       equipmentInstDesc: undefined,
       installDate: undefined,
@@ -501,6 +503,10 @@ export default {
 
       delete returnData.imgPath
       delete returnData.documentPath
+      delete returnData.topOrganName
+      delete returnData.organName
+      delete returnData.equipmentSupplierName
+      delete returnData.equipmentAreaName
 
       return returnData
     },
