@@ -1,6 +1,7 @@
 <template>
   <div class="select-container" :style="{width: width}">
     <a-tree-select
+        tree-node-filter-prop="title"
         class="tree-select"
         :class="{'have-default-name': showDefaultOrganName}"
         :multiple="multiple"
@@ -112,7 +113,7 @@ export default {
         const {data: res} = await this.$api.building.positionSelectByCommunityID(params)
         if(String(res.code) === '0') {
           res.data.children = (res.data.children || []).map(item=>({...item,key:Math.random(), value: item.positionId,label: item.positionName,title: item.positionName,selectable: false , children: [],isLeaf: false}))
-          this.treeData = ([res.data] || []).map(item=>({...item, value: item.positionId,label: item.positionName, selectable: false}))
+          this.treeData = ([res.data] || []).map(item=>({...item, value: item.positionId,label: item.positionName, selectable: false,key: Math.random()}))
         }
       }catch {}
     },
@@ -124,7 +125,7 @@ export default {
         }
         const {data: res} = await this.$api.building.positionSelectAsynByOwnership(params)
         if(String(res.code) === '0') {
-          return (res.data || []).map(item=>({...item, value:item.positionId,label: item.positionName}))
+          return (res.data || []).map(item=>({...item, value:item.positionId,label: item.positionName,key: Math.random()}))
         }
       }catch {
         return []
