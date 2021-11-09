@@ -98,11 +98,11 @@ export const columns = [
     dataIndex: "installDate",
     width: 120
   },
-  {
-    title: "取得日期",
-    dataIndex: "useStartDate",
-    width: 120
-  },
+  // {
+  //   title: "取得日期",
+  //   dataIndex: "useStartDate",
+  //   width: 120
+  // },
   {
     title: "操作",
     dataIndex: "operation",

@@ -160,6 +160,7 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
+    line-height: 30px;
     padding: 0 30px 0 11px;
     overflow: hidden;
     white-space: nowrap;
