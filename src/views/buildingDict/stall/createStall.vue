@@ -508,6 +508,8 @@ export default {
           url: item,
           name: item.split("/").pop()
         }));
+      this.organName = data.organName;
+      this.organId = data.organId;
       { // 获取车场
         this.parkApiList({ organId: data.organId });
       }
@@ -518,8 +520,6 @@ export default {
         };
         await this.parkAreaApiList(params);
       }
-      this.organName = data.organName;
-      this.organId = data.organId;
       this.checkCarType(data.objType);
       return {
         ...data,
