@@ -504,7 +504,7 @@ export default {
     },
 
     /*************接口相关************/
-    afterParkApiDetail (value) {
+    async afterParkApiDetail (value) {
       const data = {
         ...value,
       }
@@ -514,8 +514,16 @@ export default {
       this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       this.organNameMain = data.organName
       this.organIdMain = data.organId
+      data.communityId = Number(data.communityId) === -1 ? '': data.communityId
+      let {organId:organTopId} = await queryTopOrganByOrganID(
+          {
+            nOrgId: data.organId,
+            nOrganId: data.organId,
+          }
+      )
+      this.queryCommunityListByOrganId(organTopId)
       // 营运项目
-      this.communityIdOpt = [{label: value.communityName, value: value.communityId}]
+      // this.communityIdOpt = [{label: value.communityName, value: value.communityId}]
       return data
     },
     // 详情
@@ -531,7 +539,7 @@ export default {
               this.loading = false
               if (res.data.code === "0") {
                 this.formInfo.areaArray=[]
-                this.form.setFieldsValue(this.afterParkApiDetail(res.data.data))
+                this.form.setFieldsValue(await this.afterParkApiDetail(res.data.data))
               } else {
                 this.$SG_Message.error(res.data.message)              }
               resolve()
