@@ -37,15 +37,7 @@
                       'placeName',
                       {
                         initialValue: '' || undefined,
-                        rules: [
-                          {
-                            required: true,
-                            whitespace: true,
-                            message: '请输入车场名称',
-                          },
-                        ],
-                      },
-                    ]"
+                        rules: [ { required: true, whitespace: true, message: '请输入车场名称'}]}]"
                   />
                 </a-form-item>
               </a-col>
@@ -192,15 +184,23 @@
                               @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <a-input
-                              :min="0"
-                              step="0.0001"
+                              :maxLength="com.maxLength"
+                              :style="allWidth"
+                              :placeholder="com.placeHolder"
+                              :key="formInfo.areaArray[index].key"
+                              v-else-if="['input'].includes(com.component)"
+                              v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
+                            {initialValue:item ,rules: [{required: false,pattern: new RegExp(/^[0-9]\d*$/,'g'), message: '请输入正整数'}]}]"
+                              @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
+                          />
+                          <a-input
                               :style="allWidth"
                               :maxLength="com.maxLength"
                               :key="index+'number'"
                               :placeholder="com.placeHolder"
                               v-if="['number'].includes(com.component)"
                               v-decorator="[`areaArray[${index}].${formInfo.areaArray[index].key + com.dataIndex}`,
-                              {initialValue: 0 ,rules: [{required: com.isRequired,message: com.errMessage},...com.rules]}]"
+                              {initialValue:Number(item || 0) , rules: [{required: com.isRequired,message: com.errMessage},...com.rules]}]"
                               @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <a-input
@@ -562,6 +562,7 @@ export default {
               } else {
                 this.$message.error(res.data.message)
               }
+              this.DE_Loding(loadingName)
             })
           },
           () => {
@@ -588,6 +589,7 @@ export default {
             } else {
               this.$SG_Message.error(res.data.message)
             }
+            this.DE_Loding(loadingName)
           })
         },
         () => {
