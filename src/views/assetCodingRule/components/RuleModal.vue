@@ -144,7 +144,7 @@ export default {
       this.activeIndex = index
       this.rightList = item.param
       this.sequenceFlag = false
-      if (item.name === '序列') {
+      if (item.name === '序号') {
         this.sequenceFlag = true
       }
     },
