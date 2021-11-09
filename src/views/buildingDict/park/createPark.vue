@@ -160,6 +160,7 @@
                           <a-input
                               :key="'areaDescription'+index+ind"
                               type="textarea"
+                              :disabled="formInfo.areaArray[index].disabled"
                               :maxLength="com.maxLength"
                               :style="allWidth"
                               :placeholder="com.placeHolder"
@@ -176,6 +177,7 @@
                             :key="'areaPosiNums'+index+ind"
                             :maxLength="com.maxLength"
                             :style="allWidth"
+                            :disabled="formInfo.areaArray[index].disabled"
                             :placeholder="com.placeHolder"
                             v-model="formInfo.areaArray[index].areaPosiNums"
                         />
@@ -191,6 +193,7 @@
                           :style="allWidth"
                           :maxLength="com.maxLength"
                           :placeholder="com.placeHolder"
+                          :disabled="formInfo.areaArray[index].disabled"
                           v-model="formInfo.areaArray[index].areaZone"
                         />
                       </a-form-model-item>
@@ -206,6 +209,7 @@
                           :style="allWidth"
                           :maxLength="com.maxLength"
                           :placeholder="com.placeHolder"
+                          :disabled="formInfo.areaArray[index].disabled"
                           v-model="formInfo.areaArray[index].areaName"
                         />
                       </a-form-model-item>
@@ -221,6 +225,7 @@
                             :style="allWidth"
                             :maxLength="com.maxLength"
                             :placeholder="com.placeHolder"
+                            :disabled="formInfo.areaArray[index].disabled"
                             v-model="formInfo.areaArray[index].areaCode"
                         />
                       </a-form-model-item>
@@ -233,6 +238,7 @@
                           <SG-UploadFile
                               :customDownload="customDownload"
                               :customUpload="customUpload"
+                              :show="formInfo.areaArray[index].disabled"
                               :max="1"
                               v-model="formInfo.areaArray[index].areaOtherImg"
                               :maxSize="2048"
@@ -241,10 +247,26 @@
                           </SG-UploadFile>
                         </div>
                       </a-form-model-item>
-                        <span v-else-if="com.dataIndex === 'operation'"
-                              @click="handleTableDelete(index)"
+                      <div v-else-if="com.dataIndex === 'operation'">
+                        <template v-if="formInfo.areaArray[index].parkingAreaId">
+                          <span
+                              v-if="formInfo.areaArray[index].disabled"
+                              @click="handleTableEdit(index)"
+                              style="color: #0084ff;cursor: pointer;"
+                          >编辑&nbsp;&nbsp;</span>
+                          <span v-else
+                              @click="handleTableEditSave(index)"
+                              style="color: #0084ff;cursor: pointer;"
+                          >编辑保存&nbsp;&nbsp;</span>
+                        </template>
+                        <span v-if="routeQuery.type === 'edit' && !formInfo.areaArray[index].parkingAreaId"
+                          @click="handleTableSave(index)"
+                          style="color: #0084ff;cursor: pointer;"
+                        >保存&nbsp;&nbsp;</span>
+                        <span @click="handleTableDelete(index)"
                               style="color: red;cursor: pointer;"
                         >删除</span>
+                      </div>
                     </div>
                   </template>
                 </a-table>
@@ -268,6 +290,12 @@ import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import {areaTitle,} from "./dict";
 import DictSelect from "../../common/DictSelect";
+import {
+  addParkingPlaceArea,
+  editParkingPlaceArea,
+  getParkingPlaceAreasByPlaceId,
+  stallApiDetail
+} from "../../../api/building";
 const tableDataTemplate = {
   areaName:'', // 名称
   areaCode:'', // 编码
@@ -375,6 +403,7 @@ export default {
     handleCancel() {
       this.$router.push({ path: "/buildingDict", query: { showKey: "land" } })
     },
+    /************ 处理区域 ************/
     handleTableAppend () {
       this.formInfo.areaArray.push({
         ...tableDataTemplate,
@@ -382,6 +411,24 @@ export default {
       })
       // this.formInfo = {...this.formInfo}
     },
+    // 新增区域
+    handleTableSave(index) {
+      const tableData = this.formInfo.areaArray[index]
+      const areaOtherImg = tableData.areaOtherImg.map(node=>node.url).join(',')
+      this.addParkingPlaceArea({...tableData, areaOtherImg,placeId: this.formInfo.placeId})
+    },
+    handleTableEditSave(index) {
+      const tableData = this.formInfo.areaArray[index]
+      const areaOtherImg = tableData.areaOtherImg.map(node=>node.url).join(',')
+      const params = {
+        ...tableData,
+        areaOtherImg,
+        placeId: this.formInfo.placeId
+      }
+      delete params.key
+      this.editParkingPlaceArea(params)
+    },
+
     // 删除区域数据
     async handleTableDelete (index) {
       const tableData = this.formInfo.areaArray[index]
@@ -406,9 +453,13 @@ export default {
       }
       this.formInfo.areaArray.splice(index,1)
     },
+    handleTableEdit (index) {
+      const tableData = this.formInfo.areaArray[index]
+      tableData.disabled = false
+    },
     /*************接口相关************/
+
     beforeSubmit (value) {
-      debugger
       let areaArray = this.formInfo.areaArray || []
       areaArray = areaArray.map(item=>({...item,areaOtherImg: item.areaOtherImg.map(node=>node.url).join(',')}))
       return {
@@ -422,8 +473,6 @@ export default {
         ...value,
       }
       data.organId = String(data.organId)
-      data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
-      data.areaArray = [...data.areaArray]
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       data.communityId = String(data.communityId)
       this.organNameMain = data.organName
@@ -435,7 +484,11 @@ export default {
               nOrganId: data.organId,
             }
         )
+        // 查询运营项目
         await this.queryCommunityListByOrganId(organTopId)
+        // 查询区域
+        const areaList = await this.getParkingPlaceAreasByPlaceId({organId:data.organId,placeId:data.placeId})
+        data.areaArray = areaList.map(item=>({...item, key:Math.random(), disabled: true, areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
       }
       // 营运项目
       return data
@@ -466,12 +519,13 @@ export default {
         )
       })
     },
-    parkApiEdit (data) {
+    async parkApiEdit (data) {
       // parkApiEdit
       const params = {
         ...data,
         placeId: this.routeQuery.placeId
       }
+      await this.preAreaListSubmit(params.areaArray || [])
       let loadingName = this.SG_Loding("编辑中...")
       this.$api.building.parkApiEdit(params).then(
           (res) => {
@@ -496,7 +550,6 @@ export default {
       )
     },
     parkApiInsert (data) {
-      debugger
       const params = {
         ...data
       }
@@ -569,6 +622,47 @@ export default {
         })
       }
       return false
+    },
+    // 新增区域
+    async addParkingPlaceArea (data) {
+      let loadingName = this.SG_Loding("区域新增中")
+      try {
+      const {data: res} = await this.$api.building.addParkingPlaceArea(data)
+        if(String(res.code) === '0'){
+          this.$SG_Message.success('新增成功')
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(res.message)
+          })
+        }
+      }finally {
+        this.DE_Loding(loadingName)
+      }
+    },
+    // 编辑区域
+    async editParkingPlaceArea (data) {
+      const {data: res} = await this.$api.building.editParkingPlaceArea(data)
+      if(String(res.code) !== '0'){
+        throw (res.message)
+      }
+
+    },
+    // 查询区域
+    async getParkingPlaceAreasByPlaceId ({organId,placeId}) {
+      const params = {organId,placeId}
+      try {
+        const {data: res} = await this.$api.building.getParkingPlaceAreasByPlaceId(params)
+        if(String(res.code) === '0'){
+          return res.data || []
+        }else {
+          this.$SG_Message.error(res.message)
+          return []
+        }
+      } catch {
+        return []
+      }
+      return []
+
     },
     /************************************/
   },

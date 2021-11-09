@@ -154,7 +154,7 @@ export const areaTitle = [
     scopedSlots: { customRender: "otherImg" }
   },
   {
-    width: 100,
+    width: 150,
     align: 'center',
     dataIndex: "operation",
     slots: { title: 'operationTitle'},

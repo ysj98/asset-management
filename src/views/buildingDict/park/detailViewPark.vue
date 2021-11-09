@@ -85,7 +85,7 @@
             <a-row>
               <a-col :span="23" :offset="1">
                 <a-form-item label="" v-bind="formItemLayoutTable">
-                  <a-table :columns="areaTitle.filter(item=>item.dataIndex !=='operation')" :pagination="false" bordered :data-source="formInfo.areaArray">
+                  <a-table :columns="areaTitle.filter(item=>item.dataIndex !=='operation')" :pagination="false" bordered :data-source="tableCache">
                     <template v-for="com in areaTitle.filter(item=>item.dataIndex !=='operation')" :slot="com.dataIndex" slot-scope="item, record, index">
                       <div :key="com.dataIndex">
                         <a-form-item style="margin: -5px;">
@@ -93,7 +93,7 @@
                           <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
                             <SG-UploadFile
                                 :show="true"
-                                v-model="formInfo.areaArray[index].areaOtherImg"
+                                v-model="tableCache[index].areaOtherImg"
                             >
                               <span slot="tips"></span>
                             </SG-UploadFile>
@@ -102,6 +102,13 @@
                       </div>
                     </template>
                   </a-table>
+                  <SG-FooterPagination
+                      location="static"
+                      :pageLength="page.pageLength"
+                      :totalCount="page.totalCount"
+                      v-model="page.pageNo"
+                      @change="handleChange"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -125,6 +132,11 @@ export default {
   data() {
     return {
       areaTitle, // 区域信息表头
+      page: {
+        pageLength: 10,
+        totalCount: 0,
+        pageNo: 1
+      },
       formInfo: { // 表单
         organId:'', // 组织机构ID
         communityId: '', // 项目Id
@@ -140,6 +152,7 @@ export default {
         description: '', // 备注
         areaArray: []
       },
+      tableCache: [],
       allStyle: 'width: 100%;',
       typeFilter,
       filePath: [], // 附件
@@ -191,7 +204,6 @@ export default {
           sm: { span: 21 },
         },
       },
-
     }
   },
   mounted() {
@@ -208,6 +220,12 @@ export default {
     // 初始化
     async init(){
       this.parkApiDetail()
+    },
+    handleChange ({pageLength,pageNo}) {
+      const areaArray = this.formInfo.areaArray
+      let start = pageLength * (pageNo-1)
+      let end = pageLength * pageNo
+      this.tableCache = areaArray.slice(start, end)
     },
     /*************接口相关************/
     afterParkApiDetail (value) {
@@ -237,6 +255,8 @@ export default {
               if (res.data.code === "0") {
                 this.formInfo.areaArray=[]
                 this.formInfo = this.afterParkApiDetail(res.data.data)
+                this.page.totalCount = this.formInfo.areaArray.length
+                this.handleChange(this.page)
               } else {
                 this.$message.error(res.data.message)
               }
