@@ -37,7 +37,7 @@
                     :default-name="formInfo.equipmentName"
                     :topOrganId="topOrganId || ''"
                     @change="handleRquipmentChange"
-                    v-decorator="['equipmentId',{initialValue: undefined, rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
+                    v-decorator="['equipmentId',{initialValue: '', rules: [ {required: true, message: '请选择设备设施分类'}]}]"/>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -71,7 +71,7 @@
                     :allowClear="false"
                     :loading="communityIdFlag"
                     placeholder="请选择项目"
-                    v-decorator="['communityId']"
+                    v-decorator="['communityId', {initialValue: ''}]"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
                     optionFilterProp="children"
@@ -442,8 +442,11 @@ export default {
     initPreData(){
     },
     handleRquipmentChange (val) {
+      console.log(1,val)
       if(val){
-        this.getInfoAttrListByEquipmentId()
+        this.$nextTick(()=>{
+          this.getInfoAttrListByEquipmentId()
+        })
       }
     },
     // 初始化时调用此接口查询运营项目
