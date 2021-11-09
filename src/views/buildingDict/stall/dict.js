@@ -30,7 +30,7 @@ export const queryCondition = {
   placeId: '', // 车场Id
   pageNo: 1,
   pageLength: 10,
-  isOnlyCurrent: 0
+  isOnlyCurrent: ''
 };
 // 车位用途
 export const parkingUsageOption = [
