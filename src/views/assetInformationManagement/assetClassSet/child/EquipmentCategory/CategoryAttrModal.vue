@@ -9,7 +9,7 @@
         }
       "
     >
-      <a-table v-bind="tableOptions">
+      <a-table ref="refTable" v-bind="tableOptions">
         <!-- 表格 底部 新增 -->
         <template #footer>
           <div @click="handleAddAttr" class="table-footer">
@@ -104,6 +104,10 @@ export default {
       this.tableOptions.dataSource.push({
         _key: uuid()
       });
+      this.$nextTick(()=>{
+        const antTableBodyEle = this.$refs.refTable.$el.querySelector('.ant-table-body')
+        antTableBodyEle.scrollTop = antTableBodyEle.scrollHeight;
+      })
     },
     async handleSave() {
       const tempArr = this.tableOptions.dataSource
@@ -239,5 +243,8 @@ export default {
   cursor: pointer;
   padding: 8px 20px;
   height: 30px;
+}
+::v-deep .ant-table-body{
+  scroll-behavior:smooth
 }
 </style>

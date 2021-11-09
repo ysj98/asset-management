@@ -6,12 +6,6 @@
         v-model="searchValueInput"
         @input="onChange"
       >
-        <a-icon
-          slot="suffix"
-          style="cursor: pointer"
-          type="search"
-          @click="onChange"
-        />
       </a-input>
     </div>
     <div class="tree-main" :key="treeUuid + ''">
@@ -39,8 +33,9 @@
               v-if="
                 scope.title.indexOf(searchValueInput) > -1 && searchValueInput
               "
-              >{{ scope.title }}</span
             >
+              {{ scope.title }}
+            </span>
             <span class="tree-node-title" v-else>{{ scope.title }}</span>
           </div>
         </template>
@@ -50,11 +45,7 @@
 </template>
 <script>
 import { utils } from "@/utils/utils";
-let getUuid = (
-  (uuid = 1) =>
-  () =>
-    ++uuid
-)();
+let getUuid = ((uuid = 1) => () => ++uuid)();
 // 递归找到对应的id 挂在子节点
 function fetchItem(data = [], id, type) {
   for (let i = 0; i < data.length; i++) {
@@ -78,31 +69,31 @@ const topItem = {
   upEquipmentId: -1,
   equipmentId: -1,
   title: "设备设施分类",
-  scopedSlots: { title: "title" },
+  scopedSlots: { title: "title" }
 };
 export default {
   props: {
     organId: {
       type: [String, Number],
-      default: "",
+      default: ""
     },
     // 是否可搜索
     searchAble: {
       type: Boolean,
-      default: true,
+      default: true
     },
-    selectedKeysDefault:{
-      type:Array,
-      default(){
-        return []
+    selectedKeysDefault: {
+      type: Array,
+      default() {
+        return [];
       }
     },
-    expandedKeysDefault:{
-      type:Array,
-      default(){
-        return []
+    expandedKeysDefault: {
+      type: Array,
+      default() {
+        return [];
       }
-    },
+    }
   },
   watch: {
     organId(nv) {
@@ -110,22 +101,22 @@ export default {
         this.getEquipmentList();
       }
     },
-    selectedKeys(newValue){
-      this.$emit('update:selectedKeysDefault',newValue)
+    selectedKeys(newValue) {
+      this.$emit("update:selectedKeysDefault", newValue);
     },
-    expandedKeys(newValue){
-      this.$emit('update:expandedKeysDefault',newValue)
-    },
+    expandedKeys(newValue) {
+      this.$emit("update:expandedKeysDefault", newValue);
+    }
   },
   mounted() {
     if (this.organId) {
       this.getEquipmentList();
     }
-    if (this.selectedKeysDefault.length){
-      this.selectedKeys = this.selectedKeysDefault
+    if (this.selectedKeysDefault.length) {
+      this.selectedKeys = this.selectedKeysDefault;
     }
-    if (this.expandedKeysDefault.length){
-      this.expandedKeys = this.expandedKeysDefault
+    if (this.expandedKeysDefault.length) {
+      this.expandedKeys = this.expandedKeysDefault;
     }
   },
   data() {
@@ -140,7 +131,7 @@ export default {
       store: {},
       selectItem: {}, // 当前添加项
       treeUuid: getUuid(),
-      searchValueInput: "", // 搜索框的值
+      searchValueInput: "" // 搜索框的值
     };
   },
   computed: {
@@ -150,8 +141,8 @@ export default {
         const collect = [];
         // 向上找树节点
         const filterList = Object.values(this.store)
-          .filter((v) => v.title.includes(this.searchValueInput))
-          .map((v) => v.key);
+          .filter(v => v.title.includes(this.searchValueInput))
+          .map(v => v.key);
         this.upwardCollectOrgan(filterList, collect);
         // 向下找树节点
 
@@ -159,12 +150,12 @@ export default {
       } else {
         return Object.keys(this.store);
       }
-    },
+    }
   },
   methods: {
     handleSelect(selectedKeys, e) {
       const {
-        node: { dataRef },
+        node: { dataRef }
       } = e;
       this.selectedKeys = selectedKeys;
       this.$emit("handleSelect", dataRef);
@@ -193,14 +184,14 @@ export default {
     upwardCollectOrgan(list, store) {
       if (list.length) {
         const upwardList = list
-          .map((v) => {
+          .map(v => {
             if (!store.includes(v)) {
               store.push(v);
             }
             return this.mapStoreOrganIdItem(v).parentKey;
           })
-          .filter((v) => v)
-          .map((v) => this.mapStoreOrganIdItem(v).key);
+          .filter(v => v)
+          .map(v => this.mapStoreOrganIdItem(v).key);
         this.upwardCollectOrgan(upwardList, store);
       }
     },
@@ -208,10 +199,10 @@ export default {
     upCreateTree() {
       // 重组树列表
       let treeList = this.dataList
-        .filter((item) => {
+        .filter(item => {
           return this.containTreeNodes.includes(item.key);
         })
-        .map((item) => {
+        .map(item => {
           return { ...item };
         });
       // 重组树树结构
@@ -228,7 +219,7 @@ export default {
       this.gData = this.upCreateTree();
       Object.assign(this, {
         expandedKeys: [topItem.key],
-        autoExpandParent: true,
+        autoExpandParent: true
       });
       this.treeUuid = getUuid();
     },
@@ -245,7 +236,7 @@ export default {
       if (this.organId) {
         let data = {
           upEquipmentId: treeNode.dataRef.id,
-          organId: this.organId,
+          organId: this.organId
         };
         return this.queryEquipmentListByUpEquipmentId(
           data,
@@ -260,14 +251,14 @@ export default {
       let data = {
         organId: this.organId,
         isCurrent: this.isCurrent,
-        upEquipmentId: -1,
+        upEquipmentId: -1
       };
       return this.$api.building
         .getEquipmentListByUpEquipmentId(data)
-        .then((res) => {
+        .then(res => {
           if (res.data.code === 0) {
             let result = res.data.data ? res.data.data.resultList : [];
-            this.gData[0].children = result.map((item) => {
+            this.gData[0].children = result.map(item => {
               item.key = item.equipmentId;
               item.id = item.equipmentId;
               item.title = item.equipmentName;
@@ -287,7 +278,7 @@ export default {
     },
     queryEquipmentListByUpEquipmentId(data = {}, key) {
       return this.$api.building.getEquipmentListByUpEquipmentId(data).then(
-        (res) => {
+        res => {
           if (res.data.code === 0) {
             let result = res.data.data ? res.data.data.resultList : [];
             let _item = fetchItem(this.gData, key, "key");
@@ -314,8 +305,8 @@ export default {
         },
         () => {}
       );
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="less" scoped>

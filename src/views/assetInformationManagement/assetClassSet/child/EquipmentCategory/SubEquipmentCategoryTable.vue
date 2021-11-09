@@ -1,12 +1,12 @@
 <template>
   <div>
-    <a-table v-bind="tableOptions">
+    <a-table ref="refTable" v-bind="tableOptions">
       <!-- 分类名称 -->
       <template #professionName="text,record,index">
         <a-input
           style="width: 200px;"
           v-model="record.professionName"
-          placeholder="请输入分类编码"
+          placeholder="请输入分类名称"
         ></a-input>
       </template>
       <!-- 属性数量 -->
@@ -296,6 +296,10 @@ export default {
       this.tableOptions.dataSource.push({
         _key: uuid()
       });
+      this.$nextTick(()=>{
+        const antTableBodyEle = this.$refs.refTable.$el.querySelector('.ant-table-body')
+        antTableBodyEle.scrollTop = antTableBodyEle.scrollHeight;
+      })
     },
     handleDelete(record) {
       const { professionCode, _key } = record;
@@ -379,7 +383,7 @@ export default {
           upEquipmentName: this.upEquipmentName,
           equipmentId: ele.professionCode || "",
           equipmentName: ele.professionName || "",
-          professionName: ele.professionName || ""
+          professionName: ele.professionName || "",
         };
       });
       const requestData = {
@@ -412,7 +416,13 @@ export default {
         data: { code, data }
       } = await this.$api.assets.getPage(requestData);
       if (code === "0") {
-        this.tableOptions.dataSource = data ? data.data : [];
+        const tempArr = data ? data.data : [];
+        this.tableOptions.dataSource = tempArr.map(ele=>{
+          return {
+            ...ele,
+            equipmentCode: Number(ele.equipmentCode) || ''
+          }
+        })
       }
     }
   },
@@ -440,5 +450,8 @@ export default {
 ::v-deep .ant-table-footer {
   background-color: #fff;
   padding: 0;
+}
+::v-deep .ant-table-body{
+  scroll-behavior:smooth
 }
 </style>
