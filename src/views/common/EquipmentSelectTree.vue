@@ -2,7 +2,7 @@
   <div class="select-container" :style="{width: width}">
     <a-tree-select
       class="tree-select"
-      :class="{'have-default-name': showDefaultOrganName}"
+      :class="{'have-default-name': showDefaultOrganName && defaultName}"
       :multiple="multiple"
       v-model="valueCom"
       :allowClear="allowClear"
@@ -14,7 +14,7 @@
       @change="handleChange"
       @select="handleSelect"
     />
-    <div class="default-name" v-show="showDefaultOrganName">{{defaultName}}</div>
+    <div class="default-name" v-show="showDefaultOrganName && defaultName">{{defaultName}}</div>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
       default: false
     },
     value: {
-      type: [String, Array, Number],
+      type: [Number, Array, String],
       default: undefined
     },
     width:{
@@ -74,7 +74,8 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit("change", value);
+        // ant-design-vue bug https://github.com/vueComponent/ant-design-vue/pull/1551 #1551
+        this.$emit("change", String(value));
       }
     }
   },
