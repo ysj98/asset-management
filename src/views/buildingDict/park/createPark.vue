@@ -467,6 +467,16 @@ export default {
       tableData.disabled = false
       this.formInfo.areaArray = [...this.formInfo.areaArray]
     },
+    // 验证区域是否全部存储
+    validateAreaArray () {
+      for( const item of this.formInfo.areaArray || []){
+        if (!item.parkingAreaId) {
+          this.$SG_Message.error("请先保存未保存的区域信息")
+          return true
+        }
+      }
+      return false
+    },
     /*************接口相关************/
 
     beforeSubmit (value) {
@@ -530,7 +540,9 @@ export default {
       })
     },
     async parkApiEdit (data) {
-      // parkApiEdit
+      if (this.validateAreaArray()) {
+        return
+      }
       const params = {
         ...data,
         placeId: this.routeQuery.placeId
