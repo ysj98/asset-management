@@ -464,7 +464,7 @@ export default {
           } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
             generateKeyFn = (ele)=> ele.equipmentId
           }
-          resData = getArrayRepeat(resData,generateKeyFn).flat()
+          resData = getArrayRepeat(resData,generateKeyFn).map(ele=>ele[0])
           this.tableData = this.handleTableDataSourceModeName(
             resData
           ).map(ele => ({
