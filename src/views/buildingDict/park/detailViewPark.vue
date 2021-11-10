@@ -86,10 +86,14 @@
               <a-col :span="23" :offset="1">
                 <a-form-item label="" v-bind="formItemLayoutTable">
                   <a-table :columns="areaTitle.filter(item=>item.dataIndex !=='operation')" :pagination="false" bordered :data-source="tableCache">
+                     <span slot="areaNameTitle">
+                      区域名称</span>
+                    <span slot="areaCodeTitle">
+                      区域编码</span>
                     <template v-for="com in areaTitle.filter(item=>item.dataIndex !=='operation')" :slot="com.dataIndex" slot-scope="item, record, index">
                       <div :key="com.dataIndex">
                         <a-form-item style="margin: -5px;">
-                          <span v-if="['text', 'input'].includes(com.component)">{{ item }}</span>
+                          <span v-if="['text', 'input','number', 'textarea'].includes(com.component)">{{ item }}</span>
                           <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
                             <SG-UploadFile
                                 :show="true"
@@ -214,7 +218,7 @@ export default {
     this.init()
   },
   methods: {
-    // 请求土地详情
+    // 请求详情
     async blankApiDetail() {
     },
     // 初始化
@@ -228,17 +232,20 @@ export default {
       this.tableCache = areaArray.slice(start, end)
     },
     /*************接口相关************/
-    afterParkApiDetail (value) {
+    async afterParkApiDetail (value) {
       const data = {
         ...value,
       }
-      data.areaArray = value.areaArray.map(item=>({...item, key:Math.random(),areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
       // 遍历循环
       this.formInfo.areaArray = [...data.areaArray]
       // this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      const areaList = await this.getParkingPlaceAreasByPlaceId({organId:data.organId,placeId:data.placeId})
+      data.areaArray = areaList.map(item=>({...item, key:Math.random(), disabled: true, areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
+
       return {
         ...data,
-        otherImg: (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+        otherImg: (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()})),
+        areaList,
       }
     },
     // 详情
@@ -254,7 +261,7 @@ export default {
               this.loading = false
               if (res.data.code === "0") {
                 this.formInfo.areaArray=[]
-                this.formInfo = this.afterParkApiDetail(res.data.data)
+                this.formInfo =await this.afterParkApiDetail(res.data.data)
                 this.page.totalCount = this.formInfo.areaArray.length
                 this.handleChange(this.page)
               } else {
@@ -268,6 +275,23 @@ export default {
             }
         )
       })
+    },
+    // 查询区域
+    async getParkingPlaceAreasByPlaceId ({organId,placeId}) {
+      const params = {organId,placeId}
+      try {
+        const {data: res} = await this.$api.building.getParkingPlaceAreasByPlaceId(params)
+        if(String(res.code) === '0'){
+          return res.data || []
+        }else {
+          this.$SG_Message.error(res.message)
+          return []
+        }
+      } catch {
+        return []
+      }
+      return []
+
     },
   },
 }
