@@ -65,7 +65,6 @@
                       :style="allWidth"
                       :allowClear="false"
                       :loading="communityIdFlag"
-                      :disabled="this.routeQuery.type === 'edit'"
                       placeholder="请选择项目"
                       v-model="formInfo.communityId"
                       notFoundContent="没有查询到数据"
