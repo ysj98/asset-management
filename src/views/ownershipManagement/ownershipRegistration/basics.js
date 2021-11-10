@@ -35,7 +35,10 @@ export const register = [{
   width: '10%'
 }, {
   title: '面积',
-  dataIndex: 'assetArea',
+  key: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  },
   width: '5%'
 }, {
   title: '原权证号',
@@ -88,7 +91,10 @@ export const cancellation = [{
   width: '20%'
 }, {
   title: '面积',
-  dataIndex: 'assetArea',
+  key: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  },
   width: '10%'
 }, {
   title: '原权证号',

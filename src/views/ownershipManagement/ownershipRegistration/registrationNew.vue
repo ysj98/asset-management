@@ -167,6 +167,10 @@
             class="custom-table td-pd10"
             :pagination="false"
             >
+            <!-- 面积  -->
+            <template #assetArea="text,record">
+              {{String(record.assetType) === $store.state.ASSET_TYPE_CODE.EQUIPMENT ? record.assetArea : '/'}}
+            </template>
             <!-- 注销登记 -->
             <template v-if="changeType !== '3'" slot="warrantNbr" slot-scope="text, record">
               <a-select

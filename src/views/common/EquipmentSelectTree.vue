@@ -13,17 +13,21 @@
       option-filter-prop="label"
       @change="handleChange"
       @select="handleSelect"
+      :maxTagCount="maxTagCount"
     />
     <div class="default-name" v-show="showDefaultOrganName && defaultName">{{defaultName}}</div>
   </div>
 </template>
 
 <script>
-import {isArray} from "lodash/lang";
 
 export default {
   name: "EquipmentSelectTree",
   props: {
+    maxTagCount:{
+      type:Number,
+      default: 1
+    },
     placeholder: {
       type: String,
       default: "请选择分类"
