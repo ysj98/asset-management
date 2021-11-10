@@ -1,37 +1,38 @@
 export const tableHeader = [
   {
     align: 'center',
+    width: 100,
     title: '资产类型',
     dataIndex: 'codeTypeName',
     scopedSlots: { customRender: 'codeTypeName' },
   },
   {
-    width: 400,
+    width: '30%',
     align: 'center',
     title: '默认编码规则',
     dataIndex: 'defaultCode',
     scopedSlots: { customRender: 'defaultCode' },
   },
   {
-    width: 500,
+    width: '30%',
     align: 'center',
     title: '自定义编码规则',
     dataIndex: 'customCode',
     scopedSlots: { customRender: 'customCode' },
   },
   {
-    width: 300,
+    width: '30%',
     align: 'center',
     title: '预览',
     dataIndex: 'preview',
     scopedSlots: { customRender: 'preview' },
   },
   {
-    align: 'center',
+    width: '170px',
     title: "操作",
+    align: 'center',
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: 200
   }
 ]
 
