@@ -31,7 +31,19 @@
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
               <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
+            <EquipmentSelectTree
+              v-if="isSelectedEquipment"
+              :style="allStyle"
+              :top-organ-id="queryCondition.organId"
+              :multiple="true"
+              v-model="queryCondition.assetClassify"
+              :options-data-format="(data)=>{
+                return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+              }"
+              @select="assetClassifyDataFn($event,true)"
+            />
+            <a-select v-else :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类"
+                      :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
               <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <div class="box sg-datePicker" :style="dateWidth">
@@ -82,6 +94,7 @@ import { ASSET_MANAGEMENT } from "@/config/config.power"
 import segiIcon from '@/components/segiIcon.vue'
 import noDataTips from '@/components/noDataTips'
 import {utils, debounce} from '@/utils/utils.js'
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
@@ -193,7 +206,7 @@ const queryCondition =  {
     pageSize: 10    // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips},
+  components: {SearchContainer, TreeSelect, segiIcon, noDataTips, EquipmentSelectTree},
   props: {},
   data () {
     return {
@@ -232,6 +245,10 @@ export default {
     }
   },
   computed: {
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    }
   },
   methods: {
     // 导出
@@ -371,9 +388,10 @@ export default {
       this.getListFn()
     },
     // 资产分类
-    assetClassifyDataFn (value) {
+    assetClassifyDataFn (value,isSelectedEquipment) {
       this.$nextTick(function () {
-        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyData)
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
+        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions)
       })
     },
     // 资产类型变化

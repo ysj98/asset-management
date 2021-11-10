@@ -85,7 +85,7 @@
                         :options-data-format="(data)=>{
                           return [{label: '全部资产分类', value: '', isLeaf: true},...data]
                         }"
-                        @select="assetClassifyDataFn"
+                        @select="assetClassifyDataFn($event,true)"
                 />
                 <a-select
                         v-else
@@ -367,12 +367,13 @@
             },
             moment,
             // 全部资产分类
-            assetClassifyDataFn(value){
+            assetClassifyDataFn(value,isSelectedEquipment){
                 this.$nextTick(() => {
+                    const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
                     this.queryData.objectTypeList = this.handleMultipleSelectValue(
                         value,
                         this.queryData.objectTypeList,
-                        this.assetClassifyData
+                        resOptions
                     );
                 });
             },

@@ -44,7 +44,7 @@
           :options-data-format="(data)=>{
             return [{label: '全部资产分类', value: '', isLeaf: true},...data]
           }"
-          @select="changeAssetClassify"
+          @select="changeAssetClassify($event,true)"
         />
         <a-select
           v-else
@@ -411,9 +411,10 @@ export default {
       })
     },
     // 资产分类发生变化
-    changeAssetClassify (value) {
+    changeAssetClassify (value,isSelectedEquipment) {
       this.$nextTick(function () {
-        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyOptions)
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyOptions
+        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions)
       })
     },
     // 来源方式
