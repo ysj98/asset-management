@@ -10,7 +10,7 @@
       :tree-data="optionsDataFormat(treeData)"
       :placeholder="placeholder"
       :load-data="onLoadData"
-      option-filter-prop="label"
+      treeNodeFilterProp="title"
       @change="handleChange"
       @select="handleSelect"
       :maxTagCount="maxTagCount"
