@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import {isArray} from "lodash/lang";
+
 export default {
   name: "EquipmentSelectTree",
   props: {
@@ -75,7 +77,8 @@ export default {
       },
       set(value) {
         // ant-design-vue bug https://github.com/vueComponent/ant-design-vue/pull/1551 #1551
-        this.$emit("change", String(value));
+        const res = typeof value === 'number' ? String(value) : value
+        this.$emit("change", res);
       }
     }
   },

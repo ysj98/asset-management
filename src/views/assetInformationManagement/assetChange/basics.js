@@ -101,7 +101,10 @@ export const changeDirectionUse = [{
   dataIndex: 'assetUse'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'assetArea'
+  dataIndex: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  }
 }, {
   title: '运营面积(㎡)',
   dataIndex: 'operationArea',
@@ -140,6 +143,40 @@ export const changeDirectionUse = [{
   width: 120
 }]
 
+// 使用方向变动-设备
+export const changeDirectionUseEq = [{
+  title: '资产名称',
+  dataIndex: 'assetName'
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode'
+}, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+}, {
+  title: '所在位置',
+  dataIndex: 'address'
+}, {
+  title: '分类',
+  dataIndex: 'assetCategoryName'
+}, {
+  title: '用途',
+  dataIndex: 'assetUse'
+}, {
+  title: '变更前使用方向',
+  key: 'oldDebugger',
+},
+{
+  // TODO:更改 key 和 customRender
+  title: '变更后使用方向',
+  key: 'newDebugger',
+  scopedSlots:{
+    customRender:'newDebugger'
+  }
+},
+]
+
+
 // 资产项目变动
 export const projectChange = [{
   title: '资产名称',
@@ -161,7 +198,10 @@ export const projectChange = [{
   dataIndex: 'assetUse',
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'assetArea',
+  key: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  }
 }, {
   title: '变更前资产项目',
   dataIndex: 'projectName',
@@ -193,7 +233,10 @@ export const variationOriginalValue = [{
   dataIndex: 'assetCategoryName',
 }, {
   title: '资产面积(㎡)',
-  dataIndex: 'assetArea',
+  key: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  }
 }, {
   title: '所在位置',
   dataIndex: 'address',
