@@ -111,8 +111,8 @@ module.exports = {
   configureWebpack: (config) => {
     if (isProd) {
       // 配置不打包的资源，需指定 cdn 加载
+      // 'ant-design-vue': 'antd',
       config.externals = {
-        'ant-design-vue': 'antd',
         'axios': 'axios',
         'vue': 'Vue',
         'vuex': 'Vuex',
