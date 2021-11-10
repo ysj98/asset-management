@@ -24,23 +24,35 @@
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-              <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变更类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
-              <a-select-option :title="item.name" v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
-              <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
-              <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
-              <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <div class="box sg-datePicker" :style="dateWidth">
-              <SG-DatePicker label="交付日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
-            </div>
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变更类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
+            <a-select-option :title="item.name" v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']" @change="assetTypeDataFn" v-model="queryCondition.assetType">
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            :style="allStyle"
+            :top-organ-id="queryCondition.organId"
+            :multiple="true"
+            v-model="queryCondition.assetClassify"
+            :options-data-format="(data)=>{
+                  return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+                }"
+            @select="assetClassifyDataFn($event,true)"
+          />
+          <a-select v-else :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类"
+                    :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
+            <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <div class="box sg-datePicker" :style="dateWidth">
+            <SG-DatePicker label="交付日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
+          </div>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
@@ -55,7 +67,13 @@
         :dataSource="tableData"
         class="custom-table td-pd10"
         :pagination="false"
-        >
+      >
+        <template #assetArea="text,record">
+          {{ String(record.assetType)=== $store.state.ASSET_TYPE_CODE.EQUIPMENT ?'/' : record.assetArea}}
+        </template>
+        <template #deliveryArea="text,record">
+          {{ String(record.assetType)=== $store.state.ASSET_TYPE_CODE.EQUIPMENT ?'/' : record.deliveryArea}}
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -71,6 +89,7 @@
 </template>
 
 <script>
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
@@ -110,7 +129,10 @@ const columns = [
   },
   {
     title: '资产面积(㎡)',
-    dataIndex: 'assetArea'
+    key: 'assetArea',
+    scopedSlots:{
+      customRender:'assetArea'
+    }
   },
   {
     title: '规格型号',
@@ -134,7 +156,10 @@ const columns = [
   },
   {
     title: '交付面积(㎡)',
-    dataIndex: 'deliveryArea'
+    key: 'deliveryArea',
+    scopedSlots:{
+      customRender:'deliveryArea'
+    }
   },
   {
     title: '交付日期',
@@ -180,24 +205,24 @@ const approvalStatusData = [
   }
 ]
 const queryCondition =  {
-    organId: '',           // 组织机构id
-    approvalStatus: '',    // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-    projectId: '',         // 资产项目Id
-    changeType: '',        // 变更类型
-    assetType: '',         // 资产类型Id
-    assetClassify: '',     // 资产分类
-    startDate: '',         // 创建日期开始日期
-    endDate: '',           // 创建日期结束日期
-    changStartDate: '',    // 变更日期开始
-    changEndDate: '',      // 变更日期结束
-    // currentOrganId: '',    //0 否 1 是
-    assetName: '',         // 资产名称/编码模糊查询
-    deliveryCodeName: '',  // 交付单号
-    pageNum: 1,            // 当前页
-    pageSize: 10           // 每页显示记录数
-  }
+  organId: '',           // 组织机构id
+  approvalStatus: '',    // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+  projectId: '',         // 资产项目Id
+  changeType: '',        // 变更类型
+  assetType: '',         // 资产类型Id
+  assetClassify: '',     // 资产分类
+  startDate: '',         // 创建日期开始日期
+  endDate: '',           // 创建日期结束日期
+  changStartDate: '',    // 变更日期开始
+  changEndDate: '',      // 变更日期结束
+  // currentOrganId: '',    //0 否 1 是
+  assetName: '',         // 资产名称/编码模糊查询
+  deliveryCodeName: '',  // 交付单号
+  pageNum: 1,            // 当前页
+  pageSize: 10           // 每页显示记录数
+}
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips},
+  components: {SearchContainer, TreeSelect, segiIcon, noDataTips, EquipmentSelectTree},
   props: {},
   data () {
     return {
@@ -236,6 +261,10 @@ export default {
     }
   },
   computed: {
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    }
   },
   methods: {
     // 导出
@@ -359,8 +388,7 @@ export default {
     },
     // 资产类别
     assetTypeFn () {
-      this.queryCondition.assetClassify = ''
-      this.getListFn()
+
     },
     // 资产分类
     assetClassifyDataFn (value) {
@@ -372,6 +400,13 @@ export default {
     assetTypeDataFn (value) {
       this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+        // TODO: 遗留BUG 先这样写 有时间优化
+        if (!this.queryCondition.assetType[0] || this.queryCondition.assetType.length > 1 ) {
+          this.assetClassifyData = [{name: '全部资产分类', value: ''}]
+          this.queryCondition.assetClassify = ['']
+        }else {
+          this.getListFn()
+        }
       })
     },
     // 状态发生变化
