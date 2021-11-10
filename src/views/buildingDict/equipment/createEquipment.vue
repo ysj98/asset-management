@@ -196,7 +196,7 @@
                     :max="10"
                     :maxSize="2048"
                   >
-                    <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M)</span>
+                    <span slot="tips">(注：上传的图片最多为 10 张,且图片大小小于2M)</span>
                   </SG-UploadFile>
                 </div>
                 </a-col>
