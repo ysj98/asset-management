@@ -86,7 +86,7 @@
         </a-row>
         <a-row>
           <a-col :span="16">
-            <a-form-model-item label="地理位置" :label-col="{ span: 2 }" :wrapper-col="{ span: 19 }">
+            <a-form-model-item label="地理位置" :label-col="{ span: 2 }" :wrapper-col="{ span: 19 }" prop="placeAddr">
               <a-input
                 :maxLength="128"
                 :style="allWidth"
@@ -347,6 +347,9 @@ export default {
       ],
       typeId: [
         { required: true, message: '请输入车场类型' },
+      ],
+      placeAddr: [
+        { required: true, message: '请输入地理位置' },
       ],
     },
     communityIdOpt:[],
