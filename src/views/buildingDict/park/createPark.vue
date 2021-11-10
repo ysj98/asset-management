@@ -53,6 +53,7 @@
                   :style="allWidth"
                   placeholder="请选择项目"
                   showSearch
+                  :disabled="this.routeQuery.type === 'edit'"
                   :options="$addTitle(communityIdOpt)"
                   :allowClear="false"
                   notFoundContent="没有查询到数据"
@@ -369,6 +370,7 @@ export default {
             nOrganId: value,
           }
         )
+        if(this.routeQuery.type === 'edit') return
         this.queryCommunityListByOrganId(organTopId)
         this.formInfo.communityId = ''
       }
