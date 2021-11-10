@@ -4,7 +4,7 @@
       <!-- 分类名称 -->
       <template #professionName="text,record,index">
         <a-input
-          style="width: 200px;"
+          style="width: 100%;"
           v-model="record.professionName"
           placeholder="请输入分类名称"
         ></a-input>
@@ -23,16 +23,16 @@
       <!-- 专业设备 -->
       <template #equipmentCode="text,record,index">
         <a-select
+          style="width: 100%;"
           :disabled="Boolean(record.professionCode)"
           v-model="record.equipmentCode"
-          style="width: 200px;"
           :options="equipmentCodeSubOptions"
         ></a-select>
       </template>
       <!-- 净残值率 -->
       <template #netSalvageRate="text,record,index">
         <a-input-number
-          style="width: 200px;"
+          style="width: 100%;"
           v-model="record.netSalvageRate"
           placeholder="请输入净残值率"
           :min="0"
@@ -44,14 +44,14 @@
       <template #depreciationMethod="text,record,index">
         <a-select
           v-model="record.depreciationMethod"
-          style="width: 200px;"
+          style="width: 100%;"
           :options="depreciationMethodOptions"
         ></a-select>
       </template>
       <!-- 使用年限 -->
       <template #usedAge="text,record,index">
         <a-input-number
-          style="width: 110px;"
+          style="width: 100%;"
           v-model="record.usedAge"
           :min="0"
           :max="999"
@@ -62,7 +62,7 @@
       <!-- 折旧年限 -->
       <template #depreciationAge="text,record,index">
         <a-input-number
-          style="width: 110px;"
+          style="width: 100%;"
           v-model="record.depreciationAge"
           :min="0"
           :max="999"
