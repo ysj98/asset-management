@@ -580,7 +580,7 @@ export const building = {
   // 区域 新增
   addParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/addParkingPlaceArea.json',
   // 区域 修改
-  editParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/editParkingPlaceArea.json',
+  editParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/updateParkingPlaceArea.json',
   // 区域 列表
   getParkingPlaceAreasByPlaceId: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceAreasByPlaceId.json',
   // 车场 编辑

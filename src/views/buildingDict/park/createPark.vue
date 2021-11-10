@@ -236,12 +236,12 @@
                       :rules="{}">
                         <div style="transform: scale(0.8)" >
                           <SG-UploadFile
-                              :customDownload="customDownload"
-                              :customUpload="customUpload"
-                              :show="formInfo.areaArray[index].disabled"
-                              :max="1"
-                              v-model="formInfo.areaArray[index].areaOtherImg"
-                              :maxSize="2048"
+                            :customDownload="customDownload"
+                            :customUpload="customUpload"
+                            :show="formInfo.areaArray[index].disabled"
+                            :max="1"
+                            v-model="formInfo.areaArray[index].areaOtherImg"
+                            :maxSize="2048"
                           >
                             <span slot="tips"></span>
                           </SG-UploadFile>
@@ -412,21 +412,30 @@ export default {
       // this.formInfo = {...this.formInfo}
     },
     // 新增区域
-    handleTableSave(index) {
+    async handleTableSave(index) {
       const tableData = this.formInfo.areaArray[index]
       const areaOtherImg = tableData.areaOtherImg.map(node=>node.url).join(',')
-      this.addParkingPlaceArea({...tableData, areaOtherImg,placeId: this.formInfo.placeId})
+      const data = await this.addParkingPlaceArea({...tableData, areaOtherImg,placeId: this.formInfo.placeId})
+      if (data) {
+        tableData.parkingAreaId = data
+        tableData.disabled = true
+      }
+      this.formInfo.areaArray = [...this.formInfo.areaArray]
     },
-    handleTableEditSave(index) {
+    async handleTableEditSave(index) {
       const tableData = this.formInfo.areaArray[index]
       const areaOtherImg = tableData.areaOtherImg.map(node=>node.url).join(',')
       const params = {
         ...tableData,
         areaOtherImg,
-        placeId: this.formInfo.placeId
+        placeId: this.formInfo.placeId,
+        areaId: tableData.parkingAreaId
       }
       delete params.key
-      this.editParkingPlaceArea(params)
+      delete params.disabled
+      await this.editParkingPlaceArea(params)
+      tableData.disabled = true
+      this.formInfo.areaArray = [...this.formInfo.areaArray]
     },
 
     // 删除区域数据
@@ -456,6 +465,7 @@ export default {
     handleTableEdit (index) {
       const tableData = this.formInfo.areaArray[index]
       tableData.disabled = false
+      this.formInfo.areaArray = [...this.formInfo.areaArray]
     },
     /*************接口相关************/
 
@@ -626,9 +636,10 @@ export default {
     async addParkingPlaceArea (data) {
       let loadingName = this.SG_Loding("区域新增中")
       try {
-      const {data: res} = await this.$api.building.addParkingPlaceArea(data)
+        const {data: res} = await this.$api.building.addParkingPlaceArea(data)
         if(String(res.code) === '0'){
           this.$SG_Message.success('新增成功')
+          return res.data
         } else {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.error(res.message)
@@ -637,14 +648,23 @@ export default {
       }finally {
         this.DE_Loding(loadingName)
       }
+      return
     },
     // 编辑区域
     async editParkingPlaceArea (data) {
-      const {data: res} = await this.$api.building.editParkingPlaceArea(data)
-      if(String(res.code) !== '0'){
-        throw (res.message)
+      let loadingName = this.SG_Loding("区域编辑中")
+      try {
+        const {data: res} = await this.$api.building.editParkingPlaceArea(data)
+        if(String(res.code) === '0'){
+          this.$SG_Message.success('编辑成功')
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(res.message)
+          })
+        }
+      }finally {
+        this.DE_Loding(loadingName)
       }
-
     },
     // 查询区域
     async getParkingPlaceAreasByPlaceId ({organId,placeId}) {
