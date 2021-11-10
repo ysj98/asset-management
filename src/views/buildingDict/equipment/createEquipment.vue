@@ -32,7 +32,7 @@
                       placeholder="请选择设备设施分类"
                       @change="handleRquipmentChange"
                       :default-name="formInfo.equipmentName"
-                      :topOrganId="formInfo.topOrganId || ''"
+                      :topOrganId="topOrganId || ''"
                       v-model="formInfo.equipmentId"/>
                 </a-form-model-item>
               </a-col>
@@ -305,8 +305,8 @@ export default {
         const params = { nOrgId: value, nOrganId: value }
         let {organId:organTopId} = await queryTopOrganByOrganID(params)
         this.topOrganId = organTopId
-        this.queryCommunityListByOrganId(organTopId)
-        this.getEquipmentSupplierListByOrganId(value)
+        await this.queryCommunityListByOrganId(organTopId)
+        await this.getEquipmentSupplierListByOrganId(value)
         // 清除数据
         this.formInfo.equipmentName =
         this.formInfo.equipmentAreaName =
