@@ -375,6 +375,8 @@ export default {
     // 车位用途发生变化
     handleCarStallUsage (ev) {
       console.log(ev)
+      this.formInfo.objType = undefined
+      this.formInfo.objStatus = undefined
       switch (ev) {
         case 1: // 运营车位
         case '1':
