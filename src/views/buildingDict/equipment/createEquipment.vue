@@ -65,6 +65,7 @@
                       :style="allWidth"
                       :allowClear="false"
                       :loading="communityIdFlag"
+                      :disabled="this.routeQuery.type === 'edit'"
                       placeholder="请选择项目"
                       v-model="formInfo.communityId"
                       notFoundContent="没有查询到数据"
@@ -307,11 +308,13 @@ export default {
         this.topOrganId = organTopId
         await this.queryCommunityListByOrganId(organTopId)
         await this.getEquipmentSupplierListByOrganId(value)
+        if(this.routeQuery.type !== 'edit') {
+          this.formInfo.communityId=
+          this.formInfo.equipmentId=undefined
+        }
         // 清除数据
         this.formInfo.equipmentName =
         this.formInfo.equipmentAreaName =
-        this.formInfo.communityId=
-        this.formInfo.equipmentId=
         this.formInfo.equipmentAreaId=
         this.formInfo.equipmentSupplierId = undefined
       }
