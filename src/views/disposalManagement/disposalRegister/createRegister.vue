@@ -360,7 +360,7 @@
           <div v-show="quickInfo.select === '1'" style="margin-left: 10px;">
             <SG-RadioGroup direction="vertical" v-model="quickInfo.radioValue" style="font-size: 14px;">
               <SG-Radio :value="1">按照资产个数均摊</SG-Radio>
-              <SG-Radio :value="2">按照资产面积均摊</SG-Radio>
+              <SG-Radio :disabled="String(assetType)===$store.state.ASSET_TYPE_CODE.EQUIPMENT" :value="2">按照资产面积均摊</SG-Radio>
             </SG-RadioGroup>
           </div>
           <div v-show="quickInfo.select === '2'" style="line-height: 30px;margin-left: 10px;">
@@ -406,6 +406,7 @@ export default {
   props: {},
   data () {
     return {
+      assetType:'',
       // 快捷录入弹出框
       modalInfo: {
         title: '',
@@ -639,7 +640,8 @@ export default {
       this.checkedData = []
       this.table.dataSource = []
     },
-    assetTypeFn () {
+    assetTypeFn (val) {
+      this.assetType = val
       this.checkedData = []
       this.table.dataSource = []
     },
@@ -893,6 +895,7 @@ export default {
               disposeReason: data.disposeReason,
               remark: data.remark
             })
+            this.assetType = String(data.assetType)
           })
         } else {
           this.$message.error(res.data.message)
