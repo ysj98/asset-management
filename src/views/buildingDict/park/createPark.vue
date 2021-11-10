@@ -494,7 +494,7 @@ export default {
       }
       data.organId = String(data.organId)
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
-      data.communityId = String(data.communityId)
+      data.communityId = String(data.communityId) === '-1' ? undefined : String(data.communityId)
       this.organNameMain = data.organName
       this.organIdMain = data.organId
       if (data.organId) {
@@ -511,7 +511,7 @@ export default {
         data.areaArray = areaList.map(item=>({...item, key:Math.random(), disabled: true, areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
       }
       // 营运项目
-      return data
+      return {...data}
     },
     // 详情
     async parkApiDetail() {
