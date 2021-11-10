@@ -356,11 +356,12 @@ export default {
         this.$message.error("请输入分类名称");
         return null;
       }
-      const professionNameArr = this.tableOptions.dataSource.map(ele=>ele.professionName)
-      if(professionNameArr.length !== new Set(professionNameArr).size){
-        this.$message.error("分类名称不能重复")
-        return null
-      }
+      // 由于存量数据存在 分类名称 相同的数据，最终决定去除前端分类名称重复校验
+      // const professionNameArr = this.tableOptions.dataSource.map(ele=>ele.professionName)
+      // if(professionNameArr.length !== new Set(professionNameArr).size){
+      //   this.$message.error("分类名称不能重复")
+      //   return null
+      // }
       const keyArr = [
         "equipmentOrganRelId",
         "equipmentName",
@@ -420,7 +421,7 @@ export default {
         this.tableOptions.dataSource = tempArr.map(ele=>{
           return {
             ...ele,
-            equipmentCode: Number(ele.equipmentCode) || ''
+            equipmentCode: ['0',null].includes(ele.equipmentCode) ? '' : ele.equipmentCode
           }
         })
       }
