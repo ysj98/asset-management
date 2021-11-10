@@ -525,7 +525,6 @@ export default {
         ...data,
         placeId: this.routeQuery.placeId
       }
-      await this.preAreaListSubmit(params.areaArray || [])
       let loadingName = this.SG_Loding("编辑中...")
       this.$api.building.parkApiEdit(params).then(
           (res) => {
