@@ -310,6 +310,7 @@ export default {
         organName: "",
         organId: ""
       },
+      loadingFlag: false,
       bussType: "blankDir",
     };
   },
@@ -375,8 +376,10 @@ export default {
     // 车位用途发生变化
     handleCarStallUsage (ev) {
       console.log(ev)
-      this.formInfo.objType = undefined
-      this.formInfo.objStatus = undefined
+      if (this.loadingFlag) {
+        this.formInfo.objType = undefined
+        this.formInfo.objStatus = undefined
+      }
       switch (ev) {
         case 1: // 运营车位
         case '1':
@@ -439,6 +442,9 @@ export default {
       this.$nextTick(() => {
         this.form.setFieldsValue(this.formInfo);
       });
+      if (this.routeQuery.type === "create") {
+         this.loadingFlag = true
+      }
       if (this.routeQuery.type === "edit") {
         await this.stallApiDetail({
           placeId: this.routeQuery.placeId,
@@ -500,6 +506,9 @@ export default {
         }
       } finally {
         this.DE_Loding(loadingName);
+        this.$nextTick(()=>{
+          this.loadingFlag = true
+        })
       }
     },
     async afterStallApiList(data) {
