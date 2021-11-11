@@ -266,7 +266,7 @@ export const equipment = [
   { title: '设备设施编码', dataIndex: 'equipmentCode', width: 150 },
   { title: '设备设施分类', dataIndex: 'equipmentTypeName', width: 150 },
   { title: '规格型号', dataIndex: 'equipmentModel', width: 150 },
-  { title: '运营项目', dataIndex: 'communityId', width: 100 },
+  { title: '运营项目', dataIndex: 'communityName', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 100 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
   { title: '所在位置', dataIndex: 'position', width: 100 },
