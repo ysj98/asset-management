@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -148,7 +149,10 @@ const columns = [
   },
   {
     title: '归还面积（㎡）',
-    dataIndex: 'returnArea',
+    key: 'returnArea',
+    customRender(record){
+      return generateTableAreaByAssetTypeString({keyStr:'returnArea',assetTypeName:record.assetTypeName,record})
+    },
     width: 120
   },
   {

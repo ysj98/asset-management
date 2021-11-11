@@ -116,7 +116,6 @@
 </template>
 
 <script>
-import store from '@/store/index'
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'

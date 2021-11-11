@@ -4,7 +4,7 @@
     <SG-Title title="资产明细"/>
     <div style="margin-left: 40px">
       <!--数据总览-->
-      <overview-number :numList="numList" style="margin-bottom: 8px" v-if="isShow && !isSelectedEquipment"  />
+      <overview-number :numList="numList" style="margin-bottom: 8px" v-if="isShow"  />
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
           <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}，合计领用面积：{{ receiveAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
@@ -428,6 +428,14 @@
         }
       }
 
+    },
+    mounted() {
+      if (this.isSelectedEquipment){
+        const arr = ["领用数量", "已归还数量", "未归还数量",]
+        this.numList.forEach((ele,idx)=>{
+          ele.title = arr[idx]
+        })
+      }
     }
   }
 </script>

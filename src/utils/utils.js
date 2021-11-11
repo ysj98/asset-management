@@ -1,4 +1,5 @@
 import sg_calc from 'sg-calc'
+import store from "store";
 /**
  * 工具函数库
  */
@@ -665,4 +666,19 @@ export function handleEnumerationConversion(value, list, keyWord = ['title', 'va
   }
   const result = list.filter(ele => ele[keyWord[0]] === value)[0]
   return result ? result[keyWord[1]] : null
+}
+
+export function generateTableAreaByAssetTypeCode({keyStr, assetTypeCode, record}){
+  if (assetTypeCode === store.state.ASSET_TYPE_CODE.EQUIPMENT){
+    return '/'
+  }else {
+    return record[keyStr]
+  }
+}
+export function generateTableAreaByAssetTypeString({keyStr, assetTypeName, record}){
+  if (assetTypeName === store.state.ASSET_TYPE_STRING.EQUIPMENT){
+    return '/'
+  }else {
+    return record[keyStr]
+  }
 }
