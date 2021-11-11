@@ -149,6 +149,7 @@
 </template>
 
 <script>
+    import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
     import TreeSelect from "../../common/treeSelect";
     import noDataTips from "@/components/noDataTips";
     import moment from "moment";
@@ -304,7 +305,9 @@
                   {
                     title: "资产面积",
                     key: "area",
-                    customRender: this.generateColumnArea,
+                    customRender(record){
+                      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:record.assetTypeCode})
+                    },
                     width: 70,
                   },
                   {
@@ -358,13 +361,6 @@
             this.onDateChange(this.defaultValue)
         },
         methods: {
-           generateColumnArea(record){
-                if (String(record.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
-                    return '/'
-                }else {
-                    return record.area
-                }
-            },
             moment,
             // 全部资产分类
             assetClassifyDataFn(value,isSelectedEquipment){

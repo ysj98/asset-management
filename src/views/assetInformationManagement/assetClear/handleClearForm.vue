@@ -193,6 +193,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import {dateToString} from 'utils/formatTime'
@@ -225,7 +226,9 @@ const defaultColumns = [
   {
     title: '面积(㎡)',
     key: 'assetArea',
-    customRender: this.generateColumnArea,
+    customRender(record){
+      return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:record.assetTypeCode})
+    },
     width: '160'
   },
   {
@@ -283,13 +286,6 @@ export default {
     }
   },
   methods: {
-    generateColumnArea(record){
-      if (record.assetType === this.$store.state.ASSET_TYPE_STRING.EQUIPMENT){
-        return '/'
-      }else {
-        return record.assetArea
-      }
-    },
     formatDate (value) {
       if (value) {
         return dateToString(new Date(value), 'yyyy-mm-dd')
