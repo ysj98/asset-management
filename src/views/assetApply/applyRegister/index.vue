@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import store from '@/store/index'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -137,7 +138,14 @@ const columns = [
   },
   {
     title: '领用面积（㎡）',
-    dataIndex: 'receiveArea',
+    key: 'receiveArea',
+    customRender(record){
+      if (record.assetTypeName === store.state.ASSET_TYPE_STRING.EQUIPMENT){
+        return '/'
+      }else {
+        return record.receiveArea
+      }
+    },
     width: 120
   },
   {

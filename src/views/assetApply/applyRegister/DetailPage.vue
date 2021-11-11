@@ -14,6 +14,7 @@
           :registerId="registerId"
           @backAssetList="getAssetList"
           @validateProject="validateProject"
+          :isSelectedEquipment="isSelectedEquipment"
         />
         <!--审批轨迹及审批意见-->
         <approval-flow-part v-if="type === 'approval' || type === 'detail'" :type="type" :stepList="stepList"/>
@@ -58,7 +59,11 @@
         queryType: 1 // 资产明细是否分页，0分，1不分
       }
     },
-
+    computed:{
+      isSelectedEquipment(){
+        return String(this.dynamicData.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+      },
+    },
     methods: {
       // 校验基础信息组件资产项目数据
       validateProject () {
@@ -81,7 +86,7 @@
           //校验关联资产
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
-          } else if(this.validateAssetList(assetList)) {
+          } else if(!this.isSelectedEquipment && this.validateAssetList(assetList)) {
             return this.$message.warn('领用面积为必有项且不能为0')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
@@ -93,7 +98,7 @@
             detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
           console.log(data,detailList,dynamicData)
-          let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length, 
+          let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length,
           ...dynamicData, saveType: saveWays} : { ...data, detailList }
           delete form.receiveOrganName
           delete form.receiveUserName
@@ -143,7 +148,7 @@
           this.$message.error(err || '查询领用登记详情出错')
         })
       },
-      
+
       // 处理底部按钮事件
       handleFooterBtn (sign) {
         const { type } = this
@@ -157,7 +162,7 @@
           type === 'approval' ? this.handleApprove() : this.$router.go(-1)
         }
       },
-      
+
       // 审批驳回、通过
       handleApprove (sign) {
         this.spinning = true
@@ -178,13 +183,13 @@
           this.$message.error(err || `${tip}失败`)
         })
       },
-      
+
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
         this.dynamicData = Object.assign({}, this.dynamicData, obj)
         console.log(this.dynamicData)
       },
-      
+
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
         let arr = list.filter(m => m.receiveArea == undefined || +m.receiveArea == 0)

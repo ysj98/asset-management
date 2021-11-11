@@ -10,7 +10,18 @@
         <div style="line-height: 32px; font-weight: bold">待选资产</div>
       </a-col>
       <a-col :span="6">
+        <EquipmentSelectTree
+          v-if="isSelectedEquipment"
+          style="width: 100%"
+          :top-organ-id="organId"
+          v-model="objectType"
+          :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+          @select="fetchData"
+        />
         <a-select
+          v-else
           style="width: 100%"
           v-model="objectType"
           @change="fetchData"
@@ -68,8 +79,10 @@
 </template>
 
 <script>
+  import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
   export default {
     name: 'SelectAssetList',
+    components:{EquipmentSelectTree},
     props: {
       // 是否获取全部属性，默认获取userId字符串构成的数组
       allAttrs: { type: Boolean, default: () => false },
@@ -85,7 +98,8 @@
       // 资产项目projectId
       proId: { type: [Number, String], default: () => '' },
       // 资产类型
-      assetType: { type: [Number, String], default: () => '' }
+      assetType: { type: [Number, String], default: () => '' },
+      isSelectedEquipment:{ type:Boolean, default:false }
     },
     data () {
       return {
@@ -94,7 +108,7 @@
         // assetTypeOptions: [], // 类型选项
         projectId: undefined, // 资产项目
         projectOptions: [], // 资产项目选项
-        objectType: undefined, // 资产类别
+        objectType: '', // 资产类别
         objectTypeOptions: [], // 类别选项
         dataSource: [], // Table数据源
         loading: false, // Table loading
@@ -203,7 +217,7 @@
 
       // 根据资产类型查资产分类列表
       queryObjectType (assetType) {
-        this.objectType = undefined
+        this.objectType = ''
         this.objectTypeOptions = []
         if (!assetType) { return false }
         const { organId } = this

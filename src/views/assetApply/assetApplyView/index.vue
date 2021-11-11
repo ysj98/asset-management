@@ -48,7 +48,19 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
+        <EquipmentSelectTree
+          v-if="isSelectedEquipment"
+          :multiple="true"
+          style="width: 190px; margin-right: 10px;"
+          :top-organ-id="queryCondition.organId"
+          v-model="queryCondition.objectTypeList"
+          :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+          @select="changeAssetClassify"
+        />
         <a-select
+          v-else
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
@@ -104,13 +116,15 @@
 </template>
 
 <script>
+import store from '@/store/index'
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
-
+import { generateTableAreaByAssetTypeString} from '@/utils/utils'
 
   const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '领用中', value: '0' }, { name: '未归还', value: '1' }, { name: '已归还', value: '2' }
@@ -149,7 +163,14 @@ const columns = [
   },
   {
     title: '资产面积（㎡）',
-    dataIndex: 'area'
+    key: 'area',
+    customRender(record){
+      return generateTableAreaByAssetTypeString({
+        record,
+        keyStr:'area',
+        assetTypeName: record.assetTypeName
+      })
+    }
   },
   {
     title: '领用单号',
@@ -170,7 +191,14 @@ const columns = [
   },
   {
     title: '领用面积（m²）',
-    dataIndex: 'receiveArea'
+    key: 'receiveArea',
+    customRender(record){
+      return generateTableAreaByAssetTypeString({
+        record,
+        keyStr:'receiveArea',
+        assetTypeName: record.assetTypeName
+      })
+    }
   },
   {
     title: '归还日期',
@@ -178,11 +206,25 @@ const columns = [
   },
   {
     title: '已归还面积(㎡)',
-    dataIndex: 'returnArea'
+    key: 'returnArea',
+    customRender(record){
+      return generateTableAreaByAssetTypeString({
+        record,
+        keyStr:'returnArea',
+        assetTypeName: record.assetTypeName
+      })
+    }
   },
   {
     title: '未归还面积(㎡)',
-    dataIndex: 'unReturnArea'
+    key: 'unReturnArea',
+    customRender(record){
+      return generateTableAreaByAssetTypeString({
+        record,
+        keyStr:'unReturnArea',
+        assetTypeName: record.assetTypeName
+      })
+    }
   },
   {
     title: '状态',
@@ -201,7 +243,7 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree},
   data () {
     return {
       ASSET_MANAGEMENT,
@@ -270,6 +312,12 @@ export default {
         }
       ],
       projectData: []
+    }
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     }
   },
   watch: {
