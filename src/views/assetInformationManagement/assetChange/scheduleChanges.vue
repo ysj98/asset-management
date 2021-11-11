@@ -28,7 +28,15 @@
             <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
               <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
+            <a-select
+              :maxTagCount="1"
+              :style="allStyle"
+              mode="multiple"
+              placeholder="全部资产类型"
+              :tokenSeparators="[',']"
+              @change="assetTypeDataFn"
+              v-model="queryCondition.assetType"
+            >
               <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <EquipmentSelectTree
@@ -382,11 +390,6 @@ export default {
         }
       })
     },
-    // 资产类别
-    assetTypeFn () {
-      this.queryCondition.assetClassify = ''
-      this.getListFn()
-    },
     // 资产分类
     assetClassifyDataFn (value,isSelectedEquipment) {
       this.$nextTick(function () {
@@ -398,6 +401,12 @@ export default {
     assetTypeDataFn (value) {
       this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
+        if (!this.queryCondition.assetType[0] || this.queryCondition.assetType.length > 1 ) {
+          this.assetClassifyData = [{name: '全部资产分类', value: ''}]
+          this.queryCondition.assetClassify = ['']
+        }else {
+          this.getListFn()
+        }
       })
     },
     // 状态发生变化
