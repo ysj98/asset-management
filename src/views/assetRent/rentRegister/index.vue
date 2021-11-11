@@ -168,6 +168,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import segiIcon from "@/components/segiIcon.vue";
 import TreeSelect from "../../common/treeSelect";
@@ -260,7 +261,10 @@ const columns = [
   {
     title: "出租面积(㎡)",
     width: 100,
-    dataIndex: "leaseArea",
+    key: "leaseArea",
+    customRender(record){
+      return generateTableAreaByAssetTypeString({record,keyStr:'leaseArea',assetTypeName:record.assetTypeName})
+    }
   },
   {
     title: "起租日期",

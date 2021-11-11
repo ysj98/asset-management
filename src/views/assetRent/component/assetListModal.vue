@@ -14,7 +14,17 @@
       <!-- 输入框 -->
       <div class="search_box">
         <span class="f14">待选资产:</span>
+        <EquipmentSelectTree
+          v-if="isSelectedEquipment"
+          style="width: 140px; margin-left: 200px"
+          :top-organ-id="organId"
+          v-model="objectType"
+          :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+        />
         <a-select
+          v-else
           style="width: 140px; margin-left: 200px"
           v-model="objectType"
           @change="fetchData"
@@ -53,7 +63,7 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="loading"
-          :scroll="{ x: 2000 }"
+          :scroll="{ x: 2000,y:380 }"
           size="small"
           :pagination="false"
           class="custom-table td-pd10"
@@ -90,6 +100,7 @@
 </template>
 
 <script>
+import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 const assetStatus = [
   {
     name: "全部资产状态",
@@ -136,11 +147,12 @@ const columns = [
   { title: "资产状态", align: "center", dataIndex: "assetStatusName" },
 ];
 export default {
+  components:{EquipmentSelectTree},
   data() {
     return {
       columns,
       show: false, // 模态框显示
-      objectType: undefined, // 资产类别
+      objectType: '', // 资产类别
       objectTypeOptions: [], // 类别选项
       assetStatus: [...assetStatus],
       dataSource: [], // 表格数据源
@@ -165,6 +177,7 @@ export default {
     proId: { type: [Number, String], default: () => "" },
     // 资产类型
     assetType: { type: [Number, String], default: () => "" },
+    isSelectedEquipment: { type:Boolean,default:false }
   },
   watch: {
     assetType(val) {
@@ -282,7 +295,7 @@ export default {
 
     // 根据资产类型查资产分类列表
     queryObjectType(assetType) {
-      this.objectType = undefined;
+      this.objectType = '';
       this.objectTypeOptions = [];
       if (!assetType) {
         return false;

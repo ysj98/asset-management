@@ -47,7 +47,7 @@
       </a-col>
     </a-row>
     <a-row class="a_row">
-      <a-col :span="6" :offset="2">
+      <a-col v-if="!isSelectedEquipment" :span="6" :offset="2">
         <div>出租面积(㎡)： {{ assetInfo.leaseArea }}㎡</div>
       </a-col>
       <a-col :span="7" :offset="1">
@@ -70,10 +70,10 @@
     <SG-Title title="资产明细" />
     <div class="assetInfo pr">
       <div class="textNum pa">
-        资产数量： {{ dataSource.length }}个， 出租面积： {{ rentOutArea }}㎡
+        资产数量： {{ dataSource.length }}个<span v-if="!isSelectedEquipment">， 出租面积： {{ rentOutArea }}㎡</span>
       </div>
       <a-table
-        :columns="columns"
+        :columns="columnsCom"
         :data-source="dataSource"
         :loading="loading"
         bordered
@@ -218,7 +218,7 @@ export default {
       dataSource: [], // 资产明细数据源
       dataSource2: [], // 收益明细数据源
       rentOutArea: 0, // 出租总面积
-      earnings: 0, // 
+      earnings: 0, //
       uploadList: [], // 附件列表
       pagination: {
         pageLength: 10,
@@ -243,6 +243,21 @@ export default {
         status: 1,
       },
     };
+  },
+  computed:{
+    isSelectedEquipment(){
+      return String(this.assetInfo.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+          const arr = ['assetArea','leaseArea']
+          return this.columns.filter(ele=>{
+            return !arr.includes(ele.dataIndex)
+          })
+      }else {
+        return this.columns
+      }
+    }
   },
   methods: {
     // 获取资产明细
