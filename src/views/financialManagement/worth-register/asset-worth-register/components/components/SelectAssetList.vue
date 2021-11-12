@@ -30,7 +30,18 @@
         <!--/>-->
       <!--</a-col>-->
       <a-col :span="6">
+        <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            style="width: 100%"
+            :top-organ-id="organId"
+            v-model="objectType"
+            :options-data-format="(data)=>{
+              return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+            }"
+            @change="fetchData"
+        />
         <a-select
+          v-else
           style="width: 100%"
           v-model="objectType"
           @change="fetchData"
@@ -83,8 +94,10 @@
 </template>
 
 <script>
+  import EquipmentSelectTree from "../../../../../common/EquipmentSelectTree";
   export default {
     name: 'SelectAssetList',
+    components: {EquipmentSelectTree},
     props: {
       // 是否获取全部属性，默认获取userId字符串构成的数组
       allAttrs: { type: Boolean, default: () => false },
@@ -128,7 +141,11 @@
         ]
       }
     },
-
+    computed: {
+      isSelectedEquipment(){
+        return this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+      }
+    },
     methods: {
       // 获取列表数据
       fetchData ({ pageLength = 10, pageNo = 1}) {

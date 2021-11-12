@@ -55,7 +55,19 @@
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetType"
         ></a-select>
+        <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            style="width: 300px"
+            :top-organ-id="organId"
+            :multiple="true"
+            v-model="assetClassify"
+            :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+            @select="changeAssetClassify($event,true)"
+        />
         <a-select
+          v-else
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
@@ -100,6 +112,7 @@ import {getCurrentDate, getMonthsAgoDate} from 'utils/formatTime'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
+import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 
 const columns = [
   {
@@ -190,6 +203,7 @@ const columns = [
 
 export default {
   components: {
+    EquipmentSelectTree,
     TreeSelect, noDataTips
   },
   data () {
@@ -219,7 +233,7 @@ export default {
       assetSubject: [''],
       assetSubjectOptions: [],
       assetClassify: [''],
-      assetClassifyOptions: [],
+      assetClassifyOptions: [{label: '全部资产分类', value: ''}],
       beginDate: getMonthsAgoDate(3),
       endDate: getCurrentDate(),
       paginator: {
@@ -228,6 +242,12 @@ export default {
         totalCount: 0
       },
       showNoDataTips: false
+    }
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     }
   },
   watch: {
@@ -277,9 +297,10 @@ export default {
       })
     },
     // 资产分类发生变化
-    changeAssetClassify (value) {
+    changeAssetClassify (value,isSelectedEquipment) {
       this.$nextTick(function () {
-        this.assetClassify = this.handleMultipleSelectValue(value, this.assetClassify, this.assetClassifyOptions)
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyOptions
+        this.assetClassify = this.handleMultipleSelectValue(value, this.assetClassify, resOptions)
       })
     },
     // 处理多选下拉框有全选时的数组
@@ -445,7 +466,12 @@ export default {
     getAssetClassifyOptions () {
       let obj = {
         organId: this.organId,
-        assetType: this.assetType.length > 0 ? this.assetType.join(',') : ''
+        assetType: this.assetType.length === 1 ? this.assetType.join(',') : ''
+      }
+      if (!obj.assetType) {
+        this.assetClassify = ['']
+        this.assetClassifyOptions = [{label: '全部资产分类', value: ''}]
+        return
       }
       this.$api.assets.getList(obj).then(res => {
         if (res.data.code === '0') {

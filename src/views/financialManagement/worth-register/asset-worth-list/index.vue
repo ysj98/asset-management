@@ -34,16 +34,29 @@
               :options="$addTitle(assetTypeOptions)"
               :filterOption="filterOption"
               v-model="organProjectType.assetType"
+              @select="changeAssetType"
             />
           </a-col>
           <a-col :span="5">
+            <EquipmentSelectTree
+                v-if="isSelectedEquipment"
+                style="width: 300px"
+                :top-organ-id="organProjectType.organId"
+                :multiple="true"
+                v-model="assetCategoryId"
+                :options-data-format="(data)=>{
+                  return [{label: '全部资产分类', value: '-1', isLeaf: true},...data]
+                }"
+                @select="changeAssetClassify($event,true)"
+            />
             <a-select
+              v-else
               mode="multiple"
               v-bind="properties"
-              @change="queryTableData"
               v-model="assetCategoryId"
               :options="$addTitle(categoryOptions)"
               placeholder="请选择资产分类"
+              @select="changeAssetClassify($event)"
             />
           </a-col>
           <a-col :span="5">
@@ -107,9 +120,10 @@
   import SearchContainer from 'src/views/common/SearchContainer'
   import TooltipText from "src/views/common/TooltipText";
   import {queryCategoryList, queryProjectListByOrganId, filterOption, queryAssetTypeList, exportDataAsExcel} from 'src/views/common/commonQueryApi'
+  import EquipmentSelectTree from "../../../common/EquipmentSelectTree";
   export default {
     name: 'index',
-    components: { SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber, TooltipText },
+    components: {EquipmentSelectTree, SearchContainer, TreeSelect, NoDataTip, TrendChartPart, OverviewNumber, TooltipText },
     data () {
       return {
         moment,
@@ -121,7 +135,7 @@
         exportBtnLoading: false, // 导出按钮loading
         assessmenBaseDate: moment().format('YYYY-MM-DD'), // 查询条件-日期,默认当天
         originalValue: 0, // 资产原值,趋势图中展示
-        categoryOptions: [], // 查询条件-资产分类选项
+        categoryOptions: [{title: '全部资产分类', key: '-1'}], // 查询条件-资产分类选项
         assetCategoryId: undefined, // 查询条件-资产分类id
         organProjectType: {
           organId: '',
@@ -163,6 +177,12 @@
           {title: '最新价值(元)', key: 'marketValue', value: 0, fontColor: '#324057'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         properties: { allowClear: true, showSearch: true, maxTagCount: 1, style: "width: 100%" } // 查询表单控件公共属性
+      }
+    },
+    computed:{
+      isSelectedEquipment(){
+        const assetTypeArr = this.organProjectType.assetType || []
+        return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
       }
     },
 
@@ -268,23 +288,61 @@
           this.$message.error(err || '查询汇总接口出错')
         })
       },
-
+      // 资产分类发生变化
+      changeAssetClassify (value,isSelectedEquipment) {
+        this.$nextTick(function () {
+          const resOptions = isSelectedEquipment === true ? new Array(9999) : this.categoryOptions
+          this.assetCategoryId = this.handleMultipleSelectValue(value, this.assetCategoryId, resOptions)
+          // debugger
+        })
+      },
+      // 资产类型发生变化
+      changeAssetType (value) {
+        this.$nextTick(function () {
+          this.organProjectType.assetType = this.handleMultipleSelectValue(value, this.organProjectType.assetType, this.assetTypeOptions)
+          this.queryTableData({})
+          this.queryCategoryOptions()
+        })
+      },
       // 根据资产类型查资产分类列表
       queryCategoryOptions () {
-        this.categoryOptions = []
+        this.categoryOptions = [{title: '全部资产分类', key: '-1'}]
         const { organProjectType: { organId, assetType }, assetTypeOptions } = this
         if (!organId || !assetType || !assetType.length) { return false }
         let assetVal = ''
+        this.assetCategoryId = ['-1']
         if (assetType.includes('-1')) {
+          this.categoryOptions = [{title: '全部资产分类', key: '-1'}]
           assetVal = [...assetTypeOptions].splice(1).map(m => m.key).join(',')
+          return
         } else {
           assetVal = assetType.join(',')
+        }
+        if (assetType.length>1) {
+          return
         }
         queryCategoryList({ assetType: assetVal, organId }).then(list => {
           list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
       },
-
+      // 处理多选下拉框有全选时的数组
+      handleMultipleSelectValue (value, data, dataOptions) {
+        // 如果选的是全部
+        if (value === '-1') {
+          data = ['-1']
+        } else {
+          let totalIndex = data.indexOf('-1')
+          if (totalIndex > -1) {
+            data.splice(totalIndex, 1)
+          } else {
+            // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+            if (data.length === dataOptions.length - 1) {
+              data = ['-1']
+            }
+          }
+        }
+        return data
+      },
       // 汇总当前页数据
       calcTotal () {
         const { tableObj: { dataSource } } = this
@@ -293,7 +351,6 @@
           let original = 0
           let asset = 0
           let assetNew = 0
-
           dataSource.forEach(m => {
             const { firstMarketValue, originalValue, assetValuation, assessmentValue } = m
             market += firstMarketValue ? Number(firstMarketValue) : 0
@@ -316,12 +373,11 @@
 
     watch: {
       // 全选与其他选项互斥处理
-      assetCategoryId: function (val) {
-        if (val && val.length !== 1 && val.includes('-1')) {
-          this.assetCategoryId = ['-1']
-        }
-      },
-
+      // assetCategoryId: function (val) {
+      //   if (val && val.length !== 1 && val.includes('-1')) {
+      //     this.assetCategoryId = ['-1']
+      //   }
+      // },
       // 长度不能超过30字符
       assetNameCode: function (val, pre) {
         if (val && val.length > 40) {
@@ -332,14 +388,6 @@
 
       'organProjectType.projectId': function () {
         this.queryTableData({})
-      },
-
-      'organProjectType.assetType': function (assetType) {
-        if (assetType && assetType.length !== 1 && assetType.includes('-1')) {
-          this.organProjectType.assetType = ['-1']
-        }
-        this.queryTableData({})
-        this.queryCategoryOptions()
       }
     }
   }
