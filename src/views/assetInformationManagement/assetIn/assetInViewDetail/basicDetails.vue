@@ -26,7 +26,7 @@
         </a-col>
       </a-row>
       <a-row class="playground-row" v-show="type === 'getUseDirection'">
-        <a-col class="playground-col" :span="8" v-for="(item, index) in useDirection" :key="index">
+        <a-col class="playground-col" :span="8" v-for="(item, index) in useDirectionCom" :key="index">
           {{item.text}}：{{useDirectionDetail[item.value] || useDirectionDetail[item.value] === 0 ? useDirectionDetail[item.value] : '--'}}
         </a-col>
       </a-row>
@@ -118,7 +118,7 @@ export default {
       const {HOUSE,LAND,YARD,EQUIPMENT} = this.ASSET_TYPE_CODE
       const info = [
         { text: '转物业日期', value: 'transferTime' },
-        { text: '使用方向', value: 'transferTime', assetType:[EQUIPMENT] },
+        { text: '使用方向', value: 'debuggerPlaceholder', assetType:[EQUIPMENT] },
         { text: '转物业面积(㎡)', value: 'transferArea', assetType:[HOUSE, LAND, YARD] },
         { text: '转运营日期', value: 'transferOperationTime', assetType:[HOUSE, LAND, YARD] },
         { text: '运营面积(㎡)', value: 'transferOperationArea', assetType:[HOUSE, LAND, YARD] },
@@ -143,8 +143,8 @@ export default {
         { text: '楼栋名称', value: 'buildName', assetType:[HOUSE] },
         { text: '房间名称', value: 'houseName', assetType:[HOUSE] },
         { text: '土地名称', value: 'landName', assetType:[LAND] },
-        { text: '车场名称', value: 'landName', assetType:[YARD] },
-        { text: '设备设施名称', value: 'landName', assetType:[EQUIPMENT] },
+        { text: '车场名称', value: 'carParkName', assetType:[YARD] },
+        { text: '设备设施名称', value: 'equipmentName', assetType:[EQUIPMENT] },
 
         { text: '土地编号', value: 'landCode', assetType:[LAND] },
         { text: '资产位置', value: 'address' },

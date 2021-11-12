@@ -44,14 +44,14 @@ export function handleAssetTypeField(assetType, keyStr) {
       list: "assetEquipList",
       pageList: "equipList",
       verificationList: "equipmentVerificationList",
-      detail:'assetCarPark'
+      detail:'assetEquip'
     },
     [ASSET_TYPE_CODE.YARD]: {
       ids: "carParkIds",
       list: "assetCarParkList",
       pageList: "carParkList",
       verificationList: "yardVerificationList",
-      detail:'assetEquip'
+      detail:'assetCarPark'
     }
   };
   return options[assetType][keyStr];

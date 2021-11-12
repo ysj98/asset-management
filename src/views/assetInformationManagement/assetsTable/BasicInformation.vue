@@ -46,7 +46,6 @@ export default {
   },
   created() {
     const { HOUSE, LAND, YARD, EQUIPMENT } = this.ASSET_TYPE_CODE;
-    // TODO: 有哪些信息 不同业态 区别展示
     this.list = [
       {
         keyName: "assetId",
@@ -92,15 +91,13 @@ export default {
         assetType: [LAND]
       },
       {
-        // TODO: 更改 key 的名字
-        keyName: "landName",
+        keyName: "carParkName",
         title: "车场名称",
         value: "",
         assetType: [YARD]
       },
       {
-        // TODO: 更改 key 的名字
-        keyName: "debugger",
+        keyName: "equipmentName",
         title: "设备设施名称",
         value: "",
         assetType: [EQUIPMENT]
