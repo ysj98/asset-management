@@ -134,14 +134,24 @@ export function confirmDownloadTemplate(api, otherRequestData) {
   };
   Object.assign(requestData, otherRequestData);
   api(requestData).then(res => {
-    let blob = new Blob([res.data]);
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "资产登记模板.xls";
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    this.modalShow = false;
+    if (res.data.type === 'application/json'){
+      res.data.arrayBuffer().then(buffer => {
+        const res = new TextDecoder('utf-8')
+        let data = JSON.parse(res.decode(new Uint8Array(buffer))) || {};
+        if (data.code !== '0'){
+          this.$SG_Message.error(data.message)
+        }
+      })
+    }else {
+      let blob = new Blob([res.data]);
+      let a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "资产登记模板.xls";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      this.modalShow = false;
+    }
   });
 }
