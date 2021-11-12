@@ -55,6 +55,7 @@ import directionUse from './directionUse'
 import correlativeCharges from './correlativeCharges'
 import basic from './basic'
 import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
+import {SET_PARKING_PLACE_RESOURCE_TYPE, SET_PARKING_OBJ_TYPE} from "store/types/platformDictTypes";
 export default {
   components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
   props: {},
@@ -112,6 +113,15 @@ export default {
       this.activeStepIndex = Number(this.$route.query.activeStepIndex)
       this.$store.commit('pro/updateNav', [{name: '资产管理', path: ''}, {name: '资产登记', path: '/assetRegister'}, {name: `${this.titleData[this.activeStepIndex]}`, path: ''}])
     }
+
+    this.$store.dispatch('platformDict/getPlatformDict',{
+      code: 'PARKING_OBJ_TYPE',
+      type: SET_PARKING_OBJ_TYPE
+    })
+    this.$store.dispatch('platformDict/getPlatformDict',{
+      code: 'PARKING_PLACE_RESOURCE_TYPE',
+      type: SET_PARKING_PLACE_RESOURCE_TYPE
+    })
   },
   watch: {
     'activeStepIndex' (val) {

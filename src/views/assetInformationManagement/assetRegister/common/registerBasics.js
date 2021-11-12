@@ -248,7 +248,7 @@ export const yard = [
   { title: '车位名称', dataIndex: 'name', width: 150 },
   { title: '车位编码', dataIndex: 'code', width: 100 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 100 },
-  { title: '车场类型', dataIndex: 'type', width: 100 },
+  { title: '车场类型', key: 'type', width: 100 ,scopedSlots: {customRender: 'type'} },
   { title: '建筑面积(㎡)', dataIndex: 'area', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 350 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
