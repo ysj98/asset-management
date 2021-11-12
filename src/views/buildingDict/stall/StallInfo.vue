@@ -324,6 +324,29 @@ export default {
         this.hasPowerExport = true
       }
     },
+    // 删除车位
+    handleDel(record) {
+      this.$SG_Modal.confirm({
+        title: `确定要删除该车位信息吗?`,
+        okText: "确定",
+        cancelText: "关闭",
+        onOk: () => {
+          let data = {
+            organId: record.organId,
+            placeId: record.placeId,
+            parkingId: record.parkingId
+          };
+          this.$api.building.stallApiDelete(data).then((res) => {
+            if (String(res.data.code) === "0") {
+              this.$message.success("删除成功!");
+              this.query();
+            } else {
+              this.$message.error(res.data.message);
+            }
+          });
+        },
+      });
+    },
     exportList() {
       if(!this.queryCondition.organId) {
         this.$message.warn("请选择组织机构")
@@ -355,26 +378,7 @@ export default {
         this.goPage(type, record);
       }
       if (["delete"].includes(type)) {
-        this.$SG_Modal.confirm({
-          title: `确定要删除该车位信息吗?`,
-          okText: "确定",
-          cancelText: "关闭",
-          onOk: () => {
-            let data = {
-              organId: this.queryCondition.organId,
-              placeId: record.placeId,
-              parkingId: record.parkingId
-            };
-            this.$api.building.stallApiDelete(data).then((res) => {
-              if (res.data.code === "0") {
-                this.$message.success("删除成功!");
-                this.query();
-              } else {
-                this.$message.error(res.data.message);
-              }
-            });
-          },
-        });
+        this.handleDel(record)
       }
     },
     goPage(type, record) {
