@@ -31,6 +31,10 @@
         <template slot="operation" slot-scope="text, record">
           <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
         </template>
+        <!-- 车场类型 -->
+        <template #type="text,record">
+          {{generateYardClassification(record)}}
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -172,6 +176,21 @@ export default {
     this.init()
   },
   methods: {
+    generateYardClassification(record){
+      const {type, objectType} = record
+      let data = []
+      // 1车场 2车位 固化的
+      if (String(type) === '1'){
+        data = this.$store.state.platformDict.PARKING_PLACE_RESOURCE_TYPE
+      }else if(String(type) === '2'){
+        data = this.$store.state.platformDict.PARKING_OBJ_TYPE
+      }
+
+      let res = data.filter(ele=>{
+        return ele.value === objectType
+      })[0]
+      return res ? res.name : '--'
+    },
     /*
     * @public ref调用
     * 新增 资产登记 第二个页面 添加资产导入 需要 detailData 数据
