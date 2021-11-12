@@ -227,7 +227,7 @@ const defaultColumns = [
     title: '面积(㎡)',
     key: 'assetArea',
     customRender(record){
-      return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:record.assetTypeCode})
+      return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:record.assetType})
     },
     width: '160'
   },
