@@ -177,13 +177,12 @@ export default {
   },
   methods: {
     generateYardClassification(record){
-      debugger
       const {type, objectType} = record
       let data = []
       // 1车场 2车位 固化的
-      if (type === '1'){
+      if (String(type) === '1'){
         data = this.$store.state.platformDict.PARKING_PLACE_RESOURCE_TYPE
-      }else if(type === '2'){
+      }else if(String(type) === '2'){
         data = this.$store.state.platformDict.PARKING_OBJ_TYPE
       }
 
