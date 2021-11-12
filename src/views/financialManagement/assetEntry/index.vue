@@ -48,15 +48,27 @@
           style="width: 190px; margin-right: 10px;"
           @select="changeAssetType"
         ></a-select>
+        <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            style="width: 190px; margin-right: 10px;"
+            :top-organ-id="organId"
+            :multiple="true"
+            v-model="assetClassify"
+            :options-data-format="(data)=>{
+              return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+            }"
+            @select="changeAssetClassify($event,true)"
+        />
         <a-select
+            v-else
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
-          placeholder="全部资产分类"
+          placeholder="全部资产分类1"
           v-model="assetClassify"
           :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px;"
-          @select="changeAssetClassify"
+          @select="changeAssetClassify($event, true)"
         ></a-select>
         <a-select
           :maxTagCount="1"
@@ -119,6 +131,7 @@
   import {utils} from '@/utils/utils'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import listCarefully from 'src/views/common/listCarefully'
+  import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 
   const columnsData = [
     {
@@ -244,6 +257,7 @@
   ]
   export default {
     components: {
+      EquipmentSelectTree,
       TreeSelect, noDataTips, BatchImport, OverviewNumber, listCarefully
     },
     data () {
@@ -296,6 +310,12 @@
       },
       assetType () {
         this.getAssetClassifyOptions()
+      }
+    },
+    computed: {
+      isSelectedEquipment () {
+        const assetTypeArr = this.assetType || []
+        return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
       }
     },
     methods: {
@@ -351,9 +371,10 @@
         })
       },
       // 资产分类发生变化
-      changeAssetClassify (value) {
+      changeAssetClassify (value,isSelectedEquipment) {
         this.$nextTick(function () {
-          this.assetClassify = this.handleMultipleSelectValue(value, this.assetClassify, this.assetClassifyOptions)
+          const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyOptions
+          this.assetClassify = this.handleMultipleSelectValue(value, this.assetClassify, resOptions)
         })
       },
       // 资产科目发生变化
@@ -579,9 +600,11 @@
       getAssetClassifyOptions () {
         let obj = {
           organId: this.organId,
-          assetType: this.assetType.length > 0 ? this.assetType.join(',') : ''
+          assetType: this.assetType.length === 1 ? this.assetType.join(',') : ''
         }
         if (!obj.assetType) {
+          this.assetClassify = ['']
+          this.assetClassifyOptions = [{label: '全部资产分类', value: ''}]
           return
         }
         this.$api.assets.getList(obj).then(res => {
