@@ -5,6 +5,8 @@
  * @Description: file content
  */
 // 首次登记 变更登记
+import store from "store";
+
 export const register = [{
   title: '资产名称',
   dataIndex: 'assetName',
@@ -36,8 +38,12 @@ export const register = [{
 }, {
   title: '面积',
   key: 'assetArea',
-  scopedSlots: {
-    customRender: 'assetArea'
+  customRender(record){
+    if (String(record.assetType) === store.state.ASSET_TYPE_CODE.EQUIPMENT){
+      return '/'
+    }else {
+      return record.assetArea
+    }
   },
   width: '5%'
 }, {
