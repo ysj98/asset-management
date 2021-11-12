@@ -127,6 +127,13 @@
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产分类<i></i></span><span>：</span></div>
             <a-form-item>
+              <EquipmentSelectTree
+                v-if="editable && isEquipment"
+                :style="allStyle"
+                :top-organ-id="organId"
+                v-decorator="['assetCategoryId',
+                {rules: [{required: true,  message: '请选择资产分类'}], initialValue: detail.assetCategoryId}]"
+              />
               <a-select
                 placeholder="请选择资产分类"
                 :options="$addTitle(assetCategoryOptions)"
@@ -135,7 +142,7 @@
                 @change="changeAssetCategory"
                 v-decorator="['assetCategoryId',
                 {rules: [{required: true,  message: '请选择资产分类'}], initialValue: detail.assetCategoryId}]"
-                v-if="editable"
+                v-else-if="editable && !isEquipment"
               ></a-select>
               <span class="label-value" v-else>{{detail.assetCategoryName || '--'}}</span>
             </a-form-item>
@@ -621,6 +628,7 @@ import associateAssetModal from './associateAssetModal'
 import {dateToString} from 'utils/formatTime'
 import utils from '@/utils/utils'
 import moment from 'moment'
+import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 
 const columns = [
   {
@@ -677,6 +685,7 @@ const columns = [
 
 export default {
   components: {
+    EquipmentSelectTree,
     FormFooter, TreeSelect, associateAssetModal
   },
   data () {
@@ -688,6 +697,7 @@ export default {
       organId: '',
       organName: '',
       cardId: '',
+      isEquipment: false,
       detail: {
         cardName: '',
         cardCode: '',
@@ -930,6 +940,7 @@ export default {
       this.getAssetPurposeOptions()
       this.checkedData = []
       this.dataSource = []
+      this.isEquipment = value === '3'
       this.form.setFieldsValue({
         assetCategoryId: undefined,     // 资产分类
         assetIds: undefined,             // 关联资产
