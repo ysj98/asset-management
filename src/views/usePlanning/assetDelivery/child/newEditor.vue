@@ -141,7 +141,7 @@
           <a-table
             :scroll="{y: 450}"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
@@ -258,6 +258,7 @@ export default {
   data () {
     return {
       moment,
+      assetType:'',
       deliveryId: '',        // 交付id
       deliveryArea: '',      // 交付面积
       assetChangeCount: '',  // 资产数量
@@ -299,6 +300,17 @@ export default {
     }
   },
   computed: {
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['deliveryArea','assetArea']
+        return this.columns.filter(ele=> !arr.includes((ele.dataIndex || ele.key)))
+      }else {
+        return this.columns
+      }
+    }
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
@@ -345,6 +357,7 @@ export default {
             }
           }
           this.form.setFieldsValue(o)
+          this.assetType = obj.assetType
         } else {
           this.$message.error(res.data.message)
         }
@@ -446,7 +459,7 @@ export default {
               arr.push(item.assetId)
             }
           })
-          if (arr.length !== 0) {
+          if (!this.isSelectedEquipment && arr.length !== 0) {
             this.$message.info("请填写交付面积");
             return;
           }
@@ -615,7 +628,8 @@ export default {
       this.checkedData = []
     },
     // 资产类型监听
-    assetTypeFn () {
+    assetTypeFn (value) {
+      this.assetType = value
       this.tableData = []
       this.checkedData = []
     },
