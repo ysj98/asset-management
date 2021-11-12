@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import {queryTopOrganByOrganID} from '@/views/buildingDict/publicFn.js'
 import TreeSelect from "@/views/common/treeSelect";
 import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 import { debounce } from "utils/utils";
@@ -168,13 +169,22 @@ export default {
     handlePositionIds(value) {
       this.$emit("update:positionIds", value);
     },
-    handleChangeOrgan(topOrganId) {
-      this.topOrganId = topOrganId;
-      this.$emit("changeOrganId", topOrganId);
-      this.positionApiList(topOrganId,this.searchName)
+    async handleChangeOrgan(userSelectedOrganId) {
+      this.$emit("changeOrganId", userSelectedOrganId);
+      if (this.ASSET_TYPE_CODE.EQUIPMENT === this.checkboxAssetType){
+        const {organId:organTopId} = await queryTopOrganByOrganID({
+          nOrganId:userSelectedOrganId,
+          nOrgId:userSelectedOrganId
+        });
+        this.topOrganId = organTopId
+      }
+      if (this.ASSET_TYPE_CODE.YARD === this.checkboxAssetType){
+        this.positionApiList(userSelectedOrganId,this.searchName)
+      }
     },
     init() {
-      const _tempArr = [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.LAND,this.ASSET_TYPE_CODE.YARD]
+      // this.ASSET_TYPE_CODE.YARD
+      const _tempArr = [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.LAND]
       if (_tempArr.includes(this.checkboxAssetType)){
         this.debounceMothed();
       }
