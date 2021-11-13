@@ -112,7 +112,7 @@ export default {
       return this.$store.state.ASSET_TYPE_CODE;
     },
     assetType(){
-      return this.$route.query.assetType
+      return String(this.$route.query.assetType)
     },
     useDirectionCom(){
       const {HOUSE,LAND,YARD,EQUIPMENT} = this.ASSET_TYPE_CODE
