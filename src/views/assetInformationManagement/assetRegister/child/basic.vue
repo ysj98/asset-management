@@ -479,7 +479,7 @@ export default {
           } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
             generateKeyFn = (ele)=> ele.landId
           } else if (this.assetType === this.ASSET_TYPE_CODE.YARD){
-            generateKeyFn = (ele)=> ele.placeId
+            generateKeyFn = (ele)=> ele.placeId + ele.objectId
           } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
             generateKeyFn = (ele)=> ele.equipmentId
           }
