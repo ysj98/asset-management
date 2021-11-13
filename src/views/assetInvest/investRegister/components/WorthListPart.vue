@@ -5,7 +5,10 @@
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
         <div class="box">
-          <div class="left" style="height: 100%">资产数量：{{ tableObj.dataSource.length }}，投资面积：{{ investAreaSum }}㎡</div><div class="right" style="margin-bottom: 8px">
+          <div class="left" style="height: 100%">资产数量：{{ tableObj.dataSource.length }}
+            <span v-if="!isSelectedEquipment">，投资面积：{{ investAreaSum }}㎡</span>
+          </div>
+          <div class="right" style="margin-bottom: 8px">
           <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px" v-if="type=='add' || type=='edit'">添加资产</SG-Button>
           <SG-Button icon="delete" type="primary" ghost @click="handleDelete" v-if="type=='add' || type=='edit'">删除</SG-Button>
         </div>
@@ -13,6 +16,7 @@
       </div>
       <a-table
         v-bind="tableObj"
+        :columns="columnsCom"
         class="custom-tables"
         bordered
       >
@@ -62,7 +66,7 @@
         </a-popconfirm>
         </template>
       </a-table>
-     
+
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px">暂无数据</div>
       <SG-FooterPagination
         v-bind="paginationObj"
@@ -74,12 +78,12 @@
     <SG-Title title="收益明细"/>
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
-        
+
         <div class="box">
           <div class="left" style="height: 100%">总收益：{{ profitSum }}</div><div class="right" style="margin-bottom: 8px">
         </div>
         </div>
-      
+
       <a-table
         v-bind="profitTableObj"
         class="custom-tables"
@@ -105,7 +109,7 @@
         v-if="(type == 'approval' || type == 'detail') && profitTableObj.dataSource.length"
         @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
       />
-    </div> 
+    </div>
     </div>
     <SG-Modal
       v-bind="modalObj"
@@ -124,6 +128,7 @@
         :assetType="dynamicData.assetType"
         :proId="dynamicData.projectId"
         :key="`${dynamicData.projectId}${dynamicData.assetType}`"
+        :isSelectedEquipment="isSelectedEquipment"
         @getReturnAssetInfo="getReturnAssetInfo"
       />
       <!--快捷录入资产估值-->
@@ -140,7 +145,7 @@
   export default {
     name: 'WorthListPart',
     components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText },
-    props: ['type', 'registerId', 'organId', 'dynamicData', 'details'],
+    props: ['type', 'registerId', 'organId', 'dynamicData', 'details','isSelectedEquipment'],
     data () {
       return {
         tableObj: {
@@ -152,16 +157,16 @@
           selectedRowKeys: [], // Table选中的key数据
           columns: (this.type == 'add' || this.type == 'edit') ? [
             { title: '序号', dataIndex: 'index' },
-            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
+            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'assetObjectTypeName' }, { title: '规格型号', dataIndex: 'specificationTypeName' },
-            { title: '资产面积(㎡)', dataIndex: 'assetArea' }, 
+            { title: '资产面积(㎡)', dataIndex: 'assetArea' },
             { slots: { title: "investArea" }, dataIndex: 'investArea', scopedSlots: { customRender: 'investArea' } },
             { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },{ title: '操作', dataIndex: 'opt', scopedSlots: { customRender: 'opt' } }
           ] : [
             { title: '序号', dataIndex: 'index' },
-            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
+            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'assetObjectTypeName' }, { title: '规格型号', dataIndex: 'specificationTypeName' },
-            { title: '资产面积(㎡)', dataIndex: 'assetArea' }, 
+            { title: '资产面积(㎡)', dataIndex: 'assetArea' },
             { title: '投资面积(㎡)', dataIndex: 'investArea', scopedSlots: { customRender: 'investArea' } },
             { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } }
           ]
@@ -175,10 +180,10 @@
           selectedRowKeys: [], // Table选中的key数据
           columns: [
             { title: '序号', dataIndex: 'index' },
-            { title: '收入编号', dataIndex: 'incomeId' },{ title: '费用科目', dataIndex: 'feeSubjectName' }, 
+            { title: '收入编号', dataIndex: 'incomeId' },{ title: '费用科目', dataIndex: 'feeSubjectName' },
             { title: '账期', dataIndex: 'accountingPeriod' }, { title: '收益金额(元)', dataIndex: 'amount' },
             { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } }
-          ] 
+          ]
         },
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
@@ -201,7 +206,16 @@
         tempList: []
       }
     },
-
+    computed:{
+      columnsCom(){
+        if (this.isSelectedEquipment){
+          const arr = ['assetArea', 'investArea']
+          return this.tableObj.columns.filter(ele=> !arr.includes((ele.dataIndex || ele.key)))
+        }else {
+          return this.tableObj.columns
+        }
+      }
+    },
     methods: {
       // 计算最后一行求和数据及上浮比例
       calcSum (data) {
@@ -223,7 +237,7 @@
         this.tableObj.dataSource.map(item => {
           if(item.investArea){
            return num += item.investArea
-          } 
+          }
         })
         let num1 = 0
         this.profitTableObj.dataSource.map(i => {
@@ -258,7 +272,7 @@
           this.tableObj.dataSource.map(i => {
             if(i.assetId != assetId){
               data.push(i)
-            } 
+            }
           })
           if (!data.length) {
           this.tableObj.dataSource = []
@@ -290,10 +304,10 @@
           console.log(this.tableObj.dataSource)
           this.selectedList = this.initList
           console.log(this.selectedList)
-        }  
+        }
         this.modalObj.isShow = bool
       },
-      
+
       // 导出
       handleExport () {},
 
@@ -306,11 +320,11 @@
           }
         }
       },
-      
+
       // 获取选中的资产数据
       getAssetList () {
         let {selectedList, assetList, tempList} = this
-        assetList = tempList 
+        assetList = tempList
         if (!selectedList.length) { return this.$message.warn('请选择资产数据') }
         this.modalObj.isShow = !selectedList.length
         // 去重处理，比较arr 与 tableObj.dataSource
@@ -335,7 +349,7 @@
           } else {
             // 过滤列表中被取消选中的数据
             this.tableObj.dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId))).map((m, i) => ({...m, index: i + 1}))
-           
+
             return this.calcSum(dataSource)
           }
         }
@@ -366,7 +380,7 @@
       })
             this.investAreaSum = num
             this.calcSum(this.tableObj.dataSource)
-            
+
           }
           if(this.type=='detail'){
             this.$api.assetRent.getIncomeDetailPageList({pageNum:pageNo, pageSize:pageLength, orderId:registerId, orderType: 2, status: 1}).then(result => {
@@ -386,11 +400,11 @@
       })
             this.profitSum = num1
             return this.calcSum(this.profitTableObj.dataSource)
-            
+
           }
           })
           }
-          
+
           return
           throw res.message || '查询登记资产接口出错'
         }).catch(err => {
@@ -398,7 +412,7 @@
           this.$message.error(123 || '查询登记资产接口出错')
         })
       },
-      
+
       // 根据资产id查询资产详情的列表数据--不分页
       queryAssetListByAssetId (selectedRows = [], status) {
         let form = {}
@@ -419,7 +433,7 @@
             if (status === 'init') {
               dataSource = addData
             } else {
-              
+
               dataSource.push(...addData)
               // 过滤列表中被取消选中的数据
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
@@ -444,7 +458,7 @@
           isEditAll = this.handleAddModal(false)
         }
       },
-      
+
 
 
       handleAssetValueAll () {
@@ -500,7 +514,7 @@
            if(!assetList[index].investArea){
                  assetList[index].investArea = item.assetArea
            }
-           
+
          })
          this.tempList = assetList
          //this.assetList = assetList
@@ -508,13 +522,13 @@
          //this.tableObj.dataSource = assetList
     },
     },
-    
-    
+
+
     created () {
-      
+
       const { type } = this
       if (type === 'add' || type === 'edit') {
-        
+
         // 允许多选
         this.tableObj.rowSelection = this.rowSelection()
         // 列表查询结果不分页，且前端计算求和数据
@@ -525,9 +539,9 @@
         // 列表查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({type: 'init'})
       }
-      
+
     },
-    
+
     watch: {
       'tableObj.dataSource': function (val) {
              this.calcSum(val)
@@ -541,7 +555,7 @@
       dynamicData: function (data, oldData) {
         console.log(data,oldData)
         if(data.endInvestDate != oldData.endInvestDate || data.signingDate != oldData.signingDate || data.startInvestDate != oldData.startInvestDate){
-          return 
+          return
         }
         let {tableObj: {dataSource}, type, numList, details} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {

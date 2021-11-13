@@ -3,7 +3,18 @@
     <div class="detail_page">
       <a-spin :spinning="spinning" style="padding-bottom: 75px;">
         <!--基础信息-->
-        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData" :defaultOrganName="organName" :defaultOrganId="organId" :investAreaTotal="investAreaTotal" :investCount="investCount"/>
+        <base-info-part
+          v-if="type"
+          ref="baseInfo"
+          :isSelectedEquipment="isSelectedEquipment"
+          :type="type"
+          :details="details"
+          :defaultOrganName="organName"
+          :defaultOrganId="organId"
+          :investAreaTotal="investAreaTotal"
+          :investCount="investCount"
+          @setData="setListTableData"
+        />
         <!--资产价值清单-->
         <worth-list-part
           v-if="type"
@@ -12,6 +23,7 @@
           :dynamicData="dynamicData"
           :organId="details.organId"
           :registerId="registerId"
+          :isSelectedEquipment="isSelectedEquipment"
           @backAssetList="getAssetList"
           @validateProject="validateProject"
         />
@@ -34,7 +46,7 @@
   import BaseInfoPart from './components/BaseInfoPart'
   import WorthListPart from './components/WorthListPart'
   import ApprovalFlowPart from './components/ApprovalFlowPart'
-  
+
   export default {
     name: 'DetailPage',
     components: { ApprovalFlowPart, WorthListPart, BaseInfoPart, FormFooter },
@@ -60,7 +72,11 @@
         queryType: 1 // 资产明细是否分页，0分，1不分
       }
     },
-
+    computed:{
+      isSelectedEquipment(){
+        return String(this.dynamicData.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+      },
+    },
     methods: {
       // 校验基础信息组件资产项目数据
       validateProject () {
@@ -84,7 +100,7 @@
           //校验关联资产
           if (!assetList.length) {
             return this.$message.warn('请选择关联资产数据')
-          } else if(this.validateAssetList(assetList)) {
+          } else if(!this.isSelectedEquipment && this.validateAssetList(assetList)) {
             return this.$message.warn('投资面积为必有项')
           }
           let api = { add: 'insertRegister', edit: 'updateRegister' }
@@ -95,7 +111,7 @@
             const { investDetailId, investArea, remark, assetId } = m
             investDetail.push({ investDetailId, investArea, remark, assetId })
           })
-          let form = type === 'edit' || type === 'add' ? { ...data, investDetail, investOrderId: registerId ? registerId : '', investArea: investAreaTotal, 
+          let form = type === 'edit' || type === 'add' ? { ...data, investDetail, investOrderId: registerId ? registerId : '', investArea: investAreaTotal,
           ...dynamicData, approvalStatus: saveWays } : { ...data, detailList }
           delete form.assetArea
           this.$api.assetInvest.saveUpdateInvestOrder(form).then(r => {
@@ -137,12 +153,12 @@
               // returnDate: res.data.returnDate,
               // returnUserId: res.data.returnUserId,
               // returnOrganId: res.data.returnOrganId,
-             
+
             }
              return Object.assign(this, { stepList, details: { ...details, ...res.data, attachmentList: [...result.data.data]} })
-              
+
           }
-          
+
           })
           return
           throw res.message || '查询领用登记详情出错'
@@ -151,7 +167,7 @@
           this.$message.error(123 || '查询领用登记详情出错')
         })
       },
-      
+
       // 处理底部按钮事件
       handleFooterBtn (sign) {
         const { type } = this
@@ -165,7 +181,7 @@
           type === 'approval' ? this.handleApprove() : this.$router.go(-1)
         }
       },
-      
+
       // 审批驳回、通过
       handleApprove (sign) {
         this.spinning = true
@@ -186,12 +202,12 @@
           this.$message.error(err || `${tip}失败`)
         })
       },
-      
+
       // 联动更新资产价值清单Table中评估基准日、评估方法、评估机构的值
       setListTableData (obj) {
         this.dynamicData = Object.assign({}, this.dynamicData, obj)
       },
-      
+
       // 校验资产价值清单本次必有项非空
       validateAssetList (list) {
         let arr = list.filter(m => +m.investArea === 0 || !m.investArea)
