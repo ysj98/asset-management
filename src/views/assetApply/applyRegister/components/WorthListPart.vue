@@ -149,7 +149,8 @@
     computed:{
       columnsCom(){
         if (this.isSelectedEquipment){
-          return this.tableObj.columns.filter(ele=>(ele.dataIndex || ele.key) !== 'receiveArea')
+          const arr = ['receiveArea','area']
+          return this.tableObj.columns.filter(ele=>!arr.includes((ele.dataIndex || ele.key)))
         }else {
           return this.tableObj.columns
         }
