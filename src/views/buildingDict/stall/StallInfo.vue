@@ -269,6 +269,7 @@ export default {
         return;
       }
       this.queryCondition.communityId = '' // [""]
+      this.queryCondition.placeId= ''
       this.queryCondition.organId = organId
       this.queryCommunityListByOrganId();
       // 异步接口
