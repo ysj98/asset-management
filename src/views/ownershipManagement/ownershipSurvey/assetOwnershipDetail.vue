@@ -172,6 +172,7 @@
   </a-spin>
 </template>
 <script>
+import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import noDataTips from "@/components/noDataTips";
 // import certDetail from "./child/certDetail.vue";
 import certDetail from "@/views/ownershipManagement/authorityCardManagement/cardDetails";
@@ -238,7 +239,10 @@ const tableCertColumns = [
   },
   {
     title: "面积(㎡)",
-    dataIndex: "area",
+    key: "area",
+    customRender(record){
+      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
+    },
     width: "10%"
   }
 ];
