@@ -230,6 +230,7 @@ export default {
   mixins: [dictMixin],
   data() {
     return {
+      bussType: "stallDir",
       parkingUsageOption,
       parkTypeOpt, // 全部车场
       carTypeMenu, // 车位类型列表
@@ -310,8 +311,7 @@ export default {
         organName: "",
         organId: ""
       },
-      loadingFlag: false,
-      bussType: "blankDir",
+      loadingFlag: false
     };
   },
   beforeCreate() {
@@ -431,6 +431,38 @@ export default {
           this.communityIdOpt = resultArr;
         }
       });
+    },
+    // 文件上传
+    customUpload (list = []) {
+      if(!this.formInfo.organId) {
+        this.$message.error("请选择所属机构")
+        return Promise.resolve({lists: []})
+      }
+      let files = Array.from(list)
+      let lists = []
+      let errorLists = []
+      // 由于基础数据上传接口不是多文件上传
+      let requestList = files.map(file => {
+        let fileData = new FormData()
+        fileData.append('file', file)
+        errorLists.push({ url: file.name, name: file.name  })
+        fileData.append('organId', this.formInfo.organId)
+        return this.$api.building.parkUploadPicFile(fileData)
+      })
+      let requestAll = Promise.all(requestList)
+      return requestAll.then(res => {
+        res.map(item => {
+          if (item.data.code === '0' && item.data.data) {
+            let url = item.data.data?.imgPath
+            lists.push({url, name: url.substring(url.lastIndexOf('/')+1)})
+          } else {
+            this.$SG_Message.error(item.data.message)
+          }
+        })
+        return {lists}
+      }).catch(() => {
+        return {lists: [], errorLists}
+      })
     },
     getPopupContainer(e) {
       return e.parentElement;

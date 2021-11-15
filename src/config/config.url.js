@@ -575,6 +575,7 @@ export const building = {
   parkApiInsert: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/addParkingPlace.json',
   // 车场 删除
   parkApiDelete: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlace.json',
+  parkUploadPicFile: '/car-parking-api/rest-api/v1/parkingPlaceApiController/uploadPicFile',
   // 区域 删除
   deleteParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlaceArea.json',
   // 区域 新增
@@ -609,6 +610,7 @@ export const building = {
   equipmentApiEdit: '/equipment-openapi/equipmentInst/updateEquipmentInst',
   // 设备 详情
   equipmentApiDetail: '/equipment-openapi/equipmentInst/queryEquipmentInstById',
+  equipmentFileUpload: '/equipment-openapi/common/uploadFile',
   // 根据组织机构ID查询供应商
   getEquipmentSupplierListByOrganId: '/equipment-openapi/equipmentSupplier/getEquipmentSupplierListByOrganId',
   // 根据组织机构id查询分类编码表

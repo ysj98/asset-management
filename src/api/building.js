@@ -191,6 +191,10 @@ export function parkApiEdit (data) {
 export function parkApiDelete (data) {
   return axiosPost(building.parkApiDelete, data)
 }
+// 车场 上传附件
+export function parkUploadPicFile (data) {
+  return axiosPost(building.parkUploadPicFile, data)
+}
 // 车场 ->区域 删除
 export function deleteParkingPlaceArea (data) {
   return axiosPost(building.deleteParkingPlaceArea, data)
@@ -252,6 +256,11 @@ export function equipmentApiEdit (data) {
 // 设备 删除
 export function equipmentApiDelete (data) {
   return axiosPost(building.equipmentApiDelete, data)
+}
+
+// 设备 图片附件上传
+export function equipmentFileUpload (data) {
+  return axiosPost(building.equipmentFileUpload, data)
 }
 
 // 根据组织机构id查询分类编码表

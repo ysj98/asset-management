@@ -124,6 +124,7 @@
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
             <div style="width: 86%">
               <SG-UploadFile
+                ref="uploadFile"
                 :customDownload="customDownload"
                 :customUpload="customUpload"
                 v-model="formInfo.otherImg"
@@ -132,6 +133,7 @@
               >
                 <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M,区域信息图片同上)</span>
               </SG-UploadFile>
+<!--              <file-upload />-->
             </div>
           </a-col>
         </a-row>
@@ -290,12 +292,7 @@ import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import {areaTitle,} from "./dict";
 import DictSelect from "../../common/DictSelect";
-import {
-  addParkingPlaceArea,
-  editParkingPlaceArea,
-  getParkingPlaceAreasByPlaceId,
-  stallApiDetail
-} from "../../../api/building";
+
 const tableDataTemplate = {
   areaName:'', // 名称
   areaCode:'', // 编码
@@ -306,11 +303,12 @@ const tableDataTemplate = {
   areaDescription:'' // 描述
 }
 export default {
-  components: {DictSelect, TreeSelect, FormFooter},
+  components: { DictSelect, TreeSelect, FormFooter},
   mixins: [dictMixin],
   data: () =>({
     areaTitle,
     typeFilter,
+    bussType: "parkDir",
     allWidth: "width:100%",
     formInfo: { // 表单
       organId: undefined, // 组织机构ID
@@ -379,6 +377,7 @@ export default {
     },
     // 初始化
     async init(){
+      this.initUploadFile()
       // this.form.setFieldsValue(this.formInfo)
       if (this.routeQuery.type === "edit") {
         let loadingName = this.SG_Loding("加载中...")
@@ -388,6 +387,11 @@ export default {
           this.DE_Loding(loadingName)
         }
       }
+    },
+    initUploadFile () {
+      this.$refs.uploadFile.$data.hostImg = ""
+      this.$refs.uploadFile.$data.imgStr = ""
+      console.log(this.$refs.uploadFile.$data.hostImg )
     },
     handleSave () {
       this.$refs.form.validate(valid => {
@@ -699,8 +703,40 @@ export default {
       return []
 
     },
-    /************************************/
+    // 文件上传
+    customUpload (list = []) {
+      if(!this.formInfo.organId) {
+        this.$message.error("请选择所属机构")
+        return Promise.resolve({lists: []})
+      }
+      let files = Array.from(list)
+      let lists = []
+      let errorLists = []
+      // 由于基础数据上传接口不是多文件上传
+      let requestList = files.map(file => {
+        let fileData = new FormData()
+        fileData.append('file', file)
+        errorLists.push({ url: file.name, name: file.name  })
+        fileData.append('organId', this.formInfo.organId)
+        return this.$api.building.parkUploadPicFile(fileData)
+      })
+      let requestAll = Promise.all(requestList)
+      return requestAll.then(res => {
+        res.map(item => {
+          if (String(item.data.code )=== '0' && item.data.data) {
+            let url = item.data.data?.imgPath
+            lists.push({url, name: url.substring(url.lastIndexOf('/')+1)})
+          } else {
+            this.$SG_Message.error(item.data.message)
+          }
+        })
+        return {lists}
+      }).catch(() => {
+        return {lists: [], errorLists}
+      })
+    },
   },
+    /************************************/
   mounted() {
     let { organName, organId, type, placeId } = this.$route.query
     Object.assign(this, {
