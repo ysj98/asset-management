@@ -30,7 +30,7 @@
     <div class="particulars-nav">
       <span class="section-title blue">资产明细</span>
       <div class="particulars-obj">
-        <div class="particulars-t">交付资产数量：{{assetChangeCount || '0'}}个，合计交付面积：{{deliveryArea || '0'}}㎡</div>
+        <div class="particulars-t">交付资产数量：{{assetChangeCount || '0'}}个<span v-if="!isSelectedEquipment">，合计交付面积：{{deliveryArea || '0'}}㎡</span></div>
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"

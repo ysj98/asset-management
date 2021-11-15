@@ -128,7 +128,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
         <div class="button-box">
-          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个，合计交付面积：{{deliveryArea ? deliveryArea.toFixed(2) : 0}}㎡</div>
+          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个<span v-if="!isSelectedEquipment">，合计交付面积：{{deliveryArea || '0'}}㎡</span></div>
           <div class="fr">
             <SG-Button class="mr10" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
             <SG-Button :disabled="selectedRowKeys.length === 0" type="primary" weaken @click="deleteFn">删除</SG-Button>
