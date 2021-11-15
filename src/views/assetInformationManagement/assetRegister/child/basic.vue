@@ -47,7 +47,7 @@
         @change="handleChange"
       />
     </div>
-    <basicDownload ref="basicDownload"></basicDownload>
+    <basicDownload ref="basicDownload" :userSelectedOrganId.sync='userSelectedOrganId'></basicDownload>
     <!--  添加资产导入  -->
     <AssetImportModal
       ref="assetImportModalRef"
@@ -179,6 +179,10 @@ export default {
     this.init()
   },
   methods: {
+    tempFn(value){
+      console.log('test')
+      console.log(value)
+    },
     generateYardClassification(record){
       const {type, objectType} = record
       let data = []
