@@ -39,7 +39,7 @@
                             v-model="queryData.assetTypeList"
                             :options="$addTitle(assetTypeOptions)"
                             style="width: 190px; margin-right: 10px;"
-                            @select="changeAssetType"
+                            @change="changeAssetType"
                     ></a-select>
                     <a-select
                             :maxTagCount="1"
@@ -401,7 +401,12 @@
                         this.queryData.assetTypeList,
                         this.assetTypeOptions
                     );
-                    this.getListFn()
+                    if (!this.queryData.assetTypeList[0] || this.queryData.assetTypeList.length > 1 ) {
+                      this.assetClassifyData = [{label: '全部资产分类', value: ''}]
+                      this.queryData.objectTypeList = ['']
+                    }else {
+                      this.getListFn()
+                    }
                 });
             },
             // 资产项目发生变化

@@ -144,6 +144,7 @@ export default {
   methods: {
     changeOrganId(userSelectedOrganId) {
       this.userSelectedOrganId = userSelectedOrganId;
+      this.$emit('update:userSelectedOrganId',userSelectedOrganId)
       this.positionIds = [];
     },
     /*

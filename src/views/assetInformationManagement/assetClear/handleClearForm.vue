@@ -131,7 +131,7 @@
             <SG-Button type="primary" weaken @click="addAsset">添加资产</SG-Button>
           </div>
           <a-table
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="dataSource"
             class="custom-table td-pd10"
             :pagination="false"
@@ -193,7 +193,6 @@
 </template>
 
 <script>
-import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import {dateToString} from 'utils/formatTime'
@@ -225,10 +224,7 @@ const defaultColumns = [
   },
   {
     title: '面积(㎡)',
-    key: 'assetArea',
-    customRender(record){
-      return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:record.assetType})
-    },
+    dataIndex: 'assetArea',
     width: '160'
   },
   {
@@ -247,6 +243,7 @@ export default {
   },
   data () {
     return {
+      assetType:'',
       pageType: 'new',
       editable: false,
       form: this.$form.createForm(this),
@@ -285,6 +282,18 @@ export default {
       }
     }
   },
+  computed:{
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        return this.columns.filter(ele=>(ele.dataIndex || ele.key) !== 'assetArea')
+      }else {
+        return this.columns
+      }
+    }
+  },
   methods: {
     formatDate (value) {
       if (value) {
@@ -303,9 +312,10 @@ export default {
       this.checkedData = []
     },
     // 资产类型发生变化
-    changeAssetType () {
+    changeAssetType (value) {
       this.dataSource = []
       this.checkedData = []
+      this.assetType = value
     },
     // 页码发生变化
     handlePageChange (page) {
@@ -494,6 +504,7 @@ export default {
         if (res.data.code === '0') {
           let data = res.data.data
           this.detail = data
+          this.assetType = data.assetType
           this.organId = data.organId
           this.organName = data.organName
           this.detail.attachment.forEach(item => {
@@ -519,6 +530,13 @@ export default {
       this.$api.assets.getCleanupDetail(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
+          let resKey = ''
+          Object.keys(this.$store.state.ASSET_TYPE_STRING).forEach(ele=>{
+            if (this.$store.state.ASSET_TYPE_STRING[ele] === data.assetTypeName){
+              resKey = ele
+            }
+          })
+          this.assetType = this.$store.state.ASSET_TYPE_CODE[resKey]
           this.organName = data.organName
           this.detail = data
           this.detail.attachment.forEach(item => {

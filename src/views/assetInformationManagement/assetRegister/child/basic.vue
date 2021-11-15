@@ -7,7 +7,7 @@
 <template>
   <div class="sg-child-house">
     <!--数据总览-->
-    <overview-number :numList="numListCom"/>
+    <overview-number :numList="numList"/>
     <div class="button-box">
       <div class="buytton-nav" v-show="setType === 'new' && !registerOrderId">
         <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
@@ -47,11 +47,12 @@
         @change="handleChange"
       />
     </div>
-    <basicDownload ref="basicDownload"></basicDownload>
+    <basicDownload ref="basicDownload" :userSelectedOrganId.sync='userSelectedOrganId'></basicDownload>
     <!--  添加资产导入  -->
     <AssetImportModal
       ref="assetImportModalRef"
       :modalData="modalObj.add"
+      :userSelectedOrganId.sync='userSelectedOrganId'
       @handleAdditionAsset="handleAdditionAsset"
       @doClosePop="
         ()=>{ modalObj.add.flag = false }
@@ -121,6 +122,7 @@ export default {
       houseVerificationList,
       landVerificationList,
       yardVerificationList,
+      userSelectedOrganId:'',
       detailData:{},
       projectList:[],
       modalObj: {
@@ -155,6 +157,7 @@ export default {
       tableData: [],    // 表格内容
       columns: [],      // 表格表头
       assetType: '',    // 资产类型
+      projectId: ''
     }
   },
   computed: {
@@ -165,10 +168,6 @@ export default {
     ASSET_TYPE_CODE(){
       return this.$store.state.ASSET_TYPE_CODE;
     },
-
-    numListCom(){
-      return this.numList.filter(ele=>!ele.noShow)
-    }
   },
   created () {
   },
@@ -176,6 +175,10 @@ export default {
     this.init()
   },
   methods: {
+    tempFn(value){
+      console.log('test')
+      console.log(value)
+    },
     generateYardClassification(record){
       const {type, objectType} = record
       let data = []
@@ -209,6 +212,7 @@ export default {
         this.$api.assets.getRegisterOrderById(obj).then(res => {
           if (Number(res.data.code) === 0) {
             this.detailData = res.data.data
+            this.projectId = res.data.data.projectId
           } else {
             this.$message.error(res.data.message)
           }
@@ -413,6 +417,7 @@ export default {
         if (type === 'project' && val) {
           this.tableData = []
           this.sourceType = Number(sourceType)
+          this.projectId  = val
         }
         // 切换总的统计数据的值为0
         if (!type && this.tableData.length === 0) {
@@ -444,8 +449,14 @@ export default {
       console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
+      let resOrganId = this.organId
+      if ([this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(String(this.assetType))){
+        resOrganId = this.userSelectedOrganId
+      }
       fileData.append('registerOrderModelFile', files[0])
       fileData.append('assetType', this.assetType)
+      fileData.append('organId', resOrganId)
+      fileData.append('projectId',this.projectId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -479,7 +490,7 @@ export default {
           } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
             generateKeyFn = (ele)=> ele.landId
           } else if (this.assetType === this.ASSET_TYPE_CODE.YARD){
-            generateKeyFn = (ele)=> ele.placeId
+            generateKeyFn = (ele)=> ele.placeId + ele.objectId
           } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
             generateKeyFn = (ele)=> ele.equipmentId
           }
@@ -517,7 +528,7 @@ export default {
         let sourceModeName = ele.sourceModeName
         if (!ele.sourceModeName) {
           // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
-          let sourceModeObj = this.sourceOptions.find(sourceItem => Number(sourceItem.key) === Number(this.sourceType))
+          let sourceModeObj = this.sourceOptions.filter(sourceItem => Number(sourceItem.key) === Number(this.sourceType))[0]
           sourceModeName = sourceModeObj ? sourceModeObj.title : ''
         }
         return {
@@ -532,7 +543,7 @@ export default {
     * */
     handleValidateExcelData(arrData){
       let publicData = []
-      if (Object.keys(this.ASSET_TYPE_CODE).map(e => ([this.ASSET_TYPE_CODE[e]])).includes(this.assetType)){
+      if (Object.keys(this.ASSET_TYPE_CODE).map(e => (this.ASSET_TYPE_CODE[e])).includes(this.assetType)){
         const ASSET_TYPE_VERSIFICATION_LIST = handleAssetTypeField(this.assetType,'verificationList')
          publicData = this[ASSET_TYPE_VERSIFICATION_LIST]
       }
@@ -638,10 +649,16 @@ export default {
     * */
     async handleAdditionAsset(fileList){
       if (!fileList.length) { return }
+      let resOrganId = this.organId
+      if ([this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(String(this.assetType))){
+        resOrganId = this.userSelectedOrganId
+      }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', fileList[0])
       fileData.append('assetType', this.assetType)
       fileData.append('registerOrderId', String(this.registerOrderId || ''))
+      fileData.append('organId', resOrganId)
+      fileData.append('projectId',this.projectId)
       if (this.formData === null) {
         return this.$message.error('请先上传文件!')
       }
@@ -766,6 +783,8 @@ export default {
               this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
             } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
               this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
+            } else if (this.assetType === this.ASSET_TYPE_CODE.YARD) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
             }
             this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
             this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)

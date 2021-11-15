@@ -34,7 +34,17 @@
       <div slot="contentForm" style="margin-top: 18px">
         <a-row :gutter="8">
           <a-col :span="4">
-            <a-select v-model="queryObj.objectTypeList" :options="$addTitle(objectTypeOptions)"
+            <EquipmentSelectTree
+              v-if="isSelectedEquipment"
+              style="width: 100%;"
+              :top-organ-id="organProjectValue.organId"
+              :multiple="true"
+              v-model="queryObj.objectTypeList"
+              :options-data-format="(data)=>{
+                  return [{label: '全部资产分类', value: '-1', isLeaf: true},...data]
+                }"
+            />
+            <a-select v-else v-model="queryObj.objectTypeList" :options="$addTitle(objectTypeOptions)"
               v-bind="selectProperty" placeholder="请选择资产分类"
             />
           </a-col>
@@ -61,6 +71,7 @@
 </template>
 
 <script>
+  import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
   import noDataTips from '@/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import SearchContainer from 'src/views/common/SearchContainer'
@@ -68,7 +79,7 @@
   import { queryCategoryList, queryAssetTypeList, exportDataAsExcel } from 'src/views/common/commonQueryApi'
   export default {
     name: 'assetInvestmentView',
-    components: {noDataTips, SearchContainer, OrganProject},
+    components: {noDataTips, SearchContainer, OrganProject, EquipmentSelectTree},
     data () {
       return {
         toggle: false,
@@ -115,7 +126,7 @@
           { title: '合同编号', dataIndex: 'contractCode', width: 150 },
           { title: '投资状态', dataIndex: 'investStatusName' },
           { title: '签订日期', dataIndex: 'signingDate', width: 100 },
-          { title: '审批状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 60 }
+          { title: '审批状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 120 }
         ], // Table columns
         loading: false, // Table loading
         tableData: [], // Table DataSource
@@ -137,7 +148,12 @@
         timeoutId: 0 // 用于清除超字数提示
       }
     },
-
+    computed:{
+      isSelectedEquipment(){
+        const assetTypeArr = this.queryObj.assetTypeList
+        return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+      }
+    },
     mounted () {
       this.queryAssetType()
     },

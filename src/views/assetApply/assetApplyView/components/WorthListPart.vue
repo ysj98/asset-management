@@ -115,8 +115,12 @@
           {title: '领用面积（m²）', key: 'receiveArea', value: 0, fontColor: '#324057'},
           {title: '已归还面积（m²）', key: 'returnArea', value: 0, fontColor: '#324057'},
           {title: '未归还面积（m²）', key: 'unReturnArea', value: 0, fontColor: '#324057'},
-        ] // 概览数字数据, title 标题，value 数值，bgColor 背景色
-
+        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        numListEq :[
+          {title: '领用数量', key: 'receiveArea', value: 0, fontColor: '#324057'},
+          {title: '已归还数量', key: 'returnArea', value: 0, fontColor: '#324057'},
+          {title: '未归还数量', key: 'unReturnArea', value: 0, fontColor: '#324057'},
+        ],
       }
     },
     computed:{
@@ -393,7 +397,7 @@
 
     watch: {
       details: function (val) {
-            if(this.details.assetTypeName == '房屋' || this.details.assetTypeName == '土地' || this.details.assetTypeName == '车场' ){this.isShow=true}
+            this.isShow=true
             this.numList.map((item,index) => {
             if(!this.details[item.key]){
               return this.numList[index].value = 0
@@ -429,14 +433,6 @@
       }
 
     },
-    mounted() {
-      if (this.isSelectedEquipment){
-        const arr = ["领用数量", "已归还数量", "未归还数量",]
-        this.numList.forEach((ele,idx)=>{
-          ele.title = arr[idx]
-        })
-      }
-    }
   }
 </script>
 

@@ -96,6 +96,7 @@
 
 <script>
 import BasicInformation from "@/views/assetInformationManagement/assetsTable/BasicInformation";
+import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
     export default {
         name: "detail",
         components:{
@@ -237,34 +238,8 @@ import BasicInformation from "@/views/assetInformationManagement/assetsTable/Bas
                             objectTypeName: data.objectTypeName ? data.objectTypeName : '--',
                             address: data.address ? data.address : '--',
                         }
-
-                        let obj
-                        if (this.assetType === 1) {
-                            const houseData = data.assetHouse
-                            obj = {
-                                area: houseData.area,
-                                buildName: houseData.buildName,
-                                houseName: houseData.houseName,
-                                kindOfRightName: houseData.kindOfRightName,
-                                ownershipStatusName: houseData.ownershipStatusName,
-                                warrantNbr: houseData.warrantNbr,
-                                decorationSituation: houseData.decorationSituation,
-                                creditorAmount: houseData.creditorAmount,
-                                debtAmount: houseData.debtAmount,
-                            }
-                        } else if (this.assetType === 4){
-                            const assetLand = data.assetLand
-                            obj = {
-                                area: assetLand.landArea,
-                                landName: assetLand.landName,
-                                landCode: assetLand.landCode,
-                                kindOfRightName: assetLand.kindOfRightName,
-                                ownershipStatusName: assetLand.ownershipStatusName,
-                                warrantNbr: assetLand.warrantNbr,
-                                creditorAmount: assetLand.creditorAmount,
-                                debtAmount: assetLand.debtAmount,
-                            }
-                        }
+                        const ASSET_TYPE_DETAIL = handleAssetTypeField(this.assetType, "detail");
+                        let obj = data[ASSET_TYPE_DETAIL]
                         this.assetInfo = {...basicInfo, ...obj}
                         console.log(this.assetInfo)
                     } else {

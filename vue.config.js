@@ -20,8 +20,8 @@ const getIPAdress = () => {
 const localhost = getIPAdress()
 console.log('IP', localhost)
 
-// const target = 'http://192.168.1.7:8088'
-const target = 'http://beta.uhomecp.com/'
+const target = 'http://192.168.1.7:8088'
+// const target = 'http://betanew.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
   '/uhomecp-sso/',
@@ -111,8 +111,8 @@ module.exports = {
   configureWebpack: (config) => {
     if (isProd) {
       // 配置不打包的资源，需指定 cdn 加载
-      // 'ant-design-vue': 'antd',
       config.externals = {
+        'ant-design-vue': 'antd',
         'axios': 'axios',
         'vue': 'Vue',
         'vuex': 'Vuex',
