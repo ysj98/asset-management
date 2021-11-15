@@ -7,7 +7,7 @@
 <template>
   <div class="sg-child-house">
     <!--数据总览-->
-    <overview-number :numList="numListCom"/>
+    <overview-number :numList="numList"/>
     <div class="button-box">
       <div class="buytton-nav" v-show="setType === 'new' && !registerOrderId">
         <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
@@ -168,10 +168,6 @@ export default {
     ASSET_TYPE_CODE(){
       return this.$store.state.ASSET_TYPE_CODE;
     },
-
-    numListCom(){
-      return this.numList.filter(ele=>!ele.noShow)
-    }
   },
   created () {
   },
@@ -547,7 +543,7 @@ export default {
     * */
     handleValidateExcelData(arrData){
       let publicData = []
-      if (Object.keys(this.ASSET_TYPE_CODE).map(e => ([this.ASSET_TYPE_CODE[e]])).includes(this.assetType)){
+      if (Object.keys(this.ASSET_TYPE_CODE).map(e => (this.ASSET_TYPE_CODE[e])).includes(this.assetType)){
         const ASSET_TYPE_VERSIFICATION_LIST = handleAssetTypeField(this.assetType,'verificationList')
          publicData = this[ASSET_TYPE_VERSIFICATION_LIST]
       }
@@ -787,6 +783,8 @@ export default {
               this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
             } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
               this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
+            } else if (this.assetType === this.ASSET_TYPE_CODE.YARD) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
             }
             this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
             this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)
