@@ -52,6 +52,7 @@
     <AssetImportModal
       ref="assetImportModalRef"
       :modalData="modalObj.add"
+      :userSelectedOrganId.sync='userSelectedOrganId'
       @handleAdditionAsset="handleAdditionAsset"
       @doClosePop="
         ()=>{ modalObj.add.flag = false }
@@ -121,6 +122,7 @@ export default {
       houseVerificationList,
       landVerificationList,
       yardVerificationList,
+      userSelectedOrganId:'',
       detailData:{},
       projectList:[],
       modalObj: {
@@ -155,6 +157,7 @@ export default {
       tableData: [],    // 表格内容
       columns: [],      // 表格表头
       assetType: '',    // 资产类型
+      projectId: ''
     }
   },
   computed: {
@@ -209,6 +212,7 @@ export default {
         this.$api.assets.getRegisterOrderById(obj).then(res => {
           if (Number(res.data.code) === 0) {
             this.detailData = res.data.data
+            this.projectId = res.data.data.projectId
           } else {
             this.$message.error(res.data.message)
           }
@@ -413,6 +417,7 @@ export default {
         if (type === 'project' && val) {
           this.tableData = []
           this.sourceType = Number(sourceType)
+          this.projectId  = val
         }
         // 切换总的统计数据的值为0
         if (!type && this.tableData.length === 0) {
@@ -444,8 +449,14 @@ export default {
       console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
+      let resOrganId = this.organId
+      if ([this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(String(this.assetType))){
+        resOrganId = this.userSelectedOrganId
+      }
       fileData.append('registerOrderModelFile', files[0])
       fileData.append('assetType', this.assetType)
+      fileData.append('organId', resOrganId)
+      fileData.append('projectId',this.projectId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -638,10 +649,16 @@ export default {
     * */
     async handleAdditionAsset(fileList){
       if (!fileList.length) { return }
+      let resOrganId = this.organId
+      if ([this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(String(this.assetType))){
+        resOrganId = this.userSelectedOrganId
+      }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', fileList[0])
       fileData.append('assetType', this.assetType)
       fileData.append('registerOrderId', String(this.registerOrderId || ''))
+      fileData.append('organId', resOrganId)
+      fileData.append('projectId',this.projectId)
       if (this.formData === null) {
         return this.$message.error('请先上传文件!')
       }
