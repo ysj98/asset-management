@@ -264,6 +264,7 @@ export default {
       }
       this.queryCondition.topOrganId = organId
       this.queryCondition.communityId = '' //[""]
+      this.queryCondition.equipmentId = undefined
       this.queryCommunityListByOrganId();
       // 异步接口
       this.searchQuery();
