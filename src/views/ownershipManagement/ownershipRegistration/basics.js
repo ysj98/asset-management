@@ -5,8 +5,7 @@
  * @Description: file content
  */
 // 首次登记 变更登记
-import store from "store";
-
+import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 export const register = [{
   title: '资产名称',
   dataIndex: 'assetName',
@@ -39,11 +38,7 @@ export const register = [{
   title: '面积',
   key: 'assetArea',
   customRender(record){
-    if (String(record.assetType) === store.state.ASSET_TYPE_CODE.EQUIPMENT){
-      return '/'
-    }else {
-      return record.assetArea
-    }
+    return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
   },
   width: '5%'
 }, {
@@ -98,8 +93,8 @@ export const cancellation = [{
 }, {
   title: '面积',
   key: 'assetArea',
-  scopedSlots: {
-    customRender: 'assetArea'
+  customRender(record){
+    return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
   },
   width: '10%'
 }, {
