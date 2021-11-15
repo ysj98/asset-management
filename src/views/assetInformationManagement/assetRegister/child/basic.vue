@@ -47,12 +47,11 @@
         @change="handleChange"
       />
     </div>
-    <basicDownload ref="basicDownload" :userSelectedOrganId.sync='userSelectedOrganId'></basicDownload>
+    <basicDownload ref="basicDownload"></basicDownload>
     <!--  添加资产导入  -->
     <AssetImportModal
       ref="assetImportModalRef"
       :modalData="modalObj.add"
-      :userSelectedOrganId.sync='userSelectedOrganId'
       @handleAdditionAsset="handleAdditionAsset"
       @doClosePop="
         ()=>{ modalObj.add.flag = false }
@@ -449,13 +448,8 @@ export default {
       console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
-      let resOrganId = this.organId
-      if ([this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(String(this.assetType))){
-        resOrganId = this.userSelectedOrganId
-      }
       fileData.append('registerOrderModelFile', files[0])
       fileData.append('assetType', this.assetType)
-      fileData.append('organId', resOrganId)
       fileData.append('projectId',this.projectId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
@@ -649,15 +643,10 @@ export default {
     * */
     async handleAdditionAsset(fileList){
       if (!fileList.length) { return }
-      let resOrganId = this.organId
-      if ([this.ASSET_TYPE_CODE.EQUIPMENT,this.ASSET_TYPE_CODE.YARD].includes(String(this.assetType))){
-        resOrganId = this.userSelectedOrganId
-      }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', fileList[0])
       fileData.append('assetType', this.assetType)
       fileData.append('registerOrderId', String(this.registerOrderId || ''))
-      fileData.append('organId', resOrganId)
       fileData.append('projectId',this.projectId)
       if (this.formData === null) {
         return this.$message.error('请先上传文件!')
