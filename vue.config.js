@@ -112,7 +112,7 @@ module.exports = {
     if (isProd) {
       // 配置不打包的资源，需指定 cdn 加载
       config.externals = {
-        // 'ant-design-vue': 'antd',
+        'ant-design-vue': 'antd',
         'axios': 'axios',
         'vue': 'Vue',
         'vuex': 'Vuex',
