@@ -255,6 +255,7 @@ export const yard = [
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
@@ -273,6 +274,7 @@ export const equipment = [
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 350 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
+  { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 150 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
