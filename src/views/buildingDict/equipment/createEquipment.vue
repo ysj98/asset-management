@@ -374,7 +374,7 @@ export default {
     /* **************** */
     // 文件上传
     customUpload (list = []) {
-      if(!this.formInfo.organId) {
+      if(!this.formInfo.topOrganId) {
         this.$message.error("请选择所属机构")
         return Promise.resolve({lists: []})
       }
@@ -386,7 +386,7 @@ export default {
         let fileData = new FormData()
         fileData.append('file', file)
         errorLists.push({ url: file.name, name: file.name  })
-        fileData.append('organId', this.formInfo.organId)
+        fileData.append('organId', this.formInfo.topOrganId)
         return this.$api.building.equipmentFileUpload(fileData)
       })
       let requestAll = Promise.all(requestList)
