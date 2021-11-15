@@ -453,7 +453,7 @@ export default {
       return requestAll.then(res => {
         res.map(item => {
           if (item.data.code === '0' && item.data.data) {
-            let url = item.data.data?.imgPath
+            let url = item.data.data.imgPath
             lists.push({url, name: url.substring(url.lastIndexOf('/')+1)})
           } else {
             this.$SG_Message.error(item.data.message)
