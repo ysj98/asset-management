@@ -528,7 +528,7 @@ export default {
         let sourceModeName = ele.sourceModeName
         if (!ele.sourceModeName) {
           // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
-          let sourceModeObj = this.sourceOptions.find(sourceItem => Number(sourceItem.key) === Number(this.sourceType))
+          let sourceModeObj = this.sourceOptions.filter(sourceItem => Number(sourceItem.key) === Number(this.sourceType))[0]
           sourceModeName = sourceModeObj ? sourceModeObj.title : ''
         }
         return {
