@@ -163,7 +163,7 @@
                               :key="'areaDescription'+index+ind"
                               type="textarea"
                               :disabled="formInfo.areaArray[index].disabled"
-                              :maxLength="com.maxLength"
+                              :maxLength="128"
                               :style="allWidth"
                               :placeholder="com.placeHolder"
                               v-model="formInfo.areaArray[index].areaDescription"
@@ -174,7 +174,7 @@
                           style="margin: -5px;"
                           :label-col="{ span: 0 }"
                           :wrapper-col="{ span: 24 }"
-                          :rules=" [{required: false,pattern: new RegExp(/^\d{0,13}?$/), message: '请输入车位数量,并且是正整数'}]">
+                          :rules=" [{required: false,pattern: new RegExp(/^\d{0,11}?$/), message: '请输入车位数量,并且小于11位的正整数,'}]">
                         <a-input
                             :key="'areaPosiNums'+index+ind"
                             :maxLength="com.maxLength"
@@ -209,7 +209,7 @@
 <!--                        区域名称-->
                         <a-input
                           :style="allWidth"
-                          :maxLength="com.maxLength"
+                          :maxLength="64"
                           :placeholder="com.placeHolder"
                           :disabled="formInfo.areaArray[index].disabled"
                           v-model="formInfo.areaArray[index].areaName"
@@ -225,7 +225,7 @@
 <!--                        区域编码-->
                         <a-input
                             :style="allWidth"
-                            :maxLength="com.maxLength"
+                            :maxLength="64"
                             :placeholder="com.placeHolder"
                             :disabled="formInfo.areaArray[index].disabled"
                             v-model="formInfo.areaArray[index].areaCode"
