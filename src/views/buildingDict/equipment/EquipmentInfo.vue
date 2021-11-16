@@ -32,7 +32,7 @@
                 style="margin-right: 10px;"
                 :allowClear="true"
                 placeholder="请选择设备设施分类"
-                :topOrganId="queryCondition.topOrganId"
+                :topOrganId="topOrganId"
                 v-model="queryCondition.equipmentId"/>
 <!--                mode="multiple"-->
             <a-select
@@ -117,6 +117,7 @@ import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
 import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 import moment from "moment";
+import {queryTopOrganByOrganID} from "../publicFn";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
@@ -146,6 +147,7 @@ export default {
         loading: false,
         totalCount: 0,
       },
+      topOrganId: '',
       createPower: false, // 新建
       editPower: false, // 编辑
       deletePower: false, // 删除
@@ -256,12 +258,15 @@ export default {
       });
     },
     // orangId改变
-    organIdChange(organId,organName) {
+    async organIdChange(organId,organName) {
       console.log("一级物业改变", organId);
       this.organName = organName;
       if (!organId) {
         return;
       }
+      const params = { nOrgId: organId, nOrganId: organId }
+      let {organId:organTopId} = await queryTopOrganByOrganID(params)
+      this.topOrganId = organTopId
       this.queryCondition.topOrganId = organId
       this.queryCondition.communityId = '' //[""]
       this.queryCondition.equipmentId = undefined
