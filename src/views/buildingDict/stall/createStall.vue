@@ -67,7 +67,7 @@
                 <a-form-model-item label="车位名称" :required="true" prop="name">
                   <a-input
                     :style="allWidth"
-                    :maxLength="30"
+                    :maxLength="64"
                     placeholder="请输入车位名称"
                     v-model="formInfo.name"
                   />
@@ -78,7 +78,7 @@
                   <a-input
                     :style="allWidth"
                     placeholder="请输入车位编码"
-                    :maxLength="30"
+                    :maxLength="64"
                     v-model="formInfo.code"
                   />
                 </a-form-model-item>
@@ -172,7 +172,7 @@
                 <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
                 <div style="width: 86%">
                 <a-textarea
-                  :maxLength="200"
+                  :maxLength="128"
                   v-model="formInfo.description"
                 />
                 </div>
@@ -285,14 +285,14 @@ export default {
           { required: true, message: '请输入车位状态' },
         ],
         useArea: [
-          {pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
+          {pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
         ],
         shareArea: [
-          {pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
+          {pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
         ],
         propertyArea:[
           { required: true, message: '请输入产权面积' },
-          {required: true, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}
+          {required: true, pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
         ],
       },
       placeArr: [], // 车场列表
