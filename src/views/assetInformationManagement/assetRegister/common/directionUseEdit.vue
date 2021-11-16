@@ -21,7 +21,7 @@
           <a-col :span="12" class="playground-col">资产名称：{{examine.assetName || '--'}}</a-col>
           <a-col :span="12" class="playground-col">资产编码：{{examine.assetCode || '--'}}</a-col>
           <a-col :span="12" class="playground-col">资产分类：{{examine.objectTypeName || '--'}}</a-col>
-          <a-col :span="12" class="playground-col">建筑面积(㎡)：{{examine.buildArea || '--'}}</a-col>
+          <a-col v-if="!isEquipment" :span="12" class="playground-col">建筑面积(㎡)：{{examine.buildArea || '--'}}</a-col>
         </a-row>
       <span class="section-title blue">使用方向</span>
       <a-form :form="form" @submit="handleSubmit">

@@ -90,7 +90,7 @@ import {
   baseChange,
   debtChange,
   baseChangeTwo,
-  assetSize
+  assetSize, changeDirectionUseEq
 } from "./basics";
 import { utils } from "@/utils/utils.js";
 const originalObjectTypeMap = {
@@ -138,6 +138,7 @@ export default {
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "4") {
         arr = utils.deepClone(changeDirectionUse);
+        arr = this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT ? utils.deepClone(changeDirectionUseEq) : utils.deepClone(changeDirectionUse)
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "3") {
         arr = utils.deepClone(variationOriginalValue);

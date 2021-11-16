@@ -286,9 +286,9 @@
             <template #assetArea="text,record">
               {{[$store.state.ASSET_TYPE_STRING.EQUIPMENT,$store.state.ASSET_TYPE_CODE.EQUIPMENT].includes(String(record.assetType)) ? '/' : record.assetArea}}
             </template>
-            <!-- 使用方向 TODO:待字段确认 -->
-            <template #newDebugger="text,record">
-              <a-select style="width: 200px;" :options="amsUseDirectionCom"></a-select>
+            <!-- 使用方向 -->
+            <template #newUseDirection="text,record">
+              <a-select v-model="record.newUseDirection" style="width: 200px;" :options="amsUseDirectionCom"></a-select>
             </template>
             <!-- 交付运营 -->
             <template
@@ -794,7 +794,7 @@ export default {
             } else if (String(this.changeType) === "4") {
               if (String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
                 // TODO: 使用方向 设备设施分类 校验
-                if(conditionalJudgment.includes(this.tableData[i].newDebugger)){
+                if(conditionalJudgment.includes(this.tableData[i].newUseDirection)){
                   this.$message.info("请输入变更后使用方向");
                   return;
                 }

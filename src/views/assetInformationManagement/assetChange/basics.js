@@ -164,14 +164,13 @@ export const changeDirectionUseEq = [{
   dataIndex: 'assetUse'
 }, {
   title: '变更前使用方向',
-  key: 'oldDebugger',
+  key: 'oldUseDirection',
 },
 {
-  // TODO:更改 key 和 customRender
   title: '变更后使用方向',
-  key: 'newDebugger',
+  key: 'newUseDirection',
   scopedSlots:{
-    customRender:'newDebugger'
+    customRender:'newUseDirection'
   }
 },
 ]
