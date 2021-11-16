@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
   import FormFooter from '@/components/FormFooter'
   import SelectAsset from './components/SelectRegistAsset'
   import {queryProjectListByOrganId, filterOption, queryAssetTypeList} from 'src/views/common/commonQueryApi'
@@ -137,7 +137,7 @@ import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
             { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
             { title: '资产面积(㎡)', key: 'area',
               customRender(record){
-                return generateTableAreaByAssetTypeCode({record,assetTypeCode:record.assetType,keyStr:'area'})
+                return generateTableAreaByAssetTypeString({record,assetTypeName:record.assetTypeName,keyStr:'area'})
               }},
             { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
             { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
