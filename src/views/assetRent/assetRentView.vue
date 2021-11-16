@@ -128,7 +128,7 @@
           { title: '承租人', dataIndex: 'lesseeName', width: 120 },
           { title: '出租面积(㎡)', key: 'leaseArea',
             customRender(record){
-              return generateTableAreaByAssetTypeString({keyStr:'assetArea',record,assetTypeName:record.assetTypeName})
+              return generateTableAreaByAssetTypeString({keyStr:'leaseArea',record,assetTypeName:record.assetTypeName})
             }
           },
           { title: '起租日期', dataIndex: 'startLeaseDate', width: 80 },

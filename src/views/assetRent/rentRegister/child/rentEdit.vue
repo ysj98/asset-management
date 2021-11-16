@@ -773,7 +773,7 @@ export default {
                 return;
               }
             });
-            if (this.pass === false) {
+            if (!this.isSelectedEquipment && this.pass === false) {
               this.$message.error("出租面积必须大于1㎡");
               return;
             }

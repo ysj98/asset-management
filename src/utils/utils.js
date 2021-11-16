@@ -669,6 +669,9 @@ export function handleEnumerationConversion(value, list, keyWord = ['title', 'va
 }
 
 export function generateTableAreaByAssetTypeCode({keyStr, assetTypeCode, record}){
+  if (!assetTypeCode){
+    return record[keyStr]
+  }
   if (assetTypeCode === store.state.ASSET_TYPE_CODE.EQUIPMENT){
     return '/'
   }else {
@@ -676,6 +679,9 @@ export function generateTableAreaByAssetTypeCode({keyStr, assetTypeCode, record}
   }
 }
 export function generateTableAreaByAssetTypeString({keyStr, assetTypeName, record}){
+  if (!assetTypeName){
+    return record[keyStr]
+  }
   if (assetTypeName === store.state.ASSET_TYPE_STRING.EQUIPMENT){
     return '/'
   }else {
