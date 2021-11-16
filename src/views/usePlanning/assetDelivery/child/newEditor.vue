@@ -435,31 +435,25 @@ export default {
               return;
             }
           }
-          let arr = []
-          let assetDetailList = []
-          this.tableData.forEach(item => {
-            if (!conditionalJudgment.includes(item.deliveryArea)) {
-              assetDetailList.push({
-                deliveryDetailId: conditionalJudgment.includes(item.deliveryDetailId) ? '' : item.deliveryDetailId,  //明细Id 修改时必填
-                deliveryId: conditionalJudgment.includes(item.deliveryId) ? '' : item.deliveryId, // 修改时必填
-                assetId: item.assetId,                // 资产id
-                assetType: item.assetType,            // 资产类型
-                assetCode: item.assetCode,            // 资产编码
-                organId: item.organId,                // 组织机构Id
-                projectId: item.projectId,            // 资产项目Id
-                assetObjectId: item.assetObjectId,    // 资产对象id
-                objectType: item.objectType,          // 资产分类
-                assetArea: item.assetArea,            // 资产面积
-                remark: item.remark,                  // 备注，填的
-                deliveryArea: item.deliveryArea,      // 交付面积，填的
-                oldTransferArea: item.transferArea || '',   // 原交付物业面积(转物业面积)
-                oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
-              })
-            } else {
-              arr.push(item.assetId)
+          let assetDetailList = this.tableData.map(item => {
+            return {
+              deliveryDetailId: conditionalJudgment.includes(item.deliveryDetailId) ? '' : item.deliveryDetailId,  //明细Id 修改时必填
+              deliveryId: conditionalJudgment.includes(item.deliveryId) ? '' : item.deliveryId, // 修改时必填
+              assetId: item.assetId,                // 资产id
+              assetType: item.assetType,            // 资产类型
+              assetCode: item.assetCode,            // 资产编码
+              organId: item.organId,                // 组织机构Id
+              projectId: item.projectId,            // 资产项目Id
+              assetObjectId: item.assetObjectId,    // 资产对象id
+              objectType: item.objectType,          // 资产分类
+              assetArea: item.assetArea,            // 资产面积
+              remark: item.remark,                  // 备注，填的
+              deliveryArea: item.deliveryArea,      // 交付面积，填的
+              oldTransferArea: item.transferArea || '',   // 原交付物业面积(转物业面积)
+              oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
             }
           })
-          if (!this.isSelectedEquipment && arr.length !== 0) {
+          if (!this.isSelectedEquipment && this.tableData.length && this.tableData.every(ele=>conditionalJudgment.includes(ele.deliveryArea))) {
             this.$message.info("请填写交付面积");
             return;
           }
