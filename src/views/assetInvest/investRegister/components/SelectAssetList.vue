@@ -268,7 +268,9 @@
       const {allAttrs, value, assetType} = this
 
       this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value)
-      this.queryObjectType(String(assetType))
+      if (!this.isSelectedEquipment){
+        this.queryObjectType(String(assetType))
+      }
       // 添加可以选择不同数量分页
       this.$nextTick(function () {
         let arr = this.$refs.footerPagination.pageLists
