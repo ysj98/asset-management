@@ -539,7 +539,7 @@ export default {
         documentPath: (this.formInfo.documentPath || []).map(node => node.url).join(","),
       }
 
-      delete returnData.imgPath
+      // delete returnData.imgPath
       delete returnData.documentPath
       delete returnData.topOrganName
       delete returnData.organName
