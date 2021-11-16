@@ -400,7 +400,6 @@ export default {
     assetTypeDataFn (value) {
       this.$nextTick(function () {
         this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
-        // TODO: 遗留BUG 先这样写 有时间优化
         if (!this.queryCondition.assetType[0] || this.queryCondition.assetType.length > 1 ) {
           this.assetClassifyData = [{name: '全部资产分类', value: ''}]
           this.queryCondition.assetClassify = ['']

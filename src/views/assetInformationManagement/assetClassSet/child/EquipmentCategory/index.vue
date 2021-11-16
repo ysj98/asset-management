@@ -88,12 +88,6 @@ export default {
               title: "分类ID",
               key: "equipmentId"
             }
-            // TODO:没有这个信息
-            // {
-            //   title: "分类描述",
-            //   key: "",
-            //   value: ""
-            // }
           ],
           [
             {

@@ -793,7 +793,6 @@ export default {
               }
             } else if (String(this.changeType) === "4") {
               if (String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
-                // TODO: 使用方向 设备设施分类 校验
                 if(conditionalJudgment.includes(this.tableData[i].newUseDirection)){
                   this.$message.info("请输入变更后使用方向");
                   return;

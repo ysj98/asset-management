@@ -116,11 +116,6 @@
           {title: '已归还面积（m²）', key: 'returnArea', value: 0, fontColor: '#324057'},
           {title: '未归还面积（m²）', key: 'unReturnArea', value: 0, fontColor: '#324057'},
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-        numListEq :[
-          {title: '领用数量', key: 'receiveArea', value: 0, fontColor: '#324057'},
-          {title: '已归还数量', key: 'returnArea', value: 0, fontColor: '#324057'},
-          {title: '未归还数量', key: 'unReturnArea', value: 0, fontColor: '#324057'},
-        ],
       }
     },
     computed:{
@@ -390,13 +385,10 @@
         // type === 'approval' || type === 'detail'时
         // 列表查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({type: 'init'})
-
-
       }
     },
-
     watch: {
-      details: function (val) {
+      details: function () {
             this.isShow=true
             this.numList.map((item,index) => {
             if(!this.details[item.key]){
@@ -409,8 +401,13 @@
       },
       // 基础信息组件传递的数据，更新Table相关项
       dynamicData: function (data) {
-
         let {tableObj: {dataSource}, type, numList, details} = this
+        if (this.isSelectedEquipment){
+          const arr = ["领用数量","已归数量","未归还数量"]
+          this.numList.forEach((ele,index)=>{
+            ele.title = arr[index]
+          })
+        }
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
