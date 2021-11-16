@@ -81,6 +81,7 @@
               mode="multiple"-->
               <a-select
                 showSearch
+                :disabled="setType==='edit'"
                 :style="allWidth"
                 placeholder="请选择资产类型"
                 v-decorator="['assetType',{
@@ -282,6 +283,25 @@
             class="custom-table td-pd10"
             :pagination="false"
           >
+            <!-- 变更后资产类型 TODO:待完善 优化 设备设施类型 -->
+            <template #newAssetCategoryCode="text,record">
+              <EquipmentSelectTree
+                v-if="isSelectedEquipment"
+                size="small"
+                style="width: 100%"
+                :top-organ-id="organId"
+                :defaultName="record.assetCategoryName"
+                v-model="record.newAssetCategoryCode"
+              />
+              <a-select
+                v-else
+                size="small"
+                style="width: 100%"
+                v-model="record.newAssetCategoryCode"
+                :options="$addTitle(objectTypeOptions)"
+                placeholder="请选择资产类别"
+              />
+            </template>
             <!-- 资产面积(㎡) 建筑面积(㎡) -->
             <template #assetArea="text,record">
               {{[$store.state.ASSET_TYPE_STRING.EQUIPMENT,$store.state.ASSET_TYPE_CODE.EQUIPMENT].includes(String(record.assetType)) ? '/' : record.assetArea}}
@@ -478,26 +498,29 @@
 </template>
 
 <script>
+import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 import AssetBundlePopover from "../../common/assetBundlePopover";
 import {
-  deliveryProperty,
-  deliveryOperation,
+  assetSize,
+  baseChange,
+  baseChangeTwo,
   changeDirectionUse,
-  variationOriginalValue,
+  changeDirectionUseEq,
+  debtChange,
+  deliveryOperation,
+  deliveryProperty,
   positionChange,
   projectChange,
-  baseChange,
-  debtChange,
-  baseChangeTwo,
-  assetSize, changeDirectionUseEq,
+  variationOriginalValue,
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips";
-import {  calc, debounce } from "@/utils/utils.js";
+import {calc, debounce} from "@/utils/utils.js";
 
 import moment from "moment";
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {SET_AMS_USE_DIRECTION} from "store/types/platformDictTypes";
+
 const newEditSingleData = {
   title: "", // 登记单名称
   changeType: undefined, // 变更类型
@@ -518,10 +541,11 @@ const shareWayData = [
   { name: "按资产个数分摊", value: "2" },
 ];
 export default {
-  components: { AssetBundlePopover, FormFooter, noDataTips },
+  components: { AssetBundlePopover, FormFooter, noDataTips, EquipmentSelectTree },
   props: {},
   data() {
     return {
+      objectTypeOptions:[],
       sourceOptions:[], // 来源方式
       changeOrderId: "",
       scroll: {y: 450, x: 1600},
@@ -599,7 +623,10 @@ export default {
           label: ele.name
         };
       })
-    }
+    },
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
   },
   watch: {
     changeType(val) {
@@ -621,6 +648,10 @@ export default {
         this.columns = baseChange;
         // 装修情况有变化
         this.handleBaseAndHuse();
+        // 如果 不是 设备设施类型
+        if(this.assetType !== this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
+          this.queryObjectType()
+        }
       } else if (val === "8") {
         this.columns = debtChange;
       } else if (val === "9") {
@@ -659,6 +690,24 @@ export default {
     }
   },
   methods: {
+    queryObjectType () {
+      const organId = this.organId
+      const assetType = this.assetType
+      if(!organId || !assetType){
+        return null
+      }
+      this.$api.assets.getList({ assetType, organId }).then(res => {
+        if (Number(res.data.code) === 0) {
+          let { data } = res.data
+          this.objectTypeOptions = data.map(m => ({
+            title: m.professionName,
+            key: m.professionCode
+          }))
+        }
+      }).catch(err => {
+        this.$message.error(err || '查询资产类别失败')
+      })
+    },
     /*
     * 获取来源方式
     * */
@@ -908,7 +957,8 @@ export default {
               debtAmount:
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
               newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : "" ,  // 变更后资产面积
-              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : ""
+              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : "", // 变更后使用方向(设备设施 独有)
+              newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "" // 变更后资产分类
             });
           });
           let obj = {
@@ -1119,11 +1169,9 @@ export default {
       console.log("会进到这里来2", this.changeType, "www", this.assetType);
       if (this.changeType === "7") {
         // 房屋
-        if (["1"].includes(this.assetType)) {
+        if (this.assetType === this.$store.state.ASSET_TYPE_CODE.HOUSE) {
           this.columns = baseChangeTwo;
-        }
-        // 土地
-        if (['4'].includes(this.assetType)) {
+        }else {
           this.columns = baseChange;
         }
       }

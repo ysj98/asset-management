@@ -340,6 +340,12 @@ export const baseChange = [{
   align: 'center',
   scopedSlots: { customRender: 'newSourceMode' },
   width: 120
+},{
+  title: '变更后资产分类',
+  key: 'newAssetCategoryCode',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetCategoryCode' },
+  width: 120
 }, {
   title: '操作',
   dataIndex: 'operation',
@@ -392,6 +398,12 @@ export const baseChangeTwo = [{
   dataIndex: 'newSourceModeName',
   align: 'center',
   scopedSlots: { customRender: 'newSourceMode' },
+  width: 120
+},{
+  title: '变更后资产分类',
+  key: 'newAssetCategoryCode',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetCategoryCode' },
   width: 120
 },{
   title: '操作',

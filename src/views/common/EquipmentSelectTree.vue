@@ -1,6 +1,7 @@
 <template>
   <div class="select-container" :style="{width: width}">
     <a-tree-select
+      :size="size"
       class="tree-select"
       :class="{'have-default-name': showDefaultOrganName && defaultName}"
       :multiple="multiple"
@@ -24,6 +25,10 @@
 export default {
   name: "EquipmentSelectTree",
   props: {
+    size:{
+      type:String,
+      default:'default'
+    },
     maxTagCount:{
       type:Number,
       default: 1
