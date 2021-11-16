@@ -342,7 +342,7 @@ export const baseChange = [{
   width: 120
 },{
   title: '变更后资产分类',
-  key: 'newAssetCategoryCode',
+  dataIndex: 'newAssetCategoryName',
   align: 'center',
   scopedSlots: { customRender: 'newAssetCategoryCode' },
   width: 120
@@ -401,7 +401,7 @@ export const baseChangeTwo = [{
   width: 120
 },{
   title: '变更后资产分类',
-  key: 'newAssetCategoryCode',
+  dataIndex: 'newAssetCategoryName',
   align: 'center',
   scopedSlots: { customRender: 'newAssetCategoryCode' },
   width: 120

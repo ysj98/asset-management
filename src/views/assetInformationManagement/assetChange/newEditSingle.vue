@@ -283,14 +283,14 @@
             class="custom-table td-pd10"
             :pagination="false"
           >
-            <!-- 变更后资产类型 TODO:待完善 优化 设备设施类型 -->
+            <!-- 变更后资产类型 TODO:待完善 优化 设备设施类型 变更最终保存校验 -->
             <template #newAssetCategoryCode="text,record">
               <EquipmentSelectTree
                 v-if="isSelectedEquipment"
                 size="small"
                 style="width: 100%"
                 :top-organ-id="organId"
-                :defaultName="record.assetCategoryName"
+                :defaultName="record.newAssetCategoryName"
                 v-model="record.newAssetCategoryCode"
               />
               <a-select
@@ -895,6 +895,10 @@ export default {
               }
               if (!this.tableData[i].newSourceMode) {
                 this.$message.info("变更后来源方式");
+                return;
+              }
+              if (!this.tableData[i].newAssetCategoryCode) {
+                this.$message.info("变更后资产分类");
                 return;
               }
             } else if (String(this.changeType) === "8") {
