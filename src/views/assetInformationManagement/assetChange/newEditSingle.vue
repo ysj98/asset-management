@@ -907,7 +907,8 @@ export default {
                 String(this.changeType) === "8" ? item.newCreditorAmount : "", // 变更后债权金额
               debtAmount:
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
-              newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : ""   // 变更后资产面积
+              newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : "" ,  // 变更后资产面积
+              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : ""
             });
           });
           let obj = {
