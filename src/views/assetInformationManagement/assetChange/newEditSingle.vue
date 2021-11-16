@@ -283,7 +283,6 @@
             class="custom-table td-pd10"
             :pagination="false"
           >
-            <!-- 变更后资产类型 TODO:待完善 优化 设备设施类型 变更最终保存校验 -->
             <template #newAssetCategoryCode="text,record">
               <EquipmentSelectTree
                 v-if="isSelectedEquipment"

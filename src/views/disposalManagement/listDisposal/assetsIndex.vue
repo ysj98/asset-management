@@ -222,7 +222,6 @@ const columns = [
   },
   {
     title: '处置面积(㎡)',
-    //TODO: 这里 列表中 没有 assetType 字段 无法做处理
     dataIndex: 'dispArea'
   },
   {
