@@ -65,7 +65,7 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                  <span>{{formInfo.propertyArea || '-'}}</span>
+                  <span>{{formInfo.floorArea || '-'}}</span>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -137,7 +137,7 @@ export default {
         parkingAreaId: '',
         useArea: '',
         shareArea: '',
-        propertyArea: '',
+        floorArea: '',
         parkingImg: [],
         description: '',
         parkingAreaUnits: ''

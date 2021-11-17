@@ -106,7 +106,7 @@ export const columns = [
   },
   {
     title: "建筑面积(㎡)",
-    dataIndex: "propertyArea",
+    dataIndex: "floorArea",
     width: 120
   },
   {

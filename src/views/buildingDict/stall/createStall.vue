@@ -133,13 +133,13 @@
             </a-row>
             <a-row>
               <a-col :span="8">
-                <a-form-model-item label="建筑面积(㎡)" prop="propertyArea">
+                <a-form-model-item label="建筑面积(㎡)" prop="floorArea">
                   <a-input-number
                     :min="0"
                     placeholder="请输入建筑面积"
                     :max="999999.9999"
                     :style="allWidth"
-                    v-model="formInfo.propertyArea"
+                    v-model="formInfo.floorArea"
                   />
                 </a-form-model-item>
               </a-col>
@@ -254,7 +254,7 @@ export default {
         parkingAreaId: undefined, // '区域Id',
         useArea: undefined, // 使用面积
         shareArea: undefined, //'公摊面积',
-        propertyArea: undefined, // '产权面积',
+        floorArea: undefined, // '产权面积',
         parkingImg: [],
         description: undefined // '备注',
         // parkingAreaUnits: '' // '面积单位'
@@ -290,8 +290,8 @@ export default {
         shareArea: [
           {pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
         ],
-        propertyArea:[
-          { required: true, message: '请输入产权面积' },
+        floorArea:[
+          { required: true, message: '请输入建筑面积' },
           {required: true, pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
         ],
       },
