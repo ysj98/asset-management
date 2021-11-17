@@ -833,6 +833,7 @@ export default {
       fileData.append('file', files[0])
       fileData.append('registerOrderId', this.registerOrderId)
       fileData.append('assetType', this.assetType)
+      fileData.append('projectId',this.projectId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
