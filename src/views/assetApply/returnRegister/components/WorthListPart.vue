@@ -439,7 +439,7 @@
       assetList: function () {
         if(this.assetList.length == 0){return}
         this.assetTypeName = this.assetList[0].assetTypeName
-        if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
+        if(Object.keys(this.$store.state.ASSET_TYPE_STRING).map(e => (this.$store.state.ASSET_TYPE_STRING[e])).includes(this.assetList[0].assetTypeName)){
            this.tableObj.columns = [
             { title: '领用ID', dataIndex: 'receiveDetailId' },
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },
@@ -461,7 +461,7 @@
         if(data.returnOrganId != oldData.returnOrganId || data.returnUserId != oldData.returnUserId || data.returnDate != oldData.returnDate){
           return
         }
-        let {tableObj: {dataSource}, type, numList, details} = this
+        let {tableObj: {dataSource}, type} = this
         if ((type === 'add' || type === 'edit') && dataSource.length) {
           const { projectId, assetType } = data
           // 如果切换资产项目\资产类型，则清空Table dataSource
@@ -473,13 +473,11 @@
             this.tableObj.dataSource = []
             this.returnAreaSum = 0
             this.$emit('backAssetList',this.tableObj.dataSource,0)
-            return this.numList = numList.map(m => {
-              return { ...m, value:  0 }
+          } else{
+            this.tableObj.dataSource = dataSource.map(m => {
+              return Object.assign(m, data)
             })
           }
-          this.tableObj.dataSource = dataSource.map(m => {
-            return Object.assign(m, data)
-          })
         }
       }
 

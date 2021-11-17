@@ -3,7 +3,16 @@
     <div class="detail_page">
       <a-spin :spinning="spinning" style="padding-bottom: 75px;">
         <!--基础信息-->
-        <base-info-part ref="baseInfo" v-if="type" :type="type" :details="details" @setData="setListTableData" :defaultOrganName="organName" :defaultOrganId="organId"/>
+        <base-info-part
+          ref="baseInfo"
+          v-if="type"
+          :isSelectedEquipment="isSelectedEquipment"
+          :type="type"
+          :details="details"
+          @setData="setListTableData"
+          :defaultOrganName="organName"
+          :defaultOrganId="organId"
+        />
         <!--资产价值清单-->
         <worth-list-part
           v-if="type"
@@ -12,6 +21,7 @@
           :dynamicData="dynamicData"
           :organId="details.organId"
           :registerId="registerId"
+          :isSelectedEquipment="isSelectedEquipment"
           @backAssetList="getAssetList"
           @validateProject="validateProject"
         />
@@ -57,7 +67,11 @@
         organId: ''  // 组织机构id
       }
     },
-
+    computed:{
+      isSelectedEquipment(){
+        return this.dynamicData.assetTypeName === this.$store.state.ASSET_TYPE_STRING.EQUIPMENT
+      },
+    },
     methods: {
       // 校验基础信息组件资产项目数据
       validateProject () {

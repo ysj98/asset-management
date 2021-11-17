@@ -2,7 +2,7 @@
 <template>
   <div class="base_info_form">
     <SG-Title title="资产信息"/>
-    <a-form 
+    <a-form
     :form="assetForm"
     :class="{'disabled_form': type == 'approval' || type == 'detail'}"
     :layout="type == 'approval' || type == 'detail' ? 'inline' : 'horizontal'"
@@ -48,7 +48,7 @@
           <a-input  v-decorator="['objectTypeName']" disabled/>
         </a-form-item>
       </a-col>
-      <a-col :span="8">
+      <a-col v-if="!isSelectedEquipment" :span="8">
         <a-form-item label="资产面积" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
           <a-input  v-decorator="['area']" disabled/>
         </a-form-item>
@@ -110,7 +110,7 @@
         </a-form-item>
       </a-col>
     </a-row>
-       
+
     <a-row :gutter="24">
       <a-col :span="8" >
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="资产类型">
@@ -141,7 +141,7 @@
         </a-form-item>
       </a-col>
     </a-row>
-      
+
       <a-row :gutter="24">
         <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用部门" v-if="type == 'approval' || type == 'detail'">
@@ -162,7 +162,7 @@
         </a-form-item>
       </a-col>
       </a-row>
-      
+
     <a-row>
       <a-col :span="24">
         <a-col :span="8">
@@ -203,7 +203,7 @@
         </a-form-item>
       </a-col>
  </a-row>
-    
+
   </a-form>
   </div>
 </template>
@@ -212,7 +212,7 @@
   import moment from 'moment'
   export default {
     name: 'BaseInfoPart',
-    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId'],
+    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId','isSelectedEquipment'],
     data () {
       return {
         formItemLayout: {
@@ -259,7 +259,7 @@
           reject('数据不完整')
         })
       },
-      
+
       // 渲染数据
       renderDetail () {
         const {type, details} = this
@@ -285,21 +285,21 @@
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '', 
+            remark: remark || '',
             projectId: projectName,
             assetType: assetTypeName,
             receiveId,
             createByName, approvalStatusName, createTime, receiveUserName, receiveOrganName
           })
         }
-          
+
 
               this.assetForm.setFieldsValue({ ...details.assetInfo })
           return this.form.setFieldsValue({ ...formatDetails })
-         
+
       },
 
-      // 查询平台字典      
+      // 查询平台字典
         queryDict () {
           const list = [
           { code: 'asset_type', tip: '资产类型', optionName: 'typeOptions' },
@@ -320,7 +320,7 @@
           })
         })
       },
-  
+
 
       // 查询评估机构-机构字典
       queryOrganOptions () {
@@ -359,7 +359,7 @@
           this.$message.error(err || '查询资产项目失败')
         })
       },
-      
+
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
@@ -385,9 +385,9 @@
           this.form.setFieldsValue({ receiveUserName: value, receiveUserId: id })
           this.$emit('setData', { [type]: value, receiveUserId: +id})
         }
-        
+
       },
-      
+
       // 单独校验资产项目是否选择
       validateProject () {
         this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
@@ -403,7 +403,7 @@
           })
           return this.form.setFieldsValue({ receiveUserName: this.staffList[0].title })
         })
-      } 
+      }
     },
     mounted () {
         this.renderDetail()
@@ -412,8 +412,8 @@
         this.queryOrganOptions()
         this.queryProjectOptions()
         this.queryStaff(this.details.organId)
-        
-        
+
+
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }

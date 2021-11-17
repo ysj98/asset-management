@@ -87,6 +87,9 @@
           <treeSelect @changeTree="setData(arguments, 'returnOrganName')"  placeholder='请选择归还部门' :allowClear="false" style="width: 100%" v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]"
             :disabled="type == 'approval' || type == 'detail'" v-if="type=='edit' || type=='add'" :default="false"></treeSelect>
             <!-- <a-input v-decorator="['returnOrganName', { rules: [{ required: true, message: '请选择归还部门' }] }]" disabled ></a-input> -->
+          <span v-else>
+              {{details.returnOrganName}}
+          </span>
         </a-form-item>
       </a-col>
       <a-col :span="8">

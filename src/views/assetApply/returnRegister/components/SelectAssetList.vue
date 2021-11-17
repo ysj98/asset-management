@@ -16,7 +16,7 @@
           :top-organ-id="organId"
           v-model="objectType"
           :options-data-format="(data)=>{
-            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+            return [{label: '全部资产分类', value: '-1', isLeaf: true},...data]
           }"
           @select="fetchData"
         />
@@ -119,7 +119,7 @@
         // assetTypeOptions: [], // 类型选项
         projectId: undefined, // 资产项目
         projectOptions: [], // 资产项目选项
-        objectType: '', // 资产类别
+        objectType: '-1', // 资产类别
         objectTypeOptions: [], // 类别选项
         dataSource: [], // Table数据源
         loading: false, // Table loading
@@ -131,7 +131,7 @@
           { title: '资产编码', dataIndex: 'assetCode' },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '资产分类', dataIndex: 'objectTypeName' },
           { title: '领用日期', dataIndex: 'receiveDate' },
           { title: '领用人', dataIndex: 'receiveUserName' },
           { title: '领用面积（㎡）', dataIndex: 'receiveArea' },
@@ -171,7 +171,6 @@
               }
             })
             console.log(res)
-            if(this.assetType != '房屋' && this.assetType != '土地' && this.assetType != '车场' ){}
             const {count, data} = res.data
             this.dataSource = data
             Object.assign(this.paginationObj, {
@@ -246,7 +245,7 @@
 
       // 根据资产类型查资产分类列表
       queryObjectType (assetType) {
-        this.objectType = ''
+        this.objectType = '-1'
         this.objectTypeOptions = []
         if (!assetType) { return false }
         const { organId } = this
@@ -273,13 +272,13 @@
     },
     mounted () {
       const {allAttrs, value, assetType} = this
-      if(this.assetType != 1 && this.assetType != 2 && this.assetType != 4 ) {
+      if(Object.keys(this.$store.state.ASSET_TYPE_CODE).map(e => (this.$store.state.ASSET_TYPE_CODE[e])).includes(this.assetType)) {
                this.columns = [
           { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
           { title: '资产编码', dataIndex: 'assetCode' },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '资产分类', dataIndex: 'objectTypeName' },
           { title: '领用日期', dataIndex: 'receiveDate' },
           { title: '领用人', dataIndex: 'receiveUserName' },
         ]
@@ -298,17 +297,16 @@
     },
     watch: {
       assetType: function () {
-          if(this.assetType != 1 && this.assetType != 2 && this.assetType != 4 ) {
-
+          if(Object.keys(this.$store.state.ASSET_TYPE_CODE).map(e => (this.$store.state.ASSET_TYPE_CODE[e])).includes(this.assetType) ) {
                this.columns = [
-          { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
-          { title: '资产编码', dataIndex: 'assetCode' },
-          { title: '资产名称', dataIndex: 'assetName' },
-          { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产分类', dataIndex: 'assetCategoryName' },
-          { title: '领用日期', dataIndex: 'receiveDate' },
-          { title: '领用人', dataIndex: 'receiveUserName' },
-        ]
+                { title: '领用编号', dataIndex: 'receiveDetailId', fixed: 'left', width: 120 },
+                { title: '资产编码', dataIndex: 'assetCode' },
+                { title: '资产名称', dataIndex: 'assetName' },
+                { title: '资产类型', dataIndex: 'assetTypeName' },
+                { title: '资产分类', dataIndex: 'objectTypeName' },
+                { title: '领用日期', dataIndex: 'receiveDate' },
+                { title: '领用人', dataIndex: 'receiveUserName' },
+               ]
           }
       },
       value: function (value) {

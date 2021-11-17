@@ -78,7 +78,7 @@
   export default {
     name: 'WorthListPart',
     components: {  OverviewNumber,  TooltipText },
-    props: ['type', 'registerId', 'organId', 'dynamicData', 'details'],
+    props: ['type', 'registerId', 'organId', 'dynamicData', 'details','isSelectedEquipment'],
     data () {
       return {
         tableObj: {
@@ -119,9 +119,6 @@
       }
     },
     computed:{
-      isSelectedEquipment(){
-          return this.dynamicData.assetTypeName === this.$store.state.ASSET_TYPE_STRING.EQUIPMENT
-      },
       columnsCom(){
         if (this.isSelectedEquipment){
           return this.tableObj.columns.filter(ele=>(ele.dataIndex || ele.key) !== 'returnArea')
@@ -422,10 +419,11 @@
               return { ...m, value:  0 }
             })
 
+          }else{
+            this.tableObj.dataSource = dataSource.map(m => {
+              return Object.assign(m, data)
+            })
           }
-          this.tableObj.dataSource = dataSource.map(m => {
-            return Object.assign(m, data)
-          })
         }
       }
 
