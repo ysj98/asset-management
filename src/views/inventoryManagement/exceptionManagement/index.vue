@@ -124,7 +124,7 @@ const columns = [
   {
     title: '资产编号',
     dataIndex: 'assetCode',
-    width: 160,
+    width: 200,
     fixed: 'left'
   },
   {
