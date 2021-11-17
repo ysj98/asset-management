@@ -269,10 +269,13 @@ export default {
       } else {
         data.factoryDate = ''
       }
+      const imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({url: item,name: item.split("/").pop()}));
+      // 转换附件
+      const documentPath = fileList.map(item=>({url: item.filePath,name: item.fileName}))
       return {
         ...data,
-        imgPath: fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName})),
-        documentPath: fileList.filter(item=>Number(item.fileType) === 2).map(item=>({url:item.filePath,name:item.fileName}))
+        imgPath,
+        documentPath
       }
     },
     // 初始化

@@ -258,7 +258,7 @@ import {
   getInfoAttrListByEquipmentId,
 } from "../../../api/building";
 import moment from "moment";
-import {equipmentFileUpload} from "../../../api/basics";
+const imgExt = new Array("png","jpg","jpeg","bmp","gif");
 export default {
   components: {EquipmentSelectTree, EquipmentSelect, EquipmentPositionSelectTree , FormFooter, TreeSelect},
   mixins: [dictMixin],
@@ -483,9 +483,10 @@ export default {
         }
       }
       // 转换图片
-      const imgPath = fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName}))
+      // const imgPath = fileList.filter(item=>Number(item.fileType) === 1).map(item=>({url:item.filePath,name:item.fileName}))
+      const imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({url: item,name: item.split("/").pop()}));
       // 转换附件
-      const documentPath = fileList.filter(item=>Number(item.fileType) === 2).map(item=>({url: item.filePath,name: item.fileName}))
+      const documentPath = fileList.map(item=>({url: item.filePath,name: item.fileName}))
       return {
         ...data,
         imgPath,
@@ -519,13 +520,13 @@ export default {
         params.factoryDate = moment(params.factoryDate, 'YYYYMMDD').valueOf() / 1000
       }
       const fileList = [
-        ...(this.formInfo.imgPath|| []).map(item => ({...item,fileType: 1})),
-        ...(this.formInfo.documentPath|| []).map(item => ({...item,fileType: 2}))
+        // ...(this.formInfo.imgPath|| []).map(item => ({...item,fileType: 1})),
+        ...(this.formInfo.documentPath|| []).map(item => ({...item}))
       ].map(item => ({
         fileSize: 0,
         fileName: item.name,
         filePath: item.url,
-        fileType: item.fileType
+        fileType: imgExt.includes(item.name.split('.').pop())? 1: 2
       }))
 
       const returnData = {
