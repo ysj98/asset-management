@@ -501,11 +501,17 @@ export default {
       const amount = this.table.dataSource.reduce((accumulator, currentValue) => accumulator + currentValue.disposeCost, 0)
       console.log(amount)
       this.newCardData.disposeCost = amount
+      this.form.setFieldsValue({
+        disposeCost: amount,
+      })
     },
     sumDisposeReceive(){
       const amount = this.table.dataSource.reduce((accumulator, currentValue) => accumulator + currentValue.disposeReceive, 0)
       console.log(amount)
       this.newCardData.disposeReceive = amount
+      this.form.setFieldsValue({
+        disposeReceive: amount,
+      })
     },
     handleIsAssistAccreditation(event,record){
       this.$set(record,'isAssistAccreditation',event.target.checked)
