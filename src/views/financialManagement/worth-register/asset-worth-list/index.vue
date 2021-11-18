@@ -299,6 +299,7 @@
       // 资产类型发生变化
       changeAssetType (value) {
         this.$nextTick(function () {
+          this.categoryOptions = [{title: '全部资产分类', key: '-1'}]
           this.organProjectType.assetType = this.handleMultipleSelectValue(value, this.organProjectType.assetType, this.assetTypeOptions)
           this.queryTableData({})
           this.queryCategoryOptions()
