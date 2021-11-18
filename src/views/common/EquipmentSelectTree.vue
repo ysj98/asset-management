@@ -22,6 +22,8 @@
 
 <script>
 
+import {queryTopOrganByOrganID} from "../buildingDict/publicFn";
+
 export default {
   name: "EquipmentSelectTree",
   props: {
@@ -41,6 +43,10 @@ export default {
     topOrganId: {
       type: [String, Number],
       required: true
+    },
+    // 是否开启顶级机构Id反查
+    isTopOrganId:{
+      default: true
     },
     // 默认不支持清空
     allowClear: {
@@ -94,6 +100,7 @@ export default {
   watch: {
     topOrganId: {
       handler: function(newValue) {
+        console.log('topOrganID', newValue)
         if (newValue) {
           this.init();
         }
@@ -129,9 +136,16 @@ export default {
       });
     },
     async getPositionData(options = {}) {
+      let organId = this.topOrganId
+      if (this.isTopOrganId) {
+      const params = { nOrgId: this.topOrganId, nOrganId: this.topOrganId }
+      let data = await queryTopOrganByOrganID(params)
+        organId = data.organId
+      }
+      console.log('organId', organId)
       return new Promise(async (resolve, reject) => {
         const requestData = {
-          organId: this.topOrganId,
+          organId: organId,
           upEquipmentId: "-1"
         };
         Object.assign(requestData, options);
