@@ -81,6 +81,8 @@ export default {
   },
   data() {
     return {
+      // 一级机构 id
+      oneOrganId:'',
       treeData: [],
       showDefaultOrganName: true // 显示默认值
     };
@@ -99,9 +101,12 @@ export default {
   },
   watch: {
     topOrganId: {
-      handler: function(newValue) {
+      handler: async function(newValue) {
         console.log('topOrganID', newValue)
         if (newValue) {
+          if (this.isTopOrganId){
+            this.oneOrganId = await this.getTopOrganId({nOrganId:newValue,nOrgId:newValue})
+          }
           this.init();
         }
       },
@@ -118,13 +123,25 @@ export default {
     handleChange () {
       this.showDefaultOrganName = false
     },
+    //  获取 一级机构 id
+    async getTopOrganId({nOrgId,nOrganId}){
+      return new Promise(async (resolve) => {
+        const params = { nOrgId, nOrganId }
+        let data = await queryTopOrganByOrganID(params)
+        resolve(data.organId)
+      })
+    },
     onLoadData(treeNode) {
       console.log("treeNode", treeNode);
       return new Promise(async (resolve, reject) => {
         const { value } = treeNode;
+        let organId = this.topOrganId
+        if (this.isTopOrganId) {
+          organId = this.oneOrganId
+        }
         try {
           const data = await this.getPositionData({
-            organId: this.topOrganId,
+            organId: organId,
             upEquipmentId: value
           });
           treeNode.dataRef.children = this.handlePositionDataToTreeData(data);
@@ -138,9 +155,7 @@ export default {
     async getPositionData(options = {}) {
       let organId = this.topOrganId
       if (this.isTopOrganId) {
-      const params = { nOrgId: this.topOrganId, nOrganId: this.topOrganId }
-      let data = await queryTopOrganByOrganID(params)
-        organId = data.organId
+        organId = this.oneOrganId
       }
       console.log('organId', organId)
       return new Promise(async (resolve, reject) => {
