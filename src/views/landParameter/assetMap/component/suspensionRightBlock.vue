@@ -246,6 +246,10 @@ export default {
     // 选择省市区
     async handleSelectAdress(type, item, transferFlag) {
 
+      let payload  = {
+        ...this.queryCondition,
+        assetTypes: this.assetTypes.join(",")
+      }
       let { label, value } = item
       console.log("选择省市区", type, item)
       if (type === "province") {
@@ -263,7 +267,8 @@ export default {
           await this.queryCityAndAreaList(value, type)
         }
         if (!transferFlag){
-          this.$emit('selectCity', label)
+          payload._periphery = label
+          this.$emit('search', payload)
         }
       }
       if (type === "city") {
@@ -276,7 +281,8 @@ export default {
         if ( label === '全省' ){
           address = this.currentProvince
         }
-        this.$emit('selectCity', address)
+        payload._periphery = address
+        this.$emit('search', payload)
       }
       this.query()
     },
@@ -392,7 +398,7 @@ export default {
     overflow-y: auto;
   }
   .search-checkbox {
-    width: 75px;
+    //width: 90px;
     display: inline-block;
   }
   .search-item-province {

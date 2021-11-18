@@ -10,7 +10,7 @@
       <div class="asset-map-box" :id="mapDomId"></div>
       <!-- 搜索弹窗 -->
       <div class="suspensionRightBlock">
-        <suspensionRightBlock @search="handleSearchMap" @selectCity="selectCity"></suspensionRightBlock>
+        <suspensionRightBlock @search="handleSearchMap"></suspensionRightBlock>
       </div>
       <!-- 显示弹窗 -->
       <div class="show-map-detail" v-show="showDetailModal">
@@ -41,49 +41,31 @@
 <script>
 import Tools, {calc, getArrayRepeat, handleEnumerationConversion} from "@/utils/utils"
 import suspensionRightBlock from "./component/suspensionRightBlock"
-import mapLandIcon from "./images/map_land.png"
-import mapHouseIcon from "./images/map_house.png"
-import mapLandTipIcon from "./images/map_land_tip.png"
-import mapHouseTipIcon from "./images/map_house_tip.png"
 import landMapDetail from "./component/landMapDetail"
 import houseMapDetail from "./component/houseMapDetail"
-
-var markerMap = {
-  "1": {
-    name: "楼栋: ",
-    color: "#ffffff",
-    backgroundColor: "rgba(0,0,0,.8)",
-    boxShadow: "3px 3px 3px 3px rgba(4, 117, 221, 0.23)",
-    markerIcon: mapHouseIcon,
-    tipIcon: mapHouseTipIcon,
-  },
-  "2": {
-    name: "土地: ",
-    color: "#ffffff",
-    backgroundColor: "rgba(0,0,0,.8)",
-    boxShadow: "3px 3px 3px 3px rgba(4, 117, 221, 0.23)",
-    markerIcon: mapLandIcon,
-    tipIcon: mapLandTipIcon,
-  },
-}
+import EquipmentDetail from "@/views/landParameter/assetMap/component/EquipmentDetail";
+import YardDetail from "@/views/landParameter/assetMap/component/YardDetail";
+import {assetMapResourceTypeOptions, markerMap, detailInfoKey,MAP_ASSET_TYPE_CODE} from './share'
 export default {
   name: "AssetMapPage",
   components: {
     suspensionRightBlock,
     landMapDetail,
     houseMapDetail,
+    EquipmentDetail,
+    YardDetail
   },
   data() {
     return {
       listTableOptions:{
         rowKey: function (record){
-          // return record.resourceId
-          return Math.random()
+          return record.resourceId
+        },
+        pagination: false,
+        scroll:{
+          y: 400
         },
         bordered:true,
-        pagination:{
-          size:'small'
-        },
         dataSource: [],
         columns: [
           {
@@ -128,7 +110,7 @@ export default {
       this.handleOpenAssetDetail(record,SOURCE)
     },
     generateResourceType(text,record){
-      return  handleEnumerationConversion(String(record.resourceType), this.$store.state.ASSET_TYPE_OPTIONS, ['value', 'name'])
+      return  handleEnumerationConversion(record.resourceType, assetMapResourceTypeOptions, ['value', 'name'])
     },
     // 打开 重复点位 列表
     handleOpenAssetList(data){
@@ -140,9 +122,12 @@ export default {
     handleOpenAssetDetail(obj,SOURCE) {
       console.log("拿到数据=>", obj)
       let { resourceType } = obj
+      const {HOUSE,LAND,YARD,EQUIPMENT}  = MAP_ASSET_TYPE_CODE
       let detailMap = {
-        "1": houseMapDetail,
-        "2": landMapDetail,
+        [HOUSE]: houseMapDetail,
+        [LAND]: landMapDetail,
+        [YARD]: YardDetail,
+        [EQUIPMENT]: EquipmentDetail
       }
       this.showDetailModal = true
       if (SOURCE !== 'list'){
@@ -168,9 +153,10 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
+            this.detailInfo = { ...result[detailInfoKey[String(resourceType)]] }
+            // TODO: 车场 设备设施 处理
             // 楼栋信息
-            if (String(resourceType) === "1") {
-              this.detailInfo = { ...result.buildInfo }
+            if (String(resourceType) === MAP_ASSET_TYPE_CODE.HOUSE) {
               // 修改价值元
               if (this.detailInfo.assetValue) {
                 this.detailInfo.assetValue =  Math.floor(calc.divide(Number(this.detailInfo.assetValue), 10000) * 100) / 100
@@ -184,8 +170,7 @@ export default {
               }
             }
             // 土地信息
-            if (String(resourceType) === "2") {
-              this.detailInfo = { ...result.landInfo }
+            if (String(resourceType) === MAP_ASSET_TYPE_CODE.LAND) {
               // 修改价值元
               if (this.detailInfo.originalValue) {
                 this.detailInfo.originalValue = Math.floor(calc.divide(Number(this.detailInfo.originalValue), 10000) * 100) / 100
@@ -197,6 +182,29 @@ export default {
               // 修改面积
               if (this.detailInfo.landArea) {
                 this.detailInfo.landArea = Number(this.detailInfo.landArea).toFixed(2)
+              }
+            }
+            // 设备设施信息
+            if (String(resourceType) === MAP_ASSET_TYPE_CODE.EQUIPMENT) {
+              // TODO: 处理 设备设施 独有的信息
+              // 修改价值元
+              if (this.detailInfo.assetValue) {
+                this.detailInfo.assetValue =  Math.floor(calc.divide(Number(this.detailInfo.assetValue), 10000) * 100) / 100
+              }
+            }
+            // 车场信息
+            if (String(resourceType) === MAP_ASSET_TYPE_CODE.YARD) {
+              // TODO: 处理 车场 独有的信息
+              // 修改价值元
+              if (this.detailInfo.assetValue) {
+                this.detailInfo.assetValue =  Math.floor(calc.divide(Number(this.detailInfo.assetValue), 10000) * 100) / 100
+              }
+              // 修改面积
+              if (this.detailInfo.assetArea) {
+                this.detailInfo.assetArea = Number(this.detailInfo.assetArea).toFixed(2)
+              }
+              if (this.detailInfo.builtArea) {
+                this.detailInfo.builtArea = Number(this.detailInfo.builtArea).toFixed(2)
               }
             }
           } else {
@@ -224,11 +232,14 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || []
-            result.push(...result)
             // result.pop()
             result = getArrayRepeat(result,(ele)=>(ele.longitude + ele.latitude))
+            // TODO: 清除 标记
             this.removeMarker()
             this.createIconMarker(result)
+            if(data._periphery){
+              this.getBoundary(data._periphery)
+            }
           } else {
             this.$message.error(res.data.message || res.data.msg)
           }
@@ -237,15 +248,9 @@ export default {
           this.loading = false
         })
     },
-    // 选择城市地图对应放大
-    selectCity(value) {
-      this.getBoundary(value)
-      // this.map.centerAndZoom(city,11)
-    },
     getBoundary(address) {
       const _this = this;
       let bdary = new BMap.Boundary();
-
       //定义中国东南西北端点，作为第一层
       const pNW = { lat: 59.0, lng: 73.0 };
       const pNE = { lat: 59.0, lng: 136.0 };
@@ -258,6 +263,10 @@ export default {
       pArray.push(pSE);
       pArray.push(pNE);
       pArray.push(pNW);
+      if (address === '全国'){
+        _this.map.setViewport(pArray)
+        return null
+      }
       bdary.get(`${address}`, function(rs) {
         console.log('address',address)
         //获取行政区域
@@ -459,7 +468,7 @@ export default {
   right: 470px;
   top: 10px;
 
-  max-width: 300px;
+  max-width: 400px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 1px 2px 2px 0px rgb(0 0 0 / 14%);
