@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {calc, utils, getArrayRepeat} from '@/utils/utils'
+import {calc, utils, getArrayRepeat, handleEnumerationConversion} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
 import {
@@ -669,7 +669,7 @@ export default {
           * */
           let basicData = arrData.map(ele => ({
             ...ele,
-            sourceMode: ele.sourceMode !== undefined ? ele.sourceMode : this.sourceType,
+            sourceMode: ele.sourceModeName ? handleEnumerationConversion(ele.sourceModeName, this.sourceOptions, ['title', 'key']) : this.sourceType,
             kindOfRight: this.ownershipData[ele.kindOfRightName],
             ownershipStatus: this.organDictData[ele.ownershipStatusName]
           }));
