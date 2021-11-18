@@ -103,6 +103,7 @@
         <a-select
           showSearch
           allowClear
+          style="width:144px"
           placeholder="全部资产分类"
           optionFilterProp="children"
           :maxTagCount="1"
@@ -412,8 +413,14 @@ export default {
       };
       this.queryCondition.objectTypeList = [""];
       if (!obj.assetType) {
+        this.assetTypeList = [{ label: "全部资产分类", value: "" }];
         return;
       }
+      if ((obj.assetType || '').split(',').length>1) {
+        this.assetTypeList = [{ label: "全部资产分类", value: "" }];
+        return;
+      }
+      console.log(obj)
       this.$api.assets.getList(obj).then((res) => {
         if (+res.data.code === 0) {
           let arr = [{ label: "全部资产分类", value: "" }];
