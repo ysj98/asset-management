@@ -88,7 +88,7 @@ export default {
       const {HOUSE,LAND,YARD,EQUIPMENT} = this.ASSET_TYPE_CODE
       const info = [
         { text: '转物业日期', value: 'transferTime' },
-        { text: '使用方向', value: 'debugger', assetType:[EQUIPMENT] },
+        { text: '使用方向', value: 'useDirectionName', assetType:[EQUIPMENT] },
         { text: '转物业面积(㎡)', value: 'transferArea', assetType:[HOUSE, LAND, YARD] },
         { text: '转运营日期', value: 'transferOperationTime', assetType:[HOUSE, LAND, YARD] },
         { text: '运营面积(㎡)', value: 'transferOperationArea', assetType:[HOUSE, LAND, YARD] },
@@ -113,8 +113,8 @@ export default {
         { text: '楼栋名称', value: 'buildName', assetType:[HOUSE] },
         { text: '房间名称', value: 'houseName', assetType:[HOUSE] },
         { text: '土地名称', value: 'landName', assetType:[LAND] },
-        { text: '车场名称', value: 'xxx', assetType:[YARD] },
-        { text: '设备设施名称', value: 'debugger', assetType:[EQUIPMENT] },
+        { text: '车场名称', value: 'carParkName', assetType:[YARD] },
+        { text: '设备设施名称', value: 'equipmentName', assetType:[EQUIPMENT] },
 
         { text: '土地编号', value: 'landCode', assetType:[LAND] },
         { text: '资产位置', value: 'address' },
