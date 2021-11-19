@@ -1,7 +1,7 @@
 <template>
   <div class="landMapDetail-page">
     <div class="detail-top-head">
-      {{ detailInfo.buildName | filterNullValue }}（楼栋）
+      {{ detailInfo.placeName | filterNullValue }}（车场）
       <span class="fr pointer" @click="handleSwitch"
         ><a-icon type="close"
       /></span>
@@ -14,78 +14,64 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">宗地号：</span
+                  <span class="detail-label">车场编码：</span
                   ><span class="detail-main">{{
-                    detailInfo.addressNo | filterNullValue
+                    detailInfo.placeCode | filterNullValue
                   }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">总层数：</span
+                  <span class="detail-label">车场面积：</span
                   ><span class="detail-main">{{
-                    detailInfo.buildFloor | filterNullValueSquare
+                    detailInfo.placeArea | filterNullValueSquare
                   }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">房屋数量：</span
+                  <span class="detail-label">车位数量：</span
                   ><span class="detail-main">{{
-                    detailInfo.houseNum | filterNullValue
+                    detailInfo.placeNums | filterNullValue
                   }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑面积：</span
+                  <span class="detail-label">车场类型：</span
                   ><span class="detail-main">{{
                     detailInfo.builtArea | filterNullValue
                   }}</span>
                 </div>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">楼栋类型：</span
+<!-- TODO:缺少交付时间 -->
+                  <span class="detail-label">交付时间：</span
                   ><span class="detail-main">{{
                     detailInfo.buildType | filterNullValue
-                  }}</span>
-                </div>
-              </a-col>
-              <a-col :span="12">
-                <div class="detail-top-item">
-                  <span class="detail-label">用途：</span
-                  ><span class="detail-main">{{
-                    detailInfo.useType | filterNullValue
-                  }}</span>
-                </div>
-              </a-col>
-              <a-col :span="12">
-                <div class="detail-top-item">
-                  <span class="detail-label">建筑年代：</span
-                  ><span class="detail-main">{{
-                    detailInfo.builtAge | filterNullValueSquare
-                  }}</span>
-                </div>
-              </a-col>
-              <a-col :span="12">
-                <div class="detail-top-item">
-                  <span class="detail-label">建筑结构：</span
-                  ><span class="detail-main">{{
-                    detailInfo.buildStruct | filterNullValue
                   }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
                   <span class="detail-label">地理位置：</span
-                  ><span class="detail-main"
-                    >{{ detailInfo.position | filterNullValue }}
-                  </span>
+                  ><span class="detail-main">{{
+                    detailInfo.position | filterNullValue
+                  }}</span>
+                </div>
+              </a-col>
+              <a-col :span="24">
+                <div class="detail-top-item">
+                  <span class="detail-label">运营项目：</span
+                  ><span class="detail-main">{{
+                    detailInfo.communityName | filterNullValueSquare
+                  }}</span>
                 </div>
               </a-col>
             </a-row>
           </div>
+          <!-- TODO:车场 默认图 -->
           <div class="detail-content-right pt10">
             <img v-if="imgSrc" :src="imgSrc" alt="" />
             <img v-else src="../images/default_house.png" />

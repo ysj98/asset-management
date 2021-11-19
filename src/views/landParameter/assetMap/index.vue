@@ -27,12 +27,13 @@
         </div>
         <div class="list-container-line"></div>
         <div class="list-container-content">
-          <a-table v-bind="listTableOptions">
+          <a-table v-bind="listTableOptions" :dataSource="listTableDataSourceCom">
             <!-- 资产名称 -->
             <template #resourceName="text,record,index">
               <a @click="handleAssetItemClick(record)">{{record.resourceName}}</a>
             </template>
           </a-table>
+          <a-pagination v-bind="listPageObj" size="small" @change="listTableChangePage" />
         </div>
       </div>
     </div>
@@ -57,6 +58,9 @@ export default {
   },
   data() {
     return {
+      listPageObj:{
+        current:1
+      },
       listTableOptions:{
         rowKey: function (record){
           return record.resourceId
@@ -71,8 +75,8 @@ export default {
           {
             title: '序号',
             key: 'index',
-            customRender(text,record,index){
-              return index + 1
+            customRender:(text,record,index)=>{
+              return ((this.listPageObj.current -1 ) * 10) + (index + 1)
             }
           },
           {
@@ -101,10 +105,18 @@ export default {
       detailInfo: {}, // 土地信息
     }
   },
+  computed:{
+    listTableDataSourceCom(){
+      return this.listTableOptions.dataSource.slice((this.listPageObj.current-1) * 10, this.listPageObj.current + 9)
+    }
+  },
   mounted() {
     this.createBaiduMap()
   },
   methods: {
+    listTableChangePage(val){
+      this.listPageObj.current = val
+    },
     handleAssetItemClick(record){
       let SOURCE = 'list'
       this.handleOpenAssetDetail(record,SOURCE)
@@ -232,9 +244,7 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || []
-            // result.pop()
             result = getArrayRepeat(result,(ele)=>(ele.longitude + ele.latitude))
-            // TODO: 清除 标记
             this.removeMarker()
             this.createIconMarker(result)
             if(data._periphery){
