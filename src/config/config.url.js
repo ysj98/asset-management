@@ -394,6 +394,8 @@ export const assets = {
     queryAssetViewPage: '/ams/asset-house/house/page',
     // 不页查询房屋资产信息
     queryAssetViewPage2: '/ams/asset-house/house/pageV2',
+    // 不分页查询车场资产信息
+    carPage:'/ams/admin/common/query/carPage',
     // 导出房屋卡片
     exportHouseExcel: '/ams/asset-house/card',
     // 导出资产视图

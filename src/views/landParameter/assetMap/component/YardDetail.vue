@@ -38,18 +38,10 @@
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
+                  <!-- TODO:缺少车场类型 -->
                   <span class="detail-label">车场类型：</span
                   ><span class="detail-main">{{
                     detailInfo.builtArea | filterNullValue
-                  }}</span>
-                </div>
-              </a-col>
-              <a-col :span="24">
-                <div class="detail-top-item">
-<!-- TODO:缺少交付时间 -->
-                  <span class="detail-label">交付时间：</span
-                  ><span class="detail-main">{{
-                    detailInfo.buildType | filterNullValue
                   }}</span>
                 </div>
               </a-col>
@@ -65,7 +57,7 @@
                 <div class="detail-top-item">
                   <span class="detail-label">运营项目：</span
                   ><span class="detail-main">{{
-                    detailInfo.communityName | filterNullValueSquare
+                    detailInfo.communityName | filterNullValue
                   }}</span>
                 </div>
               </a-col>
@@ -74,7 +66,7 @@
           <!-- TODO:车场 默认图 -->
           <div class="detail-content-right pt10">
             <img v-if="imgSrc" :src="imgSrc" alt="" />
-            <img v-else src="../images/default_house.png" />
+            <img v-else src="../images/default_yard.png" />
           </div>
         </div>
       </div>

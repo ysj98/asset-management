@@ -166,7 +166,6 @@ export default {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
             this.detailInfo = { ...result[detailInfoKey[String(resourceType)]] }
-            // TODO: 车场 设备设施 处理
             // 楼栋信息
             if (String(resourceType) === MAP_ASSET_TYPE_CODE.HOUSE) {
               // 修改价值元
@@ -198,7 +197,6 @@ export default {
             }
             // 设备设施信息
             if (String(resourceType) === MAP_ASSET_TYPE_CODE.EQUIPMENT) {
-              // TODO: 处理 设备设施 独有的信息
               // 修改价值元
               if (this.detailInfo.assetValue) {
                 this.detailInfo.assetValue =  Math.floor(calc.divide(Number(this.detailInfo.assetValue), 10000) * 100) / 100
@@ -206,7 +204,6 @@ export default {
             }
             // 车场信息
             if (String(resourceType) === MAP_ASSET_TYPE_CODE.YARD) {
-              // TODO: 处理 车场 独有的信息
               // 修改价值元
               if (this.detailInfo.assetValue) {
                 this.detailInfo.assetValue =  Math.floor(calc.divide(Number(this.detailInfo.assetValue), 10000) * 100) / 100
@@ -215,9 +212,10 @@ export default {
               if (this.detailInfo.assetArea) {
                 this.detailInfo.assetArea = Number(this.detailInfo.assetArea).toFixed(2)
               }
-              if (this.detailInfo.builtArea) {
-                this.detailInfo.builtArea = Number(this.detailInfo.builtArea).toFixed(2)
+              if (this.detailInfo.placeArea) {
+                this.detailInfo.placeArea = Number(this.detailInfo.placeArea || 0).toFixed(2)
               }
+              // TODO:车场类型 特殊处理
             }
           } else {
             this.$message.error(res.data.message || res.data.msg)

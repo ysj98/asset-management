@@ -264,7 +264,7 @@
         <span class="section-title blue">资产列表</span>
         <div class="button-box">
           <SG-Button
-            v-show="changeType!=='3' || !['1', '2'].includes(originalObjectType)"
+            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
             class="buytton-nav"
             type="primary"
             weaken
@@ -382,7 +382,7 @@
             <!-- 原值变更 -->
             <template v-if="changeType === '3'" slot="newOriginalValue" slot-scope="text, record">
               <a-input-number
-                :disabled="changeType=='3'&&['1', '2'].includes(originalObjectType)"
+                :disabled="changeType=='3'&&['1', '2','3'].includes(originalObjectType)"
                 size="small"
                 :min="0"
                 :step="1.00"
@@ -519,6 +519,7 @@ import {calc, debounce} from "@/utils/utils.js";
 import moment from "moment";
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {SET_AMS_USE_DIRECTION} from "store/types/platformDictTypes";
+import {carPage} from "api/assets";
 
 const newEditSingleData = {
   title: "", // 登记单名称
@@ -1266,7 +1267,6 @@ export default {
     },
     handleFormatAssetData(data){
       return data.map((element) => {
-        element.assetObjectId = element.assetHouseId;
         element.key = element.assetId;
         element.oldOriginalValue = element.originalValue;
         element.newOriginalValue = ""; // 变动后原值
@@ -1287,16 +1287,16 @@ export default {
       });
     },
     async getStallApiPageList(val){
+      let projectId = this.form.getFieldValue("projectId");
       const requestData  = {
         organId: this.organId, // 机构id
-        placeId: val, // 车场Id
-        pageNo: 1,
-        pageLength: 9999,
-        isOnlyCurrent: 1
+        projectIdList: [projectId], // 车场Id
+        placeIdList: [val],
+        type:'2'
       }
-      const {data:{code,data}} = await this.$api.building.stallApiPageList(requestData)
+      const {data:{code,data}} = await this.$api.assets.carPage(requestData)
       if (code === '0'){
-        let resultList =  data ? data.resultList :[]
+        let resultList =  data
         this.checkedData = resultList.map(ele=>ele.assetId);
         this.tableData = this.handleFormatAssetData(resultList);
         this.computedEqually();

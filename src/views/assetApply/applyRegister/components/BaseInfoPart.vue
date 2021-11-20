@@ -106,6 +106,8 @@
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="领用人">
           <a-select
+            showSearch
+            optionFilterProp="children"
             v-decorator="['receiveUserName', { rules: [{ required: true, message: '请选择领用人' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
             @change="setData($event, 'receiveUserName')"

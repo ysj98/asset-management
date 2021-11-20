@@ -33,7 +33,7 @@
           <!-- TODO:设备设施 默认图 -->
           <div class="detail-content-right pt10">
             <img v-if="imgSrc" :src="imgSrc" alt="" />
-            <img v-else src="../images/default_house.png" />
+            <img v-else src="../images/default_equipment.png" />
           </div>
         </div>
       </div>
