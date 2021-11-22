@@ -132,7 +132,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea' },
             { title: '资产原值(元)', dataIndex: 'originalValue' },
             { title: '最新估值(元)', dataIndex: 'marketValue' },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 100, fixed: 'right' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },

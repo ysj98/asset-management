@@ -50,10 +50,10 @@
       <a-col v-if="!isSelectedEquipment" :span="6" :offset="2">
         <div>出租面积(㎡)： {{ assetInfo.leaseArea }}㎡</div>
       </a-col>
-      <a-col :span="7" :offset="1">
+      <a-col :span="7" :offset="!isSelectedEquipment ? 1 : 2">
         <div>创建人： {{ assetInfo.createByName }}</div>
       </a-col>
-      <a-col :span="7" :offset="1">
+      <a-col :span="7" :offset="!isSelectedEquipment ? 1 : 0">
         <div>创建日期： {{ assetInfo.createTime }}</div>
       </a-col>
     </a-row>

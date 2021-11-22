@@ -517,6 +517,10 @@ export function queryAssetViewPage (data) {
 export function queryAssetViewPage2 (data) {
   return axiosPost(assets.assetView.queryAssetViewPage2, data)
 }
+// 不分页查询车场资产信息
+export function carPage (data) {
+  return axiosPost(assets.assetView.carPage, data)
+}
 // 资产视图使用面积统计
 export function queryAssetViewArea (data) {
   return axiosPost(assets.assetView.queryAssetArea, data)

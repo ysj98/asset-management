@@ -439,7 +439,7 @@
       assetList: function () {
         if(this.assetList.length == 0){return}
         this.assetTypeName = this.assetList[0].assetTypeName
-        if(Object.keys(this.$store.state.ASSET_TYPE_STRING).map(e => (this.$store.state.ASSET_TYPE_STRING[e])).includes(this.assetList[0].assetTypeName)){
+        if(!Object.keys(this.$store.state.ASSET_TYPE_STRING).map(e => (this.$store.state.ASSET_TYPE_STRING[e])).includes(this.assetList[0].assetTypeName)){
            this.tableObj.columns = [
             { title: '领用ID', dataIndex: 'receiveDetailId' },
             { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },

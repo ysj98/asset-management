@@ -97,7 +97,6 @@ export const landVerificationList = [
   { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' }
 ]
 
-// TODO:车场导入校验规则
 export const yardVerificationList = [
   { title: '资产名称', dataIndex: 'assetName', required: true, fontLength: 30 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },

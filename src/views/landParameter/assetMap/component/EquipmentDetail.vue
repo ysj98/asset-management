@@ -1,7 +1,7 @@
 <template>
   <div class="landMapDetail-page">
     <div class="detail-top-head">
-      {{ detailInfo.buildName | filterNullValue }}（项目设备设施）
+      {{ detailInfo.communityName | filterNullValue }}（项目设备设施）
       <span class="fr pointer" @click="handleSwitch"
         ><a-icon type="close"
       /></span>
@@ -33,7 +33,7 @@
           <!-- TODO:设备设施 默认图 -->
           <div class="detail-content-right pt10">
             <img v-if="imgSrc" :src="imgSrc" alt="" />
-            <img v-else src="../images/default_house.png" />
+            <img v-else src="../images/default_equipment.png" />
           </div>
         </div>
       </div>
@@ -50,7 +50,13 @@
         <div class="pb10 pt10">
           <SG-Title title="设备设施详情" noMargin />
         </div>
-        <div class="detail-info"></div>
+        <div class="detail-info">
+          <div style="margin-bottom: 15px;" v-for="(item,index) in detailInfo.equipmentDetailList" :key="index">
+            <span>{{item.equipmentName}}</span>
+            <span>：</span>
+            <span>{{item.assetNum}}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -199,7 +205,8 @@ export default {
   }
 }
 .detail-info {
-  height: 300px;
+  min-height: 100px;
+  max-height: 300px;
   overflow: auto;
   padding: 20px 10px;
   border: 1px solid rgba(232, 232, 232, 0.8);

@@ -97,7 +97,10 @@
           <a-select
             v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
+            showSearch
+            optionFilterProp="children"
             @change="setData($event, 'returnUserName')"
+            @search="handleSearchReturnUserList"
             placeholder="请选择归还人"
             :options="$addTitle(staffList)"
             :getPopupContainer="
@@ -313,7 +316,10 @@
           this.$message.error(err || '查询资产项目失败')
         })
       },
-
+      // 搜索 归还人
+      handleSearchReturnUserList(value){
+        this.queryStaff(this.returnUserId,value)
+      },
       // 通过父组件，设置联动项到资产价值清单组件
       setData (val, type) {
         let value = ''
@@ -351,8 +357,8 @@
       },
 
       // 查询部门人员
-      queryStaff(id) {
-        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:5}).then(res => {
+      queryStaff(id,name) {
+        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:50, name: name || ''}).then(res => {
           if(res.data.data.length == 0){
             this.staffList = []
             return this.form.setFieldsValue({ returnUserName: ''})

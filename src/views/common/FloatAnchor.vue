@@ -80,7 +80,11 @@ export default {
     // 跳转到指定锚点
     jumpTo(id) {
       let node = id ? document.getElementById(id) : "";
-      node && node.scrollIntoView();
+      if (node){
+        let parentNode = node.parentNode
+        parentNode.scrollTop = node.offsetTop - 60
+      }
+      // node && node.scrollIntoView();
     },
 
     // 计算兄弟元素滚动高度

@@ -397,7 +397,7 @@
             changeAssetType(value) {
                 this.$nextTick(function() {
                     this.queryData.assetTypeList = this.handleMultipleSelectValue(
-                        value,
+                value[value.length-1] || '' ,
                         this.queryData.assetTypeList,
                         this.assetTypeOptions
                     );
