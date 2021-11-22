@@ -97,6 +97,8 @@
           <a-select
             v-decorator="['returnUserName', { rules: [{ required: true, message: '请选择归还人' }] }]"
             :disabled="type == 'approval' || type == 'detail'"
+            showSearch
+            optionFilterProp="children"
             @change="setData($event, 'returnUserName')"
             placeholder="请选择归还人"
             :options="$addTitle(staffList)"
@@ -352,7 +354,7 @@
 
       // 查询部门人员
       queryStaff(id) {
-        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:5}).then(res => {
+        this.$api.basics.queryUserPageList({organId: id, pageNo:1, pageLength:9999}).then(res => {
           if(res.data.data.length == 0){
             this.staffList = []
             return this.form.setFieldsValue({ returnUserName: ''})
