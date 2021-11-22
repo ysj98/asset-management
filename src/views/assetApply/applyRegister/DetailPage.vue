@@ -95,7 +95,7 @@
           let detailList = []
           assetList.forEach(m => {
             const { assetId, receiveArea, assetObjectId, remark } = m
-            detailList.push({ assetId, receiveArea: receiveArea || 0, assetObjectId, remark })
+            detailList.push({ assetId, receiveArea, assetObjectId, remark })
           })
           console.log(data,detailList,dynamicData)
           let form = type === 'edit' || type === 'add' ? { ...data, detailList, receiveId: registerId, receiveArea: receiveAreaTotal, receiveCount: detailList.length,
