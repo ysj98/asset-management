@@ -41,7 +41,7 @@
                   <!-- TODO:缺少车场类型 -->
                   <span class="detail-label">车场类型：</span
                   ><span class="detail-main">{{
-                    detailInfo.builtArea | filterNullValue
+                    detailInfo.typeName | filterNullValue
                   }}</span>
                 </div>
               </a-col>
