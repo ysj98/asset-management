@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
 const columns = [
   {
     title: "出租单ID",
@@ -116,7 +117,14 @@ const columns = [
   {
     title: "出租面积(㎡)",
     width: 100,
-    dataIndex: "leaseArea",
+    key: "leaseArea",
+    customRender(record){
+      return generateTableAreaByAssetTypeString({
+        record,
+        keyStr:'leaseArea',
+        assetTypeName: record.assetTypeName
+      })
+    },
     align: "center",
   },
   {
