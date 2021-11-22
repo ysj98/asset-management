@@ -267,7 +267,7 @@ export default {
       }
       // 如果开启
       if (["start"].includes(editType)) {
-        this.changeStatus(1, record.categoryConfId, record.professionCode);
+        this.changeStatus(1, record.categoryConfId, record.professionCode, record.professionName);
         return;
       }
       // 如果暂停
@@ -276,7 +276,7 @@ export default {
           title: "提示",
           content: "确认要停用该资产分类吗？",
           onOk() {
-            self.changeStatus(0, record.categoryConfId, record.professionCode);
+            self.changeStatus(0, record.categoryConfId, record.professionCode, record.professionName);
           }
         });
         return;
@@ -306,12 +306,13 @@ export default {
       }
     },
     // 改变状态
-    changeStatus(status, id, professionCode) {
+    changeStatus(status, id, professionCode, professionName) {
       let form = {
         categoryConfId: id,
         status: status,
         organId: this.organId,
         professionCode: professionCode,
+        professionName: professionName,
         assetType: pageTypeMap[this.type]
       };
       this.$api.assets.updateStatus(form).then(res => {
