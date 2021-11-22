@@ -448,7 +448,7 @@ export default {
               objectType: item.objectType,          // 资产分类
               assetArea: item.assetArea,            // 资产面积
               remark: item.remark,                  // 备注，填的
-              deliveryArea: item.deliveryArea,      // 交付面积，填的
+              deliveryArea: item.deliveryArea || 0,      // 交付面积，填的
               oldTransferArea: item.transferArea || '',   // 原交付物业面积(转物业面积)
               oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
             }
