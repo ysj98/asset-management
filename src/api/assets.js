@@ -168,11 +168,11 @@ export function getRegisterOrderListPage (data) {
 }
 // 资产登记新增-下载导入模板
 export function downloadTemplate (data) {
-  return axiosPost(assets.assetRegister.downloadTemplate, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.downloadTemplate, data, true, false, {responseType: 'blob'})
 }
 // 资产登记新增（修改的批量导出）-再次下载导入模板
 export function downloadTemplateV2 (data) {
-  return axiosPost(assets.assetRegister.downloadTemplateV2, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.downloadTemplateV2, data, true, false, {responseType: 'blob'})
 }
 // 基本信息批量更新（导入）
 export function baseImport (data) {

@@ -453,7 +453,8 @@ export default {
               oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
             }
           })
-          if (!this.isSelectedEquipment && this.tableData.length && this.tableData.every(ele=>conditionalJudgment.includes(ele.deliveryArea))) {
+          // 非设备类型时 且 tableData 有数据 且每一个数据中的交付面积，都不为 undefined "" null 0
+          if (!this.isSelectedEquipment && (this.tableData.length && (this.tableData.some(ele=>[...conditionalJudgment,0].includes(ele.deliveryArea))))) {
             this.$message.info("请填写交付面积");
             return;
           }
