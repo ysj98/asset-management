@@ -77,6 +77,7 @@
   import SearchContainer from 'src/views/common/SearchContainer'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { queryCategoryList, queryAssetTypeList, exportDataAsExcel } from 'src/views/common/commonQueryApi'
+  import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
   export default {
     name: 'assetInvestmentView',
     components: {noDataTips, SearchContainer, OrganProject, EquipmentSelectTree},
@@ -120,7 +121,11 @@
           { title: '投资单ID', dataIndex: 'investOrderId' },
           { title: '投资单名称', dataIndex: 'investName', width: 120  },
           { title: '投资项目', dataIndex: 'investProject', width: 120 },
-          { title: '投资面积(㎡)', dataIndex: 'investArea' },
+          { title: '投资面积(㎡)', key: 'investArea',
+            customRender(record){
+              return generateTableAreaByAssetTypeCode({record,keyStr:'investArea',assetTypeCode:String(record.assetType)})
+            },
+          },
           { title: '起投日期', dataIndex: 'startInvestDate', width: 80 },
           { title: '止投日期', dataIndex: 'endInvestDate', width: 80 },
           { title: '合同编号', dataIndex: 'contractCode', width: 150 },
