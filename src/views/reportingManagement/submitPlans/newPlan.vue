@@ -199,7 +199,8 @@
 									placeholder="请选择填报人"
 									:open="false"
 									:style="{width: '100%'}"
-                  record.informantOpt									@dropdownVisibleChange="tabSelectPerson(record, index, 'informant')"
+                  :options="record.informantOpt"
+                  @dropdownVisibleChange="tabSelectPerson(record, index, 'informant')"
 									v-model="record.informant"
 								>
 									<div slot="dropdownRender" slot-scope="menu"></div>
