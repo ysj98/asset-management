@@ -33,7 +33,11 @@
               <a @click="handleAssetItemClick(record)">{{record.resourceName}}</a>
             </template>
           </a-table>
-          <a-pagination v-bind="listPageObj" size="small" @change="listTableChangePage" />
+          <a-pagination
+            v-bind="listPageObj"
+            size="small"
+            :total="listTableOptions.dataSource.length"
+            @change="listTableChangePage" />
         </div>
       </div>
     </div>
@@ -107,7 +111,8 @@ export default {
   },
   computed:{
     listTableDataSourceCom(){
-      return this.listTableOptions.dataSource.slice((this.listPageObj.current-1) * 10, this.listPageObj.current + 9)
+      let idx = (this.listPageObj.current-1) * 10
+      return this.listTableOptions.dataSource.slice(idx, idx + 9)
     }
   },
   mounted() {
@@ -126,6 +131,7 @@ export default {
     },
     // 打开 重复点位 列表
     handleOpenAssetList(data){
+      this.listPageObj.current = 1
       this.listTableOptions.dataSource = data
       this.showDetailListModal = true
       this.closeDetailMap()
