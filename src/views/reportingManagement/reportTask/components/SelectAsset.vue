@@ -20,7 +20,18 @@
         />
       </a-col>
       <a-col :span="7">
+        <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            style="width: 100%"
+            :top-organ-id="organId"
+            v-model="objectType"
+            :options-data-format="(data)=>{
+            return [{label: '请选择资产类别', value: '', isLeaf: true},...data]
+          }"
+            @select="queryData()"
+        />
         <a-select
+          v-else
           style="width: 100%"
           v-model="objectType"
           @change="queryData()"
@@ -65,8 +76,10 @@
 </template>
 
 <script>
+  import EquipmentSelectTree from "../../../common/EquipmentSelectTree";
   export default {
     name: 'SelectAsset',
+    components: {EquipmentSelectTree},
     props: ['type', 'organId', 'projectId', 'isBatch'],
     data () {
       return {
@@ -111,9 +124,17 @@
       }
     },
 
+    computed:{
+      isSelectedEquipment(){
+        return this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+      }
+    },
+
     methods: {
       queryData (obj = {}) {
-        this.type == 'Card' ? this.queryCardList(obj) : this.queryAssetList(obj)
+        this.$nextTick(() => {
+          this.type == 'Card' ? this.queryCardList(obj) : this.queryAssetList(obj)
+        })
       },
 
       // 处理table 选中
