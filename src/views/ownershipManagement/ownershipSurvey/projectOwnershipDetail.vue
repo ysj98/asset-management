@@ -32,13 +32,19 @@
       <div class="detail-table-box" ref="table_box">
         <a-tabs @change="tabChange" v-model="showKey" :animated="false">
           <a-tab-pane :tab="'无证(' + (this.noOwnershipCount || 0) + ')'" key="noOwnership">
-            <noCertOwnershipDetail  @change="handleChange" :projectId="projectId" :type="type" :assetTypes="assetTypes"/>
+            <noCertOwnershipDetail
+              :totalCount="this.noOwnershipCount || 0"
+              :projectId="projectId"
+              :type="type"
+              :assetTypes="assetTypes"
+              @change="handleChange"
+            />
           </a-tab-pane>
           <a-tab-pane :tab="'有证(' + (this.ownershipCount || 0) + ')'" key="ownership" :assetTypes="assetTypes">
-            <hasCertOwnershipDetail @change="handleChange" :projectId="projectId" :type="type"/>
+            <hasCertOwnershipDetail :totalCount="this.ownershipCount || 0" @change="handleChange" :projectId="projectId" :type="type"/>
           </a-tab-pane>
           <a-tab-pane :tab="'待办(' + (this.waitOwnershipCount || 0) + ')'" key="waitOwnership" :assetTypes="assetTypes">
-            <waitCertOwnershipDetail :projectId="projectId" :type="type"/>
+            <waitCertOwnershipDetail :totalCount="this.waitOwnershipCount || 0" :projectId="projectId" :type="type"/>
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -146,7 +152,7 @@ export default {
             this.$message.error(res.data.message)
           }
         })
-        
+
       }, () => {
         this.DE_Loding(loadingName).then(res => {
           this.$SG_Message.error('保存失败！')
@@ -200,5 +206,5 @@ export default {
     height: 3px;
   }
 }
-  
+
 </style>
