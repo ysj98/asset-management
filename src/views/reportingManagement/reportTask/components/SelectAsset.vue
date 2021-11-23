@@ -157,8 +157,8 @@
         this.loading = true
         let form = {
           queryType: 1, assetNameCode: name, projectId, organId,
-          assetType: assetType === '-1' ? '' : assetType,
-          objectType: objectType === '-1' ? '' : objectType,
+          assetType: assetType === '' ? '' : assetType,
+          objectType: objectType === '' ? '' : objectType,
           pageSize: pageLength, pageNum: pageNo
         }
         this.$api.assets.assetListPage(form).then(r => {
@@ -187,7 +187,7 @@
               title: m.name,
               key: m.value
             }))
-            list.unshift({ title: '全部资产类型', key: '-1' })
+            list.unshift({ title: '全部资产类型', key: '' })
             this.assetTypeOptions = list
             return false
           }
@@ -210,7 +210,7 @@
               title: m.professionName,
               key: m.professionCode
             }))
-            list.unshift({ title: '全部资产分类', key: '-1' })
+            list.unshift({ title: '全部资产分类', key: '' })
             this.objectTypeOptions = list
             return false
           }
