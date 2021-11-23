@@ -4,7 +4,7 @@
  * 日期：2019年6月26日
  */
 import host from './config.base.js'
-
+import configs from "@/config/config.base.js";
 let mock = process.env.NODE_ENV === 'production' ? '' : ''
 mock = ''
 export const User = {
@@ -278,8 +278,12 @@ export const assets = {
     getPage: '/ams/categoryCfg/getPage',
     // 资产分类设置-导出资产分类列表
     exportList: '/ams/categoryCfg/export',
-    // 资产分类设置-获取费用科目类列表
-    getFeeTypeList: '/ams/categoryCfg/getFeeTypeList',
+    /*
+    * 资产分类设置-获取费用科目类列表(根据当前环境判断调用接口路径，招商环境和其他环境)
+    * 其他环境  /ams/categoryCfg/getFeeTypeList
+    * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
+    * */
+    getFeeTypeList: configs.platform === "merchants" ? '/charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList' : '/ams/categoryCfg/getFeeTypeList',
     // 资产分类设置-修改资产分类
     update: '/ams/categoryCfg/update',
     // 资产分类设置-修改资产分类状态
