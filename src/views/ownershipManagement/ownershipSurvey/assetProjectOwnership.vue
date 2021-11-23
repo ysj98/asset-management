@@ -448,10 +448,12 @@ export default {
     },
     // 页面跳转
     goPage(type, record) {
+      let assetTypes = this.queryCondition.assetTypes
       let query = {
         type,
         projectId: record.projectId,
-        assetTypes: this.queryCondition.assetTypes || []
+        // assetTypes 存在 且长度大于等于1，然后过滤 空值，undefined，如果 assetTypes不存在就传空数组
+        assetTypes: (assetTypes && assetTypes.length && assetTypes.filter(ele=>!["",undefined].includes(ele))) || []
       };
       this.$router.push({ path: operationTypes[type], query });
     },

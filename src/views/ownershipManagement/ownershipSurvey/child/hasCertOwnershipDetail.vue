@@ -13,6 +13,7 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
       :locale="{emptyText: '暂无数据'}"
+      :scroll="{y:500}"
     >
       <template slot="settingMethod" slot-scope="text, record">
         <span v-if="type==='detail'">{{record.settingMethodName}}</span>

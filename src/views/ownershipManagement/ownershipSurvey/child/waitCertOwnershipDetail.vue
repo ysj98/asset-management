@@ -13,6 +13,7 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
       :locale="{ emptyText: '暂无数据' }"
+      :scroll="{y:500}"
     >
     </a-table>
     <no-data-tips
