@@ -30,7 +30,7 @@
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
             <SG-CheckboxGroup
-              v-model="assetTypes"
+              :value="assetTypes"
               @change="checkboxGroupChnage"
             >
               <span
@@ -292,6 +292,11 @@ export default {
     },
     // 多选框改变
     checkboxGroupChnage(checkedValues) {
+      console.log('checkedValues',checkedValues)
+      if (checkedValues && checkedValues.length === 0){
+        this.$message.warn('至少保留一种业态')
+        return null
+      }
       console.log("checked = ", checkedValues)
       this.assetTypes = checkedValues
       this.table.columns = getColumns(checkedValues)
