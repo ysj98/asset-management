@@ -267,7 +267,7 @@ export const equipment = [
   { title: '运营项目', dataIndex: 'communityName', width: 100 },
   { title: '资产名称', dataIndex: 'assetName', width: 100 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
-  { title: '所在位置', dataIndex: 'position', width: 100 },
+  { title: '所在位置', dataIndex: 'pasitionString', width: 100 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 350 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
