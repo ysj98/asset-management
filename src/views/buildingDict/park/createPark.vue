@@ -181,8 +181,8 @@
                           :label-col="{ span: 0 }"
                           :wrapper-col="{ span: 24 }"
                           :rules=" [
-                           { required: true, message: '请输入车位数量', trigger: 'blur' },
-                           {required: true,pattern: new RegExp(/^\d{0,11}?$/), message: '请输入车位数量,并且小于11位的正整数,'}]">
+                           { required: true, message: '请输入区域车位数量', trigger: 'blur' },
+                           {required: true,pattern: new RegExp(/^\d{0,11}?$/), message: '请输入区域车位数量,并且小于11位的正整数,'}]">
                         <a-input
                             :key="'areaPosiNums'+index+ind"
                             :maxLength="com.maxLength"
