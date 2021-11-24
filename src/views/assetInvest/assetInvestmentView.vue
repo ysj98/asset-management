@@ -116,7 +116,11 @@
           { title: '资产分类', dataIndex: 'objectTypeName', width: 120 },
           { title: '所属机构', dataIndex: 'organName', width: 180 },
           { title: '资产项目', dataIndex: 'projectName', width: 180 },
-          { title: '资产面积(㎡)', dataIndex: 'assetArea' },
+          { title: '资产面积(㎡)', key: 'assetArea',
+            customRender(record){
+              return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
+            },
+          },
           { title: '规格型号', dataIndex: 'specificationTypeName' },
           { title: '投资单ID', dataIndex: 'investOrderId' },
           { title: '投资单名称', dataIndex: 'investName', width: 120  },
