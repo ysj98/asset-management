@@ -118,11 +118,11 @@ export const areaTitle = [
     width: 140,
     align: 'center',
     maxLength: 18,
-    title: "区域面积(㎡)",
     dataIndex: "areaZone",
     component:'number',
     errMessage: '请输入区域面积',
     placeHolder:'请输入区域面积',
+    slots: { title: 'areaZone'},
     rules: [{required: false, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}],
     scopedSlots: { customRender: "areaZone" }
   },
@@ -130,10 +130,10 @@ export const areaTitle = [
     width: 200,
     align: 'center',
     maxLength: 128,
-    title: "区域车位数",
     component:'input',
     dataIndex: "areaPosiNums",
     placeHolder:'请输入区域车位数',
+    slots: { title: 'areaPosiNums'},
     scopedSlots: { customRender: "areaPosiNums" }
   },
   {

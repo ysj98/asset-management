@@ -149,6 +149,12 @@
                   <span slot="areaCodeTitle">
                       <span style="color:red">*</span>
                       区域编码</span>
+                  <span slot="areaZone">
+                      <span style="color:red">*</span>
+                      区域面积(㎡)</span>
+                  <span slot="areaPosiNums">
+                      <span style="color:red">*</span>
+                      区域车位数</span>
                   <span slot="operationTitle"
                         @click="handleTableAppend(index)"
                         style="color: #0084ff;cursor: pointer;"
@@ -174,7 +180,9 @@
                           style="margin: -5px;"
                           :label-col="{ span: 0 }"
                           :wrapper-col="{ span: 24 }"
-                          :rules=" [{required: false,pattern: new RegExp(/^\d{0,11}?$/), message: '请输入车位数量,并且小于11位的正整数,'}]">
+                          :rules=" [
+                           { required: true, message: '请输入车位数量', trigger: 'blur' },
+                           {required: true,pattern: new RegExp(/^\d{0,11}?$/), message: '请输入车位数量,并且小于11位的正整数,'}]">
                         <a-input
                             :key="'areaPosiNums'+index+ind"
                             :maxLength="com.maxLength"
@@ -189,7 +197,9 @@
                         style="margin: -5px;"
                         :label-col="{ span: 0 }"
                         :wrapper-col="{ span: 24 }"
-                        :rules="[{required: false, pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}]"
+                        :rules="[
+                           { required: true, message: '请输入区域面积', trigger: 'blur' },
+                           { pattern: new RegExp(/^\d{1,13}(?:\.\d{1,4})?$/), message: '请输入小于13位整数，小于4位精度的数值'}]"
                       >
                         <a-input
                           :style="allWidth"
