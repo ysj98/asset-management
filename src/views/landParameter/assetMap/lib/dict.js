@@ -4,6 +4,7 @@
  * @Author: chh
  */
 import {MAP_ASSET_TYPE_CODE} from '../share'
+import store from '@/store/index'
 export const arrkeys = [
   ['数量个数', 'assetNum'],
   ['面积(㎡)', 'assetArea'],
@@ -22,16 +23,16 @@ export const dataIndexs = [
 ]
 export const getDataIndexs = (arr) => {
   let dataIndexs = ['totalInfo']
-  if (arr.includes(MAP_ASSET_TYPE_CODE.LAND)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.LAND)) {
     dataIndexs.push('landInfo')
   }
-  if (arr.includes(MAP_ASSET_TYPE_CODE.HOUSE)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.HOUSE)) {
     dataIndexs.push('houseInfo')
   }
-  if (arr.includes(MAP_ASSET_TYPE_CODE.YARD)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.YARD)) {
     dataIndexs.push('parkInfo')
   }
-  if (arr.includes(MAP_ASSET_TYPE_CODE.EQUIPMENT)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.EQUIPMENT)) {
     dataIndexs.push('equipmentInfo')
   }
   return dataIndexs
@@ -45,28 +46,29 @@ export const columns = [{
 }]
 export let getColumns = (arr) => {
   let nvColumns = [...columns]
-  if (arr.includes(MAP_ASSET_TYPE_CODE.LAND)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.LAND)) {
     nvColumns.push({
       title: "土地",
       dataIndex: "landInfo",
     })
   }
-  if (arr.includes(MAP_ASSET_TYPE_CODE.HOUSE)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.HOUSE)) {
     nvColumns.push({
       title: "房屋",
       dataIndex: "houseInfo",
     })
   }
-  if (arr.includes(MAP_ASSET_TYPE_CODE.YARD)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.YARD)) {
     nvColumns.push({
       title: "车场",
       dataIndex: "parkInfo",
     })
   }
-  if (arr.includes(MAP_ASSET_TYPE_CODE.EQUIPMENT)) {
+  if (arr.includes(store.state.ASSET_TYPE_CODE.EQUIPMENT)) {
     nvColumns.push({
       title: "设备设施",
       dataIndex: "equipmentInfo",
+      width: 90
       // customRender(record){
       //   console.log('record',record)
       //   // return record === null ? '/' : record
