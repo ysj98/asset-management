@@ -283,7 +283,8 @@ export const assets = {
     * 其他环境  /ams/categoryCfg/getFeeTypeList
     * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
     * */
-    getFeeTypeList: configs.platform === "merchants" ? '/charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList' : '/ams/categoryCfg/getFeeTypeList',
+    getFeeTypeList: '/ams/categoryCfg/getFeeTypeList',
+    getFeeTypeList2:'/charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList',
     // 资产分类设置-修改资产分类
     update: '/ams/categoryCfg/update',
     // 资产分类设置-修改资产分类状态

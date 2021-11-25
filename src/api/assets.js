@@ -6,6 +6,7 @@
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { assets, assetIn } from '../config/config.url'
+import configs from "@/config/config.base";
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -390,9 +391,13 @@ export function getPage (data) {
 export function exportList (data) {
   return axiosPost(assets.assetClassSet.exportList, data, false, false, {responseType: 'blob'})
 }
-// 资产分类设置-获取费用科目类列表
+/*
+  * 资产分类设置-获取费用科目类列表(根据当前环境判断调用接口路径，招商环境和其他环境)
+  * 其他环境  /ams/categoryCfg/getFeeTypeList
+  * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
+  * */
 export function getFeeTypeList (data) {
-  return axiosGet(assets.assetClassSet.getFeeTypeList, data)
+  return configs.platform === "merchants" ? axiosPost(assets.assetClassSet.getFeeTypeList2, data) : axiosGet(assets.assetClassSet.getFeeTypeList, data)
 }
 // 资产分类设置-修改资产分类
 export function update (data) {
