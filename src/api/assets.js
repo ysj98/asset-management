@@ -397,7 +397,23 @@ export function exportList (data) {
   * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
   * */
 export function getFeeTypeList (data) {
-  return configs.platform === "merchants" ? axiosPost(assets.assetClassSet.getFeeTypeList2, data) : axiosGet(assets.assetClassSet.getFeeTypeList, data)
+  return new Promise((resolve, reject) => {
+    if(configs.platform === "merchants"){
+      axiosPost(assets.assetClassSet.getFeeTypeList2, data).then(value=>{
+        const obj = value
+        obj.data.data = value.data.data.resultList
+        resolve(obj)
+      },error=>{
+        reject(error)
+      })
+    }{
+      axiosGet(assets.assetClassSet.getFeeTypeList, data).then(value=>{
+        resolve(value)
+      },(error)=>{
+        reject(error)
+      })
+    }
+  })
 }
 // 资产分类设置-修改资产分类
 export function update (data) {

@@ -51,7 +51,36 @@ export default {
   methods: {
     tabChange (v) {
       this.showKey = v
+    },
+    init(){
+      const arr = [
+        {
+          auth:ASSET_MANAGEMENT.ASSET_CLASS_TAB_HOUSE,
+          keyStr:'house'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_CLASS_TAB_LAND,
+          keyStr:'land'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_CLASS_TAB_EQ,
+          keyStr:'facilityAndEquipment'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_CLASS_TAB_PARK,
+          keyStr:'carPark'
+        }
+      ]
+      for (let i = 0;i<arr.length;i++){
+        if (this.$power.has(arr[i].auth)){
+          this.showKey  = arr[i].keyStr
+          break;
+        }
+      }
     }
+  },
+  mounted() {
+    this.init()
   }
 }
 </script>
