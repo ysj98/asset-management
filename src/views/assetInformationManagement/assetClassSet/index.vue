@@ -6,16 +6,16 @@
   <div class="assetClassSet-page">
     <div class="custom-tabs">
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
-        <a-tab-pane tab="房屋" key="house">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_HOUSE)" tab="房屋" key="house">
           <listModel type="house"/>
         </a-tab-pane>
-        <a-tab-pane tab="土地" key="land">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_LAND)" tab="土地" key="land">
           <listModel type="land"/>
         </a-tab-pane>
-        <a-tab-pane tab="设备设施" key="facilityAndEquipment">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_EQ)" tab="设备设施" key="facilityAndEquipment">
           <EquipmentCategory />
         </a-tab-pane>
-        <a-tab-pane tab="车场" key="carPark">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_PARK)" tab="车场" key="carPark">
           <listModel type="carPark"/>
         </a-tab-pane>
       </a-tabs>
@@ -23,6 +23,7 @@
   </div>
 </template>
 <script>
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import { SET_DEPRECIATION_METHOD, SET_EQUIPMENT_CODE_SUB } from '@/store/types/platformDictTypes'
 import listModel from "./listModel"
 import EquipmentCategory from './child/EquipmentCategory/index'
@@ -33,6 +34,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       showKey: 'house',
     }
   },

@@ -36,6 +36,29 @@ export const ASSET_MANAGEMENT = {
   /**
   * 资产分类
   **/
+  // 资产分类-车场tab
+  ASSET_CLASS_TAB_PARK:'asset_class_tab_park',
+  // 资产分类-设备设施tab
+  ASSET_CLASS_TAB_EQ:'asset_class_tab_eq',
+  // 资产分类-土地tab
+  ASSET_CLASS_TAB_LAND:'asset_class_tab_land',
+  // 资产分类-房间tab
+  ASSET_CLASS_TAB_HOUSE:'asset_class_tab_house',
+  // 楼盘字典-车场tab
+  ASSET_SOURCE_TAB_PARK:'asset_source_tab_park',
+  // 楼盘字典-车位tab
+  ASSET_SOURCE_TAB_PARK_ITEM:'asset_source_tab_park_item',
+  // 楼盘字典-房间tab
+  ASSET_SOURCE_TAB_HOUSE:'asset_source_tab_house',
+  // 楼盘字典-楼栋tab
+  ASSET_SOURCE_TAB_BUILD:'asset_source_tab_build',
+  // 楼盘字典-土地tab
+  ASSET_SOURCE_TAB_LAND:'asset_source_tab_land',
+  // 楼盘字典-设备设施tab
+  ASSET_SOURCE_TAB_EQ:'asset_source_tab_eq',
+
+  // 资产分类-设备设施保存
+  ASSET_CLASS_SET_EQ:'asset_class_set_eq',
   // 资产分类-编辑资产分类信息
   ASSET_CLASS_SET_EDIT: 'zcgl_asset_class_set_edit',
   // 资产分类-启用/停用资产分类信息(状态)

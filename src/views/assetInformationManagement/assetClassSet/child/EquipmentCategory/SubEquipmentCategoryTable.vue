@@ -83,7 +83,7 @@
     </a-table>
     <div class="footer">
       <div>
-        <a-button @click="handleSave" type="primary">保存</a-button>
+        <a-button @click="handleSave" type="primary" v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_EQ">保存</a-button>
         <a-button
           @click="handleResetSubEquipmentCategoryTable"
           style="margin-left: 20px;"
@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import { uuid } from "utils/utils";
 import { pick } from "lodash";
 import CategoryAttrModal from "@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/CategoryAttrModal";
@@ -129,6 +130,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       tableOptions: {
         rowKey: function(record) {
           return record.professionCode || record._key;
