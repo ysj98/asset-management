@@ -273,12 +273,12 @@
         </div>
         <div
           class="table-layout-fixed"
-          v-if="columns.length !== 0"
+          v-if="columnsCom.length !== 0"
           :class="{'table-border': tableData.length != 0}"
         >
           <a-table
             :scroll="scroll"
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
@@ -627,6 +627,16 @@ export default {
     isSelectedEquipment(){
       return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
     },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['assetArea']
+        return this.columns.filter(ele=>{
+          return !arr.includes(ele.dataIndex)
+        })
+      }else {
+        return this.columns
+      }
+    }
   },
   watch: {
     changeType(val) {

@@ -60,7 +60,7 @@
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
@@ -125,7 +125,21 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['assetArea']
+        return this.columns.filter(ele=>{
+          return !arr.includes(ele.dataIndex)
+        })
+      }else {
+        return this.columns
+      }
+    }
+  },
   watch: {
     changeType(value) {
       let val = String(value);

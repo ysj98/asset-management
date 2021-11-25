@@ -1,3 +1,4 @@
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
 // 交付物业
 export const deliveryProperty = [{
   title: '资产名称',
@@ -197,7 +198,7 @@ export const projectChange = [{
   dataIndex: 'assetUse',
 }, {
   title: '建筑面积(㎡)',
-  key: 'assetArea',
+  dataIndex: 'assetArea',
   scopedSlots: {
     customRender: 'assetArea'
   }
@@ -232,7 +233,7 @@ export const variationOriginalValue = [{
   dataIndex: 'assetCategoryName',
 }, {
   title: '资产面积(㎡)',
-  key: 'assetArea',
+  dataIndex: 'assetArea',
   scopedSlots: {
     customRender: 'assetArea'
   }

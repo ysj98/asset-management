@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -129,7 +130,10 @@ const columns = [
   },
   {
     title: '资产面积(㎡)',
-    dataIndex: 'area'
+    key: 'area',
+    customRender(record){
+      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
+    },
   },
   {
     title: '资产位置',

@@ -306,7 +306,7 @@
                     title: "资产面积",
                     key: "area",
                     customRender(record){
-                      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:record.assetType})
+                      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
                     },
                     width: 70,
                   },

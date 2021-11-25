@@ -919,6 +919,11 @@ export default {
       console.log(data, '-=-=-=')
       this.basicData = data
     }
+  },
+  activated() {
+    this.numList.forEach(list => {
+      list.value = 0
+    })
   }
 }
 </script>

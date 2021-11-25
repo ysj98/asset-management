@@ -214,7 +214,6 @@ export const directionEquipment = [
   { title: '资产名称', dataIndex: 'assetName', width: 200 },
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
-  { title: '是否转物业', dataIndex: 'buildArea', width: 150 },
   { title: '转物业时间', dataIndex: 'transferTime', width: 200 },
   { title: '使用方向', dataIndex: 'useDirectionName', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
