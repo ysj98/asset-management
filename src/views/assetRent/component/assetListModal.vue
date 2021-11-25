@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 const assetStatus = [
   {
@@ -141,7 +142,11 @@ const columns = [
   { title: "资产类型", align: "center", dataIndex: "assetTypeName" },
   { title: "资产分类", align: "center", dataIndex: "assetCategoryName" },
   { title: "资产项目", align: "center", dataIndex: "projectName" },
-  { title: "资产面积(㎡)", align: "center", dataIndex: "assetArea" },
+  { title: "资产面积(㎡)", align: "center", dataIndex: "assetArea",
+    customRender(text,record){
+      return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
+    },
+  },
   { title: "规格型号", align: "center", dataIndex: "model" },
   { title: "资产位置", align: "center", dataIndex: "address" },
   { title: "资产状态", align: "center", dataIndex: "assetStatusName" },
