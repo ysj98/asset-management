@@ -739,7 +739,7 @@ export default {
       let _this = this
       _this.$confirm({
         title: '提示',
-        content: str === 'delete' ? '确认要删除该资产登记单吗？' : '确认要清空资产列表？',
+        content: str === 'delete' ? '确认删除该行资产明细记录吗？' : '确认要清空资产列表？',
         onOk() {
           if (str === 'delete') {
             _this.tableData.forEach((item, index) => {
