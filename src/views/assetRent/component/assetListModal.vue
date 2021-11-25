@@ -20,7 +20,7 @@
           :top-organ-id="organId"
           v-model="objectType"
           :options-data-format="(data)=>{
-            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+            return [{label: '全部资产分类', value: '-1', isLeaf: true},...data]
           }"
         />
         <a-select
@@ -157,7 +157,7 @@ export default {
     return {
       columns,
       show: false, // 模态框显示
-      objectType: '', // 资产类别
+      objectType: '-1', // 资产类别
       objectTypeOptions: [], // 类别选项
       assetStatus: [...assetStatus],
       dataSource: [], // 表格数据源
@@ -300,7 +300,7 @@ export default {
 
     // 根据资产类型查资产分类列表
     queryObjectType(assetType) {
-      this.objectType = '';
+      this.objectType = '-1';
       this.objectTypeOptions = [];
       if (!assetType) {
         return false;
