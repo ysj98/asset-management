@@ -53,6 +53,7 @@
                   :style="allWidth"
                   placeholder="请选择项目"
                   showSearch
+                  option-filter-prop="children"
                   :options="$addTitle(communityIdOpt)"
                   :allowClear="false"
                   notFoundContent="没有查询到数据"
