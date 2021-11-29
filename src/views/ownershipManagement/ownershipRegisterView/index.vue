@@ -96,7 +96,20 @@
               notFoundContent="没有查询到数据"
             />
             <!-- 全部资产分类 -->
+            <EquipmentSelectTree
+              :style="allWidth"
+              v-if="isSelectedEquipment"
+              style="width: 300px"
+              :top-organ-id="queryCondition.organId"
+              :multiple="true"
+              v-model="queryCondition.objectTypeList"
+              :options-data-format="(data)=>{
+                 return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+              }"
+              @select="objectTypeListSelect($event,true)"
+            />
             <a-select
+              v-else
               showSearch
               placeholder="请选择资产分类"
               v-model="queryCondition.objectTypeList"
@@ -147,7 +160,7 @@
           :dataSource="table.dataSource"
           :locale="{ emptyText: '暂无数据' }"
         >
-          <template slot="matchingName" slot-scope="text, record">
+          <template slot="matchingName" slot-scope="text">
             {{ text }}
             <!-- <span class="nav_name" @click="goPage('detail', record)">{{
               text
@@ -173,6 +186,7 @@
   </div>
 </template>
 <script>
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import noDataTips from "@/components/noDataTips"
 import SearchContainer from "@/views/common/SearchContainer"
 import TreeSelect from "@/views/common/treeSelect"
@@ -203,6 +217,7 @@ export default {
     segiIcon,
     OverviewNumber,
     SegiRangePicker,
+    EquipmentSelectTree
   },
   data() {
     return {
@@ -233,6 +248,12 @@ export default {
         pagination: false,
         loading: false,
       },
+    }
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetTypeList
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     }
   },
   created() {
@@ -459,12 +480,13 @@ export default {
         )
       })
     },
-    objectTypeListSelect(value) {
+    objectTypeListSelect(value,isSelectedEquipment) {
       this.$nextTick(function() {
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.objectTypeListOpt
         this.queryCondition.objectTypeList = this.handleMultipleSelectValue(
           value,
           this.queryCondition.objectTypeList,
-          this.objectTypeListOpt
+          resOptions
         )
       })
     },

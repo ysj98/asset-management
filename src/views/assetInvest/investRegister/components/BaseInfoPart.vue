@@ -160,7 +160,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col :span="8" v-if="type == 'add' || type == 'edit'">
+      <a-col :span="8" v-if="(type == 'add' || type == 'edit') && !isSelectedEquipment">
         <a-form-item label="资产面积（㎡）" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
           <a-input
             :disabled="type == 'add' || type == 'edit'"
@@ -168,7 +168,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col :span="8" v-if="type == 'approval' || type == 'detail'">
+      <a-col :span="8" v-if="(type == 'approval' || type == 'detail') && !isSelectedEquipment">
         <a-form-item label="投资面积" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" >
           <a-input
             :disabled="type == 'approval' || type == 'detail'"
@@ -265,7 +265,7 @@
   import TreeSelect from '../../../common/treeSelect'
   export default {
     name: 'BaseInfoPart',
-    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId', 'investOrderId', 'investAreaTotal', 'investCount'],
+    props: ['type', 'details', 'defaultOrganName', 'defaultOrganId', 'investOrderId', 'investAreaTotal', 'investCount','isSelectedEquipment'],
     components: {TreeSelect},
     data () {
       return {

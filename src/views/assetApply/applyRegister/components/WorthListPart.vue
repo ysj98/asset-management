@@ -5,15 +5,19 @@
     <div style="margin-left: 40px">
       <div style="margin-bottom: 8px;text-align: right">
         <div v-if="type == 'add' || type == 'edit'" class="box">
-          <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }} <span v-if="type=='add'">，合计领用面积：{{ receiveAreaSum }}㎡</span></div><div class="right" style="margin-bottom: 8px">
-          <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
-          <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
+          <div class="left" style="height: 100%">已选择资产数量：{{ tableObj.dataSource.length }}
+            <span v-if="type=='add' && !isSelectedEquipment ">，合计领用面积：{{ receiveAreaSum }}㎡</span>
+          </div>
+          <div class="right" style="margin-bottom: 8px">
+            <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
+            <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
+          </div>
         </div>
-        </div>      
       </div>
-      <div class="sum" style="margin-left: 980px" v-if="type=='detail'">合计：{{ receiveAreaSum }}㎡</div>
+      <div class="sum" style="margin-left: 980px" v-if="type=='detail' && !isSelectedEquipment">合计：{{ receiveAreaSum }}㎡</div>
       <a-table
         v-bind="tableObj"
+        :columns="columnsCom"
         class="custom-tables"
         bordered
       >
@@ -70,7 +74,7 @@
         @change="({ pageNo, pageLength }) => queryAssetListByRegisterId({ pageNo, pageLength })"
       />
     </div>
-    <p style="margin-left: 1160px" v-if="type=='edit'">合计：{{ receiveAreaSum }}㎡</p>
+    <p style="margin-left: 1160px" v-if="type=='edit' && !isSelectedEquipment">合计：{{ receiveAreaSum }}㎡</p>
     <SG-Modal
       v-bind="modalObj"
       v-model="modalObj.isShow"
@@ -89,6 +93,7 @@
         :proId="dynamicData.projectId"
         :key="`${dynamicData.projectId}${dynamicData.assetType}`"
         @getReceiveAssetInfo="getReceiveAssetInfo"
+        :isSelectedEquipment="isSelectedEquipment"
       />
       <!--快捷录入资产估值-->
       <set-asset v-else ref="setAsset" :assetType="dynamicData.assetType"/>
@@ -104,7 +109,7 @@
   export default {
     name: 'WorthListPart',
     components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText },
-    props: ['type', 'registerId', 'organId', 'dynamicData', 'details'],
+    props: ['type', 'registerId', 'organId', 'dynamicData', 'details','isSelectedEquipment'],
     data () {
       return {
         tableObj: {
@@ -116,12 +121,12 @@
           selectedRowKeys: [], // Table选中的key数据
           columns:  [
             { title: '序号', dataIndex: 'index' },
-            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
+            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },
             { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
             { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
             { slots: { title: "receiveArea" }, dataIndex: 'receiveArea', scopedSlots: { customRender: 'receiveArea' }},{ title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
-          ] 
+          ]
         },
         exportBtnLoading: false, // 导出按钮loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
@@ -141,7 +146,16 @@
         assetList: []
       }
     },
-
+    computed:{
+      columnsCom(){
+        if (this.isSelectedEquipment){
+          const arr = ['receiveArea','area']
+          return this.tableObj.columns.filter(ele=>!arr.includes((ele.dataIndex || ele.key)))
+        }else {
+          return this.tableObj.columns
+        }
+      }
+    },
     methods: {
       // 计算最后一行求和数据及上浮比例
       calcSum (data) {
@@ -162,7 +176,7 @@
         this.tableObj.dataSource.map(item => {
           if(item.receiveArea){
            return num += item.receiveArea
-          } 
+          }
         })
         this.receiveAreaSum = num.toFixed(2)
         // 返回给上层组件,用于保存
@@ -181,7 +195,7 @@
           this.selectedRowKeys = []
         }
         this.calcSum(data)
-        
+
       },
 
       // 添加资产
@@ -205,7 +219,7 @@
         }
         this.modalObj.isShow = bool
       },
-      
+
       // 导出
       handleExport () {},
 
@@ -218,7 +232,7 @@
           }
         }
       },
-      
+
       // 获取选中的资产数据
       getAssetList () {
 
@@ -285,7 +299,7 @@
           if (res && String(res.code) === '0') {
             const { data, count } = res.data
             this.tableObj.dataSource = (data || []).map((m, i) => ({...m, index: i + 1}))
-            this.assetList = this.tableObj.dataSource 
+            this.assetList = this.tableObj.dataSource
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -304,7 +318,7 @@
           this.$message.error(err || '查询登记资产接口出错')
         })
       },
-      
+
       // 根据资产id查询资产详情的列表数据--不分页
       // queryAssetListByAssetId (selectedRows = [], status) {
       //   let form = {}
@@ -315,14 +329,14 @@
       //   }
       //   if (status === 'init') {
       //     form.registerId = registerId
-          
+
       //   } else {
-          
+
       //     if (!selectedRows.length) { return false }
       //     form.assetId = selectedRows.join(',')
       //   }
       //   this.tableObj.loading = true
-                  
+
       //   this.$api.worthRegister.queryRelList(form).then(r => {
       //     console.log(r)
       //     this.tableObj.loading = false
@@ -367,7 +381,7 @@
             if (status === 'init') {
               dataSource = addData
             } else {
-              
+
               dataSource.push(...addData)
               // 过滤列表中被取消选中的数据
               dataSource = dataSource.filter(n => selectedList.includes(Number(n.assetId)))
@@ -392,7 +406,7 @@
           isEditAll = this.handleAddModal(false)
         }
       },
-      
+
 
 
       handleAssetValueAll () {
@@ -445,7 +459,7 @@
          this.assetList = assetList
          this.assetList.map((item,index) => {
            this.assetList[index].area = item.assetArea
-           //this.assetList[index].receiveArea = item.assetArea - item.occupationArea 
+           //this.assetList[index].receiveArea = item.assetArea - item.occupationArea
            if(!this.assetList[index].receiveArea){
              this.assetList[index].receiveArea = item.assetArea
            }
@@ -453,9 +467,9 @@
          })
     },
     },
-    
+
     created () {
-      
+
       const { type } = this
       if (type === 'add' || type === 'edit') {
         // 允许多选
@@ -468,24 +482,24 @@
         // 列表查询结果分页，且后端计算求和数据
         this.queryAssetListByRegisterId({type: 'init'})
       }
-      
+
     },
-    
+
     watch: {
-      assetList: function () {
-        if(this.assetList.length==0){
-          return
-        }
-        if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
-           this.tableObj.columns = [
-            { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' }, 
-            { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
-            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
-            { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
-          ] 
-        }
-      },
+      // assetList: function () {
+      //   if(this.assetList.length==0){
+      //     return
+      //   }
+      //   if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
+      //      this.tableObj.columns = [
+      //       { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },
+      //       { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
+      //       { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
+      //       { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
+      //       { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },
+      //     ]
+      //   }
+      // },
       details: function (val) {
          if(this.details.detailList){
            this.queryAssetListByAssetId([], 'init')
@@ -495,7 +509,7 @@
       dynamicData: function (data, oldData) {
         console.log(data,oldData)
         if(data.receiveOrganId != oldData.receiveOrganId || data.receiveUserId != oldData.receiveUserId || data.receiveDate != oldData.receiveDate || data.returnDate != oldData.returnDate){
-          return 
+          return
         }
         let {tableObj: {dataSource}, type, numList, details} = this
         console.log(type,dataSource.length)

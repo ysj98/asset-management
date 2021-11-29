@@ -105,6 +105,7 @@ import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OperationPopover from "@/components/OperationPopover"
+import {generateTableAreaByAssetTypeString} from "utils/utils";
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '草稿', value: '0' }, { name: '待审批', value: '2' }, { name: '已驳回', value: '3' }, { name: '已审批', value: '1' }, { name: '已取消', value: '4' }
 ]
@@ -145,7 +146,14 @@ const columns = [
   },
   {
     title: '投资面积（㎡）',
-    dataIndex: 'investArea',
+    key: 'investArea',
+    customRender(record){
+      return generateTableAreaByAssetTypeString({
+        record,
+        keyStr:'investArea',
+        assetTypeName: record.assetTypeName
+      })
+    },
     width: 120
   },
   {

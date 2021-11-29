@@ -128,7 +128,7 @@
       <div class="tab-nav">
         <span class="section-title blue">资产明细</span>
         <div class="button-box">
-          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个，合计交付面积：{{deliveryArea ? deliveryArea.toFixed(2) : 0}}㎡</div>
+          <div class="fl">交付资产数量：{{assetChangeCount || 0}}个<span v-if="!isSelectedEquipment">，合计交付面积：{{deliveryArea || '0'}}㎡</span></div>
           <div class="fr">
             <SG-Button class="mr10" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
             <SG-Button :disabled="selectedRowKeys.length === 0" type="primary" weaken @click="deleteFn">删除</SG-Button>
@@ -141,7 +141,7 @@
           <a-table
             :scroll="{y: 450}"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
@@ -258,6 +258,7 @@ export default {
   data () {
     return {
       moment,
+      assetType:'',
       deliveryId: '',        // 交付id
       deliveryArea: '',      // 交付面积
       assetChangeCount: '',  // 资产数量
@@ -299,6 +300,17 @@ export default {
     }
   },
   computed: {
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['deliveryArea','assetArea']
+        return this.columns.filter(ele=> !arr.includes((ele.dataIndex || ele.key)))
+      }else {
+        return this.columns
+      }
+    }
   },
   created () {
     this.organIdData = JSON.parse(this.$route.query.record)
@@ -345,6 +357,7 @@ export default {
             }
           }
           this.form.setFieldsValue(o)
+          this.assetType = obj.assetType
         } else {
           this.$message.error(res.data.message)
         }
@@ -422,31 +435,26 @@ export default {
               return;
             }
           }
-          let arr = []
-          let assetDetailList = []
-          this.tableData.forEach(item => {
-            if (!conditionalJudgment.includes(item.deliveryArea)) {
-              assetDetailList.push({
-                deliveryDetailId: conditionalJudgment.includes(item.deliveryDetailId) ? '' : item.deliveryDetailId,  //明细Id 修改时必填
-                deliveryId: conditionalJudgment.includes(item.deliveryId) ? '' : item.deliveryId, // 修改时必填
-                assetId: item.assetId,                // 资产id
-                assetType: item.assetType,            // 资产类型
-                assetCode: item.assetCode,            // 资产编码
-                organId: item.organId,                // 组织机构Id
-                projectId: item.projectId,            // 资产项目Id
-                assetObjectId: item.assetObjectId,    // 资产对象id
-                objectType: item.objectType,          // 资产分类
-                assetArea: item.assetArea,            // 资产面积
-                remark: item.remark,                  // 备注，填的
-                deliveryArea: item.deliveryArea,      // 交付面积，填的
-                oldTransferArea: item.transferArea || '',   // 原交付物业面积(转物业面积)
-                oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
-              })
-            } else {
-              arr.push(item.assetId)
+          let assetDetailList = this.tableData.map(item => {
+            return {
+              deliveryDetailId: conditionalJudgment.includes(item.deliveryDetailId) ? '' : item.deliveryDetailId,  //明细Id 修改时必填
+              deliveryId: conditionalJudgment.includes(item.deliveryId) ? '' : item.deliveryId, // 修改时必填
+              assetId: item.assetId,                // 资产id
+              assetType: item.assetType,            // 资产类型
+              assetCode: item.assetCode,            // 资产编码
+              organId: item.organId,                // 组织机构Id
+              projectId: item.projectId,            // 资产项目Id
+              assetObjectId: item.assetObjectId,    // 资产对象id
+              objectType: item.objectType,          // 资产分类
+              assetArea: item.assetArea,            // 资产面积
+              remark: item.remark,                  // 备注，填的
+              deliveryArea: item.deliveryArea || 0,      // 交付面积，填的
+              oldTransferArea: item.transferArea || '',   // 原交付物业面积(转物业面积)
+              oldTransferOperationArea: item.transferOperationArea || ''   // 原交付运营面积(原转运营面积)
             }
           })
-          if (arr.length !== 0) {
+          // 非设备类型时 且 tableData 有数据 且每一个数据中的交付面积，都不为 undefined "" null 0
+          if (!this.isSelectedEquipment && (this.tableData.length && (this.tableData.some(ele=>[...conditionalJudgment,0].includes(ele.deliveryArea))))) {
             this.$message.info("请填写交付面积");
             return;
           }
@@ -615,7 +623,8 @@ export default {
       this.checkedData = []
     },
     // 资产类型监听
-    assetTypeFn () {
+    assetTypeFn (value) {
+      this.assetType = value
       this.tableData = []
       this.checkedData = []
     },

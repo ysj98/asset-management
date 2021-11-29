@@ -60,7 +60,7 @@
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
@@ -90,7 +90,7 @@ import {
   baseChange,
   debtChange,
   baseChangeTwo,
-  assetSize
+  assetSize, changeDirectionUseEq
 } from "./basics";
 import { utils } from "@/utils/utils.js";
 const originalObjectTypeMap = {
@@ -125,7 +125,21 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['assetArea']
+        return this.columns.filter(ele=>{
+          return !arr.includes(ele.dataIndex)
+        })
+      }else {
+        return this.columns
+      }
+    }
+  },
   watch: {
     changeType(value) {
       let val = String(value);
@@ -138,6 +152,7 @@ export default {
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "4") {
         arr = utils.deepClone(changeDirectionUse);
+        arr = this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT ? utils.deepClone(changeDirectionUseEq) : utils.deepClone(changeDirectionUse)
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "3") {
         arr = utils.deepClone(variationOriginalValue);

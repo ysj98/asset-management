@@ -100,9 +100,22 @@
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
+        <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            style="width: 144px"
+            :top-organ-id="queryCondition.organId"
+            :multiple="true"
+            v-model="queryCondition.objectTypeList"
+            :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+            @select="assetClassifyDataFn($event,true)"
+        />
         <a-select
+            v-else
           showSearch
           allowClear
+          style="width:144px"
           placeholder="全部资产分类"
           optionFilterProp="children"
           :maxTagCount="1"
@@ -158,6 +171,7 @@
 </template>
 
 <script>
+import EquipmentSelectTree from "../common/EquipmentSelectTree";
 const columns = [
   {
     title: "维修编号",
@@ -268,11 +282,18 @@ export default {
     };
   },
   components: {
+    EquipmentSelectTree,
     segiIcon,
     TreeSelect,
     OverviewNumber,
     OperationPopover,
     noDataTips,
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    }
   },
   methods: {
     // 导出
@@ -412,8 +433,14 @@ export default {
       };
       this.queryCondition.objectTypeList = [""];
       if (!obj.assetType) {
+        this.assetTypeList = [{ label: "全部资产分类", value: "" }];
         return;
       }
+      if ((obj.assetType || '').split(',').length>1) {
+        this.assetTypeList = [{ label: "全部资产分类", value: "" }];
+        return;
+      }
+      console.log(obj)
       this.$api.assets.getList(obj).then((res) => {
         if (+res.data.code === 0) {
           let arr = [{ label: "全部资产分类", value: "" }];
@@ -484,12 +511,13 @@ export default {
       });
     },
     // 全部资产分类
-    assetClassifyDataFn(value) {
+    assetClassifyDataFn(value,isSelectedEquipment) {
       this.$nextTick(() => {
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetTypeList
         this.queryCondition.objectTypeList = this.handleMultipleSelectValue(
           value,
           this.queryCondition.objectTypeList,
-          this.assetTypeList
+            resOptions
         );
       });
     },

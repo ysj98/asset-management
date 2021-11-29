@@ -48,7 +48,19 @@
             <a-select :maxTagCount="1" :style="allStyle" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType" @change="assetTypeFn">
               <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
+            <EquipmentSelectTree
+              :style="allStyle"
+              v-if="isSelectedEquipment"
+              :top-organ-id="queryCondition.organId"
+              :multiple="true"
+              v-model="queryCondition.assetClassify"
+              :options-data-format="(data)=>{
+                 return [{label: '全部分类', value: '', isLeaf: true},...data]
+              }"
+              @select="assetClassifyDataFn($event,true)"
+            />
+            <a-select v-else :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类"
+                      :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
               <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部处置方式" :tokenSeparators="[',']"  @select="disposeModeDataFn" v-model="queryCondition.disposeMode">
@@ -149,6 +161,7 @@
 </template>
 
 <script>
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
@@ -304,7 +317,7 @@ const queryCondition =  {
     pageSize: 10    // 每页显示记录数
   }
 export default {
-  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber},
+  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, EquipmentSelectTree},
   props: {},
   data () {
     return {
@@ -368,7 +381,11 @@ export default {
       }
     }
   },
-  computed: {
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    }
   },
   methods: {
     getCheckboxProps(record){
@@ -557,9 +574,10 @@ export default {
       this.getListFn()
     },
     // 资产分类
-    assetClassifyDataFn (value) {
+    assetClassifyDataFn (value,isSelectedEquipment) {
       this.$nextTick(function () {
-        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyData)
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
+        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions)
       })
     },
     // 处置方式

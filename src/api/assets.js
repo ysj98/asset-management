@@ -6,6 +6,7 @@
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { assets, assetIn } from '../config/config.url'
+import configs from "@/config/config.base";
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -168,11 +169,11 @@ export function getRegisterOrderListPage (data) {
 }
 // 资产登记新增-下载导入模板
 export function downloadTemplate (data) {
-  return axiosPost(assets.assetRegister.downloadTemplate, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.downloadTemplate, data, true, false, {responseType: 'blob'})
 }
 // 资产登记新增（修改的批量导出）-再次下载导入模板
 export function downloadTemplateV2 (data) {
-  return axiosPost(assets.assetRegister.downloadTemplateV2, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.downloadTemplateV2, data, true, false, {responseType: 'blob'})
 }
 // 基本信息批量更新（导入）
 export function baseImport (data) {
@@ -390,9 +391,29 @@ export function getPage (data) {
 export function exportList (data) {
   return axiosPost(assets.assetClassSet.exportList, data, false, false, {responseType: 'blob'})
 }
-// 资产分类设置-获取费用科目类列表
+/*
+  * 资产分类设置-获取费用科目类列表(根据当前环境判断调用接口路径，招商环境和其他环境)
+  * 其他环境  /ams/categoryCfg/getFeeTypeList
+  * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
+  * */
 export function getFeeTypeList (data) {
-  return axiosGet(assets.assetClassSet.getFeeTypeList, data)
+  return new Promise((resolve, reject) => {
+    if(configs.platform === "merchants"){
+      axiosPost(assets.assetClassSet.getFeeTypeList2, data).then(value=>{
+        const obj = value
+        obj.data.data = value.data.data.resultList
+        resolve(obj)
+      },error=>{
+        reject(error)
+      })
+    }{
+      axiosGet(assets.assetClassSet.getFeeTypeList, data).then(value=>{
+        resolve(value)
+      },(error)=>{
+        reject(error)
+      })
+    }
+  })
 }
 // 资产分类设置-修改资产分类
 export function update (data) {
@@ -402,9 +423,35 @@ export function update (data) {
 export function updateStatus (data) {
   return axiosPost(assets.assetClassSet.updateStatus, data, false, false)
 }
+// 3.1.1查询设备分类编码列表
+export function getEquipmentCodeList (data) {
+  return axiosPost(assets.assetClassSet.getEquipmentCodeList, data, false, false)
+}
+// 3.1.2根据设备分类ID查询子级设备分类信息
+export function getEquipmentListByUpEquipmentId (data) {
+  return axiosPost(assets.assetClassSet.getEquipmentListByUpEquipmentId, data, false, false)
+}
+// 3.1.5根据设备分类ID查询设备分类台账属性(不分页)
+export function getInfoAttrListByEquipmentId (data) {
+  return axiosPost(assets.assetClassSet.getInfoAttrListByEquipmentId, data, false, false)
+}
+// 删除设施设备分类
+export function updateEquipmentStatus (data) {
+  return axiosPost(assets.assetClassSet.updateEquipmentStatus, data, true, false)
+}
+//  保存/更新设施设备分类
+export function updateEquipment (data) {
+  return axiosPost(assets.assetClassSet.updateEquipment, data, true, false)
+}
 // 资产分类设置-获取资产分类详情
 export function getDetail (data) {
   return axiosPost(assets.assetClassSet.getDetail, data, false, false)
+}
+export function batchSaveInfoAttr (data) {
+  return axiosPost(assets.assetClassSet.batchSaveInfoAttr, data, false, false)
+}
+export function deleteInfoAttr (data) {
+  return axiosPost(assets.assetClassSet.deleteInfoAttr, data, false, false)
 }
 
 // 房屋台账-资产项目视图
@@ -490,6 +537,10 @@ export function queryAssetViewPage (data) {
 // 不分页查询房屋资产信息
 export function queryAssetViewPage2 (data) {
   return axiosPost(assets.assetView.queryAssetViewPage2, data)
+}
+// 不分页查询车场资产信息
+export function carPage (data) {
+  return axiosPost(assets.assetView.carPage, data)
 }
 // 资产视图使用面积统计
 export function queryAssetViewArea (data) {

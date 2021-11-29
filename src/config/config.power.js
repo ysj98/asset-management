@@ -36,6 +36,29 @@ export const ASSET_MANAGEMENT = {
   /**
   * 资产分类
   **/
+  // 资产分类-车场tab
+  ASSET_CLASS_TAB_PARK:'asset_class_tab_park',
+  // 资产分类-设备设施tab
+  ASSET_CLASS_TAB_EQ:'asset_class_tab_eq',
+  // 资产分类-土地tab
+  ASSET_CLASS_TAB_LAND:'asset_class_tab_land',
+  // 资产分类-房间tab
+  ASSET_CLASS_TAB_HOUSE:'asset_class_tab_house',
+  // 楼盘字典-车场tab
+  ASSET_SOURCE_TAB_PARK:'asset_source_tab_park',
+  // 楼盘字典-车位tab
+  ASSET_SOURCE_TAB_PARK_ITEM:'asset_source_tab_park_item',
+  // 楼盘字典-房间tab
+  ASSET_SOURCE_TAB_HOUSE:'asset_source_tab_house',
+  // 楼盘字典-楼栋tab
+  ASSET_SOURCE_TAB_BUILD:'asset_source_tab_build',
+  // 楼盘字典-土地tab
+  ASSET_SOURCE_TAB_LAND:'asset_source_tab_land',
+  // 楼盘字典-设备设施tab
+  ASSET_SOURCE_TAB_EQ:'asset_source_tab_eq',
+
+  // 资产分类-设备设施保存
+  ASSET_CLASS_SET_EQ:'asset_class_set_eq',
   // 资产分类-编辑资产分类信息
   ASSET_CLASS_SET_EDIT: 'zcgl_asset_class_set_edit',
   // 资产分类-启用/停用资产分类信息(状态)
@@ -49,6 +72,14 @@ export const ASSET_MANAGEMENT = {
   ASSET_CLASS_LAND_CHANGE: 'asset_class_land_change',
   // 资产分类-状态删除土地
   ASSET_CLASS_LAND_DELETE: 'asset_class_land_delete',
+  // 资产分类-新增车场
+  ASSET_CLASS_CAR_PARK_CREATE: 'asset_class_car_park_create',
+  // 资产分类-编辑车场
+  ASSET_CLASS_CAR_PARK_EDIT: 'asset_class_car_park_edit',
+  // 资产分类-状态改变车场
+  ASSET_CLASS_CAR_PARK_CHANGE: 'asset_class_car_park_change',
+  // 资产分类-状态删除车场
+  ASSET_CLASS_CAR_PARK_DELETE: 'asset_class_car_park_delete',
   // 2.0.0新增end
   // 楼盘字典-新增房间
   ASSET_ADD_HOUSE: 'zcgl_add_house',
@@ -87,6 +118,24 @@ export const ASSET_MANAGEMENT = {
   ASSET_DICT_LAND_EDIT: 'zcgl_dict_land_edit',
   // 楼盘字典-删除土地
   ASSET_DICT_LAND_DELETE: 'zcgl_dict_land_delete',
+  // 楼盘字典-创建车场
+  ASSET_DICT_PARK_CREATE: 'zcgl_dict_park_create',
+  // 楼盘字典-修改车场
+  ASSET_DICT_PARK_EDIT: 'zcgl_dict_park_edit',
+  // 楼盘字典-删除车场
+  ASSET_DICT_PARK_DELETE: 'zcgl_dict_park_delete',
+  // 楼盘字典-创建车位
+  ASSET_DICT_STALL_CREATE: 'zcgl_dict_stall_create',
+  // 楼盘字典-修改车位
+  ASSET_DICT_STALL_EDIT: 'zcgl_dict_stall_edit',
+  // 楼盘字典-删除车位
+  ASSET_DICT_STALL_DELETE: 'zcgl_dict_stall_delete',
+  // 楼盘字典-创建设备
+  ASSET_DICT_EQUIPMENT_CREATE: 'zcgl_dict_equipment_create',
+  // 楼盘字典-修改设备
+  ASSET_DICT_EQUIPMENT_EDIT: 'zcgl_dict_equipment_edit',
+  // 楼盘字典-删除设备
+  ASSET_DICT_EQUIPMENT_DELETE: 'zcgl_dict_equipment_delete',
   // 2.0.0end
   /**
   * 资产变动

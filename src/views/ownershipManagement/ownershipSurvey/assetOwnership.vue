@@ -3,7 +3,7 @@
  * @Author: chen han
  * @Description: 资产权属
  -->
- <template>
+<template>
   <div>
     <div class="pb70 content-active-box">
       <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0}">
@@ -13,7 +13,7 @@
         <div slot="contentForm" class="search-content-box" style="text-align: left; position: absolute;">
           <!-- style="text-align: left;width: 100%; position: absolute" -->
           <div class="search-from-box">
-              <treeSelect
+            <treeSelect
               @changeTree="changeTree"
               placeholder="请选择组织机构"
               :allowClear="false"
@@ -40,9 +40,21 @@
               v-model="queryCondition.assetTypes"
               :options="$addTitle(assetTypeOptions)"
               :style="allStyle"
-              @select="changeAssetType"
+              @change="changeAssetType"
             ></a-select>
+            <EquipmentSelectTree
+              v-if="isSelectedEquipment"
+              :style="allStyle"
+              :top-organ-id="queryCondition.organId"
+              :multiple="true"
+              v-model="queryCondition.objectTypes"
+              :options-data-format="(data)=>{
+                return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+              }"
+              @select="assetClassifyDataFn($event,true)"
+            />
             <a-select
+              v-else
               showSearch
               :allowClear="false"
               placeholder="全部资产分类"
@@ -178,6 +190,7 @@ import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -314,7 +327,8 @@ export default {
     SearchContainer,
     TreeSelect,
     noDataTips,
-    segiIcon
+    segiIcon,
+    EquipmentSelectTree
   },
   data() {
     return {
@@ -338,6 +352,12 @@ export default {
         totalCount: 0
       }
     };
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetTypes
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    }
   },
   created() {
     this.platformDictFn("AMS_KIND_OF_RIGHT");
@@ -428,18 +448,21 @@ export default {
         this.queryCondition.kindOfRights = this.handleMultipleSelectValue(value, this.queryCondition.kindOfRights, this.kindOfRightsOpt)
       })
     },
-    assetClassifyDataFn (value) {
+    assetClassifyDataFn (value,isSelectedEquipment) {
       this.$nextTick(function () {
-        this.queryCondition.objectTypes = this.handleMultipleSelectValue(value, this.queryCondition.objectTypes, this.assetClassifyData)
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
+        this.queryCondition.objectTypes = this.handleMultipleSelectValue(value, this.queryCondition.objectTypes, resOptions)
       })
     },
     changeAssetType (value) {
       this.$nextTick(function () {
         this.queryCondition.assetTypes = this.handleMultipleSelectValue(value, this.queryCondition.assetTypes, this.assetTypeOptions)
-        if (!this.queryCondition.assetTypes[0]) {
+        if (!this.queryCondition.assetTypes[0] || this.queryCondition.assetTypes.length > 1 ) {
           this.assetClassifyData = [{label: '全部资产分类', value: ''}]
+          this.queryCondition.objectTypes = ['']
+        }else {
+          this.getListFn()
         }
-        this.getListFn()
       })
     },
     statussSelect (value) {
@@ -547,10 +570,10 @@ export default {
           } else if (code === "asset_type") {
             this.assetTypeOptions = [
               {
-                  label: "全部资产类型",
-                  value: ""
+                label: "全部资产类型",
+                value: ""
               },
-                ...arr
+              ...arr
             ];
             this.getListFn()
           }
@@ -561,9 +584,9 @@ export default {
     },
     // 获取资产分类列表
     getListFn () {
-       if (!this.queryCondition.organId) {
-         return
-       }
+      if (!this.queryCondition.organId) {
+        return
+      }
       let obj = {
         organId: this.queryCondition.organId,
         assetType: this.queryCondition.assetTypes.length > 0 ? this.queryCondition.assetTypes.join(',') : ''

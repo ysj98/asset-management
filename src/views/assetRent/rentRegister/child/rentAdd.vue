@@ -190,7 +190,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col v-if="!isSelectedEquipment" :span="8">
           <a-form-item
             label="出租面积(㎡)"
             :label-col="labelCol"
@@ -237,21 +237,21 @@
               资产数量：
               <span class="pubText">{{
                 selectedList.length === 0 ? 0 : selectedList.length
-              }}</span
-              >&nbsp;&nbsp;个，&emsp; 出租面积：
-              <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
+              }}</span>&nbsp;&nbsp;个&emsp;
+              <p style="display: inline" v-if="!isSelectedEquipment">，出租面积：<span class="pubText">{{ leaseArea ? leaseArea : 0}}㎡</span></p>
             </div>
             <SG-Button
               icon="plus"
               type="primary"
               ghost
               @click="handleAddModal(true)"
-              >添加资产</SG-Button
-            >
+              >
+              添加资产
+            </SG-Button>
           </div>
           <!-- 资产表格部分 -->
           <a-table
-            :columns="columns"
+            :columns="columnsCom"
             :data-source="selectedList"
             :pagination="false"
             :bordered="true"
@@ -316,6 +316,7 @@
       :queryType="6"
       v-model="selectedList"
       @areaChange="areaChange"
+      :isSelectedEquipment="isSelectedEquipment"
     ></AssetListMoal>
   </a-spin>
 </template>
@@ -425,6 +426,21 @@ export default {
       uploadList: [], // 上传
       pass: true,
     };
+  },
+  computed:{
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['assetArea', 'leaseArea',]
+        return this.columns.filter(ele=>{
+          return !arr.includes(ele.dataIndex)
+        })
+      }else {
+        return this.columns
+      }
+    },
+    isSelectedEquipment(){
+      return String(this.dynamicData.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
   },
   components: { TenantModal, AssetListMoal, FormFooter },
   watch: {
@@ -642,7 +658,7 @@ export default {
                   return;
                 }
               });
-              if (this.pass === false) {
+              if (!this.isSelectedEquipment && this.pass === false) {
                 this.$message.error("出租面积必须大于1㎡");
                 return;
               }
@@ -661,7 +677,7 @@ export default {
                   return;
                 }
               });
-              if (this.pass === false) {
+              if (!this.isSelectedEquipment && this.pass === false) {
                 this.$message.error("出租面积必须大于1㎡");
                 return;
               }

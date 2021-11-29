@@ -81,6 +81,7 @@
               mode="multiple"-->
               <a-select
                 showSearch
+                :disabled="setType==='edit'"
                 :style="allWidth"
                 placeholder="请选择资产类型"
                 v-decorator="['assetType',{
@@ -119,7 +120,7 @@
                 notFoundContent="没有查询到变更类型"
               >
                 <a-select-option
-                  v-for="(item) in changeTypeData"
+                  v-for="(item) in changeTypeDataCom"
                   :key="item.value"
                   :value="item.value"
                   :title="item.name"
@@ -158,7 +159,7 @@
                   notFoundContent="没有查询到数据"
                 >
                   <a-select-option
-                    v-for="(item) in originalObjectTypeData"
+                    v-for="(item) in originalObjectTypeDataCom"
                     :key="item.value"
                     :value="item.value"
                     :title="item.name"
@@ -263,7 +264,7 @@
         <span class="section-title blue">资产列表</span>
         <div class="button-box">
           <SG-Button
-            v-show="changeType!=='3' || !['1', '2'].includes(originalObjectType)"
+            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
             class="buytton-nav"
             type="primary"
             weaken
@@ -272,16 +273,42 @@
         </div>
         <div
           class="table-layout-fixed"
-          v-if="columns.length !== 0"
+          v-if="columnsCom.length !== 0"
           :class="{'table-border': tableData.length != 0}"
         >
           <a-table
             :scroll="scroll"
-            :columns="columns"
+            :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
           >
+            <template #newAssetCategoryCode="text,record">
+              <EquipmentSelectTree
+                v-if="isSelectedEquipment"
+                size="small"
+                style="width: 100%"
+                :top-organ-id="organId"
+                :defaultName="record.newAssetCategoryName"
+                v-model="record.newAssetCategoryCode"
+              />
+              <a-select
+                v-else
+                size="small"
+                style="width: 100%"
+                v-model="record.newAssetCategoryCode"
+                :options="$addTitle(objectTypeOptions)"
+                placeholder="请选择资产类别"
+              />
+            </template>
+            <!-- 资产面积(㎡) 建筑面积(㎡) -->
+            <template #assetArea="text,record">
+              {{[$store.state.ASSET_TYPE_STRING.EQUIPMENT,$store.state.ASSET_TYPE_CODE.EQUIPMENT].includes(String(record.assetType)) ? '/' : record.assetArea}}
+            </template>
+            <!-- 使用方向 -->
+            <template #newUseDirection="text,record">
+              <a-select v-model="record.newUseDirection" style="width: 200px;" :options="amsUseDirectionCom"></a-select>
+            </template>
             <!-- 交付运营 -->
             <template
               v-if="changeType === '1'"
@@ -355,7 +382,7 @@
             <!-- 原值变更 -->
             <template v-if="changeType === '3'" slot="newOriginalValue" slot-scope="text, record">
               <a-input-number
-                :disabled="changeType=='3'&&['1', '2'].includes(originalObjectType)"
+                :disabled="changeType=='3'&&['1', '2','3'].includes(originalObjectType)"
                 size="small"
                 :min="0"
                 :step="1.00"
@@ -470,25 +497,30 @@
 </template>
 
 <script>
+import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 import AssetBundlePopover from "../../common/assetBundlePopover";
 import {
-  deliveryProperty,
-  deliveryOperation,
+  assetSize,
+  baseChange,
+  baseChangeTwo,
   changeDirectionUse,
-  variationOriginalValue,
+  changeDirectionUseEq,
+  debtChange,
+  deliveryOperation,
+  deliveryProperty,
   positionChange,
   projectChange,
-  baseChange,
-  debtChange,
-  baseChangeTwo,
-  assetSize,
+  variationOriginalValue,
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips";
-import {  calc, debounce } from "@/utils/utils.js";
+import {calc, debounce} from "@/utils/utils.js";
 
 import moment from "moment";
 import {querySourceType} from "@/views/common/commonQueryApi";
+import {SET_AMS_USE_DIRECTION} from "store/types/platformDictTypes";
+import {carPage} from "api/assets";
+
 const newEditSingleData = {
   title: "", // 登记单名称
   changeType: undefined, // 变更类型
@@ -504,25 +536,16 @@ const newEditSingleData = {
   organId: "",
 };
 const conditionalJudgment = [undefined, null, ""];
-const originalObjectTypeData = [
-  { name: "资产项目", value: "1" },
-  { name: "楼栋", value: "2" },
-  // { name: "车场", value: "3" },
-  { name: "资产", value: "4" },
-];
-let originalObjectTypeData_two = [
-  { name: "资产项目", value: "1" },
-  { name: "资产", value: "4" },
-];
 const shareWayData = [
   { name: "按资产面积分摊", value: "1" },
   { name: "按资产个数分摊", value: "2" },
 ];
 export default {
-  components: { AssetBundlePopover, FormFooter, noDataTips },
+  components: { AssetBundlePopover, FormFooter, noDataTips, EquipmentSelectTree },
   props: {},
   data() {
     return {
+      objectTypeOptions:[],
       sourceOptions:[], // 来源方式
       changeOrderId: "",
       scroll: {y: 450, x: 1600},
@@ -545,7 +568,6 @@ export default {
       projectList:[], // 资产项目 集合
       projectIdData: [], // 资产项目id 集合
       assetTypeData: [], // 资产类型
-      originalObjectTypeData, // 原值对象类型
       originalObjectIdData: [], // 原值对象值
       shareWayData, // 原值分摊方式
       newEditSingleData: { ...newEditSingleData },
@@ -570,7 +592,52 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    originalObjectTypeDataCom(){
+      const {HOUSE,YARD} = this.$store.state.ASSET_TYPE_CODE
+      const originalObjectTypeData = [
+        { name: "资产项目", value: "1" },
+        { name: "楼栋", value: "2", auth:[HOUSE]},
+        { name: "车场", value: "3", auth:[YARD]},
+        { name: "资产", value: "4" },
+      ];
+      return originalObjectTypeData.filter(ele=>{
+        if (ele.auth && ele.auth.length){
+          return ele.auth.includes(this.assetType);
+        }else {
+          return true
+        }
+      })
+    },
+    changeTypeDataCom(){
+      const tempApp = ['交付运营','交付物业']
+      return this.changeTypeData.filter(ele=>{
+        return this.assetType !== this.$store.state.ASSET_TYPE_CODE.EQUIPMENT  || !tempApp.includes(ele.name)
+      })
+    },
+    amsUseDirectionCom(){
+      return this.$store.state.platformDict.AMS_USE_DIRECTION.map(ele=>{
+        return {
+          title: ele.name,
+          value: ele.value,
+          label: ele.name
+        };
+      })
+    },
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['assetArea']
+        return this.columns.filter(ele=>{
+          return !arr.includes(ele.dataIndex)
+        })
+      }else {
+        return this.columns
+      }
+    }
+  },
   watch: {
     changeType(val) {
       this.checkedData = [];
@@ -580,7 +647,7 @@ export default {
       } else if (val === "1") {
         this.columns = deliveryOperation;
       } else if (val === "4") {
-        this.columns = changeDirectionUse;
+        this.columns = this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT ? changeDirectionUseEq : changeDirectionUse
       } else if (val === "3") {
         this.columns = variationOriginalValue;
       } else if (val === "5") {
@@ -591,9 +658,14 @@ export default {
         this.columns = baseChange;
         // 装修情况有变化
         this.handleBaseAndHuse();
+        // 如果 不是 设备设施类型
+        if(this.assetType !== this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
+          this.queryObjectType()
+        }
       } else if (val === "8") {
         this.columns = debtChange;
       } else if (val === "9") {
+        // TODO: 字典里面没有 9
         this.columns = assetSize;      // 资产面积
       }
       console.log(this.columns)
@@ -607,6 +679,10 @@ export default {
     this.organIdData = JSON.parse(this.$route.query.record);
     this.organId = this.organIdData[0].value;
     this.setType = this.$route.query.setType;
+    this.$store.dispatch('platformDict/getPlatformDict',{
+      code:'AMS_USE_DIRECTION',
+      type: SET_AMS_USE_DIRECTION
+    })
   },
   mounted() {
     this.getSourceOptions()
@@ -624,6 +700,24 @@ export default {
     }
   },
   methods: {
+    queryObjectType () {
+      const organId = this.organId
+      const assetType = this.assetType
+      if(!organId || !assetType){
+        return null
+      }
+      this.$api.assets.getList({ assetType, organId }).then(res => {
+        if (Number(res.data.code) === 0) {
+          let { data } = res.data
+          this.objectTypeOptions = data.map(m => ({
+            title: m.professionName,
+            key: m.professionCode
+          }))
+        }
+      }).catch(err => {
+        this.$message.error(err || '查询资产类别失败')
+      })
+    },
     /*
     * 获取来源方式
     * */
@@ -696,12 +790,6 @@ export default {
                 originalObjectId: data.originalObjectId,
                 originalObjectType: String(data.originalObjectType),
               });
-              // 原值对象类型选择
-              if (String(data.assetType) === "1") {
-                this.originalObjectTypeData = originalObjectTypeData;
-              } else {
-                this.originalObjectTypeData = originalObjectTypeData_two;
-              }
               // 选择资产项目
               if (String(data.originalObjectType) === "1") {
                 this.originalObjectProject();
@@ -763,31 +851,38 @@ export default {
                 return;
               }
             } else if (String(this.changeType) === "4") {
-              if (
-                conditionalJudgment.includes(this.tableData[i].operationArea)
-              ) {
-                this.$message.info("请输入运营面积");
-                return;
-              } else if (
-                conditionalJudgment.includes(this.tableData[i].selfUserArea)
-              ) {
-                this.$message.info("请输入自用面积");
-                return;
-              } else if (
-                conditionalJudgment.includes(this.tableData[i].idleArea)
-              ) {
-                this.$message.info("请输入闲置面积");
-                return;
-              } else if (
-                conditionalJudgment.includes(this.tableData[i].occupationArea)
-              ) {
-                this.$message.info("请输入占用面积");
-                return;
-              } else if (
-                conditionalJudgment.includes(this.tableData[i].otherArea)
-              ) {
-                this.$message.info("请输入其他面积");
-                return;
+              if (String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
+                if(conditionalJudgment.includes(this.tableData[i].newUseDirection)){
+                  this.$message.info("请输入变更后使用方向");
+                  return;
+                }
+              }else {
+                if (
+                  conditionalJudgment.includes(this.tableData[i].operationArea)
+                ) {
+                  this.$message.info("请输入运营面积");
+                  return;
+                } else if (
+                  conditionalJudgment.includes(this.tableData[i].selfUserArea)
+                ) {
+                  this.$message.info("请输入自用面积");
+                  return;
+                } else if (
+                  conditionalJudgment.includes(this.tableData[i].idleArea)
+                ) {
+                  this.$message.info("请输入闲置面积");
+                  return;
+                } else if (
+                  conditionalJudgment.includes(this.tableData[i].occupationArea)
+                ) {
+                  this.$message.info("请输入占用面积");
+                  return;
+                } else if (
+                  conditionalJudgment.includes(this.tableData[i].otherArea)
+                ) {
+                  this.$message.info("请输入其他面积");
+                  return;
+                }
               }
             } else if (String(this.changeType) === "5") {
               if (!this.tableData[i].addressName) {
@@ -812,6 +907,10 @@ export default {
                 this.$message.info("变更后来源方式");
                 return;
               }
+              if (!this.tableData[i].newAssetCategoryCode) {
+                this.$message.info("变更后资产分类");
+                return;
+              }
             } else if (String(this.changeType) === "8") {
               if (!this.tableData[i].newCreditorAmount) {
                 this.$message.info("请选择变更后债权金额");
@@ -828,6 +927,7 @@ export default {
               }
             }
           }
+
           this.tableData.forEach((item) => {
             arr.push({
               assetId: item.assetId,
@@ -870,7 +970,9 @@ export default {
                 String(this.changeType) === "8" ? item.newCreditorAmount : "", // 变更后债权金额
               debtAmount:
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
-              newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : ""   // 变更后资产面积
+              newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : "" ,  // 变更后资产面积
+              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : "", // 变更后使用方向(设备设施 独有)
+              newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "" // 变更后资产分类
             });
           });
           let obj = {
@@ -966,7 +1068,7 @@ export default {
       this.originalValue = val;
       this.computedEqually();
       if(val==0){
-        this.tableData.map((item,index) => {
+        this.tableData.map((item) => {
           item.newOriginalValue = 0
         })
       }
@@ -975,12 +1077,10 @@ export default {
     assetTypeChange(val) {
       this.assetType = val;
       console.log("资产类型改变=>", val);
-      // 如果选择的不是房间
-      if (val === "1") {
-        this.originalObjectTypeData = originalObjectTypeData;
-      } else {
-        this.originalObjectTypeData = originalObjectTypeData_two;
-      }
+      this.form.setFieldsValue({
+        changeType: '',
+      });
+      this.changeTypeChange("")
       // 如果是设备 并且变更类型是原值变动  原值对象类型非资产
       this.handleDefaultShareWay();
       // 装修情况有变化
@@ -1001,7 +1101,7 @@ export default {
       // 根据”+$原值对象类型$（$原值对象$）+“资产原值”+$原值金额$+$原值分摊规则$，
       //如根据楼栋（楼栋001）资产原值为100000按照资产面积分摊
       if (this.changeType === "3" && this.originalObjectType !== "4") {
-        let originalObjectTypeName = this.originalObjectTypeData.find(
+        let originalObjectTypeName = this.originalObjectTypeDataCom.find(
           (item) => item.value === this.originalObjectType
         ).name;
         let originalObjectId =
@@ -1074,18 +1174,18 @@ export default {
         });
         // 依次各个值
       }
-      this.form.setFieldsValue({ remark: this.joinRemark() });
+      let str = this.joinRemark()
+      console.log('str',str)
+      this.form.setFieldsValue({ remark: this.joinRemark(str) });
     }, 200),
     // 当为基础信息变动， 并且为房屋或者车场，资产类型
     handleBaseAndHuse() {
       console.log("会进到这里来2", this.changeType, "www", this.assetType);
       if (this.changeType === "7") {
         // 房屋
-        if (["1"].includes(this.assetType)) {
+        if (this.assetType === this.$store.state.ASSET_TYPE_CODE.HOUSE) {
           this.columns = baseChangeTwo;
-        }
-        // 土地
-        if (['4'].includes(this.assetType)) {
+        }else {
           this.columns = baseChange;
         }
       }
@@ -1126,6 +1226,9 @@ export default {
           this.organBuild();
         }
         // 如果原值对象类型是车场
+        if (originalObjectType === "3") {
+          this.getParkApiList();
+        }
       }
     },
     // 原值对象类型改变
@@ -1156,16 +1259,77 @@ export default {
         this.organBuild(val);
       }
       // 选择车场
+      if (val === "3") {
+        this.getParkApiList();
+      }
+      // 选择车场 原值分摊方式 处理
       this.$nextTick(() => {
         this.handleDefaultShareWay();
       });
     },
     // 项目生成原值对象
     originalObjectProject() {
-      let projectId = this.form.getFieldValue("projectId");
+      let projectId = this.projectId;
+      // let projectId = this.form.getFieldValue("projectId");
       this.originalObjectIdData = [
         this.projectIdData.find((item) => item.value === projectId),
       ];
+    },
+    handleFormatAssetData(data){
+      return data.map((element) => {
+        element.key = element.assetId;
+        element.oldOriginalValue = element.originalValue;
+        element.newOriginalValue = ""; // 变动后原值
+        element.transferArea = ""; // 交付物业面积
+        element.transferOperationArea = ""; // 交付运营面积
+        element.addressName = ""; // 变动后位置
+        element.changeProjectId = ""; // 变动后资产项目
+        element.oldWarrantNbr = element.warrantNbr;
+        element.warrantNbr = undefined;
+        element.warrantNbrData = []; // 用于存储单个下拉框数据
+        element.warrantGeneralData = []; // 用于存权证号总是数据
+        element.disposeCost = ""; // 处置成本
+        element.disposeReceive = ""; // 处置收入
+        element.remark = ""; // 处置备注
+        return {
+          ...element,
+        };
+      });
+    },
+    async getStallApiPageList(val){
+      let projectId = this.form.getFieldValue("projectId");
+      const requestData  = {
+        organId: this.organId, // 机构id
+        projectIdList: [projectId], // 车场Id
+        placeIdList: [val],
+        type:'2'
+      }
+      const {data:{code,data}} = await this.$api.assets.carPage(requestData)
+      if (code === '0'){
+        let resultList =  data
+        this.checkedData = resultList.map(ele=>ele.assetId);
+        this.tableData = this.handleFormatAssetData(resultList);
+        this.computedEqually();
+      }
+    },
+    async getParkApiList(){
+      const requestData = {
+        organId: this.organId,
+        onlyCurrentNode: 1,
+        pageNo: 1,
+        pageLength: 9999
+      }
+      const {data:{code,data}} = await this.$api.building.parkApiList(requestData)
+      if (code === "0") {
+        let result = data ? data.resultList : [];
+        this.originalObjectIdData = result.map(item => {
+          return {
+            ...item,
+            name: item.placeName,
+            value: item.placeId,
+          };
+        });
+      }
     },
     // 项目请求楼栋
     organBuild() {
@@ -1198,32 +1362,9 @@ export default {
       this.$api.assets.queryAssetViewPage2(data).then((res) => {
         if (res.data.code === "0") {
           let result = res.data.data || [];
-          let keys = [];
-          let arr = result.map((element) => {
-            keys.push(element.assetId);
-            element.assetObjectId = element.assetHouseId;
-            element.key = element.assetId;
-            element.oldOriginalValue = element.originalValue;
-            element.newOriginalValue = ""; // 变动后原值
-            element.transferArea = ""; // 交付物业面积
-            element.transferOperationArea = ""; // 交付运营面积
-            element.addressName = ""; // 变动后位置
-            element.changeProjectId = ""; // 变动后资产项目
-            element.oldWarrantNbr = element.warrantNbr;
-            element.warrantNbr = undefined;
-            element.warrantNbrData = []; // 用于存储单个下拉框数据
-            element.warrantGeneralData = []; // 用于存权证号总是数据
-            element.disposeCost = ""; // 处置成本
-            element.disposeReceive = ""; // 处置收入
-            element.remark = ""; // 处置备注
-            return {
-              ...element,
-            };
-          });
-          this.checkedData = keys;
-          this.tableData = arr;
+          this.checkedData = result.map(ele=>ele.assetId);
+          this.tableData = this.handleFormatAssetData(result);
           this.computedEqually();
-          console.log("得到数据=>", arr);
         }
       });
     },
@@ -1237,6 +1378,10 @@ export default {
       // 如果原值对象是楼栋，则请求房间
       if (originalObjectType === "2") {
         this.queryAssetViewPage2(val);
+      }
+      // 如果原值对象是车场，则请求车场
+      if (originalObjectType === "3") {
+        this.getStallApiPageList(val);
       }
     },
     // 项目请求全部资产
@@ -1254,31 +1399,9 @@ export default {
       this.$api.assets.assetListPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let result = res.data.data.data || [];
-          let keys = [];
-          let arr = result.map((element) => {
-            keys.push(element.assetId);
-            element.key = element.assetId;
-            element.oldOriginalValue = element.originalValue;
-            element.newOriginalValue = ""; // 变动后原值
-            element.transferArea = ""; // 交付物业面积
-            element.transferOperationArea = ""; // 交付运营面积
-            element.addressName = ""; // 变动后位置
-            element.changeProjectId = ""; // 变动后资产项目
-            element.oldWarrantNbr = element.warrantNbr;
-            element.warrantNbr = undefined;
-            element.warrantNbrData = []; // 用于存储单个下拉框数据
-            element.warrantGeneralData = []; // 用于存权证号总是数据
-            element.disposeCost = ""; // 处置成本
-            element.disposeReceive = ""; // 处置收入
-            element.remark = ""; // 处置备注
-            return {
-              ...element,
-            };
-          });
-          this.checkedData = keys;
-          this.tableData = arr;
+          this.checkedData = result.map(ele=>ele.assetId);
+          this.tableData = this.handleFormatAssetData(result);
           this.computedEqually();
-          console.log("得到数据=>", arr);
         } else {
           this.$message.error(res.data.message);
         }

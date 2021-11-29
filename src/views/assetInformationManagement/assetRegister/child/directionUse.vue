@@ -3,7 +3,7 @@
  * @Date: 2020-07-15 14:50:50
  * @LastEditTime: 2020-08-01 10:25:54
  * @Description: 使用方向
---> 
+-->
 <template>
   <div class="directionUse">
     <!--数据总览-->
@@ -40,18 +40,43 @@
       />
     </div>
     <!-- 新增编辑 -->
-    <directionUseEdit @cancel="cancel" v-if="modalShow" ref="directionUseEdit" @allQuery="allQuery"></directionUseEdit>
+    <directionUseEdit
+      :is-equipment="isEquipment"
+      @cancel="cancel"
+      v-if="modalShow"
+      ref="directionUseEdit"
+      @allQuery="allQuery"
+    >
+    </directionUseEdit>
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
 
 <script>
 import {utils} from '@/utils/utils'
-import {directionUseData} from './../common/registerBasics'
+import { directionUseData, directionEquipment} from './../common/registerBasics'
 import noDataTips from '@/components/noDataTips'
 import directionUseEdit from './../common/directionUseEdit'
 import OverviewNumber from 'src/views/common/OverviewNumber'
+const numList = [
+  {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057'},
+  {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
+  {title: '运营面积(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
+  {title: '自用面积(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+  {title: '占用面积(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+  {title: '其他面积(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'},
+  {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+]
+const numListEquipment = [
+  {title: '资产数量', key: 'assetNum', value: 0, fontColor: '#324057'},
+  {title: '运营数量', key: 'operateNum', value: 0, bgColor: '#4BD288'},
+  {title: '自用数量', key: 'selfUseNum', value: 0, bgColor: '#DD81E6'},
+  {title: '占用数量', key: 'occupationNum', value: 0, bgColor: '#FD7474'},
+  {title: '其他数量', key: 'otherNum', value: 0, bgColor: '#BBC8D6'},
+  {title: '闲置数量', key: 'idleNum', value: 0, bgColor: '#1890FF'},
+]
 export default {
+  name:'DirectionUse',
   components: {noDataTips, directionUseEdit, OverviewNumber},
   props: {
     registerOrderId: [String, Number],
@@ -62,15 +87,7 @@ export default {
     return {
       record: [],
       setType: '',
-      numList: [
-        {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057'},
-        {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
-        {title: '运营面积(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
-        {title: '自用面积(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-        {title: '占用面积(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
-        {title: '其他面积(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'},
-        {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList, // 概览数字数据, title 标题，value 数值，bgColor 背景色
       fileType: ['xls', 'xlsx'],
       columns: [],
       tableData: [],
@@ -87,22 +104,31 @@ export default {
     }
   },
   computed: {
+    isEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+      // return true
+    },
+    directionUseDataCom(){
+      return this.isEquipment ? directionEquipment : directionUseData
+    },
   },
   created () {
   },
   mounted () {
+    if (this.isEquipment){
+      this.numList = numListEquipment
+    }
     this.queryCondition.registerOrderId = this.registerOrderId
     this.queryCondition.assetType = this.assetType
-    this.organId = this.organId
     this.record = JSON.parse(this.$route.query.record)
     this.setType = this.$route.query.setType
     if (this.setType === 'detail') {
       let arr = []
-      arr = utils.deepClone(directionUseData)
+      arr = utils.deepClone(this.directionUseDataCom)
       arr.pop()
       this.columns = arr
     } else {
-      this.columns = directionUseData
+      this.columns = this.directionUseDataCom
     }
     this.query()
   },
@@ -151,6 +177,7 @@ export default {
       let fileData = new FormData()
       fileData.append('file', files[0])
       fileData.append('registerOrderId', this.registerOrderId)
+      fileData.append('assetType',Number(this.assetType))
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -177,7 +204,7 @@ export default {
         }
       }, () => {
         e.target.value = ''
-        this.DE_Loding(loadingName).then(res => {
+        this.DE_Loding(loadingName).then(() => {
           this.$SG_Message.error('导入失败！')
         })
       })
@@ -231,6 +258,7 @@ export default {
       }
       this.$api.assets.useForSummary(obj).then(res => {
         if (Number(res.data.code) === 0) {
+          res.data.data.assetNum = this.count
           return this.numList = this.numList.map(m => {
             return { ...m, value: res.data.data[m.key] || 0 }
           })

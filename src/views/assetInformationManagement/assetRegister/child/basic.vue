@@ -31,6 +31,10 @@
         <template slot="operation" slot-scope="text, record">
           <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
         </template>
+        <!-- 车场类型 -->
+        <template #type="text,record">
+          {{generateYardClassification(record)}}
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -59,14 +63,24 @@
 </template>
 
 <script>
-import {calc, utils} from '@/utils/utils'
+import {calc, utils, getArrayRepeat, handleEnumerationConversion} from '@/utils/utils'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from '@/components/noDataTips'
-import {columnsData, judgmentData, landCheck, landData} from './../common/registerBasics'
+import {
+  columnsData,
+  equipment,
+  equipmentVerificationList,
+  houseVerificationList,
+  landVerificationList,
+  yardVerificationList,
+  landData,
+  yard
+} from './../common/registerBasics'
 import basicDownload from './../common/basicDownload'
 import AssetImportModal from "@/views/assetInformationManagement/assetRegister/common/AssetImportModal";
 import bridge from './center'
 import {querySourceType} from "@/views/common/commonQueryApi";
+import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
 
 let getUuid = (() => {
   let uuid = 1
@@ -74,6 +88,17 @@ let getUuid = (() => {
     return ++uuid
   }
 })()
+const numList = [
+  {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
+  {title: '建筑面积(㎡)', key: 'areaNum', value: 0, bgColor: '#FD7474', noShow: false},
+  {title: '债权(元)', key: 'debtAmount', value: 0, bgColor: '#1890FF'},
+  {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
+]
+const numListEq = [
+  {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
+  {title: '债权(元)', key: 'debtAmount', value: 0, bgColor: '#1890FF'},
+  {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
+]
 export default {
   components: {OverviewNumber, noDataTips, basicDownload, AssetImportModal},
   props: {
@@ -92,6 +117,11 @@ export default {
   },
   data () {
     return {
+      equipmentVerificationList,
+      houseVerificationList,
+      landVerificationList,
+      yardVerificationList,
+      userSelectedOrganId:'',
       detailData:{},
       projectList:[],
       modalObj: {
@@ -122,18 +152,21 @@ export default {
       organDictDataName: [],   // 权属情况名称
       fileType: ['xls', 'xlsx'],
       setType: '',
-      numList: [
-        {title: '资产数量', key: 'assetsNum', value: 0, fontColor: '#324057'},
-        {title: '建筑面积(㎡)', key: 'areaNum', value: 0, bgColor: '#FD7474'},
-        {title: '债权(元)', key: 'debtAmount', value: 0, bgColor: '#1890FF'},
-        {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList, // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableData: [],    // 表格内容
       columns: [],      // 表格表头
       assetType: '',    // 资产类型
+      projectId: ''
     }
   },
   computed: {
+    isEquipment(){
+      return this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+      // return true
+    },
+    ASSET_TYPE_CODE(){
+      return this.$store.state.ASSET_TYPE_CODE;
+    },
   },
   created () {
   },
@@ -141,6 +174,25 @@ export default {
     this.init()
   },
   methods: {
+    tempFn(value){
+      console.log('test')
+      console.log(value)
+    },
+    generateYardClassification(record){
+      const {type, objectType} = record
+      let data = []
+      // 1车场 2车位 固化的
+      if (String(type) === '1'){
+        data = this.$store.state.platformDict.PARKING_PLACE_RESOURCE_TYPE
+      }else if(String(type) === '2'){
+        data = this.$store.state.platformDict.PARKING_OBJ_TYPE
+      }
+
+      let res = data.filter(ele=>{
+        return ele.value === objectType
+      })[0]
+      return res ? res.name : '--'
+    },
     /*
     * @public ref调用
     * 新增 资产登记 第二个页面 添加资产导入 需要 detailData 数据
@@ -159,6 +211,7 @@ export default {
         this.$api.assets.getRegisterOrderById(obj).then(res => {
           if (Number(res.data.code) === 0) {
             this.detailData = res.data.data
+            this.projectId = res.data.data.projectId
           } else {
             this.$message.error(res.data.message)
           }
@@ -170,6 +223,11 @@ export default {
     * 编辑 初始化
     * */
     async init(){
+      if (this.isEquipment){
+        this.numList = numListEq
+      }else {
+        this.numList = numList
+      }
       this.record = JSON.parse(this.$route.query.record)
       this.assetType = String(this.assetTypeId)
       this.setType = this.$route.query.setType
@@ -188,10 +246,14 @@ export default {
       if (this.setType === 'detail' || this.setType === 'edit') {
         let arr = []
         this.assetType = String(this.record[0].assetType)
-        if (+this.record[0].assetType === 1) {                    // 房屋表头
+        if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {                    // 房屋表头
           arr = utils.deepClone(columnsData)
-        } else if (+this.record[0].assetType === 4) {             // 土地表头
+        } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {             // 土地表头
           arr = utils.deepClone(landData)
+        } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT) {
+          arr = utils.deepClone(equipment)
+        } else if (this.assetType === this.ASSET_TYPE_CODE.YARD) {
+          arr = utils.deepClone(yard)
         }
         if (this.setType === 'detail') { arr.pop()}
         this.columns = arr
@@ -208,7 +270,7 @@ export default {
     handleInitDefaultSourceType(projectId){
       let res = this.projectList.find(ele=>ele.projectId === projectId)
       console.log('res',res)
-      this.sourceType = res ? res.sourceType : ''
+      this.sourceType = res ? Number(res.sourceType) : ''
     },
     /*
     * 获取项目列表
@@ -270,15 +332,12 @@ export default {
       this.$api.assets.getRegisterOrderDetailsPageById(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = []
-          if (+this.assetType === 1) {
-            data = res.data.data.data.assetHoseList
-          } else {
-            data = res.data.data.data.assetLandList
-          }
+          let ASSET_TYPE_PAGE_LIST = handleAssetTypeField(this.assetType,'pageList')
+          data = res.data.data.data[ASSET_TYPE_PAGE_LIST]
           if (data && data.length) {
             data.forEach((item, index) => {
               item.key = index
-              item.pasitionString =  item.pasitionString + item.address || ""
+              item.pasitionString = item.allAddress || ((item.pasitionString || '') + (item.address || ""))
             })
           }
           if (this.columns[0].dataIndex !== 'assetId') {
@@ -302,7 +361,7 @@ export default {
       this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (this.assetType === '4') {
+          if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
             this.numList[1].title = '土地面积'
           }
           return this.numList = this.numList.map(m => {
@@ -318,22 +377,46 @@ export default {
       bridge.$on("assetType",(val, type, sourceType)=>{
         //val值    type：project项目  asset资产类型
         // 房屋
-        if (type === 'asset' && val === '1') {
-          this.assetType = '1'
+        // 初始化 nulList 显示状态
+        if (type==='asset'){
+          let resType = ''
+          let resColumns = []
           this.tableData = []
-          this.columns = columnsData
-          this.numList[1].title = '建筑面积'
-        // 土地
-        } else if (type === 'asset' && val === '4') {
-          this.assetType = '4'
-          this.tableData = []
-          this.columns = landData
-          this.numList[1].title = '土地面积'
+          switch (val){
+            case this.ASSET_TYPE_CODE.HOUSE:
+              resType = this.ASSET_TYPE_CODE.HOUSE
+              resColumns = columnsData
+              this.numList[1].title = '建筑面积'
+              break
+            case this.ASSET_TYPE_CODE.LAND:
+              resType = this.ASSET_TYPE_CODE.LAND
+              resColumns = landData
+              this.numList[1].title = '土地面积'
+              break
+            case this.ASSET_TYPE_CODE.YARD:
+              resType = this.ASSET_TYPE_CODE.YARD
+              resColumns = yard
+              this.numList[1].title = '资产面积'
+              break
+            case this.ASSET_TYPE_CODE.EQUIPMENT:
+              resType = this.ASSET_TYPE_CODE.EQUIPMENT
+              resColumns = equipment
+              break
+          }
+          this.assetType = resType
+          this.columns = resColumns
+
+          if (this.isEquipment){
+            this.numList = numListEq
+          }else {
+            this.numList = numList
+          }
         }
         // 项目切换
         if (type === 'project' && val) {
           this.tableData = []
-          this.sourceType = sourceType
+          this.sourceType = Number(sourceType)
+          this.projectId  = val
         }
         // 切换总的统计数据的值为0
         if (!type && this.tableData.length === 0) {
@@ -367,6 +450,7 @@ export default {
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', files[0])
       fileData.append('assetType', this.assetType)
+      fileData.append('projectId',this.projectId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -382,11 +466,8 @@ export default {
         if (res.data.code === '0') {
           e.target.value = ''
           let resData = [], arrData =[]
-          if (this.assetType === '1') {
-            arrData = res.data.data.assetHouseList
-          } else if (this.assetType === '4') {
-            arrData =  res.data.data.assetBlankList
-          }
+          let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
+          arrData =  res.data.data[ASSET_TYPE_LIST]
           // 遍历判断必填有字段
           let validateRes = this.handleValidateExcelData( arrData)
           if(validateRes){
@@ -397,27 +478,22 @@ export default {
           }
           resData = utils.deepClone([...arrData, ...this.tableData])
           // 房屋
-          if (this.assetType === '1') {
-            // 数组去重根据type和objectId
-            let hash = {}
-            resData = resData.reduce((preVal, curVal) => {
-              hash[Number(curVal.objectId) + Number(curVal.type)] ? '' : hash[Number(curVal.objectId) + Number(curVal.type)] = true && preVal.push(curVal)
-              return preVal
-            }, [])
-          } else if (this.assetType === '4') {
-            // 土地
-            // 数组去重根据objectId
-            let hash = {}
-            resData = resData.reduce((preVal, curVal) => {
-              hash[Number(curVal.landId)] ? '' : hash[Number(curVal.landId)] = true && preVal.push(curVal)
-              return preVal
-            }, [])
+          let generateKeyFn = null
+          if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {
+            generateKeyFn = (ele)=> ele.objectId + ele.type
+          } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
+            generateKeyFn = (ele)=> ele.landId
+          } else if (this.assetType === this.ASSET_TYPE_CODE.YARD){
+            generateKeyFn = (ele)=> ele.placeId + ele.objectId
+          } else if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
+            generateKeyFn = (ele)=> ele.equipmentId
           }
+          resData = getArrayRepeat(resData,generateKeyFn).map(ele=>ele[0])
           this.tableData = this.handleTableDataSourceModeName(
             resData
           ).map(ele => ({
             ...ele,
-            pasitionString: ele.pasitionString + ele.address || ""
+            pasitionString: ele.allAddress || ((ele.pasitionString || '') + (ele.address || ""))
           }));
           this.calcFn()   // 计算统计的值
           this.DE_Loding(loadingName).then(() => {
@@ -446,7 +522,7 @@ export default {
         let sourceModeName = ele.sourceModeName
         if (!ele.sourceModeName) {
           // 筛选对应的来源方式 枚举值 (取项目默认的来源方式)
-          let sourceModeObj = this.sourceOptions.find(sourceItem => sourceItem.key === String(this.sourceType))
+          let sourceModeObj = this.sourceOptions.filter(sourceItem => Number(sourceItem.key) === Number(this.sourceType))[0]
           sourceModeName = sourceModeObj ? sourceModeObj.title : ''
         }
         return {
@@ -461,10 +537,9 @@ export default {
     * */
     handleValidateExcelData(arrData){
       let publicData = []
-      if (this.assetType === '1') {
-        publicData = judgmentData
-      } else if (this.assetType === '4') {
-        publicData = landCheck
+      if (Object.keys(this.ASSET_TYPE_CODE).map(e => (this.ASSET_TYPE_CODE[e])).includes(this.assetType)){
+        const ASSET_TYPE_VERSIFICATION_LIST = handleAssetTypeField(this.assetType,'verificationList')
+         publicData = this[ASSET_TYPE_VERSIFICATION_LIST]
       }
       for (let i = 0; i < arrData.length; i++) {
         for (let j = 0; j < publicData.length; j++) {
@@ -533,6 +608,7 @@ export default {
     async handleSaveAsset(basicData){
       let loadingName = this.SG_Loding("保存中...")
       let data = this.detailData
+      let ASSET_TYPE_LIST = handleAssetTypeField(data.assetType,'list')
       let requestData = {
         registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
         registerOrderName: data.registerOrderName,    // 登记单名称
@@ -540,8 +616,7 @@ export default {
         assetType: data.assetType,                    // 资产类型Id
         remark: data.remark,                          // 备注
         organId: this.organId,                          // 组织机构id
-        assetHouseList: String(data.assetType || '' ) === '1' ? basicData : [],   // 房屋
-        assetBlankList: String(data.assetType || '' ) === '4' ? basicData : []    // 土地
+        [ASSET_TYPE_LIST]: basicData,
       }
       try {
         let updateRegisterOrderV2ResData = await this.$api.assets.updateRegisterOrderV2(requestData)
@@ -572,6 +647,7 @@ export default {
       fileData.append('registerOrderModelFile', fileList[0])
       fileData.append('assetType', this.assetType)
       fileData.append('registerOrderId', String(this.registerOrderId || ''))
+      fileData.append('projectId',this.projectId)
       if (this.formData === null) {
         return this.$message.error('请先上传文件!')
       }
@@ -580,15 +656,8 @@ export default {
       try {
         let readExcelModelV2ResData = await this.$api.assets.readExcelModelV2(fileData)
         if(readExcelModelV2ResData.data.code === '0'){
-          /*
-          * key assetType
-          * value 接口返回的字段名
-          * */
-          const tempObj  = {
-            '1':'assetHouseList',
-            '4':'assetBlankList'
-          }
-          let arrData = readExcelModelV2ResData.data.data[tempObj[this.assetType]]
+          let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
+          let arrData = readExcelModelV2ResData.data.data[ASSET_TYPE_LIST]
           let validateRes = this.handleValidateExcelData( arrData )
           if( validateRes ) {
             await this.DE_Loding(loadingName)
@@ -600,7 +669,7 @@ export default {
           * */
           let basicData = arrData.map(ele => ({
             ...ele,
-            sourceMode: ele.sourceMode !== undefined ? ele.sourceMode : this.sourceType,
+            sourceMode: ele.sourceModeName ? handleEnumerationConversion(ele.sourceModeName, this.sourceOptions, ['title', 'key']) : this.sourceType,
             kindOfRight: this.ownershipData[ele.kindOfRightName],
             ownershipStatus: this.organDictData[ele.ownershipStatusName]
           }));
@@ -670,7 +739,7 @@ export default {
       let _this = this
       _this.$confirm({
         title: '提示',
-        content: str === 'delete' ? '确认要删除该资产登记单吗？' : '确认要清空资产列表？',
+        content: str === 'delete' ? '确认删除该行资产明细记录吗？' : '确认要清空资产列表？',
         onOk() {
           if (str === 'delete') {
             _this.tableData.forEach((item, index) => {
@@ -692,15 +761,24 @@ export default {
         list.value = 0
       })
       if (this.tableData.length > 0) {
-        this.tableData.forEach(item => {
-          if (this.assetType === '1') {
-            this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
-          } else if (this.assetType === '4') {
-            this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
-          }
-          this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
-          this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)
-        })
+        if (this.assetType === this.ASSET_TYPE_CODE.EQUIPMENT){
+          this.tableData.forEach(item => {
+            this.numList[1].value = calc.add(this.numList[1].value, item.creditorAmount || 0)
+            this.numList[2].value = calc.add(this.numList[2].value, item.debtAmount || 0)
+          })
+        }else {
+          this.tableData.forEach(item => {
+            if (this.assetType === this.ASSET_TYPE_CODE.HOUSE) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
+            } else if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.landArea || 0)
+            } else if (this.assetType === this.ASSET_TYPE_CODE.YARD) {
+              this.numList[1].value = calc.add(this.numList[1].value, item.area || 0)
+            }
+            this.numList[2].value = calc.add(this.numList[2].value, item.creditorAmount || 0)
+            this.numList[3].value = calc.add(this.numList[3].value, item.debtAmount || 0)
+          })
+        }
       }
       this.numList[0].value = this.tableData.length
     },
@@ -729,10 +807,8 @@ export default {
       let obj = {
         registerOrderId: this.registerOrderId,  // 资产登记ID，修改时必填
         assetType: this.assetType,      // 资产类型, 1房屋、2土地、3设备
-        buildIds: [],                           // 楼栋id列表（房屋时必填）
         scope: '',                              // 1楼栋 2房屋（房屋时必填）
         organId: this.organId,
-        blankIdList: []                         // 土地Id列表（土地时必填）
       }
       this.$api.assets.downloadTemplate(obj).then(res => {
         let blob = new Blob([res.data])
@@ -757,6 +833,7 @@ export default {
       fileData.append('file', files[0])
       fileData.append('registerOrderId', this.registerOrderId)
       fileData.append('assetType', this.assetType)
+      fileData.append('projectId',this.projectId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -837,11 +914,16 @@ export default {
         let sourceModeObj = this.sourceOptions.find(ele => item.sourceModeName === ele.title)
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
         item.kindOfRight = this.ownershipData[item.kindOfRightName]
-        item.sourceMode = sourceModeObj ? sourceModeObj.key : ''
+        item.sourceMode = sourceModeObj ? Number(sourceModeObj.key) : ''
       },this)
       console.log(data, '-=-=-=')
       this.basicData = data
     }
+  },
+  activated() {
+    this.numList.forEach(list => {
+      list.value = 0
+    })
   }
 }
 </script>

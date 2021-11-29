@@ -359,3 +359,23 @@ asset_return_view_export  资产归还一览表导出
     power_land_relatedExpenses             相关费用页签
     power_land_archive             档案文件页签
     power_land_operationInformation             运营信息页签
+
+资产管理V2.1.6
+  资产->资产信息->基础设置->楼盘字典
+    zcgl_dict_park_create                         楼盘字典-创建车场
+    zcgl_dict_park_edit                           楼盘字典-修改车场
+    zcgl_dict_park_delete                         楼盘字典-删除车场
+
+    zcgl_dict_stall_create                        楼盘字典-创建车位
+    zcgl_dict_stall_edit                          楼盘字典-修改车位
+    zcgl_dict_stall_delete                        楼盘字典-删除车位
+
+    zcgl_dict_equipment_create                    楼盘字典-创建设备
+    zcgl_dict_equipment_edit                      楼盘字典-修改设备
+    zcgl_dict_equipment_delete                    楼盘字典-删除设备
+
+  资产->资产信息->基础设置->资产分类
+    asset_class_car_park_create                   资产分类-新增车场
+    asset_class_car_park_edit                     资产分类-编辑车场
+    asset_class_car_park_change                    资产分类-状态改变车场
+    asset_class_car_park_delete                    资产分类-状态删除车场

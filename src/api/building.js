@@ -170,3 +170,132 @@ export function blankApiDetail (data) {
 export function blankApiInsert (data) {
   return axiosPost(building.blankApiInsert, data)
 }
+
+// 车场列表查询
+export function parkApiList (data) {
+  return axiosPost(building.parkApiPageList, data)
+}
+// 车场 详情
+export function parkApiDetail (data) {
+  return axiosPost(building.parkApiDetail, data)
+}
+// 车场 新增
+export function parkApiInsert (data) {
+  return axiosPost(building.parkApiInsert, data)
+}
+// 车场 编辑
+export function parkApiEdit (data) {
+  return axiosPost(building.parkApiEdit, data)
+}
+// 车场 删除
+export function parkApiDelete (data) {
+  return axiosPost(building.parkApiDelete, data)
+}
+// 车场 上传附件
+export function parkUploadPicFile (data) {
+  return axiosPost(building.parkUploadPicFile, data)
+}
+// 车场 ->区域 删除
+export function deleteParkingPlaceArea (data) {
+  return axiosPost(building.deleteParkingPlaceArea, data)
+}
+// 车场 ->区域 新增
+export function addParkingPlaceArea (data) {
+  return axiosPost(building.addParkingPlaceArea, data)
+}
+// 车场 ->区域 修改
+export function editParkingPlaceArea (data) {
+  return axiosPost(building.editParkingPlaceArea, data)
+}
+// 车场 ->区域 列表
+export function getParkingPlaceAreasByPlaceId (data) {
+  return axiosPost(building.getParkingPlaceAreasByPlaceId, data)
+}
+// 车位 列表查询
+export function stallApiPageList (data) {
+  return axiosPost(building.stallApiPageList, data)
+}
+// 车位 详情
+export function stallApiDetail (data) {
+  return axiosGet(building.stallApiDetail, {...data})
+}
+// 车位 新增
+export function stallApiInsert (data) {
+  return axiosPost(building.stallApiInsert, data)
+}
+// 车位 编辑
+export function stallApiEdit (data) {
+  return axiosPost(building.stallApiEdit, data)
+}
+// 车位 删除
+export function stallApiDelete (data) {
+  return axiosGet(building.stallApiDelete, data)
+}
+// 车位 导出
+export function stallApiExport (data) {
+  return axiosPost(building.stallApiExport, data,false, false, {
+    responseType: 'blob'
+  })
+}
+// 设备 列表查询
+export function equipmentApiPageList (data) {
+  return axiosPost(building.equipmentApiPageList, data)
+}
+// 设备 详情
+export function equipmentApiDetail (data) {
+  return axiosPost(building.equipmentApiDetail, data)
+}
+// 设备 新增
+export function equipmentApiInsert (data) {
+  return axiosPost(building.equipmentApiInsert, data)
+}
+// 设备 编辑
+export function equipmentApiEdit (data) {
+  return axiosPost(building.equipmentApiEdit, data)
+}
+// 设备 删除
+export function equipmentApiDelete (data) {
+  return axiosPost(building.equipmentApiDelete, data)
+}
+
+// 设备 图片附件上传
+export function equipmentFileUpload (data) {
+  return axiosPost(building.equipmentFileUpload, data)
+}
+
+// 根据组织机构id查询分类编码表
+export function getEquipmentCodeList (data) {
+  return axiosPost(building.getEquipmentCodeList, data)
+}
+
+// 根据组织机构id查询分类编码id查询子设备信息
+export function getEquipmentListByUpEquipmentId (data) {
+  return axiosPost(building.getEquipmentListByUpEquipmentId, data)
+}
+
+// 根据组织机构id查询供应商
+export function getEquipmentSupplierListByOrganId (data) {
+  return axiosPost(building.getEquipmentSupplierListByOrganId, data)
+}
+
+// 根据组织机构id查询其它
+export function getInfoAttrListByEquipmentId (data) {
+  return axiosPost(building.getInfoAttrListByEquipmentId, data)
+}
+// 根据组织机构ID查询设备位置
+export function getEquipmentInstListByTopOrganId(data) {
+  return axiosGet(building.getEquipmentInstListByTopOrganId,data)
+}
+// 根据 communityId 查询 所属机构
+export function queryOrganIdByCommunityId(data) {
+  return axiosGet(building.queryOrganIdByCommunityId,data)
+}
+
+// 根据CommunityID查询位置列表
+export function positionSelectByCommunityID(data) {
+  return axiosPost(building.positionSelectByCommunityID,data)
+}
+// 根据communitId和positionType查询具体资源
+export function positionSelectAsynByOwnership(data) {
+  return axiosPost(building.positionSelectAsynByOwnership,data)
+}

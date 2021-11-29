@@ -32,6 +32,7 @@ import * as assetRent from './assetRent'
 import * as assetInvest from './assetInvest'
 import * as paramsConfig from './paramsConfig'
 import * as dataCenter from './dataCenter'
+import * as codeRule from './codeRule'
 const API = {
   auth,
   global,
@@ -52,7 +53,8 @@ const API = {
   assetRent,
   assetInvest,
   paramsConfig,
-  dataCenter
+  dataCenter,
+  codeRule
 }
 export default {
   install (Vue) {

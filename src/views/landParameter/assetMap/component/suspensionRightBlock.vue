@@ -30,7 +30,7 @@
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
             <SG-CheckboxGroup
-              v-model="assetTypes"
+              :value="assetTypes"
               @change="checkboxGroupChnage"
             >
               <span
@@ -108,6 +108,7 @@ export default {
   },
   data() {
     return {
+      currentProvince: '',
       toggle: true,
       // menus: ["海文花园", "广东省", "深圳市"],
       assetTypeListOpt: [], // 请求资产类型
@@ -189,9 +190,9 @@ export default {
         label: this.codeToLabel('province',data.paramKey),
         value: data.paramKey
       }
-      await this.handleSelectAdress('province',defaultProvince)
+      await this.handleSelectAdress('province',defaultProvince,true)
       let defaultCity = {
-        label:  this.codeToLabel('city',data.subKey),
+        label:  this.codeToLabel('city',data.subKey,true),
         value: data.subKey
       }
       await this.handleSelectAdress('city',defaultCity)
@@ -243,8 +244,12 @@ export default {
     },
     // 拼接处导航栏
     // 选择省市区
-    async handleSelectAdress(type, item) {
+    async handleSelectAdress(type, item, transferFlag) {
 
+      let payload  = {
+        ...this.queryCondition,
+        assetTypes: this.assetTypes.join(",")
+      }
       let { label, value } = item
       console.log("选择省市区", type, item)
       if (type === "province") {
@@ -258,16 +263,26 @@ export default {
         })
         this.cityOpt = [{...cityOptFrist}]
         if (label !== '全国'){
+          this.currentProvince = label
           await this.queryCityAndAreaList(value, type)
+        }
+        if (!transferFlag){
+          payload._periphery = label
+          this.$emit('search', payload)
         }
       }
       if (type === "city") {
+        let address = label
         let flag = this.queryCondition.city === value
         if (flag) {
           return
         }
         this.queryCondition.city = value
-        this.$emit('selectCity', label)
+        if ( label === '全省' ){
+          address = this.currentProvince
+        }
+        payload._periphery = address
+        this.$emit('search', payload)
       }
       this.query()
     },
@@ -277,6 +292,11 @@ export default {
     },
     // 多选框改变
     checkboxGroupChnage(checkedValues) {
+      console.log('checkedValues',checkedValues)
+      if (checkedValues && checkedValues.length === 0){
+        this.$message.warn('至少保留一种业态')
+        return null
+      }
       console.log("checked = ", checkedValues)
       this.assetTypes = checkedValues
       this.table.columns = getColumns(checkedValues)
@@ -383,7 +403,7 @@ export default {
     overflow-y: auto;
   }
   .search-checkbox {
-    width: 75px;
+    //width: 90px;
     display: inline-block;
   }
   .search-item-province {

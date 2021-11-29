@@ -256,7 +256,7 @@
           const { attachmentList, organId, userId, auditUsers } = this
           // 校验自定义必填项
           if (!organId || !auditUsers.length) {
-            document.getElementById('needValue').scrollIntoView()
+            // document.getElementById('needValue').scrollIntoView()
             this.validateAuditUsers = !auditUsers.length
             return this.validateOrganId = !organId
           }

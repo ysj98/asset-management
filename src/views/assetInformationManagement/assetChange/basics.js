@@ -1,3 +1,4 @@
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
 // 交付物业
 export const deliveryProperty = [{
   title: '资产名称',
@@ -101,7 +102,10 @@ export const changeDirectionUse = [{
   dataIndex: 'assetUse'
 }, {
   title: '建筑面积(㎡)',
-  dataIndex: 'assetArea'
+  dataIndex: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  }
 }, {
   title: '运营面积(㎡)',
   dataIndex: 'operationArea',
@@ -140,6 +144,39 @@ export const changeDirectionUse = [{
   width: 120
 }]
 
+// 使用方向变动-设备
+export const changeDirectionUseEq = [{
+  title: '资产名称',
+  dataIndex: 'assetName'
+}, {
+  title: '资产编码',
+  dataIndex: 'assetCode'
+}, {
+  title: '资产类型',
+  dataIndex: 'assetTypeName',
+}, {
+  title: '所在位置',
+  dataIndex: 'address'
+}, {
+  title: '分类',
+  dataIndex: 'assetCategoryName'
+}, {
+  title: '用途',
+  dataIndex: 'assetUse'
+}, {
+  title: '变更前使用方向',
+  key: 'oldUseDirection',
+},
+{
+  title: '变更后使用方向',
+  key: 'newUseDirection',
+  scopedSlots:{
+    customRender:'newUseDirection'
+  }
+},
+]
+
+
 // 资产项目变动
 export const projectChange = [{
   title: '资产名称',
@@ -162,6 +199,9 @@ export const projectChange = [{
 }, {
   title: '建筑面积(㎡)',
   dataIndex: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  }
 }, {
   title: '变更前资产项目',
   dataIndex: 'projectName',
@@ -194,6 +234,9 @@ export const variationOriginalValue = [{
 }, {
   title: '资产面积(㎡)',
   dataIndex: 'assetArea',
+  scopedSlots: {
+    customRender: 'assetArea'
+  }
 }, {
   title: '所在位置',
   dataIndex: 'address',
@@ -298,6 +341,12 @@ export const baseChange = [{
   align: 'center',
   scopedSlots: { customRender: 'newSourceMode' },
   width: 120
+},{
+  title: '变更后资产分类',
+  dataIndex: 'newAssetCategoryName',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetCategoryCode' },
+  width: 120
 }, {
   title: '操作',
   dataIndex: 'operation',
@@ -350,6 +399,12 @@ export const baseChangeTwo = [{
   dataIndex: 'newSourceModeName',
   align: 'center',
   scopedSlots: { customRender: 'newSourceMode' },
+  width: 120
+},{
+  title: '变更后资产分类',
+  dataIndex: 'newAssetCategoryName',
+  align: 'center',
+  scopedSlots: { customRender: 'newAssetCategoryCode' },
   width: 120
 },{
   title: '操作',

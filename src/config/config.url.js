@@ -4,7 +4,7 @@
  * 日期：2019年6月26日
  */
 import host from './config.base.js'
-
+import configs from "@/config/config.base.js";
 let mock = process.env.NODE_ENV === 'production' ? '' : ''
 mock = ''
 export const User = {
@@ -278,14 +278,35 @@ export const assets = {
     getPage: '/ams/categoryCfg/getPage',
     // 资产分类设置-导出资产分类列表
     exportList: '/ams/categoryCfg/export',
-    // 资产分类设置-获取费用科目类列表
+    /*
+    * 资产分类设置-获取费用科目类列表(根据当前环境判断调用接口路径，招商环境和其他环境)
+    * 其他环境  /ams/categoryCfg/getFeeTypeList
+    * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
+    * */
     getFeeTypeList: '/ams/categoryCfg/getFeeTypeList',
+    getFeeTypeList2:'/charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList',
     // 资产分类设置-修改资产分类
     update: '/ams/categoryCfg/update',
     // 资产分类设置-修改资产分类状态
     updateStatus: '/ams/categoryCfg/updateStatus',
     // 资产分类设置-获取资产分类详情
-    getDetail: '/ams/categoryCfg/getDetail'
+    getDetail: '/ams/categoryCfg/getDetail',
+    // 3.1.1查询设备分类编码列表
+    getEquipmentCodeList: '/equipment-openapi/equipment/getEquipmentCodeList',
+    // 3.1.2根据设备分类ID查询子级设备分类信息
+    getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId',
+    // 3.1.5根据设备分类ID查询设备分类台账属性(不分页)
+    getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId',
+    // 删除设施设备分类
+    updateEquipmentStatus: '/ams/categoryCfg/updateEquipmentStatus',
+    //  保存/更新设施设备分类
+    updateEquipment: '/ams/categoryCfg/updateEquipment',
+    // 3.2.7批量保存设备分类台账属性
+    batchSaveInfoAttr:'/equipment-openapi/equipment/batchSaveInfoAttr',
+    // 3.2.8删除设备分类台账属性
+    deleteInfoAttr:'/equipment-openapi/equipment/deleteInfoAttr'
+
+
   },
   // 房屋台账-资产项目视图
   assetProjectView: {
@@ -378,6 +399,8 @@ export const assets = {
     queryAssetViewPage: '/ams/asset-house/house/page',
     // 不页查询房屋资产信息
     queryAssetViewPage2: '/ams/asset-house/house/pageV2',
+    // 不分页查询车场资产信息
+    carPage:'/ams/admin/common/query/carPage',
     // 导出房屋卡片
     exportHouseExcel: '/ams/asset-house/card',
     // 导出资产视图
@@ -553,6 +576,64 @@ export const building = {
   blankApiDetail: '/basic-data-api/rest-api/v1/ams/blankApi/detail',
   // 土地新增
   blankApiInsert: '/basic-data-api/rest-api/v1/ams/blankApi/insert',
+  // 车场 分页查询
+  parkApiPageList: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceList.json',
+  // 车场 新增
+  parkApiInsert: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/addParkingPlace.json',
+  // 车场 删除
+  parkApiDelete: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlace.json',
+  parkUploadPicFile: '/car-parking-api/rest-api/v1/parkingPlaceApiController/uploadPicFile',
+  // 区域 删除
+  deleteParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlaceArea.json',
+  // 区域 新增
+  addParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/addParkingPlaceArea.json',
+  // 区域 修改
+  editParkingPlaceArea: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/updateParkingPlaceArea.json',
+  // 区域 列表
+  getParkingPlaceAreasByPlaceId: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceAreasByPlaceId.json',
+  // 车场 编辑
+  parkApiEdit: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/updateParkingPlace.json',
+  // 车场 详情
+  parkApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceById.json',
+  // 车位 分页查询
+  stallApiPageList: '/car-parking-api/rest-api/v1/parkingPlaceApiController/parkingPlaceResult.json',
+  // 车位 新增
+  stallApiInsert: '/car-parking-api/rest-api/v1/parkingPlaceApiController/saveParkingPlace.json',
+  // 车位 删除
+  stallApiDelete: '/car-parking-api/rest-api/v1/parkingPlaceApiController/deleteParkingPlace.json',
+  // 车位 编辑
+  stallApiEdit: '/car-parking-api/rest-api/v1/parkingPlaceApiController/updateParkingPlace.json',
+  // 车位 详情
+  stallApiDetail: '/car-parking-api/rest-api/v1/parkingPlaceApiController/parkingPlaceDetail.json',
+  // 车位 导出
+  stallApiExport: '/car-batch/rest-api/v1/parkingBatchApiController/downloadParkingData',
+  // 设备 分页查询
+  equipmentApiPageList: '/equipment-openapi/equipmentInst/pageEquipmentInst',
+  // 设备 新增
+  equipmentApiInsert: '/equipment-openapi/equipmentInst/addEquipmentInst',
+  // 设备 删除
+  equipmentApiDelete: '/equipment-openapi/equipmentInst/deleteEquipmentInst',
+  // 设备 编辑
+  equipmentApiEdit: '/equipment-openapi/equipmentInst/updateEquipmentInst',
+  // 设备 详情
+  equipmentApiDetail: '/equipment-openapi/equipmentInst/queryEquipmentInstById',
+  equipmentFileUpload: '/equipment-openapi/common/uploadFile',
+  // 根据组织机构ID查询供应商
+  getEquipmentSupplierListByOrganId: '/equipment-openapi/equipmentSupplier/getEquipmentSupplierListByOrganId',
+  // 根据组织机构id查询分类编码表
+  getEquipmentCodeList: '/equipment-openapi/equipment/getEquipmentCodeList',
+  // 根据组织机构id查询分类编码表
+  getEquipmentListByUpEquipmentId: '/equipment-openapi/equipment/getEquipmentListByUpEquipmentId',
+  // 根据organId和设备分类Id
+  getInfoAttrListByEquipmentId: '/equipment-openapi/equipment/getInfoAttrListByEquipmentId',
+  // 根据communityId查询位置
+  getEquipmentInstListByTopOrganId: '/equipment-openapi/common/getPositionListByCommunityId',
+  // 根据 communityId 查询 organId
+  queryOrganIdByCommunityId: '/equipment-openapi/common/queryOrganIdByCommunityId',
+  // 根据CommunityID查询位置列表
+  positionSelectByCommunityID: '/basic-data-api/rest-api/v1/positionApi/positionSelectByID',
+  // 根据communitId和positionType查询具体资源
+  positionSelectAsynByOwnership: '/basic-data-api/rest-api/v1/positionApi/positionSelectAsynByOwnership'
 }
 
 // 权属概况
@@ -1215,4 +1296,18 @@ export const paramsConfig = {
   paramsSave: '/ams/basicSettings/save',
   // 组织机构系统设置统一查询接口
   queryParamsConfigDetail: '/ams/basicSettings/detail'
+}
+
+// 资产编码规则
+export const codeRule = {
+  // 插入参数列表接口
+  paramInit : '/ams/codeRule/paramInit',
+  // 列表接口
+  init : '/ams/codeRule/init',
+  // 预览
+  getPreview: '/ams/codeRule/getPreview',
+  // 保存编码规则
+  save: '/ams/codeRule/save',
+  // 获取编码默认规则
+  default: '/ams/codeRule/default'
 }

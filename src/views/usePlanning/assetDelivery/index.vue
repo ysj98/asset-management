@@ -131,6 +131,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
 import SegiRangePicker from "@/components/SegiRangePicker";
 import TreeSelect from "../../common/treeSelect";
 import moment from "moment";
@@ -156,7 +157,11 @@ const columns = [
   { title: "交付类型", dataIndex: "deliveryTypeName" },
   { title: "交付单位", dataIndex: "deliveryCompany" },
   { title: "交付资产数量", dataIndex: "assetChangeCount", width: 100 },
-  { title: "交付面积(㎡)", dataIndex: "deliveryArea", width: 100 },
+  { title: "交付面积(㎡)", key: "deliveryArea", width: 100,
+    customRender(record){
+      return generateTableAreaByAssetTypeString({keyStr:'deliveryArea',record,assetTypeName:record.assetTypeName})
+    }
+  },
   { title: "交付日期", dataIndex: "deliveryDate" },
   { title: "结束日期", dataIndex: "endDate" },
   { title: "创建人", dataIndex: "createByName" },

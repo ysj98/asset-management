@@ -27,7 +27,16 @@
                 <a-select :style="allStyle" :disabled="judgeInstitutions" placeholder="全部资产类型" v-model="assetType" @change="assetTypeFn">
                   <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
-                <a-select :style="allStyle" placeholder="全部资产类别" v-model="objectType">
+                <EquipmentSelectTree
+                  v-if="isSelectedEquipment"
+                  :style="allStyle"
+                  :top-organ-id="paginator.organId"
+                  v-model="objectType"
+                  :options-data-format="(data)=>{
+                    return [{label: '全部资产类别', value: '', isLeaf: true},...data]
+                  }"
+                />
+                <a-select v-else :style="allStyle" placeholder="全部资产类别" v-model="objectType">
                   <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
                 <a-input :style="allStyle" v-model="assetNameCode" placeholder="资产名称/编码"/>
@@ -94,6 +103,7 @@
   import {utils} from '@/utils/utils.js'
   import TreeSelect from '../../common/treeSelect'
   import noDataTips from '@/components/noDataTips'
+  import EquipmentSelectTree from "../../common/EquipmentSelectTree";
 
   const columns = [
     {
@@ -136,6 +146,7 @@
 
   export default {
     components: {
+      EquipmentSelectTree,
       Cephalosome,
       TreeSelect,
       noDataTips
@@ -196,6 +207,9 @@
           hideDefaultSelections: true,
           onSelection: this.onSelection
         }
+      },
+      isSelectedEquipment(){
+        return this.assetType === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
       }
     },
     watch: {

@@ -23,7 +23,16 @@
         <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
           <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
+        <EquipmentSelectTree
+          v-if="isSelectedEquipment"
+          :style="allStyle"
+          :top-organ-id="organId"
+          v-model="selecData.objectType"
+          :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+        />
+        <a-select v-else :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
           <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
@@ -66,6 +75,7 @@
 import Cephalosome from '@/components/Cephalosome'
 import {utils} from '@/utils/utils.js'
 import noDataTips from '@/components/noDataTips'
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 const columns = [
   {
     title: '资产编码',
@@ -105,7 +115,7 @@ const columns = [
   // }
 ]
 export default {
-  components: {Cephalosome, noDataTips},
+  components: {Cephalosome, noDataTips, EquipmentSelectTree},
   props: {
     organId: {
       type: [String, Number],
@@ -172,6 +182,10 @@ export default {
         hideDefaultSelections: true,
         onSelection: this.onSelection
       }
+    },
+    isSelectedEquipment(){
+      const assetTypeArr = [this.selecData.assetType]
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     }
   },
   watch: {
@@ -193,7 +207,7 @@ export default {
       let checkedData = []
       let rowsData = []
       this.selectedRowKeys.forEach(item => {
-        this.overallData.forEach((element, index) => {
+        this.overallData.forEach((element) => {
           if (item === element.assetId) {
             checkedData.push(element.assetId)
             rowsData.push(element)
@@ -351,7 +365,7 @@ export default {
           let data = res.data.data.data
           if (data) {
             let arrData = utils.deepClone(this.overallData)
-            data.forEach((element, index) => {
+            data.forEach((element) => {
               element.key = element.assetId
               element.remark = ''              // 处置备注
               if (this.judgmentType === 'delivery') {

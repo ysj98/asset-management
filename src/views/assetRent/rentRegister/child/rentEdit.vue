@@ -197,7 +197,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col v-if="!isSelectedEquipment" :span="8">
           <a-form-item
             label="出租面积(㎡)"
             :label-col="labelCol"
@@ -245,8 +245,9 @@
               <span class="pubText">{{
                 selectedList.length === 0 ? 0 : selectedList.length
               }}</span
-              >&nbsp;&nbsp;个，&emsp; 出租面积：
-              <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
+              >&nbsp;&nbsp;个
+              <p style="display: inline" v-if="!isSelectedEquipment">，&emsp; 出租面积：
+                <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span></p>
             </div>
             <SG-Button
               icon="plus"
@@ -258,7 +259,7 @@
           </div>
           <!-- 资产表格部分 -->
           <a-table
-            :columns="columns"
+            :columns="columnsCom"
             :data-source="selectedList"
             :pagination="false"
             :bordered="true"
@@ -286,7 +287,7 @@
                 :max="200"
                 v-model="record.remark"
                 style="width: 150px"
-                maxLength="200"
+                :maxLength="200"
               />
             </template>
           </a-table>
@@ -323,6 +324,7 @@
       :queryType="6"
       v-model="selectedList"
       @areaChange="areaChange"
+      :isSelectedEquipment="isSelectedEquipment"
     ></AssetListMoal>
   </a-spin>
 </template>
@@ -432,6 +434,21 @@ export default {
       uploadList: [], // 上传列表
       pass: true,
     };
+  },
+  computed:{
+    columnsCom(){
+      if (this.isSelectedEquipment){
+        const arr = ['assetArea', 'leaseArea',]
+        return this.columns.filter(ele=>{
+          return !arr.includes(ele.dataIndex)
+        })
+      }else {
+        return this.columns
+      }
+    },
+    isSelectedEquipment(){
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    },
   },
   watch: {
     // 自定义必填项校验
@@ -738,7 +755,7 @@ export default {
                   return;
                 }
               });
-              if (this.pass === false) {
+              if (!this.isSelectedEquipment && this.pass === false) {
                 this.$message.error("出租面积必须大于1㎡");
                 return;
               }
@@ -756,7 +773,7 @@ export default {
                 return;
               }
             });
-            if (this.pass === false) {
+            if (!this.isSelectedEquipment && this.pass === false) {
               this.$message.error("出租面积必须大于1㎡");
               return;
             }

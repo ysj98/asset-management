@@ -34,7 +34,17 @@
       <div slot="contentForm" style="margin-top: 18px">
         <a-row :gutter="8">
           <a-col :span="4">
-            <a-select v-model="queryObj.objectTypeList" :options="$addTitle(objectTypeOptions)"
+            <EquipmentSelectTree
+              v-if="isSelectedEquipment"
+              style="width: 100%;"
+              :top-organ-id="organProjectValue.organId"
+              :multiple="true"
+              v-model="queryObj.objectTypeList"
+              :options-data-format="(data)=>{
+                  return [{label: '全部资产分类', value: '-1', isLeaf: true},...data]
+                }"
+            />
+            <a-select v-else v-model="queryObj.objectTypeList" :options="$addTitle(objectTypeOptions)"
               v-bind="selectProperty" placeholder="请选择资产分类"
             />
           </a-col>
@@ -61,14 +71,16 @@
 </template>
 
 <script>
+  import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
   import noDataTips from '@/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import SearchContainer from 'src/views/common/SearchContainer'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { queryCategoryList, queryAssetTypeList, exportDataAsExcel } from 'src/views/common/commonQueryApi'
+  import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
   export default {
     name: 'assetInvestmentView',
-    components: {noDataTips, SearchContainer, OrganProject},
+    components: {noDataTips, SearchContainer, OrganProject, EquipmentSelectTree},
     data () {
       return {
         toggle: false,
@@ -104,18 +116,26 @@
           { title: '资产分类', dataIndex: 'objectTypeName', width: 120 },
           { title: '所属机构', dataIndex: 'organName', width: 180 },
           { title: '资产项目', dataIndex: 'projectName', width: 180 },
-          { title: '资产面积(㎡)', dataIndex: 'assetArea' },
+          { title: '资产面积(㎡)', key: 'assetArea',
+            customRender(record){
+              return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
+            },
+          },
           { title: '规格型号', dataIndex: 'specificationTypeName' },
           { title: '投资单ID', dataIndex: 'investOrderId' },
           { title: '投资单名称', dataIndex: 'investName', width: 120  },
           { title: '投资项目', dataIndex: 'investProject', width: 120 },
-          { title: '投资面积(㎡)', dataIndex: 'investArea' },
+          { title: '投资面积(㎡)', key: 'investArea',
+            customRender(record){
+              return generateTableAreaByAssetTypeCode({record,keyStr:'investArea',assetTypeCode:String(record.assetType)})
+            },
+          },
           { title: '起投日期', dataIndex: 'startInvestDate', width: 80 },
           { title: '止投日期', dataIndex: 'endInvestDate', width: 80 },
           { title: '合同编号', dataIndex: 'contractCode', width: 150 },
           { title: '投资状态', dataIndex: 'investStatusName' },
           { title: '签订日期', dataIndex: 'signingDate', width: 100 },
-          { title: '审批状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 60 }
+          { title: '审批状态', dataIndex: 'approvalStatusName', fixed: 'right', width: 120 }
         ], // Table columns
         loading: false, // Table loading
         tableData: [], // Table DataSource
@@ -137,7 +157,12 @@
         timeoutId: 0 // 用于清除超字数提示
       }
     },
-
+    computed:{
+      isSelectedEquipment(){
+        const assetTypeArr = this.queryObj.assetTypeList
+        return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+      }
+    },
     mounted () {
       this.queryAssetType()
     },

@@ -13,6 +13,7 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
       :locale="{ emptyText: '暂无数据' }"
+      :scroll="{y:500}"
     >
     </a-table>
     <no-data-tips
@@ -20,11 +21,13 @@
       v-show="table.dataSource.length === 0"
     ></no-data-tips>
     <SG-FooterPagination
+      v-if="$route.query.type==='detail'"
       :pageLength="queryCondition.pageSize"
-      :totalCount="table.totalCount"
+      :totalCount="totalCount"
       location="absolute"
       v-model="queryCondition.pageNum"
       @change="handleChange"
+      :noPageTools="true"
     />
   </div>
 </template>
@@ -110,6 +113,9 @@ export default {
     scrollHeight: {
       default: () => ({ y: "auto" }),
     },
+    totalCount:{
+      default: 0
+    }
     // assetTypes: {
     //   type: Array,
     //   default: () => []
@@ -129,6 +135,9 @@ export default {
   },
   mounted() {
     this.assetTypes = this.$route.query.assetTypes
+    if (this.$route.query.type === 'set'){
+      this.queryCondition.pageSize = 9999
+    }
     this.query();
   },
   methods: {
@@ -136,7 +145,7 @@ export default {
       let data = {
         ...this.queryCondition,
         projectId: this.projectId,
-        assetTypes: this.assetTypes
+        assetTypes: this.assetTypes,
       };
       this.table.loading = true;
       this.$api.basics.attrList(data).then(
@@ -171,7 +180,6 @@ export default {
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
-      this.queryCondition.pageSize = data.pageLength;
       this.query();
     },
   },

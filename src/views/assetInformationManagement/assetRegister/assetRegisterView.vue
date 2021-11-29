@@ -11,7 +11,8 @@
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="queryCondition.assetType">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"
+                    @change="assetTypeDataFn" v-model="queryCondition.assetType">
             <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
@@ -35,7 +36,19 @@
           :options="$addTitle(sourceOptions)"
           @select="changeSource"
         />
+        <EquipmentSelectTree
+          v-if="isSelectedEquipment"
+          style="width: 300px"
+          :top-organ-id="queryCondition.organId"
+          :multiple="true"
+          v-model="queryCondition.assetClassify"
+          :options-data-format="(data)=>{
+            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+          }"
+          @select="changeAssetClassify($event,true)"
+        />
         <a-select
+          v-else
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
@@ -66,6 +79,10 @@
         <template slot="operation" slot-scope="text, record">
           <router-link :to="{ path: '/assetCheckInView/detail', query: { registerOrderId: record.registerOrderId, assetId: record.assetId, assetType: record.assetType } }" class="action_text">详情</router-link>
         </template>
+        <!-- 资产面积 -->
+        <template #area="text,record">
+          {{record.assetType === '设备设施'? '/' : record.area}}
+        </template>
       </a-table>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -88,7 +105,7 @@ import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {querySourceType} from "@/views/common/commonQueryApi";
-
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -143,7 +160,10 @@ const columns = [
   },
   {
     title: '资产面积(㎡)',
-    dataIndex: 'area'
+    key: 'area',
+    scopedSlots: {
+      customRender: 'area'
+    }
   },
   {
     title: '资产位置',
@@ -189,7 +209,7 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree},
   data () {
     return {
       sourceOptions:[{ value:'', label: '全部来源方式' }],
@@ -231,6 +251,12 @@ export default {
         }
       ],
       projectData: []
+    }
+  },
+  computed:{
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetType
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     }
   },
   watch: {
@@ -386,9 +412,10 @@ export default {
       })
     },
     // 资产分类发生变化
-    changeAssetClassify (value) {
+    changeAssetClassify (value,isSelectedEquipment) {
       this.$nextTick(function () {
-        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, this.assetClassifyOptions)
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyOptions
+        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions)
       })
     },
     // 来源方式

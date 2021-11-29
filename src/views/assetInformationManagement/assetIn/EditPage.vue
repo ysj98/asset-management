@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import {generateTableAreaByAssetTypeString} from '@/utils/utils'
   import FormFooter from '@/components/FormFooter'
   import SelectAsset from './components/SelectRegistAsset'
   import {queryProjectListByOrganId, filterOption, queryAssetTypeList} from 'src/views/common/commonQueryApi'
@@ -133,8 +134,12 @@
             { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' } },
             { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-             { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
-            { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
+            { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
+            { title: '资产面积(㎡)', key: 'area',
+              customRender(record){
+                return generateTableAreaByAssetTypeString({record,assetTypeName:record.assetTypeName,keyStr:'area'})
+              }},
+            { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
             { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
             { title: '核实时间', dataIndex: 'verifierTime' }, { title: '核实人', dataIndex: 'verifierByName' }
           ]
@@ -155,7 +160,6 @@
     methods: {
       // 下拉搜索筛选
       filterOption,
-
       // 改变资产项目或资产类型，清空关联的登记单
       changeSelect () {
         this.selectedList = []

@@ -23,35 +23,52 @@
         ></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
-        <a-tab-pane tab="楼栋信息" key="building">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD)" tab="楼栋信息" key="building">
           <buildingInfo :isCurrent="isCurrent" :organId="organId"/>
         </a-tab-pane>
-        <a-tab-pane tab="房间信息" key="house">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE)" tab="房间信息" key="house">
           <houseInfo />
         </a-tab-pane>
-        <a-tab-pane tab="土地信息" key="land">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND)" tab="土地信息" key="land">
           <landInfo />
+        </a-tab-pane>
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK)" tab="车场信息" key="park">
+           <parkInfo />
+        </a-tab-pane>
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK_ITEM)" tab="车位信息" key="stall">
+          <stall-info />
+        </a-tab-pane>
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_EQ)" tab="设备信息" key="equipment">
+          <equipment-info />
         </a-tab-pane>
       </a-tabs>
     </div>
   </div>
 </template>
 <script>
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import buildingInfo from './buildingInfo'
 import houseInfo from './houseInfo'
 import landInfo from './land/landInfo'
+import parkInfo from './park/ParkInfo'
+import StallInfo from "./stall/StallInfo";
 import TreeSelect from '../common/treeSelect'
 import { typeFilter } from './buildingDictConfig'
+import EquipmentInfo from "./equipment/EquipmentInfo";
 const allWidth = {width: '185px'}
 export default {
   components: {
-    buildingInfo,
-    houseInfo,
+    EquipmentInfo,
+    parkInfo,
     landInfo,
-    TreeSelect
+    houseInfo,
+    StallInfo,
+    TreeSelect,
+    buildingInfo,
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       typeFilter,
       isCurrent: 0, // 查询条件-是否仅当前机构
       showKey: 'building',
@@ -60,6 +77,7 @@ export default {
     }
   },
   created () {
+    this.init()
     // let query = this.GET_ROUTE_QUERY(this.$route.path)
     // if (Object.keys(query).length > 0) {
     //   if (query.showKey === 'house') {
@@ -89,6 +107,40 @@ export default {
     organIdChange (value) {
       this.organId = value
     },
+    init(){
+      const arr = [
+        {
+          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD,
+          keyStr:'building'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE,
+          keyStr:'house'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND,
+          keyStr:'land'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK,
+          keyStr:'park'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK_ITEM,
+          keyStr:'stall'
+        },
+        {
+          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_EQ,
+          keyStr:'equipment'
+        }
+      ]
+      for (let i = 0;i<arr.length;i++){
+        if (this.$power.has(arr[i].auth)){
+          this.showKey  = arr[i].keyStr
+          break;
+        }
+      }
+    }
   }
 }
 </script>

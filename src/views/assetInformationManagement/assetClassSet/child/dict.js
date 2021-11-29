@@ -5,7 +5,8 @@
 //资产类型：1 房屋，2构筑物，3设备，4土地，5车场
 export const pageTypeMap = {
   'house': '1',
-  'land': '4'
+  'land': '4',
+  'carPark': '5'
 }
 // 启用状态
 export const statusOptions = [
@@ -21,7 +22,8 @@ export const titleMap = {
 // 分类自定
 export const typeMap = {
   'house': '房屋',
-  'land': '土地'
+  'land': '土地',
+  'carPark': '车场'
 }
 // 标题字典
 export const actionMap = {

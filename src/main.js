@@ -53,4 +53,5 @@ const vueInstance = new Vue({
 }).$mount('#app')
 // 初始化用户数据
 store.dispatch('auth/getUserInfo')
+store.dispatch('getAssetType')
 export default vueInstance

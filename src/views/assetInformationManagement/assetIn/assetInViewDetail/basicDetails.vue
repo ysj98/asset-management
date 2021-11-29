@@ -1,6 +1,6 @@
  <!--
  * 登记单信息
---> 
+-->
 <template>
   <div class="basicDetails">
     <div class="newInformation-nav">
@@ -15,14 +15,9 @@
         <SG-UploadFile show v-if="files.length" v-model="files"/>
         <span v-else style="margin-left: 9px; color: #49505E">--</span>
       </div>
-      <a-row class="playground-row" v-if="type === 'getBasicByHouse'">
-        <a-col class="playground-col" :span="8" v-for="(item, index) in getBasicByHouse" :key="index">
-          {{item.text}}：{{getBasicByHouseDetail[item.value] || getBasicByHouseDetail[item.value] === 0 ? getBasicByHouseDetail[item.value] : '--'}}
-        </a-col>
-      </a-row>
-      <a-row class="playground-row" v-if="type === 'getBasicByGround'">
-        <a-col class="playground-col" :span="8" v-for="(item, index) in getBasicByGround" :key="index">
-          {{item.text}}：{{getBasicByGroundDetail[item.value] || getBasicByGroundDetail[item.value] === 0 ? getBasicByGroundDetail[item.value] : '--'}}
+      <a-row class="playground-row" v-if="type === 'getBasicCom'">
+        <a-col class="playground-col" :span="8" v-for="(item, index) in getBasicCom" :key="index">
+          {{item.text}}：{{getBasicDetail[item.value] || getBasicDetail[item.value] === 0 ? getBasicDetail[item.value] : '--'}}
         </a-col>
       </a-row>
       <a-row class="playground-row" v-show="type === 'getValueInformation'">
@@ -31,7 +26,7 @@
         </a-col>
       </a-row>
       <a-row class="playground-row" v-show="type === 'getUseDirection'">
-        <a-col class="playground-col" :span="8" v-for="(item, index) in useDirection" :key="index">
+        <a-col class="playground-col" :span="8" v-for="(item, index) in useDirectionCom" :key="index">
           {{item.text}}：{{useDirectionDetail[item.value] || useDirectionDetail[item.value] === 0 ? useDirectionDetail[item.value] : '--'}}
         </a-col>
       </a-row>
@@ -40,6 +35,7 @@
 </template>
 
 <script>
+import {handleAssetTypeField} from '@/views/assetInformationManagement/assetRegister/common/share'
 export default {
   components: {},
   props: {
@@ -72,24 +68,7 @@ export default {
         { text: '备注', value: 'remark' }
       ],
       Detail: {},
-      getBasicByHouse: [
-        { text: '资产ID', value: 'assetId' },
-        { text: '资产名称', value: 'assetName' },
-        { text: '资产编码', value: 'assetCode' },
-        { text: '资产类型', value: 'assetTypeName' },
-        { text: '资产分类', value: 'objectTypeName' },
-        { text: '资产面积(㎡)', value: 'area' },
-        { text: '楼栋名称', value: 'buildName' },
-        { text: '房间名称', value: 'houseName' },
-        { text: '资产位置', value: 'address' },
-        { text: '权属类型', value: 'kindOfRightName' },
-        { text: '权属情况', value: 'ownershipStatusName' },
-        { text: '权证号', value: 'warrantNbr' },
-        { text: '装修情况', value: 'decorationSituation' },
-        { text: '债权金额(元)', value: 'creditorAmount' },
-        { text: '债务金额(元)', value: 'debtAmount' }
-      ],
-      getBasicByHouseDetail: {},
+      getBasicDetail:{},
       getBasicByGround: [
         { text: '资产ID', value: 'assetId' },
         { text: '资产名称', value: 'assetName' },
@@ -129,6 +108,55 @@ export default {
     }
   },
   computed: {
+    ASSET_TYPE_CODE() {
+      return this.$store.state.ASSET_TYPE_CODE;
+    },
+    assetType(){
+      return String(this.$route.query.assetType)
+    },
+    useDirectionCom(){
+      const {HOUSE,LAND,YARD,EQUIPMENT} = this.ASSET_TYPE_CODE
+      const info = [
+        { text: '转物业日期', value: 'transferTime' },
+        { text: '使用方向', value: 'useDirectionName', assetType:[EQUIPMENT] },
+        { text: '转物业面积(㎡)', value: 'transferArea', assetType:[HOUSE, LAND, YARD] },
+        { text: '转运营日期', value: 'transferOperationTime', assetType:[HOUSE, LAND, YARD] },
+        { text: '运营面积(㎡)', value: 'transferOperationArea', assetType:[HOUSE, LAND, YARD] },
+        { text: '自用面积(㎡)', value: 'selfUserArea', assetType:[HOUSE, LAND, YARD] },
+        { text: '占用面积(㎡)', value: 'occupationArea', assetType:[HOUSE, LAND, YARD] },
+        { text: '其他面积(㎡)', value: 'otherArea', assetType:[HOUSE, LAND, YARD] },
+        { text: '闲置面积(㎡)', value: 'idleArea', assetType:[HOUSE, LAND, YARD] }
+      ]
+      return info.filter(this.handleInfoArr)
+    },
+    getBasicCom(){
+      const {HOUSE,LAND,YARD,EQUIPMENT} = this.ASSET_TYPE_CODE
+      const info = [
+        { text: '资产ID', value: 'assetId' },
+        { text: '资产名称', value: 'assetName' },
+        { text: '资产编码', value: 'assetCode' },
+        { text: '资产类型', value: 'assetTypeName' },
+        { text: '资产分类', value: 'objectTypeName' },
+        { text: '资产面积(㎡)', value: 'area', assetType:[HOUSE]},
+        { text: '资产面积(㎡)', value: 'landArea', assetType: [LAND] },
+
+        { text: '楼栋名称', value: 'buildName', assetType:[HOUSE] },
+        { text: '房间名称', value: 'houseName', assetType:[HOUSE] },
+        { text: '土地名称', value: 'landName', assetType:[LAND] },
+        { text: '车场名称', value: 'carParkName', assetType:[YARD] },
+        { text: '设备设施名称', value: 'equipmentName', assetType:[EQUIPMENT] },
+
+        { text: '土地编号', value: 'landCode', assetType:[LAND] },
+        { text: '资产位置', value: 'address' },
+        { text: '权属类型', value: 'kindOfRightName' },
+        { text: '权属情况', value: 'ownershipStatusName' },
+        { text: '权证号', value: 'warrantNbr' },
+        { text: '装修情况', value: 'decorationSituation', assetType:[HOUSE] },
+        { text: '债权金额(元)', value: 'creditorAmount' },
+        { text: '债务金额(元)', value: 'debtAmount' }
+      ]
+      return info.filter(this.handleInfoArr)
+    }
   },
   created () {
   },
@@ -137,10 +165,7 @@ export default {
       case 'getRegisterOrder':
         this.getRegisterOrderById()
         break;
-      case 'getBasicByHouse':
-        this.getAssetById()
-        break;
-      case 'getBasicByGround':
+      case 'getBasicCom':
         this.getAssetById()
         break;
       default:
@@ -148,6 +173,17 @@ export default {
     }
   },
   methods: {
+    /*
+    * 根据 assetType 数据 过滤
+    * assetType 没有元素时意味着 所有资产类型 都显示，如果存在数据则根据 当前资产类型 判断是否显示
+    * */
+    handleInfoArr(ele){
+      if (ele.assetType && ele.assetType.length){
+        return ele.assetType.includes(this.assetType);
+      }else {
+        return true
+      }
+    },
     // 获取登记单信息
     getRegisterOrderById () {
       let obj = {
@@ -173,6 +209,7 @@ export default {
       })
     },
     // 获取基础信息
+    // 获取基础信息
     getAssetById () {
       let data = {
         assetId: this.assetId
@@ -180,18 +217,14 @@ export default {
       this.$api.subsidiary.getAssetById(data).then(res => {
         if (res.data.code === "0") {
           let obj = res.data.data || {}
-          if (this.type === 'getBasicByHouse') {
-            this.getBasicByHouseDetail = {...obj}
-            for (let key in obj.assetHouse) {
-              this.getBasicByHouseDetail[key] = obj.assetHouse[key]
+          if (this.type === 'getBasicCom') {
+            const ASSET_TYPE_DETAIL = handleAssetTypeField(this.assetType, "detail");
+            const resData = obj[ASSET_TYPE_DETAIL]
+            this.getBasicDetail = {...obj}
+            for (let key in resData) {
+              this.getBasicDetail[key] = resData[key]
             }
-            this.$emit('change', obj.assetHouse)
-          } else {
-            this.getBasicByGroundDetail = {...obj}
-            for (let key in obj.assetLand) {
-              this.getBasicByGroundDetail[key] = obj.assetLand[key]
-            }
-            this.$emit('change', obj.assetLand)
+            this.$emit('change', resData || {})
           }
         } else {
           this.$message.error(res.data.message);

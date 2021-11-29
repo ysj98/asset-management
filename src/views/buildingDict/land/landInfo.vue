@@ -182,6 +182,8 @@ export default {
         ...this.queryCondition,
         communityId: this.queryCondition.communityId.join(","),
       };
+      this.table.dataSource = []
+      this.table.totalCount = 0
       this.table.loading = true;
       this.$api.building.blankApiPageList(data).then(
         (res) => {

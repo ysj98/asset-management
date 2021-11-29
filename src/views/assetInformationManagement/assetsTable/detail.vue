@@ -58,75 +58,8 @@
         </div>
         <div class="l-section">
             <SG-Title title="基础信息" noMargin/>
-            <div class="l-model">
-                <div class="l-model-item">
-                    <span class="lable">资产ID：</span>
-                    <span class="value">{{assetInfo.assetId}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">资产名称：</span>
-                    <span class="value">{{assetInfo.assetName}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">资产编码：</span>
-                    <span class="value">{{assetInfo.assetCode}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">资产类型：</span>
-                    <span class="value">{{assetInfo.assetTypeName}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">资产分类：</span>
-                    <span class="value">{{assetInfo.objectTypeName}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable" v-if="assetType === 1 || assetType === 4">资产面积(㎡)：</span>
-                    <span class="value">{{assetInfo.area ? assetInfo.area : '--'}}</span>
-                </div>
-                <div class="l-model-item" v-if="assetType === 1">
-                    <span class="lable">楼栋名称：</span>
-                    <span class="value">{{assetInfo.buildName ? assetInfo.buildName : '--'}}</span>
-                </div>
-                <div class="l-model-item" v-if="assetType === 4">
-                    <span class="lable">土地名称：</span>
-                    <span class="value">{{assetInfo.landName ? assetInfo.landName : '--'}}</span>
-                </div>
-                <div class="l-model-item" v-if="assetType === 1">
-                    <span class="lable">房间名称：</span>
-                    <span class="value">{{assetInfo.houseName ? assetInfo.houseName : '--'}}</span>
-                </div>
-                <div class="l-model-item" v-if="assetType === 4">
-                    <span class="lable">土地编码：</span>
-                    <span class="value">{{assetInfo.landCode ? assetInfo.landCode : '--'}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">资产位置：</span>
-                    <span class="value">{{assetInfo.address}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">权属类型：</span>
-                    <span class="value">{{assetInfo.kindOfRightName ? assetInfo.kindOfRightName : '--'}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">权属情况：</span>
-                    <span class="value">{{assetInfo.ownershipStatusName ? assetInfo.ownershipStatusName : '--'}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">权证号：</span>
-                    <span class="value">{{assetInfo.warrantNbr ? assetInfo.warrantNbr : '--'}}</span>
-                </div>
-                <div class="l-model-item" v-if="assetType === 1">
-                    <span class="lable">装修情况：</span>
-                    <span class="value">{{assetInfo.decorationSituation ? assetInfo.decorationSituation : '--'}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">债权金额(元)：</span>
-                    <span class="value">{{assetInfo.creditorAmount ? assetInfo.creditorAmount : '--'}}</span>
-                </div>
-                <div class="l-model-item">
-                    <span class="lable">债务金额(元)：</span>
-                    <span class="value">{{assetInfo.debtAmount ? assetInfo.debtAmount : '--'}}</span>
-                </div>
+            <div style="padding: 0 30px">
+              <BasicInformation :detailData="assetInfo" />
             </div>
         </div>
         <div class="l-section">
@@ -162,8 +95,13 @@
 </template>
 
 <script>
+import BasicInformation from "@/views/assetInformationManagement/assetsTable/BasicInformation";
+import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
     export default {
         name: "detail",
+        components:{
+          BasicInformation
+        },
         data() {
             return {
                 assetId: '',
@@ -226,7 +164,8 @@
                     { url: '/doc/2019/07/23/8/2019/07/23/1563883528442.txt', name: '1563883528442.txt' },
                     { url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' },
                     { url: '/picture/2019/07/23/8/201907232005287916_700_375.JPEG', name: '201907232005287916_700_375.JPEG' }
-                ]
+                ],
+
             }
         },
         created() {
@@ -299,34 +238,8 @@
                             objectTypeName: data.objectTypeName ? data.objectTypeName : '--',
                             address: data.address ? data.address : '--',
                         }
-
-                        let obj
-                        if (this.assetType === 1) {
-                            const houseData = data.assetHouse
-                            obj = {
-                                area: houseData.area,
-                                buildName: houseData.buildName,
-                                houseName: houseData.houseName,
-                                kindOfRightName: houseData.kindOfRightName,
-                                ownershipStatusName: houseData.ownershipStatusName,
-                                warrantNbr: houseData.warrantNbr,
-                                decorationSituation: houseData.decorationSituation,
-                                creditorAmount: houseData.creditorAmount,
-                                debtAmount: houseData.debtAmount,
-                            }
-                        } else if (this.assetType === 4){
-                            const assetLand = data.assetLand
-                            obj = {
-                                area: assetLand.landArea,
-                                landName: assetLand.landName,
-                                landCode: assetLand.landCode,
-                                kindOfRightName: assetLand.kindOfRightName,
-                                ownershipStatusName: assetLand.ownershipStatusName,
-                                warrantNbr: assetLand.warrantNbr,
-                                creditorAmount: assetLand.creditorAmount,
-                                debtAmount: assetLand.debtAmount,
-                            }
-                        }
+                        const ASSET_TYPE_DETAIL = handleAssetTypeField(this.assetType, "detail");
+                        let obj = data[ASSET_TYPE_DETAIL]
                         this.assetInfo = {...basicInfo, ...obj}
                         console.log(this.assetInfo)
                     } else {

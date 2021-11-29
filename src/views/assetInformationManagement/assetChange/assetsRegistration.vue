@@ -259,7 +259,7 @@ export default {
         pageNum: 1, // 当前页
         pageSize: 10, // 每页显示记录数
         projectId: "", // 资产项目Id
-        organId: 1, // 组织机构id
+        organId: '', // 组织机构id
         changeType: "", // 备注：变更类型id(多个用，分割)
         assetType: "", // 资产类型，多个用，分隔
         startCreateDate: getThreeMonthsAgoDate(), // 备注：开始创建日期
@@ -305,12 +305,14 @@ export default {
     this.platformDictFn("asset_change_type");
     // 获取资产类型
     this.platformDictFn("asset_type");
-    this.query();
   },
   methods: {
     moment,
     // 查询
     query() {
+      if (!this.queryCondition.organId){
+        return null
+      }
       this.loading = true;
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页

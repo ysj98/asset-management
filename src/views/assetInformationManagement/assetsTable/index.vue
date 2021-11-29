@@ -39,7 +39,7 @@
                             v-model="queryData.assetTypeList"
                             :options="$addTitle(assetTypeOptions)"
                             style="width: 190px; margin-right: 10px;"
-                            @select="changeAssetType"
+                            @change="changeAssetType"
                     ></a-select>
                     <a-select
                             :maxTagCount="1"
@@ -76,7 +76,19 @@
                         :options="$addTitle(cleanupTypeData)"
                         @select="changeCleanupType"
                 ></a-select>
+                <EquipmentSelectTree
+                        v-if="isSelectedEquipment"
+                        style="width: 300px"
+                        :top-organ-id="organId"
+                        :multiple="true"
+                        v-model="queryData.objectTypeList"
+                        :options-data-format="(data)=>{
+                          return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+                        }"
+                        @select="assetClassifyDataFn($event,true)"
+                />
                 <a-select
+                        v-else
                         showSearch
                         allowClear
                         placeholder="全部资产分类"
@@ -137,94 +149,16 @@
 </template>
 
 <script>
+    import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
     import TreeSelect from "../../common/treeSelect";
-    import SegiRangePicker from "@/components/SegiRangePicker";
     import noDataTips from "@/components/noDataTips";
     import moment from "moment";
     import { ASSET_MANAGEMENT } from "@/config/config.power";
     import OverviewNumber from "@/views/common/OverviewNumber";
-    import TooltipText from "../../common/TooltipText";
+    import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
     // import {calc} from '@/utils/utils'
     // import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
-    const columns = [
-        {
-            title: "出库明细ID",
-            dataIndex: "cleaningOrderDetailId",
-            width: 90,
-        },
-        {
-            title: "资产名称",
-            dataIndex: "assetName",
-            width: 70,
-        },
-        {
-            title: "资产编码",
-            dataIndex: "assetCode",
-            width: 70,
-        },
-        {
-            title: "资产类型",
-            dataIndex: "assetTypeName",
-            width: 70,
-        },
-        {
-            title: "资产分类",
-            dataIndex: "objectTypeName",
-            width: 70,
-        },
-        {
-            title: "管理机构",
-            dataIndex: "organName",
-            width: 70,
-        },
-        {
-            title: "资产项目名称",
-            dataIndex: "projectName",
-            width: 80,
-        },
-        {
-            title: "出库单编号",
-            dataIndex: "cleaningOrderCode",
-            width: 80,
-        },
-        {
-            title: "出库原因",
-            dataIndex: "cleanupTypeName",
-            width: 80,
-        },
-        {
-            title: "资产位置",
-            dataIndex: "location",
-            width: 120,
-        },
-        {
-            title: "资产面积",
-            dataIndex: "area",
-            width: 70,
-        },
-        {
-            title: "出库人",
-            dataIndex: "creatUserName",
-            width: 65,
-        },
-        {
-            title: "出库日期",
-            dataIndex: "createDate",
-            width: 70,
-        },
-        {
-            title: "状态",
-            dataIndex: "approvalStatusName",
-            width: 60,
-        },
-        {
-            title: "操作",
-            width: 80,
-            dataIndex: "operation",
-            scopedSlots: { customRender: "operation" }
-        }
-    ];
 
     const approvalStatusData = [
         {
@@ -255,11 +189,10 @@
 
     export default {
         components: {
-            TooltipText,
             TreeSelect,
-            SegiRangePicker,
             noDataTips,
-            OverviewNumber
+            OverviewNumber,
+            EquipmentSelectTree
         },
         data() {
             return {
@@ -318,7 +251,87 @@
                 ], // 统计数据
                 ASSET_MANAGEMENT,
                 allStyle: "width: 180px; margin-right: 10px;",
-                columns,
+                columns:[
+                  {
+                    title: "出库明细ID",
+                    dataIndex: "cleaningOrderDetailId",
+                    width: 90,
+                  },
+                  {
+                    title: "资产名称",
+                    dataIndex: "assetName",
+                    width: 70,
+                  },
+                  {
+                    title: "资产编码",
+                    dataIndex: "assetCode",
+                    width: 70,
+                  },
+                  {
+                    title: "资产类型",
+                    dataIndex: "assetTypeName",
+                    width: 70,
+                  },
+                  {
+                    title: "资产分类",
+                    dataIndex: "objectTypeName",
+                    width: 70,
+                  },
+                  {
+                    title: "管理机构",
+                    dataIndex: "organName",
+                    width: 70,
+                  },
+                  {
+                    title: "资产项目名称",
+                    dataIndex: "projectName",
+                    width: 80,
+                  },
+                  {
+                    title: "出库单编号",
+                    dataIndex: "cleaningOrderCode",
+                    width: 80,
+                  },
+                  {
+                    title: "出库原因",
+                    dataIndex: "cleanupTypeName",
+                    width: 80,
+                  },
+                  {
+                    title: "资产位置",
+                    dataIndex: "location",
+                    width: 120,
+                  },
+                  {
+                    title: "资产面积",
+                    key: "area",
+                    customRender(record){
+                      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
+                    },
+                    width: 70,
+                  },
+                  {
+                    title: "出库人",
+                    dataIndex: "creatUserName",
+                    width: 65,
+                  },
+                  {
+                    title: "出库日期",
+                    dataIndex: "createDate",
+                    width: 70,
+                  },
+                  {
+                    title: "状态",
+                    dataIndex: "approvalStatusName",
+                    width: 60,
+                  },
+                  {
+                    title: "操作",
+                    width: 80,
+                    dataIndex: "operation",
+                    scopedSlots: { customRender: "operation" }
+                  }
+                ],
                 dataSource: [],
                 exportBtnLoading: false, // 导出按钮loading
 
@@ -327,6 +340,12 @@
                 overviewNumSpinning: false,
 
             };
+        },
+        computed:{
+          isSelectedEquipment(){
+            const assetTypeArr = this.queryData.assetTypeList
+            return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+          }
         },
         watch: {
             $route() {
@@ -344,12 +363,13 @@
         methods: {
             moment,
             // 全部资产分类
-            assetClassifyDataFn(value){
+            assetClassifyDataFn(value,isSelectedEquipment){
                 this.$nextTick(() => {
+                    const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
                     this.queryData.objectTypeList = this.handleMultipleSelectValue(
                         value,
                         this.queryData.objectTypeList,
-                        this.assetClassifyData
+                        resOptions
                     );
                 });
             },
@@ -377,11 +397,16 @@
             changeAssetType(value) {
                 this.$nextTick(function() {
                     this.queryData.assetTypeList = this.handleMultipleSelectValue(
-                        value,
+                value[value.length-1] || '' ,
                         this.queryData.assetTypeList,
                         this.assetTypeOptions
                     );
-                    this.getListFn()
+                    if (!this.queryData.assetTypeList[0] || this.queryData.assetTypeList.length > 1 ) {
+                      this.assetClassifyData = [{label: '全部资产分类', value: ''}]
+                      this.queryData.objectTypeList = ['']
+                    }else {
+                      this.getListFn()
+                    }
                 });
             },
             // 资产项目发生变化
@@ -602,6 +627,7 @@
                 if (!this.organId) {
                     return
                 }
+                this.queryData.objectTypeList = ['']
                 let obj = {
                     organId: this.organId,
                     assetType: this.queryData.assetTypeList.length > 0 ? this.queryData.assetTypeList.join(',') : ''

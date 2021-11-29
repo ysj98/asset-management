@@ -174,8 +174,9 @@
           rowKey: 'projectId',
           scroll: { x: 1800 },
           columns: [
-            { title: '管理机构', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 150, fixed: 'left' },
-            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 150, fixed: 'left' },
+            { title: '管理机构', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 200, fixed:
+                'left' },
+            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200, fixed: 'left' },
             { title: '资产项目编码', dataIndex: 'projectCode', width: 150 },
             { title: '来源方式', dataIndex: 'sourceTypeName' },
             { title: '来源渠道', dataIndex: 'souceChannelType' },
