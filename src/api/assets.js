@@ -400,9 +400,23 @@ export function getFeeTypeList (data) {
   return new Promise((resolve, reject) => {
     if(configs.platform === "merchants"){
       axiosPost(assets.assetClassSet.getFeeTypeList2, data).then(value=>{
-        const obj = value
-        obj.data.data = value.data.data.resultList
-        resolve(obj)
+        let {data:{data=[],code=-1,message='解构失败'},...restArgus} = value
+        if (data){
+          data = data.map((ele)=>{
+            return {
+              feeTypeId:ele.feeItemTypeId,
+              feeTypeName:ele.feeItemTypeName
+            }
+          })
+        }
+        resolve({
+          ...restArgus,
+          data:{
+            code,
+            data,
+            message
+          }
+        })
       },error=>{
         reject(error)
       })
