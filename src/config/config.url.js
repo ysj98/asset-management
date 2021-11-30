@@ -284,7 +284,7 @@ export const assets = {
     * 招商环境  /charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList
     * */
     getFeeTypeList: '/ams/categoryCfg/getFeeTypeList',
-    getFeeTypeList2:'/charging-api/rest-api/v1/feeItemType/queryFeeItemTypeList',
+    getFeeTypeList2:'/charging-lease-api/rest-api/v1/feeItemType/queryFirstOrganFeeItemTypeList',
     // 资产分类设置-修改资产分类
     update: '/ams/categoryCfg/update',
     // 资产分类设置-修改资产分类状态
