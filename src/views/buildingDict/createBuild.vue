@@ -273,12 +273,26 @@
                     <a-form-item label="平面图" v-bind="formItemLayout2">
                       <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
                     </a-form-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-item label="附件" v-bind="formItemLayout2">
-                      <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" type="all" v-model="filepaths"/>
-                    </a-form-item>
-                  </a-col>
+                </a-col>
+                <a-col :span="24">
+                  <a-form-item label="图片" v-bind="formItemLayout2">
+                    <SG-UploadFile
+                      v-model="otherPicPath"
+                      :customDownload="customDownload"
+                      :customUpload="customUpload"
+                      />
+                  </a-form-item>
+                </a-col>
+                <a-col :span="24">
+                  <a-form-item label="附件" v-bind="formItemLayout2">
+                    <SG-UploadFile
+                      :customDownload="customDownload"
+                      :maxSize="51200"
+                      :customUpload="customUpload"
+                      type="all"
+                      v-model="filepaths"/>
+                  </a-form-item>
+                </a-col>
             </a-row>
           </a-form>
         </div>
@@ -291,6 +305,11 @@
    </div>
 </template>
 <script>
+
+/*
+* TODO: 添加 otherPicPath 字段 对应附件，但是以图片展示
+* */
+
 import FormFooter from '@/components/FormFooter.vue'
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
 import utils from '@/utils/utils'
@@ -359,6 +378,7 @@ export default {
         lng: '',
         lat: ''
       },
+      otherPicPath:[], // 图片
       picPath: [], // 平面图
       filepaths: [], // 附件
       buildTypeOpt: [], // 楼栋类型
@@ -487,9 +507,13 @@ export default {
           let lngAnLatArr = data.lngAndlat.split('-')
           data.longitude = lngAnLatArr[0]
           data.latitude = lngAnLatArr[1]
-          // 处理图片
+          // 处理平面图
           if (this.picPath.length > 0) {
             data.picPath = this.picPath[0].url
+          }
+          // 处理图片
+          if (this.otherPicPath.length > 0) {
+            data.otherPicPath = this.otherPicPath.map(item => item.url).join(',')
           }
           // 处理附件
           if (this.filepaths.length > 0) {
@@ -609,6 +633,13 @@ export default {
         this.picPath = picPath
       }
       // 处理附件
+      if (data.otherPicPath) {
+        let otherPicPath = data.otherPicPath.split(',')
+        this.otherPicPath = otherPicPath.map(url => {
+          return {url, name: url.substring(url.lastIndexOf('/')+1)}
+        })
+      }
+      // 处理附件
       if (data.filepaths) {
         let filepaths = data.filepaths.split(',')
         this.filepaths = filepaths.map(url => {
@@ -659,6 +690,7 @@ export default {
         lat: ''
       }
       this.picPath = [] // 平面图
+      this.otherPicPath = [] // 图片
       this.filepaths = [] // 附件
     },
     bMapChange (point) {
