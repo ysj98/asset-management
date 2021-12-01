@@ -96,6 +96,10 @@ export default [
       {
         title: '资产编码规则',
         path: '/assetCodingRule'
+      },
+      {
+        title: '资产转运营参数',
+        path: '/assetOperatingParameters'
       }
     ]
   },
