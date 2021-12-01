@@ -400,8 +400,8 @@ export default {
       }
     },
     initUploadFile () {
-      this.$refs.uploadFile.$data.hostImg = ""
-      this.$refs.uploadFile.$data.imgStr = ""
+      // this.$refs.uploadFile.$data.hostImg = ""
+      // this.$refs.uploadFile.$data.imgStr = ""
       console.log(this.$refs.uploadFile.$data.hostImg )
     },
     handleSave () {
@@ -711,7 +711,7 @@ export default {
       } catch {
         return []
       }
-      return []
+      // return []
 
     },
     // 文件上传
