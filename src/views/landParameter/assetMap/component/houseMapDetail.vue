@@ -236,8 +236,7 @@ export default {
       const resOrganId = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
       const data = {
         tabUrl:`/asset-management/#/buildingView/buildingViewDetail?buildId=${this.detailInfo.buildId}&organId=${resOrganId}`,
-        tabTitle:'楼栋视图详情tttest',
-        operDescId:'363'
+        tabTitle:'楼栋视图详情',
       }
       win.openPortalMenu(data)
     },
