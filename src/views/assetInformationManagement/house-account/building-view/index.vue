@@ -159,7 +159,9 @@
       // 查看楼栋视图详情
       handleViewDetail (buildId) {
         const { organProjectBuildingValue: { organId } } = this
-        buildId && this.$router.push({ path: '/buildingView/buildingViewDetail', query: {organId, buildId }})
+        const resObj = this.organOptions.filter(ele=>ele.vaslukeye = organId)[0]
+        const organName = resObj ? resObj.title : ''
+        buildId && this.$router.push({ path: '/buildingView/buildingViewDetail', query: {organId, buildId,organName:organName }})
       },
 
       // 查询列表数据
