@@ -225,6 +225,9 @@ export default {
     queryType: {
       type: [String, Number],
       default: ''
+    },
+    pageNum: {
+      type: Number
     }
   },
   data () {
@@ -514,7 +517,7 @@ export default {
     // 关闭弹窗
     handleCancel (str) {
       if (str === 'success') {
-        this.$emit('successQuery')
+        this.$emit('successQuery', this.pageNum)
       }
       this.show = false
       this.$emit('showFn', this.show)
