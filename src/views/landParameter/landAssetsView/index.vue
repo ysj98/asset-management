@@ -388,7 +388,11 @@ export default {
     },
     // 查看土地资产视图详情
     handleViewDetail ({assetLandId, assetId}) {
-      this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId, assetId }})
+      const query = {
+        organId: this.queryCondition.organId,
+        organName: this.organName
+      }
+      this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId, assetId,...query }})
     },
     // 点击总览数据块
     // 0运营；1闲置；2自用；3占用；4其他
