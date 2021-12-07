@@ -93,18 +93,18 @@
           <a-col :span="4">
             <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
           </a-col>
-          </a-row>
-          <a-row :gutter="12" style="margin-top: 14px">
-            <a-col :span="4">
-              <a-select
-                :filter-option="filterOption"
-                show-search
-                v-model="ownershipUse"
-                style="width: 100%"
-                :options="$addTitle(ownershipUseOPt)"
-                placeholder="权属用途"
-              />
-            </a-col>
+        </a-row>
+        <a-row :gutter="12" style="margin-top: 14px">
+          <a-col :span="4">
+            <a-select
+              :filter-option="filterOption"
+              show-search
+              v-model="ownershipUse"
+              style="width: 100%"
+              :options="$addTitle(ownershipUseOPt)"
+              placeholder="权属用途"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -115,7 +115,8 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="assetName" slot-scope="text">
-        <tooltip-text :text="text"/>
+        <!-- <tooltip-text :text="text"/> -->
+        {{text}}
       </template>
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
@@ -184,7 +185,7 @@
           dataSource: [],
           scroll: { x: 3500 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left' },
+            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 160 },
             { title: '资产编码', dataIndex: 'assetCode' },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '宗地号', dataIndex: 'addressNo' },
@@ -218,7 +219,7 @@
             { title: '物业费', dataIndex: 'organFee' },
             { title: '已租面积', dataIndex: 'rentedArea' },
             { title: '未租面积', dataIndex: 'unRentedArea' },
-            { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 60 }
+            { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
         key: 0, // 更新Modal包裹的子组件
@@ -574,5 +575,8 @@
         font-weight: bold;
       }
     }
+  }
+  /deep/ .sg-FooterPagination{
+    z-index: 2;
   }
 </style>

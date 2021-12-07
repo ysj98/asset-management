@@ -119,7 +119,8 @@
             { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
             { title: '宗地号', dataIndex: 'addressNo', width: 150 },
             { title: '建筑年代', dataIndex: 'years' },
-            { title: '建筑面积(㎡)', dataIndex: 'area' },
+            { title: '楼栋建筑面积(㎡)', dataIndex: 'buildBuiltArea' },
+            { title: '房屋建筑面积(㎡)', dataIndex: 'area' },
             { title: '楼高', dataIndex: 'buildHeight' },
             { title: '层数', dataIndex: 'floorNum' },
             { title: '地上层数', dataIndex: 'upFloorNum' },
@@ -315,5 +316,8 @@
         white-space: nowrap;
       }
     }
+  }
+  /deep/ .sg-FooterPagination{
+    z-index: 2;
   }
 </style>
