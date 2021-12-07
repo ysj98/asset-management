@@ -18,7 +18,7 @@
        </div>
      </div>
      <div class="tree-content">
-       <positionTree @change="checkTreeChange" ref="positionTree" :isCurrent="isCurrent" :organIdOwn="organIdOwn" :organId="organId"/>
+       <positionTree @change="checkTreeChange" ref="positionTree" :isCurrent="isCurrent" :organId="organId"/>
      </div>
     </div>
     <!-- 新增内容部分 -->

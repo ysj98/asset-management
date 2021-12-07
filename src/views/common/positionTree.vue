@@ -67,10 +67,6 @@ const topItem = {
 }
 export default {
   props: {
-    organIdOwn: {
-      type:[String,Number],
-      default:''
-    },
     isCurrent:{
       type: Number,
       default: 0,
@@ -230,7 +226,7 @@ export default {
       let data = {
         upPositionId: treeNode.dataRef.id,
         positionType: '1',
-        organId: this.organIdOwn || this.organId,
+        organId:this.organId,
       }
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
     },
@@ -238,7 +234,7 @@ export default {
     positionSelectAsyn () {
       this.emptyTreeData()
       let data = {
-        organId: this.organIdOwn || this.organId,
+        organId:this.organId,
         isCurrent:this.isCurrent,
         upPositionId: '-1',
         positionType: '1'
