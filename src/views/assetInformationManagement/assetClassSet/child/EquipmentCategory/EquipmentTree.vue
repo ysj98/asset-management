@@ -11,7 +11,7 @@
     <div class="tree-main" :key="treeUuid + ''">
       <div class="table-no-data" v-if="gData.length === 0">暂无数据</div>
       <a-tree
-        :selectedKeys="selectedKeys"
+        :selectedKeys="selectedKeysDefault"
         :loadData="onLoadData"
         :expandedKeys="expandedKeys"
         :autoExpandParent="autoExpandParent"
