@@ -4,7 +4,7 @@
  * @Description: 建筑物位置->楼栋，单元，楼层，选择组件
  -->
 <template>
-  <div class="custom-tree building-tree">
+  <div class="building-tree">
     <div class="tree-search" v-if="searchAble">
       <a-input placeholder="请输入建筑物进行查询" v-model="searchValueInput" @input="onChange">
         <a-icon slot="suffix" style="cursor: pointer;" type="search" @click="onChange"/>
@@ -13,13 +13,14 @@
     <div class="tree-main" :key="treeUuid + ''">
       <div class="table-no-data" v-if="gData.length===0">暂无数据</div>
       <a-tree
-        @expand="onExpand"
+        :selectedKeys="selectedKeysDefault"
         :loadData="onLoadData"
         :expandedKeys="expandedKeys"
         :autoExpandParent="autoExpandParent"
         :treeData="gData"
-        @select="hanldSelect"
-        >
+        @expand="onExpand"
+        @select="handleSelect"
+      >
         <template slot="title" slot-scope="scope">
           <div class="tree-bg-box" :key="scope.key" :class="[scope.key===activeKey&&'active']" @click="hanldeOper(scope)">
             <!-- 标题及搜索 -->
@@ -67,10 +68,6 @@ const topItem = {
 }
 export default {
   props: {
-    organIdOwn: {
-      type:[String,Number],
-      default:''
-    },
     isCurrent:{
       type: Number,
       default: 0,
@@ -84,6 +81,18 @@ export default {
       type: Boolean,
       default: true
     },
+    selectedKeysDefault: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    expandedKeysDefault: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
   },
   watch: {
     organId (nv) {
@@ -93,24 +102,35 @@ export default {
     },
     isCurrent(){
       this.positionSelectAsyn()
-    }
+    },
+    selectedKeys(newValue) {
+      this.$emit("update:selectedKeysDefault", newValue);
+    },
+    expandedKeys(newValue) {
+      this.$emit("update:expandedKeysDefault", newValue);
+    },
   },
   mounted () {
     if (this.organId) {
       this.positionSelectAsyn()
     }
+    if (this.selectedKeysDefault.length) {
+      this.selectedKeys = this.selectedKeysDefault;
+    }
+    if (this.expandedKeysDefault.length) {
+      this.expandedKeys = this.expandedKeysDefault;
+    }
   },
   data () {
     return {
+      selectedKeys: [topItem.key],
       activeKey: '', // 当前点击项
       expandedKeys: [topItem.key],
-      copyExpandedKeys: [topItem.key],
       autoExpandParent: false,
       gData: [{...topItem}],
       copyGdata: [{...topItem}],
       dataList: [{...topItem}], // 缓存每一项请求
       store: {},
-      selectItem: {}, // 当前添加项
       treeUuid: getUuid(),
       searchValueInput: '', // 搜索框的值
     }
@@ -132,21 +152,24 @@ export default {
     },
   },
   methods: {
+    handleSelect(selectedKeys, e) {
+      const {
+        node: { dataRef }
+      } = e;
+      this.selectedKeys = selectedKeys;
+      this.$emit("handleSelect", dataRef);
+    },
     emptyTreeData () {
       this.gData = [{...topItem}]
-      this.expandedKeys = [topItem.key]
       this.dataList = [{...topItem}]
-      this.selectItem = {}
       this.store = {[topItem.key]: topItem}
       this.copyGdata = utils.deepClone(this.gData)
-      this.copyExpandedKeys = [topItem.key]
       this.searchValueInput = ''
     },
     hanldeOper (scope) {
       if (this.activeKey === scope.key) {
         return
       }
-      this.selectItem = {...scope}
       this.activeKey = scope.key
       this.$emit('change', {...scope})
     },
@@ -183,25 +206,11 @@ export default {
       this.searchValueInput = e.target.value
       let value = this.searchValueInput
       if (!value || !value.trim()) {
-        // this.expandedKeys = [...this.copyExpandedKeys]
-        // this.gData = this.copyGdata
         this.resetLoad()
         this.treeUuid = getUuid()
         return
       }
-      let treeData = this.upCreateTree()
-      // 匹配到树结构的key
-      let filterList = Object.values(this.store).filter(v => v.title.includes(this.searchValueInput)).map(v => v.key)
-      // 匹配到key 但未展开
-      let filterKeys = filterList.filter(item => {
-        return !this.copyExpandedKeys.includes(item)
-      })
-      let expandedKeys = this.containTreeNodes.filter(item => {
-        return !filterKeys.includes(item)
-      })
-      this.gData = treeData
-      // console.log('数据=>', this.gData)
-      // console.log('展开', expandedKeys)
+      this.gData = this.upCreateTree()
       Object.assign(this, {
         expandedKeys: [topItem.key],
         // searchValue: value,
@@ -213,13 +222,8 @@ export default {
     resetLoad () {
       this.positionSelectAsyn()
     },
-    hanldSelect () {
-    },
     onExpand  (expandedKeys) {
       this.expandedKeys = expandedKeys
-      if (!this.searchValueInput) {
-        this.copyExpandedKeys = [...expandedKeys]
-      }
       this.autoExpandParent = false
     },
     // 异步加载数据
@@ -230,7 +234,7 @@ export default {
       let data = {
         upPositionId: treeNode.dataRef.id,
         positionType: '1',
-        organId: this.organIdOwn || this.organId,
+        organId:this.organId,
       }
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
     },
@@ -238,7 +242,7 @@ export default {
     positionSelectAsyn () {
       this.emptyTreeData()
       let data = {
-        organId: this.organIdOwn || this.organId,
+        organId:this.organId,
         isCurrent:this.isCurrent,
         upPositionId: '-1',
         positionType: '1'
@@ -258,8 +262,9 @@ export default {
             this.dataList.push({...item})
             return {...item}
           })
+          this.$emit('init',{gData:this.gData})
           this.copyGdata = utils.deepClone(this.gData)
-          this.expandedKeys = [topItem.key]
+          // this.expandedKeys = [topItem.key]
           this.treeUuid = getUuid()
           this.hanldeOper(this.gData[0])
         } else {
@@ -305,16 +310,6 @@ export default {
 <style lang="less" scoped>
   .tree-bg-box{
     z-index: 4;
-  &::before{
-    content: '';
-    display: inline-block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 30px;
-    margin-top: -2px;
-    background: transparent;
-  }
   .tree-ope-box{
     position: absolute;
     right: 16px;
@@ -350,6 +345,11 @@ export default {
 }
 .table-no-data{
   text-align: center;
+}
+</style>
+<style lang="less">
+.building-tree{
+  .ant-tree li .ant-tree-node-content-wrapper{cursor: default;}
 }
 </style>
 <style lang="less">
