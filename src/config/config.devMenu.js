@@ -100,6 +100,10 @@ export default [
       {
         title: '资产转运营参数',
         path: '/assetOperatingParameters'
+      },
+      {
+        title: '土地地图绘制',
+        path: '/mapDrawLand'
       }
     ]
   },
