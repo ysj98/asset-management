@@ -10,7 +10,7 @@
     <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId" :organ-name="organName" />
     <!--其它信息-->
     <!-- 不知道干什么用的，也没调用接口 隐藏掉 -->
-    <other-info-part v-if="false" style="margin-bottom: 35px"/>
+    <other-info-part v-if="buildId" :buildId="buildId" style="margin-bottom: 35px"/>
   </div>
 </template>
 
@@ -47,6 +47,10 @@
     /*抽离子组件的公共样式*/
     & /deep/ .title_div {
       margin-left: 40px;
+    }
+    & /deep/ .sg-FooterPagination {
+      margin-left: 40px;
+      width: calc(100% - 40px);
     }
   }
 </style>
