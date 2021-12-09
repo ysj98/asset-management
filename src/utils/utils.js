@@ -1,5 +1,6 @@
 import sg_calc from 'sg-calc'
 import store from "store";
+import {Power} from '@/utils/power'
 /**
  * 工具函数库
  */
@@ -686,5 +687,16 @@ export function generateTableAreaByAssetTypeString({keyStr, assetTypeName, recor
     return '/'
   }else {
     return record[keyStr]
+  }
+}
+
+/*
+* tab页面，根据权限获取默认展示第一个tab的key
+* */
+export function getDefaultKey(arr){
+  for (let i = 0;i<arr.length;i++){
+    if (Power.has(arr[i].auth)){
+      return arr[i].keyStr
+    }
   }
 }

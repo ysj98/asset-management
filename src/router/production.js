@@ -96,7 +96,7 @@ let proRouter = [{
   },
   {
     path: '/mapDrawLand',
-    name: '资产转运营参数',
+    name: '土地地图绘制',
     component: () => import('@/views/mapDrawLand/index.vue'),
     meta: {
       keepAlive: true
@@ -104,7 +104,7 @@ let proRouter = [{
   },
   {
     path: '/assetOperatingParameters',
-    name: '土地地图绘制',
+    name: '资产转运营参数',
     component: () => import('@/views/assetOperatingParameters/index.vue'),
     meta: {
       keepAlive: true
