@@ -25,7 +25,11 @@ export default {
     demoFn() {
       this.mapInstance.pm.addControls({
         position: "topleft",
-        drawCircle: false
+        drawCircle: false,
+        drawMarker:false,
+        drawCircleMarker:false,
+        drawPolyline:false,
+        rotateMode:false
       });
     },
     initMap(id) {
@@ -39,11 +43,25 @@ export default {
       const rc = new LRasterCoords(this.mapInstance, imgInfo);
       this.mapInstance.setMaxZoom(rc.zoomLevel());
       this.mapInstance.setView(rc.unproject([imgInfo[0], imgInfo[1]]), 2);
-      Leaflet.tileLayer("./views/mapDrawLand/tiles4/{z}/{x}/{y}.png", {
+      Leaflet.tileLayer("http://192.168.200.27:8081/www/tiles4/{z}/{x}/{y}.png", {
         noWrap: true,
         bounds: rc.getMaxBounds(),
         maxNativeZoom: rc.zoomLevel()
       }).addTo(this.mapInstance);
+      this.mapInstance.on('click', function (event) {
+        // to obtain raster coordinates from the map use `project`
+        console.log('event.latlng',event.latlng)
+        const coord = rc.project(event.latlng)
+        console.log('coord',coord)
+      })
+      this.mapInstance.on('pm:create', (e) => {
+        console.log(e);
+        const arr = e.layer._latlngs[0].map(ele=>{
+          console.log('ele',ele)
+          return rc.project(ele)
+        })
+        console.log('arr',arr)
+      });
     }
   },
   mounted() {
@@ -54,6 +72,7 @@ export default {
 
 <style scoped>
 #leaflet-map {
-  height: 500px;
+  height: 90%;
+  background-color: #ffffff;
 }
 </style>
