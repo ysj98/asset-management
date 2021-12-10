@@ -52,8 +52,8 @@
         <div>
           <a-form
             labelAlign="right"
-            :labelCol="{ span: 3 }"
-            :wrapperCol="{ span: 10 }"
+            :labelCol="{ span: 4 }"
+            :wrapperCol="{ span: 20 }"
           >
             <a-form-item label="所属机构">
               <span>

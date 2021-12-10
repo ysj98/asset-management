@@ -54,6 +54,10 @@ export default [
       {
         title: '资产出库一览表详情',
         path: '/assetTable/detail',
+      },
+      {
+        title: '资产转运营',
+        path: '/assetOperating',
       }
     ]
   },

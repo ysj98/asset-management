@@ -111,6 +111,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/assetOperating',
+    name: '资产转运营',
+    component: () => import('@/views/assetOperating/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/assetChangeRegister',
     name: '资产变更单',
     component: () => import('@/views/assetInformationManagement/assetChange/assetsRegistration.vue'),
