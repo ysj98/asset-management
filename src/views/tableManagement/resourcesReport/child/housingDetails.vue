@@ -61,13 +61,13 @@
             notFoundContent="没有查询到数据"
           />
           <!-- <a-input v-model="queryCondition.houseId" placeholder="房号" maxlength="40" :style="allStyle" /> -->
-          <SG-Button type="primary" style="margin-left: 10px;" @click="query">查询</SG-Button>
+          <SG-Button type="primary" style="margin-left: 10px;" @click="doSearch">查询</SG-Button>
         </div>
       </div>
       <div class="tab-nav">
         <div class="table-border table-layout-fixed">
         <a-table
-          :scroll="{y: 450 }"
+          :scroll="{y: 450,x:800 }"
           :loading="loading"
           :columns="columns"
           :dataSource="tableData"
@@ -77,6 +77,7 @@
         </a-table>
         <no-data-tips v-show="tableData.length === 0"></no-data-tips>
         <SG-FooterPagination
+          v-if="!isHouse"
           :pageLength="queryCondition.pageSize"
           :totalCount="count"
           :location="location"
@@ -100,15 +101,18 @@ const houseStatusOpt = [{ label: "全部房屋状态", value: "" }, { label: "�
 const columns = [
   { title: '项目名称', dataIndex: 'communityName', width: 150 },
   { title: '楼栋名称', dataIndex: 'buildName', width: 150 },
-  { title: '单元', dataIndex: 'unitName', width: 50 },
-  { title: '楼层', dataIndex: 'floorName', width: 50 },
-  { title: '房号', dataIndex: 'roomNo', width: 50 },
-  { title: '租赁甲方', dataIndex: 'firstName'},
-  { title: '使用方向', dataIndex: 'resTypeName' },
-  { title: '使用状态', dataIndex: 'busiStatus' },
+  { title: '单元', dataIndex: 'unitName', width: 80 },
+  { title: '楼层', dataIndex: 'floorName', width: 80 },
+  { title: '房号', dataIndex: 'roomNo', width: 80 },
   { title: '房间面积(㎡)', dataIndex: 'area', width: 100 },
-  { title: '租赁用途', dataIndex: 'leaseUse', width: 80 },
-  { title: '租户名称', dataIndex: 'lessee' }
+  { title: '资产构成', dataIndex: 'assetStructure', width: 100 },
+  { title: '计租模式', dataIndex: 'billModeStr', width: 100 },
+  { title: '可租面积(㎡)', dataIndex: 'rentableArea', width: 100 },
+  { title: '租赁甲方', dataIndex: 'firstName', width: 100},
+  { title: '使用方向', dataIndex: 'resTypeName', width: 100 },
+  { title: '使用状态', dataIndex: 'busiStatus', width: 100},
+  { title: '租赁用途', dataIndex: 'leaseUse', width: 100 },
+  { title: '租户名称', dataIndex: 'lessee', width: 100 }
 ]
 export default {
   components: {noDataTips},
@@ -144,6 +148,13 @@ export default {
     }
   },
   computed: {
+    isHouse(){
+      /*
+      * type 1 楼栋
+      * type 2 房屋
+      * */
+      return this.record.type === 2
+    }
   },
   created () {
   },
@@ -158,6 +169,10 @@ export default {
     this.query()
   },
   methods: {
+    doSearch(){
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
     // 分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -193,6 +208,14 @@ export default {
       })
     },
     query () {
+      /*
+      * type 1 楼栋
+      * type 2 房屋
+      * */
+      let apiFn = this.$api.building.queryHouseByPageV2
+      if (this.isHouse){
+        apiFn = this.$api.building.queryHouseByPageV3
+      }
       this.loading = true
       let obj = {
         organId: this.record.organId,
@@ -204,9 +227,14 @@ export default {
         pageNum: this.queryCondition.pageNum,            // 当前页
         pageSize: this.queryCondition.pageSize           // 每页显示记录数
       }
-      this.$api.building.queryHouseByPageV2(obj).then(res => {
+      apiFn(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = []
+          if (!this.isHouse){
+            data = res.data.data.data
+          }else {
+            data = res.data.houseList
+          }
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index

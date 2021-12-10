@@ -78,6 +78,10 @@ const columnsData = [
   { title: '产权人', dataIndex: 'obligeeAndPercent', width: 150 },
   { title: '权属用途', dataIndex: 'ownershipUse', width: 150 },
   { title: '楼栋名称', dataIndex: 'buildName', width: 150  },
+  { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 150  },
+  { title: '资产用途', dataIndex: 'useTypeName', width: 150  },
+  { title: '资产形态', dataIndex: 'typeName', width: 150  },
   { title: '资产状态', dataIndex: 'assetStatusName', width: 150  },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
@@ -89,10 +93,6 @@ const columnsData = [
   { title: '自用面积(㎡)', dataIndex: 'oneselfArea', width: 150 },
   { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 150 },
   { title: '销售面积(㎡)', dataIndex: 'sellArea', width: 150 },
-  { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
-  { title: '资产分类', dataIndex: 'objectTypeName', width: 150  },
-  { title: '资产用途', dataIndex: 'useTypeName', width: 150  },
-  { title: '资产形态', dataIndex: 'typeName', width: 150  },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150}
 ]
 const queryCondition =  {

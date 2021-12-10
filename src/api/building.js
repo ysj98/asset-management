@@ -18,6 +18,9 @@ export function queryHouseByPage (data) {
 export function queryHouseByPageV2 (data) {
   return axiosPost(building.queryHouseByPageV2, data)
 }
+export function queryHouseByPageV3 (data) {
+  return axiosPost(building.queryHouseByPageV3, data)
+}
 // 修改房屋
 export function updateHouse (data) {
   return axiosPost(building.updateHouse, data)
