@@ -233,7 +233,7 @@ export default {
           if (!this.isHouse){
             data = res.data.data.data
           }else {
-            data = res.data.houseList
+            data = res.data.data
           }
           if (data && data.length > 0) {
             data.forEach((item, index) => {
