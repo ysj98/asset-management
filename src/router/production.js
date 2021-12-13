@@ -122,6 +122,27 @@ let proRouter = [{
     path: '/assetOperating',
     name: '资产转运营',
     component: () => import('@/views/assetOperating/index.vue'),
+  },
+  {
+    path: '/assetManagementMode',
+    name: '资产经营方式',
+    component: () => import('@/views/assetManagementMode/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/anyAttrConfig',
+    name: '自定义编码设置',
+    component: () => import('@/views/anyAttrConfig/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetBussinessInformation',
+    name: '资产业务信息',
+    component: () => import('@/views/assetBussinessInformation/index.vue'),
     meta: {
       keepAlive: true
     }

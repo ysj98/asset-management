@@ -112,6 +112,18 @@ export default [
       {
         title: '条码管理',
         path: '/barcodeManagement'
+      },
+      {
+        title: '资产经营方式',
+        path: '/assetManagementMode'
+      },
+      {
+        title: '资产业务信息',
+        path: '/assetBussinessInformation'
+      },
+      {
+        title: '自定义属性设置',
+        path: '/anyAttrConfig'
       }
     ]
   },
