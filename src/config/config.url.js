@@ -1319,3 +1319,13 @@ export const codeRule = {
   // 获取编码默认规则
   default: '/ams/codeRule/default'
 }
+
+export const attrConfig = {
+  // 新增属性配置
+  insertAssetAttrConfig: "/ams/assetAttr/insertAssetAttrConfig",
+  // 查询属性
+  queryAssetAttrConfig: "/ams/assetAttr/queryAssetAttrConfig",
+  // 更新属性配置,状态
+  updateAssetAttrConfig: "/ams/assetAttr/updateAssetAttrConfig",
+  // updateAssetAttrConfig: "/ams/assetAttr/updateAssetAttrConfig",
+}

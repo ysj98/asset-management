@@ -4,10 +4,18 @@
 -->
 <template>
   <div class="landInfo-page pb70">
-<!--    <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0, overflow: 'visible'}">-->
-<!--      <div slot="headerForm" class="search-content-box">-->
-<!--      </div>-->
-<!--    </SearchContainer>-->
+    <SearchContainer :value="false" :contentStyle="{paddingTop: toggle?'16px': 0, overflow: 'visible'}">
+      <div slot="headerForm" class="search-content-box">
+      <div style="overflow: visible;margin-right: 10px">
+        <top-organ-by-user
+          :hasAll="false"
+          :selectFirst="true"
+          v-model="queryCondition.organId"
+          :formStyle="{ width: '170px', verticalAlign: 'bottom' }"
+        />
+      </div>
+      </div>
+    </SearchContainer>
 
     <div class="create-form">
       <!-- 搜索框 -->
@@ -24,8 +32,9 @@
             :locale="{emptyText: '暂无数据'}"
             :scroll="{x: 1200}"
         >
-          <template slot="matchingName" slot-scope="text, record">
-            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+          <template slot="assetOperationModes" slot-scope="text, record">
+            <coloe-select v-if="record.color" v-model="record.color" @click.native="handleColorSelectVisible(record)" />
+            <a-button v-else type="link"  @click.native="handleAssetOperationVisible(record)">添加业务属性</a-button>
           </template>
           <template slot="TCYS" slot-scope="text, record">
             <coloe-select v-if="record.color" v-model="record.color" @click.native="handleColorSelectVisible(record)" />
@@ -42,7 +51,19 @@
         />
       </div>
     </div>
-    <color-select-dialog :visible="colorSelectVisible" :value="selectItem.color" @close="()=>colorSelectVisible = false" @submit="handleColorSelectSubmit"/>
+    <color-select-dialog
+      :visible="colorSelectVisible"
+      :value="selectItem.color"
+      @close="()=>colorSelectVisible = false"
+      @submit="handleColorSelectSubmit"
+    />
+    <asset-operation-modes-dialog
+        :organ-id="queryCondition.organId"
+        :visible="assetOperationModelVisible"
+        :value="selectItem.color"
+        @close="()=>assetOperationModelVisible = false"
+        @submit="handleAssetOperationModesSubmit"
+    />
   </div>
 </template>
 <script>
@@ -57,9 +78,15 @@ import {
 } from "./dict.js";
 import ColoeSelect from "./components/coloeSelect";
 import ColorSelectDialog from "./components/ColorSelectDialog";
+import AssetOperationModesDialog from "./components/AssetOperationModesDialog";
+import SearchContainer from "../../common/SearchContainer";
+import TopOrganByUser from "../../common/topOrganByUser";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
+    TopOrganByUser,
+    SearchContainer,
+    AssetOperationModesDialog,
     ColorSelectDialog,
     ColoeSelect,
     noDataTips,
@@ -70,6 +97,7 @@ export default {
       selectItem: {}, // 选中的元素
       queryCondition,
       colorSelectVisible: false,
+      assetOperationModelVisible: false,
       typeFilter,
       ASSET_MANAGEMENT,
       installValue: [], // 安装日期
@@ -110,6 +138,19 @@ export default {
       this.colorSelectVisible = true
       this.selectItem = record
     },
+    handleAssetOperationVisible (record) {
+      console.log('handleAssetOperationVisible')
+      this.assetOperationModelVisible = true
+      this.selectItem = record
+    },
+    handleColorSelectSubmit (val) {
+      this.selectItem.color = val;
+      this.colorSelectVisible = false
+    },
+    handleAssetOperationModesSubmit(val){
+      console.log(val)
+      this.assetOperationModelVisible = false
+    },
     //////////////////////////////////////////////////////
     async query() {
       let data = {
@@ -128,7 +169,6 @@ export default {
       } finally {
         this.table.loading = false;
       }
-
     },
     // 重置分页查询
     searchQuery() {
@@ -166,10 +206,6 @@ export default {
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });
     },
-    handleColorSelectSubmit (val) {
-      this.selectItem.color = val;
-      this.colorSelectVisible = false
-    }
   },
 };
 </script>

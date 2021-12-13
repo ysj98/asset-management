@@ -28,38 +28,44 @@ export const allWidth = {
   overflow: 'hidden'
 };
 export const queryCondition = {
-  topOrganId: '', // 所属组织机构
-  equipmentInstNameOrCode: '', // 设备实力名称或编码
-  pageNo: 1,
-  communityId: '', //运营项目
-  equipmentId: undefined, // 设备设施分类Id
-  pageLength: 10,
-  isCurrent: 0
+  assetType : "", // 资产类型
+  organId: "", // 一级组织机构id
+  attrName: "", // 属性名称
+  status: "", // 是否启用（1：是、0：否）
+  pageNum: 1,
+  pageSize: 10,
 };
+// 资产状态
+export const statusOptions = [
+  { label: '全部状态', value: ''},
+  { label: '启用', value: '0'},
+  { label: '停用', value: '1'},
+]
 export const columns = [
   {
+    width: 120,
     title: "序号",
     align: "center",
-    dataIndex: "Index",
-    width: 120
+    dataIndex: "index",
+    customRender: (text,record,index) => `${index+1}`,
   },
   {
     title: "编码",
     align: "center",
-    dataIndex: "code",
+    dataIndex: "attrCode",
     width: 120
   },
   {
     align: "center",
     title: "业务属性字段",
-    dataIndex: "equipmentInstName",
+    dataIndex: "attrName",
     width: 500
   },
   {
     title: "启用状态",
     align: "center",
-    dataIndex: "state",
-    scopedSlots: { customRender: "state" },
+    dataIndex: "status",
+    scopedSlots: { customRender: "status" },
     width: 120
   },
   {

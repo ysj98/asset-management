@@ -47,7 +47,8 @@ export const columns = [
   {
     align: "center",
     title: "业务属性字段",
-    dataIndex: "equipmentInstName",
+    dataIndex: "assetOperationModes",
+    scopedSlots: { customRender: "assetOperationModes" },
     width: 500
   },
   {
@@ -57,6 +58,28 @@ export const columns = [
     scopedSlots: { customRender: "TCYS" },
     width: 100
   },
+];
+
+export const selectAttrColumns = [
+  {
+    width: 120,
+    title: "序号",
+    align: "center",
+    dataIndex: "index",
+    customRender: (text,record,index) => `${index+1}`,
+  },
+  {
+    title: "编码",
+    align: "center",
+    dataIndex: "attrCode",
+    width: 120
+  },
+  {
+    align: "center",
+    title: "业务属性字段",
+    dataIndex: "attrName",
+    width: 120
+  }
 ];
 
 // 时间戳转换格式化时间

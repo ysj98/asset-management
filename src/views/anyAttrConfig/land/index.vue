@@ -15,8 +15,16 @@
               :hasAll="false"
               :selectFirst="true"
               @change="handleOrganChange"
+              v-model="queryCondition.organId"
               :formStyle="{ width: '170px', verticalAlign: 'bottom', }"
             />
+            <dict-select
+              style="width: 170px;margin-left: 10px;"
+              :dict-options="statusOptions"
+              v-model="queryCondition.status"
+            />
+            <a-input style="width: 170px;margin-left: 10px;" v-model="queryCondition.attrName" placeholder="请输入业务属性名称" />
+            <SG-Button style="margin-left: 10px;margin-top: -2px" @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
           </div>
         </div>
       </div>
@@ -37,27 +45,31 @@
             :locale="{emptyText: '暂无数据'}"
             :scroll="{x: 1200}"
         >
-          <template slot="state" slot-scope="text, record">
-            <a-switch :checked="true" @click="handleChangeStatus(record)" :active-value="1"/>
+          <template slot="status" slot-scope="text, record">
+            <a-switch :checked="String(record.status) === '1'" disabled :active-value="1"/>
           </template>
           <template slot="operate" slot-scope="text, record">
+            <OperationPopover
+                :operationData="record.operationDataBtn"
+                @operationFun="operationFun($event, record)"
+            ></OperationPopover>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
-            :pageLength="queryCondition.pageLength"
+            :pageLength="queryCondition.pageSize"
             :totalCount="table.totalCount"
             location="fixed"
-            v-model="queryCondition.pageNo"
-            @change="handleChange"
-        />
+            v-model="queryCondition.pageNum"
+            @change="handleChange"/>
       </div>
     </div>
     <append-dialog
       :organObject="organObject"
+      :object="selectItem"
       :visible="appendVisible"
-      @submit="appendVisible = false"
-      @close="appendVisible = false"/>
+      @submit="handleAppendSubmit"
+      @close="handleAppendClose"/>
   </div>
 </template>
 <script>
@@ -66,15 +78,21 @@ import { ASSET_MANAGEMENT } from "@/config/config.power";
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
 import AppendDialog from "./components/AppendDialog";
 import {
-  operationTypes,
   columns,
-  queryCondition,
+  queryCondition, statusOptions,
 } from "./dict.js";
 import SearchContainer from "../../common/SearchContainer";
 import TopOrganByUser from "../../common/topOrganByUser";
+import DictSelect from "../../common/DictSelect";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
+import {utils} from "../../../utils/utils";
+import {queryAssetAttrConfig} from "../../../api/attrConfig";
+import OperationPopover from "../../../components/OperationPopover";
+
 export default {
   components: {
+    OperationPopover,
+    DictSelect,
     TopOrganByUser,
     SearchContainer,
     noDataTips,
@@ -85,6 +103,7 @@ export default {
       selectItem: {}, // 选中的元素
       organObject: undefined, // 组织机构
       queryCondition,
+      statusOptions,
       appendVisible: false,
       typeFilter,
       ASSET_MANAGEMENT,
@@ -105,42 +124,54 @@ export default {
     };
   },
   mounted() {
-    this.handlePower();
+    this.init();
   },
   methods: {
+    init () {
+      this.queryCondition.assetType = this.$store.state.ASSET_TYPE_CODE.LAND
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
     handleColorSelectVisible (record) {
       console.log('handleColorSelectVisible')
       this.colorSelectVisible = true
       this.selectItem = record
     },
+    handleAppendSubmit () {
+      this.appendVisible = false
+      this.selectItem = undefined
+      this.init()
+    },
+    handleAppendClose () {
+      this.appendVisible = false
+      this.selectItem = undefined
+    },
+    operationFun (type, record) {
+      switch (type) {
+        case "edit":
+          this.selectItem = record;
+          this.appendVisible = true
+          break;
+        case "enable":
+          this.updateAssetAttrConfig(record,1)
+          break;
+        case "disable":
+          this.updateAssetAttrConfig(record,0)
+          break
+      }
+    },
     //////////////////////////////////////////////////////
     async query() {
       let data = {
         ...this.queryCondition,
-        // communityId: this.queryCondition.communityId.join(","),
-        systemCode: "assets",
-        organId: ""
       };
-      let organId = ""
-      data.organId = organId
-      delete data.communityId
-      this.table.dataSource = [{}]
+      console.log(data)
+      this.table.dataSource = []
       this.table.totalCount = 0
-      try {
-        this.table.loading = true;
-      } finally {
-        this.table.loading = false;
-      }
-
+      this.queryAssetAttrConfig(data)
     },
     // 重置分页查询
     searchQuery() {
-      this.queryCondition.pageNo = 1;
-      this.query();
-    },
-    handleChange(data) {
-      this.queryCondition.pageNo = data.pageNo;
-      this.queryCondition.pageLength = data.pageLength;
       this.query();
     },
     // 处理按钮权限
@@ -164,7 +195,61 @@ export default {
     // 组织机构树变化
     handleOrganChange (organObject) {
       this.organObject = organObject
-    }
+    },
+    handleChange(data) {
+      this.queryCondition.pageNum = data.pageNo;
+      this.queryCondition.pageSize = data.pageLength;
+      this.query();
+    },
+    // 生成操作按钮
+    createOperationBtn() {
+      // 审批状态
+      let arr = [];
+      // if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
+        arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+        arr.push({ iconType: "edit", text: "启用", editType: "enable" });
+        arr.push({ iconType: "edit", text: "停用", editType: "disable" });
+
+      // }
+      return arr;
+    },
+    /**************************************************** **/
+    async queryAssetAttrConfig (params) {
+      try {
+        this.table.loading = true;
+        const {data: res} = await this.$api.attrConfig.queryAssetAttrConfig(params);
+        if (String(res.code) === "0") {
+          this.table.dataSource = (res.data.data || []).map(item => {
+            return {
+              ...item,
+              operationDataBtn: this.createOperationBtn(),
+            }
+          });
+          this.table.totalCount = res.data.count;
+        }
+      } finally {
+        this.table.loading = false;
+      }
+    },
+    async updateAssetAttrConfig (record, status) {
+      const { id, organId} = record
+      const params = {
+        id,
+        status,
+        organId: String(organId)
+      }
+      try{
+        const { data: res } = await this.$api.attrConfig.updateAssetAttrConfig(params)
+        if (String(res.code) === "0") {
+          this.$SG_Message.success("更新成功")
+          this.query()
+        } else {
+          this.$SG_Message.error(res.message)
+        }
+      }finally {
+
+      }
+    },
   },
 };
 </script>
