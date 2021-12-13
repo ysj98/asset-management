@@ -108,6 +108,18 @@ export default [
       {
         title: '土地地图绘制',
         path: '/mapDrawLand'
+      },
+      {
+        title: '资产经营方式',
+        path: '/assetManagementMode'
+      },
+      {
+        title: '资产业务信息',
+        path: '/assetBussinessInformation'
+      },
+      {
+        title: '自定义属性设置',
+        path: '/anyAttrConfig'
       }
     ]
   },
