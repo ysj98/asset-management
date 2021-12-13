@@ -17,7 +17,7 @@
       <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     </div>
     <!--编辑列表表头-->
-    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk">
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
       <edit-table-header :key="key" ref="tableHeader" :penetrateData="penetrateData" :checkedArr="checkedHeaderArr" :columns="sortFactor"/>
     </SG-Modal>
   </div>

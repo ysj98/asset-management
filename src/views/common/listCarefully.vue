@@ -19,6 +19,7 @@
     okText="确定"
     title="列表设置"
     @ok="commonFn"
+    @cancel="()=>{ modalShow = false }"
   >
     <div>
       <a-checkbox-group v-model="listValue">

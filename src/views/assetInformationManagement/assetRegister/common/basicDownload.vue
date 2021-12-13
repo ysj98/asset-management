@@ -12,6 +12,7 @@
       okText="下载模板"
       title="下载模板"
       @ok="commonFn"
+      @cancel="()=>{modalShow=false}"
     >
       <DownLoadTemplate
         :key="checkboxAssetType"
