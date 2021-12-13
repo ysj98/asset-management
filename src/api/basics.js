@@ -168,3 +168,12 @@ export function queryCommunityListByOrganId (data) {
 export function queryDictList (data) {
   return axiosPost(basics.queryDictList, data)
 }
+
+// 土地信息导入文档
+export function landImportExcel (organId, data) {
+  return axiosPost(basics.landImportExcel + '/' + organId, data)
+}
+// 土地信息模板下载
+export function landDownLoadExcel (data) {
+  return axiosGet(basics.landDownLoadExcel, data, false, {responseType: 'blob'})
+}

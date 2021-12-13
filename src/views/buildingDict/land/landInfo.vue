@@ -7,7 +7,7 @@
     <div class="create-form">
       <!-- 搜索框 -->
       <div class="top-search-one">
-        <div>
+        <div class="pt30" style="width: 400px;">
           <SG-Button
             v-if="createPower"
             @click="goPage('create')"
@@ -19,6 +19,7 @@
           <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10">
             <segiIcon type="#icon-ziyuan10" class="mr10" />导出
           </SG-Button>
+          <SG-Button @click="showLandDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
         </div>
 
         <div style="overflow: visible">
@@ -107,6 +108,7 @@
         />
       </div>
     </div>
+    <landDataImport title="导入数据" ref="landDataImport" :organId="queryCondition.organId" @success="landImport"></landDataImport>
   </div>
 </template>
 <script>
@@ -126,6 +128,7 @@ import {
   landTypeOpt,
   landuseOpt,
 } from "./dict.js";
+import landDataImport from './landDataImport.vue'
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
@@ -133,6 +136,7 @@ export default {
     noDataTips,
     segiIcon,
     OperationPopover,
+    landDataImport
   },
   data() {
     return {
@@ -379,6 +383,9 @@ export default {
         a.remove();
       });
     },
+    showLandDataImport () {
+      this.$refs.landDataImport.visible = true
+    },
     // 操作事件函数
     operationFun(type, record) {
       console.log("操作事件", type, record);
@@ -436,6 +443,9 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       );
     },
+    landImport() {
+      this.query()
+    }
   },
 };
 </script>
