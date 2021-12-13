@@ -4,6 +4,14 @@
  * @Description:
  */
 let proRouter = [{
+    path: '/barcodeManagement',
+    name: '条码管理',
+    component: () => import('@/views/barcodeManagement/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/buildingDict',
     name: '楼盘字典',
     component: () => import('@/views/buildingDict/index.vue'),

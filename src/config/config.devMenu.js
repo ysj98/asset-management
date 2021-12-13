@@ -108,6 +108,10 @@ export default [
       {
         title: '土地地图绘制',
         path: '/mapDrawLand'
+      },
+      {
+        title: '条码管理',
+        path: '/barcodeManagement'
       }
     ]
   },
