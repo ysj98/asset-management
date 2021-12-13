@@ -54,6 +54,10 @@ export default [
       {
         title: '资产出库一览表详情',
         path: '/assetTable/detail',
+      },
+      {
+        title: '资产转运营',
+        path: '/assetOperating',
       }
     ]
   },
@@ -100,6 +104,10 @@ export default [
       {
         title: '资产转运营参数',
         path: '/assetOperatingParameters'
+      },
+      {
+        title: '土地地图绘制',
+        path: '/mapDrawLand'
       }
     ]
   },
