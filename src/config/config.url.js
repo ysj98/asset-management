@@ -78,7 +78,11 @@ export const basics = {
   // 根据组织机构查询岗位
   queryPostNewPageList: '/basic-data-api/rest-api/v1/postmanageApi/queryPostNewPageList',
   // 组织机构请求项目
-  queryCommunityListByOrganId: '/basic-data-api/rest-api/v1/community/queryCommunityListByOrganId'
+  queryCommunityListByOrganId: '/basic-data-api/rest-api/v1/community/queryCommunityListByOrganId',
+  // 土地信息导入文档
+  landImportExcel: '/basic-data-batch-api/rest-api/v1/ams/blankApi/importExcel',
+  // 土地信息文档模板下载
+  landDownLoadExcel: '/basic-data-batch-api/rest-api/v1/ams/blankApi/downLoadExcel'
 }
 
 // 资产管理
@@ -697,7 +701,11 @@ export const ownership = {
     // 查询权证详情
     warrantDetail: '/ams/ownerShipUser/warrant/detail',
     // 权证统计
-    warrantTotal: '/ams/ownerShipUser/warrant/total'
+    warrantTotal: '/ams/ownerShipUser/warrant/total',
+    // 权证管理附件上传
+    uploadAnnex: '/ams/attachment/uploadAnnex',
+    // 权证管理附件下载
+    downLoadAnnex: '/ams/attachment/downLoadAnnex'
   },
   // 组织机构权属
   organView: '/ams/ownerShip/owner/organView',

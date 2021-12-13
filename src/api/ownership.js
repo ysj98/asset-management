@@ -114,3 +114,12 @@ export function registerExport (data) {
 export function shipTotal (data) {
   return axiosPost(ownership.ownershipRegistration.shipTotal, data)
 }
+
+// 权证管理附件上传
+export function uploadAnnex (data) {
+  return axiosPost(ownership.authorityCardManagement.uploadAnnex, data)
+}
+// 权证管理附件下载
+export function downLoadAnnex (data) {
+  return axiosPost(ownership.authorityCardManagement.downLoadAnnex, data)
+}
