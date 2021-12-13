@@ -7,6 +7,7 @@
     :noPadding="true"
     :maskClosable="false"
     @ok="submitFn"
+    @cancel="()=>{ show = false }"
   >
     <template #title>
       <div style="font-size: 16px">投资收益登记</div>

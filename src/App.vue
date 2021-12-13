@@ -20,3 +20,4 @@ export default {
 <style src="@/assets/less/base.less" lang="less"></style>
 <style src="@/assets/less/common.less" lang="less"></style>
 <style src="@/assets/less/replaceAnt.less" lang="less"></style>
+<style src="@/assets/less/custom.less" lang="less"></style>

@@ -47,6 +47,7 @@
       :title="modalList.add.title"
       :maskClosable="false"
       @ok="handleAddPopSave"
+      @cancel="()=>{ modalList.add.show = false }"
     >
       <div>
         <div>
