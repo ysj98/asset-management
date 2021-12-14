@@ -108,7 +108,7 @@ export default {
     // 删除
     deleteFn (record) {
         this.$SG_Modal.confirm({
-          title: `确认要删除该相关费用吗?`,
+          content: `确认要删除该相关费用吗?`,
           okText: '确定',
           cancelText: '取消',
           onOk: () => {

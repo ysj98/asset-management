@@ -304,7 +304,7 @@ export default {
       }
       if (["delete"].includes(type)) {
         this.$SG_Modal.confirm({
-          title: `确定要删除该车场信息吗?`,
+          content: `确定要删除该车场信息吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: () => {

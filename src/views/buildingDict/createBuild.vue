@@ -575,7 +575,7 @@ export default {
     },
     handleCancel () {
       this.$SG_Modal.confirm({
-          title: `确定删除该楼栋吗?`,
+        content: `确定删除该楼栋吗?`,
           okText: '确定',
           cancelText: '再想想',
           onOk: () => {

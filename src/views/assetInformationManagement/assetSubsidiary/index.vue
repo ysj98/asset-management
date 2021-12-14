@@ -465,7 +465,7 @@ export default {
       if (['on', 'off', 'delete'].includes(type)) {
         let info = operationInfo[type]
         this.$SG_Modal.confirm({
-          title: `确定${info['msg']}该附属配套吗?`,
+          content: `确定${info['msg']}该附属配套吗?`,
           okText: '确定',
           cancelText: '关闭',
           onOk: () => {

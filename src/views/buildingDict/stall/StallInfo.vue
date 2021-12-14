@@ -328,7 +328,7 @@ export default {
     // 删除车位
     handleDel(record) {
       this.$SG_Modal.confirm({
-        title: `确定要删除该车位信息吗?`,
+        content: `确定要删除该车位信息吗?`,
         okText: "确定",
         cancelText: "关闭",
         onOk: () => {

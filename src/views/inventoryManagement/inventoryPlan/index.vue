@@ -282,7 +282,7 @@ export default {
         let label = labelTypeMap[type]['name']
         let approvalStatus = labelTypeMap[type]['approvalStatus']
         this.$SG_Modal.confirm({
-          title: `确定${label}该计划吗?`,
+          content: `确定${label}该计划吗?`,
           okText: '确定',
           cancelText: '再想想',
           onOk: () => {
