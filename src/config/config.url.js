@@ -1327,5 +1327,16 @@ export const attrConfig = {
   queryAssetAttrConfig: "/ams/assetAttr/queryAssetAttrConfig",
   // 更新属性配置,状态
   updateAssetAttrConfig: "/ams/assetAttr/updateAssetAttrConfig",
-  // updateAssetAttrConfig: "/ams/assetAttr/updateAssetAttrConfig",
+}
+export const assetOperationMode = {
+  // 查询业务属性字段
+  queryAssetAttrConfig: "/ams/assetOperationMode/queryAssetAttrConfig",
+  updateAssetAttrConfig: "/ams/assetOperationMode/updateAssetAttrConfig"
+}
+// 资产业务信息
+export const assetBussinessInformation = {
+  // 用户配置查询
+  assetRolList: "/ams/assetShowConfig/assetRolList",
+  // 新增用户配置
+  addCustomShow: "/ams/assetShowConfig/addCustomShow"
 }

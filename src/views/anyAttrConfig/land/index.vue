@@ -195,6 +195,7 @@ export default {
     // 组织机构树变化
     handleOrganChange (organObject) {
       this.organObject = organObject
+      this.query();
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;

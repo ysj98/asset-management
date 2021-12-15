@@ -23,7 +23,7 @@ export const allWidth = {
   overflow: 'hidden'
 };
 export const queryCondition = {
-  topOrganId: '', // 所属组织机构
+  organId: '', // 所属组织机构
   equipmentInstNameOrCode: [], // 设备实力名称或编码
   pageNo: 1,
   communityId: '', //运营项目

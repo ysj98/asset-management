@@ -34,6 +34,8 @@ import * as paramsConfig from './paramsConfig'
 import * as dataCenter from './dataCenter'
 import * as codeRule from './codeRule'
 import * as attrConfig from './attrConfig'
+import * as assetOperationMode from './assetOperationMode'
+import * as assetBussinessInformation from './assetBussinessInformation'
 const API = {
   auth,
   global,
@@ -56,7 +58,9 @@ const API = {
   paramsConfig,
   dataCenter,
   codeRule,
-  attrConfig
+  attrConfig,
+  assetOperationMode,
+  assetBussinessInformation
 }
 export default {
   install (Vue) {

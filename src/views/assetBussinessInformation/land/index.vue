@@ -15,7 +15,14 @@
           </div>
           <div style="overflow: visible;margin-top:-10px;">
             <!-- 公司 -->
-            <treeSelect :typeFilter="typeFilter"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
+            <treeSelect
+                :typeFilter="typeFilter"
+                placeholder='请选择组织机构'
+                v-model="queryCondition.organId"
+                :allowClear="false"
+                :style="allWidth"
+              @change="handleTreeChange"
+            ></treeSelect>
             <dict-select
               mode="multiple"
               :maxTagCount="1"
@@ -50,7 +57,11 @@
                 placeholder='选择来源方式'
                 v-model="queryCondition.equipmentInstNameOrCode"/>
             <dict-select
+              mode="multiple"
+              :maxTagCount="1"
               :style="allStyle"
+              :isFilterAll="true"
+              :dictOptions="operationMode"
               placeholder='选择经营方式'
               v-model="queryCondition.equipmentInstNameOrCode"/>
           </div>
@@ -100,7 +111,12 @@
         />
       </div>
     </div>
-    <list-config-dialog :visible="listConfigDialogVisible" />
+    <list-config-dialog
+      :visible="listConfigDialogVisible"
+      :organ-id="queryCondition.organId"
+      @submit="handleConfigSubmit"
+      @close="listConfigDialogVisible = false"
+    />
     <asset-manage :visible="assetManageVisible" @close="()=>assetManageVisible = false"/>
   </div>
 </template>
@@ -146,6 +162,7 @@ export default {
       assetManageVisible: false,
       installValue: [], // 安装日期
       expValue: [], // 报废日期
+      operationMode: [], // 经营方式
       hasPowerExport: false, // 导出按钮权限
       allStyle,
       allWidth,
@@ -162,8 +179,8 @@ export default {
         {title: '......(㎡)', key: 'otherArea', value: 0, fontColor: '#8400ff'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       table: {
-        columns,
-        dataSource: [],
+        columns: [],
+        dataSource: [{}],
         loading: false,
         totalCount: 0,
       },
@@ -188,8 +205,20 @@ export default {
     },
   },
   mounted() {
+    this.init()
   },
   methods: {
+    init () {
+      this.queryModeOperList()
+    },
+    handleTreeChange () {
+      console.log('handleTreeChange')
+      this.$nextTick(async ()=>{
+        this.table.loading = true
+        await this.assetRolList()
+        await this.query();
+      })
+    },
     async query() {
       let data = {
         ...this.queryCondition,
@@ -200,7 +229,7 @@ export default {
       let organId = ""
       data.organId = organId
       delete data.communityId
-      this.table.dataSource = []
+      this.table.dataSource = [{}]
       this.table.totalCount = 0
       try {
         this.table.loading = true;
@@ -212,7 +241,11 @@ export default {
     // 重置分页查询
     searchQuery() {
       this.queryCondition.pageNo = 1;
-      this.query();
+      this.$nextTick(async ()=>{
+        this.table.loading = true
+        await this.assetRolList()
+        await this.query();
+      })
     },
     // 操作事件函数
     handleChange(data) {
@@ -239,7 +272,75 @@ export default {
     },
     handleSelect (){
       console.log(2)
-    }
+    },
+    handleConfigSubmit () {
+      this.listConfigDialogVisible = false;
+    },
+    //////////////////////////////////////////////////////////////////
+    async assetRolList () {
+      try {
+        const params = {
+          assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
+          organId: this.queryCondition.organId
+        }
+        const {data: res} = await this.$api.assetBussinessInformation.assetRolList(params)
+        if (String(res.code) === '0') {
+          this.generatorOptions(res.data)
+        } else {
+          this.$SG_Message.error(res.message)
+        }
+      } finally {
+      }
+    },
+    /**
+     *
+     * @param customChose 默认列表
+     * @param customShow 用户配置数据列表
+     * @param templeCode 全量数据列表
+     */
+    generatorOptions ({customChose=[],customShow = [],templeCode = []}) {
+      const itemList = templeCode.map(item => {
+        return {
+          ...item,
+          label: item.colName,
+          value: item.colCode
+        }
+      });
+      itemList.forEach(item =>{ // 处理默认表格
+        const choseNum = customChose.some(n=>n.colCode == item.colCode)
+        const userShow = customShow.some(n=>n.colCode == item.colCode)
+        if (choseNum || userShow) {
+          this.table.columns.push({
+            align: "center",
+            title: item.label,
+            dataIndex: item.value,
+            width: 100
+          })
+        }
+      })
+      this.table.columns.push(...columns)
+    },
+    // 取全部经营方式
+    queryModeOperList() {
+      let data = {
+        dictCode: "OCM_MODE_OPER",
+        dictFlag: "1",
+        groupId: this.organIdMain,
+        code: "OCM_MODE_OPER",
+        organId: this.organIdMain,
+      }
+      this.$api.basics.organDict(data).then((res) => {
+        this.operationMode=[{label: '全部经营方式',value: ''}]
+        if (res.data.code === "0") {
+          let data = res.data.data
+          this.operationMode = data.map((item) => ({
+            value: item["value"],
+            label: item["name"],
+          }))
+          this.operationMode.unshift({label: '全部经营方式',value: ''})
+        }
+      })
+    },
   },
 };
 </script>

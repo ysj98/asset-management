@@ -3,7 +3,7 @@
     <a-modal title="业务属性字段" :visible="visible" width="800px"  @cancel="handleClose" @ok="handleSubmit">
       <div class="modal-box">
         <a-table
-          rowKey="id"
+          rowKey="attrJSON"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
           class="custom-table td-pd10"
           :loading="table.loading"
@@ -63,6 +63,10 @@ export default {
   }),
   methods: {
     init () {
+      this.page.pageNum = 1;
+      this.page.pageSize = 10;
+      this.page.totalCount = 0;
+      this.selectedRowKeys = []
       this.query()
     },
     onSelectChange(selectedRowKeys) {
@@ -71,7 +75,14 @@ export default {
     },
     handleSubmit () {
       console.log('submit')
-      this.$emit("submit",this.selectedRowKeys)
+      const selectObject = this.selectedRowKeys.map((item)=>{
+        const obj = JSON.parse(item)
+        return {
+          ...obj, attrConfigId: obj.id
+        }
+      })
+      
+      this.$emit("submit",selectObject)
     },
     handleClose () {
     console.log('handle close')
@@ -99,7 +110,7 @@ export default {
         this.table.loading = true;
         const {data: res} = await this.$api.attrConfig.queryAssetAttrConfig(params);
         if (String(res.code) === "0") {
-          this.table.dataSource = res.data.data;
+          this.table.dataSource = (res.data.data|| []).map((item)=>({...item,attrJSON:JSON.stringify(item)}));
           this.page.totalCount = res.data.count;
         }
       } finally {
