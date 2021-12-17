@@ -554,7 +554,15 @@ export const ASSET_MANAGEMENT = {
    power_land_disposeInfo: 'power_land_disposeInfo', // 资产信息页签
    power_land_relatedExpenses: 'power_land_relatedExpenses', // 相关费用页签
    power_land_archive: 'power_land_archive', // 档案文件页签
-   power_land_operationInformation: 'power_land_operationInformation' // 运营信息页签
+   power_land_operationInformation: 'power_land_operationInformation', // 运营信息页签
+   /**
+   * 资产条码 & 条码管理
+   */
+  BARCODE_SETTING_SAVE: 'barCode_setting_save', // 资产管理————保存
+  BARCODE_MANAGEMENT_PRINT: 'barCode_management_print', // 条码管理————条码打印
+  BARCODE_MANAGEMENT_EXPORT: 'barCode_management_export', // 条码管理————导出
+  BARCODE_MANAGEMENT_UPDATE: 'barCode_management_update', // 条码管理————批量更新
+  BARCODE_MANAGEMENT_EDIT: 'barCode_management_edit' // 条码管理————编辑标签
 }
 
 

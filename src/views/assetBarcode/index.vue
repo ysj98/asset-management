@@ -23,7 +23,7 @@
         <div class="content-title">
           <img :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
           <SG-Button type="primary" @click="change">更换Logo</SG-Button>
-          <div class="organName">{{organName}}</div>
+          <div class="organName">{{organName || '无'}}</div>
           <span class="assetLabel">资产标签</span>
         </div>
         <hr />
@@ -63,7 +63,7 @@
           </div>
         </div>
       </div>
-      <SG-Button type="primary" @click="save">保存</SG-Button>
+      <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_SETTING_SAVE" type="primary" @click="save">保存</SG-Button>
     </div>
     <changeLogo :show="showChangeLogo" @submit="logoSubmit" @cancel="cancel"></changeLogo>
   </div>
@@ -72,6 +72,7 @@
 <script>
 import TreeSelect from '../common/treeSelect.vue'
 import changeLogo from './changeLogo.vue'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const assetCodes = [
   {name: '资产位置', value: 0},
@@ -83,11 +84,9 @@ const assetCodes = [
 ]
 export default {
   components: {TreeSelect, changeLogo},
-  computed: {
-
-  },
   data () {
     return {
+      ASSET_MANAGEMENT,
       organId: '',
       organName: '',
       assetCodes: [...assetCodes],

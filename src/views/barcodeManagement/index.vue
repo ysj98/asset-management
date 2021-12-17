@@ -2,9 +2,9 @@
   <div class="barcodeManagement">
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button>条码打印</SG-Button>
-        <SG-Button style="margin-left:15px;" @click="exportLabel">导出</SG-Button>
-        <SG-Button style="margin-left:15px;" @click="showDataImport">批量更新标签</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_PRINT">条码打印</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_EXPORT" style="margin-left:15px;" @click="exportLabel">导出</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_UPDATE" style="margin-left:15px;" @click="showDataImport">批量更新标签</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -66,7 +66,7 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <a-button type="link" @click="editLabel(record)">编辑标签</a-button>
+          <a-button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_EDIT" type="link" @click="editLabel(record)">编辑标签</a-button>
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -91,6 +91,7 @@ import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import noDataTips from '@/components/noDataTips'
 import labelCodeModal from './labelCodeModal.vue'
 import labelcodeDataImport from './labelcodeDataImport.vue'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left'}
 const queryCondition = {
@@ -118,6 +119,7 @@ export default {
   components: {SearchContainer, TreeSelect, EquipmentSelectTree, noDataTips, labelCodeModal, labelcodeDataImport},
   data () {
     return {
+      ASSET_MANAGEMENT,
       fold: true,
       allStyle: allWidth,
       queryCondition: {...queryCondition},
