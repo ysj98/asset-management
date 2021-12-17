@@ -4,17 +4,20 @@
 -->
 <template>
   <div class="landInfo-page pb70">
-    <SearchContainer :value="false" :contentStyle="{paddingTop: toggle?'16px': 0, overflow: 'visible'}">
+    <SearchContainer
+      :value="false"
+      :contentStyle="{ paddingTop: toggle ? '16px' : 0, overflow: 'visible' }"
+    >
       <div slot="headerForm" class="search-content-box">
-      <div style="overflow: visible;margin-right: 10px">
-        <top-organ-by-user
-          :hasAll="false"
-          :selectFirst="true"
-          @change="handleTreeChange"
-          v-model="queryCondition.organId"
-          :formStyle="{ width: '170px', verticalAlign: 'bottom' }"
-        />
-      </div>
+        <div style="overflow: visible; margin-right: 10px">
+          <top-organ-by-user
+            :hasAll="false"
+            :selectFirst="true"
+            @change="handleTreeChange"
+            v-model="queryCondition.organId"
+            :formStyle="{ width: '170px', verticalAlign: 'bottom' }"
+          />
+        </div>
       </div>
     </SearchContainer>
 
@@ -23,63 +26,88 @@
       <!-- 表格部分 -->
       <div style="padding-top: 50px">
         <a-table
-            class="custom-table td-pd10"
-            :loading="table.loading"
-            :pagination="false"
-            bordered
-            align="center"
-            :columns="table.columns"
-            :dataSource="table.dataSource"
-            :locale="{emptyText: '暂无数据'}"
-            :scroll="{x: 1200}"
+          class="custom-table td-pd10"
+          :loading="table.loading"
+          :pagination="false"
+          bordered
+          align="center"
+          :columns="table.columns"
+          :dataSource="table.dataSource"
+          :locale="{ emptyText: '暂无数据' }"
+          :scroll="{ x: 1200 }"
         >
           <template slot="assetOperationModes" slot-scope="text, record">
-            <template v-for="(item,index) of record.assetOperationModes">
-              <span style="font-size: 14px;margin-right: 10px;" :key="index">{{item.attrCode}}</span>
+            <template v-for="(item, index) of record.assetOperationModes">
+              <span style="font-size: 14px; margin-right: 10px" :key="index">{{
+                item.attrCode
+              }}</span>
             </template>
-            <a-button v-if="record.isEdit" type="link"  @click.native="handleAssetOperationVisible(record)">添加业务属性</a-button>
+            <a-button
+              v-if="record.isEdit"
+              type="link"
+              @click.native="handleAssetOperationVisible(record)"
+              >添加业务属性</a-button
+            >
           </template>
           <template slot="modeColour" slot-scope="text, record">
             <template v-if="record.isEdit">
-              <coloe-select v-if="record.modeColour" v-model="record.modeColour" @click.native="handleColorSelectVisible(record)" />
-              <a-button v-else type="link"  @click.native="handleColorSelectVisible(record)">设定</a-button>
+              <coloe-select
+                v-if="record.modeColour"
+                v-model="record.modeColour"
+                @click.native="handleColorSelectVisible(record)"
+              />
+              <a-button
+                v-else
+                type="link"
+                @click.native="handleColorSelectVisible(record)"
+                >设定</a-button
+              >
             </template>
             <template v-else>
-              <coloe-select v-if="record.modeColour" v-model="record.modeColour" />
+              <coloe-select
+                v-if="record.modeColour"
+                v-model="record.modeColour"
+              />
             </template>
           </template>
           <template slot="operation" slot-scope="text, record">
             <template v-if="!record.isEdit">
-              <a-button  type="link"  @click.native="handleEdit(record)">编辑</a-button>
+              <a-button type="link" @click.native="handleEdit(record)"
+                >编辑</a-button
+              >
             </template>
             <template v-else>
-              <a-button type="link"  @click.native="handleSave(record)">保存</a-button>
-              <a-button type="link"  @click.native="handleClose(record)">取消</a-button>
+              <a-button type="link" @click.native="handleSave(record)"
+                >保存</a-button
+              >
+              <a-button type="link" @click.native="handleClose(record)"
+                >取消</a-button
+              >
             </template>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
-            :pageLength="queryCondition.pageLength"
-            :totalCount="table.totalCount"
-            location="fixed"
-            v-model="queryCondition.pageNo"
-            @change="handleChange"
+          :pageLength="queryCondition.pageLength"
+          :totalCount="table.totalCount"
+          location="fixed"
+          v-model="queryCondition.pageNo"
+          @change="handleChange"
         />
       </div>
     </div>
     <color-select-dialog
       :visible="colorSelectVisible"
       :value="selectItem.modeColour"
-      @close="()=>colorSelectVisible = false"
+      @close="() => (colorSelectVisible = false)"
       @submit="handleColorSelectSubmit"
     />
     <asset-operation-modes-dialog
-        :organ-id="queryCondition.organId"
-        :visible="assetOperationModelVisible"
-        :value="selectItem.color"
-        @close="()=>assetOperationModelVisible = false"
-        @submit="handleAssetOperationModesSubmit"
+      :organ-id="queryCondition.organId"
+      :visible="assetOperationModelVisible"
+      :value="selectItem.color"
+      @close="() => (assetOperationModelVisible = false)"
+      @submit="handleAssetOperationModesSubmit"
     />
   </div>
 </template>
@@ -87,19 +115,19 @@
 import noDataTips from "@/components/noDataTips";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
-import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
-import {
-  operationTypes,
-  columns,
-  queryCondition,
-} from "./dict.js";
+import { typeFilter } from "@/views/buildingDict/buildingDictConfig";
+import { operationTypes, columns, queryCondition } from "./dict.js";
 import ColoeSelect from "./components/coloeSelect";
 import ColorSelectDialog from "./components/ColorSelectDialog";
 import AssetOperationModesDialog from "./components/AssetOperationModesDialog";
 import SearchContainer from "../../common/SearchContainer";
 import TopOrganByUser from "../../common/topOrganByUser";
-import {updateAssetAttrConfig} from "../../../api/assetOperationMode";
-const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
+import { updateAssetAttrConfig } from "../../../api/assetOperationMode";
+const allWidth = {
+  width: "170px",
+  "margin-right": "10px",
+  "margin-top": "14px",
+};
 export default {
   components: {
     TopOrganByUser,
@@ -124,23 +152,23 @@ export default {
       hasPowerExport: false, // 导出按钮权限
       table: {
         columns,
-        dataSource: [{color: ''}],
+        dataSource: [{ color: "" }],
         loading: false,
         totalCount: 0,
       },
-      topOrganId: '',
+      topOrganId: "",
       createPower: false, // 新建
       editPower: false, // 编辑
       deletePower: false, // 删除
-      toggle: false
+      toggle: false,
     };
   },
   watch: {
     $route() {
       if (
-          this.$route.path === "/buildingDict" &&
-          this.$route.query.refresh &&
-          this.$route.query.showKey === "equipment"
+        this.$route.path === "/buildingDict" &&
+        this.$route.query.refresh &&
+        this.$route.query.showKey === "equipment"
       ) {
         this.queryCondition.pageN0 = 1;
         this.queryCondition.pageLength = 10;
@@ -152,52 +180,52 @@ export default {
     this.handlePower();
   },
   methods: {
-    handleTreeChange () {
-      this.$nextTick(()=>{
-        this.query()
-      })
+    handleTreeChange() {
+      this.$nextTick(() => {
+        this.query();
+      });
     },
-    handleEdit(record){
-      if (this.table.dataSource.findIndex(item=>item.isEdit)!== -1) {
-        this.$SG_Message.error("请保存其它编辑的数据")
-        return
+    handleEdit(record) {
+      if (this.table.dataSource.findIndex((item) => item.isEdit) !== -1) {
+        this.$SG_Message.error("请保存其它编辑的数据");
+        return;
       }
-      this.selectItemCache = JSON.stringify(record)
-      record.isEdit = true
+      this.selectItemCache = JSON.stringify(record);
+      record.isEdit = true;
     },
     handleClose(record) {
-      debugger
-      record = JSON.parse(this.selectItemCache)
+      debugger;
+      record = JSON.parse(this.selectItemCache);
     },
-    handleSave (record) {
+    handleSave(record) {
       this.$SG_Modal.confirm({
-        title: `确定要保存信息吗?`,
+        content: `确定要保存信息吗?`,
         okText: "确定",
         cancelText: "关闭",
-        onOk:async () => {
-          await this.updateAssetAttrConfig(record)
+        onOk: async () => {
+          await this.updateAssetAttrConfig(record);
           await this.query();
-        }
-      })
+        },
+      });
     },
-    handleColorSelectVisible (record) {
-      console.log('handleColorSelectVisible')
-      this.colorSelectVisible = true
-      this.selectItem = record
+    handleColorSelectVisible(record) {
+      console.log("handleColorSelectVisible");
+      this.colorSelectVisible = true;
+      this.selectItem = record;
     },
-    handleAssetOperationVisible (record) {
-      console.log('handleAssetOperationVisible')
-      this.assetOperationModelVisible = true
-      this.selectItem = record
+    handleAssetOperationVisible(record) {
+      console.log("handleAssetOperationVisible");
+      this.assetOperationModelVisible = true;
+      this.selectItem = record;
     },
-    handleColorSelectSubmit (val) {
+    handleColorSelectSubmit(val) {
       this.selectItem.modeColour = val;
-      this.colorSelectVisible = false
+      this.colorSelectVisible = false;
     },
-    handleAssetOperationModesSubmit(val){
-      console.log(val)
-      this.selectItem.assetOperationModes = val
-      this.assetOperationModelVisible = false
+    handleAssetOperationModesSubmit(val) {
+      console.log(val);
+      this.selectItem.assetOperationModes = val;
+      this.assetOperationModelVisible = false;
     },
     //////////////////////////////////////////////////////
     async query() {
@@ -205,18 +233,22 @@ export default {
         organId: this.queryCondition.organId,
         assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
         pageNum: this.queryCondition.pageNo,
-        pageSize: this.queryCondition.pageLength
+        pageSize: this.queryCondition.pageLength,
       };
-      this.table.dataSource = []
-      this.table.totalCount = 0
+      this.table.dataSource = [];
+      this.table.totalCount = 0;
       try {
         this.table.loading = true;
-        const {data: res} = await this.$api.assetOperationMode.queryAssetAttrConfig(params)
-        if (String(res.code) === '0'){
-          this.table.dataSource = (res.data.data || []).map(item=>({...item, isEdit: false}))
-          this.table.totalCount = res.data.count
+        const { data: res } =
+          await this.$api.assetOperationMode.queryAssetAttrConfig(params);
+        if (String(res.code) === "0") {
+          this.table.dataSource = (res.data.data || []).map((item) => ({
+            ...item,
+            isEdit: false,
+          }));
+          this.table.totalCount = res.data.count;
         } else {
-          this.$SG_Message.error(res.message)
+          this.$SG_Message.error(res.message);
         }
       } finally {
         this.table.loading = false;
@@ -239,26 +271,29 @@ export default {
         this.createPower = true;
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
-        this.hasPowerExport = true
+        this.hasPowerExport = true;
       }
     },
     /////////////////////////////////////////////
-    async updateAssetAttrConfig (record) {
+    async updateAssetAttrConfig(record) {
       try {
-        const {modeOperId,modeColour,assetOperationModes} = record
+        const { modeOperId, modeColour, assetOperationModes } = record;
         const params = {
           assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
           organId: this.queryCondition.organId,
           modeOperId,
-          assetOperationModes: (assetOperationModes||[]).map(item=>({attrConfigId: item.attrConfigId})),
-          modeColour
-        }
-        const {data: res} = await this.$api.assetOperationMode.updateAssetAttrConfig(params)
-        if (String(res.code) === '0'){
-          record.isEdit = false
-          this.$SG_Message.success("操作成功")
+          assetOperationModes: (assetOperationModes || []).map((item) => ({
+            attrConfigId: item.attrConfigId,
+          })),
+          modeColour,
+        };
+        const { data: res } =
+          await this.$api.assetOperationMode.updateAssetAttrConfig(params);
+        if (String(res.code) === "0") {
+          record.isEdit = false;
+          this.$SG_Message.success("操作成功");
         } else {
-          this.$SG_Message.error(res.message)
+          this.$SG_Message.error(res.message);
         }
       } finally {
       }
@@ -273,4 +308,3 @@ export default {
   justify-content: space-between;
 }
 </style>
-
