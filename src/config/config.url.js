@@ -1364,4 +1364,5 @@ export const assetBussinessInformation = {
   // 导出
   exportTransferOperation: "/ams/assetAttr/exportTransferOperation",
   // 资产经营导出查询
-  queryAssetToExport: "/ams/assetAttr/queryAssetToExport",
+  queryAssetToExport: "/ams/assetAttr/queryAssetToExport"
+}
