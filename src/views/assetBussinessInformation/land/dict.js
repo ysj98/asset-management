@@ -23,13 +23,22 @@ export const allWidth = {
   overflow: 'hidden'
 };
 export const queryCondition = {
-  organId: '', // 所属组织机构
-  equipmentInstNameOrCode: [], // 设备实力名称或编码
-  pageNo: 1,
-  communityId: '', //运营项目
-  equipmentId: undefined, // 设备设施分类Id
-  pageLength: 10,
-  isCurrent: 0
+  city: '',           // 市
+  province: '',       // 省
+  region: '',         // 区
+  flag: '',           // 类型：0运营；1闲置；2自用；3占用；4其他
+  landName: '',       // 资产名称/编码模糊查询
+  objectTypes: '',    // 资产分类(多选)
+  organId: '',        // 组织机构id
+  projectId: [''],      //类型：String  必有字段  备注：项目id
+  statuss: [''],        // 资产状态(多选)
+  useTypes: [''],        // 用途
+  pageNum: 1,         // 当前页
+  pageSize: 10,       // 每页显示记录数
+  address: '',         // 地理位置
+  landCategory: '',
+  modeOperId: [''],     // 经营方式
+  sourceModes:''            // 来源方式
 };
 // 资产状态
 export const approvalStatusData = [
@@ -43,11 +52,27 @@ export const approvalStatusData = [
   { label: '已取消', value: '6' },
   { label: '入库中', value: '7' }
 ]
+export const editColumns = [
+  {
+    align: "center",
+    title: "属性名称",
+    dataIndex: "attrName",
+    scopedSlots: { customRender: "attrName" },
+    width: 100
+  },{
+    align: "center",
+    title: "操作",
+    dataIndex: "operate",
+    scopedSlots: { customRender: "operate" },
+    width: 300
+  },
+];
 
 export const columns = [
   {
     align: "center",
     title: "操作",
+    fixed: 'right',
     dataIndex: "operate",
     scopedSlots: { customRender: "operate" },
     width: 100

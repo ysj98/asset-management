@@ -147,6 +147,10 @@ export default {
         list = [v]
       } else {
         list = list.filter(item=>item !== this.filterAllValue)
+        const dictLength = this.options.filter(item=>item.value !== this.filterAllValue).length
+        if(list.length>=1 && list.length === dictLength){
+          list = [this.filterAllValue]
+        }
       }
       this.valueCmp = list
       })
