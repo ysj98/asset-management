@@ -14,9 +14,6 @@
       :disabled="disabled"
       :treeCheckable="treeCheckable"
       :treeDefaultExpandAll="treeDefaultExpandAll"
-      :getPopupContainer="(triggerNode) =>{
-        return triggerNode.parentNode
-      }"
       @change="changeTree">
     </a-tree-select>
     <div class="default-organ-name" v-show="showDefaultOrganName">{{defaultOrganName}}</div>
@@ -227,6 +224,8 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
       z-index: 1;
+
+      line-height: 30px;
     }
   }
 </style>

@@ -4,30 +4,54 @@
  * @Description: 一级物业选择框
  -->
 <template>
-    <a-select
-      :defaultValue="selectValue === '' ? undefined : selectValue"
-      :style="formStyle"
-      showSearch
-      v-model="selectValue"
-      :allowClear="showClear"
-      :filterOption="filterOption"
-      @change="handleChange"
-      notFoundContent="没有查询到数据"
-      :placeholder="hasAll?'全部公司': '所选公司'"
-      >
-        <a-select-option
-          :title="item.name"
-          v-for="(item) in options"
-          :key="item.value"
-          :value='item.value'>
-          {{item.name}}
-        </a-select-option>
-    </a-select>
+   <div>
+     <SG-Select
+       v-if="type==='segiSelect'"
+       :defaultValue="selectValue === '' ? undefined : selectValue"
+       :style="formStyle"
+       showSearch
+       v-model="selectValue"
+       @change="handleChange"
+       notFoundContent="没有查询到数据"
+       :placeholder="hasAll?'全部公司': '所选公司'"
+     >
+       <SG-Option v-for="item in options" :key="item.value" :label="item.name" :value="item.value" :title="item.name">
+       </SG-Option>
+     </SG-Select>
+     <a-select
+       v-else
+       :defaultValue="selectValue === '' ? undefined : selectValue"
+       :style="formStyle"
+       showSearch
+       v-model="selectValue"
+       :allowClear="showClear"
+       :filterOption="filterOption"
+       @change="handleChange"
+       notFoundContent="没有查询到数据"
+       :placeholder="hasAll?'全部公司': '所选公司'"
+     >
+       <a-select-option
+         :title="item.name"
+         v-for="(item) in options"
+         :key="item.value"
+         :value='item.value'>
+         {{item.name}}
+       </a-select-option>
+     </a-select>
+   </div>
 </template>
 <script>
 export default {
   name: 'topOrganByUser',
   props: {
+    // 高保真样式
+    type:{
+      type:String,
+      default:'antSelect',
+      validator: function (value) {
+        return ['antSelect', 'segiSelect'].includes(value)
+      }
+    },
     // 搜索框样式
     formStyle: {
       default: () => ({})

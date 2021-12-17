@@ -77,7 +77,7 @@
       <template #footer>
         <div @click="handleAddCategory" class="table-footer">
           <a-icon type="plus" />
-          <span style="margin-left: 5px;">新增分类</span>
+          <span style="margin-left: 5px;">新增分类属性</span>
         </div>
       </template>
     </a-table>
