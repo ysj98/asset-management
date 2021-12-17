@@ -1352,5 +1352,16 @@ export const assetBussinessInformation = {
   // 用户配置查询
   assetRolList: "/ams/assetShowConfig/assetRolList",
   // 新增用户配置
-  addCustomShow: "/ams/assetShowConfig/addCustomShow"
-}
+  addCustomShow: "/ams/assetShowConfig/addCustomShow",
+  // 查询土地台账列表
+  queryAssetAttr: "/ams/assetAttr/queryAssetAttr",
+  // 更新土地列表
+  updateAssetAttr: "/ams/assetAttr/updateAssetAttr",
+  // 土地视图面积统计
+  queryAssetAttrViewTotal: "/ams/assetAttr/queryAssetAttrViewTotal",
+  // 导入
+  readExcelModel: "/ams/assetAttr/readExcelModel",
+  // 导出
+  exportTransferOperation: "/ams/assetAttr/exportTransferOperation",
+  // 资产经营导出查询
+  queryAssetToExport: "/ams/assetAttr/queryAssetToExport",

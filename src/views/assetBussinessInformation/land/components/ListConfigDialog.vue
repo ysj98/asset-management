@@ -1,7 +1,10 @@
 <template>
   <a-modal :visible="visible" title="列表设置" width="800px" @cancel="handleClose" @ok="handleSubmit">
     <a-checkbox-group v-model="selectedList">
-      <div class="check-box">
+      <div class="loading" v-if="loading">
+        <span>加载中...</span>
+      </div>
+      <div v-else class="check-box">
         <template v-for="(item, index) of options">
           <a-checkbox :value="item.value" :key="index" style="margin-left: 10px">
             <a-tooltip>
@@ -15,6 +18,7 @@
           </a-checkbox>
         </template>
       </div>
+
     </a-checkbox-group>
   </a-modal>
 </template>
@@ -29,8 +33,9 @@ export default  {
     },
   },
   data: ()=>({
+    options: [],
+    loading: false,
     selectedList: [],
-    options: []
   }),
   watch: {
     visible: {
@@ -69,6 +74,7 @@ export default  {
       }
     },
     async assetRolList () {
+      this.loading = true
       try {
         const params = {
           assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
@@ -81,6 +87,7 @@ export default  {
           this.$SG_Message.error(res.message)
         }
       } finally {
+        this.loading = false
       }
     },
     /**
@@ -124,6 +131,12 @@ export default  {
   text-overflow:ellipsis;
   vertical-align: bottom;
   margin-top: 10px;
+}
+.loading {
+  width: 750px;
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
 }
 </style>
 
