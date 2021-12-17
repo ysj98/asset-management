@@ -34,6 +34,7 @@ import * as paramsConfig from './paramsConfig'
 import * as dataCenter from './dataCenter'
 import * as codeRule from './codeRule'
 import * as attrConfig from './attrConfig'
+import * as barCode from './barCode'
 const API = {
   auth,
   global,
@@ -56,7 +57,8 @@ const API = {
   paramsConfig,
   dataCenter,
   codeRule,
-  attrConfig
+  attrConfig,
+  barCode
 }
 export default {
   install (Vue) {

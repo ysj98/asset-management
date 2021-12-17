@@ -114,6 +114,10 @@ export default [
         path: '/barcodeManagement'
       },
       {
+        title: '资产条码',
+        path: '/assetBarcode'
+      },
+      {
         title: '资产经营方式',
         path: '/assetManagementMode'
       },

@@ -12,6 +12,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/assetBarcode',
+    name: '资产条码',
+    component: () => import('@/views/assetBarcode/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/buildingDict',
     name: '楼盘字典',
     component: () => import('@/views/buildingDict/index.vue'),

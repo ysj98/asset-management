@@ -3,88 +3,159 @@
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
         <SG-Button>条码打印</SG-Button>
-        <SG-Button style="margin-left:15px;">导出</SG-Button>
-        <SG-Button style="margin-left:15px;">批量更新标签</SG-Button>
+        <SG-Button style="margin-left:15px;" @click="exportLabel">导出</SG-Button>
+        <SG-Button style="margin-left:15px;" @click="showDataImport">批量更新标签</SG-Button>
       </div>
-      <div slot="contentForm" class="search-content-box" style="position: absolute;">
-        <div class="search-from-box" style="float: right; text-align: left;">
-          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-select
-            :style="allStyle"
-            placeholder="全部资产项目"
-            v-model="queryCondition.projectId"
-            :showSearch="true"
-            :filterOption="filterOption"
-          >
-            <a-select-option
-              :title="item.name"
-              v-for="(item, index) in projectData"
-              :key="index"
-              :value="item.value"
-            >{{item.name}}</a-select-option>
+      <div slot="headerForm" style="float: right; text-align: left">
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId" @select="getObjectKeyValueByOrganIdFn" :getPopupContainer="
+          (triggerNode) => {
+            return triggerNode.parentNode || document.body
+          }
+          ">
+          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
+            (triggerNode) => {
+              return triggerNode.parentNode || document.body
+            }"
+          >{{item.name}}</a-select-option>
+        </a-select>
+        <a-select
+          :maxTagCount="1"
+          :style="allStyle"
+          mode="multiple"
+          placeholder="全部资产类型"
+          :tokenSeparators="[',']"
+          @select="changeAssetType"
+          v-model="queryCondition.assetTypeList">
+          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+        </a-select>
+        <a-input-search v-model="queryCondition.assetNameOrCode" placeholder="请输入资产名称/编码" maxlength="30" :style="allStyle" @search="onSearch"/>
+      </div>
+      <div slot="contentForm" class="search-content-box">
+        <div class="search-from-box">
+          <EquipmentSelectTree
+              v-if="isSelectedEquipment"
+              :style="allStyle"
+              style="margin-top: 14px;"
+              :top-organ-id="queryCondition.organId"
+              :multiple="true"
+              v-model="queryCondition.objectTypeList"
+              :options-data-format="(data)=>{
+                return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+              }"
+              @select="assetClassifyDataFn($event,true)"
+            />
+          <a-select v-else :maxTagCount="1" :style="allStyle" style="margin-top: 14px;" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypeList">
+            <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select
-            :maxTagCount="1"
-            :style="allStyle"
-            mode="multiple"
-            placeholder="全部资产类型"
-            :tokenSeparators="[',']"
-            @select="changeAssetType"
-            v-model="queryCondition.assetType"
-          >
-            <a-select-option
-              v-for="(item, index) in assetTypeData"
-              :key="index"
-              :value="item.value"
-              :title="item.name"
-            >{{item.name}}</a-select-option>
-          </a-select>
-          <a-input placeholder="请输入资产名称/编码" maxlength="30" :style="allStyle"/>
-          <a-select placeholder="全部资产分类" :style="allStyle"></a-select>
-          <a-input placeholder="请输入登记单名称/编码" maxlength="30" :style="allStyle"/>
+          <a-input v-model="queryCondition.labelCode" placeholder="请输入登记单名称/编码" maxlength="30" :style="allStyle" style="margin-top: 14px;"/>
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;">查询</SG-Button>
-          <SG-Button style="margin-right: 10px;">清空</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button style="margin-right: 10px;" @click="clear">清空</SG-Button>
         </div>
       </div>
     </search-container>
+    <div class="table-layout-fixed">
+      <a-table
+        rowKey="assetId"
+        :loading="loading"
+        :columns="columns"
+        :dataSource="tableData"
+        class="custom-table td-pd10"
+        :pagination="false"
+        >
+        <template slot="operation" slot-scope="text, record">
+          <a-button type="link" @click="editLabel(record)">编辑标签</a-button>
+        </template>
+      </a-table>
+      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+      <SG-FooterPagination
+        :pageLength="queryCondition.pageSize"
+        :totalCount="count"
+        :location="location"
+        :noPageTools="noPageTools"
+        v-model="queryCondition.pageNum"
+        @change="handleChange"
+      />
+    </div>
+    <labelCodeModal :show="showlabelCodeModal" :assetsData="assetsData" @cancel="cancel"></labelCodeModal>
+    <labelcodeDataImport ref="labelcodeDataImport" :labelTemp="labelTemp" @cancel="cancelDataImport"></labelcodeDataImport>
   </div>
 </template>
 
 <script>
 import SearchContainer from 'src/views/common/SearchContainer'
 import TreeSelect from '../common/treeSelect.vue'
-const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
+import noDataTips from '@/components/noDataTips'
+import labelCodeModal from './labelCodeModal.vue'
+import labelcodeDataImport from './labelcodeDataImport.vue'
+
+const allWidth = {width: '170px', 'margin-right': '10px', float: 'left'}
+const queryCondition = {
+  organId: '', // 组织机构id
+  projectId: [''], // 资产项目Id
+  assetTypeList: '', // 资产类型，多个用，分隔
+  assetNameOrCode: '', // 资产名称/编码
+  objectTypeList: [''], // 资产分类
+  labelCode: '', // 登记单名称/编码
+  pageNum: 1,     // 当前页
+  pageSize: 10    // 每页显示记录数
+}
+const columns = [
+  { title: '资产名称', dataIndex: 'assetName' },
+  { title: '资产编码', dataIndex: 'assetCode' },
+  { title: '资产类型', dataIndex: 'assetTypeName' },
+  { title: '资产分类', dataIndex: 'objectTypeName' },
+  { title: '资产项目名称', dataIndex: 'statusName' },
+  { title: '管理机构', dataIndex: 'organName' },
+  { title: '资产位置', dataIndex: 'address' },
+  { title: '标签编码', dataIndex: 'labelCode' },
+  { title: '操作', dataIndex: 'operation', scopedSlots: { customRender: 'operation' } }
+]
 export default {
-  components: {SearchContainer, TreeSelect},
+  components: {SearchContainer, TreeSelect, EquipmentSelectTree, noDataTips, labelCodeModal, labelcodeDataImport},
   data () {
     return {
       fold: true,
       allStyle: allWidth,
-      queryCondition: {
-        organId: '', // 组织机构id
-        projectId: "", // 资产项目Id
-      },
+      queryCondition: {...queryCondition},
       projectData: [{ name: "全部资产项目", value: "" }],
       assetTypeData: [],
+      assetClassifyData: [
+        {
+          name: '全部资产分类',
+          value: ''
+        }
+      ],
+      loading: false,
+      columns,
+      tableData: [],
+      noPageTools: false,
+      location: 'absolute',
+      count: '',
+      assetsData: '',
+      showlabelCodeModal: false,
+      labelTemp: {}
     }
   },
   mounted() {
     // 获取资产类型
-    this.platformDictFn("asset_type")
+    this.platformDictFn()
+  },
+  computed: {
+    isSelectedEquipment(){
+      const assetTypeArr = this.queryCondition.assetTypeList
+      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    }
   },
   methods: {
     // 组织机构树
     changeTree (value, label) {
-      console.log('!!!', value, label)
-      // this.organName = label
       this.queryCondition.organId = value
-      // this.queryCondition.pageNum = 1
-      // this.queryCondition.obligeeId = ''
-      // this.selectFn()
-      // this.queryHandler()
       this.getObjectKeyValueByOrganIdFn()
+      this.getListFn()
     },
     filterOption(input, option) {
       return (
@@ -98,49 +169,207 @@ export default {
       let obj = {
         organId: this.queryCondition.organId,
         projectName: ""
-      };
+      }
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data;
-          let arr = [];
+          let data = res.data.data
+          let arr = []
           data.forEach(item => {
             arr.push({
               name: item.projectName,
               value: item.projectId
-            });
-          });
-          this.projectData = [{ name: "全部资产项目", value: "" }, ...arr];
+            })
+          })
+          this.projectData = [{ name: "全部资产项目", value: "" }, ...arr]
         } else {
-          this.$message.error(res.data.message);
+          this.$message.error(res.data.message)
         }
-      });
+      })
     },
     // 平台字典获取变更类型
-    platformDictFn(str) {
+    platformDictFn() {
       let obj = {
-        code: str
+        code: 'asset_type'
       };
       this.$api.assets.platformDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data;
-          if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
-          }
+          let data = res.data.data
+          this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data]
+          this.getListFn()
         } else {
           this.$message.error(res.data.message);
         }
       });
     },
-    // 资产类型发生变化
-    changeAssetType(value) {
-      this.$nextTick(function() {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.assetType,
-          this.assetTypeData
-        );
-      });
+    // 资产类型变化
+    changeAssetType (value) {
+      this.$nextTick(function () {
+        this.queryCondition.assetTypeList = this.handleMultipleSelectValue(value, this.queryCondition.assetTypeList, this.assetTypeData)
+        if (!this.queryCondition.assetTypeList[0] || this.queryCondition.assetTypeList.length > 1 ) {
+          this.assetClassifyData = [{name: '全部资产分类', value: ''}]
+          this.queryCondition.objectTypeList = ['']
+        }else {
+          this.getListFn()
+        }
+      })
     },
+    // 处理多选下拉框有全选时的数组
+    handleMultipleSelectValue (value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === '') {
+        data = ['']
+      } else {
+        let totalIndex = data.indexOf('')
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1)
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = ['']
+          }
+        }
+      }
+      return data
+    },
+    // 资产分类列表
+    getListFn () {
+      if (!this.queryCondition.organId) {
+        return
+      }
+      let obj = {
+        organId: this.queryCondition.organId,
+        assetType: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : ''
+      }
+      this.$api.assets.getList(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({
+              name: item.professionName,
+              value: item.professionCode
+            })
+          })
+          this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
+        }
+      })
+    },
+    // 资产分类
+    assetClassifyDataFn (value,isSelectedEquipment) {
+      this.$nextTick(function () {
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
+        this.queryCondition.objectTypeList = this.handleMultipleSelectValue(value, this.queryCondition.objectTypeList, resOptions)
+      })
+    },
+    onSearch () {
+      this.queryCondition.pageNum = 1
+      this.query()
+    },
+    // 分页查询
+    handleChange (data) {
+      this.queryCondition.pageNum = data.pageNo
+      this.queryCondition.pageSize = data.pageLength
+      this.query()
+    },
+    query () {
+      this.loading = true
+      let projectIdList = []
+      if (this.queryCondition.projectId.length === 1 && this.queryCondition.projectId[0] === '') {
+        this.queryCondition.projectId = ['']
+      } else {
+        projectIdList = [...this.queryCondition.projectId]
+      }
+      let form = {
+        organId: this.queryCondition.organId,
+        projectIdList: projectIdList,
+        assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
+        objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
+        labelCode: this.queryCondition.labelCode,
+        assetNameOrCode: this.queryCondition.assetNameOrCode,
+        pageNum: this.queryCondition.pageNum,
+        pageSize: this.queryCondition.pageSize
+      }
+      this.$api.barCode.queryLabelCodeList(form).then(res => {
+        this.tableData = res.data.data.data
+        this.count = res.data.data.count
+        this.loading = false
+      })
+    },
+    clear () {
+      this.queryCondition = {
+        organId: '', // 组织机构id
+        projectIdList: [], // 资产项目Id
+        assetTypeList: [''], // 资产类型，多个用，分隔
+        assetNameOrCode: '', // 资产名称/编码
+        objectTypeList: [''], // 资产分类
+        labelCode: '', // 登记单名称/编码
+        pageNum: 1     // 当前页
+      }
+    },
+    exportLabel () {
+      let projectIdList = []
+      if (this.queryCondition.projectId.length === 1 && this.queryCondition.projectId[0] === '') {
+        this.queryCondition.projectId = ['']
+      } else {
+        projectIdList = [...this.queryCondition.projectId]
+      }
+      let form = {
+        organId: this.queryCondition.organId,
+        projectIdList: projectIdList,
+        assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
+        objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
+        labelCode: this.queryCondition.labelCode,
+        assetNameOrCode: this.queryCondition.assetNameOrCode,
+        pageNum: this.queryCondition.pageNum,
+        pageSize: this.queryCondition.pageSize
+      }
+      let loadingName = this.$SG_Message.loading({content: '下载中...'})
+      this.$api.barCode.exportLabelData(form).then(res => {
+            this.$SG_Message.destroy(loadingName)
+            let blob = new Blob([res.data])
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(blob)
+            a.download = `条码管理报表.xls`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+      }, () => {
+        this.$SG_Message.destroy(loadingName)
+        this.$SG_Message.error('导出条码管理报表失败!')
+      })
+    },
+    showDataImport () {
+      let projectIdList = []
+      if (this.queryCondition.projectId.length === 1 && this.queryCondition.projectId[0] === '') {
+        this.queryCondition.projectId = ['']
+      } else {
+        projectIdList = [...this.queryCondition.projectId]
+      }
+      let form = {
+        organId: this.queryCondition.organId,
+        projectIdList: projectIdList,
+        assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
+        objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
+        labelCode: this.queryCondition.labelCode,
+        assetNameOrCode: this.queryCondition.assetNameOrCode,
+        pageNum: this.queryCondition.pageNum,
+        pageSize: this.queryCondition.pageSize
+      }
+      this.labelTemp = form
+      this.$refs.labelcodeDataImport.visible = true
+    },
+    editLabel (data) {
+      this.assetsData = data
+      this.showlabelCodeModal = true
+    },
+    cancel () {
+      this.showlabelCodeModal=false
+      this.query()
+    },
+    cancelDataImport () {
+      this.query()
+    }
   }
 }
 </script>
@@ -149,14 +378,13 @@ export default {
 .barcodeManagement{
   .search-content-box{
     display: flex;
-    justify-content: space-between;
-    .search-from-box{
-      flex: 1;
-    }
+    justify-content: flex-end;
     .two-row-box{
       padding-top: 14px;
-      flex: 0 0 200px;
     }
+  }
+  .custom-table {
+    padding-bottom: 60px;
   }
 }
 </style>

@@ -1319,3 +1319,17 @@ export const codeRule = {
   // 获取编码默认规则
   default: '/ams/codeRule/default'
 }
+
+// 条码管理
+export const barCode = {
+  // 主列表查询
+  queryLabelCodeList: '/ams/asset/queryLabelCodeList',
+  // 编辑标签
+  editLabel: '/ams/asset/editLabel',
+  // 下载模板/导出
+  exportLabelData: '/ams/asset/exportLabelData',
+  // 批量更新标签-导入
+  readExcelModel: '/ams/asset/readExcelModel',
+  // 查询资产条码
+  findAssetLabel: '/ams/basicSettings/findAssetLabel'
+}

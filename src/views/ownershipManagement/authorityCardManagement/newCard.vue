@@ -438,7 +438,6 @@ export default {
               })
             })
           }
-          console.log('!!!', this.newCardData.files)
           let obj = {
             warrantId: this.warrantId,                                                                          // 权证id
             rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,         // 权利类型
