@@ -157,7 +157,7 @@ export default {
       const { attrId, attrOrganRelId, _key } = record;
       const _this = this;
       this.$SG_Modal.confirm({
-        title: `确定删除此属性吗?`,
+        content: `确定删除此属性吗?`,
         okText: "确定",
         cancelText: "取消",
         onOk: async () => {

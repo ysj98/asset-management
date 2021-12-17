@@ -450,7 +450,7 @@ export default {
       if (tableData.parkingAreaId) {
         let delFlag = false
         this.$SG_Modal.confirm({
-          title: `确定要删除该车场信息吗?`,
+          content: `确定要删除该车场信息吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: async () => {

@@ -35,6 +35,8 @@ import * as dataCenter from './dataCenter'
 import * as codeRule from './codeRule'
 import * as attrConfig from './attrConfig'
 import * as barCode from './barCode'
+import * as assetOperationMode from './assetOperationMode'
+import * as assetBussinessInformation from './assetBussinessInformation'
 const API = {
   auth,
   global,
@@ -58,7 +60,9 @@ const API = {
   dataCenter,
   codeRule,
   attrConfig,
-  barCode
+  barCode,
+  assetOperationMode,
+  assetBussinessInformation
 }
 export default {
   install (Vue) {

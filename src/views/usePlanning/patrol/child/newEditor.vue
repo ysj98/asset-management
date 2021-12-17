@@ -422,7 +422,7 @@ export default {
         return
       }
       this.$SG_Modal.confirm({
-        title: `确认要删除吗？?`,
+        content: `确认要删除吗？?`,
         okText: '确定',
         cancelText: '再想想',
         onOk: () => {

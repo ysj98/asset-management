@@ -110,7 +110,7 @@ export default {
     // 删除
     deleteFn (record) {
         this.$SG_Modal.confirm({
-          title: `确定删除该附属配套吗?`,
+          content: `确定删除该附属配套吗?`,
           okText: '确定',
           cancelText: '取消',
           onOk: () => {

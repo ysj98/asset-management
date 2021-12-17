@@ -95,6 +95,15 @@ export default {
           this.getOptions()
         })
       }
+    },
+    // 防止存在异步赋值的情况
+    dictOptions: {
+      immediate: true,
+      handler: function () {
+        this.$nextTick(()=>{
+          this.getOptions()
+        })
+      }
     }
   },
   data: () => ({
@@ -143,7 +152,6 @@ export default {
       })
     },
     async getOptions(){
-
       this.options = utils.deepClone(this.dictOptions || [])
       if (!this.menuCode) {
         return

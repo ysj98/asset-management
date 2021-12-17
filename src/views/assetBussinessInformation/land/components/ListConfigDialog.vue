@@ -1,6 +1,6 @@
 <template>
-  <a-modal :visible="visible" title="列表设置" width="800px">
-    <a-checkbox-group>
+  <a-modal :visible="visible" title="列表设置" width="800px" @cancel="handleClose" @ok="handleSubmit">
+    <a-checkbox-group v-model="selectedList">
       <div class="check-box">
         <template v-for="(item, index) of options">
           <a-checkbox :value="item.value" :key="index" style="margin-left: 10px">
@@ -21,29 +21,16 @@
 <script>
 export default  {
   props: {
+    organId:{
+      default: ""
+    },
     visible: {
       default : false
     },
   },
   data: ()=>({
-    options: [
-      { label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },{ label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },{ label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },{ label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },{ label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },{ label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },{ label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' }, { label: 'Orange', value: 'Orange' },
-      { label: 'Apple', value: 'Apple' },{ label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },
-    ]
+    selectedList: [],
+    options: []
   }),
   watch: {
     visible: {
@@ -55,7 +42,72 @@ export default  {
     }
   },
   methods:{
-    init () {}
+    init () {
+      this.assetRolList()
+    },
+    handleClose () {
+      this.$emit("close")
+    },
+    handleSubmit () {
+      const params = this.beforeAddCustomShow(this.selectedList)
+      this.addCustomShow(params)
+    },
+    /*********************************************************************************************************/
+    beforeAddCustomShow (params) {
+      const chooseList = this.options.filter(item=>params.some(n=>n===item.value)).map(item=>({colName:item.colName,colCode:item.colCode}))
+      return {chooseList}
+    },
+    async addCustomShow(params){
+      try {
+        const {data: res} = await this.$api.assetBussinessInformation.addCustomShow(params)
+        if (String(res.code) === '0') {
+          this.$emit("submit")
+        } else {
+          this.$SG_Message.error(res.message)
+        }
+      } finally {
+      }
+    },
+    async assetRolList () {
+      try {
+        const params = {
+          assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
+          organId: this.organId
+        }
+        const {data: res} = await this.$api.assetBussinessInformation.assetRolList(params)
+        if (String(res.code) === '0') {
+          this.options = this.generatorOptions(res.data)
+        } else {
+          this.$SG_Message.error(res.message)
+        }
+      } finally {
+      }
+    },
+    /**
+     *
+     * @param customChose 默认列表
+     * @param customShow 用户配置数据列表
+     * @param templeCode 全量数据列表
+     */
+    generatorOptions ({customChose=[],customShow = [],templeCode = []}) {
+      const itemList = templeCode.map(item => {
+        return {
+          ...item,
+          label: item.colName,
+          value: item.colCode
+        }
+      });
+      return itemList.map(item =>{ // 处理默认表格
+        const choseNum = customChose.some(n=>n.colCode == item.colCode)
+        const userShow = customShow.some(n=>n.colCode == item.colCode)
+        console.log(choseNum,userShow)
+        if (choseNum || userShow) {
+          this.selectedList.push(item.value)
+        }
+        return item
+      })
+    },
+
   }
 }
 </script>

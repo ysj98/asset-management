@@ -1,20 +1,17 @@
 import { axiosGet, axiosPost } from '../utils/axios'
-import { User } from '../config/config.url'
+import {attrConfig} from '../config/config.url'
 
-/**
- *
- * @param {String} username 用户名
- * @param {String} password 密码
- */
-export function login (username, password) {
-    let para = {
-        username,
-        password
-    }
-    return axiosPost(User.login, para, false, true)
+/* 查询 */
+export function queryAssetAttrConfig (params) {
+    return axiosPost(attrConfig.queryAssetAttrConfig, params)
 }
 
-/* 获取用户资料 */
-export function getUserData () {
-    return axiosGet(User.getUserData)
+/* 新增 */
+export function insertAssetAttrConfig (params) {
+    return axiosPost(attrConfig.insertAssetAttrConfig,params)
+}
+
+/* 更新 */
+export function updateAssetAttrConfig (params) {
+    return axiosPost(attrConfig.updateAssetAttrConfig,params)
 }

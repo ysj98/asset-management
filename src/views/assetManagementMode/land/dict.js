@@ -23,7 +23,7 @@ export const allWidth = {
   overflow: 'hidden'
 };
 export const queryCondition = {
-  topOrganId: '', // 所属组织机构
+  organId: '', // 所属组织机构
   equipmentInstNameOrCode: '', // 设备实力名称或编码
   pageNo: 1,
   communityId: '', //运营项目
@@ -41,22 +41,52 @@ export const columns = [
   {
     title: "编码",
     align: "center",
-    dataIndex: "Index",
+    dataIndex: "modeOperName",
     width: 120
   },
   {
     align: "center",
     title: "业务属性字段",
-    dataIndex: "equipmentInstName",
+    dataIndex: "assetOperationModes",
+    scopedSlots: { customRender: "assetOperationModes" },
     width: 500
   },
   {
     align: "center",
     title: "图层颜色",
-    dataIndex: "TCYS",
-    scopedSlots: { customRender: "TCYS" },
+    dataIndex: "modeColour",
+    scopedSlots: { customRender: "modeColour" },
     width: 100
+  },,
+  {
+    align: "center",
+    title: "操作",
+    dataIndex: "operation",
+    scopedSlots: { customRender: "operation" },
+    width: 120
   },
+];
+
+export const selectAttrColumns = [
+  {
+    width: 120,
+    title: "序号",
+    align: "center",
+    dataIndex: "index",
+    customRender: (text,record,index) => `${index+1}`,
+  },
+  {
+    title: "编码",
+    align: "center",
+    dataIndex: "attrCode",
+    width: 120
+  },
+  {
+    align: "center",
+    title: "业务属性字段",
+    dataIndex: "attrName",
+    width: 120
+  }
 ];
 
 // 时间戳转换格式化时间
