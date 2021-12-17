@@ -118,6 +118,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_DICT_LAND_EDIT: 'zcgl_dict_land_edit',
   // 楼盘字典-删除土地
   ASSET_DICT_LAND_DELETE: 'zcgl_dict_land_delete',
+  // 楼盘字典-土地批量导入
+  ASSET_DICT_LAND_IMPORT: 'zcgl_dict_land_import',
   // 楼盘字典-创建车场
   ASSET_DICT_PARK_CREATE: 'zcgl_dict_park_create',
   // 楼盘字典-修改车场
@@ -219,6 +221,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
   // 权证管理-导出
   ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
+  // 权证管理-列表字段自定义
+  ASSET_ACM_SETTING: 'zcgl_asset_acm_setting',
 
   /**
   * 权属人管理

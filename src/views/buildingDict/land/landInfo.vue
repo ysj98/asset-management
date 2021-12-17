@@ -19,7 +19,7 @@
           <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10">
             <segiIcon type="#icon-ziyuan10" class="mr10" />导出
           </SG-Button>
-          <SG-Button @click="showLandDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
+          <SG-Button v-if="landImportButton" @click="showLandDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
         </div>
 
         <div style="overflow: visible">
@@ -143,6 +143,7 @@ export default {
       typeFilter,
       ASSET_MANAGEMENT,
       hasPowerExport: false, // 导出按钮权限
+      landImportButton: false, // 批量导入按钮权限
       allStyle,
       allWidth,
       queryCondition: utils.deepClone(queryCondition),
@@ -362,6 +363,9 @@ export default {
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
         this.hasPowerExport = true
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_IMPORT)) {
+        this.landImportButton = true
       }
     },
     exportList() {

@@ -21,9 +21,9 @@
       <SG-Title style="margin-left: 20px;" title="资产二维码设置" />
       <div class="content">
         <div class="content-title">
-          <img src="../../assets/image/seat.jpg" width="80" alt="" style="margin-right:10px;">
+          <img :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
           <SG-Button type="primary" @click="change">更换Logo</SG-Button>
-          <div class="organName">组织机构</div>
+          <div class="organName">{{organName}}</div>
           <span class="assetLabel">资产标签</span>
         </div>
         <hr />
@@ -32,36 +32,40 @@
           <div style="font-size:12px;">资产编码</div>
         </div>
         <hr />
-        <div class="content-choose">
-          <a-select :filterOption="filterOption" v-model="selectConfigure.firstly">
-            <a-select-option v-for="(item, index) in assetCodes" :key="index">
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
-          <a-select :filterOption="filterOption" v-model="selectConfigure.secondly">
-            <a-select-option v-for="(item, index) in assetCodes" :key="index">
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
-          <a-select :filterOption="filterOption" v-model="selectConfigure.thirdly">
-            <a-select-option v-for="(item, index) in assetCodes" :key="index">
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
-          <a-select :filterOption="filterOption" v-model="selectConfigure.forthly">
-            <a-select-option v-for="(item, index) in assetCodes" :key="index">
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
+        <div style="display: inline-flex;">
+          <div class="content-choose">
+            <a-select :filterOption="filterOption" v-model="selectConfigure.firstly">
+              <a-select-option v-for="item in assetCodes" :key="item.value" :disabled="listCom.includes(item.value) && item.value !== selectConfigure.firstly">
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
+            <a-select :filterOption="filterOption" v-model="selectConfigure.secondly">
+              <a-select-option v-for="item in assetCodes" :key="item.value" :disabled="listCom.includes(item.value) && item.value !== selectConfigure.secondly">
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
+            <a-select :filterOption="filterOption" v-model="selectConfigure.thirdly">
+              <a-select-option v-for="item in assetCodes" :key="item.value" :disabled="listCom.includes(item.value) && item.value !== selectConfigure.thirdly">
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
+            <a-select :filterOption="filterOption" v-model="selectConfigure.forthly">
+              <a-select-option v-for="item in assetCodes" :key="item.value" :disabled="listCom.includes(item.value) && item.value !== selectConfigure.forthly">
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
+          </div>
+          <div class="pic">
+            <div>
+              <img src="../../assets/image/example.png" width="200" alt="">
+            </div>
+            <img style="position: absolute; top: 75px; right: 73px;" :src="logoInfo.src" width="50" alt="">
+          </div>
         </div>
       </div>
+      <SG-Button type="primary" @click="save">保存</SG-Button>
     </div>
-    <SG-Modal
-      title="上传Logo"
-      v-model="showChangeLogo"
-    >
-      <changeLogo></changeLogo>
-    </SG-Modal>
+    <changeLogo :show="showChangeLogo" @submit="logoSubmit" @cancel="cancel"></changeLogo>
   </div>
 </template>
 
@@ -74,9 +78,8 @@ const assetCodes = [
   {name: '资产类型', value: 1},
   {name: '资产分类', value: 2},
   {name: '资产项目', value: 3},
-  // {name: '规格型号', value: 4},
-  {name: '所属机构', value: 5},
-  {name: '接管时间', value: 6}
+  {name: '所属机构', value: 4},
+  {name: '接管时间', value: 5}
 ]
 export default {
   components: {TreeSelect, changeLogo},
@@ -86,18 +89,23 @@ export default {
   data () {
     return {
       organId: '',
+      organName: '',
       assetCodes: [...assetCodes],
       showChangeLogo: false,
+      selectData: [],
       selectConfigure: {
         firstly: '',
         secondly: '',
         thirdly: '',
         forthly: ''
-      }
+      },
+      logoInfo: {}
     }
   },
-  mounted() {
-    this.search()
+  computed: {
+    listCom() {
+      return Object.keys(this.selectConfigure).map((ele) => this.selectConfigure[ele]);
+    }
   },
   methods: {
     change () {
@@ -105,6 +113,15 @@ export default {
     },
     changeTree (value, label) {
       this.organId = value
+      this.$api.barCode.findAssetLabel({organId: this.organId}).then(res => {
+        this.organName = res.data.data.organName
+        let data = res.data.data.dictionaryAttr.split(",")
+        this.selectData = this.assetCodes.filter(item => data.indexOf(String(item.value)) > -1)
+        this.selectConfigure.firstly = this.selectData[0].value
+        this.selectConfigure.secondly = this.selectData[1].value
+        this.selectConfigure.thirdly = this.selectData[2].value
+        this.selectConfigure.forthly = this.selectData[3].value
+      })
     },
     filterOption(input, option) {
       return (
@@ -113,10 +130,15 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       )
     },
-    search () {
-      this.$api.barCode.findAssetLabel({organId: this.organId}).then(res => {
-        console.log('res', res.data.data)
-      })
+    logoSubmit (data) {
+      console.log('@@@@@@', data)
+      this.logoInfo = data
+    },
+    cancel () {
+      this.showChangeLogo = false
+    },
+    save () {
+      // this.$api.
     }
   }
 }
@@ -144,17 +166,18 @@ export default {
       }
       button{
         margin-left: 10px;
-        margin-right: 80px;
+        margin-right: 50px;
       }
       .organName{
-        display: inline-block;
+        display: inline-flex;
+        justify-content: center;
         border: 2px solid black;
-        width: 200px;
+        width: 280px;
         font-size: 20px;
         font-weight: bold;
       }
       .assetLabel{
-        margin-left: 80px;
+        margin-left: 50px;
         font-size: 16px;
       }
     }
@@ -169,6 +192,11 @@ export default {
         margin-left: 50px;
         margin-bottom: 20px;
       }
+    }
+    .pic {
+      margin-top: 30px;
+      margin-left: 140px;
+      position: relative;
     }
   }
 }

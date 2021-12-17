@@ -364,7 +364,7 @@ export default {
       this.showlabelCodeModal = true
     },
     cancel () {
-      this.showlabelCodeModal=false
+      this.showlabelCodeModal = false
       this.query()
     },
     cancelDataImport () {
