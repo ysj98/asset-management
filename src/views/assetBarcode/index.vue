@@ -21,7 +21,8 @@
       <SG-Title style="margin-left: 20px;" title="资产二维码设置" />
       <div class="content">
         <div class="content-title">
-          <img :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
+          <img v-if="logoInfo.src" :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
+          <img v-else src="../../assets/image/seat.jpg" width="80" alt="">
           <SG-Button type="primary" @click="change">更换Logo</SG-Button>
           <div class="organName">{{organName || '无'}}</div>
           <span class="assetLabel">资产标签</span>
@@ -72,6 +73,7 @@
 <script>
 import TreeSelect from '../common/treeSelect.vue'
 import changeLogo from './changeLogo.vue'
+// import configs from "@/config/config.base.js";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const assetCodes = [
@@ -112,6 +114,9 @@ export default {
     },
     changeTree (value, label) {
       this.organId = value
+      this.query()
+    },
+    query () {
       this.$api.barCode.findAssetLabel({organId: this.organId}).then(res => {
         this.organName = res.data.data.organName
         let data = res.data.data.dictionaryAttr.split(",")
@@ -120,6 +125,7 @@ export default {
         this.selectConfigure.secondly = this.selectData[1].value
         this.selectConfigure.thirdly = this.selectData[2].value
         this.selectConfigure.forthly = this.selectData[3].value
+        this.logoInfo.src = res.data.data.imageUrl
       })
     },
     filterOption(input, option) {
@@ -130,14 +136,25 @@ export default {
       )
     },
     logoSubmit (data) {
-      console.log('@@@@@@', data)
       this.logoInfo = data
     },
     cancel () {
       this.showChangeLogo = false
     },
     save () {
-      // this.$api.
+      let dictionaryAttr = []
+      for (let i in this.selectConfigure) {
+        dictionaryAttr.push(this.selectConfigure[i])
+      }
+      let form = {
+        organId: this.organId,
+        imageUrl: this.logoInfo.imageUrl,
+        dictionaryAttr: dictionaryAttr.join(',')
+      }
+      this.$api.barCode.saveAssetLabel(form).then(res => {
+        console.log('!!!', res)
+        this.query()
+      })
     }
   }
 }

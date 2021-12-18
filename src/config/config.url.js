@@ -1331,7 +1331,11 @@ export const barCode = {
   // 批量更新标签-导入
   readExcelModel: '/ams/asset/readExcelModel',
   // 查询资产条码
-  findAssetLabel: '/ams/basicSettings/findAssetLabel'
+  findAssetLabel: '/ams/basicSettings/findAssetLabel',
+  // 保存/编辑
+  saveAssetLabel: '/ams/basicSettings/saveAssetLabel',
+  // 条码打印
+  barCodePrint: '/ams/asset/barCodePrint'
 }
 
 export const attrConfig = {

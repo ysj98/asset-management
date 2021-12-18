@@ -21,3 +21,11 @@ export function readExcelModel (data) {
 export function findAssetLabel (data) {
   return axiosGet(barCode.findAssetLabel, data)
 }
+// 保存/编辑
+export function saveAssetLabel (data) {
+  return axiosPost(barCode.saveAssetLabel, data)
+}
+// 条码打印
+export function barCodePrint (data) {
+  return axiosPost(barCode.barCodePrint, data)
+}

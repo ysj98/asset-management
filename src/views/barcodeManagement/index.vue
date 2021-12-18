@@ -2,7 +2,7 @@
   <div class="barcodeManagement">
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_PRINT">条码打印</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_PRINT" @click="printBarcode">条码打印</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_EXPORT" style="margin-left:15px;" @click="exportLabel">导出</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_UPDATE" style="margin-left:15px;" @click="showDataImport">批量更新标签</SG-Button>
       </div>
@@ -64,6 +64,7 @@
         :dataSource="tableData"
         class="custom-table td-pd10"
         :pagination="false"
+        :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
         >
         <template slot="operation" slot-scope="text, record">
           <a-button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_EDIT" type="link" @click="editLabel(record)">编辑标签</a-button>
@@ -139,7 +140,10 @@ export default {
       count: '',
       assetsData: '',
       showlabelCodeModal: false,
-      labelTemp: {}
+      labelTemp: {},
+      selectedRowKeys: [], // Table选中项
+      assetIdList: [], //资产id列表
+      barCodeInfo: {} // 打印二维码信息
     }
   },
   mounted() {
@@ -269,6 +273,7 @@ export default {
     },
     // 分页查询
     handleChange (data) {
+      console.log(data)
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
       this.query()
@@ -371,6 +376,30 @@ export default {
     },
     cancelDataImport () {
       this.query()
+    },
+    // 处理选中的数据
+    handleSelectChange (selectedRowKeys, selectedRows) {
+      this.assetIdList = []
+      this.selectedRowKeys = selectedRowKeys
+      selectedRows.forEach(item => {
+        this.assetIdList.push(item.assetId)
+      })
+    },
+    printBarcode () {
+      if (!this.assetIdList.length) {
+        this.$message.info("请先选择要生成二维码的项目实例")
+        return
+      } else {
+        let { href } = this.$router.resolve({
+          path: "/barcodePrint", // 这里写的是要跳转的路由地址
+            query:{
+              organId: this.queryCondition.organId,
+              id: this.assetIdList  //要传的参数
+            }  // 这里写的是页面参数
+        });
+        window.open(href, "setTitle");
+        window.getTitleFun = this.setOpenTile
+      }
     }
   }
 }

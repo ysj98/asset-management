@@ -31,7 +31,8 @@ export default {
       imgName: '',
       imgInfo: {
         src: '',
-        name: ''
+        name: '',
+        imageUrl: ''
       }
     }
   },
@@ -42,7 +43,7 @@ export default {
       let fileData = new FormData()
       fileData.append('file', img)
       this.$api.ownership.uploadAnnex(fileData).then(res => {
-        console.log('res', res)
+        this.imgInfo.imageUrl = res.data.data.attachmentPath
       })
 
       this.cropperImg = URL.createObjectURL(img)
