@@ -165,6 +165,7 @@ export default {
       console.log(data)
       this.table.dataSource = []
       this.table.totalCount = 0
+      if (!data.organId) {return}
       this.queryAssetAttrConfig(data)
     },
     // 重置分页查询
