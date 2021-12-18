@@ -8,10 +8,10 @@
       <div slot="headerForm" class="search-content-box">
         <div class="top-search-one" style="padding: 0;">
           <div>
-            <SG-Button class="mr10" type="info" @click="exportOperationAttr">导出</SG-Button>
-            <SG-Button class="mr10" type="info" @click="listConfigDialogVisible=true">列表设置</SG-Button>
-            <SG-Button class="mr10" type="info" @click="handleDownloadTemplate">下载模板</SG-Button>
-            <SG-Button class="mr10" type="info" @click="handleImport">导入业务信息</SG-Button>
+            <SG-Button v-if="exportPower" class="mr10" type="info" @click="exportOperationAttr">导出</SG-Button>
+            <SG-Button v-if="listConfigPower" class="mr10" type="info" @click="listConfigDialogVisible=true">列表设置</SG-Button>
+            <SG-Button v-if="downloadPower" class="mr10" type="info" @click="handleDownloadTemplate">下载模板</SG-Button>
+            <SG-Button v-if="exportBillPower" class="mr10" type="info" @click="handleImport">导入业务信息</SG-Button>
           </div>
           <div style="overflow: visible;margin-top:-10px;">
             <!-- 公司 -->
@@ -204,6 +204,10 @@ export default {
   },
   data() {
     return {
+      exportPower: false,
+      listConfigPower: false,
+      downloadPower: false,
+      exportBillPower: false,
       selectItem: {},
       typeFilter,
       ASSET_MANAGEMENT,
@@ -263,8 +267,23 @@ export default {
       this.exportVisible = true
     },
     init () {
+      this.handlePower()
       this.queryModeOperList()
       this.queryLandUseTypeList()
+    },
+    handlePower() {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BILL_MANAGEMENT_LAND_EXPORT)) {
+        this.exportPower = true
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BILL_MANAGEMENT_LAND_LIST_CONFIG)) {
+        this.listConfigPower = true
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BILL_MANAGEMENT_LAND_DOWNLOAD)) {
+        this.downloadPower = true
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BILL_MANAGEMENT_LAND_EXPORT_BILL)) {
+        this.exportBillPower = true
+      }
     },
     handleClear () {
       this.provinces= {
@@ -378,9 +397,9 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      // if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
-      arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
-      // }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BILL_MANAGEMENT_LAND_EDIT)) {
+        arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+      }
       return arr;
     },
     //////////////////////////////////////////////////////////////////

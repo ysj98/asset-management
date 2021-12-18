@@ -562,7 +562,28 @@ export const ASSET_MANAGEMENT = {
   BARCODE_MANAGEMENT_PRINT: 'barCode_management_print', // 条码管理————条码打印
   BARCODE_MANAGEMENT_EXPORT: 'barCode_management_export', // 条码管理————导出
   BARCODE_MANAGEMENT_UPDATE: 'barCode_management_update', // 条码管理————批量更新
-  BARCODE_MANAGEMENT_EDIT: 'barCode_management_edit' // 条码管理————编辑标签
+  BARCODE_MANAGEMENT_EDIT: 'barCode_management_edit', // 条码管理————编辑标签
+
+
+  /**
+   * 基础信息管理 -> 自定义编码设置
+   */
+  CUSTOM_CODE_LAND_ADD: 'custom_code_land_add', // 新增
+  CUSTOM_CODE_LAND_EDIT: 'custom_code_land_edit', // 编辑
+  CUSTOM_CODE_LAND_CHANGE: 'custom_code_land_change', // 状态变化
+  /**
+   * 基础信息管理 -> 资产经营方式
+   */
+  ASSET_FUNCTION_EDIT: 'asset_function_edit',  // 编辑
+  ASSET_FUNCTION_CHANGE: 'asset_function_change', // 状态变化
+  /**
+   * 基础信息管理 -> 资产业务信息
+   */
+  ASSET_BILL_MANAGEMENT_LAND_EXPORT: 'asset_bill_management_land_export', // 导出
+  ASSET_BILL_MANAGEMENT_LAND_LIST_CONFIG: 'asset_bill_management_land_list_config', // 列表设置
+  ASSET_BILL_MANAGEMENT_LAND_DOWNLOAD: 'asset_bill_management_land_download', // 下载模板
+  ASSET_BILL_MANAGEMENT_LAND_EXPORT_BILL: 'asset_bill_management_land_export_bill', // 导入业务信息
+  ASSET_BILL_MANAGEMENT_LAND_EDIT: 'asset_bill_management_land_edit', // 编辑
 }
 
 

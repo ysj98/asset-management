@@ -71,18 +71,20 @@
             </template>
           </template>
           <template slot="operation" slot-scope="text, record">
-            <template v-if="!record.isEdit">
-              <a-button type="link" @click.native="handleEdit(record)"
-                >编辑</a-button
-              >
-            </template>
-            <template v-else>
-              <a-button type="link" @click.native="handleSave(record)"
-                >保存</a-button
-              >
-              <a-button type="link" @click.native="handleClose(record)"
-                >取消</a-button
-              >
+            <template v-if="record.editPower">
+              <template v-if="!record.isEdit">
+                <a-button type="link" @click.native="handleEdit(record)"
+                  >编辑</a-button
+                >
+              </template>
+              <template v-else>
+                <a-button type="link" @click.native="handleSave(record)"
+                  >保存</a-button
+                >
+                <a-button type="link" @click.native="handleClose(record)"
+                  >取消</a-button
+                >
+              </template>
             </template>
           </template>
         </a-table>
@@ -147,9 +149,6 @@ export default {
       assetOperationModelVisible: false,
       typeFilter,
       ASSET_MANAGEMENT,
-      installValue: [], // 安装日期
-      expValue: [], // 报废日期
-      hasPowerExport: false, // 导出按钮权限
       table: {
         columns,
         dataSource: [{ color: "" }],
@@ -157,24 +156,8 @@ export default {
         totalCount: 0,
       },
       topOrganId: "",
-      createPower: false, // 新建
-      editPower: false, // 编辑
-      deletePower: false, // 删除
       toggle: false,
     };
-  },
-  watch: {
-    $route() {
-      if (
-        this.$route.path === "/buildingDict" &&
-        this.$route.query.refresh &&
-        this.$route.query.showKey === "equipment"
-      ) {
-        this.queryCondition.pageN0 = 1;
-        this.queryCondition.pageLength = 10;
-        this.query();
-      }
-    },
   },
   mounted() {
     this.handlePower();
@@ -194,7 +177,6 @@ export default {
       record.isEdit = true;
     },
     handleClose(record) {
-      debugger;
       record = JSON.parse(this.selectItemCache);
     },
     handleSave(record) {
@@ -245,6 +227,7 @@ export default {
           this.table.dataSource = (res.data.data || []).map((item) => ({
             ...item,
             isEdit: false,
+            editPower: this.$power.has(ASSET_MANAGEMENT.ASSET_FUNCTION_EDIT),
           }));
           this.table.totalCount = res.data.count;
         } else {
@@ -254,7 +237,6 @@ export default {
         this.table.loading = false;
       }
     },
-
     // 重置分页查询
     searchQuery() {
       this.queryCondition.pageNo = 1;
