@@ -72,28 +72,7 @@ export default  {
         scopedSlots: { customRender: "operate" },
         width: '350px'
       },],
-      dataSource: [{
-        name:'1312323',
-        value: '123123123'
-      },{
-        name:'1312323',
-        value: '123123123'
-      },{
-        name:'1312323',
-        value: '123123123'
-      },{
-        name:'1312323',
-        value: '123123123'
-      },{
-        name:'1312323',
-        value: '123123123'
-      },{
-        name:'1312323',
-        value: '123123123'
-      },{
-        name:'1312323',
-        value: '123123123'
-      }]
+      dataSource: []
     }
   }),
   watch: {

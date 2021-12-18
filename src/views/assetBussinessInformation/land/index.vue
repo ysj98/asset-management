@@ -366,15 +366,6 @@ export default {
               .indexOf(input.toLowerCase()) >= 0
       );
     },
-    handleAssetClassChange (v) {
-      let list = this.queryCondition.equipmentInstNameOrCode || []
-      if (v === '') {
-        list = ['']
-      } else {
-        list = list.filter(item=>item !== '')
-      }
-      this.queryCondition.equipmentInstNameOrCode = [...list]
-    },
     handleSelect (){
       console.log(2)
     },

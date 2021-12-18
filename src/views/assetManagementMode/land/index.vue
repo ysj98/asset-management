@@ -39,15 +39,14 @@
           <template slot="assetOperationModes" slot-scope="text, record">
             <template v-for="(item, index) of record.assetOperationModes">
               <span style="font-size: 14px; margin-right: 10px" :key="index">{{
-                item.attrCode
+                item.modeOperName
               }}</span>
             </template>
             <a-button
               v-if="record.isEdit"
               type="link"
               @click.native="handleAssetOperationVisible(record)"
-              >添加业务属性</a-button
-            >
+              >添加业务属性</a-button>
           </template>
           <template slot="modeColour" slot-scope="text, record">
             <template v-if="record.isEdit">
@@ -173,13 +172,18 @@ export default {
         this.$SG_Message.error("请保存其它编辑的数据");
         return;
       }
-      this.selectItemCache = JSON.stringify(record);
+      // this.selectItemCache = JSON.stringify(record);
       record.isEdit = true;
     },
     handleClose(record) {
-      record = JSON.parse(this.selectItemCache);
+      // record = JSON.parse(this.selectItemCache);
+      this.query();
     },
     handleSave(record) {
+      if ((this.selectItem.assetOperationModes || []).length<=0) {
+        this.$SG_Message.error("业务属性字段不能为空");
+        return
+      }
       this.$SG_Modal.confirm({
         content: `确定要保存信息吗?`,
         okText: "确定",

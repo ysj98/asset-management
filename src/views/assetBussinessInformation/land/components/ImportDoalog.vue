@@ -83,7 +83,7 @@ export default {
         const { data: res } = await this.$api.attrConfig.insertAssetAttrConfig(params)
         if (String(res.code) === "0") {
           this.$emit("submit")
-          this.$SG_Message.success("新增成功")
+          this.$SG_Message.success("导入成功")
         } else {
           this.$SG_Message.error(res.message)
         }
