@@ -20,6 +20,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/barcodePrint',
+    name: '资产条码打印',
+    component: () => import('@/views/barcodeManagement/barcodePrint.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/buildingDict',
     name: '楼盘字典',
     component: () => import('@/views/buildingDict/index.vue'),
