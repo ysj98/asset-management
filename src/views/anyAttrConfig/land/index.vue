@@ -222,6 +222,8 @@ export default {
             }
           });
           this.table.totalCount = res.data.count;
+        } else {
+          this.$SG_Message.error(res.message)
         }
       } finally {
         this.table.loading = false;
@@ -243,7 +245,6 @@ export default {
           this.$SG_Message.error(res.message)
         }
       }finally {
-
       }
     },
   },
