@@ -8,10 +8,10 @@
       <div slot="headerForm" class="search-content-box">
         <div class="top-search-one" style="padding: 0;">
           <div>
-            <SG-Button class="mr10" type="info">导出</SG-Button>
+            <SG-Button class="mr10" type="info" @click="exportOperationAttr">导出</SG-Button>
             <SG-Button class="mr10" type="info" @click="listConfigDialogVisible=true">列表设置</SG-Button>
             <SG-Button class="mr10" type="info" @click="handleDownloadTemplate">下载模板</SG-Button>
-            <SG-Button class="mr10" type="info">导入业务信息</SG-Button>
+            <SG-Button class="mr10" type="info" @click="handleImport">导入业务信息</SG-Button>
           </div>
           <div style="overflow: visible;margin-top:-10px;">
             <!-- 公司 -->
@@ -47,6 +47,7 @@
                 :style="allStyle"
             />
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+            <SG-Button @click="handleClear" class="mr10" type="info">清空</SG-Button>
           </div>
         </div>
       </div>
@@ -127,10 +128,10 @@
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
-            :pageLength="queryCondition.pageSize"
+            :pageLength="page.pageLength"
             :totalCount="table.totalCount"
             location="fixed"
-            v-model="queryCondition.pageNum"
+            v-model="page.pageNo"
             @change="handleChange"
         />
       </div>
@@ -154,9 +155,12 @@
       @close="()=>exportVisible = false"
       @submit="()=>exportVisible = false"
     />
+    <!--导入-->
+    <export-and-download @upload="uploadFile" showDown ref="batchImport" title="导入"/>
   </div>
 </template>
 <script>
+import ExportAndDownload from "../../common/eportAndDownFile"
 import SearchContainer from "@/views/common/SearchContainer";
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
@@ -178,9 +182,12 @@ import AssetManage from "./components/AssetManage";
 import OverviewNumber from "./components/OverviewNumber";
 import EditDialog from "./components/EditDialog";
 import ExportDoalog from "./components/ExportDoalog";
+import {exportOperationAttr} from "../../../api/assetBussinessInformation";
+import ImportDoalog from "./components/ImportDoalog";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
+    ImportDoalog,
     ExportDoalog,
     EditDialog,
     OverviewNumber,
@@ -192,7 +199,8 @@ export default {
     noDataTips,
     segiIcon,
     OperationPopover,
-    SearchContainer
+    SearchContainer,
+    ExportAndDownload
   },
   data() {
     return {
@@ -202,6 +210,7 @@ export default {
       listConfigDialogVisible: false, // 列表设置标志位
       assetManageVisible: false,
       exportVisible: false, // 导出标志位
+      importVisible: false, // 导入标志位
       installValue: [], // 安装日期
       operationMode: [], // 经营方式
       landuseTypeOpt: [], // 土地用途
@@ -216,6 +225,10 @@ export default {
         city: undefined,
         district: undefined
       },
+      page: {
+        pageNo: 1,         // 当前页
+        pageLength: 10,       // 每页显示记录数
+      },
       queryCondition: utils.deepClone(queryCondition),
       numList: [
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
@@ -225,6 +238,7 @@ export default {
         loading: false,
         totalCount: 0,
       },
+      tableCache: [],
       toggle: false
     };
   },
@@ -252,19 +266,33 @@ export default {
       this.queryModeOperList()
       this.queryLandUseTypeList()
     },
+    handleClear () {
+      this.provinces= {
+        province: undefined,
+        city: undefined,
+        district: undefined
+      }
+      const organId = this.queryCondition.organId
+      this.queryCondition = utils.deepClone(queryCondition)
+    },
+    handleImport () {
+      if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
+      this.$refs.batchImport.visible = true
+    },
     handleTreeChange () {
       console.log('handleTreeChange')
       this.$nextTick(async ()=>{
         this.getListFn()
         this.getObjectKeyValueByOrganIdFn()
-        this.table.loading = true
         await this.assetRolList()
         await this.query();
       })
     },
     async query() {
+      if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
       const params = {
         ...this.queryCondition,
+        ...this.page,
         city: this.provinces.city,
         province: this.provinces.province,
         region: this.provinces.district,
@@ -279,24 +307,33 @@ export default {
         this.table.loading = true;
         this.queryAssetAttrViewTotal(params)
         await this.queryAssetAttr(params)
+        this.page.pageNo = 1;
+        this.page.pageLength = 10;
+        this.firstPageSlice(this.page.pageNo,this.page.pageLength)
       } finally {
         this.table.loading = false;
       }
     },
     // 重置分页查询
     searchQuery() {
-      this.queryCondition.pageNo = 1;
+      this.page.pageNo = 1;
       this.$nextTick(async ()=>{
-        this.table.loading = true
+        if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
         await this.assetRolList()
         await this.query();
       })
     },
     // 操作事件函数
     handleChange(data) {
-      this.queryCondition.pageNo = data.pageNo;
-      this.queryCondition.pageLength = data.pageLength;
-      this.query();
+      this.page.pageNo = data.pageNo;
+      this.page.pageLength = data.pageLength;
+      this.firstPageSlice(this.page.pageNo,this.page.pageLength)
+    },
+    firstPageSlice(pageNo, pageSize){
+      let start = (pageNo-1)*pageSize
+      let end = pageNo*pageSize
+      end = end>this.table.totalCount? this.table.totalCount: end;
+      this.table.dataSource = (this.tableCache || []).slice(start,end)
     },
     handleEditSubmit () {
       this.selectItem = {}
@@ -351,7 +388,7 @@ export default {
       try {
         const {data: res} = await this.$api.assetBussinessInformation.queryAssetAttr(params)
         if (String(res.code) === '0') {
-          this.table.dataSource = (res.data.data || []).map(item => {
+          this.tableCache = (res.data.data || []).map(item => {
             return {
               ...item,
               operationDataBtn: this.createOperationBtn(),
@@ -365,6 +402,7 @@ export default {
       }
     },
     async assetRolList () {
+      if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
       try {
         const params = {
           assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
@@ -518,6 +556,49 @@ export default {
       } else {
         this.$SG_Message.error(res.message)
       }
+    },
+    // 下载
+    async exportOperationAttr () {
+      if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
+      const params = {
+        organId: this.queryCondition.organId
+      }
+      try{
+        const {data: res} = await this.$api.assetBussinessInformation.exportOperationAttr(params)
+        debugger
+        let blob = new Blob([res])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `资产土地经营导出.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        this.$emit("submit")
+      } catch (e) {
+        this.$SG_Message.error("下载失败")
+      }finally {
+      }
+    },
+    // 批量导入
+    uploadFile (file) {
+      const { organId } = this.queryCondition
+      let name = this.$SG_Message.loading({ duration: 0, content: '导入中' })
+      let fileData = new FormData()
+      fileData.append('attrModelFile', file)
+      fileData.append("organId",organId)
+      this.$api.assetBussinessInformation.readExcelModel(fileData).then(r => {
+        this.$SG_Message.destroy(name)
+        let res = r.data
+        if (res && String(res.code) === '0') {
+          this.$SG_Message.success(res.message || '导入成功')
+          this.$refs.batchImport.visible = false
+        }
+        throw res.message
+      }).catch(err => {
+        this.$SG_Message.destroy(name)
+        this.$SG_Message.error(err || '批量导入失败')
+      })
     }
   },
 };
