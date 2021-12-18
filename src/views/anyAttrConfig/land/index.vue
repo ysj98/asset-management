@@ -8,18 +8,19 @@
       <div slot="headerForm" class="search-content-box">
         <div class="top-search-one" style="padding: 0;">
           <div>
-            <SG-Button class="mr10" type="info" @click="appendVisible = true">新增</SG-Button>
+            <SG-Button v-if="createPower" class="mr10" type="info" @click="appendVisible = true">新增</SG-Button>
           </div>
-          <div style="overflow: visible;margin-right: 10px">
+          <div style="overflow: visible;margin-right: 10px;margin-top: 0px;">
             <top-organ-by-user
               :hasAll="false"
               :selectFirst="true"
               @change="handleOrganChange"
               v-model="queryCondition.organId"
+              style="display: inline-block;vertical-align: bottom;"
               :formStyle="{ width: '170px', verticalAlign: 'bottom', }"
             />
             <dict-select
-              style="width: 170px;margin-left: 10px;"
+              style="width: 170px;margin-left: 10px;margin-top: -10px"
               :dict-options="statusOptions"
               v-model="queryCondition.status"
             />
@@ -107,9 +108,6 @@ export default {
       appendVisible: false,
       typeFilter,
       ASSET_MANAGEMENT,
-      installValue: [], // 安装日期
-      expValue: [], // 报废日期
-      hasPowerExport: false, // 导出按钮权限
       table: {
         columns,
         dataSource: [{color: ''}],
@@ -118,8 +116,6 @@ export default {
       },
       topOrganId: '',
       createPower: false, // 新建
-      editPower: false, // 编辑
-      deletePower: false, // 删除
       toggle: false
     };
   },
@@ -128,6 +124,7 @@ export default {
   },
   methods: {
     init () {
+      this.handlePower()
       this.queryCondition.assetType = this.$store.state.ASSET_TYPE_CODE.LAND
       this.queryCondition.pageNum = 1
       this.query()
@@ -168,6 +165,7 @@ export default {
       console.log(data)
       this.table.dataSource = []
       this.table.totalCount = 0
+      if (!data.organId) {return}
       this.queryAssetAttrConfig(data)
     },
     // 重置分页查询
@@ -176,11 +174,8 @@ export default {
     },
     // 处理按钮权限
     handlePower() {
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_CREATE)) {
+      if (this.$power.has(ASSET_MANAGEMENT.CUSTOM_CODE_LAND_ADD)) {
         this.createPower = true;
-      }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
-        this.hasPowerExport = true
       }
     },
     handleColorSelectSubmit (val) {
@@ -206,12 +201,13 @@ export default {
     createOperationBtn() {
       // 审批状态
       let arr = [];
-      // if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_EQUIPMENT_EDIT)) {
+      if (this.$power.has(ASSET_MANAGEMENT.CUSTOM_CODE_LAND_EDIT)) {
         arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+      }
+      if (this.$power.has(ASSET_MANAGEMENT.CUSTOM_CODE_LAND_CHANGE)) {
         arr.push({ iconType: "edit", text: "启用", editType: "enable" });
         arr.push({ iconType: "edit", text: "停用", editType: "disable" });
-
-      // }
+      }
       return arr;
     },
     /**************************************************** **/
@@ -227,6 +223,8 @@ export default {
             }
           });
           this.table.totalCount = res.data.count;
+        } else {
+          this.$SG_Message.error(res.message)
         }
       } finally {
         this.table.loading = false;
@@ -248,7 +246,6 @@ export default {
           this.$SG_Message.error(res.message)
         }
       }finally {
-
       }
     },
   },

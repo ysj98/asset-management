@@ -19,7 +19,7 @@ export function updateAssetAttr (params) {
 }
 /* 导出资产信息 */
 export function exportTransferOperation (params) {
-    return axiosPost(assetBussinessInformation.exportTransferOperation, params)
+    return axiosPost(assetBussinessInformation.exportTransferOperation, params, false, false, {responseType: 'blob'})
 }
 /* 导入资产信息 */
 export function readExcelModel (params) {
@@ -33,4 +33,9 @@ export function queryAssetAttrViewTotal (params) {
 /* 土地导出查询 */
 export function queryAssetToExport (params) {
     return axiosPost(assetBussinessInformation.queryAssetToExport, params)
+}
+
+/* 土地导出查询 */
+export function exportOperationAttr (params) {
+    return axiosPost(assetBussinessInformation.exportOperationAttr, params, false, false, {responseType: 'blob'})
 }

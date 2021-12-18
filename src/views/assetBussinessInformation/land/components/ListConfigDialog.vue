@@ -18,7 +18,6 @@
           </a-checkbox>
         </template>
       </div>
-
     </a-checkbox-group>
   </a-modal>
 </template>
@@ -67,6 +66,7 @@ export default  {
         const {data: res} = await this.$api.assetBussinessInformation.addCustomShow(params)
         if (String(res.code) === '0') {
           this.$emit("submit")
+          this.$SG_Message.success("编辑成功")
         } else {
           this.$SG_Message.error(res.message)
         }

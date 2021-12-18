@@ -37,6 +37,7 @@ import * as attrConfig from './attrConfig'
 import * as barCode from './barCode'
 import * as assetOperationMode from './assetOperationMode'
 import * as assetBussinessInformation from './assetBussinessInformation'
+import * as drawMap from './drawMap'
 const API = {
   auth,
   global,
@@ -59,10 +60,11 @@ const API = {
   paramsConfig,
   dataCenter,
   codeRule,
-  attrConfig,
   barCode,
   assetOperationMode,
-  assetBussinessInformation
+  assetBussinessInformation,
+  attrConfig,
+  drawMap
 }
 export default {
   install (Vue) {

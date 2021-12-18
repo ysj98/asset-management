@@ -134,7 +134,7 @@ export default {
     init () {
       if (!this.visible) return
       if (this.object) {
-        this.table.datasource = this.object.assetAttrList
+        this.table.datasource = this.object.assetAttrList || []
       }
     },
     handleSubmit () {
@@ -152,7 +152,7 @@ export default {
         const { data: res } = await this.$api.assetBussinessInformation.updateAssetAttr(params)
         if (String(res.code) === "0") {
           this.$emit("submit")
-          this.$SG_Message.success("新增成功")
+          this.$SG_Message.success("编辑成功")
         } else {
           this.$SG_Message.error(res.message)
         }

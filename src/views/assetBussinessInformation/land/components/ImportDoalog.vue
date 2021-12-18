@@ -1,43 +1,13 @@
 <template>
   <div>
     <a-modal
-      title="导出"
+      title="导入"
       :visible="visible"
       width="800px"
       okText="下载模板"
       @cancel="handleCancel"
       @ok="handleSubmit">
       <div class="box">
-        <div style="padding: 10px 20px;">
-          <a-row class="playground-row">
-            <a-form-model ref="form" :rules="rules" :model="formInfo" :label-col="{ span: 5 }" :wrapper-col="{ span: 14 }">
-              <a-row>
-                <a-col class="playground-col" :span="24">
-                  <a-form-model-item label="经营方式：">
-                    <dict-select
-                      :dictOptions="operationMode"
-                      placeholder='选择经营方式'
-                      @change="handleChange"
-                      v-model="formInfo.modeOperId"/>
-                  </a-form-model-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col class="playground-col" :span="24">
-                  <a-form-model-item label="土地名称：">
-                    <dict-select
-                        mode="multiple"
-                        :maxTagCount="1"
-                        :isFilterAll="true"
-                        :dict-options="assetList"
-                        placeholder='选择土地用途'
-                        v-model="formInfo.assetLandIds"/>
-                  </a-form-model-item>
-                </a-col>
-              </a-row>
-            </a-form-model>
-          </a-row>
-        </div>
       </div>
     </a-modal>
   </div>
@@ -113,7 +83,7 @@ export default {
         const { data: res } = await this.$api.attrConfig.insertAssetAttrConfig(params)
         if (String(res.code) === "0") {
           this.$emit("submit")
-          this.$SG_Message.success("新增成功")
+          this.$SG_Message.success("导入成功")
         } else {
           this.$SG_Message.error(res.message)
         }
@@ -172,6 +142,7 @@ export default {
       }
       try{
         const {data: res} = await this.$api.assetBussinessInformation.exportTransferOperation(params)
+        debugger
         let blob = new Blob([res])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

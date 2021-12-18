@@ -29,12 +29,10 @@ export const queryCondition = {
   flag: '',           // 类型：0运营；1闲置；2自用；3占用；4其他
   landName: '',       // 资产名称/编码模糊查询
   objectTypes: '',    // 资产分类(多选)
-  organId: '',        // 组织机构id
+  organId: undefined,        // 组织机构id
   projectId: [''],      //类型：String  必有字段  备注：项目id
   statuss: [''],        // 资产状态(多选)
   useTypes: [''],        // 用途
-  pageNum: 1,         // 当前页
-  pageSize: 10,       // 每页显示记录数
   address: '',         // 地理位置
   landCategory: '',
   modeOperId: [''],     // 经营方式
