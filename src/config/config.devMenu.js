@@ -126,7 +126,7 @@ export default [
         path: '/assetBussinessInformation'
       },
       {
-        title: '自定义属性设置',
+        title: '资产业务属性配置',
         path: '/anyAttrConfig'
       }
     ]

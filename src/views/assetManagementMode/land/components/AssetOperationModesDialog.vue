@@ -17,9 +17,9 @@
         />
         <SG-FooterPagination
             location="relative"
-            :pageLength="page.pageLength"
+            :pageLength="page.pageSize"
             :totalCount="page.totalCount"
-            v-model="page.pageNo"
+            v-model="page.pageNum"
             @change="handleChange"
         />
       </div>
@@ -34,15 +34,20 @@ export default {
     visible: {
       default: false
     },
+    preview: {
+      default: ()=>[]
+    },
     organId: {
       default: ""
     },
   },
   watch: {
     visible: {
-      handler: function () {
+      handler: function (val) {
         this.$nextTick(()=>{
-          this.init()
+          if (val) {
+            this.init()
+          }
         })
       },
     },
@@ -67,7 +72,11 @@ export default {
       this.page.pageSize = 10;
       this.page.totalCount = 0;
       this.selectedRowKeys = []
+      this.preView()
       this.query()
+    },
+    preView(){
+      this.selectedRowKeys = this.preview.map(item=>JSON.stringify({id: item.attrConfigId,attrCode: item.attrCode,attrName: item.attrName}))
     },
     onSelectChange(selectedRowKeys) {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
@@ -110,7 +119,7 @@ export default {
         this.table.loading = true;
         const {data: res} = await this.$api.attrConfig.queryAssetAttrConfig(params);
         if (String(res.code) === "0") {
-          this.table.dataSource = (res.data.data|| []).map((item)=>({...item,attrJSON:JSON.stringify(item)}));
+          this.table.dataSource = (res.data.data|| []).map((item)=>({...item,attrJSON:JSON.stringify({id:item.id,attrCode:item.attrCode,attrName:item.attrName})}));
           this.page.totalCount = res.data.count;
         }
       } finally {

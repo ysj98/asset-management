@@ -286,11 +286,12 @@ export default {
       }
     },
     handleClear () {
-      this.provinces= {
+      this.provinces = {
         province: undefined,
         city: undefined,
         district: undefined
       }
+      this.$refs.ProvinceCityDistrict.allClearFn()
       const organId = this.queryCondition.organId
       this.queryCondition = utils.deepClone(queryCondition)
     },
@@ -319,6 +320,7 @@ export default {
         projectId: this.queryCondition.projectId.join(","),
         modeOperId: this.queryCondition.modeOperId.join(","),
         useTypes: this.queryCondition.useTypes.join(""),
+        objectTypes: this.queryCondition.objectTypes.join(""),
       };
       this.table.dataSource = []
       this.table.totalCount = 0
@@ -371,6 +373,7 @@ export default {
     },
     handleConfigSubmit () {
       this.listConfigDialogVisible = false;
+      this.assetRolList()
     },
     operationFun (type, record) {
       switch (type) {
@@ -545,19 +548,16 @@ export default {
     async queryAssetAttrViewTotal (params) {
       const {data: res} = await this.$api.assetBussinessInformation.queryAssetAttrViewTotal(params)
       if (String(res.code) === '0') {
-        let asstNum = 0
+        // let asstNum = 0
         this.numList = (res.data.data || []).map(item=>{
-          if (item.assetNum) {
-            asstNum += Number(item.assetNum)
-          }
+          console.log(item)
           return {
             title: item.attrName,
             key: item.attrName,
-            value: 0,
+            value: item.landArea,
             fontColor: '#8400ff'
           }
         })
-        this.numList.unshift({title: '资产数量', key: 'assetCount', value: asstNum, fontColor: '#8400ff'})
         /**
          * assetNum: 1
          attrName: "assetNum"
@@ -614,6 +614,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.custom-table {
+  padding-bottom: 40px;
+}
 .top-search-one {
   padding: 20px;
   display: flex;

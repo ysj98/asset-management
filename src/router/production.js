@@ -149,7 +149,7 @@ let proRouter = [{
   },
   {
     path: '/anyAttrConfig',
-    name: '自定义编码设置',
+    name: '资产业务属性配置',
     component: () => import('@/views/anyAttrConfig/index.vue'),
     meta: {
       keepAlive: true

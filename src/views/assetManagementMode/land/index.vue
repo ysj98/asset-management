@@ -39,7 +39,7 @@
           <template slot="assetOperationModes" slot-scope="text, record">
             <template v-for="(item, index) of record.assetOperationModes">
               <span style="font-size: 14px; margin-right: 10px" :key="index">{{
-                item.modeOperName
+                item.attrName
               }}</span>
             </template>
             <a-button
@@ -73,16 +73,13 @@
             <template v-if="record.editPower">
               <template v-if="!record.isEdit">
                 <a-button type="link" @click.native="handleEdit(record)"
-                  >编辑</a-button
-                >
+                  >编辑</a-button>
               </template>
               <template v-else>
                 <a-button type="link" @click.native="handleSave(record)"
-                  >保存</a-button
-                >
+                  >保存</a-button>
                 <a-button type="link" @click.native="handleClose(record)"
-                  >取消</a-button
-                >
+                  >取消</a-button>
               </template>
             </template>
           </template>
@@ -104,6 +101,7 @@
       @submit="handleColorSelectSubmit"
     />
     <asset-operation-modes-dialog
+       :preview="selectItem.assetOperationModes"
       :organ-id="queryCondition.organId"
       :visible="assetOperationModelVisible"
       :value="selectItem.color"
@@ -230,6 +228,7 @@ export default {
         if (String(res.code) === "0") {
           this.table.dataSource = (res.data.data || []).map((item) => ({
             ...item,
+            assetOperationModes: (item.assetOperationModes|| []).map(node=>({...node, attrName: node.modeOperName})),
             isEdit: false,
             editPower: this.$power.has(ASSET_MANAGEMENT.ASSET_FUNCTION_EDIT),
           }));
