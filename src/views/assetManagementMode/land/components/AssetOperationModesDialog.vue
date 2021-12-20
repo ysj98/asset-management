@@ -17,9 +17,9 @@
         />
         <SG-FooterPagination
             location="relative"
-            :pageLength="page.pageLength"
+            :pageLength="page.pageSize"
             :totalCount="page.totalCount"
-            v-model="page.pageNo"
+            v-model="page.pageNum"
             @change="handleChange"
         />
       </div>
