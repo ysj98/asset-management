@@ -1,31 +1,29 @@
 <template>
   <div class="simple-asset-land-info">
     <div class="land-name">
-      {{ "XXX土地" }}
+      {{ assetLandInfo.projectName }}
     </div>
     <div>
       <span class="title-left">资产项目</span>
       <span class="content-right">
-        {{
-          "这是一个超级长名字的i先昂吗这是一个超级长名字的i先昂吗这是一个超级长名字的i先昂吗"
-        }}
+        {{ assetLandInfo.landName }}
       </span>
     </div>
     <div>
       <span class="title-left">资产编码</span>
       <span class="content-right">
-        {{ "dsdg-sdg-sdgsdg-sdg-sdg-sd-g-sdg-sdg--sdg-sdg-sdg" }}
+        {{ assetLandInfo.assetCode }}
       </span>
     </div>
     <div>
       <span class="title-left">宗地号</span>
       <span class="content-right">
-        {{ 12345678901234 }}
+        {{ assetLandInfo.theNo || "--" }}
       </span>
     </div>
     <div>
       <span class="title-left">土地面积</span>
-      <span class="content-right"> {{ `${"1000000"}m²` }} </span>
+      <span class="content-right"> {{ `${assetLandInfo.landArea}m²` }} </span>
     </div>
   </div>
 </template>

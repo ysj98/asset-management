@@ -564,6 +564,19 @@ export const ASSET_MANAGEMENT = {
   BARCODE_MANAGEMENT_UPDATE: 'barCode_management_update', // 条码管理————批量更新
   BARCODE_MANAGEMENT_EDIT: 'barCode_management_edit', // 条码管理————编辑标签
 
+  /*
+  * 土地地图绘制
+  * */
+  DRAW_LAND_MAP_ADD_METHOD:'draw_land_add_method', // 新增方案
+  DRAW_LAND_MAP_UPLOAD_IMAGE:'draw_land_add_method', // 上传背景图
+  DRAW_LAND_MAP_DELETE_POLYGON:'draw_land_add_method', // 删除绘制
+
+
+  /*
+  * 资产转运营参数
+  * */
+  CHANGE_ASSET_OPERATION_ADD:'change_asset_operation_add', // 新建
+
 
   /**
    * 基础信息管理 -> 自定义编码设置

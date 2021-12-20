@@ -64,7 +64,7 @@
           </div>
         </div>
       </div>
-      <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_SETTING_SAVE" type="primary" @click="save">保存</SG-Button>
+      <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_SETTING_SAVE" style="margin-left: 600px;margin-top: 20px;" type="primary" @click="save">保存</SG-Button>
     </div>
     <changeLogo :show="showChangeLogo" @submit="logoSubmit" @cancel="cancel"></changeLogo>
   </div>
@@ -73,7 +73,7 @@
 <script>
 import TreeSelect from '../common/treeSelect.vue'
 import changeLogo from './changeLogo.vue'
-// import configs from "@/config/config.base.js";
+import configs from "@/config/config.base.js";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 const assetCodes = [
@@ -118,14 +118,18 @@ export default {
     },
     query () {
       this.$api.barCode.findAssetLabel({organId: this.organId}).then(res => {
-        this.organName = res.data.data.organName
-        let data = res.data.data.dictionaryAttr.split(",")
-        this.selectData = this.assetCodes.filter(item => data.indexOf(String(item.value)) > -1)
-        this.selectConfigure.firstly = this.selectData[0].value
-        this.selectConfigure.secondly = this.selectData[1].value
-        this.selectConfigure.thirdly = this.selectData[2].value
-        this.selectConfigure.forthly = this.selectData[3].value
-        this.logoInfo.src = res.data.data.imageUrl
+        if (Number(res.data.code) === 0) {
+          this.organName = res.data.data.organName
+          let data = res.data.data.dictionaryAttr.split(",")
+          this.selectData = this.assetCodes.filter(item => data.indexOf(String(item.value)) > -1)
+          this.selectConfigure.firstly = this.selectData[0].value
+          this.selectConfigure.secondly = this.selectData[1].value
+          this.selectConfigure.thirdly = this.selectData[2].value
+          this.selectConfigure.forthly = this.selectData[3].value
+          this.logoInfo.src = configs.hostImg + '/' + res.data.data.imageUrl
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     },
     filterOption(input, option) {
@@ -152,7 +156,6 @@ export default {
         dictionaryAttr: dictionaryAttr.join(',')
       }
       this.$api.barCode.saveAssetLabel(form).then(res => {
-        console.log('!!!', res)
         this.query()
       })
     }

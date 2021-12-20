@@ -78,27 +78,27 @@ export default {
     },
     handleSave () {
         if (this.formData === null) {
-            return this.$message.error('请先上传文件!')
+          return this.$message.error('请先上传文件!')
         }
         let loadingName = this.SG_Loding('导入中...')
         this.$api.basics.landImportExcel(this.organId, this.formData).then(res => {
-            if (res.data.code === '0') {
+          if (res.data.code === '0') {
             this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success('导入成功！')
-                this.visible = false
-                this.$emit('success')
+              this.$SG_Message.success('导入成功！')
+              this.visible = false
+              this.$emit('success')
             })
-            } else {
+          } else {
             this.DE_Loding(loadingName).then(() => {
-                this.$refs.downErrorFile.visible = true
-                this.upErrorInfo = res.data.message
+              this.$refs.downErrorFile.visible = true
+              this.upErrorInfo = res.data.message
             })
-            }
+          }
         }, () => {
-            this.DE_Loding(loadingName).then(res => {
-            this.$SG_Message.error('导入失败！')
-            })
+          this.DE_Loding(loadingName).then(res => {
+          this.$SG_Message.error('导入失败！')
         })
+      })
     },
     checkFile (fileName, fileSize) {
       // 检查文件类型
@@ -143,15 +143,15 @@ export default {
     downLandSource () {
       let loadingName = this.$SG_Message.loading({content: '下载中...'})
       this.$api.basics.landDownLoadExcel({organId: this.organId}).then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.data])
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            a.download = `土地资料模板.xls`
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
+        this.$SG_Message.destroy(loadingName)
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `土地资料模板.xls`
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
       }, () => {
         this.$SG_Message.destroy(loadingName)
         this.$SG_Message.error('导出土地模板失败!')

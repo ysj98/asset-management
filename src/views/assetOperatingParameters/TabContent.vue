@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="action-block">
-      <a-button style="width: 100px" type="primary" @click="btnAddClick">
+      <a-button v-power="ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_ADD" style="width: 100px" type="primary" @click="btnAddClick">
         新建
       </a-button>
       <div>
@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OperationPopover from "@/components/OperationPopover";
 import TopOrganByUser from "@/views/common/topOrganByUser";
 export default {
@@ -104,6 +105,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       queryForm: {
         status: "0",
       },

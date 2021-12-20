@@ -5,7 +5,7 @@
  */
 
 let conf = {
-  local: 'http://192.168.1.11:8092', // 开发
+  local: 'http://192.168.1.7:8088', // 开发
   gamma: 'https://gammapic.uhomecp.com', // 测试
   uhomecp: 'http://pic.uhomecp.com' // 线上
 }
