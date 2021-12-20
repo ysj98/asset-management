@@ -153,14 +153,17 @@ export default {
   watch: {
     popupData: {
       handler: function (newValue) {
-        this.initBaseInfo(newValue);
-        this.initTableData(newValue);
-        this.initAttrData(newValue);
+        this.init(newValue);
       },
       immediate: true,
     },
   },
   methods: {
+    init(data) {
+      this.initBaseInfo(data);
+      this.initTableData(data);
+      this.initAttrData(data);
+    },
     initTableData(allData) {
       this.tableOptions.dataSource = [
         {

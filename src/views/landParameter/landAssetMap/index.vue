@@ -113,7 +113,10 @@ export default {
         console.error("错误");
         return null;
       }
-      console.log("assetId", assetId);
+      let Profile = Vue.extend(LandDetailPopup);
+      const popupInstance = new Profile({
+        propsData: { popupData: {} },
+      }).$mount("#landDetailPopup");
       const req = {
         assetId: assetId,
         // 固定写死2
@@ -133,11 +136,9 @@ export default {
               ...landInfo,
             };
             // 创建构造器
-            let Profile = Vue.extend(LandDetailPopup);
             // 创建 Profile 实例，并挂载到一个元素上。
-            new Profile({ propsData: { popupData: data } }).$mount(
-              "#landDetailPopup"
-            );
+            console.log("popupInstance", popupInstance);
+            popupInstance.init(data);
           } else {
             this.$SG_Message.error(message);
           }
