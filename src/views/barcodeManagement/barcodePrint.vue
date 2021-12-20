@@ -4,8 +4,8 @@
       <!-- printHide是为了隐藏打印的按钮，在打印页面时 -->
     <div class="btn"><a-button type="primary" @click="printClick" class='printHide'>打印</a-button></div>
     <div class="content">
-      <div class="codecontent" v-for="(item, index) in codeArray" :key="index" :id="`code${index}`" style="page-break-after:always;">
-        <div :ref="`ref${index}`" class="code"></div>
+      <div class="codecontent" v-for="(item, index) in codeArray" :key="index" style="page-break-after:always;">
+        <div :ref="`ref${index}`" :id="`code${index}`" class="code"></div>
         <div v-for="asset in assetInfo" :key="asset.value">
           <div class="up">
             <span class="left">{{asset.name}}：</span>
@@ -83,25 +83,27 @@ export default {
      // 查看二维码接口
     checkCode(){
       this.$api.barCode.barCodePrint(this.codeInformationParams).then((res)=>{
-        this.codeArray = JSON.parse(JSON.stringify(res.data.data))
-        console.log('codeArray', this.codeArray)
-        let dictionaryAttr = this.codeArray[0].dictionaryAttr.split(',')
-        let selectData = []
-        dictionaryAttr.forEach(dictionary => {
-          let info = {}
-          info.name = this.assetCodes.filter(item => dictionary.indexOf(String(item.value)) > -1)[0].name
-          info.value = this.dictionaryCodes.filter(item => dictionary.indexOf(String(item.value)) > -1)[0].name
-          selectData.push(info)
-        })
-        this.assetInfo = selectData
-        this.bindQRCode()
+        if (Number(res.data.code) === 0) {
+          this.codeArray = JSON.parse(JSON.stringify(res.data.data))
+          let dictionaryAttr = this.codeArray[0].dictionaryAttr.split(',')
+          let selectData = []
+          dictionaryAttr.forEach(dictionary => {
+            let info = {}
+            info.name = this.assetCodes.filter(item => dictionary.indexOf(String(item.value)) > -1)[0].name
+            info.value = this.dictionaryCodes.filter(item => dictionary.indexOf(String(item.value)) > -1)[0].name
+            selectData.push(info)
+          })
+          this.assetInfo = selectData
+          this.bindQRCode()
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     },
     bindQRCode() {
       document.title = window.opener.getTitleFun;//接收传过来的title值
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
-          console.log('img', configs.hostImg + '/' + item.imageUrl)
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {
             text: item.qrCode,
             width: 150,
@@ -112,6 +114,19 @@ export default {
             url: configs.hostImg + '/' + item.imageUrl
           })
           console.log(qrcode)
+          const id = `code${index}`
+          const divBlock = document.getElementById(id)
+          const cEle = divBlock.querySelector('canvas')
+          const iEle = divBlock.querySelector('img')
+          const textEle = document.createElement('span')
+          divBlock.appendChild(textEle)
+          const image = new Image(30,30)
+          image.setAttribute('crossOrigin', 'anonymous')
+          image.src = configs.hostImg + '/' + item.imageUrl
+          image.onload = function (){
+            cEle.getContext('2d').drawImage(image, 0, 0, 200, 200, 45, 45, 30, 30)
+            iEle.src = cEle.toDataURL()
+          }
         })
       })
     },
