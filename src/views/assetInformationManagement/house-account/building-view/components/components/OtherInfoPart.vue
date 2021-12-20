@@ -16,7 +16,7 @@
 <script>
   export default {
     name: 'OtherInfoPart',
-    props: ['buildId'],
+    props: ['buildId', 'assetIds'],
     data () {
       return {
         spinning: false, // 页面加载状态

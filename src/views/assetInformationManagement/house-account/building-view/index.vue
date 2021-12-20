@@ -72,7 +72,7 @@
         <span style="color: #0084FF; cursor: pointer">{{text}}</span>
       </span>
       <span slot="action" slot-scope="text, record">
-        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record.buildId)">详情</span>
+        <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
@@ -157,11 +157,12 @@
       },
 
       // 查看楼栋视图详情
-      handleViewDetail (buildId) {
+      handleViewDetail (record) {
+        console.log('record', record)
         const { organProjectBuildingValue: { organId } } = this
         const resObj = this.organOptions.filter(ele=>ele.vaslukeye = organId)[0]
         const organName = resObj ? resObj.title : ''
-        buildId && this.$router.push({ path: '/buildingView/buildingViewDetail', query: {organId, buildId,organName:organName }})
+        record.buildId && this.$router.push({ path: '/buildingView/buildingViewDetail', query: {organId, assetIds: record.assetIds, buildId: record.buildId,organName:organName }})
       },
 
       // 查询列表数据

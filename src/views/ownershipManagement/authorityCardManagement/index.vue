@@ -153,7 +153,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import BatchImport from 'src/views/common/eportAndDownFile'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 import EditTableHeader from './EditTableHeader'
-const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 const columns = [
   {
     title: '所属机构',
@@ -549,6 +549,7 @@ export default {
     },
     // 点击查询按钮
     queryHandler () {
+      this.queryCondition.pageNum = 1
       this.query()
       this.warrantTotal()
     },
