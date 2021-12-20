@@ -265,6 +265,10 @@ export default [
         title: '资产地图',
         path: '/assetMap'
       },
+      {
+        title: '土地地图',
+        path: '/landAssetMap'
+      },
     ]
   },
   {

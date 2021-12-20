@@ -1394,4 +1394,8 @@ export const drawMap = {
   deleteLayerDetails: "/ams/layerScheme/deleteLayerDetails",
   // 批量修改图层绘制详情
   updateLayerDetails: "/ams/layerScheme/updateLayerDetails",
+  // 统计土地用途
+  landUseStatistics: "/ams/layerScheme/landUseStatistics",
+  // 资产地图-土地资产和业务详情
+  landBusinessDetail: "/ams/asset/map/landBusinessDetail",
 }

@@ -2,13 +2,27 @@
   <div class="container">
     <div class="top-action">
       <div class="left">
-        <!-- TODO:权限控制  -->
-        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_ADD_METHOD" @click="openAddMethodPop" type="primary" icon="edit" text>
+        <div class="place-block"></div>
+        <SG-Button
+          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_ADD_METHOD"
+          @click="openAddMethodPop"
+          type="primary"
+          icon="edit"
+          text
+        >
           新增方案
         </SG-Button>
-        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_UPLOAD_IMAGE" @click="btnUpload" class="right-block" icon="upload" text>
+        <div class="place-block"></div>
+        <SG-Button
+          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_UPLOAD_IMAGE"
+          @click="btnUpload"
+          class="right-block"
+          icon="upload"
+          text
+        >
           上传背景图
         </SG-Button>
+        <div class="place-block"></div>
         <SG-Button
           v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_DELETE_POLYGON"
           @click="handleDel"
@@ -55,7 +69,7 @@
       />
     </div>
     <div class="bottom-show">
-      <div v-if="false">
+      <div>
         <button @click="getAll">获取所有图形</button>
         <button @click="tempInit">初始化图形</button>
         <button @click="removeAll">移除所有图形</button>
@@ -84,15 +98,12 @@
       id="background"
       @change="handleUploadBackground"
     />
-    <SimpleAssetLandInfo
-      ref="SimpleAssetLandInfoRef"
-      :asset-land-info="currentAssetInfo"
-    />
   </div>
 </template>
 
 <script>
-import {ASSET_MANAGEMENT} from '@/config/config.power'
+import { arrayToObj, generatePathStyle } from "@/views/mapDrawLand/share";
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 // TODO: 通过 config 获取当前环境域名(看看能不能直接用相对路径获取 layerPath)
 const baseUrl = "http://192.168.1.7:8088/";
@@ -104,6 +115,7 @@ import LRasterCoords from "leaflet-rastercoords";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "leaflet/dist/leaflet.css";
+import Vue from "_vue@2.6.14@vue";
 
 export default {
   /*
@@ -114,12 +126,11 @@ export default {
     TopOrganByUser,
     AddMethodsModal,
     AssetLandList,
-    SimpleAssetLandInfo,
   },
   data() {
     return {
+      assetList: [],
       ASSET_MANAGEMENT,
-      currentAssetInfo: {},
       currentSelectLayer: null,
       operationModeList: [],
       // 地图是否加载
@@ -154,56 +165,72 @@ export default {
         assetId,
       });
     },
-    generatePop(layer, otherInfo) {
-      // TODO:动态生成 不同资产数据的弹窗
-      console.log("this.$refs", this.$refs);
-      const popupContent = this.$refs.SimpleAssetLandInfoRef.$el;
-
-      layer.bindPopup(popupContent);
-
-      layer._assetId = otherInfo.assetId;
-      // TODO:编辑的时候不做"悬浮"现实弹窗的效果,因为牵扯到编辑图形,来回在图形内外移动,实际操作效果很差
-      // layer.on("mouseover", (e) => {
-      //   e.target.openPopup();
-      // });
-      // layer.on("mouseout", (e) => {
-      //   e.target.closePopup();
-      // });
-      // layer.on("click", layer.closePopup);
+    getDialog({ assetId }) {
+      const popupData = this.assetList.filter(
+        (ele) => ele.assetId === assetId
+      )[0];
+      let Profile = Vue.extend(SimpleAssetLandInfo);
+      new Profile({ propsData: { assetLandInfo: popupData } }).$mount(
+        "#mapDialog-container"
+      );
+    },
+    generatePop(layer) {
+      layer.on("click", (e) => {
+        const popup = Leaflet.popup({
+          className: "custom-popup",
+          minWidth: 199,
+          maxHeight: 550,
+        })
+          .setLatLng(e.latlng)
+          .setContent('<div id="mapDialog-container"></div>')
+          .openOn(layer);
+        this.mapInstance.openPopup(popup);
+        this.$nextTick(() => {
+          this.getDialog({ assetId: e.target._assetId });
+        });
+      });
+    },
+    // 根据 geoJsonData 生成图层时 对每一个图层做初始化处理
+    initLayer(feature, layer) {
+      this.generatePop(layer);
+      this.initLayerEvent(layer);
+      this.initLayerData(layer, {
+        assetId: feature.assetId,
+        layerDetailId: feature.layerDetailId,
+      });
+      layer.addTo(this.polygonLayer);
+      this.polygonLayer.addTo(this.mapInstance);
+      this.jsonData = Object.assign({}, this.jsonData, {
+        [feature.assetId]: layer,
+      });
+      this.mapLayers = Object.assign({}, this.mapLayers, {
+        [feature.assetId]: layer,
+      });
     },
     createLayersFromJson(data) {
       const _this = this;
       return Leaflet.geoJSON(data, {
         style: function (feature) {
-          return _this.generatePathStyle({
+          return generatePathStyle({
             color: feature.properties.style.color,
           });
         },
-        pointToLayer: function (feature, latlng) {},
-        onEachFeature: (feature, layer) => {
-          this.generatePop(layer, feature);
-          this.initLayerEvent(layer);
-          this.initLayerData(layer, {
-            assetId: feature.assetId,
-            layerDetailId: feature.layerDetailId,
-          });
-        },
+        onEachFeature: _this.initLayer,
       });
     },
-    handleRender(itemData) {
-      const res = this.createLayersFromJson(itemData);
-      // // 好像不支持链式调用
-      // res._assetId = itemData.assetId;
-      // res._layerDetailId = itemData.layerDetailId;
-      res.addTo(this.polygonLayer);
-      // 好像不支持链式调用
+    handleRender(geoJsonData) {
+      const res = this.createLayersFromJson(geoJsonData);
+      Object.keys(res._layers).forEach((ele) => {
+        // TODO:为什么在这后面 addTo(this.mapInstance),然后通过 this.polygonLayer调用clearLayers的时候就无效,改成放到下面addTo就可以
+        res._layers[ele].addTo(this.polygonLayer);
+        this.jsonData = Object.assign({}, this.jsonData, {
+          [res._layers[ele]._assetId]: res._layers[ele],
+        });
+        this.mapLayers = Object.assign({}, this.mapLayers, {
+          [res._layers[ele]._assetId]: res._layers[ele],
+        });
+      });
       this.polygonLayer.addTo(this.mapInstance);
-      this.jsonData = Object.assign({}, this.jsonData, {
-        [itemData.assetId]: itemData,
-      });
-      this.mapLayers = Object.assign({}, this.mapLayers, {
-        [itemData.assetId]: res,
-      });
     },
     // 点击上传背景图
     btnUpload() {
@@ -245,34 +272,23 @@ export default {
           .then(({ data: { data, code, message } }) => {
             if (code === "0") {
               console.log("data", data);
+              const { layerPath, width, height } = data;
+              const temp = layerPath.split("/");
+              const options = {
+                id: "leaflet-map",
+                imageWidth: width,
+                imgHeight: height,
+                layerPath: temp[temp.length - 1],
+              };
+              this.initMap(options);
             } else {
               this.$SG_Message.error(message);
             }
           });
       };
     },
-    /*
-     * type
-     *   - 0 array to obj return Array  [{x,y}]
-     *   - 1 obj to array return Array  [x,y]
-     * */
-    arrayToObj(data, type) {
-      if (type === 0) {
-        return data.map((ele) => {
-          return {
-            x: ele[0],
-            y: ele[1],
-          };
-        });
-      }
-      if (type === 1) {
-        return data.map((ele) => {
-          return [ele.x, ele.y];
-        });
-      }
-    },
     initAssetLayers(assetList) {
-      // TODO: 先清空数据 清空原有图层,看看图层组
+      this.assetList = assetList;
       this.polygonLayer.clearLayers();
       const geoJsonData = assetList
         .filter((ele) => ele.layerSchemeDetailVo)
@@ -289,16 +305,15 @@ export default {
             geometry: {
               type: "Polygon",
               coordinates: [
-                this.arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1),
+                arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1),
               ],
             },
           };
         });
-      geoJsonData.forEach((ele) => {
-        this.handleRender(ele);
-      });
+      this.createLayersFromJson(geoJsonData);
     },
     removeAll() {
+      console.log("this.polygonLayer", this.polygonLayer);
       this.polygonLayer.clearLayers();
       this.polygonLayer.eachLayer((layer) => {
         console.log("layer", layer);
@@ -377,9 +392,7 @@ export default {
           assetId: 1,
         },
       ];
-      geoJsonData.forEach((ele) => {
-        this.handleRender(ele);
-      });
+      this.createLayersFromJson(geoJsonData);
     },
     getAll() {
       const res = this.mapInstance.pm.getGeomanDrawLayers();
@@ -479,9 +492,8 @@ export default {
     /*
      * type: 'edit' | 'text'
      * */
-    handleDraw({ assetItemInfo, type }) {
+    handleDraw({ assetItemInfo }) {
       this.closeDraw();
-      // TODO:根据所选资产 配置画笔,然后只能画一个多边形
       const { modeColour, assetId } = assetItemInfo;
       const layer = this.mapLayers[assetId];
       if (layer) {
@@ -492,7 +504,6 @@ export default {
         // 不管点击区域是哪一部分 都直接开启对应图形的编辑
         this.enableDraw(layer);
         this.currentSelectLayer = layer;
-        console.log("layer", layer);
         layer.openPopup();
       } else {
         this.currentAssetId = assetItemInfo.assetId;
@@ -504,11 +515,6 @@ export default {
      * 入库 删除图块
      * */
     async delPolygon({ assetId, layerDetailId }) {
-      // if (!layerDetailId) {
-      //   this.$refs.AssetLandListRef.setAssetDrawFlag({ assetId, flag: true });
-      //   delete this.jsonData[assetId];
-      //   delete this.mapLayers[assetId];
-      // }
       const res = {
         layerSchemeDetailReqDtos: [
           {
@@ -575,20 +581,8 @@ export default {
         }
       });
     },
-    // 获取绘制样式
-    generatePathStyle({ color }, options = {}) {
-      const obj = {
-        color: color,
-        fillColor: color,
-        fillOpacity: 0.3,
-        hintlineStyle: color,
-        templineStyle: color,
-        // weight: 0.8,
-      };
-      return Object.assign(obj, options);
-    },
     setDrawOptions({ modeColour }) {
-      const style = this.generatePathStyle({ color: modeColour });
+      const style = generatePathStyle({ color: modeColour });
       this.mapInstance.pm.setPathOptions(style);
     },
     closeDraw() {
@@ -602,9 +596,11 @@ export default {
       });
     },
     // 地图平移到指定位置
-    jumpMapLand(layerInfo) {
-      // this.mapInstance.panTo(layerInfo._latlngs[0][0]);
-      this.mapInstance.flyToBounds(layerInfo.getBounds());
+    jumpMapLand(layer) {
+      // TODO:跳转要不要带动画
+      // const latlngs = layer.getLatLngs();
+      // this.mapInstance.panTo(latlngs[0]);
+      this.mapInstance.flyToBounds(layer.getBounds());
     },
     handleSuccess() {},
     doOpenPop(modal, title) {
@@ -671,18 +667,18 @@ export default {
         res.properties || (res.properties = {});
         this.save({
           assetId: res.assetId,
-          coordinateList: this.arrayToObj(res.geometry.coordinates[0], 0),
-        }).then((value) => {
-          this.generatePop(e.layer, { assetId: this.currentAssetId });
+          coordinateList: arrayToObj(res.geometry.coordinates[0], 0),
+        }).then((arr) => {
+          const { layerDetailId, assetId } = arr[0];
+          this.generatePop(e.layer);
           this.jsonData = Object.assign({}, this.jsonData, {
             [this.currentAssetId]: res,
           });
           this.mapLayers[this.currentAssetId] = e.layer;
-          // TODO:使用后端返回的详情id
-          // this.initLayerData(e.layer, {
-          //   layerDetailId: value.layerDetailId,
-          //   assetId: res.assetId,
-          // });
+          this.initLayerData(e.layer, {
+            layerDetailId: layerDetailId,
+            assetId: assetId,
+          });
           this.initLayerEvent(e.layer);
         });
       });
@@ -696,7 +692,7 @@ export default {
         this.mapLayers[this.currentAssetId] = e.layer;
         this.updatePolygon({
           assetId: res.assetId,
-          coordinateList: this.arrayToObj(res.geometry.coordinates[0], 0),
+          coordinateList: arrayToObj(res.geometry.coordinates[0], 0),
         });
       });
       this.mapInstance.on("pm:remove", (e) => {
@@ -737,4 +733,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.place-block {
+  display: none;
+}
+</style>
 <style src="./index.less" lang="less" scoped></style>

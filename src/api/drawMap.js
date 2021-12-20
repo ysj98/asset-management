@@ -1,4 +1,4 @@
-import { axiosPost } from "../utils/axios";
+import {axiosGet, axiosPost} from "../utils/axios";
 import { drawMap } from "../config/config.url";
 
 // 上传图层图片
@@ -38,4 +38,13 @@ export function deleteLayerDetails(data) {
 // 批量修改图层绘制详情
 export function updateLayerDetails(data) {
   return axiosPost(drawMap.updateLayerDetails, data);
+}
+// 统计土地用途
+export function landUseStatistics(data) {
+  return axiosPost(drawMap.landUseStatistics, data);
+}
+
+// 资产地图-土地资产和业务详情
+export function landBusinessDetail(data) {
+  return axiosGet(drawMap.landBusinessDetail, data);
 }
