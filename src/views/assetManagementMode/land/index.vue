@@ -73,16 +73,13 @@
             <template v-if="record.editPower">
               <template v-if="!record.isEdit">
                 <a-button type="link" @click.native="handleEdit(record)"
-                  >编辑</a-button
-                >
+                  >编辑</a-button>
               </template>
               <template v-else>
                 <a-button type="link" @click.native="handleSave(record)"
-                  >保存</a-button
-                >
+                  >保存</a-button>
                 <a-button type="link" @click.native="handleClose(record)"
-                  >取消</a-button
-                >
+                  >取消</a-button>
               </template>
             </template>
           </template>

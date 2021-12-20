@@ -170,6 +170,7 @@ export default {
     },
     // 重置分页查询
     searchQuery() {
+      this.queryCondition.pageNum = 1;
       this.query();
     },
     // 处理按钮权限
