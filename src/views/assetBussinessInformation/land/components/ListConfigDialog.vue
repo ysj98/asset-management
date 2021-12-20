@@ -6,7 +6,7 @@
       </div>
       <div v-else class="check-box">
         <template v-for="(item, index) of options">
-          <a-checkbox :value="item.value" :key="index" style="margin-left: 10px">
+          <a-checkbox :value="item.value" :key="index" style="margin-left: 10px" :disabled="item.disabled">
             <a-tooltip>
               <template slot="title">
                 {{item.label}}
@@ -97,22 +97,29 @@ export default  {
      * @param templeCode 全量数据列表
      */
     generatorOptions ({customChose=[],customShow = [],templeCode = []}) {
+      this.selectedList = []
+      const selectItemList = new Set()
       const itemList = templeCode.map(item => {
         return {
           ...item,
           label: item.colName,
-          value: item.colCode
+          value: item.colCode,
+          disabled: false
         }
       });
-      return itemList.map(item =>{ // 处理默认表格
+      const returnList = itemList.map(item =>{ // 处理默认表格
         const choseNum = customChose.some(n=>n.colCode == item.colCode)
         const userShow = customShow.some(n=>n.colCode == item.colCode)
-        console.log(choseNum,userShow)
-        if (choseNum || userShow) {
-          this.selectedList.push(item.value)
+        if (userShow) {
+          item.disabled = true
+          // this.selectedList.push(item.value)
+        } else if (choseNum) {
+          selectItemList.add(item.value)
         }
         return item
-      })
+      });
+      this.selectedList = Array.from(selectItemList)
+      return returnList
     },
 
   }

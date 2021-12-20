@@ -286,11 +286,12 @@ export default {
       }
     },
     handleClear () {
-      this.provinces= {
+      this.provinces = {
         province: undefined,
         city: undefined,
         district: undefined
       }
+      this.$refs.ProvinceCityDistrict.allClearFn()
       const organId = this.queryCondition.organId
       this.queryCondition = utils.deepClone(queryCondition)
     },
@@ -319,6 +320,7 @@ export default {
         projectId: this.queryCondition.projectId.join(","),
         modeOperId: this.queryCondition.modeOperId.join(","),
         useTypes: this.queryCondition.useTypes.join(""),
+        objectTypes: this.queryCondition.objectTypes.join(""),
       };
       this.table.dataSource = []
       this.table.totalCount = 0
@@ -371,6 +373,7 @@ export default {
     },
     handleConfigSubmit () {
       this.listConfigDialogVisible = false;
+      this.assetRolList()
     },
     operationFun (type, record) {
       switch (type) {
