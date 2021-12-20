@@ -21,6 +21,7 @@
 </template>
 <script>
 import QRCode from "qrcodejs2"
+import configs from "@/config/config.base.js"
 const assetCodes = [
   {name: '资产位置', value: 0},
   {name: '资产类型', value: 1},
@@ -49,7 +50,8 @@ export default {
       codeArray: [],
       assetCodes: [...assetCodes],
       dictionaryCodes: [...dictionaryCodes],
-      assetInfo: []
+      assetInfo: [],
+      imgUrl: ''
     };
   },
  created () {
@@ -82,6 +84,7 @@ export default {
     checkCode(){
       this.$api.barCode.barCodePrint(this.codeInformationParams).then((res)=>{
         this.codeArray = JSON.parse(JSON.stringify(res.data.data))
+        console.log('codeArray', this.codeArray)
         let dictionaryAttr = this.codeArray[0].dictionaryAttr.split(',')
         let selectData = []
         dictionaryAttr.forEach(dictionary => {
@@ -98,17 +101,19 @@ export default {
       document.title = window.opener.getTitleFun;//接收传过来的title值
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
+          console.log('img', configs.hostImg + '/' + item.imageUrl)
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {
             text: item.qrCode,
             width: 150,
             height: 150, // 高度
             colorDark: "#333333", //二维码颜色
             colorLight: "#ffffff", //二维码背景色
-            correctLevel : QRCode.CorrectLevel.L
+            correctLevel : QRCode.CorrectLevel.L,
+            url: configs.hostImg + '/' + item.imageUrl
           })
+          console.log(qrcode)
         })
       })
-      
     },
   },
 };

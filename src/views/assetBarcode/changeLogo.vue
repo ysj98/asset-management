@@ -43,7 +43,11 @@ export default {
       let fileData = new FormData()
       fileData.append('file', img)
       this.$api.ownership.uploadAnnex(fileData).then(res => {
-        this.imgInfo.imageUrl = res.data.data.attachmentPath
+        if (Number(res.data.code) === 0) {
+          this.imgInfo.imageUrl = res.data.data.attachmentPath
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
 
       this.cropperImg = URL.createObjectURL(img)

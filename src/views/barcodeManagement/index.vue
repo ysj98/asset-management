@@ -110,7 +110,7 @@ const columns = [
   { title: '资产编码', dataIndex: 'assetCode' },
   { title: '资产类型', dataIndex: 'assetTypeName' },
   { title: '资产分类', dataIndex: 'objectTypeName' },
-  { title: '资产项目名称', dataIndex: 'statusName' },
+  { title: '资产项目名称', dataIndex: 'projectName' },
   { title: '管理机构', dataIndex: 'organName' },
   { title: '资产位置', dataIndex: 'address' },
   { title: '标签编码', dataIndex: 'labelCode' },
@@ -147,6 +147,7 @@ export default {
     }
   },
   mounted() {
+    this.query()
     // 获取资产类型
     this.platformDictFn()
   },
@@ -257,6 +258,8 @@ export default {
             })
           })
           this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
+        } else {
+          this.$message.error(res.data.message);
         }
       })
     },
@@ -297,9 +300,13 @@ export default {
         pageSize: this.queryCondition.pageSize
       }
       this.$api.barCode.queryLabelCodeList(form).then(res => {
-        this.tableData = res.data.data.data
-        this.count = res.data.data.count
-        this.loading = false
+        if (Number(res.data.code) === 0) {
+          this.tableData = res.data.data.data
+          this.count = res.data.data.count
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     },
     clear () {

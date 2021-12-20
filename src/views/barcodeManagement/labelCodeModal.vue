@@ -40,8 +40,11 @@ export default {
         labelCode: this.newLabel
       }
       this.$api.barCode.editLabel(form).then(res => {
-        console.log('res', res)
-        this.cancel()
+        if (!this.newLabel) {
+          this.$SG_Message.error('请填写标签编码新值')
+        } else {
+          this.cancel()
+        }
       })
     },
     cancel () {

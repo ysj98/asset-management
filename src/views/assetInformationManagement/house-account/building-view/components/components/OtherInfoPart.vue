@@ -48,10 +48,11 @@
           buildId: this.buildId
         }
         this.$api.assets.queryAssetViewArchiveDetail(form).then(res => {
-          this.spinning = false
-          console.log('res', res)
-        }).catch(err => {
-          console.error(err)
+          if (Number(res.data.code) === 0) {
+            this.spinning = false
+          } else {
+            this.$message.error(res.data.message)
+          }
         })
       }
     },

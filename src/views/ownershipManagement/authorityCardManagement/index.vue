@@ -527,6 +527,13 @@ export default {
               item.key = index
               item.lotNoEstateUnitCode = `${item.houseNo || '--'}/${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
             })
+            data.forEach(item => {
+              if (Number(item.uploadAttachment) === 1) {
+                item.uploadAttachment = '已上传'
+              } else {
+                item.uploadAttachment = '未上传'
+              }
+            })
             this.tableData = data
             this.count = res.data.data.count
           } else {
