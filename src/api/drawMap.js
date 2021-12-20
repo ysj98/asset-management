@@ -21,3 +21,21 @@ export function addLayerScheme(data) {
 export function queryLayerPageList(data) {
   return axiosPost(drawMap.queryLayerPageList, data);
 }
+
+// 根据项目查询资产及经营方式
+export function queryAssetOpMode(data) {
+  return axiosPost(drawMap.queryAssetOpMode, data);
+}
+
+// 批量新增图层绘制详情
+export function addLayerDetails(data) {
+  return axiosPost(drawMap.addLayerDetails, data);
+}
+// 批量删除图层绘制详情
+export function deleteLayerDetails(data) {
+  return axiosPost(drawMap.deleteLayerDetails, data);
+}
+// 批量修改图层绘制详情
+export function updateLayerDetails(data) {
+  return axiosPost(drawMap.updateLayerDetails, data);
+}

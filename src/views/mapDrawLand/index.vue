@@ -3,14 +3,23 @@
     <div class="top-action">
       <div class="left">
         <!-- TODO:权限控制  -->
-        <SG-Button @click="openAddMethodPop" type="primary" icon="edit" text>
+        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_ADD_METHOD" @click="openAddMethodPop" type="primary" icon="edit" text>
           新增方案
         </SG-Button>
-        <SG-Button @click="btnUpload" class="right-block" icon="upload" text>
+        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_UPLOAD_IMAGE" @click="btnUpload" class="right-block" icon="upload" text>
           上传背景图
         </SG-Button>
-        <SG-Button class="right-block" icon="delete" text>删除绘制</SG-Button>
-        <SG-Button class="right-block" icon="save" text>保存绘制</SG-Button>
+        <SG-Button
+          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_DELETE_POLYGON"
+          @click="handleDel"
+          class="right-block"
+          icon="delete"
+          text
+          :disabled="!currentSelectLayer"
+        >
+          删除绘制
+        </SG-Button>
+        <!--        <SG-Button class="right-block" icon="save" text>保存绘制</SG-Button>-->
       </div>
       <div class="right">
         <TopOrganByUser
@@ -20,7 +29,7 @@
           :selectFirst="true"
         />
         <SG-Select
-          v-model="currentMethodId"
+          v-model="layerSchemeId"
           class="right-block"
           placeholder="请选择方案"
           @change="changeMethod"
@@ -37,40 +46,29 @@
     <div class="middle-content">
       <div v-if="!mapFlag" class="place">初始化地图失败,缺少必要数据</div>
       <div v-else id="leaflet-map"></div>
-
-      <!-- 资产项目、资产名称/资产编码 搜索条件 -->
-      <div v-if="mapFlag" class="content-filter-block">
-        <SG-Select
-          v-model="currentAssetProject"
-          filterable
-          multiple
-          class="select-layer"
-          placeholder="全部资产项目"
-        >
-          <SG-Option
-            v-for="project in assetProjectOptions"
-            :key="project.value"
-            :label="project.label"
-            :value="project.value"
-            :title="project.title"
-          ></SG-Option>
-        </SG-Select>
-        <div class="input-layer">
-          <a-input placeholder="搜资产名称、资产编码" class="input right-block">
-          </a-input>
-          <div class="search-block">
-            <a-icon :style="{ color: '#ffffff' }" type="search" />
-          </div>
-        </div>
-        <AssetLandList
-          @handleDraw="handleDraw"
-          style="position: absolute; top: 40px"
-        />
-      </div>
+      <AssetLandList
+        ref="AssetLandListRef"
+        class="filter-block"
+        v-if="mapFlag"
+        @handleDraw="handleDraw"
+        @initAssetLayers="initAssetLayers"
+      />
     </div>
     <div class="bottom-show">
-      <button @click="getAll">获取所有图形</button>
-      <button @click="tempInit">初始化图形</button>
+      <div v-if="false">
+        <button @click="getAll">获取所有图形</button>
+        <button @click="tempInit">初始化图形</button>
+        <button @click="removeAll">移除所有图形</button>
+      </div>
+      <div
+        class="item"
+        v-for="item in operationModeList"
+        :key="item.modeOperId"
+      >
+        <span class="color-block" :style="{ backgroundColor: item.modeColour }">
+        </span>
+        <span>{{ item.modeOperName }}</span>
+      </div>
     </div>
     <AddMethodsModal
       v-if="modalList.addMethod.show"
@@ -86,10 +84,16 @@
       id="background"
       @change="handleUploadBackground"
     />
+    <SimpleAssetLandInfo
+      ref="SimpleAssetLandInfoRef"
+      :asset-land-info="currentAssetInfo"
+    />
   </div>
 </template>
 
 <script>
+import {ASSET_MANAGEMENT} from '@/config/config.power'
+import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 // TODO: 通过 config 获取当前环境域名(看看能不能直接用相对路径获取 layerPath)
 const baseUrl = "http://192.168.1.7:8088/";
 import AssetLandList from "@/views/mapDrawLand/AssetLandList";
@@ -100,6 +104,7 @@ import LRasterCoords from "leaflet-rastercoords";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "leaflet/dist/leaflet.css";
+
 export default {
   /*
    * 土地地图绘制
@@ -109,9 +114,14 @@ export default {
     TopOrganByUser,
     AddMethodsModal,
     AssetLandList,
+    SimpleAssetLandInfo,
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
+      currentAssetInfo: {},
+      currentSelectLayer: null,
+      operationModeList: [],
       // 地图是否加载
       mapFlag: false,
       currentAssetId: "",
@@ -127,63 +137,77 @@ export default {
         },
       },
       mapInstance: null,
+      polygonLayer: null,
       mapLayers: {},
-      jsonData: [],
+      jsonData: {},
       currentTopOrganId: "",
-      currentMethodId: "",
-      currentAssetProject: [],
+      layerSchemeId: "",
+      organIdByMethod: "",
       methodOptions: [],
-      assetProjectOptions: [],
     };
   },
   methods: {
+    handleDel() {
+      const assetId = this.currentSelectLayer._assetId;
+      this.delPolygon({
+        layerDetailId: this.currentSelectLayer._layerDetailId,
+        assetId,
+      });
+    },
+    generatePop(layer, otherInfo) {
+      // TODO:动态生成 不同资产数据的弹窗
+      console.log("this.$refs", this.$refs);
+      const popupContent = this.$refs.SimpleAssetLandInfoRef.$el;
+
+      layer.bindPopup(popupContent);
+
+      layer._assetId = otherInfo.assetId;
+      // TODO:编辑的时候不做"悬浮"现实弹窗的效果,因为牵扯到编辑图形,来回在图形内外移动,实际操作效果很差
+      // layer.on("mouseover", (e) => {
+      //   e.target.openPopup();
+      // });
+      // layer.on("mouseout", (e) => {
+      //   e.target.closePopup();
+      // });
+      // layer.on("click", layer.closePopup);
+    },
     createLayersFromJson(data) {
+      const _this = this;
       return Leaflet.geoJSON(data, {
         style: function (feature) {
-          console.log("feature.properties", feature);
-          return feature.properties && feature.properties.style;
-        },
-        pointToLayer: function (feature, latlng) {
-          return Leaflet.circleMarker(latlng, {
-            radius: 8,
-            fillColor: "#ff7800",
-            color: "#000",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8,
+          return _this.generatePathStyle({
+            color: feature.properties.style.color,
           });
         },
+        pointToLayer: function (feature, latlng) {},
         onEachFeature: (feature, layer) => {
-          var popupContent = "测试效果";
-
-          layer.bindPopup(popupContent);
-
-          layer._assetId = feature.assetId;
-          layer.on("mouseover", (e) => {
-            console.log("mouseover===>event", e);
-            layer.openPopup();
+          this.generatePop(layer, feature);
+          this.initLayerEvent(layer);
+          this.initLayerData(layer, {
+            assetId: feature.assetId,
+            layerDetailId: feature.layerDetailId,
           });
-          layer.on("mouseout", (e) => {
-            console.log("mouseover===>event", e);
-            layer.closePopup();
-          });
-          layer.off("click", layer.openPopup, layer);
         },
       });
     },
     handleRender(itemData) {
       const res = this.createLayersFromJson(itemData);
-      res.addTo(this.mapInstance);
-      res._assetId = itemData.assetId;
-
-      this.jsonData.push(itemData);
+      // // 好像不支持链式调用
+      // res._assetId = itemData.assetId;
+      // res._layerDetailId = itemData.layerDetailId;
+      res.addTo(this.polygonLayer);
+      // 好像不支持链式调用
+      this.polygonLayer.addTo(this.mapInstance);
+      this.jsonData = Object.assign({}, this.jsonData, {
+        [itemData.assetId]: itemData,
+      });
       this.mapLayers = Object.assign({}, this.mapLayers, {
         [itemData.assetId]: res,
       });
     },
     // 点击上传背景图
     btnUpload() {
-      const id = this.currentMethodId;
+      const id = this.layerSchemeId;
       if (!id) {
         this.$SG_Message.error("请先选择方案");
         return null;
@@ -210,7 +234,7 @@ export default {
           imgFile: file,
           width,
           height,
-          layerSchemeId: this.currentMethodId,
+          layerSchemeId: this.layerSchemeId,
         };
         const req = new FormData();
         Object.keys(r).forEach((ele) => {
@@ -226,6 +250,59 @@ export default {
             }
           });
       };
+    },
+    /*
+     * type
+     *   - 0 array to obj return Array  [{x,y}]
+     *   - 1 obj to array return Array  [x,y]
+     * */
+    arrayToObj(data, type) {
+      if (type === 0) {
+        return data.map((ele) => {
+          return {
+            x: ele[0],
+            y: ele[1],
+          };
+        });
+      }
+      if (type === 1) {
+        return data.map((ele) => {
+          return [ele.x, ele.y];
+        });
+      }
+    },
+    initAssetLayers(assetList) {
+      // TODO: 先清空数据 清空原有图层,看看图层组
+      this.polygonLayer.clearLayers();
+      const geoJsonData = assetList
+        .filter((ele) => ele.layerSchemeDetailVo)
+        .map((ele) => {
+          return {
+            assetId: ele.assetId,
+            layerDetailId: ele.layerSchemeDetailVo.layerDetailId,
+            type: "Feature",
+            properties: {
+              style: {
+                color: ele.modeColour,
+              },
+            },
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                this.arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1),
+              ],
+            },
+          };
+        });
+      geoJsonData.forEach((ele) => {
+        this.handleRender(ele);
+      });
+    },
+    removeAll() {
+      this.polygonLayer.clearLayers();
+      this.polygonLayer.eachLayer((layer) => {
+        console.log("layer", layer);
+      });
     },
     tempInit() {
       const geoJsonData = [
@@ -308,6 +385,23 @@ export default {
       const res = this.mapInstance.pm.getGeomanDrawLayers();
       console.log("res", res);
     },
+    // 开启单个图形绘制
+    enableDraw(layer) {
+      this.mapInstance.pm.disableGlobalEditMode();
+      layer.pm.enable();
+    },
+    initLayerData(layer, { layerDetailId, assetId }) {
+      layer._layerDetailId = layerDetailId;
+      layer._assetId = assetId;
+    },
+    // 初始化 图块事件
+    initLayerEvent(layer) {
+      layer.on("click", () => {
+        this.enableDraw(layer);
+        this.currentSelectLayer = layer;
+        this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
+      });
+    },
     changeMethod(value) {
       this.initStore();
       const res = this.methodOptions.filter((e) => e.value === value)[0];
@@ -317,17 +411,18 @@ export default {
           this.mapFlag = true;
           this.$nextTick(() => {
             const temp = layerPath.split("/");
-            console.log("temp[temp.length - 1]", temp[temp.length - 1]);
             const options = {
               id: "leaflet-map",
               imageWidth: width,
               imgHeight: height,
               layerPath: temp[temp.length - 1],
             };
-            console.log("layerPath", temp[temp.length - 1]);
             this.initMap(options);
-
-            this.getAssetProjectOptions({ organId });
+            this.$refs.AssetLandListRef.initData({
+              layerSchemeId: value,
+              organId,
+            });
+            this.organIdByMethod = organId;
           });
         } else {
           this.mapFlag = false;
@@ -348,9 +443,11 @@ export default {
         drawRectangle: false,
         dragMode: false,
         cutPolygon: false,
-        // removalMode: false,
+        // false
+        removalMode: true,
         rotateMode: false,
         oneBlock: true,
+        editMode: false,
       });
     },
     async getMethodOptions() {
@@ -379,29 +476,120 @@ export default {
         this.$SG_Message.error(message);
       }
     },
-
-    handleDraw(assetItemInfo) {
+    /*
+     * type: 'edit' | 'text'
+     * */
+    handleDraw({ assetItemInfo, type }) {
       this.closeDraw();
       // TODO:根据所选资产 配置画笔,然后只能画一个多边形
-      const { color, assetId } = assetItemInfo;
-      const res = this.mapLayers[assetId];
-      if (res) {
-        this.jumpMapLand(res);
-        res.pm.enable();
+      const { modeColour, assetId } = assetItemInfo;
+      const layer = this.mapLayers[assetId];
+      if (layer) {
+        this.jumpMapLand(layer);
+        // if (type === "edit") {
+        //   this.enableDraw(layer);
+        // }
+        // 不管点击区域是哪一部分 都直接开启对应图形的编辑
+        this.enableDraw(layer);
+        this.currentSelectLayer = layer;
+        console.log("layer", layer);
+        layer.openPopup();
       } else {
         this.currentAssetId = assetItemInfo.assetId;
-        this.setDrawOptions({ color });
+        this.setDrawOptions({ modeColour });
         this.openDraw();
       }
     },
-    setDrawOptions({ color }) {
-      this.mapInstance.pm.setPathOptions({
-        color,
+    /*
+     * 入库 删除图块
+     * */
+    async delPolygon({ assetId, layerDetailId }) {
+      // if (!layerDetailId) {
+      //   this.$refs.AssetLandListRef.setAssetDrawFlag({ assetId, flag: true });
+      //   delete this.jsonData[assetId];
+      //   delete this.mapLayers[assetId];
+      // }
+      const res = {
+        layerSchemeDetailReqDtos: [
+          {
+            layerDetailId,
+          },
+        ],
+      };
+      const {
+        data: { code, message },
+      } = await this.$api.drawMap.deleteLayerDetails(res);
+      if (code !== "0") {
+        this.$SG_Message.error(message);
+      } else {
+        this.mapInstance.removeLayer(this.currentSelectLayer);
+        this.currentSelectLayer = null;
+        delete this.jsonData[assetId];
+        delete this.mapLayers[assetId];
+        this.$refs.AssetLandListRef.setAssetDrawFlag({ assetId, flag: false });
+      }
+    },
+    /*
+     * 入库 更新图块信息
+     * */
+    async updatePolygon({ layerDetailId, coordinateList }) {
+      const res = {
+        layerSchemeDetailReqDtos: [
+          {
+            layerDetailId: layerDetailId,
+            coordinateList: coordinateList,
+          },
+        ],
+      };
+      const {
+        data: { code, message },
+      } = await this.$api.drawMap.updateLayerDetails(res);
+      if (code !== "0") {
+        this.$SG_Message.error(message);
+      }
+    },
+    /*
+     * 入库 图块
+     * */
+    async save({ assetId, coordinateList }) {
+      return new Promise(async (resolve, reject) => {
+        const res = {
+          layerSchemeDetailReqDtos: [
+            {
+              layerId: this.layerSchemeId,
+              organId: this.organIdByMethod,
+              assetId,
+              coordinateList: coordinateList,
+            },
+          ],
+        };
+        const {
+          data: { code, message, data },
+        } = await this.$api.drawMap.addLayerDetails(res);
+        if (code !== "0") {
+          this.$SG_Message.error(message);
+          reject(message);
+        } else {
+          resolve(data);
+          this.$refs.AssetLandListRef.setAssetDrawFlag({ assetId, flag: true });
+        }
+      });
+    },
+    // 获取绘制样式
+    generatePathStyle({ color }, options = {}) {
+      const obj = {
+        color: color,
         fillColor: color,
         fillOpacity: 0.3,
         hintlineStyle: color,
         templineStyle: color,
-      });
+        // weight: 0.8,
+      };
+      return Object.assign(obj, options);
+    },
+    setDrawOptions({ modeColour }) {
+      const style = this.generatePathStyle({ color: modeColour });
+      this.mapInstance.pm.setPathOptions(style);
     },
     closeDraw() {
       this.mapInstance.pm.disableDraw();
@@ -436,65 +624,95 @@ export default {
       if (this.mapInstance) {
         this.mapInstance.remove();
         this.mapInstance = null;
+        this.polygonLayer = null;
       }
       this.mapLayers = {};
     },
-    // 获取资产项目 options
-    async getAssetProjectOptions({ organId }) {
-      let form = {
-        organId: organId,
+    async queryAssetAttrConfig() {
+      const req = {
+        pageSize: 99999,
+        pageNum: 1,
+        assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
+        organId: this.currentTopOrganId,
       };
-      this.$api.assets
-        .getObjectKeyValueByOrganId(form)
-        .then(({ data: { data, code, message } }) => {
-          if (code === "0") {
-            this.assetProjectOptions = data.map((ele) => {
-              return {
-                label: ele.projectName,
-                value: ele.projectId,
-                title: ele.projectName,
-              };
-            });
-          } else {
-            this.$message.error(message);
-          }
-        });
+      const {
+        data: {
+          code,
+          message,
+          data: { data },
+        },
+      } = await this.$api.assetOperationMode.queryAssetAttrConfig(req);
+      if (code === "0") {
+        this.operationModeList = data;
+      } else {
+        this.$SG_Message.error(message);
+      }
     },
     changeTopOrganId({ value }) {
       this.currentTopOrganId = value;
       this.getMethodOptions();
+      this.queryAssetAttrConfig();
     },
     initEvent() {
+      this.mapInstance.on("click", () => {
+        // this.mapInstance.pm.disableGlobalEditMode();
+        if (this.currentSelectLayer) {
+          // 如果存在则关闭编辑并且 清空 currentSelectLayer
+          // 插件默认阻止了冒泡,所以点击图形的时候不会执行当前函数
+          this.currentSelectLayer.pm.disable();
+          this.currentSelectLayer = null;
+        }
+      });
       // 监听绘制图形完成后 事件
       this.mapInstance.on("pm:create", (e) => {
-        e.layer._assetId = this.currentAssetId;
-
+        console.log("e", e);
         const res = e.layer.toGeoJSON();
         res.assetId = this.currentAssetId;
         res.properties || (res.properties = {});
-        this.jsonData.push(res);
-        this.mapLayers[this.currentAssetId] = e.layer;
+        this.save({
+          assetId: res.assetId,
+          coordinateList: this.arrayToObj(res.geometry.coordinates[0], 0),
+        }).then((value) => {
+          this.generatePop(e.layer, { assetId: this.currentAssetId });
+          this.jsonData = Object.assign({}, this.jsonData, {
+            [this.currentAssetId]: res,
+          });
+          this.mapLayers[this.currentAssetId] = e.layer;
+          // TODO:使用后端返回的详情id
+          // this.initLayerData(e.layer, {
+          //   layerDetailId: value.layerDetailId,
+          //   assetId: res.assetId,
+          // });
+          this.initLayerEvent(e.layer);
+        });
       });
       this.mapInstance.on("pm:markerdragend", (e) => {
-        console.log("e", e);
+        const res = e.layer.toGeoJSON();
+        res.assetId = this.currentAssetId;
+        res.properties || (res.properties = {});
+        this.jsonData = Object.assign({}, this.jsonData, {
+          [this.currentAssetId]: res,
+        });
+        this.mapLayers[this.currentAssetId] = e.layer;
+        this.updatePolygon({
+          assetId: res.assetId,
+          coordinateList: this.arrayToObj(res.geometry.coordinates[0], 0),
+        });
       });
       this.mapInstance.on("pm:remove", (e) => {
-        console.log("e", e);
-        const idx = this.jsonData.findIndex(
-          (ele) => ele.assetId === e.layer._assetId
-        );
-        console.log("idx", idx);
-        console.log("this.mapLayers", this.mapLayers);
-        if (idx !== -1) {
-          this.jsonData.splice(idx, 1);
-          delete this.mapLayers[e.layer._assetId];
-        }
+        this.delPolygon({
+          layerDetailId: e.target._layerDetailId,
+          assetId: e.target._assetId,
+        });
+        delete this.mapLayers[e.layer._assetId];
+        delete this.jsonData[e.layer._assetId];
       });
     },
     /*
      * 地图初始化
      * */
     initMap({ id, imageWidth, imgHeight, layerPath }) {
+      this.polygonLayer = new Leaflet.layerGroup();
       this.mapInstance = Leaflet.map(id, {
         crs: Leaflet.CRS.Simple,
         attributionControl: false,
@@ -517,7 +735,6 @@ export default {
       this.initControls();
     },
   },
-  mounted() {},
 };
 </script>
 <style src="./index.less" lang="less" scoped></style>
