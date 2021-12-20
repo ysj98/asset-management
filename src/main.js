@@ -13,6 +13,10 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.less'
 import SG_UI from 'segi-ant'
 import 'segi-ant/lib/segi-ant.css'
+
+// 引入样式
+import './assets/css/global.css'
+
 // 引入服务
 import API from './api'
 import Axios from './utils/axios'

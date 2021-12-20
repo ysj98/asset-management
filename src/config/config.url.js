@@ -1371,7 +1371,7 @@ export const assetBussinessInformation = {
   // 资产经营导出查询
   queryAssetToExport: "/ams/assetAttr/queryAssetToExport",
   // 导出全部数据
-  exportOperationAttr: "/ams/assetAttr/exportOperationAttr", 
+  exportOperationAttr: "/ams/assetAttr/exportOperationAttr",
 }
 
 // 土地地图绘制
@@ -1385,6 +1385,13 @@ export const drawMap = {
   // 新增图层方案
   addLayerScheme: '/ams/layerScheme/addLayerScheme',
   // 查询图层方案(分页)
-  queryLayerPageList: '/ams/layerScheme/queryLayerPageList'
-
+  queryLayerPageList: '/ams/layerScheme/queryLayerPageList',
+  // 根据项目查询资产及经营方式
+  queryAssetOpMode: "/ams/layerScheme/queryAssetOpMode",
+  // 批量新增图层绘制详情
+  addLayerDetails: "/ams/layerScheme/addLayerDetails",
+  // 批量删除图层绘制详情
+  deleteLayerDetails: "/ams/layerScheme/deleteLayerDetails",
+  // 批量修改图层绘制详情
+  updateLayerDetails: "/ams/layerScheme/updateLayerDetails",
 }
