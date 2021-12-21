@@ -72,7 +72,7 @@
       />
     </div>
     <labelCodeModal :show="showlabelCodeModal" :assetsData="assetsData" @cancel="cancel"></labelCodeModal>
-    <labelcodeDataImport ref="labelcodeDataImport" :labelTemp="labelTemp" @hiddeModal="cancelDataImport"></labelcodeDataImport>
+    <labelcodeDataImport ref="labelcodeDataImport" :labelTemp="labelTemp" @success="query" @hiddeModal="cancelDataImport"></labelcodeDataImport>
   </div>
 </template>
 
@@ -362,7 +362,7 @@ export default {
           path: "/barcodePrint", // 这里写的是要跳转的路由地址
             query:{
               organId: this.queryCondition.organId,
-              id: this.assetIdList  //要传的参数
+              assetId: this.assetIdList  //要传的参数
             }  // 这里写的是页面参数
         });
         window.open(href, "setTitle");

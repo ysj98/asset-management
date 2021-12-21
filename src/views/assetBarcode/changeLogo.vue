@@ -8,13 +8,13 @@
   >
     <input id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
     <div>
-      <img :src="cropperImg" width="400" ref="img">
+      <img id="image" :src="cropperImg" width="400" ref="img">
     </div>
   </SG-Modal>
 </template>
 
 <script>
-// import Cropper from 'cropperjs'
+import Cropper from 'cropperjs'
 // import 'cropperjs/dist/cropper.min.css'
 
 export default {
@@ -52,17 +52,31 @@ export default {
 
       this.cropperImg = URL.createObjectURL(img)
       this.imgName = img.name
-      // this.initCropper()
+      this.initCropper()
     },
-    // initCropper () {
-    //   let cropper = new Cropper(this.$refs.img, {
-    //     viewMode: 1,
-    //     dragMode: 'none',
-    //     aspectRatio: 16/9
-    //   })
-    //   console.log('cropper', cropper, this.$refs.img)
-    //   this.cropper = cropper
-    // },
+    initCropper () {
+      const image = document.getElementById('image')
+      const cropper = new Cropper(image, {
+        aspectRatio: 16 / 9,
+        crop(event) {
+          console.log(event.detail.x);
+          console.log(event.detail.y);
+          console.log(event.detail.width);
+          console.log(event.detail.height);
+          console.log(event.detail.rotate);
+          console.log(event.detail.scaleX);
+          console.log(event.detail.scaleY);
+        },
+      });
+      console.log('cropper', cropper)
+      // let cropper = new Cropper(this.$refs.img, {
+      //   viewMode: 1,
+      //   dragMode: 'none',
+      //   aspectRatio: 16/9
+      // })
+      // console.log('cropper', cropper, this.$refs.img)
+      // this.cropper = cropper
+    },
     submit () {
       this.imgInfo.src = this.cropperImg
       this.imgInfo.name = this.imgName

@@ -136,7 +136,6 @@ export default {
         }
         this.fileName = files[0].name
         this.formData = fileData
-        console.log(';;;;', this.formData)
     },
     // 上传文件
     handleUpload () {

@@ -56,10 +56,10 @@ export default {
   },
  created () {
     this.codeInformationParams.organId = this.$route.query.organId
-    if(Array.isArray(this.$route.query.id)){
-      this.codeInformationParams.assetIdList.push(...this.$route.query.id)
+    if(Array.isArray(this.$route.query.assetId)){
+      this.codeInformationParams.assetIdList.push(...this.$route.query.assetId)
     }else{
-      this.codeInformationParams.assetIdList.push(this.$route.query.id)
+      this.codeInformationParams.assetIdList.push(this.$route.query.assetId)
     }
     this.checkCode()
   },
@@ -120,6 +120,7 @@ export default {
           const iEle = divBlock.querySelector('img')
           const textEle = document.createElement('span')
           divBlock.appendChild(textEle)
+          textEle.innerText = '测试效果'
           const image = new Image(30,30)
           image.setAttribute('crossOrigin', 'anonymous')
           image.src = configs.hostImg + '/' + item.imageUrl
