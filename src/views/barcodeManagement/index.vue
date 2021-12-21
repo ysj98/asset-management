@@ -8,16 +8,8 @@
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-        <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId" @select="getObjectKeyValueByOrganIdFn" :getPopupContainer="
-          (triggerNode) => {
-            return triggerNode.parentNode || document.body
-          }
-          ">
-          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value" :getPopupContainer="
-            (triggerNode) => {
-              return triggerNode.parentNode || document.body
-            }"
-          >{{item.name}}</a-select-option>
+        <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select
           :maxTagCount="1"
@@ -51,8 +43,7 @@
           <a-input v-model="queryCondition.labelCode" placeholder="请输入登记单名称/编码" maxlength="30" :style="allStyle" style="margin-top: 14px;"/>
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
-          <SG-Button style="margin-right: 10px;" @click="clear">清空</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px;" @click="onSearch">查询</SG-Button>
         </div>
       </div>
     </search-container>
@@ -97,7 +88,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left'}
 const queryCondition = {
   organId: '', // 组织机构id
-  projectId: [''], // 资产项目Id
+  projectId: undefined, // 资产项目Id
   assetTypeList: '', // 资产类型，多个用，分隔
   assetNameOrCode: '', // 资产名称/编码
   objectTypeList: [''], // 资产分类
@@ -124,7 +115,7 @@ export default {
       fold: true,
       allStyle: allWidth,
       queryCondition: {...queryCondition},
-      projectData: [{ name: "全部资产项目", value: "" }],
+      projectData: [],
       assetTypeData: [],
       assetClassifyData: [
         {
@@ -166,9 +157,7 @@ export default {
     },
     filterOption(input, option) {
       return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       );
     },
     // 资产项目
@@ -187,7 +176,7 @@ export default {
               value: item.projectId
             })
           })
-          this.projectData = [{ name: "全部资产项目", value: "" }, ...arr]
+          this.projectData = arr
         } else {
           this.$message.error(res.data.message)
         }
@@ -283,15 +272,9 @@ export default {
     },
     query () {
       this.loading = true
-      let projectIdList = []
-      if (this.queryCondition.projectId.length === 1 && this.queryCondition.projectId[0] === '') {
-        this.queryCondition.projectId = ['']
-      } else {
-        projectIdList = [...this.queryCondition.projectId]
-      }
       let form = {
         organId: this.queryCondition.organId,
-        projectIdList: projectIdList,
+        projectIdList: this.queryCondition.projectId,
         assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
         objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
         labelCode: this.queryCondition.labelCode,
@@ -309,27 +292,10 @@ export default {
         }
       })
     },
-    clear () {
-      this.queryCondition = {
-        organId: '', // 组织机构id
-        projectIdList: [], // 资产项目Id
-        assetTypeList: [''], // 资产类型，多个用，分隔
-        assetNameOrCode: '', // 资产名称/编码
-        objectTypeList: [''], // 资产分类
-        labelCode: '', // 登记单名称/编码
-        pageNum: 1     // 当前页
-      }
-    },
     exportLabel () {
-      let projectIdList = []
-      if (this.queryCondition.projectId.length === 1 && this.queryCondition.projectId[0] === '') {
-        this.queryCondition.projectId = ['']
-      } else {
-        projectIdList = [...this.queryCondition.projectId]
-      }
       let form = {
         organId: this.queryCondition.organId,
-        projectIdList: projectIdList,
+        projectIdList: this.queryCondition.projectId,
         assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
         objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
         labelCode: this.queryCondition.labelCode,
@@ -354,15 +320,9 @@ export default {
       })
     },
     showDataImport () {
-      let projectIdList = []
-      if (this.queryCondition.projectId.length === 1 && this.queryCondition.projectId[0] === '') {
-        this.queryCondition.projectId = ['']
-      } else {
-        projectIdList = [...this.queryCondition.projectId]
-      }
       let form = {
         organId: this.queryCondition.organId,
-        projectIdList: projectIdList,
+        projectIdList: this.queryCondition.projectId,
         assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
         objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
         labelCode: this.queryCondition.labelCode,
