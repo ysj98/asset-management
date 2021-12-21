@@ -115,7 +115,7 @@ import LRasterCoords from "leaflet-rastercoords";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "leaflet/dist/leaflet.css";
-import Vue from "_vue@2.6.14@vue";
+import Vue from "vue";
 
 export default {
   /*
