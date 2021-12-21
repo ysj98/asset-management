@@ -578,6 +578,15 @@ export const ASSET_MANAGEMENT = {
   CHANGE_ASSET_OPERATION_ADD:'change_asset_operation_add', // 新建
 
 
+  /*
+ * 资产转运营
+ * */
+  ASSET_OPERATING_ADD:'asset_operating_add', // 新建转运营单
+  ASSET_OPERATING_EXPORT_FILE:'asset_operating_export_file', // 导出
+  ASSET_OPERATING_EDIT:'asset_operating_edit', // 编辑
+  ASSET_OPERATING_DEL:'asset_operating_del', // 删除
+  ASSET_OPERATING_APPROVE:'asset_operating_approve', // 审批
+
   /**
    * 基础信息管理 -> 自定义编码设置
    */

@@ -144,6 +144,7 @@ export default {
 .content {
   color: rgba(0, 0, 0, 0.65);
   flex: 1;
+  text-align: left;
 }
 .col-block {
   display: flex;

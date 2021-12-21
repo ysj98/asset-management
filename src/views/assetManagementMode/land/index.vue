@@ -34,7 +34,7 @@
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{ emptyText: '暂无数据' }"
-          :scroll="{ x: 1200 }"
+          :scroll="{ x: 1200,y: 800 }"
         >
           <template slot="assetOperationModes" slot-scope="text, record">
             <template v-for="(item, index) of record.assetOperationModes">
@@ -85,13 +85,13 @@
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
-        <SG-FooterPagination
-          :pageLength="queryCondition.pageLength"
-          :totalCount="table.totalCount"
-          location="fixed"
-          v-model="queryCondition.pageNo"
-          @change="handleChange"
-        />
+<!--        <SG-FooterPagination-->
+<!--          :pageLength="queryCondition.pageLength"-->
+<!--          :totalCount="table.totalCount"-->
+<!--          location="fixed"-->
+<!--          v-model="queryCondition.pageNo"-->
+<!--          @change="handleChange"-->
+<!--        />-->
       </div>
     </div>
     <color-select-dialog
@@ -182,6 +182,10 @@ export default {
         this.$SG_Message.error("业务属性字段不能为空");
         return
       }
+      if (Boolean(this.selectItem.constructor)) {
+        this.$SG_Message.error("图层颜色不能为空");
+        return
+      }
       this.$SG_Modal.confirm({
         content: `确定要保存信息吗?`,
         okText: "确定",
@@ -216,8 +220,8 @@ export default {
       let params = {
         organId: this.queryCondition.organId,
         assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
-        pageNum: this.queryCondition.pageNo,
-        pageSize: this.queryCondition.pageLength,
+        // pageNum: this.queryCondition.pageNo,
+        // pageSize: this.queryCondition.pageLength,
       };
       this.table.dataSource = [];
       this.table.totalCount = 0;

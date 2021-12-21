@@ -75,9 +75,9 @@
     methods: {
       goDetail(){
         const {organId,organName} = this.$route.query
-        //TODO: 缺少 blankId 信息
+        const {landId} = this.infoData
         const data = {
-          tabUrl:`/asset-management/#/buildingDict/detailLand?organId=${organId}&organName=${organName}&type=detail&blankId=${132020524}`,
+          tabUrl:`/asset-management/#/buildingDict/detailLand?organId=${organId}&organName=${organName}&type=detail&blankId=${landId}`,
           tabTitle:'土地详情',
         }
         win.openPortalMenu(data)

@@ -36,7 +36,7 @@ export const queryCondition = {
   address: '',         // 地理位置
   landCategory: '',
   modeOperId: [''],     // 经营方式
-  sourceModes:''            // 来源方式
+  sourceModes: ['']            // 来源方式
 };
 // 资产状态
 export const approvalStatusData = [

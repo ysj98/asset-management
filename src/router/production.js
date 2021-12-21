@@ -127,6 +127,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/landAssetMap',
+    name: '土地地图',
+    component: () => import('@/views/landParameter/landAssetMap/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/assetOperatingParameters',
     name: '资产转运营参数',
     component: () => import('@/views/assetOperatingParameters/index.vue'),

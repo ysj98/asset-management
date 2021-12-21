@@ -311,16 +311,17 @@ export default {
     async query() {
       if (!this.queryCondition.organId) { return this.$message.info('请选择组织机构') }
       const params = {
-        ...this.queryCondition,
         ...this.page,
+        ...this.queryCondition,
         city: this.provinces.city,
-        province: this.provinces.province,
         region: this.provinces.district,
+        province: this.provinces.province,
         statuss: this.queryCondition.statuss.join(","),
+        useTypes: this.queryCondition.useTypes.join(","),
         projectId: this.queryCondition.projectId.join(","),
         modeOperId: this.queryCondition.modeOperId.join(","),
-        useTypes: this.queryCondition.useTypes.join(""),
-        objectTypes: this.queryCondition.objectTypes.join(""),
+        sourceModes: this.queryCondition.sourceModes.join(","),
+        objectTypes: this.queryCondition.objectTypes.join(","),
       };
       this.table.dataSource = []
       this.table.totalCount = 0
