@@ -81,7 +81,7 @@
       />
     </div>
     <labelCodeModal :show="showlabelCodeModal" :assetsData="assetsData" @cancel="cancel"></labelCodeModal>
-    <labelcodeDataImport ref="labelcodeDataImport" :labelTemp="labelTemp" @cancel="cancelDataImport"></labelcodeDataImport>
+    <labelcodeDataImport ref="labelcodeDataImport" :labelTemp="labelTemp" @hiddeModal="cancelDataImport"></labelcodeDataImport>
   </div>
 </template>
 
@@ -382,6 +382,7 @@ export default {
       this.query()
     },
     cancelDataImport () {
+      this.$refs.labelcodeDataImport.visible = false
       this.query()
     },
     // 处理选中的数据

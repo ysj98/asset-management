@@ -4,7 +4,7 @@
         okText="导入"
         v-model="visible"
         @ok="handleSave"
-        @cancel="hiddeModal"
+        @cancel="cancel"
         :width="543"
         :maskClosable="false"
         :noPadding="true"
@@ -162,7 +162,7 @@ export default {
     },
     cancel () {
       this.hiddeModal()
-      this.$emit('cancel')
+      this.$emit('hiddeModal')
     },
     deleteFile () {
       this.fileName = ''

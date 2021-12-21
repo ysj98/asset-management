@@ -81,6 +81,9 @@
         width: 23%;
         padding: 5px 0;
       }
+      & :nth-child(6) {
+        width: 258px;
+      }
     }
   }
 </style>
