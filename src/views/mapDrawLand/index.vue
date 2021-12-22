@@ -72,7 +72,6 @@
       <!--      <div>-->
       <!--        <button @click="getAll">获取所有图形</button>-->
       <!--        <button @click="tempInit">初始化图形</button>-->
-      <!--        <button @click="removeAll">移除所有图形</button>-->
       <!--      </div>-->
       <div
         class="item"
@@ -102,16 +101,17 @@
 </template>
 
 <script>
-import { arrayToObj, generatePathStyle } from "@/views/mapDrawLand/share";
+import {
+  arrayToObj,
+  generatePathStyle,
+  initMap,
+} from "@/views/mapDrawLand/share";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
-// TODO: 通过 config 获取当前环境域名(看看能不能直接用相对路径获取 layerPath)
-const baseUrl = "http://192.168.1.7:8088/";
 import AssetLandList from "@/views/mapDrawLand/AssetLandList";
 import AddMethodsModal from "@/views/mapDrawLand/AddMethodsModal";
 import TopOrganByUser from "@/views/common/topOrganByUser";
 import Leaflet from "leaflet";
-import LRasterCoords from "leaflet-rastercoords";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "leaflet/dist/leaflet.css";
@@ -129,6 +129,7 @@ export default {
   },
   data() {
     return {
+      createLayerArr: [],
       assetList: [],
       ASSET_MANAGEMENT,
       currentSelectLayer: null,
@@ -242,6 +243,22 @@ export default {
       inputEle.value = null;
       inputEle.click();
     },
+    handleInitMap(options) {
+      const { layerPath, imageWidth, imgHeight } = options;
+      const temp = layerPath.split("/");
+      const obj = {
+        id: "leaflet-map",
+        imageWidth: imageWidth,
+        imgHeight: imgHeight,
+        layerPath: temp[temp.length - 1],
+        mapInstanceKeyName: "mapInstance",
+      };
+      initMap.call(this, obj, () => {
+        this.initMapEvent();
+        this.initControls();
+        this.mapInstance.pm.setLang("zh");
+      });
+    },
     // 上传背景图 后对应事件
     handleUploadBackground(event) {
       const file = event.target.files[0];
@@ -264,16 +281,13 @@ export default {
           .uploadImage(req)
           .then(({ data: { data, code, message } }) => {
             if (code === "0") {
-              console.log("data", data);
-              const { layerPath, width, height } = data;
-              const temp = layerPath.split("/");
+              //TODO:这块要和后端确认返回的路径
               const options = {
-                id: "leaflet-map",
-                imageWidth: width,
-                imgHeight: height,
-                layerPath: temp[temp.length - 1],
+                ...data,
+                imgHeight: data.height,
+                imageWidth: data.width,
               };
-              this.initMap(options);
+              this.handleInitMap(options);
             } else {
               this.$SG_Message.error(message);
             }
@@ -282,8 +296,10 @@ export default {
     },
     initAssetLayers(assetList) {
       this.assetList = assetList;
-      // TODO:此处要清空 pm 新建的图块
       this.polygonLayer.clearLayers();
+      this.createLayerArr.forEach((ele) => {
+        this.mapInstance.removeLayer(ele);
+      });
       const geoJsonData = assetList
         .filter((ele) => ele.layerSchemeDetailVo)
         .map((ele) => {
@@ -307,9 +323,6 @@ export default {
       this.jsonData = {};
       this.mapLayers = {};
       this.createLayersFromJson(geoJsonData);
-    },
-    removeAll() {
-      this.polygonLayer.clearLayers();
     },
     tempInit() {
       const geoJsonData = [
@@ -434,8 +447,9 @@ export default {
               imageWidth: width,
               imgHeight: height,
               layerPath: temp[temp.length - 1],
+              mapInstanceKeyName: "mapInstance",
             };
-            this.initMap(options);
+            this.handleInitMap(options);
             this.$refs.AssetLandListRef.initData({
               layerSchemeId: value,
               organId,
@@ -531,10 +545,12 @@ export default {
       if (code !== "0") {
         this.$SG_Message.error(message);
       } else {
-        //TODO:清空所删除图层的弹窗
         this.mapInstance.closePopup();
         this.$message.success("删除成功");
         this.mapInstance.removeLayer(this.currentSelectLayer);
+        this.createLayerArr = this.createLayerArr.filter(
+          (ele) => ele._assetId !== this.currentSelectLayer._assetId
+        );
         this.currentSelectLayer = null;
         delete this.jsonData[assetId];
         delete this.mapLayers[assetId];
@@ -630,6 +646,7 @@ export default {
         this.mapInstance.remove();
         this.mapInstance = null;
         this.polygonLayer = null;
+        this.createLayerArr = [];
       }
       this.mapLayers = {};
     },
@@ -674,6 +691,7 @@ export default {
       // 监听绘制图形完成后 事件
       this.mapInstance.on("pm:create", (e) => {
         console.log("e", e);
+        this.createLayerArr.push(e.layer);
         const res = e.layer.toGeoJSON();
         res.assetId = this.currentAssetId;
         res.properties || (res.properties = {});
@@ -702,32 +720,6 @@ export default {
         delete this.mapLayers[e.layer._assetId];
         delete this.jsonData[e.layer._assetId];
       });
-    },
-    /*
-     * 地图初始化
-     * */
-    initMap({ id, imageWidth, imgHeight, layerPath }) {
-      this.polygonLayer = new Leaflet.layerGroup();
-      this.mapInstance = Leaflet.map(id, {
-        crs: Leaflet.CRS.Simple,
-        attributionControl: false,
-        zoomControl: false,
-      });
-      new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(
-        this.mapInstance
-      );
-      const imgInfo = [imageWidth, imgHeight];
-      const rc = new LRasterCoords(this.mapInstance, imgInfo);
-      this.mapInstance.setMaxZoom(rc.zoomLevel());
-      this.mapInstance.setView(rc.unproject([imgInfo[0], imgInfo[1]]), 2);
-      Leaflet.tileLayer(`${baseUrl}/scheme/${layerPath}/{z}/{x}/{y}.png`, {
-        noWrap: true,
-        bounds: rc.getMaxBounds(),
-        maxNativeZoom: rc.zoomLevel(),
-      }).addTo(this.mapInstance);
-      this.mapInstance.pm.setLang("zh");
-      this.initMapEvent();
-      this.initControls();
     },
   },
 };

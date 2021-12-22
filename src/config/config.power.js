@@ -568,8 +568,8 @@ export const ASSET_MANAGEMENT = {
   * 土地地图绘制
   * */
   DRAW_LAND_MAP_ADD_METHOD:'draw_land_add_method', // 新增方案
-  DRAW_LAND_MAP_UPLOAD_IMAGE:'draw_land_add_method', // 上传背景图
-  DRAW_LAND_MAP_DELETE_POLYGON:'draw_land_add_method', // 删除绘制
+  DRAW_LAND_MAP_UPLOAD_IMAGE:'draw_land_map_upload_image', // 上传背景图
+  DRAW_LAND_MAP_DELETE_POLYGON:'draw_land_map_delete_polygon', // 删除绘制
 
 
   /*

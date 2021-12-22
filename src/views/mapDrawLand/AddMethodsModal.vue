@@ -192,11 +192,11 @@ export default {
     },
     async handleDelete(record) {
       const _this = this;
-      const idx = this.tableOptions.dataSource.findIndex(
-        (ele) => ele._key === record._key
-      );
       // 本地删除
       if (record._key) {
+        const idx = this.tableOptions.dataSource.findIndex(
+          (ele) => ele._key === record._key
+        );
         if (idx !== -1) {
           this.tableOptions.dataSource.splice(idx, 1);
           this.$SG_Message.success({ content: "操作成功" });
@@ -204,6 +204,9 @@ export default {
       }
       // 调用接口删除
       if (record.layerId) {
+        const idx = this.tableOptions.dataSource.findIndex(
+          (ele) => ele.layerId === record.layerId
+        );
         this.$SG_Modal.confirm({
           content: "确认删除吗?",
           okText: "确定",

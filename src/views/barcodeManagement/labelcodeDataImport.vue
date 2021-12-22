@@ -16,6 +16,9 @@
             <div>
             <SG-Button @click="downSource" type="primary" weaken>下载模板</SG-Button>
             <SG-Button @click="handleUpload" class="right-btn" type="primary" weaken>上传文件</SG-Button>
+            <a-select style="width:170px;margin-right:10px;" :allowClear="true" placeholder="全部资产项目" v-model="projectId" :showSearch="true" :filterOption="filterOption">
+              <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+            </a-select>
             </div>
         </div>
         <!-- 中间内容 -->
@@ -43,6 +46,9 @@
 import downErrorFile from '@/views/common/downErrorFile'
 export default {
   props: {
+    projectData: {
+      type: Array
+    },
     labelTemp: {
       default: {}
     }
@@ -59,7 +65,8 @@ export default {
       formData: null,
       fileMaxSize: 10240,
       fileType: ['xls', 'xlsx'],
-      tipText: ''
+      tipText: '',
+      projectId: undefined // 资产项目Id
     }
   },
   watch: {
@@ -143,21 +150,28 @@ export default {
     },
     // 下载文件
     downSource () {
-      let loadingName = this.$SG_Message.loading({content: '下载中...'})
-      this.$api.barCode.exportLabelData(this.labelTemp).then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.data])
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            a.download = `标签编码模板.xls`
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
-      }, () => {
-        this.$SG_Message.destroy(loadingName)
-        this.$SG_Message.error('导出标签编码模板失败!')
-      })
+      if (!this.projectId) {
+        this.$SG_Message.error('请选择资产项目')
+      } else {
+        let projectIdList = []
+        projectIdList.push(this.projectId)
+        this.labelTemp.projectIdList = projectIdList
+        let loadingName = this.$SG_Message.loading({content: '下载中...'})
+        this.$api.barCode.exportLabelData(this.labelTemp).then(res => {
+              this.$SG_Message.destroy(loadingName)
+              let blob = new Blob([res.data])
+              let a = document.createElement('a')
+              a.href = URL.createObjectURL(blob)
+              a.download = `标签编码模板.xls`
+              a.style.display = 'none'
+              document.body.appendChild(a)
+              a.click()
+              a.remove()
+        }, () => {
+          this.$SG_Message.destroy(loadingName)
+          this.$SG_Message.error('导出标签编码模板失败!')
+        })
+      }
     },
     cancel () {
       this.hiddeModal()
