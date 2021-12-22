@@ -3,7 +3,7 @@
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
         <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_PRINT" @click="printBarcode">条码打印</SG-Button>
-        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_EXPORT" style="margin-left:15px;" @click="exportLabel">导出</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_EXPORT" style="margin-left:15px;" @click="exportLabel"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_MANAGEMENT_UPDATE" style="margin-left:15px;" @click="showDataImport">批量更新标签</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
@@ -71,7 +71,7 @@
         @change="handleChange"
       />
     </div>
-    <labelCodeModal :show="showlabelCodeModal" :assetsData="assetsData" @cancel="cancel"></labelCodeModal>
+    <labelCodeModal ref="showlabelCodeModal" :assetsData="assetsData" @cancel="cancel"></labelCodeModal>
     <labelcodeDataImport ref="labelcodeDataImport" :projectData="projectData" :labelTemp="labelTemp" @success="query" @hiddeModal="cancelDataImport"></labelcodeDataImport>
   </div>
 </template>
@@ -84,6 +84,7 @@ import noDataTips from '@/components/noDataTips'
 import labelCodeModal from './labelCodeModal.vue'
 import labelcodeDataImport from './labelcodeDataImport.vue'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import segiIcon from '@/components/segiIcon.vue'
 
 const allWidth = {width: '170px', 'margin-right': '10px', float: 'left'}
 const queryCondition = {
@@ -108,7 +109,7 @@ const columns = [
   { title: '操作', dataIndex: 'operation', scopedSlots: { customRender: 'operation' } }
 ]
 export default {
-  components: {SearchContainer, TreeSelect, EquipmentSelectTree, noDataTips, labelCodeModal, labelcodeDataImport},
+  components: {SearchContainer, TreeSelect, EquipmentSelectTree, noDataTips, labelCodeModal, labelcodeDataImport, segiIcon},
   data () {
     return {
       ASSET_MANAGEMENT,
@@ -130,7 +131,6 @@ export default {
       location: 'absolute',
       count: '',
       assetsData: '',
-      showlabelCodeModal: false,
       labelTemp: {},
       selectedRowKeys: [], // Table选中项
       assetIdList: [], //资产id列表
@@ -338,10 +338,10 @@ export default {
     },
     editLabel (data) {
       this.assetsData = data
-      this.showlabelCodeModal = true
+      this.$refs.showlabelCodeModal.visible = true
     },
     cancel () {
-      this.showlabelCodeModal = false
+      this.$refs.showlabelCodeModal.visible = false
       this.query()
     },
     cancelDataImport () {

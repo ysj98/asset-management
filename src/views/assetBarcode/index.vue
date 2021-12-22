@@ -66,7 +66,7 @@
       </div>
       <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_SETTING_SAVE" style="margin-left: 600px;margin-top: 20px;" type="primary" @click="save">保存</SG-Button>
     </div>
-    <changeLogo :show="showChangeLogo" @submit="logoSubmit" @cancel="cancel"></changeLogo>
+    <changeLogo ref="showChangeLogo" @submit="logoSubmit" @cancel="cancel"></changeLogo>
   </div>
 </template>
 
@@ -92,7 +92,6 @@ export default {
       organId: '',
       organName: '',
       assetCodes: [...assetCodes],
-      showChangeLogo: false,
       selectData: [],
       selectConfigure: {
         firstly: '',
@@ -110,7 +109,7 @@ export default {
   },
   methods: {
     change () {
-      this.showChangeLogo = true
+      this.$refs.showChangeLogo.show = true
     },
     changeTree (value, label) {
       this.organId = value
