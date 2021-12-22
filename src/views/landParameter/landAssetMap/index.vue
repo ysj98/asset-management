@@ -451,6 +451,8 @@ export default {
 
         if (document.fullscreenElement) {
           this.autoChange();
+        }else {
+          this.closeAutoChange()
         }
       };
       document.addEventListener("fullscreenchange", onChange);
