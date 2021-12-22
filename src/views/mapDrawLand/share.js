@@ -71,7 +71,6 @@ export function initMap(
     bounds: rc.getMaxBounds(),
     maxNativeZoom: rc.zoomLevel(),
   }).addTo(this[mapInstanceKeyName]);
-  this.mapInstance.pm.setLang("zh");
   if (typeof callback === "function") {
     callback();
   }

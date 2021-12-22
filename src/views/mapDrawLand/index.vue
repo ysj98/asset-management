@@ -256,6 +256,7 @@ export default {
       initMap.call(this, obj, () => {
         this.initMapEvent();
         this.initControls();
+        this.mapInstance.pm.setLang("zh");
       });
     },
     // 上传背景图 后对应事件
