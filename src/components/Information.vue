@@ -48,7 +48,7 @@ export default {
       // 如果 值为空或者undefined 就显示 --
       const children = [undefined, "", null].includes(resValue)
         ? "--"
-        : (data.render && data.render(_h, data)) ||
+        : (data.render && data.render(_h, data, resValue)) ||
           _h(
             "span",
             {

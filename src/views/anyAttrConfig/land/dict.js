@@ -38,8 +38,8 @@ export const queryCondition = {
 // 资产状态
 export const statusOptions = [
   { label: '全部状态', value: ''},
-  { label: '启用', value: '0'},
-  { label: '停用', value: '1'},
+  { label: '启用', value: '1'},
+  { label: '停用', value: '0'},
 ]
 export const columns = [
   {

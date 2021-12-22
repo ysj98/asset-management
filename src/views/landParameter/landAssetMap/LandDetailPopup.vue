@@ -1,6 +1,9 @@
 <template>
   <div class="land-detail-popup">
-    <div class="title">{{ popupData.assetName || "--" }}</div>
+    <div class="title">
+      <span>{{ assetName || "--" }}</span>
+      <a-icon @click="doClosePopup" class="close-icon" type="close" />
+    </div>
     <div class="content">
       <div class="base-info">
         <Information v-bind="baseInfoOptions"></Information>
@@ -49,8 +52,9 @@ import { uuid } from "utils/utils";
 export default {
   name: "landDetailPopup",
   props: {
-    popupData: {
+    mapInstance: {
       type: Object,
+      required: true,
     },
   },
   components: {
@@ -58,6 +62,7 @@ export default {
   },
   data() {
     return {
+      assetName: "",
       tableOptions: {
         rowKey: "key",
         dataSource: [],
@@ -114,11 +119,11 @@ export default {
           ],
           [
             {
+              // TODO:使用期限
               title: "使用期限",
-              key: "attrNames",
-              render(h, data) {
-                console.log("data", data);
-                return "测试";
+              key: "startAndEndTime",
+              render(h, data, value) {
+                return value;
               },
               colProps: {
                 span: 24,
@@ -150,19 +155,15 @@ export default {
       attrData: [],
     };
   },
-  watch: {
-    popupData: {
-      handler: function (newValue) {
-        this.init(newValue);
-      },
-      immediate: true,
-    },
-  },
   methods: {
+    doClosePopup() {
+      this.mapInstance.closePopup();
+    },
     init(data) {
       this.initBaseInfo(data);
       this.initTableData(data);
       this.initAttrData(data);
+      this.assetName = data.assetName;
     },
     initTableData(allData) {
       this.tableOptions.dataSource = [
@@ -195,8 +196,14 @@ export default {
       ];
     },
     initBaseInfo(allData) {
-      console.log("初始化基本数据", allData);
-      this.baseInfoOptions.data = allData;
+      // TODO: startDate endDate 空串
+      this.baseInfoOptions.data = {
+        ...allData,
+        startAndEndTime:
+          allData.startDate && allData.endDate
+            ? [allData.startDate, allData.endDate]
+            : "",
+      };
     },
   },
 };
@@ -219,6 +226,11 @@ export default {
     border-radius: 8px 8px 0 0;
     border-bottom: 1px solid #dce1e6;
     z-index: 4;
+    .close-icon {
+      position: absolute;
+      right: 15px;
+      top: 12px;
+    }
   }
   .content {
     height: 520px;

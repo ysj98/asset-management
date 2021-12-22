@@ -216,8 +216,9 @@ export default {
 
 <style lang="less" scoped>
 .asset-land-list-block {
+  width: 0;
   // TODO:地图遮蔽区域优化
-  background-color: rgba(0, 0, 0, 0.1);
+  //background-color: rgba(0, 0, 0, 0.1);
   .content-filter-block {
     .select-layer {
       background: #ffffff;
@@ -269,6 +270,8 @@ export default {
     max-height: 500px;
     min-height: 100px;
     overflow: auto;
+    position: absolute;
+    top: 35px;
     .item-block {
       .list-item {
         padding: 0 16px;

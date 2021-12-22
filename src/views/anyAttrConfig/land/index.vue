@@ -47,7 +47,7 @@
             :scroll="{x: 1200}"
         >
           <template slot="status" slot-scope="text, record">
-            <a-switch :checked="String(record.status) === '1'" disabled :active-value="1"/>
+            <a-switch :checked="String(record.status) === '1'" disabled active-value="1"/>
           </template>
           <template slot="operate" slot-scope="text, record">
             <OperationPopover
@@ -238,8 +238,10 @@ export default {
         status,
         organId: String(organId)
       }
+      let loadingName = this.SG_Loding("更新中...");
       try{
         const { data: res } = await this.$api.attrConfig.updateAssetAttrConfig(params)
+        this.DE_Loding(loadingName)
         if (String(res.code) === "0") {
           this.$SG_Message.success("更新成功")
           this.query()
@@ -247,6 +249,7 @@ export default {
           this.$SG_Message.error(res.message)
         }
       }finally {
+        this.DE_Loding(loadingName)
       }
     },
   },

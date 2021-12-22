@@ -170,11 +170,11 @@ export default {
         this.$SG_Message.error("请保存其它编辑的数据");
         return;
       }
-      // this.selectItemCache = JSON.stringify(record);
+      this.selectItem = record
       record.isEdit = true;
     },
     handleClose(record) {
-      // record = JSON.parse(this.selectItemCache);
+      this.selectItem = {}
       this.query();
     },
     handleSave(record) {
@@ -182,7 +182,7 @@ export default {
         this.$SG_Message.error("业务属性字段不能为空");
         return
       }
-      if (Boolean(this.selectItem.constructor)) {
+      if (!Boolean(this.selectItem.modeColour)) {
         this.$SG_Message.error("图层颜色不能为空");
         return
       }
@@ -193,6 +193,7 @@ export default {
         onOk: async () => {
           await this.updateAssetAttrConfig(record);
           await this.query();
+          this.selectItem = {}
         },
       });
     },

@@ -69,11 +69,11 @@
       />
     </div>
     <div class="bottom-show">
-      <div>
-        <button @click="getAll">获取所有图形</button>
-        <button @click="tempInit">初始化图形</button>
-        <button @click="removeAll">移除所有图形</button>
-      </div>
+      <!--      <div>-->
+      <!--        <button @click="getAll">获取所有图形</button>-->
+      <!--        <button @click="tempInit">初始化图形</button>-->
+      <!--        <button @click="removeAll">移除所有图形</button>-->
+      <!--      </div>-->
       <div
         class="item"
         v-for="item in operationModeList"
@@ -215,22 +215,15 @@ export default {
             color: feature.properties.style.color,
           });
         },
+        filter: function (geoJsonFeature) {
+          console.log(
+            "geoJsonFeature",
+            _this.mapLayers[geoJsonFeature.assetId]
+          );
+          return !_this.mapLayers[geoJsonFeature.assetId];
+        },
         onEachFeature: _this.initLayer,
       });
-    },
-    handleRender(geoJsonData) {
-      const res = this.createLayersFromJson(geoJsonData);
-      Object.keys(res._layers).forEach((ele) => {
-        // TODO:为什么在这后面 addTo(this.mapInstance),然后通过 this.polygonLayer调用clearLayers的时候就无效,改成放到下面addTo就可以
-        res._layers[ele].addTo(this.polygonLayer);
-        this.jsonData = Object.assign({}, this.jsonData, {
-          [res._layers[ele]._assetId]: res._layers[ele],
-        });
-        this.mapLayers = Object.assign({}, this.mapLayers, {
-          [res._layers[ele]._assetId]: res._layers[ele],
-        });
-      });
-      this.polygonLayer.addTo(this.mapInstance);
     },
     // 点击上传背景图
     btnUpload() {
@@ -289,6 +282,7 @@ export default {
     },
     initAssetLayers(assetList) {
       this.assetList = assetList;
+      // TODO:此处要清空 pm 新建的图块
       this.polygonLayer.clearLayers();
       const geoJsonData = assetList
         .filter((ele) => ele.layerSchemeDetailVo)
@@ -310,14 +304,12 @@ export default {
             },
           };
         });
+      this.jsonData = {};
+      this.mapLayers = {};
       this.createLayersFromJson(geoJsonData);
     },
     removeAll() {
-      console.log("this.polygonLayer", this.polygonLayer);
       this.polygonLayer.clearLayers();
-      this.polygonLayer.eachLayer((layer) => {
-        console.log("layer", layer);
-      });
     },
     tempInit() {
       const geoJsonData = [
@@ -409,10 +401,23 @@ export default {
     },
     // 初始化 图块事件
     initLayerEvent(layer) {
-      layer.on("click", () => {
-        this.enableDraw(layer);
-        this.currentSelectLayer = layer;
+      layer.addEventListener("click", (e) => {
+        Leaflet.DomEvent.stop(e);
+        this.handleLayerClick(layer);
         this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
+      });
+      layer.on("pm:update", (e) => {
+        const res = e.layer.toGeoJSON();
+        res.assetId = this.currentAssetId;
+        res.properties || (res.properties = {});
+        this.jsonData = Object.assign({}, this.jsonData, {
+          [this.currentAssetId]: res,
+        });
+        this.mapLayers[this.currentAssetId] = e.layer;
+        this.updatePolygon({
+          layerDetailId: e.layer._layerDetailId,
+          coordinateList: arrayToObj(res.geometry.coordinates[0], 0),
+        });
       });
     },
     changeMethod(value) {
@@ -456,8 +461,7 @@ export default {
         drawRectangle: false,
         dragMode: false,
         cutPolygon: false,
-        // false
-        removalMode: true,
+        removalMode: false,
         rotateMode: false,
         oneBlock: true,
         editMode: false,
@@ -489,6 +493,12 @@ export default {
         this.$SG_Message.error(message);
       }
     },
+    handleLayerClick(layer) {
+      this.jumpMapLand(layer);
+      this.enableDraw(layer);
+      this.currentSelectLayer = layer;
+      layer.openPopup();
+    },
     /*
      * type: 'edit' | 'text'
      * */
@@ -497,14 +507,7 @@ export default {
       const { modeColour, assetId } = assetItemInfo;
       const layer = this.mapLayers[assetId];
       if (layer) {
-        this.jumpMapLand(layer);
-        // if (type === "edit") {
-        //   this.enableDraw(layer);
-        // }
-        // 不管点击区域是哪一部分 都直接开启对应图形的编辑
-        this.enableDraw(layer);
-        this.currentSelectLayer = layer;
-        layer.openPopup();
+        this.handleLayerClick(layer);
       } else {
         this.currentAssetId = assetItemInfo.assetId;
         this.setDrawOptions({ modeColour });
@@ -528,6 +531,9 @@ export default {
       if (code !== "0") {
         this.$SG_Message.error(message);
       } else {
+        //TODO:清空所删除图层的弹窗
+        this.mapInstance.closePopup();
+        this.$message.success("删除成功");
         this.mapInstance.removeLayer(this.currentSelectLayer);
         this.currentSelectLayer = null;
         delete this.jsonData[assetId];
@@ -552,6 +558,8 @@ export default {
       } = await this.$api.drawMap.updateLayerDetails(res);
       if (code !== "0") {
         this.$SG_Message.error(message);
+      } else {
+        this.$message.success("编辑成功");
       }
     },
     /*
@@ -576,6 +584,7 @@ export default {
           this.$SG_Message.error(message);
           reject(message);
         } else {
+          this.$message.success("保存成功");
           resolve(data);
           this.$refs.AssetLandListRef.setAssetDrawFlag({ assetId, flag: true });
         }
@@ -591,7 +600,7 @@ export default {
     openDraw() {
       this.mapInstance.pm.enableDraw("Polygon", {
         snappable: true,
-        snapDistance: 5,
+        snapDistance: 2,
         // markerEditable: true,
       });
     },
@@ -649,15 +658,18 @@ export default {
       this.getMethodOptions();
       this.queryAssetAttrConfig();
     },
-    initEvent() {
-      this.mapInstance.on("click", () => {
-        // this.mapInstance.pm.disableGlobalEditMode();
-        if (this.currentSelectLayer) {
-          // 如果存在则关闭编辑并且 清空 currentSelectLayer
-          // 插件默认阻止了冒泡,所以点击图形的时候不会执行当前函数
-          this.currentSelectLayer.pm.disable();
-          this.currentSelectLayer = null;
-        }
+    initMapEvent() {
+      const _this = this;
+      function onClickFn() {
+        _this.mapInstance.pm.disableGlobalEditMode();
+        _this.currentSelectLayer = null;
+      }
+      this.mapInstance.on("click", onClickFn);
+      this.mapInstance.on("pm:drawstart", () => {
+        this.mapInstance.off("click", onClickFn);
+      });
+      this.mapInstance.on("pm:drawend", () => {
+        this.mapInstance.on("click", onClickFn);
       });
       // 监听绘制图形完成后 事件
       this.mapInstance.on("pm:create", (e) => {
@@ -680,19 +692,6 @@ export default {
             assetId: assetId,
           });
           this.initLayerEvent(e.layer);
-        });
-      });
-      this.mapInstance.on("pm:markerdragend", (e) => {
-        const res = e.layer.toGeoJSON();
-        res.assetId = this.currentAssetId;
-        res.properties || (res.properties = {});
-        this.jsonData = Object.assign({}, this.jsonData, {
-          [this.currentAssetId]: res,
-        });
-        this.mapLayers[this.currentAssetId] = e.layer;
-        this.updatePolygon({
-          assetId: res.assetId,
-          coordinateList: arrayToObj(res.geometry.coordinates[0], 0),
         });
       });
       this.mapInstance.on("pm:remove", (e) => {
@@ -727,7 +726,7 @@ export default {
         maxNativeZoom: rc.zoomLevel(),
       }).addTo(this.mapInstance);
       this.mapInstance.pm.setLang("zh");
-      this.initEvent();
+      this.initMapEvent();
       this.initControls();
     },
   },
