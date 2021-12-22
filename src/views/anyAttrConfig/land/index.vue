@@ -47,7 +47,7 @@
             :scroll="{x: 1200}"
         >
           <template slot="status" slot-scope="text, record">
-            <a-switch :checked="String(record.status) === '1'" disabled :active-value="1"/>
+            <a-switch :checked="String(record.status) === '1'" disabled active-value="1"/>
           </template>
           <template slot="operate" slot-scope="text, record">
             <OperationPopover
