@@ -144,6 +144,10 @@ export default {
       clearInterval(this.timer);
     },
     async autoChange(flag = true) {
+      if (!Object.keys(this.mapLayers).length) {
+        console.warn("没有涂层数据");
+        return null;
+      }
       this.closeAutoChange();
       this.idx = 0;
       if (!flag) {
@@ -451,8 +455,8 @@ export default {
 
         if (document.fullscreenElement) {
           this.autoChange();
-        }else {
-          this.closeAutoChange()
+        } else {
+          this.closeAutoChange();
         }
       };
       document.addEventListener("fullscreenchange", onChange);

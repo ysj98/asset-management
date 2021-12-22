@@ -19,7 +19,7 @@
                   <a-form-model-item label="资产名称：">{{object.assetName}}</a-form-model-item>
                 </a-col>
                 <a-col class="playground-col" :span="12">
-                  <a-form-model-item label="运营项目：">{{object.organName}}</a-form-model-item>
+                  <a-form-model-item label="运营项目：">{{object.communityName}}</a-form-model-item>
                 </a-col>
               </a-row>
               <a-row>
