@@ -40,17 +40,14 @@
               </a-row>
               <a-row>
                 <a-col class="playground-col" :span="12">
-                  <a-form-model-item label="土地性质：">{{object.organName}}</a-form-model-item>
-                </a-col>
-                <a-col class="playground-col" :span="12">
-                  <a-form-model-item label="经营方式：">{{object.organName}}</a-form-model-item>
+                  <a-form-model-item label="经营方式：">{{object.modeOperName}}</a-form-model-item>
                 </a-col>
               </a-row>
               <a-row>
                 <a-col class="playground-col" :span="12">
                   <a-form-model-item label="地理位置：">{{object.location}}</a-form-model-item>
                 </a-col>
-                </a-row>
+              </a-row>
               <a-row>
                 <a-col class="playground-col" :span="12">
                   <a-form-model-item label="管理机构：">{{object.organName}}</a-form-model-item>
