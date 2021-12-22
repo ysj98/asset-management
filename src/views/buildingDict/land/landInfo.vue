@@ -108,7 +108,7 @@
         />
       </div>
     </div>
-    <landDataImport title="导入数据" ref="landDataImport" :organId="queryCondition.organId" @success="landImport"></landDataImport>
+    <landDataImport title="导入数据" ref="landDataImport" :organId="queryCondition.organId" @success="landImport" @cancel="$refs.landDataImport.visible = false"></landDataImport>
   </div>
 </template>
 <script>

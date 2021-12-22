@@ -4,8 +4,8 @@
       <!-- printHide是为了隐藏打印的按钮，在打印页面时 -->
     <div class="btn"><a-button type="primary" @click="printClick" class='printHide'>打印</a-button></div>
     <div class="content">
-      <div class="codecontent" v-for="(item, index) in codeArray" :key="index" style="page-break-after:always;">
-        <div :ref="`ref${index}`" :id="`code${index}`" class="code"></div>
+      <div class="codecontent" v-for="(item, index) in codeArray" :id="`code${index}`" :key="index" style="page-break-after:always;">
+        <div :ref="`ref${index}`" class="code"></div>
         <div v-for="asset in assetInfo" :key="asset.value">
           <div class="up">
             <span class="left">{{asset.name}}：</span>
@@ -16,7 +16,6 @@
         </div>
       </div>
     </div>
-    <!-- <div ref='code' ></div> -->
   </div>
 </template>
 <script>
@@ -104,28 +103,26 @@ export default {
       document.title = window.opener.getTitleFun;//接收传过来的title值
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
+          console.log('window.location.host', window.location.host)
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {
             text: item.qrCode,
             width: 150,
             height: 150, // 高度
             colorDark: "#333333", //二维码颜色
             colorLight: "#ffffff", //二维码背景色
-            correctLevel : QRCode.CorrectLevel.L,
-            url: configs.hostImg + '/' + item.imageUrl
+            correctLevel : QRCode.CorrectLevel.H,
+            url: window.location.host + '/' + item.imageUrl
           })
           console.log(qrcode)
           const id = `code${index}`
           const divBlock = document.getElementById(id)
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
-          const textEle = document.createElement('span')
-          divBlock.appendChild(textEle)
-          textEle.innerText = '测试效果'
-          const image = new Image(30,30)
+          const image = new Image(50, 50)
           image.setAttribute('crossOrigin', 'anonymous')
-          image.src = configs.hostImg + '/' + item.imageUrl
+          image.src = item.imageUrl
           image.onload = function (){
-            cEle.getContext('2d').drawImage(image, 0, 0, 200, 200, 45, 45, 30, 30)
+            cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
             iEle.src = cEle.toDataURL()
           }
         })

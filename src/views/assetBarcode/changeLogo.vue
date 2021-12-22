@@ -2,20 +2,21 @@
   <SG-Modal
     class="changeLogo"
     title="上传Logo"
+    :maskClosable="false"
     v-model="show"
     @ok="submit"
     @cancel="cancel"
   >
-    <input id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
-    <div>
-      <img id="image" :src="cropperImg" width="400" ref="img">
+    <input style="margin-bottom: 20px;" id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
+    <div style="width: 400px;">
+      <img id="image" :src="cropperImg" ref="img">
     </div>
   </SG-Modal>
 </template>
 
 <script>
 import Cropper from 'cropperjs'
-// import 'cropperjs/dist/cropper.min.css'
+import 'cropperjs/dist/cropper.min.css'
 
 export default {
   name: "ImgCropper",
@@ -56,26 +57,28 @@ export default {
     },
     initCropper () {
       const image = document.getElementById('image')
-      const cropper = new Cropper(image, {
-        aspectRatio: 16 / 9,
-        crop(event) {
-          console.log(event.detail.x);
-          console.log(event.detail.y);
-          console.log(event.detail.width);
-          console.log(event.detail.height);
-          console.log(event.detail.rotate);
-          console.log(event.detail.scaleX);
-          console.log(event.detail.scaleY);
-        },
-      });
+      const cropper = {}
+      image.addEventListener('load', () => {
+        if (cropper) {
+          cropper.destroy()
+        }
+        const cropper = new Cropper(image, {
+          aspectRatio: 1 / 1,
+          ready(e) {
+            console.log('e', e)
+          },
+          crop(event) {
+            console.log(event.detail.x);
+            console.log(event.detail.y);
+            console.log(event.detail.width);
+            console.log(event.detail.height);
+            console.log(event.detail.rotate);
+            console.log(event.detail.scaleX);
+            console.log(event.detail.scaleY);
+          }
+        })
+      })
       console.log('cropper', cropper)
-      // let cropper = new Cropper(this.$refs.img, {
-      //   viewMode: 1,
-      //   dragMode: 'none',
-      //   aspectRatio: 16/9
-      // })
-      // console.log('cropper', cropper, this.$refs.img)
-      // this.cropper = cropper
     },
     submit () {
       this.imgInfo.src = this.cropperImg
@@ -84,6 +87,9 @@ export default {
       this.cancel ()
     },
     cancel () {
+      this.cropperImg = ''
+      this.cropper = ''
+      this.imgName = ''
       this.$emit("cancel")
     }
   }
@@ -94,6 +100,11 @@ export default {
 .changeLogo{
   & > div {
     margin-top: 20px;
+  }
+  img {
+    display: block;
+    /* This rule is very important, please don't ignore this */
+    max-width: 100%;
   }
 }
 </style>

@@ -358,11 +358,13 @@ export default {
         this.$message.info("请先选择要生成二维码的项目实例")
         return
       } else {
+        let organId = this.queryCondition.organId
+        let assetIdList = this.assetIdList
         let { href } = this.$router.resolve({
           path: "/barcodePrint", // 这里写的是要跳转的路由地址
             query:{
-              organId: this.queryCondition.organId,
-              assetId: this.assetIdList  //要传的参数
+              organId: organId,
+              assetId: assetIdList  //要传的参数
             }  // 这里写的是页面参数
         });
         window.open(href, "setTitle");
