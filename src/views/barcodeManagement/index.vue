@@ -72,7 +72,7 @@
       />
     </div>
     <labelCodeModal :show="showlabelCodeModal" :assetsData="assetsData" @cancel="cancel"></labelCodeModal>
-    <labelcodeDataImport ref="labelcodeDataImport" :labelTemp="labelTemp" @success="query" @hiddeModal="cancelDataImport"></labelcodeDataImport>
+    <labelcodeDataImport ref="labelcodeDataImport" :projectData="projectData" :labelTemp="labelTemp" @success="query" @hiddeModal="cancelDataImport"></labelcodeDataImport>
   </div>
 </template>
 
@@ -138,6 +138,7 @@ export default {
     }
   },
   mounted() {
+    this.query()
     // 获取资产类型
     this.platformDictFn()
   },
@@ -270,30 +271,26 @@ export default {
       this.query()
     },
     query () {
-      if (!this.queryCondition.projectId) {
-        this.$message.error('请选择资产项目')
-      } else {
-        this.loading = true
-        let form = {
-          organId: this.queryCondition.organId,
-          projectIdList: this.queryCondition.projectId,
-          assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
-          objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
-          labelCode: this.queryCondition.labelCode,
-          assetNameOrCode: this.queryCondition.assetNameOrCode,
-          pageNum: this.queryCondition.pageNum,
-          pageSize: this.queryCondition.pageSize
-        }
-        this.$api.barCode.queryLabelCodeList(form).then(res => {
-          if (Number(res.data.code) === 0) {
-            this.tableData = res.data.data.data
-            this.count = res.data.data.count
-            this.loading = false
-          } else {
-            this.$message.error(res.data.message)
-          }
-        })
+      this.loading = true
+      let form = {
+        organId: this.queryCondition.organId,
+        projectIdList: this.queryCondition.projectId,
+        assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
+        objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
+        labelCode: this.queryCondition.labelCode,
+        assetNameOrCode: this.queryCondition.assetNameOrCode,
+        pageNum: this.queryCondition.pageNum,
+        pageSize: this.queryCondition.pageSize
       }
+      this.$api.barCode.queryLabelCodeList(form).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.tableData = res.data.data.data
+          this.count = res.data.data.count
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     exportLabel () {
       if (!this.queryCondition.projectId) {
@@ -329,7 +326,6 @@ export default {
     showDataImport () {
       let form = {
         organId: this.queryCondition.organId,
-        projectIdList: this.queryCondition.projectId,
         assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
         objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
         labelCode: this.queryCondition.labelCode,

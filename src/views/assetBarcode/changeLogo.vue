@@ -77,10 +77,11 @@ export default {
         }
         const cropper = new Cropper(image, {
           aspectRatio: 1 / 1,
-          ready(e) {
-            console.log('e', e)
-          },
+          // ready(e) {
+          //   console.log('e', e)
+          // },
           crop(event) {
+            console.log(event)
             console.log(event.detail.x);
             console.log(event.detail.y);
             console.log(event.detail.width);
@@ -93,14 +94,14 @@ export default {
       })
       console.log('cropper', cropper)
       
-      var dataurl = image.cropper("getCroppedCanvas")
-      cropper.getCroppedCanvas().toBlob(async function(blob) {
-          const params = new FormData()
-          params.append('upload_file', blob, this.imgName)
-          console.log('params', params)
-        //   $.ajax({url: 'ams/attachment/uploadAnnex'})
-        // }, 'image/jpeg')
-      })
+      // var dataurl = image.cropper("getCroppedCanvas")
+      // cropper.getCroppedCanvas().toBlob(async function(blob) {
+      //     const params = new FormData()
+      //     params.append('upload_file', blob, this.imgName)
+      //     console.log('params', params)
+      //   //   $.ajax({url: 'ams/attachment/uploadAnnex'})
+      //   // }, 'image/jpeg')
+      // })
     },
     submit () {
       this.imgInfo.src = this.cropperImg
