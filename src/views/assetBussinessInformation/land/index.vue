@@ -80,8 +80,6 @@
               placeholder='选择来源方式'
               v-model="queryCondition.sourceModes"/>
             <dict-select
-              mode="multiple"
-              :maxTagCount="1"
               :style="allStyle"
               :isFilterAll="true"
               :dictOptions="operationMode"
@@ -319,7 +317,7 @@ export default {
         statuss: this.queryCondition.statuss.join(","),
         useTypes: this.queryCondition.useTypes.join(","),
         projectId: this.queryCondition.projectId.join(","),
-        modeOperId: this.queryCondition.modeOperId.join(","),
+        modeOperId: this.queryCondition.modeOperId,
         sourceModes: this.queryCondition.sourceModes.join(","),
         objectTypes: this.queryCondition.objectTypes.join(","),
       };

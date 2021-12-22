@@ -117,7 +117,7 @@ export default  {
           selectItemList.add(item.value)
         }
         return item
-      });
+      }).sort(item=>item.disabled?-1:1);
       this.selectedList = Array.from(selectItemList)
       return returnList
     },

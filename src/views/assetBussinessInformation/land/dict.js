@@ -35,7 +35,7 @@ export const queryCondition = {
   useTypes: [''],        // 用途
   address: '',         // 地理位置
   landCategory: '',
-  modeOperId: [''],     // 经营方式
+  modeOperId: '',     // 经营方式
   sourceModes: ['']            // 来源方式
 };
 // 资产状态

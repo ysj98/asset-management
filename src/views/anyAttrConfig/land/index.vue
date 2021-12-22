@@ -101,7 +101,7 @@ export default {
   },
   data() {
     return {
-      selectItem: {}, // 选中的元素
+      selectItem: undefined, // 选中的元素
       organObject: undefined, // 组织机构
       queryCondition,
       statusOptions,
@@ -132,7 +132,7 @@ export default {
     handleColorSelectVisible (record) {
       console.log('handleColorSelectVisible')
       this.colorSelectVisible = true
-      this.selectItem = record
+      this.$set(this,'selectItem',record)
     },
     handleAppendSubmit () {
       this.appendVisible = false
@@ -146,7 +146,7 @@ export default {
     operationFun (type, record) {
       switch (type) {
         case "edit":
-          this.selectItem = record;
+          this.$set(this,'selectItem',record)
           this.appendVisible = true
           break;
         case "enable":
