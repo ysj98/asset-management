@@ -1,8 +1,16 @@
 <template>
   <div class="land-asset-map">
     <div class="top-block">
-      <div class="progress left-block">
-        <span style="line-height: 32px">透明度</span>
+      <div class="progress-block left-block">
+        <span class="text" style="line-height: 32px">透明度</span>
+        <a-progress
+          @click="handleProgress"
+          type="line"
+          class="progress"
+          :percent="progress"
+          :strokeWidt="20"
+          status="normal"
+        />
       </div>
       <TreeSelect
         class="left-block tree-select"
@@ -38,8 +46,9 @@
       <div v-else id="leaflet-map"></div>
     </div>
     <div class="bottom-show">
-      <button @click="autoChange">开启自动轮播</button>
-      <button @click="changeStyle">改变透明度</button>
+      <!--      <button @click="autoChange">开启自动轮播</button>-->
+      <!--      <button @click="autoChange">关闭自动轮播</button>-->
+      <!--      <button @click="changeStyle">改变透明度</button>-->
       <div
         class="item"
         v-for="item in operationModeList"
@@ -63,13 +72,17 @@
 
 import Vue from "vue";
 import LandDetailPopup from "@/views/landParameter/landAssetMap/LandDetailPopup";
-import { arrayToObj, generatePathStyle } from "@/views/mapDrawLand/share";
+import {
+  arrayToObj,
+  generatePathStyle,
+  initMap,
+  jumpMapLand,
+} from "@/views/mapDrawLand/share";
 import TreeSelect from "src/views/common/treeSelect";
 import Leaflet from "leaflet";
-import LRasterCoords from "leaflet-rastercoords";
 import "leaflet/dist/leaflet.css";
+import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 
-const baseUrl = "http://192.168.1.7:8088/";
 export default {
   /*
    * 土地资产地图预览
@@ -81,6 +94,7 @@ export default {
   },
   data() {
     return {
+      progress: 30,
       assetList: [],
       cycleArr: [],
       timer: null,
@@ -100,9 +114,19 @@ export default {
     };
   },
   methods: {
-    changeStyle() {
+    handleProgress(e) {
+      let allWidth = e.target.offsetWidth;
+      if (e.target.className === "ant-progress-bg") {
+        allWidth = e.target.parentNode.offsetWidth;
+      }
+      this.progress = Math.ceil((e.offsetX / allWidth) * 100);
+      if (this.mapFlag) {
+        this.changeStyle({ fillOpacity: e.offsetX / allWidth });
+      }
+    },
+    changeStyle({ fillOpacity = 0.3 }) {
       this.pathStyle = {
-        fillOpacity: 0.9,
+        fillOpacity: fillOpacity,
       };
       this.initAssetLayers(this.assetList);
     },
@@ -116,8 +140,11 @@ export default {
         }, 5000);
       });
     },
-    async autoChange(flag = true) {
+    closeAutoChange() {
       clearInterval(this.timer);
+    },
+    async autoChange(flag = true) {
+      this.closeAutoChange();
       this.idx = 0;
       if (!flag) {
         return null;
@@ -128,7 +155,11 @@ export default {
         }
         const layer = this.mapLayers[this.cycleArr[this.idx]];
         const latlng = layer.getCenter();
-        this.generatePop({ layer, assetId: this.cycleArr[this.idx], latlng });
+        this.generateDetailPop({
+          layer,
+          assetId: this.cycleArr[this.idx],
+          latlng,
+        });
         console.log("layer.toGeoJSON()", layer.toGeoJSON());
         // const data = layer.toGeoJSON();
         //
@@ -182,7 +213,7 @@ export default {
         });
       this.createLayersFromJson(geoJsonData);
     },
-    getDialog({ assetId }, popup) {
+    getDetailDialog({ assetId }, popup) {
       if (!assetId || !popup) {
         console.error("错误");
         return null;
@@ -219,8 +250,32 @@ export default {
         }
       );
     },
-    generatePop({ layer, latlng, assetId }) {
-      this.jumpMapLand(layer);
+    getDialog({ assetId }) {
+      const popupData = this.assetList.filter(
+        (ele) => ele.assetId === assetId
+      )[0];
+      let Profile = Vue.extend(SimpleAssetLandInfo);
+      new Profile({ propsData: { assetLandInfo: popupData } }).$mount(
+        "#simple-popup"
+      );
+    },
+    generateSimplePop({ layer, latlng, assetId }) {
+      const popup = Leaflet.popup({
+        className: "custom-popup",
+        minWidth: 199,
+        maxHeight: 550,
+      })
+        .setLatLng(latlng)
+        .setContent('<div id="simple-popup"></div>')
+        .openOn(layer);
+      this.mapInstance.openPopup(popup);
+      this.$nextTick(() => {
+        this.getDialog({ assetId: assetId });
+      });
+      return popup;
+    },
+    generateDetailPop({ layer, latlng, assetId }) {
+      jumpMapLand(layer, this.mapInstance);
       const popup = Leaflet.popup({
         className: "custom-popup",
         closeButton: false,
@@ -233,8 +288,9 @@ export default {
         .openOn(layer);
       this.mapInstance.openPopup(popup);
       this.$nextTick(() => {
-        this.getDialog({ assetId: assetId }, popup);
+        this.getDetailDialog({ assetId: assetId }, popup);
       });
+      return popup;
     },
     initLayerData(layer, { layerDetailId, assetId }) {
       layer._layerDetailId = layerDetailId;
@@ -246,11 +302,26 @@ export default {
         layerDetailId: feature.layerDetailId,
       });
       layer.on("click", (e) => {
-        this.generatePop({
+        layer._detailPopup_ = this.generateDetailPop({
           layer,
           latlng: e.latlng,
           assetId: e.target._assetId,
         });
+      });
+      layer.on("mouseover", (e) => {
+        if (layer._detailPopup_) {
+          return null;
+        }
+        layer._popup_ = this.generateSimplePop({
+          layer,
+          latlng: layer.getBounds().getCenter(),
+          assetId: e.target._assetId,
+        });
+      });
+      layer.on("mouseout", () => {
+        this.mapInstance.closePopup(layer._popup_);
+        layer._detailPopup_ = null;
+        layer._popup_ = null;
       });
       layer.addTo(this.polygonLayer);
       this.polygonLayer.addTo(this.mapInstance);
@@ -339,8 +410,9 @@ export default {
               imageWidth: width,
               imgHeight: height,
               layerPath: temp[temp.length - 1],
+              mapInstanceKeyName: "mapInstance",
             };
-            this.initMap(options);
+            initMap.call(this, options);
             this.getAssetList();
             this.organIdByMethod = organId;
           });
@@ -352,32 +424,7 @@ export default {
         this.$SG_Message.error("系统出错,请刷新后重试");
       }
     },
-    /*
-     * 地图初始化
-     * */
-    initMap({ id, imageWidth, imgHeight, layerPath }) {
-      this.polygonLayer = new Leaflet.layerGroup();
-      this.mapInstance = Leaflet.map(id, {
-        crs: Leaflet.CRS.Simple,
-        attributionControl: false,
-        zoomControl: false,
-      });
-      new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(
-        this.mapInstance
-      );
-      const imgInfo = [imageWidth, imgHeight];
-      const rc = new LRasterCoords(this.mapInstance, imgInfo);
-      this.mapInstance.setMaxZoom(rc.zoomLevel());
-      this.mapInstance.setView(rc.unproject([imgInfo[0], imgInfo[1]]), 2);
-      Leaflet.tileLayer(`${baseUrl}/scheme/${layerPath}/{z}/{x}/{y}.png`, {
-        noWrap: true,
-        bounds: false,
-        maxNativeZoom: rc.zoomLevel(),
-      }).addTo(this.mapInstance);
-    },
-    jumpMapLand(layer) {
-      this.mapInstance.flyToBounds(layer.getBounds());
-    },
+
     async getAssetList() {
       const req = {
         layerSchemeId: this.layerSchemeId,
@@ -485,13 +532,22 @@ export default {
     right: 30px;
     z-index: 999;
     height: 38px;
-    .progress {
+    .progress-block {
       height: 32px;
-      width: 240px;
+      width: 250px;
       border-radius: 16px;
       background-color: #fff;
       padding: 0 16px;
       border: 1px solid #d9d9d9;
+      .text {
+        width: 40px;
+        display: inline-block;
+      }
+      .progress {
+        margin-left: 10px;
+        display: inline-block;
+        width: 160px;
+      }
     }
     .full-icon-block {
       border-radius: 50%;
