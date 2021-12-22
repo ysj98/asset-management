@@ -36,7 +36,8 @@ const proxyURL = [
   '/datacachesvr-api-netty/',
   '/car-parking-api/',
   '/car-batch/',
-  '/equipment-openapi/'
+  '/equipment-openapi/',
+  '/scheme/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接
@@ -86,7 +87,20 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
-    proxy: proxy.data,
+    proxy: {
+      ...proxy.data,
+      // '/ams/': {
+      //   target: 'http://192.168.30.82:8081/',
+      //   changeOrigin: true,
+      //   cookieDomainRewrite: {
+      //     '*': localhost
+      //   },
+      //   withCredentials: true,
+      //   headers: {
+      //     Referer: target
+      //   }
+      // },
+    },
     host: localhost
   },
   css: {
