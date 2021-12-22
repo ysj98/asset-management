@@ -106,6 +106,7 @@ export default {
       const params = {
         ...this.page,
         organId: this.organId,
+        status: "1"
       }
       this.table.loading = true
       console.log(params)
