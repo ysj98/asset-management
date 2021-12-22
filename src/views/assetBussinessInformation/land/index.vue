@@ -402,12 +402,16 @@ export default {
         const {data: res} = await this.$api.assetBussinessInformation.queryAssetAttr(params)
         if (String(res.code) === '0') {
           this.tableCache = (res.data.data || []).map(item=> {
+            // 将assetId添加入 内部自定义参数数组
+            item.assetAttrList = (item.assetAttrList || []).map(node => ({
+              ...node,
+              objectId: item.assetId
+            }))
             // 混合自定义参数
             const attrObj = (item.assetAttrList || []).reduce((obj,node) => {
               obj[node.attrCode] = node.attrValue
               return obj;
             }, {})
-
             return {...item,...attrObj}
           }).map(item => {
             return {
