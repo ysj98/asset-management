@@ -138,7 +138,6 @@ export default {
     }
   },
   mounted() {
-    this.query()
     // 获取资产类型
     this.platformDictFn()
   },
@@ -271,53 +270,61 @@ export default {
       this.query()
     },
     query () {
-      this.loading = true
-      let form = {
-        organId: this.queryCondition.organId,
-        projectIdList: this.queryCondition.projectId,
-        assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
-        objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
-        labelCode: this.queryCondition.labelCode,
-        assetNameOrCode: this.queryCondition.assetNameOrCode,
-        pageNum: this.queryCondition.pageNum,
-        pageSize: this.queryCondition.pageSize
-      }
-      this.$api.barCode.queryLabelCodeList(form).then(res => {
-        if (Number(res.data.code) === 0) {
-          this.tableData = res.data.data.data
-          this.count = res.data.data.count
-          this.loading = false
-        } else {
-          this.$message.error(res.data.message)
+      if (!this.queryCondition.projectId) {
+        this.$message.error('请选择资产项目')
+      } else {
+        this.loading = true
+        let form = {
+          organId: this.queryCondition.organId,
+          projectIdList: this.queryCondition.projectId,
+          assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
+          objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
+          labelCode: this.queryCondition.labelCode,
+          assetNameOrCode: this.queryCondition.assetNameOrCode,
+          pageNum: this.queryCondition.pageNum,
+          pageSize: this.queryCondition.pageSize
         }
-      })
+        this.$api.barCode.queryLabelCodeList(form).then(res => {
+          if (Number(res.data.code) === 0) {
+            this.tableData = res.data.data.data
+            this.count = res.data.data.count
+            this.loading = false
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      }
     },
     exportLabel () {
-      let form = {
-        organId: this.queryCondition.organId,
-        projectIdList: this.queryCondition.projectId,
-        assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
-        objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
-        labelCode: this.queryCondition.labelCode,
-        assetNameOrCode: this.queryCondition.assetNameOrCode,
-        pageNum: this.queryCondition.pageNum,
-        pageSize: this.queryCondition.pageSize
+      if (!this.queryCondition.projectId) {
+        this.$message.error('请选择资产项目')
+      } else {
+        let form = {
+          organId: this.queryCondition.organId,
+          projectIdList: this.queryCondition.projectId,
+          assetTypes: this.queryCondition.assetTypeList.length > 0 ? this.queryCondition.assetTypeList.join(',') : '',
+          objectTypes: this.queryCondition.objectTypeList.length > 0 ? this.queryCondition.objectTypeList.join(',') : '',
+          labelCode: this.queryCondition.labelCode,
+          assetNameOrCode: this.queryCondition.assetNameOrCode,
+          pageNum: this.queryCondition.pageNum,
+          pageSize: this.queryCondition.pageSize
+        }
+        let loadingName = this.$SG_Message.loading({content: '下载中...'})
+        this.$api.barCode.exportLabelData(form).then(res => {
+              this.$SG_Message.destroy(loadingName)
+              let blob = new Blob([res.data])
+              let a = document.createElement('a')
+              a.href = URL.createObjectURL(blob)
+              a.download = `条码管理报表.xls`
+              a.style.display = 'none'
+              document.body.appendChild(a)
+              a.click()
+              a.remove()
+        }, () => {
+          this.$SG_Message.destroy(loadingName)
+          this.$SG_Message.error('导出条码管理报表失败!')
+        })
       }
-      let loadingName = this.$SG_Message.loading({content: '下载中...'})
-      this.$api.barCode.exportLabelData(form).then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.data])
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            a.download = `条码管理报表.xls`
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
-      }, () => {
-        this.$SG_Message.destroy(loadingName)
-        this.$SG_Message.error('导出条码管理报表失败!')
-      })
     },
     showDataImport () {
       let form = {

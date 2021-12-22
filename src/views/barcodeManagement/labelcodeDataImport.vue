@@ -143,21 +143,25 @@ export default {
     },
     // 下载文件
     downSource () {
-      let loadingName = this.$SG_Message.loading({content: '下载中...'})
-      this.$api.barCode.exportLabelData(this.labelTemp).then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.data])
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            a.download = `标签编码模板.xls`
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
-      }, () => {
-        this.$SG_Message.destroy(loadingName)
-        this.$SG_Message.error('导出标签编码模板失败!')
-      })
+      if (!this.labelTemp.projectIdList) {
+        this.$message.error('请选择资产项目')
+      } else {
+        let loadingName = this.$SG_Message.loading({content: '下载中...'})
+        this.$api.barCode.exportLabelData(this.labelTemp).then(res => {
+              this.$SG_Message.destroy(loadingName)
+              let blob = new Blob([res.data])
+              let a = document.createElement('a')
+              a.href = URL.createObjectURL(blob)
+              a.download = `标签编码模板.xls`
+              a.style.display = 'none'
+              document.body.appendChild(a)
+              a.click()
+              a.remove()
+        }, () => {
+          this.$SG_Message.destroy(loadingName)
+          this.$SG_Message.error('导出标签编码模板失败!')
+        })
+      }
     },
     cancel () {
       this.hiddeModal()
