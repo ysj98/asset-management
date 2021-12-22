@@ -1,5 +1,5 @@
-import Leaflet from "_leaflet@1.7.1@leaflet";
-import LRasterCoords from "_leaflet-rastercoords@1.0.4@leaflet-rastercoords";
+import Leaflet from "leaflet";
+import LRasterCoords from "leaflet-rastercoords";
 /*
  * type
  *   - 0 array to obj return Array  [{x,y}]
