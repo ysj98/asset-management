@@ -35,7 +35,8 @@ export default {
       default: ""
     },
     object: {
-      type:[Object]
+      type:[Object],
+      default : undefined
     },
     organObject: {
       default: ()=>{}
@@ -87,6 +88,7 @@ export default {
     handleSubmit () {
       this.$refs.form.validate(async (validate) => {
         if(validate) {
+          console.log(this.object)
           if (!this.object){
             this.insertAssetAttrConfig()
           } else {
