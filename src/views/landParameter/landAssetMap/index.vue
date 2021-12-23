@@ -204,7 +204,7 @@ export default {
         // this.createLayersFromJson(layer.toGeoJSON())
 
         this.idx++;
-      }, 2000);
+      }, 5000);
     },
     handleToggleFullscreen() {
       if (!this.mapFlag) {
