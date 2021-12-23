@@ -58,7 +58,9 @@
       </div>
     </div>
     <div class="middle-content">
-      <div v-if="!mapFlag" class="place">初始化地图失败,缺少必要数据</div>
+      <div v-if="!mapFlag" class="place">
+       {{errorText}}
+      </div>
       <div v-else id="leaflet-map"></div>
       <AssetLandList
         ref="AssetLandListRef"
@@ -157,6 +159,15 @@ export default {
       organIdByMethod: "",
       methodOptions: [],
     };
+  },
+  computed: {
+    errorText() {
+      if (!this.layerSchemeId) {
+        return "请先选择方案";
+      } else {
+        return "当前方案不存在背景图";
+      }
+    },
   },
   methods: {
     handleDel() {
