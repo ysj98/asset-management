@@ -7,7 +7,8 @@
     @ok="submit"
     @cancel="cancel"
   >
-    <input style="margin-bottom: 20px;" id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
+    <SG-Button @click="upload" style="display:block;margin-bottom:20px;">上传</SG-Button>
+    <input ref="changeLogo" style="display:none;" id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
     <img width="500" id="image" :src="cropperImg" ref="img">
   </SG-Modal>
 </template>
@@ -28,6 +29,9 @@ export default {
     }
   },
   methods: {
+    upload () {
+      this.$refs.changeLogo.click()
+    },
     uploadImg (event) {
       const _this = this
       const img = event.target.files[0]
@@ -42,13 +46,13 @@ export default {
           _this.$api.ownership.uploadAnnex(fileData).then(res => {
             if (Number(res.data.code) === 0) {
               _this.imgInfo.imageUrl = res.data.data.attachmentPath
-              _this.show = false
             } else {
               _this.$message.error(res.data.message)
             }
           })
         } else {
           _this.$SG_Message.error('请上传正方形图片')
+          event.target.value = null
         }
       }
     },
@@ -69,13 +73,11 @@ export default {
 
 <style lang="less">
 .changeLogo{
+  input {
+    border: 1px solid red;
+  }
   & > div {
     margin-top: 20px;
-  }
-  img {
-    display: block;
-    /* This rule is very important, please don't ignore this */
-    max-width: 100%;
   }
 }
 </style>
