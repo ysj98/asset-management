@@ -176,24 +176,7 @@ export default {
       ];
     },
     initAttrData(allData) {
-      // this.attrData = allData.assetAttrDto || [];
-      this.attrData = [
-        {
-          attrCode: 1,
-          attrName: "一万五1",
-          attrValue: 100,
-        },
-        {
-          attrCode: 2,
-          attrName: "一3万五1",
-          attrValue: 1100,
-        },
-        {
-          attrCode: 3,
-          attrName: "一2万五1",
-          attrValue: 10340,
-        },
-      ];
+      this.attrData = allData.assetAttrDto || [];
     },
     initBaseInfo(allData) {
       // TODO: startDate endDate 空串
