@@ -4,9 +4,6 @@
  * 日期：2019年6月26日
  */
 import host from './config.base.js'
-import configs from "@/config/config.base.js";
-let mock = process.env.NODE_ENV === 'production' ? '' : ''
-mock = ''
 export const User = {
   // 登录
   login: '/uhomecp-sso/v3/propertyUser/login',
@@ -158,6 +155,8 @@ export const assets = {
     saveRegisterOrder: '/ams/registerOrder/saveRegisterOrder',
     // 资产登记-编辑保存
     updateRegisterOrder: '/ams/registerOrder/updateRegisterOrder',
+    // 更新附件独立接口
+    updateAttachment: '/ams/attachment/updateAttachment',
     // 资产登记-编辑回显
     getRegisterOrderById: '/ams/registerOrder/getRegisterOrderById',
     // 资产登记-详情回显
@@ -1398,4 +1397,6 @@ export const drawMap = {
   landUseStatistics: "/ams/layerScheme/landUseStatistics",
   // 资产地图-土地资产和业务详情
   landBusinessDetail: "/ams/asset/map/landBusinessDetail",
+  // 资产地图-土地资产和业务详情
+  queryLayerById: "/ams/layerScheme/queryLayerById",
 }
