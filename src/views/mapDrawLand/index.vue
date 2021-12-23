@@ -59,7 +59,7 @@
     </div>
     <div class="middle-content">
       <div v-if="!mapFlag" class="place">
-       {{errorText}}
+        {{ errorText }}
       </div>
       <div v-else id="leaflet-map"></div>
       <AssetLandList
@@ -277,11 +277,11 @@ export default {
       const img = new Image();
       img.src = url;
       img.onload = () => {
-        const { width, height } = img;
+        const { naturalWidth, naturalHeight } = img;
         const r = {
           imgFile: file,
-          width,
-          height,
+          width: naturalWidth,
+          height: naturalHeight,
           layerSchemeId: this.layerSchemeId,
         };
         const req = new FormData();
