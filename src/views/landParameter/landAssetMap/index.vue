@@ -43,7 +43,7 @@
         <a-icon type="fullscreen-exit" />
       </div>
       <div v-if="!mapFlag" class="place">
-        {{errorText}}
+        {{ errorText }}
       </div>
       <div v-else id="leaflet-map"></div>
     </div>
@@ -364,7 +364,9 @@ export default {
     },
     async getLandUseStatistics({ assetList }) {
       const req = {
-        assetIdList: assetList.map((ele) => ele.assetId),
+        assetIdList: assetList
+          .filter((ele) => ele.layerSchemeDetailVo)
+          .map((ele) => ele.assetId),
       };
       const {
         data: { code, message, data },
