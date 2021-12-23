@@ -1,6 +1,6 @@
 <template>
   <SG-Modal
-    v-model="show"
+    v-model="visible"
     title="编辑标签编码"
     @ok="submit"
     @cancel="cancel"
@@ -19,10 +19,6 @@
 <script>
 export default {
   props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
     assetsData: {
       type: "",
       default: ''
@@ -30,6 +26,7 @@ export default {
   },
   data () {
     return {
+      visible: false,
       newLabel: ''
     }
   },
@@ -43,12 +40,13 @@ export default {
         if (!this.newLabel) {
           this.$SG_Message.error('请填写标签编码新值')
         } else {
-          this.cancel()
+          this.visible = false
         }
       })
     },
     cancel () {
-      this.$emit("cancel", false)
+      this.newLabel = ''
+      this.$emit('cancel')
     }
   }
 }

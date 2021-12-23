@@ -16,7 +16,7 @@
             <div>
             <SG-Button @click="downSource" type="primary" weaken>下载模板</SG-Button>
             <SG-Button @click="handleUpload" class="right-btn" type="primary" weaken>上传文件</SG-Button>
-            <a-select style="width:170px;margin-right:10px;" :allowClear="true" placeholder="全部资产项目" v-model="projectId" :showSearch="true" :filterOption="filterOption">
+            <a-select style="width:170px;margin-left:140px;" :allowClear="true" placeholder="全部资产项目" v-model="projectId" :showSearch="true" :filterOption="filterOption">
               <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
             </a-select>
             </div>

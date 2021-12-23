@@ -86,7 +86,6 @@ import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandI
 export default {
   /*
    * 土地资产地图预览
-   * TODO:全屏/关闭全屏 图标
    * */
   name: "landAssetMap",
   components: {
@@ -97,7 +96,6 @@ export default {
       progress: 30,
       assetList: [],
       cycleArr: [],
-      timer: null,
       idx: 0,
       assetIds: [],
       mapLayers: {},
@@ -111,7 +109,20 @@ export default {
       operationModeList: [],
       mapEle: null,
       pathStyle: {},
+      sleepFlag: false,
+      sleepTimer: null,
+      timer: null,
     };
+  },
+  watch: {
+    sleepFlag(newValue) {
+      console.log("newValue", newValue);
+      if (newValue) {
+        this.autoChange();
+      } else {
+        this.closeAutoChange();
+      }
+    },
   },
   methods: {
     handleProgress(e) {
@@ -131,19 +142,29 @@ export default {
       this.initAssetLayers(this.assetList);
     },
     // TODO: 无相应 5s后开始自动切换
-    initSleepEvent() {
-      document.addEventListener("mousemove", () => {
-        clearTimeout(timer);
-        this.sleep = false;
-        const timer = setTimeout(() => {
-          this.sleep = true;
-        }, 5000);
-      });
+    initSleepEvent(type) {
+      function cb() {
+        clearTimeout(this.sleepTimer);
+        this.sleepFlag = false;
+        this.sleepTimer = setTimeout(() => {
+          this.sleepFlag = true;
+        });
+      }
+      const resFn = cb.bind(this);
+      document.addEventListener("mousemove", resFn);
+      if (type === "close") {
+        document.removeEventListener("mousemove", resFn);
+        return null;
+      }
     },
     closeAutoChange() {
       clearInterval(this.timer);
     },
     async autoChange(flag = true) {
+      if (!Object.keys(this.mapLayers).length) {
+        console.warn("没有涂层数据");
+        return null;
+      }
       this.closeAutoChange();
       this.idx = 0;
       if (!flag) {
@@ -155,6 +176,7 @@ export default {
         }
         const layer = this.mapLayers[this.cycleArr[this.idx]];
         const latlng = layer.getCenter();
+        jumpMapLand(layer, this.mapInstance);
         this.generateDetailPop({
           layer,
           assetId: this.cycleArr[this.idx],
@@ -275,7 +297,7 @@ export default {
       return popup;
     },
     generateDetailPop({ layer, latlng, assetId }) {
-      jumpMapLand(layer, this.mapInstance);
+      // jumpMapLand(layer, this.mapInstance);
       const popup = Leaflet.popup({
         className: "custom-popup",
         closeButton: false,
@@ -443,23 +465,37 @@ export default {
         this.$SG_Message.error(message);
       }
     },
+    mouseMoveCb() {
+      clearTimeout(this.sleepTimer);
+      this.sleepFlag = false;
+      this.sleepTimer = setTimeout(() => {
+        this.sleepFlag = true;
+      }, 5000);
+    },
     initFullEvent() {
-      const onChange = () => {
-        this.$refs.closeBtn.className = document.fullscreenElement
-          ? "full-screen-close"
-          : "default-close-btn";
+      document.addEventListener("fullscreenchange", this.fullscreenchangeCb);
+    },
+    fullscreenchangeCb() {
+      console.log("this", this);
+      this.$refs.closeBtn.className = document.fullscreenElement
+        ? "full-screen-close"
+        : "default-close-btn";
 
-        if (document.fullscreenElement) {
-          this.autoChange();
-        }else {
-          this.closeAutoChange()
-        }
-      };
-      document.addEventListener("fullscreenchange", onChange);
+      if (document.fullscreenElement) {
+        document.addEventListener("mousemove", this.mouseMoveCb);
+      } else {
+        document.removeEventListener("mousemove", this.mouseMoveCb);
+        this.closeAutoChange();
+      }
     },
   },
   mounted() {
     this.initFullEvent();
+  },
+  beforeDestroy() {
+    this.closeAutoChange();
+    document.removeEventListener("mousemove", this.mouseMoveCb);
+    document.removeEventListener("fullscreenchange", this.fullscreenchangeCb);
   },
 };
 </script>
