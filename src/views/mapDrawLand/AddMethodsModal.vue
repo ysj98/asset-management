@@ -19,7 +19,7 @@
           ></a-input-search>
         </div>
         <a-table class="custom-table" ref="refTable" v-bind="tableOptions">
-          <!-- 公司  -->
+          <!-- 所属机构  -->
           <template #organName="text, record, index">
             <div v-if="record.layerId && !record._editFlag">
               {{ record.organName }}
@@ -129,7 +129,7 @@ export default {
             customRender: this.generateSerialNumber,
           },
           {
-            title: "公司",
+            title: "所属机构",
             key: "organName",
             scopedSlots: { customRender: "organName" },
           },
@@ -265,7 +265,7 @@ export default {
         // return "最少一个新增一个数据";
       } else {
         if (data.some((ele) => !ele.organId || !ele.schemeName)) {
-          return "请选择公司和填写方案名称";
+          return "请选择所属机构和填写方案名称";
         }
       }
     },
