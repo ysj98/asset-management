@@ -236,7 +236,8 @@ export default {
               this.newFiles.push({
                 url: item.attachmentPath,
                 name: item.oldAttachmentName,
-                fileSources: item.fileSources
+                fileSources: item.fileSources,
+                attachmentId: item.attachmentId
               })
             }
           })
