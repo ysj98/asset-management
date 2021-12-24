@@ -71,6 +71,7 @@
 <script>
 import {utils} from '@/utils/utils'
 import {columns, mortgageInformation} from './beat'
+import warantAnnex from './warrantAnnex'
 const conditionalJudgment = [undefined, null, '']
 const titleDeed = [
   { text: '权证号', value: 'warrantNbr' },
@@ -139,6 +140,7 @@ const landDeed = [
 export default {
   components: {},
   props: {},
+  mixins: [warantAnnex],
   data () {
     return {
       conditionalJudgment,

@@ -809,7 +809,8 @@ export default {
               data.amsAttachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
-                name: item.oldAttachmentName
+                name: item.oldAttachmentName,
+                attachmentId: item.attachmentId
               })
             })
           }
