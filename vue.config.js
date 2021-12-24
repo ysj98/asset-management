@@ -2,6 +2,7 @@ const os = require('os');
 const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const openInEditor = require('launch-editor-middleware');
 const isProd = process.env.NODE_ENV === 'production'
 // 获取本机ip
 const getIPAdress = () => {
@@ -21,7 +22,7 @@ const localhost = getIPAdress()
 console.log('IP', localhost)
 
 const target = 'http://192.168.1.7:8088'
-// const target = 'http://betanew.uhomecp.com/'
+// const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
   '/uhomecp-sso/',
@@ -87,6 +88,9 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
+    setup (app) {
+      app.use('/__open-in-editor', openInEditor('intellij-idea-ultimate-edition'))
+    },
     proxy: {
       ...proxy.data,
       // '/ams/': {
@@ -139,7 +143,7 @@ module.exports = {
           uglifyOptions: {
             compress: {
               drop_debugger: true, // 去除debugger
-              drop_console: true // 去除console
+              // drop_console: true // 去除console
             }
           },
           sourceMap: false,
