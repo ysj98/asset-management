@@ -155,6 +155,10 @@ export function saveRegisterOrder (data) {
 export function updateRegisterOrder (data) {
   return axiosPost(assets.assetRegister.updateRegisterOrder, data)
 }
+// 资产登记-编辑保存
+export function updateAttachment (data) {
+  return axiosPost(assets.assetRegister.updateAttachment, data)
+}
 // 资产登记-编辑回显
 export function getRegisterOrderById (data) {
   return axiosGet(assets.assetRegister.getRegisterOrderById, data)

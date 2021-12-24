@@ -129,7 +129,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.particularsData = data
-          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName}))
+          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
           let files = []
           if (data.attachment && data.attachment.length > 0) {
               data.attachment.forEach(item => {

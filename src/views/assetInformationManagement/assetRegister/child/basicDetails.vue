@@ -15,7 +15,12 @@
       </a-row>
       <div style="display: flex;margin-top: 10px;">
         <SG-UploadFile
-          @input="handleChangeFile"
+          @update="(value)=>{
+            handleChangeFile(value,1)
+          }"
+          @delete="(value)=>{
+            handleChangeFile(value,0)
+          }"
           v-model="filepaths"
           :max="10"
           :customDownload="
@@ -67,14 +72,24 @@ export default {
     this.editFn()
   },
   methods: {
-    handleChangeFile(files){
-      // TODO: 登记xx,附件变动
+    /*
+    * type 0删除  1新增
+    * */
+    handleChangeFile(value,type){
+      let filesArr = []
+      if (type===0){
+        filesArr = this.filepaths.filter(ele=>ele.url !== value.url)
+      }else {
+        const newUrlArr = value.map(ele=>ele.url)
+        filesArr = [...this.filepaths.filter(ele=> !newUrlArr.includes(ele.url)),...value]
+      }
       clearTimeout(this.timer)
       this.timer = setTimeout(()=>{
+        let attachment = filesArr.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
         const req = {
           objectType:2,
           objectId:this.Detail.registerOrderId,
-          attachment: files.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
+          attachment
         }
         this.$api.assets.updateAttachment(req).then(({data:{code,message,data}})=>{
           if (code === '0'){
@@ -84,7 +99,7 @@ export default {
             this.$SG_Message.error(message)
           }
         })
-      },1600)
+      },0)
     },
     editFn () {
       let obj = {
@@ -94,7 +109,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.Detail = data
-          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName}))
+          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
         } else {
           this.$message.error(res.data.message)
         }

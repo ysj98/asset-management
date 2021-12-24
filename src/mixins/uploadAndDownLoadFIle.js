@@ -7,7 +7,7 @@ export default {
     // 自定义下载
     customDownload(file, apiFn) {
       let loadingName = this.SG_Loding("下载中...");
-      apiFn({ filePath: file.url }).then(
+      apiFn({ attachmentId: file.attachmentId }).then(
         (res) => {
           this.DE_Loding(loadingName).then(() => {
             let blob = new Blob([res.data]);
