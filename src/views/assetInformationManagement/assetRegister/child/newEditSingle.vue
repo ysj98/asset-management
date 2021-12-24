@@ -141,6 +141,7 @@ export default {
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
         this.$refs.newInformation.save()
         let data = this.$refs.newInformation.saveValues
+        let filepaths = this.$refs.newInformation.getFilepaths()
         if (!data) {return}
         this.assetType = data.assetType
         console.log(this.assetType, 'assetTypeassetTypeassetType')
@@ -160,7 +161,9 @@ export default {
           remark: data.remark,                          // 备注
           organId: this.organId,                          // 组织机构id
           [ASSET_TYPE_LIST]: basicData,
+          attachment:filepaths.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
         }
+        debugger
         // 新增
         let loadingName = this.SG_Loding('保存中...')
         this.$api.assets.saveRegisterOrder(obj).then(res => {

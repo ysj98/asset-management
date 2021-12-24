@@ -13,18 +13,38 @@
           {{item.text}}：{{Detail[item.value] || '--'}}
         </a-col>
       </a-row>
+      <div style="display: flex;margin-top: 10px;">
+        <SG-UploadFile
+          @input="handleChangeFile"
+          v-model="filepaths"
+          :max="10"
+          :customDownload="
+            (value) => {
+              return customDownload(value, $api.ownership.downLoadAnnex);
+            }
+          "
+          :customUpload="
+            (value) => {
+              return customUpload(value, $api.ownership.uploadAnnex);
+            }
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 export default {
   components: {},
   props: {
     registerOrderId: [String, Number]
   },
+  mixins:[uploadAndDownLoadFIle],
   data () {
     return {
+      filepaths:[],
       basicDetails: [
         { text: '登记单编号', value: 'registerOrderId' },
         { text: '登记单名称', value: 'registerOrderName' },
@@ -36,6 +56,7 @@ export default {
         { text: '备注', value: 'remark' }
       ],
       Detail: {},
+      timer: null
     }
   },
   computed: {
@@ -46,6 +67,25 @@ export default {
     this.editFn()
   },
   methods: {
+    handleChangeFile(files){
+      // TODO: 登记xx,附件变动
+      clearTimeout(this.timer)
+      this.timer = setTimeout(()=>{
+        const req = {
+          objectType:2,
+          objectId:this.Detail.registerOrderId,
+          attachment: files.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
+        }
+        this.$api.assets.updateAttachment(req).then(({data:{code,message,data}})=>{
+          if (code === '0'){
+            console.log('data',data)
+            this.$SG_Message.success('更新成功')
+          }else {
+            this.$SG_Message.error(message)
+          }
+        })
+      },1600)
+    },
     editFn () {
       let obj = {
         registerOrderId: this.registerOrderId     // 资产登记单ID
@@ -54,6 +94,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.Detail = data
+          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName}))
         } else {
           this.$message.error(res.data.message)
         }

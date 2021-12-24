@@ -22,6 +22,21 @@
           <a-col class="playground-col" :span="8">入库日期：{{particularsData.storageTime || '--'}}</a-col>
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         </a-row>
+        <div style="display: flex;">
+          <span style="margin-right: 10px;">附件：</span>
+          <div style="display: flex">
+            <SG-UploadFile
+              v-model="filepaths"
+              :max="10"
+              :show="true"
+              :customDownload="
+              (value) => {
+                return customDownload(value, $api.ownership.downLoadAnnex);
+              }
+            "
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div class="particulars-nav">
@@ -54,6 +69,7 @@
 </template>
 
 <script>
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import selectTab from '../../common/selectTab'
 import basic from './child/basic'
 import necessaryCaaessories from './child/necessaryCaaessories'
@@ -63,8 +79,10 @@ import correlativeCharges from './child/correlativeCharges'
 export default {
   components: {selectTab, basic, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
   props: {},
+  mixins: [uploadAndDownLoadFIle],
   data () {
     return {
+      filepaths:[],
       organId: '',
       record: '',
       registerOrderId: '',
@@ -111,6 +129,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.particularsData = data
+          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName}))
           let files = []
           if (data.attachment && data.attachment.length > 0) {
               data.attachment.forEach(item => {
