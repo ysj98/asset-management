@@ -66,11 +66,14 @@ export function initMap(
     2
   );
   this[mapInstanceKeyName].setMaxZoom(rc.zoomLevel());
-  Leaflet.tileLayer(`/scheme/${layerPath}/{z}/{x}/{y}.png`, {
-    noWrap: true,
-    bounds: rc.getMaxBounds(),
-    maxNativeZoom: rc.zoomLevel(),
-  }).addTo(this[mapInstanceKeyName]);
+  Leaflet.tileLayer(
+    `/scheme/${layerPath}/{z}/{x}/{y}.png?requestTime=${new Date().getTime()}`,
+    {
+      noWrap: true,
+      bounds: rc.getMaxBounds(),
+      maxNativeZoom: rc.zoomLevel(),
+    }
+  ).addTo(this[mapInstanceKeyName]);
   if (typeof callback === "function") {
     callback();
   }

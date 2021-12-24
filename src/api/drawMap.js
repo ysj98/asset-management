@@ -48,3 +48,8 @@ export function landUseStatistics(data) {
 export function landBusinessDetail(data) {
   return axiosGet(drawMap.landBusinessDetail, data);
 }
+
+// 根据方案id查询图层方案
+export function queryLayerById(data) {
+  return axiosGet(drawMap.queryLayerById, data,true);
+}

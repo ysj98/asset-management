@@ -19,6 +19,7 @@
           class="right-block"
           icon="upload"
           text
+          :disabled="!isCanUpload"
         >
           上传背景图
         </SG-Button>
@@ -33,7 +34,6 @@
         >
           删除绘制
         </SG-Button>
-        <!--        <SG-Button class="right-block" icon="save" text>保存绘制</SG-Button>-->
       </div>
       <div class="right">
         <TopOrganByUser
@@ -58,7 +58,9 @@
       </div>
     </div>
     <div class="middle-content">
-      <div v-if="!mapFlag" class="place">初始化地图失败,缺少必要数据</div>
+      <div v-if="!mapFlag" class="place">
+        {{ errorText }}
+      </div>
       <div v-else id="leaflet-map"></div>
       <AssetLandList
         ref="AssetLandListRef"
@@ -156,9 +158,33 @@ export default {
       layerSchemeId: "",
       organIdByMethod: "",
       methodOptions: [],
+      isCanUpload: false,
     };
   },
+  computed: {
+    errorText() {
+      if (!this.layerSchemeId) {
+        return "请先选择方案";
+      } else {
+        return "当前方案不存在背景图";
+      }
+    },
+  },
   methods: {
+    async queryLayerById({ layerId }) {
+      const req = {
+        layerId,
+      };
+      const {
+        data: { code, data, message },
+      } = await this.$api.drawMap.queryLayerById(req);
+      if (code === "0") {
+        return Promise.resolve(data);
+      } else {
+        this.$SG_Message.error(message);
+        return Promise.reject(message);
+      }
+    },
     handleDel() {
       const assetId = this.currentSelectLayer._assetId;
       this.delPolygon({
@@ -266,11 +292,11 @@ export default {
       const img = new Image();
       img.src = url;
       img.onload = () => {
-        const { width, height } = img;
+        const { naturalWidth, naturalHeight } = img;
         const r = {
           imgFile: file,
-          width,
-          height,
+          width: naturalWidth,
+          height: naturalHeight,
           layerSchemeId: this.layerSchemeId,
         };
         const req = new FormData();
@@ -281,13 +307,8 @@ export default {
           .uploadImage(req)
           .then(({ data: { data, code, message } }) => {
             if (code === "0") {
-              //TODO:这块要和后端确认返回的路径
-              const options = {
-                ...data,
-                imgHeight: data.height,
-                imageWidth: data.width,
-              };
-              this.handleInitMap(options);
+              this.$SG_Message.success(data);
+              this.isCanUpload = false;
             } else {
               this.$SG_Message.error(message);
             }
@@ -433,35 +454,52 @@ export default {
         });
       });
     },
-    changeMethod(value) {
-      this.initStore();
-      const res = this.methodOptions.filter((e) => e.value === value)[0];
-      if (res) {
-        const { organId, layerPath, width, height } = res;
-        if (organId && layerPath && width && height) {
-          this.mapFlag = true;
-          this.$nextTick(() => {
-            const temp = layerPath.split("/");
-            const options = {
-              id: "leaflet-map",
-              imageWidth: width,
-              imgHeight: height,
-              layerPath: temp[temp.length - 1],
-              mapInstanceKeyName: "mapInstance",
-            };
-            this.handleInitMap(options);
-            this.$refs.AssetLandListRef.initData({
-              layerSchemeId: value,
-              organId,
+    async changeMethod(value) {
+      try {
+        this.initStore();
+        this.mapFlag = false;
+        this.isCanUpload = false;
+        // const res = this.methodOptions.filter((e) => e.value === value)[0];
+        const res = await this.queryLayerById({ layerId: value });
+        const { organId, layerPath, width, height, isgenerate } = res;
+        //   0: "未生成",
+        //   1: "生成中",
+        //   2: "已生成",
+        if (isgenerate === 1) {
+          this.$SG_Message.error("当前方案最新背景图正在生成中");
+          return null;
+        } else if (isgenerate === 0) {
+          this.isCanUpload = true;
+          return null;
+        } else if (isgenerate === 2) {
+          this.isCanUpload = true;
+          if (organId && layerPath && width && height) {
+            this.mapFlag = true;
+            this.$nextTick(() => {
+              const temp = layerPath.split("/");
+              const options = {
+                id: "leaflet-map",
+                imageWidth: width,
+                imgHeight: height,
+                layerPath: temp[temp.length - 1],
+                mapInstanceKeyName: "mapInstance",
+              };
+              this.handleInitMap(options);
+              this.$refs.AssetLandListRef.initData({
+                layerSchemeId: value,
+                organId,
+              });
+              this.organIdByMethod = organId;
             });
-            this.organIdByMethod = organId;
-          });
-        } else {
-          this.mapFlag = false;
-          console.warn("初始化地图失败,缺少必要数据");
+          } else {
+            this.mapFlag = false;
+            console.warn("初始化地图失败,缺少必要数据");
+          }
         }
-      } else {
-        this.$SG_Message.error("系统出错,请刷新后重试");
+      } catch (error) {
+        console.log("test");
+        console.error(error);
+        this.$SG_Message.error(error);
       }
     },
     initControls() {

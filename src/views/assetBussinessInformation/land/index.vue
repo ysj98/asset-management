@@ -241,6 +241,13 @@ export default {
         totalCount: 0,
       },
       tableCache: [],
+      colorList: [
+        { bgColor: "#5b8ff9", fontColor: '#ffffff' },
+        { bgColor: "#d48265", fontColor: '#ffffff' },
+        { bgColor: "#4BD288", fontColor: '#ffffff' },
+        { bgColor: "#1890FF", fontColor: '#ffffff' },
+        { bgColor: "#DD81E6", fontColor: '#ffffff' }
+      ],
       toggle: false
     };
   },
@@ -561,13 +568,14 @@ export default {
       const {data: res} = await this.$api.assetBussinessInformation.queryAssetAttrViewTotal(params)
       if (String(res.code) === '0') {
         // let asstNum = 0
-        this.numList = (res.data.data || []).map(item=>{
+        this.numList = (res.data.data || []).map((item, index)=>{
           console.log(item)
           return {
             title: item.attrName,
             key: item.attrName,
             value: item.landArea,
-            fontColor: '#8400ff'
+            fontColor: '#000',
+            bgColor: '#fff'
           }
         })
         /**
