@@ -121,5 +121,5 @@ export function uploadAnnex (data) {
 }
 // 权证管理附件下载
 export function downLoadAnnex (data) {
-  return axiosGet(ownership.authorityCardManagement.downLoadAnnex, data)
+  return axiosGet(ownership.authorityCardManagement.downLoadAnnex, data, false, {responseType: 'blob'})
 }
