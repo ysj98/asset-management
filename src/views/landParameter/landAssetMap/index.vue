@@ -95,6 +95,7 @@ export default {
   },
   data() {
     return {
+      autoChaneIngFlag: false,
       progress: 30,
       assetList: [],
       cycleArr: [],
@@ -111,7 +112,6 @@ export default {
       operationModeList: [],
       mapEle: null,
       pathStyle: {},
-      sleepFlag: false,
       sleepTimer: null,
       timer: null,
     };
@@ -125,18 +125,13 @@ export default {
       }
     },
   },
-  watch: {
-    sleepFlag(newValue) {
-      console.log("newValue", newValue);
-      if (newValue) {
-        this.autoChange();
-      } else {
-        this.closeAutoChange();
-      }
-    },
-  },
   methods: {
     handleProgress(e) {
+      if (
+        !["ant-progress-inner", "ant-progress-bg"].includes(e.target.className)
+      ) {
+        return null;
+      }
       let allWidth = e.target.offsetWidth;
       if (e.target.className === "ant-progress-bg") {
         allWidth = e.target.parentNode.offsetWidth;
@@ -152,26 +147,13 @@ export default {
       };
       this.initAssetLayers(this.assetList);
     },
-    // TODO: 无相应 5s后开始自动切换
-    initSleepEvent(type) {
-      function cb() {
-        clearTimeout(this.sleepTimer);
-        this.sleepFlag = false;
-        this.sleepTimer = setTimeout(() => {
-          this.sleepFlag = true;
-        });
-      }
-      const resFn = cb.bind(this);
-      document.addEventListener("mousemove", resFn);
-      if (type === "close") {
-        document.removeEventListener("mousemove", resFn);
-        return null;
-      }
-    },
     closeAutoChange() {
+      console.log("关闭了定时器");
       clearInterval(this.timer);
+      this.autoChaneIngFlag = false;
     },
     async autoChange(flag = true) {
+      const _this = this;
       if (!Object.keys(this.mapLayers).length) {
         console.warn("没有涂层数据");
         return null;
@@ -181,30 +163,31 @@ export default {
       if (!flag) {
         return null;
       }
-      this.timer = setInterval(() => {
-        if (this.idx === Object.keys(this.mapLayers).length) {
-          this.idx = 0;
+      cycleFn();
+      this.autoChaneIngFlag = true;
+      this.timer = setInterval(cycleFn, 5000);
+      function cycleFn() {
+        if (_this.idx === Object.keys(_this.mapLayers).length) {
+          _this.idx = 0;
         }
-        const layer = this.mapLayers[this.cycleArr[this.idx]];
+        const layer = _this.mapLayers[_this.cycleArr[_this.idx]];
         const latlng = layer.getCenter();
-        jumpMapLand(layer, this.mapInstance);
-        this.generateDetailPop({
+        jumpMapLand(layer, _this.mapInstance);
+        _this.generateDetailPop({
           layer,
-          assetId: this.cycleArr[this.idx],
+          assetId: _this.cycleArr[_this.idx],
           latlng,
         });
-        console.log("layer.toGeoJSON()", layer.toGeoJSON());
         // const data = layer.toGeoJSON();
         //
         // // TODO:自动切换 "高亮" 对应图块
         // // layer.remove();
         // data.properties.style.fillOpacity = 0.9;
-        // this.mapLayers[this.cycleArr[this.idx]] =
-        //   this.createLayersFromJson(data);
-        // this.createLayersFromJson(layer.toGeoJSON())
-
-        this.idx++;
-      }, 5000);
+        // _this.mapLayers[_this.cycleArr[_this.idx]] =
+        //   _this.createLayersFromJson(data);
+        // _this.createLayersFromJson(layer.toGeoJSON())
+        _this.idx++;
+      }
     },
     handleToggleFullscreen() {
       if (!this.mapFlag) {
@@ -342,6 +325,9 @@ export default {
         });
       });
       layer.on("mouseover", (e) => {
+        if (this.autoChaneIngFlag) {
+          return null;
+        }
         if (layer._detailPopup_) {
           return null;
         }
@@ -352,6 +338,9 @@ export default {
         });
       });
       layer.on("mouseout", () => {
+        if (this.autoChaneIngFlag) {
+          return null;
+        }
         this.mapInstance.closePopup(layer._popup_);
         layer._detailPopup_ = null;
         layer._popup_ = null;
@@ -479,10 +468,10 @@ export default {
       }
     },
     mouseMoveCb() {
+      this.closeAutoChange();
       clearTimeout(this.sleepTimer);
-      this.sleepFlag = false;
       this.sleepTimer = setTimeout(() => {
-        this.sleepFlag = true;
+        this.autoChange();
       }, 5000);
     },
     initFullEvent() {
@@ -495,9 +484,11 @@ export default {
         : "default-close-btn";
 
       if (document.fullscreenElement) {
+        this.mouseMoveCb();
         document.addEventListener("mousemove", this.mouseMoveCb);
       } else {
         document.removeEventListener("mousemove", this.mouseMoveCb);
+        clearTimeout(this.sleepTimer);
         this.closeAutoChange();
       }
     },
