@@ -224,7 +224,7 @@ export default {
   methods: {
     async goDetail(){
       const {organId,organName} = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
-      const tabUrl = `/asset-management/#/landAssetsView/detail?assetLandId=${this.detailInfo.landId}&assetId=${this.detailInfo.assetId}&organId=${organId}&organName=${organName}`
+      const tabUrl = `/asset-management/#/landAssetsView/detail?assetLandId=${this.detailInfo.assetLandId}&assetId=${this.detailInfo.assetId}&organId=${organId}&organName=${organName}`
       const  tabTitle = '土地资产视图详情'
       win.openPortalMenu(tabUrl,tabTitle)
     },
