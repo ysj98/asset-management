@@ -412,10 +412,14 @@ export default {
   },
   computed: {
     title () {
+      if(this.fromType === 'portal'){
+        return '楼栋详情'
+      }
       return this.type === 'edit' ? '编辑楼栋' : '新增楼栋'
     }
   },
   mounted () {
+    console.log('mounted执行')
     this.fromType = this.$route.query.fromType
     if (this.fromType === 'portal'){
       this.resetAll()

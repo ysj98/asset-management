@@ -233,7 +233,7 @@ export default {
   },
   methods: {
     async goDetail(){
-      const resOrganId = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
+      const {organId:resOrganId} = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
       const  tabUrl  = `/asset-management/#/buildingView/buildingViewDetail?buildId=${this.detailInfo.buildId}&organId=${resOrganId}`
       const tabTitle = '楼栋视图详情'
       win.openPortalMenu(tabUrl,tabTitle)

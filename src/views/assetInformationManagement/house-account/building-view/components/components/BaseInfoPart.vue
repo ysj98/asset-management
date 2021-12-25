@@ -58,7 +58,7 @@
         const fromType = 'portal'
         const positionId = this.$route.query.buildId
         const tabTitle = '楼栋详情'
-        const tabUrl = `/asset-management/#/createBuildDetail?fromType===${fromType}&positionId=${positionId}`
+        const tabUrl = `/asset-management/#/createBuildDetail?fromType=${fromType}&positionId=${positionId}`
         win.openPortalMenu(tabUrl,tabTitle)
       },
       // 查询基本信息
