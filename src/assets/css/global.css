@@ -4,3 +4,6 @@
 .custom-popup .leaflet-popup-content {
   margin: 0;
 }
+.sg-search-container{
+  position: relative;
+}
