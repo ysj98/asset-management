@@ -71,9 +71,10 @@
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+              <a-col v-if="routeQuery.type === 'edit'" :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
                   <a-select
+                    :disabled="true"
                     :style="allWidth"
                     :getPopupContainer="getPopupContainer"
                     @change="communityIdChange"

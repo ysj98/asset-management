@@ -35,10 +35,11 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-item label="运营项目"  v-bind="formItemLayout">
+                  <a-form-item v-if="type !== 'create'" label="运营项目"  v-bind="formItemLayout">
+                    <!-- 总是不允许用户选择运营项目 -->
                     <a-select
                       :style="allWidth"
-                      :disabled="communityIdDisabled"
+                      :disabled="true"
                       :getPopupContainer="getPopupContainer"
                       @change="communityIdChange"
                         placeholder="请选择项目"
@@ -277,7 +278,7 @@
                 <a-col :span="24">
                   <a-form-item label="图片" v-bind="formItemLayout2">
                     <SG-UploadFile
-                      v-model="otherPicPath"
+                      v-model="buildPic"
                       :customDownload="customDownload"
                       :customUpload="customUpload"
                       />
@@ -307,7 +308,7 @@
 <script>
 
 /*
-* TODO: 添加 otherPicPath 字段 对应附件，但是以图片展示
+* TODO: 添加 buildPic 字段 对应附件，但是以图片展示
 * */
 
 import FormFooter from '@/components/FormFooter.vue'
@@ -378,7 +379,7 @@ export default {
         lng: '',
         lat: ''
       },
-      otherPicPath:[], // 图片
+      buildPic:[], // 图片
       picPath: [], // 平面图
       filepaths: [], // 附件
       buildTypeOpt: [], // 楼栋类型
@@ -512,8 +513,8 @@ export default {
             data.picPath = this.picPath[0].url
           }
           // 处理图片
-          if (this.otherPicPath.length > 0) {
-            data.otherPicPath = this.otherPicPath.map(item => item.url).join(',')
+          if (this.buildPic.length > 0) {
+            data.buildPic = this.buildPic.map(item => item.url).join(',')
           }
           // 处理附件
           if (this.filepaths.length > 0) {
@@ -633,9 +634,9 @@ export default {
         this.picPath = picPath
       }
       // 处理附件
-      if (data.otherPicPath) {
-        let otherPicPath = data.otherPicPath.split(',')
-        this.otherPicPath = otherPicPath.map(url => {
+      if (data.buildPic) {
+        let buildPic = data.buildPic.split(',')
+        this.buildPic = buildPic.map(url => {
           return {url, name: url.substring(url.lastIndexOf('/')+1)}
         })
       }
@@ -690,7 +691,7 @@ export default {
         lat: ''
       }
       this.picPath = [] // 平面图
-      this.otherPicPath = [] // 图片
+      this.buildPic = [] // 图片
       this.filepaths = [] // 附件
     },
     bMapChange (point) {

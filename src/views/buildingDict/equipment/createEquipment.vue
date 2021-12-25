@@ -58,9 +58,10 @@
                   />
                 </a-form-model-item>
               </a-col>
-              <a-col :span="8">
+              <a-col v-if="routeQuery.type === 'edit'" :span="8">
                 <a-form-model-item label="运营项目" prop="communityId">
                   <a-select
+                      :disabled="true"
                       showSearch
                       :style="allWidth"
                       :allowClear="false"
@@ -263,7 +264,9 @@ export default {
   components: {EquipmentSelectTree, EquipmentSelect, EquipmentPositionSelectTree , FormFooter, TreeSelect},
   mixins: [dictMixin],
   data:()=>({
+    routeQuery:{},
     formInfo:{
+      communityId: '',
       bussType: "equipmentDir",
       topOrganName: '',
       equipmentName: '',
