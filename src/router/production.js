@@ -36,6 +36,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/createBuildDetail',
+    name: '楼栋详情',
+    component: () => import('@/views/buildingDict/createBuild'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/buildingDict/createHouse',
     name: '新建房间',
     component: () => import('@/views/buildingDict/createHouse.vue')

@@ -298,7 +298,7 @@
           </a-form>
         </div>
     </div>
-     <FormFooter>
+     <FormFooter v-if="fromType !== 'portal'">
        <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr2']" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_BUILD_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
@@ -307,9 +307,6 @@
 </template>
 <script>
 
-/*
-* TODO: 添加 buildPic 字段 对应附件，但是以图片展示
-* */
 
 import FormFooter from '@/components/FormFooter.vue'
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
@@ -354,6 +351,7 @@ export default {
   },
   data () {
     return {
+      fromType:'',
       allStyle: 'width: 100%;',
       organIdMain:'', // 所属机构
       organNameMain:'', // 所属机构名称
@@ -418,10 +416,14 @@ export default {
     }
   },
   mounted () {
+    this.fromType = this.$route.query.fromType
+    if (this.fromType === 'portal'){
+      this.resetAll()
+      this.queryBuildDetail(this.$route.query.positionId)
+    }
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
-    // this.queryDictDataList()
     this.platformDictFn()
     this.init()
     this.handleBtn()
@@ -745,25 +747,6 @@ export default {
           })
         } else {
           this.$message.error(res.data.message)
-        }
-      })
-    },
-    // 机构字典
-    queryDictDataList () {
-      let data = {
-        dictCode: 'BUILD_STRUCT',
-        groupId: this.organId
-      }
-      this.$api.basics.queryDictDataList(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          let arr = []
-          result.forEach(item => {
-            if (String(item.dictStatus) === '1') {
-              arr.push({label: item.dictName, value: item.dictValue, ...item})
-            }
-          })
-          this.buildStructOpt = arr
         }
       })
     },

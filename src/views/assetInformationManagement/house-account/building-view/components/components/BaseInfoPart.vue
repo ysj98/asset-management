@@ -12,7 +12,10 @@
             </div>
             <div v-else>
               <span style="color: #282D5B">{{title ? `${title}:` : ''}}</span>
-              <span style="margin-left:4px; color: #49505E">{{(baseInfoData[key] !== '' && baseInfoData[key] !== null) ? baseInfoData[key] : '无'}}</span>
+              <span style="margin-left:4px;" v-if="key==='buildName'">
+                <a @click="goDetail">{{baseInfoData[key]}}</a>
+              </span>
+              <span v-else style="margin-left:4px; color: #49505E">{{(baseInfoData[key] !== '' && baseInfoData[key] !== null) ? baseInfoData[key] : '无'}}</span>
             </div>
           </div>
         </a-col>
@@ -23,6 +26,7 @@
 
 <script>
   import { basics } from '@/config/config.url'
+  import {win} from "utils/utils";
   export default {
     name: 'BaseInfoPart',
     props: ['buildId'],
@@ -50,6 +54,13 @@
     },
 
     methods: {
+      goDetail(){
+        const fromType = 'portal'
+        const positionId = this.$route.query.buildId
+        const tabTitle = '楼栋详情'
+        const tabUrl = `/asset-management/#/createBuildDetail?fromType===${fromType}&positionId=${positionId}`
+        win.openPortalMenu(tabUrl,tabTitle)
+      },
       // 查询基本信息
       queryHouseInfo () {
         this.spinning = true
