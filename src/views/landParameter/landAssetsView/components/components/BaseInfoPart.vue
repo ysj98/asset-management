@@ -76,11 +76,9 @@
       goDetail(){
         const {organId,organName} = this.$route.query
         const {landId} = this.infoData
-        const data = {
-          tabUrl:`/asset-management/#/buildingDict/detailLand?organId=${organId}&organName=${organName}&type=detail&blankId=${landId}`,
-          tabTitle:'土地详情',
-        }
-        win.openPortalMenu(data)
+        const tabUrl = `/asset-management/#/buildingDict/detailLand?organId=${organId}&organName=${organName}&type=detail&blankId=${landId}`
+        const tabTitle = '土地详情'
+        win.openPortalMenu(tabUrl,tabTitle)
       },
       // 查询详情
       queryDetailInfo () {

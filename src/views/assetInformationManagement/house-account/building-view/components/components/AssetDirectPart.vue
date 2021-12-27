@@ -83,13 +83,10 @@
     },
 
     methods: {
-      // TODO：传参 blankId
       goDetail({id}){
-        const data = {
-          tabUrl:`/asset-management/#/buildingDict/detailHouse?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&houseId=${id}&searchBuildName=`,
-          tabTitle:'房间详情',
-        }
-        win.openPortalMenu(data)
+        const tabTitle = '房间详情'
+        const tabUrl = `/asset-management/#/buildingDict/detailHouse?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&houseId=${id}&searchBuildName=`
+        win.openPortalMenu(tabUrl,tabTitle)
       },
       // 处理背景色和宽度
       handleStyle (areaInfo, totalArea) {

@@ -223,12 +223,10 @@ export default {
   },
   methods: {
     async goDetail(){
-      const resOrganId = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
-      const data = {
-        tabUrl:`/asset-management/#/buildingView/buildingViewDetail?buildId=${this.detailInfo.buildId}&organId=${resOrganId}`,
-        tabTitle:'楼栋视图详情',
-      }
-      win.openPortalMenu(data)
+      const {organId,organName} = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
+      const tabUrl = `/asset-management/#/landAssetsView/detail?assetLandId=${this.detailInfo.assetLandId}&assetId=${this.detailInfo.assetId}&organId=${organId}&organName=${organName}`
+      const  tabTitle = '土地资产视图详情'
+      win.openPortalMenu(tabUrl,tabTitle)
     },
     handleSwitch() {
       this.$emit("close", "land")

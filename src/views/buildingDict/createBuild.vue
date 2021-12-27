@@ -35,10 +35,11 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-item label="运营项目"  v-bind="formItemLayout">
+                  <a-form-item v-if="type !== 'create'" label="运营项目"  v-bind="formItemLayout">
+                    <!-- 总是不允许用户选择运营项目 -->
                     <a-select
                       :style="allWidth"
-                      :disabled="communityIdDisabled"
+                      :disabled="true"
                       :getPopupContainer="getPopupContainer"
                       @change="communityIdChange"
                         placeholder="请选择项目"
@@ -277,7 +278,7 @@
                 <a-col :span="24">
                   <a-form-item label="图片" v-bind="formItemLayout2">
                     <SG-UploadFile
-                      v-model="otherPicPath"
+                      v-model="buildPic"
                       :customDownload="customDownload"
                       :customUpload="customUpload"
                       />
@@ -297,7 +298,7 @@
           </a-form>
         </div>
     </div>
-     <FormFooter>
+     <FormFooter v-if="fromType !== 'portal'">
        <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr2']" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_BUILD_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
@@ -306,9 +307,6 @@
 </template>
 <script>
 
-/*
-* TODO: 添加 otherPicPath 字段 对应附件，但是以图片展示
-* */
 
 import FormFooter from '@/components/FormFooter.vue'
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
@@ -353,6 +351,7 @@ export default {
   },
   data () {
     return {
+      fromType:'',
       allStyle: 'width: 100%;',
       organIdMain:'', // 所属机构
       organNameMain:'', // 所属机构名称
@@ -378,7 +377,7 @@ export default {
         lng: '',
         lat: ''
       },
-      otherPicPath:[], // 图片
+      buildPic:[], // 图片
       picPath: [], // 平面图
       filepaths: [], // 附件
       buildTypeOpt: [], // 楼栋类型
@@ -413,14 +412,22 @@ export default {
   },
   computed: {
     title () {
+      if(this.fromType === 'portal'){
+        return '楼栋详情'
+      }
       return this.type === 'edit' ? '编辑楼栋' : '新增楼栋'
     }
   },
   mounted () {
+    console.log('mounted执行')
+    this.fromType = this.$route.query.fromType
+    if (this.fromType === 'portal'){
+      this.resetAll()
+      this.queryBuildDetail(this.$route.query.positionId)
+    }
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
-    // this.queryDictDataList()
     this.platformDictFn()
     this.init()
     this.handleBtn()
@@ -512,8 +519,8 @@ export default {
             data.picPath = this.picPath[0].url
           }
           // 处理图片
-          if (this.otherPicPath.length > 0) {
-            data.otherPicPath = this.otherPicPath.map(item => item.url).join(',')
+          if (this.buildPic.length > 0) {
+            data.buildPic = this.buildPic.map(item => item.url).join(',')
           }
           // 处理附件
           if (this.filepaths.length > 0) {
@@ -633,9 +640,9 @@ export default {
         this.picPath = picPath
       }
       // 处理附件
-      if (data.otherPicPath) {
-        let otherPicPath = data.otherPicPath.split(',')
-        this.otherPicPath = otherPicPath.map(url => {
+      if (data.buildPic) {
+        let buildPic = data.buildPic.split(',')
+        this.buildPic = buildPic.map(url => {
           return {url, name: url.substring(url.lastIndexOf('/')+1)}
         })
       }
@@ -690,7 +697,7 @@ export default {
         lat: ''
       }
       this.picPath = [] // 平面图
-      this.otherPicPath = [] // 图片
+      this.buildPic = [] // 图片
       this.filepaths = [] // 附件
     },
     bMapChange (point) {
@@ -744,25 +751,6 @@ export default {
           })
         } else {
           this.$message.error(res.data.message)
-        }
-      })
-    },
-    // 机构字典
-    queryDictDataList () {
-      let data = {
-        dictCode: 'BUILD_STRUCT',
-        groupId: this.organId
-      }
-      this.$api.basics.queryDictDataList(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          let arr = []
-          result.forEach(item => {
-            if (String(item.dictStatus) === '1') {
-              arr.push({label: item.dictName, value: item.dictValue, ...item})
-            }
-          })
-          this.buildStructOpt = arr
         }
       })
     },
