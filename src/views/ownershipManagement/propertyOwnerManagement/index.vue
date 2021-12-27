@@ -4,7 +4,7 @@
 <template>
   <div>
     <SG-SearchContainer background="white">
-      <div slot="btns">
+      <div slot="headBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button
           icon="export"
@@ -15,7 +15,7 @@
         >导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newPropertyOwner" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_NEW">新建权属人</SG-Button>
       </div>
-      <div slot="form">
+      <div slot="headRight" class="search-content-box">
         <topOrganByUser @change="organIdChange" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true"/>
         <a-input-search placeholder="权属人名称" :style="allStyle" v-model="ownerName" @search="queryClick" />
       </div>
@@ -277,5 +277,10 @@ export default {
   }
   .custom-table {
     padding-bottom: 50px;
+  }
+  .search-content-box {
+    div {
+      display: inline-block;
+    }
   }
 </style>

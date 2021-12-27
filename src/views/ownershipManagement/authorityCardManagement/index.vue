@@ -15,7 +15,7 @@
       </div>
       <div slot="headerForm">
       </div>
-      <div slot="contentForm" class="search-content-box" style=" position: absolute">
+      <div slot="contentForm" class="search-content-box" style="position: absolute">
         <div class="search-from-box" style="float: right; text-align: left">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select
