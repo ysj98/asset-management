@@ -92,8 +92,7 @@ export default {
             },
             {
               title: "资产编码",
-              //TODO:缺少数据
-              key: "equipmentId",
+              key: "assetCode",
             },
           ],
           [
@@ -112,14 +111,12 @@ export default {
               key: "landProperties",
             },
             {
-              //TODO:缺少数据
               title: "经营方式",
-              key: "equipmentId",
+              key: "modelOperName",
             },
           ],
           [
             {
-              // TODO:使用期限
               title: "使用期限",
               key: "startAndEndTime",
               render(h, data, value) {
@@ -141,9 +138,8 @@ export default {
           ],
           [
             {
-              //TODO:缺少数据
               title: "运营项目",
-              key: "attrNames",
+              key: "communityName",
               colProps: {
                 span: 24,
               },
@@ -179,7 +175,6 @@ export default {
       this.attrData = allData.assetAttrDtos || [];
     },
     initBaseInfo(allData) {
-      // TODO: startDate endDate 空串
       this.baseInfoOptions.data = {
         ...allData,
         startAndEndTime:
