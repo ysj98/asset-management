@@ -700,3 +700,14 @@ export function getDefaultKey(arr){
     }
   }
 }
+
+export function handleDownloadFile({data,fileName}){
+  let blob = new Blob([data])
+  let a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = fileName
+  a.style.display = 'none'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+}

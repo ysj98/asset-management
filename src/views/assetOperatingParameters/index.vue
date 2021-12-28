@@ -2,7 +2,7 @@
   <div class="container">
     <a-tabs v-model="currentKey" type="card">
       <a-tab-pane v-for="item in tabList" :key="item.keyStr" :tab="item.name">
-        <TabContent :type='item.keyStr' />
+        <TabContent :assetType="currentKey" :type="item.keyStr" />
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -10,6 +10,7 @@
 
 <script>
 import { getDefaultKey } from "utils/utils";
+import store from "store";
 import TabContent from "@/views/assetOperatingParameters/TabContent";
 export default {
   /*
@@ -26,23 +27,23 @@ export default {
       tabList: [
         {
           auth: "",
-          name: "房屋",
-          keyStr: "1",
+          name: store.state.ASSET_TYPE_STRING.HOUSE,
+          keyStr: store.state.ASSET_TYPE_CODE.HOUSE,
         },
         {
           auth: "",
-          name: "土地",
-          keyStr: "2",
+          name: store.state.ASSET_TYPE_STRING.LAND,
+          keyStr: store.state.ASSET_TYPE_CODE.LAND,
         },
         {
           auth: "",
-          name: "车场",
-          keyStr: "3",
+          name: store.state.ASSET_TYPE_STRING.YARD,
+          keyStr: store.state.ASSET_TYPE_CODE.YARD,
         },
         {
           auth: "",
-          name: "设备设施",
-          keyStr: "4",
+          name: store.state.ASSET_TYPE_STRING.EQUIPMENT,
+          keyStr: store.state.ASSET_TYPE_CODE.EQUIPMENT,
         },
       ],
     };

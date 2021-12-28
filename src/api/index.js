@@ -38,6 +38,8 @@ import * as barCode from './barCode'
 import * as assetOperationMode from './assetOperationMode'
 import * as assetBussinessInformation from './assetBussinessInformation'
 import * as drawMap from './drawMap'
+import * as operationParams from './operationParams'
+import * as toOperation from './toOperation'
 const API = {
   auth,
   global,
@@ -64,7 +66,9 @@ const API = {
   assetOperationMode,
   assetBussinessInformation,
   attrConfig,
-  drawMap
+  drawMap,
+  operationParams,
+  toOperation
 }
 export default {
   install (Vue) {
