@@ -55,7 +55,8 @@ export function initMap(
     zoomControl: false,
   });
   new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(this.mapInstance);
-  const imgInfo = [imageWidth, imgHeight];
+  const num = Math.max(imgHeight, imageWidth)
+  const imgInfo = [num,num];
   const rc = new LRasterCoords(this.mapInstance, imgInfo);
   this[mapInstanceKeyName].setMaxBounds(
     rc.unproject([0, 0]),
