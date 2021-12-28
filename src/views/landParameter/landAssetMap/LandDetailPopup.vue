@@ -176,7 +176,7 @@ export default {
       ];
     },
     initAttrData(allData) {
-      this.attrData = allData.assetAttrDto || [];
+      this.attrData = allData.assetAttrDtos || [];
     },
     initBaseInfo(allData) {
       // TODO: startDate endDate 空串
