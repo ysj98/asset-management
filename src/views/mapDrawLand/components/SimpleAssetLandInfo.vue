@@ -1,12 +1,12 @@
 <template>
   <div class="simple-asset-land-info">
     <div class="land-name">
-      {{ assetLandInfo.projectName }}
+      {{ assetLandInfo.landName }}
     </div>
     <div>
       <span class="title-left">资产项目</span>
       <span class="content-right">
-        {{ assetLandInfo.landName }}
+        {{ assetLandInfo.projectName }}
       </span>
     </div>
     <div>
