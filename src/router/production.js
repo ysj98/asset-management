@@ -156,6 +156,16 @@ let proRouter = [{
     component: () => import('@/views/assetOperating/index.vue'),
   },
   {
+    path: '/addAndEditOperation',
+    name: '资产转运营单-编辑',
+    component: () => import('@/views/assetOperating/addAndEditOperation.vue'),
+  },
+  {
+    path: '/operationDetail',
+    name: '资产转运营详情',
+    component: () => import('@/views/assetOperating/operationDetail.vue'),
+  },
+  {
     path: '/assetManagementMode',
     name: '资产经营方式',
     component: () => import('@/views/assetManagementMode/index.vue'),

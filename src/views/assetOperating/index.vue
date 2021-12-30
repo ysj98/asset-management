@@ -14,7 +14,7 @@
           icon="plus"
           type="primary"
           v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW"
-          @click="newChangeSheetFn"
+          @click="goAddEdit"
         >
           新建转运营单
         </SG-Button>
@@ -36,6 +36,8 @@
             :style="allStyle2"
           ></treeSelect>
           <a-select
+            mode="multiple"
+            :maxTagCount="1"
             :style="allStyle2"
             :showSearch="true"
             :filterOption="filterOption"
@@ -113,7 +115,7 @@
                 :allowClear="false"
                 label="创建日期"
                 pickerType="RangePicker"
-                v-model="alterationDate"
+                v-model="createAndEndTime"
                 format="YYYY-MM-DD"
               ></SG-DatePicker>
             </div>
@@ -160,6 +162,7 @@
 </template>
 
 <script>
+import { generateAssetStringByCode } from "@/utils/utils";
 import OperationPopover from "@/components/OperationPopover";
 import SearchContainer from "@/views/common/SearchContainer";
 import TreeSelect from "@/views/common/treeSelect";
@@ -203,7 +206,10 @@ const columns = [
   },
   {
     title: "资产类型",
-    dataIndex: "assetType",
+    key: "assetType",
+    customRender: (text, record) => {
+      return generateAssetStringByCode({ record });
+    },
   },
   {
     title: "转运营资产数量",
@@ -218,9 +224,8 @@ const columns = [
     dataIndex: "createTime",
   },
   {
-    // TODO
     title: "状态",
-    dataIndex: "createByName2",
+    dataIndex: "approvalStatusName",
   },
   {
     title: "操作",
@@ -240,23 +245,23 @@ const approvalStatusListOptions = [
   },
   {
     name: "草稿",
-    value: "0",
+    value: 0,
   },
   {
     name: "已审批",
-    value: "1",
+    value: 1,
   },
   {
     name: "待审批",
-    value: "2",
+    value: 2,
   },
   {
     name: "已驳回",
-    value: "3",
+    value: 3,
   },
   {
     name: "已取消",
-    value: "4",
+    value: 4,
   },
 ];
 const allWidth = {
@@ -268,7 +273,7 @@ const allWidth = {
   "vertical-align": "middle",
 };
 const allWidth2 = {
-  width: "170px",
+  width: "200px",
   "margin-right": "10px",
   flex: 1,
   "margin-top": "0",
@@ -278,7 +283,7 @@ const allWidth2 = {
 const queryCondition = {
   registerNameOrCode: "",
   organId: "", // 组织机构id
-  projectId: "", // 资产项目Id
+  projectId: [], // 资产项目Id
   assetType: [], // 资产类型Id
   approvalStatusList: [], // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
   createTimeStart: "", // 开始日期
@@ -299,6 +304,7 @@ export default {
   props: {},
   data() {
     return {
+      organInfo: {},
       overviewNumSpinning: false,
       numList: [
         { title: "全部", key: "total", value: 0, fontColor: "#324057" },
@@ -318,19 +324,13 @@ export default {
       allStyle2: allWidth2,
       toggle: true,
       columns,
-      organName: "",
       organId: "",
       tableData: [],
       operationData: [...operationData],
       approvalStatusListOptions: [...approvalStatusListOptions],
       queryCondition: { ...queryCondition },
       count: "",
-      projectData: [
-        {
-          name: "全部资产项目",
-          value: "",
-        },
-      ],
+      projectData: [],
       assetTypeData: [],
       assetClassifyData: [
         {
@@ -338,53 +338,63 @@ export default {
           value: "",
         },
       ],
-      alterationDate: [],
+      createAndEndTime: [],
     };
   },
   computed: {},
   methods: {
+    handleReq() {
+      const res1 = this.queryCondition.assetType;
+      const res2 = this.queryCondition.approvalStatusList;
+      console.log("res1", res1);
+      const assetTypes = res1.filter(
+        (ele) => !["", undefined, null].includes(ele)
+      );
+      const approvalStatusList = res2.filter(
+        (ele) => !["", undefined, null].includes(ele)
+      );
+      return {
+        projectId: this.queryCondition.projectId,
+        organId: Number(this.queryCondition.organId),
+        assetTypes,
+        approvalStatusList,
+        createTimeStart: moment(this.createAndEndTime[0]).format("YYYY-MM-DD"),
+        createTimeEnd: moment(this.createAndEndTime[1]).format("YYYY-MM-DD"),
+        isCurrent: this.queryCondition.isCurrent,
+        registerNameOrCode: this.queryCondition.registerNameOrCode,
+      };
+    },
     handleExport() {
       let obj = {
-        projectId: this.queryCondition.projectId, // 资产项目Id
-        organId: Number(this.queryCondition.organId), // 组织机构id
-        assetTypes: this.queryCondition.assetType, // 资产类型Id
-        approvalStatusList: this.queryCondition.approvalStatusList,
-        createTimeStart:
-          this.alterationDate.length > 0
-            ? moment(this.alterationDate[0]).format("YYYY-MM-DD")
-            : "", // 创建日期开始日期
-        createTimeEnd:
-          this.alterationDate.length > 0
-            ? moment(this.alterationDate[1]).format("YYYY-MM-DD")
-            : "", // 创建日期结束日期
-        isCurrent: this.queryCondition.isCurrent, // 仅当前机构下资产清理单 0 否 1 是
-        registerNameOrCode: this.queryCondition.registerNameOrCode,
+        ...this.handleReq(),
       };
       this.$api.toOperation.exportListPage(obj).then((res) => {
         handleDownloadFile({ fileName: "资产转运营列表.xls", data: res.data });
       });
     },
     handleActionBtn(record) {
-      const { status } = record;
+      // TODO:确认按钮根据状态准确显示
+      const { approvalStatus } = record;
       // TODO: 更换图标
+      // 参考 approvalStatusListOptions 变量
       const operationList = [
         {
-          iconType: "book",
+          iconType: "edit",
           text: "编辑",
           editType: "edit",
-          statusAuth: ["草稿", "已驳回"],
+          statusAuth: [0, 3],
         },
         {
-          iconType: "book",
+          iconType: "approve",
           text: "审批",
           editType: "approve",
-          statusAuth: ["待审批"],
+          statusAuth: [2],
         },
         {
-          iconType: "book",
+          iconType: "delete",
           text: "删除",
           editType: "delete",
-          statusAuth: ["草稿", "已驳回"],
+          statusAuth: [0, 3],
         },
         { iconType: "book", text: "详情", editType: "detail" },
       ];
@@ -393,12 +403,11 @@ export default {
         // statusAuth 存在并且 长度不为0,且权限数组包含当前数据的状态
         return (
           !ele.statusAuth ||
-          (ele.statusAuth.length && ele.statusAuth.includes(status))
+          (ele.statusAuth.length && ele.statusAuth.includes(approvalStatus))
         );
       });
     },
     operationFun(type, record) {
-      console.log("record", record);
       switch (type) {
         case "edit":
           break;
@@ -419,7 +428,10 @@ export default {
         });
       } else if (type === "edit") {
         let recordData = JSON.stringify([
-          { value: this.queryCondition.organId, name: this.organName },
+          {
+            value: this.queryCondition.organId,
+            name: this.organInfo.organName,
+          },
         ]);
         let enitData = JSON.stringify([record]);
         this.$router.push({
@@ -447,22 +459,25 @@ export default {
         });
       }
     },
-    // 新建权属登记
-    newChangeSheetFn() {
-      let recordData = JSON.stringify([
-        { value: this.queryCondition.organId, name: this.organName },
-      ]);
+    goAddEdit() {
+      const query = {
+        organId: this.organInfo.organId,
+        organName: this.organInfo.organName,
+      };
       this.$router.push({
-        path: "/ownershipRegistration/registrationNew",
-        query: { record: recordData, setType: "new" },
+        path: "/addAndEditOperation",
+        query,
       });
     },
     // 组织机构树
     changeTree(value, label) {
-      this.organName = label;
+      this.organInfo = {
+        organId: value,
+        organName: label,
+      };
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
-      this.queryCondition.projectId = "";
+      this.queryCondition.projectId = [];
       this.getObjectKeyValueByOrganIdFn();
       this.query();
     },
@@ -501,7 +516,7 @@ export default {
               value: item.projectId,
             });
           });
-          this.projectData = [{ name: "全部资产项目", value: "" }, ...arr];
+          this.projectData = arr;
         } else {
           this.$message.error(res.data.message);
         }
@@ -570,8 +585,8 @@ export default {
     },
     // 清空
     eliminateFn() {
+      this.initCreateAndEndTime();
       let organId = this.queryCondition.organId;
-      this.alterationDate = [];
       this.queryCondition = { ...queryCondition };
       this.queryCondition.organId = organId;
       this.query();
@@ -594,26 +609,19 @@ export default {
         return [];
       }
     },
+    initCreateAndEndTime() {
+      this.createAndEndTime = [
+        moment(new Date().getTime() - 24 * 1000 * 60 * 60 * 30),
+        moment(new Date()),
+      ];
+    },
     // 查询
     query() {
       this.loading = true;
       let obj = {
-        projectId: this.queryCondition.projectId, // 资产项目Id
-        organId: Number(this.queryCondition.organId), // 组织机构id
-        assetTypes: this.queryCondition.assetType, // 资产类型Id
-        approvalStatusList: this.queryCondition.approvalStatusList,
-        createTimeStart:
-          this.alterationDate.length > 0
-            ? moment(this.alterationDate[0]).format("YYYY-MM-DD")
-            : "", // 创建日期开始日期
-        createTimeEnd:
-          this.alterationDate.length > 0
-            ? moment(this.alterationDate[1]).format("YYYY-MM-DD")
-            : "", // 创建日期结束日期
-        isCurrent: this.queryCondition.isCurrent, // 仅当前机构下资产清理单 0 否 1 是
+        ...this.handleReq(),
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
-        registerNameOrCode: this.queryCondition.registerNameOrCode,
       };
       this.$api.toOperation.getTransferOperationPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -674,6 +682,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.initCreateAndEndTime();
     // 资产类型
     this.platformDictFn("asset_type");
   },
