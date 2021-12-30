@@ -91,6 +91,7 @@
               <div style="display: flex">
                 <SG-UploadFile
                   v-model="filepaths"
+                  type="all"
                   :max="10"
                   :customDownload="(value)=>{
                   return customDownload(value,$api.ownership.downLoadAnnex)

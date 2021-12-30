@@ -22,6 +22,7 @@
             handleChangeFile(value,0)
           }"
           v-model="filepaths"
+          type="all"
           :max="10"
           :customDownload="
             (value) => {
