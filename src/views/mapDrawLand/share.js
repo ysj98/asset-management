@@ -64,7 +64,7 @@ export function initMap(
   );
   this[mapInstanceKeyName].setView(
     rc.unproject([imgInfo[0] / 2, imgInfo[1] / 2]),
-    2
+    4
   );
   this[mapInstanceKeyName].setMaxZoom(rc.zoomLevel());
   Leaflet.tileLayer(
