@@ -40,7 +40,7 @@
           <a-select v-else :maxTagCount="1" :style="allStyle" style="margin-top: 14px;" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypeList">
             <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input v-model="queryCondition.labelCode" placeholder="请输入登记单名称/编码" maxlength="30" :style="allStyle" style="margin-top: 14px;"/>
+          <a-input v-model="queryCondition.labelCode" placeholder="请输入标签编码" maxlength="30" :style="allStyle" style="margin-top: 14px;"/>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="onSearch">查询</SG-Button>

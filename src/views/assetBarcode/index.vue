@@ -21,19 +21,21 @@
       <SG-Title style="margin-left: 20px;" title="资产二维码设置" />
       <div class="content">
         <div class="content-title">
-          <img v-if="logoInfo.src" :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
-          <img v-else src="../../assets/image/seat.jpg" width="80" alt="">
-          <SG-Button type="primary" @click="change">更换Logo</SG-Button>
+          <div>
+            <img v-if="logoInfo.src" :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
+            <img v-else src="../../assets/image/seat.jpg" width="80" alt="">
+            <SG-Button type="primary" @click="change">更换Logo</SG-Button>
+          </div>
           <div class="organName">{{organName || '无'}}</div>
-          <span class="assetLabel">资产标签</span>
         </div>
         <hr />
         <div class="content-show">
           <div style="font-size:16px;padding-bottom:10px;">资产名称</div>
-          <div style="font-size:12px;">资产编码</div>
+          <div style="font-size:16px;padding-bottom:10px;">资产标签</div>
+          <div style="font-size:16px;">资产编码</div>
         </div>
         <hr />
-        <div style="display: inline-flex;">
+        <div style="width:800px; display: inline-flex; justify-content:space-between;">
           <div class="content-choose">
             <a-select :filterOption="filterOption" v-model="selectConfigure.firstly">
               <a-select-option v-for="item in assetCodes" :key="item.value" :disabled="listCom.includes(item.value) && item.value !== selectConfigure.firstly">
@@ -64,7 +66,7 @@
           </div>
         </div>
       </div>
-      <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_SETTING_SAVE" style="margin-left: 600px;margin-top: 20px;" type="primary" @click="save">保存</SG-Button>
+      <SG-Button v-power="ASSET_MANAGEMENT.BARCODE_SETTING_SAVE" style="margin-left: 500px;margin-top: 20px;" type="primary" @click="save">保存</SG-Button>
     </div>
     <changeLogo ref="showChangeLogo" @submit="logoSubmit" @cancel="cancel"></changeLogo>
   </div>
@@ -125,7 +127,9 @@ export default {
           this.selectConfigure.secondly = this.selectData[1].value
           this.selectConfigure.thirdly = this.selectData[2].value
           this.selectConfigure.forthly = this.selectData[3].value
-          this.logoInfo.src = configs.hostImg + '/' + res.data.data.imageUrl
+          if (res.data.data.imageUrl) {
+            this.logoInfo.src = configs.hostImg + '/' + res.data.data.imageUrl
+          }
         } else {
           this.$message.error(res.data.message)
         }
@@ -149,6 +153,7 @@ export default {
       for (let i in this.selectConfigure) {
         dictionaryAttr.push(this.selectConfigure[i])
       }
+      console.log('logo', this.logoInfo)
       let form = {
         organId: this.organId,
         imageUrl: this.logoInfo.imageUrl,
@@ -171,11 +176,12 @@ export default {
   }
   .content {
     border: 1px solid black;
-    width: 700px;
+    width: 800px;
     margin-top: 30px;
-    margin-left: 300px;
+    margin-left: 200px;
     .content-title {
       display: flex;
+      justify-content: space-between;
       align-items: center;
       margin-top: 20px;
       margin-bottom: 20px;
@@ -190,13 +196,12 @@ export default {
         display: inline-flex;
         justify-content: center;
         border: 2px solid black;
-        width: 280px;
+        min-width: 300px;
         font-size: 20px;
         font-weight: bold;
-      }
-      .assetLabel{
-        margin-left: 50px;
-        font-size: 16px;
+        margin-right: 40px;
+        padding-left: 10px;
+        padding-right: 10px;
       }
     }
     .content-show {
@@ -213,7 +218,7 @@ export default {
     }
     .pic {
       margin-top: 30px;
-      margin-left: 140px;
+      margin-right: 160px;
       position: relative;
     }
   }
