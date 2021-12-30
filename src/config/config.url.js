@@ -1496,4 +1496,6 @@ export const toOperation = {
   getOperationDetailListPage: "/ams/asset/getOperationDetailListPage",
   // 调整转运营项位置
   adjustParamPosition: "/ams/basicSettings/adjustParamPosition",
+  // 批量导入
+  importData: "/ams/asset/importData",
 };
