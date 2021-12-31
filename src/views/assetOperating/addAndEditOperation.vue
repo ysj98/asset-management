@@ -1,22 +1,38 @@
 <template>
   <div class="add-and-edit-operation">
     <SG-Title title="基本信息" />
-    <BaseFormEdit :assetType.sync="assetType" :organ-info="organInfo" />
+    <BaseFormEdit
+      ref="BaseFormEditRef"
+      :assetType.sync="assetType"
+      :organ-info="organInfo"
+    />
     <SG-Title title="资产列表" />
     <div class="table-data-action">
+      <SG-Button @click="handleAddDataToTable" class="right-btn">
+        手动添加已选资产
+      </SG-Button>
       <SG-Button @click="btnAddAsset" type="primary">添加资产</SG-Button>
       <SG-Button @click="clearTableData" class="right-btn">清空列表</SG-Button>
       <SG-Button @click="btnImport" type="primary" class="right-btn">
         批量导入
       </SG-Button>
     </div>
-    <TableAsset :dataSource="importedData" :assetType="assetType" />
+    <TableAsset
+      ref="TableAssetRef"
+      :dataSource="importedData"
+      :assetType="assetType"
+      :customParams="customParams"
+    />
     <div class="footer-action">
-      <SG-Button type="primary">暂存草稿</SG-Button>
-      <SG-Button type="primary" class="right-btn">提交</SG-Button>
+      <SG-Button @click="handleSave(0)" type="primary">暂存草稿</SG-Button>
+      <SG-Button @click="handleSave(1)" type="primary" class="right-btn">
+        提交
+      </SG-Button>
       <SG-Button class="right-btn" @click="goBack">取消</SG-Button>
     </div>
     <SelectAssetExportModal
+      ref="SelectAssetExportModalRef"
+      :key="uid"
       v-show="modalList.SelectAssetExportModal.show"
       v-bind="modalList.SelectAssetExportModal"
       @doClosePop="doClosePop"
@@ -29,6 +45,12 @@
 import SelectAssetExportModal from "@/views/assetOperating/SelectAssetExportModal";
 import BaseFormEdit from "@/views/assetOperating/BaseFormEdit";
 import TableAsset from "@/views/assetOperating/TableAsset";
+import {
+  flatTableDataSource,
+  getBaseInfo,
+  getColumns,
+  getOperationDetailListPage,
+} from "@/views/assetOperating/share";
 export default {
   /*
    * 新增和编辑页面
@@ -49,11 +71,17 @@ export default {
         organInfo() {
           return _this.organInfoCom;
         },
+        customParams() {
+          return _this.customParamsCom;
+        },
       },
     };
   },
   data() {
     return {
+      type: "",
+      customParams: [],
+      uid: 0,
       // 被导入的表格数据
       importedData: [],
       modalList: {
@@ -66,11 +94,20 @@ export default {
       },
       organInfo: {},
       assetType: "",
+      assetOperationRegisterId: "",
     };
   },
   watch: {
-    assetType() {
+    assetType(newValue) {
+      console.log("assetType", newValue);
       this.clearTableData();
+      if (!["", undefined, null].includes(newValue)) {
+        this.getColumns({
+          organId: this.organInfoCom.organId,
+          assetType: newValue,
+        });
+      }
+      this.uid = this.uid + 1;
     },
   },
   computed: {
@@ -80,8 +117,74 @@ export default {
     organInfoCom() {
       return this.organInfo;
     },
+    customParamsCom() {
+      return this.customParams;
+    },
   },
   methods: {
+    getColumns({ organId, assetType }) {
+      getColumns(
+        {
+          organId,
+          assetType,
+        },
+        (ele) => ({ ...ele })
+      ).then(
+        (columns) => {
+          this.customParams = columns;
+        },
+        (reason) => {
+          console.error(reason);
+        }
+      );
+    },
+    /*
+     * type 0草稿  1提交
+     * */
+    async handleSave(type) {
+      let baseInfo;
+      try {
+        baseInfo = this.$refs.BaseFormEditRef.sendData();
+      } catch (error) {
+        console.error(error);
+      }
+      if (!baseInfo) {
+        console.error(baseInfo);
+        return null;
+      }
+      if (!this.$refs.TableAssetRef.handleValidate()) {
+        return null;
+      }
+      const dataSource = this.$refs.TableAssetRef.getReq();
+      const req = {
+        ...baseInfo,
+        organId: this.organInfoCom.organId,
+        approvalStatus: type,
+        assetOperationDetailList: dataSource.map((ele) => {
+          return {
+            projectId: baseInfo.projectId,
+            organId: this.organInfoCom.organId,
+            assetType: this.assetTypeCom,
+            assetId: ele.assetId,
+            paramList: ele.paramList,
+          };
+        }),
+      };
+      if (this.type === "edit") {
+        req.assetOperationRegisterId = this.assetOperationRegisterId;
+      }
+      const {
+        data: { code, message },
+      } = await this.$api.toOperation.submitTransferOperation(req);
+      if (code === "0") {
+        this.$SG_Message.success("操作成功");
+        this.goBack();
+        console.log("code", code);
+      } else {
+        this.$SG_Message.error(message);
+      }
+      console.log("req", req);
+    },
     async handleImport(event) {
       const file = event.target.files[0];
       const req = new FormData();
@@ -93,7 +196,7 @@ export default {
         data: { data },
       } = await this.$api.toOperation.importData(req);
       event.target.value = null;
-      this.importedData = data
+      this.importedData = data;
       // if (code === "0") {
       //   console.log("data", data);
       // } else {
@@ -101,7 +204,7 @@ export default {
       // }
     },
     goBack() {
-      this.$router.back();
+      this.$router.go(-1);
     },
     // 清空列表
     clearTableData() {
@@ -113,6 +216,9 @@ export default {
         return null;
       }
       this.doOpenPop("SelectAssetExportModal");
+    },
+    handleAddDataToTable() {
+      this.importedData = this.$refs.SelectAssetExportModalRef.getSelectData();
     },
     btnImport() {
       this.$refs.importRef.click();
@@ -132,10 +238,42 @@ export default {
         organId: data.organId,
         organName: data.organName,
       };
+      this.type = data.type;
+      this.assetOperationRegisterId = data.assetOperationRegisterId;
+    },
+    initEditData() {
+      getBaseInfo({
+        assetOperationRegisterId: this.assetOperationRegisterId,
+      }).then((data) => {
+        console.log("data", data);
+        const { projectId, title, assetType, remark, attachmentList } = data;
+        this.$refs.BaseFormEditRef.initData({
+          projectId,
+          title,
+          assetType,
+          remark,
+          attachmentList,
+        });
+      });
+      getOperationDetailListPage({
+        pageNum: 1,
+        pageSize: 9999,
+        assetOperationRegisterId: this.assetOperationRegisterId,
+      }).then((data) => {
+        this.importedData = flatTableDataSource({
+          dataSource: data ? data.data : [],
+        });
+      });
+      // this.$nextTick(() => {
+      //   this.$refs.BaseFormEditRef.handleSelectAssetType("1");
+      // });
     },
   },
   created() {
     this.initRouteQuery();
+    if (this.type === "edit") {
+      this.initEditData();
+    }
   },
 };
 </script>
@@ -154,6 +292,9 @@ export default {
     margin-top: 20px;
 
     background-color: transparent;
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
   }
   .right-btn {
     margin-left: 20px;

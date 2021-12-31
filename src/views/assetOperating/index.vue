@@ -14,7 +14,7 @@
           icon="plus"
           type="primary"
           v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW"
-          @click="goAddEdit"
+          @click="goAddEdit('add')"
         >
           新建转运营单
         </SG-Button>
@@ -221,7 +221,10 @@ const columns = [
   },
   {
     title: "创建日期",
-    dataIndex: "createTime",
+    key: "createTime",
+    customRender(text, record) {
+      return moment(record.createTime).format("YYYY-MM-DD hh:mm:ss");
+    },
   },
   {
     title: "状态",
@@ -373,9 +376,7 @@ export default {
       });
     },
     handleActionBtn(record) {
-      // TODO:确认按钮根据状态准确显示
       const { approvalStatus } = record;
-      // TODO: 更换图标
       // 参考 approvalStatusListOptions 变量
       const operationList = [
         {
@@ -385,7 +386,7 @@ export default {
           statusAuth: [0, 3],
         },
         {
-          iconType: "approve",
+          iconType: "check-square",
           text: "审批",
           editType: "approve",
           statusAuth: [2],
@@ -407,15 +408,47 @@ export default {
         );
       });
     },
+    goDetail({ assetOperationRegisterId }) {
+      this.$router.push({
+        path: "/assetOperating/detail",
+        query: {
+          assetOperationRegisterId,
+        },
+      });
+    },
+    handleDel({ assetOperationRegisterId }) {
+      console.log("assetOperationRegisterId-删除", assetOperationRegisterId);
+    },
+    async handleApprove({ assetOperationRegisterId }) {
+      const req = {
+        assetOperationRegisterId,
+        // TODO:入参与后端确认
+        approvalStatus: 1,
+      };
+      const {
+        data: { code, message },
+      } = await this.$api.toOperation.updateOperationApprovalStatus(req);
+      if (code === "0") {
+        this.query();
+        this.$SG_Message.success("操作成功");
+      } else {
+        this.$SG_Message.error(message);
+      }
+    },
     operationFun(type, record) {
+      const assetOperationRegisterId = record.assetOperationRegisterId;
       switch (type) {
         case "edit":
+          this.goAddEdit("edit", assetOperationRegisterId);
           break;
         case "approve":
+          this.handleApprove({ assetOperationRegisterId });
           break;
         case "delete":
+          this.handleDel({ assetOperationRegisterId });
           break;
         case "detail":
+          this.goDetail({ assetOperationRegisterId });
           break;
       }
     },
@@ -459,13 +492,17 @@ export default {
         });
       }
     },
-    goAddEdit() {
+    goAddEdit(type, assetOperationRegisterId) {
       const query = {
         organId: this.organInfo.organId,
         organName: this.organInfo.organName,
+        type,
       };
+      if (type === "edit") {
+        query.assetOperationRegisterId = assetOperationRegisterId;
+      }
       this.$router.push({
-        path: "/addAndEditOperation",
+        path: "/assetOperating/edit",
         query,
       });
     },

@@ -18,7 +18,7 @@ export function getOperationPageStatistics(data) {
 
 // 审核
 export function updateOperationApprovalStatus(data) {
-  return axiosPost(toOperation.updateOperationApprovalStatus, data);
+  return axiosPost(toOperation.updateOperationApprovalStatus, data, true);
 }
 
 // 新增提交

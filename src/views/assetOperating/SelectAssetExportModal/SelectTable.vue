@@ -50,6 +50,9 @@ export default {
     organInfo() {
       return this.sonData.organInfo();
     },
+    customParamsCom() {
+      return this.sonData.customParams();
+    },
   },
   watch: {
     selectTableData: {
@@ -61,24 +64,26 @@ export default {
   },
   methods: {
     async handleExport() {
-      const assetIdList = this.selectTableData.map((ele) => ele.assetId);
-      //TODO:入参待完善
+      const assetIds = this.selectTableData.map((ele) => ele.assetId);
       const req = {
-        organId: this.organInfo.organId,
-        assetType: this.assetType,
-        queryType: 8,
-        assetIdList,
+        assetIds: assetIds.join(","),
+        transferOperationNameList: this.customParamsCom.map(
+          (ele) => ele.transferOperationName
+        ),
       };
       const responseData = await this.$api.toOperation.exportAsset(req);
-      if (
-        Object.prototype.toString.call(responseData.data) === "[object Blob]"
-      ) {
+      if (responseData.data.type === "application/json") {
+        const enc = new TextDecoder("utf-8");
+        responseData.data.arrayBuffer().then((buffer) => {
+          let data = JSON.parse(enc.decode(new Uint8Array(buffer))) || {};
+          console.log("data", data);
+          this.$SG_Message.error(data.message);
+        });
+      } else {
         handleDownloadFile({
           data: responseData.data,
           fileName: "资产转运营模板.xls",
         });
-      } else {
-        this.$SG_Message.error(responseData.data.message);
       }
     },
     handleDel(record) {
