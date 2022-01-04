@@ -196,9 +196,8 @@ const columns = [
     dataIndex: "title",
   },
   {
-    // TODO
     title: "所属机构",
-    dataIndex: "registerTypeName",
+    dataIndex: "organName",
   },
   {
     title: "资产项目名称",
@@ -416,13 +415,23 @@ export default {
         },
       });
     },
-    handleDel({ assetOperationRegisterId }) {
-      console.log("assetOperationRegisterId-删除", assetOperationRegisterId);
+    async handleDel({ assetOperationRegisterId }) {
+      const req = {
+        assetOperationRegisterId,
+      };
+      const {
+        data: { code, message },
+      } = await this.$api.toOperation.deleteOperation(req);
+      if (code === "0") {
+        this.query();
+        this.$SG_Message.success("操作成功");
+      } else {
+        this.$SG_Message.error(message);
+      }
     },
     async handleApprove({ assetOperationRegisterId }) {
       const req = {
         assetOperationRegisterId,
-        // TODO:入参与后端确认
         approvalStatus: 1,
       };
       const {
@@ -705,19 +714,6 @@ export default {
       });
     },
   },
-  watch: {
-    $route() {
-      if (
-        this.$route.path === "/ownershipRegistration" &&
-        this.$route.query.refresh
-      ) {
-        this.queryCondition.pageNum = 1;
-        this.queryCondition.pageSize = 10;
-        this.query();
-      }
-    },
-  },
-  created() {},
   mounted() {
     this.initCreateAndEndTime();
     // 资产类型

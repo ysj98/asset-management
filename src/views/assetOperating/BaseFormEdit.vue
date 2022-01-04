@@ -37,6 +37,7 @@
             style="width: 200px"
             v-model="formData.projectId"
             :options="projectListOptions"
+            @change="handleChangeProject"
           ></a-select>
         </a-form-model-item>
         <div style="margin-top: 20px">
@@ -110,6 +111,9 @@ export default {
     assetType: {
       required: true,
     },
+    projectId: {
+      type: [Number, String],
+    },
   },
   mixins: [uploadAndDownLoadFIle],
   data() {
@@ -163,6 +167,9 @@ export default {
     },
   },
   methods: {
+    handleChangeProject(value) {
+      this.$emit("update:projectId", value);
+    },
     async getProjectListOptions({ organId }) {
       this.projectListOptions = await getObjectKeyValueByOrganId(
         {
@@ -183,19 +190,25 @@ export default {
         remark: remark || "",
       };
     },
-    initAttachmentList(attachmentList) {
-      // TODO:处理附件
-      this.attachmentList = attachmentList || [];
+    initAttachmentList(attachment) {
+      this.attachmentList = attachment.map((ele) => {
+        return {
+          url: ele.attachmentPath,
+          name: ele.oldAttachmentName,
+        };
+      });
     },
     initData(data) {
-      const { projectId, title, assetType, remark, attachmentList } = data;
+      const { projectId, title, assetType, remark, attachment } = data;
       this.initFormData({
         projectId,
         title,
         assetType: String(assetType),
         remark,
       });
-      this.initAttachmentList(attachmentList);
+      console.log("data", data);
+      console.log("attachment", data.attachment);
+      this.initAttachmentList(attachment || []);
     },
     handleValidate() {
       let res = true;
@@ -230,5 +243,8 @@ export default {
 
 <style scoped lang="less">
 .base-form-edit {
+}
+::v-deep .sg-uploadFile > .preview {
+  overflow: auto;
 }
 </style>

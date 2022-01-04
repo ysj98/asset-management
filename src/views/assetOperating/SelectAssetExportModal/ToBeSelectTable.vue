@@ -100,6 +100,9 @@ export default {
     },
   },
   computed: {
+    projectId() {
+      return this.sonData.projectId();
+    },
     assetType() {
       return this.sonData.assetType();
     },
@@ -179,6 +182,7 @@ export default {
         organId: this.organInfo.organId,
         isTransferOperation: 0,
         queryType: 8,
+        projectId: this.projectId,
       };
       const {
         data: { data, code, message },

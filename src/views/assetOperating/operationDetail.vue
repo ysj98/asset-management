@@ -10,9 +10,9 @@
       <div style="margin-top: 10px; display: flex; align-items: baseline">
         <span style="margin-right: 10px">附件:</span>
         <SG-UploadFile
-          v-if="attachmentList.length"
+          v-if="attachment.length"
           style="width: 600px"
-          v-model="attachmentList"
+          v-model="attachment"
           :show="true"
           :max="5"
           :maxSize="5120"
@@ -46,6 +46,7 @@ import {
   getOperationDetailListPage,
   flatTableDataSource,
 } from "@/views/assetOperating/share";
+import moment from "_moment@2.29.1@moment";
 export default {
   /*
    * 详情页面
@@ -62,7 +63,7 @@ export default {
         pageSize: 10,
       },
       assetOperationRegisterId: "",
-      attachmentList: [],
+      attachment: [],
       list: [
         {
           keyName: "assetOperationRegisterId",
@@ -85,7 +86,7 @@ export default {
           value: "",
         },
         {
-          keyName: "assetName",
+          keyName: "projectName",
           title: "资产项目",
           value: "",
         },
@@ -98,6 +99,9 @@ export default {
           keyName: "createTime",
           title: "创建日期",
           value: "",
+          render(h, data, resValue) {
+            return moment(resValue).format("YYYY-MM-DD hh:mm:ss");
+          },
         },
         {
           keyName: "createByName",
@@ -129,7 +133,7 @@ export default {
       }).then(
         (value) => {
           this.initList(value);
-          this.initAttachmentList(value.attachmentList || []);
+          this.initAttachment(value.attachment || []);
         },
         (reason) => {
           console.error(reason);
@@ -157,6 +161,7 @@ export default {
               dataSource: data.data,
             });
             this.totalCount = data.count;
+            console.log("data", data);
             resolve(data);
           },
           (reason) => {
@@ -180,8 +185,13 @@ export default {
         ele.value = data[ele.keyName];
       });
     },
-    initAttachmentList(attachmentList) {
-      this.attachmentList = attachmentList;
+    initAttachment(attachment) {
+      this.attachment = attachment.map((ele) => {
+        return {
+          url: ele.attachmentPath,
+          name: ele.oldAttachmentName,
+        };
+      });
     },
   },
   mounted() {
@@ -193,5 +203,8 @@ export default {
 <style scoped lang="less">
 .operation-detail {
   padding: 10px 20px;
+}
+::v-deep .sg-uploadFile > .preview {
+  overflow: auto;
 }
 </style>

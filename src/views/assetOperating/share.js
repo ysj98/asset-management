@@ -138,17 +138,18 @@ export function getOperationDetailListPage({
     );
   });
 }
-export function flatTableDataSource({ dataSource }) {
+export function flatTableDataSource({ dataSource },keyStr='paramList') {
   if (!Array.isArray(dataSource)) {
     console.error(arguments);
     return null;
   }
   return dataSource.map((ele) => {
     const res = {};
-    ele.paramList &&
-      ele.paramList.forEach((ele) => {
+    ele[keyStr] &&
+      ele[keyStr].forEach((ele) => {
         res[ele.transferOperationCode] = ele.transferOperationValue;
       });
+    console.log('res',res)
     return {
       ...ele,
       ...res,

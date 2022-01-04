@@ -33,7 +33,7 @@ export default {
       rules: {},
       tableOptions: {
         rowKey: (record) => record.assetId,
-        scroll: { x: 1000, y: 800 },
+        scroll: { x: 800, y: 800 },
         dataSource: [],
         columns: [...baseColumns],
         pagination: false,
@@ -43,16 +43,18 @@ export default {
   watch: {
     dataSource: {
       handler(newValue) {
-        this.tableOptions.dataSource = cloneDeep(newValue).map((ele) => {
-          const res = {};
-          this.customParams.forEach((ele) => {
-            res[ele.transferOperationCode] = "";
+        if (Array.isArray(newValue)) {
+          this.tableOptions.dataSource = cloneDeep(newValue).map((ele) => {
+            const res = {};
+            this.customParams.forEach((ele) => {
+              res[ele.transferOperationCode] = "";
+            });
+            return {
+              ...res,
+              ...ele,
+            };
           });
-          return {
-            ...res,
-            ...ele,
-          };
-        });
+        }
       },
       immediate: true,
     },

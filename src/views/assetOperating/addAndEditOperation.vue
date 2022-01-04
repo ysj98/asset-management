@@ -4,6 +4,7 @@
     <BaseFormEdit
       ref="BaseFormEditRef"
       :assetType.sync="assetType"
+      :projectId.sync="projectId"
       :organ-info="organInfo"
     />
     <SG-Title title="资产列表" />
@@ -24,8 +25,10 @@
       :customParams="customParams"
     />
     <div class="footer-action">
-      <SG-Button @click="handleSave(0)" type="primary">暂存草稿</SG-Button>
-      <SG-Button @click="handleSave(1)" type="primary" class="right-btn">
+      <SG-Button @click="handleSave('stash')" type="primary">
+        暂存草稿
+      </SG-Button>
+      <SG-Button @click="handleSave('submit')" type="primary" class="right-btn">
         提交
       </SG-Button>
       <SG-Button class="right-btn" @click="goBack">取消</SG-Button>
@@ -74,6 +77,9 @@ export default {
         customParams() {
           return _this.customParamsCom;
         },
+        projectId() {
+          return _this.projectId;
+        },
       },
     };
   },
@@ -93,13 +99,13 @@ export default {
         },
       },
       organInfo: {},
+      projectId: "",
       assetType: "",
       assetOperationRegisterId: "",
     };
   },
   watch: {
     assetType(newValue) {
-      console.log("assetType", newValue);
       this.clearTableData();
       if (!["", undefined, null].includes(newValue)) {
         this.getColumns({
@@ -107,6 +113,10 @@ export default {
           assetType: newValue,
         });
       }
+      this.uid = this.uid + 1;
+    },
+    projectId() {
+      this.clearTableData();
       this.uid = this.uid + 1;
     },
   },
@@ -139,9 +149,16 @@ export default {
       );
     },
     /*
-     * type 0草稿  1提交
+     * type stash-草稿  submit-提交
      * */
     async handleSave(type) {
+      let approvalStatus = null;
+      if (type === "stash") {
+        approvalStatus = 0;
+      }
+      if (type === "submit") {
+        approvalStatus = 2;
+      }
       let baseInfo;
       try {
         baseInfo = this.$refs.BaseFormEditRef.sendData();
@@ -159,7 +176,7 @@ export default {
       const req = {
         ...baseInfo,
         organId: this.organInfoCom.organId,
-        approvalStatus: type,
+        approvalStatus,
         assetOperationDetailList: dataSource.map((ele) => {
           return {
             projectId: baseInfo.projectId,
@@ -189,19 +206,22 @@ export default {
       const file = event.target.files[0];
       const req = new FormData();
       req.append("organId", this.organInfoCom.organId);
-      req.append("file", file);
+      req.append("multipartFile", file);
+      req.append("assetType", this.assetType);
       const {
-        code,
-        message,
-        data: { data },
-      } = await this.$api.toOperation.importData(req);
-      event.target.value = null;
-      this.importedData = data;
-      // if (code === "0") {
-      //   console.log("data", data);
-      // } else {
-      //   this.$SG_Message.error(message);
-      // }
+        data: { code, message, data },
+      } = await this.$api.toOperation.readExcelModelV3(req);
+      if (code === "0") {
+        event.target.value = null;
+        this.importedData = flatTableDataSource(
+          {
+            dataSource: data || [],
+          },
+          "operationAttrList"
+        );
+      } else {
+        this.$SG_Message.error(message);
+      }
     },
     goBack() {
       this.$router.go(-1);
@@ -211,8 +231,9 @@ export default {
       this.importedData = [];
     },
     btnAddAsset() {
-      if (["", undefined, null].includes(this.assetType)) {
-        this.$message.error("请先选择资产类型");
+      let error = this.handleValidatePre();
+      if (error) {
+        this.$SG_Message.error(error);
         return null;
       }
       this.doOpenPop("SelectAssetExportModal");
@@ -220,7 +241,20 @@ export default {
     handleAddDataToTable() {
       this.importedData = this.$refs.SelectAssetExportModalRef.getSelectData();
     },
+    handleValidatePre() {
+      if (!this.projectId) {
+        return "请选择资产项目";
+      }
+      if (["", undefined, null].includes(this.assetType)) {
+        return "请先选择资产类型";
+      }
+    },
     btnImport() {
+      let error = this.handleValidatePre();
+      if (error) {
+        this.$SG_Message.error(error);
+        return null;
+      }
       this.$refs.importRef.click();
     },
     doOpenPop(modal) {
@@ -246,13 +280,13 @@ export default {
         assetOperationRegisterId: this.assetOperationRegisterId,
       }).then((data) => {
         console.log("data", data);
-        const { projectId, title, assetType, remark, attachmentList } = data;
+        const { projectId, title, assetType, remark, attachment } = data;
         this.$refs.BaseFormEditRef.initData({
           projectId,
           title,
           assetType,
           remark,
-          attachmentList,
+          attachment,
         });
       });
       getOperationDetailListPage({
@@ -284,7 +318,8 @@ export default {
   position: relative;
   .table-data-action {
     text-align: right;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    padding-right: 20px;
   }
   .footer-action {
     display: flex;

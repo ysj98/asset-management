@@ -1497,5 +1497,7 @@ export const toOperation = {
   // 调整转运营项位置
   adjustParamPosition: "/ams/basicSettings/adjustParamPosition",
   // 批量导入
-  importData: "/ams/asset/importData",
+  readExcelModelV3: "/ams/registerOrder/readExcelModelV3",
+  // 删除
+  deleteOperation: "/ams/asset/deleteOperation",
 };

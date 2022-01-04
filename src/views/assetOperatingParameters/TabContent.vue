@@ -159,6 +159,7 @@ export default {
         rowKey: "transferOperationId",
         pagination: false,
         dataSource: [],
+        scroll: { x: 600, y: 800 },
         columns: [
           {
             title: "序号",
@@ -322,6 +323,7 @@ export default {
         ...this.modalForm,
         organId: this.organInfo.organID,
         assetType: this.assetType,
+        status: 1,
       };
 
       if (this.modalList.add.title === "编辑") {
