@@ -719,6 +719,15 @@ export default {
     // 资产类型
     this.platformDictFn("asset_type");
   },
+  activated() {
+    if (this.$route.meta.isKeep) {
+      this.query();
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    to.meta.isKeep = true;
+    next();
+  },
 };
 </script>
 <style lang="less" scoped>
