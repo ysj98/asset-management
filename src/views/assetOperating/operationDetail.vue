@@ -46,7 +46,7 @@ import {
   getOperationDetailListPage,
   flatTableDataSource,
 } from "@/views/assetOperating/share";
-import moment from "_moment@2.29.1@moment";
+import moment from "moment";
 export default {
   /*
    * 详情页面
