@@ -53,7 +53,7 @@ export default {
       imgUrl: ''
     };
   },
- created () {
+ mounted () {
     this.codeInformationParams.organId = this.$route.query.organId
     if(Array.isArray(this.$route.query.assetId)){
       this.codeInformationParams.assetIdList.push(...this.$route.query.assetId)
@@ -118,14 +118,16 @@ export default {
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          image.src = configs.hostImg + '/' + item.imageUrl
-          console.log(image.src)
+          // image.src = configs.hostImg + '/' + item.imageUrl
+          image.src = 'https://s2.loli.net/2022/01/04/CFlRYTHcLxt5UZS.png'
           image.onload = function (){
             cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
-            iEle.src = cEle.toDataURL()
+            // TODO： 此处 toDataUrl 报错，暂时不清楚，先使用 canvas
+            // iEle.src = cEle.toDataURL()
+            iEle.style.display ='none'
+            cEle.style.display = 'block'
           }
         })
-        this.$forceUpdate()
       })
     },
   },
