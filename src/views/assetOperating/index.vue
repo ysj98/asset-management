@@ -14,7 +14,7 @@
           icon="plus"
           type="primary"
           v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW"
-          @click="goAddEdit"
+          @click="goAddEdit('add')"
         >
           新建转运营单
         </SG-Button>
@@ -196,9 +196,8 @@ const columns = [
     dataIndex: "title",
   },
   {
-    // TODO
     title: "所属机构",
-    dataIndex: "registerTypeName",
+    dataIndex: "organName",
   },
   {
     title: "资产项目名称",
@@ -221,7 +220,10 @@ const columns = [
   },
   {
     title: "创建日期",
-    dataIndex: "createTime",
+    key: "createTime",
+    customRender(text, record) {
+      return moment(record.createTime).format("YYYY-MM-DD hh:mm:ss");
+    },
   },
   {
     title: "状态",
@@ -373,9 +375,7 @@ export default {
       });
     },
     handleActionBtn(record) {
-      // TODO:确认按钮根据状态准确显示
       const { approvalStatus } = record;
-      // TODO: 更换图标
       // 参考 approvalStatusListOptions 变量
       const operationList = [
         {
@@ -385,7 +385,7 @@ export default {
           statusAuth: [0, 3],
         },
         {
-          iconType: "approve",
+          iconType: "check-square",
           text: "审批",
           editType: "approve",
           statusAuth: [2],
@@ -407,15 +407,57 @@ export default {
         );
       });
     },
+    goDetail({ assetOperationRegisterId }) {
+      this.$router.push({
+        path: "/assetOperating/detail",
+        query: {
+          assetOperationRegisterId,
+        },
+      });
+    },
+    async handleDel({ assetOperationRegisterId }) {
+      const req = {
+        assetOperationRegisterId,
+      };
+      const {
+        data: { code, message },
+      } = await this.$api.toOperation.deleteOperation(req);
+      if (code === "0") {
+        this.query();
+        this.$SG_Message.success("操作成功");
+      } else {
+        this.$SG_Message.error(message);
+      }
+    },
+    async handleApprove({ assetOperationRegisterId }) {
+      const req = {
+        assetOperationRegisterId,
+        approvalStatus: 1,
+      };
+      const {
+        data: { code, message },
+      } = await this.$api.toOperation.updateOperationApprovalStatus(req);
+      if (code === "0") {
+        this.query();
+        this.$SG_Message.success("操作成功");
+      } else {
+        this.$SG_Message.error(message);
+      }
+    },
     operationFun(type, record) {
+      const assetOperationRegisterId = record.assetOperationRegisterId;
       switch (type) {
         case "edit":
+          this.goAddEdit("edit", assetOperationRegisterId);
           break;
         case "approve":
+          this.handleApprove({ assetOperationRegisterId });
           break;
         case "delete":
+          this.handleDel({ assetOperationRegisterId });
           break;
         case "detail":
+          this.goDetail({ assetOperationRegisterId });
           break;
       }
     },
@@ -459,13 +501,17 @@ export default {
         });
       }
     },
-    goAddEdit() {
+    goAddEdit(type, assetOperationRegisterId) {
       const query = {
         organId: this.organInfo.organId,
         organName: this.organInfo.organName,
+        type,
       };
+      if (type === "edit") {
+        query.assetOperationRegisterId = assetOperationRegisterId;
+      }
       this.$router.push({
-        path: "/addAndEditOperation",
+        path: "/assetOperating/edit",
         query,
       });
     },
@@ -668,23 +714,19 @@ export default {
       });
     },
   },
-  watch: {
-    $route() {
-      if (
-        this.$route.path === "/ownershipRegistration" &&
-        this.$route.query.refresh
-      ) {
-        this.queryCondition.pageNum = 1;
-        this.queryCondition.pageSize = 10;
-        this.query();
-      }
-    },
-  },
-  created() {},
   mounted() {
     this.initCreateAndEndTime();
     // 资产类型
     this.platformDictFn("asset_type");
+  },
+  activated() {
+    if (this.$route.meta.isKeep) {
+      this.query();
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    to.meta.isKeep = true;
+    next();
   },
 };
 </script>

@@ -1,4 +1,4 @@
-import { axiosPost } from "../utils/axios";
+import { axiosGet, axiosPost } from "../utils/axios";
 import { toOperation } from "../config/config.url";
 // 主列表导出
 export function exportListPage(data) {
@@ -18,7 +18,7 @@ export function getOperationPageStatistics(data) {
 
 // 审核
 export function updateOperationApprovalStatus(data) {
-  return axiosPost(toOperation.updateOperationApprovalStatus, data);
+  return axiosPost(toOperation.updateOperationApprovalStatus, data, true);
 }
 
 // 新增提交
@@ -44,6 +44,11 @@ export function getOperationDetailListPage(data) {
 }
 
 // 批量导入
-export function importData(data) {
-  return axiosPost(toOperation.importData, data, true);
+export function readExcelModelV3(data) {
+  return axiosPost(toOperation.readExcelModelV3, data, true);
+}
+
+// 删除
+export function deleteOperation(data) {
+  return axiosGet(toOperation.deleteOperation, data, true);
 }

@@ -78,6 +78,9 @@ export default {
     };
   },
   methods: {
+    getSelectData() {
+      return this.selectTableData;
+    },
     changeTab(value) {
       this.tabKey = value;
     },
