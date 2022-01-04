@@ -94,6 +94,7 @@ export default {
             this.DE_Loding(loadingName).then(() => {
                 this.$SG_Message.success('导入成功！')
                 this.visible = false
+                this.projectId = undefined
                 this.$emit('success')
             })
             } else {
@@ -174,6 +175,7 @@ export default {
       }
     },
     cancel () {
+      this.projectId = undefined
       this.hiddeModal()
       this.$emit('hiddeModal')
     },

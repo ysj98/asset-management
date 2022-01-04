@@ -40,7 +40,13 @@ export default {
         if (!this.newLabel) {
           this.$SG_Message.error('请填写标签编码新值')
         } else {
-          this.visible = false
+          if (res.data.code === '0') {
+            this.visible = false
+            this.newLabel = ''
+            this.cancel()
+          } else {
+            this.$SG_Message.error('标签编码不能重复')
+          }          
         }
       })
     },
