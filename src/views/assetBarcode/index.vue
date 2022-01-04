@@ -23,7 +23,7 @@
         <div class="content-title">
           <div>
             <img v-if="logoInfo.src" :src="logoInfo.src" width="80" alt="" style="margin-right:10px;">
-            <img v-else src="../../assets/image/seat.jpg" width="80" alt="">
+            <img v-else-if="!logoInfo.src" src="../../assets/image/seat.jpg" width="80" alt="">
             <SG-Button type="primary" @click="change">更换Logo</SG-Button>
           </div>
           <div class="organName">{{organName || '无'}}</div>
@@ -101,7 +101,9 @@ export default {
         thirdly: '',
         forthly: ''
       },
-      logoInfo: {}
+      logoInfo: {
+        src: ''
+      }
     }
   },
   computed: {
@@ -115,6 +117,7 @@ export default {
     },
     changeTree (value, label) {
       this.organId = value
+      this.logoInfo = {}
       this.query()
     },
     query () {
@@ -127,8 +130,10 @@ export default {
           this.selectConfigure.secondly = this.selectData[1].value
           this.selectConfigure.thirdly = this.selectData[2].value
           this.selectConfigure.forthly = this.selectData[3].value
-          if (res.data.data.imageUrl) {
+          if (res.data.data.imageUrl && res.data.data.imageUrl !== '') {
             this.logoInfo.src = configs.hostImg + '/' + res.data.data.imageUrl
+            console.log('>>>', this.logoInfo.src)
+            this.$forceUpdate()
           }
         } else {
           this.$message.error(res.data.message)
@@ -153,7 +158,6 @@ export default {
       for (let i in this.selectConfigure) {
         dictionaryAttr.push(this.selectConfigure[i])
       }
-      console.log('logo', this.logoInfo)
       let form = {
         organId: this.organId,
         imageUrl: this.logoInfo.imageUrl,

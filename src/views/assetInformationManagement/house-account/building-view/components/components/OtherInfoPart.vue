@@ -45,7 +45,9 @@
       queryOtherInfo () {
         this.spinning = true
         let form = {
-          buildId: this.buildId
+          buildId: this.buildId,
+          pageNum: this.paginationObj.pageNum,
+          pageSize: this.paginationObj.pageSize
         }
         this.$api.assets.queryAssetViewArchiveDetail(form).then(res => {
           if (Number(res.data.code) === 0) {

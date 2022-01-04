@@ -85,7 +85,7 @@ export default {
         if (Number(res.data.code) === 0) {
           this.codeArray = JSON.parse(JSON.stringify(res.data.data))
           let dictionaryAttr = this.codeArray[0].dictionaryAttr.split(',')
-          let selectData = []
+          let selectData = [{name: '资产名称', value: 'assetName'}, {name: '资产标签', value: 'labelCode'}, {name: '资产编码', value: 'assetCode'}]
           dictionaryAttr.forEach(dictionary => {
             let info = {}
             info.name = this.assetCodes.filter(item => dictionary.indexOf(String(item.value)) > -1)[0].name
@@ -103,7 +103,7 @@ export default {
       document.title = window.opener.getTitleFun;//接收传过来的title值
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
-          console.log('window.location.host', window.location.host)
+          console.log('!!!!', this.codeArray)
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {
             text: item.qrCode,
             width: 150,
@@ -111,21 +111,21 @@ export default {
             colorDark: "#333333", //二维码颜色
             colorLight: "#ffffff", //二维码背景色
             correctLevel : QRCode.CorrectLevel.H,
-            url: window.location.host + '/' + item.imageUrl
+            url: configs.hostImg + '/' + item.imageUrl
           })
-          console.log(qrcode)
           const id = `code${index}`
           const divBlock = document.getElementById(id)
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          image.setAttribute('crossOrigin', 'anonymous')
-          image.src = item.imageUrl
+          image.src = configs.hostImg + '/' + item.imageUrl
+          console.log(image.src)
           image.onload = function (){
             cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
             iEle.src = cEle.toDataURL()
           }
         })
+        this.$forceUpdate()
       })
     },
   },
