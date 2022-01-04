@@ -29,10 +29,10 @@
           rowKey: 'buildId',
           dataSource: [],
           columns: [
-            { title: '档案分类', dataIndex: 'address', key: 'address' },
-            { title: '档案名称', dataIndex: 'tags', key: 'tags'},
-            { title: '档案日期', dataIndex: 'tagss', key: 'tagss'},
-            { title: '归档人', dataIndex: 'taas', key: 'taas'},
+            { title: '档案分类', dataIndex: 'typeName', key: 'typeName' },
+            { title: '档案名称', dataIndex: 'archiveName', key: 'archiveName'},
+            { title: '档案日期', dataIndex: 'filingDate', key: 'filingDate'},
+            { title: '归档人', dataIndex: 'createByName', key: 'createByName'},
             { title: '操作', key: 'action', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
           ]
         }
