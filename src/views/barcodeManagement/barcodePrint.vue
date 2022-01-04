@@ -21,6 +21,7 @@
 <script>
 import QRCode from "qrcodejs2"
 import configs from "@/config/config.base.js"
+import { axiosGet } from '../../utils/axios'
 const assetCodes = [
   {name: '资产位置', value: 0},
   {name: '资产类型', value: 1},
@@ -103,7 +104,6 @@ export default {
       document.title = window.opener.getTitleFun;//接收传过来的title值
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
-          console.log('!!!!', this.codeArray)
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {
             text: item.qrCode,
             width: 150,
@@ -118,17 +118,13 @@ export default {
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          image.src = configs.hostImg + '/' + item.imageUrl
-          console.log('image', image.src)
-          // image.src = 'https://s2.loli.net/2022/01/04/CFlRYTHcLxt5UZS.png'
-          image.setAttribute("crossOrigin", 'anonymous')
-          image.onload = function (){
-            cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
-            // TODO： 此处 toDataUrl 报错，暂时不清楚，先使用 canvas
-            iEle.src = cEle.toDataURL()
-            // iEle.style.display ='none'
-            // cEle.style.display = 'block'
-          }
+          axiosGet(`/${item.imageUrl}`, {}, false, { responseType: 'blob'}).then(value=>{
+            image.src = URL.createObjectURL(value.data)
+            image.onload = function (){
+              cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
+              iEle.src = cEle.toDataURL()
+            }
+          })
         })
       })
     },

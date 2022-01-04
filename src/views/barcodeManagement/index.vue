@@ -293,9 +293,9 @@ export default {
       })
     },
     exportLabel () {
-      if (!this.queryCondition.projectId) {
-        this.$message.error('请选择资产项目')
-      } else {
+      // if (!this.queryCondition.projectId) {
+      //   this.$message.error('请选择资产项目')
+      // } else {
         let form = {
           organId: this.queryCondition.organId,
           projectIdList: this.queryCondition.projectId,
@@ -321,7 +321,7 @@ export default {
           this.$SG_Message.destroy(loadingName)
           this.$SG_Message.error('导出条码管理报表失败!')
         })
-      }
+      // }
     },
     showDataImport () {
       let form = {

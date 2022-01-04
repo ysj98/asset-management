@@ -38,7 +38,8 @@ const proxyURL = [
   '/car-parking-api/',
   '/car-batch/',
   '/equipment-openapi/',
-  '/scheme/'
+  '/scheme/',
+  '/group1/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接
