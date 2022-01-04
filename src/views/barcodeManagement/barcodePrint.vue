@@ -3,7 +3,7 @@
   <div class="codeCotainer" ref='printContainer'>
       <!-- printHide是为了隐藏打印的按钮，在打印页面时 -->
     <div class="btn"><a-button type="primary" @click="printClick" class='printHide'>打印</a-button></div>
-    <div class="content">
+    <div class="content" id="content">
       <div class="codecontent" v-for="(item, index) in codeArray" :id="`code${index}`" :key="index" style="page-break-after:always;">
         <div :ref="`ref${index}`" class="code"></div>
         <div v-for="asset in assetInfo" :key="asset.value">
@@ -70,7 +70,7 @@ export default {
         var imageToPrint = document.getElementById(`code${i}`); //获取需要打印的内容
         newWin.document.write(imageToPrint.outerHTML); //将需要打印的内容添加进新的窗口
       }
-      const styleSheet = `<style>.codecontent{float: left;margin-top: 35px;width:50%}</style>`;
+      const styleSheet = `<style>.codecontent{float:left;margin-top:35px;width:50%}</style>`;
       newWin.document.head.innerHTML = styleSheet; //给打印的内容加上样式
       newWin.document.close(); //在IE浏览器中使用必须添加这一句
       newWin.focus(); //在IE浏览器中使用必须添加这一句
@@ -118,14 +118,16 @@ export default {
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          // image.src = configs.hostImg + '/' + item.imageUrl
-          image.src = 'https://s2.loli.net/2022/01/04/CFlRYTHcLxt5UZS.png'
+          image.src = configs.hostImg + '/' + item.imageUrl
+          console.log('image', image.src)
+          // image.src = 'https://s2.loli.net/2022/01/04/CFlRYTHcLxt5UZS.png'
+          image.setAttribute("crossOrigin", 'anonymous')
           image.onload = function (){
             cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
             // TODO： 此处 toDataUrl 报错，暂时不清楚，先使用 canvas
-            // iEle.src = cEle.toDataURL()
-            iEle.style.display ='none'
-            cEle.style.display = 'block'
+            iEle.src = cEle.toDataURL()
+            // iEle.style.display ='none'
+            // cEle.style.display = 'block'
           }
         })
       })
