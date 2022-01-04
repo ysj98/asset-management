@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import { getDefaultKey } from "utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import store from "store";
 import TabContent from "@/views/assetOperatingParameters/TabContent";
@@ -24,7 +23,6 @@ export default {
   data() {
     return {
       currentKey: "",
-      // TODO: 权限编写
       tabList: [
         {
           auth: ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_TAB_HOUSE,
@@ -51,7 +49,10 @@ export default {
   },
   methods: {},
   created() {
-    this.currentKey = getDefaultKey(this.tabList);
+    this.tabList = this.tabList.filter(ele=>{
+      return this.$power.has(ele.auth)
+    })
+    this.tabList.length && (this.currentKey = this.tabList[0].keyStr)
   },
 };
 </script>
