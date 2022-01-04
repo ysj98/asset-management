@@ -576,7 +576,10 @@ export const ASSET_MANAGEMENT = {
   * 资产转运营参数
   * */
   CHANGE_ASSET_OPERATION_ADD:'change_asset_operation_add', // 新建
-
+  CHANGE_ASSET_OPERATION_TAB_HOUSE:'change_asset_operation_tab_house',
+  CHANGE_ASSET_OPERATION_TAB_LAND:'change_asset_operation_tab_land',
+  CHANGE_ASSET_OPERATION_TAB_YARD:'change_asset_operation_tab_yard',
+  CHANGE_ASSET_OPERATION_TAB_EQUIPMENT:'change_asset_operation_tab_equipment',
 
   /*
  * 资产转运营

@@ -10,15 +10,18 @@
       style="position: relative"
     >
       <div slot="headerBtns">
+        <span style="height: 0"></span>
         <SG-Button
           icon="plus"
           type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW"
+          v-power="ASSET_MANAGEMENT.ASSET_OPERATING_ADD"
           @click="goAddEdit('add')"
         >
           新建转运营单
         </SG-Button>
+        <span style="height: 0"></span>
         <SG-Button
+          v-power="ASSET_MANAGEMENT.ASSET_OPERATING_EXPORT_FILE"
           style="margin-left: 20px"
           icon="export"
           type="primary"
@@ -383,22 +386,28 @@ export default {
           text: "编辑",
           editType: "edit",
           statusAuth: [0, 3],
+          auth: ASSET_MANAGEMENT.ASSET_OPERATING_EDIT,
         },
         {
           iconType: "check-square",
           text: "审批",
           editType: "approve",
           statusAuth: [2],
+          auth: ASSET_MANAGEMENT.ASSET_OPERATING_EXPORT_FILE,
         },
         {
           iconType: "delete",
           text: "删除",
           editType: "delete",
           statusAuth: [0, 3],
+          auth: ASSET_MANAGEMENT.ASSET_OPERATING_APPROVE,
         },
         { iconType: "book", text: "详情", editType: "detail" },
       ];
-      return operationList.filter((ele) => {
+      const authRes = operationList.filter((ele) => {
+        return this.$power.has(ele.auth);
+      });
+      return authRes.filter((ele) => {
         // statusAuth 不存在代表所有状态可访问
         // statusAuth 存在并且 长度不为0,且权限数组包含当前数据的状态
         return (

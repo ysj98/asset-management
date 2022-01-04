@@ -9,7 +9,7 @@
     />
     <SG-Title title="资产列表" />
     <div class="table-data-action">
-      <SG-Button @click="handleAddDataToTable" class="right-btn">
+      <SG-Button v-if="false" @click="handleAddDataToTable" class="right-btn">
         手动添加已选资产
       </SG-Button>
       <SG-Button @click="btnAddAsset" type="primary">添加资产</SG-Button>

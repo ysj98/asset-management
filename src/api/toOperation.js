@@ -23,7 +23,7 @@ export function updateOperationApprovalStatus(data) {
 
 // 新增提交
 export function submitTransferOperation(data) {
-  return axiosPost(toOperation.submitTransferOperation, data);
+  return axiosPost(toOperation.submitTransferOperation, data,true);
 }
 
 // 添加资产导出

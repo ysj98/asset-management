@@ -10,13 +10,14 @@
 
 <script>
 import { getDefaultKey } from "utils/utils";
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import store from "store";
 import TabContent from "@/views/assetOperatingParameters/TabContent";
 export default {
   /*
    * 资产转运营参数
    * */
-  name: "assetOperatingParameters",
+  name: "assetOperationParameters",
   components: {
     TabContent,
   },
@@ -26,22 +27,22 @@ export default {
       // TODO: 权限编写
       tabList: [
         {
-          auth: "",
+          auth: ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_TAB_HOUSE,
           name: store.state.ASSET_TYPE_STRING.HOUSE,
           keyStr: store.state.ASSET_TYPE_CODE.HOUSE,
         },
         {
-          auth: "",
+          auth: ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_TAB_LAND,
           name: store.state.ASSET_TYPE_STRING.LAND,
           keyStr: store.state.ASSET_TYPE_CODE.LAND,
         },
         {
-          auth: "",
+          auth: ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_TAB_YARD,
           name: store.state.ASSET_TYPE_STRING.YARD,
           keyStr: store.state.ASSET_TYPE_CODE.YARD,
         },
         {
-          auth: "",
+          auth: ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_TAB_EQUIPMENT,
           name: store.state.ASSET_TYPE_STRING.EQUIPMENT,
           keyStr: store.state.ASSET_TYPE_CODE.EQUIPMENT,
         },
