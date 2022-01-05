@@ -60,7 +60,7 @@ export default new Vuex.Store({
               assetTypeString[ASSET_TYPE_STRING_ENUM[ele.name]] = ele.name
             }
           })
-
+          console.log('assetTypeString',assetTypeString)
           commit(SET_ASSET_TYPE_STRING, assetTypeString);
 
           Object.keys(assetTypeString).forEach(ele => {
@@ -77,6 +77,7 @@ export default new Vuex.Store({
             //   assetTypeCode[ele] = tempRes[0].value;
             // }
           });
+          console.log('assetTypeCode',assetTypeCode)
           commit(SET_ASSET_TYPE_CODE, assetTypeCode);
         } else {
           this.$message.error(res.data.message);
