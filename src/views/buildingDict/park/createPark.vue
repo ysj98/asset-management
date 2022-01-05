@@ -47,10 +47,11 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col v-if="routeQuery.type === 'edit'" :span="8">
+          <!-- v-if="routeQuery.type === 'edit'" -->
+          <a-col  :span="8">
             <a-form-model-item label="运营项目" prop="communityId">
               <a-select
-                  :disabled="true"
+                  :disabled="routeQuery.type === 'edit'"
                   :style="allWidth"
                   placeholder="请选择项目"
                   showSearch
