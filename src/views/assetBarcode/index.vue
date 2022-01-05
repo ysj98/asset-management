@@ -131,7 +131,12 @@ export default {
           this.selectConfigure.thirdly = this.selectData[2].value
           this.selectConfigure.forthly = this.selectData[3].value
           if (res.data.data.imageUrl && res.data.data.imageUrl !== '') {
-            this.logoInfo.src = configs.hostImg + '/' + res.data.data.imageUrl
+            let hostImgLength = configs.hostImg1.length
+            if (configs.hostImg1[hostImgLength - 1] === '/') {
+              this.logoInfo.src = configs.hostImg1 + res.data.data.imageUrl
+            } else {
+              this.logoInfo.src = configs.hostImg1 + '/' + res.data.data.imageUrl
+            }
             console.log('>>>', this.logoInfo.src)
             this.$forceUpdate()
           }
