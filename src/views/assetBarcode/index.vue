@@ -164,8 +164,12 @@ export default {
         dictionaryAttr: dictionaryAttr.join(',')
       }
       this.$api.barCode.saveAssetLabel(form).then(res => {
-        console.log('!!!', res.data)
-        this.query()
+        if (res.data.code === '0') {
+          this.query()
+          this.$message.success('保存成功')
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     }
   }
