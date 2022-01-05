@@ -172,7 +172,7 @@ export default {
       if (!this.$refs.TableAssetRef.handleValidate()) {
         return null;
       }
-      const dataSource = this.$refs.TableAssetRef.getReq();
+      const dataSource = this.$refs.TableAssetRef.getReq(this.type);
       const req = {
         ...baseInfo,
         organId: this.organInfoCom.organId,
