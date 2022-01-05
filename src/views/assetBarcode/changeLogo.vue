@@ -7,7 +7,11 @@
     @ok="submit"
     @cancel="cancel"
   >
-    <SG-Button @click="upload" style="display:block;margin-bottom:20px;">上传</SG-Button>
+    <div>
+      <SG-Button @click="upload" style="margin-bottom:20px;margin-right:10px;">上传</SG-Button>
+      <a-icon type="exclamation-circle" />
+      <span>建议上传正方形的图片。</span>
+    </div>
     <input ref="changeLogo" style="display:none;" id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
     <img width="500" id="image" :src="cropperImg" ref="img">
   </SG-Modal>
