@@ -561,7 +561,8 @@ export default {
         obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : ''    // 权证号
+        warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : '',    // 权证号
+        uploadAttachment: this.queryCondition.attachmentStatus
       }
       this.$api.ownership.warrantTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -636,7 +637,8 @@ export default {
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        warrantNbr: this.queryCondition.warrantNbr    // 权证号
+        warrantNbr: this.queryCondition.warrantNbr,    // 权证号
+        uploadAttachment: this.queryCondition.attachmentStatus
       }
       let loadingName = this.SG_Loding('导出中...')
       this.$api.ownership.warrantExport(data).then(res => {
