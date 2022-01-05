@@ -92,7 +92,7 @@ export default {
       });
       this.tableOptions.columns = [...baseColumns, ...res];
     },
-    getReq() {
+    getReq(type) {
       return this.tableOptions.dataSource.map((ele) => {
         let paramList = [];
         Object.keys(ele).forEach((e) => {
@@ -107,6 +107,16 @@ export default {
             });
           }
         });
+        if (type === "edit") {
+          paramList.forEach((paramItem) => {
+            const res = ele.paramList.filter(
+              (eleParamItem) =>
+                paramItem.transferOperationCode ===
+                eleParamItem.transferOperationCode
+            )[0];
+            paramItem.assetOperationDetailId = res.assetOperationDetailId;
+          });
+        }
         return {
           ...ele,
           paramList,
