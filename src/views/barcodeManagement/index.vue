@@ -138,7 +138,6 @@ export default {
     }
   },
   mounted() {
-    this.query()
     // 获取资产类型
     this.platformDictFn()
   },
@@ -154,6 +153,7 @@ export default {
       this.queryCondition.organId = value
       this.getObjectKeyValueByOrganIdFn()
       this.getListFn()
+      this.query()
     },
     filterOption(input, option) {
       return (
