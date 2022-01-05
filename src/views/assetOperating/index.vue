@@ -405,7 +405,11 @@ export default {
         { iconType: "book", text: "详情", editType: "detail" },
       ];
       const authRes = operationList.filter((ele) => {
-        return this.$power.has(ele.auth);
+        if (!ele.auth){
+          return true
+        }else {
+          return this.$power.has(ele.auth);
+        }
       });
       return authRes.filter((ele) => {
         // statusAuth 不存在代表所有状态可访问

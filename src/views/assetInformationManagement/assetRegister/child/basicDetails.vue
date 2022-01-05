@@ -24,6 +24,7 @@
           v-model="filepaths"
           type="all"
           :max="10"
+          :maxSize="20480"
           :customDownload="
             (value) => {
               return customDownload(value, $api.ownership.downLoadAnnex);
