@@ -157,11 +157,11 @@ export default {
           pageNum: this.pageForm.pageNum,
         }).then(
           (data) => {
-            this.tableOptions.dataSource = flatTableDataSource({
-              dataSource: data.data,
-            });
-            this.totalCount = data.count;
             console.log("data", data);
+            this.tableOptions.dataSource = flatTableDataSource({
+              dataSource: data ? data.data : [],
+            });
+            this.totalCount = data ? data.count : 0;
             resolve(data);
           },
           (reason) => {
@@ -173,6 +173,9 @@ export default {
     },
     initTableColumns() {
       const item = this.tableOptions.dataSource[0];
+      if (!item) {
+        return null;
+      }
       const res = generateColumnsByParamList({ paramList: item.paramList });
       this.tableOptions.columns = [...baseColumns, ...res];
     },
