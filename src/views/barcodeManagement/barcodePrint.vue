@@ -102,16 +102,8 @@ export default {
     },
     bindQRCode() {
       document.title = window.opener.getTitleFun;//接收传过来的title值
-
-      let hostImgLength = configs.hostImg.length
-      let url = ''
-      if (configs.hostImg[hostImgLength - 1] === '/') {
-        url = configs.hostImg + this.codeArray[0].imageUrl
-      } else {
-        url = configs.hostImg + '/' + this.codeArray[0].imageUrl
-      }
+      let url = this.codeArray[0].imageUrl
       console.log('url', url)
-      
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {

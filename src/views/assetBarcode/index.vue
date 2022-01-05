@@ -62,7 +62,7 @@
             <div>
               <img src="../../assets/image/example.png" width="200" alt="">
             </div>
-            <img style="position: absolute; top: 75px; right: 73px;" :src="logoInfo.src" width="50" alt="">
+            <img style="position: absolute; top: 75px; right: 73px;" :src="logoInfo.src" width="50" height="50" alt="">
           </div>
         </div>
       </div>

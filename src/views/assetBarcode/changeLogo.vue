@@ -33,28 +33,20 @@ export default {
       this.$refs.changeLogo.click()
     },
     uploadImg (event) {
-      const _this = this
       const img = event.target.files[0]
       const i = new Image()
       i.src = URL.createObjectURL(img)
-      i.onload = function() {
-        if (i.naturalWidth === i.naturalHeight) {
-          _this.cropperImg = i.src
-          _this.imgName = img.name
-          let fileData = new FormData()
-          fileData.append('file', img)
-          _this.$api.ownership.uploadAnnex(fileData).then(res => {
-            if (Number(res.data.code) === 0) {
-              _this.imgInfo.imageUrl = res.data.data.attachmentPath
-            } else {
-              _this.$message.error(res.data.message)
-            }
-          })
+      this.cropperImg = i.src
+      this.imgName = img.name
+      let fileData = new FormData()
+      fileData.append('file', img)
+      this.$api.ownership.uploadAnnex(fileData).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.imgInfo.imageUrl = res.data.data.attachmentPath
         } else {
-          _this.$SG_Message.error('请上传正方形图片')
-          event.target.value = null
+          this.$message.error(res.data.message)
         }
-      }
+      })
     },
     submit () {
       this.imgInfo.src = this.cropperImg
