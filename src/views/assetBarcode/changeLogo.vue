@@ -9,11 +9,11 @@
   >
     <div>
       <SG-Button @click="upload" style="margin-bottom:20px;margin-right:10px;">上传</SG-Button>
-      <a-icon type="exclamation-circle" />
-      <span>建议上传正方形的图片。</span>
+      <a-icon type="info-circle" style="color:red;margin-right:5px;" />
+      <span style="color:red;">建议上传正方形的图片。</span>
     </div>
     <input ref="changeLogo" style="display:none;" id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg" />
-    <img width="500" id="image" :src="cropperImg" ref="img">
+    <img width="500" :src="cropperImg" ref="img">
   </SG-Modal>
 </template>
 
@@ -37,20 +37,31 @@ export default {
       this.$refs.changeLogo.click()
     },
     uploadImg (event) {
+      const _this = this
       const img = event.target.files[0]
       const i = new Image()
       i.src = URL.createObjectURL(img)
-      this.cropperImg = i.src
-      this.imgName = img.name
-      let fileData = new FormData()
-      fileData.append('file', img)
-      this.$api.ownership.uploadAnnex(fileData).then(res => {
-        if (Number(res.data.code) === 0) {
-          this.imgInfo.imageUrl = res.data.data.attachmentPath
+      i.onload = function() {
+        if (i.naturalWidth / i.naturalHeight > 0.9 && i.naturalWidth / i.naturalHeight < 1.1) {
+          _this.cropperImg = i.src
+          _this.imgName = img.name
+          let fileData = new FormData()
+          fileData.append('file', img)
+          _this.$api.ownership.uploadAnnex(fileData).then(res => {
+            if (Number(res.data.code) === 0) {
+              _this.imgInfo.imageUrl = res.data.data.attachmentPath
+              _this.$message.success('上传成功')
+            } else {
+              _this.$message.error(res.data.message)
+              _this.cropperImg = ''
+              _this.imgName = ''
+            }
+          })
         } else {
-          this.$message.error(res.data.message)
+          _this.$SG_Message.error('请上传长宽比为1:1的图片')
+          event.target.value = null
         }
-      })
+      }
     },
     submit () {
       this.imgInfo.src = this.cropperImg

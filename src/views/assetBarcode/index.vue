@@ -164,6 +164,7 @@ export default {
         dictionaryAttr: dictionaryAttr.join(',')
       }
       this.$api.barCode.saveAssetLabel(form).then(res => {
+        console.log('!!!', res.data)
         this.query()
       })
     }
