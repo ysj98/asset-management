@@ -56,6 +56,7 @@
         <a-row style="display: flex; margin-top: 20px">
           <a-form-model-item label="附件">
             <SG-UploadFile
+              type="all"
               v-model="attachmentList"
               :max="5"
               :maxSize="5120"
@@ -176,6 +177,7 @@ export default {
         return {
           url: ele.attachmentPath,
           name: ele.oldAttachmentName,
+          attachmentId: ele.attachmentId,
         };
       });
     },
