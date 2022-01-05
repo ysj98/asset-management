@@ -47,6 +47,7 @@ import {
   flatTableDataSource,
 } from "@/views/assetOperating/share";
 import moment from "moment";
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 export default {
   /*
    * 详情页面
@@ -55,6 +56,7 @@ export default {
   components: {
     Information,
   },
+  mixins:[uploadAndDownLoadFIle],
   data() {
     return {
       totalCount: 0,
@@ -193,6 +195,7 @@ export default {
         return {
           url: ele.attachmentPath,
           name: ele.oldAttachmentName,
+          attachmentId: ele.attachmentId,
         };
       });
     },
