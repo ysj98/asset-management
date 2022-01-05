@@ -102,6 +102,8 @@ export default {
     },
     bindQRCode() {
       document.title = window.opener.getTitleFun;//接收传过来的title值
+      let url = configs.hostImg + '/' + this.codeArray[0].imageUrl
+      console.log('url', url)
       this.$nextTick(()=>{
         this.codeArray.forEach((item,index) => {
           let qrcode = new QRCode(this.$refs[`ref${index}`][0], {
@@ -118,7 +120,7 @@ export default {
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          axiosGet(`/${item.imageUrl}`, {}, false, { responseType: 'blob'}).then(value=>{
+          axiosGet(`${url}`, {}, false, { responseType: 'blob'}).then(value=>{
             image.src = URL.createObjectURL(value.data)
             image.onload = function (){
               cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)

@@ -3,9 +3,15 @@
   <div class="other_info">
     <a-spin :spinning="spinning">
       <SG-Title title="其它信息"/>
-      <a-table v-bind="tableObj" :pagination="false" class="custom-table td-pd10 title_div table-border">
+      <a-table
+        :columns="tableObj.columns"
+        :dataSource="tableData"
+        rowKey="archiveId"
+        :pagination="false"
+        class="custom-table td-pd10 title_div table-border"
+      >
         <span slot="action" slot-scope="text, record">
-          <span class="btn-text">下载</span>
+          <span class="btn-text" style="color: #0084FF; cursor: pointer" @click="detail(record)">详情</span>
         </span>
       </a-table>
       <SG-FooterPagination ref="footerPagination" v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
@@ -25,6 +31,7 @@
           pageSize: 10,
           totalCount: 0
         },
+        tableData: [],
         tableObj: {
           rowKey: 'buildId',
           dataSource: [],
@@ -52,11 +59,15 @@
         this.$api.assets.queryAssetViewArchiveDetail(form).then(res => {
           if (Number(res.data.code) === 0) {
             this.spinning = false
+            this.tableData = res.data.data.data
           } else {
             this.$message.error(res.data.message)
           }
         })
-      }
+      },
+      detail(data) {
+        window.parent.openPortalMenu('/archives-management/#/consultantFile/details?type=detail&archiveId=' + data.archiveId, '档案文件详情')
+      },
     },
     watch: {}
   }
