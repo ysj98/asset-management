@@ -93,7 +93,7 @@
               :checked="queryCondition.isCurrent"
               @change="checkboxFn"
             >
-              仅当前机构资产变更单
+              仅当前机构资产转运营单
             </a-checkbox>
             <a-select
               :maxTagCount="1"

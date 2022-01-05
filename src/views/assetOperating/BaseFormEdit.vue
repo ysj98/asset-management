@@ -7,74 +7,55 @@
         :rules="rules"
         layout="inline"
       >
-        <a-form-model-item
-          :labelCol="{ span: 8 }"
-          style="width: 30%"
-          label="转运营单名称"
-          prop="title"
-        >
-          <a-input
-            v-model="formData.title"
-            placeholer="请输入变动单名称"
-          ></a-input>
-        </a-form-model-item>
-        <a-form-model-item
-          :labelCol="{ span: 8 }"
-          style="width: 30%"
-          label="所属机构"
-        >
-          <span>{{ this.organInfo.organName }}</span>
-        </a-form-model-item>
-        <a-form-model-item
-          :labelCol="{ span: 8 }"
-          style="width: 30%"
-          label="资产项目"
-          prop="projectId"
-        >
-          <a-select
-            optionFilterProp="children"
-            showSearch
-            style="width: 200px"
-            v-model="formData.projectId"
-            :options="projectListOptions"
-            @change="handleChangeProject"
-          ></a-select>
-        </a-form-model-item>
-        <div style="margin-top: 20px">
-          <a-form-model-item
-            :labelCol="{ span: 8 }"
-            style="width: 30%"
-            label="资产类型"
-            prop="assetType"
-          >
+        <a-row>
+          <a-col :span="8">
+            <a-form-model-item label="转运营单名称" prop="title">
+              <a-input
+                v-model="formData.title"
+                placeholer="请输入变动单名称"
+              ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="8">
+            <a-form-model-item label="所属机构">
+              <span>{{ this.organInfo.organName }}</span>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item label="资产项目" prop="projectId">
+              <a-select
+                optionFilterProp="children"
+                showSearch
+                style="width: 200px"
+                v-model="formData.projectId"
+                :options="projectListOptions"
+                @change="handleChangeProject"
+              ></a-select>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row style="margin-top: 20px">
+          <a-form-model-item label="资产类型" prop="assetType">
             <a-select
               style="width: 200px"
               v-model="formData.assetType"
               :options="assetTypeOptions"
             ></a-select>
           </a-form-model-item>
-        </div>
-        <div style="margin-top: 20px">
-          <a-form-model-item
-            style="width: 60%"
-            :labelCol="{ span: 4 }"
-            label="备注"
-          >
+        </a-row>
+        <a-row style="margin-top: 20px">
+          <a-form-model-item label="备注">
             <a-textarea
               style="width: 600px"
               v-model="formData.remark"
               placeholder="请输入备注信息"
             ></a-textarea>
           </a-form-model-item>
-        </div>
-        <div style="display: flex; margin-top: 20px">
-          <a-form-model-item
-            style="width: 60%"
-            :labelCol="{ span: 4 }"
-            label="附件"
-          >
+        </a-row>
+        <a-row style="display: flex; margin-top: 20px">
+          <a-form-model-item label="附件">
             <SG-UploadFile
-              style="width: 600px"
               v-model="attachmentList"
               :max="5"
               :maxSize="5120"
@@ -90,7 +71,7 @@
               "
             />
           </a-form-model-item>
-        </div>
+        </a-row>
       </a-form-model>
     </div>
   </div>
