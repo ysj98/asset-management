@@ -511,6 +511,7 @@ export default {
       }
     },
     goAddEdit(type, assetOperationRegisterId) {
+      let path = "/assetOperating/add";
       const query = {
         organId: this.organInfo.organId,
         organName: this.organInfo.organName,
@@ -518,9 +519,10 @@ export default {
       };
       if (type === "edit") {
         query.assetOperationRegisterId = assetOperationRegisterId;
+        path = "/assetOperating/edit";
       }
       this.$router.push({
-        path: "/assetOperating/edit",
+        path,
         query,
       });
     },
