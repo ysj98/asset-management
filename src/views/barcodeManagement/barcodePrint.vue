@@ -113,14 +113,14 @@ export default {
             colorDark: "#333333", //二维码颜色
             colorLight: "#ffffff", //二维码背景色
             correctLevel : QRCode.CorrectLevel.H,
-            url: configs.hostImg + '/' + item.imageUrl
           })
           const id = `code${index}`
           const divBlock = document.getElementById(id)
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          axiosGet(`${url}`, {}, false, { responseType: 'blob'}).then(value=>{
+          const reqUrl = `${configs.hostImg1}${url}`
+          axiosGet(`${reqUrl}`, {}, false, { responseType: 'blob'}).then(value=>{
             image.src = URL.createObjectURL(value.data)
             image.onload = function (){
               cEle.getContext('2d').drawImage(image, 55, 55, 40, 40)
