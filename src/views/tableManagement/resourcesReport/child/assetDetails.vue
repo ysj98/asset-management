@@ -175,7 +175,7 @@ export default {
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.query()
+      this.query('changePage')
     },
     // 资产项目
     getObjectKeyValueByOrganIdFn () {
@@ -231,7 +231,9 @@ export default {
           }
           this.loading = false
           if (str !== 'asset') {
-            this.assetViewTotal(obj)
+            if(str !== 'changePage'){
+              this.assetViewTotal(obj)
+            }
           }
         } else {
           this.$message.error(res.data.message)
