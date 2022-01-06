@@ -4,13 +4,13 @@
       {{ assetLandInfo.landName }}
     </div>
     <div>
-      <span class="title-left">资产项目</span>
+      <span class="title-left">项目名称/物业名称</span>
       <span class="content-right">
-        {{ assetLandInfo.projectName }}
+        {{ `${assetLandInfo.projectName}${assetLandInfo.projectName}${assetLandInfo.projectName}` }}
       </span>
     </div>
     <div>
-      <span class="title-left">资产编码</span>
+      <span class="title-left">地块编号</span>
       <span class="content-right">
         {{ assetLandInfo.assetCode }}
       </span>

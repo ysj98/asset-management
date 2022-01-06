@@ -87,11 +87,11 @@ export default {
         formatBasicInfoList: [
           [
             {
-              title: "资产项目",
+              title: "项目名称/物业名称",
               key: "projectName",
             },
             {
-              title: "资产编码",
+              title: "地块编号",
               key: "assetCode",
             },
           ],
