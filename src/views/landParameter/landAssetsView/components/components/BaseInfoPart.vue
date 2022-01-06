@@ -6,7 +6,10 @@
     <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <a @click="goDetail" v-if="key === 'assetName'">
+          {{infoData[key]}}
+        </a>
+        <span v-else style="margin-left: 9px; color: #49505E">{{infoData[key] || '无'}}</span>
       </a-col>
     </a-row>
     <!--空间位置-->
@@ -32,6 +35,7 @@
   import EditAssetDetail from './EditLandDetail'
   import PreviewImages from 'components/PreviewImages.vue'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import {win} from "utils/utils";
   export default {
     name: 'BaseInfoPart',
     components: { EditAssetDetail, OverviewNumber, PreviewImages },
@@ -69,6 +73,13 @@
     },
 
     methods: {
+      goDetail(){
+        const {organId,organName} = this.$route.query
+        const {landId} = this.infoData
+        const tabUrl = `/asset-management/#/buildingDict/detailLand?organId=${organId}&organName=${organName}&type=detail&blankId=${landId}`
+        const tabTitle = '土地详情'
+        win.openPortalMenu(tabUrl,tabTitle)
+      },
       // 查询详情
       queryDetailInfo () {
         this.spinning = true

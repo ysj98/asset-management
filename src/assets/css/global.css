@@ -1,0 +1,9 @@
+.custom-popover .ant-popover-inner-content {
+  padding: 0;
+}
+.custom-popup .leaflet-popup-content {
+  margin: 0;
+}
+.sg-search-container{
+  position: relative;
+}

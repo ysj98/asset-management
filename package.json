@@ -9,17 +9,22 @@
   },
   "dependencies": {
     "@ant-design/colors": "^3.2.1",
+    "@geoman-io/leaflet-geoman-free": "^2.11.3",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.19.0",
     "core-js": "^2.6.5",
+    "cropperjs": "^1.5.12",
     "echarts": "^4.5.0",
     "js-cookie": "^2.2.0",
+    "leaflet": "^1.7.1",
+    "leaflet-rastercoords": "^1.0.4",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
+    "qrcodejs2": "0.0.2",
     "qs": "^6.7.0",
-    "segi-ant": "^0.1.30",
+    "segi-ant": "^1.2.5",
     "sg-calc": "^1.0.9",
-    "vue": "2.6.10",
+    "vue": "^2.6.10",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"
   },
@@ -37,7 +42,7 @@
     "style-resources-loader": "^1.2.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "vue-cli-plugin-style-resources-loader": "^0.1.3",
-    "vue-template-compiler": "2.6.10",
+    "vue-template-compiler": "^2.6.10",
     "xlsx": "^0.15.2"
   }
 }

@@ -47,9 +47,11 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="8">
+          <!-- v-if="routeQuery.type === 'edit'" -->
+          <a-col  :span="8">
             <a-form-model-item label="运营项目" prop="communityId">
               <a-select
+                  :disabled="routeQuery.type === 'edit'"
                   :style="allWidth"
                   placeholder="请选择项目"
                   showSearch
@@ -464,7 +466,7 @@ export default {
       if (tableData.parkingAreaId) {
         let delFlag = false
         this.$SG_Modal.confirm({
-          title: `确定要删除该车场信息吗?`,
+          content: `确定要删除该车场信息吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: async () => {

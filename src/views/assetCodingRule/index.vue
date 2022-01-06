@@ -52,7 +52,7 @@ export default {
     handleTreeChange (val) {
       if(this.formInfo.organId != 0 ) {
         this.$SG_Modal.confirm({
-          title: `即将切换组织机构，请确认自定义编码已保存?`,
+          content: `即将切换组织机构，请确认自定义编码已保存?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: async () => {

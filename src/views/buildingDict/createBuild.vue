@@ -35,7 +35,9 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-item label="运营项目"  v-bind="formItemLayout">
+                  <!-- v-if="type !== 'create'" -->
+                  <a-form-item  label="运营项目"  v-bind="formItemLayout">
+                    <!-- 总是不允许用户选择运营项目 -->
                     <a-select
                       :style="allWidth"
                       :disabled="communityIdDisabled"
@@ -273,17 +275,31 @@
                     <a-form-item label="平面图" v-bind="formItemLayout2">
                       <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
                     </a-form-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-item label="附件" v-bind="formItemLayout2">
-                      <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" type="all" v-model="filepaths"/>
-                    </a-form-item>
-                  </a-col>
+                </a-col>
+                <a-col :span="24">
+                  <a-form-item label="图片" v-bind="formItemLayout2">
+                    <SG-UploadFile
+                      v-model="buildPic"
+                      :customDownload="customDownload"
+                      :customUpload="customUpload"
+                      />
+                  </a-form-item>
+                </a-col>
+                <a-col :span="24">
+                  <a-form-item label="附件" v-bind="formItemLayout2">
+                    <SG-UploadFile
+                      :customDownload="customDownload"
+                      :maxSize="51200"
+                      :customUpload="customUpload"
+                      type="all"
+                      v-model="filepaths"/>
+                  </a-form-item>
+                </a-col>
             </a-row>
           </a-form>
         </div>
     </div>
-     <FormFooter>
+     <FormFooter v-if="fromType !== 'portal'">
        <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr2']" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_BUILD_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
@@ -291,6 +307,8 @@
    </div>
 </template>
 <script>
+
+
 import FormFooter from '@/components/FormFooter.vue'
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
 import utils from '@/utils/utils'
@@ -334,6 +352,7 @@ export default {
   },
   data () {
     return {
+      fromType:'',
       allStyle: 'width: 100%;',
       organIdMain:'', // 所属机构
       organNameMain:'', // 所属机构名称
@@ -359,6 +378,7 @@ export default {
         lng: '',
         lat: ''
       },
+      buildPic:[], // 图片
       picPath: [], // 平面图
       filepaths: [], // 附件
       buildTypeOpt: [], // 楼栋类型
@@ -393,14 +413,22 @@ export default {
   },
   computed: {
     title () {
+      if(this.fromType === 'portal'){
+        return '楼栋详情'
+      }
       return this.type === 'edit' ? '编辑楼栋' : '新增楼栋'
     }
   },
   mounted () {
+    console.log('mounted执行')
+    this.fromType = this.$route.query.fromType
+    if (this.fromType === 'portal'){
+      this.resetAll()
+      this.queryBuildDetail(this.$route.query.positionId)
+    }
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
-    // this.queryDictDataList()
     this.platformDictFn()
     this.init()
     this.handleBtn()
@@ -487,9 +515,13 @@ export default {
           let lngAnLatArr = data.lngAndlat.split('-')
           data.longitude = lngAnLatArr[0]
           data.latitude = lngAnLatArr[1]
-          // 处理图片
+          // 处理平面图
           if (this.picPath.length > 0) {
             data.picPath = this.picPath[0].url
+          }
+          // 处理图片
+          if (this.buildPic.length > 0) {
+            data.buildPic = this.buildPic.map(item => item.url).join(',')
           }
           // 处理附件
           if (this.filepaths.length > 0) {
@@ -551,7 +583,7 @@ export default {
     },
     handleCancel () {
       this.$SG_Modal.confirm({
-          title: `确定删除该楼栋吗?`,
+        content: `确定删除该楼栋吗?`,
           okText: '确定',
           cancelText: '再想想',
           onOk: () => {
@@ -609,6 +641,13 @@ export default {
         this.picPath = picPath
       }
       // 处理附件
+      if (data.buildPic) {
+        let buildPic = data.buildPic.split(',')
+        this.buildPic = buildPic.map(url => {
+          return {url, name: url.substring(url.lastIndexOf('/')+1)}
+        })
+      }
+      // 处理附件
       if (data.filepaths) {
         let filepaths = data.filepaths.split(',')
         this.filepaths = filepaths.map(url => {
@@ -659,6 +698,7 @@ export default {
         lat: ''
       }
       this.picPath = [] // 平面图
+      this.buildPic = [] // 图片
       this.filepaths = [] // 附件
     },
     bMapChange (point) {
@@ -712,25 +752,6 @@ export default {
           })
         } else {
           this.$message.error(res.data.message)
-        }
-      })
-    },
-    // 机构字典
-    queryDictDataList () {
-      let data = {
-        dictCode: 'BUILD_STRUCT',
-        groupId: this.organId
-      }
-      this.$api.basics.queryDictDataList(data).then(res => {
-        if (res.data.code === '0') {
-          let result = res.data.data || []
-          let arr = []
-          result.forEach(item => {
-            if (String(item.dictStatus) === '1') {
-              arr.push({label: item.dictName, value: item.dictValue, ...item})
-            }
-          })
-          this.buildStructOpt = arr
         }
       })
     },

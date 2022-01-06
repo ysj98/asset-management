@@ -118,6 +118,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_DICT_LAND_EDIT: 'zcgl_dict_land_edit',
   // 楼盘字典-删除土地
   ASSET_DICT_LAND_DELETE: 'zcgl_dict_land_delete',
+  // 楼盘字典-土地批量导入
+  ASSET_DICT_LAND_IMPORT: 'zcgl_dict_land_import',
   // 楼盘字典-创建车场
   ASSET_DICT_PARK_CREATE: 'zcgl_dict_park_create',
   // 楼盘字典-修改车场
@@ -219,6 +221,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
   // 权证管理-导出
   ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
+  // 权证管理-列表字段自定义
+  ASSET_ACM_SETTING: 'zcgl_asset_acm_setting',
 
   /**
   * 权属人管理
@@ -550,7 +554,61 @@ export const ASSET_MANAGEMENT = {
    power_land_disposeInfo: 'power_land_disposeInfo', // 资产信息页签
    power_land_relatedExpenses: 'power_land_relatedExpenses', // 相关费用页签
    power_land_archive: 'power_land_archive', // 档案文件页签
-   power_land_operationInformation: 'power_land_operationInformation' // 运营信息页签
+   power_land_operationInformation: 'power_land_operationInformation', // 运营信息页签
+   /**
+   * 资产条码 & 条码管理
+   */
+  BARCODE_SETTING_SAVE: 'barCode_setting_save', // 资产管理————保存
+  BARCODE_MANAGEMENT_PRINT: 'barCode_management_print', // 条码管理————条码打印
+  BARCODE_MANAGEMENT_EXPORT: 'barCode_management_export', // 条码管理————导出
+  BARCODE_MANAGEMENT_UPDATE: 'barCode_management_update', // 条码管理————批量更新
+  BARCODE_MANAGEMENT_EDIT: 'barCode_management_edit', // 条码管理————编辑标签
+
+  /*
+  * 土地地图绘制
+  * */
+  DRAW_LAND_MAP_ADD_METHOD:'draw_land_add_method', // 新增方案
+  DRAW_LAND_MAP_UPLOAD_IMAGE:'draw_land_map_upload_image', // 上传背景图
+  DRAW_LAND_MAP_DELETE_POLYGON:'draw_land_map_delete_polygon', // 删除绘制
+
+
+  /*
+  * 资产转运营参数
+  * */
+  CHANGE_ASSET_OPERATION_ADD:'change_asset_operation_add', // 新建
+  CHANGE_ASSET_OPERATION_TAB_HOUSE:'change_asset_operation_tab_house',
+  CHANGE_ASSET_OPERATION_TAB_LAND:'change_asset_operation_tab_land',
+  CHANGE_ASSET_OPERATION_TAB_YARD:'change_asset_operation_tab_yard',
+  CHANGE_ASSET_OPERATION_TAB_EQUIPMENT:'change_asset_operation_tab_equipment',
+
+  /*
+ * 资产转运营
+ * */
+  ASSET_OPERATING_ADD:'asset_operating_add', // 新建转运营单
+  ASSET_OPERATING_EXPORT_FILE:'asset_operating_export_file', // 导出
+  ASSET_OPERATING_EDIT:'asset_operating_edit', // 编辑
+  ASSET_OPERATING_DEL:'asset_operating_del', // 删除
+  ASSET_OPERATING_APPROVE:'asset_operating_approve', // 审批
+
+  /**
+   * 基础信息管理 -> 自定义编码设置
+   */
+  CUSTOM_CODE_LAND_ADD: 'custom_code_land_add', // 新增
+  CUSTOM_CODE_LAND_EDIT: 'custom_code_land_edit', // 编辑
+  CUSTOM_CODE_LAND_CHANGE: 'custom_code_land_change', // 状态变化
+  /**
+   * 基础信息管理 -> 资产经营方式
+   */
+  ASSET_FUNCTION_EDIT: 'asset_function_edit',  // 编辑
+  ASSET_FUNCTION_CHANGE: 'asset_function_change', // 状态变化
+  /**
+   * 基础信息管理 -> 资产业务信息
+   */
+  ASSET_BILL_MANAGEMENT_LAND_EXPORT: 'asset_bill_management_land_export', // 导出
+  ASSET_BILL_MANAGEMENT_LAND_LIST_CONFIG: 'asset_bill_management_land_list_config', // 列表设置
+  ASSET_BILL_MANAGEMENT_LAND_DOWNLOAD: 'asset_bill_management_land_download', // 下载模板
+  ASSET_BILL_MANAGEMENT_LAND_EXPORT_BILL: 'asset_bill_management_land_export_bill', // 导入业务信息
+  ASSET_BILL_MANAGEMENT_LAND_EDIT: 'asset_bill_management_land_edit', // 编辑
 }
 
 

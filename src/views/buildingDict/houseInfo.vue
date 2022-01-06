@@ -717,7 +717,7 @@ export default {
       }
       if (["on", "off"].includes(type)) {
         this.$SG_Modal.confirm({
-          title: `确定${type === "on" ? "启用" : "禁用"}该房间吗?`,
+          content: `确定${type === "on" ? "启用" : "禁用"}该房间吗?`,
           okText: "确定",
           cancelText: "关闭",
           onOk: () => {

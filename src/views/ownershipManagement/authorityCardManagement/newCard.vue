@@ -129,6 +129,9 @@
             <a-form-item v-bind="formItemTextarea" :colon="false">
               <label slot="label">上传附件：</label>
               <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
+                :customUpload="customUpload"
+                :customDownload="customDownload"
                 v-model="newCardData.files"
                 type="all"
                 :maxSize="5120"
@@ -215,9 +218,11 @@
 
 <script>
 // import Cephalosome from '@/components/Cephalosome'
+import configBase from "@/config/config.base";
 import moment from 'moment'
 import {debounce, utils} from '@/utils/utils'
 import {accessCard, titleDeed, newCardData, columns, mortgageInformation, landDeed} from './beat'
+import warantAnnex from './warrantAnnex'
 const conditionalJudgment = [undefined, null, '']
 export default {
   components: {},
@@ -225,10 +230,15 @@ export default {
     queryType: {
       type: [String, Number],
       default: ''
+    },
+    pageNum: {
+      type: Number
     }
   },
+  mixins: [warantAnnex],
   data () {
     return {
+      configBase,
       newData: '',
       setType: '',
       titleDeed: utils.deepClone(titleDeed),
@@ -426,7 +436,8 @@ export default {
             this.newCardData.files.forEach(list => {
               files.push({
                 attachmentPath: list.url,
-                oldAttachmentName: list.name
+                oldAttachmentName: list.name,
+                originName: list.name
               })
             })
           }
@@ -514,7 +525,7 @@ export default {
     // 关闭弹窗
     handleCancel (str) {
       if (str === 'success') {
-        this.$emit('successQuery')
+        this.$emit('successQuery', this.pageNum)
       }
       this.show = false
       this.$emit('showFn', this.show)
@@ -801,7 +812,8 @@ export default {
               data.amsAttachmentList.forEach(item => {
               files.push({
                 url: item.attachmentPath,
-                name: item.oldAttachmentName
+                name: item.oldAttachmentName,
+                attachmentId: item.attachmentId
               })
             })
           }

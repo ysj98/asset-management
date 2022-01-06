@@ -77,7 +77,7 @@
       <template #footer>
         <div @click="handleAddCategory" class="table-footer">
           <a-icon type="plus" />
-          <span style="margin-left: 5px;">新增分类</span>
+          <span style="margin-left: 5px;">新增分类属性</span>
         </div>
       </template>
     </a-table>
@@ -307,7 +307,7 @@ export default {
       const { professionCode, _key } = record;
       const _this = this;
       this.$SG_Modal.confirm({
-        title: `确定删除此分类吗?`,
+        content: `确定删除此分类吗?`,
         okText: "确定",
         cancelText: "取消",
         onOk: async () => {

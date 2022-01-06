@@ -109,6 +109,7 @@ export default {
   },
   methods: {
     hiddeModal () {
+      this.visible = false
       this.upErrorInfo = ''
       this.fileName = ''
       this.formData = null

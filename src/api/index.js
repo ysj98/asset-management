@@ -33,6 +33,13 @@ import * as assetInvest from './assetInvest'
 import * as paramsConfig from './paramsConfig'
 import * as dataCenter from './dataCenter'
 import * as codeRule from './codeRule'
+import * as attrConfig from './attrConfig'
+import * as barCode from './barCode'
+import * as assetOperationMode from './assetOperationMode'
+import * as assetBussinessInformation from './assetBussinessInformation'
+import * as drawMap from './drawMap'
+import * as operationParams from './operationParams'
+import * as toOperation from './toOperation'
 const API = {
   auth,
   global,
@@ -54,7 +61,14 @@ const API = {
   assetInvest,
   paramsConfig,
   dataCenter,
-  codeRule
+  codeRule,
+  barCode,
+  assetOperationMode,
+  assetBussinessInformation,
+  attrConfig,
+  drawMap,
+  operationParams,
+  toOperation
 }
 export default {
   install (Vue) {

@@ -71,9 +71,11 @@
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+<!--              v-if="routeQuery.type === 'edit'"-->
+              <a-col  :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
                   <a-select
+                    :disabled="routeQuery.type === 'edit'"
                     :style="allWidth"
                     :getPopupContainer="getPopupContainer"
                     @change="communityIdChange"
@@ -358,6 +360,32 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="经营方式" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    :getPopupContainer="getPopupContainer"
+                    placeholder="请选择经营方式"
+                    showSearch
+                    optionFilterProp="children"
+                    :options="$addTitle(operationMode)"
+                    :allowClear="false"
+                    :filterOption="filterOption"
+                    notFoundContent="没有查询到数据"
+                    v-decorator="[
+                      'modeOper',
+                      {
+                        rules: [
+                          {
+                            whitespace: true,
+                            message: '请选择经营方式',
+                          },
+                        ],
+                      },
+                    ]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="有无围墙" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
@@ -496,6 +524,7 @@ export default {
       landuseTypeOpt: [], // 土地用途分类
       wallTypeOpt: [{value:"1",label:"有围墙"}, {value:"0",label:"无围墙"}], // 有无围墙
       landuseOpt: [], // 土地用途
+      operationMode: [], // 经营方式
       redMap: [], // 用地红线图
       encloseWallPic: [], // 围墙图片
       nowPic: [], // 现状图片
@@ -841,6 +870,25 @@ export default {
         }
       })
     },
+    // 取全部经营方式
+    queryModeOperList() {
+      let data = {
+        dictCode: "OCM_MODE_OPER",
+        dictFlag: "1",
+        groupId: this.organIdMain,
+        code: "OCM_MODE_OPER",
+        organId: this.organIdMain,
+      }
+      this.$api.basics.organDict(data).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data
+          this.operationMode = data.map((item) => ({
+            value: item["value"],
+            label: item["name"],
+          }))
+        }
+      })
+    },
     // 请求项目
     queryCommunityListByOrganId(organTopId) {
       let data = {
@@ -1001,6 +1049,7 @@ export default {
       this.queryLandType()
       this.queryLandUseTypeList()
       this.queryLandUseList()
+      this.queryModeOperList()
     },
     // 初始化
     async init(){

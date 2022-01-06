@@ -54,6 +54,10 @@ export default [
       {
         title: '资产出库一览表详情',
         path: '/assetTable/detail',
+      },
+      {
+        title: '资产转运营',
+        path: '/assetOperating',
       }
     ]
   },
@@ -96,6 +100,34 @@ export default [
       {
         title: '资产编码规则',
         path: '/assetCodingRule'
+      },
+      {
+        title: '资产转运营参数',
+        path: '/assetOperationParameters'
+      },
+      {
+        title: '土地地图绘制',
+        path: '/mapDrawLand'
+      },
+      {
+        title: '条码管理',
+        path: '/barcodeManagement'
+      },
+      {
+        title: '资产条码',
+        path: '/assetBarcode'
+      },
+      {
+        title: '资产经营方式',
+        path: '/assetManagementMode'
+      },
+      {
+        title: '资产业务信息',
+        path: '/assetBussinessInformation'
+      },
+      {
+        title: '资产业务属性配置',
+        path: '/anyAttrConfig'
       }
     ]
   },
@@ -232,6 +264,10 @@ export default [
       {
         title: '资产地图',
         path: '/assetMap'
+      },
+      {
+        title: '土地地图',
+        path: '/landAssetMap'
       },
     ]
   },

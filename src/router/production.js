@@ -4,9 +4,41 @@
  * @Description:
  */
 let proRouter = [{
+    path: '/barcodeManagement',
+    name: '条码管理',
+    component: () => import('@/views/barcodeManagement/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetBarcode',
+    name: '资产条码',
+    component: () => import('@/views/assetBarcode/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/barcodePrint',
+    name: '资产条码打印',
+    component: () => import('@/views/barcodeManagement/barcodePrint.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/buildingDict',
     name: '楼盘字典',
     component: () => import('@/views/buildingDict/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/createBuildDetail',
+    name: '楼栋详情',
+    component: () => import('@/views/buildingDict/createBuild'),
     meta: {
       keepAlive: true
     }
@@ -90,6 +122,77 @@ let proRouter = [{
     path: '/assetCodingRule',
     name: '资产编码规则',
     component: () => import('@/views/assetCodingRule/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/mapDrawLand',
+    name: '土地地图绘制',
+    component: () => import('@/views/mapDrawLand/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/landAssetMap',
+    name: '土地地图',
+    component: () => import('@/views/landParameter/landAssetMap/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetOperationParameters',
+    name: '资产转运营参数',
+    component: () => import('@/views/assetOperationParameters/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetOperating',
+    name: '资产转运营',
+    component: () => import('@/views/assetOperating/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetOperating/edit',
+    name: '资产转运营单编辑',
+    component: () => import('@/views/assetOperating/addAndEditOperation.vue'),
+  },
+  {
+    path: '/assetOperating/add',
+    name: '资产转运营单新增',
+    component: () => import('@/views/assetOperating/addAndEditOperation.vue'),
+  },
+  {
+    path: '/assetOperating/detail',
+    name: '资产转运营详情',
+    component: () => import('@/views/assetOperating/operationDetail.vue'),
+  },
+  {
+    path: '/assetManagementMode',
+    name: '资产经营方式',
+    component: () => import('@/views/assetManagementMode/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/anyAttrConfig',
+    name: '资产业务属性配置',
+    component: () => import('@/views/anyAttrConfig/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/assetBussinessInformation',
+    name: '资产业务信息',
+    component: () => import('@/views/assetBussinessInformation/index.vue'),
     meta: {
       keepAlive: true
     }

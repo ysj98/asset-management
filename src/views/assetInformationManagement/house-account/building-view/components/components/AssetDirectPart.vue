@@ -26,7 +26,7 @@
                 @mousemove="handleMouseMove($event, true, room.roomId, room.roomNo)"
                 @mouseout="handleMouseMove($event, false)"
               >
-                {{room.roomNo}}
+                <a @click="goDetail({id:room.roomId})">{{room.roomNo}}</a>
               </div>
             </div>
           </div>
@@ -48,10 +48,11 @@
 <script>
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import FloatView from './FloatView'
+  import {win} from "utils/utils";
   export default {
     name: 'AssetDirectPart',
     components: { OverviewNumber, FloatView },
-    props: ['organId', 'buildId'],
+    props: ['organId', 'buildId','organName'],
     data () {
       return {
         spinning: false, // 加载状态
@@ -82,6 +83,11 @@
     },
 
     methods: {
+      goDetail({id}){
+        const tabTitle = '房间详情'
+        const tabUrl = `/asset-management/#/buildingDict/detailHouse?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&houseId=${id}&searchBuildName=`
+        win.openPortalMenu(tabUrl,tabTitle)
+      },
       // 处理背景色和宽度
       handleStyle (areaInfo, totalArea) {
         const { bgColorObj, maxTotalArea } = this

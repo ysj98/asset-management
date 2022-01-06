@@ -18,14 +18,27 @@
         <a-col class="playground-col" :span="24">附记：{{particularsData.excursus || '--'}}</a-col>
         <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
-            <div class="umImg" v-if="files.length > 0">
-              <SG-UploadFile
-                v-model="files"
-                type="all"
-                :show="true"
-              />
-            </div>
-          </a-col>
+          <div v-if="files.length > 0">
+            <!-- <div v-for="(item, index) in files" :key="index"> -->
+              <div class="umImg">
+                <SG-UploadFile
+                  v-model="oldFiles"
+                  type="all"
+                  :show="true"
+                />
+              </div>
+              <div class="umImg">
+                <SG-UploadFile
+                  :baseImgURL="configBase.hostImg1"
+                  :customDownload="customDownload"
+                  v-model="newFiles"
+                  type="all"
+                  :show="true"
+                />
+              </div>
+            <!-- </div> -->
+          </div>
+        </a-col>
       </a-row>
     </div>
     <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3'">
@@ -57,8 +70,10 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import {utils} from '@/utils/utils'
 import {columns, mortgageInformation} from './beat'
+import warantAnnex from './warrantAnnex'
 const conditionalJudgment = [undefined, null, '']
 const titleDeed = [
   { text: '权证号', value: 'warrantNbr' },
@@ -127,8 +142,10 @@ const landDeed = [
 export default {
   components: {},
   props: {},
+  mixins: [warantAnnex],
   data () {
     return {
+      configBase,
       conditionalJudgment,
       basicDate: [],
       titleDeed,
@@ -136,6 +153,8 @@ export default {
       landDeed,
       particularsData: {},
       files: [],
+      oldFiles: [],
+      newFiles: [],
       kindOfRight: '',        // 权证类型判断
       beat: [],
       columns: [],
@@ -191,6 +210,8 @@ export default {
     // 详情查询
     query (warrantNbr, id) {
       this.particularsData = {}
+      this.oldFiles = []
+      this.newFiles = []
       this.show = true
       this.warrantNbr = warrantNbr
       this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr, organId: id}).then(res => {
@@ -204,8 +225,24 @@ export default {
             data.amsAttachmentList.forEach(item => {
             files.push({
               url: item.attachmentPath,
-              name: item.oldAttachmentName
+              name: item.oldAttachmentName,
+              fileSources: item.fileSources
             })
+            if (item.fileSources === 0) {
+              this.oldFiles.push({
+                url: item.attachmentPath,
+                name: item.oldAttachmentName,
+                fileSources: item.fileSources
+              })
+            }
+            if (item.fileSources === 1) {
+              this.newFiles.push({
+                url: item.attachmentPath,
+                name: item.oldAttachmentName,
+                fileSources: item.fileSources,
+                attachmentId: item.attachmentId
+              })
+            }
           })
         }
         this.files = files
@@ -255,5 +292,8 @@ export default {
       margin-bottom: 70px;
     }
   }
+}
+::v-deep .sg-uploadFile.show>.preview {
+  overflow: auto;
 }
 </style>

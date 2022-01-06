@@ -338,6 +338,7 @@
             :title="modalInfo.title"
             okText="确定"
             @ok="quickFn"
+            @cancel="()=>{ modalInfo.show = false }"
     >
     <div class="l-modal-container">
       <div class="l-modal-left">

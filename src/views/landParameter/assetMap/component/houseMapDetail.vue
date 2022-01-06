@@ -83,6 +83,9 @@
       </div>
       <!-- 表格部分 -->
       <div class="detail-table">
+        <div style="text-align: center;padding: 20px 20px 0;">
+          <a @click="goDetail">查看资产详情</a>
+        </div>
         <div class="pb10 pt10">
           <SG-Title title="资产概况" noMargin />
         </div>
@@ -101,8 +104,9 @@
 </template>
 
 <script>
-import Tools from '@/utils/utils'
+import Tools, {win} from '@/utils/utils'
 import configs from '@/config/config.base.js'
+import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 const columns = [
   {
     title: "资产数量(个)",
@@ -172,6 +176,9 @@ export default {
     detailInfo: {
       type: Object,
       default: () => ({})
+    },
+    organId:{
+      default:''
     }
   },
   data() {
@@ -225,6 +232,12 @@ export default {
     }
   },
   methods: {
+    async goDetail(){
+      const {organId:resOrganId} = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
+      const  tabUrl  = `/asset-management/#/buildingView/buildingViewDetail?buildId=${this.detailInfo.buildId}&organId=${resOrganId}`
+      const tabTitle = '楼栋视图详情'
+      win.openPortalMenu(tabUrl,tabTitle)
+    },
     handleSwitch() {
       this.$emit("close", "land")
     },

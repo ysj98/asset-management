@@ -9,12 +9,13 @@
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn" style="margin-right: 8px">新建权证</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_SETTING" icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
       </div>
-      <div slot="contentForm" class="search-content-box" style=" position: absolute">
+      <div slot="contentForm" class="search-content-box" style="position: absolute">
         <div class="search-from-box" style="float: right; text-align: left">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select
@@ -59,6 +60,9 @@
           </a-select>
           <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
           <a-input :style="allStyle" v-model="queryCondition.seatingPosition" placeholder="坐落位置" maxlength="30"  />
+          <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部附件状态" v-model="queryCondition.attachmentStatus">
+            <a-select-option :title="item.name" v-for="(item, index) in attachmentStatus" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="queryHandler">查询</SG-Button>
@@ -71,7 +75,7 @@
     <div class="table-layout-fixed" ref="table_box">
       <a-table
         :loading="loading"
-        :columns="columns"
+        :columns="tableObj.columns"
         :dataSource="tableData"
         :row-selection="rowSelection"
         class="custom-table td-pd10"
@@ -104,6 +108,7 @@
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
+        ref="footerPagination"
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
         :location="location"
@@ -113,11 +118,25 @@
       />
     </div>
     <!-- 新增 -->
-    <NewCard v-if="newShow" ref="newCard" @showFn="showFn" @successQuery="successQueryFn"></NewCard>
+    <NewCard v-if="newShow" ref="newCard" :pageNum="queryCondition.pageNum" @showFn="showFn" @successQuery="successQueryFn"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
     <!--导入-->
     <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="权证批量导入"/>
+    <!--编辑列表表头-->
+    <SG-Modal
+      v-bind="modalObj"
+      v-model="modalObj.status"
+      @ok="handleModalOk"
+      @cancel="handleModalStatus(false)"
+    >
+    <edit-table-header
+        :key="key"
+        ref="tableHeader"
+        :checkedArr="checkedHeaderArr"
+        :columns="tableObj.initColumns"
+      />
+    </SG-Modal>
   </div>
 </template>
 
@@ -133,7 +152,8 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 // import {utils, debounce} from '@/utils/utils.js'
 import BatchImport from 'src/views/common/eportAndDownFile'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
-const allWidth = {width: '170px', 'margin-right': '10px', float: 'left', 'margin-top': '14px'}
+import EditTableHeader from './EditTableHeader'
+const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 const columns = [
   {
     title: '所属机构',
@@ -188,6 +208,10 @@ const columns = [
     scopedSlots: { customRender: 'handoverDate' },
   },
   {
+    title: '附件',
+    dataIndex: 'uploadAttachment'
+  },
+  {
     title: '状态',
     dataIndex: 'statusName'
   },
@@ -216,11 +240,26 @@ const statusData = [
     value: '1'
   }
 ]
+const attachmentStatus = [
+  {
+    name: '全部附件状态',
+    value: ''
+  },
+  {
+    name: '未上传',
+    value: '0'
+  },
+  {
+    name: '已上传',
+    value: '1'
+  }
+]
 const queryCondition =  {
     organId: '',        // 组织机构
     kindOfRights: '',   // 权证类型(多选)
     obligeeId: '',      // 权属人
     status: '',         // 权证状态
+    attachmentStatus: '', // 附加状态
     warrantNbr: '',     // 权证号
     ownerTypeList: [],  // 权属形式
     pageNum: 1,         // 第几页
@@ -228,7 +267,7 @@ const queryCondition =  {
     seatingPosition: '' // 坐落位置
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, EditTableHeader},
   props: {},
   data () {
     return {
@@ -240,13 +279,13 @@ export default {
       location: 'absolute',
       allStyle: allWidth,
       toggle: true,
-      columns,
       organName: '',
       organId: '',
       tableData: [],
       kindOfRightsData: [],
       operationData: [...operationData],
       statusData: [...statusData],
+      attachmentStatus: [...attachmentStatus],
       queryCondition: {...queryCondition},
       count: '',
       obligeeIdData: [],
@@ -260,40 +299,47 @@ export default {
         {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       ownerTypeData: [], // 权属形式
+      modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
+      key: 0, // 更新Modal包裹的子组件
+      checkedHeaderArr: [], // 格式如['name', 'age']
+      tableObj: {
+        initColumns: [],
+        scroll: { x: 3500 },
+        columns
+      },
       rowSelection: {
-  onChange: (selectedRowKeys, selectedRows) => {
+        onChange: (selectedRowKeys, selectedRows) => {
+          this.idArr = []
+          this.idArr = selectedRows.map(item => {
+              return item.warrantId
+          })
+          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows, this.idArr);
+        },
+        onSelect: (record, selected, selectedRows) => {
+          console.log(record, selected, selectedRows);
+          if(selectedRows.length==0){
+            this.control = true
+          }else{
+            this.control = false
+          }
 
-    this.idArr = []
-    this.idArr = selectedRows.map(item => {
-        return item.warrantId
-    })
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows, this.idArr);
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-    if(selectedRows.length==0){
-      this.control = true
-    }else{
-      this.control = false
-    }
+        },
+        onSelectAll: (selected, selectedRows, changeRows) => {
+          if(selectedRows.length==0){
+            this.control = true
+          }else{
+            this.control = false
+          }
 
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    if(selectedRows.length==0){
-      this.control = true
-    }else{
-      this.control = false
-    }
-
-    console.log(selected, selectedRows, changeRows);
-  },
-   getCheckboxProps: record => ({
+          console.log(selected, selectedRows, changeRows);
+        },
+        getCheckboxProps: record => ({
           props: {
             disabled: record.statusName === '注销', // 注销权证禁止选择
             name: record.statusName,
           },
         })
-}
+      }
     }
   },
   computed: {
@@ -453,8 +499,8 @@ export default {
     showFn (val) {
       this.newShow = val
     },
-    successQueryFn () {
-      this.queryCondition.pageNum = 1
+    successQueryFn (val) {
+      this.queryCondition.pageNum = val
       this.queryCondition.pageSize = 10
       this.query()
     },
@@ -470,7 +516,8 @@ export default {
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         pageNum: this.queryCondition.pageNum,     // 当前页
         pageSize: this.queryCondition.pageSize,    // 每页显示记录数
-        seatingPosition: this.queryCondition.seatingPosition // 坐落位置
+        seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
+        uploadAttachment: this.queryCondition.attachmentStatus
       }
       this.$api.ownership.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -479,6 +526,13 @@ export default {
             data.forEach((item, index) => {
               item.key = index
               item.lotNoEstateUnitCode = `${item.houseNo || '--'}/${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
+            })
+            data.forEach(item => {
+              if (Number(item.uploadAttachment) === 1) {
+                item.uploadAttachment = '已上传'
+              } else {
+                item.uploadAttachment = '未上传'
+              }
             })
             this.tableData = data
             this.count = res.data.data.count
@@ -495,6 +549,7 @@ export default {
     },
     // 点击查询按钮
     queryHandler () {
+      this.queryCondition.pageNum = 1
       this.query()
       this.warrantTotal()
     },
@@ -506,7 +561,8 @@ export default {
         obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : ''    // 权证号
+        warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : '',    // 权证号
+        uploadAttachment: this.queryCondition.attachmentStatus
       }
       this.$api.ownership.warrantTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -581,7 +637,8 @@ export default {
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        warrantNbr: this.queryCondition.warrantNbr    // 权证号
+        warrantNbr: this.queryCondition.warrantNbr,    // 权证号
+        uploadAttachment: this.queryCondition.attachmentStatus
       }
       let loadingName = this.SG_Loding('导出中...')
       this.$api.ownership.warrantExport(data).then(res => {
@@ -622,30 +679,55 @@ export default {
         this.$message.error(res.data.message)
       })
     },
-  // 权证批量删除
-  delBatch () {
-    let _this = this
-        this.$confirm({
-          title: '提示',
-          content: '确认要批量注销选中权证吗？',
-          onOk() {
-          let obj = {
-            warrantIdList: _this.idArr
-          }
-          _this.$api.ownership.warrantDeleteBatch(obj).then(res => {
-            if (Number(res.data.code) === 0) {
-              _this.$message.info('注销成功')
-              _this.query()
-            } else {
-              _this.$message.error(res.data.message)
+    // 权证批量删除
+    delBatch () {
+      let _this = this
+          this.$confirm({
+            title: '提示',
+            content: '确认要批量注销选中权证吗？',
+            onOk() {
+            let obj = {
+              warrantIdList: _this.idArr
             }
-            window.location.reload()
+            _this.$api.ownership.warrantDeleteBatch(obj).then(res => {
+              if (Number(res.data.code) === 0) {
+                _this.$message.info('注销成功')
+                _this.query()
+              } else {
+                _this.$message.error(res.data.message)
+              }
+              window.location.reload()
+            })
+            }
           })
-          }
-        })
-  }
+    },
+    // 列表设置Modal保存
+    handleModalOk () {
+      let arr = this.$refs['tableHeader'].checkedList
+      if (!arr.length) {
+        return this.$message.info('请至少选中一项!')
+      }
+      this.modalObj.status = false
+      let{ initColumns } = this.tableObj
+      this.checkedHeaderArr = arr
+      let columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
+      this.tableObj.scroll = { x: columns.length * 100 } // 防止较少列时出现滚动
+      this.tableObj.columns = columns
+    },
+    // 打开/关闭列表列头编辑Modal
+    handleModalStatus (status) {
+      this.modalObj.status = status
+      status && (this.key = new Date().getTime())
+    },
   },
   created () {
+    // 初始化Table列头
+    let{ columns } = this.tableObj
+    this.tableObj.initColumns = columns
+    // 默认不展示xx表头
+    this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
+    // 初始化被选中的列头数据
+    this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action')
   },
   watch: {
     '$route' () {
@@ -661,6 +743,13 @@ export default {
     this.platformDictFn()
     // 权属类型
     this.platformDict()
+    // 添加可以选择不同数量分页
+    this.$nextTick(function () {
+      let arr = this.$refs.footerPagination.pageLists
+      if (!arr.includes(200)) {
+        this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100]
+      }
+    })
   }
 }
 </script>

@@ -17,6 +17,7 @@
         <component
           :is="currentTabComponent"
           :detailInfo="detailInfo"
+          :organId="organId"
           @close="closeDetailMap"
         ></component>
       </div>
@@ -62,6 +63,8 @@ export default {
   },
   data() {
     return {
+      // 右边所属机构 id
+      organId:'',
       listPageObj:{
         current:1
       },
@@ -241,6 +244,9 @@ export default {
     // 搜索地图全量
     handleSearchMap(data = {}) {
       console.log("拿到查询参数=>", data)
+      if (data){
+        this.organId  = data.organId
+      }
       this.restMap()
       this.loading = true
       this.$api.land

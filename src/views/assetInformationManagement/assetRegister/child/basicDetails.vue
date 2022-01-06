@@ -13,18 +13,48 @@
           {{item.text}}：{{Detail[item.value] || '--'}}
         </a-col>
       </a-row>
+      <div style="display: flex;margin-top: 10px;">
+        <SG-UploadFile
+          :baseImgURL="configBase.hostImg1"
+          @update="(value)=>{
+            handleChangeFile(value,1)
+          }"
+          @delete="(value)=>{
+            handleChangeFile(value,0)
+          }"
+          v-model="filepaths"
+          type="all"
+          :max="10"
+          :maxSize="20480"
+          :customDownload="
+            (value) => {
+              return customDownload(value, $api.ownership.downLoadAnnex);
+            }
+          "
+          :customUpload="
+            (value) => {
+              return customUpload(value, $api.ownership.uploadAnnex);
+            }
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import configBase from "@/config/config.base";
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 export default {
   components: {},
   props: {
     registerOrderId: [String, Number]
   },
+  mixins:[uploadAndDownLoadFIle],
   data () {
     return {
+      configBase,
+      filepaths:[],
       basicDetails: [
         { text: '登记单编号', value: 'registerOrderId' },
         { text: '登记单名称', value: 'registerOrderName' },
@@ -36,6 +66,7 @@ export default {
         { text: '备注', value: 'remark' }
       ],
       Detail: {},
+      timer: null
     }
   },
   computed: {
@@ -46,6 +77,35 @@ export default {
     this.editFn()
   },
   methods: {
+    /*
+    * type 0删除  1新增
+    * */
+    handleChangeFile(value,type){
+      let filesArr = []
+      if (type===0){
+        filesArr = this.filepaths.filter(ele=>ele.url !== value.url)
+      }else {
+        const newUrlArr = value.map(ele=>ele.url)
+        filesArr = [...this.filepaths.filter(ele=> !newUrlArr.includes(ele.url)),...value]
+      }
+      clearTimeout(this.timer)
+      this.timer = setTimeout(()=>{
+        let attachment = filesArr.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
+        const req = {
+          objectType:2,
+          objectId:this.Detail.registerOrderId,
+          attachment
+        }
+        this.$api.assets.updateAttachment(req).then(({data:{code,message,data}})=>{
+          if (code === '0'){
+            console.log('data',data)
+            this.$SG_Message.success('更新成功')
+          }else {
+            this.$SG_Message.error(message)
+          }
+        })
+      },0)
+    },
     editFn () {
       let obj = {
         registerOrderId: this.registerOrderId     // 资产登记单ID
@@ -54,6 +114,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.Detail = data
+          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
         } else {
           this.$message.error(res.data.message)
         }

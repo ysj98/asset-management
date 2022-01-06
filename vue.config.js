@@ -2,6 +2,7 @@ const os = require('os');
 const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const openInEditor = require('launch-editor-middleware');
 const isProd = process.env.NODE_ENV === 'production'
 // 获取本机ip
 const getIPAdress = () => {
@@ -21,7 +22,7 @@ const localhost = getIPAdress()
 console.log('IP', localhost)
 
 const target = 'http://192.168.1.7:8088'
-// const target = 'http://betanew.uhomecp.com/'
+// const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
   '/uhomecp-sso/',
@@ -36,7 +37,9 @@ const proxyURL = [
   '/datacachesvr-api-netty/',
   '/car-parking-api/',
   '/car-batch/',
-  '/equipment-openapi/'
+  '/equipment-openapi/',
+  '/scheme/',
+  '/group1/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接
@@ -86,7 +89,23 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
-    proxy: proxy.data,
+    setup (app) {
+      app.use('/__open-in-editor', openInEditor('intellij-idea-ultimate-edition'))
+    },
+    proxy: {
+      ...proxy.data,
+      // '/ams/': {
+      //   target: 'http://192.168.30.82:8081/',
+      //   changeOrigin: true,
+      //   cookieDomainRewrite: {
+      //     '*': localhost
+      //   },
+      //   withCredentials: true,
+      //   headers: {
+      //     Referer: target
+      //   }
+      // },
+    },
     host: localhost
   },
   css: {
@@ -125,7 +144,7 @@ module.exports = {
           uglifyOptions: {
             compress: {
               drop_debugger: true, // 去除debugger
-              drop_console: true // 去除console
+              // drop_console: true // 去除console
             }
           },
           sourceMap: false,

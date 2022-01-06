@@ -71,7 +71,7 @@
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
-    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk">
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
       <edit-table-header :key="key" ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="tableObj.initColumns"/>
     </SG-Modal>
   </div>

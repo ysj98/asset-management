@@ -531,7 +531,14 @@ export const win = {
    */
   openPortalMenu (tabUrl, tabTitle, operDescId) {
     if (this.isParent) {
-      window.parent.openPortalMenu(tabUrl, tabTitle, operDescId)
+      if ( window.parent.openPortalMenu) {
+        window.parent.openPortalMenu(tabUrl, tabTitle, operDescId)
+        return null
+      }
+      if ( window.parent.openNewPage) {
+        window.parent.openNewPage(tabUrl, tabTitle, operDescId)
+        return null
+      }
     } else {
       console.log('当前没有处于 Portal 中。')
     }
@@ -687,4 +694,49 @@ export function generateTableAreaByAssetTypeString({keyStr, assetTypeName, recor
   }else {
     return record[keyStr]
   }
+}
+
+
+export function handleDownloadFile({data,fileName}){
+  let blob = new Blob([data])
+  let a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = fileName
+  a.style.display = 'none'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+}
+
+export function generateAssetStringByCode({ record }) {
+  return store.state.ASSET_TYPE_OPTIONS.filter(
+      (ele) => String(ele.value) === String(record.assetType)
+  )[0].name;
+}
+
+export  function quickSort(arr, left = 0, right = arr.length - 1) {
+  if (left < right) {
+    const pivot = Math.floor((right + left) / 2);
+    const newPivot = partition(arr, pivot, left, right);
+    quickSort(arr, left, newPivot - 1);
+    quickSort(arr, newPivot + 1, right);
+  }
+
+  return arr;
+}
+
+function partition(arr, pivot, left, right) {
+  const pivotValue = arr[pivot];
+  let newPivot = left;
+
+  swap(arr, pivot, right);
+  for (let i = left; i < right; i++) {
+    if (arr[i] < pivotValue) {
+      swap(arr, i, newPivot);
+      newPivot += 1;
+    }
+  }
+  swap(arr, right, newPivot);
+
+  return newPivot;
 }

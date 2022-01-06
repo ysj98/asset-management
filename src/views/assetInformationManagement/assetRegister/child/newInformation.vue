@@ -85,6 +85,27 @@
                 />
             </a-form-item>
           </a-col>
+          <a-col class="playground-col" :span="24">
+            <a-form-item :colon="false" v-bind="formItemTextarea">
+              <label slot="label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
+              <div style="display: flex">
+                <SG-UploadFile
+                  :baseImgURL="configBase.hostImg1"
+                  v-model="filepaths"
+                  type="all"
+                  :max="10"
+                  :maxSize="20480"
+                  :customDownload="(value)=>{
+                  return customDownload(value,$api.ownership.downLoadAnnex)
+                }"
+                  :customUpload="(value)=>{
+                  return customUpload(value,$api.ownership.uploadAnnex)
+                }"
+                />
+              </div>
+            </a-form-item>
+
+          </a-col>
         </a-form>
       </a-row>
     </div>
@@ -92,6 +113,8 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import bridge from './center.js'
 const newEditSingleData = {
   registerOrderName: '',    // 资产名称
@@ -103,8 +126,11 @@ const newEditSingleData = {
 export default {
   components: {},
   props: {},
+  mixins:[uploadAndDownLoadFIle],
   data () {
     return {
+      configBase,
+      filepaths:[],
       saveValues: '',
       assetTypeData: [],     // 资产类型
       projectList: [],       // 资产项目列表
@@ -225,6 +251,12 @@ export default {
     // 资产类型监听
     assetTypeFn (val) {
       bridge.$emit('assetType', val, 'asset')
+    },
+    /*
+    * ref 调用
+    * */
+    getFilepaths(){
+      return this.filepaths
     },
     // 提交
     save () {

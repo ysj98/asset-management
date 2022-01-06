@@ -7,10 +7,10 @@
     <!--基本信息-->
     <base-info-part v-if="buildId" :buildId="buildId"/>
     <!--资产使用方向-->
-    <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId"/>
+    <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId" :organ-name="organName" />
     <!--其它信息-->
     <!-- 不知道干什么用的，也没调用接口 隐藏掉 -->
-    <other-info-part v-if="false" style="margin-bottom: 35px"/>
+    <other-info-part v-if="buildId" :buildId="buildId" :assetIds="assetIds" style="margin-bottom: 35px"/>
   </div>
 </template>
 
@@ -23,17 +23,19 @@
     components: { AssetDirectPart, BaseInfoPart, OtherInfoPart },
     data () {
       return {
+        organName:'',
         organId: '', // 组织机构id
-        buildId: '' // 房间id
+        buildId: '', // 房间id
+        assetIds: [] // 资产id
       }
     },
 
     methods: {},
 
     created () {
-      const { organId, buildId } = this.$route.query
+      const { organId, assetIds, buildId, organName } = this.$route.query
       Object.assign(this, {
-        organId, buildId
+        organId, assetIds, buildId, organName
       })
     }
   }
@@ -46,6 +48,10 @@
     /*抽离子组件的公共样式*/
     & /deep/ .title_div {
       margin-left: 40px;
+    }
+    & /deep/ .sg-FooterPagination {
+      margin-left: 40px;
+      width: calc(100% - 40px);
     }
   }
 </style>

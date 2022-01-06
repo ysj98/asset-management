@@ -123,6 +123,12 @@
             </a-col>
             <a-col :span="8">
               <div class="detail-item">
+                <div class="item-label">经营方式：</div>
+                <div class="item-content">{{blankInfo.modeOper || '-'}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
                 <div class="item-label">有无围墙：</div>
                 <div class="item-content">{{blankInfo.isEncloseWall || '-'}}</div>
               </div>
@@ -188,6 +194,7 @@ export default {
       landTypeOpt: [], // 土地类型
       landuseOpt: [], // 土地用途类型
       landusetypeOpt: [], // 土地用途分类
+      operationMode: [], // 经营方式
       organIdMain: '', // 所属机构 id
       organNameMain:'', // 所属机构
     };
@@ -199,7 +206,7 @@ export default {
   },
   methods: {
     async initOptions() {
-      return Promise.all([this.queryLandType(), this.queryLandUseList(), this.queryLandUseTypeList()])
+      return Promise.all([this.queryLandType(), this.queryLandUseList(), this.queryLandUseTypeList(), this.queryModeOperList()])
     },
     async init() {
       await this.blankApiDetail()
@@ -236,6 +243,11 @@ export default {
             (item) => item.value === data.landuse
           );
           data.landuseName = landuse ? landuse.label : "";
+
+          let modeOper = this.operationMode.find(
+            (item) => item.value === data.modeOper);
+          data.modeOper = modeOper ? modeOper.label : "" ;
+
           this.blankInfo.isEncloseWall = data.isEncloseWall === '1' ? '有围墙' : '无围墙';
           // 处理地址
           this.blankInfo.address = data.provinceName + data.cityName + data.regionName + data.address;
@@ -340,6 +352,27 @@ export default {
         }
       });
     },
+    // 取全部经营方式
+    queryModeOperList() {
+      let data = {
+        dictCode: "OCM_MODE_OPER",
+        dictFlag: "1",
+        groupId: this.organIdMain,
+        code: "OCM_MODE_OPER",
+        organId: this.organIdMain,
+      }
+      return this.$api.basics.organDict(data).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data
+          this.operationMode = data.map((item) => {
+            return {
+              value: item["value"],
+              label: item["name"],
+            }
+          })
+        }
+      })
+    }
   },
 };
 </script>

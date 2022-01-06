@@ -1,13 +1,16 @@
 <template>
   <a-select
     :mode="mode"
+    :maxTagCount="maxTagCount"
     v-model="valueCmp"
     :disabled="disabled"
     :placeholder="placeholder"
     :notFoundContent="notFoundContent"
     optionFilterProp="children"
     :options="$addTitle(options)"
-    @change="handleChange" />
+    @change="handleChange"
+    @select="handleSelect"
+  />
 </template>
 <script>
 import { utils } from "@/utils/utils";
@@ -47,10 +50,23 @@ export default {
     disabled:{
       default: false
     },
-    // 模式
+    // 模式 'default' | 'multiple' | 'tags' | 'combobox'
     mode: {
       type: String,
       default: ''
+    },
+    // 是否选中一个文字可以取消其它选中项,如选中 '' 将其余置空
+    isFilterAll: {
+      default: false
+    },
+    // 设置可以清空其它选项的值
+    filterAllValue: {
+      type: [String, Number],
+      default: ''
+    },
+    // 展示的行数
+    maxTagCount: {
+      type: Number,
     },
     // 字典编码
     menuCode: {
@@ -79,6 +95,15 @@ export default {
           this.getOptions()
         })
       }
+    },
+    // 防止存在异步赋值的情况
+    dictOptions: {
+      immediate: true,
+      handler: function () {
+        this.$nextTick(()=>{
+          this.getOptions()
+        })
+      }
     }
   },
   data: () => ({
@@ -96,11 +121,41 @@ export default {
   },
   methods: {
     handleChange (value) {
-      const obj = this.options.find(item=>item.value === value)
-      this.$emit('change',value,obj)
+      if (Array.isArray(value)) {
+        // const val = this.handleSelectAllTabExportAllOrSetAll(value)
+        // this.valueCmp = val
+        const obj = value.map( node =>  this.options.find(item=>item.value === node))
+        this.$nextTick(()=>{
+          this.$emit('change', value, obj)
+        })
+      } else {
+        const obj = this.options.find(item=>item.value === value)
+        this.$emit('change',value,obj)
+      }
+    },
+    handleSelect (v) {
+      console.log('1')
+      // 仅多选可开启
+      if (this.isFilterAll && this.mode === 'multiple') {
+        this.handleSelectAllTabExportAllOrSetAll(v)
+      }
+    },
+    handleSelectAllTabExportAllOrSetAll (v) {
+      this.$nextTick(()=>{
+      let list = this.valueCmp || []
+      if (v === this.filterAllValue) {
+        list = [v]
+      } else {
+        list = list.filter(item=>item !== this.filterAllValue)
+        const dictLength = this.options.filter(item=>item.value !== this.filterAllValue).length
+        if(list.length>=1 && list.length === dictLength){
+          list = [this.filterAllValue]
+        }
+      }
+      this.valueCmp = list
+      })
     },
     async getOptions(){
-
       this.options = utils.deepClone(this.dictOptions || [])
       if (!this.menuCode) {
         return
