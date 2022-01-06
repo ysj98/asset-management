@@ -90,6 +90,7 @@
               <label slot="label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
               <div style="display: flex">
                 <SG-UploadFile
+                  :baseImgURL="configBase.hostImg1"
                   v-model="filepaths"
                   type="all"
                   :max="10"
@@ -112,6 +113,7 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import bridge from './center.js'
 const newEditSingleData = {
@@ -127,6 +129,7 @@ export default {
   mixins:[uploadAndDownLoadFIle],
   data () {
     return {
+      configBase,
       filepaths:[],
       saveValues: '',
       assetTypeData: [],     // 资产类型

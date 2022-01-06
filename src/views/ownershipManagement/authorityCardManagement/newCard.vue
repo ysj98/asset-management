@@ -129,6 +129,7 @@
             <a-form-item v-bind="formItemTextarea" :colon="false">
               <label slot="label">上传附件：</label>
               <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
                 :customUpload="customUpload"
                 :customDownload="customDownload"
                 v-model="newCardData.files"
@@ -217,6 +218,7 @@
 
 <script>
 // import Cephalosome from '@/components/Cephalosome'
+import configBase from "@/config/config.base";
 import moment from 'moment'
 import {debounce, utils} from '@/utils/utils'
 import {accessCard, titleDeed, newCardData, columns, mortgageInformation, landDeed} from './beat'
@@ -236,6 +238,7 @@ export default {
   mixins: [warantAnnex],
   data () {
     return {
+      configBase,
       newData: '',
       setType: '',
       titleDeed: utils.deepClone(titleDeed),

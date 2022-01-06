@@ -26,6 +26,7 @@
           <span style="margin-right: 10px;">附件：</span>
           <div style="display: flex">
             <SG-UploadFile
+              :baseImgURL="configBase.hostImg1"
               v-model="filepaths"
               :max="10"
               :show="true"
@@ -69,6 +70,7 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import selectTab from '../../common/selectTab'
 import basic from './child/basic'
@@ -82,6 +84,7 @@ export default {
   mixins: [uploadAndDownLoadFIle],
   data () {
     return {
+      configBase,
       filepaths:[],
       organId: '',
       record: '',

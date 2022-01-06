@@ -15,6 +15,7 @@
       </a-row>
       <div style="display: flex;margin-top: 10px;">
         <SG-UploadFile
+          :baseImgURL="configBase.hostImg1"
           @update="(value)=>{
             handleChangeFile(value,1)
           }"
@@ -42,6 +43,7 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 export default {
   components: {},
@@ -51,6 +53,7 @@ export default {
   mixins:[uploadAndDownLoadFIle],
   data () {
     return {
+      configBase,
       filepaths:[],
       basicDetails: [
         { text: '登记单编号', value: 'registerOrderId' },

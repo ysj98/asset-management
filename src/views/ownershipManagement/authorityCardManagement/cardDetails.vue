@@ -29,6 +29,7 @@
               </div>
               <div class="umImg">
                 <SG-UploadFile
+                  :baseImgURL="configBase.hostImg1"
                   :customDownload="customDownload"
                   v-model="newFiles"
                   type="all"
@@ -69,6 +70,7 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import {utils} from '@/utils/utils'
 import {columns, mortgageInformation} from './beat'
 import warantAnnex from './warrantAnnex'
@@ -143,6 +145,7 @@ export default {
   mixins: [warantAnnex],
   data () {
     return {
+      configBase,
       conditionalJudgment,
       basicDate: [],
       titleDeed,
@@ -289,5 +292,8 @@ export default {
       margin-bottom: 70px;
     }
   }
+}
+::v-deep .sg-uploadFile.show>.preview {
+  overflow: auto;
 }
 </style>
