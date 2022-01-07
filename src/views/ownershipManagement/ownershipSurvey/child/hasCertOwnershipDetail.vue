@@ -115,7 +115,7 @@ let columns = [
     width: "120px"
   },
   {
-    title: "备注",
+    title: "权属备注",
     dataIndex: "remark",
     scopedSlots: { customRender: "remark" },
     width: "150px"
@@ -240,7 +240,7 @@ export default {
   border: 1px solid rgba(238, 242, 245, 1);
   border-top: none;
   min-height: 140px;
-  padding-bottom: 50px;
+  padding-bottom: 80px;
 }
 .noTipStyle {
   padding: 20px 0;

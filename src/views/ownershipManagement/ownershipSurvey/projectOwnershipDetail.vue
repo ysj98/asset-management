@@ -128,12 +128,7 @@ export default {
     },
     // 监听输入改变
     handleChange (o) {
-      let {assetObjectId, settingMethod} = o
-      // console.log('你好世界1=>', o, this.changeData)
-      if (['2', '3'].includes(String(settingMethod))) {
-        delete this.changeData[assetObjectId]
-        return
-      }
+      let {assetObjectId} = o
       this.changeData[String(assetObjectId)] = {...o}
     },
     handleSave () {

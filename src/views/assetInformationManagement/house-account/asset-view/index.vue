@@ -105,6 +105,14 @@
               placeholder="权属用途"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="supportMaterial"
+              style="width: 100%"
+              :options="$addTitle(supportMaterialOpt)"
+              placeholder="权属用途"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -152,11 +160,18 @@
   import NoDataTip from 'src/components/noDataTips'
   import {querySourceType} from "@/views/common/commonQueryApi";
   const judgment = [undefined, null, '']
+  const supportMaterialOpt = [
+    { label: "全部证件情况", value: "" },
+    { label: "有证件材料", value: 1 },
+    { label: "无证件材料", value: 0 },
+  ]
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
+        supportMaterialOpt,
+        supportMaterial: '',
         sourceModes:[],  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
@@ -332,7 +347,7 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId,
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
           useType,sourceModes, address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
@@ -342,6 +357,7 @@
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           ownershipUse,
+          supportMaterial,
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),

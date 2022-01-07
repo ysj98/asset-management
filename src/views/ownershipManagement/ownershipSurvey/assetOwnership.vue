@@ -136,6 +136,17 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
+            <!-- 证件情况 -->
+            <a-select
+              showSearch
+              placeholder="请选择"
+              v-model="queryCondition.supportMaterial"
+              :style="allWidth"
+              :options="$addTitle(supportMaterialOpt)"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
             <a-input
               :maxLength="30"
               v-model="queryCondition.name"
@@ -220,7 +231,8 @@ const queryCondition = {
   statuss: [''],           // 资产状态(多选)
   name: "",                // 资产名称/权证号
   pageNum: 1,
-  pageSize: 10
+  pageSize: 10,
+  supportMaterial: ''
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
 const ownershipStatussOpt = [
@@ -243,6 +255,11 @@ const statussOpt = [
   { label: "已取消", value: "6" },
   { label: "入库中", value: "7" }
 ];
+const supportMaterialOpt = [
+  { label: "全部证件情况", value: "" },
+  { label: "有证件材料", value: 1 },
+  { label: "无证件材料", value: 0 },
+]
 let columns = [
   {
     title: "资产名称",
@@ -345,6 +362,7 @@ export default {
       kindOfRightsOpt,
       shipTypeOpt,
       statussOpt,
+      supportMaterialOpt,
       table: {
         columns,
         dataSource: [],
