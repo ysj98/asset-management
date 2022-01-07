@@ -359,7 +359,7 @@ export default {
         (ele) => !["", undefined, null].includes(ele)
       );
       return {
-        projectId: this.queryCondition.projectId,
+        projectIdList: this.queryCondition.projectId,
         organId: Number(this.queryCondition.organId),
         assetTypes,
         approvalStatusList,
