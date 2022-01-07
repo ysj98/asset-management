@@ -6,7 +6,7 @@
     <div>
       <span class="title-left">项目名称/物业名称</span>
       <span class="content-right">
-        {{ `${assetLandInfo.projectName}${assetLandInfo.projectName}${assetLandInfo.projectName}` }}
+        {{ `${assetLandInfo.projectName}` }}
       </span>
     </div>
     <div>
