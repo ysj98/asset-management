@@ -119,6 +119,8 @@
             { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
             { title: '宗地号', dataIndex: 'addressNo', width: 150 },
             { title: '建筑年代', dataIndex: 'years' },
+            { title: '实际产权单位', dataIndex: 'propertyRightUnit' },
+            { title: '房产证保管单位', dataIndex: 'safekeepUnit' },
             { title: '楼栋建筑面积(㎡)', dataIndex: 'buildBuiltArea' },
             { title: '房屋建筑面积(㎡)', dataIndex: 'area' },
             { title: '楼高', dataIndex: 'buildHeight' },
