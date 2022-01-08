@@ -153,6 +153,12 @@
               placeholder="输入资产名称/权利号"
               :style="allStyle"
             />
+            <a-input
+              :maxLength="30"
+              v-model="queryCondition.ownershipRemark"
+              placeholder="权属备注"
+              :style="allStyle"
+            />
           </div>
           <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
@@ -230,6 +236,7 @@ const queryCondition = {
   shipType: '',            // 权属类型
   statuss: [''],           // 资产状态(多选)
   name: "",                // 资产名称/权证号
+  ownershipRemark: "",
   pageNum: 1,
   pageSize: 10,
   supportMaterial: ''
@@ -330,6 +337,11 @@ let columns = [
   {
     title: "资产状态",
     dataIndex: "statusName",
+    width: 100
+  },
+  {
+    title: "权属备注",
+    dataIndex: "ownershipRemark",
     width: 100
   },
   {
@@ -564,6 +576,7 @@ export default {
       this.queryCondition.kindOfRights = [''];
       this.queryCondition.statuss = [''];
       this.queryCondition.name = "";
+      this.queryCondition.ownershipRemark = ""
       this.queryCondition.assetTypes = ['']
       this.queryCondition.objectTypes = ['']
       this.queryCondition.shipType = "";
