@@ -38,7 +38,7 @@
         </div>
       </template>
       <template slot="supportMaterial" slot-scope="text, record">
-        <span v-if="type === 'detail'">{{ record.supportMaterial }}</span>
+        <span v-if="type === 'detail'">{{ record.supportMaterial === 1 ? '是' : '否' }}</span>
         <div v-else>
           <a-select
             :style="{ width: '100%' }"
@@ -52,7 +52,7 @@
       </template>
       <template slot="attachment" slot-scope="text, record">
         <span v-if="type === 'detail'">
-          <a>查看附件</a>
+          <a @click="openPop(record)">查看附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
         </span>
         <div v-else>
           <a @click="openPop(record)">编辑附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
@@ -83,6 +83,7 @@
         <SG-UploadFile
           :baseImgURL="configBase.hostImg1"
           v-model="currentRowAttachmentList"
+          :show="!isSet"
           type="all"
           :max="10"
           :maxSize="20480"
@@ -221,6 +222,11 @@ export default {
         totalCount: 0,
       },
     };
+  },
+  computed:{
+    isSet(){
+      return this.$route.query.type === 'set'
+    }
   },
   mounted() {
     this.assetTypes = this.$route.query.assetTypes
