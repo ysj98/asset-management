@@ -225,7 +225,7 @@
             { title: '房产证截止时间', dataIndex: 'houseEndDate', width: 150 },
             { title: '房产证使用年限', dataIndex: 'houseProveLife', width: 150 },
             // TODO
-            { title: '是否有消防验收材料', dataIndex: 'XX2', width: 150 },
+            // { title: '是否有消防验收材料', dataIndex: 'XX2', width: 150 },
             { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
 
             { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
