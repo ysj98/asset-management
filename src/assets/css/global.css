@@ -7,3 +7,6 @@
 .sg-search-container{
   position: relative;
 }
+.sg-uploadFile>.preview {
+  overflow: auto;
+}
