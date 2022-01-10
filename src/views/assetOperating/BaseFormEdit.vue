@@ -1,6 +1,6 @@
 <template>
   <div class="base-form-edit">
-    <div style="width: 70%">
+    <div style="width: 100%">
       <a-form-model
         ref="ruleForm"
         :model="formData"
@@ -9,7 +9,12 @@
       >
         <a-row>
           <a-col :span="8">
-            <a-form-model-item label="转运营单名称" prop="title">
+            <a-form-model-item
+              :style="formItemStyle"
+              label="转运营单名称"
+              prop="title"
+              v-bind="formItemLayout"
+            >
               <a-input
                 v-model="formData.title"
                 placeholer="请输入变动单名称"
@@ -18,12 +23,21 @@
           </a-col>
 
           <a-col :span="8">
-            <a-form-model-item label="所属机构">
+            <a-form-model-item
+              :style="formItemStyle"
+              label="所属机构"
+              v-bind="formItemLayout"
+            >
               <span>{{ this.organInfo.organName }}</span>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item label="资产项目" prop="projectId">
+            <a-form-model-item
+              :style="formItemStyle"
+              label="资产项目"
+              prop="projectId"
+              v-bind="formItemLayout"
+            >
               <a-select
                 optionFilterProp="children"
                 showSearch
@@ -36,7 +50,12 @@
           </a-col>
         </a-row>
         <a-row style="margin-top: 20px">
-          <a-form-model-item label="资产类型" prop="assetType">
+          <a-form-model-item
+            :style="formItemStyle"
+            label="资产类型"
+            prop="assetType"
+            v-bind="formItemLayoutTwo"
+          >
             <a-select
               style="width: 200px"
               v-model="formData.assetType"
@@ -45,7 +64,11 @@
           </a-form-model-item>
         </a-row>
         <a-row style="margin-top: 20px">
-          <a-form-model-item label="备注">
+          <a-form-model-item
+            :style="formItemStyle"
+            label="备注"
+            v-bind="formItemLayoutTwo"
+          >
             <a-textarea
               style="width: 600px"
               v-model="formData.remark"
@@ -54,7 +77,11 @@
           </a-form-model-item>
         </a-row>
         <a-row style="display: flex; margin-top: 20px">
-          <a-form-model-item label="附件">
+          <a-form-model-item
+            :style="formItemStyle"
+            label="附件"
+            v-bind="formItemLayoutTwo"
+          >
             <SG-UploadFile
               type="all"
               v-model="attachmentList"
@@ -100,6 +127,29 @@ export default {
   mixins: [uploadAndDownLoadFIle],
   data() {
     return {
+      formItemStyle: {
+        width: "100%",
+      },
+      formItemLayoutTwo: {
+        labelCol: {
+          xs: { span: 8 },
+          sm: { span: 2 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 },
+        },
+      },
+      formItemLayout: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 6 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 },
+        },
+      },
       rules: {
         title: [
           {
