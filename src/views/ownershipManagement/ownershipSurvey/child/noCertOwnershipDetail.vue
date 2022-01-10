@@ -52,10 +52,10 @@
       </template>
       <template slot="attachment" slot-scope="text, record">
         <span v-if="type === 'detail'">
-          <a @click="openPop(record)">查看附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
+          <a @click="openPop(record,0)">查看附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
         </span>
         <div v-else>
-          <a @click="openPop(record)">编辑附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
+          <a @click="openPop(record,1)">编辑附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
         </div>
       </template>
     </a-table>
@@ -78,6 +78,7 @@
       :maskClosable="false"
       @ok="attachmentModalSubmit"
       @cancel="()=>{attachmentModalFlag=false}"
+      :show="!modalEditFlag"
     >
       <div>
         <SG-UploadFile
@@ -99,6 +100,10 @@
           "
         />
       </div>
+      <template #footer>
+        <SG-Button v-if="modalEditFlag" @click="attachmentModalSubmit" type="primary">提交</SG-Button>
+        <SG-Button @click="()=>{attachmentModalFlag=false}">返回</SG-Button>
+      </template>
     </SG-Modal>
   </div>
 </template>
@@ -207,6 +212,7 @@ export default {
   mixins:[uploadAndDownLoadFIle],
   data() {
     return {
+      modalEditFlag: false,
       currentRowAttachmentList:[],
       configBase,
       currentRow:{},
@@ -237,7 +243,11 @@ export default {
   },
   methods: {
     // 打开附件弹窗
-    openPop(row){
+    /*
+    * type 0查看 1编辑
+    * */
+    openPop(row,type){
+      this.modalEditFlag = Boolean(type)
       this.currentRow = row
       this.attachmentModalFlag = true
       this.currentRowAttachmentList = this.currentRow.attachmentRespDtos.map(ele=>{
