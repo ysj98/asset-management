@@ -220,7 +220,7 @@
             { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
             { title: '权属人', dataIndex: 'obligeeName', width: 100 },
             { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
-            { title: '房产证保管单位', dataIndex: 'safekeepUnit', width: 150 },
+            { title: '实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
             { title: '房产证起始时间', dataIndex: 'houseStartDate', width: 150 },
             { title: '房产证截止时间', dataIndex: 'houseEndDate', width: 150 },
             { title: '房产证使用年限', dataIndex: 'houseProveLife', width: 150 },

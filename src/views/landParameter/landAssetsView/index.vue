@@ -206,7 +206,7 @@ const columnsData = [
   { title: '土地类型', dataIndex: 'landType', width: 150 },
   { title: '土地用途', dataIndex: 'landuse', width: 150 },
   { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
-  { title: '房产证保管单位', dataIndex: 'safekeepUnit', width: 150 },
+  { title: '实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
   { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150 },
   { title: '容积率', dataIndex: 'landRate', width: 150 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 150 },
