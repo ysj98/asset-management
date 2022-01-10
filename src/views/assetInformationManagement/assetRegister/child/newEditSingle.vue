@@ -163,7 +163,6 @@ export default {
           [ASSET_TYPE_LIST]: basicData,
           attachment:filepaths.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
         }
-        debugger
         // 新增
         let loadingName = this.SG_Loding('保存中...')
         this.$api.assets.saveRegisterOrder(obj).then(res => {

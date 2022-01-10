@@ -37,6 +37,27 @@
           />
         </div>
       </template>
+      <template slot="supportMaterial" slot-scope="text, record">
+        <span v-if="type === 'detail'">{{ record.supportMaterial === 1 ? '是' : '否' }}</span>
+        <div v-else>
+          <a-select
+            :style="{ width: '100%' }"
+            @change="watchSupportMaterialChange($event, record)"
+            optionFilterProp="children"
+            :options="$addTitle(supportMaterialOptions)"
+            :allowClear="false"
+            v-model="record.supportMaterial"
+          />
+        </div>
+      </template>
+      <template slot="attachment" slot-scope="text, record">
+        <span v-if="type === 'detail'">
+          <a @click="openPop(record)">查看附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
+        </span>
+        <div v-else>
+          <a @click="openPop(record)">编辑附件 {{record.attachmentRespDtos ? record.attachmentRespDtos.length : 0}}</a>
+        </div>
+      </template>
     </a-table>
     <no-data-tips
       class="noTipStyle"
@@ -51,9 +72,39 @@
       @change="handleChange"
       :noPageTools="true"
     />
+    <SG-Modal
+      title="附件"
+      v-model="attachmentModalFlag"
+      :maskClosable="false"
+      @ok="attachmentModalSubmit"
+      @cancel="()=>{attachmentModalFlag=false}"
+    >
+      <div>
+        <SG-UploadFile
+          :baseImgURL="configBase.hostImg1"
+          v-model="currentRowAttachmentList"
+          :show="!isSet"
+          type="all"
+          :max="10"
+          :maxSize="20480"
+          :customDownload="
+            (value) => {
+              return  customDownload(value, $api.ownership.downLoadAnnex);
+            }
+          "
+          :customUpload="
+            (value) => {
+              return customUpload(value, $api.ownership.uploadAnnex);
+            }
+          "
+        />
+      </div>
+    </SG-Modal>
   </div>
 </template>
  <script>
+import configBase from "@/config/config.base";
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import noDataTips from "@/components/noDataTips";
 let getUuid = ((uuid = 1) => () => ++uuid)();
 let queryCondition = {
@@ -65,6 +116,10 @@ let seletOpt = [
   { label: "办理新证", value: 1 },
   { label: "不具备办理条件", value: 2 },
 ];
+let supportMaterialOptions = [
+  { label: "是", value: 1 },
+  { label: "否", value: 0 },
+]
 // 表格数据
 let columns = [
   {
@@ -109,9 +164,21 @@ let columns = [
     width: "150px",
   },
   {
-    title: "备注",
+    title: "权属备注",
     dataIndex: "remark",
     scopedSlots: { customRender: "remark" },
+    width: "150px",
+  },
+  {
+    title: "是否有证明材料",
+    dataIndex: "supportMaterial",
+    scopedSlots: { customRender: "supportMaterial" },
+    width: "150px",
+  },
+  {
+    title: "附件",
+    dataIndex: "attachment",
+    scopedSlots: { customRender: "attachment" },
     width: "150px",
   },
 ];
@@ -137,10 +204,16 @@ export default {
     //   default: () => []
     // }
   },
+  mixins:[uploadAndDownLoadFIle],
   data() {
     return {
+      currentRowAttachmentList:[],
+      configBase,
+      currentRow:{},
+      attachmentModalFlag:false,
       assetTypes: [],
       seletOpt,
+      supportMaterialOptions,
       queryCondition: { ...queryCondition },
       table: {
         columns,
@@ -150,6 +223,11 @@ export default {
       },
     };
   },
+  computed:{
+    isSet(){
+      return this.$route.query.type === 'set'
+    }
+  },
   mounted() {
     this.assetTypes = this.$route.query.assetTypes
     if (this.$route.query.type === 'set'){
@@ -158,6 +236,31 @@ export default {
     this.query();
   },
   methods: {
+    // 打开附件弹窗
+    openPop(row){
+      this.currentRow = row
+      this.attachmentModalFlag = true
+      this.currentRowAttachmentList = this.currentRow.attachmentRespDtos.map(ele=>{
+        return {
+          ...ele,
+          name:ele.newAttachmentName,
+          url: ele.attachmentPath
+        }
+      })
+    },
+    attachmentModalSubmit(){
+      this.currentRow.attachmentRespDtos = this.currentRowAttachmentList.map(ele=>{
+        return {
+          ...ele,
+          objectId:this.currentRow.assetHouseId,
+          newAttachmentName: ele.name,
+          attachmentPath: ele.url,
+          oldAttachmentName: ele.name
+        }
+      })
+      this.watchAttachmentRespDtosChange(this.currentRow.attachmentRespDtos,this.currentRow)
+      this.attachmentModalFlag = false
+    },
     query() {
       let data = {
         ...this.queryCondition,
@@ -173,13 +276,14 @@ export default {
             this.table.dataSource = result.map((item) => {
               //  item.settingMethod = item.settingMethod || 2 // 默认不具备办理条件
               item.settingMethod = 2; // 默认不具备办理条件
+              item.supportMaterial = item.supportMaterial || '否'
               item.area = item.area || "--";
               item.assetTypeName = item.assetTypeName || "--";
               item.assetCode = item.assetCode || "--";
               item.location = item.location || "--";
+              console.log('this.type !== "set"',this.type !== "set")
               if (this.type !== "set") {
                 item.remark = item.remark || "--";
-                //  item.settingMethodName = item.settingMethodName || '不具备办理条件'
                 item.settingMethodName = "不具备办理条件";
               }
               return {
@@ -197,25 +301,52 @@ export default {
         }
       );
     },
-    // 监听选择框变化
+    // 监听选择框(权属办理设置)变化
     watchSettingMethodChange(e, row) {
       console.log("记录select=>", e, row);
       let o = {
+        supportMaterial: Number(e),
         settingMethod: Number(e),
         remark: row.remark || "",
         assetType: row.assetType,
         assetObjectId: row.assetHouseId,
+        attachmentReqDtos: row.attachmentRespDtos
+      };
+      this.$emit("change", o);
+    },
+    // 监听选择框(是否有证明材料)变化
+    watchSupportMaterialChange(e, row) {
+      let o = {
+        supportMaterial: Number(e),
+        settingMethod: Number(row.settingMethod),
+        remark: row.remark || "",
+        assetType: row.assetType,
+        assetObjectId: row.assetHouseId,
+        attachmentReqDtos: row.attachmentRespDtos
       };
       this.$emit("change", o);
     },
     // 监听输入框变化
     watchRemarkChange(e, row) {
-      console.log("记录input=>", e, row);
       let o = {
+        supportMaterial: Number(row.supportMaterial),
         settingMethod: Number(row.settingMethod),
         remark: row.remark || "",
         assetType: row.assetType,
         assetObjectId: row.assetHouseId,
+        attachmentReqDtos: row.attachmentRespDtos
+      };
+      this.$emit("change", o);
+    },
+    // 监听附件发生变化
+    watchAttachmentRespDtosChange(e, row) {
+      let o = {
+        supportMaterial: Number(row.supportMaterial),
+        settingMethod: Number(row.settingMethod),
+        remark: row.remark || "",
+        assetType: row.assetType,
+        assetObjectId: row.assetHouseId,
+        attachmentReqDtos: e
       };
       this.$emit("change", o);
     },
@@ -232,7 +363,7 @@ export default {
   border: 1px solid rgba(238, 242, 245, 1);
   border-top: none;
   min-height: 140px;
-  padding-bottom: 50px;
+  padding-bottom: 80px;
 }
 .noTipStyle {
   padding: 20px 0;

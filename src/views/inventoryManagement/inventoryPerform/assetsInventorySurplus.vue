@@ -73,7 +73,22 @@
             <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" label="上传图片：">
               <SG-UploadFile
+                type="all"
                 v-model="newCardData.files"
+                :maxSize="20480"
+                :customDownload="
+                  (value) => {
+                    return customDownload(
+                      value,
+                      $api.ownership.downLoadAnnex
+                    );
+                  }
+                "
+                :customUpload="
+                  (value) => {
+                    return customUpload(value, $api.ownership.uploadAnnex);
+                  }
+                "
               />
             </a-form-item>
           </a-col>
@@ -86,9 +101,11 @@
 </template>
 
 <script>
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 export default {
   components: {},
   props: {},
+  mixins:[uploadAndDownLoadFIle],
   data () {
     return {
       organId: '',
@@ -269,16 +286,9 @@ export default {
             this.newCardData.assetType = String(this.particularsData.assetType) || ''             // 资产类型
             this.newCardData.assetClassify = String(this.particularsData.objectType) || ''             // 资产分类
             this.checkResult = this.particularsData.checkResult
-            let files = []
             if (data.attachmentList && data.attachmentList.length > 0) {
-              data.attachmentList.forEach(item => {
-              files.push({
-                url: item.attachmentPath,
-                name: item.oldAttachmentName
-              })
-            })
-          }
-          this.newCardData.files = files
+              this.newCardData.files = data.attachmentList.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+            }
           }
           this.getListFn()      // 查询资产分类
         } else {

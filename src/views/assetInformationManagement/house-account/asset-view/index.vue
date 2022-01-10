@@ -105,6 +105,14 @@
               placeholder="权属用途"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="supportMaterial"
+              style="width: 100%"
+              :options="$addTitle(supportMaterialOpt)"
+              placeholder="权属用途"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -152,11 +160,18 @@
   import NoDataTip from 'src/components/noDataTips'
   import {querySourceType} from "@/views/common/commonQueryApi";
   const judgment = [undefined, null, '']
+  const supportMaterialOpt = [
+    { label: "全部证件情况", value: "" },
+    { label: "有证件材料", value: 1 },
+    { label: "无证件材料", value: 0 },
+  ]
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
+        supportMaterialOpt,
+        supportMaterial: '',
         sourceModes:[],  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
@@ -186,39 +201,49 @@
           scroll: { x: 3500 },
           columns: [
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 160 },
-            { title: '资产编码', dataIndex: 'assetCode' },
+            { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
-            { title: '宗地号', dataIndex: 'addressNo' },
-            { title: '建筑面积(㎡)', dataIndex: 'area' },
+            { title: '宗地号', dataIndex: 'addressNo', width: 150 },
+            { title: '建筑面积(㎡)', dataIndex: 'area', width: 150 },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
             { title: '地理位置', dataIndex: 'address', width: 300 },
             { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
-            { title: '单元', dataIndex: 'unitName' },
-            { title: '楼层', dataIndex: 'floor' },
-            { title: '层高', dataIndex: 'floorHeight' },
-            { title: '分类', dataIndex: 'objectTypeName' },
-            { title: '权属用途', dataIndex: 'ownershipUseName' },
-            { title: '用途', dataIndex: 'useType' },
-            { title: '资产形态', dataIndex: 'typeName' },
-            { title: '权属类型', dataIndex: 'kindOfRightName' },
-            { title: '权属状态', dataIndex: 'ownershipStatusName' },
-            { title: '权证号', dataIndex: 'warrantNbr' },
+            { title: '单元', dataIndex: 'unitName', width: 100 },
+            { title: '楼层', dataIndex: 'floor', width: 100 },
+            { title: '层高', dataIndex: 'floorHeight', width: 100 },
+            { title: '分类', dataIndex: 'objectTypeName', width: 100 },
+            { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
+            { title: '用途', dataIndex: 'useType', width: 100 },
+            { title: '资产形态', dataIndex: 'typeName', width: 100 },
+            { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+            { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
+            { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+            { title: '权属人', dataIndex: 'obligeeName', width: 100 },
+            { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
+            { title: '实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
+            { title: '房产证起始时间', dataIndex: 'houseStartDate', width: 150 },
+            { title: '房产证截止时间', dataIndex: 'houseEndDate', width: 150 },
+            { title: '房产证使用年限', dataIndex: 'houseProveLife', width: 150 },
+            // TODO
+            // { title: '是否有消防验收材料', dataIndex: 'XX2', width: 150 },
+            { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
+
             { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
-            { title: '接管时间', dataIndex: 'startDate' },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea' },
-            { title: '闲置(㎡)', dataIndex: 'idleArea' },
-            { title: '占用(㎡)', dataIndex: 'occupationArea' },
-            { title: '其它(㎡)', dataIndex: 'otherArea' },
-            { title: '财务卡片编码', dataIndex: 'financialCode' },
-            { title: '资产原值(元)', dataIndex: 'originalValue' },
-            { title: '最新估值(元)', dataIndex: 'marketValue' },
-            { title: '资产状态', dataIndex: 'statusName' },
-            { title: '物业管理单位', dataIndex: 'organManagement' },
-            { title: '物业缴费期限', dataIndex: 'organPayDeadline' },
-            { title: '物业费', dataIndex: 'organFee' },
-            { title: '已租面积', dataIndex: 'rentedArea' },
-            { title: '未租面积', dataIndex: 'unRentedArea' },
+            { title: '接管时间', dataIndex: 'startDate', width: 150  },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150  },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100 },
+            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100 },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100 },
+            { title: '其它(㎡)', dataIndex: 'otherArea', width: 100 },
+            { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
+            { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
+            { title: '最新估值(元)', dataIndex: 'marketValue', width: 100 },
+            { title: '资产状态', dataIndex: 'statusName', width: 100 },
+            { title: '物业管理单位', dataIndex: 'organManagement', width: 150 },
+            { title: '物业缴费期限', dataIndex: 'organPayDeadline', width: 150 },
+            { title: '物业费', dataIndex: 'organFee', width: 100 },
+            { title: '已租面积', dataIndex: 'rentedArea', width: 100 },
+            { title: '未租面积', dataIndex: 'unRentedArea', width: 100 },
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -332,16 +357,18 @@
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId,
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
           useType,sourceModes, address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
+          assetTypes: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           ownershipUse,
+          supportMaterial,
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
@@ -421,6 +448,7 @@
         let form = type === 'exportHouseBtn' ? {
           assetHouseId: buildIdList.join(',')
         } : {
+          assetTypes: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
           province, city, region, assetName, status: status || null, address,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
