@@ -315,7 +315,7 @@ export default {
     watchSettingMethodChange(e, row) {
       console.log("记录select=>", e, row);
       let o = {
-        supportMaterial: Number(e),
+        supportMaterial: Number(row.supportMaterial),
         settingMethod: Number(e),
         remark: row.remark || "",
         assetType: row.assetType,

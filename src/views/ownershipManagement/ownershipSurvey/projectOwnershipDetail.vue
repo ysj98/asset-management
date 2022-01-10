@@ -128,6 +128,8 @@ export default {
     },
     // 监听输入改变
     handleChange (o) {
+      o.supportMaterial = o.supportMaterial || 0
+
       let {assetObjectId} = o
       this.changeData[String(assetObjectId)] = {...o}
     },
