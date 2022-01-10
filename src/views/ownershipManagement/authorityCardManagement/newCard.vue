@@ -58,6 +58,24 @@
               v-decorator="['kindOfRight',{ rules: [{required: true, message: '请选择权证类型'}], initialValue: newCardData.kindOfRight}]"/>
             </a-form-item>
           </a-col>
+          <a-col class="playground-col" :span="12">
+            <a-form-item v-bind="formItemLayout" :colon="false">
+              <label slot="label">实际产权单位：</label>
+               <a-input
+                :style="allWidth"
+                placeholder="请输入实际产权单位"
+                v-decorator="['propertyRightUnit', {rules: [{required: false}], initialValue: newCardData.propertyRightUnit}]"/>
+            </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="12">
+            <a-form-item v-bind="formItemLayout" :colon="false">
+              <label slot="label">实际保管单位：</label>
+              <a-input
+                :style="allWidth"
+                placeholder="请输入实际保管单位"
+                v-decorator="['safekeepUnit', {rules: [{required: false}], initialValue: newCardData.safekeepUnit}]"/>
+            </a-form-item>
+          </a-col>
           <!-- beat -->
           <!-- -----------------------------------------------------------21212------------------------------------------------------------->
           <!-- 基本输入框 -->
@@ -245,7 +263,7 @@ export default {
       accessCard: utils.deepClone(accessCard),
       landDeed: utils.deepClone(landDeed),
       warrantId: '',
-      typeJudgment: '',        // 权证类型判断
+      typeJudgment: '',        // 权证类型判断 1 不动产
       beat: [],
       mortgageInformation: [...mortgageInformation],  // 抵押信息
       columns: [...columns],
@@ -321,6 +339,8 @@ export default {
             warrantNbr: '',  // 权证号
             ownerType: undefined,      // 权属形式
             kindOfRight: undefined, // 权证类型
+            propertyRightUnit: '',  // 实际产权单位
+            safekeepUnit: '',  // 实际保管单位
             excursus: '', // 附记
             remark: ''  // 备注
           })
@@ -442,11 +462,13 @@ export default {
             })
           }
           let obj = {
-            warrantId: this.warrantId,                                                                          // 权证id
-            rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,         // 权利类型
-            warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,               // 权证号
-            ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                  // 权属形式
-            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,            // 权证类型
+            warrantId: this.warrantId,                                                                                // 权证id
+            rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,               // 权利类型
+            warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,                     // 权证号
+            ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                        // 权属形式
+            kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,                  // 权证类型
+            propertyRightUnit: conditionalJudgment.includes(values.propertyRightUnit) ? '' : values.propertyRightUnit,// 实际产权单位
+            safekeepUnit: conditionalJudgment.includes(values.safekeepUnit) ? '' : values.safekeepUnit,               // 实际保管单位
             lotNo: conditionalJudgment.includes(values.lotNo) ? '' : values.lotNo,                              // 丘地号(产权证所有)
             estateUnitCode: conditionalJudgment.includes(values.estateUnitCode) ? '' : values.estateUnitCode,   // 不动产单元号(产权证所有)
             seatingPosition: conditionalJudgment.includes(values.seatingPosition) ? '' : values.seatingPosition, // 坐落位置
@@ -459,6 +481,10 @@ export default {
             totalSuite: conditionalJudgment.includes(values.totalSuite) ? '' : values.totalSuite,                //  总套数(产权证所有)
             qualityOfRight: conditionalJudgment.includes(values.qualityOfRight) ? '' : values.qualityOfRight,    // 权利性质(产权证所有)
             useLimitDate: conditionalJudgment.includes(values.useLimitDate) ? '' : values.useLimitDate,          // 使用期限(产权证所有)
+            houseProveLife: conditionalJudgment.includes(values.houseProveLife) ? '' : values.houseProveLife,          // 房产证使用年限(产权证所有)
+            houseStartDate: conditionalJudgment.includes(values.houseStartDate) ? '' : `${values.houseStartDate.format('YYYY-MM-DD')}`,          // 房产证起始日期(产权证所有)
+            houseEndDate: conditionalJudgment.includes(values.houseEndDate) ? '' : `${values.houseEndDate.format('YYYY-MM-DD')}`,          // 房产证截止日期(产权证所有)
+
             rigisterDate: conditionalJudgment.includes(values.rigisterDate) ? '' : `${values.rigisterDate.format('YYYY-MM-DD')}`,                // 登记日期
             organId: this.organId,                                                 // 组织机构
             remark: conditionalJudgment.includes(values.remark) ? '' : values.remark,                            // 备注
@@ -763,6 +789,8 @@ export default {
               handoverDate: conditionalJudgment.includes(data.amsOwnershipWarrant.handoverDate) ? undefined : moment(data.amsOwnershipWarrant.handoverDate, 'YYYY-MM-DD'),
               structure: conditionalJudgment.includes(data.amsOwnershipWarrant.structure) ? undefined : String(data.amsOwnershipWarrant.structure),     // 建筑结构
               seatingPosition: data.amsOwnershipWarrant.seatingPosition,    // 坐落位置
+              propertyRightUnit: data.amsOwnershipWarrant.propertyRightUnit,    // 实际产权单位
+              safekeepUnit: data.amsOwnershipWarrant.safekeepUnit,    // 实际保管单位
             })
             if (this.typeJudgment === '1') {
               this.form.setFieldsValue({
@@ -773,7 +801,10 @@ export default {
                 totalSuite: data.amsOwnershipWarrant.totalSuite,
                 qualityOfRight: conditionalJudgment.includes(data.amsOwnershipWarrant.qualityOfRight) ? undefined : String(data.amsOwnershipWarrant.qualityOfRight),
                 useLimitDate: data.amsOwnershipWarrant.useLimitDate,
-                rightTypeName: data.amsOwnershipWarrant.rightTypeName
+                rightTypeName: data.amsOwnershipWarrant.rightTypeName,
+                houseProveLife: data.amsOwnershipWarrant.houseProveLife, // 房产证使用年限
+                houseStartDate: conditionalJudgment.includes(data.amsOwnershipWarrant.houseStartDate) ? undefined : moment(data.amsOwnershipWarrant.houseStartDate, 'YYYY-MM-DD'), // 房产证起始日期
+                houseEndDate: conditionalJudgment.includes(data.amsOwnershipWarrant.houseEndDate) ? undefined : moment(data.amsOwnershipWarrant.houseEndDate, 'YYYY-MM-DD'), // 房产证截止日期
               })
             } else if (this.typeJudgment === '2') {
               this.form.setFieldsValue({

@@ -306,6 +306,31 @@ export const titleDeed = [
     required: false
   },
   {
+    label: '房产证使用年限',
+    attrCode: 'houseProveLife',
+    formType: 'inputNumber',
+    attrValue: '',
+    min: 0,
+    max: 10000,
+    required: false
+  },
+  {
+    label: '房产证起始日期',
+    attrCode: 'houseStartDate',
+    formType: 'date',
+    attrValue: '',
+    max: 50,
+    required: false
+  },
+  {
+    label: '房产证截止日期',
+    attrCode: 'houseEndDate',
+    formType: 'date',
+    attrValue: '',
+    max: 50,
+    required: false
+  },
+  {
     label: '登记日期',
     attrCode: 'rigisterDate',
     formType: 'date',
@@ -431,7 +456,12 @@ export const newCardData = {
   warrantNbr: '',                  // 类型：String  必有字段  备注：权证号
   ownerType: undefined,            // 类型：Number  必有字段  备注：权属形式
   kindOfRight: undefined,          // 类型：Number  必有字段  备注：权证类型
+  propertyRightUnit: '',          // 类型：String  必有字段  备注：实际产权单位
+  safekeepUnit: '',                // 类型：String  必有字段  备注：实际保管单位
   lotNo: '',                       // 类型：String  必有字段  备注：丘地号(产权证所有)
+  houseProveLife: '',              // 类型：String  必有字段  备注：房产证使用年限(产权证所有)
+  houseStartDate: undefined,       // 类型：String  必有字段  备注：房产证起始日期(产权证所有)
+  houseEndDate: undefined,         // 类型：String  必有字段  备注：房产证截止日期(产权证所有)
   estateUnitCode: '',              // 类型：String  必有字段  备注：不动产单元号(产权证所有)
   seatingPosition: '',             // 类型：String  必有字段  备注：坐落位置
   landArea: '',                    // 类型：Number  必有字段  备注：土地面积(产权证所有)
@@ -525,4 +555,3 @@ export const mortgageInformation = [
     scopedSlots: { customRender: 'operation' }
   }
 ]
-
