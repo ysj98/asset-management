@@ -264,8 +264,8 @@ const statussOpt = [
 ];
 const supportMaterialOpt = [
   { label: "全部证件情况", value: "" },
-  { label: "有证件材料", value: 1 },
-  { label: "无证件材料", value: 0 },
+  { label: "有证明材料证件", value: 1 },
+  { label: "无证明材料证件", value: 0 },
 ]
 let columns = [
   {
