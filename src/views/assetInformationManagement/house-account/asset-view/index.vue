@@ -450,7 +450,8 @@
         } : {
           assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
-          province, city, region, assetName, status: status || null, address,
+          province, city, region, assetName,  address,
+          statusList: status.includes('all') ? [] : status,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
