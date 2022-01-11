@@ -227,7 +227,8 @@ export default {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)
         this.particularsData = data.amsOwnershipWarrant
-        console.log(this.particularsData)
+        this.particularsData['houseEndDate'] =this.particularsData['houseEndDate'].split('T')[0]
+        this.particularsData['houseStartDate'] =this.particularsData['houseStartDate'].split('T')[0]
         let files = []
         if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
             data.amsAttachmentList.forEach(item => {
