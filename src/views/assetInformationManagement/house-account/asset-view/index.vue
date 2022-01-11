@@ -363,7 +363,7 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          assetTypes: this.$store.state.ASSET_TYPE_CODE.HOUSE,
+          assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
@@ -448,7 +448,7 @@
         let form = type === 'exportHouseBtn' ? {
           assetHouseId: buildIdList.join(',')
         } : {
-          assetTypes: this.$store.state.ASSET_TYPE_CODE.HOUSE,
+          assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
           province, city, region, assetName, status: status || null, address,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
