@@ -112,7 +112,7 @@ export default {
             height: 150, // 高度
             colorDark: "#333333", //二维码颜色
             colorLight: "#ffffff", //二维码背景色
-            correctLevel : QRCode.CorrectLevel.H,
+            correctLevel : QRCode.CorrectLevel.Q,
           })
           const id = `code${index}`
           const divBlock = document.getElementById(id)
