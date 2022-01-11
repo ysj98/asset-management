@@ -344,7 +344,7 @@ export default {
         if (this.autoChaneIngFlag) {
           return null;
         }
-        const target = e.originalEvent.toElement;
+        const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
         if (target.getAttribute("id") === "leaflet-map") {
           this.mapInstance.closePopup(layer._popup_);
           layer._popup_ = null;
