@@ -19,14 +19,6 @@
           <a-icon type="gitlab" />
         </a-button>
       </a-tooltip>
-      <!-- 蓝湖高保真 -->
-      <a-tooltip placement="topLeft" >
-        <template slot="title">
-          <span>蓝湖高保真</span>
-        </template>
-        <a-button type="dashed" @click="openLanhu">
-          <a-icon type="snippets" />
-        </a-button>
       </a-tooltip>
       <!-- docs -->
       <a-tooltip placement="topLeft" >
@@ -43,14 +35,6 @@
         </template>
         <a-button type="dashed" @click="openUi">
           <a-icon type="snippets" />
-        </a-button>
-      </a-tooltip>
-      <a-tooltip placement="topLeft" >
-        <template slot="title">
-          <span>版本需求文档</span>
-        </template>
-        <a-button type="dashed" @click="Rpd">
-          <a-icon type="solution" />
         </a-button>
       </a-tooltip>
     </a-button-group>
@@ -87,12 +71,8 @@ export default {
     openAntDocs () {
       window.open('https://vue.ant.design/docs/vue/introduce-cn/')
     },
-    // open lanhu Ui
-    openLanhu () {
-      window.open('https://lanhuapp.com/web/#/item/project/board?pid=40bdae3a-630a-46bd-a38e-993a6b8ea422&teamId=d22c4265-5e0a-42cc-b87b-c861a865c661')
-    },
     openUi () {
-      window.open('http://sgui.rxshc.com/segi-ant/index.html#/comlist/sg-button?tdsourcetag=s_pctim_aiomsg')
+      window.open('http://sgui.rxshc.com/segi-ant/v1/index.html#/comlist/sg-button')
     },
     Rpd () {
       window.open('https://docs.qq.com/sheet/DQnVUTmFLcG9aS0Fv?tab=bj226v&_t=1604282931509&groupUin=NlD0v%25252FXQQk7tB6rSk%25252BkIpQ%25253D%25253D&ADUIN=916166346&ADSESSION=1604281281&ADTAG=CLIENT.QQ.5627_.0&ADPUBNO=27047')
@@ -107,7 +87,7 @@ export default {
 <style lang="scss" scoped>
 .menu-button-components {
   position: fixed;
-  left: -138px;
+  left: -46px;
   bottom: 0;
   z-index: 999;
   &:hover {
