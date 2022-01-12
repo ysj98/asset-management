@@ -124,12 +124,17 @@
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
-        {{text}}
+        <span :title="text">
+          {{text}}
+        </span>
       </template>
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
     </a-table>
+    <div style="height: 70px;">
+
+    </div>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
@@ -200,7 +205,7 @@
           dataSource: [],
           scroll: { x: 3500 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 160 },
+            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '宗地号', dataIndex: 'addressNo', width: 150 },
