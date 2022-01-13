@@ -140,6 +140,7 @@
               <a class="operation-btn" @click="deleteFn(record)">删除</a>
             </template>
           </a-table>
+          <div class="table-space-pagination"></div>
           <SG-FooterPagination
             v-if="!editable"
             :pageLength="paginator.pageLength"
