@@ -4,11 +4,11 @@
 <template>
   <div>
     <SG-SearchContainer background="white">
-      <div slot="btns">
+      <div slot="headBtns">
         <SG-Button icon="export" :loading="exportBtnLoading" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_INVENTORY_REPORT_EXPORT" @click="handleExport">导出</SG-Button>
         <SG-Button icon="plus" type="primary" @click="newInventoryReport" v-power="ASSET_MANAGEMENT.ASSET_CLEAR_NEW">新建盘点报告</SG-Button>
       </div>
-      <div slot="form">
+      <div slot="headRight">
         <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <segi-range-picker label="提交时间" style="margin-right: 10px;" :defaultValue="[moment(queryCondition.beginDate, 'YYYY-MM-DD'), moment(queryCondition.endDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>
         <a-select
