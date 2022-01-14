@@ -153,6 +153,7 @@ export default {
           }
         })
         let ASSET_TYPE_LIST = handleAssetTypeField(data.assetType,'list')
+        console.log(ASSET_TYPE_LIST, '存储数据==================')
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称

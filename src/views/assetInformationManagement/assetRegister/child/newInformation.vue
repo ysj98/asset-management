@@ -11,7 +11,7 @@
       <a-row class="playground-row">
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="8">
-            <a-form-item :colon="false" v-bind="formItemLayout">
+            <a-form-item :colon="false"  v-bind="formItemLayoutLong">
               <label slot="label">登记单名称：</label>
               <a-input placeholder="请输入登记单名称"
               :style="allWidth"
@@ -87,13 +87,32 @@
           </a-col>
           <a-col class="playground-col" :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
+              <label slot="label">图&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;片：</label>
+              <div style="display: flex">
+                <SG-UploadFile
+                  :baseImgURL="configBase.hostImg1"
+                  v-model="imgFiles"
+                  :max="5"
+                  :maxSize="20480"
+                  :customDownload="(value)=>{
+                  return customDownload(value,$api.ownership.downLoadAnnex)
+                }"
+                  :customUpload="(value)=>{
+                  return customUpload(value,$api.ownership.uploadAnnex)
+                }"
+                />
+              </div>
+            </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="24">
+            <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
               <div style="display: flex">
                 <SG-UploadFile
                   :baseImgURL="configBase.hostImg1"
                   v-model="filepaths"
-                  type="all"
-                  :max="10"
+                  type="file"
+                  :max="5"
                   :maxSize="20480"
                   :customDownload="(value)=>{
                   return customDownload(value,$api.ownership.downLoadAnnex)
@@ -130,7 +149,8 @@ export default {
   data () {
     return {
       configBase,
-      filepaths:[],
+      filepaths: [],
+      imgFiles: [],
       saveValues: '',
       assetTypeData: [],     // 资产类型
       projectList: [],       // 资产项目列表
@@ -154,7 +174,17 @@ export default {
           xs: { span: 24 },
           sm: { span: 16 }
         }
-      }
+      },
+      formItemLayoutLong: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 7 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 }
+        }
+      },
     }
   },
   computed: {
@@ -256,7 +286,7 @@ export default {
     * ref 调用
     * */
     getFilepaths(){
-      return this.filepaths
+      return [...this.imgFiles, ...this.filepaths]
     },
     // 提交
     save () {

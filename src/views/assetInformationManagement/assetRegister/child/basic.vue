@@ -156,7 +156,8 @@ export default {
       tableData: [],    // 表格内容
       columns: [],      // 表格表头
       assetType: '',    // 资产类型
-      projectId: ''
+      projectId: '',
+      assetManagementRight:[],// 经营权数组字典
     }
   },
   computed: {
@@ -172,8 +173,17 @@ export default {
   },
   mounted () {
     this.init()
+    this.getMangementRight()
   },
   methods: {
+    getMangementRight() {
+      this.$api.assets.platformDict({ code: "ASSET_MANAGEMENT_RIGHT" }).then(res =>{
+        if(res.data.code === '0'){
+          this.assetManagementRight = res.data.data
+          console.log(this.assetManagementRight,'this.assetManagementRight')
+        }
+      })
+    },
     tempFn(value){
       console.log('test')
       console.log(value)
@@ -913,7 +923,8 @@ export default {
         // 传 来源方式 对应的 枚举值
         let sourceModeObj = this.sourceOptions.find(ele => item.sourceModeName === ele.title)
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
-        item.kindOfRight = this.ownershipData[item.kindOfRightName]
+        item.kindOfRight = this.ownershipData[item.kindOfRightName],
+        item.managementRight = this.assetManagementRight.find(r => r.name === item.managementRightName).value || '',
         item.sourceMode = sourceModeObj ? Number(sourceModeObj.key) : ''
       },this)
       console.log(data, '-=-=-=')

@@ -13,7 +13,33 @@
           {{item.text}}：{{Detail[item.value] || '--'}}
         </a-col>
       </a-row>
-      <div style="display: flex;margin-top: 10px;">
+      <div style="display: flex;margin-top: 10px;" class="playground-row">
+        <label slot="label" style="padding-top: 5px;">图&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;片：</label>
+        <SG-UploadFile
+          :baseImgURL="configBase.hostImg1"
+          @update="(value)=>{
+            handleChangeFile(value,1,'img')
+          }"
+          @delete="(value)=>{
+            handleChangeFile(value,0,'img')
+          }"
+          v-model="imgFiles"
+          :max="5"
+          :maxSize="20480"
+          :customDownload="
+            (value) => {
+              return customDownload(value, $api.ownership.downLoadAnnex);
+            }
+          "
+          :customUpload="
+            (value) => {
+              return customUpload(value, $api.ownership.uploadAnnex);
+            }
+          "
+        />
+      </div>
+      <div style="display: flex;margin-top: 10px;" class="playground-row">
+        <label slot="label" style="padding-top: 5px;">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
         <SG-UploadFile
           :baseImgURL="configBase.hostImg1"
           @update="(value)=>{
@@ -23,8 +49,8 @@
             handleChangeFile(value,0)
           }"
           v-model="filepaths"
-          type="all"
-          :max="10"
+          type="file"
+          :max="5"
           :maxSize="20480"
           :customDownload="
             (value) => {
@@ -55,6 +81,7 @@ export default {
     return {
       configBase,
       filepaths:[],
+      imgFiles:[],
       basicDetails: [
         { text: '登记单编号', value: 'registerOrderId' },
         { text: '登记单名称', value: 'registerOrderName' },
@@ -80,17 +107,29 @@ export default {
     /*
     * type 0删除  1新增
     * */
-    handleChangeFile(value,type){
+    handleChangeFile(value,type,fileType){
       let filesArr = []
       if (type===0){
-        filesArr = this.filepaths.filter(ele=>ele.url !== value.url)
+        if(fileType === 'img'){
+          filesArr = this.imgFiles.filter(ele=>ele.url !== value.url)
+          filesArr = filesArr.concat(this.filepaths)
+        }else{
+          filesArr = this.filepaths.filter(ele=>ele.url !== value.url)
+          filesArr = filesArr.concat(this.imgFiles)
+        }
       }else {
         const newUrlArr = value.map(ele=>ele.url)
-        filesArr = [...this.filepaths.filter(ele=> !newUrlArr.includes(ele.url)),...value]
+        if(fileType === 'img'){
+          filesArr = [...this.imgFiles.filter(ele=> !newUrlArr.includes(ele.url)),...value]
+          filesArr = filesArr.concat(this.filepaths)
+        }else{
+          filesArr = [...this.filepaths.filter(ele=> !newUrlArr.includes(ele.url)),...value]
+          filesArr = filesArr.concat(this.imgFiles)
+        }
       }
       clearTimeout(this.timer)
       this.timer = setTimeout(()=>{
-        let attachment = filesArr.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
+        let attachment = filesArr.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name,attachmentSuffix: '.'+ele.name.split('.')[ele.name.split('.').length-1]}))
         const req = {
           objectType:2,
           objectId:this.Detail.registerOrderId,
@@ -114,7 +153,9 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.Detail = data
-          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+          // this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+          this.filepaths = data.otherAttachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+          this.imgFiles = data.imageAttachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
         } else {
           this.$message.error(res.data.message)
         }

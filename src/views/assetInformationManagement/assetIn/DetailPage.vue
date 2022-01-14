@@ -17,8 +17,32 @@
           </a-col>
         </a-row>
         <div style="margin-top: 8px">
-          <span style="color: #282D5B; float: left">附件:</span>
-          <SG-UploadFile show v-if="attachmentList.length" v-model="attachmentList"/>
+          <span style="color: #282D5B; float: left; padding-right: 10px;">图片:</span>
+          <div v-if="imageAttachment.length">
+            <SG-UploadFile show v-model="oldImgAttachment"/>
+            <SG-UploadFile 
+              v-model="newImgAttachment" 
+              :baseImgURL="configBase.hostImg1"
+              :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+              show />
+          </div>
+          <span v-else style="margin-left: 9px; color: #49505E">--</span>
+        </div>
+        <div style="margin-top: 8px">
+          <span style="color: #282D5B; float: left; padding-right: 10px;">附件:</span>
+          <div v-if="otherAttachment.length">
+            <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
+            <SG-UploadFile 
+              v-model="newOtherAttachment" 
+              :baseImgURL="configBase.hostImg1"
+              :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+              type="file"
+              show />
+          </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
       </div>
@@ -54,13 +78,17 @@
 <script>
   import FormFooter from '@/components/FormFooter'
   import {generateTableAreaByAssetTypeString} from "utils/utils";
+  import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+  import configBase from "@/config/config.base";
   export default {
     name: 'DetailPage',
     components: {FormFooter},
+    mixins:[uploadAndDownLoadFIle],
     data () {
       return {
         spinning: false,
         storeId: '', // 入库单Id
+        configBase,
         baseInfoKeys: [
           {title: '入库单名称', key: 'storeName'}, {title: '入库单编号', key: 'storeCode'}, {title: '状态', key: 'statusName'},
           {title: '所属机构', key: 'organName'}, {title: '资产项目', key: 'projectName'}, {title: '资产类型', key: 'assetTypeName'},
@@ -68,7 +96,12 @@
           {title: '创建日期', key: 'createDate'}, {title: '备注', key: 'remark', span: 24}
         ], // 基本信息字段
         advice: '', // 审核意见
-        attachmentList: [], // 附件
+        otherAttachment: [], // 附件
+        imageAttachment:[],
+        oldOtherAttachment: [],
+        newOtherAttachment: [],
+        oldImgAttachment: [],
+        newImgAttachment: [],
         infoData: {}, // 基本信息字段值
         submitBtnLoading: false, // 按钮loading
         isApprove: false, // 当前页面是否为审批操作
@@ -134,14 +167,36 @@
           this.spinning = false
           if (res && String(res.code) === '0') {
             let nameList = ['待审批', '已驳回', '已审批', '已取消']
-            const {attachmentList, assetRegisterId, status, ...others} = res.data
+            const {otherAttachment,attachmentList, imageAttachment, assetRegisterId, status, ...others} = res.data
             assetRegisterId && this.queryAssetByRegistId({assetRegisterId})
+            let arr1 = attachmentList.filter(item => item.attachmentSuffix === '.jpg' || item.attachmentSuffix === '.png' || item.attachmentSuffix === '.jpeg' || item.attachmentSuffix === '.bmp')
+            let arr2 = attachmentList.filter(item => item.attachmentSuffix !== '.jpg' && item.attachmentSuffix !== '.png' && item.attachmentSuffix !== '.jpeg' && item.attachmentSuffix !== '.bmp')
+            let img0 = arr1.filter(img => Number(img.fileSources) === 0)
+            let img1 = arr1.filter(img => Number(img.fileSources) === 1)
+            let file0 = arr2.filter(img => Number(img.fileSources) === 0)
+            let file1 = arr2.filter(img => Number(img.fileSources) === 1)
+            console.log(this.otherAttachment, this.imageAttachment, 'this.otherAttachment')
             return Object.assign(this, {
               assetRegisterId,
               infoData: { ...others, statusName: nameList[status] },
-              attachmentList: (attachmentList || []).map(m => {
-                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
-              })
+              otherAttachment: (arr2 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              imageAttachment: (arr1 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              oldImgAttachment: (img0 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              newImgAttachment: (img1 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources, attachmentId: m.attachmentId }
+              }),
+              oldOtherAttachment: (file0 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              newOtherAttachment: (file1 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources, attachmentId: m.attachmentId }
+              }),
             })
           }
           throw res.message || '查询详情出错'

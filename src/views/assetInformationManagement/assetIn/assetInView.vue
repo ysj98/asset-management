@@ -125,6 +125,14 @@ const columns = [
     dataIndex: 'projectName'
   },
   {
+    title: '权属人',
+    dataIndex: 'qse'
+  },
+  {
+    title: '有无经营权',
+    dataIndex: 'ywjyq'
+  },
+  {
     title: '入库单编号',
     dataIndex: 'storeCode'
   },

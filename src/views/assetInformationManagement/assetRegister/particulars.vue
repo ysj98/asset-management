@@ -13,6 +13,7 @@
           <a-col class="playground-col" :span="8">所属机构：{{particularsData.organName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产项目名称：{{particularsData.projectName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">有无经营权：{{particularsData.managementRightName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">状态：{{particularsData.approvalStatusName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建人：{{particularsData.createByName || '--'}}</a-col>
           <a-col class="playground-col" :span="8">创建时间：{{particularsData.createTime || '--'}}</a-col>
@@ -23,12 +24,28 @@
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         </a-row>
         <div style="display: flex;">
-          <span style="margin-right: 10px;">附件：</span>
+          <span style="margin-right: 10px;">图片：</span>
+          <div style="display: flex">
+            <SG-UploadFile
+              :baseImgURL="configBase.hostImg1"
+              v-model="imgFiles"
+              :max="5"
+              :show="true"
+              :customDownload="
+              (value) => {
+                return customDownload(value, $api.ownership.downLoadAnnex);
+              }
+            "
+            />
+          </div>
+        </div>
+        <div style="display: flex;">
+          <span style="margin-right: 10px;margin-top: 10px;">附件：</span>
           <div style="display: flex">
             <SG-UploadFile
               :baseImgURL="configBase.hostImg1"
               v-model="filepaths"
-              :max="10"
+              :max="5"
               :show="true"
               :customDownload="
               (value) => {
@@ -86,6 +103,7 @@ export default {
     return {
       configBase,
       filepaths:[],
+      imgFiles:[],
       organId: '',
       record: '',
       registerOrderId: '',
@@ -132,7 +150,8 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.particularsData = data
-          this.filepaths = data.attachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+          this.filepaths = data.otherAttachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+          this.imgFiles = data.imageAttachment.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
           let files = []
           if (data.attachment && data.attachment.length > 0) {
               data.attachment.forEach(item => {

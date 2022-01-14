@@ -2,7 +2,7 @@
 <template>
   <div class="project_manage">
     <!--搜索条件-->
-    <search-container v-model="fold" style="position: relative">
+    <search-container v-model="fold" style="position: relative;height:260px;">
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button
@@ -37,6 +37,12 @@
           </a-col>
           <a-col :span="6" style="text-align: left; width: 20%">
             <a-input placeholder="请输入资产项目名称" v-model="projectName"/>
+          </a-col>
+          
+        </a-row>
+        <a-row :gutter="8" style="margin-top: 14px">
+          <a-col :span="6" style="text-align: left; width: 20%">
+            <a-date-picker @change="onChange" placeholder="请选择创建日期" style="width: 100%;"/>
           </a-col>
           <a-col :span="6" style="text-align: left">
             <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
@@ -201,6 +207,9 @@
     },
 
     methods: {
+      onChange (val,dateString) {
+        console.log(val,dateString)
+      },
       // 处理是否选中仅当前机构
       changeChecked (e) {
         this.isCurrent = e.target.checked

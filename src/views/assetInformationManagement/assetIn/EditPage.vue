@@ -54,8 +54,40 @@
         </a-row>
         <a-row>
           <a-col :span="24">
+            <a-form-item label="图片" :label-col="{span: 2}" :wrapper-col="{span: 22}">
+              <!-- <SG-UploadFile  v-model="attachmentList"/> -->
+              <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
+                v-model="imgFiles"
+                :max="5"
+                :maxSize="20480"
+                :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+                :customUpload="(value)=>{
+                return customUpload(value,$api.ownership.uploadAnnex)
+              }"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24">
             <a-form-item label="附件" :label-col="{span: 2}" :wrapper-col="{span: 22}">
-              <SG-UploadFile type="all" v-model="attachmentList"/>
+              <!-- <SG-UploadFile type="file" v-model="attachmentList"/> -->
+              <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
+                v-model="attachmentList"
+                type="file"
+                :max="5"
+                :maxSize="20480"
+                :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+                :customUpload="(value)=>{
+                return customUpload(value,$api.ownership.uploadAnnex)
+              }"
+              />
             </a-form-item>
           </a-col>
         </a-row>
@@ -102,15 +134,21 @@
 </template>
 
 <script>
-import {generateTableAreaByAssetTypeString} from '@/utils/utils'
+  import {generateTableAreaByAssetTypeString} from '@/utils/utils'
+  import configBase from "@/config/config.base";
+  import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
   import FormFooter from '@/components/FormFooter'
   import SelectAsset from './components/SelectRegistAsset'
   import {queryProjectListByOrganId, filterOption, queryAssetTypeList} from 'src/views/common/commonQueryApi'
   export default {
     name: 'EditPage',
+    mixins:[uploadAndDownLoadFIle],
     components: {FormFooter, SelectAsset},
     data () {
       return {
+        configBase,
+        imgFiles:[],
+        filepaths:[],
         organId: '',
         labelCol: {span: 6},
         wrapperCol: {span: 18},
@@ -231,7 +269,7 @@ import {generateTableAreaByAssetTypeString} from '@/utils/utils'
         this.spinning = true
         this.$api.assets.queryAssetStoreDetail({storeId}).then(({data: res}) => {
           if (res && String(res.code) === '0') {
-            const {storeName, projectId, assetType, remark, organId, attachmentList, assetRegisterId, assetRegisterName} = res.data
+            const {storeName, projectId, assetType, remark, organId, otherAttachment, imageAttachment, assetRegisterId, assetRegisterName} = res.data
             this.queryProjectByOrganId(organId)
             let idArr = assetRegisterId ? assetRegisterId.split(',') : []
             let nameArr = assetRegisterName ? assetRegisterName.split(',') : []
@@ -242,9 +280,12 @@ import {generateTableAreaByAssetTypeString} from '@/utils/utils'
                   registerOrderName: nameArr[i], registerOrderId
                 }
               }),
-              attachmentList: (attachmentList || []).map(m => {
+              attachmentList: (otherAttachment || []).map(m => {
                 return { url: m.attachmentPath, name: m.oldAttachmentName }
-              })
+              }),
+              imgFiles: (imageAttachment || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName }
+              }),
             })
             this.queryAssetByRegistId({})
             return this.$nextTick(function () {
@@ -266,7 +307,8 @@ import {generateTableAreaByAssetTypeString} from '@/utils/utils'
         }
         this.form.validateFieldsAndScroll((err, values) => {
           // 提交保存
-          const { attachmentList, organId, selectedList, storeId } = this
+          const { attachmentList, organId, selectedList, storeId, imgFiles } = this
+          let arr = [...attachmentList, ...imgFiles]
           this.validateAssets = !selectedList.length
           if (err || !selectedList.length) {
             return selectedList.length ? false : this.$message.warn('请选择关联资产登记单')
@@ -274,7 +316,7 @@ import {generateTableAreaByAssetTypeString} from '@/utils/utils'
           let form = {
             ...values, organId, status: 0, storeId,
             assetRegisterId: selectedList.map(m => m.registerOrderId).join(','),
-            attachmentList: attachmentList.map(m => {
+            attachmentList: arr.map(m => {
               return { attachmentPath: m.url, oldAttachmentName: m.name }
             })
           }
