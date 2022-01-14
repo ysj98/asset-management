@@ -4,7 +4,7 @@
 <template>
   <div class="asset-project-view-list">
     <SG-SearchContainer background="white">
-      <div slot="btns">
+      <div slot="headBtns">
         <SG-Button
           icon="import"
           type="primary"
@@ -13,7 +13,7 @@
           v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT"
         >导出</SG-Button>
       </div>
-      <div slot="form">
+      <div slot="headRight">
         <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select
           showSearch

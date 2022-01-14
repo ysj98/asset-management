@@ -5,7 +5,7 @@
 <template>
   <div>
     <SG-SearchContainer background="white">
-      <div slot="btns">
+      <div slot="headBtns">
         <!-- <SG-Button v-if="createPower" icon="plus" type="primary" @click="operationFun('create')" class="mr10"
           >新建</SG-Button
         >-->
@@ -16,7 +16,7 @@
           <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
         </SG-Button>
       </div>
-      <div slot="form">
+      <div slot="headRight" style="display: flex">
         <topOrganByUser
           @change="organIdChange"
           :formStyle="allStyle"
@@ -178,6 +178,7 @@ export default {
   },
   data() {
     return {
+      toggle: false,
       ASSET_MANAGEMENT,
       allStyle,
       organId: "",
@@ -401,5 +402,18 @@ export default {
 }
 .custom-table {
   padding-bottom: 50px;
+}
+.search-content-box{
+  display: flex;
+  justify-content: space-between;
+  .search-from-box{
+    flex: 1;
+    flex-wrap: wrap;
+    text-align: right;
+  }
+  .two-row-box{
+    padding-top: 14px;
+    flex: 0 0 190px;
+  }
 }
 </style>
