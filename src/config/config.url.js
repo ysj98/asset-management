@@ -1369,6 +1369,9 @@ export const paramsConfig = {
   paramsSave: "/ams/basicSettings/save",
   // 组织机构系统设置统一查询接口
   queryParamsConfigDetail: "/ams/basicSettings/detail",
+  // 获取Bpm工作流公共接口
+  getDataFromBpmWorkFlow:"/ams/approval/getDataFromBpmWorkFlow",
+
 };
 
 // 资产编码规则
@@ -1388,19 +1391,19 @@ export const codeRule = {
 // 条码管理
 export const barCode = {
   // 主列表查询
-  queryLabelCodeList: "/ams/asset/queryLabelCodeList",
+  queryLabelCodeList: "/ams/labelCodeManager/queryLabelCodeList",
   // 编辑标签
-  editLabel: "/ams/asset/editLabel",
+  editLabel: "/ams/labelCodeManager/editLabel",
   // 下载模板/导出
-  exportLabelData: "/ams/asset/exportLabelData",
+  exportLabelData: "/ams/labelCodeManager/exportLabelData",
   // 批量更新标签-导入
-  readExcelModel: "/ams/asset/readExcelModel",
+  readExcelModel: "/ams/labelCodeManager/readExcelModel",
   // 查询资产条码
-  findAssetLabel: "/ams/basicSettings/findAssetLabel",
+  findAssetLabel: "/ams/labelCodeManager/findAssetLabel",
   // 保存/编辑
-  saveAssetLabel: "/ams/basicSettings/saveAssetLabel",
+  saveAssetLabel: "/ams/assetLabelCode/saveAssetLabel",
   // 条码打印
-  barCodePrint: "/ams/asset/barCodePrint",
+  barCodePrint: "/ams/labelCodeManager/barCodePrint",
 };
 
 export const attrConfig = {
@@ -1468,38 +1471,38 @@ export const drawMap = {
 };
 export const operationParams = {
   // 分页查询转运营参数列表
-  getPage: "/ams/basicSettings/getPage",
+  getPage: "/ams/operationParam/getPage",
   // 修改资产转运营参数状态
-  updateStatus: "/ams/basicSettings/updateStatus",
+  updateStatus: "/ams/operationParam/updateStatus",
   // 资产转运营参数-新增保存
-  saveTransferOperationParam: "/ams/basicSettings/saveTransferOperationParam",
+  saveTransferOperationParam: "/ams/operationParam/saveTransferOperationParam",
   // 资产转运营参数-编辑提交
-  editTransferOperationParam: "/ams/basicSettings/editTransferOperationParam",
+  editTransferOperationParam: "/ams/operationParam/editTransferOperationParam",
   // 资产转运营参数-详情
-  getDeatil: "/ams/basicSettings/getDeatil",
+  getDeatil: "/ams/operationParam/getDeatil",
 };
 
 export const toOperation = {
   // 主列表导出
-  exportListPage: "/ams/asset/exportListPage",
+  exportListPage: "/ams/operation/exportListPage",
   // 主列表查询
-  getTransferOperationPage: "/ams/asset/getTransferOperationPage",
+  getTransferOperationPage: "/ams/operation/getTransferOperationPage",
   // 主列表统计
-  getOperationPageStatistics: "/ams/asset/getOperationPageStatistics",
+  getOperationPageStatistics: "/ams/operation/getOperationPageStatistics",
   // 审核
-  updateOperationApprovalStatus: "/ams/asset/updateOperationApprovalStatus",
+  updateOperationApprovalStatus: "/ams/operation/updateOperationApprovalStatus",
   // 新增提交
-  submitTransferOperation: "/ams/asset/submitTransferOperation",
+  submitTransferOperation: "/ams/operation/submitTransferOperation",
   // 添加资产导出
-  exportAsset: "/ams/registerOrder/exportAsset",
+  exportAsset: "/ams/operation/exportAsset",
   // 详情-基本信息
-  getBasicMessage: "/ams/asset/getBasicMessage",
+  getBasicMessage: "/ams/operation/getBasicMessage",
   // 详情-资产转运营明细列表
-  getOperationDetailListPage: "/ams/asset/getOperationDetailListPage",
+  getOperationDetailListPage: "/ams/operation/getOperationDetailListPage",
   // 调整转运营项位置
-  adjustParamPosition: "/ams/basicSettings/adjustParamPosition",
+  adjustParamPosition: "/ams/operationParam/adjustParamPosition",
   // 批量导入
-  readExcelModelV3: "/ams/registerOrder/readExcelModelV3",
+  readExcelModelV3: "/ams/operation/readExcelModelV3",
   // 删除
-  deleteOperation: "/ams/asset/deleteOperation",
+  deleteOperation: "/ams/operation/deleteOperation",
 };
