@@ -42,7 +42,10 @@
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
           <a-col :span="6" style="text-align: left; width: 20%">
-            <a-date-picker @change="onChange" placeholder="请选择创建日期" style="width: 100%;"/>
+            <a-date-picker @change="onChangeStart" placeholder="请选择创建开始日期" style="width: 100%;"/>
+          </a-col>
+          <a-col :span="6" style="text-align: left; width: 20%">
+            <a-date-picker @change="onChangeEnd" placeholder="请选择创建结束日期" style="width: 100%;"/>
           </a-col>
           <a-col :span="6" style="text-align: left">
             <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
@@ -202,13 +205,18 @@
           add: {title: '新建资产项目', okText: '提交', cancelText: '取消'},
           edit: {title: '编辑资产项目', okText: '提交', cancelText: '取消'},
           approval: {title: '审核资产项目', okText: '审核通过', cancelText: '驳回'}
-        }
+        },
+        maxDate: null,
+        minDate: null,
       }
     },
 
     methods: {
-      onChange (val,dateString) {
-        console.log(val,dateString)
+      onChangeStart (val,dateString) {
+        this.minDate = dateString
+      },
+      onChangeEnd (val,dateString) {
+        this.maxDate = dateString
       },
       // 处理是否选中仅当前机构
       changeChecked (e) {
@@ -380,7 +388,9 @@
           organId, isCurrent, pageSize: pageLength, pageNum: pageNo, projectName,
           transferToOperation: transferToOperation === 'all' ? "" : transferToOperation,
           sourceTypeList: (sourceTypeList && sourceTypeList.includes('all')) ? [] : sourceTypeList,
-          approvalStatusList: (approvalStatusList && approvalStatusList.includes('all')) ? [] : approvalStatusList
+          approvalStatusList: (approvalStatusList && approvalStatusList.includes('all')) ? [] : approvalStatusList,
+          minDate: this.minDate,
+          maxDate: this.maxDate
         }
         this.$api.assets.queryProjectManageListPage(form).then(r => {
           this.tableObj.loading = false

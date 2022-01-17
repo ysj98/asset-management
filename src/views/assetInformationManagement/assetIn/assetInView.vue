@@ -126,11 +126,11 @@ const columns = [
   },
   {
     title: '权属人',
-    dataIndex: 'qse'
+    dataIndex: 'obligeeName'
   },
   {
     title: '有无经营权',
-    dataIndex: 'ywjyq'
+    dataIndex: 'managementRightName'
   },
   {
     title: '入库单编号',
