@@ -70,7 +70,7 @@
     <!--列表部分-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="action" slot-scope="text, record">
-        <!--['0 待审批', '1 已驳回', '2 已审批', '3 已取消']-->
+        <!--['2 待审批', '3 已驳回', '1 已审批', '4 已取消']-->
         <SG-PopoverMore trigger="hover">
           <div slot="content">
             <router-link style="color: #6D7585; line-height: 35px; display: block; "
@@ -80,7 +80,7 @@
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">详情</span>
             </router-link>
             <router-link
-              v-if="String(record.status) === '1'"
+              v-if="String(record.status) === '3'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_EDIT"
               style="color: #6D7585; line-height: 35px; display: block; "
               :to="{ path: '/assetIn/edit', query: {id: record.storeId}}"
@@ -89,7 +89,7 @@
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">编辑</span>
             </router-link>
             <a
-              v-if="String(record.status) === '1'"
+              v-if="String(record.status) === '3'"
               style="display: block; line-height: 35px"
               @click="deleteAsset(record.storeId)"
               v-power="ASSET_MANAGEMENT.ASSET_IN_DELETE"
@@ -98,7 +98,7 @@
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">删除</span>
             </a>
             <router-link
-              v-if="String(record.status) === '0'"
+              v-if="String(record.status) === '2'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_APPROVE"
               style="display: block; color: #6D7585; line-height: 35px"
               :to="{ path: '/assetIn/approve', query: {id: record.storeId}}"
@@ -144,8 +144,8 @@
         projectOptions: [], // 资产项目选项
         assetTypeOptions: [], // 资产类型选项
         statusOptions: [
-          { title: '全部', key: '-1' }, { title: '待审批', key: '0' },
-          { title: '已驳回', key: '1' }, { title: '已审批', key: '2' }, { title: '已取消', key: '3' }
+          { title: '全部', key: '-1' }, { title: '待审批', key: '2' },
+          { title: '已驳回', key: '3' }, { title: '已审批', key: '1' }, { title: '已取消', key: '4' }
         ], // 查询条件-状态选项
         tableObj: {
           dataSource: [],
@@ -292,7 +292,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            let nameList = ['待审批', '已驳回', '已审批', '已取消']
+            let nameList = ['草稿','已审批', '待审批','已驳回', '已取消']
             this.tableObj.dataSource = data.map(m => {
               return {
                 ...m, statusName: nameList[m.status]

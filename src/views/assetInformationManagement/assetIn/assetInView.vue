@@ -91,7 +91,8 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 const approvalStatusData = [
-  { name: '全部状态', value: '' }, { name: '待审批', value: '0' }, { name: '已驳回', value: '1' }, { name: '已审批', value: '2' }, { name: '已取消', value: '3' }
+  { name: '全部状态', value: '' }, { name: '待审批', value: '2' },
+  { name: '已驳回', value: '3' }, { name: '已审批', value: '1' }, { name: '已取消', value: '4' }
 ]
 
 const columns = [

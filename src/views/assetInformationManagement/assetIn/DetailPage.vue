@@ -166,7 +166,7 @@
         this.$api.assets.queryAssetStoreDetail({storeId}).then(({data: res}) => {
           this.spinning = false
           if (res && String(res.code) === '0') {
-            let nameList = ['待审批', '已驳回', '已审批', '已取消']
+            let nameList = ['草稿','已审批', '待审批','已驳回', '已取消']
             const {otherAttachment,attachmentList, imageAttachment, assetRegisterId, status, ...others} = res.data
             assetRegisterId && this.queryAssetByRegistId({assetRegisterId})
             let arr1 = attachmentList.filter(item => item.attachmentSuffix === '.jpg' || item.attachmentSuffix === '.png' || item.attachmentSuffix === '.jpeg' || item.attachmentSuffix === '.bmp')
