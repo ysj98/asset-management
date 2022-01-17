@@ -10,7 +10,7 @@
   <div class="wrapper">
     <SG-Modal
     class="inventoryResultRegistration"
-    width="880px"
+    width="1080px"
     v-model="show"
     :noPadding="true"
     :title="newData === 'new' ? '登记盘盈资产' : '编辑盘盈资产'"
