@@ -3,34 +3,34 @@
     <a-table
       :columns="columns"
       :data-source="tData"
-      :rowKey="record => record.serviceType"
+      :rowKey="(record) => record.serviceType"
       :pagination="false"
       :loading="loadingFlag"
     >
       <!-- 序号 -->
-      <template #index="row,record,index">
+      <template #index="row, record, index">
         {{ index + 1 }}
       </template>
       <!-- 业务分类 -->
-      <template #serviceTypeText="text,record,index">
+      <template #serviceTypeText="text, record, index">
         <span v-if="record.isValid">
           <!--  -->
         </span>
         {{ record.serviceTypeText }}
       </template>
       <!-- 个性化设置 -->
-      <template #isValid="text,record,index">
+      <template #isValid="text, record, index">
         <a-switch
           :checked="Boolean(record.isValid)"
           @change="
-            value => {
+            (value) => {
               record.isValid = Number(value);
             }
           "
         />
       </template>
       <!-- 参数值 -->
-      <template #value="text,record,index">
+      <template #value="text, record, index">
         <component
           v-if="record.isValid"
           :ref="record.serviceType"
@@ -38,6 +38,8 @@
           @sendData="handleSendData(record, $event)"
           v-bind="record.customServiceParamSet"
           :isValid="record.isValid"
+          :serviceTypeText="record.serviceTypeText"
+          :approvalOptions="approvalOptions"
         ></component>
       </template>
     </a-table>
@@ -45,46 +47,52 @@
 </template>
 
 <script>
-// 显示在当前tab的 approveServiceType
-const approveServiceType = [1001];
+const approveServiceType = [1002, 1003, 1004, 1005];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
-   * 系统设置 tab
+   * 审批设置
    * */
-  name: "SystemSetting",
-  props:{
-    organId:{
+  name: "ApprovalSetting",
+  props: {
+    approvalOptions: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    organId: {
       type: String,
-      default: ''
+      default: "",
     },
-    loadingFlag:{
-      type:Boolean,
-      default: true
+    loadingFlag: {
+      type: Boolean,
+      default: true,
     },
-    tabDataSource:{
-      type:Array,
-      required: true
-    }
+    tabDataSource: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       serviceTypeAll: serviceTypeAll,
       columns,
-      tData: []
+      tData: [],
     };
   },
   watch: {
-    tabDataSource:{
-      handler:function (newValue){
-        this.tData = newValue.filter(ele=>{
-          return approveServiceType.includes(ele.serviceType)
-        })
-      }
-    }
+    tabDataSource: {
+      handler: function (newValue) {
+        console.log("newValue", newValue);
+        this.tData = newValue.filter((ele) => {
+          return approveServiceType.includes(ele.serviceType);
+        });
+      },
+      immediate: true,
+    },
   },
   methods: {
-
     /*
      * payload {subKey:city,paramKey:province}
      * */
@@ -98,33 +106,33 @@ export default {
     sendData() {
       // 过滤掉 不在approveServiceType 中的  ref
       let resObj = {};
-      approveServiceType.forEach(ele => {
+      approveServiceType.forEach((ele) => {
         // $refs 不是响应式的,过滤掉 ref 为 undefined 的
-        if ((ele in this.$refs) && this.$refs[ele] ) {
+        if (ele in this.$refs && this.$refs[ele]) {
           resObj[ele] = this.$refs[ele];
         }
       });
       for (let refName in resObj) {
         let errorMsg = resObj[refName].sendData();
         if (errorMsg) {
-          console.log("refName", refName);
           this.$message.error(`${errorMsg}`);
           return null;
         }
       }
-      return this.tData.map(ele => {
+      return this.tData.map((ele) => {
         const { isValid, serviceType } = ele;
         let keyTitle = "customServiceParamSet";
-        // 现在就这几个 key
         return {
           isValid,
           serviceType,
-          subKey: isValid ? ele[keyTitle].subKey : '',
-          paramKey: isValid ?  ele[keyTitle].paramKey : '',
+          subKey: isValid ? ele[keyTitle].subKey : "",
+          paramKey: isValid ? ele[keyTitle].paramKey : "",
+          flowJson: isValid ? ele[keyTitle].flowJson : "",
         };
       });
-    }
+    },
   },
+  mounted() {},
 };
 </script>
 
