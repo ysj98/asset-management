@@ -449,7 +449,8 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         let form = {
           approvalStatusList: projectStatus.includes('-1') ? '' : projectStatus.join(','),
-          organId, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo, ...queryObj
+          organIds: organId,
+          organId: 1, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo, ...queryObj
         }
         if (type === 'export') { return form }
         this.tableObj.loading = true

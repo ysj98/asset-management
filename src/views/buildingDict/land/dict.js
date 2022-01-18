@@ -58,6 +58,7 @@ export const columns = [
   {
     title: "土地面积(㎡)",
     dataIndex: "buildArea",
+    scopedSlots: { customRender: "buildArea" },
     width: 120
   },
   {

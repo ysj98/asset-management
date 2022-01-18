@@ -103,7 +103,9 @@
       changeTree (organId, name) {
         this.organName = name
         this.organId = organId
-        this.organId = this.organId.join(',')
+        if(organId instanceof Array){
+          this.organId = this.organId.join(',')
+        }
       },
 
       // 查询资产项目接口

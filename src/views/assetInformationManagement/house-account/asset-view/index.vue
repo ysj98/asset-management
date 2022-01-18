@@ -320,7 +320,7 @@
       queryCategoryOptions (organId) {
         this.categoryId = []
         this.categoryOptions = []
-        this.$api.assets.getList({organId, assetType: '1'}).then(({data: res}) => {
+        this.$api.assets.getList({organId: 1,organIds: organId, assetType: '1'}).then(({data: res}) => {
           if (res && String(res.code) === '0') {
             const arr = (res.data || []).map(m => {
               return { title: m.professionName, key: m.professionCode }
@@ -538,7 +538,7 @@
       organDict (code,organId) {
         this.ownershipUse = ''
         this.ownershipUseOPt = []
-        this.$api.assets.organDict({ organId: organId, code }).then(res => {
+        this.$api.assets.organDict({ organId: 1,organIds: organId, code }).then(res => {
           if (res.data.code === "0") {
             let result = res.data.data || [];
             let arr = result.map(item => ({ label: item.name, value: item.value }));

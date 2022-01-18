@@ -91,6 +91,9 @@
           <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
           </template>
+          <template slot="buildArea" slot-scope="text">
+            <span>{{Number(text).toFixed(4)}}</span>
+          </template>
           <template slot="operation" slot-scope="text, record">
             <OperationPopover
               :operationData="record.operationDataBtn"

@@ -96,6 +96,7 @@
                     :max="999999.9999"
                     :min="0"
                     :style="allWidth"
+                    :precision="4"
                     v-decorator="[
                       'buildArea',
                       {

@@ -40,7 +40,7 @@
             <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">土地面积(㎡)：</div>
-                <div class="item-content">{{blankInfo.buildArea || '-'}}</div>
+                <div class="item-content">{{Number(blankInfo.buildArea).toFixed(4) || '-'}}</div>
               </div>
             </a-col>
             <a-col :span="8">
