@@ -740,3 +740,26 @@ function partition(arr, pivot, left, right) {
 
   return newPivot;
 }
+
+export function getTypeKey(list, keyStr) {
+  const resArr = [];
+  (function getValue(list, keyStr) {
+    let res = [];
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].typeKey.includes(keyStr)) {
+        res = list[i].children || [];
+      } else {
+        if (
+            list[i].children &&
+            Array.isArray(list[i].children) &&
+            list[i].children.length
+        ) {
+          getValue(list[i].children, keyStr);
+        }
+      }
+    }
+    resArr.push(res);
+    return res;
+  })(list, keyStr);
+  return resArr.flat();
+}

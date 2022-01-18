@@ -17,8 +17,8 @@ export function editTransferOperationParam(data) {
   return axiosPost(operationParams.editTransferOperationParam, data,true);
 }
 // 资产转运营参数-详情
-export function getDeatil(data) {
-  return axiosPost(operationParams.getDeatil, data);
+export function getDetail(data) {
+  return axiosPost(operationParams.getDetail, data);
 }
 
 export function adjustParamPosition(data) {
