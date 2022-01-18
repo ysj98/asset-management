@@ -369,7 +369,7 @@
         this.tableObj.loading = true
         let form = {
           assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
-          organId, buildIdList, projectIdList, pageSize: pageLength,
+          organId: 1, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           ownershipUse,
@@ -377,6 +377,7 @@
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
+          organIds: organId
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
