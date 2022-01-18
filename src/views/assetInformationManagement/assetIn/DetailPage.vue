@@ -61,14 +61,17 @@
       <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       <div v-if="isApprove">
+        <SG-Title title="审核意见"/>
+        <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
+      </div>
+      <div style="height: 70px;"></div>
+      <div v-if="isApprove">
         <!--后期开发-->
         <!--审核意见-->
-        <!--<SG-Title title="审核意见"/>-->
-        <!--<a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>-->
         <!--底部审批操作按钮组-->
         <form-footer location="fixed">
-          <SG-Button type="primary" @click="handleBtn('')" :loading="submitBtnLoading">审批通过</SG-Button>
-          <SG-Button type="dangerous" @click="handleBtn('reject')" :loading="submitBtnLoading" style="margin-right: 8px">驳回</SG-Button>
+          <SG-Button type="primary" @click="handleBtn(1)" :loading="submitBtnLoading">审批通过</SG-Button>
+          <SG-Button type="dangerous" @click="handleBtn(0)" :loading="submitBtnLoading" style="margin-right: 8px">驳回</SG-Button>
         </form-footer>
       </div>
     </a-spin>
@@ -76,6 +79,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import FormFooter from '@/components/FormFooter'
   import {generateTableAreaByAssetTypeString} from "utils/utils";
   import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
@@ -86,7 +90,9 @@
     mixins:[uploadAndDownLoadFIle],
     data () {
       return {
+        apprId: '',
         spinning: false,
+        organId: '',
         storeId: '', // 入库单Id
         configBase,
         baseInfoKeys: [
@@ -132,13 +138,58 @@
     },
 
     created () {
-      const { query: { id }, path } = this.$route
-      this.storeId = id
-      this.isApprove = path === '/assetIn/approve'
-      id && this.queryDetail(id)
+     this.init()
     },
 
     methods: {
+      async init(){
+        const { query: { instid}, path } = this.$route
+        let obj = this.$route.query
+        if (instid){
+          const req = {
+            serviceOrderId: instid
+          }
+          const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
+          if (code === '0'){
+            console.log('data',data)
+            obj = data
+          }else {
+            this.$message.error(message)
+          }
+        }
+        const {id, organId,} = obj
+        this.storeId = id
+        this.organId = organId
+        if (id){
+          this.queryDetail(id)
+          if (organId){
+            // 资产入库 1001 硬编码
+            // 详情页面也需要展示审批轨迹
+            const req = {busType: 1001,busId:id,organId}
+            this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
+              if (code==='0'){
+                console.log('data',data)
+                this.apprId = data.amsApprovalResDto.apprId
+                this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+                  return {
+                    date:moment(ele.operDateStr),
+                    title: ele.operOpinion,
+                    desc: "", isDone: false, operation: [],
+                  }
+                })
+                // this.stepList.reverse()
+                this.stepList[0].isDone = true
+
+                if (path === '/assetIn/approve'){
+                  this.isApprove = data.amsApprovalResDto.isAbRole === 1
+                }
+              }else {
+                this.$message.error(message)
+              }
+            })
+          }
+        }
+      },
       // 根据资产登记单查询资产明细
       queryAssetByRegistId ({pageNo = 1, pageLength = 10, assetRegisterId = this.assetRegisterId}) {
         if (!assetRegisterId) { return false }
@@ -167,7 +218,7 @@
           this.spinning = false
           if (res && String(res.code) === '0') {
             let nameList = ['草稿','已审批', '待审批','已驳回', '已取消']
-            const {otherAttachment,attachmentList, imageAttachment, assetRegisterId, status, ...others} = res.data
+            const {attachmentList, assetRegisterId, status, ...others} = res.data
             assetRegisterId && this.queryAssetByRegistId({assetRegisterId})
             let arr1 = attachmentList.filter(item => item.attachmentSuffix === '.jpg' || item.attachmentSuffix === '.png' || item.attachmentSuffix === '.jpeg' || item.attachmentSuffix === '.bmp')
             let arr2 = attachmentList.filter(item => item.attachmentSuffix !== '.jpg' && item.attachmentSuffix !== '.png' && item.attachmentSuffix !== '.jpeg' && item.attachmentSuffix !== '.bmp')
@@ -207,18 +258,29 @@
       },
 
       // 按钮操作
-      handleBtn (flag) {
+      handleBtn (operResult) {
+        if (operResult === 0){
+          if (!this.advice){
+            this.$message.error('驳回必填审核意见')
+            return null
+          }
+        }
         this.submitBtnLoading = true
-        const {storeId, advice} = this
-        this.$api.assets.auditAssetStore({ storeId, advice, status: flag ? 1 : 2 }).then(({data: res}) => {
+        const req = {
+          apprId: this.apprId,
+          operResult,
+          operOpinion: this.advice
+        }
+        this.$api.approve.uniformSubmit(req).then(({data: res}) => {
           if (res && String(res.code) === '0') {
-            this.$message.success(flag ? '驳回成功' : '审批成功')
+            this.$message.success(operResult ?'审批成功' : '驳回成功')
             // 跳回列表路由
             return this.$router.push({ path: '/assetIn', query: { refresh: true } })
           }
           throw res.message
         }).catch(err => {
-          this.$message.error(err || `${flag ? '驳回失败' : '审批失败'}`)
+          console.error(err)
+          this.$message.error(err || `${operResult ?   '审批失败' : '驳回失败'}`)
         }).finally(() => this.submitBtnLoading = false)
       }
     }

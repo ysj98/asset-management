@@ -151,34 +151,18 @@
           />
         </div>
       </div>
-      <div class="edit-box" v-show="pageType === 'audit'">
-        <div class="edit-box-title"><i></i><span>审核信息</span></div>
-        <div class="edit-box-content">
-          <div class="edit-box-content-item">
-            <div class="label-name-box"><span class="label-name">审核人</span><span>：</span></div>
-            <a-form-item>
-              <span class="label-value">{{audit.auditor || '--'}}</span>
-            </a-form-item>
-          </div>
-          <div class="edit-box-content-item">
-            <div class="label-name-box"><span class="label-name">审核时间</span><span>：</span></div>
-            <a-form-item>
-              <span class="label-value">{{audit.auditTime || '--'}}</span>
-            </a-form-item>
-          </div>
-          <div class="edit-box-content-item total-width">
-            <div class="label-name-box"><span class="label-name">审核意见</span><span>：</span></div>
-            <a-form-item class="label-value">
-              <a-textarea
-                placeholder="请输入审核意见"
-                :rows="3"
-                v-model="audit.auditOpinion"
-              ></a-textarea>
-            </a-form-item>
-          </div>
-        </div>
-      </div>
     </a-form>
+    <!--审批轨迹-->
+    <div v-if="pageType === 'detail' || pageType === 'audit'">
+      <SG-Title title="审批轨迹"/>
+      <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
+      <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+    </div>
+    <div v-if="isApprove">
+      <SG-Title title="审核意见"/>
+      <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
+    </div>
+    <div style="height: 70px;"></div>
     <form-footer v-show="pageType === 'new' || pageType === 'edit'">
       <slot>
         <SG-Button type="primary" @click="handleSubmit(1)">提交</SG-Button>
@@ -186,7 +170,7 @@
         <SG-Button @click="cancel">取消</SG-Button>
       </slot>
     </form-footer>
-    <form-footer v-show="pageType === 'audit'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="approveAudit" @cancel="rejectAudit">
+    <form-footer v-show="isApprove" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="handleApprove(1)" @cancel="handleApprove(0)">
     </form-footer>
     <!-- 选择资产 -->
     <AssetBundlePopover ref="assetBundlePopover" :organId="organId" queryType="2" @status="status" v-if="editable"></AssetBundlePopover>
@@ -197,6 +181,7 @@
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import {dateToString} from 'utils/formatTime'
+import moment from "_moment@2.29.1@moment";
 const defaultColumns = [
   {
     title: '资产名称',
@@ -244,6 +229,10 @@ export default {
   },
   data () {
     return {
+      advice:'',
+      stepList:[],
+      isApprove: false,
+      apprId:'',
       assetType:'',
       pageType: 'new',
       editable: false,
@@ -488,13 +477,28 @@ export default {
     cancel () {
       this.$router.push({path: '/assetClear'})
     },
-    // 审核通过
-    approveAudit () {},
-    // 驳回
-    rejectAudit () {
-      if (!this.auditOpinion) {
-        this.$message.warning('驳回时审核意见不能为空')
-        return
+    // 出库审批 待联调
+    handleApprove(operResult){
+      if (operResult === 0){
+        if (!this.advice){
+          this.$message.error('驳回必填审核意见')
+          return null
+        }
+        const req = {
+          apprId: this.apprId,
+          operResult,
+          operOpinion: this.advice
+        }
+        this.$api.approve.uniformSubmit(req).then(({data: res}) => {
+          if (res && String(res.code) === '0') {
+            this.$message.success('操作成功')
+            this.$router.push({path: '/assetClear', query: {refresh: true}})
+          }
+          throw res.message
+        }).catch(err => {
+          console.error(err)
+          this.$message.error('操作失败')
+        })
       }
     },
     getEditDetail () {
@@ -567,30 +571,73 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+    },
+    async init(){
+      const { query: { instid } } = this.$route
+      let obj = this.$route.query
+      if (instid){
+        const req = {
+          serviceOrderId: instid
+        }
+        const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
+        if (code === '0'){
+          console.log('data',data)
+          obj = data
+          obj.pageType = 'audit'
+        }else {
+          this.$message.error(message)
+        }
+      }
+
+      this.pageType = obj.pageType
+      this.editable = this.pageType === 'new' || this.pageType === 'edit'
+      this.organId = obj.organId
+      this.organName = obj.organName
+      if (this.editable) {
+        this.getProjectIdOptions()
+        this.getAssetTypeOptions()
+        this.getCleanupTypeOptions()
+      }
+      if (this.pageType !== 'new') {
+        this.cleaningOrderId = obj.cleaningOrderId
+        if (this.pageType === 'edit') {
+          this.getEditDetail()
+        } else {
+          this.getDetail()
+          this.getAssetDetailList()
+        }
+        // 暂时不需要审批轨迹，所以只有是审批页面才调用接口
+          if (this.pageType === 'audit' || this.pageType === 'detail'){
+            const req = {busType: 1002,busId:this.cleaningOrderId,organId:this.organId}
+            this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
+              if (code==='0'){
+                console.log('data',data)
+                this.apprId = data.amsApprovalResDto.apprId
+                this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+                  return {
+                    date:moment(ele.operDateStr),
+                    title: ele.operOpinion,
+                    desc: "", isDone: false, operation: [],
+                  }
+                })
+                // this.stepList.reverse()
+                this.stepList[0].isDone = true
+                if (this.pageType === 'audit'){
+                  this.isApprove = data.amsApprovalResDto.isAbRole === 1
+                }
+              }else {
+                this.$message.error(message)
+              }
+            })
+          }
+      }
+      if (!this.editable) {
+        this.columns = this.columns.slice(0, this.columns.length - 1)
+      }
     }
   },
   mounted () {
-    this.pageType = this.$route.query.pageType
-    this.editable = this.pageType === 'new' || this.pageType === 'edit'
-    this.organId = this.$route.query.organId
-    this.organName = this.$route.query.organName
-    if (this.editable) {
-      this.getProjectIdOptions()
-      this.getAssetTypeOptions()
-      this.getCleanupTypeOptions()
-    }
-    if (this.pageType !== 'new') {
-      this.cleaningOrderId = this.$route.query.cleaningOrderId
-      if (this.pageType === 'edit') {
-        this.getEditDetail()
-      } else {
-        this.getDetail()
-        this.getAssetDetailList()
-      }
-    }
-    if (!this.editable) {
-      this.columns = this.columns.slice(0, this.columns.length - 1)
-    }
+    this.init()
   }
 }
 </script>

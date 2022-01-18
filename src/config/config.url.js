@@ -1506,3 +1506,12 @@ export const toOperation = {
   // 删除
   deleteOperation: "/ams/operation/deleteOperation",
 };
+
+export const approve = {
+  // 根据BPM流程实例id查询审批单详情
+  getApprByServiceOrderId:'/ams/approval/getApprByServiceOrderId',
+  // 根据业务类型和业务id查询审批轨迹接口
+  queryApprovalRecordByBus:'/ams/approval/queryApprovalRecordByBus',
+  // 统一审批接口
+  uniformSubmit:'/ams/approval/uniformSubmit',
+}

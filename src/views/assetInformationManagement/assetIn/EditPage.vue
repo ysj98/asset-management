@@ -314,7 +314,7 @@
             return selectedList.length ? false : this.$message.warn('请选择关联资产登记单')
           }
           let form = {
-            ...values, organId, status: 0, storeId,
+            ...values, organId, status: 2, storeId,
             assetRegisterId: selectedList.map(m => m.registerOrderId).join(','),
             attachmentList: arr.map(m => {
               return { attachmentPath: m.url, oldAttachmentName: m.name }
