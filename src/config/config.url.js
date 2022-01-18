@@ -1399,7 +1399,7 @@ export const barCode = {
   // 批量更新标签-导入
   readExcelModel: "/ams/labelCodeManager/readExcelModel",
   // 查询资产条码
-  findAssetLabel: "/ams/labelCodeManager/findAssetLabel",
+  findAssetLabel: "/ams/assetLabelCode/findAssetLabel",
   // 保存/编辑
   saveAssetLabel: "/ams/assetLabelCode/saveAssetLabel",
   // 条码打印
@@ -1479,7 +1479,7 @@ export const operationParams = {
   // 资产转运营参数-编辑提交
   editTransferOperationParam: "/ams/operationParam/editTransferOperationParam",
   // 资产转运营参数-详情
-  getDeatil: "/ams/operationParam/getDeatil",
+  getDetail: "/ams/operationParam/getDetail",
 };
 
 export const toOperation = {

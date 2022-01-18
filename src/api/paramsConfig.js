@@ -12,3 +12,7 @@ export function querySysSet(data) {
 export function queryParamsConfigDetail(data) {
   return axiosPost(paramsConfig.queryParamsConfigDetail, data);
 }
+
+export function getDataFromBpmWorkFlow(data) {
+  return axiosPost(paramsConfig.getDataFromBpmWorkFlow, data);
+}
