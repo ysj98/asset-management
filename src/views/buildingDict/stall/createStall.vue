@@ -209,7 +209,6 @@ import FormFooter from "@/components/FormFooter.vue";
 import dictMixin from "../dictMixin.js";
 import TreeSelect from "@/views/common/treeSelect";
 import { typeFilter } from "@/views/buildingDict/buildingDictConfig";
-import { queryTopOrganByOrganID } from "@/views/buildingDict/publicFn";
 import { carTypeMenu, parkingUsageOption, parkTypeOpt } from "./dict";
 import DictSelect from "../../common/DictSelect";
 import { stallApiDetail } from "../../../api/building";
@@ -217,10 +216,7 @@ import { stallApiDetail } from "../../../api/building";
 const allWidth = { width: "100%" };
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" };
 const allWidth2 = { width: "250px", flex: 1 };
-// 页面跳转
-const operationTypes = {
-  index: "/buildingDict"
-};
+
 export default {
   components: {
     DictSelect,
@@ -337,7 +333,8 @@ export default {
     beforeSubmit(value) {
       return {
         ...value,
-        parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(",")
+        useArea: String(value.useArea),
+        parkingImg: (this.formInfo.parkingImg || []).map(node => node.url).join(",")
       };
     },
     // 确定
