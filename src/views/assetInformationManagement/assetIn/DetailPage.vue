@@ -144,16 +144,17 @@
 
     methods: {
       async init(){
-        const { query: { instid}, path } = this.$route
+        const { query: { instId }, path } = this.$route
         let obj = this.$route.query
-        if (instid){
+        if (instId){
           const req = {
-            serviceOrderId: instid
+            serviceOrderId: instId
           }
           const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
           if (code === '0'){
             console.log('data',data)
-            obj = data
+            // 合并数据 query 和 接口 data
+            Object.assign(obj,data)
           }else {
             this.$message.error(message)
           }
@@ -185,7 +186,7 @@
                       desc: "", isDone: false, operation: [],
                     }
                   })
-                  this.stepList[0].isDone = true
+                  this.stepList.length && (this.stepList[0].isDone = true)
                   if (path === '/assetIn/approve'){
                     this.isApprove = data.amsApprovalResDto.isAbRole === 1
                   }
