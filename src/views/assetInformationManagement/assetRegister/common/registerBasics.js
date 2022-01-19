@@ -15,6 +15,7 @@ export const columnsData = [
   { title: '建筑面积', dataIndex: 'area', width: 100 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '有无经营权', dataIndex: 'managementRightName', width: 100 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },

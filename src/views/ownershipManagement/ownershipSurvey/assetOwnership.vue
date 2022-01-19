@@ -189,6 +189,7 @@
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
+        <div style="height: 70px;"></div>
         <SG-FooterPagination
           :pageLength="queryCondition.pageSize"
           :totalCount="table.totalCount"
@@ -264,8 +265,8 @@ const statussOpt = [
 ];
 const supportMaterialOpt = [
   { label: "全部证件情况", value: "" },
-  { label: "有证件材料", value: 1 },
-  { label: "无证件材料", value: 0 },
+  { label: "有证明材料证件", value: 1 },
+  { label: "无证明材料证件", value: 0 },
 ]
 let columns = [
   {

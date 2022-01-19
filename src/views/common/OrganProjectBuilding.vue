@@ -13,7 +13,7 @@
     <a-row :gutter="8">
       <!--组织机构选择控件, 单选-->
       <a-col :span="isShowBuilding ? 8 : 12">
-        <tree-select @changeTree="changeTree" :allowClear="false" class="organ_style"/>
+        <tree-select @changeTree="changeTree" :multiple="true" :allowClear="false" class="organ_style"/>
       </a-col>
       <a-col :span="isShowBuilding ? 8 : 12">
         <a-select
@@ -103,6 +103,9 @@
       changeTree (organId, name) {
         this.organName = name
         this.organId = organId
+        if(organId instanceof Array){
+          this.organId = this.organId.join(',')
+        }
       },
 
       // 查询资产项目接口
@@ -141,6 +144,7 @@
 
     watch: {
       organId: function (organId) {
+        if(!organId) return
         Object.assign(this, {
           projectId: undefined,
           projectOptions: [],

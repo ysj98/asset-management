@@ -562,8 +562,7 @@ export default {
         this.handleLayerClick(layer);
       } else {
         this.currentAssetId = assetItemInfo.assetId;
-        this.setDrawOptions({ modeColour });
-        this.openDraw();
+        this.openDraw({ modeColour });
       }
     },
     /*
@@ -644,18 +643,17 @@ export default {
         }
       });
     },
-    setDrawOptions({ modeColour }) {
-      const style = generatePathStyle({ color: modeColour });
-      this.mapInstance.pm.setPathOptions(style);
-    },
     closeDraw() {
       this.mapInstance.pm.disableDraw();
     },
-    openDraw() {
+    openDraw({ modeColour }) {
+      const style = generatePathStyle({ color: modeColour });
       this.mapInstance.pm.enableDraw("Polygon", {
         snappable: true,
         snapDistance: 2,
-        // markerEditable: true,
+        hintlineStyle: { color: modeColour, dashArray: [5, 5] },
+        templineStyle: { color: modeColour },
+        pathOptions: style,
       });
     },
     // 地图平移到指定位置

@@ -17,12 +17,13 @@
       }"
     >
       <div :style="{'font-size': '14px', 'color': item.fontColor || '#fff', 'margin-bottom': '10px'}">{{item.title}}</div>
-      <div :style="{'font-size': '20px', color: item.fontColor || '#324057', 'font-weight': 'bold'}">{{item.value}}</div>
+      <div :style="{'font-size': '20px', color: item.fontColor || '#324057', 'font-weight': 'bold'}">{{format(item.value)}}</div>
     </div>
   </div>
 </template>
 
 <script>
+  import { getFormat } from "utils/utils";
   export default {
     name: 'OverviewNumber',
     props: {
@@ -48,6 +49,10 @@
     },
 
     methods: {
+      // 格式化
+      format(val){
+        return getFormat(val)
+      },
       // 点击事件
       handleClick (item, index) {
         // item: 当前区域的信息，i：当前区域的位置下标

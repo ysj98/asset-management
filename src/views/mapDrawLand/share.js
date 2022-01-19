@@ -28,10 +28,8 @@ export function generatePathStyle({ color }, options = {}) {
   const obj = {
     color: color,
     fillColor: color,
-    fillOpacity: 0.3,
-    hintlineStyle: color,
-    templineStyle: color,
-    // weight: 0.8,
+    fillOpacity: 0.11,
+    weight: 0.5,
   };
   return Object.assign(obj, options);
 }
@@ -53,6 +51,7 @@ export function initMap(
     crs: Leaflet.CRS.Simple,
     attributionControl: false,
     zoomControl: false,
+    minZoom: 3,
   });
   new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(this.mapInstance);
   const num = Math.max(imgHeight, imageWidth)

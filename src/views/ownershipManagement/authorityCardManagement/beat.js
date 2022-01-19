@@ -229,8 +229,8 @@ export const titleDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 9999999.9999,
+    precision: 4,
     required: false
   },
   {
@@ -255,8 +255,8 @@ export const titleDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 9999999.99,
+    precision: 4,
+    max: 9999999.9999,
     required: true
   },
   {
@@ -265,8 +265,8 @@ export const titleDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 9999999.99,
+    precision: 4,
+    max: 9999999.9999,
     required: false
   },
   {
@@ -275,8 +275,8 @@ export const titleDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 9999999.9999,
+    precision: 4,
     required: false
   },
   {

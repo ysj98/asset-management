@@ -17,8 +17,32 @@
           </a-col>
         </a-row>
         <div style="margin-top: 8px">
-          <span style="color: #282D5B; float: left">附件:</span>
-          <SG-UploadFile show v-if="attachmentList.length" v-model="attachmentList"/>
+          <span style="color: #282D5B; float: left; padding-right: 10px;">图片:</span>
+          <div v-if="imageAttachment.length">
+            <SG-UploadFile show v-model="oldImgAttachment"/>
+            <SG-UploadFile 
+              v-model="newImgAttachment" 
+              :baseImgURL="configBase.hostImg1"
+              :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+              show />
+          </div>
+          <span v-else style="margin-left: 9px; color: #49505E">--</span>
+        </div>
+        <div style="margin-top: 8px">
+          <span style="color: #282D5B; float: left; padding-right: 10px;">附件:</span>
+          <div v-if="otherAttachment.length">
+            <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
+            <SG-UploadFile 
+              v-model="newOtherAttachment" 
+              :baseImgURL="configBase.hostImg1"
+              :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+              type="file"
+              show />
+          </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
       </div>
@@ -33,18 +57,21 @@
         />
       </div>
       <!--审批轨迹-->
-      <SG-Title title="审批轨迹"/>
-      <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
-      <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+      <div v-if="!isOld">
+        <SG-Title title="审批轨迹"/>
+        <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
+        <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+      </div>
+      <div v-if="isApprove && !isOld">
+        <SG-Title title="审核意见"/>
+        <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
+      </div>
+      <div style="height: 70px;"></div>
       <div v-if="isApprove">
-        <!--后期开发-->
-        <!--审核意见-->
-        <!--<SG-Title title="审核意见"/>-->
-        <!--<a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>-->
         <!--底部审批操作按钮组-->
         <form-footer location="fixed">
-          <SG-Button type="primary" @click="handleBtn('')" :loading="submitBtnLoading">审批通过</SG-Button>
-          <SG-Button type="dangerous" @click="handleBtn('reject')" :loading="submitBtnLoading" style="margin-right: 8px">驳回</SG-Button>
+          <SG-Button type="primary" @click="handleBtn(1)" :loading="submitBtnLoading">审批通过</SG-Button>
+          <SG-Button type="dangerous" @click="handleBtn(0)" :loading="submitBtnLoading" style="margin-right: 8px">驳回</SG-Button>
         </form-footer>
       </div>
     </a-spin>
@@ -52,15 +79,23 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import FormFooter from '@/components/FormFooter'
   import {generateTableAreaByAssetTypeString} from "utils/utils";
+  import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+  import configBase from "@/config/config.base";
   export default {
     name: 'DetailPage',
     components: {FormFooter},
+    mixins:[uploadAndDownLoadFIle],
     data () {
       return {
+        isOld: true,
+        apprId: '',
         spinning: false,
+        organId: '',
         storeId: '', // 入库单Id
+        configBase,
         baseInfoKeys: [
           {title: '入库单名称', key: 'storeName'}, {title: '入库单编号', key: 'storeCode'}, {title: '状态', key: 'statusName'},
           {title: '所属机构', key: 'organName'}, {title: '资产项目', key: 'projectName'}, {title: '资产类型', key: 'assetTypeName'},
@@ -68,7 +103,12 @@
           {title: '创建日期', key: 'createDate'}, {title: '备注', key: 'remark', span: 24}
         ], // 基本信息字段
         advice: '', // 审核意见
-        attachmentList: [], // 附件
+        otherAttachment: [], // 附件
+        imageAttachment:[],
+        oldOtherAttachment: [],
+        newOtherAttachment: [],
+        oldImgAttachment: [],
+        newImgAttachment: [],
         infoData: {}, // 基本信息字段值
         submitBtnLoading: false, // 按钮loading
         isApprove: false, // 当前页面是否为审批操作
@@ -99,13 +139,70 @@
     },
 
     created () {
-      const { query: { id }, path } = this.$route
-      this.storeId = id
-      this.isApprove = path === '/assetIn/approve'
-      id && this.queryDetail(id)
+     this.init()
     },
 
     methods: {
+      async init(){
+        console.log('this.$route',this.$route)
+        const { query: { instId }, path } = this.$route
+        let obj = this.$route.query
+        if (instId){
+          // 嵌套在 bpm 中时，关闭 面包屑
+          this.$route.meta.noShowProBreadNav = true
+          const req = {
+            serviceOrderId: instId
+          }
+          const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
+          if (code === '0'){
+            console.log('data',data)
+            // 合并数据 query 和 接口 data
+            Object.assign(obj,data)
+            // 返回的数据 budId 代表 入库单id
+            obj.id = data.busId
+          }else {
+            this.$message.error(message)
+          }
+        }
+        const {id, organId,} = obj
+        this.storeId = id
+        this.organId = organId
+        if (id){
+          this.queryDetail(id)
+          if (organId){
+            // 资产入库 1001 硬编码
+            // 详情页面也需要展示审批轨迹
+            const req = {busType: 1001,busId:id,organId}
+            this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
+              if (code==='0'){
+                // 旧数据不存在审批单，但是 code 为“0”
+                if (message === '审批单不存在'){
+                  if (path === '/assetIn/approve'){
+                    this.isApprove  = true
+                  }
+                  this.isOld = true
+                }else {
+                  this.isOld = false
+                  this.apprId = data.amsApprovalResDto.apprId
+                  this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+                    return {
+                      date:moment(ele.operDateStr),
+                      title: ele.operOpinion,
+                      desc: "", isDone: false, operation: [],
+                    }
+                  })
+                  this.stepList.length && (this.stepList[0].isDone = true)
+                  if (path === '/assetIn/approve'){
+                    this.isApprove = data.amsApprovalResDto.isAbRole === 1
+                  }
+                }
+              }else {
+                this.$message.error(message)
+              }
+            })
+          }
+        }
+      },
       // 根据资产登记单查询资产明细
       queryAssetByRegistId ({pageNo = 1, pageLength = 10, assetRegisterId = this.assetRegisterId}) {
         if (!assetRegisterId) { return false }
@@ -133,15 +230,37 @@
         this.$api.assets.queryAssetStoreDetail({storeId}).then(({data: res}) => {
           this.spinning = false
           if (res && String(res.code) === '0') {
-            let nameList = ['待审批', '已驳回', '已审批', '已取消']
+            let nameList = ['草稿','已审批', '待审批','已驳回', '已取消']
             const {attachmentList, assetRegisterId, status, ...others} = res.data
             assetRegisterId && this.queryAssetByRegistId({assetRegisterId})
+            let arr1 = attachmentList.filter(item => item.attachmentSuffix === '.jpg' || item.attachmentSuffix === '.png' || item.attachmentSuffix === '.jpeg' || item.attachmentSuffix === '.bmp')
+            let arr2 = attachmentList.filter(item => item.attachmentSuffix !== '.jpg' && item.attachmentSuffix !== '.png' && item.attachmentSuffix !== '.jpeg' && item.attachmentSuffix !== '.bmp')
+            let img0 = arr1.filter(img => Number(img.fileSources) === 0)
+            let img1 = arr1.filter(img => Number(img.fileSources) === 1)
+            let file0 = arr2.filter(img => Number(img.fileSources) === 0)
+            let file1 = arr2.filter(img => Number(img.fileSources) === 1)
+            console.log(this.otherAttachment, this.imageAttachment, 'this.otherAttachment')
             return Object.assign(this, {
               assetRegisterId,
               infoData: { ...others, statusName: nameList[status] },
-              attachmentList: (attachmentList || []).map(m => {
-                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix }
-              })
+              otherAttachment: (arr2 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              imageAttachment: (arr1 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              oldImgAttachment: (img0 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              newImgAttachment: (img1 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources, attachmentId: m.attachmentId }
+              }),
+              oldOtherAttachment: (file0 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources }
+              }),
+              newOtherAttachment: (file1 || []).map(m => {
+                return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources, attachmentId: m.attachmentId }
+              }),
             })
           }
           throw res.message || '查询详情出错'
@@ -152,18 +271,36 @@
       },
 
       // 按钮操作
-      handleBtn (flag) {
+      handleBtn (operResult) {
+        if (operResult === 0){
+          if (!this.advice && !this.isOld){
+            this.$message.error('驳回必填审核意见')
+            return null
+          }
+        }
         this.submitBtnLoading = true
-        const {storeId, advice} = this
-        this.$api.assets.auditAssetStore({ storeId, advice, status: flag ? 1 : 2 }).then(({data: res}) => {
+        let req = {
+          apprId: this.apprId,
+          operResult,
+          operOpinion: this.advice
+        }
+
+        let apiFn = this.$api.approve.uniformSubmit
+        if(this.isOld){
+          const {storeId, advice} = this
+          req = { storeId, advice, status: operResult ? 1 : 3 }
+          apiFn = this.$api.assets.auditAssetStore
+        }
+        apiFn(req).then(({data: res}) => {
           if (res && String(res.code) === '0') {
-            this.$message.success(flag ? '驳回成功' : '审批成功')
+            this.$message.success(operResult ?'审批成功' : '驳回成功')
             // 跳回列表路由
             return this.$router.push({ path: '/assetIn', query: { refresh: true } })
           }
           throw res.message
         }).catch(err => {
-          this.$message.error(err || `${flag ? '驳回失败' : '审批失败'}`)
+          console.error(err)
+          this.$message.error(err || `${operResult ?   '审批失败' : '驳回失败'}`)
         }).finally(() => this.submitBtnLoading = false)
       }
     }

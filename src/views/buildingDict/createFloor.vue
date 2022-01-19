@@ -55,7 +55,8 @@
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea v-decorator="['floorDesc', {initialValue: ''}]"/>
+                      <a-textarea @input="(e)=>{ floorDescNum = e.target.value.length}" v-decorator="['floorDesc', {initialValue: ''}]" :maxLength="50" placeholder="请输入描述内容(50字内)" />
+                      <div style="text-align: right">{{floorDescNum}}/50</div>
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
@@ -124,6 +125,7 @@ export default {
         {key: 0, title: '否'},
         {key: 1, title: '是'}
       ],
+      floorDescNum: 0,
       bussType: 'floorDir',
       ASSET_MANAGEMENT,
       hasUpdatePower: false,
@@ -227,6 +229,7 @@ export default {
       })
       console.log('得到值all=>', values)
       this.form.setFieldsValue(values)
+      this.floorDescNum = values.floorDesc ? values.floorDesc.length : 0
     },
     // 重置所有数据
     resetAll () {

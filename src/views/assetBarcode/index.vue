@@ -90,6 +90,7 @@ export default {
   components: {TreeSelect, changeLogo},
   data () {
     return {
+      assetLabelCodeId:'',
       ASSET_MANAGEMENT,
       organId: '',
       organName: '',
@@ -102,7 +103,9 @@ export default {
         forthly: ''
       },
       logoInfo: {
-        src: ''
+        src: '',
+        name: '',
+        imageUrl: ''
       }
     }
   },
@@ -115,7 +118,7 @@ export default {
     change () {
       this.$refs.showChangeLogo.show = true
     },
-    changeTree (value, label) {
+    changeTree (value) {
       this.organId = value
       this.logoInfo = {}
       this.query()
@@ -123,6 +126,7 @@ export default {
     query () {
       this.$api.barCode.findAssetLabel({organId: this.organId}).then(res => {
         if (Number(res.data.code) === 0) {
+          this.assetLabelCodeId = res.data.data.assetLabelCodeId
           this.organName = res.data.data.organName
           let data = res.data.data.dictionaryAttr.split(",")
           this.selectData = this.assetCodes.filter(item => data.indexOf(String(item.value)) > -1)
@@ -130,12 +134,14 @@ export default {
           this.selectConfigure.secondly = this.selectData[1].value
           this.selectConfigure.thirdly = this.selectData[2].value
           this.selectConfigure.forthly = this.selectData[3].value
-          if (res.data.data.imageUrl && res.data.data.imageUrl !== '') {
+          if (res.data.data.attachmentList && res.data.data.attachmentList[0]) {
             let hostImgLength = configs.hostImg1.length
+            this.logoInfo.name = res.data.data.attachmentList[0].oldAttachmentName
+            this.logoInfo.imageUrl = res.data.data.attachmentList[0].attachmentPath
             if (configs.hostImg1[hostImgLength - 1] === '/') {
-              this.logoInfo.src = configs.hostImg1 + res.data.data.imageUrl
+              this.logoInfo.src = configs.hostImg1 + res.data.data.attachmentList[0].attachmentPath
             } else {
-              this.logoInfo.src = configs.hostImg1 + '/' + res.data.data.imageUrl
+              this.logoInfo.src = configs.hostImg1 + '/' + res.data.data.attachmentList[0].attachmentPath
             }
             console.log('>>>', this.logoInfo.src)
             this.$forceUpdate()
@@ -164,8 +170,14 @@ export default {
         dictionaryAttr.push(this.selectConfigure[i])
       }
       let form = {
+        assetLabelCodeId: this.assetLabelCodeId,
         organId: this.organId,
-        imageUrl: this.logoInfo.imageUrl,
+        attachmentList: [
+          {
+            attachmentPath:this.logoInfo.imageUrl,
+            oldAttachmentName: this.logoInfo.name
+          }
+        ],
         dictionaryAttr: dictionaryAttr.join(',')
       }
       this.$api.barCode.saveAssetLabel(form).then(res => {

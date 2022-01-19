@@ -124,7 +124,9 @@
     <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
-        {{text}}
+        <span :title="text">
+          {{text}}
+        </span>
       </template>
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
@@ -133,6 +135,9 @@
        {{+text===1?'是':'否'}}
       </template>
     </a-table>
+    <div style="height: 70px;">
+
+    </div>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
@@ -162,11 +167,12 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
   import {querySourceType} from "@/views/common/commonQueryApi";
+  import { getFormat } from "utils/utils";
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
-    { label: "有证件材料", value: 1 },
-    { label: "无证件材料", value: 0 },
+    { label: "有证明材料证件", value: 1 },
+    { label: "无证明材料证件", value: 0 },
   ]
   export default {
     name: 'index',
@@ -203,7 +209,7 @@
           dataSource: [],
           scroll: { x: 3500 },
           columns: [
-            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 160 },
+            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '宗地号', dataIndex: 'addressNo', width: 150 },
@@ -281,7 +287,6 @@
         sourceOptions:[],
       }
     },
-
     methods: {
       filterOption(input, option) {
         return (
@@ -319,7 +324,7 @@
       queryCategoryOptions (organId) {
         this.categoryId = []
         this.categoryOptions = []
-        this.$api.assets.getList({organId, assetType: '1'}).then(({data: res}) => {
+        this.$api.assets.getList({organId: 1,organIds: organId, assetType: '1'}).then(({data: res}) => {
           if (res && String(res.code) === '0') {
             const arr = (res.data || []).map(m => {
               return { title: m.professionName, key: m.professionCode }
@@ -367,8 +372,8 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          assetTypes: this.$store.state.ASSET_TYPE_CODE.HOUSE,
-          organId, buildIdList, projectIdList, pageSize: pageLength,
+          assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
+          organId: 1, buildIdList, projectIdList, pageSize: pageLength,
           province, city, region, assetName, pageNum: pageNo, address,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           ownershipUse,
@@ -376,6 +381,7 @@
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
+          organIds: organId
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
@@ -403,6 +409,9 @@
         this.$api.assets.assetHousePageTotal(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
+            for(let key in data){
+              data[key] = getFormat(data[key])
+            }
             this.totalField.area = judgment.includes(data.totalArea) ? 0 : data.totalArea                            // 建筑面积
             this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
             this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
@@ -452,9 +461,10 @@
         let form = type === 'exportHouseBtn' ? {
           assetHouseId: buildIdList.join(',')
         } : {
-          assetTypes: this.$store.state.ASSET_TYPE_CODE.HOUSE,
+          assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
-          province, city, region, assetName, status: status || null, address,
+          province, city, region, assetName,  address,
+          statusList: status.includes('all') ? [] : status,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
@@ -535,7 +545,7 @@
       organDict (code,organId) {
         this.ownershipUse = ''
         this.ownershipUseOPt = []
-        this.$api.assets.organDict({ organId: organId, code }).then(res => {
+        this.$api.assets.organDict({ organId: 1,organIds: organId, code }).then(res => {
           if (res.data.code === "0") {
             let result = res.data.data || [];
             let arr = result.map(item => ({ label: item.name, value: item.value }));

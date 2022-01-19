@@ -553,7 +553,8 @@ export default {
     // 获取资产出库原因下拉列表
     organDict(code) {
       let form = {
-        code
+        code,
+        organId: this.organId
       };
       this.$api.basics.organDict(form).then(res => {
         if (res.data.code === "0") {

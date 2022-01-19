@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       autoChaneIngFlag: false,
-      progress: 30,
+      progress: 11,
       assetList: [],
       cycleArr: [],
       idx: 0,
@@ -141,7 +141,7 @@ export default {
         this.changeStyle({ fillOpacity: e.offsetX / allWidth });
       }
     },
-    changeStyle({ fillOpacity = 0.3 }) {
+    changeStyle({ fillOpacity = 0.11 }) {
       this.pathStyle = {
         fillOpacity: fillOpacity,
       };
@@ -318,7 +318,7 @@ export default {
         layerDetailId: feature.layerDetailId,
       });
       layer.on("click", (e) => {
-        layer._detailPopup_ = this.generateDetailPop({
+        this.generateDetailPop({
           layer,
           latlng: e.latlng,
           assetId: e.target._assetId,
@@ -328,28 +328,28 @@ export default {
         if (this.autoChaneIngFlag) {
           return null;
         }
-        if (layer._detailPopup_) {
-          return null;
-        }
         layer._popup_ = this.generateSimplePop({
           layer,
           latlng: layer.getBounds().getCenter(),
           assetId: e.target._assetId,
         });
       });
-      layer.on("mouseout", () => {
-        if (this.autoChaneIngFlag) {
-          return null;
-        }
-        this.mapInstance.closePopup(layer._popup_);
-        layer._detailPopup_ = null;
-        layer._popup_ = null;
-      });
+      layer.on("mouseout", mouseoutCb, this);
       layer.addTo(this.polygonLayer);
       this.polygonLayer.addTo(this.mapInstance);
       this.mapLayers = Object.assign({}, this.mapLayers, {
         [feature.assetId]: layer,
       });
+      function mouseoutCb(e) {
+        if (this.autoChaneIngFlag) {
+          return null;
+        }
+        const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
+        if (target.getAttribute("id") === "leaflet-map") {
+          this.mapInstance.closePopup(layer._popup_);
+          layer._popup_ = null;
+        }
+      }
     },
     async getLandUseStatistics({ assetList }) {
       const req = {

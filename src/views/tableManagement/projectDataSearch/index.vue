@@ -136,32 +136,245 @@
           dataSource: [],
           scroll: { x: 5200 },
           columns: [
-            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, fixed: 'left' },
-            { title: '资产项目编码', dataIndex: 'projectCode' }, { title: '管理机构', dataIndex: 'organName' },
-            { title: '来源方式', dataIndex: 'sourceTypeName' }, { title: '来源渠道', dataIndex: 'souceChannelType' },
-            { title: '建筑年代', dataIndex: 'buildAge' }, { title: '楼栋数', dataIndex: 'buildCount' },
-            { title: '整栋接管数量', dataIndex: 'assetBuildCount' },
-            { title: '资产数量', dataIndex: 'assetCount' }, { title: '房屋性质', dataIndex: 'houseTypeName' },
-            { title: '建筑面积(㎡)', dataIndex: 'area' }, { title: '划转前房屋状态', dataIndex: 'houseStatusName' },
-            { title: '上报基础情况表时间', dataIndex: 'reportBasicInfoDate' }, { title: '上报房屋划转请示时间', dataIndex: 'reportHouseTransferReqDate' },
-            { title: '房屋核实时间', dataIndex: 'houseVerificationDate' }, { title: '上报核实报告时间', dataIndex: 'reportHouseVerificationDate' },
-            { title: '划转批复下发时间', dataIndex: 'transferApprovalDate' }, { title: '协议签署时间', dataIndex: 'agreementSignDate' },
-            { title: '是否接管', dataIndex: 'takeOverName' }, { title: '接管时间', dataIndex: 'takeOverDate' },
-            { title: '权属办理中存在问题', dataIndex: 'ownershipHandleProblems', width: 200 },
-            { title: '房屋划转历史遗留问题', dataIndex: 'houseTransferHisProblem', width: 200 },
-            { title: '划转时房屋权属', dataIndex: 'houseProperty' }, { title: '划转时权利人', dataIndex: 'houseObligee' },
-            { title: '权属变更时间', dataIndex: 'propertyChangeTime' }, { title: '产权情况', dataIndex: 'ownershipStatusName' },
-            { title: '是否过户', dataIndex: 'isTranster' }, { title: '是否转物业', dataIndex: 'isPropertyName' },
-            { title: '转物业时间', dataIndex: 'transferTime' },{ title: '转物业面积(㎡)', dataIndex: 'transferArea' },
-            { title: '是否转运营', dataIndex: 'transferToOperationName' }, { title: '转运营时间', dataIndex: 'transferOperationTime' },
-            { title: '转运营面积(㎡)', dataIndex: 'transferOperationArea' }, { title: '运营面积(㎡)', dataIndex: 'operationArea' },
-            { title: '闲置(㎡)', dataIndex: 'idleArea' }, { title: '自用(㎡)', dataIndex: 'selfUserArea' },
-            { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
-            { title: '已运营基本情况', dataIndex: 'operationInfo' }, { title: '资产原值(元)', dataIndex: 'originalValue' },
-            { title: '首次成本法估值', dataIndex: 'assetValuation' }, { title: '首次市场法估值', dataIndex: 'firstMarketValue' },
-            { title: '最新估值(元)', dataIndex: 'marketValue' }, { title: '项目状态', dataIndex: 'approvalStatusName' },
-            { title: '已租面积', dataIndex: 'rentedArea' },{ title: '未租面积', dataIndex: 'unRentedArea' },
-            { title: '备注', dataIndex: 'remark', width: 180 }
+            {
+              "title": "资产项目名称",
+              "dataIndex": "projectName",
+              "scopedSlots": {
+                "customRender": "projectName"
+              },
+              "fixed": "left",
+              "width": 150
+            },
+            {
+              "title": "资产项目编码",
+              "dataIndex": "projectCode",
+              "width": 150
+            },
+            {
+              "title": "管理机构",
+              "dataIndex": "organName",
+              "width": 150
+            },
+            {
+              "title": "来源方式",
+              "dataIndex": "sourceTypeName",
+              "width": 150
+            },
+            {
+              "title": "来源渠道",
+              "dataIndex": "souceChannelType",
+              "width": 150
+            },
+            {
+              "title": "建筑年代",
+              "dataIndex": "buildAge",
+              "width": 150
+            },
+            {
+              "title": "楼栋数",
+              "dataIndex": "buildCount",
+              "width": 150
+            },
+            {
+              "title": "整栋接管数量",
+              "dataIndex": "assetBuildCount",
+              "width": 150
+            },
+            {
+              "title": "资产数量",
+              "dataIndex": "assetCount",
+              "width": 150
+            },
+            {
+              "title": "房屋性质",
+              "dataIndex": "houseTypeName",
+              "width": 150
+            },
+            {
+              "title": "建筑面积(㎡)",
+              "dataIndex": "area",
+              "width": 150
+            },
+            {
+              "title": "划转前房屋状态",
+              "dataIndex": "houseStatusName",
+              "width": 150
+            },
+            {
+              "title": "上报基础情况表时间",
+              "dataIndex": "reportBasicInfoDate",
+              "width": 150
+            },
+            {
+              "title": "上报房屋划转请示时间",
+              "dataIndex": "reportHouseTransferReqDate",
+              "width": 150
+            },
+            {
+              "title": "房屋核实时间",
+              "dataIndex": "houseVerificationDate",
+              "width": 150
+            },
+            {
+              "title": "上报核实报告时间",
+              "dataIndex": "reportHouseVerificationDate",
+              "width": 150
+            },
+            {
+              "title": "划转批复下发时间",
+              "dataIndex": "transferApprovalDate",
+              "width": 150
+            },
+            {
+              "title": "协议签署时间",
+              "dataIndex": "agreementSignDate",
+              "width": 150
+            },
+            {
+              "title": "是否接管",
+              "dataIndex": "takeOverName",
+              "width": 150
+            },
+            {
+              "title": "接管时间",
+              "dataIndex": "takeOverDate",
+              "width": 150
+            },
+            {
+              "title": "权属办理中存在问题",
+              "dataIndex": "ownershipHandleProblems",
+              "width": 150
+            },
+            {
+              "title": "房屋划转历史遗留问题",
+              "dataIndex": "houseTransferHisProblem",
+              "width": 150
+            },
+            {
+              "title": "划转时房屋权属",
+              "dataIndex": "houseProperty",
+              "width": 150
+            },
+            {
+              "title": "划转时权利人",
+              "dataIndex": "houseObligee",
+              "width": 150
+            },
+            {
+              "title": "权属变更时间",
+              "dataIndex": "propertyChangeTime",
+              "width": 150
+            },
+            {
+              "title": "产权情况",
+              "dataIndex": "ownershipStatusName",
+              "width": 150
+            },
+            {
+              "title": "是否过户",
+              "dataIndex": "isTranster",
+              "width": 150
+            },
+            {
+              "title": "是否转物业",
+              "dataIndex": "isPropertyName",
+              "width": 150
+            },
+            {
+              "title": "转物业时间",
+              "dataIndex": "transferTime",
+              "width": 150
+            },
+            {
+              "title": "转物业面积(㎡)",
+              "dataIndex": "transferArea",
+              "width": 150
+            },
+            {
+              "title": "是否转运营",
+              "dataIndex": "transferToOperationName",
+              "width": 150
+            },
+            {
+              "title": "转运营时间",
+              "dataIndex": "transferOperationTime",
+              "width": 150
+            },
+            {
+              "title": "转运营面积(㎡)",
+              "dataIndex": "transferOperationArea",
+              "width": 150
+            },
+            {
+              "title": "运营面积(㎡)",
+              "dataIndex": "operationArea",
+              "width": 150
+            },
+            {
+              "title": "闲置(㎡)",
+              "dataIndex": "idleArea",
+              "width": 150
+            },
+            {
+              "title": "自用(㎡)",
+              "dataIndex": "selfUserArea",
+              "width": 150
+            },
+            {
+              "title": "占用(㎡)",
+              "dataIndex": "occupationArea",
+              "width": 150
+            },
+            {
+              "title": "其它(㎡)",
+              "dataIndex": "otherArea",
+              "width": 150
+            },
+            {
+              "title": "已运营基本情况",
+              "dataIndex": "operationInfo",
+              "width": 150
+            },
+            {
+              "title": "资产原值(元)",
+              "dataIndex": "originalValue",
+              "width": 150
+            },
+            {
+              "title": "首次成本法估值",
+              "dataIndex": "assetValuation",
+              "width": 150
+            },
+            {
+              "title": "首次市场法估值",
+              "dataIndex": "firstMarketValue",
+              "width": 150
+            },
+            {
+              "title": "最新估值(元)",
+              "dataIndex": "marketValue",
+              "width": 150
+            },
+            {
+              "title": "项目状态",
+              "dataIndex": "approvalStatusName",
+              "width": 150
+            },
+            {
+              "title": "已租面积",
+              "dataIndex": "rentedArea",
+              "width": 150
+            },
+            {
+              "title": "未租面积",
+              "dataIndex": "unRentedArea",
+              "width": 150
+            },
+            {
+              "title": "备注",
+              "dataIndex": "remark",
+              "width": 150
+            }
           ]
         },
         numList: [
@@ -236,7 +449,8 @@
         if (!organId) { return this.$message.info('请选择组织机构') }
         let form = {
           approvalStatusList: projectStatus.includes('-1') ? '' : projectStatus.join(','),
-          organId, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo, ...queryObj
+          organIds: organId,
+          organId: 1, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo, ...queryObj
         }
         if (type === 'export') { return form }
         this.tableObj.loading = true

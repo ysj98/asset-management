@@ -40,6 +40,7 @@ import * as assetBussinessInformation from './assetBussinessInformation'
 import * as drawMap from './drawMap'
 import * as operationParams from './operationParams'
 import * as toOperation from './toOperation'
+import * as approve from './approve'
 const API = {
   auth,
   global,
@@ -68,7 +69,8 @@ const API = {
   attrConfig,
   drawMap,
   operationParams,
-  toOperation
+  toOperation,
+  approve
 }
 export default {
   install (Vue) {

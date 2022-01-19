@@ -669,7 +669,7 @@ export function getArrayRepeat(arr,getStrFn){
 export function handleEnumerationConversion(value, list, keyWord = ['title', 'value']) {
   if (!value || !list) {
     console.trace()
-    throw new Error('缺少入参')
+    return null
   }
   const result = list.filter(ele => ele[keyWord[0]] === value)[0]
   return result ? result[keyWord[1]] : null
@@ -739,4 +739,68 @@ function partition(arr, pivot, left, right) {
   swap(arr, right, newPivot);
 
   return newPivot;
+}
+
+export function getTypeKey(list, keyStr) {
+  const resArr = [];
+  (function getValue(list, keyStr) {
+    let res = [];
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].typeKey.includes(keyStr)) {
+        res = list[i].children || [];
+      } else {
+        if (
+            list[i].children &&
+            Array.isArray(list[i].children) &&
+            list[i].children.length
+        ) {
+          getValue(list[i].children, keyStr);
+        }
+      }
+    }
+    resArr.push(res);
+    return res;
+  })(list, keyStr);
+  return resArr.flat();
+}
+/**
+ * 数字千分位
+ * @param str 要格式化的字符串
+ * @param decimal 保留小数位数
+ * @return 返回处理后的千分位
+ */
+ export function getFormat(str, decimal) {
+  let result = ''
+  let product = '1'
+  if(Number(str) === 0){
+    result = str
+  }else if(str > 0){
+    if(str.toString().includes('.')){
+      if(decimal && decimal > 0){
+        for(let i = 0; i < decimal; i++){
+          product += '0'
+        }
+        str = Math.round((Number(str) + Number.EPSILON) * Number(product)) / Number(product)  // 保留 decimal 位小数
+      }
+      let num = str.toString().split('.')
+      let integer = num[0].toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s){
+        return s+','
+      })
+      result = integer+'.'+num[1]
+    }else{
+      let zero = ''
+      if(decimal && decimal > 0){
+        for(let i = 0; i < decimal; i++){
+          zero += '0'
+        }
+      }
+      result = str.toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s){
+        return s+','
+      })
+      result = decimal && decimal>0 ? result + '.' + zero : result
+    }
+  }else if(str < 0){
+    result = str
+  }
+  return result
 }

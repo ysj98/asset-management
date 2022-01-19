@@ -2,7 +2,7 @@
 <template>
   <div class="project_manage">
     <!--搜索条件-->
-    <search-container v-model="fold" style="position: relative">
+    <search-container v-model="fold" style="position: relative;height:260px;">
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button
@@ -37,6 +37,15 @@
           </a-col>
           <a-col :span="6" style="text-align: left; width: 20%">
             <a-input placeholder="请输入资产项目名称" v-model="projectName"/>
+          </a-col>
+          
+        </a-row>
+        <a-row :gutter="8" style="margin-top: 14px">
+          <a-col :span="6" style="text-align: left; width: 20%">
+            <a-date-picker @change="onChangeStart" placeholder="请选择创建开始日期" style="width: 100%;"/>
+          </a-col>
+          <a-col :span="6" style="text-align: left; width: 20%">
+            <a-date-picker @change="onChangeEnd" placeholder="请选择创建结束日期" style="width: 100%;"/>
           </a-col>
           <a-col :span="6" style="text-align: left">
             <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
@@ -196,11 +205,19 @@
           add: {title: '新建资产项目', okText: '提交', cancelText: '取消'},
           edit: {title: '编辑资产项目', okText: '提交', cancelText: '取消'},
           approval: {title: '审核资产项目', okText: '审核通过', cancelText: '驳回'}
-        }
+        },
+        maxDate: null,
+        minDate: null,
       }
     },
 
     methods: {
+      onChangeStart (val,dateString) {
+        this.minDate = dateString
+      },
+      onChangeEnd (val,dateString) {
+        this.maxDate = dateString
+      },
       // 处理是否选中仅当前机构
       changeChecked (e) {
         this.isCurrent = e.target.checked
@@ -371,7 +388,9 @@
           organId, isCurrent, pageSize: pageLength, pageNum: pageNo, projectName,
           transferToOperation: transferToOperation === 'all' ? "" : transferToOperation,
           sourceTypeList: (sourceTypeList && sourceTypeList.includes('all')) ? [] : sourceTypeList,
-          approvalStatusList: (approvalStatusList && approvalStatusList.includes('all')) ? [] : approvalStatusList
+          approvalStatusList: (approvalStatusList && approvalStatusList.includes('all')) ? [] : approvalStatusList,
+          minDate: this.minDate,
+          maxDate: this.maxDate
         }
         this.$api.assets.queryProjectManageListPage(form).then(r => {
           this.tableObj.loading = false

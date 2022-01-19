@@ -46,7 +46,8 @@
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea v-decorator="['unitDesc', {initialValue: ''}]"/>
+                      <a-textarea @input="(e)=>{ unitDescNum = e.target.value.length}" v-decorator="['unitDesc', {initialValue: ''}]" :maxLength="200" placeholder="请输入描述内容(200字内)" />
+                      <div style="text-align: right">{{unitDescNum}}/200</div>
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
@@ -90,6 +91,7 @@ export default {
   },
   data () {
     return {
+      unitDescNum:0,
       bussType: 'unitDir',
       ASSET_MANAGEMENT,
       hasUpdatePower: false,
@@ -187,6 +189,7 @@ export default {
       })
       console.log('得到值all=>', values)
       this.form.setFieldsValue(values)
+      this.unitDescNum = values.unitDesc ? values.unitDesc.length : 0
     },
     // 重置所有数据
     resetAll () {

@@ -209,7 +209,6 @@ import FormFooter from "@/components/FormFooter.vue";
 import dictMixin from "../dictMixin.js";
 import TreeSelect from "@/views/common/treeSelect";
 import { typeFilter } from "@/views/buildingDict/buildingDictConfig";
-import { queryTopOrganByOrganID } from "@/views/buildingDict/publicFn";
 import { carTypeMenu, parkingUsageOption, parkTypeOpt } from "./dict";
 import DictSelect from "../../common/DictSelect";
 import { stallApiDetail } from "../../../api/building";
@@ -217,10 +216,7 @@ import { stallApiDetail } from "../../../api/building";
 const allWidth = { width: "100%" };
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" };
 const allWidth2 = { width: "250px", flex: 1 };
-// 页面跳转
-const operationTypes = {
-  index: "/buildingDict"
-};
+
 export default {
   components: {
     DictSelect,
@@ -335,10 +331,21 @@ export default {
       this.formInfo.parkingAreaId= undefined
     },
     beforeSubmit(value) {
-      return {
+      const result = {
         ...value,
+        useArea: [null,undefined].includes(value.useArea) ? '' : String(value.useArea),
+        floorArea: [null,undefined].includes(value.floorArea) ? '' : String(value.floorArea),
+        shareArea: [null,undefined].includes(value.shareArea) ? '' : String(value.shareArea),
         parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(",")
-      };
+      }
+      // 删除掉 值为null和空串的字段
+      Object.keys(result).forEach(ele=>{
+        if ([null,''].includes(result[ele])){
+          delete result[ele]
+        }
+      })
+      return result
+
     },
     // 确定
     handleSave() {

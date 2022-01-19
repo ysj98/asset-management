@@ -40,7 +40,7 @@
             <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">土地面积(㎡)：</div>
-                <div class="item-content">{{blankInfo.buildArea || '-'}}</div>
+                <div class="item-content">{{Number(blankInfo.buildArea).toFixed(4) || '-'}}</div>
               </div>
             </a-col>
             <a-col :span="8">
@@ -135,6 +135,18 @@
             </a-col>
             <a-col :span="8">
               <div class="detail-item">
+                <div class="item-label">是否缴纳土地出让金：</div>
+                <div class="item-content">{{ blankInfo.isPledge || "--"}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">是否抵押：</div>
+                <div class="item-content"> {{ blankInfo.isSell || "--"}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
                 <div class="item-label">围墙图片：</div>
                 <div class="item-content">
                   <SG-UploadFile v-if="encloseWallPic.length" :show="true" v-model="encloseWallPic" />
@@ -182,6 +194,8 @@
   </div>
 </template>
  <script>
+ import {yesOrNoOptions} from "@/views/buildingDict/land/dict";
+ import {handleEnumerationConversion} from "utils/utils";
 export default {
   data() {
     return {
@@ -224,6 +238,8 @@ export default {
           let data = res.data.data;
           // 处理图片
           this.blankInfo = data;
+          this.blankInfo.isSell = handleEnumerationConversion(this.blankInfo.isSell, yesOrNoOptions, ['value', 'title']) || "--"
+          this.blankInfo.isPledge = handleEnumerationConversion(this.blankInfo.isPledge, yesOrNoOptions, ['value', 'title']) || "--"
           // 处理所处机构
           this.organIdMain = data.organId
           this.organNameMain = data.organName
