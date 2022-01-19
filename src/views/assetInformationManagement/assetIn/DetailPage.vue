@@ -57,17 +57,17 @@
         />
       </div>
       <!--审批轨迹-->
-      <SG-Title title="审批轨迹"/>
-      <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
-      <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
-      <div v-if="isApprove">
+      <div v-if="!isOld">
+        <SG-Title title="审批轨迹"/>
+        <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
+        <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+      </div>
+      <div v-if="isApprove && !isOld">
         <SG-Title title="审核意见"/>
         <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
       </div>
       <div style="height: 70px;"></div>
       <div v-if="isApprove">
-        <!--后期开发-->
-        <!--审核意见-->
         <!--底部审批操作按钮组-->
         <form-footer location="fixed">
           <SG-Button type="primary" @click="handleBtn(1)" :loading="submitBtnLoading">审批通过</SG-Button>
@@ -90,6 +90,7 @@
     mixins:[uploadAndDownLoadFIle],
     data () {
       return {
+        isOld: true,
         apprId: '',
         spinning: false,
         organId: '',
@@ -168,20 +169,26 @@
             const req = {busType: 1001,busId:id,organId}
             this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
               if (code==='0'){
-                console.log('data',data)
-                this.apprId = data.amsApprovalResDto.apprId
-                this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
-                  return {
-                    date:moment(ele.operDateStr),
-                    title: ele.operOpinion,
-                    desc: "", isDone: false, operation: [],
+                // 旧数据不存在审批单，但是 code 为“0”
+                if (message === '审批单不存在'){
+                  if (path === '/assetIn/approve'){
+                    this.isApprove  = true
                   }
-                })
-                // this.stepList.reverse()
-                this.stepList[0].isDone = true
-
-                if (path === '/assetIn/approve'){
-                  this.isApprove = data.amsApprovalResDto.isAbRole === 1
+                  this.isOld = true
+                }else {
+                  this.isOld = false
+                  this.apprId = data.amsApprovalResDto.apprId
+                  this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+                    return {
+                      date:moment(ele.operDateStr),
+                      title: ele.operOpinion,
+                      desc: "", isDone: false, operation: [],
+                    }
+                  })
+                  this.stepList[0].isDone = true
+                  if (path === '/assetIn/approve'){
+                    this.isApprove = data.amsApprovalResDto.isAbRole === 1
+                  }
                 }
               }else {
                 this.$message.error(message)
@@ -260,18 +267,25 @@
       // 按钮操作
       handleBtn (operResult) {
         if (operResult === 0){
-          if (!this.advice){
+          if (!this.advice && !this.isOld){
             this.$message.error('驳回必填审核意见')
             return null
           }
         }
         this.submitBtnLoading = true
-        const req = {
+        let req = {
           apprId: this.apprId,
           operResult,
           operOpinion: this.advice
         }
-        this.$api.approve.uniformSubmit(req).then(({data: res}) => {
+
+        let apiFn = this.$api.approve.uniformSubmit
+        if(this.isOld){
+          const {storeId, advice} = this
+          req = { storeId, advice, status: operResult ? 1 : 3 }
+          apiFn = this.$api.assets.auditAssetStore
+        }
+        apiFn(req).then(({data: res}) => {
           if (res && String(res.code) === '0') {
             this.$message.success(operResult ?'审批成功' : '驳回成功')
             // 跳回列表路由
