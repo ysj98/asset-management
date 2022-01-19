@@ -144,9 +144,12 @@
 
     methods: {
       async init(){
+        console.log('this.$route',this.$route)
         const { query: { instId }, path } = this.$route
         let obj = this.$route.query
         if (instId){
+          // 嵌套在 bpm 中时，关闭 面包屑
+          this.$route.meta.noShowProBreadNav = true
           const req = {
             serviceOrderId: instId
           }

@@ -2,7 +2,7 @@
 生产环境面包屑导航
 -->
 <template>
-  <div class="bread-nav" style="height:40px;min-height:40px;line-height:40px; text-align: left; padding-left:30px;border-bottom:1px solid #ddd;">
+  <div v-if="isShow" class="bread-nav" style="height:40px;min-height:40px;line-height:40px; text-align: left; padding-left:30px;border-bottom:1px solid #ddd;">
     <router-link :tag="getTags(index)" :to='item.path' class='bread-item' :class="[index === proBreadNav.length-1&&'chu']" v-for="(item, index) in proBreadNav" :key="index">{{item.name}}
       <a-icon type="right" :style="{ fontSize: '12px', marginRight: '5px', color: '#C0C7D1', display: index === proBreadNav.length-1 ? 'none' : ''}"/>  
     </router-link>
@@ -22,6 +22,9 @@ export default {
     }
   },
   computed: {
+    isShow(){
+      return !this.$route.meta.noShowProBreadNav
+    },
     proBreadNav () {
       return this.$store.state.pro.proBreadNav
     }
