@@ -113,3 +113,16 @@ export const columns = [
     width: 100
   }
 ];
+
+export const yesOrNoOptions = [
+  {
+    title:'是',
+    value:'1',
+    label:'是'
+  },
+  {
+    title:'否',
+    value:'0',
+    label:'否'
+  }
+]

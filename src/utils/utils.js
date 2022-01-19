@@ -669,7 +669,7 @@ export function getArrayRepeat(arr,getStrFn){
 export function handleEnumerationConversion(value, list, keyWord = ['title', 'value']) {
   if (!value || !list) {
     console.trace()
-    throw new Error('缺少入参')
+    return null
   }
   const result = list.filter(ele => ele[keyWord[0]] === value)[0]
   return result ? result[keyWord[1]] : null

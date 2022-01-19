@@ -414,6 +414,40 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :span="8">
+                <a-form-item label="是否缴纳土地出让金" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    v-decorator="[
+                      'isPledge',
+                      {
+                        initialValue: ''
+                      },
+                    ]"
+                    placeholder="请选择"
+                    :options="yesOrNoOptions"
+                  >
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="是否抵押" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    v-decorator="[
+                      'isSell',
+                      {
+                        initialValue: ''
+                      },
+                    ]"
+                    placeholder="请选择"
+                    :options="yesOrNoOptions"
+                  >
+                    <a-select-option value="1">是</a-select-option>
+                    <a-select-option value="0">否</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
               <a-col :span="24">
                 <a-form-item label="围墙图片" v-bind="formItemLayout2">
                   <SG-UploadFile
@@ -480,8 +514,9 @@
   </div>
 </template>
 <script>
+import {yesOrNoOptions} from "@/views/buildingDict/land/dict";
 import FormFooter from "@/components/FormFooter.vue"
-import { utils, debounce } from "@/utils/utils"
+import { utils } from "@/utils/utils"
 import dictMixin from "../dictMixin.js"
 import selectLngAndLat from "@/views/common/selectLngAndLat.vue"
 import TreeSelect from "@/views/common/treeSelect";
@@ -491,10 +526,6 @@ import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 const allWidth = { width: "100%" }
 const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
 const allWidth2 = { width: "250px", flex: 1 }
-// 页面跳转
-const operationTypes = {
-  index: "/buildingDict",
-}
 export default {
   components: {
     FormFooter,
@@ -504,6 +535,7 @@ export default {
   mixins: [dictMixin],
   data() {
     return {
+      yesOrNoOptions,
       allStyle: 'width: 100%;',
       typeFilter,
       allWidth,
