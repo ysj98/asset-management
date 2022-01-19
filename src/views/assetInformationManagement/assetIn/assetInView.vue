@@ -49,7 +49,12 @@
         <div class="box">
           <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-          <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="入库单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="入库单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <ProvinceCityDistrict
+          class="city"
+          ref="ProvinceCityDistrict"
+          v-model="provinces"
+        ></ProvinceCityDistrict>
       </div>
     </SG-SearchContainer>
     <!--数据总览-->
@@ -82,6 +87,7 @@
 </template>
 
 <script>
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
 import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
@@ -159,7 +165,7 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict},
   data () {
     return {
       ASSET_MANAGEMENT,

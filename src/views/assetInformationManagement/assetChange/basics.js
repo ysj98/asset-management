@@ -312,6 +312,11 @@ export const baseChange = [{
   dataIndex: 'oldSourceModeName',
   width: '10%'
 },{
+  title: '有无经营权',
+  dataIndex: 'managementRight',
+  scopedSlots: { customRender: 'managementRight' },
+  width: '10%'
+},{
   title: '资产类型',
   dataIndex: 'assetTypeName',
   width: '10%'
@@ -376,6 +381,11 @@ export const baseChangeTwo = [{
 }, {
   title: '来源方式',
   dataIndex: 'oldSourceModeName',
+},{
+  title: '有无经营权',
+  dataIndex: 'managementRight',
+  scopedSlots: { customRender: 'managementRight' },
+  width: '10%'
 }, {
   title: '变更后资产名称',
   dataIndex: 'newAssetName',

@@ -65,6 +65,12 @@
               </a-col>
               <a-col :span="8">
                 <div class="detail-item">
+                  <div class="item-label">使用面积(㎡)：</div>
+                  <div class="item-content">{{houseInfo.useArea || '-'}}</div>
+                </div>
+              </a-col>
+              <a-col :span="8">
+                <div class="detail-item">
                   <div class="item-label">分摊面积(㎡)：</div>
                   <div class="item-content">{{houseInfo.shareArea || '-'}}</div>
                 </div>

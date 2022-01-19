@@ -117,6 +117,14 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="使用面积" v-bind="formItemLayout">
+                  <a-input-number
+                    :style="allWidth"
+                    v-decorator="['useArea', {initialValue: '' || undefined, rules: [{required: true, message: '请输入使用面积'}]}]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="分摊面积" v-bind="formItemLayout">
                   <a-input-number
                     :style="allWidth"
@@ -510,7 +518,8 @@ export default {
         code: data.code || undefined,
         deliveryTime: data.deliveryTime || undefined,
         repairTime: data.repairTime || undefined,
-        balconyArea: data.balconyArea || undefined
+        balconyArea: data.balconyArea || undefined,
+        useArea:data.useArea || undefined,
       });
       // 处理图片
       if (data.planeFigurePath) {

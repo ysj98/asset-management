@@ -200,6 +200,10 @@ const columns = [
     dataIndex: "projectName"
   },
   {
+    title: "有无经营权",
+    dataIndex: "projectName"
+  },
+  {
     title: "资产类型",
     dataIndex: "assetTypeName"
   },
@@ -305,6 +309,8 @@ export default {
     this.platformDictFn("asset_change_type");
     // 获取资产类型
     this.platformDictFn("asset_type");
+    //获取 有无经营权
+    this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
   },
   methods: {
     moment,
@@ -375,7 +381,7 @@ export default {
         }
       }).finally(() => {
         this.overviewNumSpinning = false;
-      });;
+      });
     },
     // 高级搜索控制
     searchContainerFn(val) {
@@ -437,8 +443,8 @@ export default {
         this.commonFn("delete", val.changeOrderId);
       }
       // 审批
-      if (["approval"].includes(str)) {
-      }
+      // if (["approval"].includes(str)) {
+      // }
       // 编辑
       if (["edit"].includes(str)) {
         let recordData = JSON.stringify([
@@ -571,6 +577,9 @@ export default {
           if (str === "asset_type") {
             this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
           }
+          // if(str === 'ASSET_MANAGEMENT_RIGHT'){
+
+          // }
         } else {
           this.$message.error(res.data.message);
         }

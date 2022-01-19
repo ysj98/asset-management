@@ -416,6 +416,17 @@
               />
             </template>
             <!-- 基础信息 -->
+
+            <!-- 有无经营权 -->
+            <template v-if="changeType === '7'" slot="managementRight" slot-scope="text, record">
+              <a-select
+                size="small"
+                style="width: 100%"
+                v-model="record.managementRight"
+                placeholder="请选择有无经营权"
+                :options="$addTitle(managementRightOptions)"
+              />
+            </template>
             <template v-if="changeType === '7'" slot="newAssetName" slot-scope="text, record">
               <a-input size="small" maxlength="30" v-model="record.newAssetName" />
             </template>
@@ -545,6 +556,7 @@ export default {
   props: {},
   data() {
     return {
+      managementRightOptions:[], //有无经营权
       objectTypeOptions:[],
       sourceOptions:[], // 来源方式
       changeOrderId: "",
@@ -689,6 +701,7 @@ export default {
     this.getObjectKeyValueByOrganIdFn();
     this.platformDictFn("asset_change_type");
     this.platformDictFn("asset_type");
+    this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
     if (this.setType === "edit") {
       this.enitData = JSON.parse(this.$route.query.enitData);
       this.changeOrderId = this.enitData[0].changeOrderId;
@@ -770,6 +783,7 @@ export default {
             item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
+            item.managementRight = +item.managementRight
             checkedData.push(item.assetId);
           });
           this.$nextTick(() => {
@@ -955,6 +969,8 @@ export default {
               otherArea: String(this.changeType) === "4" ? item.otherArea : "", // 其他面积
               originalValue:
                 String(this.changeType) === "3" ? item.newOriginalValue : "", // 资产原值
+              managementRight:
+              String(this.changeType) === "7" ? item.managementRight : "", // 有无经营产权
               newAssetName:
                 String(this.changeType) === "7" ? item.newAssetName : "", // 变更后资产名称
               newAssetCode:
@@ -1452,6 +1468,15 @@ export default {
           // 资产类型
           if (code === "asset_type") {
             this.assetTypeData = [...data];
+          }
+          //有无经营权
+          if(code === "ASSET_MANAGEMENT_RIGHT"){
+            this.managementRightOptions=data.map(item=>{
+              return {
+                key:item.value,
+                title:item.name
+              }
+            })
           }
         } else {
           this.$message.error(res.data.message);

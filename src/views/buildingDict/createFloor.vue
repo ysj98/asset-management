@@ -24,6 +24,11 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
+                  <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
+                    <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['useArea', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
                   <a-form-item label="楼层顺序" v-bind="formItemLayout">
                     <a-input-number  :precision="0" :style="allWidth" v-decorator="['floorIndex', {initialValue: '' ||
                     undefined}]"/>
@@ -52,6 +57,22 @@
                     <a-form-item label="描述" v-bind="formItemLayout2">
                       <a-textarea v-decorator="['floorDesc', {initialValue: ''}]"/>
                     </a-form-item>
+                </a-col>
+                <a-col :span="12">
+                  <a-form-item label="是否有消防验收材料" v-bind="formItemLayout">
+                    <a-select
+                      :style="allWidth"
+                      :getPopupContainer="getPopupContainer"
+                        placeholder="是否有消防验收材料"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="$addTitle(fireMaterialOpt)"
+                        :allowClear="false"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                        v-decorator="['fireMaterial', {initialValue: 0}]"
+                      />
+                  </a-form-item>
                 </a-col>
                 <a-col :span="24">
                   <a-form-item label="图片" v-bind="formItemLayout2">
@@ -99,6 +120,10 @@ export default {
   },
   data () {
     return {
+      fireMaterialOpt:[
+        {key: 0, title: '否'},
+        {key: 1, title: '是'}
+      ],
       bussType: 'floorDir',
       ASSET_MANAGEMENT,
       hasUpdatePower: false,
@@ -183,6 +208,8 @@ export default {
     },
     // 处理编辑数据
     handleEdit (data) {
+      //消防材料
+      data.fireMaterial = +data.fireMaterial || 0
       // 处理图片
       if (data.picPath) {
         this.picPath = [{url: data.picPath, name: ''}]
@@ -214,6 +241,7 @@ export default {
           utils.each(values, (value, key) => {
             data[key] = value || ''
           })
+          data.fireMaterial = data.fireMaterial || 0
           // 处理图片
           if (this.picPath.length) {
             data.picPath = this.picPath[0].url

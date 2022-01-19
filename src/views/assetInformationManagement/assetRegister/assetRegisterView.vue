@@ -61,7 +61,12 @@
         <div class="box">
           <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-          <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="登记单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="登记单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <ProvinceCityDistrict
+          class="city"
+          ref="ProvinceCityDistrict"
+          v-model="provinces"
+        ></ProvinceCityDistrict>
       </div>
     </SG-SearchContainer>
     <!--数据总览-->
@@ -98,6 +103,7 @@
 </template>
 
 <script>
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -209,9 +215,14 @@ const columns = [
 ]
 
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict},
   data () {
     return {
+      provinces: {
+        province: undefined,
+        city: undefined,
+        district: undefined
+      },
       sourceOptions:[{ value:'', label: '全部来源方式' }],
       ASSET_MANAGEMENT,
       toggle: false,
@@ -327,7 +338,10 @@ export default {
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId                                // 登记单编码
+        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
+        city: this.provinces.city ? this.provinces.city : '',               // 市
+        province: this.provinces.province ? this.provinces.province : '',   // 省
+        region: this.provinces.district ? this.provinces.district : '',     // 区
       }
       this.$api.assets.findAssetRegListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -506,6 +520,35 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .city {
+    float: right;
+    margin-right: 8px;
+    /deep/.ant-col-8 {width: 180px;}
+    /deep/.province_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.city_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.district_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 .assetRegister {
   .box {
     display: inline-block;

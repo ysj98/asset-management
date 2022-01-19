@@ -129,6 +129,9 @@
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
+      <template slot="fireMaterial" slot-scope="text">
+       {{+text===1?'是':'否'}}
+      </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -244,6 +247,7 @@
             { title: '物业费', dataIndex: 'organFee', width: 100 },
             { title: '已租面积', dataIndex: 'rentedArea', width: 100 },
             { title: '未租面积', dataIndex: 'unRentedArea', width: 100 },
+            { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },

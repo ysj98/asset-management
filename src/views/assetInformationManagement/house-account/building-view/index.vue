@@ -74,6 +74,9 @@
       <span slot="action" slot-scope="text, record">
         <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
+      <template slot="fireMaterial" slot-scope="text">
+        {{+text===1?'是':'否'}}
+      </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -135,6 +138,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea' },
             { title: '资产原值(元)', dataIndex: 'originalValue' },
             { title: '最新估值(元)', dataIndex: 'marketValue' },
+            { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 100, fixed: 'right' }
           ]
         },

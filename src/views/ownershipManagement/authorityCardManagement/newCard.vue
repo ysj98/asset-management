@@ -24,6 +24,21 @@
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="12">
             <a-form-item v-bind="formItemLayout" :colon="false">
+              <label slot="label">组织机构：</label>
+              <treeSelect
+                :allowClear="false"
+                :style="allWidth"
+                :default="false"
+                :defaultOrganName="organName"
+                :value="organId"
+                @changeTree="changeTree"
+                :placeholder="''"
+                v-decorator="['organId', { rules: [{ required: true, message: '请选择组织机构' }]}]"
+              ></treeSelect>
+            </a-form-item>
+          </a-col>
+          <a-col class="playground-col" :span="12">
+            <a-form-item v-bind="formItemLayout" :colon="false">
               <label slot="label">权证号：</label>
               <a-input placeholder="请输入权证号"
               :disabled="setType === 'edit'"
@@ -152,7 +167,8 @@
                 :customDownload="customDownload"
                 v-model="newCardData.files"
                 type="all"
-                :maxSize="5120"
+                :maxSize="20480"
+                :max="20"
               />
             </a-form-item>
           </a-col>
@@ -235,15 +251,17 @@
 </template>
 
 <script>
+import TreeSelect from "src/views/common/treeSelect";
 // import Cephalosome from '@/components/Cephalosome'
 import configBase from "@/config/config.base";
 import moment from 'moment'
 import {debounce, utils} from '@/utils/utils'
 import {accessCard, titleDeed, newCardData, columns, mortgageInformation, landDeed} from './beat'
 import warantAnnex from './warrantAnnex'
+import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {},
+  components: {TreeSelect},
   props: {
     queryType: {
       type: [String, Number],
@@ -256,6 +274,7 @@ export default {
   mixins: [warantAnnex],
   data () {
     return {
+      typeFilter,
       configBase,
       newData: '',
       setType: '',
@@ -287,6 +306,7 @@ export default {
       typeOfRightData:[],      // 权利类型
       show: false,
       organId: '',
+      organName:'',
       formItemTextarea: {
         labelCol: {
           xs: { span: 24 },
@@ -360,10 +380,15 @@ export default {
     }
   },
   methods: {
+    changeTree(value, label){
+      this.organName = label
+      this.organId = value
+    },
     // 新增进来清空数据
-    newFn (val, id) {
+    newFn (val, id,name) {
       this.newData = val
       this.organId = id
+      this.organName = name
       if (val === 'new') {
         this.warrantId = ''
         this.setType = ''

@@ -268,6 +268,11 @@ let columns = [
     width: "15%"
   },
   {
+    title: "使用面积(㎡)",
+    dataIndex: "useArea",
+    width: "15%"
+  },
+  {
     title: "套内面积(㎡)",
     dataIndex: "innerArea",
     width: "15%"

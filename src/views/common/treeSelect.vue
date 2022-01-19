@@ -216,7 +216,8 @@ export default {
     }
     .default-organ-name {
       position: absolute;
-      top: 0;
+      top: 50%;
+      transform: translateY(-50%);
       left: 0;
       width: 100%;
       padding: 0 30px 0 11px;
@@ -224,7 +225,6 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
       z-index: 1;
-
       line-height: 30px;
     }
   }

@@ -117,7 +117,7 @@
         @change="handleChange"
       />
     </div>
-    <!-- 新增 -->
+    <!-- 新增 -->""
     <NewCard v-if="newShow" ref="newCard" :pageNum="queryCondition.pageNum" @showFn="showFn" @successQuery="successQueryFn"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
@@ -350,7 +350,7 @@ export default {
       this.newShow = true
       this.$nextTick(() => {
         this.$refs.newCard.show = true
-        this.$refs.newCard.newFn('new', this.queryCondition.organId)
+        this.$refs.newCard.newFn('new', this.queryCondition.organId, this.organName)
         this.$refs.newCard.selectFn()
       })
     },
@@ -363,7 +363,7 @@ export default {
         this.newShow = true
         this.$nextTick(() => {
           this.$refs.newCard.show = true
-          this.$refs.newCard.newFn('edit', val.organId)
+          this.$refs.newCard.newFn('edit', val.organId, val.organName)
           this.$refs.newCard.selectFn()
           this.$refs.newCard.query(val.warrantId, val.warrantNbr, val.organId)
         })

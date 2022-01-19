@@ -86,7 +86,12 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                    <a-input-number :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
+                    <a-input-number  :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
+                  <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
+                    <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['useArea', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                   <a-col v-bind="formSpan">
@@ -271,6 +276,22 @@
                       <a-textarea :maxLength="200" v-decorator="['description', {initialValue: ''}]"/>
                     </a-form-item>
                 </a-col>
+                <a-col :span="12">
+                  <a-form-item label="是否有消防验收材料" v-bind="formItemLayout">
+                    <a-select
+                      :style="allWidth"
+                      :getPopupContainer="getPopupContainer"
+                        placeholder="是否有消防验收材料"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="$addTitle(fireMaterialOpt)"
+                        :allowClear="false"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                        v-decorator="['fireMaterial', {initialValue: 0}]"
+                      />
+                  </a-form-item>
+                </a-col>
                 <a-col :span="24">
                     <a-form-item label="平面图" v-bind="formItemLayout2">
                       <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
@@ -352,6 +373,10 @@ export default {
   },
   data () {
     return {
+      fireMaterialOpt:[
+        {key: 0, title: '否'},
+        {key: 1, title: '是'}
+      ],
       fromType:'',
       allStyle: 'width: 100%;',
       organIdMain:'', // 所属机构
@@ -507,6 +532,7 @@ export default {
           utils.each(values, (value, key) => {
             data[key] = value || ''
           })
+          data.fireMaterial = data.fireMaterial || 0
           // 处理时间类型
            if (data.completionDate) {
              data.completionDate = data.completionDate.format('YYYY-MM-DD')
@@ -620,7 +646,8 @@ export default {
     },
     // 处理编辑数据
     async handleEdit (data) {
-      console.log('test')
+      //消防材料
+      data.fireMaterial = +data.fireMaterial || 0
       // 把楼栋的 organId 传出去供 单元和楼层使用
       this.$emit('handleOrganIdOwn',data.organId)
       // 处理时间类型
