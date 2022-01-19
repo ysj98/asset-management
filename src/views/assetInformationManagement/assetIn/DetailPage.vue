@@ -158,6 +158,8 @@
             console.log('data',data)
             // 合并数据 query 和 接口 data
             Object.assign(obj,data)
+            // 返回的数据 budId 代表 入库单id
+            obj.id = data.busId
           }else {
             this.$message.error(message)
           }
