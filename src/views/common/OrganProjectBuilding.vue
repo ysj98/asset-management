@@ -144,6 +144,7 @@
 
     watch: {
       organId: function (organId) {
+        if(!organId) return
         Object.assign(this, {
           projectId: undefined,
           projectOptions: [],

@@ -181,7 +181,7 @@
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import {dateToString} from 'utils/formatTime'
-import moment from "_moment@2.29.1@moment";
+import moment from "moment";
 const defaultColumns = [
   {
     title: '资产名称',

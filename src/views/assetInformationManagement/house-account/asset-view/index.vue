@@ -164,6 +164,7 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
   import {querySourceType} from "@/views/common/commonQueryApi";
+  import { getFormat } from "utils/utils";
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
@@ -282,7 +283,6 @@
         sourceOptions:[],
       }
     },
-
     methods: {
       filterOption(input, option) {
         return (
@@ -405,6 +405,9 @@
         this.$api.assets.assetHousePageTotal(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
+            for(let key in data){
+              data[key] = getFormat(data[key])
+            }
             this.totalField.area = judgment.includes(data.totalArea) ? 0 : data.totalArea                            // 建筑面积
             this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
             this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
