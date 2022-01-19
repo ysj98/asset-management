@@ -335,10 +335,21 @@ export default {
       this.formInfo.parkingAreaId= undefined
     },
     beforeSubmit(value) {
-      return {
+      const result = {
         ...value,
+        useArea: [null,undefined].includes(value.useArea) ? '' : String(value.useArea),
+        floorArea: [null,undefined].includes(value.floorArea) ? '' : String(value.floorArea),
+        shareArea: [null,undefined].includes(value.shareArea) ? '' : String(value.shareArea),
         parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(",")
-      };
+      }
+      // 删除掉 值为null和空串的字段
+      Object.keys(result).forEach(ele=>{
+        if ([null,''].includes(result[ele])){
+          delete result[ele]
+        }
+      })
+      return result
+
     },
     // 确定
     handleSave() {
