@@ -149,6 +149,18 @@
         class="custom-table table-boxs"
         :pagination="false"
         >
+        <template slot="landArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="acreage" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="transferOperationArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="selfUserArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
         <span slot="action" slot-scope="text, record">
           <span v-if="record.assetName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
         </span>
@@ -192,6 +204,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
+import { getFormat } from "utils/utils";
 const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
@@ -200,22 +213,22 @@ const columnsData = [
   { title: '管理机构', dataIndex: 'organName', width: 150, disabled: true },
   { title: '宗地号', dataIndex: 'theNo', width: 150 },
   { title: '宗地位置', dataIndex: 'location', width: 150 },
-  { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150 },
+  { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },
   { title: '资产项目名称', dataIndex: 'projectName', width: 150 },
   { title: '权属用途', dataIndex: 'landCategory', width: 150 },
   { title: '土地类型', dataIndex: 'landType', width: 150 },
   { title: '土地用途', dataIndex: 'landuse', width: 150 },
   { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
   { title: '实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
-  { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150 },
+  { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150, scopedSlots: { customRender: 'acreage' } },
   { title: '容积率', dataIndex: 'landRate', width: 150 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 150 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
   { title: '使用期限', dataIndex: 'validPeriod', width: 150 },
   { title: '接管日期', dataIndex: 'takeOverDate', width: 150 },
-  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
-  { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
+  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
+  { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150, scopedSlots: { customRender: 'selfUserArea' } },
   { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
   { title: '其他(㎡)', dataIndex: 'otherArea', width: 150 },
   { title: '财务卡片编码', dataIndex: 'cardCode', width: 150 },
@@ -258,6 +271,7 @@ export default {
   props: {},
   data () {
     return {
+      getFormat,
       ASSET_MANAGEMENT,
       exportBtnLoading: false,
       modalShow: false,
@@ -637,6 +651,9 @@ export default {
       this.$api.land.assetViewListTotal(obj).then(res => {
         if (String(res.data.code) === '0') {
           let data = res.data.data
+          for(let key in data){
+              data[key] = getFormat(data[key])
+            }
           this.totalField.landArea = judgment.includes(data.area) ? 0 : data.area               // 土地面积
           this.totalField.acreage = judgment.includes(data.acreageTotal) ? 0 : data.acreageTotal                // 计容面积
           this.totalField.transferOperationArea = judgment.includes(data.transferOperationArea) ? 0 : data.transferOperationArea  // 运营

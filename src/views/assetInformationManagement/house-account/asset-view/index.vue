@@ -134,6 +134,24 @@
       <template slot="fireMaterial" slot-scope="text">
        {{+text===1?'是':'否'}}
       </template>
+      <template slot="area" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="transferOperationArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="selfUserArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="idleArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="occupationArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="otherArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
     </a-table>
     <div style="height: 70px;">
 
@@ -179,6 +197,7 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
     data () {
       return {
+        getFormat,
         supportMaterialOpt,
         supportMaterial: '',
         sourceModes:[],  // 查询条件-来源方式
@@ -213,7 +232,7 @@
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
             { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-            { title: '建筑面积(㎡)', dataIndex: 'area', width: 150 },
+            { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
             { title: '地理位置', dataIndex: 'address', width: 300 },
             { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
@@ -239,11 +258,11 @@
 
             { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
             { title: '接管时间', dataIndex: 'startDate', width: 150  },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150  },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100 },
-            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100 },
-            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100 },
-            { title: '其它(㎡)', dataIndex: 'otherArea', width: 100 },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
+            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
+            { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
             { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 100 },
