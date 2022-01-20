@@ -405,9 +405,9 @@ export default {
         { iconType: "book", text: "详情", editType: "detail" },
       ];
       const authRes = operationList.filter((ele) => {
-        if (!ele.auth){
-          return true
-        }else {
+        if (!ele.auth) {
+          return true;
+        } else {
           return this.$power.has(ele.auth);
         }
       });
@@ -420,13 +420,14 @@ export default {
         );
       });
     },
-    goDetail({ assetOperationRegisterId },fromType) {
+    goDetail({ assetOperationRegisterId, approvalStatus }, fromType) {
       this.$router.push({
         path: "/assetOperating/detail",
         query: {
           assetOperationRegisterId,
           organId: this.queryCondition.organId,
-          fromType
+          approvalStatus,
+          fromType,
         },
       });
     },
@@ -460,19 +461,22 @@ export default {
       }
     },
     operationFun(type, record) {
-      const assetOperationRegisterId = record.assetOperationRegisterId;
+      const { assetOperationRegisterId, approvalStatus } = record;
       switch (type) {
         case "edit":
           this.goAddEdit("edit", assetOperationRegisterId);
           break;
         case "approve":
-          this.goDetail({ assetOperationRegisterId },'approve');
+          this.goDetail(
+            { assetOperationRegisterId, approvalStatus },
+            "approve"
+          );
           break;
         case "delete":
-          this.handleDel({ assetOperationRegisterId });
+          this.handleDel({ assetOperationRegisterId, approvalStatus });
           break;
         case "detail":
-          this.goDetail({ assetOperationRegisterId },'detail');
+          this.goDetail({ assetOperationRegisterId, approvalStatus }, "detail");
           break;
       }
     },

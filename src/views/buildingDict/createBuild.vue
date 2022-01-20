@@ -35,15 +35,14 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <!-- v-if="type !== 'create'" -->
-                  <a-form-item  label="运营项目"  v-bind="formItemLayout">
+                  <a-form-item v-if="type !== 'create'"  label="运营项目"  v-bind="formItemLayout">
                     <!-- 总是不允许用户选择运营项目 -->
                     <a-select
                       :style="allWidth"
-                      :disabled="communityIdDisabled"
+                      :disabled="true"
                       :getPopupContainer="getPopupContainer"
                       @change="communityIdChange"
-                        placeholder="请选择项目"
+                        placeholder="无"
                         showSearch
                         optionFilterProp="children"
                         :options="$addTitle(communityIdOpt)"
@@ -697,7 +696,11 @@ export default {
       this.organIdMain = data.organId
       this.$refs.organTopRef.initDepartment(organTopId, organTopName)
       // 在获取 所属机构id 之后 获取项目 暂时和所属机构一样只能选同一 一级机构下的
-      await this.queryCommunityListByOrganId(organTopId)
+      try {
+        await this.queryCommunityListByOrganId(organTopId)
+      }catch (e) {
+        console.error(e)
+      }
       // 处理项目是否可以选择
       console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false
