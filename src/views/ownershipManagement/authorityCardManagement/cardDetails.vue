@@ -302,7 +302,7 @@ export default {
     }
   }
 }
-::v-deep .sg-uploadFile.show>.preview {
-  overflow: auto;
-}
+// ::v-deep .sg-uploadFile.show>.preview {
+//   overflow: auto;
+// }
 </style>
