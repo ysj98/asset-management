@@ -81,10 +81,30 @@
         </div>
       </div>
     </div>
+    <div class="particulars-nav">
+      <div>
+        <SG-Title title="审批轨迹"/>
+        <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
+        <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+      </div>
+      <div v-if="isApprove">
+        <SG-Title title="审核意见"/>
+        <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
+      </div>
+      <div style="height: 70px;"></div>
+      <div v-if="isApprove">
+        <!--底部审批操作按钮组-->
+        <form-footer location="fixed">
+          <SG-Button type="primary" @click="handleBtn(1)">审批通过</SG-Button>
+          <SG-Button type="dangerous" @click="handleBtn(0)" style="margin-right: 8px">驳回</SG-Button>
+        </form-footer>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import FormFooter from '@/components/FormFooter'
 import {
   deliveryProperty,
   deliveryOperation,
@@ -98,6 +118,7 @@ import {
   assetSize, changeDirectionUseEq
 } from "./basics";
 import { utils } from "@/utils/utils.js";
+import moment from "moment";
 const originalObjectTypeMap = {
   "1": "资产项目",
   "2": "楼栋",
@@ -109,10 +130,14 @@ const shareWayMap = {
   "2": "按资产个数分摊",
 };
 export default {
-  components: {},
+  components: {FormFooter},
   props: {},
   data() {
     return {
+      advice:'',
+      organId:'',
+      isApprove: false,
+      stepList:[],
       managementRightOptions:[],
       changeType: "",
       assetType: "",
@@ -183,6 +208,35 @@ export default {
     },
   },
   methods: {
+    // 按钮操作
+    handleBtn (operResult) {
+      if (operResult === 0){
+        if (!this.advice){
+          this.$message.error('驳回必填审核意见')
+          return null
+        }
+      }
+      let req = {
+        apprId: this.apprId,
+        operResult,
+        operOpinion: this.advice
+      }
+      this.$api.approve.uniformSubmit(req).then(({data: res}) => {
+        if (res && String(res.code) === '0') {
+          this.$message.success(operResult ?'审批成功' : '驳回成功')
+          // 跳回列表路由
+          this.$router.push({
+            path: "/assetChangeRegister",
+            query: { refresh: true },
+          });
+        }else {
+          throw res.message
+        }
+      }).catch(err => {
+        console.error(err)
+        this.$message.error(err || `${operResult ?   '审批失败' : '驳回失败'}`)
+      })
+    },
     // 查询详情
     query() {
       let obj = {
@@ -289,16 +343,67 @@ export default {
         }
       });
     },
+    async init(){
+      const { query: { instId } } = this.$route
+      let obj = this.$route.query
+      if (instId){
+        // 嵌套在 bpm 中时，关闭 面包屑
+        this.$route.meta.noShowProBreadNav = true
+        const req = {
+          serviceOrderId: instId
+        }
+        const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
+        if (code === '0'){
+          console.log('data',data)
+          // 合并数据 query 和 接口 data
+          Object.assign(obj,data)
+          // 返回的数据 budId 代表 入库单id
+          obj.id = data.busId
+        }else {
+          this.$message.error(message)
+        }
+      }else {
+        this.$route.meta.noShowProBreadNav = false
+      }
+
+      const setType = obj.setType
+      // 判断是否嵌套在 bpm 中
+      this.organId = obj.organId
+      this.particularsData = JSON.parse(obj.record);
+      this.changeOrderId = this.particularsData[0].changeOrderId;
+      this.changeType = this.particularsData[0].changeType + "";
+      this.assetType = this.particularsData[0].assetType + "";
+      this.query();
+      this.getChangeDetailPageFn();
+      this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
+      if (this.organId){
+        // 资产变更 1003 硬编码
+        // 详情页面也需要展示审批轨迹
+        const req = {busType: 1003,busId:this.changeOrderId,organId: this.organId}
+        this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
+          if (code==='0'){
+            this.apprId = data.amsApprovalResDto.apprId
+            this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+              return {
+                date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
+                title: ele.operOpinion,
+                desc: "", isDone: false, operation: [],
+              }
+            })
+            this.stepList.length && (this.stepList[0].isDone = true)
+            if (setType === 'approve'){
+              this.isApprove = data.amsApprovalResDto.isAbRole === 1
+            }
+          }else {
+            this.$message.error(message)
+          }
+        })
+      }
+
+    }
   },
-  created() {},
   mounted() {
-    this.particularsData = JSON.parse(this.$route.query.record);
-    this.changeOrderId = this.particularsData[0].changeOrderId;
-    this.changeType = this.particularsData[0].changeType + "";
-    this.assetType = this.particularsData[0].assetType + "";
-    this.query();
-    this.getChangeDetailPageFn();
-    this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
+    this.init()
   },
 };
 </script>

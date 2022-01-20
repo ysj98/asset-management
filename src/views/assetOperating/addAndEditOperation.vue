@@ -152,12 +152,14 @@ export default {
      * type stash-草稿  submit-提交
      * */
     async handleSave(type) {
+      let saveType = 0
       let approvalStatus = null;
       if (type === "stash") {
         approvalStatus = 0;
       }
       if (type === "submit") {
         approvalStatus = 2;
+        saveType = 1
       }
       let baseInfo;
       try {
@@ -177,6 +179,7 @@ export default {
         ...baseInfo,
         organId: this.organInfoCom.organId,
         approvalStatus,
+        saveType,
         assetOperationDetailList: dataSource.map((ele) => {
           return {
             projectId: baseInfo.projectId,

@@ -420,11 +420,13 @@ export default {
         );
       });
     },
-    goDetail({ assetOperationRegisterId }) {
+    goDetail({ assetOperationRegisterId },fromType) {
       this.$router.push({
         path: "/assetOperating/detail",
         query: {
           assetOperationRegisterId,
+          organId: this.queryCondition.organId,
+          fromType
         },
       });
     },
@@ -464,13 +466,13 @@ export default {
           this.goAddEdit("edit", assetOperationRegisterId);
           break;
         case "approve":
-          this.handleApprove({ assetOperationRegisterId });
+          this.goDetail({ assetOperationRegisterId },'approve');
           break;
         case "delete":
           this.handleDel({ assetOperationRegisterId });
           break;
         case "detail":
-          this.goDetail({ assetOperationRegisterId });
+          this.goDetail({ assetOperationRegisterId },'detail');
           break;
       }
     },

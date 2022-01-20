@@ -26,28 +26,77 @@
       </div>
     </div>
     <SG-Title title="资产列表" />
-    <a-table v-bind="tableOptions"></a-table>
+    <a-table v-bind="tableOptions">
+      <template #community="text, record">
+        <a-select
+          style="width: 200px"
+          placeholder="请选择项目"
+          showSearch
+          optionFilterProp="children"
+          notFoundContent="没有查询到数据"
+          :options="communityIdOpt"
+          :allowClear="false"
+          v-model="record.communityId"
+        />
+      </template>
+    </a-table>
     <SG-FooterPagination
+      v-if="fromType !== 'approve'"
       v-model="pageForm.pageNum"
       :pageLength="pageForm.pageSize"
       :totalCount="totalCount"
       :noPageTools="true"
       @change="handleChange"
     />
+    <!--审批轨迹-->
+    <div>
+      <SG-Title title="审批轨迹" />
+      <SG-TrackStep
+        v-if="stepList.length"
+        :stepList="stepList"
+        style="margin-left: 45px"
+      />
+      <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+    </div>
+    <div v-if="isApprove">
+      <SG-Title title="审核意见" />
+      <a-textarea
+        :rows="4"
+        style="resize: none; margin-left: 45px"
+        placeholder="请输入审核意见"
+        v-model="advice"
+      />
+    </div>
+    <div style="height: 70px"></div>
+    <div v-if="isApprove">
+      <!--底部审批操作按钮组-->
+      <form-footer location="fixed">
+        <SG-Button type="primary" @click="handleBtn(1)">审批通过</SG-Button>
+        <SG-Button
+          type="dangerous"
+          @click="handleBtn(0)"
+          style="margin-right: 8px"
+          >驳回</SG-Button
+        >
+      </form-footer>
+    </div>
   </div>
 </template>
 
 <script>
+import FormFooter from "@/components/FormFooter";
 import Information from "@/components/Information";
 import {
-  getBaseInfo,
   baseColumns,
-  generateColumnsByParamList,
-  getOperationDetailListPage,
   flatTableDataSource,
+  generateColumnsByParamList,
+  getBaseInfo,
+  getOperationDetailListPage,
 } from "@/views/assetOperating/share";
 import moment from "moment";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import { some } from "lodash";
+
 export default {
   /*
    * 详情页面
@@ -55,10 +104,16 @@ export default {
   name: "operationDetail",
   components: {
     Information,
+    FormFooter,
   },
-  mixins:[uploadAndDownLoadFIle],
+  mixins: [uploadAndDownLoadFIle],
   data() {
     return {
+      communityIdOpt: [],
+      advice: "",
+      stepList: [],
+      isApprove: false,
+      fromType: "",
       totalCount: 0,
       pageForm: {
         pageNum: 1,
@@ -128,8 +183,139 @@ export default {
     };
   },
   methods: {
+    queryCommunityListByOrganId({ organId }) {
+      return new Promise((resolve, reject) => {
+        let data = {
+          organId: organId,
+        };
+        this.$api.basics.queryCommunityListByOrganId(data).then(
+          (res) => {
+            if (res.data.code === "0") {
+              let result = res.data.data || [];
+              let resultArr = result.map((item) => {
+                return {
+                  label: item.name,
+                  value: item.communityId,
+                  title: item.name,
+                  ...item,
+                };
+              });
+              resolve(resultArr);
+            }
+            reject(res.data.message);
+          },
+          (reason) => {
+            reject(reason);
+          }
+        );
+      });
+    },
+    // 按钮操作
+    handleBtn(operResult) {
+      if (operResult === 0) {
+        if (!this.advice) {
+          this.$message.error("驳回必填审核意见");
+          return null;
+        }
+      }
+      let req = {
+        apprId: this.apprId,
+        operResult,
+        operOpinion: this.advice,
+      };
+      if (operResult === 1) {
+        const data = this.tableOptions.dataSource.map((ele) => {
+          return { assetId: ele.assetId, communityId: ele.communityId };
+        });
+        const error = this.handleValidate(data);
+        if (error) {
+          this.$message.error(error);
+          return null;
+        } else {
+          req.boData = data;
+        }
+      }
+      this.$api.approve
+        .uniformSubmit(req)
+        .then(({ data: res }) => {
+          if (res && String(res.code) === "0") {
+            this.$message.success(operResult ? "审批成功" : "驳回成功");
+            // 跳回列表路由
+            this.$router.go(-1);
+          } else {
+            throw res.message;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message.error(err || `${operResult ? "审批失败" : "驳回失败"}`);
+        });
+    },
+    // 验证是否选择运营项目
+    handleValidate(data) {
+      if (data.some((ele) => !ele.communityId)) {
+        return "请选择运营项目";
+      }
+    },
+    async initCurrentEnvironmentQuery() {
+      const {
+        query: { instId },
+      } = this.$route;
+      let obj = this.$route.query;
+      if (instId) {
+        this.$route.meta.noShowProBreadNav = true;
+        const req = {
+          serviceOrderId: instId,
+        };
+        const {
+          data: { code, message, data },
+        } = await this.$api.approve.getApprByServiceOrderId(req);
+        if (code === "0") {
+          console.log("data", data);
+          obj = data;
+          Object.assign(obj, data);
+          obj.fromType = "approve";
+          obj.assetOperationRegisterId = data.busId;
+        } else {
+          this.$message.error(message);
+        }
+      } else {
+        this.$route.meta.noShowProBreadNav = false;
+      }
+      return obj;
+    },
+    initApproveData({ organId, assetOperationRegisterId }) {
+      const req = { busType: 1004, busId: assetOperationRegisterId, organId };
+      this.$api.approve
+        .queryApprovalRecordByBus(req)
+        .then(({ data: { code, message, data } }) => {
+          if (code === "0") {
+            if (message === "操作成功") {
+              this.apprId = data.amsApprovalResDto.apprId;
+              this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
+                return {
+                  date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
+                  title: ele.operOpinion,
+                  desc: "",
+                  isDone: false,
+                  operation: [],
+                };
+              });
+              this.stepList.length && (this.stepList[0].isDone = true);
+              if (this.fromType === "approve") {
+                this.isApprove = data.amsApprovalResDto.isAbRole === 1;
+              }
+            }
+          } else {
+            this.$message.error(message);
+          }
+        });
+    },
     async init() {
-      this.initRouteQuery();
+      const obj = await this.initCurrentEnvironmentQuery();
+      const { organId, assetOperationRegisterId } = obj;
+      this.initRouteQuery(obj);
+      this.initApproveData({ organId, assetOperationRegisterId });
       getBaseInfo({
         assetOperationRegisterId: this.assetOperationRegisterId,
       }).then(
@@ -141,6 +327,16 @@ export default {
           console.error(reason);
         }
       );
+      if (this.fromType === "approve") {
+        this.queryCommunityListByOrganId({ organId }).then(
+          (data) => {
+            this.communityIdOpt = data;
+          },
+          (reason) => {
+            console.error(reason);
+          }
+        );
+      }
       await this.getOperationDetailListPage();
       this.initTableColumns();
     },
@@ -153,10 +349,19 @@ export default {
     },
     getOperationDetailListPage() {
       return new Promise((resolve, reject) => {
-        getOperationDetailListPage({
-          assetOperationRegisterId: this.assetOperationRegisterId,
+        let pageReq = {
           pageSize: this.pageForm.pageSize,
           pageNum: this.pageForm.pageNum,
+        };
+        if (this.fromType === "approve") {
+          pageReq = {
+            pageSize: 9999,
+            pageNum: 1,
+          };
+        }
+        getOperationDetailListPage({
+          assetOperationRegisterId: this.assetOperationRegisterId,
+          ...pageReq,
         }).then(
           (data) => {
             console.log("data", data);
@@ -180,10 +385,20 @@ export default {
       }
       const res = generateColumnsByParamList({ paramList: item.paramList });
       this.tableOptions.columns = [...baseColumns, ...res];
+      if (this.fromType === "approve") {
+        this.tableOptions.columns.push({
+          title: "运营项目",
+          width: 220,
+          scopedSlots: {
+            customRender: "community",
+          },
+        });
+      }
     },
-    initRouteQuery() {
-      const { assetOperationRegisterId } = this.$route.query;
+    initRouteQuery(data) {
+      const { assetOperationRegisterId, fromType } = data;
       this.assetOperationRegisterId = assetOperationRegisterId;
+      this.fromType = fromType;
     },
     initList(data) {
       this.list.forEach((ele) => {
