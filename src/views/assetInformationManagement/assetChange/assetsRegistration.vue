@@ -147,7 +147,6 @@ import SegiRangePicker from "@/components/SegiRangePicker";
 import TreeSelect from "../../common/treeSelect";
 import moment from "moment";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { utils, debounce } from "@/utils/utils.js";
 import { getCurrentDate, getThreeMonthsAgoDate } from "utils/formatTime";
 import noDataTips from "@/components/noDataTips";
 import OverviewNumber from "@/views/common/OverviewNumber";
@@ -429,7 +428,7 @@ export default {
         let particularsData = JSON.stringify([val]);
         this.$router.push({
           path: "/assetChangeRegister/particulars",
-          query: { record: particularsData }
+          query: { record: particularsData, organId: this.queryCondition.organId, setType: 'detail' }
         });
       }
       // 删除
@@ -437,8 +436,13 @@ export default {
         this.commonFn("delete", val.changeOrderId);
       }
       // 审批
-      // if (["approval"].includes(str)) {
-      // }
+      if (["approval"].includes(str)) {
+        let particularsData = JSON.stringify([val]);
+        this.$router.push({
+          path: "/assetChangeRegister/particulars",
+          query: { record: particularsData, organId: this.queryCondition.organId, setType: 'approve' }
+        });
+      }
       // 编辑
       if (["edit"].includes(str)) {
         let recordData = JSON.stringify([
