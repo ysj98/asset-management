@@ -272,7 +272,7 @@
             { title: '物业费', dataIndex: 'organFee', width: 100 },
             { title: '已租面积', dataIndex: 'rentedArea', width: 100 },
             { title: '未租面积', dataIndex: 'unRentedArea', width: 100 },
-            { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
+            { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -408,6 +408,12 @@
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
             this.tableObj.dataSource = data
+            this.tableObj.dataSource.forEach(item=>{
+              if(item.fireMaterial){
+                //导出需使用字段
+                item.isFireMaterial = item.fireMaterial
+              }
+            })
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -489,7 +495,6 @@
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
           sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
         }
-        console.log(form)
         if(type === 'exportAssetBtn'){
           this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
             if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res1.data.message) }
