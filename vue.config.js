@@ -144,7 +144,7 @@ module.exports = {
           uglifyOptions: {
             compress: {
               drop_debugger: true, // 去除debugger
-              // drop_console: true // 去除console
+              drop_console: false // 去除console
             }
           },
           sourceMap: false,

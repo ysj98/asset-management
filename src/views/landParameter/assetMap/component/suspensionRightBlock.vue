@@ -87,7 +87,7 @@
   </div>
 </template>
 <script>
-import Tools, {calc} from "@/utils/utils"
+import Tools, {calc, getFormat} from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
 import {
   columns,
@@ -210,6 +210,12 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
+            // 数据中面积、价值添加分位符
+            let resultArr = Object.values(result)
+            resultArr.forEach(item => {
+              item['assetArea'] = getFormat(item['assetArea'], 2)
+              item['assetValue'] = getFormat(item['assetValue'], 2)
+            })
             let keysArr = getDataIndexs(this.assetTypes)
             let dataSource = arrkeys.map((item) => {
               let key = item[1]

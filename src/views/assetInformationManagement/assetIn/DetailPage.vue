@@ -158,11 +158,13 @@
             console.log('data',data)
             // 合并数据 query 和 接口 data
             Object.assign(obj,data)
-            // 返回的数据 budId 代表 入库单id
+            // 返回的数据 busId 代表 入库单id
             obj.id = data.busId
           }else {
             this.$message.error(message)
           }
+        }else {
+          this.$route.meta.noShowProBreadNav = false
         }
         const {id, organId,} = obj
         this.storeId = id
@@ -186,7 +188,7 @@
                   this.apprId = data.amsApprovalResDto.apprId
                   this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
                     return {
-                      date:moment(ele.operDateStr),
+                      date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                       title: ele.operOpinion,
                       desc: "", isDone: false, operation: [],
                     }
@@ -296,8 +298,9 @@
             this.$message.success(operResult ?'审批成功' : '驳回成功')
             // 跳回列表路由
             return this.$router.push({ path: '/assetIn', query: { refresh: true } })
+          }else {
+            throw res.message
           }
-          throw res.message
         }).catch(err => {
           console.error(err)
           this.$message.error(err || `${operResult ?   '审批失败' : '驳回失败'}`)

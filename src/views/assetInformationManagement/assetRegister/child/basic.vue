@@ -924,7 +924,7 @@ export default {
         let sourceModeObj = this.sourceOptions.find(ele => item.sourceModeName === ele.title)
         item.ownershipStatus = this.organDictData[item.ownershipStatusName]
         item.kindOfRight = this.ownershipData[item.kindOfRightName],
-        item.managementRight = this.assetManagementRight.find(r => r.name === item.managementRightName).value || '',
+        item.managementRight = item.managementRightName ?  this.assetManagementRight.find(r => r.name === item.managementRightName).value : ''
         item.sourceMode = sourceModeObj ? Number(sourceModeObj.key) : ''
       },this)
       console.log(data, '-=-=-=')

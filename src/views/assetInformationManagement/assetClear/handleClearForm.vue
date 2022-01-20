@@ -358,7 +358,8 @@ export default {
     // 获取资产出库原因下拉列表
     getCleanupTypeOptions() {
       let form = {
-        code: 'asset_cleanup_type'
+        code: 'asset_cleanup_type',
+        organId: this.organId
       }
       this.$api.basics.organDict(form).then(res => {
         if (res.data.code === '0') {
@@ -484,22 +485,24 @@ export default {
           this.$message.error('驳回必填审核意见')
           return null
         }
-        const req = {
-          apprId: this.apprId,
-          operResult,
-          operOpinion: this.advice
-        }
-        this.$api.approve.uniformSubmit(req).then(({data: res}) => {
-          if (res && String(res.code) === '0') {
-            this.$message.success('操作成功')
-            this.$router.push({path: '/assetClear', query: {refresh: true}})
-          }
-          throw res.message
-        }).catch(err => {
-          console.error(err)
-          this.$message.error('操作失败')
-        })
       }
+      const req = {
+        apprId: this.apprId,
+        operResult,
+        operOpinion: this.advice
+      }
+      this.$api.approve.uniformSubmit(req).then(({data: res}) => {
+        if (res && String(res.code) === '0') {
+          this.$message.success('操作成功')
+          this.$router.push({path: '/assetClear', query: {refresh: true}})
+        }else {
+          throw res.message
+        }
+      }).catch(err => {
+        console.error(err)
+        this.$message.error('操作失败')
+      })
+
     },
     getEditDetail () {
       let form = {
@@ -573,20 +576,25 @@ export default {
       })
     },
     async init(){
-      const { query: { instid } } = this.$route
+      const { query: { instId } } = this.$route
       let obj = this.$route.query
-      if (instid){
+      if (instId){
+        this.$route.meta.noShowProBreadNav = true
         const req = {
-          serviceOrderId: instid
+          serviceOrderId: instId
         }
         const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
         if (code === '0'){
           console.log('data',data)
           obj = data
+          Object.assign(obj,data)
           obj.pageType = 'audit'
+          obj.cleaningOrderId = data.busId
         }else {
           this.$message.error(message)
         }
+      }else {
+        this.$route.meta.noShowProBreadNav = false
       }
 
       this.pageType = obj.pageType
@@ -615,13 +623,12 @@ export default {
                 this.apprId = data.amsApprovalResDto.apprId
                 this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
                   return {
-                    date:moment(ele.operDateStr),
+                    date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                     title: ele.operOpinion,
                     desc: "", isDone: false, operation: [],
                   }
                 })
-                // this.stepList.reverse()
-                this.stepList[0].isDone = true
+                this.stepList.length && (this.stepList[0].isDone = true)
                 if (this.pageType === 'audit'){
                   this.isApprove = data.amsApprovalResDto.isAbRole === 1
                 }

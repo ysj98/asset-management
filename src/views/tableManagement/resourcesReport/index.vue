@@ -58,6 +58,7 @@ import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
+import { getFormat } from '../../../utils/utils'
 const columnsData = [
   { title: '管理机构', dataIndex: 'organName', width: 150 },
   { title: '资产数量', dataIndex: 'assetNum', width: 150 },
@@ -261,6 +262,13 @@ export default {
       this.$api.tableManage.houseResourcePageList({...obj,containEmpty: this.queryCondition.containEmpty}).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
+          data.forEach(item => {
+            for(let sub in item){
+              if(sub != 'organId' && sub != 'organName'){
+                item[sub] = getFormat(item[sub])
+              }
+            }
+          })
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
