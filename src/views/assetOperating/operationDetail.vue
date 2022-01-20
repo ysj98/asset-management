@@ -36,6 +36,7 @@
           notFoundContent="没有查询到数据"
           :options="communityIdOpt"
           :allowClear="false"
+          :disabled="fromType !== 'approve'"
           v-model="record.communityId"
         />
       </template>
@@ -95,7 +96,6 @@ import {
 } from "@/views/assetOperating/share";
 import moment from "moment";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
-import { some } from "lodash";
 
 export default {
   /*
@@ -113,6 +113,7 @@ export default {
       advice: "",
       stepList: [],
       isApprove: false,
+      approvalStatus: "",
       fromType: "",
       totalCount: 0,
       pageForm: {
@@ -232,7 +233,7 @@ export default {
           this.$message.error(error);
           return null;
         } else {
-          req.boData = data;
+          req.boData = JSON.stringify(data);
         }
       }
       this.$api.approve
@@ -258,30 +259,32 @@ export default {
       }
     },
     async initCurrentEnvironmentQuery() {
-      const {
-        query: { instId },
-      } = this.$route;
+      // 不嵌套在 bpm 中，不用做特殊处理
+      // const {
+      //   query: { instId },
+      // } = this.$route;
       let obj = this.$route.query;
-      if (instId) {
-        this.$route.meta.noShowProBreadNav = true;
-        const req = {
-          serviceOrderId: instId,
-        };
-        const {
-          data: { code, message, data },
-        } = await this.$api.approve.getApprByServiceOrderId(req);
-        if (code === "0") {
-          console.log("data", data);
-          obj = data;
-          Object.assign(obj, data);
-          obj.fromType = "approve";
-          obj.assetOperationRegisterId = data.busId;
-        } else {
-          this.$message.error(message);
-        }
-      } else {
-        this.$route.meta.noShowProBreadNav = false;
-      }
+      // if (instId) {
+      //   this.$route.meta.noShowProBreadNav = true;
+      //   const req = {
+      //     serviceOrderId: instId,
+      //   };
+      //   const {
+      //     data: { code, message, data },
+      //   } = await this.$api.approve.getApprByServiceOrderId(req);
+      //   if (code === "0") {
+      //     console.log("data", data);
+      //     obj = data;
+      //     Object.assign(obj, data);
+      //     obj.fromType = "approve";
+      //     obj.assetOperationRegisterId = data.busId;
+      //     obj.approvalStatus = String(data.approvalStatus;)
+      //   } else {
+      //     this.$message.error(message);
+      //   }
+      // } else {
+      //   this.$route.meta.noShowProBreadNav = false;
+      // }
       return obj;
     },
     initApproveData({ organId, assetOperationRegisterId }) {
@@ -327,7 +330,8 @@ export default {
           console.error(reason);
         }
       );
-      if (this.fromType === "approve") {
+      // 是审批 或者 状态是已审批
+      if (this.fromType === "approve" || this.approvalStatus === "1") {
         this.queryCommunityListByOrganId({ organId }).then(
           (data) => {
             this.communityIdOpt = data;
@@ -364,9 +368,12 @@ export default {
           ...pageReq,
         }).then(
           (data) => {
-            console.log("data", data);
+            const resultData = (data.data || []).map((ele) => ({
+              ...ele,
+              communityId: String(ele.communityId || ""),
+            }));
             this.tableOptions.dataSource = flatTableDataSource({
-              dataSource: data ? data.data : [],
+              dataSource: resultData || [],
             });
             this.totalCount = data ? data.count : 0;
             resolve(data);
@@ -385,7 +392,7 @@ export default {
       }
       const res = generateColumnsByParamList({ paramList: item.paramList });
       this.tableOptions.columns = [...baseColumns, ...res];
-      if (this.fromType === "approve") {
+      if (this.fromType === "approve" || this.approvalStatus === "1") {
         this.tableOptions.columns.push({
           title: "运营项目",
           width: 220,
@@ -396,9 +403,10 @@ export default {
       }
     },
     initRouteQuery(data) {
-      const { assetOperationRegisterId, fromType } = data;
+      const { assetOperationRegisterId, fromType, approvalStatus } = data;
       this.assetOperationRegisterId = assetOperationRegisterId;
       this.fromType = fromType;
+      this.approvalStatus = String(approvalStatus);
     },
     initList(data) {
       this.list.forEach((ele) => {
