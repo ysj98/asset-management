@@ -30,10 +30,9 @@
                 :style="allWidth"
                 :default="false"
                 :defaultOrganName="organName"
-                :value="organId"
                 @changeTree="changeTree"
                 :placeholder="''"
-                v-decorator="['organId', { rules: [{ required: true, message: '请选择组织机构' }]}]"
+                v-decorator="['organId', { rules: [{ required: true, message: '请选择组织机构' }],initialValue:organId}]"
               ></treeSelect>
             </a-form-item>
           </a-col>
