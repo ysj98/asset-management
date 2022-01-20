@@ -783,6 +783,7 @@ export default {
             item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
+            //有无经营产权
             item.managementRight = +item.managementRight
             checkedData.push(item.assetId);
           });

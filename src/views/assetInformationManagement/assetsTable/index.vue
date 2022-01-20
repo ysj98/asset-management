@@ -115,6 +115,13 @@
                         :maxLength="30"
                         placeholder="出库单名称/编号"
                 />
+                <div style="width:100%">
+                  <ProvinceCityDistrict
+                    class="city"
+                    ref="ProvinceCityDistrict"
+                    v-model="provinces"
+                  ></ProvinceCityDistrict>
+                </div>
             </div>
         </SG-SearchContainer>
         <!--数据概览信息-->
@@ -149,6 +156,7 @@
 </template>
 
 <script>
+    import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
     import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
     import TreeSelect from "../../common/treeSelect";
     import noDataTips from "@/components/noDataTips";
@@ -192,10 +200,16 @@
             TreeSelect,
             noDataTips,
             OverviewNumber,
-            EquipmentSelectTree
+            EquipmentSelectTree,
+            ProvinceCityDistrict
         },
         data() {
             return {
+                provinces: {
+                  province: undefined,
+                  city: undefined,
+                  district: undefined
+                },
                 organName: "",
                 organId: "",
                 queryData: {
@@ -508,8 +522,13 @@
                 ...obj,
                 organId: this.organId
               }
+              const params2 ={
+                city: this.provinces.city ? this.provinces.city : '',               // 市
+                province: this.provinces.province ? this.provinces.province : '',   // 省
+                region: this.provinces.district ? this.provinces.district : '',     // 区
+              }
                 this.assetCleanupGetCount(params)
-                this.$api.assets.getGeneralSurvey(params).then(res => {
+                this.$api.assets.getGeneralSurvey({...params,...params2}).then(res => {
                     if (Number(res.data.code) === 0) {
                         const data = res.data.data
                         this.pageTotalCount = data.count
@@ -777,6 +796,35 @@
 </script>
 
 <style lang="less" scoped>
+  .city {
+    float: right;
+    margin-right: 8px;
+    /deep/.ant-col-8 {width: 180px;}
+    /deep/.province_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.city_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.district_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
     .assets-clear {
         /deep/ .sg-search-container .bottom-fold-wrap .search-icon {
             display: none;

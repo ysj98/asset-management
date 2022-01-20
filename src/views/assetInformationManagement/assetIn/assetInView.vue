@@ -50,11 +50,13 @@
           <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="入库单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <div  style="width:100%">
         <ProvinceCityDistrict
           class="city"
           ref="ProvinceCityDistrict"
           v-model="provinces"
         ></ProvinceCityDistrict>
+        </div>
       </div>
     </SG-SearchContainer>
     <!--数据总览-->
@@ -177,6 +179,11 @@ export default {
   components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict},
   data () {
     return {
+      provinces: {
+        province: undefined,
+        city: undefined,
+        district: undefined
+      },
       ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
@@ -283,7 +290,12 @@ export default {
         maxDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
         storeName: this.queryCondition.registerOrderNameOrId                                // 入库单编码
       }
-      this.$api.assets.assetInGetGeneralSurvey(obj).then(res => {
+      let obj2 = {
+        city: this.provinces.city ? this.provinces.city : '',               // 市
+        province: this.provinces.province ? this.provinces.province : '',   // 省
+        region: this.provinces.district ? this.provinces.district : '',     // 区
+      }
+      this.$api.assets.assetInGetGeneralSurvey({...obj,...obj2}).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -454,6 +466,35 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .city {
+    float: right;
+    margin-right: 8px;
+    /deep/.ant-col-8 {width: 180px;}
+    /deep/.province_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.city_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.district_style {
+      width: 170px;
+      margin: 14px 10px 0 0;
+      flex: 1;
+      margin-top: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 .assetRegister {
   .box {
     display: inline-block;

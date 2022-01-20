@@ -64,7 +64,12 @@
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
-          ></a-table>
+          >
+            <!-- 有无经营权 -->
+            <template v-if="changeType === '7'" slot="managementRight" slot-scope="text, record">
+              {{record.managementRightName}}
+            </template>
+          </a-table>
           <SG-FooterPagination
             :pageLength="queryCondition.pageSize"
             :totalCount="queryCondition.count"
@@ -108,6 +113,7 @@ export default {
   props: {},
   data() {
     return {
+      managementRightOptions:[],
       changeType: "",
       assetType: "",
       changeOrderId: "",
@@ -230,6 +236,13 @@ export default {
             item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
+            //有无经营产权
+            this.managementRightOptions.forEach(j=>{
+              if(+j.key === +item.managementRight ){
+                item.managementRightName = j.title
+              }
+            })
+
           });
           this.tableData = data;
           this.queryCondition.count = res.data.data.count;
@@ -254,6 +267,28 @@ export default {
       this.queryCondition.pageSize = data.pageLength;
       this.getChangeDetailPageFn();
     },
+    // 平台字典获取变更类型
+    platformDictFn(code) {
+      let obj = {
+        code,
+      };
+      this.$api.assets.platformDict(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data;
+          //有无经营权
+          if(code === "ASSET_MANAGEMENT_RIGHT"){
+            this.managementRightOptions=data.map(item=>{
+              return {
+                key:item.value,
+                title:item.name
+              }
+            })
+          }
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
   },
   created() {},
   mounted() {
@@ -263,6 +298,7 @@ export default {
     this.assetType = this.particularsData[0].assetType + "";
     this.query();
     this.getChangeDetailPageFn();
+    this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
   },
 };
 </script>
