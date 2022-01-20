@@ -78,7 +78,7 @@
               <SG-UploadFile
                 :baseImgURL="configBase.hostImg1"
                 v-model="attachmentList"
-                type="file"
+                type="all"
                 :max="5"
                 :maxSize="20480"
                 :customDownload="(value)=>{
@@ -352,6 +352,17 @@
           this.validateAssets = false
         }
         this.queryAssetByRegistId({})
+      },
+      imgFiles(files){
+        let reg = /^((?!png|jpg|jpeg|bmp).)*$/
+        let flag = this.imgFiles.some(item => {
+          let str = item.name.split('.')
+          return str[str.length-1] !== 'png' && str[str.length-1] !== 'jpg' && str[str.length-1] !== 'jpeg' && str[str.length-1] !== 'bmp'
+        })
+        if(flag){
+          this.$message.error('请上传图片')
+          this.imgFiles = files.filter(item => !reg.test(item.name))
+        }
       }
     }
   }

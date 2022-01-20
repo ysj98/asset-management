@@ -142,7 +142,6 @@ export default {
       }
       try{
         const {data: res} = await this.$api.assetBussinessInformation.exportTransferOperation(params)
-        debugger
         let blob = new Blob([res])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

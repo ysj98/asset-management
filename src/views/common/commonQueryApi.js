@@ -106,7 +106,6 @@ export const querySourceType = (organId, context) => {
 export const exportDataAsExcel = (data, API, name, context) => {
   // data: 后台入参，url: 导出地址，无法统一，name:导出excel名字
   return API(data).then(res => {
-    debugger
     if (res.status === 200 && res.data && res.data.size) {
       let a = document.createElement('a')
       a.href = URL.createObjectURL(new Blob([res.data]))

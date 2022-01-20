@@ -107,20 +107,20 @@
           <a-col class="playground-col" :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
-              <div style="display: flex">
-                <SG-UploadFile
-                  :baseImgURL="configBase.hostImg1"
-                  v-model="filepaths"
-                  type="file"
-                  :max="5"
-                  :maxSize="20480"
-                  :customDownload="(value)=>{
-                  return customDownload(value,$api.ownership.downLoadAnnex)
-                }"
-                  :customUpload="(value)=>{
-                  return customUpload(value,$api.ownership.uploadAnnex)
-                }"
-                />
+              <div style="display: flex">  
+              <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
+                v-model="filepaths"
+                type="all"
+                :max="5"
+                :maxSize="20480"
+                :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+                :customUpload="(value)=>{
+                return customUpload(value,$api.ownership.uploadAnnex)
+              }"
+              />
               </div>
             </a-form-item>
 
@@ -188,6 +188,19 @@ export default {
     }
   },
   computed: {
+  },
+  watch: {
+    imgFiles(files){
+      let reg = /^((?!png|jpg|jpeg|bmp).)*$/
+      let flag = this.imgFiles.some(item => {
+        let str = item.name.split('.')
+        return str[str.length-1] !== 'png' && str[str.length-1] !== 'jpg' && str[str.length-1] !== 'jpeg' && str[str.length-1] !== 'bmp'
+      })
+      if(flag){
+        this.$message.error('请上传图片')
+        this.imgFiles = files.filter(item => !reg.test(item.name))
+      }
+    }
   },
   created () {
   },
