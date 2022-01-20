@@ -114,7 +114,9 @@ export default {
                 paramItem.transferOperationCode ===
                 eleParamItem.transferOperationCode
             )[0];
-            paramItem.assetOperationDetailId = res.assetOperationDetailId;
+            if (res){
+              paramItem.assetOperationDetailId = res.assetOperationDetailId;
+            }
           });
         }
         return {
