@@ -35,15 +35,14 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <!-- v-if="type !== 'create'" -->
-                  <a-form-item  label="运营项目"  v-bind="formItemLayout">
+                  <a-form-item v-if="type !== 'create'"  label="运营项目"  v-bind="formItemLayout">
                     <!-- 总是不允许用户选择运营项目 -->
                     <a-select
                       :style="allWidth"
-                      :disabled="communityIdDisabled"
+                      :disabled="true"
                       :getPopupContainer="getPopupContainer"
                       @change="communityIdChange"
-                        placeholder="请选择项目"
+                        placeholder="无"
                         showSearch
                         optionFilterProp="children"
                         :options="$addTitle(communityIdOpt)"
