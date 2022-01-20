@@ -91,7 +91,7 @@
             <a
               v-if="String(record.status) === '3'"
               style="display: block; line-height: 35px"
-              @click="deleteAsset(record.storeId)"
+              @click="deleteAsset(record)"
               v-power="ASSET_MANAGEMENT.ASSET_IN_DELETE"
             >
               <a-icon type="delete" style="color: #a7adb8; font-size: 15px"/>
@@ -208,16 +208,17 @@
       },
 
       // 资产删除
-      deleteAsset (storeId) {
+      deleteAsset ({storeId,organId}) {
         let _this = this
         _this.$confirm({
           title: '提示',
-          content: '确认要删除该登记单吗？',
+          content: '确认要删除吗？',
           okText: '确认',
           cancelText: '取消',
           onOk: function () {
             _this.tableObj.loading = true
-            _this.$api.assets.auditAssetStore({ storeId, advice: '', status: 3 }).then(({data: res}) => {
+            console.log({ storeId, organId, advice: '', status: 4 })
+            _this.$api.assets.auditAssetStore({ storeId, organId, advice: '', status: 4 }).then(({data: res}) => {
               if (res && String(res.code) === '0') {
                 _this.$message.success('删除成功')
                 return _this.queryTableData({})
