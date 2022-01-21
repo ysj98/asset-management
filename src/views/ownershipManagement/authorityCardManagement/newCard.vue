@@ -479,6 +479,8 @@ export default {
           if (this.newCardData.files.length > 0) {
             this.newCardData.files.forEach(list => {
               files.push({
+                // fileSources 回显的时候对数据初始化，如果无 则代表新数据 传1
+                fileSources: [undefined,null].includes(list.fileSources) ? 1 : list.fileSources,
                 attachmentPath: list.url,
                 oldAttachmentName: list.name,
                 originName: list.name
@@ -866,6 +868,7 @@ export default {
           if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
               data.amsAttachmentList.forEach(item => {
               files.push({
+                fileSources: item.fileSources,
                 url: item.attachmentPath,
                 name: item.oldAttachmentName,
                 attachmentId: item.attachmentId
