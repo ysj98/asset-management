@@ -85,6 +85,13 @@ export default {
       this.$api.barCode.barCodePrint(this.codeInformationParams).then((res)=>{
         if (Number(res.data.code) === 0) {
           this.codeArray = JSON.parse(JSON.stringify(res.data.data))
+          this.codeArray = this.codeArray.map(ele=>{
+            const result = ele.attachmentList ? ele.attachmentList[0] : {}
+            return {
+              ...ele,
+              imageUrl: result ? result.attachmentPath : ''
+            }
+          })
           let dictionaryAttr = this.codeArray[0].dictionaryAttr.split(',')
           let selectData = [{name: '资产名称', value: 'assetName'}, {name: '资产标签', value: 'labelCode'}, {name: '资产编码', value: 'assetCode'}]
           dictionaryAttr.forEach(dictionary => {
