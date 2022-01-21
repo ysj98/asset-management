@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2022-01-17 15:38:41
+ * @LastEditTime: 2022-01-21 11:18:12
  * @Description: 资源报表
 -->
 <template>
@@ -11,7 +11,7 @@
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm" style="text-align: left; float: right">
-        <a-checkbox @change="onCheck">展示资产数量为0得机构</a-checkbox>
+        <a-checkbox :checked="queryCondition.containEmpty" @change="onCheck">展示资产数量为0得机构</a-checkbox>
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -92,7 +92,7 @@ const queryCondition =  {
   statuss: '',        // 资产状态(多选)
   pageNum: 1,         // 当前页
   pageSize: 10,        // 每页显示记录数
-  containEmpty: 0,    //展示资产数量为0得机构 1-展示 0-不展示
+  containEmpty: 1,    //展示资产数量为0得机构 1-展示 0-不展示
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber},

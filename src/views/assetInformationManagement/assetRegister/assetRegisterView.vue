@@ -526,25 +526,19 @@ export default {
     /deep/.ant-col-8 {width: 180px;}
     /deep/.province_style {
       width: 170px;
-      margin: 14px 10px 0 0;
       flex: 1;
-      margin-top: 14px;
       display: inline-block;
       vertical-align: middle;
     }
     /deep/.city_style {
       width: 170px;
-      margin: 14px 10px 0 0;
       flex: 1;
-      margin-top: 14px;
       display: inline-block;
       vertical-align: middle;
     }
     /deep/.district_style {
       width: 170px;
-      margin: 14px 10px 0 0;
       flex: 1;
-      margin-top: 14px;
       display: inline-block;
       vertical-align: middle;
     }
