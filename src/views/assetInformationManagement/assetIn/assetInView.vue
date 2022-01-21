@@ -297,13 +297,20 @@ export default {
       }
       this.$api.assets.assetInGetGeneralSurvey({...obj,...obj2}).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
-          data.forEach((item, index) => {
-            item.key = index
-          })
-          this.tableData = data
-          this.count = res.data.data.count
-          this.loading = false
+            if(!res.data.data){
+              this.tableData = []
+              this.count = 0
+              this.loading = false
+              return
+            }
+            let data = res.data.data.data
+            data.forEach((item, index) => {
+              item.key = index
+            })
+            this.tableData = data
+            this.count = res.data.data.count
+            this.loading = false
+
           if (this.queryCondition.pageNum === 1) {
             this.pageListStatistics(obj)
           }
