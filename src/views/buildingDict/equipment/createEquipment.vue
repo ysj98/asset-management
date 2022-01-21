@@ -390,7 +390,6 @@ export default {
         fileData.append('file', file)
         errorLists.push({ url: file.name, name: file.name  })
         fileData.append('organId', this.formInfo.topOrganId)
-        debugger
         return this.$api.building.equipmentFileUpload(fileData)
       })
       let requestAll = Promise.all(requestList)
