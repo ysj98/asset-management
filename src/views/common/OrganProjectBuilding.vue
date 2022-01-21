@@ -11,9 +11,13 @@
 <template>
   <div class="choose_area">
     <a-row :gutter="8">
-      <!--组织机构选择控件, 单选-->
+      <!--组织机构选择控件, 多选-->
       <a-col :span="isShowBuilding ? 8 : 12">
-        <tree-select @changeTree="changeTree" :multiple="true" :allowClear="false" class="organ_style"/>
+        <tree-select 
+          :multiple="true" 
+          :allowClear="false" 
+          @changeTree="changeTree" 
+          class="organ_style"/>
       </a-col>
       <a-col :span="isShowBuilding ? 8 : 12">
         <a-select

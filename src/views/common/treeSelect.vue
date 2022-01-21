@@ -3,6 +3,7 @@
     <a-tree-select
       class="tree-select"
       :class="{'have-default-name': showDefaultOrganName}"
+      :maxTagCount="maxTagCount" 
       :multiple="multiple"
       :showSearch="showSearch"
       :dropdownStyle="dropdownStyle"
@@ -95,7 +96,8 @@ export default {
     return {
       showDefaultOrganName: false,
       organId: '',
-      treeData: []
+      treeData: [],
+      maxTagCount: -1
     }
   },
   computed: {
@@ -192,6 +194,7 @@ export default {
   },
   mounted () {
     console.log('treeSelect-mounted加载')
+    this.maxTagCount = this.multiple ? 1 : -1
     this.organId = this.value
     this.initDepartment()
   }

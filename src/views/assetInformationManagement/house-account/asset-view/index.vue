@@ -487,7 +487,7 @@
           assetHouseId: buildIdList.join(',')
         } : {
           assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
-          organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
+          organId: 1, organIds: organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
           province, city, region, assetName,  address,
           statusList: status.includes('all') ? [] : status,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
