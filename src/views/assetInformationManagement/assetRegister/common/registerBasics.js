@@ -15,7 +15,7 @@ export const columnsData = [
   { title: '建筑面积', dataIndex: 'area', width: 100 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
-  { title: '有无经营权', dataIndex: 'managementRightName', width: 100 },
+  { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
@@ -44,6 +44,7 @@ export const houseVerificationList = [
   { title: '建筑面积', dataIndex: 'area', required: false, type: 'float4' },
   { title: '坐落位置', dataIndex: 'position', required: false },
   { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
+  { title: '有无经营权', dataIndex: 'managementRightName', required: false },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '装修情况', dataIndex: 'decorationSituation', required: true, fontLength: 30 },
@@ -78,6 +79,7 @@ export const landVerificationList = [
   { title: '土地用途', dataIndex: 'landuseName', required: false },
   { title: '坐落位置', dataIndex: 'pasitionString', required: false },
   { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
+  { title: '有无经营权', dataIndex: 'managementRightName', required: false },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float132' },
@@ -101,6 +103,7 @@ export const landVerificationList = [
 export const yardVerificationList = [
   { title: '资产名称', dataIndex: 'assetName', required: true, fontLength: 30 },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
+  { title: '有无经营权', dataIndex: 'managementRightName', required: false },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float132' },
   { title: '市场价值', dataIndex: 'marketValue', required: false, type: 'float' },
@@ -123,6 +126,7 @@ export const yardVerificationList = [
 export const equipmentVerificationList = [
   { title: '资产名称', dataIndex: 'assetName', required: true, fontLength: 30 },
   { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
+  { title: '有无经营权', dataIndex: 'managementRightName', required: false },
   { title: '权属情况', dataIndex: 'ownershipStatusName', required: true },
   { title: '权证号', dataIndex: 'warrantNbr', required: false, fontLength: 50 },
   { title: '资产原值', dataIndex: 'originalValue', required: false, type: 'float132' },
@@ -149,6 +153,7 @@ export const landData = [
   { title: '土地用途', dataIndex: 'landuseName', width: 100 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
@@ -250,6 +255,7 @@ export const yard = [
   { title: '资产名称', dataIndex: 'assetName', width: 350 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
@@ -269,6 +275,7 @@ export const equipment = [
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
   { title: '所在位置', dataIndex: 'pasitionString', width: 100 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 350 },
+  { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },

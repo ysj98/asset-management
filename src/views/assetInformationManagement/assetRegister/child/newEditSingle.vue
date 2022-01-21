@@ -24,7 +24,8 @@
       <keep-alive>
         <basic
           v-if="this.activeStepIndex === 0"
-          ref="basicRef" :organId="organId"
+          ref="basicRef" 
+          :organId="organId"
           :registerOrderId="registerOrderId"
           :assetTypeId="assetType"
         >
