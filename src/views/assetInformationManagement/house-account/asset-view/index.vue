@@ -131,8 +131,10 @@
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
       </span>
-      <template slot="fireMaterial" slot-scope="text">
-       {{+text===1?'是':'否'}}
+      <template slot="fireMaterial" slot-scope="text, record">
+        <span v-if="record.assetName !== '所有页-合计'">
+           {{+text===1?'是':'否'}}
+        </span>
       </template>
       <template slot="area" slot-scope="text">
        {{getFormat(text)}}
@@ -448,6 +450,7 @@
             this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
             this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
             this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
+            console.log('----',this.tableObj.dataSource)
           } else {
             this.$message.error(res.message)
           }
