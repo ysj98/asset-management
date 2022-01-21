@@ -2,7 +2,7 @@
 <template>
   <SG-Modal
     class="assetBundlePopover"
-    width="836px"
+    width="1000px"
     v-model="show"
     :noPadding="true"
     title="权证详情"
