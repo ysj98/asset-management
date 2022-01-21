@@ -49,7 +49,7 @@
             handleChangeFile(value,0)
           }"
           v-model="filepaths"
-          type="file"
+          type="all"
           :max="5"
           :maxSize="20480"
           :customDownload="
@@ -118,8 +118,19 @@ export default {
           filesArr = filesArr.concat(this.imgFiles)
         }
       }else {
+        // debugger
         const newUrlArr = value.map(ele=>ele.url)
         if(fileType === 'img'){
+          let reg = /^((?!png|jpg|jpeg|bmp).)*$/
+          let flag = this.imgFiles.some(item => {
+            let str = item.name.split('.')
+            return str[str.length-1] !== 'png' && str[str.length-1] !== 'jpg' && str[str.length-1] !== 'jpeg' && str[str.length-1] !== 'bmp'
+          })
+          if(flag){
+            this.imgFiles = this.imgFiles.filter(item => !reg.test(item.name))
+            this.$message.error('请上传图片')
+            return
+          }
           filesArr = [...this.imgFiles.filter(ele=> !newUrlArr.includes(ele.url)),...value]
           filesArr = filesArr.concat(this.filepaths)
         }else{
@@ -137,7 +148,6 @@ export default {
         }
         this.$api.assets.updateAttachment(req).then(({data:{code,message,data}})=>{
           if (code === '0'){
-            console.log('data',data)
             this.$SG_Message.success('更新成功')
           }else {
             this.$SG_Message.error(message)

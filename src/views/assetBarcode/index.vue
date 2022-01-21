@@ -129,11 +129,11 @@ export default {
           this.assetLabelCodeId = res.data.data.assetLabelCodeId
           this.organName = res.data.data.organName
           let data = res.data.data.dictionaryAttr.split(",")
-          this.selectData = this.assetCodes.filter(item => data.indexOf(String(item.value)) > -1)
-          this.selectConfigure.firstly = this.selectData[0].value
-          this.selectConfigure.secondly = this.selectData[1].value
-          this.selectConfigure.thirdly = this.selectData[2].value
-          this.selectConfigure.forthly = this.selectData[3].value
+          data = data.map(ele=>Number(ele))
+          this.selectConfigure.firstly = data[0]
+          this.selectConfigure.secondly = data[1]
+          this.selectConfigure.thirdly = data[2]
+          this.selectConfigure.forthly = data[3]
           if (res.data.data.attachmentList && res.data.data.attachmentList[0]) {
             let hostImgLength = configs.hostImg1.length
             this.logoInfo.name = res.data.data.attachmentList[0].oldAttachmentName

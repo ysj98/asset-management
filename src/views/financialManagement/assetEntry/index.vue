@@ -105,6 +105,7 @@
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
+    <div style="height: 70px;"></div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"
       :totalCount="paginator.totalCount"

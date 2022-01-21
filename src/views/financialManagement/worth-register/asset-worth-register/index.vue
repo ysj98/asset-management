@@ -143,6 +143,7 @@
         </div>
       </batch-import>
     </div>
+    <div style="height: 70px;"></div>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
 </template>

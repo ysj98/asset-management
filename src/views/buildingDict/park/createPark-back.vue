@@ -493,7 +493,6 @@ export default {
       })
     },
     beforeSubmit (value) {
-      debugger
       let areaArray = this.formInfo.areaArray || []
       areaArray = areaArray.map(item=>({...item,areaOtherImg: item.areaOtherImg.map(node=>node.url).join(',')}))
       return {

@@ -246,6 +246,8 @@ export default {
         console.log(res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
+          this.changeType = data.changeType + "";
+          this.assetType = data.assetType + "";
           data.originalObjectTypeName =
             originalObjectTypeMap[data.originalObjectType];
           data.shareWayName = shareWayMap[data.shareWay];
@@ -357,8 +359,8 @@ export default {
           console.log('data',data)
           // 合并数据 query 和 接口 data
           Object.assign(obj,data)
-          // 返回的数据 budId 代表 入库单id
-          obj.id = data.busId
+          // 返回的数据 budId 代表 变更单单id
+          obj.record = JSON.stringify([{changeOrderId: data.busId}])
         }else {
           this.$message.error(message)
         }
@@ -371,8 +373,6 @@ export default {
       this.organId = obj.organId
       this.particularsData = JSON.parse(obj.record);
       this.changeOrderId = this.particularsData[0].changeOrderId;
-      this.changeType = this.particularsData[0].changeType + "";
-      this.assetType = this.particularsData[0].assetType + "";
       this.query();
       this.getChangeDetailPageFn();
       this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
