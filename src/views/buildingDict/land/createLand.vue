@@ -418,7 +418,7 @@
                   <a-select
                     :style="allWidth"
                     v-decorator="[
-                      'isPledge',
+                      'isSell',
                       {
                         initialValue: ''
                       },
@@ -434,7 +434,7 @@
                   <a-select
                     :style="allWidth"
                     v-decorator="[
-                      'isSell',
+                      'isPledge',
                       {
                         initialValue: ''
                       },

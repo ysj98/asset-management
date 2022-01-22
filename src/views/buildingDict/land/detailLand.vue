@@ -136,13 +136,13 @@
             <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">是否缴纳土地出让金：</div>
-                <div class="item-content">{{ blankInfo.isPledge || "--"}}</div>
+                <div class="item-content">{{ blankInfo.isSell || "--"}}</div>
               </div>
             </a-col>
             <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">是否抵押：</div>
-                <div class="item-content"> {{ blankInfo.isSell || "--"}}</div>
+                <div class="item-content"> {{ blankInfo.isPledge || "--"}}</div>
               </div>
             </a-col>
             <a-col :span="8">
