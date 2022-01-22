@@ -681,7 +681,8 @@ export default {
             ...ele,
             sourceMode: ele.sourceModeName ? handleEnumerationConversion(ele.sourceModeName, this.sourceOptions, ['title', 'key']) : this.sourceType,
             kindOfRight: this.ownershipData[ele.kindOfRightName],
-            ownershipStatus: this.organDictData[ele.ownershipStatusName]
+            ownershipStatus: this.organDictData[ele.ownershipStatusName],
+            managementRight: ele.managementRightName ?  this.assetManagementRight.find(r => r.name === ele.managementRightName).value : ''
           }));
           await this.DE_Loding(loadingName)
           await this.handleSaveAsset(basicData)
