@@ -112,6 +112,15 @@ export default {
           organId: this.organInfoCom.organId,
           assetType: newValue,
         });
+        getOperationDetailListPage({
+          pageNum: 1,
+          pageSize: 9999,
+          assetOperationRegisterId: this.assetOperationRegisterId,
+        }).then((data) => {
+          this.importedData = flatTableDataSource({
+            dataSource: data ? data.data : [],
+          });
+        });
       }
       this.uid = this.uid + 1;
     },
@@ -152,14 +161,14 @@ export default {
      * type stash-草稿  submit-提交
      * */
     async handleSave(type) {
-      let saveType = 0
+      let saveType = 0;
       let approvalStatus = null;
       if (type === "stash") {
         approvalStatus = 0;
       }
       if (type === "submit") {
         approvalStatus = 2;
-        saveType = 1
+        saveType = 1;
       }
       let baseInfo;
       try {
@@ -172,9 +181,9 @@ export default {
         return null;
       }
 
-      const error = await this.$refs.TableAssetRef.handleValidate()
+      const error = await this.$refs.TableAssetRef.handleValidate();
       if (error) {
-        this.$message.error(error)
+        this.$message.error(error);
         return null;
       }
       const dataSource = this.$refs.TableAssetRef.getReq(this.type);
@@ -295,18 +304,6 @@ export default {
           attachment,
         });
       });
-      getOperationDetailListPage({
-        pageNum: 1,
-        pageSize: 9999,
-        assetOperationRegisterId: this.assetOperationRegisterId,
-      }).then((data) => {
-        this.importedData = flatTableDataSource({
-          dataSource: data ? data.data : [],
-        });
-      });
-      // this.$nextTick(() => {
-      //   this.$refs.BaseFormEditRef.handleSelectAssetType("1");
-      // });
     },
   },
   created() {

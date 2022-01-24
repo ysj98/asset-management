@@ -1,7 +1,16 @@
 <template>
   <div>
     <a-form-model :model="formData" ref="formRef" :rules="rules">
-      <a-table class="custom-table" v-bind="tableOptions"></a-table>
+      <a-table class="custom-table" v-bind="tableOptions">
+        <template #action="text, record">
+          <a
+            @click="handleDelete({ assetId: record.assetId })"
+            style="color: #fd7474"
+          >
+            删除
+          </a>
+        </template>
+      </a-table>
     </a-form-model>
   </div>
 </template>
@@ -71,20 +80,35 @@ export default {
     },
   },
   methods: {
+    handleDelete({ assetId }) {
+      const _this = this;
+      this.$confirm({
+        title: "提示",
+        content: "确认删除吗？",
+        onOk() {
+          const idx = _this.tableOptions.dataSource.findIndex(
+            (ele) => ele.assetId === assetId
+          );
+          if (idx !== -1) {
+            _this.tableOptions.dataSource.splice(idx, 1);
+          }
+        },
+      });
+    },
     handleValidate() {
       return new Promise((resolve) => {
-        if(this.tableOptions.dataSource.length){
+        if (this.tableOptions.dataSource.length) {
           this.$refs.formRef.validate((valid) => {
-            if (valid){
-              resolve('')
-            }else {
-              resolve('请输入必填字段信息')
+            if (valid) {
+              resolve("");
+            } else {
+              resolve("请输入必填字段信息");
             }
           });
-        }else {
-          resolve('请添加资产')
+        } else {
+          resolve("请添加资产");
         }
-      })
+      });
     },
     handleTableColumns(paramsList) {
       console.log("paramsList", paramsList);
@@ -97,7 +121,17 @@ export default {
           },
         };
       });
-      this.tableOptions.columns = [...baseColumns, ...res];
+      this.tableOptions.columns = [
+        ...baseColumns,
+        ...res,
+        {
+          title: "操作",
+          width: 120,
+          scopedSlots: {
+            customRender: "action",
+          },
+        },
+      ];
     },
     getReq(type) {
       return this.tableOptions.dataSource.map((ele) => {
@@ -121,7 +155,7 @@ export default {
                 paramItem.transferOperationCode ===
                 eleParamItem.transferOperationCode
             )[0];
-            if (res){
+            if (res) {
               paramItem.assetOperationDetailId = res.assetOperationDetailId;
             }
           });
