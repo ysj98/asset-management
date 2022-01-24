@@ -288,37 +288,47 @@ export default {
       return obj;
     },
     initApproveData({ organId, assetOperationRegisterId }) {
-      const req = { busType: 1004, busId: assetOperationRegisterId, organId };
-      this.$api.approve
-        .queryApprovalRecordByBus(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            if (message === "操作成功") {
-              this.apprId = data.amsApprovalResDto.apprId;
-              this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
-                return {
-                  date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
-                  title: ele.operOpinion,
-                  desc: "",
-                  isDone: false,
-                  operation: [],
-                };
-              });
-              this.stepList.length && (this.stepList[0].isDone = true);
-              if (this.fromType === "approve") {
-                this.isApprove = data.amsApprovalResDto.isAbRole === 1;
+      return new Promise((resolve, reject) => {
+        const req = { busType: 1004, busId: assetOperationRegisterId, organId };
+        this.$api.approve.queryApprovalRecordByBus(req).then(
+          ({ data: { code, message, data } }) => {
+            if (code === "0") {
+              if (message === "操作成功") {
+                this.apprId = data.amsApprovalResDto.apprId;
+                this.stepList = (data.approvalRecordResDtos || []).map(
+                  (ele) => {
+                    return {
+                      date: ele.operDateStr
+                        ? moment(ele.operDateStr)
+                        : moment(),
+                      title: ele.operOpinion,
+                      desc: "",
+                      isDone: false,
+                      operation: [],
+                    };
+                  }
+                );
+                this.stepList.length && (this.stepList[0].isDone = true);
+                if (this.fromType === "approve") {
+                  this.isApprove = data.amsApprovalResDto.isAbRole === 1;
+                }
               }
+              resolve();
+            } else {
+              this.$message.error(message);
+              reject();
             }
-          } else {
-            this.$message.error(message);
+          },
+          (reason) => {
+            reject(reason);
           }
-        });
+        );
+      });
     },
     async init() {
       const obj = await this.initCurrentEnvironmentQuery();
       const { organId, assetOperationRegisterId } = obj;
       this.initRouteQuery(obj);
-      this.initApproveData({ organId, assetOperationRegisterId });
       getBaseInfo({
         assetOperationRegisterId: this.assetOperationRegisterId,
       }).then(
@@ -330,8 +340,16 @@ export default {
           console.error(reason);
         }
       );
-      // 是审批 或者 状态是已审批
-      if (this.fromType === "approve" || this.approvalStatus === "1") {
+      const a1 = this.initApproveData({ organId, assetOperationRegisterId });
+      const a2 = this.getOperationDetailListPage();
+      console.log("one");
+      await a1;
+      await a2;
+      // 是审批且是 AB角，或者状态是已审批
+      if (
+        (this.fromType === "approve" && this.isApprove) ||
+        this.approvalStatus === "1"
+      ) {
         this.queryCommunityListByOrganId({ organId }).then(
           (data) => {
             this.communityIdOpt = data;
@@ -341,7 +359,6 @@ export default {
           }
         );
       }
-      await this.getOperationDetailListPage();
       this.initTableColumns();
     },
     handleChange({ pageNo, pageLength }) {
@@ -386,13 +403,17 @@ export default {
       });
     },
     initTableColumns() {
+      console.log("two");
       const item = this.tableOptions.dataSource[0];
       if (!item) {
         return null;
       }
       const res = generateColumnsByParamList({ paramList: item.paramList });
       this.tableOptions.columns = [...baseColumns, ...res];
-      if (this.fromType === "approve" || this.approvalStatus === "1") {
+      if (
+        (this.fromType === "approve" && this.isApprove) ||
+        this.approvalStatus === "1"
+      ) {
         this.tableOptions.columns.push({
           title: "运营项目",
           width: 220,
