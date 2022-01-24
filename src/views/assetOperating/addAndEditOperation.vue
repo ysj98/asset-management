@@ -171,7 +171,10 @@ export default {
         console.error(baseInfo);
         return null;
       }
-      if (!this.$refs.TableAssetRef.handleValidate()) {
+
+      const error = await this.$refs.TableAssetRef.handleValidate()
+      if (error) {
+        this.$message.error(error)
         return null;
       }
       const dataSource = this.$refs.TableAssetRef.getReq(this.type);

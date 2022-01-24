@@ -72,12 +72,19 @@ export default {
   },
   methods: {
     handleValidate() {
-      let flag = true;
-      this.$refs.formRef.validate((valid) => {
-        console.log("valid", valid);
-        flag = valid;
-      });
-      return flag;
+      return new Promise((resolve) => {
+        if(this.tableOptions.dataSource.length){
+          this.$refs.formRef.validate((valid) => {
+            if (valid){
+              resolve('')
+            }else {
+              resolve('请输入必填字段信息')
+            }
+          });
+        }else {
+          resolve('请添加资产')
+        }
+      })
     },
     handleTableColumns(paramsList) {
       console.log("paramsList", paramsList);
