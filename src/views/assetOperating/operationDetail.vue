@@ -158,7 +158,7 @@ export default {
           title: "创建日期",
           value: "",
           render(h, data, resValue) {
-            return moment(resValue).format("YYYY-MM-DD hh:mm:ss");
+            return moment(resValue).format("YYYY-MM-DD HH:mm:ss");
           },
         },
         {

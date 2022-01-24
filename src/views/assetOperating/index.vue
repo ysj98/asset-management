@@ -225,7 +225,7 @@ const columns = [
     title: "创建日期",
     key: "createTime",
     customRender(text, record) {
-      return moment(record.createTime).format("YYYY-MM-DD hh:mm:ss");
+      return moment(record.createTime).format("YYYY-MM-DD HH:mm:ss");
     },
   },
   {
