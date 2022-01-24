@@ -6,12 +6,12 @@ export const baseColumns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: 160
+    // width: 160
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: 120
+    // width: 120
   },
   {
     title: "资产类型",
@@ -21,17 +21,17 @@ export const baseColumns = [
   {
     title: "资产分类",
     dataIndex: "objectTypeName",
-    width: 120
+    // width: 120
   },
   {
     title: "所在位置",
     dataIndex: "address",
-    width: 200
+    // width: 200
   },
   {
     title: "来源方式",
     dataIndex: "sourceModeName",
-    width: 120
+    // width: 120
   },
 ];
 export function generateColumnsByParamList({ paramList }, mapFn) {
