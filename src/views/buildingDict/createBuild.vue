@@ -84,7 +84,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                    <a-input-number  :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
+                    <a-input-number :precision="4"  :max="999999.9999" :style="allWidth" v-decorator="['builtArea', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
