@@ -47,12 +47,12 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col v-if="routeQuery.type === 'edit'" :span="8">
+          <a-col :span="8">
             <a-form-model-item label="运营项目" prop="communityId">
               <a-select
-                  :disabled="true"
+                  :disabled="routeQuery.type === 'edit'"
                   :style="allWidth"
-                  placeholder="无"
+                  :placeholder=" routeQuery.type === 'edit' ? '无' : '请选择'"
                   showSearch
                   option-filter-prop="children"
                   :options="$addTitle(communityIdOpt)"
