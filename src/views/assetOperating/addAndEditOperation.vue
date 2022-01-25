@@ -112,15 +112,6 @@ export default {
           organId: this.organInfoCom.organId,
           assetType: newValue,
         });
-        getOperationDetailListPage({
-          pageNum: 1,
-          pageSize: 9999,
-          assetOperationRegisterId: this.assetOperationRegisterId,
-        }).then((data) => {
-          this.importedData = flatTableDataSource({
-            dataSource: data ? data.data : [],
-          });
-        });
       }
       this.uid = this.uid + 1;
     },
@@ -302,6 +293,17 @@ export default {
           assetType,
           remark,
           attachment,
+        });
+        this.$nextTick(() => {
+          getOperationDetailListPage({
+            pageNum: 1,
+            pageSize: 9999,
+            assetOperationRegisterId: this.assetOperationRegisterId,
+          }).then((data) => {
+            this.importedData = flatTableDataSource({
+              dataSource: data ? data.data : [],
+            });
+          });
         });
       });
     },

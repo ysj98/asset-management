@@ -191,7 +191,11 @@ export default {
   },
   computed: {
     assetTypeOptions() {
-      return this.$store.state.ASSET_TYPE_OPTIONS.map((ele) => ({
+      // 过滤掉 车场和设备设施 3 or 5
+      const { EQUIPMENT, YARD } = this.$store.state.ASSET_TYPE_CODE;
+      return this.$store.state.ASSET_TYPE_OPTIONS.filter(
+        (ele) => ![EQUIPMENT, YARD].includes(String(ele.value))
+      ).map((ele) => ({
         title: ele.name,
         value: ele.value,
         label: ele.name,
