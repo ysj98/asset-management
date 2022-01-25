@@ -50,6 +50,8 @@ export default {
   methods: {},
   created() {
     this.tabList = this.tabList.filter(ele=>{
+      return Object.values(this.$store.state.ASSET_TYPE_CODE).includes(ele.keyStr)
+    }).filter(ele=>{
       return this.$power.has(ele.auth)
     })
     this.tabList.length && (this.currentKey = this.tabList[0].keyStr)
