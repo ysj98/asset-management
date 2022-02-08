@@ -492,13 +492,15 @@ export default {
       });
     },
     handleOperation(pageType, record) {
+      console.log('record.organId',record.organId)
       this.$router.push({
         path: "/assetClear/" + pageType,
         query: {
           pageType: pageType,
           cleaningOrderId: record.cleaningOrderId,
           organId: this.organId,
-          organName: this.organName
+          organName: this.organName,
+          relatedOrganId: record.organId
         }
       });
     },

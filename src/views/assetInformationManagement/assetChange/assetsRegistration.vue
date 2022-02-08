@@ -428,7 +428,7 @@ export default {
         let particularsData = JSON.stringify([val]);
         this.$router.push({
           path: "/assetChangeRegister/particulars",
-          query: { record: particularsData, organId: this.queryCondition.organId, setType: 'detail' }
+          query: { record: particularsData, organId: this.queryCondition.organId, setType: 'detail', relatedOrganId: val.organId }
         });
       }
       // 删除
@@ -440,7 +440,7 @@ export default {
         let particularsData = JSON.stringify([val]);
         this.$router.push({
           path: "/assetChangeRegister/particulars",
-          query: { record: particularsData, organId: this.queryCondition.organId, setType: 'approve' }
+          query: { record: particularsData, organId: this.queryCondition.organId, setType: 'approve', relatedOrganId: val.organId }
         });
       }
       // 编辑

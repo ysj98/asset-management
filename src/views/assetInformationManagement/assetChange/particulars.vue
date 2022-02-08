@@ -135,7 +135,6 @@ export default {
   data() {
     return {
       advice:'',
-      organId:'',
       isApprove: false,
       stepList:[],
       managementRightOptions:[],
@@ -370,16 +369,15 @@ export default {
 
       const setType = obj.setType
       // 判断是否嵌套在 bpm 中
-      this.organId = obj.organId
       this.particularsData = JSON.parse(obj.record);
       this.changeOrderId = this.particularsData[0].changeOrderId;
       this.query();
       this.getChangeDetailPageFn();
       this.platformDictFn("ASSET_MANAGEMENT_RIGHT");
-      if (this.organId){
+      if (obj.organId){
         // 资产变更 1003 硬编码
         // 详情页面也需要展示审批轨迹
-        const req = {busType: 1003,busId:this.changeOrderId,organId: this.organId}
+        const req = {busType: 1003,busId:this.changeOrderId,organId: this.$route.query.relatedOrganId}
         this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
           if (code==='0'){
             this.apprId = data.amsApprovalResDto.apprId

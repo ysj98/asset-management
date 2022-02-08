@@ -616,7 +616,8 @@ export default {
         }
         // 暂时不需要审批轨迹，所以只有是审批页面才调用接口
           if (this.pageType === 'audit' || this.pageType === 'detail'){
-            const req = {busType: 1002,busId:this.cleaningOrderId,organId:this.organId}
+            console.log('this.$route.query.relatedOrganId',this.$route.query.relatedOrganId)
+            const req = {busType: 1002,busId:this.cleaningOrderId,organId: this.$route.query.relatedOrganId}
             this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
               if (code==='0'){
                 console.log('data',data)

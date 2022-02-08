@@ -74,7 +74,7 @@
         <SG-PopoverMore trigger="hover">
           <div slot="content">
             <router-link style="color: #6D7585; line-height: 35px; display: block; "
-              :to="{ path: '/assetIn/detail', query: {id: record.storeId, organId: organProjectType.organId}}"
+              :to="{ path: '/assetIn/detail', query: {id: record.storeId, organId: organProjectType.organId, relatedOrganId:record.organId}}"
             >
               <a-icon type="read" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">详情</span>
@@ -101,7 +101,7 @@
               v-if="String(record.status) === '2'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_APPROVE"
               style="display: block; color: #6D7585; line-height: 35px"
-              :to="{ path: '/assetIn/approve', query: {id: record.storeId, organId: organProjectType.organId}}"
+              :to="{ path: '/assetIn/approve', query: {id: record.storeId, organId: organProjectType.organId, relatedOrganId:record.organId }}"
             >
               <a-icon type="audit" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">审批</span>

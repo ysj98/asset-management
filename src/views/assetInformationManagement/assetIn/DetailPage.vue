@@ -93,7 +93,6 @@
         isOld: true,
         apprId: '',
         spinning: false,
-        organId: '',
         storeId: '', // 入库单Id
         configBase,
         baseInfoKeys: [
@@ -160,21 +159,21 @@
             Object.assign(obj,data)
             // 返回的数据 busId 代表 入库单id
             obj.id = data.busId
+            obj.relatedOrganId = obj.organId
           }else {
             this.$message.error(message)
           }
         }else {
           this.$route.meta.noShowProBreadNav = false
         }
-        const {id, organId,} = obj
+        const {id, relatedOrganId,} = obj
         this.storeId = id
-        this.organId = organId
         if (id){
           this.queryDetail(id)
-          if (organId){
+          if (relatedOrganId){
             // 资产入库 1001 硬编码
             // 详情页面也需要展示审批轨迹
-            const req = {busType: 1001,busId:id,organId}
+            const req = {busType: 1001,busId:id,organId: relatedOrganId}
             this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
               if (code==='0'){
                 // 旧数据不存在审批单，但是 code 为“0”
@@ -290,7 +289,7 @@
         let apiFn = this.$api.approve.uniformSubmit
         if(this.isOld){
           const {storeId, advice} = this
-          req = { storeId, advice, status: operResult ? 1 : 3 }
+          req = { storeId, advice, status: operResult ? 1 : 3, organId: this.$route.query.relatedOrganId }
           apiFn = this.$api.assets.auditAssetStore
         }
         apiFn(req).then(({data: res}) => {

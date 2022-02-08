@@ -290,6 +290,7 @@ export default {
     initApproveData({ organId, assetOperationRegisterId }) {
       return new Promise((resolve, reject) => {
         const req = { busType: 1004, busId: assetOperationRegisterId, organId };
+        console.log('relatedOrganId',organId)
         this.$api.approve.queryApprovalRecordByBus(req).then(
           ({ data: { code, message, data } }) => {
             if (code === "0") {
@@ -340,7 +341,7 @@ export default {
           console.error(reason);
         }
       );
-      const a1 = this.initApproveData({ organId, assetOperationRegisterId });
+      const a1 = this.initApproveData({ organId: this.$route.query.relatedOrganId, assetOperationRegisterId });
       const a2 = this.getOperationDetailListPage();
       console.log("one");
       await a1;

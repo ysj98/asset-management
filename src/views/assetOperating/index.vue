@@ -420,7 +420,7 @@ export default {
         );
       });
     },
-    goDetail({ assetOperationRegisterId, approvalStatus }, fromType) {
+    goDetail({ assetOperationRegisterId, approvalStatus, organId }, fromType) {
       this.$router.push({
         path: "/assetOperating/detail",
         query: {
@@ -428,6 +428,7 @@ export default {
           organId: this.queryCondition.organId,
           approvalStatus,
           fromType,
+          relatedOrganId: organId
         },
       });
     },
@@ -468,7 +469,7 @@ export default {
           break;
         case "approve":
           this.goDetail(
-            { assetOperationRegisterId, approvalStatus },
+            { assetOperationRegisterId, approvalStatus, organId: record.organId },
             "approve"
           );
           break;
@@ -476,7 +477,7 @@ export default {
           this.handleDel({ assetOperationRegisterId, approvalStatus });
           break;
         case "detail":
-          this.goDetail({ assetOperationRegisterId, approvalStatus }, "detail");
+          this.goDetail({ assetOperationRegisterId, approvalStatus, organId: record.organId }, "detail");
           break;
       }
     },
