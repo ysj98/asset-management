@@ -295,6 +295,9 @@ export default {
         province: this.provinces.province ? this.provinces.province : '',   // 省
         region: this.provinces.district ? this.provinces.district : '',     // 区
       }
+      if (this.queryCondition.pageNum === 1) {
+        this.pageListStatistics(obj)
+      }
       this.$api.assets.assetInGetGeneralSurvey({...obj,...obj2}).then(res => {
         if (Number(res.data.code) === 0) {
             if(!res.data.data){
@@ -310,10 +313,6 @@ export default {
             this.tableData = data
             this.count = res.data.data.count
             this.loading = false
-
-          if (this.queryCondition.pageNum === 1) {
-            this.pageListStatistics(obj)
-          }
         } else {
           this.$message.error(res.data.message)
           this.loading = false
