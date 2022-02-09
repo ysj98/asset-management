@@ -88,6 +88,7 @@
                   <a-date-picker
                     :style="allWidth"
                     placeholder="请选择交付时间"
+                    valueFormat="YYYY-MM-DD"
                     :getPopupContainer="getPopupContainer"
                     v-model="formInfo.deliverDate"
                   />
