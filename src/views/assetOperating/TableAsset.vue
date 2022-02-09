@@ -144,7 +144,7 @@ export default {
             paramList.push({
               transferOperationCode: e,
               transferOperationName: res[0].transferOperationName,
-              transferOperationValue: ele[e],
+              transferOperationValue: ele[e] || '',
             });
           }
         });
