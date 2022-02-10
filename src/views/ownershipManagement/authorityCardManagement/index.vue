@@ -77,7 +77,16 @@
         :loading="loading"
         :columns="tableObj.columns"
         :dataSource="tableData"
-        :row-selection="rowSelection"
+        :row-selection="{selectedRowKeys: idArr, 
+        onChange: onChange,
+        onSelect: onSelect,
+        onSelectAll: onSelectAll,
+        getCheckboxProps: record => ({
+          props: {
+            disabled: record.statusName === '注销', // 注销权证禁止选择
+            name: record.statusName,
+          },
+        })}"
         class="custom-table td-pd10"
         :pagination="false"
         :rowKey='record=>record.warrantId'
@@ -307,44 +316,39 @@ export default {
         scroll: { x: 3500 },
         columns
       },
-      rowSelection: {
-        onChange: (selectedRowKeys, selectedRows) => {
-          this.idArr = []
-          this.idArr = selectedRows.map(item => {
-              return item.warrantId
-          })
-          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows, this.idArr);
-        },
-        onSelect: (record, selected, selectedRows) => {
-          console.log(record, selected, selectedRows);
-          if(selectedRows.length==0){
-            this.control = true
-          }else{
-            this.control = false
-          }
-
-        },
-        onSelectAll: (selected, selectedRows, changeRows) => {
-          if(selectedRows.length==0){
-            this.control = true
-          }else{
-            this.control = false
-          }
-
-          console.log(selected, selectedRows, changeRows);
-        },
-        getCheckboxProps: record => ({
-          props: {
-            disabled: record.statusName === '注销', // 注销权证禁止选择
-            name: record.statusName,
-          },
-        })
-      }
+      // rowSelection: {
+        
+      // }
     }
   },
   computed: {
   },
   methods: {
+    onChange (selectedRowKeys, selectedRows) {
+      this.idArr = []
+      this.idArr = selectedRows.map(item => {
+          return item.warrantId
+      })
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows, this.idArr);
+    },
+    onSelect (record, selected, selectedRows) {
+      console.log(record, selected, selectedRows);
+      if(selectedRows.length==0){
+        this.control = true
+      }else{
+        this.control = false
+      }
+
+    },
+    onSelectAll (selected, selectedRows, changeRows) {
+      if(selectedRows.length==0){
+        this.control = true
+      }else{
+        this.control = false
+      }
+
+      console.log(selected, selectedRows, changeRows);
+    },
     // 新建权证
     newChangeSheetFn () {
       this.newShow = true
@@ -692,11 +696,13 @@ export default {
             _this.$api.ownership.warrantDeleteBatch(obj).then(res => {
               if (Number(res.data.code) === 0) {
                 _this.$message.info('注销成功')
+                _this.idArr = []
+                this.control = false 
                 _this.query()
               } else {
                 _this.$message.error(res.data.message)
               }
-              window.location.reload()
+              // window.location.reload()
             })
             }
           })

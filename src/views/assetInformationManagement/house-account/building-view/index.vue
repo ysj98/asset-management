@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
-        <a-col :span="7">
+        <a-col :span="3">
           <SG-Button
             icon="import"
             type="primary"
@@ -16,6 +16,12 @@
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
+        <a-col :span="4">
+          <SG-Button
+            type="default"
+            @click="clickAsset"
+          >资产标签</SG-Button>
+        </a-col>
         <a-col :span="5">
           <a-select
             showSearch
@@ -64,7 +70,10 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table 
+      v-bind="tableObj" 
+      class="custom-table td-pd10"
+      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll }">
       <template slot="buildName" slot-scope="text">
         <tooltip-text :text="text"/>
       </template>
@@ -80,6 +89,21 @@
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <!--编辑资产标签-->
+    <SG-Modal
+      v-bind="modalObj"
+      v-model="modalObj.status"
+      @ok="handleModalOk"
+      @cancel="modalObj.status = false"
+    >
+    <!-- <edit-table-header
+        :key="key"
+        ref="tableHeader"
+        :checkedArr="checkedHeaderArr"
+        :columns="tableObj.initColumns"
+      /> -->
+      <edit-tag/>
+    </SG-Modal>
   </div>
 </template>
 
@@ -88,12 +112,15 @@
   import TooltipText from 'src/views/common/TooltipText'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import EditTag from './editTag'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   export default {
     name: 'index',
-    components: { OverviewNumber, NoDataTip, TooltipText },
+    components: { OverviewNumber, NoDataTip, TooltipText,EditTag },
     data () {
       return {
+        selectedRowKeys: [],
+        modalObj: { title: '资产设置', status: false, okText: '确定', width: 605 },
         ASSET_MANAGEMENT, // 权限对象
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         exportBtnLoading: false, // 导出按钮loading
@@ -156,12 +183,24 @@
     },
 
     methods: {
+      // 多选
+      onSelectChange (selectedRowKeys){
+        this.selectedRowKeys = selectedRowKeys;
+      },
+      onSelectAll (selected){
+        // console.log(this.selectedRowKeys)
+      },
+      clickAsset () {
+        if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
+        this.modalObj.status = true
+      },
+      // 资产设置
+      handleModalOk () {},
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
         this.queryTableData({type: ''})
       },
-
       // 查看楼栋视图详情
       handleViewDetail (record) {
         console.log('record', record)

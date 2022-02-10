@@ -159,6 +159,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/assetOperating/assetOperatingView',
+    name: '资产转运营一览表',
+    component: () => import('@/views/assetOperating/assetOperatingView.vue'),
+    meta: {
+     keepAlive: true
+    }
+  },
+  {
     path: '/assetOperating/edit',
     name: '资产转运营单编辑',
     component: () => import('@/views/assetOperating/addAndEditOperation.vue'),

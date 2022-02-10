@@ -58,6 +58,10 @@ export default [
       {
         title: '资产转运营',
         path: '/assetOperating',
+      },
+      {
+        title: '资产转运营一览表',
+        path: '/assetOperating/assetOperatingView',
       }
     ]
   },
