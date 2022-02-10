@@ -115,7 +115,7 @@
               <label slot="label">{{item.label}}：</label>
               <a-select :style="allWidth" showSearch :placeholder="`请选择${item.label}`"
               optionFilterProp="children"
-              :options=item.chooseArray
+              :options="item.chooseArray"
               :allowClear="true"
               :filterOption="false"
               notFoundContent="没有查询到数据"
@@ -174,8 +174,8 @@
         </a-form>
       </a-row>
     </div>
-    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '3'">
-      <span class="section-title blue">{{this.typeJudgment === '1' ? '权属人' : '土地使用权人'}}</span>
+    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4'">
+      <span class="section-title blue">{{this.typeJudgment === '1' || this.typeJudgment === '4' ? '权属人' : '土地使用权人'}}</span>
       <div class="tab-nav table-border">
         <a-table
           :columns="columns"
@@ -209,7 +209,7 @@
       </div>
       <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>添加权属人</div>
     </div>
-    <div class="newCard-nav" v-if="this.typeJudgment === '1'">
+    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '4'">
       <span class="section-title blue">抵押信息</span>
       <div class="tab-nav table-border">
         <a-table
@@ -342,6 +342,8 @@ export default {
             arr = this.accessCard
           } else if (this.typeJudgment === '3') {
             arr = this.landDeed
+          } else if (this.typeJudgment === '4') {
+            arr = this.titleDeed
           }
           arr.forEach(item => {
             if (item.formType === 'input' || item.formType === 'inputNumber') {
@@ -374,6 +376,8 @@ export default {
           this.beat = this.accessCard
         } else if (this.typeJudgment === '3') {
           this.beat = landDeed
+        }else if (this.typeJudgment === '4') {
+          this.beat = this.titleDeed
         }
       }
     }
@@ -406,7 +410,7 @@ export default {
         if (!err) {
           let amsOwnershipWarrantObligeeList = []
           let amsOwnershipWarrantMortgageList = []
-          if (this.typeJudgment === '1' || this.typeJudgment === '3') {
+          if (this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4') {
             if (this.amsOwnershipWarrantObligeeList.length === 0) {
               this.$message.info('请选择权属人')
               return
@@ -435,7 +439,7 @@ export default {
               }
             }
           }
-          if (this.typeJudgment === '1') {
+          if (this.typeJudgment === '1' || this.typeJudgment === '4') {
             // 抵押信息
             if (this.amsOwnershipWarrantMortgageList.length > 0) {
               for (let i = 0; i < this.amsOwnershipWarrantMortgageList.length; i++) {
@@ -607,7 +611,7 @@ export default {
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
           })
-          let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}] // 临时本地模拟数据
+          let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}, {label:'房屋产权证', value:'3'}] // 临时本地模拟数据
           this.kindOfRightData = arr.length < 3 ? temp : arr
         }
         // 权属用途
@@ -818,7 +822,7 @@ export default {
               propertyRightUnit: data.amsOwnershipWarrant.propertyRightUnit,    // 实际产权单位
               safekeepUnit: data.amsOwnershipWarrant.safekeepUnit,    // 实际保管单位
             })
-            if (this.typeJudgment === '1') {
+            if (this.typeJudgment === '1' || this.typeJudgment === '4') {
               this.form.setFieldsValue({
                 lotNo: data.amsOwnershipWarrant.lotNo,
                 estateUnitCode: data.amsOwnershipWarrant.estateUnitCode,
