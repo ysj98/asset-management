@@ -165,6 +165,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+            { title: '资产标签', dataIndex: 'assetLabel', width: 150 },
             { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]

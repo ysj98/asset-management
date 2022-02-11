@@ -23,6 +23,7 @@
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
+        <SG-Button type="default" @click="clickAsset">资产标签</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
@@ -168,11 +169,13 @@
       @cancel="handleModalStatus(false)"
     >
       <edit-table-header
+        v-if="modalType === 1"
         :key="key"
         ref="tableHeader"
         :checkedArr="checkedHeaderArr"
         :columns="tableObj.initColumns"
       />
+      <edit-tag v-if="modalType === 2"/>
     </SG-Modal>
   </div>
 </template>
@@ -306,9 +309,15 @@
           unRentedArea: ''             // 未租面积
         },
         sourceOptions:[],
+        modalType: 1, // 1 设置列表表头 2 设置资产标签
       }
     },
     methods: {
+      // 资产标签
+      clickAsset (){
+        this.modalType = 2
+        this.modalObj.status = true
+      },
       filterOption(input, option) {
         return (
           option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -380,6 +389,7 @@
       // 打开/关闭列表列头编辑Modal
       handleModalStatus (status) {
         this.modalObj.status = status
+        this.modalType = 1
         status && (this.key = new Date().getTime())
       },
 
