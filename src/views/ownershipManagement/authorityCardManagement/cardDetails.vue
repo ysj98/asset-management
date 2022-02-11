@@ -195,7 +195,7 @@ export default {
   },
   watch: {
     'kindOfRight' (val) {
-      if (val === '1' || val === '3') {
+      if (val === '1' || val === '3' || val === '4') {
         let arr = utils.deepClone(columns)
         this.columns = arr.splice(0, arr.length - 1)
         let opt = utils.deepClone(mortgageInformation)
@@ -204,6 +204,8 @@ export default {
           this.basicDate = titleDeed
         } else if (val === '3') {
           this.basicDate = landDeed
+        }else if (val === '4') {
+          this.basicDate = titleDeed
         }
       } else if (val === '2') {
         this.basicDate = accessCard
