@@ -305,7 +305,8 @@ export default {
         {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
         {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
-        {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'}
+        {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'},
+        {title: '房屋产权', key: 'houseWarrantCount', value: 0, bgColor: 'gray'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       ownerTypeData: [], // 权属形式
       modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
@@ -576,6 +577,7 @@ export default {
           this.numList[2].value = data.assetWarrantCount
           this.numList[3].value = data.landWarrantCount
           this.numList[4].value = data.useWarrantCount
+          this.numList[5].value = data.houseWarrantCount
           this.loading = false
         } else {
           this.$message.error(res.data.message)
