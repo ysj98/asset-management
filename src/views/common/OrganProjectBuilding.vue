@@ -14,7 +14,7 @@
       <!--组织机构选择控件, 多选-->
       <a-col :span="isShowBuilding ? 8 : 12">
         <tree-select 
-          :multiple="true" 
+          :multiple="multiple" 
           :allowClear="false" 
           @changeTree="changeTree" 
           class="organ_style"/>
@@ -80,6 +80,10 @@
       mode: {
         type: String,
         default: () => 'default'
+      },
+      multiple: {
+        type: Boolean,
+        default: () => false
       }
     },
     data () {

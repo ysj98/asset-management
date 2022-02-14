@@ -16,13 +16,13 @@
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
-        <a-col :span="4">
+        <a-col :span="3">
           <SG-Button
             type="default"
             @click="clickAsset"
           >资产标签</SG-Button>
         </a-col>
-        <a-col :span="5">
+        <a-col :span="4">
           <a-select
             showSearch
             style="width: 100%"
@@ -33,7 +33,7 @@
             v-model="organProjectBuildingValue.organId"
           ></a-select>
         </a-col>
-        <a-col :span="5">
+        <a-col :span="4">
           <a-select
             allowClear
             showSearch
@@ -46,7 +46,7 @@
             v-model="organProjectBuildingValue.buildingId"
           ></a-select>
         </a-col>
-        <a-col :span="5">
+        <a-col :span="4">
           <a-select
             v-model="organProjectBuildingValue.statusList"
             mode="multiple"
@@ -54,6 +54,16 @@
             style="width: 100%"
             placeholder="请选择资产状态"
             :options="$addTitle(statusListOpt)"
+          />
+        </a-col>
+        <a-col :span="4">
+          <a-select
+            v-model="assetLabel"
+            mode="multiple"
+            :maxTagCount="1"
+            style="width: 100%"
+            placeholder="请选择资产标签"
+            :options="$addTitle(assetLabelOpt)"
           />
         </a-col>
         <a-col :span="2">
@@ -96,13 +106,7 @@
       @ok="handleModalOk"
       @cancel="modalObj.status = false"
     >
-    <!-- <edit-table-header
-        :key="key"
-        ref="tableHeader"
-        :checkedArr="checkedHeaderArr"
-        :columns="tableObj.initColumns"
-      /> -->
-      <edit-tag/>
+      <edit-tag ref="editTagRef" v-if="modalObj.status"/>
     </SG-Modal>
   </div>
 </template>
@@ -114,11 +118,18 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTag from './editTag'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
+  const assetLabelOpt = [
+    { label: "全部资产标签  ", value: "" },
+    { label: "正常", value: 1 },
+    { label: "异常", value: 0 },
+  ]
   export default {
     name: 'index',
     components: { OverviewNumber, NoDataTip, TooltipText,EditTag },
     data () {
       return {
+        assetLabelOpt,
+        assetLabel: '',
         selectedRowKeys: [],
         modalObj: { title: '资产设置', status: false, okText: '确定', width: 605 },
         ASSET_MANAGEMENT, // 权限对象
@@ -165,8 +176,8 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-            { title: '资产标签', dataIndex: 'assetLabel', width: 150 },
             { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
+            { title: '资产标签', dataIndex: 'assetLabel', width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]
         },
@@ -192,7 +203,7 @@
         // console.log(this.selectedRowKeys)
       },
       clickAsset () {
-        if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
+        // if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
         this.modalObj.status = true
       },
       // 资产设置

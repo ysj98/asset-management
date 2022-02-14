@@ -16,3 +16,6 @@ export function getCodingRulesByCode (data) {
 export function getProjectCode (data) {
   return axiosGet(publicCode.getProjectCode, data)
 }
+export function queryAssetLabelConfig (data) {
+  return axiosGet(publicCode.queryAssetLabelConfig, data)
+}

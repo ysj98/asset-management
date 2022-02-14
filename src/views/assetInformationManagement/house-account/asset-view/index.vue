@@ -27,7 +27,7 @@
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
-          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false"/>
+          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true" :isShowBuilding="false"/>
         </div>
       </div>
       <div slot="contentForm">
@@ -114,6 +114,16 @@
               placeholder="权属用途"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="assetLabel"
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              :options="$addTitle(assetLabelOpt)"
+              placeholder="资产标签"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -175,7 +185,7 @@
         :checkedArr="checkedHeaderArr"
         :columns="tableObj.initColumns"
       />
-      <edit-tag v-if="modalType === 2"/>
+      <edit-tag v-if="modalType === 2 && modalObj.status"/>
     </SG-Modal>
   </div>
 </template>
@@ -191,20 +201,28 @@
   import NoDataTip from 'src/components/noDataTips'
   import {querySourceType} from "@/views/common/commonQueryApi";
   import { getFormat } from "utils/utils";
+  import EditTag from '../building-view/editTag.vue'
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
     { label: "有证明材料证件", value: 1 },
     { label: "无证明材料证件", value: 0 },
   ]
+  const assetLabelOpt = [
+    { label: "全部资产标签  ", value: "" },
+    { label: "正常", value: 1 },
+    { label: "异常", value: 0 },
+  ]
   export default {
     name: 'index',
-    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText },
+    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
         getFormat,
         supportMaterialOpt,
         supportMaterial: '',
+        assetLabelOpt,
+        assetLabel: '',
         sourceModes:[],  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
@@ -278,6 +296,7 @@
             { title: '已租面积', dataIndex: 'rentedArea', width: 100 },
             { title: '未租面积', dataIndex: 'unRentedArea', width: 100 },
             { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
+            { title: '资产标签', dataIndex: 'assetLabel', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -389,7 +408,7 @@
       // 打开/关闭列表列头编辑Modal
       handleModalStatus (status) {
         this.modalObj.status = status
-        this.modalType = 1
+        status ? this.modalType = 1 : ''
         status && (this.key = new Date().getTime())
       },
 

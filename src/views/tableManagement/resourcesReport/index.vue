@@ -9,9 +9,10 @@
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
+        <SG-Button icon="setting" @click="modalObj.status = true" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="text-align: left; float: right">
-        <a-checkbox :checked="queryCondition.containEmpty" @change="onCheck">展示资产数量为0得机构</a-checkbox>
+        <a-checkbox :checked="!!queryCondition.containEmpty" @change="onCheck">展示资产数量为0得机构</a-checkbox>
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -49,6 +50,9 @@
         @change="handleChange"
       />
     </div>
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
+      <set-table-header />
+    </SG-Modal>
   </div>
 </template>
 
@@ -57,6 +61,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
+import SetTableHeader from '../houseAssetAnalysis/components/SetTableHeader.vue'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import { getFormat } from '../../../utils/utils'
 const columnsData = [
@@ -95,7 +100,7 @@ const queryCondition =  {
   containEmpty: 1,    //展示资产数量为0得机构 1-展示 0-不展示
 }
 export default {
-  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber},
+  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, SetTableHeader},
   props: {},
   data () {
     return {
@@ -127,12 +132,15 @@ export default {
       queryCondition: {...queryCondition},
       count: '',
       projectData: [{name: '全部资产项目', value: ''}],
-      assetClassifyData: [{name: '全部分类', value: ''}]
+      assetClassifyData: [{name: '全部分类', value: ''}],
+      modalObj: { title: '展示列表设置', status: false, okText: '应用', width: 600 },
     }
   },
   computed: {
   },
   methods: {
+    // 表头自定义设置
+    handleModalOk () {},
     onCheck(e){
       this.queryCondition.containEmpty = e.target.checked ? 1 : 0
     },

@@ -187,6 +187,9 @@ export function baseImport (data) {
 export function getTransferByProjectId (data) {
   return axiosPost(assets.assetRegister.getTransferByProjectId, data)
 }
+export function getTransferOperationSchedule (data) {
+  return axiosPost(assets.assetRegister.getTransferOperationSchedule, data)
+}
 // 资产登记明细列表-不分页
 export function getRegisterOrderDetailsById (data) {
   return axiosPost(assets.assetRegister.getRegisterOrderDetailsById, data)

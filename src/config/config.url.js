@@ -20,6 +20,8 @@ export const publicCode = {
   getCodingRulesByCode: "/ams/codingRules/getCodingRulesByCode",
   // 资项目获取生成字段
   getProjectCode: "/ams/project/getProjectCode",
+  // 资产标签
+  queryAssetLabelConfig: '/ams/assetOperationMode/queryAssetLabelConfig'
 };
 
 export const Global = {
@@ -178,6 +180,8 @@ export const assets = {
     downloadTemplateV2: "/ams/registerOrder/downloadTemplateV2",
     // 资产登记转运营信息-根据资产项目ID
     getTransferByProjectId: "/ams/registerOrder/getTransferByProjectId",
+    // 资产转运营一览表
+    getTransferOperationSchedule: "/ams/operation/getTransferOperationSchedule",
     // 资产登记明细列表-分页
     getRegisterOrderDetailsPageById:
       "/ams/registerOrder/getRegisterOrderDetailsPageById",
