@@ -52,7 +52,7 @@
         :pagination="false"
         >
         <template slot="assetOperationRegisterId" slot-scope="text, record">
-          <router-link :to="{ path: '/assetOperating/detail', query: { assetOperationRegisterId: record.assetOperationRegisterId, approvalStatus: record.approvalStatus, organId: record.organId, fromType: 'detail', relatedOrganId: record.organId} }" class="action_text">{{text}}</router-link>
+          <router-link :to="{ path: '/assetOperating/detail', query: { assetOperationRegisterId: record.assetOperationRegisterId, approvalStatus: record.approvalStatus, organId: record.organId, fromType: 'detail', relatedOrganId: record.organId} }" class="action_text">{{record.assetOperationRegisterId}}</router-link>
         </template>
       </a-table>
     </div>
@@ -241,7 +241,8 @@ export default {
           value: ''
         }
       ],
-      projectData: []
+      projectData: [],
+      queryParam: {}
     }
   },
   computed:{
@@ -267,6 +268,12 @@ export default {
       .queryCommunityListByOrganId({organId: this.queryCondition.organId})
       .then(res => {
         let {code, data} = res.data
+        this.approvalStatusData = [
+          {
+            name: '全部运营项目',
+            value: ''
+          }
+        ]
         if(code === '0') {
           data.forEach(item => {
             this.approvalStatusData.push({
@@ -299,8 +306,7 @@ export default {
         // registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
         sourceModeList:  this.alljudge(this.queryCondition.sourceModes)
       }
-      this.$api.assets.exportOperationSchedulePage(obj).then(res => {
-        console.log(res)
+      this.$api.assets.exportOperationSchedulePage(this.queryParam).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
@@ -324,27 +330,22 @@ export default {
     },
     query () {
       this.loading = true
-      let obj = {
+      this.queryParam = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        // approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        // objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        // sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
         assetNameOrCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        // assetNameOrCode: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
-        // city: this.provinces.city ? this.provinces.city : '',               // 市
-        // province: this.provinces.province ? this.provinces.province : '',   // 省
-        // region: this.provinces.district ? this.provinces.district : '',     // 区
+        createTimeStarts: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
+        createTimeEnds: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
         communityId: this.queryCondition.operatingObject,
-        operationStatusList: []
-
+        operationStatusList: [...this.queryCondition.approvalStatus],
+        province: this.provinces.province,
+        city: this.provinces.city,
+        region: this.provinces.district,
       }
-      this.$api.assets.getTransferOperationSchedule(obj).then(res => {
+      this.$api.assets.getTransferOperationSchedule(this.queryParam).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -354,7 +355,7 @@ export default {
           this.count = res.data.data.count
           this.loading = false
           if (this.queryCondition.pageNum === 1) {
-            this.pageListStatistics(obj)
+            this.pageListStatistics(this.queryParam)
           }
         } else {
           this.$message.error(res.data.message)
@@ -388,7 +389,6 @@ export default {
     pageListStatistics (form) {
       this.$api.assets.getOperationScheduleStatistics(form).then(r => {
         let res = r.data
-        console.log(res, '查询统计信息')
         if (res && String(res.code) === '0') {
           let { numList } = this
           return this.numList = numList.map(m => {

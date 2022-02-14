@@ -63,7 +63,7 @@
             :maxTagCount="1"
             style="width: 100%"
             placeholder="请选择资产标签"
-            :options="$addTitle(assetLabelOpt)"
+            :options="$addTitle(assetLabelSelect)"
           />
         </a-col>
         <a-col :span="2">
@@ -106,7 +106,7 @@
       @ok="handleModalOk"
       @cancel="modalObj.status = false"
     >
-      <edit-tag ref="editTagRef" v-if="modalObj.status"/>
+      <edit-tag ref="editTagRef" :options="assetLabelOpt"/>
     </SG-Modal>
   </div>
 </template>
@@ -117,11 +117,10 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTag from './editTag'
+  import {queryAssetLabelConfig} from '@/api/publicCode.js'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   const assetLabelOpt = [
-    { label: "全部资产标签  ", value: "" },
-    { label: "正常", value: 1 },
-    { label: "异常", value: 0 },
+    // { label: "全部资产标签  ", value: "" },
   ]
   export default {
     name: 'index',
@@ -129,6 +128,7 @@
     data () {
       return {
         assetLabelOpt,
+        assetLabelSelect: [{ label: "全部资产标签  ", value: "" },...assetLabelOpt],
         assetLabel: '',
         selectedRowKeys: [],
         modalObj: { title: '资产设置', status: false, okText: '确定', width: 605 },
@@ -190,11 +190,23 @@
           { title: "报废", key: "2" },
           { title: "转让", key: "3" },
           { title: "报损", key: "4" },
-        ]
+        ],
+        options: []
       }
     },
 
     methods: {
+      getAssetLabel (id){
+        // debugger
+        queryAssetLabelConfig({organId: id}).then(res => {
+          let {data, code} = res.data
+          if(code === '0'){
+            this.assetLabelOpt = data.data.map(item => {
+              return ({label: item.labelName, value: item.labelName})
+            })
+          }
+        })
+      },
       // 多选
       onSelectChange (selectedRowKeys){
         this.selectedRowKeys = selectedRowKeys;
@@ -311,6 +323,7 @@
         if (!organId) { return this.$message.warn('组织机构不存在') }
         this.buildingOptions = []
         this.organProjectBuildingValue.buildingId = undefined
+        this.getAssetLabel(organId)
         this.$api.assets.queryBuildingByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -335,6 +348,7 @@
             let list = res.data.data || []
             let id = list[0] ? list[0].organId : undefined
             this.organProjectBuildingValue.organId = id
+            this.getAssetLabel(this.organProjectBuildingValue.organId)
             id && this.queryBuildingList()
             this.organOptions = list.map(item => {
               return {

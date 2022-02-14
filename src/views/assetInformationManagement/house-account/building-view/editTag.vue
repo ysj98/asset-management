@@ -6,17 +6,16 @@
 </template>
 
 <script>
-  import {queryAssetLabelConfig} from '@/api/publicCode.js'
   export default {
     name: 'EditTableHeader',
-    props: ['columns', 'checkedArr'],
+    props: ['columns', 'checkedArr', 'options'],
     data () {
       return {
         // checkAll: false, // 全选
         checkedList: [], // 选中项,
         // indeterminate: false, // 全选按钮是否与checkGroup联动
         // disabledHeader: ['organName', 'warrantNbr'] // 不可选的列头
-        options: []
+        // options: []
       }
     },
     // computed: {
@@ -33,19 +32,10 @@
     //   }
     // },
     mounted (){
-      this.getAssetLabel('110111101')
+      // this.getAssetLabel('110111101')
     },
     methods: {
-      getAssetLabel (id){
-        queryAssetLabelConfig({organId: id}).then(res => {
-          let {data, code} = res.data
-          if(code === '0'){
-            this.options = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelName})
-            })
-          }
-        })
-      }
+      
     }
   }
 </script>
