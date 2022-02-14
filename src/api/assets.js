@@ -147,6 +147,14 @@ export function assetRegListPageExport (data) {
 export function assetRegSta (data) {
   return axiosPost(assets.assetRegister.assetRegSta, data)
 }
+// 资产转运营一览表-列表统计
+export function getOperationScheduleStatistics (data) {
+  return axiosPost(assets.assetRegister.getOperationScheduleStatistics, data)
+}
+// 资产转运营一览表-导出
+export function exportOperationSchedulePage (data) {
+  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data)
+}
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
   return axiosPost(assets.assetRegister.saveRegisterOrder, data)

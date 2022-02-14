@@ -16,7 +16,7 @@
             @change="assetTypeDataFn" v-model="queryCondition.assetType">
             <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部运营项目" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;"  placeholder="全部运营项目" :tokenSeparators="[',']" @select="operatingObjFn" v-model="queryCondition.operatingObject">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
@@ -51,7 +51,7 @@
         class="custom-table td-pd10"
         :pagination="false"
         >
-        <template slot="registerOrderId" slot-scope="text, record">
+        <template slot="assetOperationRegisterId" slot-scope="text, record">
           <router-link :to="{ path: '/assetOperating/detail', query: { assetOperationRegisterId: record.assetOperationRegisterId, approvalStatus: record.approvalStatus, organId: record.organId, fromType: 'detail', relatedOrganId: record.organId} }" class="action_text">{{text}}</router-link>
         </template>
       </a-table>
@@ -82,23 +82,11 @@ const approvalStatusData = [
   {
     name: '全部运营项目',
     value: ''
-  },
-  {
-    name: '未核实',
-    value: '0'
-  },
-  {
-    name: '待入库',
-    value: '1'
-  },
-  {
-    name: '已入库',
-    value: '2'
   }
 ]
 const operating = [
   {
-    name: '选择状态',
+    name: '全部',
     value: '',
   },
   {
@@ -142,11 +130,11 @@ const columns = [
   },
   {
     title: '资产位置',
-    dataIndex: 'pasitionString'
+    dataIndex: 'address'
   },
   {
     title: '运营项目',
-    dataIndex: 'pasitionString'
+    dataIndex: 'communityName'
   },
   {
     title: '创建日期',
@@ -154,13 +142,13 @@ const columns = [
   },
   {
     title: '状态',
-    dataIndex: 'approvalStatusName'
+    dataIndex: 'operationStatusName'
   },
   {
     title: '运营单编号',
-    key: 'registerOrderId',
+    key: 'assetOperationRegisterId',
     scopedSlots: {
-      customRender: 'registerOrderId'
+      customRender: 'assetOperationRegisterId'
     }
   },
   // {
@@ -239,12 +227,12 @@ export default {
         assetClassify: [''],        // 资产分类
         registerOrderNameOrId: '',     // 登记单编号
         sourceModes : [''],         // 来源方式
+        operatingObject: '',        // 运营项目
       },
       numList: [
-        {title: '全部', key: 'whole', value: 0, fontColor: '#324057'},
-        {title: '未核实', key: 'notVerified', value: 0, bgColor: '#FD7474'},
-        {title: '待入库', key: 'waitStorage', value: 0, bgColor: '#1890FF'},
-        {title: '已入库', key: 'alreadyStorage', value: 0, bgColor: '#DD81E6'}
+        {title: '全部', key: 'total', value: 0, fontColor: '#324057'},
+        {title: '已转运营', key: 'alreadyOperation', value: 0, bgColor: '#FD7474'},
+        {title: '未转运营', key: 'notOperation', value: 0, bgColor: '#1890FF'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       assetClassifyOptions: [{label: '全部资产分类', value: ''}],
       assetTypeData: [
@@ -270,8 +258,25 @@ export default {
   },
   mounted () {
     this.platformDictFn('asset_type')
+    this.getOperatingObj()
   },
   methods: {
+    // 运营项目
+    getOperatingObj (){
+      this.$api.basics
+      .queryCommunityListByOrganId({organId: this.queryCondition.organId})
+      .then(res => {
+        let {code, data} = res.data
+        if(code === '0') {
+          data.forEach(item => {
+            this.approvalStatusData.push({
+              name: item.name,
+              value: item.communityId
+            })
+          })
+        }
+      })
+    },
     // 根据organId查询来源方式
     async getSourceOptions(organId){
       this.sourceOptions = [{ value:'', label: '全部来源方式' }]
@@ -291,10 +296,10 @@ export default {
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
+        // registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
         sourceModeList:  this.alljudge(this.queryCondition.sourceModes)
       }
-      this.$api.assets.assetRegListPageExport(obj).then(res => {
+      this.$api.assets.exportOperationSchedulePage(obj).then(res => {
         console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
@@ -315,27 +320,31 @@ export default {
       this.getSourceOptions(value)
       this.query()
       this.getObjectKeyValueByOrganIdFn()
+      this.getOperatingObj()
     },
     query () {
       this.loading = true
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        // approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
-        assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
+        // objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
+        // sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
+        assetNameOrCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
-        city: this.provinces.city ? this.provinces.city : '',               // 市
-        province: this.provinces.province ? this.provinces.province : '',   // 省
-        region: this.provinces.district ? this.provinces.district : '',     // 区
+        // assetNameOrCode: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
+        // city: this.provinces.city ? this.provinces.city : '',               // 市
+        // province: this.provinces.province ? this.provinces.province : '',   // 省
+        // region: this.provinces.district ? this.provinces.district : '',     // 区
+        communityId: this.queryCondition.operatingObject,
+        operationStatusList: []
+
       }
-      this.$api.assets.findAssetRegListPage(obj).then(res => {
+      this.$api.assets.getTransferOperationSchedule(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           data.forEach((item, index) => {
@@ -377,8 +386,9 @@ export default {
     },
     // 查询统计信息
     pageListStatistics (form) {
-      this.$api.assets.assetRegSta(form).then(r => {
+      this.$api.assets.getOperationScheduleStatistics(form).then(r => {
         let res = r.data
+        console.log(res, '查询统计信息')
         if (res && String(res.code) === '0') {
           let { numList } = this
           return this.numList = numList.map(m => {
@@ -431,10 +441,17 @@ export default {
       })
     },
     // 状态发生变化
-    approvalStatusFn (value) {
-      this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
-      })
+    approvalStatusFn (value){
+      console.log(value, '运营状态')
+      // this.$nextTick(function () {
+      //   this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.operating)
+      // })
+    },
+    operatingObjFn (value){
+      console.log(value, 'valuevaluevaluevaluevalue')
+      // this.$nextTick(function () {
+      //   this.queryCondition.operatingObject = this.handleMultipleSelectValue(value, this.queryCondition.operatingObject, this.approvalStatusData)
+      // })
     },
     // 资产类型变化
     assetTypeDataFn (value) {

@@ -158,6 +158,10 @@ export const assets = {
     assetRegListPageExport: "/ams/registerOrder/assetRegListPageExport",
     // 资产登记一览表-列表统计
     assetRegSta: "/ams/registerOrder/assetRegSta",
+    // 资产转运营一览表-列表统计
+    getOperationScheduleStatistics: "/ams/operation/getOperationScheduleStatistics",
+    // 资产转运营一览表-主列表导出
+    exportOperationSchedulePage: "ams/operation/exportOperationSchedulePage",
     // 资产登记-撤销核实
     registerOrderReAudit: "/ams/registerOrder/registerOrderReAudit",
     // 资产登记-核实
