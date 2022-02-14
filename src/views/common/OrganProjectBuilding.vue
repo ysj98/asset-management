@@ -14,7 +14,7 @@
       <!--组织机构选择控件, 多选-->
       <a-col :span="isShowBuilding ? 8 : 12">
         <tree-select 
-          :multiple="true" 
+          :multiple="multiple" 
           :allowClear="false" 
           @changeTree="changeTree" 
           class="organ_style"/>
@@ -80,6 +80,11 @@
       mode: {
         type: String,
         default: () => 'default'
+      },
+      // true 多选
+      multiple: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -143,6 +148,7 @@
       let properties = { allowClear, size, showSearch, mode }
       mode === 'multiple' ? properties.maxTagCount = 1 : '' // 多选模式防止换行
       this.properties = properties
+      this.multiple ? maxTagCount = 1 : ''
       Object.assign(this, { ...value })
     },
 

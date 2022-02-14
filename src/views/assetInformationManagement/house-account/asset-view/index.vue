@@ -26,7 +26,7 @@
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
-          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false"/>
+          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false" :multiple="true"/>
         </div>
       </div>
       <div slot="contentForm">

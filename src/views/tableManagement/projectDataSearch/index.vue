@@ -12,7 +12,7 @@
       <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8">
           <a-col :span="13" :offset="1">
-            <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
+            <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple" :multiple="true"/>
           </a-col>
           <a-col :span="3">
             <a-select v-model="queryObj.sourceType" style="width: 100%" placeholder="请选择来源方式" :options="$addTitle(sourceTypeOptions)"/>
