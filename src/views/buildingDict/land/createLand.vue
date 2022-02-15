@@ -487,6 +487,15 @@
                 </a-form-item>
               </a-col>
               <a-col :span="24">
+                <a-form-item label="图片" v-bind="formItemLayout2">
+                  <SG-UploadFile
+                    v-model="blankPic"
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
                   <SG-UploadFile
                     :customDownload="customDownload"
@@ -560,6 +569,7 @@ export default {
       redMap: [], // 用地红线图
       encloseWallPic: [], // 围墙图片
       nowPic: [], // 现状图片
+      blankPic: [], //图片
       filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
@@ -673,6 +683,18 @@ export default {
               }
             })
             data.nowPic = str
+          }
+          // 处理图片
+          if (this.blankPic.length > 0) {
+            let str = ''
+            this.blankPic.forEach((item, index) => {
+              if (index === this.blankPic.length - 1) {
+                str = str + item.url
+              } else {
+                str = str + item.url + ','
+              }
+            })
+            data.blankPic = str
           }
           // 处理附件
           if (this.filePath.length > 0) {
@@ -793,6 +815,16 @@ export default {
                 if (arr.length > 0) {
                   arr.forEach(item => {
                     this.nowPic.push({url: item,name: ''})
+                  })
+                }
+              }
+              // 处理图片
+              if (data.blankPic) {
+                let arr = data.blankPic.split(',')
+                console.log('arr', arr)
+                if (arr.length > 0) {
+                  arr.forEach(item => {
+                    this.blankPic.push({url: item,name: ''})
                   })
                 }
               }

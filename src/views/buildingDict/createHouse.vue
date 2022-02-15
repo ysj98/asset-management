@@ -284,6 +284,15 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :span="24">
+                <a-form-item label="图片" v-bind="formItemLayout2">
+                  <SG-UploadFile
+                    v-model="housePic"
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
+                  />
+                </a-form-item>
+              </a-col>
             </a-row>
             <a-row>
               <a-col :span="24">
@@ -326,6 +335,7 @@ export default {
   mixins: [dictMixin],
   data() {
     return {
+      housePic:[],
       organId: '',
       defaultOrganName: '',
       bussType: "houseMct",
@@ -426,9 +436,13 @@ export default {
           if (data.repairTime) {
             data.repairTime = data.repairTime.format("YYYY-MM-DD");
           }
-          // 处理图片
+          // 处理平面图
           if (this.planeFigurePath.length) {
             data.planeFigurePath = this.planeFigurePath[0].url;
+          }
+          // 处理图片
+          if (this.housePic.length) {
+            data.housePic = this.housePic.map(item => item.url).join(',')
           }
           // 处理附件
           if (this.filepaths.length) {
@@ -521,9 +535,16 @@ export default {
         balconyArea: data.balconyArea || undefined,
         useArea:data.useArea || undefined,
       });
-      // 处理图片
+      // 处理平面图
       if (data.planeFigurePath) {
         this.planeFigurePath = [{ url: data.planeFigurePath, name: "" }];
+      }
+      // 处理图片
+      if (data.housePic) {
+        let housePic = data.housePic.split(',')
+        this.housePic = housePic.map(url => {
+          return {url, name: url.substring(url.lastIndexOf('/')+1)}
+        })
       }
       // 处理附件
       if (data.filepaths) {

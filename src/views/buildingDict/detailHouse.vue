@@ -178,6 +178,15 @@
               </a-col>
               <a-col :span="24">
                 <div class="detail-item">
+                  <div class="item-label">图片：</div>
+                  <div class="item-content">
+                    <SG-UploadFile v-if="housePic.length" :show="true" v-model="housePic"/>
+                    <span v-else>-</span>
+                  </div>
+                </div>
+              </a-col>
+              <a-col :span="24">
+                <div class="detail-item">
                   <div class="item-label">附&nbsp;&nbsp;&nbsp;&nbsp;件：</div>
                   <div class="item-content">
                     <SG-UploadFile v-if="filepaths.length" :show="true" type="all" v-model="filepaths"/>
@@ -197,6 +206,7 @@
      return {
        filepaths: [],
        planeFigurePath: [],
+       housePic: [],
        houseInfo: {},
        houseId: '',
        organId: ''
@@ -225,9 +235,16 @@
     handleEditData (data) {
       // 处理图片
       this.houseInfo = data
-      // 处理图片
+      // 处理平面图
       if (data.planeFigurePath) {
         this.planeFigurePath = [{url: data.planeFigurePath, name: ''}]
+      }
+      // 处理图片
+      if (data.housePic) {
+        let housePic = data.housePic.split(',')
+        this.housePic = housePic.map(url => {
+          return {url, name: url.substring(url.lastIndexOf('/')+1)}
+        })
       }
       // 处理附件
       if (data.filepaths) {

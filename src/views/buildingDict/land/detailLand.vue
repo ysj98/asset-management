@@ -160,7 +160,7 @@
                 <div class="item-content">{{blankInfo.blankDesc || '-'}}</div>
               </div>
             </a-col>
-            <a-col :span="8">
+            <a-col :span="24">
               <div class="detail-item">
                 <div class="item-label">用地红线图：</div>
                 <div class="item-content">
@@ -169,11 +169,20 @@
                 </div>
               </div>
             </a-col>
-            <a-col :span="16">
+            <a-col :span="24">
               <div class="detail-item">
                 <div class="item-label">现状图片：</div>
                 <div class="item-content">
                   <SG-UploadFile v-if="nowPic.length" :show="true" v-model="nowPic" />
+                  <span v-else>-</span>
+                </div>
+              </div>
+            </a-col>
+            <a-col :span="24">
+              <div class="detail-item">
+                <div class="item-label">图片：</div>
+                <div class="item-content">
+                  <SG-UploadFile v-if="blankPic.length" :show="true" v-model="blankPic" />
                   <span v-else>-</span>
                 </div>
               </div>
@@ -204,6 +213,7 @@ export default {
       redMap: [], // 平面图
       encloseWallPic: [], // 围墙图片
       nowPic: [], // 现状图片
+      blankPic:[], // 图片
       filePath: [], // 附件
       landTypeOpt: [], // 土地类型
       landuseOpt: [], // 土地用途类型
@@ -286,6 +296,15 @@ export default {
             if (arr.length > 0) {
               arr.forEach(item => {
                 this.nowPic.push({url: item, name: ""})
+              })
+            }
+          }
+          // 处理图片
+          if (data.blankPic) {
+            let arr = data.blankPic.split(',')
+            if (arr.length > 0) {
+              arr.forEach(item => {
+                this.blankPic.push({url: item, name: ""})
               })
             }
           }
