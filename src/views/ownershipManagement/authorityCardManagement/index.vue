@@ -126,7 +126,7 @@
         @change="handleChange"
       />
     </div>
-    <!-- 新增 -->""
+    <!-- 新增 -->
     <NewCard v-if="newShow" ref="newCard" :pageNum="queryCondition.pageNum" @showFn="showFn" @successQuery="successQueryFn"></NewCard>
     <!-- 详情 -->
     <CardDetails ref="cardDetails" :warrantId="warrantId"></CardDetails>
