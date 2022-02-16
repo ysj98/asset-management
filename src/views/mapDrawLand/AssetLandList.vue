@@ -29,8 +29,11 @@
           <a-icon :style="{ color: '#ffffff' }" type="search" />
         </div>
       </div>
+      <div v-if="false" style="display: inline-block">
+        <button @click="toggle">{{ listFlag ? "收起" : "展开" }}</button>
+      </div>
     </div>
-    <div class="asset-land-list" ref="assetLandListRef">
+    <div v-show="listFlag" class="asset-land-list" ref="assetLandListRef">
       <a-spin :spinning="listLoadingFlag">
         <template #indicator>
           <a-icon type="loading" style="font-size: 24px" spin />
@@ -47,7 +50,10 @@
           >
             <a-popover placement="right" overlayClassName="custom-popover">
               <template #content>
-                <SimpleAssetLandInfo :asset-land-info="item" />
+                <SimpleAssetLandInfo
+                  :popupDataSource="popupDataSource"
+                  :assetId="item.assetId"
+                />
               </template>
               <div class="list-item">
                 <div class="left" @click="handleDraw(item, 'text')">
@@ -89,6 +95,9 @@
 </template>
 
 <script>
+/*
+ * Resolve:上线前把 临时增加的展开/收起功能隐藏
+ * */
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 
 export default {
@@ -99,8 +108,15 @@ export default {
   components: {
     SimpleAssetLandInfo,
   },
+  props: {
+    popupDataSource: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
+      listFlag: false,
       currentAssetId: "",
       organId: "",
       listLoadingFlag: true,
@@ -111,6 +127,9 @@ export default {
     };
   },
   methods: {
+    toggle() {
+      this.listFlag = !this.listFlag;
+    },
     /*
      * ref调用
      * */

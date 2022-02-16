@@ -6,21 +6,19 @@
     </div>
     <div class="content">
       <div class="base-info">
-        <Information v-bind="baseInfoOptions"></Information>
-      </div>
-      <SG-Title
-        style="margin-top: 20px; margin-bottom: 10px"
-        title="资产概况"
-      />
-      <div class="wrapper">
-        <a-table class="custom-table" v-bind="tableOptions"></a-table>
+        <SimpleAssetLandInfo
+          :popupDataSource="popupDataSource"
+          :assetId="assetId"
+          :assetNameShow="false"
+          style="padding: 0"
+        />
       </div>
       <SG-Title
         style="margin-top: 10px; margin-bottom: 20px"
         title="业务信息"
       />
       <div class="wrapper">
-        <div class="attr-block">
+        <div v-if="attrData.length" class="attr-block">
           <div
             class="item"
             v-for="(item, index) in attrData"
@@ -40,14 +38,14 @@
             </span>
           </div>
         </div>
+        <div v-else style="text-align: center">暂无数据</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Information from "@/components/Information";
-import { uuid } from "utils/utils";
+import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 
 export default {
   name: "landDetailPopup",
@@ -56,32 +54,21 @@ export default {
       type: Object,
       required: true,
     },
+    popupDataSource: {
+      type: Array,
+      required: true,
+    },
+    assetId: {
+      type: [String, Number],
+      required: true,
+    },
   },
   components: {
-    Information,
+    SimpleAssetLandInfo,
   },
   data() {
     return {
       assetName: "",
-      tableOptions: {
-        rowKey: "key",
-        dataSource: [],
-        pagination: false,
-        columns: [
-          {
-            title: "资产面积(m²)",
-            dataIndex: "landArea",
-          },
-          {
-            title: "资产原值(万元)",
-            dataIndex: "originalValue",
-          },
-          {
-            title: "最新估值(万元)",
-            dataIndex: "marketValue",
-          },
-        ],
-      },
       baseInfoOptions: {
         data: {},
         formatBasicInfoList: [
@@ -157,19 +144,8 @@ export default {
     },
     init(data) {
       this.initBaseInfo(data);
-      this.initTableData(data);
       this.initAttrData(data);
       this.assetName = data.assetName;
-    },
-    initTableData(allData) {
-      this.tableOptions.dataSource = [
-        {
-          landArea: allData.landArea || 0,
-          originalValue: allData.originalValue || 0,
-          marketValue: allData.marketValue || 0,
-          key: uuid(),
-        },
-      ];
     },
     initAttrData(allData) {
       this.attrData = allData.assetAttrDtos || [];

@@ -15,7 +15,7 @@
       <TreeSelect
         class="left-block tree-select"
         @changeTree="changeTree"
-        placeholder="全部领用部门"
+        placeholder="请选择"
       />
       <SG-Select
         class="left-block"
@@ -68,15 +68,13 @@
 </template>
 
 <script>
-/*
- * todo:提醒页面,未选择方案
- * */
 
 import Vue from "vue";
 import LandDetailPopup from "@/views/landParameter/landAssetMap/LandDetailPopup";
 import {
   arrayToObj,
   generatePathStyle,
+  getOffsetNum,
   initMap,
   jumpMapLand,
 } from "@/views/mapDrawLand/share";
@@ -84,6 +82,7 @@ import TreeSelect from "src/views/common/treeSelect";
 import Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
+import { queryLayerById } from "@/views/mapDrawLand/share";
 
 export default {
   /*
@@ -173,10 +172,14 @@ export default {
         const layer = _this.mapLayers[_this.cycleArr[_this.idx]];
         const latlng = layer.getCenter();
         jumpMapLand(layer, _this.mapInstance);
-        _this.generateDetailPop({
-          layer,
-          assetId: _this.cycleArr[_this.idx],
-          latlng,
+        _this.$nextTick(() => {
+          setTimeout(() => {
+            _this.generateDetailPop({
+              layer,
+              assetId: _this.cycleArr[_this.idx],
+              latlng,
+            });
+          }, 300);
         });
         // const data = layer.toGeoJSON();
         //
@@ -236,7 +239,11 @@ export default {
       }
       let Profile = Vue.extend(LandDetailPopup);
       const popupInstance = new Profile({
-        propsData: { mapInstance: this.mapInstance },
+        propsData: {
+          mapInstance: this.mapInstance,
+          popupDataSource: this.popupDataSource,
+          assetId,
+        },
       }).$mount("#landDetailPopup");
       const req = {
         assetId: assetId,
@@ -266,20 +273,44 @@ export default {
         }
       );
     },
+    /*
+     * 查询浮层设定信息
+     * */
+    queryLayerFields() {
+      const req = {
+        topOrganId: this.organId,
+      };
+      this.$api.drawMap
+        .queryLayerFields(req)
+        .then(({ data: { code, message, data } }) => {
+          if (code === "0") {
+            this.popupDataSource = data;
+          } else {
+            this.$message.error(message);
+            this.popupDataSource = [];
+          }
+        });
+    },
     getDialog({ assetId }) {
-      const popupData = this.assetList.filter(
-        (ele) => ele.assetId === assetId
-      )[0];
       let Profile = Vue.extend(SimpleAssetLandInfo);
-      new Profile({ propsData: { assetLandInfo: popupData } }).$mount(
-        "#simple-popup"
-      );
+      new Profile({
+        propsData: { popupDataSource: this.popupDataSource, assetId },
+      }).$mount("#simple-popup");
     },
     generateSimplePop({ layer, latlng, assetId }) {
+      const _this = this;
+      const resOffset = getOffsetNum({
+        mapInstance: _this.mapInstance,
+        latlng: latlng,
+        width: 260,
+        height: 214,
+      });
       const popup = Leaflet.popup({
         className: "custom-popup",
-        minWidth: 199,
-        maxHeight: 550,
+        minWidth: 260,
+        maxHeight: 214,
+        autoPan: false,
+        offset: resOffset,
       })
         .setLatLng(latlng)
         .setContent('<div id="simple-popup"></div>')
@@ -291,13 +322,22 @@ export default {
       return popup;
     },
     generateDetailPop({ layer, latlng, assetId }) {
+      const _this = this;
       // jumpMapLand(layer, this.mapInstance);
+      const resOffset = getOffsetNum({
+        mapInstance: _this.mapInstance,
+        latlng: latlng,
+        width: 400,
+        height: 520,
+      });
       const popup = Leaflet.popup({
         className: "custom-popup",
         closeButton: false,
-        minWidth: 459,
-        maxWidth: 500,
-        maxHeight: 540,
+        minWidth: 400,
+        maxWidth: 400,
+        maxHeight: 520,
+        autoPan: false,
+        offset: resOffset,
       })
         .setLatLng(latlng)
         .setContent('<div id="landDetailPopup"></div>')
@@ -320,7 +360,7 @@ export default {
       layer.on("click", (e) => {
         this.generateDetailPop({
           layer,
-          latlng: e.latlng,
+          latlng: layer.getBounds().getCenter(),
           assetId: e.target._assetId,
         });
       });
@@ -344,7 +384,8 @@ export default {
         if (this.autoChaneIngFlag) {
           return null;
         }
-        const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
+        const target =
+          e.originalEvent.toElement || e.originalEvent.relatedTarget;
         if (target.getAttribute("id") === "leaflet-map") {
           this.mapInstance.closePopup(layer._popup_);
           layer._popup_ = null;
@@ -384,6 +425,7 @@ export default {
       this.organId = organId;
       this.layerSchemeId = "";
       this.getMethodOptions();
+      this.queryLayerFields();
     },
     async getMethodOptions() {
       const req = {
@@ -419,22 +461,34 @@ export default {
         this.cycleArr = [];
       }
       this.mapLayers = {};
+      this.operationModeList = [];
     },
-    changeMethod(value) {
+    async changeMethod(value) {
       this.initStore();
-      const res = this.methodOptions.filter((e) => e.value === value)[0];
+      // const res = this.methodOptions.filter((e) => e.value === value)[0];
+      const res = await queryLayerById({ layerId: value });
       if (res) {
-        const { organId, layerPath, width, height } = res;
+        const {
+          organId,
+          layerPath,
+          width,
+          height,
+          centralLevel,
+          centralX,
+          centralY,
+        } = res;
         if (organId && layerPath && width && height) {
           this.mapFlag = true;
           this.$nextTick(() => {
             const temp = layerPath.split("/");
             const options = {
               id: "leaflet-map",
-              imageWidth: width,
+              imgWidth: width,
               imgHeight: height,
               layerPath: temp[temp.length - 1],
               mapInstanceKeyName: "mapInstance",
+              defaultZoom: [null, ""].includes(centralLevel) ? 4 : centralLevel,
+              defaultLatLng: { lat: centralX, lng: centralY },
             };
             initMap.call(this, options);
             this.getAssetList();
@@ -621,5 +675,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+#landDetailPopup {
+  overflow: auto;
+}
+::v-deep .leaflet-popup-tip-container {
+  display: none;
 }
 </style>

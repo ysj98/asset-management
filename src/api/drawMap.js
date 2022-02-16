@@ -1,9 +1,11 @@
-import {axiosGet, axiosPost} from "../utils/axios";
+import { axiosGet, axiosPost } from "../utils/axios";
 import { drawMap } from "../config/config.url";
 
 // 上传图层图片
 export function uploadImage(data) {
-  return axiosPost(drawMap.uploadImage, data,true,false,{ timeout: 1000 * 60 * 10 });
+  return axiosPost(drawMap.uploadImage, data, true, false, {
+    timeout: 1000 * 60 * 10,
+  });
 }
 // 图层方案修改
 export function updateLayerScheme(data) {
@@ -51,5 +53,13 @@ export function landBusinessDetail(data) {
 
 // 根据方案id查询图层方案
 export function queryLayerById(data) {
-  return axiosGet(drawMap.queryLayerById, data,true);
+  return axiosGet(drawMap.queryLayerById, data, true);
+}
+
+export function setLayerFields(data) {
+  return axiosPost(drawMap.setLayerFields, data, true);
+}
+// 根据方案id查询图层方案
+export function queryLayerFields(data) {
+  return axiosGet(drawMap.queryLayerFields, data);
 }

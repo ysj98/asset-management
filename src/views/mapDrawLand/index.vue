@@ -25,6 +25,15 @@
         </SG-Button>
         <div class="place-block"></div>
         <SG-Button
+          class="right-block"
+          icon="plus"
+          text
+          @click="jumpDefaultLatLng"
+        >
+          设置中心点
+        </SG-Button>
+        <div class="place-block"></div>
+        <SG-Button
           v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_DELETE_POLYGON"
           @click="handleDel"
           class="right-block"
@@ -33,6 +42,15 @@
           :disabled="!currentSelectLayer"
         >
           删除绘制
+        </SG-Button>
+        <div class="place-block"></div>
+        <SG-Button
+          class="right-block"
+          icon="setting"
+          text
+          @click="btnClickPopInfoSetting"
+        >
+          浮层设定
         </SG-Button>
       </div>
       <div class="right">
@@ -66,6 +84,7 @@
         ref="AssetLandListRef"
         class="filter-block"
         v-if="mapFlag"
+        :popupDataSource="popupDataSource"
         @handleDraw="handleDraw"
         @initAssetLayers="initAssetLayers"
       />
@@ -92,6 +111,16 @@
       @doRefresh="getMethodOptions"
       :modal-obj="modalList.addMethod"
     />
+    <PopupParamsConfigModal
+      v-if="modalList.popupParamsConfig.show"
+      @doClosePop="doClosePop"
+      @success="handlePopupParamsConfigSuccess"
+      v-bind="{
+        ...modalList.popupParamsConfig,
+        ...modalList.popupParamsConfig.payload,
+        dataSource: this.popupDataSource,
+      }"
+    />
     <!-- 上传背景图 -->
     <input
       style="display: none"
@@ -103,21 +132,31 @@
 </template>
 
 <script>
+/*
+ * TODO: 按钮权限控制 1. 浮层设定 2.设置中心点
+ *  TODO: 按钮图标设置
+ * */
+
 import {
   arrayToObj,
   generatePathStyle,
+  getOffsetNum,
   initMap,
+  jumpMapLand,
+  markerIcon,
 } from "@/views/mapDrawLand/share";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 import AssetLandList from "@/views/mapDrawLand/AssetLandList";
 import AddMethodsModal from "@/views/mapDrawLand/AddMethodsModal";
+import PopupParamsConfigModal from "@/views/mapDrawLand/PopupParamsConfigModal";
 import TopOrganByUser from "@/views/common/topOrganByUser";
 import Leaflet from "leaflet";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "leaflet/dist/leaflet.css";
 import Vue from "vue";
+import { queryLayerById } from "./share";
 
 export default {
   /*
@@ -128,9 +167,13 @@ export default {
     TopOrganByUser,
     AddMethodsModal,
     AssetLandList,
+    PopupParamsConfigModal,
   },
   data() {
     return {
+      popupDataSource: [],
+      selectedLayerInfo: {},
+      defaultLatLng: {},
       createLayerArr: [],
       assetList: [],
       ASSET_MANAGEMENT,
@@ -149,12 +192,24 @@ export default {
             organId: "",
           },
         },
+        popupParamsConfig: {
+          show: false,
+          modalName: "popupParamsConfig",
+          title: "浮层展示定义",
+          payload: {
+            organId: "",
+            organName: "",
+          },
+        },
       },
       mapInstance: null,
       polygonLayer: null,
       mapLayers: {},
       jsonData: {},
-      currentTopOrganId: "",
+      organInfo: {
+        organId: "",
+        organName: "",
+      },
       layerSchemeId: "",
       organIdByMethod: "",
       methodOptions: [],
@@ -171,20 +226,93 @@ export default {
     },
   },
   methods: {
-    async queryLayerById({ layerId }) {
-      const req = {
-        layerId,
-      };
-      const {
-        data: { code, data, message },
-      } = await this.$api.drawMap.queryLayerById(req);
-      if (code === "0") {
-        return Promise.resolve(data);
-      } else {
-        this.$SG_Message.error(message);
-        return Promise.reject(message);
+    /*
+     * 浮层设定 按钮点击事件
+     * */
+    btnClickPopInfoSetting() {
+      if (!this.organInfo.organId) {
+        this.$message.error("请先选择所属机构");
+        return null;
       }
+      this.doOpenPop("popupParamsConfig");
+      const { organId, organName } = this.organInfo;
+      this.modalList.popupParamsConfig.payload = {
+        organId,
+        organName,
+      };
     },
+    isSelectedMethod() {
+      let res = true;
+      if (!this.mapInstance) {
+        res = false;
+        this.$message.warn("请先选择方案");
+      }
+      return res;
+    },
+    clearAllPop() {
+      this.mapInstance.closePopup();
+    },
+    /*
+     * 设置中心点
+     * */
+    jumpDefaultLatLng() {
+      if (!this.isSelectedMethod()) {
+        return null;
+      }
+      this.clearAllPop();
+      this.mapInstance.pm.disableGlobalEditMode();
+      this.mapInstance.panTo(this.defaultLatLng);
+    },
+    /*
+     * 提交中心点信息到后台
+     * */
+    submitCenterInfo({ latlng, zIndex }) {
+      const req = {
+        centralX: latlng.lat,
+        centralY: latlng.lng,
+        centralLevel: zIndex,
+        layerId: this.selectedLayerInfo.layerId,
+        organId: this.selectedLayerInfo.organId,
+        schemeName: this.selectedLayerInfo.title,
+      };
+      this.$api.drawMap.updateLayerScheme(req).then(
+        ({ data: { code, message } }) => {
+          if (code === "0") {
+            this.$message.success("中心点变更成功");
+            this.defaultLatLng = latlng;
+          } else {
+            this.$message.error(message);
+          }
+        },
+        (reason) => {
+          console.error(reason);
+        }
+      );
+    },
+    /*
+     * 初始化 中心点位事件,弹窗信息
+     * */
+    initCenterMarker(marker) {
+      marker.on("dragend", (e) => {
+        const zIndex = this.mapInstance.getZoom();
+        const latlng = e.target._latlng;
+        this.submitCenterInfo({ latlng, zIndex });
+      });
+      marker.bindPopup(`中心点位`);
+    },
+    /*
+     * 生成中心点
+     * */
+    generateCenterMarker({ latlng }) {
+      const marker = Leaflet.marker(latlng, {
+        icon: markerIcon,
+        zIndexOffset: 1000,
+        riseOnHover: true,
+        draggable: true,
+      }).addTo(this.mapInstance);
+      this.initCenterMarker(marker);
+    },
+
     handleDel() {
       const assetId = this.currentSelectLayer._assetId;
       this.delPolygon({
@@ -193,28 +321,38 @@ export default {
       });
     },
     getDialog({ assetId }) {
-      const popupData = this.assetList.filter(
-        (ele) => ele.assetId === assetId
-      )[0];
       let Profile = Vue.extend(SimpleAssetLandInfo);
-      new Profile({ propsData: { assetLandInfo: popupData } }).$mount(
-        "#mapDialog-container"
-      );
+      new Profile({
+        propsData: { popupDataSource: this.popupDataSource, assetId },
+      }).$mount("#mapDialog-container");
     },
     generatePop(layer) {
+      const _this = this;
       layer.on("click", (e) => {
-        const popup = Leaflet.popup({
-          className: "custom-popup",
-          minWidth: 199,
-          maxHeight: 550,
-        })
-          .setLatLng(e.latlng)
-          .setContent('<div id="mapDialog-container"></div>')
-          .openOn(layer);
-        this.mapInstance.openPopup(popup);
-        this.$nextTick(() => {
-          this.getDialog({ assetId: e.target._assetId });
-        });
+        setTimeout(() => {
+          const width = 260;
+          const height = 214;
+          const resOffset = getOffsetNum({
+            mapInstance: _this.mapInstance,
+            latlng: e.latlng,
+            width: width,
+            height: height,
+          });
+          const popup = Leaflet.popup({
+            className: "custom-popup",
+            minWidth: width,
+            maxHeight: height,
+            autoPan: false,
+            offset: resOffset,
+          })
+            .setLatLng(e.latlng)
+            .setContent('<div id="mapDialog-container"></div>')
+            .openOn(layer);
+          _this.mapInstance.openPopup(popup);
+          _this.$nextTick(() => {
+            _this.getDialog({ assetId: e.target._assetId });
+          });
+        }, 300);
       });
     },
     // 根据 geoJsonData 生成图层时 对每一个图层做初始化处理
@@ -243,10 +381,6 @@ export default {
           });
         },
         filter: function (geoJsonFeature) {
-          console.log(
-            "geoJsonFeature",
-            _this.mapLayers[geoJsonFeature.assetId]
-          );
           return !_this.mapLayers[geoJsonFeature.assetId];
         },
         onEachFeature: _this.initLayer,
@@ -270,18 +404,23 @@ export default {
       inputEle.click();
     },
     handleInitMap(options) {
-      const { layerPath, imageWidth, imgHeight } = options;
+      const { layerPath, imgWidth, imgHeight, defaultZoom, defaultLatLng } =
+        options;
       const temp = layerPath.split("/");
       const obj = {
         id: "leaflet-map",
-        imageWidth: imageWidth,
+        imgWidth: imgWidth,
         imgHeight: imgHeight,
         layerPath: temp[temp.length - 1],
         mapInstanceKeyName: "mapInstance",
+        defaultZoom,
+        defaultLatLng,
       };
-      initMap.call(this, obj, () => {
+      initMap.call(this, obj, ({ defaultLatLng }) => {
+        this.defaultLatLng = defaultLatLng;
         this.initMapEvent();
         this.initControls();
+        this.generateCenterMarker({ latlng: this.defaultLatLng });
         this.mapInstance.pm.setLang("zh");
       });
     },
@@ -456,12 +595,25 @@ export default {
     },
     async changeMethod(value) {
       try {
+        this.selectedLayerInfo = this.methodOptions.find(
+          (ele) => ele.layerId === value
+        );
         this.initStore();
         this.mapFlag = false;
         this.isCanUpload = false;
         // const res = this.methodOptions.filter((e) => e.value === value)[0];
-        const res = await this.queryLayerById({ layerId: value });
-        const { organId, layerPath, width, height, isgenerate } = res;
+        const res = await queryLayerById({ layerId: value });
+        console.log("res", res);
+        const {
+          organId,
+          layerPath,
+          width,
+          height,
+          isgenerate,
+          centralX,
+          centralY,
+          centralLevel,
+        } = res;
         //   0: "未生成",
         //   1: "生成中",
         //   2: "已生成",
@@ -479,10 +631,14 @@ export default {
               const temp = layerPath.split("/");
               const options = {
                 id: "leaflet-map",
-                imageWidth: width,
+                imgWidth: width,
                 imgHeight: height,
                 layerPath: temp[temp.length - 1],
                 mapInstanceKeyName: "mapInstance",
+                defaultZoom: [null, ""].includes(centralLevel)
+                  ? 4
+                  : centralLevel,
+                defaultLatLng: { lat: centralX, lng: centralY },
               };
               this.handleInitMap(options);
               this.$refs.AssetLandListRef.initData({
@@ -523,7 +679,7 @@ export default {
       const req = {
         pageSize: 99999,
         pageNum: 1,
-        organId: this.currentTopOrganId,
+        organId: this.organInfo.organId,
       };
       const {
         data: {
@@ -546,7 +702,7 @@ export default {
       }
     },
     handleLayerClick(layer) {
-      this.jumpMapLand(layer);
+      jumpMapLand(layer, this.mapInstance);
       this.enableDraw(layer);
       this.currentSelectLayer = layer;
       layer.openPopup();
@@ -656,13 +812,6 @@ export default {
         pathOptions: style,
       });
     },
-    // 地图平移到指定位置
-    jumpMapLand(layer) {
-      // TODO:跳转要不要带动画
-      // const latlngs = layer.getLatLngs();
-      // this.mapInstance.panTo(latlngs[0]);
-      this.mapInstance.flyToBounds(layer.getBounds());
-    },
     handleSuccess() {},
     doOpenPop(modal, title) {
       if (title) {
@@ -670,11 +819,35 @@ export default {
       }
       this.modalList[modal].show = true;
     },
+    /*
+     * 查询浮层设定信息
+     * */
+    queryLayerFields() {
+      const req = {
+        topOrganId: this.organInfo.organId,
+      };
+      this.$api.drawMap
+        .queryLayerFields(req)
+        .then(({ data: { code, message, data } }) => {
+          if (code === "0") {
+            this.popupDataSource = data;
+          } else {
+            this.$message.error(message);
+            this.popupDataSource = [];
+          }
+        });
+    },
+    /*
+     * 浮层设定保存成功回调
+     * */
+    handlePopupParamsConfigSuccess() {
+      this.queryLayerFields();
+    },
     doClosePop(modal) {
       this.modalList[modal].show = false;
     },
     openAddMethodPop() {
-      this.modalList.addMethod.payload.organId = this.currentTopOrganId;
+      this.modalList.addMethod.payload.organId = this.organInfo.organId;
       this.doOpenPop("addMethod");
     },
     initStore() {
@@ -691,7 +864,7 @@ export default {
         pageSize: 99999,
         pageNum: 1,
         assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
-        organId: this.currentTopOrganId,
+        organId: this.organInfo.organId,
       };
       const {
         data: {
@@ -706,10 +879,14 @@ export default {
         this.$SG_Message.error(message);
       }
     },
-    changeTopOrganId({ value }) {
-      this.currentTopOrganId = value;
+    changeTopOrganId({ value, name }) {
+      this.organInfo = {
+        organId: value,
+        organName: name,
+      };
       this.getMethodOptions();
       this.queryAssetAttrConfig();
+      this.queryLayerFields();
     },
     initMapEvent() {
       const _this = this;
@@ -758,10 +935,19 @@ export default {
       });
     },
   },
+  beforeRouteLeave(to, from, next) {
+    for (let key in this.modalList) {
+      this.modalList[key].show = false;
+    }
+    next();
+  },
 };
 </script>
 <style scoped>
 .place-block {
+  display: none;
+}
+::v-deep .leaflet-popup-tip-container {
   display: none;
 }
 </style>

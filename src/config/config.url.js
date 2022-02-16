@@ -1476,6 +1476,10 @@ export const drawMap = {
   landBusinessDetail: "/ams/asset/map/landBusinessDetail",
   // 资产地图-土地资产和业务详情
   queryLayerById: "/ams/layerScheme/queryLayerById",
+  // 设置浮层需要的字段
+  setLayerFields: "/ams/layerScheme/setLayerFields",
+  // 查询浮层需要的字段
+  queryLayerFields: "/ams/layerScheme/queryLayerFields",
 };
 export const operationParams = {
   // 分页查询转运营参数列表

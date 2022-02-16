@@ -48,11 +48,14 @@ export default {
       // 如果 值为空或者undefined 就显示 --
       const children = [undefined, "", null].includes(resValue)
         ? "--"
-        : (data.render && data.render(_h, data, resValue)) ||
+        : (data.render && data.render(_h, data, resValue,this.BasicInfoList)) ||
           _h(
             "span",
             {
-              class: "content"
+              class: "content",
+              attrs: {
+                title: resValue
+              }
             },
             [resValue]
           );
@@ -145,6 +148,9 @@ export default {
   color: rgba(0, 0, 0, 0.65);
   flex: 1;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .col-block {
   display: flex;
