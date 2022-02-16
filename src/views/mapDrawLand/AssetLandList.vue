@@ -33,7 +33,8 @@
         <button @click="toggle">{{ listFlag ? "收起" : "展开" }}</button>
       </div>
     </div>
-    <div v-show="listFlag" class="asset-land-list" ref="assetLandListRef">
+    <!--  v-show="listFlag"   -->
+    <div class="asset-land-list" ref="assetLandListRef">
       <a-spin :spinning="listLoadingFlag">
         <template #indicator>
           <a-icon type="loading" style="font-size: 24px" spin />
