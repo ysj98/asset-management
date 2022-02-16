@@ -101,13 +101,13 @@
         </a-popconfirm>
         <router-link
           class="action_text"
-          :to="{name: '价值登记详情', params: {registerId: record.registerId, type: 'detail'}}"
+          :to="{name: '价值登记详情', params: {registerId: record.registerId, type: 'detail', relatedOrganId: record.organId}}"
         >详情</router-link>
         <router-link
           class="action_text"
           v-if="Number(record.approvalStatus) === 2"
           v-power="ASSET_MANAGEMENT.ASSET_AWR_APPROVAL"
-          :to="{name: '价值登记审批', params: {registerId: record.registerId, type: 'approval'}}"
+          :to="{name: '价值登记审批', params: {registerId: record.registerId, type: 'approval', relatedOrganId: record.organId}}"
         >审批</router-link>
         <router-link
           class="action_text"

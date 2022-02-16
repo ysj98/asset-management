@@ -1225,5 +1225,10 @@ let proRouter = [{
     name: '领用登记审批',
     component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
+  {
+    path: '/approve',
+    name: '通用审批',
+    component: () => import('@/views/approve/index.vue')
+  },
 ]
 export default proRouter

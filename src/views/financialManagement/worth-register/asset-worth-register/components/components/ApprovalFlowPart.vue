@@ -13,7 +13,7 @@
       <div style="margin-left: 40px">
         <span style="float: left">审核意见：</span>
         <div style="margin-left: 60px">
-          <a-textarea v-model="advice" placeholder="请输入审批意见" :rows="4"/>
+          <a-textarea :value="advice" @change="onChange" placeholder="请输入审批意见" :rows="4"/>
         </div>
       </div>
     </div>
@@ -23,17 +23,18 @@
 <script>
   export default {
     name: 'ApprovalFlowPart',
-    props: ['type'],
+    props: ['type','advice','stepList'],
     data () {
       return {
-        advice: '', // 审批意见
-        stepList: [
-          // { date: moment(), title: '修改', desc: '待修改', isDone: true, operation: [] }
-        ] // 审批轨迹
       }
     },
 
-    methods: {}
+    methods: {
+      onChange(event){
+        console.log('value',event.target.value)
+        this.$emit('update:advice',event.target.value)
+      }
+    }
   }
 </script>
 
