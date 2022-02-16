@@ -243,6 +243,8 @@ export default {
         assetType: String(assetType),
         remark,
       });
+      // 手动处罚 change 事件
+      this.handleChangeProject(projectId)
       console.log("data", data);
       console.log("attachment", data.attachment);
       this.initAttachmentList(attachment || []);
