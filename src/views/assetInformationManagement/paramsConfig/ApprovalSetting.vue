@@ -47,7 +47,7 @@
 </template>
 
 <script>
-const approveServiceType = [1002, 1003, 1004, 1005];
+const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*

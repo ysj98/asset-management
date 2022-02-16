@@ -31,6 +31,16 @@ export const serviceTypeAll = {
     component: SelectApproval,
     needValidate: false,
   },
+  1006: {
+    serviceTypeText: "价值登记审批",
+    component: SelectApproval,
+    needValidate: false,
+  },
+  1007: {
+    serviceTypeText: "资产处置登记审批",
+    component: SelectApproval,
+    needValidate: false,
+  },
 };
 export const columns = [
   {
