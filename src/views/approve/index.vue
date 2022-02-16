@@ -77,7 +77,7 @@ export default {
     },
   },
   created() {
-    const busType = this.$route.query.busType;
+    const busType = Number(this.$route.query.busType);
     if (busType) {
       switch (busType) {
         // 价值登记
