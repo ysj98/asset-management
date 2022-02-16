@@ -181,7 +181,19 @@ export default {
     /*
      * 取消已选字段
      * */
-    async doDelete() {},
+    async doDelete(record) {
+      const idx = this.tableOptions.dataSource.findIndex(
+        (ele) => ele.fieldName === record.fieldName
+      );
+      const res = this.tableOptions.dataSource.splice(idx, 1);
+      console.log("res", res);
+      this.baseCheckboxValues = this.baseCheckboxValues.filter(
+        (ele) => ele !== res[0].fieldName
+      );
+      this.attrCheckboxValues = this.attrCheckboxValues.filter(
+        (ele) => ele !== res[0].fieldName
+      );
+    },
     async changeSort(type, index) {
       if (type === "up") {
         this.reactiveSwap(this.tableOptions.dataSource, index, index - 1);
