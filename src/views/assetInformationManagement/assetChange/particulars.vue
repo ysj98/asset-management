@@ -377,7 +377,7 @@ export default {
       if (obj.organId){
         // 资产变更 1003 硬编码
         // 详情页面也需要展示审批轨迹
-        const req = {busType: 1003,busId:this.changeOrderId,organId: this.$route.query.relatedOrganId}
+        const req = {busType: 1003,busId:this.changeOrderId,organId: this.$route.query.relatedOrganId || obj.organId }
         this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
           if (code==='0'){
             this.apprId = data.amsApprovalResDto.apprId
