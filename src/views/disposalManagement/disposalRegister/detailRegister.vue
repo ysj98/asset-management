@@ -327,6 +327,13 @@ export default {
     if (['detail', 'approval'].includes(this.detailData.type)){
       this.queryApprovalRecordByBus()
     }
+  },
+  beforeRouteEnter(to, from, next){
+    to.meta.noShowProBreadNav = from.path === '/approve';
+    next(vm =>{
+      const {params:{ fromBpmApprove }} = from
+      vm.isApprove = fromBpmApprove || false;
+    })
   }
 }
 </script>

@@ -1,7 +1,5 @@
 <template>
-  <div>
-    跳转中
-  </div>
+  <div></div>
 </template>
 
 <script>
@@ -54,6 +52,7 @@ export default {
     async goAssetWorthRegister() {
       const res = await this.getApprByServiceOrderId();
       this.$router.push({
+        name: "价值登记审批",
         params: {
           registerId: res.busId,
           type: "approval",
@@ -69,6 +68,7 @@ export default {
     async goDisposalRegister() {
       const res = await this.getApprByServiceOrderId();
       this.$router.push({
+        name: "详情处置登记",
         query: {
           type: "approval",
           relatedOrganId: res.organId,
@@ -79,7 +79,7 @@ export default {
       });
     },
   },
-  mounted() {
+  created() {
     const busType = Number(this.$route.query.busType);
     if (busType) {
       switch (busType) {
