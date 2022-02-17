@@ -20,3 +20,10 @@ export function fileUpload (file) {
     }
   })
 }
+
+export function assetRolListV2(data) {
+  return axiosPost(Global.assetRolListV2, data);
+}
+export function addCustomShowV2(data) {
+  return axiosPost(Global.addCustomShowV2, data,true);
+}

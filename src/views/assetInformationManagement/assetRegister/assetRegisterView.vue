@@ -5,6 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
+        <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -86,7 +87,7 @@
         </template>
         <!-- 资产面积 -->
         <template #area="text,record">
-          {{record.assetType === '设备设施'? '/' : record.area}}
+          {{record.assetTypeName === '设备设施'? '/' : record.area}}
         </template>
       </a-table>
     </div>
@@ -99,10 +100,12 @@
       v-model="queryCondition.pageNum"
       @change="handleChange"
     />
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
 <script>
+import TableHeaderSettings from "@/components/TableHeaderSettings";
 import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
@@ -112,6 +115,7 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {querySourceType} from "@/views/common/commonQueryApi";
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
+import {getTableHeaders} from "utils/share";
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -131,93 +135,28 @@ const approvalStatusData = [
   }
 ]
 
-const columns = [
-  {
-    title: '登记编号',
-    dataIndex: 'assetId'
-  },
-  {
-    title: '资产名称',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '资产编码',
-    dataIndex: 'assetCode'
-  },
-  {
-    title: '资产类型',
-    dataIndex: 'assetTypeName'
-  },
-  {
-    title: '资产分类',
-    dataIndex: 'objectTypeName'
-  },
-  {
-    title: '管理机构',
-    dataIndex: 'organName'
-  },
-  {
-    title: '资产项目名称',
-    dataIndex: 'projectName'
-  },
-  {
-    title: '登记单编号',
-    dataIndex: 'registerOrderId'
-  },
+const detailColumns = [
   {
     title: '资产面积(㎡)',
     key: 'area',
     scopedSlots: {
       customRender: 'area'
     }
-  },
-  {
-    title: '资产位置',
-    dataIndex: 'pasitionString'
-  },
-  {
-    title: '来源方式',
-    dataIndex: 'sourceModeName'
-  },
-  {
-    title: '创建日期',
-    dataIndex: 'createTime'
-  },
-  {
-    title: '创建人',
-    dataIndex: 'createByName'
-  },
-  {
-    title: '核实时间',
-    dataIndex: 'verifierTime'
-  },
-  {
-    title: '核实人',
-    dataIndex: 'verifierByName'
-  },
-  {
-    title: '入库时间',
-    dataIndex: 'storageTime'
-  },
-  {
-    title: '入库人',
-    dataIndex: 'storageByName'
-  },
-  {
-    title: '状态',
-    dataIndex: 'approvalStatusName'
-  },
+  }
+]
+const requiredColumn = [
   {
     title: '操作',
     dataIndex: 'operation',
     scopedSlots: { customRender: 'operation' },
   }
 ]
-
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict, TableHeaderSettings},
   data () {
     return {
+      funType: 2,
+      listSettingFlag: false,
       provinces: {
         province: undefined,
         city: undefined,
@@ -227,7 +166,7 @@ export default {
       ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
-      columns,
+      columns:[],
       organName: '',
       organId: '',
       allStyle: 'width: 150px; margin-right: 10px;',
@@ -277,9 +216,41 @@ export default {
     }
   },
   mounted () {
+    this.initTableColumns()
     this.platformDictFn('asset_type')
   },
   methods: {
+    async initTableColumns(){
+      // 暂不考虑固定表头顺序问题，目前只有操作列
+      const res = await getTableHeaders({funType:this.funType})
+      this.columns = res.customShow.map( ele =>{
+        let mapRes = {}
+        // 匹配用户预设表头，使用前端代码对应表头配置
+        const temp = detailColumns.find(item=>[item.key,item.dataIndex].includes(ele.colCode))
+        if (temp){
+          mapRes = temp
+        }else {
+          mapRes =  {
+            title: ele.colName,
+            dataIndex: ele.colCode
+          }
+        }
+        return mapRes
+      })
+      requiredColumn.forEach(ele=>{
+        this.columns.splice(this.columns.length,0,ele)
+      })
+      // 遍历 requiredColumn，把每一个 表头插入到指定位置
+      // this.columns.length 可替换城指定位置
+      // this.columns.splice(this.columns.length,0,...requiredColumn)
+    },
+    handleTableHeaderSuccess(){
+      this.changeListSettingsModal(false)
+      this.initTableColumns()
+    },
+    changeListSettingsModal(flag){
+      this.listSettingFlag = flag
+    },
     // 根据organId查询来源方式
     async getSourceOptions(organId){
       this.sourceOptions = [{ value:'', label: '全部来源方式' }]

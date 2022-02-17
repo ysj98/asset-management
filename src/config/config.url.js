@@ -27,6 +27,10 @@ export const publicCode = {
 export const Global = {
   // 文件上传
   fileUpload: "/uhomecp-app/common/oneFileUpload.json",
+  // 用户配置查询V2
+  assetRolListV2: "/ams/assetShowConfig/assetRolListV2",
+  // 新增配置V2
+  addCustomShowV2: "/ams/assetShowConfig/addCustomShowV2",
 };
 export const dataCenter = {
   // 调用数据中心接口

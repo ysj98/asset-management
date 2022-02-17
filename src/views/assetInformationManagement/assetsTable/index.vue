@@ -6,6 +6,7 @@
         <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
             <div slot="headBtns">
 <!--                v-power="ASSET_MANAGEMENT.ASSET_IN_EXPORT"-->
+                <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
                 <SG-Button
                         icon="plus"
                         type="primary"
@@ -152,10 +153,12 @@
                 v-model="queryData.pageNum"
                 @change="handlePageChange"
         />
+        <TableHeaderSettings v-if="listSettingFlag" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
     </div>
 </template>
 
 <script>
+    import TableHeaderSettings from "@/components/TableHeaderSettings";
     import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
     import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
     import TreeSelect from "../../common/treeSelect";
@@ -164,6 +167,7 @@
     import { ASSET_MANAGEMENT } from "@/config/config.power";
     import OverviewNumber from "@/views/common/OverviewNumber";
     import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
+    import {getTableHeaders} from "utils/share";
     // import {calc} from '@/utils/utils'
     // import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
@@ -194,17 +198,102 @@
             value: "4"
         }
     ];
-
+    const detailColumns = [
+      {
+        title: "出库明细ID",
+        dataIndex: "cleaningOrderDetailId",
+        width: 90,
+      },
+      {
+        title: "资产名称",
+        dataIndex: "assetName",
+        width: 70,
+      },
+      {
+        title: "资产编码",
+        dataIndex: "assetCode",
+        width: 70,
+      },
+      {
+        title: "资产类型",
+        dataIndex: "assetTypeName",
+        width: 70,
+      },
+      {
+        title: "资产分类",
+        dataIndex: "objectTypeName",
+        width: 70,
+      },
+      {
+        title: "管理机构",
+        dataIndex: "organName",
+        width: 70,
+      },
+      {
+        title: "资产项目名称",
+        dataIndex: "projectName",
+        width: 80,
+      },
+      {
+        title: "出库单编号",
+        dataIndex: "cleaningOrderCode",
+        width: 80,
+      },
+      {
+        title: "出库原因",
+        dataIndex: "cleanupTypeName",
+        width: 80,
+      },
+      {
+        title: "资产位置",
+        dataIndex: "location",
+        width: 120,
+      },
+      {
+        title: "资产面积",
+        key: "area",
+        customRender(record){
+          return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
+        },
+        width: 70,
+      },
+      {
+        title: "出库人",
+        dataIndex: "creatUserName",
+        width: 65,
+      },
+      {
+        title: "出库日期",
+        dataIndex: "createDate",
+        width: 70,
+      },
+      {
+        title: "状态",
+        dataIndex: "approvalStatusName",
+        width: 60,
+      }
+    ]
+    const requiredColumn = [
+      {
+        title: "操作",
+        width: 80,
+        dataIndex: "operation",
+        scopedSlots: { customRender: "operation" }
+      }
+    ]
     export default {
         components: {
             TreeSelect,
             noDataTips,
             OverviewNumber,
             EquipmentSelectTree,
-            ProvinceCityDistrict
+            ProvinceCityDistrict,
+            TableHeaderSettings
         },
         data() {
             return {
+                listSettingFlag: false,
+                funType: 4,
                 provinces: {
                   province: undefined,
                   city: undefined,
@@ -265,87 +354,7 @@
                 ], // 统计数据
                 ASSET_MANAGEMENT,
                 allStyle: "width: 180px; margin-right: 10px;",
-                columns:[
-                  {
-                    title: "出库明细ID",
-                    dataIndex: "cleaningOrderDetailId",
-                    width: 90,
-                  },
-                  {
-                    title: "资产名称",
-                    dataIndex: "assetName",
-                    width: 70,
-                  },
-                  {
-                    title: "资产编码",
-                    dataIndex: "assetCode",
-                    width: 70,
-                  },
-                  {
-                    title: "资产类型",
-                    dataIndex: "assetTypeName",
-                    width: 70,
-                  },
-                  {
-                    title: "资产分类",
-                    dataIndex: "objectTypeName",
-                    width: 70,
-                  },
-                  {
-                    title: "管理机构",
-                    dataIndex: "organName",
-                    width: 70,
-                  },
-                  {
-                    title: "资产项目名称",
-                    dataIndex: "projectName",
-                    width: 80,
-                  },
-                  {
-                    title: "出库单编号",
-                    dataIndex: "cleaningOrderCode",
-                    width: 80,
-                  },
-                  {
-                    title: "出库原因",
-                    dataIndex: "cleanupTypeName",
-                    width: 80,
-                  },
-                  {
-                    title: "资产位置",
-                    dataIndex: "location",
-                    width: 120,
-                  },
-                  {
-                    title: "资产面积",
-                    key: "area",
-                    customRender(record){
-                      return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
-                    },
-                    width: 70,
-                  },
-                  {
-                    title: "出库人",
-                    dataIndex: "creatUserName",
-                    width: 65,
-                  },
-                  {
-                    title: "出库日期",
-                    dataIndex: "createDate",
-                    width: 70,
-                  },
-                  {
-                    title: "状态",
-                    dataIndex: "approvalStatusName",
-                    width: 60,
-                  },
-                  {
-                    title: "操作",
-                    width: 80,
-                    dataIndex: "operation",
-                    scopedSlots: { customRender: "operation" }
-                  }
-                ],
+                columns:[],
                 dataSource: [],
                 exportBtnLoading: false, // 导出按钮loading
 
@@ -371,11 +380,40 @@
         created() {
         },
         mounted() {
+            this.initTableColumns()
             this.platformDict("asset_type");
             this.onDateChange(this.defaultValue)
         },
         methods: {
             moment,
+          async initTableColumns(){
+            // 暂不考虑固定表头顺序问题，目前只有操作列
+            const res = await getTableHeaders({funType:this.funType})
+            this.columns = res.customShow.map( ele =>{
+              let mapRes = {}
+              // 匹配用户预设表头，使用前端代码对应表头配置
+              const temp = detailColumns.find(item=>[item.key,item.dataIndex].includes(ele.colCode))
+              if (temp){
+                mapRes = temp
+              }else {
+                mapRes =  {
+                  title: ele.colName,
+                  dataIndex: ele.colCode
+                }
+              }
+              return mapRes
+            })
+            requiredColumn.forEach(ele=>{
+              this.columns.splice(this.columns.length,0,ele)
+            })
+          },
+          handleTableHeaderSuccess(){
+            this.changeListSettingsModal(false)
+            this.initTableColumns()
+          },
+          changeListSettingsModal(flag){
+            this.listSettingFlag = flag
+          },
             // 全部资产分类
             assetClassifyDataFn(value,isSelectedEquipment){
                 this.$nextTick(() => {

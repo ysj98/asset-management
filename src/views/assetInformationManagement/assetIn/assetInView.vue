@@ -5,6 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
+        <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
@@ -85,10 +86,12 @@
       v-model="queryCondition.pageNum"
       @change="handleChange"
     />
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
 <script>
+import TableHeaderSettings from "@/components/TableHeaderSettings";
 import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
 import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
 import TreeSelect from '../../common/treeSelect'
@@ -98,52 +101,17 @@ import noDataTips from '@/components/noDataTips'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
+import {getTableHeaders} from "utils/share";
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '待审批', value: '2' },
   { name: '已驳回', value: '3' }, { name: '已审批', value: '1' }, { name: '已取消', value: '4' }
 ]
 
-const columns = [
+const detailColumns = [
   {
     title: '入库单明细id',
     dataIndex: 'relId',
     width: 120
-  },
-  {
-    title: '资产名称',
-    dataIndex: 'assetName'
-  },
-  {
-    title: '资产编码',
-    dataIndex: 'assetCode'
-  },
-  {
-    title: '资产类型',
-    dataIndex: 'assetTypeName'
-  },
-  {
-    title: '资产分类',
-    dataIndex: 'objectTypeName'
-  },
-  {
-    title: '管理机构',
-    dataIndex: 'organName'
-  },
-  {
-    title: '资产项目名称',
-    dataIndex: 'projectName'
-  },
-  {
-    title: '权属人',
-    dataIndex: 'obligeeName'
-  },
-  {
-    title: '有无经营权',
-    dataIndex: 'managementRightName'
-  },
-  {
-    title: '入库单编号',
-    dataIndex: 'storeCode'
   },
   {
     title: '资产面积(㎡)',
@@ -152,33 +120,20 @@ const columns = [
       return generateTableAreaByAssetTypeCode({record,keyStr:'area',assetTypeCode:String(record.assetType)})
     },
   },
-  {
-    title: '资产位置',
-    dataIndex: 'location'
-  },
-  {
-    title: '入库日期',
-    dataIndex: 'createDate'
-  },
-  {
-    title: '入库人',
-    dataIndex: 'createUserName'
-  },
-  {
-    title: '状态',
-    dataIndex: 'storeStatusName'
-  },
+]
+const requiredColumn = [
   {
     title: '操作',
     dataIndex: 'operation',
     scopedSlots: { customRender: 'operation' },
   }
 ]
-
 export default {
-  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict},
+  components: {TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree,ProvinceCityDistrict, TableHeaderSettings},
   data () {
     return {
+      funType: 3,
+      listSettingFlag: false,
       provinces: {
         province: undefined,
         city: undefined,
@@ -187,7 +142,7 @@ export default {
       ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
-      columns,
+      columns:[],
       organName: '',
       organId: '',
       allStyle: 'width: 150px; margin-right: 10px;',
@@ -237,9 +192,38 @@ export default {
     }
   },
   mounted () {
+    this.initTableColumns()
     this.platformDictFn('asset_type')
   },
   methods: {
+    async initTableColumns(){
+      // 暂不考虑固定表头顺序问题，目前只有操作列
+      const res = await getTableHeaders({funType:this.funType})
+      this.columns = res.customShow.map( ele =>{
+        let mapRes = {}
+        // 匹配用户预设表头，使用前端代码对应表头配置
+        const temp = detailColumns.find(item=>[item.key,item.dataIndex].includes(ele.colCode))
+        if (temp){
+          mapRes = temp
+        }else {
+          mapRes =  {
+            title: ele.colName,
+            dataIndex: ele.colCode
+          }
+        }
+        return mapRes
+      })
+      requiredColumn.forEach(ele=>{
+        this.columns.splice(this.columns.length,0,ele)
+      })
+    },
+    handleTableHeaderSuccess(){
+      this.changeListSettingsModal(false)
+      this.initTableColumns()
+    },
+    changeListSettingsModal(flag){
+      this.listSettingFlag = flag
+    },
     exportFn () {
       let obj = {
         pageNum: 1,
