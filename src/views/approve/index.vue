@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div>
+    跳转中
+  </div>
 </template>
 
 <script>
@@ -77,7 +79,7 @@ export default {
       });
     },
   },
-  created() {
+  mounted() {
     const busType = Number(this.$route.query.busType);
     if (busType) {
       switch (busType) {
