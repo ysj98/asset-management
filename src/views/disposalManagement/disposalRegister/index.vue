@@ -143,7 +143,7 @@ const operationTypes  = {
   detail: "/disposalRegister/detail",
   create: '/disposalRegister/create',
   edit: '/disposalRegister/edit',
-  approval: '/disposalRegister/approval' // 待审核
+  approval: '/disposalRegister/detail' // 待审核
 };
 const allStyle = {
   width: "170px",
@@ -514,7 +514,8 @@ export default {
           let obj = {
             disposeRegisterOrderId: record.disposeRegisterOrderId,
             approvalStatus: type === 'readApproval' ? '0' : '4',
-            status: type === 'delete' ? '0' : ''
+            status: type === 'delete' ? '0' : '',
+            organId: record.organId
           }
           let loadingName = _this.SG_Loding('提交中...')
           _this.$api.basics.updateDisposeRegisterStatus(obj).then(res => {
@@ -537,6 +538,9 @@ export default {
           organName: this.organName,
           disposeRegisterOrderId: type === 'create' ? '' : record.disposeRegisterOrderId
         }
+      if (['detail', 'approval'].includes(type)){
+        query.relatedOrganId = record.organId
+      }
       this.$router.push({ path: operationTypes[type], query })
     },
     // 高级搜索控制

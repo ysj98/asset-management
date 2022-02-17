@@ -95,18 +95,57 @@
         </div>
       </div>
     </div>
+    <!--审批轨迹-->
+    <div class="countingTaskDetail-nav">
+      <SG-Title title="审批轨迹" />
+      <SG-TrackStep
+        v-if="stepList.length"
+        :stepList="stepList"
+        style="margin-left: 45px"
+      />
+      <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
+    </div>
+    <div class="countingTaskDetail-nav" v-if="isApprove">
+      <SG-Title title="审核意见" />
+      <a-textarea
+        :rows="4"
+        style="resize: none; margin-left: 45px"
+        placeholder="请输入审核意见"
+        v-model="advice"
+      />
+    </div>
+    <div style="height: 70px"></div>
+    <div v-if="isApprove">
+      <!--底部审批操作按钮组-->
+      <form-footer location="fixed">
+        <SG-Button type="primary" @click="handleBtn(1)">审批通过</SG-Button>
+        <SG-Button
+          type="dangerous"
+          @click="handleBtn(0)"
+          style="margin-right: 8px"
+        >
+          驳回
+        </SG-Button>
+      </form-footer>
+    </div>
   </div>
 </template>
 
 <script>
+import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips"
 import {utils} from '@/utils/utils.js'
 import {columns, receivingData, conditionalJudgment} from './beat.js'
+import moment from "moment";
 export default {
-  components: {noDataTips},
+  components: {noDataTips, FormFooter},
   props: {},
   data () {
     return {
+      apprId: '',
+      stepList:[],
+      advice:'',
+      isApprove: false,
       conditionalJudgment,
       detailData: '',
       inventoryAssetCount: 0,
@@ -132,6 +171,63 @@ export default {
   computed: {
   },
   methods: {
+    queryApprovalRecordByBus(){
+      const { relatedOrganId, disposeRegisterOrderId } = this.detailData
+      const req = {busType: 1006,busId:disposeRegisterOrderId,organId: relatedOrganId}
+      this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
+        if (code==='0'){
+          if (message === '审批单不存在'){
+            if (this.detailData.type === 'approval'){
+              this.isApprove  = true
+            }
+          }else {
+            this.apprId = data.amsApprovalResDto.apprId
+            this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+              return {
+                date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
+                title: ele.operOpinion,
+                desc: "", isDone: false, operation: [],
+              }
+            })
+            this.stepList.length && (this.stepList[0].isDone = true)
+            if (this.detailData.type === 'approval'){
+              this.isApprove = data.amsApprovalResDto.isAbRole === 1
+            }
+          }
+        }else {
+          this.$message.error(message)
+        }
+      })
+    },
+    // 按钮操作
+    handleBtn(operResult) {
+      if (operResult === 0) {
+        if (!this.advice) {
+          this.$message.error("驳回必填审核意见");
+          return null;
+        }
+      }
+      let req = {
+        apprId: this.apprId,
+        operResult,
+        operOpinion: this.advice,
+      };
+      this.$api.approve
+        .uniformSubmit(req)
+        .then(({ data: res }) => {
+          if (res && String(res.code) === "0") {
+            this.$message.success(operResult ? "审批成功" : "驳回成功");
+            // 跳回列表路由
+            this.$router.go(-1);
+          } else {
+            throw res.message;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message.error(err || `${operResult ? "审批失败" : "驳回失败"}`);
+        });
+    },
     // 资产列表分页查询
     handleChange (data) {
       this.queryCondition.pageNum = data.pageNo
@@ -227,6 +323,10 @@ export default {
     this.query()
     this.getRegisterDetailListPage()
     this.getreceivecostPlanList()
+
+    if (['detail', 'approval'].includes(this.detailData.type)){
+      this.queryApprovalRecordByBus()
+    }
   }
 }
 </script>

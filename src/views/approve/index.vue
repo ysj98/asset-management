@@ -57,7 +57,7 @@ export default {
           type: "approval",
           fromBpmApprove: true,
           relatedOrganId: res.organId,
-          organName: res.organName
+          organName: res.organName,
         },
       });
     },
@@ -65,13 +65,14 @@ export default {
      * 处置登记
      * */
     async goDisposalRegister() {
-      // TODO: 处置登记 审批页面构造
       const res = await this.getApprByServiceOrderId();
       this.$router.push({
-        params: {
-          registerId: res.busId,
+        query: {
           type: "approval",
-          fromBpmApprove: true,
+          relatedOrganId: res.organId,
+          organId: res.organId,
+          organName: res.organName,
+          disposeRegisterOrderId: res.busId,
         },
       });
     },

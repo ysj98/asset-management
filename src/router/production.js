@@ -1228,7 +1228,10 @@ let proRouter = [{
   {
     path: '/approve',
     name: '通用审批',
-    component: () => import('@/views/approve/index.vue')
+    component: () => import('@/views/approve/index.vue'),
+    meta:{
+      noShowProBreadNav: true
+    }
   },
 ]
 export default proRouter

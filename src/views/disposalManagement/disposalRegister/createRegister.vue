@@ -802,7 +802,7 @@ export default {
             remark: values.remark,                   // 备注
             disposeDetailList: disposeDetailList,    // 资产清单类别
             receivecostPlanList: receivecostPlanList, // 计划列表
-            approvalStatus: '1'                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+            approvalStatus: '2'                      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
           }
           // return null
           // 新增提交
