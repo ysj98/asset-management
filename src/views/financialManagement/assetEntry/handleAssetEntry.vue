@@ -379,6 +379,7 @@
               <a-input
                 placeholder="请输入购入原值"
                 :style="allStyle"
+                :disabled="pageType === 'edit'"
                 v-if="editable"
                 @change="onPurchaseValueChange"
                 v-decorator="['purchaseValue',
@@ -427,6 +428,8 @@
               <a-input
                 placeholder="请输入预计使用期限"
                 :style="allStyle"
+                :disabled="pageType === 'edit'"
+                @input="estimateUseTermInput"
                 v-if="editable"
                 v-decorator="['estimateUseTerm',
                 {rules: [{required: true, message: '请输入预计使用期限'}, validateMonth], initialValue: detail.estimateUseTerm}
@@ -445,8 +448,9 @@
                 placeholder="请输入已使用期限"
                 :style="allStyle"
                 v-if="editable"
+                @input="alreadyUseTermInput"
                 v-decorator="['alreadyUseTerm',
-                {rules: [{required: true, message: '请输入已使用期限'}, validateMonth], initialValue: detail.alreadyUseTerm}
+                {rules: [{required: true, message: '请输入已使用期限'}, validateAlreadyUseTerm], initialValue: detail.alreadyUseTerm}
               ]">
                 <template slot="suffix">
                   <div style="color: #C4CBD4">月</div>
@@ -455,12 +459,31 @@
               <span class="label-value" v-else>{{detail.alreadyUseTerm}}个月</span>
             </a-form-item>
           </div>
+          <div class="edit-box-content-item" v-if="detail.depreciationMethod === '1'">
+            <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">单月折旧额<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-input
+                placeholder="请输入单月折旧"
+                :style="allStyle"
+                disabled
+                v-if="editable"
+                v-decorator="['monthDepreciation',
+                {rules: [{required: true, message: '请输入单月折旧'}, validateValue], initialValue: detail.monthDepreciation}
+              ]">
+                <template slot="suffix">
+                  <div style="color: #C4CBD4">元</div>
+                </template>
+              </a-input>
+              <span class="label-value" v-else>{{detail.monthDepreciation }}元</span>
+            </a-form-item>
+          </div>
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">累计折旧<i></i></span><span>：</span></div>
             <a-form-item>
               <a-input
                 placeholder="请输入累计折旧"
                 :style="allStyle"
+                :disabled="detail.depreciationMethod === '1'"
                 v-if="editable"
                 @input="changeCumulativeDepreciation"
                 v-decorator="['cumulativeDepreciation',
@@ -477,11 +500,11 @@
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">净残值率<i></i></span><span>：</span></div>
             <a-form-item>
               <a-input
-                :style="allStyle"
                 v-if="editable"
-                disabled
+                :style="allStyle"
+                @input="netSalvageInput"
                 v-decorator="['netSalvageValueRate',
-                {rules: [], initialValue: detail.netSalvageValueRate}
+                {rules: [{required: false}, validateNetSalvage], initialValue: detail.netSalvageValueRate}
               ]">
                 <template slot="suffix">
                   <div style="color: #C4CBD4">%</div>
@@ -562,12 +585,14 @@
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">折旧方法<i></i></span><span>：</span></div>
             <a-form-item>
+              <!-- v-if="detail.depreciationMethod" -->
               <a-select
                 allowClear
                 dropdownClassName="dropdown-class-depreciation"
                 placeholder="请选择折旧方法"
                 :style="allStyle"
                 :options="$addTitle(depreciationMethodOptions)"
+                @change="depreciationMethodChange"
                 v-decorator="['depreciationMethod',
                 {rules: [{required: true, message: '请选择折旧方法'}], initialValue: detail.depreciationMethod}]"
                 v-if="editable"
@@ -699,6 +724,7 @@ export default {
       cardId: '',
       isEquipment: false,
       detail: {
+        monthDepreciation: '', // 当月折旧
         cardName: '',
         cardCode: '',
         projectId: undefined,
@@ -746,7 +772,7 @@ export default {
         netValue: '',
         impairmentReady: 0,
         netForehead: '',
-        depreciationMethod: undefined,
+        depreciationMethod: '1',
         depreciationMethodName: ''
       },
       projectIdOptions: [],
@@ -777,35 +803,155 @@ export default {
     }
   },
   watch: {
-    'detail.purchaseValue' () {
-      if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
-        this.form.setFieldsValue({
-          estimateNetSalvageValue: utils.accDiv(parseFloat(this.detail.purchaseValue * this.detail.netSalvageValueRate).toFixed(2), parseFloat(100).toFixed(2), 2)
-        })
-      }
-      if (this.editable && this.detail.purchaseValue && this.detail.cumulativeDepreciation !== '') {
-        this.form.setFieldsValue({
-          netValue: utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
-        })
-        this.detail.netValue = utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
-      }
+    // 'detail.purchaseValue' () {
+    //   if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
+    //     this.form.setFieldsValue({
+    //       estimateNetSalvageValue: this.detail.purchaseValue * (this.detail.netSalvageValueRate/100) || 1, // 预计净残值 = 购入原值 * 净残值率
+    //       monthDepreciation: utils.accDiv(utils.accSub(this.detail.purchaseValue, this.detail.estimateNetSalvageValue), this.detail.estimateUseTerm), // 月折旧额 = (入账原值 - 预计净残值)/预计使用期限
+    //       // estimateNetSalvageValue: utils.accDiv(parseFloat(this.detail.purchaseValue * this.detail.netSalvageValueRate).toFixed(2), parseFloat(100).toFixed(2), 2)
+    //     })
+    //   }
+    //   if (this.editable && this.detail.purchaseValue && this.detail.cumulativeDepreciation !== '') {
+    //     this.form.setFieldsValue({
+    //       netValue: utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
+    //     })
+    //     this.detail.netValue = utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
+    //   }
+    // },
+    // 'detail.netSalvageValueRate' () {
+    //   if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
+    //     this.form.setFieldsValue({
+    //       estimateNetSalvageValue: this.detail.purchaseValue * (this.detail.netSalvageValueRate/100)
+    //       // estimateNetSalvageValue: utils.accDiv(parseFloat(this.detail.purchaseValue * this.detail.netSalvageValueRate).toFixed(2), parseFloat(100).toFixed(2), 2)
+    //     })
+    //   }
+    // },
+    // 'detail.netValue' () {
+    //   if (this.editable && this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
+    //     this.form.setFieldsValue({
+    //       netForehead: utils.accSub(parseFloat(this.detail.netValue).toFixed(2), parseFloat(this.detail.impairmentReady).toFixed(2))
+    //     })
+    //   }
+    // }
+  },
+
+  computed: {
+    // 预计净残值 = 购入原值 * 净残值率
+    estimateNetSalvageValue (){
+      // if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
+      return parseFloat(parseFloat(this.detail.purchaseValue).toFixed(4) * parseFloat((this.detail.netSalvageValueRate/100)).toFixed(4)).toFixed(4) || 0
+      // }
     },
-    'detail.netSalvageValueRate' () {
-      if (this.editable && this.detail.purchaseValue && this.detail.netSalvageValueRate) {
-        this.form.setFieldsValue({
-          estimateNetSalvageValue: utils.accDiv(parseFloat(this.detail.purchaseValue * this.detail.netSalvageValueRate).toFixed(2), parseFloat(100).toFixed(2), 2)
-        })
-      }
+    // 月折旧额 = (入账原值 - 预计净残值)/预计使用期限
+    monthDepreciation (){
+      // if (this.editable && this.detail.purchaseValue && this.detail.estimateNetSalvageValue && this.detail.estimateUseTerm) {
+      return (utils.accDiv(utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(4), parseFloat(this.detail.estimateNetSalvageValue).toFixed(4)), parseFloat(this.detail.estimateUseTerm).toFixed(4)) || 0).toFixed(4)
     },
-    'detail.netValue' () {
-      if (this.editable && this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
-        this.form.setFieldsValue({
-          netForehead: utils.accSub(parseFloat(this.detail.netValue).toFixed(2), parseFloat(this.detail.impairmentReady).toFixed(2))
-        })
+    // 累计折旧额 = 月折旧额 - 已使用月份 
+    cumulativeDepreciation (){
+      // if(this.editable && this.detail.monthDepreciation && this.detail.alreadyUseTerm){
+      return (parseFloat(this.detail.monthDepreciation).toFixed(4) * this.detail.alreadyUseTerm*1).toFixed(4) || 0
+    },
+    // 累计折旧额 = 月折旧额 - 已使用月份（资产类型未为土地==4）
+    cumulativeDepreciationForLand (){
+      if(this.detail.assetType === '4' && this.detail.alreadyUseTerm*1 < 12){
+        return (parseFloat(this.detail.monthDepreciation).toFixed(4) * (this.detail.alreadyUseTerm*1+1)).toFixed(4) || 0
+      }else if(this.detail.assetType === '4' && this.detail.alreadyUseTerm*1 === 12){
+        return (parseFloat(this.detail.monthDepreciation).toFixed(4) * (this.detail.alreadyUseTerm*1)).toFixed(4) || 0
       }
+      // if(this.editable && this.detail.monthDepreciation && this.detail.alreadyUseTerm){
+    },
+    // 净值 = 原值-累计折旧 ()
+    netValue (){
+      return (utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(4), parseFloat(this.detail.cumulativeDepreciation).toFixed(4)) || 0).toFixed(4)
+    },
+    // 净额 = 净值-减值准备。
+    netForehead (){
+      return (utils.accSub(this.netValue, parseFloat(this.detail.impairmentReady).toFixed(4)) || 0).toFixed(4)
     }
   },
   methods: {
+    // 预计使用期限输入
+    estimateUseTermInput (event){
+      this.detail.estimateUseTerm = event.target.value
+      // this.setEstimateNetSalvageValue()
+      if(this.detail.depreciationMethod === '1'){
+        this.setSameMonthValue()
+        this.setCumulativeDepreciation()
+      }
+      this.setNetValue()
+      this.setNetForehead()
+    },
+    // 净残值率输入
+    netSalvageInput (event){
+      this.detail.netSalvageValueRate = event.target.value
+      this.setEstimateNetSalvageValue()
+      if(this.detail.depreciationMethod === '1'){
+        this.setSameMonthValue()
+        this.setCumulativeDepreciation()
+      }
+      this.setNetValue()
+      this.setNetForehead()
+    },
+    alreadyUseTermInput (event) {
+      if(this.detail.depreciationMethod === '1' && !this.detail.assetType){
+        this.$message.error('请先选择资产类型')
+        this.form.setFieldsValue({
+          alreadyUseTerm: ''
+        })
+        return
+      }
+      this.detail.alreadyUseTerm = event.target.value
+      // this.setEstimateNetSalvageValue()
+      // this.setSameMonthValue()
+      if(this.detail.depreciationMethod === '1'){
+        this.setCumulativeDepreciation()
+      }
+      this.setNetValue()
+      this.setNetForehead()
+    },
+   // 设置预计净残值
+    setEstimateNetSalvageValue () {
+      this.form.setFieldsValue({
+        estimateNetSalvageValue: this.estimateNetSalvageValue,
+      })
+      this.detail.estimateNetSalvageValue = this.estimateNetSalvageValue
+    },
+     // 设置单月折旧
+    setSameMonthValue (){
+      this.form.setFieldsValue({  
+        monthDepreciation: this.monthDepreciation
+      })
+      this.detail.monthDepreciation = this.monthDepreciation
+    },
+    setCumulativeDepreciation (){
+      this.form.setFieldsValue({
+        cumulativeDepreciation: this.cumulativeDepreciation
+      })
+      this.detail.cumulativeDepreciation = this.cumulativeDepreciation
+    },
+    setNetValue (){
+      this.form.setFieldsValue({
+        netValue: this.netValue
+      })
+      this.detail.netValue = this.netValue
+    },
+    setNetForehead (){
+      this.form.setFieldsValue({
+        netForehead: this.netForehead
+      })
+      this.detail.netForehead = this.netForehead
+    },
+    // 选择折旧方法
+    depreciationMethodChange (value){
+      this.detail.depreciationMethod = value
+      if(this.detail.depreciationMethod === '1' && !this.detail.assetType){
+        this.form.setFieldsValue({
+          alreadyUseTerm: '',
+          cumulativeDepreciation: ''
+        })
+      }
+    },
     moment,
     formatDate (value) {
       if (value) {
@@ -863,6 +1009,7 @@ export default {
       })
       this.dataSource = rowsData
       this.$refs.associateAssetModal.show = false
+      this.setFieldsValue
     },
     changeTree (value, label) {
       this.detail.safekeepingOrganId = value
@@ -901,11 +1048,12 @@ export default {
       if (value) {
         if (!reg.test(value)) {
           callback('格式不正确，必须为正整数')
-        }else if (value < 0 || value > 9999) {
-          callback('该值取值范围为0-9999')
+        }else if (value < 0 || value > 12) {
+          callback('该值取值范围为1-12')
         } else {
           callback()
         }
+        this.detail.estimateUseTerm = value
       } else {
         callback()
       }
@@ -918,6 +1066,41 @@ export default {
         }
       }
       callback()
+    },
+    // 校验已使用期限
+    validateAlreadyUseTerm (rule, value, callback){
+      let reg =  /^[0-9]*[1-9][0-9]*$/
+      if (value) {
+        if (!reg.test(value)) {
+          callback('格式不正确，必须为正整数')
+        }else if (value < 0 || value > 12) {
+          callback('该值取值范围为1-12')
+        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType !== '4' && Number(value) > Number(this.detail.estimateUseTerm)){
+          callback('已使用期限小于等于预计使用期限')
+        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && value*1+1 !== 12 && value*1+1 > Number(this.detail.estimateUseTerm)){
+          callback('已使用期限+1后小于等于预计使用期限')
+        }else {
+          callback()
+        }
+        this.detail.alreadyUseTerm = value
+      } else {
+        callback()
+      }
+    },
+    // 校验净残值率
+    validateNetSalvage(rule, value, callback){
+      var regPos = /^\d+(\.\d+)?$/
+      if (value) {
+        if (!regPos.test(value)) {
+          callback('格式不正确，必须为正数值型')
+        }else if (value < 0 || value > 100) {
+          callback('该值取值范围为0-100')
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
     },
     // 资产项目发生变化
     changeProjectId (value, options) {
@@ -935,6 +1118,7 @@ export default {
     },
     // 资产类型发生变化
     changeAssetType (value) {
+      console.log(value, '资产类型发生变化')
       this.detail.assetType = value
       this.getAssetCategoryOptions()
       this.getAssetPurposeOptions()
@@ -970,6 +1154,13 @@ export default {
       if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
         this.detail.purchaseValue = event.target.value
       }
+      this.setEstimateNetSalvageValue()
+      if(this.detail.depreciationMethod === '1'){
+        this.setSameMonthValue()
+        this.setCumulativeDepreciation()
+      }
+      this.setNetValue()
+      this.setNetForehead()
     },
     // 累计折旧发生变化
     changeCumulativeDepreciation (event) {
@@ -977,12 +1168,14 @@ export default {
       let reg =  /^\d+(\.\d+)?$/
       if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
         this.detail.cumulativeDepreciation = event.target.value
-        if (this.detail.purchaseValue && this.detail.cumulativeDepreciation !== '') {
-          this.form.setFieldsValue({
-            netValue: utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
-          })
-          this.detail.netValue = utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
-        }
+        this.setNetValue()
+        this.setNetForehead()
+        // if (this.detail.purchaseValue && this.detail.cumulativeDepreciation !== '') {
+        //   this.form.setFieldsValue({
+        //     netValue: utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
+        //   })
+        //   this.detail.netValue = utils.accSub(parseFloat(this.detail.purchaseValue).toFixed(2), parseFloat(this.detail.cumulativeDepreciation).toFixed(2))
+        // }
       }
     },
     // 减值准备发生变化
@@ -991,11 +1184,12 @@ export default {
       let reg =  /^\d+(\.\d+)?$/
       if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
         this.detail.impairmentReady = event.target.value
-        if (this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
-          this.form.setFieldsValue({
-            netForehead: utils.accSub(parseFloat(this.detail.netValue).toFixed(2), parseFloat(this.detail.impairmentReady).toFixed(2))
-          })
-        }
+        // if (this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
+        //   this.form.setFieldsValue({
+        //     netForehead: utils.accSub(parseFloat(this.detail.netValue).toFixed(2), parseFloat(this.detail.impairmentReady).toFixed(2))
+        //   })
+        // }
+        this.setNetForehead()
       }
     },
     // 获取资产项目下拉列表
@@ -1355,7 +1549,7 @@ export default {
     if (this.editable) {
       this.getProjectIdOptions()
       this.getAssetTypeOptions()
-      this.getAssetCategoryOptions()
+      // this.getAssetCategoryOptions()
       this.getUnitOptions()
       this.getAssetSourceOptions()
       // this.getStoragePathOptions()

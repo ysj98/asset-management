@@ -294,23 +294,11 @@ export default {
       })
     },
     exportFn () {
-      let obj = {
-        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        // registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
-        sourceModeList:  this.alljudge(this.queryCondition.sourceModes)
-      }
       this.$api.assets.exportOperationSchedulePage(this.queryParam).then(res => {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = '资产登记一览表.xls'
+        a.download = '资产转运营一览表.xls'
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()

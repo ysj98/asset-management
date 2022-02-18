@@ -153,7 +153,9 @@ export function getOperationScheduleStatistics (data) {
 }
 // 资产转运营一览表-导出
 export function exportOperationSchedulePage (data) {
-  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data)
+  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data,  true, false, {
+    responseType: "blob",
+  })
 }
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
@@ -809,6 +811,10 @@ export function download (data) {
 // 权属人管理-权属人详情查询
 export function detail (data) {
   return axiosGet(assets.propertyOwnerManagement.detail, data)
+}
+// 列表更新资产标签
+export function updateAssetLabelConfig (data) {
+  return axiosPost(assets.projectManage.updateAssetLabelConfig, data)
 }
 
 // 资产入账

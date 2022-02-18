@@ -58,9 +58,10 @@
         </a-col>
         <a-col :span="4">
           <a-select
-            v-model="assetLabel"
+            v-model="label"
             mode="multiple"
             :maxTagCount="1"
+            @select="assetLabelFn"
             style="width: 100%"
             placeholder="请选择资产标签"
             :options="$addTitle(assetLabelSelect)"
@@ -128,8 +129,8 @@
     data () {
       return {
         assetLabelOpt,
-        assetLabelSelect: [{ label: "全部资产标签  ", value: "" },...assetLabelOpt],
-        assetLabel: '',
+        assetLabelSelect: [],
+        label: [],
         selectedRowKeys: [],
         modalObj: { title: '资产设置', status: false, okText: '确定', width: 605 },
         ASSET_MANAGEMENT, // 权限对象
@@ -177,7 +178,7 @@
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
             { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
-            { title: '资产标签', dataIndex: 'assetLabel', width: 150 },
+            { title: '资产标签', dataIndex: 'label', width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]
         },
@@ -196,15 +197,45 @@
     },
 
     methods: {
+      assetLabelFn(value){
+        this.$nextTick(function () {
+        this.label = this.handleMultipleSelectValue(
+          value,
+          this.label,
+          this.assetLabelSelect
+        );
+      });
+      },
+      // 处理多选下拉框有全选时的数组
+      handleMultipleSelectValue(value, data, dataOptions) {
+      // 如果选的是全部
+      if (value === "") {
+        data = [""];
+      } else {
+        let totalIndex = data.indexOf("");
+        if (totalIndex > -1) {
+          data.splice(totalIndex, 1);
+        } else {
+          // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+          if (data.length === dataOptions.length - 1) {
+            data = [""];
+          }
+        }
+      }
+      return data;
+    },
       getAssetLabel (id){
-        // debugger
         queryAssetLabelConfig({organId: id}).then(res => {
           let {data, code} = res.data
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelName})
+              return ({label: item.labelName, value: item.labelId})
             })
+            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : undefined
+            this.label = this.assetLabelOpt.length > 0 ? '' : undefined
           }
+        }).catch(err =>{
+          this.$message.error(err || '当前组织机构下无资产标签')
         })
       },
       // 多选
@@ -215,11 +246,31 @@
         // console.log(this.selectedRowKeys)
       },
       clickAsset () {
+        if(this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签')
         // if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
         this.modalObj.status = true
       },
       // 资产设置
-      handleModalOk () {},
+      handleModalOk () {
+        // 确定
+        let arr = this.$refs.editTagRef.labelName
+        if(this.selectedRowKeys.length <= 0){
+          this.$message.error('请选择需要设置标签的楼栋')
+          return
+        }
+        console.log(arr, this.selectedRowKeys)
+        let data = {
+          buildIds: this.selectedRowKeys.join(','),
+          label:arr.join('、')
+        }
+        this.$api.assets.updateAssetLabelConfig(data).then(res =>{
+          if(res.data.code === '0'){
+            this.selectedRowKeys = []
+            this.queryTableData({type: ''})
+          }
+        })
+        this.modalObj.status = false
+      },
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
@@ -236,12 +287,20 @@
 
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        let labelName = ''
+        if(this.label.length > 0 && this.assetLabelSelect.length > 0){
+          labelName = this.label.map(item => {
+            console.log(this.assetLabelSelect, this.label)
+            return this.assetLabelSelect.find(sub => sub.value == item).title
+          })
+          labelName = labelName.length > 0 ? labelName.join(',') : ''
+        }
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, current } = this
         let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         this.$api.assets.queryBuildingViewPage({
-          organId, buildIdList, statusList, projectIdList, pageSize: pageLength, pageNum: pageNo, flag: current ? (current - 1) : ''
+          organId, buildIdList, statusList, projectIdList, pageSize: pageLength,label: labelName, pageNum: pageNo, flag: current ? (current - 1) : ''
         }).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -368,7 +427,6 @@
     created () {
       this.queryOrganList()
     },
-
     watch: {
       organProjectBuildingValue: {
         handler: function (val) {
