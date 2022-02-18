@@ -140,7 +140,7 @@ export default {
 }
 .wrapper {
   width: 100%;
-  max-height: 300px;
+  max-height: 160px;
   overflow: auto;
 }
 .land-name {

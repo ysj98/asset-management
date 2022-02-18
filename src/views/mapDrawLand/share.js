@@ -210,9 +210,13 @@ export function getOffsetNum({ mapInstance, latlng, width, height }) {
   const allY = size.y;
   const currentX = block.x;
   const currentY = block.y;
-  if (currentX <= width / 2) {
+  if (0 <= currentX && currentX <= width / 2) {
     console.log("弹窗向右偏移");
-    resOffset[0] = Math.abs(currentX);
+    resOffset[0] = (width / 2) - currentX  + 10
+  }
+  if (currentX < 0){
+    console.log("弹窗向右偏移-中心点为超出当前区域");
+    resOffset[0] = (width / 2) + Math.abs(currentX) + 10
   }
   if (currentY <= height) {
     console.log("弹窗向下偏移");
