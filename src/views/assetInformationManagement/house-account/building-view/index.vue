@@ -258,7 +258,6 @@
           this.$message.error('请选择需要设置标签的楼栋')
           return
         }
-        console.log(arr, this.selectedRowKeys)
         let data = {
           buildIds: this.selectedRowKeys.join(','),
           label:arr.join('、')
@@ -290,10 +289,9 @@
         let labelName = ''
         if(this.label.length > 0 && this.assetLabelSelect.length > 0){
           labelName = this.label.map(item => {
-            console.log(this.assetLabelSelect, this.label)
-            return this.assetLabelSelect.find(sub => sub.value == item).title
+            return this.assetLabelSelect.find(sub => sub.value === item).title
           })
-          labelName = labelName.length > 0 ? labelName.join(',') : ''
+          labelName = labelName.length > 0 ? labelName.join('、') : ''
         }
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, current } = this
         let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList

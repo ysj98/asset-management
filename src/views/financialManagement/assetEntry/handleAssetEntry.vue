@@ -925,10 +925,17 @@ export default {
       this.detail.monthDepreciation = this.monthDepreciation
     },
     setCumulativeDepreciation (){
-      this.form.setFieldsValue({
-        cumulativeDepreciation: this.cumulativeDepreciation
-      })
-      this.detail.cumulativeDepreciation = this.cumulativeDepreciation
+      if(this.detail.assetType !== '4'){
+        this.form.setFieldsValue({
+          cumulativeDepreciation: this.cumulativeDepreciation
+        })
+        this.detail.cumulativeDepreciation = this.cumulativeDepreciation
+      }else {
+        this.form.setFieldsValue({
+          cumulativeDepreciation: this.cumulativeDepreciationForLand
+        })
+        this.detail.cumulativeDepreciation = this.cumulativeDepreciationForLand
+      }
     },
     setNetValue (){
       this.form.setFieldsValue({
@@ -1077,7 +1084,7 @@ export default {
           callback('该值取值范围为1-12')
         } else if(this.detail.depreciationMethod === '1' && this.detail.assetType !== '4' && Number(value) > Number(this.detail.estimateUseTerm)){
           callback('已使用期限小于等于预计使用期限')
-        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && value*1+1 !== 12 && value*1+1 > Number(this.detail.estimateUseTerm)){
+        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && value*1 !== 12 && value*1+1 > Number(this.detail.estimateUseTerm)){
           callback('已使用期限+1后小于等于预计使用期限')
         }else {
           callback()
