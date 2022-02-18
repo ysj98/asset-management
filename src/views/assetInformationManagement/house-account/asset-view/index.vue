@@ -23,7 +23,7 @@
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button type="default" @click="clickAsset" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
+        <SG-Button type="default" @click="clickAsset">资产标签</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
@@ -34,14 +34,14 @@
         <a-row :gutter="12">
           <a-col :span="4">
             <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="sourceModes"
-              option-filter-prop="title"
-              placeholder="请选择来源方式"
-              :options="$addTitle(sourceOptions)"
-              @change="changeSource"
+                mode="multiple"
+                :maxTagCount="1"
+                style="width: 100%"
+                v-model="sourceModes"
+                option-filter-prop="title"
+                placeholder="请选择来源方式"
+                :options="$addTitle(sourceOptions)"
+                @change="changeSource"
             />
           </a-col>
           <a-col :span="4">
@@ -114,13 +114,13 @@
               placeholder="权属用途"
             />
           </a-col>
-          <a-col :span="4" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
+          <a-col :span="4">
             <a-select
               v-model="assetLabel"
               mode="multiple"
               :maxTagCount="1"
               style="width: 100%"
-              :options="$addTitle(assetLabelSelect)"
+              :options="$addTitle(assetLabelOpt)"
               placeholder="资产标签"
             />
           </a-col>
@@ -132,16 +132,7 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
     <!--列表Table-->
-    <a-table 
-      v-bind="tableObj" 
-      class="custom-table td-pd10"
-      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll, 
-      getCheckboxProps: record => ({
-          props: {
-            disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
-            name: record.assetName,
-          },
-        }) }">>
+    <a-table v-bind="tableObj" class="custom-table td-pd10">
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
         <span :title="text">
@@ -194,7 +185,7 @@
         :checkedArr="checkedHeaderArr"
         :columns="tableObj.initColumns"
       />
-      <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt"/>
+      <edit-tag v-if="modalType === 2 && modalObj.status"/>
     </SG-Modal>
   </div>
 </template>
@@ -211,7 +202,6 @@
   import {querySourceType} from "@/views/common/commonQueryApi";
   import { getFormat } from "utils/utils";
   import EditTag from '../building-view/editTag.vue'
-  import {queryAssetLabelConfig} from '@/api/publicCode.js'
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
@@ -219,9 +209,9 @@
     { label: "无证明材料证件", value: 0 },
   ]
   const assetLabelOpt = [
-    // { label: "全部资产标签  ", value: "" },
-    // { label: "正常", value: 1 },
-    // { label: "异常", value: 0 },
+    { label: "全部资产标签  ", value: "" },
+    { label: "正常", value: 1 },
+    { label: "异常", value: 0 },
   ]
   export default {
     name: 'index',
@@ -231,10 +221,8 @@
         getFormat,
         supportMaterialOpt,
         supportMaterial: '',
-        selectedRowKeys: [],
         assetLabelOpt,
-        assetLabelSelect: [],
-        assetLabel: undefined,
+        assetLabel: '',
         sourceModes:[],  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
@@ -344,29 +332,8 @@
       }
     },
     methods: {
-      getAssetLabel (id){
-        queryAssetLabelConfig({organId: id}).then(res => {
-          let {data, code} = res.data
-          if(code === '0'){
-            this.assetLabelOpt = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelId})
-            })
-            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签  ", value: "" },...this.assetLabelOpt] : undefined
-            this.assetLabel = this.assetLabelOpt.length > 0 ? '' : undefined
-          }
-        }).catch(err =>{
-          this.$message.error(err || '当前组织机构下无资产标签')
-        })
-      },// 多选
-      onSelectChange (selectedRowKeys){
-        this.selectedRowKeys = selectedRowKeys;
-      },
-      onSelectAll (selected){
-        // console.log(this.selectedRowKeys)
-      },
       // 资产标签
       clickAsset (){
-        if(this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签')
         this.modalType = 2
         this.modalObj.status = true
       },
@@ -512,6 +479,7 @@
             this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
             this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
             this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
+            console.log('----',this.tableObj.dataSource)
           } else {
             this.$message.error(res.message)
           }
@@ -671,9 +639,6 @@
           this.queryCategoryOptions(val.organId)
           this.getSourceOptions(val.organId)
           this.organDict('OWNERSHIP_USE',val.organId)
-          if(val.organId.split(',').length === 1){
-            this.getAssetLabel(val.organId)
-          }
         }
       },
 

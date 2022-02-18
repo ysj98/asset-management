@@ -102,6 +102,7 @@ import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import {getTableHeaders} from "utils/share";
+
 const approvalStatusData = [
   { name: '全部状态', value: '' }, { name: '待审批', value: '2' },
   { name: '已驳回', value: '3' }, { name: '已审批', value: '1' }, { name: '已取消', value: '4' }
@@ -225,19 +226,7 @@ export default {
       this.listSettingFlag = flag
     },
     exportFn () {
-      let obj = {
-        pageNum: 1,
-        pageSize: 1,
-        statusList: this.alljudge(this.queryCondition.approvalStatus),      // 入库单状态
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        assetName: this.queryCondition.assetNameCode,         // 资产名称/编码
-        minDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        maxDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        storeName: this.queryCondition.registerOrderNameOrId                                // 入库单编码
-      }
+      let obj = this.handleSearchReq()
       this.$api.assets.getGeneralSurveyExport(obj).then(res => {
         console.log(res)
         let blob = new Blob([res.data])
@@ -259,11 +248,8 @@ export default {
       this.query()
       this.getObjectKeyValueByOrganIdFn()
     },
-    query () {
-      this.loading = true
-      let obj = {
-        pageNum: this.queryCondition.pageNum,                // 当前页
-        pageSize: this.queryCondition.pageSize,              // 每页显示记录数
+    handleSearchReq() {
+      return {
         statusList: this.alljudge(this.queryCondition.approvalStatus),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
@@ -272,7 +258,15 @@ export default {
         assetName: this.queryCondition.assetNameCode,         // 资产名称/编码
         minDate: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         maxDate: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        storeName: this.queryCondition.registerOrderNameOrId                                // 入库单编码
+        storeName: this.queryCondition.registerOrderNameOrId     // 入库单编码
+      };
+    },
+    query () {
+      this.loading = true
+      let obj = {
+        pageNum: this.queryCondition.pageNum,                // 当前页
+        pageSize: this.queryCondition.pageSize,              // 每页显示记录数
+        ...this.handleSearchReq()
       }
       let obj2 = {
         city: this.provinces.city ? this.provinces.city : '',               // 市

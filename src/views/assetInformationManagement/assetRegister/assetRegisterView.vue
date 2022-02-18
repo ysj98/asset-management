@@ -116,6 +116,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {querySourceType} from "@/views/common/commonQueryApi";
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import {getTableHeaders} from "utils/share";
+
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -260,19 +261,25 @@ export default {
         return this.sourceOptions = [{ value:'', label: '全部来源方式' }].concat(listArr)
       })
     },
-    exportFn () {
-      let obj = {
+    handleSearchReq(){
+      return {
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
+        sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
         createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
         registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
-        sourceModeList:  this.alljudge(this.queryCondition.sourceModes)
+        city: this.provinces.city ? this.provinces.city : '',               // 市
+        province: this.provinces.province ? this.provinces.province : '',   // 省
+        region: this.provinces.district ? this.provinces.district : '',     // 区
       }
+    },
+    exportFn () {
+      let obj = this.handleSearchReq()
       this.$api.assets.assetRegListPageExport(obj).then(res => {
         console.log(res)
         let blob = new Blob([res.data])
@@ -300,19 +307,7 @@ export default {
       let obj = {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
-        approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
-        assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
-        objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
-        sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
-        assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
-        registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
-        city: this.provinces.city ? this.provinces.city : '',               // 市
-        province: this.provinces.province ? this.provinces.province : '',   // 省
-        region: this.provinces.district ? this.provinces.district : '',     // 区
+        ...this.handleSearchReq()
       }
       this.$api.assets.findAssetRegListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {

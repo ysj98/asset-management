@@ -58,7 +58,7 @@ export function warrantDownload (data) {
 }
 // 权证导出
 export function warrantExport (data) {
-  return axiosPost(ownership.authorityCardManagement.warrantExport, data, false, false, {
+  return axiosPost(ownership.authorityCardManagement.warrantExport, data, true, false, {
     responseType: 'blob'
   })
 }

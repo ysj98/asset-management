@@ -374,9 +374,7 @@
               ]
               this.assetTypeData = [...arr, ...data]
             }
-            if(this.assetType){
-              this.getListFn()
-            }
+            this.getListFn()
           } else {
             this.$message.error(res.data.message)
           }

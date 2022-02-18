@@ -9,7 +9,7 @@
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn" style="margin-right: 8px">新建权证</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>
-        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_SETTING" icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_SETTING" icon="setting" @click="changeListSettingsModal(true)" style="margin: 0 10px">列表设置</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
@@ -133,23 +133,12 @@
     <!--导入-->
     <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="权证批量导入"/>
     <!--编辑列表表头-->
-    <SG-Modal
-      v-bind="modalObj"
-      v-model="modalObj.status"
-      @ok="handleModalOk"
-      @cancel="handleModalStatus(false)"
-    >
-    <edit-table-header
-        :key="key"
-        ref="tableHeader"
-        :checkedArr="checkedHeaderArr"
-        :columns="tableObj.initColumns"
-      />
-    </SG-Modal>
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
 <script>
+import TableHeaderSettings from "@/components/TableHeaderSettings";
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import segiIcon from '@/components/segiIcon.vue'
@@ -161,21 +150,9 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 // import {utils, debounce} from '@/utils/utils.js'
 import BatchImport from 'src/views/common/eportAndDownFile'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
-import EditTableHeader from './EditTableHeader'
+import {getTableHeaders} from "utils/share";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
-const columns = [
-  {
-    title: '所属机构',
-    dataIndex: 'organName'
-  },
-  {
-    title: '权证号码',
-    dataIndex: 'warrantNbr'
-  },
-  {
-    title: '权证类型',
-    dataIndex: 'kindOfRightName'
-  },
+const detailColumns = [
   {
     title: '权属人',
     dataIndex: 'obligeeName',
@@ -187,26 +164,6 @@ const columns = [
     scopedSlots: { customRender: 'ownerTypeName' }
   },
   {
-    title: '房屋号/宗地号/不动产单元号',
-    dataIndex: 'lotNoEstateUnitCode'
-  },
-  {
-    title: '坐落位置',
-    dataIndex: 'seatingPosition'
-  },
-  {
-    title: '用途',
-    dataIndex: 'ownershipUseName'
-  },
-  {
-    title: '权证面积(㎡)',
-    dataIndex: 'buildArea'
-  },
-  {
-    title: '登记日期',
-    dataIndex: 'rigisterDate'
-  },
-  {
     title: '使用期限',
     dataIndex: 'useLimitDate',
     scopedSlots: { customRender: 'useLimitDate' },
@@ -215,15 +172,9 @@ const columns = [
     title: '交接日期',
     dataIndex: 'handoverDate',
     scopedSlots: { customRender: 'handoverDate' },
-  },
-  {
-    title: '附件',
-    dataIndex: 'uploadAttachment'
-  },
-  {
-    title: '状态',
-    dataIndex: 'statusName'
-  },
+  }
+]
+const requiredColumn = [
   {
     title: '操作',
     dataIndex: 'operation',
@@ -276,10 +227,12 @@ const queryCondition =  {
     seatingPosition: '' // 坐落位置
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, EditTableHeader},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, TableHeaderSettings},
   props: {},
   data () {
     return {
+      funType: 5,
+      listSettingFlag: false,
       ASSET_MANAGEMENT,
       newShow: false,
       warrantId: '',
@@ -309,13 +262,11 @@ export default {
         {title: '房屋产权', key: 'houseWarrantCount', value: 0, bgColor: 'gray'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       ownerTypeData: [], // 权属形式
-      modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
       key: 0, // 更新Modal包裹的子组件
-      checkedHeaderArr: [], // 格式如['name', 'age']
       tableObj: {
         initColumns: [],
         scroll: { x: 3500 },
-        columns
+        columns:[]
       },
       // rowSelection: {
         
@@ -325,6 +276,34 @@ export default {
   computed: {
   },
   methods: {
+    async initTableColumns(){
+      // 暂不考虑固定表头顺序问题，目前只有操作列
+      const res = await getTableHeaders({funType:this.funType})
+      this.tableObj.columns = res.customShow.map( ele =>{
+        let mapRes = {}
+        // 匹配用户预设表头，使用前端代码对应表头配置
+        const temp = detailColumns.find(item=>[item.key,item.dataIndex].includes(ele.colCode))
+        if (temp){
+          mapRes = temp
+        }else {
+          mapRes =  {
+            title: ele.colName,
+            dataIndex: ele.colCode
+          }
+        }
+        return mapRes
+      })
+      requiredColumn.forEach(ele=>{
+        this.tableObj.columns.splice(this.tableObj.columns.length,0,ele)
+      })
+    },
+    handleTableHeaderSuccess(){
+      this.changeListSettingsModal(false)
+      this.initTableColumns()
+    },
+    changeListSettingsModal(flag){
+      this.listSettingFlag = flag
+    },
     onChange (selectedRowKeys, selectedRows) {
       this.idArr = []
       this.idArr = selectedRows.map(item => {
@@ -509,20 +488,25 @@ export default {
       this.queryCondition.pageSize = 10
       this.query()
     },
-    // 查询
-    query () {
-      this.loading = true
-      let obj = {
+    handleSearchReq(){
+      return {
         organId: Number(this.queryCondition.organId),        // 组织机构
         kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权证类型(多选)
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
-        pageNum: this.queryCondition.pageNum,     // 当前页
-        pageSize: this.queryCondition.pageSize,    // 每页显示记录数
         seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
         uploadAttachment: this.queryCondition.attachmentStatus
+      }
+    },
+    // 查询
+    query () {
+      this.loading = true
+      let obj = {
+        pageNum: this.queryCondition.pageNum,     // 当前页
+        pageSize: this.queryCondition.pageSize,    // 每页显示记录数
+        ...this.handleSearchReq()
       }
       this.$api.ownership.warrantList(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -637,15 +621,7 @@ export default {
     },
     // 导出列表
     exportData () {
-      let data = {
-        organId: Number(this.queryCondition.organId),        // 组织机构
-        kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权证类型(多选)
-        obligeeId: this.queryCondition.obligeeId,       // 权属人
-        ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
-        status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        warrantNbr: this.queryCondition.warrantNbr,    // 权证号
-        uploadAttachment: this.queryCondition.attachmentStatus
-      }
+      let data = this.handleSearchReq()
       let loadingName = this.SG_Loding('导出中...')
       this.$api.ownership.warrantExport(data).then(res => {
         this.$SG_Message.destroy(loadingName)
@@ -709,24 +685,6 @@ export default {
             }
           })
     },
-    // 列表设置Modal保存
-    handleModalOk () {
-      let arr = this.$refs['tableHeader'].checkedList
-      if (!arr.length) {
-        return this.$message.info('请至少选中一项!')
-      }
-      this.modalObj.status = false
-      let{ initColumns } = this.tableObj
-      this.checkedHeaderArr = arr
-      let columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
-      this.tableObj.scroll = { x: columns.length * 100 } // 防止较少列时出现滚动
-      this.tableObj.columns = columns
-    },
-    // 打开/关闭列表列头编辑Modal
-    handleModalStatus (status) {
-      this.modalObj.status = status
-      status && (this.key = new Date().getTime())
-    },
   },
   created () {
     // 初始化Table列头
@@ -734,8 +692,6 @@ export default {
     this.tableObj.initColumns = columns
     // 默认不展示xx表头
     this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
-    // 初始化被选中的列头数据
-    this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action')
   },
   watch: {
     '$route' () {
@@ -758,6 +714,7 @@ export default {
         this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100]
       }
     })
+    this.initTableColumns()
   }
 }
 </script>

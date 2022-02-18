@@ -512,18 +512,8 @@
             },
             // 导出
             newClearForm() {
-                this.exportBtnLoading = true
-                let obj = {};
-                ['assetTypeList', 'objectTypeList', 'cleanupTypeList', 'approvalStatusList', 'projectIdList'].forEach(key =>
-                  // 过滤空值
-                  obj[key] = this.queryData[key].filter(m => m)
-                )
-                const params = {
-                    ...this.queryData,
-                    ...obj,
-                    organId: this.organId
-                }
-                this.$api.assets.getGeneralSurveyExportOut(params).then(res => {
+                const req = this.handleSearchReq()
+                this.$api.assets.getGeneralSurveyExportOut(req).then(res => {
                     this.exportBtnLoading = false
                     console.log(typeof res.data)
                     if (Number(res.data.code) === -1) {
@@ -547,8 +537,7 @@
                 this.queryData.pageNum = 1;
                 this.queryList();
             },
-            // 调用接口 查询列表
-            queryList() {
+            handleSearchReq(isTotal){
               const {queryData} = this
               let obj = {};
               ['assetTypeList', 'objectTypeList', 'cleanupTypeList', 'approvalStatusList', 'projectIdList'].forEach(key =>
@@ -565,8 +554,17 @@
                 province: this.provinces.province ? this.provinces.province : '',   // 省
                 region: this.provinces.district ? this.provinces.district : '',     // 区
               }
-                this.assetCleanupGetCount(params)
-                this.$api.assets.getGeneralSurvey({...params,...params2}).then(res => {
+              if (isTotal){
+                return params
+              }else {
+                return {...params,...params2}
+              }
+            },
+            // 调用接口 查询列表
+            queryList() {
+                this.assetCleanupGetCount(this.handleSearchReq(true))
+                const req = this.handleSearchReq()
+                this.$api.assets.getGeneralSurvey(req).then(res => {
                     if (Number(res.data.code) === 0) {
                         const data = res.data.data
                         this.pageTotalCount = data.count

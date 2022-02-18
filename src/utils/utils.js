@@ -198,14 +198,12 @@ class Units {
     let r1
     let r2
     try {
-      let str1 = arg1.toString()
-      if(str1.includes('.')) t1 = str1.split('.')[1].length
+      t1 = arg1.toString().split('.')[1].length
     } catch (e) {
       console.error(e)
     }
     try {
-      let str2 = arg2.toString()
-      if(str2.includes('.')) t2 = str2.split('.')[1].length
+      t2 = arg2.toString().split('.')[1].length
     } catch (e) {
       console.error(e)
     }
@@ -226,15 +224,13 @@ class Units {
     let m
     let n
     try {
-      let str1 = arg1.toString()
-      if(str1.includes('.')) r1 = str1.split('.')[1].length
+      r1 = arg1.toString().split('.')[1].length
     } catch (e) {
       r1 = 0
       console.error(e)
     }
     try {
-      let str2 = arg2.toString()
-      if(str2.includes('.')) r2 = str2.split('.')[1].length
+      r2 = arg2.toString().split('.')[1].length
     } catch (e) {
       r2 = 0
       console.error(e)
@@ -255,15 +251,13 @@ class Units {
     let m
     let c
     try {
-      let str1 = arg1.toString()
-      if(str1.includes('.')) r1 = str1.split('.')[1].length
+      r1 = arg1.toString().split('.')[1].length
     } catch (e) {
       r1 = 0
       console.error(e)
     }
     try {
-      let str2 = arg2.toString()
-      if(str2.includes('.')) r2 = str2.split('.')[1].length
+      r2 = arg2.toString().split('.')[1].length
     } catch (e) {
       r2 = 0
       console.error(e)

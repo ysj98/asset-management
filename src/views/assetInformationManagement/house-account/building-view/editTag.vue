@@ -1,7 +1,7 @@
 <!--资产视图业务-资产视图列表页面-编辑列表表头组件-->
 <template>
   <div class="table_header">
-    <a-checkbox-group :options="options" v-model="checkedList" @change="change"/>
+    <a-checkbox-group :options="options" v-model="checkedList"/>
   </div>
 </template>
 
@@ -13,7 +13,6 @@
       return {
         // checkAll: false, // 全选
         checkedList: [], // 选中项,
-        labelName: []
         // indeterminate: false, // 全选按钮是否与checkGroup联动
         // disabledHeader: ['organName', 'warrantNbr'] // 不可选的列头
         // options: []
@@ -36,11 +35,7 @@
       // this.getAssetLabel('110111101')
     },
     methods: {
-      change(){
-        this.labelName = this.checkedList.map(item => {
-          return this.options.find(sub => sub.value == item).title
-        })
-      }
+      
     }
   }
 </script>

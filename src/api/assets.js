@@ -141,7 +141,7 @@ export function findAssetRegListPage (data) {
 }
 // 资产登记一览表-主列表导出
 export function assetRegListPageExport (data) {
-  return axiosPost(assets.assetRegister.assetRegListPageExport, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetRegister.assetRegListPageExport, data, true, false, {responseType: 'blob'})
 }
 // 资产登记一览表-列表统计
 export function assetRegSta (data) {
@@ -153,9 +153,7 @@ export function getOperationScheduleStatistics (data) {
 }
 // 资产转运营一览表-导出
 export function exportOperationSchedulePage (data) {
-  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data,  true, false, {
-    responseType: "blob",
-  })
+  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data)
 }
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
@@ -396,7 +394,7 @@ export function getGeneralSurvey(data) {
 }
 //  资产出库一览表导出
 export function getGeneralSurveyExportOut(data) {
-  return axiosPost(assets.assetClear.getGeneralSurveyExportOut, data, false, false, {responseType: 'blob'})
+  return axiosPost(assets.assetClear.getGeneralSurveyExportOut, data, true, false, {responseType: 'blob'})
 }
 
 //资产分类设置
@@ -812,10 +810,6 @@ export function download (data) {
 export function detail (data) {
   return axiosGet(assets.propertyOwnerManagement.detail, data)
 }
-// 列表更新资产标签
-export function updateAssetLabelConfig (data) {
-  return axiosPost(assets.projectManage.updateAssetLabelConfig, data)
-}
 
 // 资产入账
 // 资产入账-新建资产入账
@@ -899,5 +893,5 @@ export function getGeneralSurveyTotal (data) {
 }
 // 资产入库一览表列表导出
 export function getGeneralSurveyExport (data) {
-  return axiosPost(assetIn.getGeneralSurveyExport, data, false, false, {responseType: 'blob'})
+  return axiosPost(assetIn.getGeneralSurveyExport, data, true, false, {responseType: 'blob'})
 }

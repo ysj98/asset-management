@@ -159,7 +159,7 @@ export const assets = {
     // 资产登记一览表-主列表
     findAssetRegListPage: "/ams/registerOrder/findAssetRegListPage",
     // 资产登记一览表-主列表导出
-    assetRegListPageExport: "/ams/registerOrder/assetRegListPageExport",
+    assetRegListPageExport: "/ams/exportDynamicColumn/exportAssetRegList",
     // 资产登记一览表-列表统计
     assetRegSta: "/ams/registerOrder/assetRegSta",
     // 资产转运营一览表-列表统计
@@ -300,7 +300,7 @@ export const assets = {
     // 资产出库一览表-汇总统计
     assetCleanupListTotal: "/ams/assetCleanup/getGeneralSurveyTotal",
     // 资产出库一览表导出
-    getGeneralSurveyExportOut: "/ams/assetCleanup/getGeneralSurveyExport",
+    getGeneralSurveyExportOut: "/ams/exportDynamicColumn/exportAssetCleanupList",
   },
   // 资产分类设置
   assetClassSet: {
@@ -485,8 +485,6 @@ export const assets = {
   },
   // 资产项目管理
   projectManage: {
-    // 更新资产标签
-    updateAssetLabelConfig: '/ams/assetOperationMode/updateAssetLabelConfig',
     // 分页查询资产项目列表-根据组织ID
     queryProjectListPage: "/ams/project/getProjectListPage",
     // 查询资产项目列表-根据组织ID(统计)
@@ -755,7 +753,7 @@ export const ownership = {
     // 权证导入模板下载
     warrantDownload: "/ams/ownerShipUser/warrant/download",
     // 权证导出
-    warrantExport: "/ams/ownerShipUser/warrant/export",
+    warrantExport: "/ams/exportDynamicColumn/exportOwnerShipList",
     // 权证新增或修改
     warrantSaveOrUpdate: "/ams/ownerShipUser/warrant/saveOrUpdate",
     // 权证查询
@@ -1140,7 +1138,7 @@ export const assetIn = {
   // 资产入库一览表-列表统计
   getGeneralSurveyTotal: "/ams/assetStore/getGeneralSurveyTotal",
   // 资产入库一览表-列表导出
-  getGeneralSurveyExport: "/ams/assetStore/getGeneralSurveyExport",
+  getGeneralSurveyExport: "/ams/exportDynamicColumn/exportAssetStoreList",
 };
 
 // 资产入库
