@@ -8,7 +8,7 @@
       <div v-else style="text-align: center">暂无数据</div>
     </div>
     <!--审批意见-->
-    <div v-if="type == 'approval'">
+    <div v-if="type == 'approval' && !fromBpmApprove ">
       <SG-Title title="审批意见"/>
       <div style="margin-left: 40px">
         <span style="float: left">审核意见：</span>
@@ -23,7 +23,7 @@
 <script>
   export default {
     name: 'ApprovalFlowPart',
-    props: ['type','advice','stepList'],
+    props: ['type','advice','stepList','fromBpmApprove'],
     data () {
       return {
       }

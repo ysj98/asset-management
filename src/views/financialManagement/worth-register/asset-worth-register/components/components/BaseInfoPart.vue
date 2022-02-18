@@ -66,7 +66,7 @@
           <a-date-picker
             style="width: 100%"
             placeholder="请选择评估基准日"
-            @change="(date, dateString) => setData(dateString, 'assessmenBaseDate')"
+            @change="changeAssessmentOrganName"
             :disabled="type == 'approval' || type == 'detail'"
             v-decorator="['assessmenBaseDate', { rules: [{ required: true, message: '请选择评估基准日' }] }]"
           />
@@ -96,6 +96,21 @@
             placeholder="请选择评估机构"
             :options="$addTitle(organOptions)"
           />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="评估有效截止日" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-date-picker
+            style="width: 100%"
+            :placeholder="['edit','add'].includes(type) ? '请选择评估有效截止日' : ''"
+            :disabled="type == 'approval' || type == 'detail'"
+            v-decorator="['assessmentValidDate']"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估报告号">
+          <a-input v-decorator="['assessmentNum']" :disabled="type == 'approval' || type == 'detail'" :maxLength="100" placeholer="请输入评估报告号" />
         </a-form-item>
       </a-col>
       <!--当type === detail || type === approval时展示审批人、提交时间、审批状态-->
@@ -177,6 +192,10 @@
     },
 
     methods: {
+      changeAssessmentOrganName(date,dateString){
+          this.form.setFieldsValue({ assessmentValidDate: moment(dateString,'YYYY-MM-DD').add(1,'y').add(-1,'day') })
+          this.setData(dateString, 'assessmenBaseDate')
+      },
       filterOption (input, option) {
         return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
@@ -191,7 +210,9 @@
             }) // 处理附件格式
             // 转换日期格式为string
             let date = values.assessmenBaseDate ? moment(values.assessmenBaseDate).format('YYYY-MM-DD') : ''
-            let form = Object.assign({}, values, { attachmentList: attachArr, organId, assessmenBaseDate: date})
+            const assessmentValidDate = values.assessmentValidDate ? moment(values.assessmentValidDate).format('YYYY-MM-DD') : ''
+            console.log('values',values)
+            let form = Object.assign({}, values, { attachmentList: attachArr, organId, assessmenBaseDate: date, assessmentValidDate, assessmentNum: values.assessmentNum || ""})
             return resolve(form)
           }
           reject('数据不完整')
@@ -203,18 +224,27 @@
         const {type, details} = this
         const {
           approvalStatusName, createByName, registerName, createTime,
-          organName, assessmenBaseDate, remark, attachmentList, assetTypeName, assessmentMethod,
-          assessmentMethodName, assessmentOrganName, projectId, assetType, assessmentOrgan, projectName
+          organName, assessmenBaseDate, assessmentValidDate, remark, attachmentList, assetTypeName, assessmentMethod,
+          assessmentMethodName, assessmentOrganName, projectId, assetType, assessmentOrgan, projectName, assessmentNum
         } = details
         let attachArr = (attachmentList || []).map(m => {
           return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
-        let formatDetails = { registerName, assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD') }
+        let resAssessmentValidDate = assessmentValidDate
+        if (this.type == 'edit'){
+          resAssessmentValidDate = assessmentValidDate ? moment(assessmentValidDate, 'YYYY-MM-DD') : moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD') .add(1,'y').add(-1,'day')
+        }else if (this.type == 'add') {
+          resAssessmentValidDate = moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD') .add(1,'y').add(-1,'day')
+        }
+        console.log('resAssessmentValidDate',resAssessmentValidDate)
+        let formatDetails = { registerName, assessmenBaseDate: moment(assessmenBaseDate || new Date(), 'YYYY-MM-DD'), assessmentValidDate: resAssessmentValidDate  }
         !assessmenBaseDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'assessmenBaseDate')
+        !assessmentValidDate && this.setData(moment(new Date()).format('YYYY-MM-DD'), 'assessmentValidDate')
         // 展示状态下转换数据
         if (type === 'approval' || type === 'detail') {
           formatDetails = Object.assign({}, formatDetails, {
+            assessmentNum: assessmentNum,
             remark: remark || '无',
             projectId: projectName,
             assetType: assetTypeName,
@@ -225,7 +255,7 @@
           })
         } else {
           formatDetails = Object.assign({}, formatDetails, {
-            remark: remark || '', projectId, assetType, assessmentOrgan, assessmentMethod
+            remark: remark || '', projectId, assetType, assessmentOrgan, assessmentMethod, assessmentNum
           })
         }
         return this.form.setFieldsValue({ ...formatDetails })

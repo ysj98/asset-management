@@ -15,7 +15,7 @@
           @validateProject="validateProject"
         />
         <!--审批轨迹及审批意见-->
-        <approval-flow-part v-if="(type === 'approval' && !fromBpmApprove ) || type === 'detail'" :type="type" :advice.sync="advice" :stepList="stepList"/>
+        <approval-flow-part v-if="(type === 'approval' ) || type === 'detail'" :type="type" :fromBpmApprove="fromBpmApprove" :advice.sync="advice" :stepList="stepList"/>
       </a-spin>
       <!--底部按钮-->
       <form-footer
