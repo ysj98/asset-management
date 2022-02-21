@@ -7,6 +7,7 @@
 import { axiosPost, axiosGet  } from '../utils/axios'
 import { assets, assetIn } from '../config/config.url'
 import configs from "@/config/config.base";
+import asset from '../store/modules/asset';
 // post请求示例
 // export function seachInspectionInstByItems (data) {
 //   return axiosPost(assets.project.getproject, data)
@@ -894,4 +895,8 @@ export function getGeneralSurveyTotal (data) {
 // 资产入库一览表列表导出
 export function getGeneralSurveyExport (data) {
   return axiosPost(assetIn.getGeneralSurveyExport, data, true, false, {responseType: 'blob'})
+}
+// 列表更新资产标签
+export function updateAssetLabelConfig (data) {
+  return axiosPost(assets.projectManage.updateAssetLabelConfig, data)
 }

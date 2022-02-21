@@ -485,6 +485,8 @@ export const assets = {
   },
   // 资产项目管理
   projectManage: {
+    // 更新资产标签
+    updateAssetLabelConfig: '/ams/assetOperationMode/updateAssetLabelConfig',
     // 分页查询资产项目列表-根据组织ID
     queryProjectListPage: "/ams/project/getProjectListPage",
     // 查询资产项目列表-根据组织ID(统计)

@@ -490,8 +490,7 @@
           this.$api.assets.updateAssetLabelConfig(data).then(res =>{
             if(res.data.code === '0'){
               this.selectedRowKeys = []
-              this.initHeader()
-              // this.queryTableData({type: ''})
+              this.queryTableData({type: ''})
             }
           })
         }
@@ -606,6 +605,13 @@
 
       // 导出资产视图/房屋卡片
       handleExport (type) {
+        let labelName = ''
+        if(this.label.length > 0 && this.assetLabelSelect.length > 0){
+          labelName = this.label.map(item => {
+            return this.assetLabelSelect.find(sub => sub.value === item).title
+          })
+          labelName = labelName.length > 0 ? labelName.join('、') : ''
+        }
         if (!this.tableObj.dataSource.length) {
           return this.$message.info('无可导出数据')
         }
@@ -627,6 +633,10 @@
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
           sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
+          label: labelName
+        }
+        if(labelName === '全部资产标签' || !labelName){
+          delete form.label
         }
         if(type === 'exportAssetBtn'){
           this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
