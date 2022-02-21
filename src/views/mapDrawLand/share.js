@@ -203,6 +203,7 @@ export const allBaseFields = [
 ];
 // 获取偏移位置
 export function getOffsetNum({ mapInstance, latlng, width, height }) {
+  // 逻辑没毛病，代码待优化
   let resOffset = [0, 0];
   const size = mapInstance.getSize();
   const block = mapInstance.latLngToContainerPoint(latlng);
@@ -212,11 +213,11 @@ export function getOffsetNum({ mapInstance, latlng, width, height }) {
   const currentY = block.y;
   if (0 <= currentX && currentX <= width / 2) {
     console.log("弹窗向右偏移");
-    resOffset[0] = (width / 2) - currentX  + 10
+    resOffset[0] = width / 2 - currentX + 10;
   }
-  if (currentX < 0){
+  if (currentX < 0) {
     console.log("弹窗向右偏移-中心点为超出当前区域");
-    resOffset[0] = (width / 2) + Math.abs(currentX) + 10
+    resOffset[0] = width / 2 + Math.abs(currentX) + 10;
   }
   if (currentY <= height) {
     console.log("弹窗向下偏移");
@@ -224,9 +225,9 @@ export function getOffsetNum({ mapInstance, latlng, width, height }) {
     resOffset[1] = height - currentY + 30;
     // 防止弹窗覆盖图块 向左/右 偏移
     if (currentX > allX / 2) {
-      resOffset[0] = -(width / 2);
+      resOffset[0] = Math.min(-(width / 2), resOffset[0]);
     } else {
-      resOffset[0] = width / 2;
+      resOffset[0] = Math.max(width / 2, resOffset[0]);
     }
   }
 

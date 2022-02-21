@@ -1,15 +1,21 @@
 <template>
   <div class="simple-asset-land-info">
-    <div v-if="assetNameShow" class="land-name">
-      {{ allData.assetName }}
+    <div class="loading" v-if="loading">
+      <!--      <a-icon type="loading" style="font-size: 24px" spin />-->
+      <span style="margin-top: 20px">加载中...</span>
     </div>
-    <div class="wrapper">
-      <Information
-        style="width: 96%"
-        :row-props="{ gutter: 5 }"
-        :col-props="{ span: 24 }"
-        :basic-info-list="informationList"
-      />
+    <div v-else>
+      <div v-if="assetNameShow" class="land-name">
+        {{ allData.assetName }}
+      </div>
+      <div class="wrapper">
+        <Information
+          style="width: 96%"
+          :row-props="{ gutter: 5 }"
+          :col-props="{ span: 24 }"
+          :basic-info-list="informationList"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +44,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       assetAttrDtos: [],
       informationList: [],
       allData: {},
@@ -58,11 +65,16 @@ export default {
             data: { landInfo },
           },
         }) => {
+          this.loading = false;
           if (code === "0") {
             this.init(landInfo || {});
           } else {
             this.$message.error(message);
           }
+        },
+        (reason) => {
+          this.loading = true;
+          console.error(reason);
         }
       );
     },
@@ -159,5 +171,15 @@ export default {
 .content-right {
   color: #49505e;
   font-size: 12px;
+}
+.loading {
+  font-size: 18px;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
