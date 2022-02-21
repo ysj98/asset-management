@@ -1,7 +1,7 @@
 <!--资产视图业务-资产视图列表页面-编辑列表表头组件-->
 <template>
   <div class="table_header">
-    <a-checkbox-group :options="options" v-model="checkedList"/>
+    <a-checkbox-group :options="options" v-model="checkedList" @change="change"/>
   </div>
 </template>
 
@@ -11,31 +11,18 @@
     props: ['columns', 'checkedArr', 'options'],
     data () {
       return {
-        // checkAll: false, // 全选
         checkedList: [], // 选中项,
-        // indeterminate: false, // 全选按钮是否与checkGroup联动
-        // disabledHeader: ['organName', 'warrantNbr'] // 不可选的列头
-        // options: []
+        labelName: []
       }
     },
-    // computed: {
-    //   options: function () {
-    //     return this.columns.map(item => {
-    //       let bool = this.disabledHeader.includes(item.dataIndex)
-    //       return {
-    //         label: item.title,
-    //         value: item.dataIndex,
-    //         checked: bool,
-    //         disabled: bool
-    //       }
-    //     }).filter(m => m.value !== 'action')
-    //   }
-    // },
     mounted (){
-      // this.getAssetLabel('110111101')
     },
     methods: {
-      
+      change(){
+        this.labelName = this.checkedList.map(item => {
+          return this.options.find(sub => sub.value == item).title
+        })
+      }
     }
   }
 </script>

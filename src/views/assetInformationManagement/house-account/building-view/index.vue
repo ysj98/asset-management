@@ -197,7 +197,6 @@
 
     methods: {
       getAssetLabel (id){
-        // debugger
         queryAssetLabelConfig({organId: id}).then(res => {
           let {data, code} = res.data
           if(code === '0'){
