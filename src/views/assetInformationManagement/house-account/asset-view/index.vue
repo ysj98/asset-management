@@ -23,7 +23,7 @@
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button type="default" @click="clickAsset">资产标签</SG-Button>
+        <SG-Button type="default" @click="clickAsset" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
@@ -34,14 +34,14 @@
         <a-row :gutter="12">
           <a-col :span="4">
             <a-select
-                mode="multiple"
-                :maxTagCount="1"
-                style="width: 100%"
-                v-model="sourceModes"
-                option-filter-prop="title"
-                placeholder="请选择来源方式"
-                :options="$addTitle(sourceOptions)"
-                @change="changeSource"
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              v-model="sourceModes"
+              option-filter-prop="title"
+              placeholder="请选择来源方式"
+              :options="$addTitle(sourceOptions)"
+              @change="changeSource"
             />
           </a-col>
           <a-col :span="4">
@@ -114,13 +114,14 @@
               placeholder="权属用途"
             />
           </a-col>
-          <a-col :span="4">
+          <a-col :span="4" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
             <a-select
-              v-model="assetLabel"
+              v-model="label"
               mode="multiple"
               :maxTagCount="1"
               style="width: 100%"
-              :options="$addTitle(assetLabelOpt)"
+              @select="assetLabelFn"
+              :options="$addTitle(assetLabelSelect)"
               placeholder="资产标签"
             />
           </a-col>
@@ -132,7 +133,16 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table 
+      v-bind="tableObj" 
+      class="custom-table td-pd10"
+      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll, 
+      getCheckboxProps: record => ({
+          props: {
+            disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
+            name: record.assetName,
+          },
+        }) }">>
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
         <span :title="text">
@@ -185,7 +195,7 @@
         :checkedArr="checkedHeaderArr"
         :columns="tableObj.initColumns"
       />
-      <edit-tag v-if="modalType === 2 && modalObj.status"/>
+      <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef"/>
     </SG-Modal>
   </div>
 </template>
@@ -202,6 +212,7 @@
   import {querySourceType} from "@/views/common/commonQueryApi";
   import { getFormat } from "utils/utils";
   import EditTag from '../building-view/editTag.vue'
+  import {queryAssetLabelConfig} from '@/api/publicCode.js'
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
@@ -209,9 +220,9 @@
     { label: "无证明材料证件", value: 0 },
   ]
   const assetLabelOpt = [
-    { label: "全部资产标签  ", value: "" },
-    { label: "正常", value: 1 },
-    { label: "异常", value: 0 },
+    // { label: "全部资产标签  ", value: "" },
+    // { label: "正常", value: 1 },
+    // { label: "异常", value: 0 },
   ]
   export default {
     name: 'index',
@@ -221,8 +232,10 @@
         getFormat,
         supportMaterialOpt,
         supportMaterial: '',
+        selectedRowKeys: [],
         assetLabelOpt,
-        assetLabel: '',
+        assetLabelSelect: [],
+        label: '',
         sourceModes:[],  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
@@ -296,7 +309,7 @@
             { title: '已租面积', dataIndex: 'rentedArea', width: 100 },
             { title: '未租面积', dataIndex: 'unRentedArea', width: 100 },
             { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
-            { title: '资产标签', dataIndex: 'assetLabel', width: 150},
+            { title: '资产标签', dataIndex: 'label', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -332,8 +345,65 @@
       }
     },
     methods: {
+      initHeader (){
+        // 初始化Table列头
+        let{ columns } = this.tableObj
+        this.tableObj.initColumns = columns
+        // 默认不展示xx表头
+        this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
+        // 初始化被选中的列头数据
+        this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action')
+      },
+      assetLabelFn(value){
+        this.$nextTick(function () {
+        this.label = this.handleMultipleSelectValue(
+          value,
+          this.label,
+          this.assetLabelSelect
+        );
+      });
+      },
+      // 处理多选下拉框有全选时的数组
+      handleMultipleSelectValue(value, data, dataOptions) {
+        // 如果选的是全部
+        if (value === "") {
+          data = [""];
+        } else {
+          let totalIndex = data.indexOf("");
+          if (totalIndex > -1) {
+            data.splice(totalIndex, 1);
+          } else {
+            // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
+            if (data.length === dataOptions.length - 1) {
+              data = [""];
+            }
+          }
+        }
+        return data;
+      },
+      getAssetLabel (id){
+        queryAssetLabelConfig({organId: id}).then(res => {
+          let {data, code} = res.data
+          if(code === '0'){
+            this.assetLabelOpt = data.data.map(item => {
+              return ({label: item.labelName, value: item.labelId})
+            })
+            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : undefined
+            this.label = this.assetLabelOpt.length > 0 ? '' : undefined
+          }
+        }).catch(err =>{
+          this.$message.error(err || '当前组织机构下无资产标签')
+        })
+      },// 多选
+      onSelectChange (selectedRowKeys){
+        this.selectedRowKeys = selectedRowKeys;
+      },
+      onSelectAll (selected){
+        // console.log(this.selectedRowKeys)
+      },
       // 资产标签
       clickAsset (){
+        if(this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签')
         this.modalType = 2
         this.modalObj.status = true
       },
@@ -393,16 +463,38 @@
       },
       // 列表设置Modal保存
       handleModalOk () {
-        let arr = this.$refs['tableHeader'].checkedList
-        if (!arr.length) {
+        let arr = []
+        if (this.modalType === 1){
+          arr = this.$refs['tableHeader'].checkedList
+        }
+        if (this.modalType === 1 && !arr.length) {
           return this.$message.info('请至少选中一项!')
         }
+        if(this.modalType === 2 && !this.selectedRowKeys.length){
+          return this.$message.info('请选择要添加标签的资产!')
+        }
         this.modalObj.status = false
-        let{ initColumns } = this.tableObj
-        this.checkedHeaderArr = arr
-        let columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
-        this.tableObj.scroll = { x: columns.length * 100 } // 防止较少列时出现滚动
-        this.tableObj.columns = columns
+        if(this.modalType === 1){
+          let{ initColumns } = this.tableObj
+          this.checkedHeaderArr = arr
+          let columns = initColumns.filter(n => arr.includes(n.dataIndex) || n.dataIndex === 'action')
+          this.tableObj.scroll = { x: columns.length * 100 } // 防止较少列时出现滚动
+          this.tableObj.columns = columns
+        }
+        if(this.modalType === 2){
+          let arr = this.$refs.editTagRef.labelName
+          let data = {
+            houseIds: this.selectedRowKeys.join(','),
+            label: arr.join('、')
+          }
+          this.$api.assets.updateAssetLabelConfig(data).then(res =>{
+            if(res.data.code === '0'){
+              this.selectedRowKeys = []
+              this.initHeader()
+              // this.queryTableData({type: ''})
+            }
+          })
+        }
       },
 
       // 打开/关闭列表列头编辑Modal
@@ -411,9 +503,15 @@
         status ? this.modalType = 1 : ''
         status && (this.key = new Date().getTime())
       },
-
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        let labelName = ''
+        if(this.label.length > 0 && this.assetLabelSelect.length > 0){
+          labelName = this.label.map(item => {
+            return this.assetLabelSelect.find(sub => sub.value === item).title
+          })
+          labelName = labelName.length > 0 ? labelName.join('、') : ''
+        }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
@@ -431,7 +529,11 @@
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
-          organIds: organId
+          organIds: organId,
+          label: labelName
+        }
+        if(labelName === '全部资产标签' || !labelName){
+          delete form.label
         }
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
@@ -479,7 +581,6 @@
             this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
             this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
             this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
-            console.log('----',this.tableObj.dataSource)
           } else {
             this.$message.error(res.message)
           }
@@ -623,13 +724,7 @@
       this.queryNodesByRootCode()
     },
     created () {
-      // 初始化Table列头
-      let{ columns } = this.tableObj
-      this.tableObj.initColumns = columns
-      // 默认不展示xx表头
-      this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
-      // 初始化被选中的列头数据
-      this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action')
+      this.initHeader()
     },
 
     watch: {
@@ -639,6 +734,9 @@
           this.queryCategoryOptions(val.organId)
           this.getSourceOptions(val.organId)
           this.organDict('OWNERSHIP_USE',val.organId)
+          if(val.organId.split(',').length === 1){
+            this.getAssetLabel(val.organId)
+          }
         }
       },
 
