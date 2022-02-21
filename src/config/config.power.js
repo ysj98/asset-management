@@ -589,7 +589,10 @@ export const ASSET_MANAGEMENT = {
   ASSET_OPERATING_EDIT:'asset_operating_edit', // 编辑
   ASSET_OPERATING_DEL:'asset_operating_del', // 删除
   ASSET_OPERATING_APPROVE:'asset_operating_approve', // 审批
-
+  /*
+  * 资产转运营一览表
+  * */
+  ASSET_OPERATING_VIEW_EXPORT_FILE:'asset_operating_view_export_file', // 导出
   /**
    * 基础信息管理 -> 自定义编码设置
    */

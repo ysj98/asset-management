@@ -165,7 +165,7 @@ export const assets = {
     // 资产转运营一览表-列表统计
     getOperationScheduleStatistics: "/ams/operation/getOperationScheduleStatistics",
     // 资产转运营一览表-主列表导出
-    exportOperationSchedulePage: "ams/operation/exportOperationSchedulePage",
+    exportOperationSchedulePage: "/ams/operation/exportOperationSchedulePage",
     // 资产登记-撤销核实
     registerOrderReAudit: "/ams/registerOrder/registerOrderReAudit",
     // 资产登记-核实

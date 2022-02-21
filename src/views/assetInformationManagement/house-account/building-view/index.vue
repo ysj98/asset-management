@@ -262,10 +262,13 @@
           buildIds: this.selectedRowKeys.join(','),
           label:arr.join('、')
         }
+        if(!data.label) delete data.label
         this.$api.assets.updateAssetLabelConfig(data).then(res =>{
           if(res.data.code === '0'){
             this.selectedRowKeys = []
             this.queryTableData({type: ''})
+            this.$refs.editTagRef.checkedList = []
+            this.$refs.editTagRef.change()
           }
         })
         this.modalObj.status = false

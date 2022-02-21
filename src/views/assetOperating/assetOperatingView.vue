@@ -6,7 +6,7 @@
 
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_OPERATING_VIEW_EXPORT_FILE" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
@@ -16,7 +16,7 @@
             @change="assetTypeDataFn" v-model="queryCondition.assetType">
             <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;"  placeholder="全部运营项目" :tokenSeparators="[',']" @select="operatingObjFn" v-model="queryCondition.operatingObject">
+          <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" show-search :filter-option="filterOption" placeholder="全部运营项目" :tokenSeparators="[',']" @select="operatingObjFn" v-model="queryCondition.operatingObject">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
@@ -262,6 +262,9 @@ export default {
     this.getOperatingObj()
   },
   methods: {
+    filterOption (){
+      
+    },
     // 运营项目
     getOperatingObj (){
       this.$api.basics
