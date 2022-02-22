@@ -175,7 +175,7 @@
       @success="houseDataImportSuccess"
     />
     <!-- 房间导出 -->
-    <houseExport :organIdCopy="queryCondition.organId" :defaultOrganName="selectedOrganName" ref="houseExport" />
+    <houseExport :organIdCopy="queryCondition.organId" :defaultOrganName="selectedOrganName" :isCurrent="queryCondition.isCurrent" ref="houseExport" />
     <!-- 批量更新 -->
     <eportAndDownFile
       @upload="uploadHouseFile"

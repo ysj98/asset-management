@@ -52,7 +52,7 @@
 </template>
 <script>
 import TreeSelect from "@/views/common/treeSelect";
-import {utils, debounce} from '@/utils/utils'
+import { debounce } from '@/utils/utils'
 // let getUuid = ((uuid = 1) => () => ++uuid)()
 let fintItem = (data, value) => {
   if (!value) {
@@ -69,6 +69,10 @@ export default {
     defaultOrganName:{
       type: String,
       default: ''
+    },
+    isCurrent:{
+      type: [Number, String],
+      required: true
     }
   },
   data () {
@@ -141,7 +145,8 @@ export default {
     exportHouse () {
       let data = {
         organId: this.organId || '',
-        buildId: this.buildId || ''
+        buildId: this.buildId || '',
+        isCurrent: this.isCurrent
       }
       let organName = this.organName
       let buildName = fintItem(this.buildOpt, data.buildId).label
