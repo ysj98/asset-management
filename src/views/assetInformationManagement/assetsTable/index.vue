@@ -6,7 +6,12 @@
         <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
             <div slot="headBtns">
 <!--                v-power="ASSET_MANAGEMENT.ASSET_IN_EXPORT"-->
-                <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
+                <SG-Button
+                  @click="changeListSettingsModal(true)"
+                  v-power="ASSET_MANAGEMENT.ASSET_IN_SET_TABLE_HEADER"
+                >
+                  列表设置
+                </SG-Button>
                 <SG-Button
                         icon="plus"
                         type="primary"

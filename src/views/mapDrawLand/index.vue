@@ -25,6 +25,7 @@
         </SG-Button>
         <div class="place-block"></div>
         <SG-Button
+          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_SET_CENTER"
           class="right-block"
           icon="plus"
           text
@@ -45,6 +46,7 @@
         </SG-Button>
         <div class="place-block"></div>
         <SG-Button
+          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_POPUP_SETTINGS"
           class="right-block"
           icon="setting"
           text
@@ -132,11 +134,6 @@
 </template>
 
 <script>
-/*
- * TODO: 按钮权限控制 1. 浮层设定 2.设置中心点
- *  TODO: 按钮图标设置
- * */
-
 import {
   arrayToObj,
   generatePathStyle,

@@ -375,14 +375,17 @@ export const ASSET_MANAGEMENT = {
   ASSET_IN_DELETE: 'asset_in_delete', // 删除
 
   ASSET_IN_EXPORT: 'asset_in_export', // 资产出库一览表导出
+  ASSET_IN_SET_TABLE_HEADER:'asset_in_set_table_header', // 资产出库一览表 列表设置!!!
   /**
    * V2.0.2资产入库一览表
    */
   ASSET_IN_VIEW_EXPORT: 'asset_in_view_export', // 导出
+  ASSET_IN_VIEW_TABLE_HEADER:'asset_in_view_table_header', // 资产入库一览表 列表设置！！！
   /**
    * V2.0.2资产登记一览表
    */
   ASSET_REGISTER_VIEW_EXPORT: 'asset_register_view_export', // 导出
+  ASSET_REGISTER_SET_TABLE_HEADER:'asset_register_set_table_header', // 资产登记一览表 列表设置
   /**
    * V2.0.2报表管理
    */
@@ -570,6 +573,8 @@ export const ASSET_MANAGEMENT = {
   DRAW_LAND_MAP_ADD_METHOD:'draw_land_add_method', // 新增方案
   DRAW_LAND_MAP_UPLOAD_IMAGE:'draw_land_map_upload_image', // 上传背景图
   DRAW_LAND_MAP_DELETE_POLYGON:'draw_land_map_delete_polygon', // 删除绘制
+  DRAW_LAND_MAP_POPUP_SETTINGS:'draw_land_map_popup_settings', // 浮层设定
+  DRAW_LAND_MAP_SET_CENTER:'draw_land_map_set_center', // 设置中心点
 
 
   /*

@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_REGISTER_SET_TABLE_HEADER" @click="changeListSettingsModal(true)">列表设置</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
