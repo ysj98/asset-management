@@ -313,7 +313,7 @@ export default {
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = '资产登记一览表.xls'
+        a.download = '资产转运营一览表.xls'
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()

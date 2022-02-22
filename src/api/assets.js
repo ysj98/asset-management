@@ -154,7 +154,7 @@ export function getOperationScheduleStatistics (data) {
 }
 // 资产转运营一览表-导出
 export function exportOperationSchedulePage (data) {
-  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data)
+  return axiosPost(assets.assetRegister.exportOperationSchedulePage, data, true, false, {responseType: 'blob'})
 }
 // 资产登记-新增保存
 export function saveRegisterOrder (data) {
