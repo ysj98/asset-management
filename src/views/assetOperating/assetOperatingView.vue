@@ -3,7 +3,6 @@
 -->
 <template>
   <div class="assetRegister">
-
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_OPERATING_VIEW_EXPORT_FILE" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
@@ -220,7 +219,7 @@ export default {
         pageNum: 1,                // 当前页
         pageSize: 10,              // 每页显示记录数
         projectId: undefined,             // 资产项目Id
-        organId:1,                 // 组织机构id
+        organId:'',                 // 组织机构id
         assetType: [''],           // 资产类型id(多个用，分割)
         approvalStatus: '',        // 状态
         assetNameCode: '',         // 资产名称/编码
