@@ -159,7 +159,7 @@ let proRouter = [{
     }
   },
   {
-    path: '/assetOperatingView',
+    path: '/listOfTransferCamps',
     name: '资产转运营一览表',
     component: () => import('@/views/assetOperating/assetOperatingView.vue'),
     meta: {
