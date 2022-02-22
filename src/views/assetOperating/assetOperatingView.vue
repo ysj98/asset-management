@@ -51,7 +51,8 @@
         :pagination="false"
         >
         <template slot="assetOperationRegisterId" slot-scope="text, record">
-          <router-link :to="{ path: '/assetOperating/detail', query: { assetOperationRegisterId: record.assetOperationRegisterId, approvalStatus: record.approvalStatus, organId: record.organId, fromType: 'detail', relatedOrganId: record.organId} }" class="action_text">{{record.assetOperationRegisterId}}</router-link>
+          {{record.assetOperationRegisterId}}
+          <!-- <router-link :to="{ path: '/assetOperating/detail', query: { assetOperationRegisterId: record.assetOperationRegisterId, approvalStatus: record.approvalStatus, organId: queryCondition.organId, fromType: 'detail', relatedOrganId: record.organId} }" class="action_text">{{record.assetOperationRegisterId}}</router-link> -->
         </template>
       </a-table>
     </div>
