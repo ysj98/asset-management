@@ -300,15 +300,9 @@ export default {
       marker.on("dragend", (e) => {
         const zIndex = this.mapInstance.getZoom();
         const latlng = e.target._latlng;
-        this.submitCenterInfo({ latlng, zIndex }).then(
-          (latlng) => {
-            marker.remove();
-            this.generateCenterMarker({latlng})
-          },
-          (reason) => {
-            console.error(reason);
-          }
-        );
+        this.submitCenterInfo({ latlng, zIndex }).catch(reason => {
+          console.error(reason)
+        })
       });
       marker.bindPopup(`中心点位`);
     },
