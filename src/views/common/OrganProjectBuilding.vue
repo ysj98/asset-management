@@ -80,6 +80,11 @@
       mode: {
         type: String,
         default: () => 'default'
+      },
+      // true 多选
+      multiple: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
