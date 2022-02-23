@@ -470,10 +470,10 @@
           arr = this.$refs['tableHeader'].checkedList
         }
         if (this.modalType === 1 && !arr.length) {
-          return this.$message.info('请至少选中一项!')
+          return this.$message.error('请至少选中一项!')
         }
         if(this.modalType === 2 && !this.selectedRowKeys.length){
-          return this.$message.info('请选择要添加标签的资产!')
+          return this.$message.error('请选择要添加标签的资产!')
         }
         this.modalObj.status = false
         if(this.modalType === 1){
