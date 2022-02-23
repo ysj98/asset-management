@@ -129,7 +129,6 @@
     components: { OverviewNumber, NoDataTip, TooltipText,EditTag },
     data () {
       return {
-        flag: true,
         assetLabelOpt,
         assetLabelSelect: [],
         label: [],
@@ -400,7 +399,8 @@
         if (!organId) { return this.$message.warn('组织机构不存在') }
         this.buildingOptions = []
         this.organProjectBuildingValue.buildingId = undefined
-        this.getAssetLabel(organId)
+        debugger
+        // this.getAssetLabel(organId)
         this.$api.assets.queryBuildingByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -425,6 +425,7 @@
             let list = res.data.data || []
             let id = list[0] ? list[0].organId : undefined
             this.organProjectBuildingValue.organId = id
+            debugger
             this.getAssetLabel(this.organProjectBuildingValue.organId)
             id && this.queryBuildingList()
             this.organOptions = list.map(item => {

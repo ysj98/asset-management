@@ -34,10 +34,10 @@
               <a-input
                 placeholder="若未填写系统自动生成"
                 :style="allStyle"
-                :max="30"
+                :max="200"
                 v-if="editable"
                 v-decorator="['cardCode',
-                {rules: [{max: 30, whitespace: true, message: '卡片编码长度不得超过30字符'}], initialValue: detail.cardCode}
+                {rules: [{max: 200, whitespace: true, message: '卡片编码长度不得超过200字符'}], initialValue: detail.cardCode}
               ]"/>
               <span class="label-value" v-else>{{detail.cardCode || '--'}}</span>
             </a-form-item>
@@ -856,7 +856,7 @@ export default {
     cumulativeDepreciationForLand (){
       if(this.detail.assetType === '4' && this.detail.alreadyUseTerm*1 < 12){
         return (parseFloat(this.detail.monthDepreciation).toFixed(4) * (this.detail.alreadyUseTerm*1+1)).toFixed(4) || 0
-      }else if(this.detail.assetType === '4' && this.detail.alreadyUseTerm*1 === 12){
+      }else if(this.detail.assetType === '4' && this.detail.alreadyUseTerm*1 === 999999){
         return (parseFloat(this.detail.monthDepreciation).toFixed(4) * (this.detail.alreadyUseTerm*1)).toFixed(4) || 0
       }
       // if(this.editable && this.detail.monthDepreciation && this.detail.alreadyUseTerm){
@@ -1040,8 +1040,8 @@ export default {
       if (value) {
         if (!regPos.test(value)) {
           callback('格式不正确，必须为正数值型')
-        }else if (value < 0 || value > 9999999999.99) {
-          callback('该值取值范围为0-9999999999.99')
+        }else if (value < 0 || value > 9999999999.9999) {
+          callback('该值取值范围为0-9999999999.9999')
         } else {
           callback()
         }
@@ -1055,7 +1055,7 @@ export default {
       if (value) {
         if (!reg.test(value)) {
           callback('格式不正确，必须为正整数')
-        }else if (value < 0 || value > 12) {
+        }else if (value < 0 || value > 999999) {
           callback('该值取值范围为1-12')
         } else {
           callback()
@@ -1080,11 +1080,11 @@ export default {
       if (value) {
         if (!reg.test(value)) {
           callback('格式不正确，必须为正整数')
-        }else if (value < 0 || value > 12) {
+        }else if (value < 0 || value > 999999) {
           callback('该值取值范围为1-12')
         } else if(this.detail.depreciationMethod === '1' && this.detail.assetType !== '4' && Number(value) > Number(this.detail.estimateUseTerm)){
           callback('已使用期限小于等于预计使用期限')
-        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && value*1 !== 12 && value*1+1 > Number(this.detail.estimateUseTerm)){
+        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && value*1 !== 999999 && value*1+1 > Number(this.detail.estimateUseTerm)){
           callback('已使用期限+1后小于等于预计使用期限')
         }else {
           callback()
@@ -1158,7 +1158,7 @@ export default {
     onPurchaseValueChange (event) {
       let value = event.target.value
       let reg =  /^\d+(\.\d+)?$/
-      if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
+      if (value && reg.test(value) && value > 0 && value < 9999999999.9999) {
         this.detail.purchaseValue = event.target.value
       }
       this.setEstimateNetSalvageValue()
@@ -1173,7 +1173,7 @@ export default {
     changeCumulativeDepreciation (event) {
       let value = event.target.value
       let reg =  /^\d+(\.\d+)?$/
-      if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
+      if (value && reg.test(value) && value > 0 && value < 9999999999.9999) {
         this.detail.cumulativeDepreciation = event.target.value
         this.setNetValue()
         this.setNetForehead()
@@ -1189,7 +1189,7 @@ export default {
     changeImpairmentReady (event) {
       let value = event.target.value
       let reg =  /^\d+(\.\d+)?$/
-      if (value && reg.test(value) && value > 0 && value < 9999999999.99) {
+      if (value && reg.test(value) && value > 0 && value < 9999999999.9999) {
         this.detail.impairmentReady = event.target.value
         // if (this.detail.netValue !== '' && this.detail.impairmentReady !== '') {
         //   this.form.setFieldsValue({
