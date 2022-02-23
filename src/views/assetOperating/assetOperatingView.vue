@@ -344,9 +344,9 @@ export default {
         createTimeEnds: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
         communityId: this.queryCondition.operatingObject,
         operationStatusList: [...this.queryCondition.approvalStatus],
-        province: this.provinces.province,
-        city: this.provinces.city,
-        region: this.provinces.district,
+        province: this.provinces.province || '',
+        city: this.provinces.city || '',
+        region: this.provinces.district || '',
       }
       this.$api.assets.getTransferOperationSchedule(this.queryParam).then(res => {
         if (Number(res.data.code) === 0) {
