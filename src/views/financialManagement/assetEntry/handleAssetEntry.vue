@@ -1056,7 +1056,7 @@ export default {
         if (!reg.test(value)) {
           callback('格式不正确，必须为正整数')
         }else if (value < 0 || value > 999999) {
-          callback('该值取值范围为1-12')
+          callback('该值取值范围为1-999999')
         } else {
           callback()
         }
@@ -1081,11 +1081,13 @@ export default {
         if (!reg.test(value)) {
           callback('格式不正确，必须为正整数')
         }else if (value < 0 || value > 999999) {
-          callback('该值取值范围为1-12')
+          callback('该值取值范围为1-999999')
           // && this.detail.assetType !== '4' 
         } else if(this.detail.depreciationMethod === '1' && Number(value) > Number(this.detail.estimateUseTerm)){
           callback('已使用期限小于等于预计使用期限')
-        } 
+        } else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && this.detail.estimateUseTerm * 1 === 999999 && value*1 >= this.detail.estimateUseTerm){
+          callback('已使用期限已达最大值,预计使用期限不能超过最大值')
+        }
         // else if(this.detail.depreciationMethod === '1' && this.detail.assetType === '4' && value*1 !== 999999 && value*1+1 > Number(this.detail.estimateUseTerm)){
         //   callback('已使用期限+1后小于等于预计使用期限')
         // }
