@@ -265,37 +265,50 @@ export default {
      * 提交中心点信息到后台
      * */
     submitCenterInfo({ latlng, zIndex }) {
-      const req = {
-        centralX: latlng.lat,
-        centralY: latlng.lng,
-        centralLevel: zIndex,
-        layerId: this.selectedLayerInfo.layerId,
-        organId: this.selectedLayerInfo.organId,
-        schemeName: this.selectedLayerInfo.title,
-      };
-      this.$api.drawMap.updateLayerScheme(req).then(
-        ({ data: { code, message } }) => {
-          if (code === "0") {
-            this.$message.success("中心点变更成功");
-            this.defaultLatLng = latlng;
-          } else {
-            this.$message.error(message);
+      return new Promise((resolve, reject) => {
+        const req = {
+          centralX: latlng.lat,
+          centralY: latlng.lng,
+          centralLevel: zIndex,
+          layerId: this.selectedLayerInfo.layerId,
+          organId: this.selectedLayerInfo.organId,
+          schemeName: this.selectedLayerInfo.title,
+        };
+        this.$api.drawMap.updateLayerScheme(req).then(
+          ({ data: { code, message } }) => {
+            if (code === "0") {
+              this.$message.success("中心点变更成功");
+              this.defaultLatLng = latlng;
+              resolve(latlng);
+            } else {
+              this.$message.error(message);
+              reject(message);
+            }
+          },
+          (reason) => {
+            console.error(reason);
+            reject(reason);
           }
-        },
-        (reason) => {
-          console.error(reason);
-        }
-      );
+        );
+      });
     },
     /*
      * 初始化 中心点位事件,弹窗信息
      * */
     initCenterMarker(marker) {
-      this.centerMarker = marker
+      this.centerMarker = marker;
       marker.on("dragend", (e) => {
         const zIndex = this.mapInstance.getZoom();
         const latlng = e.target._latlng;
-        this.submitCenterInfo({ latlng, zIndex });
+        this.submitCenterInfo({ latlng, zIndex }).then(
+          (latlng) => {
+            marker.remove();
+            this.generateCenterMarker({latlng})
+          },
+          (reason) => {
+            console.error(reason);
+          }
+        );
       });
       marker.bindPopup(`中心点位`);
     },
@@ -419,7 +432,9 @@ export default {
         this.defaultLatLng = defaultLatLng;
         this.initMapEvent();
         this.initControls();
-        this.generateCenterMarker({ latlng: this.defaultLatLng });
+        this.$nextTick(() => {
+          this.generateCenterMarker({ latlng: this.defaultLatLng });
+        });
         this.mapInstance.pm.setLang("zh");
       });
     },
@@ -896,11 +911,11 @@ export default {
       this.mapInstance.on("click", onClickFn);
       this.mapInstance.on("pm:drawstart", () => {
         this.mapInstance.off("click", onClickFn);
-        this.centerMarker.setOpacity(0.2)
+        this.centerMarker.setOpacity(0.2);
       });
       this.mapInstance.on("pm:drawend", () => {
         this.mapInstance.on("click", onClickFn);
-        this.centerMarker.setOpacity(1)
+        this.centerMarker.setOpacity(1);
       });
       // 监听绘制图形完成后 事件
       this.mapInstance.on("pm:create", (e) => {
