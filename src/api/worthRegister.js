@@ -40,11 +40,11 @@ export function queryRelPageList (data) {
 }
 // 新增价值登记
 export function insertRegister (data) {
-  return axiosPost(worthRegister.insertValueRegister, data)
+  return axiosPost(worthRegister.insertValueRegister, data,true)
 }
 // 更新价值登记
 export function updateRegister (data) {
-  return axiosPost(worthRegister.updateValueRegister, data)
+  return axiosPost(worthRegister.updateValueRegister, data, true)
 }
 // 资产价值一览表查询(分页)
 export function queryAssetValuePageList (data) {
