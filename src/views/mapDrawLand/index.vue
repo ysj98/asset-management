@@ -297,6 +297,10 @@ export default {
      * */
     initCenterMarker(marker) {
       this.centerMarker = marker;
+      // this.mapInstance.pm.disableGlobalEditMode() 函数会 dragging.disable()
+      marker.on("mousedown",()=>{
+        marker.dragging.enable()
+      })
       marker.on("dragend", (e) => {
         const zIndex = this.mapInstance.getZoom();
         const latlng = e.target._latlng;
