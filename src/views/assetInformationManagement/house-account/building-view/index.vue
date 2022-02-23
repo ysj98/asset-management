@@ -119,6 +119,7 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTag from './editTag'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
+  import { throttle } from '@/utils/utils'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   const assetLabelOpt = [
     // { label: "全部资产标签  ", value: "" },
@@ -128,6 +129,7 @@
     components: { OverviewNumber, NoDataTip, TooltipText,EditTag },
     data () {
       return {
+        flag: true,
         assetLabelOpt,
         assetLabelSelect: [],
         label: [],
@@ -227,6 +229,7 @@
       getAssetLabel (id){
         queryAssetLabelConfig({organId: id}).then(res => {
           let {data, code} = res.data
+          if(!data) this.assetLabelOpt = []
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
               return ({label: item.labelName, value: item.labelId})
@@ -251,12 +254,10 @@
         this.modalObj.status = true
       },
       // 资产设置
-      handleModalOk () {
-        // 确定
+      handleModalOk: throttle(function() {
         let arr = this.$refs.editTagRef.labelName
-        if(this.selectedRowKeys.length <= 0){
-          this.$message.error('请选择需要设置标签的楼栋')
-          return
+        if( this.selectedRowKeys.length <= 0){
+          return this.$message.error('请选择需要设置标签的楼栋')
         }
         let data = {
           buildIds: this.selectedRowKeys.join(','),
@@ -272,7 +273,7 @@
           }
         })
         this.modalObj.status = false
-      },
+      }, 3000), 
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i

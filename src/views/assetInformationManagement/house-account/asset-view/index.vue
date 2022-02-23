@@ -213,6 +213,7 @@
   import { getFormat } from "utils/utils";
   import EditTag from '../building-view/editTag.vue'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
+  import { throttle } from '@/utils/utils'
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
@@ -384,6 +385,7 @@
       getAssetLabel (id){
         queryAssetLabelConfig({organId: id}).then(res => {
           let {data, code} = res.data
+          if(!data) this.assetLabelOpt = []
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
               return ({label: item.labelName, value: item.labelId})
@@ -402,11 +404,11 @@
         // console.log(this.selectedRowKeys)
       },
       // 资产标签
-      clickAsset (){
+      clickAsset: throttle (function(){
         if(this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签')
         this.modalType = 2
         this.modalObj.status = true
-      },
+      },3000),
       filterOption(input, option) {
         return (
           option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -462,7 +464,7 @@
         })
       },
       // 列表设置Modal保存
-      handleModalOk () {
+      handleModalOk: throttle (function(){
         let arr = []
         if (this.modalType === 1){
           arr = this.$refs['tableHeader'].checkedList
@@ -497,8 +499,7 @@
             }
           })
         }
-      },
-
+      }, 3000) ,
       // 打开/关闭列表列头编辑Modal
       handleModalStatus (status) {
         this.modalObj.status = status

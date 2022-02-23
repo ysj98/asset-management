@@ -4,13 +4,10 @@
     <SG-Title title="查询列表"/>
     <div style="margin-left: 45px">
       <a-row style="margin-bottom: 8px">
-        <a-col :span="2">
+        <a-col :span="12">
           <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AA_EXPORT">
             导出
           </SG-Button>
-        </a-col>
-        <a-col :span="10">
-          <SG-Button icon="setting" @click="modalObj.status = true; modalType = 2">列表设置</SG-Button>
         </a-col>
         <a-col :span="12" style="text-align: right; line-height: 32px">
           <a-icon type="setting" @click="openModal" style="color: #299fff; font-size: 18px; cursor: pointer; padding-right: 8px"/>
@@ -21,8 +18,7 @@
     </div>
     <!--编辑列表表头-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
-      <edit-table-header v-if="modalType === 1" :key="key" ref="tableHeader" :penetrateData="penetrateData" :checkedArr="checkedHeaderArr" :columns="sortFactor"/>
-      <set-table-header v-if="modalType === 2"/>
+      <edit-table-header :key="key" ref="tableHeader" :penetrateData="penetrateData" :checkedArr="checkedHeaderArr" :columns="sortFactor"/>
     </SG-Modal>
   </div>
 </template>
@@ -32,14 +28,12 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
   import {utils} from '@/utils/utils'
-  import SetTableHeader from './SetTableHeader.vue'
   export default {
     name: 'ListPart',
-    components: { EditTableHeader, SetTableHeader },
+    components: { EditTableHeader },
     props: ['queryInfo'],
     data () {
       return {
-        modalType: 1,
         penetrateData: '2',
         organQueryType: '2',    // 统计维度设置
         ASSET_MANAGEMENT, // 权限对象
@@ -128,7 +122,7 @@
       // 打开列表列头编辑Modal
       openModal () {
         this.key = Date.now()
-        this.modalType = 1
+        // this.modalType = 1
         this.modalObj.status = true
       },
       // 列表设置Modal保存

@@ -9,7 +9,6 @@
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
-        <SG-Button icon="setting" @click="modalObj.status = true" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="text-align: left; float: right">
         <a-checkbox :checked="!!queryCondition.containEmpty" @change="onCheck">展示资产数量为0得机构</a-checkbox>
@@ -50,9 +49,6 @@
         @change="handleChange"
       />
     </div>
-    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
-      <set-table-header />
-    </SG-Modal>
   </div>
 </template>
 
@@ -61,7 +57,6 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
-import SetTableHeader from '../houseAssetAnalysis/components/SetTableHeader.vue'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import { getFormat } from '../../../utils/utils'
 const columnsData = [
@@ -100,7 +95,7 @@ const queryCondition =  {
   containEmpty: 1,    //展示资产数量为0得机构 1-展示 0-不展示
 }
 export default {
-  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, SetTableHeader},
+  components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber},
   props: {},
   data () {
     return {
