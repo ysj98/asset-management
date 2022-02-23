@@ -370,6 +370,7 @@ export default {
       const setType = obj.setType
       // 判断是否嵌套在 bpm 中
       this.particularsData = JSON.parse(obj.record);
+      // 固定取值集合第一个，只有第一个有数据
       this.changeOrderId = this.particularsData[0].changeOrderId;
       this.query();
       this.getChangeDetailPageFn();

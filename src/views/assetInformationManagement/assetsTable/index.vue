@@ -737,7 +737,7 @@
                         this.numList = this.numList.map(item => {
                             return {
                                 ...item,
-                                value: data[item.key]
+                                value: data[item.key] || '0'
                             };
                         });
                     } else {

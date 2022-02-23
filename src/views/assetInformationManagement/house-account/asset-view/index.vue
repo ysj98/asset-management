@@ -133,10 +133,10 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
     <!--列表Table-->
-    <a-table 
-      v-bind="tableObj" 
+    <a-table
+      v-bind="tableObj"
       class="custom-table td-pd10"
-      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll, 
+      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll,
       getCheckboxProps: record => ({
           props: {
             disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
