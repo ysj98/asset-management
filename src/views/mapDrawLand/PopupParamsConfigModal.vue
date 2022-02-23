@@ -97,6 +97,7 @@
 
 <script>
 import { allBaseFields } from "@/views/mapDrawLand/share";
+import {clone} from "lodash";
 export default {
   /*
    * 浮层展示定义
@@ -211,13 +212,13 @@ export default {
       });
     },
     async initData() {
-      this.tableOptions.dataSource = this.dataSource;
+      this.tableOptions.dataSource = clone(this.dataSource);
       // 获取基础信息字段 默认值
-      this.baseCheckboxValues = this.dataSource
+      this.baseCheckboxValues = this.tableOptions.dataSource
         .filter((ele) => ele.fieldFlag === 0)
         .map((ele) => ele.fieldName);
       // 获取 业务信息字段 默认值
-      this.attrCheckboxValues = this.dataSource
+      this.attrCheckboxValues = this.tableOptions.dataSource
         .filter((ele) => ele.fieldFlag === 1)
         .map((ele) => ele.fieldName);
       this.queryLayerFields();
@@ -313,6 +314,7 @@ export default {
       }
     },
     doClosePop() {
+      console.log('this.modalName',this.modalName)
       this.$emit("doClosePop", this.modalName);
     },
   },
