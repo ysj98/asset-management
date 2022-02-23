@@ -94,6 +94,7 @@ export default {
   },
   data() {
     return {
+      popupDataSource:[],
       autoChaneIngFlag: false,
       progress: 11,
       assetList: [],
@@ -422,6 +423,7 @@ export default {
       });
     },
     changeTree(organId) {
+      console.log('organId',organId)
       this.organId = organId;
       this.layerSchemeId = "";
       this.getMethodOptions();

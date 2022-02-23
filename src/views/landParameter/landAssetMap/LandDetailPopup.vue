@@ -148,7 +148,14 @@ export default {
       this.assetName = data.assetName;
     },
     initAttrData(allData) {
+      const fieldNameArr = this.popupDataSource.map(ele=>ele.fieldName)
+
       this.attrData = allData.assetAttrDtos || [];
+
+      // 过滤 已经在基础属性中的业务属性信息
+      this.attrData = this.attrData.filter(ele=>{
+        return !fieldNameArr.includes(ele.attrName)
+      })
     },
     initBaseInfo(allData) {
       this.baseInfoOptions.data = {
