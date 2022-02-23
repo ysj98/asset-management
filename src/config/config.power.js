@@ -403,6 +403,8 @@ export const ASSET_MANAGEMENT = {
   HOUSE_ACCOUNT_AV_EXPORT: 'house_account_asset_view_export',   // 房屋台账-资产视图列表导出
   HOUSE_ACCOUNT_AVD_EXPORT: 'house_account_asset_view_detail_export',   // 房屋台账-资产视图详情导出
   HOUSE_ACCOUNT_OV_EXPORT: 'house_account_organ_view_export',   // 房屋台账-组织机构视图导出
+  HOUSE_ACCOUNT_BV_ASSET_LABEL: 'house_account_bv_asset_label',   // 房屋台账-楼栋视图资产标签
+  HOUSE_ACCOUNT_AV_ASSET_LABEL: 'house_account_av_asset_label',   // 房屋台账-房屋资产试图资产标签
   /**
    * V2.0.2资产入库
    */

@@ -18,6 +18,7 @@
         <!--</a-col>-->
         <a-col :span="3">
           <SG-Button
+            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_ASSET_LABEL"
             type="default"
             @click="clickAsset"
           >资产标签</SG-Button>
@@ -399,8 +400,8 @@
         if (!organId) { return this.$message.warn('组织机构不存在') }
         this.buildingOptions = []
         this.organProjectBuildingValue.buildingId = undefined
-        debugger
-        // this.getAssetLabel(organId)
+        
+        this.getAssetLabel(organId)
         this.$api.assets.queryBuildingByOrganId({organId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -419,14 +420,14 @@
       },
 
       // 查询一级组织机构
-      queryOrganList () {
+      queryOrganList (init) {
         this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: ''}).then(res => {
           if (Number(res.data.code) === 0) {
             let list = res.data.data || []
             let id = list[0] ? list[0].organId : undefined
             this.organProjectBuildingValue.organId = id
-            debugger
-            this.getAssetLabel(this.organProjectBuildingValue.organId)
+
+            // this.getAssetLabel(this.organProjectBuildingValue.organId)
             id && this.queryBuildingList()
             this.organOptions = list.map(item => {
               return {
