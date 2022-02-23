@@ -168,6 +168,7 @@ export default {
   },
   data() {
     return {
+      centerMarker: null,
       popupDataSource: [],
       selectedLayerInfo: {},
       defaultLatLng: {},
@@ -290,6 +291,7 @@ export default {
      * 初始化 中心点位事件,弹窗信息
      * */
     initCenterMarker(marker) {
+      this.centerMarker = marker
       marker.on("dragend", (e) => {
         const zIndex = this.mapInstance.getZoom();
         const latlng = e.target._latlng;
@@ -894,9 +896,11 @@ export default {
       this.mapInstance.on("click", onClickFn);
       this.mapInstance.on("pm:drawstart", () => {
         this.mapInstance.off("click", onClickFn);
+        this.centerMarker.setOpacity(0.2)
       });
       this.mapInstance.on("pm:drawend", () => {
         this.mapInstance.on("click", onClickFn);
+        this.centerMarker.setOpacity(1)
       });
       // 监听绘制图形完成后 事件
       this.mapInstance.on("pm:create", (e) => {
