@@ -4,6 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const openInEditor = require('launch-editor-middleware');
 const isProd = process.env.NODE_ENV === 'production'
+const isDebug = process.env.VUE_APP_IS_DEBUG === 'true'
 // 获取本机ip
 const getIPAdress = () => {
   var interfaces = os.networkInterfaces();
@@ -152,8 +153,11 @@ module.exports = {
         })
       )
       config.plugins.push(
-        new TerserPlugin({ terserOptions: { compress: { drop_console: true } } })
+        new TerserPlugin({ terserOptions: { compress: { drop_console: false } } })
       )
+    }
+    if (isDebug){
+      config.devtool = 'source-map'
     }
   },
   chainWebpack: config => {
