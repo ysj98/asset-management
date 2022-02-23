@@ -107,17 +107,36 @@
             if (!data || !data.length) {
               return this.tableObj.dataSource = []
             }
+            // 前端计算汇总
             let keys = [
-              'ownBuildNumber',
               'ownHouseNumber',
-              'ownUsedBuildNumber',
               'ownUsedHouseNumber',
-              'otherBuildNumber',
               'otherHouseNumber',
-              'otherUsedBuildNumber',
               'otherUsedHouseNumber'
             ]
+            // 后端返回汇总
+            let totalKeys = [
+              {
+                useKey: 'ownBuildNumber',
+                dataKey: 'ownBuildNumberTotal'
+              },
+              {
+                useKey: 'ownUsedBuildNumber',
+                dataKey: 'ownUsedBuildNumberTotal'
+              },
+              {
+                useKey: 'otherBuildNumber',
+                dataKey: 'otherBuildNumberTotal'
+              },
+              {
+                useKey: 'otherUsedBuildNumber',
+                dataKey: 'otherUsedBuildNumberTotal'
+              },
+            ]
             let sumInfo = {}
+            totalKeys.forEach(ele=>{
+              sumInfo[ele.useKey] =  data[0][ele.dataKey]
+            })
             let dataSource = data.map(m => {
               keys.forEach(key => {
                 !sumInfo[key] && (sumInfo[key] = 0)
