@@ -675,7 +675,7 @@ export default {
               if (Number(res.data.code) === 0) {
                 _this.$message.info('注销成功')
                 _this.idArr = []
-                this.control = false 
+                _this.control = true 
                 _this.query()
               } else {
                 _this.$message.error(res.data.message)
