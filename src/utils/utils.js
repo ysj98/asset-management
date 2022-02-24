@@ -801,6 +801,8 @@ export function getTypeKey(list, keyStr) {
     }
   }else if(str < 0){
     result = str
+  }else if(!Number(str)){
+    result = str
   }
   return result
 }
