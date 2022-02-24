@@ -210,19 +210,10 @@ export default {
         .then((res) => {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
-            // 数据中面积、价值添加分位符
-            let resultArr = Object.values(result)
-            resultArr.forEach(item => {
-              if (item){
-                item['assetArea'] = getFormat(item['assetArea'], 2)
-                item['assetValue'] = getFormat(item['assetValue'], 2)
-              }
-            })
             let keysArr = getDataIndexs(this.assetTypes)
             let dataSource = arrkeys.map((item) => {
               let key = item[1]
               let o = { key: Tools.getUuid(), name: item[0] }
-
               keysArr.forEach((dataIndex) => {
                 // 如果是面积
                 if (key === "assetArea") {
@@ -239,6 +230,17 @@ export default {
                 o[dataIndex] = result[dataIndex][key]
               })
               return o
+            })
+            // 数据中面积、价值添加分位符
+            const keyArr = ['面积(㎡)','价值(万元)']
+            dataSource = dataSource.map(ele=>{
+              let res  = ele
+              if (keyArr.includes(ele.name)){
+                Object.keys(ele).forEach(itemKey=>{
+                  res[itemKey] = getFormat(String(ele[itemKey] || ""),2)
+                })
+              }
+              return res
             })
             this.table.dataSource = dataSource
             console.log("得到表格数据=>", this.table.dataSource)
