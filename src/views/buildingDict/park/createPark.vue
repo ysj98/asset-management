@@ -143,6 +143,7 @@
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
             <div style="width: 86%">
               <SG-UploadFile
+                type="all"
                 ref="uploadFile"
                 :customDownload="customDownload"
                 :customUpload="customUpload"
