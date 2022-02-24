@@ -187,10 +187,25 @@
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="formInfo.parkingImg"
-                    :max="1"
+                    :max="5"
                     :maxSize="2048"
                   >
-                  <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M)</span>
+                  <span slot="tips">(注：上传的图片最多为 5 张,且图片大小小于2M)</span>
+                  </SG-UploadFile>
+                </div>
+              </a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24" style="display: flex;margin-top: 20px">
+                <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
+                <div style="width: 86%">
+                  <SG-UploadFile
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
+                    v-model="formInfo.parkingDoc"
+                    :max="5"
+                    :maxSize="20480"
+                  >
                   </SG-UploadFile>
                 </div>
               </a-col>
@@ -253,6 +268,7 @@ export default {
         shareArea: undefined, //'公摊面积',
         floorArea: undefined, // '产权面积',
         parkingImg: [],
+        parkingDoc: [],
         description: undefined // '备注',
         // parkingAreaUnits: '' // '面积单位'
       },
@@ -337,7 +353,8 @@ export default {
         useArea: [null,undefined].includes(value.useArea) ? '' : String(value.useArea),
         floorArea: [null,undefined].includes(value.floorArea) ? '' : String(value.floorArea),
         shareArea: [null,undefined].includes(value.shareArea) ? '' : String(value.shareArea),
-        parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(",")
+        parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(","),
+        parkingDoc: (this.formInfo.parkingDoc|| []).map(node => node.url).join(",")
       }
       // 删除掉 值为null和空串的字段
       Object.keys(result).forEach(ele=>{
@@ -559,6 +576,14 @@ export default {
           url: item,
           name: item.split("/").pop()
         }));
+
+      const parkingDoc = (data.parkingDoc || "")
+        .split(",")
+        .filter(item => item)
+        .map(item => ({
+          url: item,
+          name: item.split("/").pop()
+        }));
       this.organName = data.organName;
       this.organId = data.organId;
       { // 获取车场
@@ -575,6 +600,7 @@ export default {
       return {
         ...data,
         parkingImg,
+        parkingDoc,
         organId: data.organId,
         placeId: data.placeId,
         objStatus: data.objStatus,

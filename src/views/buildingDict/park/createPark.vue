@@ -130,12 +130,27 @@
                 :customDownload="customDownload"
                 :customUpload="customUpload"
                 v-model="formInfo.otherImg"
-                :max="1"
+                :max="5"
                 :maxSize="2048"
               >
-                <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M,区域信息图片同上)</span>
+                <span slot="tips">(注：上传的图片最多为 5 张,且图片大小小于2M,区域信息图片同上)</span>
               </SG-UploadFile>
-<!--              <file-upload />-->
+            </div>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24" style="display: flex;margin-top: 20px">
+            <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
+            <div style="width: 86%">
+              <SG-UploadFile
+                ref="uploadFile"
+                :customDownload="customDownload"
+                :customUpload="customUpload"
+                v-model="formInfo.carPlaceDoc"
+                :max="5"
+                :maxSize="20480"
+              >
+              </SG-UploadFile>
             </div>
           </a-col>
         </a-row>
@@ -334,6 +349,7 @@ export default {
       placeAddr: undefined, // 车厂地址
       carPlaceImg: undefined, // 车场平面图
       otherImg: [], // 其它图片
+      carPlaceDoc: [], // 附件
       description: undefined, // 备注
       areaArray: []
     },
@@ -500,11 +516,13 @@ export default {
     /*************接口相关************/
 
     beforeSubmit (value) {
+      console.log('value',value)
       let areaArray = this.formInfo.areaArray || []
       areaArray = areaArray.map(item=>({...item,areaOtherImg: item.areaOtherImg.map(node=>node.url).join(',')}))
       return {
         ...value,
         otherImg:this.formInfo.otherImg.map(node=>node.url).join(','),
+        carPlaceDoc: this.formInfo.carPlaceDoc.map(node=>node.url).join(','),
         areaArray: areaArray
       }
     },
@@ -514,6 +532,7 @@ export default {
       }
       data.organId = String(data.organId)
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       data.communityId = String(data.communityId) === '-1' ? undefined : String(data.communityId)
       this.organNameMain = data.organName
       this.organIdMain = data.organId

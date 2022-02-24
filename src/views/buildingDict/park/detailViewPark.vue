@@ -79,6 +79,16 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <a-row>
+              <a-col :span="24">
+                <a-form-item label="附件" v-bind="formItemLayout2">
+                  <SG-UploadFile
+                    :show="true"
+                    v-model="formInfo.carPlaceDoc"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
           </div>
           <div class="mb30">
             <SG-Title noMargin title="区域信息" />
@@ -126,11 +136,6 @@
 import dictMixin from "../dictMixin.js"
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {areaTitle} from "./dict";
-
-// 页面跳转
-const operationTypes = {
-  index: "/buildingDict",
-}
 export default {
   mixins: [dictMixin],
   data() {
@@ -153,6 +158,7 @@ export default {
         placeAddr: '', // 车厂地址
         carPlaceImg: '', // 车场平面图
         otherImg: [], // 其它图片
+        carPlaceDoc: [], // 附件
         description: '', // 备注
         areaArray: []
       },
@@ -238,13 +244,13 @@ export default {
       }
       // 遍历循环
       this.formInfo.areaArray = [...data.areaArray]
-      // this.formInfo.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       const areaList = await this.getParkingPlaceAreasByPlaceId({organId:data.organId,placeId:data.placeId})
       data.areaArray = areaList.map(item=>({...item, key:Math.random(), disabled: true, areaOtherImg: (item.areaOtherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))}))
 
       return {
         ...data,
         otherImg: (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()})),
+        carPlaceDoc: (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()})),
         areaList,
       }
     },

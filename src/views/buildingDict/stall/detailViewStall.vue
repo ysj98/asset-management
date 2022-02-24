@@ -97,6 +97,16 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <a-row>
+              <a-col :span="24">
+                <a-form-item label="附件" v-bind="formItemLayout2">
+                  <SG-UploadFile
+                    :show="true"
+                    v-model="formInfo.parkingDoc"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
           </div>
         </div>
       </a-form>
@@ -139,6 +149,7 @@ export default {
         shareArea: '',
         floorArea: '',
         parkingImg: [],
+        parkingDoc: [],
         description: '',
         parkingAreaUnits: ''
       },
@@ -231,7 +242,8 @@ export default {
         organId: data.organId,
         parkingAreaId: data.parkingAreaId,
         placeId: data.placeId,
-        parkingImg: (data.parkingImg || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+        parkingImg: (data.parkingImg || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()})),
+        parkingDoc: (data.parkingDoc || "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       }
     },
     // 初始化
