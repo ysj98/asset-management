@@ -298,9 +298,6 @@ export default {
     initCenterMarker(marker) {
       this.centerMarker = marker;
       // this.mapInstance.pm.disableGlobalEditMode() 函数会 dragging.disable()
-      marker.on("click",()=>{
-        marker.dragging.enable()
-      })
       marker.on("mouseover",()=>{
         marker.dragging.enable()
       })
@@ -580,7 +577,6 @@ export default {
     },
     // 开启单个图形绘制
     enableDraw(layer) {
-      debugger
       this.mapInstance.pm.disableGlobalEditMode();
       layer.pm.enable();
     },
