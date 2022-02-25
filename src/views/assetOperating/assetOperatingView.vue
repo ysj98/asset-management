@@ -12,7 +12,7 @@
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"
-            @change="assetTypeDataFn" v-model="queryCondition.assetType">
+            @select="assetTypeDataFn" v-model="queryCondition.assetType">
             <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" show-search :filter-option="filterOption" placeholder="全部运营项目" :tokenSeparators="[',']" @select="operatingObjFn" v-model="queryCondition.operatingObject">
@@ -253,7 +253,6 @@ export default {
   },
   watch: {
     'queryCondition.assetType' () {
-      console.log('queryCondition.assetType', this.queryCondition.assetType)
       this.getAssetClassifyOptions()
     }
   },
@@ -430,19 +429,6 @@ export default {
         }
       })
     },
-    // 资产分类发生变化
-    changeAssetClassify (value,isSelectedEquipment) {
-      this.$nextTick(function () {
-        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyOptions
-        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions)
-      })
-    },
-    // 来源方式
-    changeSource(value){
-      this.$nextTick(function () {
-        this.queryCondition.sourceModes = this.handleMultipleSelectValue(value, this.queryCondition.sourceModes, this.sourceOptions)
-      })
-    },
     // 状态发生变化
     approvalStatusFn (value){
       console.log(value, '运营状态')
@@ -502,8 +488,9 @@ export default {
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {
+      // debugger
       // 如果选的是全部
-      if (value === '') {
+      if (value === "") {
         data = ['']
       } else {
         let totalIndex = data.indexOf('')
