@@ -62,6 +62,7 @@
     <div class="create-content">
       <!-- 新建楼栋 -->
       <createBuild
+        :key="activeItem.buildingId"
         :type="pageType"
         @success="handleBuildSucc"
         @handleOrganIdOwn="handleOrganIdOwn"
@@ -247,6 +248,7 @@ export default {
     },
     // 点击树节点改变
     checkTreeChange(item) {
+      console.log('item',item)
       this.activeType = String(item.subPositionType);
       this.pageType = this.activeType === "-2" ? "" : "edit";
       this.createType = "";
