@@ -634,6 +634,7 @@ export const building = {
     "/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlace.json",
   parkUploadPicFile:
     "/car-parking-api/rest-api/v1/parkingPlaceApiController/uploadPicFile",
+  parkFileUpload: "/car-parking-api/car/uploadDocFile",
   // 区域 删除
   deleteParkingPlaceArea:
     "/car-parking-api/rest-api/v1/parkingPlaceRestApiController/deleteParkingPlaceArea.json",

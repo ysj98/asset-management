@@ -146,7 +146,7 @@
                 type="all"
                 ref="uploadFile"
                 :customDownload="customDownload"
-                :customUpload="customUpload"
+                :customUpload="customUploadFile"
                 v-model="formInfo.carPlaceDoc"
                 :max="5"
                 :maxSize="20480"
@@ -735,8 +735,13 @@ export default {
       // return []
 
     },
+    customUploadFile(value){
+      return this.customUpload(value,this.$api.building.parkFileUpload,(data)=>{
+        return {url:data.docPath, name: data.docName.split('/').pop()}
+      })
+    },
     // 文件上传
-    customUpload (list = []) {
+    customUpload (list = [],apiFn = this.$api.building.parkUploadPicFile,callback) {
       if(!this.formInfo.organId) {
         this.$message.error("请选择所属机构")
         return Promise.resolve({lists: []})
@@ -750,14 +755,18 @@ export default {
         fileData.append('file', file)
         errorLists.push({ url: file.name, name: file.name  })
         fileData.append('organId', this.formInfo.organId)
-        return this.$api.building.parkUploadPicFile(fileData)
+        return apiFn(fileData)
       })
       let requestAll = Promise.all(requestList)
       return requestAll.then(res => {
         res.map(item => {
           if (String(item.data.code)=== '0' && item.data.data) {
-            let url = item.data.data.imgPath;
-            lists.push({url, name: url.substring(url.lastIndexOf('/')+1)})
+            if (typeof callback === 'function'){
+              lists.push(callback(item.data.data))
+            }else {
+              let url = item.data.data.imgPath;
+              lists.push({url, name: url.substring(url.lastIndexOf('/')+1)})
+            }
           } else {
             this.$SG_Message.error(item.data.message)
           }
