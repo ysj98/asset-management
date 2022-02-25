@@ -308,7 +308,7 @@
                   <a-form-item label="附件" v-bind="formItemLayout2">
                     <SG-UploadFile
                       :customDownload="customDownload"
-                      :max="20"
+                      :max="5"
                       :maxSize="51200"
                       :customUpload="customUpload"
                       type="all"

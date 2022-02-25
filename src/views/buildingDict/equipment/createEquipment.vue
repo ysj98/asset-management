@@ -208,7 +208,7 @@
                 <div style="width: 86%">
                   <SG-UploadFile
                     type="all"
-                    :max="20"
+                    :max="5"
                     :customUpload="customUpload"
                     v-model="formInfo.documentPath"
                     :maxSize="2048"
