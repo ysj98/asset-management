@@ -205,7 +205,7 @@
                     :customUpload="customUploadFile"
                     v-model="formInfo.parkingDoc"
                     :max="5"
-                    :maxSize="20480"
+                    :maxSize="51200"
                   >
                   </SG-UploadFile>
                 </div>
