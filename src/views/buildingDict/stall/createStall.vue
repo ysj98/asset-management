@@ -187,15 +187,15 @@
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="formInfo.parkingImg"
-                    :max="5"
+                    :max="1"
                     :maxSize="2048"
                   >
-                  <span slot="tips">(注：上传的图片最多为 5 张,且图片大小小于2M)</span>
+                  <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M)</span>
                   </SG-UploadFile>
                 </div>
               </a-col>
             </a-row>
-            <a-row>
+            <a-row v-if="false">
               <a-col :span="24" style="display: flex;margin-top: 20px">
                 <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
                 <div style="width: 86%">
@@ -354,7 +354,7 @@ export default {
         useArea: [null,undefined].includes(value.useArea) ? '' : String(value.useArea),
         floorArea: [null,undefined].includes(value.floorArea) ? '' : String(value.floorArea),
         shareArea: [null,undefined].includes(value.shareArea) ? '' : String(value.shareArea),
-        parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(","),
+        // parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(","),
         parkingDoc: (this.formInfo.parkingDoc|| []).map(node => node.url).join(",")
       }
       // 删除掉 值为null和空串的字段
@@ -580,13 +580,13 @@ export default {
       }
     },
     async afterStallApiList(data) {
-      const parkingImg = (data.parkingImg || "")
-        .split(",")
-        .filter(item => item)
-        .map(item => ({
-          url: item,
-          name: item.split("/").pop()
-        }));
+      // const parkingImg = (data.parkingImg || "")
+      //   .split(",")
+      //   .filter(item => item)
+      //   .map(item => ({
+      //     url: item,
+      //     name: item.split("/").pop()
+      //   }));
 
       const parkingDoc = (data.parkingDoc || "")
         .split(",")
@@ -610,7 +610,7 @@ export default {
       this.checkCarType(data.objType);
       return {
         ...data,
-        parkingImg,
+        // parkingImg,
         parkingDoc,
         organId: data.organId,
         placeId: data.placeId,

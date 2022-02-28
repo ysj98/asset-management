@@ -130,15 +130,15 @@
                 :customDownload="customDownload"
                 :customUpload="customUpload"
                 v-model="formInfo.otherImg"
-                :max="5"
+                :max="1"
                 :maxSize="2048"
               >
-                <span slot="tips">(注：上传的图片最多为 5 张,且图片大小小于2M,区域信息图片同上)</span>
+                <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M,区域信息图片同上)</span>
               </SG-UploadFile>
             </div>
           </a-col>
         </a-row>
-        <a-row>
+        <a-row v-if="false">
           <a-col :span="24" style="display: flex;margin-top: 20px">
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
             <div style="width: 86%">
@@ -523,7 +523,7 @@ export default {
       return {
         ...value,
         otherImg:this.formInfo.otherImg.map(node=>node.url).join(','),
-        carPlaceDoc: this.formInfo.carPlaceDoc.map(node=>node.url).join(','),
+        // carPlaceDoc: this.formInfo.carPlaceDoc.map(node=>node.url).join(','),
         areaArray: areaArray
       }
     },
@@ -533,7 +533,7 @@ export default {
       }
       data.organId = String(data.organId)
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
-      data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      // data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       data.communityId = String(data.communityId) === '-1' ? undefined : String(data.communityId)
       this.organNameMain = data.organName
       this.organIdMain = data.organId
