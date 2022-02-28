@@ -138,6 +138,8 @@
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
           <SG-UploadFile
+            :max="5"
+            :maxSize="51200"
             type="all"
             v-model="attachment"
             :show="type == 'approval' || type == 'detail'"
