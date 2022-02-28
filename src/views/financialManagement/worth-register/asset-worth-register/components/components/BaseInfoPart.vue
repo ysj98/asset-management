@@ -139,7 +139,7 @@
         >
           <SG-UploadFile
             :max="5"
-            :maxSize="51200"
+            :maxSize="5120"
             type="all"
             v-model="attachment"
             :show="type == 'approval' || type == 'detail'"
