@@ -139,7 +139,7 @@ module.exports = {
         'vue-router': 'VueRouter',
         'moment': 'moment'
       }
-      // 压缩文件，去除调试信息
+      // 压缩文件
       config.plugins.push(
         new UglifyJsPlugin({
           uglifyOptions: {
