@@ -796,11 +796,11 @@ export default {
       })
     },
     // 编辑查询
-    query (warrantId, warrantNbr, id) {
+    query ({warrantId}) {
       this.show = true
       this.setType = 'edit'
       this.warrantId = warrantId
-      this.$api.ownership.warrantDetail({warrantNbr: warrantNbr, organId: id}).then(res => {
+      this.$api.ownership.warrantDetail({warrantId}).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.typeJudgment = String(data.amsOwnershipWarrant.kindOfRight)  // 判断类型

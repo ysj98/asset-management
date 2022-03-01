@@ -217,14 +217,17 @@ export default {
     handleCancel () {
       this.show = false
     },
+    initData({warrantNbr}){
+      this.warrantNbr = warrantNbr
+    },
     // 详情查询
-    query (warrantNbr, id) {
+    query ({warrantId}) {
       this.particularsData = {}
       this.oldFiles = []
       this.newFiles = []
       this.show = true
-      this.warrantNbr = warrantNbr
-      this.$api.ownership.warrantDetail({warrantNbr: this.warrantNbr, organId: id}).then(res => {
+
+      this.$api.ownership.warrantDetail({warrantId}).then(res => {
         if (Number(res.data.code) === 0) {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)

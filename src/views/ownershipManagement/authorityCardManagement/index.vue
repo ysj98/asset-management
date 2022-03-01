@@ -341,7 +341,8 @@ export default {
     // 操作
     operationFn (val, type) {
       if (type === 'particulars') {
-        this.$refs.cardDetails.query(val.warrantNbr, val.organId)
+        this.$refs.cardDetails.initData({warrantNbr: val.warrantNbr})
+        this.$refs.cardDetails.query({ warrantId: val.warrantId})
         // this.$refs.cardDetails.show = true
       } else if (type === 'edit') {
         this.newShow = true
@@ -349,7 +350,7 @@ export default {
           this.$refs.newCard.show = true
           this.$refs.newCard.newFn('edit', val.organId, val.organName)
           this.$refs.newCard.selectFn()
-          this.$refs.newCard.query(val.warrantId, val.warrantNbr, val.organId)
+          this.$refs.newCard.query( {warrantId: val.warrantId, warrantNbr: val.warrantNbr})
         })
       } else if (type === 'logout') {
         let _this = this
