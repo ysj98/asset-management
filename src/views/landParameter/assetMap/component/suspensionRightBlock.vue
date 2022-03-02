@@ -87,6 +87,7 @@
   </div>
 </template>
 <script>
+import {dataIndexs} from '../lib/dict'
 import Tools, {calc, getFormat} from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
 import {
@@ -237,7 +238,9 @@ export default {
               let res  = ele
               if (keyArr.includes(ele.name)){
                 Object.keys(ele).forEach(itemKey=>{
-                  res[itemKey] = getFormat(String(ele[itemKey] || ""),2)
+                  if (dataIndexs.includes(itemKey)){
+                    res[itemKey] = getFormat(String(ele[itemKey] || ""),2)
+                  }
                 })
               }
               return res

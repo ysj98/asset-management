@@ -791,8 +791,8 @@ export function getTypeKey(list, keyStr) {
       let num = str.toString().split('.')
       let integer = num[0].toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s){
         return s+','
-      })
-      result = integer+'.'+num[1]
+      });
+      (![undefined, null].includes(num[1])) ? (result = integer+'.'+num[1]) : (result = integer)
     }else{
       let zero = ''
       if(decimal && decimal > 0){
