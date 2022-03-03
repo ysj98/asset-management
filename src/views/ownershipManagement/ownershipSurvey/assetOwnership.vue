@@ -413,7 +413,7 @@ export default {
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
-            let result = res.data.data.data || [];
+            let result = res.data.data ? res.data.data.data : [];
             this.table.dataSource = result.map(item => {
               item.settingMethodName = item.settingMethodName || '--'
               item.kindOfRightName = item.kindOfRightName || '--'
@@ -423,7 +423,7 @@ export default {
                 ...item
               };
             });
-            this.table.totalCount = res.data.data.count || 0;
+            this.table.totalCount = res.data.data ? res.data.data.count : 0;
           } else {
             this.$message.error(res.data.message);
           }
