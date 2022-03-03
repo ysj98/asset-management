@@ -49,9 +49,20 @@ export default {
       approvalItem: "",
     };
   },
-  created() {
-    this.approvalMethod = this.paramKey;
-    this.approvalItem = this.subKey;
+  watch: {
+    paramKey: {
+      handler: function (newValue) {
+        debugger;
+        this.approvalMethod = newValue;
+      },
+      immediate: true,
+    },
+    subKey: {
+      handler: function (newValue) {
+        this.approvalItem = newValue;
+      },
+      immediate: true,
+    },
   },
   methods: {
     handleChange() {},

@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import {clone} from "lodash";
+
 const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
@@ -84,8 +86,7 @@ export default {
   watch: {
     tabDataSource: {
       handler: function (newValue) {
-        console.log("newValue", newValue);
-        this.tData = newValue.filter((ele) => {
+        this.tData = clone(newValue).filter((ele) => {
           return approveServiceType.includes(ele.serviceType);
         });
       },
@@ -132,7 +133,9 @@ export default {
       });
     },
   },
-  mounted() {},
+  mounted() {
+    console.log('mounted加载')
+  },
 };
 </script>
 

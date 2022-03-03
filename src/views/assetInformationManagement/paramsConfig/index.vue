@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="right-content">
-        <a-tabs v-model="currentTabKey" :default-active-key="1">
+        <a-tabs :key="organId" v-model="currentTabKey" :default-active-key="1">
           <a-tab-pane v-for="item in tabArr" :key="item.key" :tab="item.title">
             <component
               v-if="organId"
