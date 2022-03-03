@@ -52,7 +52,6 @@ export default {
   watch: {
     paramKey: {
       handler: function (newValue) {
-        debugger;
         this.approvalMethod = newValue;
       },
       immediate: true,
