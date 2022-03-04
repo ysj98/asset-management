@@ -326,13 +326,7 @@ export default {
           let {measuredArea} = temp
           let {numList, dataSource, sumObj} = this
           this.numList = numList.map(m => {
-            let val = ''
-            if (m.key === 'landCount') {    // 土地数量需要两位小数
-              val = temp[m.key] || 0
-            } else {
-              val = Number(temp[m.key] || 0).toFixed(2) || 0
-            }
-            return {...m, value: val}
+            return {...m, value: temp[m.key] || 0}
           })
           Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ? temp[key].toFixed(2) : 0)
           sumObj.area =  measuredArea ? measuredArea.toFixed(2) : 0

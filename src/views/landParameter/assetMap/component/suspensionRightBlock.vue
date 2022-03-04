@@ -219,7 +219,7 @@ export default {
                 // 如果是面积
                 if (key === "assetArea") {
                   result[dataIndex][key] = Number(result[dataIndex][key])
-                    ? Number(result[dataIndex][key]).toFixed(2)
+                    ? Number(result[dataIndex][key]).toFixed(4)
                     : result[dataIndex][key]
                 }
                 // 如果是价值
@@ -233,13 +233,23 @@ export default {
               return o
             })
             // 数据中面积、价值添加分位符
-            const keyArr = ['面积(㎡)','价值(万元)']
+            const keyArr = [
+              {
+                keyStr:'面积(㎡)',
+                decimal: 2
+              },
+              {
+                keyStr: '价值(万元)',
+                decimal: 4
+              }
+            ]
             dataSource = dataSource.map(ele=>{
               let res  = ele
-              if (keyArr.includes(ele.name)){
+              let item = keyArr.find(e=>e.keyStr===ele.name)
+              if (item){
                 Object.keys(ele).forEach(itemKey=>{
                   if (dataIndexs.includes(itemKey)){
-                    res[itemKey] = getFormat(String(ele[itemKey] || ""),2)
+                    res[itemKey] = getFormat(String(ele[itemKey] || ""),item.decimal)
                   }
                 })
               }

@@ -574,7 +574,7 @@ export default {
           // 判断只能为数字4小数
           if (publicData[j].type === 'float4') {
             if (arrData[i][publicData[j].dataIndex] && !(/^(\d{1,10}|\d{1,8}\.\d{1,4})$/).test(arrData[i][publicData[j].dataIndex])) {
-              return `请输入正确${publicData[j].title}(只支持10位数2位小数)`
+              return `请输入正确${publicData[j].title}(只支持10位数4位小数)`
             }
           }
           // 判断只能为整数
