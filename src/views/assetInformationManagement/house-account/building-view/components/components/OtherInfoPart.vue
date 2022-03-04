@@ -58,11 +58,12 @@
         }
         this.$api.assets.queryAssetViewArchiveDetail(form).then(res => {
           if (Number(res.data.code) === 0) {
-            this.spinning = false
             this.tableData = res.data.data.data
           } else {
             this.$message.error(res.data.message)
           }
+        }).finally(()=>{
+          this.spinning = false
         })
       },
       detail(data) {

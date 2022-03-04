@@ -9,7 +9,6 @@
     <!--资产使用方向-->
     <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId" :organ-name="organName" />
     <!--其它信息-->
-    <!-- 不知道干什么用的，也没调用接口 隐藏掉 -->
     <other-info-part v-if="buildId" :buildId="buildId" :assetIds="assetIds" style="margin-bottom: 35px"/>
   </div>
 </template>
