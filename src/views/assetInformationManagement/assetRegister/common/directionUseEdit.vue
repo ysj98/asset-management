@@ -69,10 +69,10 @@
                   <a-input-number placeholder="转物业面积"
                   :style="allWidth"
                   :min="0"
-                  :precision="2"
+                  :precision="4"
                   :max="99999999.99"
                   v-decorator="['transferArea',
-                    {rules: [{required: false, message: '转物业面积(支持两位小数)'}], initialValue: subData.transferArea}
+                    {rules: [{required: false, message: '转物业面积(支持四位小数)'}], initialValue: subData.transferArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -93,9 +93,9 @@
                   :style="allWidth"
                   :min="0"
                   :max="99999999.99"
-                  :precision="2"
+                  :precision="4"
                   v-decorator="['transferOperationArea',
-                    {rules: [{ required: true, message: '运营面积(㎡)(支持两位小数)'}], initialValue: subData.transferOperationArea}
+                    {rules: [{ required: true, message: '运营面积(㎡)(支持四位小数)'}], initialValue: subData.transferOperationArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -105,9 +105,9 @@
                   :style="allWidth"
                   :min="0"
                   :max="99999999.99"
-                  :precision="2"
+                  :precision="4"
                   v-decorator="['selfUserArea',
-                    {rules: [{ required: true, message: '自用面积(㎡)(支持两位小数)'}], initialValue: subData.selfUserArea}
+                    {rules: [{ required: true, message: '自用面积(㎡)(支持四位小数)'}], initialValue: subData.selfUserArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -117,9 +117,9 @@
                   :style="allWidth"
                   :min="0"
                   :max="99999999.99"
-                  :precision="2"
+                  :precision="4"
                   v-decorator="['occupationArea',
-                    {rules: [{ required: true, message: '占用面积(㎡)(支持两位小数)'}], initialValue: subData.occupationArea}
+                    {rules: [{ required: true, message: '占用面积(㎡)(支持四位小数)'}], initialValue: subData.occupationArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -129,9 +129,9 @@
                   :style="allWidth"
                   :min="0"
                   :max="99999999.99"
-                  :precision="2"
+                  :precision="4"
                   v-decorator="['otherArea',
-                    {rules: [{ required: true, message: '其他面积(㎡)(支持两位小数)'}], initialValue: subData.otherArea}
+                    {rules: [{ required: true, message: '其他面积(㎡)(支持四位小数)'}], initialValue: subData.otherArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -141,9 +141,9 @@
                   :style="allWidth"
                   :min="0"
                   :max="99999999.99"
-                  :precision="2"
+                  :precision="4"
                   v-decorator="['idleArea',
-                    {rules: [{ required: true, message: '闲置面积(㎡)(支持两位小数)'}], initialValue: subData.idleArea}
+                    {rules: [{ required: true, message: '闲置面积(㎡)(支持四位小数)'}], initialValue: subData.idleArea}
                   ]"/>
                 </a-form-item>
               </a-col>
