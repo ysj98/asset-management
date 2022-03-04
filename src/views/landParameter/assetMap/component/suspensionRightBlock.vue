@@ -236,11 +236,11 @@ export default {
             const keyArr = [
               {
                 keyStr:'面积(㎡)',
-                decimal: 2
+                decimal: 4
               },
               {
                 keyStr: '价值(万元)',
-                decimal: 4
+                decimal: 2
               }
             ]
             dataSource = dataSource.map(ele=>{
