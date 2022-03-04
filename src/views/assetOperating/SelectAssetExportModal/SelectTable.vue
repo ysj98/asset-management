@@ -64,6 +64,10 @@ export default {
   },
   methods: {
     async handleExport() {
+      if (!(this.selectTableData&&this.selectTableData.length)){
+        this.$message.warn('请选择资产')
+        return null
+      }
       const assetIds = this.selectTableData.map((ele) => ele.assetId);
       const req = {
         assetIds: assetIds.join(","),

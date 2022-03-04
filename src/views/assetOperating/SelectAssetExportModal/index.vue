@@ -21,6 +21,7 @@
       </template>
       <template #footer>
         <SG-Button @click="doClosePop"> 返回 </SG-Button>
+        <SG-Button @click="handleExport" type="primary"> 确认导出 </SG-Button>
       </template>
       <div>
         <ToBeSelectTable
@@ -28,6 +29,7 @@
           :selectTableData.sync="selectTableData"
         />
         <SelectTable
+          ref="selectTableRef"
           v-show="tabKey === 1"
           :selectTableData.sync="selectTableData"
         />
@@ -87,6 +89,9 @@ export default {
     doClosePop() {
       this.$emit("doClosePop", this.modalName);
     },
+    handleExport(){
+      this.$refs.selectTableRef.handleExport()
+    }
   },
 };
 </script>
