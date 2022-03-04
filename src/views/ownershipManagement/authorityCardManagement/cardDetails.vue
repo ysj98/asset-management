@@ -221,13 +221,25 @@ export default {
       this.warrantNbr = warrantNbr
     },
     // 详情查询
-    query ({warrantId}) {
+    query ({warrantId, warrantNbr, organId}) {
+      if (!warrantId && (!warrantNbr && !organId)){
+        this.$message.error('缺少必要入参')
+        return null
+      }
       this.particularsData = {}
       this.oldFiles = []
       this.newFiles = []
       this.show = true
-
-      this.$api.ownership.warrantDetail({warrantId}).then(res => {
+      let apiFn = this.$api.ownership.warrantDetail
+      let req = {warrantId}
+      if (!warrantId){
+        apiFn = this.$api.ownership.detailByWarrantNbr
+        req = {
+          warrantNbr,
+          organId
+        }
+      }
+      apiFn(req).then(res => {
         if (Number(res.data.code) === 0) {
         let data = res.data.data
         this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight)

@@ -82,35 +82,35 @@
         ], // 概览数据，title 标题，value 数值，color 背景色
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
-          scroll: { x: 3200 },
+          scroll: { x: 2000 },
           pagination: false,
           rowKey: 'warrantId',
           loading: false,
           dataSource: [],
           columns: [
-            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, fixed: 'left' },
+            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, fixed: 'left', width: 200 },
             { title: '所属机构', dataIndex: 'organName', width: 200 },
             { title: '资产项目', dataIndex: 'projectName', width: 150 },
-            { title: '权属类型', dataIndex: 'kindOfRightName' },
-            { title: '房屋所有权人', dataIndex: 'houseOwner' },
+            { title: '权属类型', dataIndex: 'kindOfRightName', width: 150 },
+            { title: '房屋所有权人', dataIndex: 'houseOwner', width: 150 },
             { title: '权属人/承租人', dataIndex: 'obligeeName', width: 150 },
             { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
             { title: '房屋号/丘地号/不动产单元号', dataIndex: 'combinationCode', width: 200 },
             { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
             { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
-            { title: '建筑面积', dataIndex: 'buildArea' },
-            { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea' },
+            { title: '建筑面积', dataIndex: 'buildArea', width: 150 },
+            { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea', width: 150 },
             { title: '分摊面积', dataIndex: 'apportionArea', width: 150 },
-            { title: '产别', dataIndex: 'antenatal' },
-            { title: '结构', dataIndex: 'structureName' },
-            { title: '总层数', dataIndex: 'totalFloor' },
-            { title: '所在层', dataIndex: 'placeFloor' },
-            { title: '土地面积', dataIndex: 'landArea' },
-            { title: '权利性质', dataIndex: 'qualityOfRightName' },
+            { title: '产别', dataIndex: 'antenatal', width: 150 },
+            { title: '结构', dataIndex: 'structureName', width: 150 },
+            { title: '总层数', dataIndex: 'totalFloor', width: 150 },
+            { title: '所在层', dataIndex: 'placeFloor', width: 150 },
+            { title: '土地面积', dataIndex: 'landArea', width: 150 },
+            { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150 },
             { title: '登记日期', dataIndex: 'rigisterDate', width: 100 },
             { title: '使用期限', dataIndex: 'useLimitDate', width: 100 },
             { title: '交接日期', dataIndex: 'handoverDate', width: 100 },
-            { title: '状态', dataIndex: 'statusName' },
+            { title: '状态', dataIndex: 'statusName',width: 150 },
             { title: '使用权合同期限', dataIndex: 'contractData', width: 120 },
             { title: '附记', dataIndex: 'excursus', width: 200 },
             { title: '备注', dataIndex: 'remark', width: 200 }
@@ -148,7 +148,7 @@
 
       // 查看权证详情
       viewDetail (record) {
-        this.$refs['cardDetails'].query(record.warrantNbr, record.organId)
+        this.$refs['cardDetails'].query({ warrantId:record.warrantId })
       },
 
       // 查询平台权属类型字典

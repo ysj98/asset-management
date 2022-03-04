@@ -375,7 +375,7 @@ export default {
       if (!warrantNbr) {
         return
       }
-      this.$refs.certDetail.query(warrantNbr, organId)
+      this.$refs.certDetail.query({warrantNbr, organId})
     }
   }
 };

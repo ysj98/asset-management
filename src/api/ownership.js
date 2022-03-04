@@ -86,6 +86,9 @@ export function warrantDeleteBatch (data) {
 export function warrantDetail (data) {
   return axiosGet(ownership.authorityCardManagement.warrantDetail, data)
 }
+export function detailByWarrantNbr (data) {
+  return axiosGet(ownership.authorityCardManagement.detailByWarrantNbr, data)
+}
 // 组织机构视图
 export function organView (data) {
   return axiosGet(ownership.organView, data)

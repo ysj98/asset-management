@@ -767,6 +767,8 @@ export const ownership = {
     warrantDeleteBatch: "/ams/ownerShipUser/warrant/deleteBatch",
     // 查询权证详情
     warrantDetail: "/ams/ownerShipUser/warrant/detail",
+    // 查询权证详情2
+    detailByWarrantNbr: "/ams//ownerShipUser/warrant/detailByWarrantNbr",
     // 权证统计
     warrantTotal: "/ams/ownerShipUser/warrant/total",
     // 权证管理附件上传
