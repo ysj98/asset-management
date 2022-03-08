@@ -202,7 +202,7 @@
                     step="1"
                     :min="0"
                     :max="99999999999.99"
-                    :precision="2"
+                    :precision="4"
                     @change="originalValueChange"
                     v-decorator="['originalValue',
                 {rules: [{required: true, message: '请输入原值金额'}, {validator: validatorOriginalValue}],
@@ -319,7 +319,7 @@
                 size="small"
                 :min="0.01"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.transferOperationArea"
               />
             </template>
@@ -329,7 +329,7 @@
                 size="small"
                 :min="0.01"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.transferArea"
               />
             </template>
@@ -339,7 +339,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.operationArea"
               />
             </template>
@@ -348,7 +348,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.selfUserArea"
               />
             </template>
@@ -357,7 +357,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.idleArea"
               />
             </template>
@@ -366,7 +366,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.occupationArea"
               />
             </template>
@@ -375,7 +375,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.otherArea"
               />
             </template>
@@ -386,7 +386,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.newOriginalValue"
               />
             </template>
@@ -455,7 +455,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.newCreditorAmount"
               />
             </template>
@@ -464,7 +464,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.newDebtAmount"
               />
             </template>
@@ -473,7 +473,7 @@
                 size="small"
                 :min="0"
                 :step="1.00"
-                :precision="2"
+                :precision="4"
                 v-model="record.newAssetArea"
               />
             </template>
