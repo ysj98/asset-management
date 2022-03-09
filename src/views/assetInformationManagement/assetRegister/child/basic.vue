@@ -27,6 +27,7 @@
         :columns="columns"
         :dataSource="tableData"
         :pagination="false"
+        :loading="loading"
         >
         <template slot="operation" slot-scope="text, record">
           <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
@@ -117,6 +118,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       equipmentVerificationList,
       houseVerificationList,
       landVerificationList,
@@ -180,7 +182,6 @@ export default {
       this.$api.assets.platformDict({ code: "ASSET_MANAGEMENT_RIGHT" }).then(res =>{
         if(res.data.code === '0'){
           this.assetManagementRight = res.data.data
-          console.log(this.assetManagementRight,'this.assetManagementRight')
         }
       })
     },
@@ -233,6 +234,7 @@ export default {
     * 编辑 初始化
     * */
     async init(){
+      this.loading = true
       if (this.isEquipment){
         this.numList = numListEq
       }else {
@@ -246,6 +248,7 @@ export default {
       let res2 = this.getSourceOptions()
       await res1
       await res2
+      this.loading = false
       if(['edit'].includes(this.setType)){
         let res3 = this.getDetail()
         await res3
@@ -371,9 +374,7 @@ export default {
       this.$api.assets.getRegisterOrderDetailsStatistics(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          if (this.assetType === this.ASSET_TYPE_CODE.LAND) {
-            this.numList[1].title = '土地面积'
-          }
+          this.numList[1].title = this.assetType === this.ASSET_TYPE_CODE.LAND ? '土地面积' : '建筑面积(㎡)'
           return this.numList = this.numList.map(m => {
             return { ...m, value: data[m.key] || 0 }
           })

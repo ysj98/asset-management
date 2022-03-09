@@ -62,9 +62,9 @@
       <div class="particulars-obj">
         <selectTab :activeType="'fancyActive'" style="margin:20px 0;" class="staffCare-tab" v-model="selectTabValue" @change="selectTabChange" :list="list"></selectTab>
         <!-- 基础信息 -->
-        <keep-alive>
           <basic v-if="this.selectTabValue === '0'" ref="basicRef" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></basic>
-        </keep-alive>
+        <!-- <keep-alive>
+        </keep-alive> -->
         <!-- 附属配套 -->
         <keep-alive>
           <necessaryCaaessories v-if="this.selectTabValue === '1'" ref="necessaryCaaessories" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
@@ -74,9 +74,9 @@
           <valueToRegister v-if="this.selectTabValue === '2'" ref="valueToRegister" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></valueToRegister>
         </keep-alive>
         <!-- 使用方向 -->
-        <keep-alive>
           <directionUse v-if="this.selectTabValue === '3'" ref="directionUse" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></directionUse>
-        </keep-alive>
+        <!-- <keep-alive>
+        </keep-alive> -->
         <!-- 相关费用 -->
         <keep-alive>
           <correlativeCharges v-if="this.selectTabValue === '4'" ref="correlativeCharges" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></correlativeCharges>
