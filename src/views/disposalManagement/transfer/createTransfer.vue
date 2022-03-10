@@ -978,6 +978,9 @@ export default {
             detailReqs,
             attachmentReqDtos,
           };
+          if (this.isEdit){
+            req.applyId = this.$route.query.applyId
+          }
           console.log("req", req);
           const {
             data: { code, message, data },
