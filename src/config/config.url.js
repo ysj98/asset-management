@@ -1548,7 +1548,7 @@ export const transfer = {
   delete:"/ams/makeover/delete",
   // 资产转让反审核
   deApproval:"/ams/makeover/deApproval",
-  // 资产转让拟出租标的历史租赁情况查询
+  // 资产转让拟转让标的历史租赁情况查询
   historicLease:"/ams/makeover/historicLease",
   // 资产转让编辑回显
   feedback:"/ams/makeover/feedback",

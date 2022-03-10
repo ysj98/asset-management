@@ -151,7 +151,7 @@
                   </div>
                 </div>
                 <div>
-                  <span class="detail-title">拟出租标的历史租赁情况</span>
+                  <span class="detail-title">拟转让标的历史租赁情况</span>
                   <a
                     @click="btnMoreLeaseInfo"
                     style="margin-left: 20px"
@@ -168,7 +168,7 @@
                   </div>
                 </div>
                 <div>
-                  <span class="detail-title">拟出租标的资产评估情况</span>
+                  <span class="detail-title">拟转让标的资产评估情况</span>
                   <div style="margin-bottom: 20px">
                     <Information
                       :row-props="{ gutter: 5 }"
