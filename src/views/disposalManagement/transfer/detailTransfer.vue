@@ -1,272 +1,278 @@
 <template>
   <div class="detail-transfer">
-    <SG-Title title="基本信息" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <Information
-          :row-props="{ gutter: 5 }"
-          :col-props="{ span: 10 }"
-          v-bind="basicInfoOptions"
-        />
-      </a-col>
-    </a-row>
-    <SG-Title title="资产明细" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-table class="custom_td" v-bind="tableAssetDetail">
-          <template #resourceList="text, record">
-            <a
-              v-if="record.resourceList.length > 1"
-              @click="btnMoreUsage(record)"
-            >
-              查看更多
-            </a>
-            <span v-else>
-              {{
-                record.resourceList[0]
-                  ? record.resourceList[0].busiStatus
-                  : "--"
-              }}
-            </span>
-          </template>
-        </a-table>
-        <SG-FooterPagination
-          v-if="false"
-          :pageLength="allPageObj.assetDetail.pageSize"
-          :totalCount="allTableTotal.assetDetail"
-          :noPageTools="true"
-          v-model="allPageObj.assetDetail.pageNum"
-          @change="changePage($event, 'assetDetail')"
-        />
-      </a-col>
-    </a-row>
-    <SG-Title title="租赁信息" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-table v-bind="tableLease">
-          <template #action="text, record">
-            <a
-              @click="btnMoreLease(record)"
-              v-if="record.historicLeaseResps.length > 1"
-            >
-              明细
-            </a>
-            <span v-else>--</span>
-          </template>
-        </a-table>
-        <SG-FooterPagination
-          v-if="false"
-          :pageLength="allPageObj.lease.pageSize"
-          :totalCount="allTableTotal.lease"
-          :noPageTools="true"
-          v-model="allPageObj.lease.pageNum"
-          @change="changePage($event, 'lease')"
-        />
-      </a-col>
-    </a-row>
-    <SG-Title title="资产评估信息" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-table v-bind="tableEvaluate"></a-table>
-        <SG-FooterPagination
-          v-if="false"
-          :pageLength="allPageObj.evaluate.pageSize"
-          :totalCount="allTableTotal.evaluate"
-          :noPageTools="true"
-          v-model="allPageObj.evaluate.pageNum"
-          @change="changePage($event, 'evaluate')"
-        />
-      </a-col>
-    </a-row>
-    <SG-Title title="可行性和必要性分析" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="可行性和必要性分析">
-          <p class="test">
-            {{ otherInfo.feasibility }}
-          </p>
-        </a-form-model-item>
-      </a-col>
-    </a-row>
-    <SG-Title title="经营测算" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="经营测算">
-          <ShowFile v-model="allFile.operationFile.value" />
-        </a-form-model-item>
-      </a-col>
-    </a-row>
-    <SG-Title title="合规性条文" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="重要条款">
-          <p>
-            {{ otherInfo.compliance }}
-          </p>
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="合规性条文附件">
-          <ShowFile v-model="allFile.clauseFile.value" />
-        </a-form-model-item>
-      </a-col>
-    </a-row>
-
-    <SG-Title title="其他必要资料" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="法律意见书">
-          <ShowFile v-model="allFile.lawFile.value" />
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="合规审查表">
-          <ShowFile v-model="allFile.reviewFile.value" />
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="决策文件">
-          <ShowFile v-model="allFile.decisionFile.value" />
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="审计报告">
-          <ShowFile v-model="allFile.auditFile.value" />
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="财务报表">
-          <ShowFile v-model="allFile.reportFile.value" />
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="其它文档">
-          <ShowFile v-model="allFile.otherFile.value" />
-        </a-form-model-item>
-      </a-col>
-    </a-row>
-    <SG-Title title="拟转让条件" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <div
-          style="
-            border-top: 1px solid #efefef;
-            border-right: 1px solid #efefef;
-            border-left: 1px solid #efefef;
-          "
-        >
-          <div class="block">
-            <div class="block-title">挂牌价格</div>
-            <div class="block-content">{{ conditions.listingPrice }}</div>
-          </div>
-          <div class="block">
-            <div class="block-title">市场分析</div>
-            <div class="block-content">{{ conditions.marketAnalysis }}</div>
-          </div>
-          <div class="block">
-            <div class="block-title">潜在意向方情况</div>
-            <div class="block-content">{{ conditions.interestedParty }}</div>
-          </div>
-          <div class="block">
-            <div class="block-title">退出条款</div>
-            <div class="block-content">{{ conditions.withdrawalClause }}</div>
-          </div>
-          <div class="block">
-            <div class="block-title">其他说明情况</div>
-            <div class="block-content">{{ conditions.remark }}</div>
-          </div>
-        </div>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="租赁合同模板">
-          <ShowFile v-model="allFile.contractFile.value" />
-        </a-form-model-item>
-      </a-col>
-      <a-col :offset="2" :span="18">
-        <a-form-model-item label="安全生产管理协议书模板">
-          <ShowFile :value="allFile.safeFile.value" />
-        </a-form-model-item>
-      </a-col>
-    </a-row>
-    <SG-Title title="审批轨迹" />
-    <a-row>
-      <a-col :offset="2" :span="18">
-        <!--审批轨迹-->
-        <div>
-          <SG-TrackStep
-            v-if="stepList.length"
-            :stepList="stepList"
-            style="margin-left: 45px"
-          />
-          <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
-        </div>
-      </a-col>
-    </a-row>
-    <div v-if="isApprove">
-      <SG-Title title="审核意见" />
+    <float-anchor style="min-width: 200px" :anchorList="anchorList" />
+    <div>
+      <SG-Title title="基本信息" id="baseInfo" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <a-textarea
-            :rows="4"
-            style="resize: none; margin-left: 45px"
-            placeholder="请输入审核意见"
-            v-model="advice"
+          <Information
+            :row-props="{ gutter: 5 }"
+            :col-props="{ span: 10 }"
+            v-bind="basicInfoOptions"
           />
         </a-col>
       </a-row>
-    </div>
-    <div style="height: 70px"></div>
-    <div v-if="isApprove">
-      <!--底部审批操作按钮组-->
-      <form-footer location="fixed">
-        <SG-Button type="primary" @click="handleBtn(1)">审批通过</SG-Button>
-        <SG-Button
-          type="dangerous"
-          @click="handleBtn(0)"
-          style="margin-right: 8px"
-        >
-          驳回
-        </SG-Button>
-      </form-footer>
-    </div>
-    <SG-Modal
-      okText="确认"
-      v-model="modalList.usage.show"
-      :title="modalList.usage.title"
-      @cancel="
-        () => {
-          doClosePop('usage');
-        }
-      "
-    >
-      <template #footer>
-        <SG-Button @click="doClosePop('usage')">返回</SG-Button>
-      </template>
-      <div v-if="modalList.usage.show">
-        <UsageTable :dataSource="modalList.usage.dataSource" />
+      <SG-Title title="资产明细" id="assetDetail" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-table class="custom_td" v-bind="tableAssetDetail">
+            <template #resourceList="text, record">
+              <a
+                v-if="record.resourceList.length > 1"
+                @click="btnMoreUsage(record)"
+              >
+                查看更多
+              </a>
+              <span v-else>
+                {{
+                  record.resourceList[0]
+                    ? record.resourceList[0].busiStatus
+                    : "--"
+                }}
+              </span>
+            </template>
+          </a-table>
+          <SG-FooterPagination
+            v-if="false"
+            :pageLength="allPageObj.assetDetail.pageSize"
+            :totalCount="allTableTotal.assetDetail"
+            :noPageTools="true"
+            v-model="allPageObj.assetDetail.pageNum"
+            @change="changePage($event, 'assetDetail')"
+          />
+        </a-col>
+      </a-row>
+      <SG-Title title="租赁信息" id="leaseInfo" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-table v-bind="tableLease">
+            <template #action="text, record">
+              <a
+                @click="btnMoreLease(record)"
+                v-if="record.historicLeaseResps.length > 1"
+              >
+                明细
+              </a>
+              <span v-else>--</span>
+            </template>
+          </a-table>
+          <SG-FooterPagination
+            v-if="false"
+            :pageLength="allPageObj.lease.pageSize"
+            :totalCount="allTableTotal.lease"
+            :noPageTools="true"
+            v-model="allPageObj.lease.pageNum"
+            @change="changePage($event, 'lease')"
+          />
+        </a-col>
+      </a-row>
+      <SG-Title title="资产评估信息" id="evaluateInfo" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-table v-bind="tableEvaluate"></a-table>
+          <SG-FooterPagination
+            v-if="false"
+            :pageLength="allPageObj.evaluate.pageSize"
+            :totalCount="allTableTotal.evaluate"
+            :noPageTools="true"
+            v-model="allPageObj.evaluate.pageNum"
+            @change="changePage($event, 'evaluate')"
+          />
+        </a-col>
+      </a-row>
+      <SG-Title title="可行性和必要性分析" id="feasibility" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="可行性和必要性分析">
+            <p class="test">
+              {{ otherInfo.feasibility }}
+            </p>
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <SG-Title title="经营测算" id="operation" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="经营测算">
+            <ShowFile v-model="allFile.operationFile.value" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <SG-Title title="合规性条文" id="clause" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="重要条款">
+            <p>
+              {{ otherInfo.compliance }}
+            </p>
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="合规性条文附件">
+            <ShowFile v-model="allFile.clauseFile.value" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+
+      <SG-Title title="其他必要资料" id="otherFile" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="法律意见书">
+            <ShowFile v-model="allFile.lawFile.value" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="合规审查表">
+            <ShowFile v-model="allFile.reviewFile.value" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="决策文件">
+            <ShowFile v-model="allFile.decisionFile.value" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="审计报告">
+            <ShowFile v-model="allFile.auditFile.value" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="财务报表">
+            <ShowFile v-model="allFile.reportFile.value" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="其它文档">
+            <ShowFile v-model="allFile.otherFile.value" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <SG-Title title="拟转让条件" id="conditions" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <div
+            style="
+              border-top: 1px solid #efefef;
+              border-right: 1px solid #efefef;
+              border-left: 1px solid #efefef;
+            "
+          >
+            <div class="block">
+              <div class="block-title">挂牌价格</div>
+              <div class="block-content">{{ conditions.listingPrice }}</div>
+            </div>
+            <div class="block">
+              <div class="block-title">市场分析</div>
+              <div class="block-content">{{ conditions.marketAnalysis }}</div>
+            </div>
+            <div class="block">
+              <div class="block-title">潜在意向方情况</div>
+              <div class="block-content">{{ conditions.interestedParty }}</div>
+            </div>
+            <div class="block">
+              <div class="block-title">退出条款</div>
+              <div class="block-content">{{ conditions.withdrawalClause }}</div>
+            </div>
+            <div class="block">
+              <div class="block-title">其他说明情况</div>
+              <div class="block-content">{{ conditions.remark }}</div>
+            </div>
+          </div>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="租赁合同模板">
+            <ShowFile v-model="allFile.contractFile.value" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :offset="2" :span="18">
+          <a-form-model-item label="安全生产管理协议书模板">
+            <ShowFile :value="allFile.safeFile.value" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <SG-Title title="审批轨迹" id="approvalTrack" />
+      <a-row>
+        <a-col :offset="2" :span="18">
+          <!--审批轨迹-->
+          <div>
+            <SG-TrackStep
+              v-if="stepList.length"
+              :stepList="stepList"
+              style="margin-left: 45px"
+            />
+            <div v-else style="text-align: center; margin: 25px 0">
+              暂无数据
+            </div>
+          </div>
+        </a-col>
+      </a-row>
+      <div v-if="isApprove">
+        <SG-Title title="审核意见" />
+        <a-row>
+          <a-col :offset="2" :span="18">
+            <a-textarea
+              :rows="4"
+              style="resize: none; margin-left: 45px"
+              placeholder="请输入审核意见"
+              v-model="advice"
+            />
+          </a-col>
+        </a-row>
       </div>
-    </SG-Modal>
-    <SG-Modal
-      okText="确认"
-      v-model="modalList.lease.show"
-      :title="modalList.lease.title"
-      @cancel="
-        () => {
-          doClosePop('lease');
-        }
-      "
-    >
-      <template #footer>
-        <SG-Button @click="doClosePop('lease')">返回</SG-Button>
-      </template>
-      <div v-if="modalList.lease.show">
-        <LeaseTable :dataSource="modalList.lease.dataSource" />
+      <div style="height: 70px"></div>
+      <div v-if="isApprove">
+        <!--底部审批操作按钮组-->
+        <form-footer location="fixed">
+          <SG-Button type="primary" @click="handleBtn(1)">审批通过</SG-Button>
+          <SG-Button
+            type="dangerous"
+            @click="handleBtn(0)"
+            style="margin-right: 8px"
+          >
+            驳回
+          </SG-Button>
+        </form-footer>
       </div>
-    </SG-Modal>
+      <SG-Modal
+        okText="确认"
+        v-model="modalList.usage.show"
+        :title="modalList.usage.title"
+        @cancel="
+          () => {
+            doClosePop('usage');
+          }
+        "
+      >
+        <template #footer>
+          <SG-Button @click="doClosePop('usage')">返回</SG-Button>
+        </template>
+        <div v-if="modalList.usage.show">
+          <UsageTable :dataSource="modalList.usage.dataSource" />
+        </div>
+      </SG-Modal>
+      <SG-Modal
+        okText="确认"
+        v-model="modalList.lease.show"
+        :title="modalList.lease.title"
+        @cancel="
+          () => {
+            doClosePop('lease');
+          }
+        "
+      >
+        <template #footer>
+          <SG-Button @click="doClosePop('lease')">返回</SG-Button>
+        </template>
+        <div v-if="modalList.lease.show">
+          <LeaseTable :dataSource="modalList.lease.dataSource" />
+        </div>
+      </SG-Modal>
+    </div>
   </div>
 </template>
 
 <script>
+import FloatAnchor from "@/views/common/FloatAnchor";
 import LeaseTable from "@/views/disposalManagement/transfer/LeaseTable";
 import UsageTable from "@/views/disposalManagement/transfer/UsageTable";
 import FormFooter from "@/components/FormFooter";
@@ -287,9 +293,22 @@ export default {
     FormFooter,
     UsageTable,
     LeaseTable,
+    FloatAnchor,
   },
   data() {
     return {
+      anchorList: [
+        { title: "基本信息", id: "baseInfo" },
+        { title: "资产明细", id: "assetDetail" },
+        { title: "租赁信息", id: "leaseInfo" },
+        { title: "资产评估信息", id: "evaluateInfo" },
+        { title: "可行性和必要性分析", id: "feasibility" },
+        { title: "经营测算", id: "operation" },
+        { title: "合规性条文", id: "clause" },
+        { title: "其他必要资料", id: "otherFile" },
+        { title: "拟转让条件", id: "conditions" },
+        { title: "审批轨迹", id: "approvalTrack" },
+      ],
       apprId: "",
       advice: "",
       fromType: "",
@@ -852,7 +871,7 @@ export default {
 
 <style scoped>
 .detail-transfer {
-  padding: 10px 40px;
+  padding: 10px 20px;
 }
 .block {
   display: flex;
