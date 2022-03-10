@@ -10,6 +10,7 @@
           icon="plus"
           type="primary"
           style="margin-right: 8px"
+          v-power="ASSET_MANAGEMENT.ASSET_TRANSFER_ADD"
         >
           新增资产转让单
         </SG-Button>
@@ -112,6 +113,7 @@ import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "utils/utils";
 import moment from "moment";
 import { getObjectKeyValueByOrganIdFn } from "@/views/disposalManagement/transfer/share";
+import {ASSET_MANAGEMENT} from "@/config/config.power";
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
 export default {
   // 资产转让登记
@@ -123,6 +125,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       tableTotal: 0,
       pageInfo: {
         pageSize: 10,
@@ -303,24 +306,28 @@ export default {
           text: "编辑",
           statusAuth: [0, 3],
           editType: "edit",
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_EDIT,
         },
         {
           iconType: "check-square",
           text: "审批",
           statusAuth: [2],
           editType: "approve",
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_APPROVE,
         },
         {
           iconType: "minus-square",
           text: "反审核",
           statusAuth: [1],
           editType: "antiApprove",
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_ANTI_APPROVE,
         },
         {
           iconType: "delete",
           text: "删除",
           statusAuth: [0, 3],
           editType: "delete",
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_DEL,
         },
         { iconType: "book", text: "详情", editType: "detail" },
       ];

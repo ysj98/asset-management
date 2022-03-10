@@ -619,6 +619,18 @@ export const ASSET_MANAGEMENT = {
   ASSET_BILL_MANAGEMENT_LAND_DOWNLOAD: 'asset_bill_management_land_download', // 下载模板
   ASSET_BILL_MANAGEMENT_LAND_EXPORT_BILL: 'asset_bill_management_land_export_bill', // 导入业务信息
   ASSET_BILL_MANAGEMENT_LAND_EDIT: 'asset_bill_management_land_edit', // 编辑
+
+  /*
+  * 资产转让
+  * */
+  /**
+   * 基础信息管理 -> 资产业务信息
+   */
+  ASSET_TRANSFER_ADD: 'asset_transfer_add', // 新增
+  ASSET_TRANSFER_EDIT: 'asset_transfer_edit', // 编辑
+  ASSET_TRANSFER_APPROVE: 'asset_transfer_approve', // 审批
+  ASSET_TRANSFER_ANTI_APPROVE: 'asset_transfer_anti_approve', // 反审核
+  ASSET_TRANSFER_DEL: 'asset_transfer_del', // 删除
 }
 
 
