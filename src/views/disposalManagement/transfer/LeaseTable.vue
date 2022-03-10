@@ -44,6 +44,7 @@ export default {
         pageLength: 10,
       },
       tableOptions: {
+        scroll: { y: 500, x: 600 },
         dataSource: [],
         columns: [
           {

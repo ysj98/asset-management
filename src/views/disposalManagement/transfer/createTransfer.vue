@@ -801,7 +801,7 @@ export default {
         feasibility: [
           {
             required: true,
-            message: "请输入申请单名称",
+            message: "可行性和必要性分析",
             trigger: "blur",
           },
         ],

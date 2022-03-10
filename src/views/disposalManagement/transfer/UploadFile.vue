@@ -17,7 +17,7 @@
     "
     type="file"
   >
-    <span slot="tips">(注：上传的图片最多为 5 张,且图片大小小于50M)</span>
+    <span slot="tips">(注：上传的附件最多为 5 个,且图片大小小于50M)</span>
   </SG-UploadFile>
 </template>
 

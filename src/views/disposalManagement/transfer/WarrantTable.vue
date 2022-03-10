@@ -45,6 +45,7 @@ export default {
       },
       tableOptions: {
         dataSource: [],
+        scroll: { y: 500, x: 600 },
         columns: [
           {
             title: "序号",
