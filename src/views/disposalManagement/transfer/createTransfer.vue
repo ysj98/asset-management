@@ -140,7 +140,7 @@
               >
                 <div>
                   <span class="detail-title">
-                    物业名称{{ `${currentAssetDetail.propertyName}` }}
+                    物业名称: {{ `${currentAssetDetail.propertyName}` }}
                   </span>
                   <div style="margin-bottom: 20px">
                     <Information
@@ -1046,6 +1046,7 @@ export default {
         .assetDetail(req)
         .then(({ data: { code, message, data } }) => {
           if (code === "0") {
+            this.currentAssetDetail.propertyName = data.propertyName
             this.currentAssetDetail.details = data.details || [];
             this.currentAssetDetail.valueInfos = data.valueInfos || {};
             this.currentAssetDetail.resourceList = data.resourceList || [];
