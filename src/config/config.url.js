@@ -1536,3 +1536,24 @@ export const approve = {
   // 统一审批接口
   uniformSubmit:'/ams/approval/uniformSubmit',
 }
+
+export const transfer = {
+  // 资产转让
+  getList:"/ams/makeover/list",
+  // 资产转让新增和更新
+  addOrUpdate:"/ams/makeover/addOrUpdate",
+  // 资产转让详情查询
+  detail:"/ams/makeover/detail",
+  // 资产转让删除
+  delete:"/ams/makeover/delete",
+  // 资产转让反审核
+  deApproval:"/ams/makeover/deApproval",
+  // 资产转让拟出租标的历史租赁情况查询
+  historicLease:"/ams/makeover/historicLease",
+  // 资产转让编辑回显
+  feedback:"/ams/makeover/feedback",
+  // 查询单个资产信息，权证、评估
+  assetDetail:"/ams/makeover/assetDetail",
+  // 资产查询批量租赁信息
+  leaseBatchQuery:"/ams/makeover/leaseBatchQuery",
+}

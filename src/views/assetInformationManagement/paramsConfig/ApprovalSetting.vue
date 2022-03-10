@@ -49,7 +49,7 @@
 <script>
 import {clone} from "lodash";
 
-const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007];
+const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*

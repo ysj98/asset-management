@@ -41,6 +41,11 @@ export const serviceTypeAll = {
     component: SelectApproval,
     needValidate: false,
   },
+  1008: {
+    serviceTypeText: "资产转让审批",
+    component: SelectApproval,
+    needValidate: false,
+  },
 };
 export const columns = [
   {

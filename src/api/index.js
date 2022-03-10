@@ -41,6 +41,7 @@ import * as drawMap from './drawMap'
 import * as operationParams from './operationParams'
 import * as toOperation from './toOperation'
 import * as approve from './approve'
+import * as transfer from './transfer'
 const API = {
   auth,
   global,
@@ -70,7 +71,8 @@ const API = {
   drawMap,
   operationParams,
   toOperation,
-  approve
+  approve,
+  transfer
 }
 export default {
   install (Vue) {

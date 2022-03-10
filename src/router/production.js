@@ -518,6 +518,34 @@ let proRouter = [{
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage')
   },
   {
+    path: '/transfer',
+    name: '资产转让',
+    component: () => import('@/views/disposalManagement/transfer/index.vue'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/transfer/add',
+    name: '新增资产转让',
+    component: () => import('@/views/disposalManagement/transfer/createTransfer.vue'),
+  },
+  {
+    path: '/transfer/edit',
+    name: '编辑资产转让',
+    component: () => import('@/views/disposalManagement/transfer/editTransfer.vue'),
+  },
+  {
+    path: '/transfer/detail',
+    name: '资产转让详情',
+    component: () => import('@/views/disposalManagement/transfer/detailTransfer.vue'),
+  },
+  {
+    path: '/transfer/approve',
+    name: '资产转让审批',
+    component: () => import('@/views/disposalManagement/transfer/approveTransfer.vue'),
+  },
+  {
     path: '/disposalRegister',
     name: '处置登记',
     component: () => import('@/views/disposalManagement/disposalRegister/index'),

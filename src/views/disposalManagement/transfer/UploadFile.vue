@@ -1,0 +1,55 @@
+<template>
+  <SG-UploadFile
+    :max="5"
+    :maxSize="51200"
+    :files="value"
+    @input="inputFn"
+    :baseImgURL="configBase.hostImg1"
+    :customDownload="
+      (value) => {
+        return customDownload(value, $api.ownership.downLoadAnnex);
+      }
+    "
+    :customUpload="
+      (value) => {
+        return customUpload(value, $api.ownership.uploadAnnex);
+      }
+    "
+    type="file"
+  >
+    <span slot="tips">(注：上传的图片最多为 5 张,且图片大小小于50M)</span>
+  </SG-UploadFile>
+</template>
+
+<script>
+import configBase from "@/config/config.base";
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+export default {
+  /*
+   * 减少代码量，其他没什么用
+   * */
+  name: "UploadFile",
+  mixins: [uploadAndDownLoadFIle],
+  props: {
+    value: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  data() {
+    return {
+      configBase,
+    };
+  },
+  methods: {
+    inputFn(value) {
+      console.log("value", value);
+      this.$emit("input", value);
+    },
+  },
+};
+</script>
+
+<style scoped></style>
