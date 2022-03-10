@@ -869,7 +869,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
 .detail-transfer {
   padding: 10px 20px;
 }
