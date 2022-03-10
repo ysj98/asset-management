@@ -59,7 +59,7 @@
           <a-input
             style="width: 200px; margin-right: 8px"
             v-model="queryForm.name"
-            placeholder="申请单名称ID"
+            placeholder="申请单名称/申请单ID"
           />
           <!-- 提交日期 -->
           <div>

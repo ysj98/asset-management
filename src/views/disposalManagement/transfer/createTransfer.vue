@@ -280,7 +280,7 @@
           </a-form-model-item>
         </a-col>
       </a-row>
-      <SG-Title title="拟出租条件" />
+      <SG-Title title="拟转让条件" />
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="listingPrice" label="挂牌价格">
