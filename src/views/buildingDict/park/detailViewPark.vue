@@ -80,7 +80,7 @@
               </a-col>
             </a-row>
             <a-row>
-              <a-col v-if="false" :span="24">
+              <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
                   <SG-UploadFile
                     :show="true"
