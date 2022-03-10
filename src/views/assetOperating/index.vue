@@ -393,14 +393,14 @@ export default {
           text: "审批",
           editType: "approve",
           statusAuth: [2],
-          auth: ASSET_MANAGEMENT.ASSET_OPERATING_EXPORT_FILE,
+          auth: ASSET_MANAGEMENT.ASSET_OPERATING_APPROVE,
         },
         {
           iconType: "delete",
           text: "删除",
           editType: "delete",
           statusAuth: [0, 3],
-          auth: ASSET_MANAGEMENT.ASSET_OPERATING_APPROVE,
+          auth: ASSET_MANAGEMENT.ASSET_OPERATING_DEL,
         },
         { iconType: "book", text: "详情", editType: "detail" },
       ];
