@@ -49,7 +49,7 @@
             <template #action="text, record">
               <a
                 @click="btnMoreLease(record)"
-                v-if="record.historicLeaseResps.length > 1"
+                v-if="(record.historicLeaseResps && record.historicLeaseResps.length > 1)"
               >
                 明细
               </a>
