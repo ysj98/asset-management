@@ -460,6 +460,7 @@ export default {
       getObjectKeyValueByOrganIdFn({ organId: value }).then((data) => {
         this.projectIdOpt = [...utils.deepClone(projectIdOpt), ...data];
       });
+      this.getTableDataSource()
     },
     /*
      * 开/关 搜索容器
@@ -470,11 +471,13 @@ export default {
   },
   mounted() {
     this.initQueryForm();
-    this.getTableDataSource();
+    // this.getTableDataSource();
   },
   activated() {
     // TODO:首次加载避免重复调用接口
-    this.getTableDataSource();
+    if (this.organId){
+      this.getTableDataSource();
+    }
   },
 };
 </script>
