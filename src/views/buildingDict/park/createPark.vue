@@ -138,7 +138,7 @@
             </div>
           </a-col>
         </a-row>
-        <a-row v-if="false">
+        <a-row>
           <a-col :span="24" style="display: flex;margin-top: 20px">
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
             <div style="width: 86%">
@@ -523,7 +523,7 @@ export default {
       return {
         ...value,
         otherImg:this.formInfo.otherImg.map(node=>node.url).join(','),
-        // carPlaceDoc: this.formInfo.carPlaceDoc.map(node=>node.url).join(','),
+        carPlaceDoc: this.formInfo.carPlaceDoc.map(node=>node.url).join(','),
         areaArray: areaArray
       }
     },
@@ -533,7 +533,7 @@ export default {
       }
       data.organId = String(data.organId)
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
-      // data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
+      data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       data.communityId = String(data.communityId) === '-1' ? undefined : String(data.communityId)
       this.organNameMain = data.organName
       this.organIdMain = data.organId

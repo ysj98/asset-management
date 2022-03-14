@@ -151,7 +151,7 @@ const allStyle = {
   "margin-top": "14px",
   'vertical-align': 'middle'
 };
-const dateWidth = {width: '300px', 'margin-right': '10px', "margin-top": "14px", 'display': 'inline-block', 'vertical-align': 'middle'}
+const dateWidth = {width: '360px', 'margin-right': '10px', "margin-top": "14px", 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
     title: '处置单ID',

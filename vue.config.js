@@ -40,7 +40,8 @@ const proxyURL = [
   '/car-batch/',
   '/equipment-openapi/',
   '/scheme/',
-  '/group1/'
+  '/group1/',
+  '/uhomecp-resource/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接

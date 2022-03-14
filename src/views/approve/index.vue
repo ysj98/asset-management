@@ -78,6 +78,18 @@ export default {
         },
       });
     },
+    async goTransfer() {
+      const res = await this.getApprByServiceOrderId();
+      console.log("res", res);
+      this.$router.push({
+        name: "资产转让审批",
+        query: {
+          applyId: res.busId,
+          organId: res.organId,
+          fromType: "approve",
+        },
+      });
+    },
   },
   created() {
     const busType = Number(this.$route.query.busType);
@@ -90,6 +102,10 @@ export default {
         // 处置登记
         case 1006:
           this.goDisposalRegister();
+          break;
+        // 资产转让
+        case 1007:
+          this.goTransfer();
           break;
       }
     } else {

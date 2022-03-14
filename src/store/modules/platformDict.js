@@ -6,7 +6,8 @@ import {
   SET_AMS_USE_DIRECTION,
   SET_EQUIPMENT_CODE_SUB,
   SET_PARKING_OBJ_TYPE,
-  SET_PARKING_PLACE_RESOURCE_TYPE
+  SET_PARKING_PLACE_RESOURCE_TYPE,
+  SET_AMS_PLEDGE_SITUATION
 } from "../types/platformDictTypes";
 const state = {
   // 折旧方法
@@ -18,7 +19,9 @@ const state = {
   // 车位分类
   PARKING_OBJ_TYPE:[],
   // 车场分类
-  PARKING_PLACE_RESOURCE_TYPE: []
+  PARKING_PLACE_RESOURCE_TYPE: [],
+  // 质押情况
+  AMS_PLEDGE_SITUATION:[]
 };
 const mutations = {
   [SET_DEPRECIATION_METHOD](state, payload) {
@@ -35,6 +38,9 @@ const mutations = {
   },
   [SET_PARKING_PLACE_RESOURCE_TYPE](state,payload){
     state.PARKING_PLACE_RESOURCE_TYPE = payload
+  },
+  [SET_AMS_PLEDGE_SITUATION](state,payload){
+    state.AMS_PLEDGE_SITUATION = payload
   },
 };
 

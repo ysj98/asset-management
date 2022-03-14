@@ -218,6 +218,11 @@ export default [
         path: '/disposalRegister',
 
       },
+      {
+        title: '资产转让单',
+        path: '/transfer',
+
+      },
     ]
   },
   {
