@@ -196,6 +196,7 @@
           <!--审批轨迹-->
           <div>
             <SG-TrackStep
+              v-stepstyleplus
               v-if="stepList.length"
               :stepList="stepList"
               style="margin-left: 45px"
@@ -278,7 +279,7 @@ import UsageTable from "@/views/disposalManagement/transfer/UsageTable";
 import FormFooter from "@/components/FormFooter";
 import ShowFile from "@/views/disposalManagement/transfer/ShowFile";
 import Information from "@/components/Information";
-import moment from "_moment@2.29.1@moment";
+import moment from "moment";
 import { getDetail } from "./share";
 
 const PAGE_ASSET_DETAIL = "assetDetail";
@@ -753,7 +754,7 @@ export default {
               const childRes =
                 ele.historicLeaseResps && ele.historicLeaseResps.length > 1
                   ? {}
-                  : { ...ele.historicLeaseResps[0] };
+                  : ele.historicLeaseResps ?  { ...ele.historicLeaseResps[0] } : {};
 
               return {
                 _key: Math.random(),

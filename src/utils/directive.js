@@ -58,5 +58,47 @@ export default function (Vue) {
       }
     }
   })
+
+  // 时间轴 文字换行效果
+  Vue.directive("stepstyleplus", {
+    update:stepstyleplusFn,
+    inserted:stepstyleplusFn,
+  });
+  function stepstyleplusFn(el){
+    // todo: 优化事项 处理浏览器窗口发生变化时 重新改变高度
+    el.style.whiteSpace = 'pre-line'
+    el.style.lineHeight = '25px'
+
+    const rightArr = Array.from(el.querySelector('.right').children)
+    const leftArr = Array.from(el.querySelector('.left').children)
+    const middleArr =  Array.from(el.querySelector('.middle').children)
+
+    const heightArr = rightArr.map(ele=>{
+      const marginHeight = 11
+      const otherHeight = 8
+      return Array.from(ele.children).reduce((pre, cur) => {
+        return pre + cur.scrollHeight
+      }, marginHeight+otherHeight)
+    });
+    middleArr.forEach((ele,index)=>{
+      ele.style.minHeight = `${heightArr[index]}px`
+      ele.querySelector('.line').style.height = `100%`
+      const lastLineNode= ele.querySelector('.isLastItem')
+      if (lastLineNode){
+        lastLineNode.style.height ="0"
+      }
+    })
+    leftArr.forEach((ele,index)=>{
+      ele.style.minHeight = `${heightArr[index]}px`
+    })
+    rightArr.forEach((ele,index)=>{
+      ele.style.minHeight = `${heightArr[index]}px`
+
+      const titleNode = ele.querySelector(".title")
+      const titleHeight = titleNode.scrollHeight
+
+      titleNode.style.minHeight = `${titleHeight}px`
+    })
+  }
 }
 

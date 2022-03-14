@@ -84,7 +84,7 @@
     <div class="particulars-nav">
       <div>
         <SG-Title title="审批轨迹"/>
-        <SG-TrackStep v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
+        <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
         <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       </div>
       <div v-if="isApprove">
