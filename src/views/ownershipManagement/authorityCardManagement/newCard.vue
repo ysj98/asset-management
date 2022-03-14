@@ -220,7 +220,7 @@
           >
           <template slot="mortgageAmount" slot-scope="text, record">
             <a-input-number placeholder="抵押金额(元)"
-              :min="0" :max="999999999.99" :step="1.00" :precision="2" v-model="record.mortgageAmount"
+              :min="0" :max="999999999.9999" :step="1.00" :precision="4" v-model="record.mortgageAmount"
             />
           </template>
           <template slot="pledgee" slot-scope="text, record">

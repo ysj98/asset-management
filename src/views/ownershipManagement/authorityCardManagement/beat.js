@@ -31,8 +31,8 @@ export const accessCard = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 9999999.9999,
+    precision: 4,
     required: true
   },
   {
@@ -41,8 +41,8 @@ export const accessCard = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 9999999.99,
+    precision: 4,
+    max: 9999999.9999,
     required: false
   },
   {
@@ -51,8 +51,8 @@ export const accessCard = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 9999999.99,
+    precision: 4,
+    max: 9999999.9999,
     required: false
   },
   {
@@ -61,8 +61,8 @@ export const accessCard = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 9999999.9999,
+    precision: 4,
     required: false
   },
   {
@@ -127,8 +127,8 @@ export const accessCard = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 9999999.9999,
+    precision: 4,
     required: false
   },
   {
@@ -151,10 +151,10 @@ export const accessCard = [
     label: '议价租金总价',
     attrCode: 'talkTotalPrice',
     formType: 'inputNumber',
-    precision: 2,
+    precision: 4,
     attrValue: '',
     min: 0,
-    max: 9999999.99,
+    max: 9999999.9999,
     required: false
   },
   {
@@ -387,8 +387,8 @@ export const landDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 99999999999.99,
+    precision: 4,
+    max: 99999999999.9999,
     required: false
   },
   {
@@ -405,8 +405,8 @@ export const landDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 99999999.99,
+    precision: 4,
+    max: 99999999.9999,
     required: true
   },
   {
@@ -415,8 +415,8 @@ export const landDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    precision: 2,
-    max: 99999999.99,
+    precision: 4,
+    max: 99999999.9999,
     required: true
   },
   {
@@ -425,8 +425,8 @@ export const landDeed = [
     formType: 'inputNumber',
     attrValue: '',
     min: 0,
-    max: 9999999.99,
-    precision: 2,
+    max: 9999999.9999,
+    precision: 4,
     required: false
   },
   {
