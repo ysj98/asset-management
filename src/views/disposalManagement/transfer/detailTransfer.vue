@@ -196,6 +196,7 @@
           <!--审批轨迹-->
           <div>
             <SG-TrackStep
+              v-stepstyleplus
               v-if="stepList.length"
               :stepList="stepList"
               style="margin-left: 45px"
@@ -753,7 +754,7 @@ export default {
               const childRes =
                 ele.historicLeaseResps && ele.historicLeaseResps.length > 1
                   ? {}
-                  : { ...ele.historicLeaseResps[0] };
+                  : ele.historicLeaseResps ?  { ...ele.historicLeaseResps[0] } : {};
 
               return {
                 _key: Math.random(),
