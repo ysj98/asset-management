@@ -360,6 +360,16 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="可出租土地面积(㎡)" v-bind="formItemLayout">
+                  <a-input-number
+                    :precision="4"
+                    :max="999999.9999"
+                    :style="allWidth"
+                    v-decorator="['rentArea']"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="经营方式" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
