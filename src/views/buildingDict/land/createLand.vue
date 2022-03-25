@@ -847,6 +847,10 @@ export default {
                   return { url, name: url.substring(url.lastIndexOf("/") + 1) }
                 })
               }
+              // 处理运营项目
+              if (data.communityId === '-1') {
+                data.communityId = ""
+              }
               // 处理省市区的联动start
               this.city = data.city
               this.region = data.region
