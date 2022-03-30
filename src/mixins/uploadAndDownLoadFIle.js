@@ -30,6 +30,7 @@ export default {
     // 自定义上传
     customUpload(list = [], apiFn) {
       let files = Array.from(list);
+      console.log({files})
       let lists = [];
       let errorLists = [];
       let requestList = files.map((file) => {
@@ -44,7 +45,7 @@ export default {
       let requestAll = Promise.all(requestList);
       return requestAll
         .then((res) => {
-          res.map((item) => {
+          res.map( (item) => {
             if (item.data.code === "0" && item.data.data) {
               let data = item.data.data;
               lists.push({
@@ -56,6 +57,15 @@ export default {
               this.$SG_Message.error(item.data.message);
             }
           });
+          lists = lists.map((ele,index)=>{
+            const res = {...ele}
+            const resKey = files[index]._key
+            if (resKey){
+              res._key = resKey
+            }
+            return res
+          })
+          console.log({lists})
           return { lists };
         })
         .catch(() => {

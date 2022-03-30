@@ -23,7 +23,14 @@ export const publicCode = {
   // 资产标签
   queryAssetLabelConfig: '/ams/assetOperationMode/queryAssetLabelConfig'
 };
-
+export const bpm = {
+  // 根据分类KEY查询流程定义接口
+  queryProcByType: "/eip-bpm-runtime/runtime/instance/v1/queryProcByType",
+  // bpm文件上传
+  bpmFileUpload:"/eip-portal/system/file/v1/upload",
+  // bpm接口 获取 token
+  getAuthorizeJwtToken: '/uhomecp-sso/auth2/authorizeJwtToken'
+}
 export const Global = {
   // 文件上传
   fileUpload: "/uhomecp-app/common/oneFileUpload.json",
