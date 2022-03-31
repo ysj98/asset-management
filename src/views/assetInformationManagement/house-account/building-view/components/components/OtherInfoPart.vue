@@ -60,7 +60,9 @@
           if (Number(res.data.code) === 0) {
             this.tableData = res.data.data.data
           } else {
-            this.$message.error(res.data.message)
+            console.warn(res.data.message)
+            // 部分环境无文档服务，不提示异常信息
+            // this.$message.error(res.data.message)
           }
         }).finally(()=>{
           this.spinning = false
