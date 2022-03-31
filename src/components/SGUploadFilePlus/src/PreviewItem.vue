@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import configs from "@/config/config.base.js";
 export default {
   props: {
     // 是否显示设为封面按钮
@@ -63,7 +64,11 @@ export default {
   computed: {
     // 图片地址
     FileURL () {
-      return this.hostImg + this.item.url
+      let resUrl = this.hostImg + this.item.url
+      if (this.item.fileSources === 0){
+        resUrl = configs.hostImg + this.item.url
+      }
+      return resUrl
     },
     // 扩展名，即文件类型
     Ext () {
