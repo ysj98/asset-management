@@ -116,9 +116,22 @@
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
               <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
+                v-model="detail.attachment"
+                type="all"
+                :max="5"
+                :maxSize="20480"
+                :customDownload="(value)=>{
+                  return customDownload(value,$api.ownership.downLoadAnnex)
+                }"
+                  :customUpload="(value)=>{
+                  return customUpload(value,$api.ownership.uploadAnnex)
+                }"
+                />
+              <!-- <SG-UploadFile
                 type="all"
                 :show="!editable"
-                v-model="detail.attachment"/>
+                v-model="detail.attachment"/> -->
               <span class="file-null" v-if="!editable && detail.attachment.length === 0">--</span>
             </a-form-item>
           </div>
@@ -178,8 +191,10 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import {dateToString} from 'utils/formatTime'
 import moment from "moment";
 const defaultColumns = [
@@ -224,11 +239,13 @@ const defaultColumns = [
     scopedSlots: { customRender: 'operation' },
   }]
 export default {
+  mixins:[uploadAndDownLoadFIle],
   components: {
     FormFooter, AssetBundlePopover
   },
   data () {
     return {
+      configBase,
       advice:'',
       stepList:[],
       isApprove: false,

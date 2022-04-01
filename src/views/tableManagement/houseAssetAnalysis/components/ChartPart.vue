@@ -22,6 +22,7 @@
   import 'echarts/lib/component/legend'
   import 'echarts/lib/component/tooltip'
   import 'echarts/lib/component/legendScroll'
+  import { getFormat } from '@/utils/utils'
   export default {
     name: 'ChartPart',
     props: ['queryInfo'],
@@ -82,7 +83,9 @@
               ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
             ] : arr
             let usedArr = ((usedList || []).filter(v => Number(v.area))).length ? usedList : []
-            // 加载完DOM渲染图表
+            // list.forEach(item => {
+            //   item.area = Number(getFormat(item.area))
+            // })
             return this.$nextTick(function () {
               this.renderPieChart('type_statistics', 'useTypeName', list)
               this.renderPieChart('direct_statistics', 'usedName', usedArr)
@@ -122,7 +125,16 @@
           tooltip: { trigger: 'item', formatter: '{b} : {c} ({d}%)'}, // 自定义提示格式
           legend: { type: 'scroll', bottom: 0, itemWidth: 10, itemHeight: 10 }, // 图例样式
           grid: { containLabel: true, top: 10, right: 10, left: 10, bottom: 40 },  // 距父元素边框距离
-          series: [{ data, type: 'pie', radius: '55%', label: { show: true, formatter: '{c} ({d}%)'}, hoverOffset: 3 }],
+          series: [
+            { data, type: 'pie', radius: '55%', 
+            label: { 
+              show: true, 
+              // formatter: '{c} ({d}%)'
+              formatter: function(p) {
+                return getFormat(p.value)+"%";
+              }
+            }, 
+            hoverOffset: 3 }],
           color: ['#5b8ff9', '#5ad8a6', '#5d7092', '#f6bd16', '#e4393c', '#e96c5b', '#6395f9', '#d48265', '#ca8622', '#bda29a', '#00FF00', '#c4ccd3'] // 自定义调色盘
         })
       },
@@ -160,7 +172,9 @@
             return {
               type: 'bar',  // 图表类型
               name: m.name, // 用于生成legend
-              label: { show: true, position: 'top' }, // 显示标签
+              label: { show: true, position: 'top',formatter: function(p) {
+                return getFormat(p.value);
+              } }, // 显示标签
               data: [obj[m.key] ? Number(obj[m.key]) : 0] // 展示数据
             }
           })

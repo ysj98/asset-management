@@ -161,6 +161,18 @@
         <template slot="selfUserArea" slot-scope="text">
           <span>{{getFormat(text)}}</span>
         </template>
+        <template slot="idleArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="otherArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="originalValue" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="marketValue" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
         <span slot="action" slot-scope="text, record">
           <span v-if="record.assetName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
         </span>
@@ -204,7 +216,7 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
-import { getFormat } from "utils/utils";
+import { getFormat } from "@/utils/utils";
 const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
@@ -229,11 +241,11 @@ const columnsData = [
   { title: '接管日期', dataIndex: 'takeOverDate', width: 150 },
   { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
   { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150, scopedSlots: { customRender: 'selfUserArea' } },
-  { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
-  { title: '其他(㎡)', dataIndex: 'otherArea', width: 150 },
+  { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150, scopedSlots: { customRender: 'idleArea' } },
+  { title: '其他(㎡)', dataIndex: 'otherArea', width: 150, scopedSlots: { customRender: 'otherArea' } },
   { title: '财务卡片编码', dataIndex: 'cardCode', width: 150 },
-  { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
-  { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+  { title: '资产原值(元)', dataIndex: 'originalValue', width: 150, scopedSlots: { customRender: 'originalValue' } },
+  { title: '最新估值(元)', dataIndex: 'marketValue', width: 150, scopedSlots: { customRender: 'marketValue' } },
   { title: '批准日期', dataIndex: 'approvalDate', width: 150 },
   { title: '资产状态', dataIndex: 'statusName', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 70}

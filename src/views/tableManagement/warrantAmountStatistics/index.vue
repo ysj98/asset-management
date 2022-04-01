@@ -60,6 +60,12 @@
                   attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
                 }
             } },
+            { title: '经营单位', dataIndex: 'businessUnit', customRender: (text, row) => {
+                return {
+                  children: text,
+                  attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+                }
+            } },
             { title: '产权证', children: [
               { title: '总数', dataIndex: 'totalNumber' },
               { title: '本单位', dataIndex: 'ownNumber' },

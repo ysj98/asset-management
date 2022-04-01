@@ -13,7 +13,35 @@
           <a-icon type="setting" @click="openModal" style="color: #299fff; font-size: 18px; cursor: pointer; padding-right: 8px"/>
         </a-col>
       </a-row>
-      <a-table :columns="columns" :dataSource="dataSource" bordered class="custom-table td-pd10" :pagination="false" :loading="tableLoading"/>
+      <a-table :columns="columns" :dataSource="dataSource" bordered class="custom-table td-pd10" :pagination="false" :loading="tableLoading">
+        <template slot="area" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="transferOperationArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="selfUserArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="occupationArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="originalValue" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="latestValuationValue" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="idleArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="otherArea" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+        <template slot="firstOriginalValue" slot-scope="text">
+          <span>{{getFormat(text)}}</span>
+        </template>
+      </a-table>
       <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     </div>
     <!--编辑列表表头-->
@@ -27,13 +55,14 @@
   import EditTableHeader from './EditTableHeader'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
-  import {utils} from '@/utils/utils'
+  import { utils, getFormat } from '@/utils/utils'
   export default {
     name: 'ListPart',
     components: { EditTableHeader },
     props: ['queryInfo'],
     data () {
       return {
+        getFormat,
         penetrateData: '2',
         organQueryType: '2',    // 统计维度设置
         ASSET_MANAGEMENT, // 权限对象
@@ -44,16 +73,17 @@
         columnsPC: [{ title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' }], // 省份城市字段跟随地区展示
         columnsFixed: [
           { title: '资产数量', dataIndex: 'assetNum' },
-          { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
-          { title: '自用(㎡)', dataIndex: 'selfUserArea' }, { title: '闲置(㎡)', dataIndex: 'idleArea' },
-          { title: '占用(㎡)', dataIndex: 'occupationArea' }, { title: '其它(㎡)', dataIndex: 'otherArea' },
-          { title: '资产原值', dataIndex: 'originalValue' }, { title: '首次评估原值', dataIndex: 'firstOriginalValue' },
-          { title: '最新估值', dataIndex: 'latestValuationValue' }
+          { title: '资产面积(㎡)', dataIndex: 'area', scopedSlots: { customRender: 'area' } }, { title: '运营(㎡)', dataIndex: 'transferOperationArea', scopedSlots: { customRender: 'transferOperationArea' } },
+          { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' } }, { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' } },
+          { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' } }, { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' } },
+          { title: '资产原值', dataIndex: 'originalValue', scopedSlots: { customRender: 'originalValue' } }, { title: '首次评估原值', dataIndex: 'firstOriginalValue', scopedSlots: { customRender: 'firstOriginalValue' } },
+          { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' } },
         ], // Table 列头固定部分
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
           { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '权属情况', dataIndex: 'ownershipStatusName' },
-          { title: '地区', dataIndex: 'regionName' }
+          { title: '地区', dataIndex: 'regionName' },
+          { title: '经营单位', dataIndex: 'businessUnit' },
         ], // 统计维度的集合
         columnsDynamic: [], // Table 列头动态部分, 用于合成columns
         columns: [], // // Table 列头 = columnsDynamic合并单元格处理后 + columnsFixed
@@ -64,8 +94,9 @@
           organName: 1,
           projectName: 2,
           objectTypeName: 3,
+          ownershipStatusName: 5,
+          businessUnit: 6,
           regionName: 4,
-          ownershipStatusName: 5
         }, // 统计维度的顺序表，用于导出
         sortFunc: (a, b) => a - b // 默认排序算法
       }
@@ -77,7 +108,6 @@
       sortFactorData.splice(4, 0, ...columnsPC)
       // this.columnsDynamic = sortFactor.concat(columnsPC)
       this.columnsDynamic = sortFactorData
-      console.log(this.columnsDynamic, 'dddssa')
       // this.sortFunc = this.generateSort(sortFactor)
       this.checkedHeaderArr = sortFactor.map(m => m.dataIndex)
       this.handleColumns()
@@ -93,8 +123,12 @@
       // 查询Table DataSource
       queryTableData ({pageNo = 1, pageLength = 10}) {
         const { queryInfo, columnsDynamic, sortIndex } = this
+        console.log(columnsDynamic, 'columnsDynamic')
         this.tableLoading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
+        dimension.splice(dimension.indexOf(6),1)
+        // dimension.splice(dimension.indexOf(4),1)
+        // dimension.push(4)
         this.$api.tableManage.queryAssetHouseList({...queryInfo, dimension, pageSize: pageLength, pageNum: pageNo, organQueryType: this.organQueryType}).then(r => {
           this.tableLoading = false
           let res = r.data
@@ -275,6 +309,8 @@
         if (!dataSource.length) { return this.$message.info('暂无可导出数据') }
         this.exportBtnLoading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex])
+        dimension.splice(dimension.indexOf(4),1)
+        dimension.push(4)
         exportDataAsExcel({...queryInfo, dimension}, this.$api.tableManage.exportAssetHouseList, '房屋资产统计分析列表.xls', this).then(() => {
           this.exportBtnLoading = false
         })

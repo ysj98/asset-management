@@ -59,8 +59,50 @@
     </a-spin>
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <template slot="area" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="transferArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="transferOperationArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="operationArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="idleArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="selfUserArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="occupationArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="otherArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="originalValue" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="assetValuation" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="firstMarketValue" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="marketValue" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="rentedArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="unRentedArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
       <span slot="projectName" slot-scope="text, record">
-        <router-link :title="text" v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
+        <router-link v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
           {{text}}
         </router-link>
         <span v-else>
@@ -69,7 +111,6 @@
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
-    <div style="height: 100px;"></div>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
@@ -87,12 +128,14 @@
   import NoDataTip from 'src/components/noDataTips'
   import EditTableHeader from './EditTableHeader'
   import moment from 'moment'
+  import { getFormat } from '@/utils/utils'
   const judgment = [undefined, null, '']
   export default {
     name: 'index',
     components: { EditTableHeader, OverviewNumber, SearchContainer, OrganProject, NoDataTip },
     data () {
       return {
+        getFormat,
         ASSET_MANAGEMENT, // 权限对象
         fold: true,
         queryObj: {
@@ -143,9 +186,8 @@
               "scopedSlots": {
                 "customRender": "projectName"
               },
-              ellipsis: true,
               "fixed": "left",
-              "width": 300
+              "width": 150
             },
             {
               "title": "资产项目编码",
@@ -195,7 +237,10 @@
             {
               "title": "建筑面积(㎡)",
               "dataIndex": "area",
-              "width": 150
+              "width": 150, 
+              "scopedSlots": {
+                "customRender": "area"
+              },
             },
             {
               "title": "划转前房屋状态",
@@ -290,7 +335,10 @@
             {
               "title": "转物业面积(㎡)",
               "dataIndex": "transferArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "transferArea"
+              },
             },
             {
               "title": "是否转运营",
@@ -305,32 +353,50 @@
             {
               "title": "转运营面积(㎡)",
               "dataIndex": "transferOperationArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "transferOperationArea"
+              },
             },
             {
               "title": "运营面积(㎡)",
               "dataIndex": "operationArea",
-              "width": 150
+              "width": 150, 
+              "scopedSlots": {
+                "customRender": "operationArea"
+              },
             },
             {
               "title": "闲置(㎡)",
               "dataIndex": "idleArea",
-              "width": 150
+              "width": 150, 
+              "scopedSlots": {
+                "customRender": "idleArea"
+              },
             },
             {
               "title": "自用(㎡)",
               "dataIndex": "selfUserArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "selfUserArea"
+              },
             },
             {
               "title": "占用(㎡)",
               "dataIndex": "occupationArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "occupationArea"
+              },
             },
             {
               "title": "其它(㎡)",
               "dataIndex": "otherArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "otherArea"
+              },
             },
             {
               "title": "已运营基本情况",
@@ -340,22 +406,34 @@
             {
               "title": "资产原值(元)",
               "dataIndex": "originalValue",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "originalValue"
+              },
             },
             {
               "title": "首次成本法估值",
               "dataIndex": "assetValuation",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "assetValuation"
+              },
             },
             {
               "title": "首次市场法估值",
               "dataIndex": "firstMarketValue",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "firstMarketValue"
+              },
             },
             {
               "title": "最新估值(元)",
               "dataIndex": "marketValue",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "marketValue"
+              },
             },
             {
               "title": "项目状态",
@@ -365,12 +443,18 @@
             {
               "title": "已租面积",
               "dataIndex": "rentedArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "rentedArea"
+              },
             },
             {
               "title": "未租面积",
               "dataIndex": "unRentedArea",
-              "width": 150
+              "width": 150,
+              "scopedSlots": {
+                "customRender": "unRentedArea"
+              },
             },
             {
               "title": "备注",

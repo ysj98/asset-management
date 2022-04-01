@@ -84,7 +84,20 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered/>
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered>
+      <template slot="originalValue" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="assetValuation" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="firstMarketValue" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="marketValue" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+    </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
@@ -97,12 +110,14 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
+  import { getFormat } from '@/utils/utils.js'
   import moment from 'moment'
   export default {
     name: 'index',
     components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip },
     data () {
       return {
+        getFormat,
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         queryObj: {
@@ -138,8 +153,9 @@
         fixedColumns: [
           { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220 },
           { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 300 },
-          { title: '资产原值(元)', dataIndex: 'originalValue' }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
-          { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue' }, { title: '最新估值(元)', dataIndex: 'marketValue' }
+          { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" } }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
+          { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue', scopedSlots: { customRender: "firstMarketValue" } }, { title: '最新估值(元)', dataIndex: 'marketValue', scopedSlots: { customRender: "marketValue" } },
+          { title: '经营单位', dataIndex: 'businessUnit' }
         ], // 列头不变部分,按资产项目统计维度
         columnsByAsset: [
           { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },

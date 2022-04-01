@@ -118,7 +118,6 @@ export default {
           filesArr = filesArr.concat(this.imgFiles)
         }
       }else {
-        // debugger
         const newUrlArr = value.map(ele=>ele.url)
         if(fileType === 'img'){
           let reg = /^((?!png|jpg|jpeg|bmp).)*$/

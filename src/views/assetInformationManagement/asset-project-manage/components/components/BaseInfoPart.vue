@@ -96,6 +96,14 @@
             />
           </a-form-item>
         </a-col>
+        <a-col :span="colSpan">
+           <a-form-item label="经营单位" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入经营单位"
+              v-decorator="['businessUnit', {initialValue, rules: [{required: false, message: '经营单位'}]}]"
+            />
+          </a-form-item>
+        </a-col>
       </a-row>
       <a-row>
         <a-col :span="24">
@@ -448,10 +456,11 @@
       this.$api.assets[api[type]]({projectId: this.projectId}).then(({data: res}) => {
         this.spinning = false
         if (res && String(res.code) === '0') {
+          console.log(res.data, 'res.data')
           let {
             attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
             takeoverAssetStatus, takeOver, receiver, trusteeshipArea, actualReceiveArea, actualUsableArea, ownershipHandleProblems, remark, houseTransferHisProblem,
-            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, thirdPartyCode, ...others
+            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, thirdPartyCode, businessUnit, ...others
           } = res.data
           // 处理附件格式
           let attachArr = attachment.map(m => {
@@ -472,6 +481,7 @@
           })
           // 转换日期格式为moment
           let formData = {
+            businessUnit: type === 'show' ? (businessUnit || '无') : businessUnit,
             ownershipHandleProblems: type === 'show' ? (ownershipHandleProblems || '无') : ownershipHandleProblems,
             houseTransferHisProblem: type === 'show' ? (houseTransferHisProblem || '无') : houseTransferHisProblem,
             projectName, sourceType: type === 'show' ? sourceTypeName : sourceType,

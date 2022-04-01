@@ -488,7 +488,6 @@ export default {
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {
-      // debugger
       // 如果选的是全部
       if (value === "") {
         data = ['']
