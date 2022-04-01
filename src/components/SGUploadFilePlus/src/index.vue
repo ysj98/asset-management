@@ -76,7 +76,7 @@
       wrapClassName="sg-uploadFile-showUpload error"
     >
       <div class="itemBox">
-        <div class="errorTips">以下文件上传失败，请重新检查后再上传。</div>
+        <div class="errorTips">{{ errorTips }}</div>
         <PreviewItem
           v-for="(item, index) in errorLists" :key="index"
           :item="item"
@@ -152,7 +152,11 @@ export default {
       default: 2000
     },
     // 图片基础地质，用于拼接展示图片
-    baseImgURL: String
+    baseImgURL: String,
+    errorTips: {
+      type: String,
+      default: '以下文件上传失败，请重新检查后再上传。'
+    }
   },
   provide () {
     return {
