@@ -293,7 +293,6 @@
         this.$nextTick(function () {
           const resOptions = isSelectedEquipment === true ? new Array(9999) : this.categoryOptions
           this.assetCategoryId = this.handleMultipleSelectValue(value, this.assetCategoryId, resOptions)
-          // debugger
         })
       },
       // 资产类型发生变化
