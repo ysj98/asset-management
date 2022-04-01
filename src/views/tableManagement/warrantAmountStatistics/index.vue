@@ -45,7 +45,7 @@
             { title: '资产项目名称', dataIndex: 'projectName', customRender: (text) => {
               return {
                 children: text,
-                attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 3 } : {}
+                attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 4 } : {}
               }
             } },
             { title: '资产项目编码', dataIndex: 'projectCode', customRender: (text, row) => {

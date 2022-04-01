@@ -205,7 +205,7 @@
           columns: [
             { title: '登记单ID', dataIndex: 'registerId', fixed: 'left', width: 150  },
             { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 180  },
-            { title: '价值登记单名称', dataIndex: 'registerName' }, { title: '资产项目', dataIndex: 'projectName' },
+            { title: '价值登记单名称', dataIndex: 'registerName', width: 120 }, { title: '资产项目', dataIndex: 'projectName' },
             { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '评估方法', dataIndex: 'assessmentMethodName', width: 160 },
             { title: '评估机构', dataIndex: 'assessmentOrganName', width: 180 }, { title: '评估基准日', dataIndex: 'assessmenBaseDate'},
             { title: '资产数量', dataIndex: 'num' }, { title: '提交人', dataIndex: 'createByName' },
@@ -230,21 +230,26 @@
       // 下拉搜索筛选
       filterOption,
       customRow (record, index) {
-        
         return {
           class: {
             'text_hidden': record.assessmentMethodName || record.assessmentOrganName
           },
           on: {
             mouseover: (e) => {
-              e.target.style.whiteSpace = 'unset'
-              e.target.style.overflow = 'unset'
-              e.target.style.textOverflow = 'unset'
+              let arr = e.target.parentNode.childNodes
+              arr.forEach(item => {
+                item.style.whiteSpace = 'unset'
+                item.style.overflow = 'unset'
+                item.style.textOverflow = 'unset'
+              })
             },  // 鼠标移入行
             mouseout: (e) => {
-              e.target.style.whiteSpace = 'nowrap'
-              e.target.style.overflow = 'hidden'
-              e.target.style.textOverflow = 'ellipsis'
+              let arr = e.target.parentNode.childNodes
+              arr.forEach(item => {
+                item.style.whiteSpace = 'nowrap'
+                item.style.overflow = 'hidden'
+                item.style.textOverflow = 'ellipsis'
+              })
             }
           }
         }
