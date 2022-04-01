@@ -26,7 +26,7 @@
               <a-col :span="12">
                 <div class="detail-top-item">
                   <span class="detail-label">总层数：</span
-                  ><span class="detail-main">{{detailInfo.buildFloor | filterNullValueSquare}}</span>
+                  ><span class="detail-main">{{detailInfo.buildFloor | filterNullValue}}</span>
                 </div>
               </a-col>
               <a-col :span="12">
@@ -56,7 +56,7 @@
               <a-col :span="12">
                 <div class="detail-top-item">
                   <span class="detail-label">建筑年代：</span
-                  ><span class="detail-main">{{detailInfo.builtAge | filterNullValueSquare}}</span>
+                  ><span class="detail-main">{{detailInfo.builtAge | filterNullValue}}</span>
                 </div>
               </a-col>
               <a-col :span="12">
