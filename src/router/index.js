@@ -23,7 +23,12 @@ const router = new Router({
 })
 // 拦截路由处理生产环境自动生产面包屑
 const breadNavList = [{name: '资产管理', path: ''}]
-const getLink = (toPath) => pro.filter(item => toPath.indexOf(item.path) !== -1)
+// 通用审批/approve 路由，不显示在 面包屑导航中，所以在当前面包屑导航方案中过滤掉
+// todo:当前面包屑导航方案存在缺陷，导航显示顺序严格依赖路由书写顺序
+const getLink = (toPath) =>
+  pro.filter((item) => {
+    return toPath.indexOf(item.path) !== -1 && item.path !== "/approve";
+  });
 router.beforeEach((to, from, next) => {
   if (to.path !== from.path) {
     store.commit('pro/updateNav', [...breadNavList, ...getLink(to.path)])

@@ -360,6 +360,16 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="可出租土地面积(㎡)" v-bind="formItemLayout">
+                  <a-input-number
+                    :precision="4"
+                    :max="999999.9999"
+                    :style="allWidth"
+                    v-decorator="['rentArea']"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="经营方式" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
@@ -836,6 +846,10 @@ export default {
                 this.filePath = filePath.map((url) => {
                   return { url, name: url.substring(url.lastIndexOf("/") + 1) }
                 })
+              }
+              // 处理运营项目
+              if (data.communityId === '-1') {
+                data.communityId = ""
               }
               // 处理省市区的联动start
               this.city = data.city

@@ -144,6 +144,7 @@ import {
 } from "@/views/mapDrawLand/share";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
+import CenterText from "@/views/mapDrawLand/components/CenterText";
 import AssetLandList from "@/views/mapDrawLand/AssetLandList";
 import AddMethodsModal from "@/views/mapDrawLand/AddMethodsModal";
 import PopupParamsConfigModal from "@/views/mapDrawLand/PopupParamsConfigModal";
@@ -168,6 +169,7 @@ export default {
   },
   data() {
     return {
+      centralName: "",
       centerMarker: null,
       popupDataSource: [],
       selectedLayerInfo: {},
@@ -260,6 +262,7 @@ export default {
       this.clearAllPop();
       this.mapInstance.pm.disableGlobalEditMode();
       this.mapInstance.panTo(this.defaultLatLng);
+      this.centerMarker.openPopup();
     },
     /*
      * 提交中心点信息到后台
@@ -295,20 +298,45 @@ export default {
     /*
      * 初始化 中心点位事件,弹窗信息
      * */
-    initCenterMarker(marker) {
+    initCenterMarker({ marker, latlng }) {
       this.centerMarker = marker;
       // this.mapInstance.pm.disableGlobalEditMode() 函数会 dragging.disable()
-      marker.on("mouseover",()=>{
-        marker.dragging.enable()
-      })
+      marker.on("mouseover", () => {
+        marker.dragging.enable();
+      });
       marker.on("dragend", (e) => {
         const zIndex = this.mapInstance.getZoom();
         const latlng = e.target._latlng;
-        this.submitCenterInfo({ latlng, zIndex }).catch(reason => {
-          console.error(reason)
-        })
+        this.submitCenterInfo({ latlng, zIndex }).catch((reason) => {
+          console.error(reason);
+        });
       });
-      marker.bindPopup(`中心点位`);
+      marker.on("popupopen", () => {
+        // 创建实例之前 如果已经创建则销毁
+        marker._vuePopup && marker._vuePopup.$destroy();
+        this.$nextTick(() => {
+          let Profile = Vue.extend(CenterText);
+          const resVue = new Profile({
+            propsData: {
+              defaultCentralName: this.centralName || "",
+              layerId: this.selectedLayerInfo.layerId,
+              organId: this.selectedLayerInfo.organId,
+            },
+          }).$mount("#center-container");
+          resVue.$on("saveSuccess", (value) => {
+            console.log("value", value);
+            this.centralName = value || "";
+          });
+          marker._vuePopup = resVue;
+        });
+      });
+      const popup = Leaflet.popup({
+        minWidth: 200,
+        autoPan: false,
+      })
+        .setLatLng(latlng)
+        .setContent('<div id="center-container"></div>');
+      marker.bindPopup(popup).openPopup();
     },
     /*
      * 生成中心点
@@ -320,7 +348,7 @@ export default {
         riseOnHover: true,
         draggable: true,
       }).addTo(this.mapInstance);
-      this.initCenterMarker(marker);
+      this.initCenterMarker({ marker, latlng });
     },
 
     handleDel() {
@@ -625,7 +653,9 @@ export default {
           centralX,
           centralY,
           centralLevel,
+          centralName,
         } = res;
+        this.centralName = centralName
         //   0: "未生成",
         //   1: "生成中",
         //   2: "已生成",
@@ -651,6 +681,7 @@ export default {
                   ? 4
                   : centralLevel,
                 defaultLatLng: { lat: centralX, lng: centralY },
+                centralName,
               };
               this.handleInitMap(options);
               this.$refs.AssetLandListRef.initData({

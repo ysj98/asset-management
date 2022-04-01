@@ -774,7 +774,7 @@ export const ownership = {
     // 权证管理附件上传
     uploadAnnex: "/ams/attachment/uploadAnnex",
     // 权证管理附件下载
-    downLoadAnnex: "/ams/attachment/downLoadAnnex",
+    downLoadAnnex: "/ams/attachment/downLoadAnnex2Path",
   },
   // 组织机构权属
   organView: "/ams/ownerShip/owner/organView",

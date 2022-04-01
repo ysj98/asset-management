@@ -123,6 +123,12 @@
             </a-col>
             <a-col :span="8">
               <div class="detail-item">
+                <div class="item-label">可出租土地面积(㎡)：</div>
+                <div class="item-content">{{blankInfo.rentArea || '-'}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="detail-item">
                 <div class="item-label">经营方式：</div>
                 <div class="item-content">{{blankInfo.modeOper || '-'}}</div>
               </div>
@@ -425,7 +431,7 @@ export default {
     display: flex;
     margin-bottom: 32px;
     .item-label {
-      flex: 0 0 85px;
+      flex: 0 0 125px;
       margin-right: 12px;
       text-align: right;
     }
