@@ -24,6 +24,8 @@ const actions = {
             reject(message)
           }
         });
+      }else {
+        resolve(state.token)
       }
     })
   }
