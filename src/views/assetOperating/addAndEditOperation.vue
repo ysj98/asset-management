@@ -137,11 +137,12 @@ export default {
   },
   methods: {
     // 获取审批流程(取第一个)
-    queryProcByType(){
+    async queryProcByType(){
+      const {data:{data:{userId}}} = await this.$api.auth.getUserData()
       const req = {
         // 硬编码
         typeKey:'x_ams_zczyy',
-        userId: this.$store.state.auth.userinfo.userId
+        userId: userId
       }
       console.log({req})
       this.$api.bpm.queryProcByType(req).then(({data:{value,state,message}})=>{

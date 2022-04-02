@@ -29,7 +29,6 @@ axiosX.interceptors.request.use(
     config.headers['AUTHORIZATION'] = localStore.getToken() ?'Bearer ' + localStore.getToken() : ''
     // BPM 的接口
     if (store.state.bpm.token && config.url.includes('eip')) {
-      // Authorization 就会出现莫名其妙的请求头
       config['headers']['AUTHORIZATION'] = 'Bearer ' + store.state.bpm.token
     }
     const { url, method } = config
