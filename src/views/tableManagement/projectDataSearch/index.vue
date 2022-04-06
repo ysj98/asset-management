@@ -102,7 +102,7 @@
         {{ getFormat(text) }}
       </template>
       <span slot="projectName" slot-scope="text, record">
-        <router-link v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
+        <router-link :title="text" v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
           {{text}}
         </router-link>
         <span v-else>
@@ -111,6 +111,7 @@
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
+    <div style="height: 100px;"></div>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
@@ -186,8 +187,9 @@
               "scopedSlots": {
                 "customRender": "projectName"
               },
+              ellipsis: true,
               "fixed": "left",
-              "width": 150
+              "width": 300
             },
             {
               "title": "资产项目编码",
