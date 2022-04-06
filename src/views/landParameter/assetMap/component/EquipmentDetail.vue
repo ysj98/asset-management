@@ -65,6 +65,7 @@
 <script>
 import Tools from "@/utils/utils";
 import configs from "@/config/config.base.js";
+import { getFormat } from '../../../../utils/utils';
 const columns = [
   {
     title: "资产数量(个)",
@@ -102,6 +103,7 @@ let getDataRow = (obj, columns) => {
   let keys = columns.map(item => item.dataIndex);
   let o = { key: Tools.getUuid() };
   keys.forEach(item => {
+    obj[item] = item === 'originalValue' || item === 'assetValue' ? getFormat(obj[item]) : obj[item]
     // 沿用 之前的逻辑
     o[item] = obj[item] || "-";
     // o[item] = [undefined, null].includes(obj[item]) ? "-" : obj[item];

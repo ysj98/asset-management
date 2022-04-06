@@ -236,7 +236,7 @@
           },
           on: {
             mouseover: (e) => {
-              let arr = e.target.parentNode.childNodes
+              let arr = e.target.parentNode.childNodes || e.target.parentElement.childNodes
               arr.forEach(item => {
                 item.style.whiteSpace = 'unset'
                 item.style.overflow = 'unset'
@@ -244,7 +244,7 @@
               })
             },  // 鼠标移入行
             mouseout: (e) => {
-              let arr = e.target.parentNode.childNodes
+              let arr = e.target.parentNode.childNodes || e.target.parentElement.childNodes
               arr.forEach(item => {
                 item.style.whiteSpace = 'nowrap'
                 item.style.overflow = 'hidden'
