@@ -2,12 +2,13 @@
  * @Date: 2019-12-07 11:22:07
  * @Description: 楼盘字典自定义下载 调用基础数据接口
  */
+import * as apiOwnership from '@/api/ownership'
 export default {
   methods: {
     // 自定义下载
-    customDownload(file, apiFn) {
+    customDownload(file) {
       let loadingName = this.SG_Loding("下载中...");
-      apiFn({ attachmentId: file.attachmentId }).then(
+      apiOwnership.downLoadAnnex({ attachmentPath: file.url,fileName: file.name }).then(
         (res) => {
           this.DE_Loding(loadingName).then(() => {
             let blob = new Blob([res.data]);
