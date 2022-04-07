@@ -103,6 +103,7 @@
               :default="false"
               :defaultOrganName="businessUnit"
               :value="businessUnitId"
+              :typeFilter="typeFilter"
               @changeTree="unitTree"
               style="width: 100%;"
               placeholder='请选择经营单位'
@@ -331,6 +332,7 @@
   import moment from 'moment'
   import { queryPlatformDict } from 'src/views/common/commonQueryApi'
   import TreeSelect from "@/views/common/treeSelect";
+  import { typeFilter } from '@/views/buildingDict/buildingDictConfig'
   export default {
   name: 'BaseInfo',
     components:{
@@ -345,6 +347,7 @@
   },
   data () {
     return {
+      typeFilter,
       colSpan: 8,
       layout: 'horizontal',
       isEdit: false, // 是否可编辑
@@ -492,8 +495,8 @@
             attachment: attachArr,
             organKey: String(organId), // 保存管理机构id
             organName: organName, // 展示管理机构名称
-            businessUnit: businessUnit,
-            businessUnitId: businessUnitId
+            businessUnit: businessUnit ? businessUnit : '',
+            businessUnitId: businessUnitId ? String(businessUnitId) : ''
           })
           // 转换日期格式为moment
           let formData = {

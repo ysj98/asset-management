@@ -152,10 +152,10 @@
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
           { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220 },
+          { title: '经营单位', dataIndex: 'businessUnit', fixed: 'left' },
           { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 300 },
           { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" } }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
           { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue', scopedSlots: { customRender: "firstMarketValue" } }, { title: '最新估值(元)', dataIndex: 'marketValue', scopedSlots: { customRender: "marketValue" } },
-          { title: '经营单位', dataIndex: 'businessUnit' }
         ], // 列头不变部分,按资产项目统计维度
         columnsByAsset: [
           { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },

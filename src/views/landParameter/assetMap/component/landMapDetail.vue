@@ -164,7 +164,7 @@ let getDataRow = (obj, columns) => {
   let o = {key: Tools.getUuid()}
   keys.forEach(item => {
     if(item === 'landArea' || item === 'marketValue' || item === 'originalValue') {
-     getFormat(obj[item])
+     obj[item] = getFormat(obj[item]) 
     }
     o[item] = obj[item]
   })

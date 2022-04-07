@@ -5,7 +5,7 @@
     :files="value"
     @input="inputFn"
     :baseImgURL="configBase.hostImg1"
-    errorTips="以下文件上传失败,请重新检查后再上传(附件大小超出500M或当前网络不稳定)"
+    errorTips="以下文件上传失败,请重新检查后再上传(附件大小超出50M或当前网络不稳定)"
     :customDownload="
       (value) => {
         return customDownload(value, $api.ownership.downLoadAnnex);

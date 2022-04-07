@@ -82,9 +82,9 @@ export default {
         ], // Table 列头固定部分
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
+          { title: '经营单位', dataIndex: 'businessUnit' },
           { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '权属情况', dataIndex: 'ownershipStatusName' },
           { title: '地区', dataIndex: 'regionName' },
-          { title: '经营单位', dataIndex: 'businessUnit' },
         ], // 统计维度的集合
         columnsDynamic: [], // Table 列头动态部分, 用于合成columns
         columns: [], // // Table 列头 = columnsDynamic合并单元格处理后 + columnsFixed
@@ -106,7 +106,7 @@ export default {
     mounted () {
       const { sortFactor, columnsPC } = this
       let sortFactorData = utils.deepClone(sortFactor)
-      sortFactorData.splice(4, 0, ...columnsPC)
+      sortFactorData.splice(5, 0, ...columnsPC)
       // this.columnsDynamic = sortFactor.concat(columnsPC)
       this.columnsDynamic = sortFactorData
       // this.sortFunc = this.generateSort(sortFactor)
@@ -135,7 +135,7 @@ export default {
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
-            const arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName']
+            const arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName', 'businessUnit']
             const sortArr = this.sortFactor.map(ele=>ele.dataIndex)
             const sortFnArr = sortArr.map(ele=>{
               return getSort( (a,b) => {
