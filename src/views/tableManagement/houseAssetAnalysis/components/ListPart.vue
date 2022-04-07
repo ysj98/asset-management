@@ -52,11 +52,12 @@
 </template>
 
 <script>
-  import EditTableHeader from './EditTableHeader'
-  import {ASSET_MANAGEMENT} from '@/config/config.power'
-  import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
-  import { utils, getFormat } from '@/utils/utils'
-  export default {
+import EditTableHeader from './EditTableHeader'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
+import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
+import {getFormat, getMutipSort, getSort, utils} from '@/utils/utils'
+
+export default {
     name: 'ListPart',
     components: { EditTableHeader },
     props: ['queryInfo'],
@@ -134,12 +135,22 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
+            const arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName']
+            const sortArr = this.sortFactor.map(ele=>ele.dataIndex)
+            const sortFnArr = sortArr.map(ele=>{
+              return getSort( (a,b) => {
+                return a[ele] > (b[ele])
+              })
+            })
+            console.log({sortFnArr})
             this.dataSource = (data || []).map((m, key) => {
               let obj = {}
               // 防止排序时出现字段值为null,无法使用localeCompare
-              let arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName']
               arr.forEach(n => obj[n] = m[n] || '')
               return { ...m, ...obj, key }
+            })
+            this.dataSource.sort((a,b)=>{
+              return getMutipSort(sortFnArr)(a, b)
             })
             this.handleColumns()
             return Object.assign(this.paginationObj, {
