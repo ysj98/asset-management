@@ -98,10 +98,17 @@
         </a-col>
         <a-col :span="colSpan">
            <a-form-item label="经营单位" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-input
-              :disabled="!isEdit" placeholder="请输入经营单位"
-              v-decorator="['businessUnit', {initialValue, rules: [{required: false, message: '经营单位'}]}]"
-            />
+             <treeSelect
+              v-if="isEdit"
+              :default="false"
+              :defaultOrganName="businessUnit"
+              :value="businessUnitId"
+              @changeTree="unitTree"
+              style="width: 100%;"
+              placeholder='请选择经营单位'
+            >
+            </treeSelect>
+            <span v-else  style="margin-left: 11px">{{ businessUnit || '无' }}</span>
           </a-form-item>
         </a-col>
       </a-row>
@@ -347,6 +354,8 @@
       spinning: false, // 页面加载状态
       form: this.$form.createForm(this), // 注册form
       attachment: [], // 附件
+      businessUnitId: '',
+      businessUnit: '',
       organName: '', // 管理机构
       organKey: '', // 管理机构
       takeOver: '', // 是否接管，否 0，是 1
@@ -372,6 +381,11 @@
   },
 
   methods: {
+    // 选择经营单位
+    unitTree (id, name) {
+      this.businessUnit = name
+      this.businessUnitId = id
+    },
     // 获取选择的组织机构
     changeTree (id) {
       this.organIdEdit = id
@@ -408,7 +422,8 @@
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.spinning = true
-          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, organIdEdit, organKey } = this
+          const { attachment, organId, type, projectId, objBySourceType, sourceType, takeOver, organIdEdit, organKey, businessUnit, businessUnitId } = this
+          console.log(this)
           // 转换日期格式为string
           let dateKeys = objBySourceType[sourceType] || []
           dateKeys.forEach(key => {
@@ -422,7 +437,7 @@
             const { url: attachmentPath, suffix, name } = m
             return { attachmentPath, attachmentSuffix: suffix || name.split('.')[1], oldAttachmentName: name, newAttachmentName: name }
           }) // 处理附件格式
-          let form = Object.assign({}, { attachment: attachArr, organId }, values)
+          let form = Object.assign({}, { attachment: attachArr, organId, businessUnit, businessUnitId }, values)
           if (type === 'edit'){
             form.projectId = projectId // 编辑时传入projectId
             // organIdEdit 未编辑的情况会是 undefined
@@ -456,11 +471,10 @@
       this.$api.assets[api[type]]({projectId: this.projectId}).then(({data: res}) => {
         this.spinning = false
         if (res && String(res.code) === '0') {
-          console.log(res.data, 'res.data')
           let {
             attachment, organName, organId, projectName, sourceType, souceChannelType, projectCode,
             takeoverAssetStatus, takeOver, receiver, trusteeshipArea, actualReceiveArea, actualUsableArea, ownershipHandleProblems, remark, houseTransferHisProblem,
-            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, thirdPartyCode, businessUnit, ...others
+            sourceTypeName, takeOverDate, takeoverAssetStatusName, contractor, developers, leaseInContractNo, thirdPartyCode, businessUnit, businessUnitId, ...others
           } = res.data
           // 处理附件格式
           let attachArr = attachment.map(m => {
@@ -478,6 +492,8 @@
             attachment: attachArr,
             organKey: String(organId), // 保存管理机构id
             organName: organName, // 展示管理机构名称
+            businessUnit: businessUnit,
+            businessUnitId: businessUnitId
           })
           // 转换日期格式为moment
           let formData = {
