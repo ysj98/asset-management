@@ -83,6 +83,9 @@ export default new Vuex.Store({
         } else {
           this.$message.error(res.data.message);
         }
+      },reason => {
+        console.error('初始化资产分类出错，看到此小时请刷新')
+        console.error(reason)
       });
     }
   },
