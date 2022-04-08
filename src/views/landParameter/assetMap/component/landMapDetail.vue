@@ -166,6 +166,11 @@ let getDataRow = (obj, columns) => {
     if(item === 'landArea' || item === 'marketValue' || item === 'originalValue') {
      obj[item] = getFormat(obj[item]) 
     }
+    // 给columnsTwo中的数据加千分位，由于都有"()"以此判断
+    if(obj[item].toString().includes('(')){
+      let arr = obj[item].split('(')
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    }
     o[item] = obj[item]
   })
   return o

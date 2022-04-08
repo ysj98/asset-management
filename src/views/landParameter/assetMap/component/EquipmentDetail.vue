@@ -104,6 +104,11 @@ let getDataRow = (obj, columns) => {
   let o = { key: Tools.getUuid() };
   keys.forEach(item => {
     obj[item] = item === 'originalValue' || item === 'assetValue' ? getFormat(obj[item]) : obj[item]
+    // 给columnsThree中的数据加千分位，由于都有"()"以此判断
+    if(obj[item].toString().includes('(')){
+      let arr = obj[item].split('(')
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    }
     // 沿用 之前的逻辑
     o[item] = obj[item] || "-";
     // o[item] = [undefined, null].includes(obj[item]) ? "-" : obj[item];
