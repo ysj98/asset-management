@@ -31,14 +31,14 @@
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
-              <a-form-item v-bind="formItemLayout" label="资产类型：">
+              <a-form-item :required="true" v-bind="formItemLayout" label="资产类型：">
                 <a-select :style="allWidth" placeholder="请选择资产类型" v-model="newCardData.assetType" @change="assetTypeFn">
                   <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
            <a-col class="playground-col" :span="12">
-              <a-form-item v-bind="formItemLayout" label="资产分类">
+              <a-form-item :required="true" v-bind="formItemLayout" label="资产分类">
                   <a-select :style="allWidth" placeholder="请选择资产分类" v-model="newCardData.assetClassify">
                     <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">
                       {{item.name}}
@@ -217,6 +217,19 @@ export default {
     statusFn () {
       this.form.validateFields((err, values) => {
         if (!err) {
+          // 添加资产类型和资产分类校验
+          const validateArr = [undefined,null,""]
+          let errorStr = ''
+          if(validateArr.includes(this.newCardData.assetType)){
+            errorStr = '请选择资产类型'
+          }else if (validateArr.includes(this.newCardData.assetClassify)){
+            errorStr = '请选择资产分类'
+          }
+          if (errorStr){
+            this.$message.error(errorStr)
+            return null
+          }
+
           let files = []
           if (this.newCardData.files.length > 0) {
             this.newCardData.files.forEach(list => {
