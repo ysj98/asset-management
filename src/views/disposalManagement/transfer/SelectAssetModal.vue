@@ -186,6 +186,10 @@ export default {
   methods: {
     popSave() {
       const list = this.selectedList;
+      if (!list.length){
+        this.$message.warn('至少选择一个资产')
+        return null
+      }
       this.$emit("popSave", list);
       this.$emit("closePop");
     },
