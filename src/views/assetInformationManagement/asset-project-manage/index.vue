@@ -517,7 +517,7 @@
   .project_manage {
     /*padding: 8px;*/
     .custom-table {
-      padding-bottom: 55px;
+      padding-bottom: 70px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {
