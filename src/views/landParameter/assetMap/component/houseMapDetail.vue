@@ -171,7 +171,7 @@ let getDataRow = (obj, columns) => {
       obj[item] = getFormat(obj[item])  
     }
     // 给columnsThree中的数据加千分位，由于都有"()"以此判断
-    if(obj[item].toString().includes('(')){
+    if(obj[item] && obj[item].toString().includes('(')){
       let arr = obj[item].split('(')
       obj[item] = `${getFormat(arr[0])}(${arr[1]}`
     }
