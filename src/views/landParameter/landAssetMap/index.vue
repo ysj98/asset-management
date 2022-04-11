@@ -68,7 +68,6 @@
 </template>
 
 <script>
-
 import Vue from "vue";
 import LandDetailPopup from "@/views/landParameter/landAssetMap/LandDetailPopup";
 import {
@@ -77,6 +76,7 @@ import {
   getOffsetNum,
   initMap,
   jumpMapLand,
+  markerIcon,
 } from "@/views/mapDrawLand/share";
 import TreeSelect from "src/views/common/treeSelect";
 import Leaflet from "leaflet";
@@ -94,7 +94,8 @@ export default {
   },
   data() {
     return {
-      popupDataSource:[],
+      selectedLayerInfo: {},
+      popupDataSource: [],
       autoChaneIngFlag: false,
       progress: 11,
       assetList: [],
@@ -423,7 +424,7 @@ export default {
       });
     },
     changeTree(organId) {
-      console.log('organId',organId)
+      console.log("organId", organId);
       this.organId = organId;
       this.layerSchemeId = "";
       this.getMethodOptions();
@@ -465,6 +466,18 @@ export default {
       this.mapLayers = {};
       this.operationModeList = [];
     },
+    /*
+     * 生成中心点
+     * */
+    generateCenterMarker({ latlng,centralName }) {
+      const marker = Leaflet.marker(latlng, {
+        icon: markerIcon,
+        zIndexOffset: 1000,
+        riseOnHover: true,
+        draggable: false,
+      }).addTo(this.mapInstance);
+      marker.bindPopup(centralName || "中心点位").openPopup();
+    },
     async changeMethod(value) {
       this.initStore();
       // const res = this.methodOptions.filter((e) => e.value === value)[0];
@@ -478,6 +491,7 @@ export default {
           centralLevel,
           centralX,
           centralY,
+          centralName
         } = res;
         if (organId && layerPath && width && height) {
           this.mapFlag = true;
@@ -492,7 +506,11 @@ export default {
               defaultZoom: [null, ""].includes(centralLevel) ? 4 : centralLevel,
               defaultLatLng: { lat: centralX, lng: centralY },
             };
-            initMap.call(this, options);
+            initMap.call(this, options, ({ defaultLatLng }) => {
+              this.$nextTick(() => {
+                this.generateCenterMarker({ latlng: defaultLatLng, centralName });
+              });
+            });
             this.getAssetList();
             this.organIdByMethod = organId;
           });

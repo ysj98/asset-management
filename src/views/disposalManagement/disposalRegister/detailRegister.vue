@@ -99,6 +99,7 @@
     <div class="countingTaskDetail-nav">
       <SG-Title title="审批轨迹" />
       <SG-TrackStep
+        v-stepstyleplus
         v-if="stepList.length"
         :stepList="stepList"
         style="margin-left: 45px"

@@ -4,9 +4,9 @@
     v-model="value"
     type="all"
     :show="true"
-    :customUpload="
+    :customDownload="
       (value) => {
-        return customUpload(value, $api.ownership.uploadAnnex);
+        return customDownload(value, $api.ownership.downLoadAnnex);
       }
     "
   />

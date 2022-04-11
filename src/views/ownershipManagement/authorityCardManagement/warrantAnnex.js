@@ -3,7 +3,7 @@ export default {
     // 自定义下载
     customDownload (file) {
       let loadingName = this.SG_Loding('下载中...')
-      this.$api.ownership.downLoadAnnex({attachmentId: file.attachmentId}).then(res => {
+      this.$api.ownership.downLoadAnnex(({ attachmentPath: file.url,fileName: file.name })).then(res => {
         this.DE_Loding(loadingName).then(() => {
           let blob = new Blob([res.data])
           let a = document.createElement('a')
