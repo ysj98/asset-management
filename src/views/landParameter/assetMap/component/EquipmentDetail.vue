@@ -65,6 +65,7 @@
 <script>
 import Tools from "@/utils/utils";
 import configs from "@/config/config.base.js";
+import { getFormat } from '../../../../utils/utils';
 const columns = [
   {
     title: "资产数量(个)",
@@ -102,6 +103,12 @@ let getDataRow = (obj, columns) => {
   let keys = columns.map(item => item.dataIndex);
   let o = { key: Tools.getUuid() };
   keys.forEach(item => {
+    obj[item] = item === 'originalValue' || item === 'assetValue' ? getFormat(obj[item]) : obj[item]
+    // 给columnsThree中的数据加千分位，由于都有"()"以此判断
+    if(obj[item] && obj[item].toString().includes('(')){
+      let arr = obj[item].split('(')
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    }
     // 沿用 之前的逻辑
     o[item] = obj[item] || "-";
     // o[item] = [undefined, null].includes(obj[item]) ? "-" : obj[item];

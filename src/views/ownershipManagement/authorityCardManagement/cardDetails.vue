@@ -21,17 +21,10 @@
           <div v-if="files.length > 0">
             <!-- <div v-for="(item, index) in files" :key="index"> -->
               <div class="umImg">
-                <SG-UploadFile
-                  v-model="oldFiles"
-                  type="all"
-                  :show="true"
-                />
-              </div>
-              <div class="umImg">
-                <SG-UploadFile
+                <SGUploadFilePlus
                   :baseImgURL="configBase.hostImg1"
                   :customDownload="customDownload"
-                  v-model="newFiles"
+                  v-model="files"
                   type="all"
                   :show="true"
                 />
@@ -70,6 +63,7 @@
 </template>
 
 <script>
+import SGUploadFilePlus from "@/components/SGUploadFilePlus";
 import configBase from "@/config/config.base";
 import {utils} from '@/utils/utils'
 import {columns, mortgageInformation} from './beat'
@@ -148,7 +142,7 @@ const landDeed = [
   { text: '交接日期', value: 'handoverDate' }
 ]
 export default {
-  components: {},
+  components: {SGUploadFilePlus},
   props: {},
   mixins: [warantAnnex],
   data () {
@@ -161,8 +155,6 @@ export default {
       landDeed,
       particularsData: {},
       files: [],
-      oldFiles: [],
-      newFiles: [],
       kindOfRight: '',        // 权证类型判断
       beat: [],
       columns: [],
@@ -227,8 +219,6 @@ export default {
         return null
       }
       this.particularsData = {}
-      this.oldFiles = []
-      this.newFiles = []
       this.show = true
       let apiFn = this.$api.ownership.warrantDetail
       let req = {warrantId}
@@ -254,21 +244,6 @@ export default {
               name: item.oldAttachmentName,
               fileSources: item.fileSources
             })
-            if (item.fileSources === 0) {
-              this.oldFiles.push({
-                url: item.attachmentPath,
-                name: item.oldAttachmentName,
-                fileSources: item.fileSources
-              })
-            }
-            if (item.fileSources === 1) {
-              this.newFiles.push({
-                url: item.attachmentPath,
-                name: item.oldAttachmentName,
-                fileSources: item.fileSources,
-                attachmentId: item.attachmentId
-              })
-            }
           })
         }
         this.files = files

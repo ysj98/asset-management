@@ -26,6 +26,18 @@
     </a-spin>
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10">
+      <template slot="buildArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="exclusiveBuildArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="apportionArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
+      <template slot="landArea" slot-scope="text">
+        {{ getFormat(text) }}
+      </template>
       <template slot="warrantNbr" slot-scope="text, record">
         <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{text}}</span>
       </template>
@@ -47,11 +59,13 @@
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
   import CardDetails from 'src/views/ownershipManagement/authorityCardManagement/cardDetails'
+  import { getFormat } from '@/utils/utils'
   export default {
     name: 'index',
     components: { NoDataTip, OrganProject, CardDetails, OverviewNumber },
     data () {
       return {
+        getFormat,
         styleSet: 'min-width: 150px !important;',
         toggle: false,
         allStyle: 'width: 150px; margin-right: 10px;',
@@ -98,14 +112,14 @@
             { title: '房屋号/丘地号/不动产单元号', dataIndex: 'combinationCode', width: 200 },
             { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
             { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
-            { title: '建筑面积', dataIndex: 'buildArea', width: 150 },
-            { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea', width: 150 },
-            { title: '分摊面积', dataIndex: 'apportionArea', width: 150 },
+            { title: '建筑面积', dataIndex: 'buildArea', width: 150, scopedSlots: { customRender: 'buildArea' } },
+            { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea', width: 150, scopedSlots: { customRender: 'exclusiveBuildArea' } },
+            { title: '分摊面积', dataIndex: 'apportionArea', width: 150, scopedSlots: { customRender: 'apportionArea' } },
             { title: '产别', dataIndex: 'antenatal', width: 150 },
             { title: '结构', dataIndex: 'structureName', width: 150 },
             { title: '总层数', dataIndex: 'totalFloor', width: 150 },
             { title: '所在层', dataIndex: 'placeFloor', width: 150 },
-            { title: '土地面积', dataIndex: 'landArea', width: 150 },
+            { title: '土地面积', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },
             { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150 },
             { title: '登记日期', dataIndex: 'rigisterDate', width: 100 },
             { title: '使用期限', dataIndex: 'useLimitDate', width: 100 },

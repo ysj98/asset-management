@@ -82,7 +82,7 @@
             label="附件"
             v-bind="formItemLayoutTwo"
           >
-            <SG-UploadFile
+            <SGUploadFilePlus
               type="all"
               v-model="attachmentList"
               :max="5"
@@ -92,11 +92,7 @@
                   return customDownload(value, $api.ownership.downLoadAnnex);
                 }
               "
-              :customUpload="
-                (value) => {
-                  return customUpload(value, $api.ownership.uploadAnnex);
-                }
-              "
+              :customUpload="uploadFileFn"
             />
           </a-form-model-item>
         </a-row>
@@ -106,11 +102,24 @@
 </template>
 
 <script>
-import { getObjectKeyValueByOrganId } from "@/utils/share";
+import SGUploadFilePlus from "@/components/SGUploadFilePlus";
+import {getObjectKeyValueByOrganId} from "@/utils/share";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+
 export default {
   name: "baseFormEdit",
+  components:{
+    SGUploadFilePlus
+  },
   props: {
+    flowKey:{
+      type: String,
+      required: true
+    },
+    isBpm:{
+      type: Boolean,
+      default: false,
+    },
     organInfo: {
       type: Object,
       validator(value) {
@@ -174,6 +183,7 @@ export default {
       },
       projectListOptions: [],
       attachmentList: [],
+      bpmFileList:[],
       formData: {
         projectId: "",
         title: "",
@@ -203,6 +213,27 @@ export default {
     },
   },
   methods: {
+    bpmUploadFile({fileArr}){
+      fileArr.forEach(ele=>{
+        const req = new FormData()
+        req.append('file',ele)
+        const params = {
+          flowKey: this.flowKey
+        }
+        this.$api.bpm.bpmFileUpload(req,{params}).then(({data})=>{
+          this.bpmFileList.push({...data,_key:ele._key})
+        },reason => {
+          console.error(reason)
+        })
+      })
+    },
+    uploadFileFn(value){
+      value.forEach(ele=>ele._key = Math.random())
+      if (this.isBpm){
+        this.bpmUploadFile({fileArr:value})
+      }
+      return this.customUpload(value, this.$api.ownership.uploadAnnex);
+    },
     handleChangeProject(value) {
       this.$emit("update:projectId", value);
     },
@@ -261,17 +292,25 @@ export default {
       if (!validateRes) {
         throw new Error("校验未通过");
       }
-      const result = {
+      const attachmentList =this.attachmentList.map((ele) => {
+        const bpmFileRes = this.bpmFileList.find(item=>(ele._key === item._key ))
+        let bpmFileId = ''
+        if (ele.bpmFileId){
+          bpmFileId = ele.bpmFileId
+        }else {
+          bpmFileId = bpmFileRes ? bpmFileRes.fileId : ''
+        }
+        return {
+          attachmentPath: ele.url,
+          oldAttachmentName: ele.name,
+          originName: ele.name,
+          bpmFileId
+        };
+      })
+      return {
         ...this.formData,
-        attachmentList: this.attachmentList.map((ele) => {
-          return {
-            attachmentPath: ele.url,
-            oldAttachmentName: ele.name,
-            originName: ele.name,
-          };
-        }),
+        attachmentList,
       };
-      return result;
     },
   },
   mounted() {

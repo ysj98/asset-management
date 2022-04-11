@@ -10,7 +10,7 @@ export function querySysSet(data) {
 }
 /* 组织机构系统设置统一查询接口 */
 export function queryParamsConfigDetail(data) {
-  return axiosPost(paramsConfig.queryParamsConfigDetail, data);
+  return axiosPost(paramsConfig.queryParamsConfigDetail, data, true);
 }
 
 export function getDataFromBpmWorkFlow(data) {

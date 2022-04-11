@@ -27,6 +27,10 @@ axiosX.interceptors.request.use(
   config => {
     config.headers['Trace-Log-Id'] = uuid(32)
     config.headers['AUTHORIZATION'] = localStore.getToken() ?'Bearer ' + localStore.getToken() : ''
+    // BPM 的接口
+    if (store.state.bpm.token && config.url.includes('eip')) {
+      config['headers']['AUTHORIZATION'] = 'Bearer ' + store.state.bpm.token
+    }
     const { url, method } = config
     // 外部接口需要此参数
     const systemCodeList = ["/car-batch", "/equipment-openapi"]

@@ -535,7 +535,7 @@ export default {
           {
             title: "权属人股权构成",
             align: "center",
-            width: 200,
+            width: 300,
             key: "equityComposition",
             customRender: (text, record) => {
               return this.generateTableItem(
@@ -717,6 +717,9 @@ export default {
           "div",
           {
             class: "table-content-item",
+            attrs:{
+              title: ele[keyStr]
+            }
           },
           [ele[keyStr]]
         )
@@ -870,7 +873,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .detail-transfer {
   padding: 10px 20px;
 }
@@ -894,7 +897,7 @@ export default {
   padding: 0 10px;
   text-align: left;
 }
-.custom_td ::v-deep .ant-table-row td {
+.custom_td .ant-table-row td {
   padding: 0;
 }
 .custom_td .custom_height {
@@ -903,6 +906,9 @@ export default {
 }
 
 .table-content-item {
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow: hidden;
   height: 40px;
   padding: 0 20px;
   border-top: 1px solid #efefef;

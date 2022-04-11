@@ -1,0 +1,392 @@
+.item-mixin {
+  .item {
+    width: 160px;
+    height: 160px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    position: relative;
+    background: #fff;
+    &:hover {
+      box-shadow: 0 1px 8px rgba(0, 0, 0, .14);
+      .ItemDelete {
+        visibility: visible;
+        opacity: 1;
+      }
+      .ItemAction {
+        display: block;
+      }
+    }
+    &.nodata {
+      background: none;
+      box-shadow: none;
+      border:1px dashed #DCE1E6;
+    }
+    // 内容
+    .ItemBox {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-image: url(./images/icon-image.png);
+      &.txt { background-image: url(./images/icon-txt.png); }
+      &.pdf { background-image: url(./images/icon-pdf.png); }
+      &.doc, &.docx { background-image: url(./images/icon-doc.png); }
+      &.xlsx, &.xls { background-image: url(./images/icon-xlsl.png); }
+      &.ppt, &.pptx { background-image: url(./images/icon-ppt.png); }
+      &.zip { background-image: url(./images/icon-zip.png); }
+      &.rar { background-image: url(./images/icon-rar.png); }
+      &.gz { background-image: url(./images/icon-gz.png); }
+      &.7z { background-image: url(./images/icon-7z.png); }
+      &.acd { background-image: url(./images/icon-acd.png); }
+      img {
+        display: block;
+        width: 100%;
+        min-height: 100%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        transition: transform 2s ease;
+        &:hover {
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+      }
+      >.ant-spin {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 40px;
+        top: 0;
+        background: rgba(255, 255, 255, .8);
+        .anticon {
+          position: absolute;
+        top: 50%;
+        left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+    // 标题
+    .ItemTitle {
+      line-height: 40px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 12px;
+        color: #49505E;
+        white-space: nowrap;
+      }
+      .download {
+        height: 16px;
+        line-height: 16px;
+        padding: 0 12px;
+        border-left: 1px solid #DCE1E6;
+        color: #959DAB;
+        cursor: pointer;
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+    // 索引
+    .ItemIndex {
+      display: none;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      line-height: 24px;
+      background: rgba(0, 0, 0, .2);
+      color: #fff;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: 0 0 8px 0;
+      font-size: 13px;
+    }
+    // 删除
+    .ItemDelete {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .3s ease;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      line-height: 24px;
+      background: #fff;
+      border-radius: 4px;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      color: #959DAB;
+      font-size: 10px;
+      cursor: pointer;
+      &:hover {
+        color: #333;
+      }
+      .anticon {
+        vertical-align: middle;
+      }
+    }
+    // 动作
+    .ItemAction {
+      display: none;
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 64px;
+      line-height: 24px;
+      background: #fff;
+      opacity: .8;
+      border-radius: 4px;
+      text-align: center;
+      color: #0084FF;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .ItemActionText {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, .1);
+      color: #fff;
+      min-width: 80px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.sg-uploadFile {
+  max-width: 848px;
+  >.fileBox {
+    display: flex;
+    justify-content: space-between;
+    line-height: 32px;
+    height: 32px;
+    margin-bottom: 20px;
+    >.btn {
+      width: 160px;
+      .segi-butn {
+        width: 100%;
+        
+      }
+      input {
+        display: none;
+      }
+    }
+    >.tips {
+      flex: 1 1 auto;
+      font-size: 12px;
+      color: #959DAB;
+      padding-left: 20px;
+    }
+    >.total {
+      font-size: 12px;
+      color: #959DAB;
+      span {
+        font-weight: bold;
+        font-size: 14px;
+        margin: 0 5px;
+        color: #49505E;
+      }
+    }
+  }
+  >.notData {
+    width: 160px;
+    height: 160px;
+    border: 1px dashed #DCE1E6;
+    background: #FAFAFA;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 160px;
+    color: #C0C9D1;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  >.preview {
+    overflow: hidden;
+    padding-left: 4px;
+    margin: 0 -4px;
+    >.previewWrap {
+      transition: transform .6s ease;
+      margin-bottom: 20px;
+      >.item {
+        float: left;
+        margin-right: 12px;
+      }
+      &:after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+    }
+    >.previewPages {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      >.previewPrev, >.previewNext {
+        font-size: 13px;
+        width: 32px;
+        height: 32px;
+        border-radius: 100%;
+        border: 2px solid #DCE1E6;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.disabled {
+          cursor: no-drop;
+          .sg-iconExt {
+            border-color: #DCE1E6;
+          }
+        }
+      }
+      >ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        align-items: center;
+        li {
+          width: 10px;
+          height: 10px;
+          border-radius: 100%;
+          background: #DCE1E6;
+          margin-right: 12px;
+          transition: all .3s ease;
+          cursor: pointer;
+          &.active {
+            background: #0084FF;
+          }
+        }
+      }
+    }
+  }
+  .item-mixin();
+}
+
+.sg-uploadFile.show {
+  >.preview {
+    padding: 0;
+    .item {
+      .ItemDelete, .ItemAction {
+        display: none;
+      }
+      .ItemIndex {
+        display: block;
+      }
+    }
+  }
+}
+
+div.sg-uploadFile-showImage {
+  .ant-carousel .slick-dots {
+    position: static;
+    height: auto;
+    text-align: center;
+    padding: 10px 0;
+    li {
+      display: inline-block;
+      width: 60px;
+      height: 40px;
+      overflow: hidden;
+      img {
+        display: block;
+        width: 100%;
+        min-height: 100%;
+        filter: grayscale(100%);
+      }
+      &.slick-active img{
+        filter: grayscale(0%);
+      }
+    }
+  }
+  .ant-carousel .slick-slide {
+    height: 600px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    >div {
+      width: 100%;
+    }
+    img {
+      display: block;
+      width: 100%;
+    }
+  }
+  .ant-carousel .slick-prev, .ant-carousel .slick-next {
+    font-size: 40px;
+    color: #fff;
+    width: 70px;
+    height: 40px;
+    opacity: .5;
+    transition: opacity .3s ease;
+    z-index: 1;
+    margin-top: -50px;
+    &::before {
+      display: none;
+    }
+    &:hover {
+      opacity: 1;
+    }
+    &.slick-prev {
+      left: 0;
+    }
+    &.slick-next {
+      right: 0;
+    }
+  }
+}
+
+div.sg-uploadFile-showUpload {
+  .item-mixin();
+  .itemBox {
+    min-height: 105px;
+    .errorTips {
+      background:rgba(255,108,93, .1);
+      color: #FD7474;
+      line-height: 30px;
+      margin: -14px -30px;
+      padding: 0 30px;
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    .item {
+      float: left;
+      margin-bottom: 12px;
+      margin-right: 12px;
+      &:nth-child(5n + 1) {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+div.sg-uploadFile-showUpload.error {
+  .itemBox {
+    .item {
+      .title {
+        color: #FD7474;
+      }
+    }
+  }
+}

@@ -204,7 +204,12 @@
             this.cacheDataObj[type] = obj
             Object.assign(this, obj)
           } else {
-            this.$message.error(`查询${tip}错误`)
+            // 查询档案信息接口 不把异常信息提供给客户
+            if (api !== 'queryAssetViewArchiveDetail') {
+              this.$message.error(`查询${tip}错误`)
+            }else {
+              console.warn(`查询${tip}错误`)
+            }
           }
         }).catch(err => {
           console.error(err)

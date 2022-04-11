@@ -49,20 +49,24 @@ export default {
         columns: [
           {
             title: "序号",
+            width: 80,
             customRender: (text, record, index) => {
               return (this.pageInfo.pageNum - 1) * 10 + 1 + index;
             },
           },
           {
             title: "权证号",
+            width: 100,
             dataIndex: "warrantNbr",
           },
           {
             title: "权证类型",
+            width: 100,
             dataIndex: "kindOfRightName",
           },
           {
             title: "权证有效期",
+            width: 200,
             key: "houseStartAndEndDate",
             customRender(text, record) {
               if (record.houseStartDate && record.houseEndDate) {
@@ -74,15 +78,28 @@ export default {
           },
           {
             title: "证载用途",
+            width: 100,
             dataIndex: "ownershipUse",
           },
           {
             title: "建筑面积(㎡)",
+            width: 100,
             dataIndex: "buildArea",
           },
           {
             title: "土地面积(㎡)",
+            width: 100,
             dataIndex: "landArea",
+          },
+          {
+            title: "权属单位",
+            width: 200,
+            dataIndex: "obligeeName",
+          },
+          {
+            title: "权属人股权构成",
+            width: 200,
+            dataIndex: "equityComposition",
           },
         ],
         rowKey: "_key",

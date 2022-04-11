@@ -460,6 +460,10 @@
           approvalStatus: status,
           cardId: cardId
         }
+        // 如果是删除 则增加 status 入参，值固定为0
+        if(status === 4){
+          form.status = 0
+        }
         this.$api.assets.updateCardStatus(form).then(res => {
           if (res.data.code === '0') {
             this.$message.success('操作成功')

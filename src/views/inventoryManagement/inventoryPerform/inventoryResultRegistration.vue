@@ -90,7 +90,9 @@
                     return customUpload(value, $api.ownership.uploadAnnex);
                   }
                 "
-              />
+              >
+                <span slot="tips">(注：上传的附件最多为 5 个,且图片大小小于20M)</span>
+              </SG-UploadFile>
             </a-form-item>
           </a-col>
           </a-form>

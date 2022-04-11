@@ -63,10 +63,11 @@ export default {
           },
           {
             title: "承租时间",
+            width: 200,
             key: "startAndEndDateFormat",
             customRender(text, record) {
               if (record.startDateFormat && record.endDateFormat) {
-                return `${record.startDateFormat}至${record.endDateFormat}`;
+                return `${record.startDateFormat} 至 ${record.endDateFormat}`;
               } else {
                 return "";
               }

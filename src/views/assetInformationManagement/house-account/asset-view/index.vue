@@ -125,6 +125,15 @@
               placeholder="资产标签"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="uploadAttachment"
+              style="width: 100%"
+              @select="attachmentStatusFn"
+              :options="$addTitle(attachmentStatus)"
+              placeholder="全部附件状态"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -157,6 +166,11 @@
            {{+text===1?'是':'否'}}
         </span>
       </template>
+      <!-- <template slot="uploadAttachment" slot-scope="text, record">
+        <span v-if="record.assetName !== '所有页-合计'">
+          {{ +text === 1 ? '已上传' : '未上传' }}
+        </span>
+      </template> -->
       <template slot="area" slot-scope="text">
        {{getFormat(text)}}
       </template>
@@ -173,6 +187,21 @@
        {{getFormat(text)}}
       </template>
       <template slot="otherArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="originalValue" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="marketValue" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="organFee" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="rentedArea" slot-scope="text">
+       {{getFormat(text)}}
+      </template>
+      <template slot="unRentedArea" slot-scope="text">
        {{getFormat(text)}}
       </template>
     </a-table>
@@ -220,6 +249,20 @@
     { label: "有证明材料证件", value: 1 },
     { label: "无证明材料证件", value: 0 },
   ]
+  const attachmentStatus = [
+  {
+    label: '全部附件状态',
+    value: ''
+  },
+  {
+    label: '未上传',
+    value: '0'
+  },
+  {
+    label: '已上传',
+    value: '1'
+  }
+]
   const assetLabelOpt = [
     // { label: "全部资产标签  ", value: "" },
     // { label: "正常", value: 1 },
@@ -230,6 +273,8 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
+        uploadAttachment: '',
+        attachmentStatus,
         getFormat,
         supportMaterialOpt,
         supportMaterial: '',
@@ -271,6 +316,7 @@
             { title: '宗地号', dataIndex: 'addressNo', width: 150 },
             { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
             { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
+            { title: '产证附件状态', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },
             { title: '地理位置', dataIndex: 'address', width: 300 },
             { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
             { title: '单元', dataIndex: 'unitName', width: 100 },
@@ -301,15 +347,15 @@
             { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
             { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
-            { title: '资产原值(元)', dataIndex: 'originalValue', width: 100 },
-            { title: '最新估值(元)', dataIndex: 'marketValue', width: 100 },
+            { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
+            { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
             { title: '资产状态', dataIndex: 'statusName', width: 100 },
             { title: '物业管理单位', dataIndex: 'organManagement', width: 150 },
             { title: '物业缴费期限', dataIndex: 'organPayDeadline', width: 150 },
             { title: '物业费', dataIndex: 'organFee', width: 100 },
-            { title: '已租面积', dataIndex: 'rentedArea', width: 100 },
-            { title: '未租面积', dataIndex: 'unRentedArea', width: 100 },
-            { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
+            { title: '已租面积', dataIndex: 'rentedArea', width: 100, scopedSlots: { customRender: 'rentedArea' } },
+            { title: '未租面积', dataIndex: 'unRentedArea', width: 100, scopedSlots: { customRender: 'unRentedArea' } },
+            { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150, scopedSlots: { customRender: 'fireMaterial' }},
             { title: '资产标签', dataIndex: 'label', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
@@ -345,7 +391,44 @@
         modalType: 1, // 1 设置列表表头 2 设置资产标签
       }
     },
+    watch: {
+      organProjectBuildingValue: function (val, pre) {
+        this.queryTableData({type: 'search'})
+        if(val.organId !== pre.organId){
+          this.queryCategoryOptions(val.organId)
+          this.getSourceOptions(val.organId)
+          this.organDict('OWNERSHIP_USE',val.organId)
+          if(val.organId.split(',').length === 1){
+            this.getAssetLabel(val.organId)
+          }
+        }
+      },
+
+      // 全选与其他选项互斥处理
+      // status: function (val) {
+      //   if (val && val.length !== 1 && val.includes('all')) {
+      //     this.status = ['all']
+      //   }
+      // },
+
+      // categoryId: function (val) {
+      //   if (val && val.length !== 1 && val.includes('all')) {
+      //     this.categoryId = ['all']
+      //   }
+      // }
+    },
+    mounted () {
+      this.queryNodesByRootCode()
+    },
+    created () {
+      this.initHeader()
+    },
+
     methods: {
+      // 选择附件上传状态
+      attachmentStatusFn (val){
+        console.log(val)
+      },
       initHeader (){
         // 初始化Table列头
         let{ columns } = this.tableObj
@@ -353,7 +436,7 @@
         // 默认不展示xx表头
         this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
         // 初始化被选中的列头数据
-        this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action')
+        this.checkedHeaderArr = columns.filter(ele=>!ele.defaultHide).map(m => m.dataIndex).filter(n => n !== 'action' && n !== 'fileStatus')
       },
       assetLabelFn(value){
         this.$nextTick(function () {
@@ -390,9 +473,9 @@
             this.assetLabelOpt = data.data.map(item => {
               return ({label: item.labelName, value: item.labelId})
             })
-            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : undefined
-            this.label = this.assetLabelOpt.length > 0 ? '' : undefined
+            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : []
           }
+          this.label = this.assetLabelOpt.length > 0 ? '' : undefined
         }).catch(err =>{
           this.$message.error(err || '当前组织机构下无资产标签')
         })
@@ -509,7 +592,7 @@
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         let labelName = ''
-        if(this.label.length > 0 && this.assetLabelSelect.length > 0){
+        if(this.label && this.assetLabelSelect.length > 0){
           labelName = this.label.map(item => {
             return this.assetLabelSelect.find(sub => sub.value === item).title
           })
@@ -518,7 +601,7 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address
+          useType,sourceModes, address, uploadAttachment
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -533,11 +616,11 @@
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
-          label: labelName
+          label: labelName,
+          uploadAttachment
         }
-        if(labelName === '全部资产标签' || !labelName){
-          delete form.label
-        }
+        if(!uploadAttachment) delete form.uploadAttachment
+        if(labelName === '全部资产标签' || !labelName) delete form.label
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -637,8 +720,10 @@
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
           sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
-          label: labelName
+          label: labelName,
+          uploadAttachment: this.uploadAttachment
         }
+        if(!this.uploadAttachment) delete form.uploadAttachment
         if(labelName === '全部资产标签' || !labelName){
           delete form.label
         }
@@ -734,39 +819,6 @@
         })
       },
     },
-    mounted () {
-      this.queryNodesByRootCode()
-    },
-    created () {
-      this.initHeader()
-    },
-
-    watch: {
-      organProjectBuildingValue: function (val, pre) {
-        this.queryTableData({type: 'search'})
-        if(val.organId !== pre.organId){
-          this.queryCategoryOptions(val.organId)
-          this.getSourceOptions(val.organId)
-          this.organDict('OWNERSHIP_USE',val.organId)
-          if(val.organId.split(',').length === 1){
-            this.getAssetLabel(val.organId)
-          }
-        }
-      },
-
-      // 全选与其他选项互斥处理
-      // status: function (val) {
-      //   if (val && val.length !== 1 && val.includes('all')) {
-      //     this.status = ['all']
-      //   }
-      // },
-
-      // categoryId: function (val) {
-      //   if (val && val.length !== 1 && val.includes('all')) {
-      //     this.categoryId = ['all']
-      //   }
-      // }
-    }
   }
 </script>
 

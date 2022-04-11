@@ -10,6 +10,7 @@ import dev from "./modules/dev";
 import auth from "./modules/auth";
 import pro from "./modules/pro";
 import asset from "./modules/asset";
+import bpm from './modules/bpm'
 import platformDict from "./modules/platformDict";
 import * as apiAsset from "@/api/assets";
 
@@ -82,6 +83,9 @@ export default new Vuex.Store({
         } else {
           this.$message.error(res.data.message);
         }
+      },reason => {
+        console.error('初始化资产分类出错，看到此小时请刷新')
+        console.error(reason)
       });
     }
   },
@@ -90,6 +94,7 @@ export default new Vuex.Store({
     dev,
     pro,
     asset,
-    platformDict
+    platformDict,
+    bpm
   }
 });

@@ -22,8 +22,8 @@ const getIPAdress = () => {
 const localhost = getIPAdress()
 console.log('IP', localhost)
 
-const target = 'http://192.168.1.7:8088'
-// const target = 'http://beta.uhomecp.com/'
+// const target = 'http://192.168.1.7:8088'
+const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
   '/uhomecp-sso/',
@@ -41,7 +41,10 @@ const proxyURL = [
   '/equipment-openapi/',
   '/scheme/',
   '/group1/',
-  '/uhomecp-resource/'
+  '/uhomecp-resource/',
+  '/eip-bpm-runtime/',
+  '/eip-portal/',
+  '/uhomecp-sso/'
 ]
 /**
  * Proxy 类，用于构建需要代理的数据对接

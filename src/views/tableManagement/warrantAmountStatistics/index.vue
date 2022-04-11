@@ -45,7 +45,7 @@
             { title: '资产项目名称', dataIndex: 'projectName', customRender: (text) => {
               return {
                 children: text,
-                attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 3 } : {}
+                attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 4 } : {}
               }
             } },
             { title: '资产项目编码', dataIndex: 'projectCode', customRender: (text, row) => {
@@ -55,6 +55,12 @@
                 }
             } },
             { title: '管理机构', dataIndex: 'organName', customRender: (text, row) => {
+                return {
+                  children: text,
+                  attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+                }
+            } },
+            { title: '经营单位', dataIndex: 'businessUnit', customRender: (text, row) => {
                 return {
                   children: text,
                   attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}

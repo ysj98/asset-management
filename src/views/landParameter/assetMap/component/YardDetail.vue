@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import { getFormat } from '@/utils/utils'
 import Tools from "@/utils/utils";
 import configs from "@/config/config.base.js";
 const columns = [
@@ -151,6 +152,14 @@ let getDataRow = (obj, columns) => {
   let keys = columns.map(item => item.dataIndex);
   let o = { key: Tools.getUuid() };
   keys.forEach(item => {
+    if(item === 'assetArea' || item === 'assetValue') {
+      obj[item] = getFormat(obj[item])  
+    }
+    // 给columnsThree中的数据加千分位，由于都有"()"以此判断
+    if(obj[item] && obj[item].toString().includes('(')){
+      let arr = obj[item].split('(')
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    }
     o[item] = obj[item] || "-";
   });
   return o;
@@ -166,6 +175,7 @@ export default {
   },
   data() {
     return {
+      getFormat,
       // 表格数据
       table: {
         columns,
@@ -205,7 +215,7 @@ export default {
       return val ? val : '-'
     },
     filterNullValueSquare (val) {
-      return val ? (val + '㎡') : '-'
+      return val ? (getFormat(val) + '㎡') : '-'
     },
     filterNullValueDateRange (detailInfo) {
       if (detailInfo.startDate) {

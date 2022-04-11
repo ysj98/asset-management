@@ -121,6 +121,7 @@
 import Tools, {win} from '@/utils/utils'
 import configs from '@/config/config.base.js'
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
+import { getFormat } from '@/utils/utils'
 const columns = [
   {
     title: "资产面积(㎡)",
@@ -162,7 +163,15 @@ let getDataRow = (obj, columns) => {
   let keys = columns.map(item => item.dataIndex)
   let o = {key: Tools.getUuid()}
   keys.forEach(item => {
-    o[item] = obj[item]
+    if(item === 'landArea' || item === 'marketValue' || item === 'originalValue') {
+     obj[item] = getFormat(obj[item]) 
+    }
+    // 给columnsTwo中的数据加千分位，由于都有"()"以此判断
+    if(obj[item] && obj[item].toString().includes('(')){
+      let arr = obj[item].split('(')
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    }
+    o[item] = obj[item] || '-'
   })
   return o
 }
@@ -179,6 +188,7 @@ export default {
   },
   data() {
     return {
+      getFormat,
       // 表格数据
       table: {
         columns,
@@ -196,6 +206,10 @@ export default {
   watch: {
     detailInfo (nv) {
       if (nv) {
+        let obj = Object.keys(nv).filter(item => item === 'landArea' || item === 'acreage')
+        obj.forEach(sub => {
+          nv[sub] = getFormat(nv[sub])
+        })
         this.table.dataSource = [getDataRow(nv, columns)]
         this.tableTwo.dataSource = [getDataRow(nv, columnsTwo)]
         console.log('拿到数据', getDataRow(nv, columns), getDataRow(nv, columnsTwo))

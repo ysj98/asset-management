@@ -160,7 +160,7 @@
           <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" :colon="false">
               <label slot="label">上传附件：</label>
-              <SG-UploadFile
+              <SGUploadFilePlus
                 :baseImgURL="configBase.hostImg1"
                 :customUpload="customUpload"
                 :customDownload="customDownload"
@@ -250,6 +250,7 @@
 </template>
 
 <script>
+import SGUploadFilePlus from "@/components/SGUploadFilePlus";
 import TreeSelect from "src/views/common/treeSelect";
 // import Cephalosome from '@/components/Cephalosome'
 import configBase from "@/config/config.base";
@@ -260,7 +261,7 @@ import warantAnnex from './warrantAnnex'
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {TreeSelect},
+  components: {TreeSelect, SGUploadFilePlus},
   props: {
     queryType: {
       type: [String, Number],

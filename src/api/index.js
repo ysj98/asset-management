@@ -42,6 +42,7 @@ import * as operationParams from './operationParams'
 import * as toOperation from './toOperation'
 import * as approve from './approve'
 import * as transfer from './transfer'
+import * as bpm from './bpm'
 const API = {
   auth,
   global,
@@ -72,7 +73,8 @@ const API = {
   operationParams,
   toOperation,
   approve,
-  transfer
+  transfer,
+  bpm
 }
 export default {
   install (Vue) {

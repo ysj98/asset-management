@@ -89,7 +89,8 @@ export default {
       if (arr[0].dataIndex !== 'serial') {
         arr.unshift({
           title: '序号',
-          dataIndex: 'serial'
+          dataIndex: 'serial',
+          width: '8%'
         })
       }
       this.columns = arr.splice(0, arr.length - 1)

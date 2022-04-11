@@ -113,7 +113,6 @@ export default {
       });
       if (code === "0") {
         let list = getTypeKey(JSON.parse(data || "[]"), "x_ams");
-        console.log("list", list);
         this.approvalOptions = list.map((element) => {
           return {
             name: element.name,
@@ -122,7 +121,9 @@ export default {
             title: element.name,
           };
         });
-      } else {
+      } else if(code === "-1") {
+        this.approvalOptions = []
+      }else {
         this.$message.error(message);
       }
     },

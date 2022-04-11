@@ -10,7 +10,7 @@
   <div class="wrapper">
     <SG-Modal
     class="inventoryResultRegistration"
-    width="880px"
+    width="1080px"
     v-model="show"
     :noPadding="true"
     :title="'盘点结果'"

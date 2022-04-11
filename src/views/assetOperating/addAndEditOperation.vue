@@ -6,6 +6,8 @@
       :assetType.sync="assetType"
       :projectId.sync="projectId"
       :organ-info="organInfo"
+      :isBpm="isBpm"
+      :flowKey="flowKey"
     />
     <SG-Title title="资产列表" />
     <div class="table-data-action">
@@ -85,6 +87,8 @@ export default {
   },
   data() {
     return {
+      flowKey:'',
+      isBpm: false,
       type: "",
       customParams: [],
       uid: 0,
@@ -132,6 +136,42 @@ export default {
     },
   },
   methods: {
+    // 获取审批流程(取第一个)
+    async queryProcByType(){
+      const {data:{data:{userId}}} = await this.$api.auth.getUserData()
+      const req = {
+        // 硬编码
+        typeKey:'x_ams_zczyy',
+        userId: userId
+      }
+      console.log({req})
+      this.$api.bpm.queryProcByType(req).then(({data:{value,state,message}})=>{
+        if (state === true){
+          console.log({value})
+          if (value && value.length){
+            this.flowKey = value[0].defKey
+          }else {
+            this.$message.error(`BPM未查询到流程分类`)
+          }
+        }else {
+          this.$message.error(`BPM根据流程分类查询流程失败  ${message}`)
+        }
+      })
+    },
+    // 获取审批配置 设置 isBpm
+    async getApproveConfig(){
+      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        // 参考 serviceTypeAll.js 文件
+        serviceType: 1002,
+        organId: this.organInfoCom.organId,
+      })
+      if (code === "0"){
+        const {isValid, paramKey} = data
+        if( isValid === 1 && paramKey === '1' ){
+          this.isBpm = true
+        }
+      }
+    },
     getColumns({ organId, assetType }) {
       getColumns(
         {
@@ -281,6 +321,17 @@ export default {
       this.type = data.type;
       this.assetOperationRegisterId = data.assetOperationRegisterId;
     },
+    async init(){
+      await this.getApproveConfig()
+      if (this.isBpm){
+        try {
+          await this.$store.dispatch('bpm/getToken')
+        }catch (error){
+          console.error(error)
+        }
+        this.queryProcByType()
+      }
+    },
     initEditData() {
       getBaseInfo({
         assetOperationRegisterId: this.assetOperationRegisterId,
@@ -313,6 +364,7 @@ export default {
     if (this.type === "edit") {
       this.initEditData();
     }
+    this.init()
   },
 };
 </script>
