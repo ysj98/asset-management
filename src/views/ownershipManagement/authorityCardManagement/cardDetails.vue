@@ -79,6 +79,7 @@ const titleDeed = [
   { text: '宗地号', value: 'lotNo' },
   { text: '坐落位置', value: 'seatingPosition' },
   { text: '土地面积 (㎡)', value: 'landArea' },
+  { text: '土地用途', value: 'landUsed' },
   { text: '权属用途', value: 'ownershipUseName' },
   { text: '建筑结构', value: 'structureName' },
   { text: '建筑面积(㎡)', value: 'buildArea' },
