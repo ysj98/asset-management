@@ -20,6 +20,7 @@ export const columnsData = [
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '装修情况', dataIndex: 'decorationSituation', width: 200 },
+  { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150, scopedSlots: { customRender: 'propertyRightUnit' } },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
