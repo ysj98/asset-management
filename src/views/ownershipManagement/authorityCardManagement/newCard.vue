@@ -504,6 +504,7 @@ export default {
             estateUnitCode: conditionalJudgment.includes(values.estateUnitCode) ? '' : values.estateUnitCode,   // 不动产单元号(产权证所有)
             seatingPosition: conditionalJudgment.includes(values.seatingPosition) ? '' : values.seatingPosition, // 坐落位置
             landArea: conditionalJudgment.includes(values.landArea) ? '' : values.landArea,                     // 土地面积(产权证所有)
+            landUse: conditionalJudgment.includes(values.landUse) ? '' : values.landUse,                     // 土地用途(产权证所有)
             ownershipUse: conditionalJudgment.includes(values.ownershipUse) ? '' : values.ownershipUse,         // 权属用途
             structure: conditionalJudgment.includes(values.structure) ? '' : values.structure,                  // 建筑结构
             buildArea: conditionalJudgment.includes(values.buildArea) ? '' : values.buildArea,                  // 建筑面积
@@ -548,6 +549,7 @@ export default {
             amsOwnershipWarrantObligeeList: amsOwnershipWarrantObligeeList,
             amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList,
             rightType: !isNaN(Number(values.rightTypeName)) ? values.rightTypeName : (values.rightTypeName == '国有建设用地使用权' ? 3 : (values.rightTypeName == '房屋所有权' ? 2 : 1))
+
           }
           let loadingName = this.SG_Loding('保存中...')
           this.$api.ownership.warrantSaveOrUpdate(obj).then(res => {
@@ -828,6 +830,7 @@ export default {
                 lotNo: data.amsOwnershipWarrant.lotNo,
                 estateUnitCode: data.amsOwnershipWarrant.estateUnitCode,
                 landArea: data.amsOwnershipWarrant.landArea,
+                landUse: data.amsOwnershipWarrant.landUse,
                 buildArea: data.amsOwnershipWarrant.buildArea,
                 totalSuite: data.amsOwnershipWarrant.totalSuite,
                 qualityOfRight: conditionalJudgment.includes(data.amsOwnershipWarrant.qualityOfRight) ? undefined : String(data.amsOwnershipWarrant.qualityOfRight),
