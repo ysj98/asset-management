@@ -83,6 +83,7 @@
             v-bind="formItemLayoutTwo"
           >
             <SGUploadFilePlus
+              :baseImgURL="configBase.hostImg1"
               type="all"
               v-model="attachmentList"
               :max="5"
@@ -102,6 +103,7 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import SGUploadFilePlus from "@/components/SGUploadFilePlus";
 import {getObjectKeyValueByOrganId} from "@/utils/share";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
@@ -136,6 +138,7 @@ export default {
   mixins: [uploadAndDownLoadFIle],
   data() {
     return {
+      configBase,
       formItemStyle: {
         width: "100%",
       },
