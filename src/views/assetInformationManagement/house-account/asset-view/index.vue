@@ -216,6 +216,7 @@
       v-model="modalObj.status"
       @ok="handleModalOk"
       @cancel="handleModalStatus(false)"
+      width="800px"
     >
       <edit-table-header
         v-if="modalType === 1"
@@ -330,8 +331,8 @@
             { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
             { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
             { title: '权属人', dataIndex: 'obligeeName', width: 100 },
-            { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
-            { title: '实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
+            { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
+            { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
             { title: '房产证起始时间', dataIndex: 'houseStartDate', width: 150 },
             { title: '房产证截止时间', dataIndex: 'houseEndDate', width: 150 },
             { title: '房产证使用年限', dataIndex: 'houseProveLife', width: 150 },
@@ -357,6 +358,12 @@
             { title: '未租面积', dataIndex: 'unRentedArea', width: 100, scopedSlots: { customRender: 'unRentedArea' } },
             { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150, scopedSlots: { customRender: 'fireMaterial' }},
             { title: '资产标签', dataIndex: 'label', width: 150},
+            { title: '竣工日期', dataIndex: 'completionDate', width: 300},
+            { title: '楼龄', dataIndex: 'buildAge', width: 150},
+            { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150},
+            { title: '产权证土地面积(㎡)', dataIndex: 'landArea', width: 150},
+            { title: '产权证土地用途', dataIndex: 'landUse', width: 150},
+            { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
