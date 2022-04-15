@@ -494,3 +494,41 @@ export const assetSize = [{
   align: 'center',
   scopedSlots: { customRender: 'operation' }
 }]
+
+// 实际产权单位
+export const propertyColumn = [
+  {
+    title: '资产名称',
+    dataIndex: 'assetName',
+  }, {
+    title: '资产编码',
+      dataIndex: 'assetCode',
+  },{
+    title: '资产类型',
+      dataIndex: 'assetTypeName',
+  }, {
+    title: '资产分类',
+      dataIndex: 'assetCategoryName',
+  }, {
+    title: '所在位置',
+      dataIndex: 'address',
+  }, {
+    title: '资产面积(㎡)',
+      dataIndex: 'assetArea',
+  },{
+    title: '变更前实际产权单位',
+    dataIndex: 'oldPropertyRightUnit',
+    width: 200,
+  }
+  , {
+    title: '变更后实际产权单位',
+    dataIndex: 'newPropertyRightUnit',
+    scopedSlots: { customRender: 'newPropertyRightUnit' },
+    width: 200,
+  }, {
+    title: '操作',
+      dataIndex: 'operation',
+      align: 'center',
+      scopedSlots: { customRender: 'operation' }
+  }
+]

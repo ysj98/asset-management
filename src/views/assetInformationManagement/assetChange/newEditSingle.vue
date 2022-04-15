@@ -477,6 +477,10 @@
                 v-model="record.newAssetArea"
               />
             </template>
+            <!-- 变更后实际产权单位 -->
+            <template slot="newPropertyRightUnit" slot-scope="text, record">
+              <a-input size="small" v-model="record.newPropertyRightUnit" />
+            </template>
             <!-- 操作 -->
             <template slot="operation" slot-scope="text, record">
               <span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
@@ -521,6 +525,7 @@ import {
   deliveryProperty,
   positionChange,
   projectChange,
+  propertyColumn,
   variationOriginalValue,
 } from "./basics";
 import FormFooter from "@/components/FormFooter";
@@ -530,7 +535,6 @@ import {calc, debounce} from "@/utils/utils.js";
 import moment from "moment";
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {SET_AMS_USE_DIRECTION} from "store/types/platformDictTypes";
-import {carPage} from "api/assets";
 
 const newEditSingleData = {
   title: "", // 登记单名称
@@ -679,6 +683,8 @@ export default {
       } else if (val === "9") {
         // TODO: 字典里面没有 9
         this.columns = assetSize;      // 资产面积
+      } else if (val === "10") {
+        this.columns = propertyColumn;
       }
       console.log(this.columns)
       this.columns.forEach(item => {
@@ -785,6 +791,8 @@ export default {
             item.newDecorationSituation = item.decorationSituation;
             //有无经营产权
             item.managementRight = +item.managementRight
+            // 实际产权单位
+            item.newPropertyRightUnit = item.propertyRightUnit
             checkedData.push(item.assetId);
           });
           this.$nextTick(() => {
@@ -940,6 +948,11 @@ export default {
                 this.$message.info("请输入变更后资产面积");
                 return;
               }
+            } else if (String(this.changeType) === "10") {
+              if (!this.tableData[i].newPropertyRightUnit) {
+                this.$message.info("请输入变更后实际产权单位");
+                return;
+              }
             }
           }
 
@@ -989,7 +1002,8 @@ export default {
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
               newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : "" ,  // 变更后资产面积
               newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : "", // 变更后使用方向(设备设施 独有)
-              newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "" // 变更后资产分类
+              newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "", // 变更后资产分类
+              propertyRightUnit: String(this.changeType) === "10" ? item.newPropertyRightUnit : "", //变更后实际产权单位
             });
           });
           let obj = {
@@ -1041,6 +1055,7 @@ export default {
 
         item.key = item.assetId;
         item.oldDecorationSituation = item.decorationSituation;
+        item.oldPropertyRightUnit = item.propertyRightUnit
         // 弹窗中返回的是 sourceModeName 但是 columns 中绑定的是 oldSourceModeName,因为草稿状态 回显的时候需要这样
         item.oldSourceModeName = oldSourceModeName
       });
@@ -1308,6 +1323,7 @@ export default {
         element.disposeCost = ""; // 处置成本
         element.disposeReceive = ""; // 处置收入
         element.remark = ""; // 处置备注
+        element.newPropertyRightUnit = ""; // 实际产权单位
         return {
           ...element,
         };
