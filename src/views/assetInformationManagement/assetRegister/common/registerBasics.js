@@ -156,6 +156,7 @@ export const landData = [
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
   { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
+  { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150, scopedSlots: { customRender: 'propertyRightUnit' } },  
   { title: '权证号', dataIndex: 'warrantNbr', width: 100 },
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
