@@ -308,7 +308,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 3500 },
+          scroll: { x: 'max-content' },
           columns: [
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
