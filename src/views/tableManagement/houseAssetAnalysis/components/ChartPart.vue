@@ -4,13 +4,21 @@
     <SG-Title title="汇总分析"/>
     <div style="margin-left: 45px" v-if="isHasData">
       <a-row :gutter="16">
-        <a-col :span="12" v-for="(val, name) in divObj" :key="name" style="margin-bottom: 25px">
+        <a-col :span="12" v-for="(val, name) in divObj" :key="name" style="margin-bottom: 25px;position: relative;">
           <div class="chart_title">{{val}}</div>
           <div :id="name"></div>
+          <a-button 
+            type="link" 
+            class="detail" 
+            v-if="name === 'type_statistics'"
+            @click="visible = true">查看明细</a-button>
         </a-col>
       </a-row>
     </div>
     <div v-else style="text-align: center; color: #00000073">暂无汇总数据</div>
+    <a-modal v-model="visible" width="1000px" title="资产分类明细" @ok="visible = false" :footer="null">
+      <AssetCategoryDetail/>
+    </a-modal>
   </a-spin>
 </template>
 
@@ -23,11 +31,14 @@
   import 'echarts/lib/component/tooltip'
   import 'echarts/lib/component/legendScroll'
   import { getFormat } from '@/utils/utils'
+  import AssetCategoryDetail from './AssetCategoryDetail.vue'
   export default {
     name: 'ChartPart',
     props: ['queryInfo'],
+    components: { AssetCategoryDetail },
     data () {
       return {
+        visible:false,
         loading: false, // 页面loading
         isHasData: false, // 是否有图表数据，用于判断显示缺省文字
         divObj: {
@@ -197,5 +208,10 @@
       height: 250px;
       width: 100%;
     }
+  }
+  .detail {
+    position: absolute;
+    right: 90px;
+    bottom: -2px;
   }
 </style>
