@@ -16,9 +16,9 @@
             <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '--'}}</span>
           </a-col>
         </a-row>
-        <div style="margin-top: 8px">
-          <span style="color: #282D5B; float: left; padding-right: 10px;">图片:</span>
-          <div v-if="imageAttachment.length">
+        <div  style="margin-top: 8px;display: flex">
+          <span style="color: #282D5B; float: left; padding-right: 10px;flex-basis: 40px;flex-shrink: 0">图片:</span>
+          <div style="width: 100%;" v-if="imageAttachment.length">
             <SG-UploadFile show v-model="oldImgAttachment"/>
             <SG-UploadFile 
               v-model="newImgAttachment" 
@@ -30,8 +30,8 @@
           </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
-        <div style="margin-top: 8px">
-          <span style="color: #282D5B; float: left; padding-right: 10px;">附件:</span>
+        <div style="margin-top: 8px; display: flex">
+          <span style="color: #282D5B; float: left; padding-right: 10px;flex-basis: 40px">附件:</span>
           <div v-if="otherAttachment.length">
             <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
             <SG-UploadFile 
