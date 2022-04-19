@@ -8,6 +8,7 @@
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_EXPORT">导出</SG-Button>
         <SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
+        <SG-Button type="primary" style="margin-right: 8px" :disabled="selectedRowKeys.length <= 0" @click="batchSubmit">批量提交</SG-Button>
         <!-- 暂时不用 -->
         <!-- <SG-Button type="primary" style="margin-right: 8px" @click="listSet">列表设置</SG-Button> -->
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
@@ -94,6 +95,7 @@
         class="custom-table td-pd10"
         :scroll="scroll"
         :pagination="false"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_AUDIT">审核</a>
@@ -300,7 +302,8 @@
           {title: '累计折旧(元)', key: 'cumulativeDepreciation', value: 0, bgColor: '#1890FF'},
           {title: '资产净值(元)', key: 'netValue', value: 0, bgColor: '#DD81E6'},
           {title: '减值准备(元)', key: 'impairmentReady', value: 0, bgColor: '#FD7474'}
-        ] // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        selectedRowKeys: []
       }
     },
     watch: {
@@ -321,6 +324,11 @@
     },
     methods: {
       moment,
+      // 批量提交
+      batchSubmit () {},
+      onSelectChange (val) {
+        this.selectedRowKeys = val
+      },
       // 列表设置
       listSet () {
         this.$refs.listCarefully.modalShow = true

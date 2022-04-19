@@ -16,30 +16,31 @@
   >
     <div>
       <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
+        <SG-Button slot="col-l" type="primary">导出</SG-Button>
         <div slot="col-r">
-        <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
-          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
-          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <EquipmentSelectTree
-          v-if="isSelectedEquipment"
-          :style="allStyle"
-          :top-organ-id="organId"
-          v-model="selecData.objectType"
-          :options-data-format="(data)=>{
-            return [{label: '全部资产分类', value: '', isLeaf: true},...data]
-          }"
-        />
-        <a-select v-else :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
-          <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select>
-        <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
-          <a-select-option :title="item.name" v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-        </a-select> -->
-        <a-input :style="allStyle" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
-        <SG-Button type="primary" @click="query">查询</SG-Button>
+          <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            :style="allStyle"
+            :top-organ-id="organId"
+            v-model="selecData.objectType"
+            :options-data-format="(data)=>{
+              return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+            }"
+          />
+          <a-select v-else :style="allStyle" placeholder="全部资产类别" v-model="selecData.objectType">
+            <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
+            <a-select-option :title="item.name" v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select> -->
+          <a-input :style="allStyle" v-model="selecData.assetNameCode" placeholder="资产名称/编码"/>
+          <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </Cephalosome>
       <div class="tab-nav">

@@ -249,6 +249,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ENTRY_DELETE: 'zcgl_asset_entry_delete',
   // 资产入账-导出
   ASSET_ENTRY_EXPORT: 'zcgl_asset_entry_export',
+  // 资产入账-批量提交
+  ASSET_ENTRY_BATCH_SUBMISSION: 'zcgl_asset_batch_submission',
   /**
    * 权属概况
    */

@@ -266,7 +266,29 @@
           <SG-Button
             v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
             class="buytton-nav"
+            weaken
+            @click="batchUpdate"
+          >批量更新</SG-Button>
+          <SG-Button
+            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
+            class="buytton-nav"
             type="primary"
+            style="margin-right: 10px;"
+            weaken
+            @click="exportBtn"
+          >导出</SG-Button>
+          <SG-Button
+            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
+            class="buytton-nav"
+            style="margin-right: 10px;"
+            weaken
+            @click="tableData = []"
+          >清空列表</SG-Button>
+          <SG-Button
+            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
+            class="buytton-nav"
+            type="primary"
+            style="margin-right: 10px;"
             weaken
             @click="addTheAsset"
           >添加资产</SG-Button>
@@ -713,6 +735,14 @@ export default {
     }
   },
   methods: {
+    // 导出
+    exportBtn () {
+
+    },
+    // 批量更新--导入
+    batchUpdate () {
+
+    },
     queryObjectType () {
       const organId = this.organId
       const assetType = this.assetType
@@ -1073,6 +1103,7 @@ export default {
     // 变更类型
     changeTypeChange(val) {
       this.changeType = val;
+      console.log(val, this.originalObjectType)
     },
     // 分摊方式改变
     shareWayChange(val) {
