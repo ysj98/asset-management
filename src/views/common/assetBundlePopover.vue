@@ -16,7 +16,7 @@
   >
     <div>
       <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
-        <SG-Button slot="col-l" type="primary">导出</SG-Button>
+        <SG-Button slot="col-l" type="primary" :disabled="selectedRowKeys.length <= 0">导出</SG-Button>
         <div slot="col-r">
           <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>

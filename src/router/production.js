@@ -1254,6 +1254,46 @@ let proRouter = [{
     component: () => import('@/views/assetApply/applyRegister/DetailPage')
   },
   {
+    path: '/organCarPrakView',
+    name: '组织机构视图',
+    component: () => import('@/views/assetInformationManagement/carPark/OrganCarPrakView')
+  },
+  {
+    path: '/organCarPrakView/detail',
+    name: '组织机构视图详情',
+    component: () => import('@/views/assetInformationManagement/carPark/OrganCarPrakDetail')
+  },
+  {
+    path: '/carPrakProjectView',
+    name: '车场项目视图',
+    component: () => import('@/views/assetInformationManagement/carPark/CarParkProjectView')
+  },
+  {
+    path: '/carPrakProjectView/detail',
+    name: '车场项目视图详情',
+    component: () => import('@/views/assetInformationManagement/carPark/CarParkProjectDetail')
+  },
+  {
+    path: '/assetCarPrakView',
+    name: '车场资产视图',
+    component: () => import('@/views/assetInformationManagement/carPark/AssetCarPrakView')
+  },
+  {
+    path: '/assetCarPrakView/detail',
+    name: '车场资产视图详情',
+    component: () => import('@/views/assetInformationManagement/carPark/AssetCarPrakDetail')
+  },
+  {
+    path: '/carPrakView',
+    name: '车场视图',
+    component: () => import('@/views/assetInformationManagement/carPark/CarPrakView')
+  },
+  {
+    path: '/carPrakView/detail',
+    name: '车场视图详情',
+    component: () => import('@/views/assetInformationManagement/carPark/CarPrakDetail')
+  },
+  {
     path: '/approve',
     name: '通用审批',
     component: () => import('@/views/approve/index.vue'),
