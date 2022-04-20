@@ -1,6 +1,6 @@
 <!-- 车场台账 - 车场项目视图 -->
 <template>
-  <div class="asset-project-view-list">
+  <div class="car-project-view-list">
     <SG-SearchContainer background="white">
       <div slot="headBtns">
         <SG-Button
@@ -41,9 +41,10 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table td-pd10"
+        class="custom-table pb70 car"
         :pagination="false"
-        :scroll="{ x: 1900 }">
+        :scroll="{ x: 1900,y: 1000 }"
+        :customRow="customRow">
         <template slot="operation" slot-scope="text, record">
           <a
             v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'"
@@ -205,6 +206,31 @@ export default {
     }
   },
   methods: {
+    customRow (record, index) {
+      return {
+        class: {
+          'text_hidden':record
+        },
+        on: {
+          mouseover: (e) => {
+            let arr = e.target.parentNode.childNodes || e.target.parentElement.childNodes
+            arr.forEach(item => {
+              item.style.whiteSpace = 'unset'
+              item.style.overflow = 'unset'
+              item.style.textOverflow = 'unset'
+            })
+          },  // 鼠标移入行
+          mouseout: (e) => {
+            let arr = e.target.parentNode.childNodes || e.target.parentElement.childNodes
+            arr.forEach(item => {
+              item.style.whiteSpace = 'nowrap'
+              item.style.overflow = 'hidden'
+              item.style.textOverflow = 'ellipsis'
+            })
+          }
+        }
+      }    
+    },
     // 导出
     handleExport () {
       this.exportBtnLoading = true
@@ -354,5 +380,21 @@ export default {
         font-weight: bold;
       }
     }
+  }
+  
+</style>
+<style lang="less">
+  .car {
+    .text_hidden {
+      .ant-table-row-cell-break-word {
+        max-width: 160px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+  .car .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+    height: 46px !important;
   }
 </style>
