@@ -234,6 +234,14 @@ export const titleDeed = [
     required: false
   },
   {
+    label: '土地用途',
+    attrCode: 'landUse',
+    formType: 'input',
+    attrValue: '',
+    max: 50,
+    required: false
+  },
+  {
     label: '权属用途',
     attrCode: 'ownershipUse',
     chooseArray: [],

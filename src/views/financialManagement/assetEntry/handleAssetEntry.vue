@@ -952,12 +952,19 @@ export default {
     // 选择折旧方法
     depreciationMethodChange (value){
       this.detail.depreciationMethod = value
-      if(this.detail.depreciationMethod === '1' && !this.detail.assetType){
-        this.form.setFieldsValue({
-          alreadyUseTerm: '',
-          cumulativeDepreciation: ''
-        })
+      this.setEstimateNetSalvageValue()
+      if(this.detail.depreciationMethod === '1'){
+        if(!this.detail.assetType) {
+          this.form.setFieldsValue({
+            alreadyUseTerm: '',
+            cumulativeDepreciation: ''
+          })
+        }
+        this.setSameMonthValue()
+        this.setCumulativeDepreciation()
       }
+      this.setNetValue()
+      this.setNetForehead()
     },
     moment,
     formatDate (value) {

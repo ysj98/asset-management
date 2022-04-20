@@ -115,7 +115,7 @@ import {
   baseChange,
   debtChange,
   baseChangeTwo,
-  assetSize, changeDirectionUseEq
+  assetSize, changeDirectionUseEq, propertyColumn
 } from "./basics";
 import { utils } from "@/utils/utils.js";
 import moment from "moment";
@@ -202,6 +202,9 @@ export default {
         this.columns = arr.splice(0, arr.length - 1);
       } else if (val === "9") {
         arr = utils.deepClone(assetSize);
+        this.columns = arr.splice(0, arr.length - 1);
+      } else if (val === "10") {
+        arr = utils.deepClone(propertyColumn);
         this.columns = arr.splice(0, arr.length - 1);
       }
     },
@@ -291,6 +294,8 @@ export default {
             item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
+            // 实际产权单位
+            item.newPropertyRightUnit = item.propertyRightUnit
             //有无经营产权
             this.managementRightOptions.forEach(j=>{
               if(+j.key === +item.managementRight ){

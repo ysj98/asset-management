@@ -36,6 +36,10 @@
         <template #type="text,record">
           {{generateYardClassification(record)}}
         </template>
+        <template slot="propertyRightUnit" slot-scope="text,record">
+          <a-input v-if="setType === 'new'" placeholder="请输入实际产权单位" v-model="record.propertyRightUnit"/>
+          <span v-else>{{ text }}</span>
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -118,6 +122,7 @@ export default {
   },
   data () {
     return {
+      propertyRightUnit: '',
       loading: false,
       equipmentVerificationList,
       houseVerificationList,
@@ -178,6 +183,9 @@ export default {
     this.getMangementRight()
   },
   methods: {
+    inputUnit (val, row) {
+      
+    },
     getMangementRight() {
       this.$api.assets.platformDict({ code: "ASSET_MANAGEMENT_RIGHT" }).then(res =>{
         if(res.data.code === '0'){
@@ -243,7 +251,6 @@ export default {
       this.record = JSON.parse(this.$route.query.record)
       this.assetType = String(this.assetTypeId)
       this.setType = this.$route.query.setType
-
       let res1 = this.getObjectKeyValueByOrganIdFn()
       let res2 = this.getSourceOptions()
       await res1
