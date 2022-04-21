@@ -57,6 +57,8 @@ import NoDataTip from "src/components/noDataTips"
 import TreeSelect from "src/views/common/treeSelect"
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OverviewNumber from "src/views/common/OverviewNumber"
+import { getFormat } from '../../../utils/utils'
+import costInfoVue from '../../reportingManagement/reportingRecordList/costInfo.vue'
 export default {
   name: "index",
   components: { OverviewNumber, NoDataTip, TreeSelect },
@@ -211,6 +213,16 @@ export default {
             } else {
               this.queryAreaInfo();
             }
+            // 处理千分位
+            this.tableObj.dataSource.forEach(item => {
+              Object.keys(item).forEach(sub => {
+                if(Object.keys(this.sumObj).includes(sub)) {
+                  item[sub] = getFormat(item[sub], 4)
+                }
+              })
+              
+            })
+            console.log(this.tableObj.dataSource, '查询数据')
             return Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo,
@@ -251,6 +263,11 @@ export default {
               (key) => (obj[key] = list[key] ? list[key].toFixed(2) : 0)
             );
             this.sumObj = obj;
+            // 处理千分位
+            let arr = Object.keys(this.sumObj)
+            arr.forEach(item => {
+              this.sumObj[item] = getFormat(this.sumObj[item], 4)
+            })
             dataSource.length &&
               this.tableObj.dataSource.push({
                 ...obj,

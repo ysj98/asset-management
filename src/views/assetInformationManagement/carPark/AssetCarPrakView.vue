@@ -70,7 +70,7 @@
           <a-col :span="4">
             <a-input placeholder="请输入资产名称或编码" v-model="assetName"/>
           </a-col>
-          <a-col :span="4">
+          <!-- <a-col :span="4">
             <a-select
               mode="multiple"
               :maxTagCount="1"
@@ -81,7 +81,7 @@
               :options="$addTitle(useTypeOptions)"
               placeholder="请选择用途"
             />
-          </a-col>
+          </a-col> -->
           <a-col :span="3" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
@@ -92,10 +92,19 @@
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
           <a-col :span="4">
-            <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
+            <a-select
+              v-model="label"
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              @select="assetLabelFn"
+              :options="$addTitle(assetLabelSelect)"
+              placeholder="资产标签"
+            />
+            <!-- <a-input placeholder="详细地址" v-model="address" :maxLength="20"/> -->
           </a-col>
         </a-row>
-        <a-row :gutter="12" style="margin-top: 14px">
+        <!-- <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4">
             <a-select
               :filter-option="filterOption"
@@ -134,7 +143,7 @@
               placeholder="全部附件状态"
             />
           </a-col>
-        </a-row>
+        </a-row> -->
       </div>
     </search-container>
     <!--数据概览信息-->
@@ -358,12 +367,14 @@
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
-          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'},
-          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '资产数量', key: 'totalArea', value: 0, fontColor: '#324057'},
+          {title: '资产面积(㎡)', key: 'totalArea', value: 0, bgColor: '#4BD288'},
+          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF'},
+          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6'},
+          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'},
+          {title: '资产原值(元)', key: 'totalOccupationArea', value: 0, bgColor: '#4BD288'},
+          {title: '资产估值(元)', key: 'totalOccupationArea', value: 0, bgColor: '#1890FF'},
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志

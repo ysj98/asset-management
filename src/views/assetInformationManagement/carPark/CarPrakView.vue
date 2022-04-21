@@ -11,7 +11,7 @@
             @click="handleExport"
             :loading="exportBtnLoading"
             v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_EXPORT"
-          >导出楼栋视图</SG-Button>
+          >导出车场视图</SG-Button>
         </a-col>
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
@@ -113,14 +113,15 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import AssetProject from './components/assetProject.vue'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
-  import { throttle } from '@/utils/utils'
+  import EditTag from './components/editTag.vue'
+  import { throttle, getFormat } from '@/utils/utils'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   const assetLabelOpt = [
     // { label: "全部资产标签  ", value: "" },
   ]
   export default {
     name: 'index',
-    components: { OverviewNumber, NoDataTip, TooltipText, AssetProject },
+    components: { OverviewNumber, NoDataTip, TooltipText, AssetProject, EditTag },
     data () {
       return {
         assetLabelOpt,
@@ -132,17 +133,18 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         exportBtnLoading: false, // 导出按钮loading
         organOptions: [], // 组织机构选项
-        buildingOptions: [], // 楼栋选项
+        buildingOptions: [], // 车场选项
         organProjectBuildingValue: {
           organId: undefined,
           projectId: undefined, // 用不到，暂存，临时需求隐藏处理
           buildingId: undefined,
           statusList: []
-        }, // 查询条件-组织机构-资产项目-楼栋对象
+        }, // 查询条件-组织机构-资产项目-车场对象
         numList: [
-          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
+          {title: '车场数量', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '车场总面积(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
           dataSource: [],
@@ -188,7 +190,8 @@
           { title: "转让", key: "3" },
           { title: "报损", key: "4" },
         ],
-        options: []
+        options: [],
+        formatArr: ['buildBuiltArea' ,'transferOperationArea', 'selfUserArea', 'idleArea', 'otherArea', 'originalValue', 'marketValue']
       }
     },
 
@@ -244,14 +247,14 @@
       },
       clickAsset () {
         if(this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签')
-        // if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
+        // if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的车场')
         this.modalObj.status = true
       },
       // 资产设置
       handleModalOk: throttle(function() {
         let arr = this.$refs.editTagRef.labelName
         if( this.selectedRowKeys.length <= 0){
-          return this.$message.error('请选择需要设置标签的楼栋')
+          return this.$message.error('请选择需要设置标签的车场')
         }
         let data = {
           buildIds: this.selectedRowKeys.join(','),
@@ -273,7 +276,7 @@
         this.current = i
         this.queryTableData({type: ''})
       },
-      // 查看楼栋视图详情
+      // 查看车场视图详情
       handleViewDetail (record) {
         console.log('record', record)
         const { organProjectBuildingValue: { organId } } = this
@@ -307,6 +310,14 @@
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
             this.tableObj.dataSource = data
+            this.tableObj.dataSource.forEach(item => {
+              let arr = Object.keys(item)
+              arr.forEach(sub => {
+                if(this.formatArr.includes(sub)){
+                  item[sub] = getFormat(item[sub])
+                }
+              })
+            })
             Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo, pageLength
@@ -318,11 +329,11 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询资产项目接口出错')
         })
-        // 查询楼栋面积统计数据
+        // 查询车场面积统计数据
         if (type === 'search') { this.queryAreaInfo() }
       },
 
-      // 查询楼栋视图面积概览数据
+      // 查询车场视图面积概览数据
       queryAreaInfo () {
         const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, numList } = this
         let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
@@ -335,10 +346,10 @@
               return { ...m, value: res.data[m.key] }
             })
           }
-          throw res.message || '查询楼栋视图面积使用统计出错'
+          throw res.message || '查询车场视图面积使用统计出错'
         }).catch(err => {
           this.overviewNumSpinning = false
-          this.$message.error(err || '查询楼栋视图面积使用统计出错')
+          this.$message.error(err || '查询车场视图面积使用统计出错')
         })
       },
 
@@ -367,16 +378,16 @@
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
             a.href = URL.createObjectURL(new Blob([res.data]))
-            a.download = '楼栋视图导出列表.xls'
+            a.download = '车场视图导出列表.xls'
             a.style.display = 'none'
             document.body.appendChild(a)
             a.click()
             return a.remove()
           }
-          throw res.message || '导出楼栋视图失败'
+          throw res.message || '导出车场视图失败'
         }).catch(err => {
           this.exportBtnLoading = false
-          this.$message.error(err || '导出楼栋视图失败')
+          this.$message.error(err || '导出车场视图失败')
         })
       },
 
@@ -387,10 +398,10 @@
         )
       },
 
-      // 查询组织机构对应的楼栋数据
+      // 查询组织机构对应的车场数据
       queryBuildingList () {
         const { organProjectBuildingValue: { organId } } = this
-        // 清空组织机构，重置楼栋选项
+        // 清空组织机构，重置车场选项
         if (!organId) { return this.$message.warn('组织机构不存在') }
         this.buildingOptions = []
         this.organProjectBuildingValue.buildingId = undefined
@@ -405,11 +416,12 @@
                 title: item.buildName
               }
             })
+            this.buildingOptions.unshift({key: '', title: '全部车场'})
             return false
           }
-          throw res.message || '查询楼栋失败'
+          throw res.message || '查询车场失败'
         }).catch(err => {
-          this.$message.error(err || '查询楼栋失败')
+          this.$message.error(err || '查询车场失败')
         })
       },
 

@@ -2,7 +2,7 @@
 <template>
   <div class="base_info">
     <a-spin :spinning="spinning"></a-spin>
-    <SG-Title title="基础信息" noMargin/>
+    <SG-Title title="空间位置" noMargin/>
     <div class="title_div" style="margin-top: 20px">
       <a-row :gutter="16">
         <a-col v-for="(item, i) in baseInfoKeys" :span="8" :key="i">
@@ -37,14 +37,13 @@
         defaultImgUrl: require('src/assets/image/default_house.png'),
         baseInfoKeys: [
           [
-            {title: '资产名称', key: 'buildName'}, {title: '资产类型', key: 'buildCode'}, {title: '建筑面积(㎡)', key: 'area'},
-            {title: '资产状态', key: 'roomNum'}
+            {title: '运营项目', key: 'buildName'}, {title: '地理位置', key: 'buildCode'}
           ], // 列2
           [
-            {title: '资产编码', key: 'years'}, {title: '资产分类', key: 'addressNo'}, {title: '资产形态', key: 'buildHeight'}
+            {title: '所在车场', key: 'years'}
           ], // 列3
           [
-            {title: '', key: 'picturePath'},
+            {title: '所在区域', key: 'address'},
           ]
         ],
         baseInfoData: {}

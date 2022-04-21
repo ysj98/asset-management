@@ -22,7 +22,7 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" />
     </a-spin>
-    <div class="table-layout-fixed pb50">
+    <div class="table-layout-fixed pb70">
       <a-table
         :loading="table.loading"
         :columns="table.columns"
@@ -45,6 +45,7 @@
 <script>
 import OverviewNumber from "@/views/common/OverviewNumber";
 import noDataTips from "@/components/noDataTips";
+import { getFormat } from '../../../utils/utils';
 let columnsFrist = [
   {
     title: "所有权",
@@ -169,6 +170,7 @@ export default {
   },
   data() {
     return {
+      formatArr: ['transferOperationArea', 'selfUserArea', 'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue'],
       tableFirst: {
         loading: false,
         columns: columnsFrist,
@@ -261,6 +263,14 @@ export default {
               };
             });
             this.table.totalCount = res.data.data.count || 0;
+            this.table.dataSource.forEach(item => {
+              let arr = Object.keys(item)
+              arr.forEach(sub => {
+                if(this.formatArr.includes(sub)){
+                  item[sub] = getFormat(item[sub])
+                }
+              })
+            })
           } else {
             this.$message.error(res.data.message || res.data.msg || "请求错误");
           }

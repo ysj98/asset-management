@@ -32,7 +32,8 @@
           <span class="label-value">{{formatDate(detail.takeOverDate) || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">接管人：</span>
+          <!-- <span class="label-name">接管人：</span> -->
+          <span>项目状态：</span>
           <span class="label-value">{{detail.receiver || '--'}}</span>
         </div>
         <div class="edit-box-content-item">
@@ -60,105 +61,74 @@
     </div>
     <div class="edit-box" style="margin-bottom: 10px">
       <div class="edit-box-title"><i></i><span>其他信息</span></div>
-      <!--当来源方式为 划转 字典值1-->
-      <div class="edit-box-content" v-if="sourceType === '1'">
-        <div class="edit-box-content-item">
-          <span class="label-name">划转批复下发时间：</span>
-          <span class="label-value">{{formatDate(detail.transferApprovalDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">协议签署时间：</span>
-          <span class="label-value">{{formatDate(detail.agreementSignDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
+      <div class="edit-box-content">
+        <div class="edit-box-content-item" v-if="sourceType === '1'">
           <span class="label-name">上报基础情况表时间：</span>
-          <span class="label-value">{{formatDate(detail.reportBasicInfoDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">资产核实时间：</span>
-          <span class="label-value">{{formatDate(detail.houseVerificationDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">上报划转请示时间：</span>
-          <span class="label-value">{{formatDate(detail.reportHouseTransferReqDate) || '--'}}</span>
-        </div>
-      </div>
-      <!--当来源方式为 外购 字典值2-->
-      <div class="edit-box-content" v-else-if="sourceType === '2'">
-        <div class="edit-box-content-item">
-          <span class="label-name">购买日期：</span>
-          <span class="label-value">{{formatDate(detail.purchaseDate) || '--'}}</span>
-        </div>
-      </div>
-      <!--当来源方式为 自建 字典值3-->
-      <div class="edit-box-content" v-else-if="sourceType === '3'">
-        <div class="edit-box-content-item">
-          <span class="label-name">开发商：</span>
-          <span class="label-value">{{detail.developers || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">承建商：</span>
-          <span class="label-value">{{detail.contractor || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">竣工日期：</span>
-          <span class="label-value">{{formatDate(detail.completionDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">交付日期：</span>
-          <span class="label-value">{{formatDate(detail.deliveryDate) || '--'}}</span>
-        </div>
-      </div>
-      <!--当来源方式为 租入 字典值4-->
-      <div class="edit-box-content" v-else-if="sourceType === '4'">
-        <div class="edit-box-content-item">
-          <span class="label-name">租入开始日期：</span>
-          <span class="label-value">{{formatDate(detail.leaseInStartDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">租入结束日期：</span>
-          <span class="label-value">{{formatDate(detail.leaseInEndDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">租入合同编号：</span>
-          <span class="label-value">{{detail.leaseInContractNo || '--'}}</span>
-        </div>
-      </div>
-      <!--当来源方式为 代管 字典值5-->
-      <div class="edit-box-content" v-else-if="sourceType === '5'">
-        <div class="edit-box-content-item">
-          <span class="label-name">代管开始日期：</span>
-          <span class="label-value">{{formatDate(detail.escrowStartDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">代管结束日期：</span>
-          <span class="label-value">{{formatDate(detail.escrowEndDate) || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">托管面积(㎡)：</span>
-          <span class="label-value">{{detail.trusteeshipArea || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">实际接收面积(㎡)：</span>
-          <span class="label-value">{{detail.actualReceiveArea || '--'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">实际可用面积(㎡)：</span>
-          <span class="label-value">{{detail.actualUsableArea || '--'}}</span>
-        </div>
-      </div>
-      <div class="edit-box-content" :style="['1', '2', '3', '4', '5'].includes(sourceType) ? 'margin-top: 0' : ''">
-        <div class="edit-box-content-item">
-          <span class="label-name">权属办理中存在问题：</span>
           <span class="label-value">{{detail.ownershipHandleProblems || '--'}}</span>
         </div>
+        <div class="edit-box-content-item" v-if="sourceType === '1'">
+          <span class="label-name">车场核实时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '1'">
+          <span class="label-name">上报车场划转请示时间：</span>
+          <span class="label-value">{{detail.ownershipHandleProblems || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '1'">
+          <span class="label-name">上报核实报告时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '1'">
+          <span class="label-name">划转批复下发时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '1'">
+          <span class="label-name">协议签署时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
         <div class="edit-box-content-item">
-          <span class="label-name">划转历史遗留问题：</span>
+          <span class="label-name">权属办理中存在问题：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item">
+          <span class="label-name">历史遗留问题：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '2'">
+          <span class="label-name">购买时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '4'">
+          <span class="label-name">租入开始时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '4'">
+          <span class="label-name">租入结束时间：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '4'">
+          <span class="label-name">租入合同编号：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '3'">
+          <span class="label-name">开发商：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '3'">
+          <span class="label-name">承建商：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '3'">
+          <span class="label-name">竣工日期：</span>
+          <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
+        </div>
+        <div class="edit-box-content-item" v-if="sourceType === '3'">
+          <span class="label-name">交付日期：</span>
           <span class="label-value">{{detail.houseTransferHisProblem || '--'}}</span>
         </div>
       </div>
     </div>
-    <div class="edit-box">
+    <!-- <div class="edit-box">
       <div class="edit-box-title"><i></i><span>转运营（物业）</span></div>
       <div class="edit-box-content">
         <a-table
@@ -169,7 +139,7 @@
         >
         </a-table>
       </div>
-    </div>
+    </div> -->
     <div class="edit-box">
       <div class="edit-box-title"><i></i><span>权属概况</span></div>
       <div class="edit-box-content">
@@ -191,7 +161,7 @@
             <a-col v-for="(item,index) in assetStatistics" :key="index" :span="4">
               <div class="asset-project-item custom-height">
                 <div class="asset-project-item-title" style="font-size: 14px; margin-bottom: 10px">{{item.title}}</div>
-                <div class="asset-project-item-number" style="font-size:20px; font-weight:bold; color:#324057">{{item.area || 0}}<span v-show="item.percent">({{item.percent}})</span></div>
+                <div class="asset-project-item-number" style="font-size:20px; font-weight:bold; color:#324057">{{getFormat(item.area) || 0}}<span v-show="item.percent">({{item.percent}})</span></div>
               </div>
             </a-col>
           </a-row>
@@ -224,6 +194,7 @@
 <script>
 import {dateToString} from 'utils/formatTime'
 import { basics } from '@/config/config.url'
+import { getFormat } from '@/utils/utils'
 // import _ from 'lodash'
 const columns = [
   {
@@ -299,6 +270,7 @@ const ownershipColumns = [
 export default {
   data () {
     return {
+      getFormat,
       projectId: '',
       sourceType: '', // 来源方式字典值，其他 99，租入 4，自建 3，外购 2，划转 1
       detail: {
@@ -325,11 +297,12 @@ export default {
       ownershipColumns,
       ownershipDataSource: [],
       assetStatistics: [
-        {title: '所有资产(㎡)', area: '', percent: ''},
+        {title: '车场数量', area: '', percent: ''},
+        {title: '车场面积(㎡)', area: '', percent: ''},
         {title: '运营(㎡)', area: '', percent: ''},
         {title: '闲置(㎡)', area: '', percent: ''},
         {title: '自用(㎡)', area: '', percent: ''},
-        {title: '占用(㎡)', area: '', percent: ''},
+        // {title: '占用(㎡)', area: '', percent: ''},
         {title: '其他(㎡)', area: '', percent: ''}
       ],
       assetList: [],

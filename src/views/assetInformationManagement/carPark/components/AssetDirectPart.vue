@@ -47,7 +47,7 @@
 
 <script>
   import OverviewNumber from 'src/views/common/OverviewNumber'
-  import FloatView from './FloatView'
+  import FloatView from './FloatView.vue'
   import {win} from "utils/utils";
   export default {
     name: 'AssetDirectPart',
