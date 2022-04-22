@@ -1,94 +1,138 @@
-<!--楼栋视图业务-楼栋视图详情页面-基础信息组件-->
 <template>
-  <div class="base_info">
-    <a-spin :spinning="spinning"></a-spin>
+  <a-spin :spinning="spinning">
+    <!--空间位置-->
     <SG-Title title="空间位置" noMargin/>
-    <div class="title_div" style="margin-top: 20px">
-      <a-row :gutter="16">
-        <a-col v-for="(item, i) in baseInfoKeys" :span="8" :key="i">
-          <div v-for="{title, key} in item" :key="key" class="item_detail">
-            <div>
-              <span style="color: #282D5B">{{title ? `${title}:` : ''}}</span>
-              <span style="margin-left:4px;" v-if="key==='buildName'">
-                <a @click="goDetail">{{baseInfoData[key]}}</a>
-              </span>
-              <span v-else style="margin-left:4px; color: #49505E">{{(baseInfoData[key] !== '' && baseInfoData[key] !== null) ? baseInfoData[key] : '无'}}</span>
-            </div>
-             <div v-if="key==='picturePath'">
-              <img :src="baseInfoData['picturePath'] ? `${imgPrx}${baseInfoData['picturePath']}` : defaultImgUrl" style="height: 115px"/>
-            </div>
-          </div>
-        </a-col>
-      </a-row>
-    </div>
-  </div>
+    <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
+      <a-col v-for="{title, key, span} in spaceInfoKeys" :span="span || 8" :key="key">
+        <span style="color: #282D5B">{{title}}:</span>
+        <span style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <a-icon v-if="key==='address'" type="environment" style="color: #e4393c; cursor: pointer" @click="handleModalOpen('location')"/>
+      </a-col>
+    </a-row>
+    <!--资产使用方向-->
+    <SG-Title title="资产使用方向" noMargin/>
+    <overview-number :numList="numList" class="title_div" style="margin-top: 21px"/>
+    <!--编辑资产详情弹窗-->
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status">
+      <template slot="footer">
+        <a-button key="submit" type="primary" :loading="modalObj.loading" @click="handleModalOk">
+          {{modalObj.okText}}
+        </a-button>
+        <a-button key="back" @click="handleModalCancel">{{modalObj.cancelText}}</a-button>
+      </template>
+      <edit-asset-detail ref="editAssetDetail" :details="details"/>
+    </SG-Modal>
+  </a-spin>
 </template>
 
 <script>
-  import { basics } from '@/config/config.url'
-  import {win} from "utils/utils";
+  // import EditAssetDetail from './EditAssetDetail'
+  import OverviewNumber from 'src/views/common/OverviewNumber'
   export default {
     name: 'BaseInfoPart',
-    props: ['buildId'],
+    components: { OverviewNumber },
+    props: ['assetHouseId'],
     data () {
       return {
-        imgPrx: basics.common.imgStr,
-        spinning: false, // 页面加载状态
-        defaultImgUrl: require('src/assets/image/default_house.png'),
-        baseInfoKeys: [
-          [
-            {title: '运营项目', key: 'buildName'}, {title: '地理位置', key: 'buildCode'}
-          ], // 列2
-          [
-            {title: '所在车场', key: 'years'}
-          ], // 列3
-          [
-            {title: '所在区域', key: 'address'},
-          ]
-        ],
-        baseInfoData: {}
+        judgingCondition: [undefined, null, ''],
+        spinning: false,
+        spaceInfoKeys: [
+          {title: '运营项目', key: 'projectName'}, {title: '所在车场', key: 'buildName'}, {title: '所在区域', key: 'proCity'},
+          {title: '地理位置', key: 'totalAddress', span: 24},
+        ], // 空间位置字段
+        infoData: {}, // 信息数据
+        details: {}, // 编辑基本信息数据
+        modalObj: { title: '编辑资产信息', status: false, okText: '保存', cancelText: '取消', width: 550, loading: false },
+        numList: [
+          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288'},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
+          // {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
+        ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
       }
     },
 
     methods: {
-      goDetail(){
-        const fromType = 'portal'
-        const positionId = this.$route.query.buildId
-        const tabTitle = '车场详情'
-        const tabUrl = `/asset-management/#/createBuildDetail?fromType=${fromType}&positionId=${positionId}`
-        win.openPortalMenu(tabUrl,tabTitle)
-      },
-      // 查询基本信息
-      queryHouseInfo () {
+      // 查询详情
+      queryDetailInfo () {
         this.spinning = true
-        this.$api.assets.queryBuildingViewBuildInfo({buildId: this.buildId}).then(r => {
+        this.$api.assets.queryAssetViewBaseInfo({assetHouseId: this.assetHouseId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
             let temp = res.data
-            temp.ownText = Number(temp.type) === 1 ? '房屋' : '楼栋'
-            return this.baseInfoData = temp
+            // temp.PCD = `${temp.province}${temp.city}${temp.region}`
+            temp.assetType = '房屋'
+            temp.houseType = '房屋'
+            let {transferOperationTime, transferOperationArea} = temp
+            this.$emit('updateTransfer', {transferOperationTime, transferOperationArea})
+            return this.infoData = temp
           }
-          throw res.message || '查询车场信息出错'
+          throw res.message || '查询接口出错'
         }).catch(err => {
           this.spinning = false
-          this.$message.error(err || '查询车场信息出错')
+          this.$message.error(err || '查询接口出错')
+        })
+      },
+
+      // 查询楼栋视图面积概览数据
+      queryHouseAreaInfo () {
+        const { assetHouseId, numList } = this
+        return this.$api.assets.queryAssetViewHouseArea({ assetHouseId }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            // 查楼栋视图详情的面积数据
+            return this.numList = numList.map(m => {
+              const { percent, number } = res.data[m.key]
+              return { ...m, value: `${number}（${percent}）` }
+            })
+          }
+          throw res.message || '查询视图面积详情出错'
+        }).catch(err => {
+          this.$message.error(err || '查询视图面积详情出错')
+        })
+      },
+
+      // 打开编辑Modal
+      handleModalOpen (type) {
+        if (type === 'location') {
+          return false
+        }
+        const { infoData: { assetName, assetCode, decorationSituation, assetHouseId, ownerUser, ownerOrgan, ownerOrganName } } = this
+        this.modalObj.status = true
+        this.details = { assetName, assetCode, decorationSituation, assetHouseId, ownerUser, ownerOrgan, ownerOrganName }
+      },
+
+      // Modal关闭
+      handleModalCancel () {
+        this.modalObj.status = false
+      },
+
+      // Modal提交
+      handleModalOk () {
+        this.modalObj.loading = true
+        new Promise((resolve, reject) => {
+          this.$refs['editAssetDetail'].handleSubmit(resolve, reject)
+        }).then(() => {
+          this.modalObj.loading = false
+          this.modalObj.status = false
+          // 更新页面
+          this.queryDetailInfo()
+          this.queryHouseAreaInfo()
+        }).catch(() => {
+          this.modalObj.loading = false
         })
       }
     },
 
-    mounted () {
-      // 从vuex中获取数据
-      // this.baseInfoData = this.$store.state.asset.buildingView || {}
-      this.queryHouseInfo()
+    created () {
+      this.queryDetailInfo()
+      this.queryHouseAreaInfo()
     }
   }
 </script>
 
 <style lang='less' scoped>
-  .base_info {
-    .item_detail {
-      margin-bottom: 30px;
-    }
-  }
+
 </style>

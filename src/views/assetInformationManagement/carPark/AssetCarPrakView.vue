@@ -34,12 +34,10 @@
         <a-row :gutter="12">
           <a-col :span="4">
             <a-select
-              mode="multiple"
-              :maxTagCount="1"
               style="width: 100%"
               v-model="sourceModes"
               option-filter-prop="title"
-              placeholder="请选择来源方式"
+              placeholder="请选择资产形态"
               :options="$addTitle(sourceOptions)"
               @change="changeSource"
             />
@@ -323,7 +321,7 @@
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '管理机构', dataIndex: 'ownerOrganName', width: 150 },
             // { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-            { title: '资产位置', dataIndex: 'address', width: 300 },
+            { title: '资产项目', dataIndex: 'address', width: 300 },
             { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
             { title: '车场名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
             { title: '车场类型', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },

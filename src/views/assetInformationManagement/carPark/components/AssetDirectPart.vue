@@ -1,4 +1,4 @@
-<!--楼栋视图业务-楼栋视图详情页面-资产使用方向组件-->
+<!--车场视图业务-车场视图详情页面-资产使用方向组件-->
 <template>
   <div class="asset_detail">
     <a-spin :spinning="spinning">
@@ -71,6 +71,12 @@
           // {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
+        mouseData: [
+          {title: '车位名称', key: 'operationArea', value: 0},
+          {title: '车位编码', key: 'operationArea', value: 0},
+          {title: '车场面积(㎡)', key: 'operationArea', value: 0},
+          {title: '使用方向', key: 'idleArea', value: 0},
+        ],
         bgColorObj: {
           idleArea: '#1890FF',
           otherArea: '#BBC8D6',
@@ -141,26 +147,26 @@
         }, 300)
       },
 
-      // 查询楼栋视图面积概览数据
+      // 查车场视图面积概览数据
       queryHouseAreaInfo (args) {
-        const { buildId, numList } = this
+        const { buildId, mouseData } = this
         let api = args ? 'queryBuildingViewRoomArea' : 'queryBuildingViewDetailArea'
         let param = args ? { houseId: args.id, buildId } : { buildId }
         return this.$api.assets[api](param).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            // 查楼栋视图详情的面积数据
-            let arr = numList.map(m => {
+            // 查车场视图详情的面积数据
+            let arr = mouseData.map(m => {
               const { percent, number } = res.data[m.key]
               return { ...m, value: `${number}（${percent}）` }
             })
             // 查浮窗的面积数据与详情页面的面积数据共用一个接口
-            return args ? args.resolve(arr) : this.numList = arr
+            return args ? args.resolve(arr) : this.mouseData = arr
           }
-          throw res.message || '查询楼栋视图面积使用统计出错'
+          throw res.message || '查询车场视图面积使用统计出错'
         }).catch(err => {
           args && args.reject()
-          this.$message.error(err || '查询楼栋视图面积使用统计出错')
+          this.$message.error(err || '查询车场视图面积使用统计出错')
         })
       },
 
@@ -183,7 +189,7 @@
         })
       },
 
-      // 查询楼栋下的单元-楼层关系
+      // 查询车场下的单元-楼层关系
       queryUnit () {
         this.spinning = true
         this.$api.assets.queryBuildingViewUnitByHouseId({buildId: this.buildId, organId: this.organId}).then(r => {
@@ -234,7 +240,7 @@
           height: 100%;
           margin-left: 81px;
           white-space: nowrap;
-          overflow-x: auto; // 房间设置了min-width，防止楼栋过多情况
+          overflow-x: auto; // 房间设置了min-width，防止车场过多情况
           overflow-y: hidden;
           /*设置横向滚动样式*/
           &::-webkit-scrollbar {

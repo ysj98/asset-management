@@ -11,13 +11,8 @@
       导出房屋卡片
     </SG-Button>
     <!--基础信息部分-->
-    <base-info-part ref="baseInfoPart" v-if="assetHouseId" :assetHouseId="assetHouseId" @updateTransfer="updateTransfer"/>
-    <!-- 空间位置 -->
-    <space-info :assetHouseId="assetHouseId" @updateTransfer="updateTransfer"/>
-    <SG-Title title="资产使用方向" noMargin/>
-    <overview-number :numList="numList" isEmit/>
-    <!-- <a-spin :spinning="overviewNumSpinning">
-    </a-spin> -->
+    <base-info-part ref="baseInfoPart" v-if="assetHouseId" :assetHouseId="assetHouseId" @updateTransfer="updateTransfer" :baseInfoKeys="baseInfoKeys" @parkingDetail="parkingDetail"/>
+    <SpaceInfo/>
     <!--其它信息部分-->
     <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
   </div>
@@ -27,11 +22,10 @@
   import BaseInfoPart from './components/BaseInfoPart'
   import OtherInfoPart from "./components/OtherInfoPart"
   import SpaceInfo from './components/SpaceInfo.vue'
-  import OverviewNumber from 'src/views/common/OverviewNumber'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   export default {
     name: 'AssetViewPage',
-    components: { OtherInfoPart, BaseInfoPart, SpaceInfo, OverviewNumber },
+    components: { OtherInfoPart, BaseInfoPart, SpaceInfo },
     data () {
       return {
         ASSET_MANAGEMENT, // 权限对象
@@ -40,15 +34,27 @@
         assetId: '', // 资产Id
         transferOperationArea: '', // 转运营面积
         transferOperationTime: '', // 转运营时间
-        numList: [
-        {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
-        {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'} 
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        baseInfoKeys: [
+          // [
+          //   {title: '主图', key: 'picturePath'},
+          // ], // 列1
+          [
+            {title: '资产名称', key: 'buildName'}, {title: '资产类型', key: 'buildCode'}, {title: '建筑面积(㎡)', key: 'area'},
+            {title: '资产状态', key: 'roomNum'}
+          ], // 列2
+          [
+            {title: '资产编码', key: 'years'}, {title: '资产分类', key: 'addressNo'}, {title: '资产形态', key: 'buildHeight'}
+          ], // 列3
+          [
+            {title: '', key: 'picturePath'},
+          ]
+        ],
       }
     },
 
     methods: {
+      // 车位详情
+      parkingDetail () {},
       // 导出房屋卡片
       exportCard () {
         this.exportBtnLoading = true

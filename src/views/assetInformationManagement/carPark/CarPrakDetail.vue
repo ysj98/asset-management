@@ -4,7 +4,7 @@
       <!--返回-->
     <!--</SG-Button>-->
     <!--基本信息-->
-    <base-info-part v-if="buildId" :buildId="buildId"/>
+    <base-info-part v-if="buildId" :buildId="buildId" :baseInfoKeys="baseInfoKeys"/>
     <!--资产使用方向-->
     <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId" :organ-name="organName" />
     <!--其它信息-->
@@ -24,7 +24,19 @@
         organName:'',
         organId: '', // 组织机构id
         buildId: '', // 房间id
-        assetIds: [] // 资产id
+        assetIds: [], // 资产id
+        baseInfoKeys: [
+          [
+            {title: '主图', key: 'picturePath'},
+          ], // 列1
+          [
+            {title: '车场名称', key: 'buildName'}, {title: '车场面积(㎡)', key: 'area'}, {title: '运营项目', key: 'buildCode'}, 
+            {title: '交付时间', key: 'roomNum'}, {title: '车场位置', key: 'buildCode'}, {title: '备注', key: 'buildCode'}, 
+          ], // 列2
+          [
+            {title: '车场编码', key: 'years'},{title: '车场类型', key: 'buildCode'},  {title: '车位数量', key: 'addressNo'}
+          ], // 列3
+        ],
       }
     },
 
