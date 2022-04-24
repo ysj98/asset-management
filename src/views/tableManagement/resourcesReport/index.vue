@@ -11,7 +11,7 @@
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm" style="text-align: left; float: right">
-        <a-checkbox :checked="!!queryCondition.containEmpty" @change="onCheck">展示资产数量为0得机构</a-checkbox>
+        <a-checkbox :checked="!!queryCondition.containEmpty" @change="onCheck">展示资产数量为0的机构</a-checkbox>
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
