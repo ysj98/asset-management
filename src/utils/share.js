@@ -83,17 +83,33 @@ export async function initTableColumns({columns,detailColumns,requiredColumn,fun
   })
 
   if(requiredColumn){
+    console.log({requiredColumn})
     requiredColumn.forEach(ele=>{
       columns.splice(columns.length,0,ele)
     })
   }
   // 增加空白列 占用多余空间
   columns.push({title:'',dataIndex:''})
+
+  // 最后一列添加空白列，所以不需要特殊处理最后一列的 width 属性了
   // 特殊处理最后一列 删除 width 属性
-  const lastColumn  = columns.pop()
-  const resLastColumn = {
-    ...lastColumn
-  }
-  delete resLastColumn.width
-  columns.push(resLastColumn)
+  // const lastColumn  = columns.pop()
+  // const resLastColumn = {
+  //   ...lastColumn
+  // }
+  // delete resLastColumn.width
+  // columns.push(resLastColumn)
+}
+/*
+* scroll 引用对象
+* otherHeight 表格之外元素高度总和
+* */
+export  function handleTableScrollHeight(scroll,otherHeight = 500){
+  // 除去表格元素 其他元素高度总计不超过 500
+  scroll.y = Math.max(600, document.body.clientHeight - otherHeight)
+}
+
+export function handleTableHeaderScrollHeight(target){
+  // -8px 参考 var.less 中的 @tableScrollHeight
+  target.querySelector(".ant-table-header").style.marginBottom = "-8px"
 }
