@@ -9,6 +9,7 @@
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_DETAIL_EXPORT" @click="downloadFn">导出</SG-Button>
+        <SG-Button @click="changeListSettingsModal(true)" class="ml20">列表设置</SG-Button>
       </div>
       <div slot="headerForm">
         <a-select
@@ -42,13 +43,15 @@
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
-        class="custom-table table-boxs"
+        class="custom-total custom-scroll"
         :pagination="false"
+        ref="table"
         >
         <span slot="action" slot-scope="text, record">
           <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">房屋详情</span>
         </span>
       </a-table>
+      <div style="height: 100px;"></div>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -60,6 +63,7 @@
       />
     </div>
     <housingDetails v-if="housingShow" :record="record" ref="housingDetails" @cancelFn="cancelFn"></housingDetails>
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" width="1200px" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -70,15 +74,17 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import housingDetails from './housingDetails'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import { getFormat } from '@/utils/utils'
-const columnsData = [
+import {handleTableHeaderScrollHeight, handleTableScrollHeight, initTableColumns} from "utils/share";
+import TableHeaderSettings from "@/components/TableHeaderSettings";
+const detailColumns = [
   { title: '管理机构', dataIndex: 'organName', width: 120, fixed: 'left' },
   { title: '资产项目', dataIndex: 'projectName', width: 120, fixed: 'left' },
-  { title: '资产名称', dataIndex: 'assetName', width: 120, fixed: 'left' },
-  { title: '资产编码', dataIndex: 'assetCode' },
-  { title: '权证号', dataIndex: 'warrantNbr'},
-  { title: '产权人', dataIndex: 'obligeeAndPercent'},
+  { title: '资产名称', dataIndex: 'assetName', width: 200, fixed: 'left' },
+  { title: '资产编码', dataIndex: 'assetCode', width: 180 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150},
+  { title: '产权人', dataIndex: 'obligeeAndPercent', width: 150},
   { title: '权属用途', dataIndex: 'ownershipUse', width: 150 },
-  { title: '楼栋名称', dataIndex: 'buildName' },
+  { title: '楼栋名称', dataIndex: 'buildName', width: 150 },
   { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 150  },
   { title: '资产用途', dataIndex: 'useTypeName', width: 150  },
@@ -96,6 +102,8 @@ const columnsData = [
   { title: '销售面积(㎡)', dataIndex: 'sellArea', width: 150 },
   // { title: '小计', dataIndex: 'subtotal', width: 150 },
   // { title: '合计', dataIndex: 'total', width: 150 },
+]
+const requiredColumn = [
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 120}
 ]
 const queryCondition =  {
@@ -106,16 +114,17 @@ const queryCondition =  {
   pageSize: 10        // 每页显示记录数
 }
 export default {
-  components: {SearchContainer, noDataTips, OverviewNumber, housingDetails},
+  components: {SearchContainer, noDataTips, OverviewNumber, housingDetails,TableHeaderSettings},
   props: {},
   data () {
     return {
+      funType: 8,
+      listSettingFlag:false,
       ASSET_MANAGEMENT,
       housingShow: false,            // 房间弹框控制
       allStyle: 'width: 240px; margin-right: 10px;',
       overviewNumSpinning: false,
-      columnsData,
-      scroll: {x: columnsData.length * 150},
+      scroll: {x: "100%",y: 600},
       numList: [
         {title: '资产数量(个)', key: 'assetNum', value: 0, fontColor: '#324057'},
         {title: '资产面积(㎡)', key: 'assetArea', value: 0, bgColor: '#4BD288'},
@@ -128,7 +137,7 @@ export default {
       noPageTools: false,
       location: 'absolute',
       toggle: false,
-      columns: columnsData,
+      columns: [],
       tableData: [],
       queryCondition: {...queryCondition},
       count: '',
@@ -143,6 +152,16 @@ export default {
   computed: {
   },
   methods: {
+    initColumns(){
+      initTableColumns({columns:this.columns,detailColumns,requiredColumn,funType: this.funType})
+    },
+    handleTableHeaderSuccess(){
+      this.changeListSettingsModal(false)
+      this.initColumns()
+    },
+    changeListSettingsModal(flag){
+      this.listSettingFlag = flag
+    },
     // 导出（暂无）
     downloadFn () {
       let obj = {
@@ -315,12 +334,15 @@ export default {
     // }
   },
   created () {
+    handleTableScrollHeight(this.scroll, 360)
+    this.initColumns()
   },
   mounted () {
     this.queryCondition.organId = this.$route.query.organId
     this.selectOrganId =  this.$route.query.selectOrganId
     this.getObjectKeyValueByOrganIdFn()
     this.query()
+    handleTableHeaderScrollHeight(this.$refs.table.$el)
   }
 }
 </script>
