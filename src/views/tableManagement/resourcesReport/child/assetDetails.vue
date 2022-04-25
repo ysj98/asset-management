@@ -48,7 +48,7 @@
         ref="table"
         >
         <span slot="action" slot-scope="text, record">
-          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">房屋详情</span>
+          <span v-if="record.projectName !== '当前页-合计' && record.projectName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">房屋详情</span>
         </span>
       </a-table>
       <div style="height: 100px;"></div>
@@ -100,8 +100,6 @@ const detailColumns = [
   { title: '自用面积(㎡)', dataIndex: 'oneselfArea', width: 150 },
   { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 150 },
   { title: '销售面积(㎡)', dataIndex: 'sellArea', width: 150 },
-  // { title: '小计', dataIndex: 'subtotal', width: 150 },
-  // { title: '合计', dataIndex: 'total', width: 150 },
 ]
 const requiredColumn = [
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 120}
