@@ -26,7 +26,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="td-pd10 custom-scroll">
+    <a-table v-bind="tableObj" class="td-pd10 custom-scroll custom-total">
       <template slot="buildArea" slot-scope="text">
         {{ getFormat(text) }}
       </template>
@@ -40,8 +40,8 @@
         {{ getFormat(text) }}
       </template>
       <template slot="warrantNbr" slot-scope="text, record, index">
-        <span v-if="index < tableObj.dataSource.length - 2" style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{record.warrantNbr}}</span>
-        <span v-else>{{record.warrantNbr}}</span>
+        <span v-if="index < tableObj.dataSource.length - 2" style="cursor: pointer; color: #0084FF" @click="viewDetail(record)" :title="record.warrantNbr">{{record.warrantNbr}}</span>
+        <span v-else :title="record.warrantNbr">{{record.warrantNbr}}</span>
       </template>
       <!-- <template slot="lotNo" slot-scope="text, record">
         <span>{{`${'--'}/${record.lotNo || '--'}/${record.estateUnitCode || '--'}`}}</span>
@@ -69,7 +69,7 @@
   // 需要合计的列
   const totalKeyArr = ['buildArea',"exclusiveBuildArea", "apportionArea", "landArea"]
   const detailColumns = [
-    { title: '权证号', key: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, width: 200 },
+    { title: '权证号', key: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, width: 200, fixed:"left" },
     { title: '所属机构', dataIndex: 'organName', width: 200 },
     { title: '资产项目', dataIndex: 'projectName', width: 150 },
     { title: '权属类型', dataIndex: 'kindOfRightName', width: 150 },
@@ -330,14 +330,6 @@
   .organ-class {
     .project_style {
       width: 150px;
-    }
-  }
-  ::v-deep .ant-table {
-    .ant-table-thead th, td {
-      white-space: nowrap;
-    }
-    .ant-table-tbody tr:nth-last-child(-n + 2) {
-      font-weight: bold !important;
     }
   }
 </style>

@@ -6,12 +6,27 @@
 .table-space-pagination{
   height: 70px;
 }
-
+/*
+此样式使表格滚动条高度变粗
+*/
 .custom-scroll{
   .ant-table {
     ::-webkit-scrollbar {
       // 表格横向滚动条高度
       height: @tableScrollHeight;
+    }
+  }
+}
+/*
+带合计的表格（当前页面合计和所有合计两行 字体加粗样式）
+*/
+.custom-total{
+  .ant-table {
+    .ant-table-thead th, td {
+      white-space: nowrap;
+    }
+    .ant-table-tbody tr:nth-last-child(-n + 2) {
+      font-weight: bold !important;
     }
   }
 }

@@ -10,3 +10,7 @@
 /* .sg-uploadFile>.preview {
   overflow: auto;
 } */
+
+.sg-FooterPagination.absolute{
+  z-index: 10;
+}
