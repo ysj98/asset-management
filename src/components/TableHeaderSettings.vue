@@ -18,7 +18,7 @@
                 v-for="item in listData"
                 :key="item.colCode"
               >
-                <a-checkbox :value="item.colCode">
+                <a-checkbox :disabled="notAllowedCode.includes(item.colCode)" :value="item.colCode">
                   {{ item.colName }}
                 </a-checkbox>
               </a-col>
@@ -48,6 +48,7 @@ export default {
       loading: true,
       listValue: [],
       listData: [],
+      notAllowedCode: []
     };
   },
   methods: {
@@ -64,6 +65,10 @@ export default {
         console.log(data);
         this.listData = data.templeCode;
         this.listValue = data.customChose.map((ele) => ele.colCode);
+        this.notAllowedCode = data.customShow.filter(ele=>{
+          // userId 为-1 代表 此表头用户不可设置
+          return ele.userId === -1
+        }).map(ele=>ele.colCode)
       } else {
         this.$message.error(message);
       }

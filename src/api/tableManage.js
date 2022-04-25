@@ -137,6 +137,10 @@ export function queryHouseAssetSumInfo (data) {
 export function queryOwnershipCardSumInfo (data) {
   return axiosPost(tableManage.queryOwnershipCardSumInfo, data)
 }
+// 权属证件一览表(汇总)
+export function queryOwnershipCardTableTotal (data) {
+  return axiosPost(tableManage.queryOwnershipCardTableTotal, data)
+}
 //  --------------------------------------房屋资产&资源统计表-------------------------------------------------------------
 // 房屋资产&资源统计表-导出
 export function houseResourceExport (data) {

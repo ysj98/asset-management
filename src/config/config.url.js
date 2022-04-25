@@ -1115,6 +1115,8 @@ export const tableManage = {
   queryHouseAssetSumInfo: "/ams/statistics/asset/house/warrantCount",
   // 权属证件一览表(汇总)
   queryOwnershipCardSumInfo: "/ams/statistics/ownership/warrant/count",
+  // 权属证件一览表-合计
+  queryOwnershipCardTableTotal: "/ams/statistics/ownership/warrantCount",
   // 房屋资产&资源统计表-导出
   houseResourceExport: "/ams/statistics/houseResource/export",
   // 房屋资产&资源统计表-明细-导出

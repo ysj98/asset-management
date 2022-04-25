@@ -5,6 +5,7 @@
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OL_EXPORT">导出</SG-Button>
+        <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
         <div style="width: 310px; position:absolute; top: 20px; right: 76px; display:flex;">
           <organ-project class="organ-class" v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
         </div>
@@ -25,7 +26,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" class="td-pd10 custom-scroll">
       <template slot="buildArea" slot-scope="text">
         {{ getFormat(text) }}
       </template>
@@ -38,17 +39,20 @@
       <template slot="landArea" slot-scope="text">
         {{ getFormat(text) }}
       </template>
-      <template slot="warrantNbr" slot-scope="text, record">
-        <span style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{text}}</span>
+      <template slot="warrantNbr" slot-scope="text, record, index">
+        <span v-if="index < tableObj.dataSource.length - 2" style="cursor: pointer; color: #0084FF" @click="viewDetail(record)">{{record.warrantNbr}}</span>
+        <span v-else>{{record.warrantNbr}}</span>
       </template>
       <!-- <template slot="lotNo" slot-scope="text, record">
         <span>{{`${'--'}/${record.lotNo || '--'}/${record.estateUnitCode || '--'}`}}</span>
       </template> -->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, searchType: 'page' })"/>
+    <div style="height: 100px;"></div>
+    <SG-FooterPagination style="z-index:10" v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength, searchType: 'page' })"/>
     <!-- 复用权证管理查看详情页面 -->
     <CardDetails ref="cardDetails"/>
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" width="1200px" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -60,11 +64,45 @@
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
   import CardDetails from 'src/views/ownershipManagement/authorityCardManagement/cardDetails'
   import { getFormat } from '@/utils/utils'
+  import {initTableColumns} from "utils/share";
+  import TableHeaderSettings from "@/components/TableHeaderSettings";
+  // 需要合计的列
+  const totalKeyArr = ['buildArea',"exclusiveBuildArea", "apportionArea", "landArea"]
+  const detailColumns = [
+    { title: '权证号', key: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, width: 200 },
+    { title: '所属机构', dataIndex: 'organName', width: 200 },
+    { title: '资产项目', dataIndex: 'projectName', width: 150 },
+    { title: '权属类型', dataIndex: 'kindOfRightName', width: 150 },
+    { title: '房屋所有权人', dataIndex: 'houseOwner', width: 150 },
+    { title: '权属人', dataIndex: 'obligeeName', width: 200, ellipsis: true },
+    { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
+    { title: '房屋号/丘地号/不动产单元号', dataIndex: 'combinationCode', width: 200 },
+    { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
+    { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
+    { title: '建筑面积', dataIndex: 'buildArea', width: 150, scopedSlots: { customRender: 'buildArea' } },
+    { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea', width: 150, scopedSlots: { customRender: 'exclusiveBuildArea' } },
+    { title: '分摊面积', dataIndex: 'apportionArea', width: 150, scopedSlots: { customRender: 'apportionArea' } },
+    { title: '产别', dataIndex: 'antenatal', width: 150 },
+    { title: '结构', dataIndex: 'structureName', width: 150 },
+    { title: '总层数', dataIndex: 'totalFloor', width: 150 },
+    { title: '所在层', dataIndex: 'placeFloor', width: 150 },
+    { title: '土地面积', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },
+    { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150 },
+    { title: '登记日期', dataIndex: 'rigisterDate', width: 100 },
+    { title: '使用期限', dataIndex: 'useLimitDate', width: 100 },
+    { title: '交接日期', dataIndex: 'handoverDate', width: 100 },
+    { title: '状态', dataIndex: 'statusName',width: 150 },
+    { title: '使用权合同期限', dataIndex: 'contractData', width: 120 },
+    { title: '附记', dataIndex: 'excursus', width: 200, ellipsis: true },
+    { title: '备注', dataIndex: 'remark', width: 200 }
+  ]
   export default {
     name: 'index',
-    components: { NoDataTip, OrganProject, CardDetails, OverviewNumber },
+    components: { NoDataTip, OrganProject, CardDetails, OverviewNumber, TableHeaderSettings },
     data () {
       return {
+        funType: 7,
+        listSettingFlag: false,
         getFormat,
         styleSet: 'min-width: 150px !important;',
         toggle: false,
@@ -90,57 +128,64 @@
         exportBtnLoading: false, // 导出按钮loading
         numList: [
           {title: '权证数量', key: 'total', value: 0, bgColor: '#4BD288'},
+          {title: '土地面积', key: 'landAreaCount', value: 0, bgColor: '#808080'},
           {title: '建筑面积(㎡)', key: 'buildArea', value: 0, bgColor: '#1890FF'},
           {title: '产权证', key: 'cqzTotal', value: 0, bgColor: '#DD81E6'},
-          {title: '使用权证', key: 'syqzTotal', value: 0, bgColor: '#FD7474'}
+          {title: '使用权证', key: 'syqzTotal', value: 0, bgColor: '#FD7474'},
         ], // 概览数据，title 标题，value 数值，color 背景色
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
-          scroll: { x: 2000 },
+          scroll: { x: "100%", y: 600 },
           pagination: false,
           rowKey: 'warrantId',
           loading: false,
           dataSource: [],
-          columns: [
-            { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, fixed: 'left', width: 200 },
-            { title: '所属机构', dataIndex: 'organName', width: 200 },
-            { title: '资产项目', dataIndex: 'projectName', width: 150 },
-            { title: '权属类型', dataIndex: 'kindOfRightName', width: 150 },
-            { title: '房屋所有权人', dataIndex: 'houseOwner', width: 150 },
-            { title: '权属人/承租人', dataIndex: 'obligeeName', width: 150 },
-            { title: '委托管理单位', dataIndex: 'entrustOrganization', width: 200 },
-            { title: '房屋号/丘地号/不动产单元号', dataIndex: 'combinationCode', width: 200 },
-            { title: '坐落位置', dataIndex: 'seatingPosition', width: 200 },
-            { title: '权属用途', dataIndex: 'ownershipUseName', width: 150 },
-            { title: '建筑面积', dataIndex: 'buildArea', width: 150, scopedSlots: { customRender: 'buildArea' } },
-            { title: '专有建筑面积', dataIndex: 'exclusiveBuildArea', width: 150, scopedSlots: { customRender: 'exclusiveBuildArea' } },
-            { title: '分摊面积', dataIndex: 'apportionArea', width: 150, scopedSlots: { customRender: 'apportionArea' } },
-            { title: '产别', dataIndex: 'antenatal', width: 150 },
-            { title: '结构', dataIndex: 'structureName', width: 150 },
-            { title: '总层数', dataIndex: 'totalFloor', width: 150 },
-            { title: '所在层', dataIndex: 'placeFloor', width: 150 },
-            { title: '土地面积', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },
-            { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150 },
-            { title: '登记日期', dataIndex: 'rigisterDate', width: 100 },
-            { title: '使用期限', dataIndex: 'useLimitDate', width: 100 },
-            { title: '交接日期', dataIndex: 'handoverDate', width: 100 },
-            { title: '状态', dataIndex: 'statusName',width: 150 },
-            { title: '使用权合同期限', dataIndex: 'contractData', width: 120 },
-            { title: '附记', dataIndex: 'excursus', width: 200 },
-            { title: '备注', dataIndex: 'remark', width: 200 }
-          ]
+          columns: []
         },
       }
     },
-
     created () {
       this.queryType()
+      this.handleTableScrollHeight()
+      initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
     },
-
+    mounted() {
+      this.handleTableHeaderScrollHeight()
+    },
     methods: {
+      handleTableHeaderScrollHeight(){
+        // -8px 参考 var.less 中的 @tableScrollHeight
+        document.querySelector(".ant-table-header").style.marginBottom = "-8px"
+      },
+      handleTableScrollHeight(){
+        // 除去表格元素 其他元素高度总计不超过 500
+        const otherHeight = 500
+        const res = Math.max(600,document.body.clientHeight - otherHeight)
+        console.log({res})
+        this.tableObj.scroll.y = res
+      },
+      handleTableHeaderSuccess(){
+        this.changeListSettingsModal(false)
+        initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
+      },
+      changeListSettingsModal(flag){
+        this.listSettingFlag = flag
+      },
+
       // 高级搜索控制
       searchContainerFn (val) {
         this.toggle = val
+      },
+      queryOwnershipCardTableTotal(form){
+        this.$api.tableManage.queryOwnershipCardTableTotal(form).then(({data:{code,message,data}})=>{
+          if (code==="0"){
+            console.log({data})
+            const temp = this.tableObj.dataSource.pop()
+            this.tableObj.dataSource.push({...temp,...data})
+          }else {
+            this.$message.error(message)
+          }
+        })
       },
       // 查询统计数据
       queryStatisticsInfo (form) {
@@ -201,7 +246,36 @@
           this.exportBtnLoading = false
         })
       },
-
+      /*
+      * 处理 合计行
+      * */
+      handleTableTotalRow(){
+        const currentPageTotalData = {
+          // 保证 rowKey 有值
+          warrantId: Math.random()
+        }
+        const allPageTotalData = {
+          // 保证 rowKey 有值
+          warrantId: Math.random()
+        }
+        this.tableObj.columns.forEach((ele,index)=>{
+          const keyStr = ele.dataIndex || ele.key
+          if (totalKeyArr.includes(keyStr)){
+            const data = this.tableObj.dataSource.reduce((pre,cur)=>{
+              return pre + Number(cur[keyStr])
+            },0)
+            currentPageTotalData[keyStr] = isNaN(data) ? "" : data
+          }
+          if (index === 0){
+            currentPageTotalData[keyStr] = '当前页-合计'
+            allPageTotalData[keyStr] = '所有页-合计'
+          }
+        })
+        this.tableObj.dataSource.push(
+          currentPageTotalData,
+          allPageTotalData
+        )
+      },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, searchType}) {
         const {queryObj, organProjectValue: {organId, projectId}} = this
@@ -214,6 +288,8 @@
           if (res && String(res.code) === '0') {
             const {count, data} = res.data
             this.tableObj.dataSource = data || []
+            this.handleTableTotalRow()
+            this.queryOwnershipCardTableTotal(form)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -251,19 +327,17 @@
 </script>
 
 <style lang='less' scoped>
-  .custom-table {
-    padding-bottom: 55px;
-    /*if you want to set scroll: { x: true }*/
-    /*you need to add style .ant-table td { white-space: nowrap; }*/
-    & /deep/ .ant-table {
-      .ant-table-thead th {
-        white-space: nowrap;
-      }
-    }
-  }
   .organ-class {
     .project_style {
       width: 150px;
+    }
+  }
+  ::v-deep .ant-table {
+    .ant-table-thead th, td {
+      white-space: nowrap;
+    }
+    .ant-table-tbody tr:nth-last-child(-n + 2) {
+      font-weight: bold !important;
     }
   }
 </style>

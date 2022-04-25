@@ -1,7 +1,17 @@
+@import "./var.less";
 .sg-datePicker-wrapper{
   // 升级segi-ant组件库,组件库样式不太行,加上这个属性,撑开容器
   min-width: 360px !important;
 }
 .table-space-pagination{
   height: 70px;
+}
+
+.custom-scroll{
+  .ant-table {
+    ::-webkit-scrollbar {
+      // 表格横向滚动条高度
+      height: @tableScrollHeight;
+    }
+  }
 }
