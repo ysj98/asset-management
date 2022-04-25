@@ -151,7 +151,7 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220 },
+          { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220,},
           { title: '经营单位', dataIndex: 'businessUnit', fixed: 'left' },
           { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 300 },
           { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" } }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
@@ -183,7 +183,8 @@
           {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#FD7474'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
-        sortFunc: (a, b) => a['organName'].localeCompare(b['organName']) // 排序算法函数
+        sortFunc: (a, b) => a['organName'].localeCompare(b['organName']), // 排序算法函数
+        sumObj: { originalValue: '', assetValuation: '', firstMarketValue: '', marketValue: '', assetCount: '', assetArea: ''},
       }
     },
 
@@ -225,6 +226,7 @@
           for (let i = 0; i < 12; i++) {
             arr.push({title: `${startTime}-${i + 1}月`, dataIndex: `date_${i}`})
           }
+          
         } else {
           let len = Number(endTime) - Number(startTime) + 1
           let startYear = Number(startTime)
@@ -254,6 +256,24 @@
             }
           }
         }
+        Object.keys(dataSource[0]).forEach(item => {
+          if (item.includes('date_')) {
+            this.sumObj[item] = ''
+          }
+        })
+        // 添加合计和小计
+        let pageSum = {}
+        dataSource.forEach((item, index) => {
+          Object.keys(this.sumObj).forEach(key => {
+            !pageSum[key] && (pageSum[key] = 0)
+            pageSum[key] += item[key] ? Number(item[key]) : 0  
+            if(index === dataSource.length - 1) pageSum[key] = pageSum[key]
+          })
+        })
+        
+        //  {organName: '所有页-合计', key: dataSource.length+1,projectName: ''}
+        // 
+        dataSource.push({key: dataSource.length, ...pageSum, organName: 'col', projectName: 'col', businessUnit: '当前页-合计'})
         if (dimension === '1' || dimension === '2') {
           dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
           // 计算需要合并的单元格起始位置及数量
@@ -279,15 +299,27 @@
             if (dataIndex === 'organName' || (dimension === '2' && dataIndex === 'projectName')) {
               return {
                 ...c, customRender: (text, row, i) => {
+                  console.log(text, 'organName')
                   let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
                   return {
                     children: text,
-                    attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0 }
+                    attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: i === dataSource.length-1 ? 0 : 1}
                   }
                 }
               }
             } else {
-              return c
+              // return c
+              return {
+                ...c,
+                customRender: (text, row, i) => {
+                  if(text === 'col' && i === dataSource.length-1){
+                  }
+                  return {
+                    children: text,
+                    attrs:{colSpan: (text === 'col' || text === '当前页-合计') && i === dataSource.length-1 ? 0 : 1}
+                  }
+                }
+              }
             }
           }).concat(arr)
         } else {
@@ -297,6 +329,13 @@
           columns,
           dataSource,
           scroll: { x: columns.length * 160 }
+        })
+        this.tableObj.dataSource.forEach(item => {
+          Object.keys(item).forEach(key => {
+            if(key.includes('date_')){
+              item[key] = getFormat(item[key])
+            }
+          })
         })
       },
 
@@ -463,7 +502,7 @@
 <style lang='less' scoped>
   .asset_worth {
     .custom-table {
-      padding: 8px 0 55px;
+      padding: 8px 0 70px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {

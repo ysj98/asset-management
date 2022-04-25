@@ -87,6 +87,27 @@ export default [
     ]
   },
   {
+    title: '车场台账',
+    children: [
+      {
+        title: '组织机构视图',
+        path: '/organCarPrakView'
+      },
+      {
+        title: '车场项目视图',
+        path: '/carPrakProjectView'
+      },
+      {
+        title: '车场视图',
+        path: '/carPrakView'
+      },
+      {
+        title: '资产视图',
+        path: '/assetCarPrakView'
+      }
+    ]
+  },
+  {
     title: '基础信息管理',
     children: [
       {
