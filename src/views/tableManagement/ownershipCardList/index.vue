@@ -26,7 +26,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="td-pd10 custom-scroll custom-total">
+    <a-table v-bind="tableObj" class="td-pd10 custom-scroll custom-total" ref="table">
       <template slot="buildArea" slot-scope="text">
         {{ getFormat(text) }}
       </template>
@@ -64,7 +64,7 @@
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
   import CardDetails from 'src/views/ownershipManagement/authorityCardManagement/cardDetails'
   import { getFormat } from '@/utils/utils'
-  import {initTableColumns} from "utils/share";
+  import {handleTableHeaderScrollHeight, handleTableScrollHeight, initTableColumns} from "utils/share";
   import TableHeaderSettings from "@/components/TableHeaderSettings";
   // 需要合计的列
   const totalKeyArr = ['buildArea',"exclusiveBuildArea", "apportionArea", "landArea"]
@@ -146,24 +146,13 @@
     },
     created () {
       this.queryType()
-      this.handleTableScrollHeight()
+      handleTableScrollHeight(this.tableObj.scroll)
       initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
     },
     mounted() {
-      this.handleTableHeaderScrollHeight()
+      handleTableHeaderScrollHeight(this.$refs.table.$el)
     },
     methods: {
-      handleTableHeaderScrollHeight(){
-        // -8px 参考 var.less 中的 @tableScrollHeight
-        document.querySelector(".ant-table-header").style.marginBottom = "-8px"
-      },
-      handleTableScrollHeight(){
-        // 除去表格元素 其他元素高度总计不超过 500
-        const otherHeight = 500
-        const res = Math.max(600,document.body.clientHeight - otherHeight)
-        console.log({res})
-        this.tableObj.scroll.y = res
-      },
       handleTableHeaderSuccess(){
         this.changeListSettingsModal(false)
         initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
