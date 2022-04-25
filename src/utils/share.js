@@ -51,8 +51,14 @@ export function getTableHeaders({ funType }) {
   });
 }
 
-
-export async function initTableColumns({columns,detailColumns,funType}){
+/*
+* 初始化 表头
+* columns 表头对象(注意函数副作用！)
+* detailColumns 详细表头信息与后台返回的表格数据相结合用
+* requiredColumn 类似 操作表头的表头
+* funType 后台定义
+* */
+export async function initTableColumns({columns,detailColumns,requiredColumn,funType}){
   // 利用js "传址" 特性,便利函数封装，使用者应注意函数副作用
   columns.splice(0,columns.length)
   // 暂不考虑固定表头顺序问题，目前只有操作列
@@ -75,6 +81,12 @@ export async function initTableColumns({columns,detailColumns,funType}){
   columns.forEach(ele=>{
     ele.ellipsis = true
   })
+
+  if(requiredColumn){
+    requiredColumn.forEach(ele=>{
+      columns.splice(columns.length,0,ele)
+    })
+  }
   // 增加空白列 占用多余空间
   columns.push({title:'',dataIndex:''})
   // 特殊处理最后一列 删除 width 属性
