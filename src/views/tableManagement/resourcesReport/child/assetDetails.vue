@@ -283,8 +283,8 @@ export default {
               item.key = index
               Object.keys(this.sumObj).forEach(key => {
                 !pageSum[key] && (pageSum[key] = 0)
-                pageSum[key] += item[key] ? Number(item[key]) : 0
-                if (index === this.tableData.length - 1) { pageSum[key] = pageSum[key]}
+                pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0
+                if (index === this.tableData.length - 1) { pageSum[key] = pageSum[key] / 10000}
               })
               for (let key in item) {
                 // item[key] = item[key] || '--'
