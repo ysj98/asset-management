@@ -5,7 +5,7 @@
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_OL_EXPORT">导出</SG-Button>
-        <SG-Button @click="changeListSettingsModal(true)">列表设置</SG-Button>
+        <SG-Button @click="changeListSettingsModal(true)" v-power="ASSET_MANAGEMENT.TM_OL_TABLE_HEADERS_SETTING">列表设置</SG-Button>
         <div style="width: 310px; position:absolute; top: 20px; right: 76px; display:flex;">
           <organ-project class="organ-class" v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
         </div>

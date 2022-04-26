@@ -9,7 +9,8 @@
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_DETAIL_EXPORT" @click="downloadFn">导出</SG-Button>
-        <SG-Button @click="changeListSettingsModal(true)" class="ml20">列表设置</SG-Button>
+        <!-- 暂时不放开 -->
+        <SG-Button v-if="false" @click="changeListSettingsModal(true)" class="ml20">列表设置</SG-Button>
       </div>
       <div slot="headerForm">
         <a-select

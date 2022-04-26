@@ -394,6 +394,7 @@ export const ASSET_MANAGEMENT = {
   TM_HA_EXPORT: 'table_manage_house_asset_export',       // 报表管理-有证房屋资产导出
   TM_OA_EXPORT: 'table_manage_ownership_amount_export',  // 报表管理-权证数量统计导出
   TM_OL_EXPORT: 'table_manage_ownership_list_export',    // 报表管理-权属证件一览表导出
+  TM_OL_TABLE_HEADERS_SETTING:'table_manage_ownership_set_table_headers',                        // 报表管理-权属证件一览表列表设置
   TM_AA_EXPORT: 'table_manage_asset_analysis_export',    // 报表管理-房屋资产统计分析列表导出
   /**
    * V2.0.2房屋台账
