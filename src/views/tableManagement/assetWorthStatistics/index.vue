@@ -12,6 +12,7 @@
           v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
           导出
         </SG-Button>
+        <SG-Button icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8" style="width: 100%">
@@ -84,7 +85,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered>
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered >
       <template slot="originalValue" slot-scope="text">
         {{ getFormat(text) }}
       </template>
@@ -100,6 +101,9 @@
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
+      <edit-table-header ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="tableObj.initColumns"/>
+    </SG-Modal>
   </div>
 </template>
 
@@ -110,13 +114,17 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
+  import EditTableHeader from '../projectDataSearch/EditTableHeader.vue'
   import { getFormat } from '@/utils/utils.js'
   import moment from 'moment'
+// import { columns } from '../../ownershipManagement/authorityCardManagement/beat'
   export default {
     name: 'index',
-    components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip },
+    components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip, EditTableHeader },
     data () {
       return {
+        checkedHeaderArr: [],
+        modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 750 },
         getFormat,
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
@@ -152,13 +160,13 @@
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
           { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220,},
-          { title: '经营单位', dataIndex: 'businessUnit', fixed: 'left' },
+          { title: '经营单位', dataIndex: 'businessUnit', fixed: 'left', width: 120, },
           { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 300 },
-          { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" } }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
+          { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" }, with: 150 }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
           { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue', scopedSlots: { customRender: "firstMarketValue" } }, { title: '最新估值(元)', dataIndex: 'marketValue', scopedSlots: { customRender: "marketValue" } },
         ], // 列头不变部分,按资产项目统计维度
         columnsByAsset: [
-          { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
+          { title: '资产编号', dataIndex: 'assetCode', width: 180 }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
           { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
           { title: '资产状态', dataIndex: 'statusName' }
         ], // 按资产统计维度时动态展示
@@ -172,7 +180,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 1500 },
+          scroll: {  },
           columns: []
         },
         numList: [
@@ -185,12 +193,24 @@
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
         sortFunc: (a, b) => a['organName'].localeCompare(b['organName']), // 排序算法函数
         sumObj: { originalValue: '', assetValuation: '', firstMarketValue: '', marketValue: '', assetCount: '', assetArea: ''},
+        choiceArr: [],
       }
     },
 
     methods: {
       moment,
-
+      handleModalOk () {
+        // console.log(this.$refs.tableHeader.checkedList)
+        this.choiceArr = this.$refs.tableHeader.checkedList
+        this.tableObj.columns = this.tableObj.columns.filter(item => {
+          return this.choiceArr.includes(item.dataIndex)
+        })
+      },
+      handleModalStatus () {
+        this.modalObj.status = true
+        // this.$refs.tableHeader.disabledHeader = ['projectName', 'businessUnit', 'organName']
+        // this.$refs.tableHeader.disabledHeader = ['projectName', 'assetCount', 'assetArea']
+      },
       // 查询资产类型--平台字典
       queryAssetType () {
         queryAssetTypeList().then(list => {
@@ -271,11 +291,14 @@
           })
         })
         
-        //  {organName: '所有页-合计', key: dataSource.length+1,projectName: ''}
-        // 
-        dataSource.push({key: dataSource.length, ...pageSum, organName: 'col', projectName: 'col', businessUnit: '当前页-合计'})
+        if(dimension === '1' || dimension === '2') {
+          dataSource.push({key: dataSource.length, ...pageSum, organName: 'zzz1', projectName: '当前页-合计', businessUnit: 'zzz1'},{ key: dataSource.length+1,organName: 'zzz2', projectName: '所有页-合计', businessUnit: 'zzz2'})
+        }else{
+          dataSource.push({key: dataSource.length, ...pageSum, organName: '当前页-合计'},{ key: dataSource.length+1,organName: '所有页-合计'})
+        }
         if (dimension === '1' || dimension === '2') {
-          dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
+          // dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
+          dimension === '2' && fixedColumnsCopy.splice(3, 0, ...columnsByAsset)
           // 计算需要合并的单元格起始位置及数量
           let temp = {}
           dataSource.sort(sortFunc).forEach((m, index) => {
@@ -296,39 +319,61 @@
           })
           columns = fixedColumnsCopy.map(c => {
             let { dataIndex } = c
-            if (dataIndex === 'organName' || (dimension === '2' && dataIndex === 'projectName')) {
+            // (dimension === '2' && dataIndex === 'projectName')
+            if (dataIndex === 'organName') {
               return {
                 ...c, customRender: (text, row, i) => {
-                  console.log(text, 'organName')
                   let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
                   return {
                     children: text,
-                    attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: i === dataSource.length-1 ? 0 : 1}
+                    attrs: {rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? 0 : 1}
                   }
                 }
               }
-            } else {
-              // return c
+            }else if ((dimension === '2' && dataIndex === 'projectName')){
+              return {
+                ...c, customRender: (text, row, i) => {
+                  let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
+                  return {
+                    children: text,
+                    attrs: {rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? 3 : 1}
+                  }
+                }
+              }
+            }else if(dataIndex === 'projectName') {
               return {
                 ...c,
                 customRender: (text, row, i) => {
-                  if(text === 'col' && i === dataSource.length-1){
-                  }
                   return {
                     children: text,
-                    attrs:{colSpan: (text === 'col' || text === '当前页-合计') && i === dataSource.length-1 ? 0 : 1}
+                    attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 3 } : {}
                   }
                 }
               }
+            }else if((dataIndex === 'organName' || dataIndex === 'businessUnit')){
+              return {
+                ...c,
+                customRender: (text, row, i) => {
+                  return {
+                    children: text,
+                    attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+                  }
+                }
+              }
+            }else {
+              return c
             }
           }).concat(arr)
         } else {
-          columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(2)), ...arr)
+          // columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(2)), ...arr)
+          columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(3)), ...arr)
         }
+        this.tableObj.initColumns = columns
+        this.checkedHeaderArr = columns.map(item => item.dataIndex)
         Object.assign(this.tableObj, {
           columns,
           dataSource,
-          scroll: { x: columns.length * 160 }
+          scroll: { x: columns.length * 160, y: 600 }
         })
         this.tableObj.dataSource.forEach(item => {
           Object.keys(item).forEach(key => {
@@ -505,6 +550,9 @@
       padding: 8px 0 70px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+        height: 47px;
+      }
       & /deep/ .ant-table {
         .ant-table-thead th {
           white-space: nowrap;
@@ -514,5 +562,18 @@
         }
       }
     }
+    & /deep/ .ant-table {
+      .ant-table-thead th {
+        white-space: nowrap;
+        text-align: center;
+      }
+      td {
+        text-align: center;
+      }
+      tr:last-child, tr:nth-last-child(2) {
+        font-weight: bold !important;
+      }
+    }
   }
+  
 </style>

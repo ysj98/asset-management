@@ -16,7 +16,7 @@
       </a-col>
     </a-row>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered/>
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered :scroll="{x: '100%', y: 600}"/>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
@@ -167,6 +167,9 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+        height: auto;
+      }
       & /deep/ .ant-table {
         .ant-table-thead th {
           white-space: nowrap;
