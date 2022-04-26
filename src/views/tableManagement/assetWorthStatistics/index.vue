@@ -102,7 +102,7 @@
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
-      <edit-table-header ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="tableObj.initColumns"/>
+      <edit-table-header ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="tableObj.initColumns" v-if="modalObj.status" :disabledHeader="disabledHeader"/>
     </SG-Modal>
   </div>
 </template>
@@ -114,15 +114,15 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
-  import EditTableHeader from '../projectDataSearch/EditTableHeader.vue'
+  import EditTableHeader from './EditTableHeader.vue'
   import { getFormat } from '@/utils/utils.js'
   import moment from 'moment'
-// import { columns } from '../../ownershipManagement/authorityCardManagement/beat'
   export default {
     name: 'index',
     components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip, EditTableHeader },
     data () {
       return {
+        disabledHeader: ['projectName', 'businessUnit', 'organName'],
         checkedHeaderArr: [],
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 750 },
         getFormat,
@@ -193,23 +193,22 @@
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
         sortFunc: (a, b) => a['organName'].localeCompare(b['organName']), // 排序算法函数
         sumObj: { originalValue: '', assetValuation: '', firstMarketValue: '', marketValue: '', assetCount: '', assetArea: ''},
-        choiceArr: [],
       }
     },
 
     methods: {
       moment,
-      handleModalOk () {
-        // console.log(this.$refs.tableHeader.checkedList)
-        this.choiceArr = this.$refs.tableHeader.checkedList
-        this.tableObj.columns = this.tableObj.columns.filter(item => {
-          return this.choiceArr.includes(item.dataIndex)
+      handleModalOk () { 
+        let choiceArr = this.$refs.tableHeader.checkedList
+        let all = this.$refs.tableHeader.columns
+         this.tableObj.columns = all.filter(item => {
+          return choiceArr.includes(item.dataIndex)
         })
+        this.checkedHeaderArr = this.tableObj.columns.map(item => item.dataIndex)
+        this.modalObj.status = false
       },
       handleModalStatus () {
         this.modalObj.status = true
-        // this.$refs.tableHeader.disabledHeader = ['projectName', 'businessUnit', 'organName']
-        // this.$refs.tableHeader.disabledHeader = ['projectName', 'assetCount', 'assetArea']
       },
       // 查询资产类型--平台字典
       queryAssetType () {
@@ -286,8 +285,8 @@
         dataSource.forEach((item, index) => {
           Object.keys(this.sumObj).forEach(key => {
             !pageSum[key] && (pageSum[key] = 0)
-            pageSum[key] += item[key] ? Number(item[key]) : 0  
-            if(index === dataSource.length - 1) pageSum[key] = pageSum[key]
+            pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
+            if(index === dataSource.length - 1) pageSum[key] = pageSum[key] / 10000
           })
         })
         
@@ -367,6 +366,7 @@
         } else {
           // columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(2)), ...arr)
           columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(3)), ...arr)
+          this.disabledHeader = ['organName', 'assetCount', 'assetArea']
         }
         this.tableObj.initColumns = columns
         this.checkedHeaderArr = columns.map(item => item.dataIndex)
