@@ -251,7 +251,8 @@
           const keyStr = ele.dataIndex || ele.key
           if (totalKeyArr.includes(keyStr)){
             const data = this.tableObj.dataSource.reduce((pre,cur)=>{
-              return pre + Number(cur[keyStr])
+              // 出参小数位 最多4位-避免浮点数运算精度丢失
+              return ((10000 * pre) + (Number(cur[keyStr])  * 10000)) / 10000
             },0)
             currentPageTotalData[keyStr] = isNaN(data) ? "" : data
           }
