@@ -95,8 +95,10 @@
         class="custom-table td-pd10"
         :scroll="scroll"
         :pagination="false"
-        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :row-selection="rowSelection"
+        rowKey="cardId"
       >
+      <!-- { selectedRowKeys: selectedRowKeys, onChange: onSelectChange} -->
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" v-show="+record.approvalStatus === 2" @click="handleOperation('audit', record)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_AUDIT">审核</a>
           <a class="operation-btn" v-show="+record.approvalStatus === 1" @click="handleStatus(record, 0)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_REVERSE_AUDIT">反审核</a>
@@ -149,7 +151,8 @@
       dataIndex: 'cardCode',
       disabled: true,
       width: 180,
-      fixed: 'left'
+      fixed: 'left',
+      ellipsis: true,
     },
     {
       title: '卡片名称',
@@ -317,6 +320,17 @@
       }
     },
     computed: {
+      rowSelection () {
+        return {
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange,
+          getCheckboxProps: record => ({
+            props: {
+              disabled: record.approvalStatusName !== '草稿',
+            }
+          })
+        }
+      },
       isSelectedEquipment () {
         const assetTypeArr = this.assetType || []
         return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
@@ -325,7 +339,12 @@
     methods: {
       moment,
       // 批量提交
-      batchSubmit () {},
+      batchSubmit () {
+        console.log(this.selectedRowKeys, 'this.selectedRowKeys')
+        this.$api.assets.batchSubmission({cardIdList: this.selectedRowKeys}).then(res => {
+          console.log(res, 'res')
+        })
+      },
       onSelectChange (val) {
         this.selectedRowKeys = val
       },

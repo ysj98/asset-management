@@ -522,6 +522,10 @@ export const assets = {
     queryGeneralInfo: "/ams/project/getProjectGeneralSituation",
     // 详情查权属情况
     queryOwnInfo: "/ams/ownerShip/queryByProjectId",
+    // 资产使用方向变更模板下载
+    downLoadUseDirectionTemplate: "/ams/assetChange/downLoadUseDirectionTemplate",
+    // 资产使用方向变更模板导入
+    readUseDirectionTemplate: "/ams/assetChange/readUseDirectionTemplate",
   },
   // 权属人管理
   propertyOwnerManagement: {
@@ -552,6 +556,8 @@ export const assets = {
     updateCardStatus: "/ams/assetCard/updateCardStatus",
     // 资产入账详情
     queryCardDetail: "/ams/assetCard/queryCardDetail",
+    // 卡片批量提交
+    batchSubmission: "/ams/assetCard/batchSubmission",
   },
 };
 // 楼盘字典

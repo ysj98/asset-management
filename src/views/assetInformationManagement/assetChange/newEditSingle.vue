@@ -305,7 +305,6 @@
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
-            :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
           >
             <template #newAssetCategoryCode="text,record">
               <EquipmentSelectTree
@@ -746,15 +745,18 @@ export default {
   methods: {
     // 导出
     exportBtn () {
-
+      let data = {
+        organId: this.organId,
+        assetType: this.assetType,
+        projectId: this.projectId
+      }
+      this.$api.assets.downLoadUseDirectionTemplate(data).then(res => {
+        console.log(res)
+      })
     },
     // 批量更新--导入
     batchUpdate () {
-
-    },
-    // 
-    onSelectChange (arr) {
-      this.selectedRowKeys = arr
+      // readUseDirectionTemplate
     },
     queryObjectType () {
       const organId = this.organId

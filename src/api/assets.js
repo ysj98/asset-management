@@ -684,6 +684,16 @@ export function queryProjectManageEditDetailById (data) {
   return axiosPost(assets.projectManage.queryEditDetailById, data)
 }
 
+// 资产使用方向变更模板下载
+export function downLoadUseDirectionTemplate (data) {
+  return axiosPost(assets.projectManage.downLoadUseDirectionTemplate, data, true, false, {responseType: 'blob'})
+}
+
+// 资产使用方向变更模板导入
+export function readUseDirectionTemplate (data) {
+  return axiosPost(assets.projectManage.readUseDirectionTemplate, data, true, false)
+}
+// 
 // 根据组织Id查资产项目
 export function queryProjectManageProjectByOrganId (data) {
   return axiosGet(assets.assetView.queryProjectByOrganId, data)
@@ -832,6 +842,10 @@ export function updateCardStatus (data) {
 // 资产入账-资产入账详情
 export function queryCardDetail (data) {
   return axiosPost(assets.assetEntry.queryCardDetail, data, false, false)
+}
+// 资产入账-批量提交
+export function batchSubmission (data) {
+  return axiosPost(assets.assetEntry.batchSubmission, data)
 }
 // 资产视图费用相关
 export function assetExpenseInfo (data) {
