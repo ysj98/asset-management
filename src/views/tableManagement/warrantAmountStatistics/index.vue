@@ -27,6 +27,7 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
+import { getFormat } from '../../../utils/utils'
   export default {
     name: 'index',
     components: { OrganProject, NoDataTip },
@@ -139,6 +140,14 @@
         if (type === 'sum') {
           Promise.all([queryTablePromise, this.queryDataSum(form)]).then(([dataSource, dataSumInfo]) => {
             dataSource && (this.tableObj.dataSource = dataSource.concat(dataSumInfo))
+            let formatArr = ['totalNumber', 'ownNumber', 'otherNumber', 'usedTotalNumber', 'ownUsedNumber', 'otherUsedNumber']
+            this.tableObj.dataSource.forEach(item => {
+              Object.keys(item).forEach(key => {
+                if(formatArr.includes(key)) {
+                  item[key] = getFormat(item[key])
+                }
+              })
+            })
           })
         }
       },
