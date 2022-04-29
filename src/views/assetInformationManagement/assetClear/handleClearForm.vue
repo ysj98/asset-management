@@ -115,7 +115,7 @@
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
-              <SG-UploadFile
+              <SGUploadFilePlus
                 :baseImgURL="configBase.hostImg1"
                 v-model="detail.attachment"
                 type="all"
@@ -195,6 +195,7 @@ import configBase from "@/config/config.base";
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import SGUploadFilePlus from '@/components/SGUploadFilePlus'
 import {dateToString} from 'utils/formatTime'
 import moment from "moment";
 const defaultColumns = [
@@ -241,7 +242,7 @@ const defaultColumns = [
 export default {
   mixins:[uploadAndDownLoadFIle],
   components: {
-    FormFooter, AssetBundlePopover
+    FormFooter, AssetBundlePopover, SGUploadFilePlus
   },
   data () {
     return {

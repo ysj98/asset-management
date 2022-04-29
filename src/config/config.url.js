@@ -1075,6 +1075,8 @@ export const tableManage = {
   getAssetValue: "/ams/statistics/getAssetValue",
   // 资产价值查询统计
   getAssetValueCount: "/ams/statistics/getValueCount",
+  // 资产价值数据报表合计
+  getAssetValueStatistics: "/ams/statistics/getAssetValueStatistics",
   // 资产项目数据报表
   projectAsset: "/ams/statistics/projectAsset",
   // 资产项目数据查询统计

@@ -60,6 +60,10 @@ export function getAssetValue (data) {
 export function getAssetValueCount (data) {
   return axiosPost(tableManage.getAssetValueCount, data)
 }
+// 资产价值数据报表合计
+export function getAssetValueStatistics (data) {
+  return axiosPost(tableManage.getAssetValueStatistics, data)
+}
 // 资产项目数据报表
 export function projectAsset (data) {
   return axiosPost(tableManage.projectAsset, data)

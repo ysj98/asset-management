@@ -229,7 +229,13 @@
       },
 
       // 根据统计方式和统计维度生成列
-      generateColumns ({queryType, startTime, endTime, dimension}, data) {
+      generateColumns ({queryType, startTime, endTime, dimension}, data, totalObj) {
+        // console.log(data, totalObj, 'totalObj')
+         if(dimension === '1' || dimension === '2') {
+          data.push({ ...totalObj,key: data.length+1,organName: 'zzz2', projectName: '所有页-合计', businessUnit: 'zzz2'})
+        }else{
+          data.push({ ...totalObj ,key: data.length+1,organName: '所有页-合计'})
+        }
         const { columnsByAsset, fixedColumns, sortFunc, columnsByOrgan } = this
         let dataSource = data.map((m, key) => {
           let temp = {}
@@ -283,18 +289,22 @@
         // 添加合计和小计
         let pageSum = {}
         dataSource.forEach((item, index) => {
-          Object.keys(this.sumObj).forEach(key => {
-            !pageSum[key] && (pageSum[key] = 0)
-            pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
-            if(index === dataSource.length - 1) pageSum[key] = pageSum[key] / 10000
-          })
+          if(item.projectName !== '所有页-合计') {
+            Object.keys(this.sumObj).forEach(key => {
+              !pageSum[key] && (pageSum[key] = 0)
+              pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
+              if(index === dataSource.length - 2) pageSum[key] = pageSum[key] / 10000
+            })
+          }
+          
         })
-        
+        let index = dataSource.length-1
         if(dimension === '1' || dimension === '2') {
-          dataSource.push({key: dataSource.length, ...pageSum, organName: 'zzz1', projectName: '当前页-合计', businessUnit: 'zzz1'},{ key: dataSource.length+1,organName: 'zzz2', projectName: '所有页-合计', businessUnit: 'zzz2'})
+          dataSource.splice(index,0,{key: dataSource.length, ...pageSum, organName: 'zzz1', projectName: '当前页-合计', businessUnit: 'zzz1'})
         }else{
-          dataSource.push({key: dataSource.length, ...pageSum, organName: '当前页-合计'},{ key: dataSource.length+1,organName: '所有页-合计'})
+          dataSource.splice(index,0,{key: dataSource.length, ...pageSum, organName: '当前页-合计'})
         }
+        
         if (dimension === '1' || dimension === '2') {
           // dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
           dimension === '2' && fixedColumnsCopy.splice(3, 0, ...columnsByAsset)
@@ -385,7 +395,8 @@
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10, type}) {
+      async queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        
         const { organProjectValue: { organId, projectId }, queryObj: { status, assetType, ...others} } = this
         if (!organId) { return this.$message.warn('请选择组织机构') }
         if (others.queryType !== '0' && !others.endTime) {
@@ -394,9 +405,28 @@
           others.endTime = others.startTime
         }
         let form = {
-          ...others, organId, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo,
+          ...others, organId, projectIdList: projectId || [],
           assetType: assetType.includes('-1') ? '' : assetType.join(','),
           status: status.includes('-1') ? '' : status.join(',')
+        }
+        let totalObj = {}
+        try {
+          this.overviewNumSpinning = true
+          let {data: {data: { valueOfYearCount }}} = await this.$api.tableManage.getAssetValueStatistics(form)
+          form.pageSize = pageLength
+          form.pageNum = pageNo
+          let res = await this.$api.tableManage.getAssetValueCount(form)
+          let counts = res.data.data
+          totalObj = {dynamicData: [...valueOfYearCount], ...counts}
+          if (res.data && String(res.data.code) === '0') {
+            counts ? this.numList = this.numList.map(m => {
+              return { ...m, value: counts[m.key] }
+            }) : false
+          }
+          this.overviewNumSpinning = false
+        } catch (error) {
+          this.overviewNumSpinning = false
+          this.$message.error(error || '查询统计出错')
         }
         if (type === 'export') { return form }
         this.tableObj.loading = true
@@ -406,7 +436,7 @@
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
             // 生成新的columns
-            this.generateColumns(others, data || [])
+            this.generateColumns(others, data || [], totalObj)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -417,25 +447,7 @@
           this.$message.error(err || '查询接口出错')
         })
         // 查询统计数据
-        if (type === 'search') { this.queryStatisticsInfo(form) }
-      },
-
-      // 查询统计数据
-      queryStatisticsInfo (form) {
-        this.overviewNumSpinning = true
-        this.$api.tableManage.getAssetValueCount(form).then(r => {
-          this.overviewNumSpinning = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            return res.data ? this.numList = this.numList.map(m => {
-              return { ...m, value: res.data[m.key] }
-            }) : false
-          }
-          throw res.message
-        }).catch(err => {
-          this.overviewNumSpinning = false
-          this.$message.error(err || '查询统计出错')
-        })
+        // if (type === 'search') { this.queryStatisticsInfo(form) }
       },
 
       // 生成结束时间选项
