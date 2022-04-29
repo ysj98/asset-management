@@ -331,7 +331,7 @@ export default {
     margin-left: 10px;
   }
   .custom-table {
-    padding-bottom: 60px;
+    padding-bottom: 70px;
   }
   .overflowX{
     /deep/ .ant-table-scroll {

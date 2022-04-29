@@ -293,7 +293,7 @@
             Object.keys(this.sumObj).forEach(key => {
               !pageSum[key] && (pageSum[key] = 0)
               pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
-              if(index === dataSource.length - 2) pageSum[key] = pageSum[key] / 10000
+              if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000).toFixed(2)
             })
           }
           
