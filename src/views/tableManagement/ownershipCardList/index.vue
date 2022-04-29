@@ -57,6 +57,7 @@
 </template>
 
 <script>
+  import {math as $math} from '@/utils/math'
   import NoDataTip from 'src/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -251,10 +252,9 @@
           const keyStr = ele.dataIndex || ele.key
           if (totalKeyArr.includes(keyStr)){
             const data = this.tableObj.dataSource.reduce((pre,cur)=>{
-              // 出参小数位 最多4位-避免浮点数运算精度丢失
-              return ((10000 * pre) + (Number(cur[keyStr])  * 10000)) / 10000
+              return $math.simplify(`${pre}+${cur[keyStr]||0}`).toString()
             },0)
-            currentPageTotalData[keyStr] = isNaN(data) ? "" : data
+            currentPageTotalData[keyStr] = isNaN(data) ? "" : Number(data)
           }
           if (index === 0){
             currentPageTotalData[keyStr] = '当前页-合计'
