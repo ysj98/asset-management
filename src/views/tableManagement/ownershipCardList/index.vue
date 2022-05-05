@@ -57,7 +57,6 @@
 </template>
 
 <script>
-  import {math as $math} from '@/utils/math'
   import NoDataTip from 'src/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
@@ -65,7 +64,7 @@
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
   import CardDetails from 'src/views/ownershipManagement/authorityCardManagement/cardDetails'
   import { getFormat } from '@/utils/utils'
-  import {handleTableHeaderScrollHeight, handleTableScrollHeight, initTableColumns} from "utils/share";
+  import {handleTableHeaderScrollHeight, handleTableScrollHeight, handleTableTotalRow, initTableColumns} from "utils/share";
   import TableHeaderSettings from "@/components/TableHeaderSettings";
   // 需要合计的列
   const totalKeyArr = ['buildArea',"exclusiveBuildArea", "apportionArea", "landArea"]
@@ -94,7 +93,7 @@
     { title: '交接日期', dataIndex: 'handoverDate', width: 100 },
     { title: '状态', dataIndex: 'statusName',width: 150 },
     { title: '使用权合同期限', dataIndex: 'contractData', width: 120 },
-    { title: '附加说明', dataIndex: 'excursus', width: 200, ellipsis: true },
+    { title: '附记', dataIndex: 'excursus', width: 200, ellipsis: true },
     { title: '备注', dataIndex: 'remark', width: 200 }
   ]
   export default {
@@ -252,9 +251,10 @@
           const keyStr = ele.dataIndex || ele.key
           if (totalKeyArr.includes(keyStr)){
             const data = this.tableObj.dataSource.reduce((pre,cur)=>{
-              return $math.simplify(`${pre}+${cur[keyStr]||0}`).toString()
+              // 出参小数位 最多4位-避免浮点数运算精度丢失
+              return ((10000 * pre) + (Number(cur[keyStr])  * 10000)) / 10000
             },0)
-            currentPageTotalData[keyStr] = isNaN(data) ? "" : Number(data)
+            currentPageTotalData[keyStr] = isNaN(data) ? "" : data
           }
           if (index === 0){
             currentPageTotalData[keyStr] = '当前页-合计'
@@ -278,7 +278,12 @@
           if (res && String(res.code) === '0') {
             const {count, data} = res.data
             this.tableObj.dataSource = data || []
-            this.handleTableTotalRow()
+            handleTableTotalRow({
+              columns: this.tableObj.columns,
+              dataSource: this.tableObj.dataSource,
+              rowKey:'warrantId',
+              totalKeyArr,
+            });
             this.queryOwnershipCardTableTotal(form)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength

@@ -113,3 +113,38 @@ export function handleTableHeaderScrollHeight(target){
   // -8px 参考 var.less 中的 @tableScrollHeight
   target.querySelector(".ant-table-header").style.marginBottom = "-8px"
 }
+
+/*
+* 处理 合计行
+* 引用对象
+* 注意函数副作用
+* totalKeyArr 需要统计合计的key <Array>
+* decimal 避免浮点数运算精度丢失
+* */
+export function handleTableTotalRow({ columns, dataSource, totalKeyArr,rowKey,decimal= 10000}){
+  const currentPageTotalData = {
+    // 保证 rowKey 有值
+    [rowKey]: Math.random()
+  }
+  const allPageTotalData = {
+    // 保证 rowKey 有值
+    [rowKey]: Math.random()
+  }
+  columns.forEach((ele,index)=>{
+    const keyStr = ele.dataIndex || ele.key
+    if (totalKeyArr.includes(keyStr)){
+      const data = dataSource.reduce((pre,cur)=>{
+        return ((decimal * pre) + (Number(cur[keyStr])  * decimal)) / decimal
+      },0)
+      currentPageTotalData[keyStr] = isNaN(data) ? "" : data
+    }
+    if (index === 0){
+      currentPageTotalData[keyStr] = '当前页-合计'
+      allPageTotalData[keyStr] = '所有页-合计'
+    }
+  })
+  dataSource.push(
+    currentPageTotalData,
+    allPageTotalData
+  )
+}
