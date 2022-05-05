@@ -203,12 +203,12 @@
     {
       "title": "上报基础情况表时间",
       "dataIndex": "reportBasicInfoDate",
-      "width": 150
+      "width": 200
     },
     {
       "title": "上报房屋划转请示时间",
       "dataIndex": "reportHouseTransferReqDate",
-      "width": 150
+      "width": 200
     },
     {
       "title": "房屋核实时间",
@@ -243,12 +243,12 @@
     {
       "title": "权属办理中存在问题",
       "dataIndex": "ownershipHandleProblems",
-      "width": 150
+      "width": 200
     },
     {
       "title": "房屋划转历史遗留问题",
       "dataIndex": "houseTransferHisProblem",
-      "width": 150
+      "width": 200
     },
     {
       "title": "划转时房屋权属",
@@ -463,291 +463,7 @@
           loading: false,
           dataSource: [],
           scroll: { x: "100%" },
-          columns: [
-            {
-              "title": "资产项目名称",
-              "dataIndex": "projectName",
-              "scopedSlots": {
-                "customRender": "projectName"
-              },
-              ellipsis: true,
-              "fixed": "left",
-              "width": 300
-            },
-            {
-              "title": "资产项目编码",
-              "dataIndex": "projectCode",
-              "width": 150
-            },
-            {
-              "title": "管理机构",
-              "dataIndex": "organName",
-              "width": 150,
-              ellipsis: true,
-            },
-            {
-              "title": "来源方式",
-              "dataIndex": "sourceTypeName",
-              "width": 150
-            },
-            {
-              "title": "来源渠道",
-              "dataIndex": "souceChannelType",
-              "width": 150
-            },
-            {
-              "title": "建筑年代",
-              "dataIndex": "buildAge",
-              "width": 150
-            },
-            {
-              "title": "楼栋数",
-              "dataIndex": "buildCount",
-              "width": 150
-            },
-            {
-              "title": "整栋接管数量",
-              "dataIndex": "assetBuildCount",
-              "width": 150
-            },
-            {
-              "title": "资产数量",
-              "dataIndex": "assetCount",
-              "width": 150
-            },
-            {
-              "title": "房屋性质",
-              "dataIndex": "houseTypeName",
-              "width": 150
-            },
-            {
-              "title": "建筑面积(㎡)",
-              "dataIndex": "area",
-              "width": 150, 
-              "scopedSlots": {
-                "customRender": "area"
-              },
-            },
-            {
-              "title": "划转前房屋状态",
-              "dataIndex": "houseStatusName",
-              "width": 150
-            },
-            {
-              "title": "上报基础情况表时间",
-              "dataIndex": "reportBasicInfoDate",
-              "width": 150
-            },
-            {
-              "title": "上报房屋划转请示时间",
-              "dataIndex": "reportHouseTransferReqDate",
-              "width": 150
-            },
-            {
-              "title": "房屋核实时间",
-              "dataIndex": "houseVerificationDate",
-              "width": 150
-            },
-            {
-              "title": "上报核实报告时间",
-              "dataIndex": "reportHouseVerificationDate",
-              "width": 150
-            },
-            {
-              "title": "划转批复下发时间",
-              "dataIndex": "transferApprovalDate",
-              "width": 150
-            },
-            {
-              "title": "协议签署时间",
-              "dataIndex": "agreementSignDate",
-              "width": 150
-            },
-            {
-              "title": "是否接管",
-              "dataIndex": "takeOverName",
-              "width": 150
-            },
-            {
-              "title": "接管时间",
-              "dataIndex": "takeOverDate",
-              "width": 150
-            },
-            {
-              "title": "权属办理中存在问题",
-              "dataIndex": "ownershipHandleProblems",
-              "width": 150
-            },
-            {
-              "title": "房屋划转历史遗留问题",
-              "dataIndex": "houseTransferHisProblem",
-              "width": 150
-            },
-            {
-              "title": "划转时房屋权属",
-              "dataIndex": "houseProperty",
-              "width": 150
-            },
-            {
-              "title": "划转时权利人",
-              "dataIndex": "houseObligee",
-              "width": 150
-            },
-            {
-              "title": "权属变更时间",
-              "dataIndex": "propertyChangeTime",
-              "width": 150
-            },
-            {
-              "title": "产权情况",
-              "dataIndex": "ownershipStatusName",
-              "width": 150
-            },
-            {
-              "title": "是否过户",
-              "dataIndex": "isTranster",
-              "width": 150
-            },
-            {
-              "title": "是否转物业",
-              "dataIndex": "isPropertyName",
-              "width": 150
-            },
-            {
-              "title": "转物业时间",
-              "dataIndex": "transferTime",
-              "width": 150
-            },
-            {
-              "title": "转物业面积(㎡)",
-              "dataIndex": "transferArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "transferArea"
-              },
-            },
-            {
-              "title": "是否转运营",
-              "dataIndex": "transferToOperationName",
-              "width": 150
-            },
-            {
-              "title": "转运营时间",
-              "dataIndex": "transferOperationTime",
-              "width": 150
-            },
-            {
-              "title": "转运营面积(㎡)",
-              "dataIndex": "transferOperationArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "transferOperationArea"
-              },
-            },
-            {
-              "title": "运营面积(㎡)",
-              "dataIndex": "operationArea",
-              "width": 150, 
-              "scopedSlots": {
-                "customRender": "operationArea"
-              },
-            },
-            {
-              "title": "闲置(㎡)",
-              "dataIndex": "idleArea",
-              "width": 150, 
-              "scopedSlots": {
-                "customRender": "idleArea"
-              },
-            },
-            {
-              "title": "自用(㎡)",
-              "dataIndex": "selfUserArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "selfUserArea"
-              },
-            },
-            {
-              "title": "占用(㎡)",
-              "dataIndex": "occupationArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "occupationArea"
-              },
-            },
-            {
-              "title": "其它(㎡)",
-              "dataIndex": "otherArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "otherArea"
-              },
-            },
-            {
-              "title": "已运营基本情况",
-              "dataIndex": "operationInfo",
-              "width": 150
-            },
-            {
-              "title": "资产原值(元)",
-              "dataIndex": "originalValue",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "originalValue"
-              },
-            },
-            {
-              "title": "首次成本法估值",
-              "dataIndex": "assetValuation",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "assetValuation"
-              },
-            },
-            {
-              "title": "首次市场法估值",
-              "dataIndex": "firstMarketValue",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "firstMarketValue"
-              },
-            },
-            {
-              "title": "最新估值(元)",
-              "dataIndex": "marketValue",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "marketValue"
-              },
-            },
-            {
-              "title": "项目状态",
-              "dataIndex": "approvalStatusName",
-              "width": 150
-            },
-            {
-              "title": "已租面积",
-              "dataIndex": "rentedArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "rentedArea"
-              },
-            },
-            {
-              "title": "未租面积",
-              "dataIndex": "unRentedArea",
-              "width": 150,
-              "scopedSlots": {
-                "customRender": "unRentedArea"
-              },
-            },
-            {
-              "title": "备注",
-              "dataIndex": "remark",
-              "width": 150
-            }
-          ]
+          columns: []
         },
         numList: [
           {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
@@ -932,8 +648,7 @@
 
     created () {
       // 初始化Table列头
-      // TODO:待后台录入 表头数据
-      // initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
+      initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
       handleTableScrollHeight(this.tableObj.scroll)
     },
     mounted() {
