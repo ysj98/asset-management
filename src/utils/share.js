@@ -106,7 +106,7 @@ export async function initTableColumns({columns,detailColumns,requiredColumn,fun
 * */
 export  function handleTableScrollHeight(scroll,otherHeight = 500){
   // 除去表格元素 其他元素高度总计不超过 500
-  scroll.y = Math.max(100, document.body.clientHeight - otherHeight)
+  scroll.y = Math.max(600, document.body.clientHeight - otherHeight)
 }
 
 export function handleTableHeaderScrollHeight(target){
