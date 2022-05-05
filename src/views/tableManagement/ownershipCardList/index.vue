@@ -235,37 +235,6 @@
           this.exportBtnLoading = false
         })
       },
-      /*
-      * 处理 合计行
-      * */
-      handleTableTotalRow(){
-        const currentPageTotalData = {
-          // 保证 rowKey 有值
-          warrantId: Math.random()
-        }
-        const allPageTotalData = {
-          // 保证 rowKey 有值
-          warrantId: Math.random()
-        }
-        this.tableObj.columns.forEach((ele,index)=>{
-          const keyStr = ele.dataIndex || ele.key
-          if (totalKeyArr.includes(keyStr)){
-            const data = this.tableObj.dataSource.reduce((pre,cur)=>{
-              // 出参小数位 最多4位-避免浮点数运算精度丢失
-              return ((10000 * pre) + (Number(cur[keyStr])  * 10000)) / 10000
-            },0)
-            currentPageTotalData[keyStr] = isNaN(data) ? "" : data
-          }
-          if (index === 0){
-            currentPageTotalData[keyStr] = '当前页-合计'
-            allPageTotalData[keyStr] = '所有页-合计'
-          }
-        })
-        this.tableObj.dataSource.push(
-          currentPageTotalData,
-          allPageTotalData
-        )
-      },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, searchType}) {
         const {queryObj, organProjectValue: {organId, projectId}} = this

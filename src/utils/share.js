@@ -1,7 +1,7 @@
 import * as apiAssets from "@/api/assets";
 import * as apiGlobal from "@/api/global";
 import { message as $message } from "ant-design-vue";
-
+import {math as $math} from '@/utils/math'
 export function getObjectKeyValueByOrganId({ organId, projectName }, cb) {
   if (!organId) {
     console.error("organId 必传");
@@ -134,9 +134,9 @@ export function handleTableTotalRow({ columns, dataSource, totalKeyArr,rowKey,de
     const keyStr = ele.dataIndex || ele.key
     if (totalKeyArr.includes(keyStr)){
       const data = dataSource.reduce((pre,cur)=>{
-        return ((decimal * pre) + (Number(cur[keyStr])  * decimal)) / decimal
+        return $math.simplify(`${pre}+${cur[keyStr]||0}`).toString()
       },0)
-      currentPageTotalData[keyStr] = isNaN(data) ? "" : data
+      currentPageTotalData[keyStr] = isNaN(data) ? "" : Number(data)
     }
     if (index === 0){
       currentPageTotalData[keyStr] = '当前页-合计'
