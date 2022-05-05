@@ -736,6 +736,8 @@ export const ownershipSurvey = {
   ownerShipUserSelect: "/ams/ownerShipUser/select",
   // 根据项目id查询权属情况
   queryByProjectId: "/ams/ownerShip/queryByProjectId",
+  // 资产项目权属汇总
+  statistics: "ams/ownerShip/attr/asset/statistics",
 };
 
 export const ownership = {
