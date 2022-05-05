@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="setting" @click="handleModalStatus" style="margin-right: 10px">列表设置</SG-Button>
+        <SG-Button icon="setting" @click="changeListSettingsModal(true)" style="margin-right: 10px">列表设置</SG-Button>
         <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AP_EXPORT">
           导出
         </SG-Button>
@@ -58,7 +58,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" class="custom-scroll  custom-total td-pd10" ref="table">
       <template slot="area" slot-scope="text">
         {{ getFormat(text) }}
       </template>
@@ -101,8 +101,8 @@
       <template slot="unRentedArea" slot-scope="text">
         {{ getFormat(text) }}
       </template>
-      <span slot="projectName" slot-scope="text, record">
-        <router-link :title="text" v-if="record.projectName !== '所有页-合计'" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
+      <span slot="projectName" slot-scope="text, record, index">
+        <router-link :title="text" v-if="index < tableObj.dataSource.length - 2" :to="{path: '/projectData/assetProjectDetail', query: {projectId: record.projectId}}">
           {{text}}
         </router-link>
         <span v-else>
@@ -114,9 +114,7 @@
     <div style="height: 100px;"></div>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
-    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
-      <edit-table-header :key="key" ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="tableObj.initColumns"/>
-    </SG-Modal>
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" width="1200px" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -127,18 +125,307 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
-  import EditTableHeader from './EditTableHeader'
   import moment from 'moment'
   import { getFormat } from '@/utils/utils'
+  import {handleTableHeaderScrollHeight, handleTableScrollHeight, handleTableTotalRow, initTableColumns} from "utils/share";
+  import TableHeaderSettings from "@/components/TableHeaderSettings";
   const judgment = [undefined, null, '']
+  const detailColumns =  [
+    {
+      "title": "资产项目名称",
+      "dataIndex": "projectName",
+      "scopedSlots": {
+        "customRender": "projectName"
+      },
+      ellipsis: true,
+      "fixed": "left",
+      "width": 300
+    },
+    {
+      "title": "资产项目编码",
+      "dataIndex": "projectCode",
+      "width": 150
+    },
+    {
+      "title": "管理机构",
+      "dataIndex": "organName",
+      "width": 150,
+      ellipsis: true,
+    },
+    {
+      "title": "来源方式",
+      "dataIndex": "sourceTypeName",
+      "width": 150
+    },
+    {
+      "title": "来源渠道",
+      "dataIndex": "souceChannelType",
+      "width": 150
+    },
+    {
+      "title": "建筑年代",
+      "dataIndex": "buildAge",
+      "width": 150
+    },
+    {
+      "title": "楼栋数",
+      "dataIndex": "buildCount",
+      "width": 150
+    },
+    {
+      "title": "整栋接管数量",
+      "dataIndex": "assetBuildCount",
+      "width": 150
+    },
+    {
+      "title": "资产数量",
+      "dataIndex": "assetCount",
+      "width": 150
+    },
+    {
+      "title": "房屋性质",
+      "dataIndex": "houseTypeName",
+      "width": 150
+    },
+    {
+      "title": "建筑面积(㎡)",
+      "dataIndex": "area",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "area"
+      },
+    },
+    {
+      "title": "划转前房屋状态",
+      "dataIndex": "houseStatusName",
+      "width": 150
+    },
+    {
+      "title": "上报基础情况表时间",
+      "dataIndex": "reportBasicInfoDate",
+      "width": 150
+    },
+    {
+      "title": "上报房屋划转请示时间",
+      "dataIndex": "reportHouseTransferReqDate",
+      "width": 150
+    },
+    {
+      "title": "房屋核实时间",
+      "dataIndex": "houseVerificationDate",
+      "width": 150
+    },
+    {
+      "title": "上报核实报告时间",
+      "dataIndex": "reportHouseVerificationDate",
+      "width": 150
+    },
+    {
+      "title": "划转批复下发时间",
+      "dataIndex": "transferApprovalDate",
+      "width": 150
+    },
+    {
+      "title": "协议签署时间",
+      "dataIndex": "agreementSignDate",
+      "width": 150
+    },
+    {
+      "title": "是否接管",
+      "dataIndex": "takeOverName",
+      "width": 150
+    },
+    {
+      "title": "接管时间",
+      "dataIndex": "takeOverDate",
+      "width": 150
+    },
+    {
+      "title": "权属办理中存在问题",
+      "dataIndex": "ownershipHandleProblems",
+      "width": 150
+    },
+    {
+      "title": "房屋划转历史遗留问题",
+      "dataIndex": "houseTransferHisProblem",
+      "width": 150
+    },
+    {
+      "title": "划转时房屋权属",
+      "dataIndex": "houseProperty",
+      "width": 150
+    },
+    {
+      "title": "划转时权利人",
+      "dataIndex": "houseObligee",
+      "width": 150
+    },
+    {
+      "title": "权属变更时间",
+      "dataIndex": "propertyChangeTime",
+      "width": 150
+    },
+    {
+      "title": "产权情况",
+      "dataIndex": "ownershipStatusName",
+      "width": 150
+    },
+    {
+      "title": "是否过户",
+      "dataIndex": "isTranster",
+      "width": 150
+    },
+    {
+      "title": "是否转物业",
+      "dataIndex": "isPropertyName",
+      "width": 150
+    },
+    {
+      "title": "转物业时间",
+      "dataIndex": "transferTime",
+      "width": 150
+    },
+    {
+      "title": "转物业面积(㎡)",
+      "dataIndex": "transferArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "transferArea"
+      },
+    },
+    {
+      "title": "是否转运营",
+      "dataIndex": "transferToOperationName",
+      "width": 150
+    },
+    {
+      "title": "转运营时间",
+      "dataIndex": "transferOperationTime",
+      "width": 150
+    },
+    {
+      "title": "转运营面积(㎡)",
+      "dataIndex": "transferOperationArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "transferOperationArea"
+      },
+    },
+    {
+      "title": "运营面积(㎡)",
+      "dataIndex": "operationArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "operationArea"
+      },
+    },
+    {
+      "title": "闲置(㎡)",
+      "dataIndex": "idleArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "idleArea"
+      },
+    },
+    {
+      "title": "自用(㎡)",
+      "dataIndex": "selfUserArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "selfUserArea"
+      },
+    },
+    {
+      "title": "占用(㎡)",
+      "dataIndex": "occupationArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "occupationArea"
+      },
+    },
+    {
+      "title": "其它(㎡)",
+      "dataIndex": "otherArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "otherArea"
+      },
+    },
+    {
+      "title": "已运营基本情况",
+      "dataIndex": "operationInfo",
+      "width": 150
+    },
+    {
+      "title": "资产原值(元)",
+      "dataIndex": "originalValue",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "originalValue"
+      },
+    },
+    {
+      "title": "首次成本法估值",
+      "dataIndex": "assetValuation",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "assetValuation"
+      },
+    },
+    {
+      "title": "首次市场法估值",
+      "dataIndex": "firstMarketValue",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "firstMarketValue"
+      },
+    },
+    {
+      "title": "最新估值(元)",
+      "dataIndex": "marketValue",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "marketValue"
+      },
+    },
+    {
+      "title": "项目状态",
+      "dataIndex": "approvalStatusName",
+      "width": 150
+    },
+    {
+      "title": "已租面积",
+      "dataIndex": "rentedArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "rentedArea"
+      },
+    },
+    {
+      "title": "未租面积",
+      "dataIndex": "unRentedArea",
+      "width": 150,
+      "scopedSlots": {
+        "customRender": "unRentedArea"
+      },
+    },
+    {
+      "title": "备注",
+      "dataIndex": "remark",
+      "width": 150
+    }
+  ]
   export default {
     name: 'index',
-    components: { EditTableHeader, OverviewNumber, SearchContainer, OrganProject, NoDataTip },
+    components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip, TableHeaderSettings },
     data () {
       return {
         getFormat,
         ASSET_MANAGEMENT, // 权限对象
         fold: true,
+        // todd:待确认
+        funType: 9,
+        listSettingFlag: false,
         queryObj: {
           takeOver: '', // 查询条件-接管状态值
           sourceType: '', // 查询条件-来源方式值
@@ -167,19 +454,15 @@
         ownershipOptions: [
           { title: '全部权属情况', key: '' }, { title: '有证', key: '1' }, { title: '无证', key: '0' }, { title: '待办证', key: '2' }
         ], // 查询条件-权属选项
-        key: 0, // 更新Modal包裹的子组件
-        checkedHeaderArr: [], // 格式如['name', 'age']
         exportBtnLoading: false, // 导出button loading标志
         overviewNumSpinning: false, // 查询视图面积概览数据loading
-        modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 750 },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
           pagination: false,
           rowKey: 'projectId',
           loading: false,
-          initColumns: [],
           dataSource: [],
-          scroll: { x: 5200 },
+          scroll: { x: "100%" },
           columns: [
             {
               "title": "资产项目名称",
@@ -199,7 +482,8 @@
             {
               "title": "管理机构",
               "dataIndex": "organName",
-              "width": 150
+              "width": 150,
+              ellipsis: true,
             },
             {
               "title": "来源方式",
@@ -488,13 +772,22 @@
           marketValue: '',      // 资产估值
           rentedArea: '',       // 已租面积
           unRentedArea: '',     // 未租面积
+          transferArea: '',     // 转物业面积
+          assetCount: '',       // 资产数量
+          transferOperationArea:'', //转运营面积
         }
       }
     },
 
     methods: {
       moment,
-
+      handleTableHeaderSuccess(){
+        this.changeListSettingsModal(false)
+        initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
+      },
+      changeListSettingsModal(flag){
+        this.listSettingFlag = flag
+      },
       // 处理接管时间
       changeDate (date, dateString) {
         this.queryObj.startTakeOverDate = dateString[0]
@@ -509,26 +802,6 @@
         querySourceType(id, this).then(list => {
           return this.sourceTypeOptions = [{ title: '全部来源方式', key: '' }].concat(list)
         })
-      },
-
-      // 列表设置Modal保存
-      handleModalOk () {
-        let arr = this.$refs['tableHeader'].checkedList
-        if (!arr.length) {
-          return this.$message.info('请至少选中一项!')
-        }
-        this.modalObj.status = false
-        let{ initColumns } = this.tableObj
-        this.checkedHeaderArr = arr
-        let columns = initColumns.filter(n => arr.includes(n.dataIndex))
-        this.tableObj.scroll = { x: columns.length * 150 } // 防止较少列时出现滚动
-        this.tableObj.columns = columns
-      },
-
-      // 打开/关闭列表列头编辑Modal
-      handleModalStatus () {
-        this.key = Date.now()
-        this.modalObj.status = status
       },
 
       // 查询列表数据
@@ -555,7 +828,31 @@
               let transferToOperationName = String(transferToOperation) === '1' ? '已转运营' : '未转运营'
               return { ...m, takeOverName, transferToOperationName, ownershipStatusName, isPropertyName }
             })
-            this.totalFn(form)
+            handleTableTotalRow(
+              {
+                columns: this.tableObj.columns,
+                dataSource: this.tableObj.dataSource,
+                rowKey: this.tableObj.rowKey,
+                totalKeyArr:[
+                  "originalValue",
+                  "buildCount",
+                  "assetBuildCount",
+                  "assetCount",
+                  "area",
+                  "transferArea",
+                  "transferOperationArea",
+                  "operationArea",
+                  "idleArea",
+                  "selfUserArea",
+                  "occupationArea",
+                  "otherArea",
+                  "marketValue",
+                  "rentedArea",
+                  "unRentedArea",
+                ]
+              }
+            )
+            this.queryOwnershipCardTableTotal(form)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -568,12 +865,11 @@
         // 查询统计数据
         if (type === 'search') { this.queryStatisticsInfo(form) }
       },
-    // 合计汇总合并
-      totalFn (form) {
-        this.$api.tableManage.projectAssetTotal(form).then(r => {
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            let data = res.data
+      queryOwnershipCardTableTotal(form){
+        this.$api.tableManage.projectAssetTotal(form).then(({data:{code,message,data}})=>{
+          if (code==="0"){
+            console.log({data})
+            const temp = this.tableObj.dataSource.pop()
             this.totalField.buildCount = judgment.includes(data.buildCountTotal) ? 0 : data.buildCountTotal          // 楼栋数
             this.totalField.assetBuildCount = judgment.includes(data.assetBuildCountTotal) ? 0 : data.assetBuildCountTotal   // 整栋楼接管数量
             this.totalField.area = judgment.includes(data.areaTotal) ? 0 : data.areaTotal                          // 建筑面积
@@ -586,12 +882,13 @@
             this.totalField.marketValue = judgment.includes(data.marketValueTotal) ? 0 : data.marketValueTotal         // 资产估值
             this.totalField.rentedArea = judgment.includes(data.rentedAreaTotal) ? 0 : data.rentedAreaTotal            // 已租面积
             this.totalField.unRentedArea = judgment.includes(data.unRentedAreaTotal) ? 0 : data.unRentedAreaTotal        // 未租面积
-            this.tableObj.dataSource.push({projectName: '所有页-合计', projectId: 'projectId', ...this.totalField})
-          } else {
-            this.$message.error(res.message)
+            this.totalField.transferArea = judgment.includes(data.transferAreaTotal) ? 0 : data.transferAreaTotal       // 转物业面积
+            this.totalField.assetCount = judgment.includes(data.assetCountTotal) ? 0 : data.assetCountTotal       // 资产数量
+            this.totalField.transferOperationArea = judgment.includes(data.transferOperationAreaTotal) ? 0 : data.transferOperationAreaTotal       // 转运营面积
+            this.tableObj.dataSource.push({...temp,...this.totalField})
+          }else {
+            this.$message.error(message)
           }
-        }).catch(err => {
-          this.$message.error(err || '查询统计出错')
         })
       },
       // 查询统计数据
@@ -616,8 +913,8 @@
       handleExport () {
         const {tableObj: { columns }} = this
         let form = this.queryTableData({type: 'export'})
-        let cells = columns.map(m => {
-          return { key: m.dataIndex, value: m.title}
+        let cells = columns.filter(ele=>ele.title).map(m => {
+          return { key: m.dataIndex || m.key, value: m.title}
         })
         this.exportBtnLoading = true
         exportDataAsExcel({...form, cells}, this.$api.tableManage.exportAssetProject, '资产项目查询列表.xls', this).then(() => {
@@ -635,12 +932,13 @@
 
     created () {
       // 初始化Table列头
-      let{ columns } = this.tableObj
-      this.tableObj.initColumns = columns
-      // 初始化被选中的列头数据
-      this.checkedHeaderArr = columns.map(m => m.dataIndex)
+      // TODO:待后台录入 表头数据
+      // initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
+      handleTableScrollHeight(this.tableObj.scroll)
     },
-
+    mounted() {
+      handleTableHeaderScrollHeight(this.$refs.table.$el)
+    },
     watch: {
       organProjectValue: {
         handler: function (val, pre) {
