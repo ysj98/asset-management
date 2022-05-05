@@ -94,7 +94,7 @@
     { title: '交接日期', dataIndex: 'handoverDate', width: 100 },
     { title: '状态', dataIndex: 'statusName',width: 150 },
     { title: '使用权合同期限', dataIndex: 'contractData', width: 120 },
-    { title: '附记', dataIndex: 'excursus', width: 200, ellipsis: true },
+    { title: '附加说明', dataIndex: 'excursus', width: 200, ellipsis: true },
     { title: '备注', dataIndex: 'remark', width: 200 }
   ]
   export default {
