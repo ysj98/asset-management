@@ -16,7 +16,7 @@
       </a-col>
     </a-row>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered/>
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered :scroll="{x: '100%', y: 600}"/>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
@@ -27,6 +27,7 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
+import { getFormat } from '../../../utils/utils'
   export default {
     name: 'index',
     components: { OrganProject, NoDataTip },
@@ -139,6 +140,14 @@
         if (type === 'sum') {
           Promise.all([queryTablePromise, this.queryDataSum(form)]).then(([dataSource, dataSumInfo]) => {
             dataSource && (this.tableObj.dataSource = dataSource.concat(dataSumInfo))
+            let formatArr = ['totalNumber', 'ownNumber', 'otherNumber', 'usedTotalNumber', 'ownUsedNumber', 'otherUsedNumber']
+            this.tableObj.dataSource.forEach(item => {
+              Object.keys(item).forEach(key => {
+                if(formatArr.includes(key)) {
+                  item[key] = getFormat(item[key])
+                }
+              })
+            })
           })
         }
       },
@@ -167,6 +176,9 @@
       padding-bottom: 55px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+        height: auto;
+      }
       & /deep/ .ant-table {
         .ant-table-thead th {
           white-space: nowrap;

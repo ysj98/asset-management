@@ -257,7 +257,6 @@ export default {
               Object.keys(this.sumObj).forEach(key => {
                 this.sumObj[key] = list[key]
               })
-              console.log(this.sumObj, 'sumObj')
               this.overviewNumSpinning = false
             } else {
               this.$message.error(data.message)
