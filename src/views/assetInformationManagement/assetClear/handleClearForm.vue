@@ -118,6 +118,7 @@
               <SGUploadFilePlus
                 :baseImgURL="configBase.hostImg1"
                 v-model="detail.attachment"
+                :show="!editable"
                 type="all"
                 :max="5"
                 :maxSize="20480"

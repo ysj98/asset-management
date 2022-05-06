@@ -234,7 +234,7 @@
          if(dimension === '1' || dimension === '2') {
           data.push({ ...totalObj,key: data.length+1,organName: 'zzz2', projectName: '所有页-合计', businessUnit: 'zzz2'})
         }else{
-          data.push({ ...totalObj ,key: data.length+1,organName: '所有页-合计'})
+          data.push({ ...totalObj ,key: data.length+1,organName: '所有页-合计', projectName: '所有页-合计'})
         }
         const { columnsByAsset, fixedColumns, sortFunc, columnsByOrgan } = this
         let dataSource = data.map((m, key) => {
@@ -288,6 +288,7 @@
         })
         // 添加合计和小计
         let pageSum = {}
+        console.log(dataSource, 'dataSource')
         dataSource.forEach((item, index) => {
           if(item.projectName !== '所有页-合计') {
             Object.keys(this.sumObj).forEach(key => {
@@ -373,6 +374,7 @@
               return c
             }
           }).concat(arr)
+          this.disabledHeader = ['projectName', 'businessUnit', 'organName']
         } else {
           // columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(2)), ...arr)
           columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(3)), ...arr)
