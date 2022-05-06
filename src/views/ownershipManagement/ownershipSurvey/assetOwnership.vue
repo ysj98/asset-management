@@ -315,7 +315,7 @@ let columns = [
   {
     title: "面积(㎡)",
     dataIndex: "area",
-    width: 100
+    width: 200
   },
   {
     title: "权属情况",
