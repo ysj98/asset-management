@@ -119,9 +119,8 @@ export function handleTableHeaderScrollHeight(target){
 * 引用对象
 * 注意函数副作用
 * totalKeyArr 需要统计合计的key <Array>
-* decimal 避免浮点数运算精度丢失
 * */
-export function handleTableTotalRow({ columns, dataSource, totalKeyArr,rowKey,decimal= 10000}){
+export function handleTableTotalRow({ columns, dataSource, totalKeyArr,rowKey}){
   const currentPageTotalData = {
     // 保证 rowKey 有值
     [rowKey]: Math.random()
