@@ -17,7 +17,7 @@
     data () {
       return {
         // checkAll: false, // 全选
-        checkedList: ['projectName', 'businessUnit', 'organName'], // 选中项,
+        checkedList: [], // 选中项,
         // indeterminate: false, // 全选按钮是否与checkGroup联动
         // disabledHeader: ['projectName', 'businessUnit', 'organName'] // 不可选的列头
       }
@@ -25,12 +25,11 @@
     computed: {
       options: function () {
         return this.columns.map(item => {
-          let bool = this.disabledHeader.includes(item.dataIndex)
+          let bool = this.checkedArr.includes(item.dataIndex)
           return {
             label: item.title,
             value: item.dataIndex,
-            checked: bool,
-            disabled: bool
+            checked: bool
           }
         }).filter(m => m.value !== 'action')
       }
