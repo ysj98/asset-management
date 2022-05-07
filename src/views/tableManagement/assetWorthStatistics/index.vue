@@ -86,7 +86,7 @@
     </a-spin>
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10" bordered >
-      <template slot="originalValue" slot-scope="text">
+      <!-- <template slot="originalValue" slot-scope="text">
         {{ getFormat(text) }}
       </template>
       <template slot="assetValuation" slot-scope="text">
@@ -97,7 +97,7 @@
       </template>
       <template slot="marketValue" slot-scope="text">
         {{ getFormat(text) }}
-      </template>
+      </template> -->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -116,7 +116,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import EditTableHeader from './EditTableHeader.vue'
   import { getFormat } from '@/utils/utils.js'
-  import { handleTableScrollHeight } from "@/utils/share";
+  import {math} from '@/utils/math'
   import moment from 'moment'
   export default {
     name: 'index',
@@ -483,9 +483,13 @@
           scroll: { x: columns.length * 160 }
         })
         handleTableScrollHeight(this.tableObj.scroll)
+        let formatArr = ['originalValue', 'assetValuation', 'firstMarketValue', 'marketValue']
         this.tableObj.dataSource.forEach(item => {
           Object.keys(item).forEach(key => {
             if(key.includes('date_')){
+              item[key] = getFormat(item[key])
+            }
+            if(formatArr.includes(key)) {
               item[key] = getFormat(item[key])
             }
           })

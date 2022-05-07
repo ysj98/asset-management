@@ -460,7 +460,8 @@ export default {
           this.detail.attachment.forEach(item => {
             let obj = {
               attachmentPath: item.url,
-              oldAttachmentName: item.name
+              oldAttachmentName: item.name,
+              fileSources: 1
             }
             attachment.push(obj)
           })
