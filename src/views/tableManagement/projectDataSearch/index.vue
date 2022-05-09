@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="setting" @click="changeListSettingsModal(true)" style="margin-right: 10px">列表设置</SG-Button>
+        <SG-Button icon="setting" @click="changeListSettingsModal(true)" v-power="ASSET_MANAGEMENT.TM_AP_HEADERS_SETTING" style="margin-right: 10px">列表设置</SG-Button>
         <SG-Button icon="import" type="primary" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_AP_EXPORT">
           导出
         </SG-Button>

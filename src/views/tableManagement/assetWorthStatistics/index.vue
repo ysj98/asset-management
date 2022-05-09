@@ -12,7 +12,7 @@
           v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
           导出
         </SG-Button>
-        <SG-Button v-power="ASSET_MANAGEMENT.TM_AW_SETTING" icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.TM_AW_HEADERS_SETTING" icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8" style="width: 100%">
@@ -368,7 +368,7 @@
             Object.keys(this.sumObj).forEach(key => {
               !pageSum[key] && (pageSum[key] = 0)
               pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
-              if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000).toFixed(4)
+              if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000)//.toFixed(4)
             })
           }
         })
