@@ -12,7 +12,7 @@
           v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
           导出
         </SG-Button>
-        <SG-Button icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.TM_AW_SETTING" icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8" style="width: 100%">
@@ -116,7 +116,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import EditTableHeader from './EditTableHeader.vue'
   import { getFormat } from '@/utils/utils.js'
-  import {math} from '@/utils/math'
+  import { handleTableScrollHeight } from "utils/share";
   import moment from 'moment'
   export default {
     name: 'index',
@@ -203,36 +203,50 @@
       getColumns () {
         let {dimension} = this.queryObj
         let funType = dimension === '1' ? '10' : dimension === '2' ? '11' : '12'
-        this.$api.global.assetRolListV2({ funType: funType }).then(({ data: {data: { customChose, customShow, templeCode } }}) => {
-          this.fixedColumns = []
-          this.tableObj.initColumns = []
-          customShow.forEach(item => {
-            this.fixedColumns.push({
-              title: item.colName,
-              dataIndex: item.colCode,
+        this.$api.global.assetRolListV2({ funType: funType }).then(({ data: {data: { customChose, customShow, templeCode }, code }}) => {
+          if(code === '0') {
+            this.fixedColumns = []
+            this.tableObj.initColumns = []
+            customShow.forEach(item => {
+              if(dimension !== '3' && item.colCode === 'organName'){
+                this.fixedColumns.unshift({
+                  title: item.colName,
+                  dataIndex: item.colCode
+                })
+              }else{
+                this.fixedColumns.push({
+                  title: item.colName,
+                  dataIndex: item.colCode
+                })
+              }
             })
-          })
-          this.fixedColumns.forEach(item => {
-            if(item.dataIndex === 'businessUnit') {
-              item.fixed = 'left'
-              item.width = 120
+            if(this.fixedColumns.length > 0) {
+              this.fixedColumns.forEach(item => {
+                if(item.dataIndex && item.dataIndex === 'businessUnit') {
+                  item.fixed = 'left'
+                  item.width = 120
+                }
+                if(item.dataIndex && item.dataIndex === 'projectName') {
+                  item.fixed = 'left'
+                  item.width = 280
+                }
+                if(item.dataIndex && item.dataIndex === 'organName') {
+                  item.fixed = 'left'
+                  item.width = 220
+                }
+              })
             }
-            if(item.dataIndex === 'projectName') {
-              item.fixed = 'left'
-              item.width = 300
-            }
-            if(item.dataIndex === 'organName') {
-              item.fixed = 'left'
-              item.width = 220
-            }
-          })
-          this.checkedHeaderArr = customChose.map(item => item.colCode)
-          templeCode.forEach(item => {
-            this.tableObj.initColumns.push({
-              title: item.colName,
-              dataIndex: item.colCode
+            
+            this.checkedHeaderArr = customChose.map(item => item.colCode)
+            templeCode.forEach(item => {
+              this.tableObj.initColumns.push({
+                title: item.colName,
+                dataIndex: item.colCode
+              })
             })
-          })
+          }
+        }).catch(error => {
+          this.$message.error(data.message || '查询表头设置失败')
         })
       },
       // 编辑列表设置
@@ -295,7 +309,7 @@
         }else{
           data.push({ ...totalObj ,key: data.length+1,organName: '所有页-合计' , projectName: '所有页-合计'})
         }
-        const { columnsByAsset, fixedColumns, sortFunc, columnsByOrgan } = this
+        const { fixedColumns} = this
         let dataSource = data.map((m, key) => {
           let temp = {}
           let arr = m.dynamicData || []
@@ -483,7 +497,7 @@
           scroll: { x: columns.length * 160 }
         })
         handleTableScrollHeight(this.tableObj.scroll)
-        let formatArr = ['originalValue', 'assetValuation', 'firstMarketValue', 'marketValue']
+        let formatArr = ['originalValue', 'assetValuation', 'firstMarketValue', 'marketValue', 'assetArea']
         this.tableObj.dataSource.forEach(item => {
           Object.keys(item).forEach(key => {
             if(key.includes('date_')){
@@ -529,6 +543,7 @@
         } catch (error) {
           this.overviewNumSpinning = false
           this.$message.error(error || '查询统计出错')
+          console.log(error, 'getAssetValueCount')
         }
         if (type === 'export') { return form }
         this.tableObj.loading = true
@@ -676,6 +691,9 @@
         .ant-table-tbody tr td {
           padding-left: 6px !important;
         }
+      }
+      & /deep/ .ant-table-tbody tr td:last-child {
+        padding-right: 0 !important;
       }
     }
     & /deep/ .ant-table {
