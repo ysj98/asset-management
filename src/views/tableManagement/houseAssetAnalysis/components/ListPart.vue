@@ -64,6 +64,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 import {getFormat, getMutipSort, getSort, utils} from '@/utils/utils'
 import { handleTableScrollHeight } from "utils/share";
+import {math} from '@/utils/math'
 export default {
     name: 'ListPart',
     components: { EditTableHeader },
@@ -111,7 +112,8 @@ export default {
           businessUnit: 6,
           regionName: 4,
         }, // 统计维度的顺序表，用于导出
-        sortFunc: (a, b) => a - b // 默认排序算法
+        sortFunc: (a, b) => a - b, // 默认排序算法
+        totalData: {}
       }
     },
     created(){
@@ -136,7 +138,7 @@ export default {
 
     methods: {
       // 查询Table DataSource
-      queryTableData ({pageNo = 1, pageLength = 10}) {
+      async queryTableData ({pageNo = 1, pageLength = 10}) {
         const { queryInfo, columnsDynamic, sortIndex } = this
         this.tableLoading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
@@ -303,8 +305,8 @@ export default {
       },
 
       // 处理columns中需要合并的列
-      handleColumns () {
-        const { columnsFixed, dataSource, columnsDynamic } = this
+      async handleColumns () {
+        const { columnsFixed, dataSource, columnsDynamic, queryInfo, sortIndex } = this
         // 对dataSource按统计维度排序
         // let newDataSource = dataSource.sort(sortFunc)
         let gatherInfo = this.calcRowSpan(dataSource, columnsDynamic)
@@ -315,24 +317,63 @@ export default {
           }
         }).concat(columnsFixed)
         // 表格添加合计和小计
-        // console.log(columnsFixed, dataSource)
-        // dataSource.push({},{})
+        let sumarr = ['assetNum', 'area', 'transferOperationArea', 'selfUserArea','idleArea', 'occupationArea', 'otherArea', 'originalValue', 'firstOriginalValue', 'latestValuationValue']
+        let sumObj = {}
+        // sumarr.forEach(key => {
+        //   let num = 0
+        //   this.dataSource.forEach((item, index) => {
+        //     item[key] = item[key] ? item[key] : 0
+        //     num += Number(item[key])
+        //     if(index === this.dataSource.length - 1) sumObj[key] = num
+        //   })
+        // })
+        const { format, bignumber, add } = math
+        sumarr.forEach(key => {
+         sumObj[key]= this.dataSource.reduce((pre, cur) => {
+            cur[key] = cur[key] ? cur[key] : 0
+            return  +format(add(bignumber(pre || 0), bignumber(cur[key] || 0)))
+          }, 0)
+        })
+        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
+        dimension.splice(dimension.indexOf(6),1)
+        try {
+          let res = await this.$api.tableManage.pageListStatistics({...queryInfo, dimension,  organQueryType: this.organQueryType})
+          if(res.data.code === '0'){
+            this.totalData = res.data.data
+            console.log(this.totalData)
+          }
+        } catch (error) {
+          console.log(error)
+          this.$message.error(error || '合计查询失败')
+        }
+        let totalObj = {}
+        Object.keys(this.totalData).forEach(key => {
+          if(key === 'assetAreaCount'){
+            totalObj.area = this.totalData[key]
+          }else{
+            let str = key.split('C')[0]
+            totalObj[str] = this.totalData[key]
+          }
+        })
+        this.dataSource.push({ organName: '当前页-合计', ...sumObj, projectName:'22'}, { ...totalObj,organName: '所有页-合计' }) // ,
       },
 
       // 合并单元格
       renderCellContent (value, row, dataIndex, i, columnsDynamic, gatherInfo) {
-        let attrs = {}
-        let rowSpanInfo = row.rowSpanInfo
-        if (rowSpanInfo[dataIndex]) {
-          let name = ''
-          for (let c = 0; c <= i; c++) {
-            name += `_${row[columnsDynamic[c].dataIndex]}`
+        if(row.organName !== '当前页-合计' && row.organName !== '所有页-合计'){
+          let attrs = {}
+          let rowSpanInfo = row.rowSpanInfo
+          if (rowSpanInfo[dataIndex]) {
+            let name = ''
+            for (let c = 0; c <= i; c++) {
+              name += `_${row[columnsDynamic[c].dataIndex]}`
+            }
+            attrs.rowSpan = gatherInfo[name]
+          } else {
+            attrs.rowSpan = 0
           }
-          attrs.rowSpan = gatherInfo[name]
-        } else {
-          attrs.rowSpan = 0
+          return { children: value, attrs }
         }
-        return { children: value, attrs }
       },
 
       // 导出

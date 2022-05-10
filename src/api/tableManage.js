@@ -84,6 +84,10 @@ export function exportAssetHouseList (data) {
 export function queryAssetHouseTotal (data) {
   return axiosPost(tableManage.queryAssetHouseTotal, data)
 }
+// 房屋资产统计分析-查询列表-合计
+export function pageListStatistics (data) {
+  return axiosPost(tableManage.pageListStatistics, data)
+}
 // 有证房屋资产统计表
 export function queryWarrantHouse (data) {
   return axiosPost(tableManage.queryWarrantHouse, data)

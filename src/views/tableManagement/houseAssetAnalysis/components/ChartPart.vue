@@ -4,9 +4,14 @@
     <SG-Title title="汇总分析"/>
     <div style="margin-left: 45px" v-if="isHasData">
       <a-row :gutter="16">
-        <a-col :span="12" v-for="(val, name) in divObj" :key="name" style="margin-bottom: 25px">
-          <div class="chart_title">{{val}}</div>
-          <div :id="name"></div>
+        <a-col :span="12" v-for="(val) in divObj" :key="val.name" style="margin-bottom: 25px">
+          <a-tooltip>
+            <template #title>
+              <span >合计：{{getFormat(val.total)}}{{val.key === 'asset_statistics' ? '万元' : '㎡'}}</span>
+            </template>
+            <div class="chart_title">{{val.name}}</div>
+          </a-tooltip>
+          <div :id="val.key"></div>
         </a-col>
       </a-row>
     </div>
@@ -23,19 +28,21 @@
   import 'echarts/lib/component/tooltip'
   import 'echarts/lib/component/legendScroll'
   import { getFormat } from '@/utils/utils'
+  import {math as $math} from '@/utils/math'
   export default {
     name: 'ChartPart',
     props: ['queryInfo'],
     data () {
       return {
+        getFormat,
         loading: false, // 页面loading
         isHasData: false, // 是否有图表数据，用于判断显示缺省文字
-        divObj: {
-          type_statistics: '资产分类统计(㎡)',
-          direct_statistics: '使用方向统计(㎡)',
-          ownership_statistics: '权属情况统计(㎡)',
-          asset_statistics: '资产价值统计(万元)'
-        }, // 图表寄存的div集合
+        divObj: [
+          { name: '资产分类统计(㎡)', total: 0, key: 'type_statistics' }, // type_statistics
+          { name: '使用方向统计(㎡)', total: 0, key: 'direct_statistics' }, // direct_statistics
+          { name: '权属情况统计(㎡)', total: 0, key: 'ownership_statistics' }, // ownership_statistics
+          { name: '资产价值统计(万元)', total: 0, key: 'asset_statistics' } // asset_statistics
+        ], // 图表寄存的div集合
         chartInstance: {
           type_statistics: null,
           direct_statistics: null,
@@ -58,6 +65,7 @@
     methods: {
       // 查询汇总数据
       queryData (form) {
+        let { divObj } = this
         if (!form.organId) { return false }
         this.loading = true
         this.$api.tableManage.queryAssetHouseTotal(form).then(r => {
@@ -78,7 +86,15 @@
                 arr.push(m)
               }
             })
-            console.log(arr)
+            
+            // 饼图添加合计数据
+            // assetValue 资产价值统计 ownershipAreaList 权属情况统计 buildAreaList 资产分类统计 usedList 使用方向统计
+            // $math.simplify(`${pre}+${cur[keyStr]||0}`).toString()
+            const { format, bignumber, add } = $math
+            divObj[3].total = Object.values(assetValue).filter(item => !isNaN(item)).reduce((pre, cur) => +format(add(bignumber(pre), bignumber(cur))))
+            divObj[0].total = buildAreaList.reduce((pre,cur) => +format(add(bignumber(pre || 0), bignumber(cur.area || 0))), 0)
+            divObj[1].total = usedList.reduce((pre,cur) => +format(add(bignumber(pre || 0), bignumber(cur.area || 0))), 0)
+            divObj[2].total = ownershipAreaList.reduce((pre,cur) => +format(add(bignumber(pre || 0), bignumber(cur.area || 0))), 0)
             let list = area || percentage ? [
               ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
             ] : arr
@@ -98,6 +114,7 @@
           this.isHasData = false
           this.loading = false
           this.$message.error(err || '查询汇总数据出错')
+          console.log(err)
         })
       },
 
@@ -192,6 +209,7 @@
       font-weight: bold;
       text-align: center;
       padding-bottom: 15px;
+      cursor: pointer;
     }
     #asset_statistics, #type_statistics, #direct_statistics, #ownership_statistics {
       height: 250px;

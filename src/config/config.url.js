@@ -1091,6 +1091,8 @@ export const tableManage = {
   exportAssetHouseList: "/ams/statistics/asset-house/pageList/export",
   // 房屋资产统计分析-汇总分析
   queryAssetHouseTotal: "/ams/statistics/asset-house/total",
+  // 房屋资产统计分析-查询列表-合计
+  pageListStatistics: "/ams/statistics/asset-house/pageListStatistics",
   // 有证房屋资产统计表
   queryWarrantHouse: "/ams/statistics/asset/house/warrant",
   // 有证房屋资产统计表（导出）
