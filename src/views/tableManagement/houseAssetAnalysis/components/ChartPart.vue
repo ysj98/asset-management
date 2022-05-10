@@ -131,7 +131,7 @@
               show: true, 
               // formatter: '{c} ({d}%)'
               formatter: function(p) {
-                return getFormat(p.value)+"%";
+                return `${getFormat(p.value)}(${p.percent}%)`;
               }
             }, 
             hoverOffset: 3 }],
