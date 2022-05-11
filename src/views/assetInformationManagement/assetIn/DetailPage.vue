@@ -1,6 +1,6 @@
 <!--资产入库-入口列表-详情页-->
 <template>
-  <div class="detail_page">
+  <div class="detail_page" ref="detail">
     <a-spin :spinning="spinning">
       <!--基本信息-->
       <SG-Title title="基本信息"/>
@@ -49,8 +49,9 @@
       <!--资产明细-->
       <SG-Title title="资产明细"/>
       <div style="margin-left: 45px">
-        <a-table v-bind="tableObj" class="custom-table td-pd10 table-border"/>
+        <a-table v-bind="tableObj" class="custom-table td-pd10 table-border table-print"/>
         <SG-FooterPagination
+          class="footer-pagination"
           v-if="tableObj.dataSource.length"
           v-bind="paginationObj" style="margin-top: 15px"
           @change="({ pageNo, pageLength }) => queryAssetByRegistId({ pageNo, pageLength })"
@@ -62,12 +63,12 @@
         <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
         <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       </div>
-      <div v-if="isApprove && !isOld">
+      <div class="footer-advice" v-if="isApprove && !isOld">
         <SG-Title title="审核意见"/>
         <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
       </div>
-      <div style="height: 70px;"></div>
-      <div v-if="isApprove">
+      <div class="empty"></div>
+      <div class="footer-action" v-if="isApprove">
         <!--底部审批操作按钮组-->
         <form-footer location="fixed">
           <SG-Button type="primary" @click="handleBtn(1)" :loading="submitBtnLoading">审批通过</SG-Button>
@@ -75,6 +76,7 @@
         </form-footer>
       </div>
     </a-spin>
+    <a-button @click="printFn" type="primary" class="print">打印</a-button>
   </div>
 </template>
 
@@ -118,19 +120,19 @@
           dataSource: [],
           loading: false,
           pagination: false,
-          scroll: { x: 1600 },
           columns: [
-            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' } },
-            { title: '资产名称', dataIndex: 'assetName' }, { title: '资产编码', dataIndex: 'assetCode' },
-            { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-            { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目名称', dataIndex: 'projectName' },
+            { title: '登记单编号', dataIndex: 'registerOrderId', scopedSlots: { customRender: 'registerOrderId' } , width: 150 },
+            { title: '资产名称', dataIndex: 'assetName', width: 300 }, { title: '资产编码', dataIndex: 'assetCode', width: 300 },
+            { title: '资产类型', dataIndex: 'assetTypeName', width: 150 }, { title: '资产分类', dataIndex: 'objectTypeName', width: 150},
+            { title: '管理机构', dataIndex: 'organName', width: 250 }, { title: '资产项目名称', dataIndex: 'projectName', width: 250 },
             { title: '资产面积(㎡)', key: 'area',
               customRender(record){
                 return generateTableAreaByAssetTypeString({record,assetTypeName:record.assetTypeName,keyStr:'area'})
-              }
-            }, { title: '资产位置', dataIndex: 'pasitionString', width: 150 },
-            { title: '创建日期', dataIndex: 'createTime' }, { title: '创建人', dataIndex: 'createByName' },
-            { title: '核实时间', dataIndex: 'verifierTime' }, { title: '核实人', dataIndex: 'verifierByName' }
+              },
+              width: 150
+            }, { title: '资产位置', dataIndex: 'pasitionString', width: 300 },
+            { title: '创建日期', dataIndex: 'createTime', width: 200 }, { title: '创建人', dataIndex: 'createByName', width: 150 },
+            { title: '核实时间', dataIndex: 'verifierTime', width: 200 }, { title: '核实人', dataIndex: 'verifierByName', width: 150 },
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
@@ -138,10 +140,24 @@
     },
 
     created () {
-     this.init()
+      this.init()
     },
-
     methods: {
+      printFn(){
+        if (this.$route.path==='/assetIn/printDetail'){
+          window.print()
+        }else {
+          const query = this.$route.query
+          const res  = new URLSearchParams()
+          Object.keys(query).forEach(ele=>{
+            res.append(ele,query[ele])
+          })
+          res.append('pageNo',this.paginationObj.pageNo)
+          res.append('pageLength',this.paginationObj.pageLength)
+          const resStr = res.toString()
+          window.open(`#/assetIn/printDetail?${resStr}`)
+        }
+      },
       async init(){
         console.log('this.$route',this.$route)
         const { query: { instId }, path } = this.$route
@@ -316,5 +332,13 @@
       display: block;
       border-bottom: 1px solid #e8e8e8;
     }
+  }
+  .print{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+  .empty{
+    height: 70px;
   }
 </style>

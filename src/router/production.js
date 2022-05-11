@@ -907,6 +907,13 @@ let proRouter = [{
     name: '详情', // 资产入库详情
     component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
   }, {
+    path: '/assetIn/printDetail',
+    name: '详情', // 资产入库详情打印页面
+    component: () => import('@/views/assetInformationManagement/assetIn/DetailPrintPage'),
+    meta:{
+      noShowProBreadNav: true
+    }
+  },  {
     path: '/assetIn/approve',
     name: '审核', // 资产入库审核
     component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
@@ -1257,6 +1264,26 @@ let proRouter = [{
     path: '/organCarPrakView',
     name: '组织机构视图',
     component: () => import('@/views/assetInformationManagement/carPark/OrganCarPrakView')
+  },
+  {
+    path: '/equipmentprojectview',
+    name: '设备设施项目视图',
+    component: () => import('@/views/equipmentview/projectview/index.vue')
+  },
+  {
+    path: '/equipmentprojectview/detail',
+    name: '设备设施项目视图详情',
+    component: () => import('@/views/equipmentview/projectview/detail.vue')
+  },
+  {
+    path: '/equipmentview',
+    name: '设备设施资产视图',
+    component: () => import('@/views/equipmentview/assetview/index.vue')
+  },
+  {
+    path: '/equipmentview/detail',
+    name: '设备设施资产视图详情',
+    component: () => import('@/views/equipmentview/assetview/detail.vue')
   },
   {
     path: '/organCarPrakView/detail',

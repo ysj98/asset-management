@@ -135,3 +135,23 @@ body.dev .p-devOpts {
     }
   }
 }
+
+@media print {
+  .bread-nav{
+    display: none;
+  }
+  #Dev{
+    display: none;
+  }
+  body.dev {
+    margin-left: 0;
+    width: 100%;
+  }
+  body{
+    margin: 0 !important;
+    width: 100%;
+  }
+  .router-view{
+    height: auto;
+  }
+}
