@@ -690,8 +690,8 @@ export function downLoadUseDirectionTemplate (data) {
 }
 
 // 资产使用方向变更模板导入
-export function readUseDirectionTemplate (data) {
-  return axiosPost(assets.projectManage.readUseDirectionTemplate, data, true, false)
+export function readUseDirectionTemplate (data, type) {
+  return axiosPost('/ams/assetChange/readUseDirectionTemplate?assetType='+type, data, true, false)
 }
 // 
 // 根据组织Id查资产项目

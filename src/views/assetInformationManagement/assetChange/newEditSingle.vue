@@ -267,7 +267,7 @@
             v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
             class="buytton-nav"
             weaken
-            @click="batchUpdate"
+            @click="addTheAsset('batchUpdate')"
           >批量更新</SG-Button>
           <SG-Button
             v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
@@ -275,8 +275,7 @@
             type="primary"
             style="margin-right: 10px;"
             weaken
-            :disabled="selectedRowKeys.length <= 0"
-            @click="exportBtn"
+            @click="addTheAsset('exportBtn')"
           >导出</SG-Button>
           <SG-Button
             v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
@@ -531,6 +530,7 @@
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
+    <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
 
@@ -743,20 +743,18 @@ export default {
     }
   },
   methods: {
-    // 导出
-    exportBtn () {
-      let data = {
-        organId: this.organId,
-        assetType: this.assetType,
-        projectId: this.projectId
-      }
-      this.$api.assets.downLoadUseDirectionTemplate(data).then(res => {
-        console.log(res)
+    change (files, e) {
+      var formData = new FormData();
+      formData.append("file" , files[0])
+      let type = this.assetType
+      this.$api.assets.readUseDirectionTemplate(formData,type).then(res => {
+        if(res.data.code === '0') {
+          res.data.data.forEach(item => {
+            this.$set(item, 'newUseDirection', item.useDirection)
+          })
+          this.tableData = res.data.data
+        }
       })
-    },
-    // 批量更新--导入
-    batchUpdate () {
-      // readUseDirectionTemplate
     },
     queryObjectType () {
       const organId = this.organId
@@ -1043,6 +1041,7 @@ export default {
               newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : "", // 变更后使用方向(设备设施 独有)
               newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "", // 变更后资产分类
               propertyRightUnit: String(this.changeType) === "10" ? item.newPropertyRightUnit : "", //变更后实际产权单位
+              oldAssetArea: item.assetArea || ""
             });
           });
           let obj = {
@@ -1103,7 +1102,7 @@ export default {
       this.$refs.assetBundlePopover.show = false;
     },
     // 添加资产
-    addTheAsset() {
+    addTheAsset(val) {
       if (!this.form.getFieldValue("projectId")) {
         this.$message.info("请先选择资产项目");
         return;
@@ -1112,16 +1111,43 @@ export default {
         this.$message.info("请先选择资产类型");
         return;
       }
-      if (this.changeType) {
-        this.$refs.assetBundlePopover.redactCheckedDataFn(
-          this.checkedData,
-          this.form.getFieldValue("projectId"),
-          this.form.getFieldValue("assetType"),
-          this.tableData
-        );
-        this.$refs.assetBundlePopover.show = true;
-      } else {
+       if (!this.changeType){
         this.$message.info("请先选择变更类型");
+        return;
+       }
+      //  导入
+      if(val && val === 'batchUpdate') {
+        this.$refs.fileUpload.click()
+      }else if(val && val === 'exportBtn') { // 导出
+        let data = {
+          organId: this.organId,
+          assetType: this.assetType,
+          projectId: this.projectId
+        }
+        // 1:楼栋，2房间，3构筑物，4土地
+        let name = this.assetTypeData.find(item =>item.value === this.assetType).name
+        this.$api.assets.downLoadUseDirectionTemplate(data).then(res => {
+          let blob = new Blob([res.data])
+          let a = document.createElement('a')
+          a.href = URL.createObjectURL(blob)
+          a.download = `批量更新${name}列表.xls`
+          a.style.display = 'none'
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+        })
+      }else{
+        if (this.changeType) {
+          this.$refs.assetBundlePopover.redactCheckedDataFn(
+            this.checkedData,
+            this.form.getFieldValue("projectId"),
+            this.form.getFieldValue("assetType"),
+            this.tableData
+          );
+          this.$refs.assetBundlePopover.show = true;
+        } else {
+          this.$message.info("请先选择变更类型");
+        }
       }
     },
     // 变更类型

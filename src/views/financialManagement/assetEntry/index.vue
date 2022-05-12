@@ -343,6 +343,13 @@
         console.log(this.selectedRowKeys, 'this.selectedRowKeys')
         this.$api.assets.batchSubmission({cardIdList: this.selectedRowKeys}).then(res => {
           console.log(res, 'res')
+          if(res.data.code === '0') {
+            this.selectedRowKeys = []
+            this.queryClick()
+          }
+        }).catch(error => {
+          console.log(error)
+          this.$message.error(error || '编辑失败')
         })
       },
       onSelectChange (val) {
