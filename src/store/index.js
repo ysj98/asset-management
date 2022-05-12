@@ -33,8 +33,20 @@ const ASSET_TYPE_STRING_ENUM = {
 
 export default new Vuex.Store({
   state: {
-    ASSET_TYPE_STRING: {},
-    ASSET_TYPE_CODE: {},
+    // 硬编码
+    // todo: 待优化: 优化代码执行逻辑，保证所有页面初始化之前 资产分类数据已经加载完毕，而不是像当前采用硬编码的形式
+    ASSET_TYPE_STRING: {
+      YARD:'车场',
+      LAND:'土地',
+      HOUSE:'房屋',
+      EQUIPMENT:'设备设施',
+    },
+    ASSET_TYPE_CODE: {
+      YARD:'5',
+      LAND:'4',
+      HOUSE:'1',
+      EQUIPMENT:'3',
+    },
     ASSET_TYPE_OPTIONS: {}
   },
   mutations: {
