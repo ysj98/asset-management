@@ -327,6 +327,7 @@ export default {
         //     if(index === this.dataSource.length - 1) sumObj[key] = num
         //   })
         // })
+        // 计算小计
         const { format, bignumber, add } = math
         sumarr.forEach(key => {
          sumObj[key]= this.dataSource.reduce((pre, cur) => {
@@ -346,6 +347,7 @@ export default {
           console.log(error)
           this.$message.error(error || '合计查询失败')
         }
+        // 处理合计数据
         let totalObj = {}
         Object.keys(this.totalData).forEach(key => {
           if(key === 'assetAreaCount'){
@@ -355,7 +357,8 @@ export default {
             totalObj[str] = this.totalData[key]
           }
         })
-        this.dataSource.push({ organName: '当前页-合计', ...sumObj, projectName:'22'}, { ...totalObj,organName: '所有页-合计' }) // ,
+
+        this.dataSource && this.dataSource.length > 0 && this.dataSource.push({ organName: '当前页-合计', ...sumObj}, { ...totalObj,organName: '所有页-合计' }) // ,
       },
 
       // 合并单元格
@@ -373,6 +376,8 @@ export default {
             attrs.rowSpan = 0
           }
           return { children: value, attrs }
+        }else {
+          return {children: value}
         }
       },
 
@@ -406,6 +411,9 @@ export default {
         td {
           padding-left: 0 !important;
           padding-right: 0 !important;
+        }
+        tr:last-child, tr:nth-last-child(2) {
+          font-weight: bold !important;
         }
         .ant-table-placeholder {
           display: block !important;

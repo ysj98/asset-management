@@ -117,6 +117,7 @@
   import EditTableHeader from './EditTableHeader.vue'
   import { getFormat } from '@/utils/utils.js'
   import { handleTableScrollHeight } from "utils/share";
+  import {math} from '@/utils/math'
   import moment from 'moment'
   export default {
     name: 'index',
@@ -211,12 +212,12 @@
               if(dimension !== '3' && item.colCode === 'organName'){
                 this.fixedColumns.unshift({
                   title: item.colName,
-                  dataIndex: item.colCode
+                  dataIndex: item.colCode,
                 })
               }else{
                 this.fixedColumns.push({
                   title: item.colName,
-                  dataIndex: item.colCode
+                  dataIndex: item.colCode,
                 })
               }
             })
@@ -234,6 +235,7 @@
                   item.fixed = 'left'
                   item.width = 220
                 }
+                item.width = 150
               })
             }
             
@@ -363,15 +365,24 @@
         // 先注释掉所有页、合计页
         // 添加合计和小计
         let pageSum = {}
-        dataSource.forEach((item, index) => {
-          if(item.projectName !== '所有页-合计') {
-            Object.keys(this.sumObj).forEach(key => {
-              !pageSum[key] && (pageSum[key] = 0)
-              pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
-              if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000).toFixed(2)
-            })
-          }
+        // dataSource.forEach((item, index) => {
+        //   if(item.projectName !== '所有页-合计') {
+        //     Object.keys(this.sumObj).forEach(key => {
+        //       !pageSum[key] && (pageSum[key] = 0)
+        //       pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
+        //       if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000).toFixed(2)
+        //     })
+        //   }
+        // })
+        const { format, bignumber, add } = math
+        let last = dataSource.pop()
+        Object.keys(this.sumObj).forEach(key => {
+          pageSum[key] = dataSource.reduce((pre, cur) => {
+            cur[key] = cur[key] ? cur[key] : 0
+            return  +format(add(bignumber(pre || 0), bignumber(cur[key] || 0)))
+          }, 0)
         })
+        dataSource.push(last)
         let index = dataSource.length - 1
         if(dimension === '1' || dimension === '2') {
           // dataSource.push({key: dataSource.length, ...pageSum, projectName: '当前页-合计'})
@@ -491,6 +502,7 @@
           // columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(3)), ...arr)
           columns = [...fixedColumnsCopy, ...arr]
         }
+        console.log(columns, 'fixedColumnsCopy')
         Object.assign(this.tableObj, {
           columns,
           dataSource,

@@ -183,8 +183,8 @@
           series: [
             { name: '资产原值', key: 'originalValue' },
             { name: '首次评估原值', key: 'firstOriginalValue' },
+            { name: '最新估值', key: 'latestValuationValue' },
             { name: '首次评估市值', key: 'firstMarketValue' },
-            { name: '最新估值', key: 'latestValuationValue' }
           ].map(m => {
             return {
               type: 'bar',  // 图表类型
