@@ -542,7 +542,14 @@ export const win = {
         return null
       }
       if ( window.parent.openNewPage) {
-        window.parent.openNewPage(tabUrl, tabTitle, operDescId)
+        const page = {
+          name: tabTitle,
+          url: tabUrl,
+        }
+        const params = {
+          isExactMatch:true
+        }
+        window.parent.openNewPage(page, params)
         return null
       }
     } else {
