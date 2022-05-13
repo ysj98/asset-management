@@ -12,7 +12,7 @@
           v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
           导出
         </SG-Button>
-        <SG-Button v-power="ASSET_MANAGEMENT.TM_AW_SETTING" icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.TM_AW_HEADERS_SETTING" icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8" style="width: 100%">
@@ -212,12 +212,12 @@
               if(dimension !== '3' && item.colCode === 'organName'){
                 this.fixedColumns.unshift({
                   title: item.colName,
-                  dataIndex: item.colCode,
+                  dataIndex: item.colCode
                 })
               }else{
                 this.fixedColumns.push({
                   title: item.colName,
-                  dataIndex: item.colCode,
+                  dataIndex: item.colCode
                 })
               }
             })
@@ -369,7 +369,7 @@
         //   if(item.projectName !== '所有页-合计') {
         //     Object.keys(this.sumObj).forEach(key => {
         //       !pageSum[key] && (pageSum[key] = 0)
-        //       pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0  
+        //       pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0
         //       if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000).toFixed(2)
         //     })
         //   }
@@ -502,7 +502,6 @@
           // columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(3)), ...arr)
           columns = [...fixedColumnsCopy, ...arr]
         }
-        console.log(columns, 'fixedColumnsCopy')
         Object.assign(this.tableObj, {
           columns,
           dataSource,
