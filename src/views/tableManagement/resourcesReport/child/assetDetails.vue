@@ -9,6 +9,8 @@
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_DETAIL_EXPORT" @click="downloadFn">导出</SG-Button>
+        <!-- 暂时不放开 -->
+        <SG-Button v-if="false" @click="changeListSettingsModal(true)" class="ml20">列表设置</SG-Button>
       </div>
       <div slot="headerForm">
         <a-select
@@ -36,19 +38,21 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" />
     </a-spin>
-    <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
+    <div :class="{'overflowX': tableData.length === 0}">
       <a-table
         :scroll="scroll"
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
-        class="custom-table table-boxs"
+        class="custom-total custom-scroll"
         :pagination="false"
+        ref="table"
         >
         <span slot="action" slot-scope="text, record">
-          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">房屋详情</span>
+          <span v-if="record.projectName !== '当前页-合计' && record.projectName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">房屋详情</span>
         </span>
       </a-table>
+      <div style="height: 100px;"></div>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -60,6 +64,7 @@
       />
     </div>
     <housingDetails v-if="housingShow" :record="record" ref="housingDetails" @cancelFn="cancelFn"></housingDetails>
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" width="1200px" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -69,15 +74,18 @@ import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import housingDetails from './housingDetails'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
-const columnsData = [
-  { title: '管理机构', dataIndex: 'organName', width: 150 },
-  { title: '资产项目', dataIndex: 'projectName', width: 150 },
-  { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 150  },
-  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
-  { title: '产权人', dataIndex: 'obligeeAndPercent', width: 150 },
+import { getFormat } from '@/utils/utils'
+import {handleTableHeaderScrollHeight, handleTableScrollHeight, initTableColumns} from "utils/share";
+import TableHeaderSettings from "@/components/TableHeaderSettings";
+const detailColumns = [
+  { title: '管理机构', dataIndex: 'organName', width: 120, fixed: 'left' },
+  { title: '资产项目', dataIndex: 'projectName', width: 120, fixed: 'left' },
+  { title: '资产名称', dataIndex: 'assetName', width: 200, fixed: 'left' },
+  { title: '资产编码', dataIndex: 'assetCode', width: 180 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150},
+  { title: '产权人', dataIndex: 'obligeeAndPercent', width: 150},
   { title: '权属用途', dataIndex: 'ownershipUse', width: 150 },
-  { title: '楼栋名称', dataIndex: 'buildName', width: 150  },
+  { title: '楼栋名称', dataIndex: 'buildName', width: 150 },
   { title: '房屋数量', dataIndex: 'houseNum', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 150  },
   { title: '资产用途', dataIndex: 'useTypeName', width: 150  },
@@ -93,7 +101,9 @@ const columnsData = [
   { title: '自用面积(㎡)', dataIndex: 'oneselfArea', width: 150 },
   { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 150 },
   { title: '销售面积(㎡)', dataIndex: 'sellArea', width: 150 },
-  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150}
+]
+const requiredColumn = [
+  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 120}
 ]
 const queryCondition =  {
   organId: '',        // 组织机构id
@@ -103,16 +113,17 @@ const queryCondition =  {
   pageSize: 10        // 每页显示记录数
 }
 export default {
-  components: {SearchContainer, noDataTips, OverviewNumber, housingDetails},
+  components: {SearchContainer, noDataTips, OverviewNumber, housingDetails,TableHeaderSettings},
   props: {},
   data () {
     return {
+      funType: 8,
+      listSettingFlag:false,
       ASSET_MANAGEMENT,
       housingShow: false,            // 房间弹框控制
       allStyle: 'width: 240px; margin-right: 10px;',
       overviewNumSpinning: false,
-      columnsData,
-      scroll: {x: columnsData.length * 150},
+      scroll: {x: "100%",y: 600},
       numList: [
         {title: '资产数量(个)', key: 'assetNum', value: 0, fontColor: '#324057'},
         {title: '资产面积(㎡)', key: 'assetArea', value: 0, bgColor: '#4BD288'},
@@ -125,16 +136,31 @@ export default {
       noPageTools: false,
       location: 'absolute',
       toggle: false,
-      columns: columnsData,
+      columns: [],
       tableData: [],
       queryCondition: {...queryCondition},
       count: '',
       projectData: [{ name: '全部资产项目', value: ''}],
+      sumObj: { houseNum:'', originalValue: '', marketValue: '', assetArea: '', houseTotalArea: '',
+        rentableArea: '', rentedArea: '', leaseArea: '', oneselfArea: '', idleArea: '', sellArea: ''},
+      subArr: ['houseNum', 'originalValue', 'marketValue', 'assetArea', 'houseTotalArea',
+        'rentableArea', 'rentedArea', 'leaseArea', 'oneselfArea', 'idleArea', 'sellArea']
+
     }
   },
   computed: {
   },
   methods: {
+    initColumns(){
+      initTableColumns({columns:this.columns,detailColumns,requiredColumn,funType: this.funType})
+    },
+    handleTableHeaderSuccess(){
+      this.changeListSettingsModal(false)
+      this.initColumns()
+    },
+    changeListSettingsModal(flag){
+      this.listSettingFlag = flag
+    },
     // 导出（暂无）
     downloadFn () {
       let obj = {
@@ -206,7 +232,7 @@ export default {
       )
     },
     // 查询
-    query (str) {
+    async query (str) {
       this.loading = true
       let obj = {
         organId: this.queryCondition.organId,                // 组织机构id
@@ -216,6 +242,33 @@ export default {
         pageNum: this.queryCondition.pageNum,          // 当前页
         pageSize: this.queryCondition.pageSize         // 每页显示记录数
       }
+      if (str !== 'asset') {
+        if(str !== 'changePage'){
+          obj.pageNum = 1
+          obj.pageSize = 1
+          try {
+            this.overviewNumSpinning = true
+            let { data } = await this.$api.tableManage.detailTotal(obj)
+            if (Number(data.code) === 0) {
+              let list = data.data
+              this.numList = this.numList.map(m => {
+                return { ...m, value: list[m.key] || 0 }
+              })
+              Object.keys(this.sumObj).forEach(key => {
+                this.sumObj[key] = list[key]
+              })
+              this.overviewNumSpinning = false
+            } else {
+              this.$message.error(data.message)
+              this.overviewNumSpinning = false
+            }
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+      obj.pageNum = this.queryCondition.pageNum,          // 当前页
+      obj.pageSize = this.queryCondition.pageSize         // 每页显示记录数
       this.$api.tableManage.detailPageList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -224,17 +277,35 @@ export default {
               item.key = index
             })
             this.tableData = data
+            let pageSum = {}
+            this.tableData.forEach((item, index) =>{
+              item.key = index
+              Object.keys(this.sumObj).forEach(key => {
+                !pageSum[key] && (pageSum[key] = 0)
+                pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0
+                if (index === this.tableData.length - 1) { pageSum[key] = pageSum[key] / 10000}
+              })
+              for (let key in item) {
+                // item[key] = item[key] || '--'
+              }
+            })
+            this.tableData = this.tableData.length ? this.tableData.concat({...pageSum,projectName: '当前页-合计', key: Date.now()}, {...this.sumObj,projectName: '所有页-合计', key: Date.now()+100}) : []
             this.count = res.data.data.count
+            let formatArr = ['houseNum', 'originalValue', 'marketValue', 'assetArea', 'houseTotalArea', 'rentableArea'
+            , 'rentedArea', 'leaseArea', 'oneselfArea', 'idleArea', 'sellArea']
+            this.tableData.forEach(item => {
+              let arr = Object.keys(item)
+              arr.forEach(key => {
+                if(formatArr.includes(key)) {
+                  item[key] = getFormat(item[key])
+                }
+              })
+            })
           } else {
             this.tableData = []
             this.count = 0
           }
           this.loading = false
-          if (str !== 'asset') {
-            if(str !== 'changePage'){
-              this.assetViewTotal(obj)
-            }
-          }
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -242,31 +313,34 @@ export default {
       })
     },
     // 资产登记-详情明细统计
-    assetViewTotal (obj) {
-      this.overviewNumSpinning = true
-      obj.pageNum = 1
-      obj.pageSize = 1
-      this.$api.tableManage.detailTotal(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.numList = this.numList.map(m => {
-            return { ...m, value: data[m.key] || 0 }
-          })
-          this.overviewNumSpinning = false
-        } else {
-          this.$message.error(res.data.message)
-          this.overviewNumSpinning = false
-        }
-      })
-    }
+    // assetViewTotal (obj) {
+    //   this.overviewNumSpinning = true
+    //   obj.pageNum = 1
+    //   obj.pageSize = 1
+    //   this.$api.tableManage.detailTotal(obj).then(res => {
+    //     if (Number(res.data.code) === 0) {
+    //       let data = res.data.data
+    //       this.numList = this.numList.map(m => {
+    //         return { ...m, value: data[m.key] || 0 }
+    //       })
+    //       this.overviewNumSpinning = false
+    //     } else {
+    //       this.$message.error(res.data.message)
+    //       this.overviewNumSpinning = false
+    //     }
+    //   })
+    // }
   },
   created () {
+    handleTableScrollHeight(this.scroll, 360)
+    this.initColumns()
   },
   mounted () {
     this.queryCondition.organId = this.$route.query.organId
     this.selectOrganId =  this.$route.query.selectOrganId
     this.getObjectKeyValueByOrganIdFn()
     this.query()
+    handleTableHeaderScrollHeight(this.$refs.table.$el)
   }
 }
 </script>
@@ -282,7 +356,7 @@ export default {
     margin-left: 10px;
   }
   .custom-table {
-    padding-bottom: 60px;
+    padding-bottom: 70px;
   }
   .overflowX{
     /deep/ .ant-table-scroll {
@@ -290,7 +364,7 @@ export default {
     }
     /deep/.ant-table-header {
       padding-bottom: 0px !important;
-      margin-bottom: 0px !important;
+      margin-bottom: 0px !important;    
     }
   }
   .city {

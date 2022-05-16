@@ -12,6 +12,7 @@
           v-power="ASSET_MANAGEMENT.TM_AW_EXPORT">
           导出
         </SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.TM_AW_HEADERS_SETTING" icon="setting" @click="handleModalStatus" style="margin-left: 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="margin-right: 8px; text-align: left">
         <a-row :gutter="8" style="width: 100%">
@@ -84,8 +85,8 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered>
-      <template slot="originalValue" slot-scope="text">
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered >
+      <!-- <template slot="originalValue" slot-scope="text">
         {{ getFormat(text) }}
       </template>
       <template slot="assetValuation" slot-scope="text">
@@ -96,10 +97,13 @@
       </template>
       <template slot="marketValue" slot-scope="text">
         {{ getFormat(text) }}
-      </template>
+      </template> -->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="()=>{ modalObj.status = false }">
+      <edit-table-header ref="tableHeader" :checkedArr="checkedHeaderArr" :columns="tableObj.initColumns" v-if="modalObj.status" :disabledHeader="disabledHeader"/>
+    </SG-Modal>
   </div>
 </template>
 
@@ -110,13 +114,20 @@
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import NoDataTip from 'src/components/noDataTips'
+  import EditTableHeader from './EditTableHeader.vue'
   import { getFormat } from '@/utils/utils.js'
+  import { handleTableScrollHeight } from "utils/share";
+  import {math} from '@/utils/math'
   import moment from 'moment'
   export default {
     name: 'index',
-    components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip },
+    components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip, EditTableHeader },
     data () {
       return {
+        // funType: '10',// 10 按资产项目统计  11 按资产统计维度 12 按组织机构统计维度 
+        disabledHeader: [],
+        checkedHeaderArr: [],
+        modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 750 },
         getFormat,
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
@@ -151,28 +162,28 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         fixedColumns: [
-          { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220 },
-          { title: '经营单位', dataIndex: 'businessUnit', fixed: 'left' },
-          { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 300 },
-          { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" } }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
-          { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue', scopedSlots: { customRender: "firstMarketValue" } }, { title: '最新估值(元)', dataIndex: 'marketValue', scopedSlots: { customRender: "marketValue" } },
+          // { title: '所属机构', dataIndex: 'organName', fixed: 'left', width: 220,},
+          // { title: '经营单位', dataIndex: 'businessUnit', fixed: 'left', width: 120, },
+          // { title: '资产项目', dataIndex: 'projectName', fixed: 'left', width: 300 },
+          // { title: '资产原值(元)', dataIndex: 'originalValue', scopedSlots: { customRender: "originalValue" }, with: 150 }, { title: '首次成本法估值(元)', dataIndex: 'assetValuation', scopedSlots: { customRender: "assetValuation" } },
+          // { title: '首次市场法估值(元)', dataIndex: 'firstMarketValue', scopedSlots: { customRender: "firstMarketValue" } }, { title: '最新估值(元)', dataIndex: 'marketValue', scopedSlots: { customRender: "marketValue" } },
         ], // 列头不变部分,按资产项目统计维度
-        columnsByAsset: [
-          { title: '资产编号', dataIndex: 'assetCode' }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
-          { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
-          { title: '资产状态', dataIndex: 'statusName' }
-        ], // 按资产统计维度时动态展示
-        columnsByOrgan: [
-          { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 220 },
-          { title: '资产数量', dataIndex: 'assetCount' }, { title: '资产面积(㎡)', dataIndex: 'assetArea' }
-        ], // 按组织机构统计维度时动态展示
+        // columnsByAsset: [
+        //   { title: '资产编号', dataIndex: 'assetCode', width: 180 }, { title: '资产名称', dataIndex: 'assetName', width: 180 },
+        //   { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
+        //   { title: '资产状态', dataIndex: 'statusName' }
+        // ], // 按资产统计维度时动态展示
+        // columnsByOrgan: [
+        //   { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 220 },
+        //   { title: '资产数量', dataIndex: 'assetCount' }, { title: '资产面积(㎡)', dataIndex: 'assetArea' }
+        // ], // 按组织机构统计维度时动态展示
         tableObj: {
           pagination: false,
           // rowKey: 'assetId',
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 1500 },
+          scroll: {  },
           columns: []
         },
         numList: [
@@ -183,13 +194,97 @@
           {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#FD7474'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         isLoad: false, // 组织机构树是否加载完成,仅自动查询初始化数据的标志
-        sortFunc: (a, b) => a['organName'].localeCompare(b['organName']) // 排序算法函数
+        sortFunc: (a, b) => a['organName'].localeCompare(b['organName']), // 排序算法函数
+        sumObj: { originalValue: '', assetValuation: '', firstMarketValue: '', marketValue: '', assetCount: '', assetArea: ''},
       }
     },
 
     methods: {
       moment,
-
+      getColumns () {
+        let {dimension} = this.queryObj
+        let funType = dimension === '1' ? '10' : dimension === '2' ? '11' : '12'
+        this.$api.global.assetRolListV2({ funType: funType }).then(({ data: {data: { customChose, customShow, templeCode }, code }}) => {
+          if(code === '0') {
+            this.fixedColumns = []
+            this.tableObj.initColumns = []
+            customShow.forEach(item => {
+              if(dimension !== '3' && item.colCode === 'organName'){
+                this.fixedColumns.unshift({
+                  title: item.colName,
+                  dataIndex: item.colCode
+                })
+              }else{
+                this.fixedColumns.push({
+                  title: item.colName,
+                  dataIndex: item.colCode
+                })
+              }
+            })
+            if(this.fixedColumns.length > 0) {
+              this.fixedColumns.forEach(item => {
+                if(item.dataIndex && item.dataIndex === 'businessUnit') {
+                  item.fixed = 'left'
+                  item.width = 120
+                }
+                if(item.dataIndex && item.dataIndex === 'projectName') {
+                  item.fixed = 'left'
+                  item.width = 280
+                }
+                if(item.dataIndex && item.dataIndex === 'organName') {
+                  item.fixed = 'left'
+                  item.width = 220
+                }
+                item.width = 150
+              })
+            }
+            
+            this.checkedHeaderArr = customChose.map(item => item.colCode)
+            templeCode.forEach(item => {
+              this.tableObj.initColumns.push({
+                title: item.colName,
+                dataIndex: item.colCode
+              })
+            })
+          }
+        }).catch(error => {
+          this.$message.error(data.message || '查询表头设置失败')
+        })
+      },
+      // 编辑列表设置
+      handleModalOk () { 
+        let choiceArr = this.$refs.tableHeader.checkedList
+        let all = this.$refs.tableHeader.columns
+        let req = []
+        let {dimension} = this.queryObj
+        let funType = dimension === '1' ? '10' : dimension === '2' ? '11' : '12'
+        all.forEach(item => {
+          if(choiceArr.includes(item.dataIndex)){
+            req.push({
+              colCode: item.dataIndex,
+              colName: item.title,
+              funType: funType
+            })
+          }
+        })
+        //  this.tableObj.columns = all.filter(item => {
+        //   return choiceArr.includes(item.dataIndex)
+        // })
+        this.$api.global
+        .addCustomShowV2({ chooseList: req }).then(res => {
+          if(res.data.code === '0') {
+            this.$message.success(res.data.message || '修改成功')
+            this.queryTableData({type: 'search'})
+          }
+        }).catch(error => {
+          this.$message.error(error || '列表设置失败')
+        })
+        // this.checkedHeaderArr = this.tableObj.columns.map(item => item.dataIndex)
+        this.modalObj.status = false
+      },
+      handleModalStatus () {
+        this.modalObj.status = true
+      },
       // 查询资产类型--平台字典
       queryAssetType () {
         queryAssetTypeList().then(list => {
@@ -209,8 +304,14 @@
       },
 
       // 根据统计方式和统计维度生成列
-      generateColumns ({queryType, startTime, endTime, dimension}, data) {
-        const { columnsByAsset, fixedColumns, sortFunc, columnsByOrgan } = this
+      generateColumns ({queryType, startTime, endTime, dimension}, data, totalObj) {
+        // console.log(data, totalObj, 'totalObj')
+         if(dimension === '1' || dimension === '2') {
+          data.push({ ...totalObj,key: data.length+1, projectName: '所有页-合计'})
+        }else{
+          data.push({ ...totalObj ,key: data.length+1,organName: '所有页-合计' , projectName: '所有页-合计'})
+        }
+        const { fixedColumns} = this
         let dataSource = data.map((m, key) => {
           let temp = {}
           let arr = m.dynamicData || []
@@ -225,6 +326,7 @@
           for (let i = 0; i < 12; i++) {
             arr.push({title: `${startTime}-${i + 1}月`, dataIndex: `date_${i}`})
           }
+          
         } else {
           let len = Number(endTime) - Number(startTime) + 1
           let startYear = Number(startTime)
@@ -254,54 +356,174 @@
             }
           }
         }
+        // 先注释掉所有页、合计页
+        Object.keys(dataSource[0]).forEach(item => {
+          if (item.includes('date_')) {
+            this.sumObj[item] = ''
+          }
+        })
+        // 先注释掉所有页、合计页
+        // 添加合计和小计
+        let pageSum = {}
+        // dataSource.forEach((item, index) => {
+        //   if(item.projectName !== '所有页-合计') {
+        //     Object.keys(this.sumObj).forEach(key => {
+        //       !pageSum[key] && (pageSum[key] = 0)
+        //       pageSum[key] += item[key] ? Number(item[key]) * 10000 : 0
+        //       if(index === dataSource.length - 2) pageSum[key] = (pageSum[key] / 10000).toFixed(2)
+        //     })
+        //   }
+        // })
+        const { format, bignumber, add } = math
+        let last = dataSource.pop()
+        Object.keys(this.sumObj).forEach(key => {
+          pageSum[key] = dataSource.reduce((pre, cur) => {
+            cur[key] = cur[key] ? cur[key] : 0
+            return  +format(add(bignumber(pre || 0), bignumber(cur[key] || 0)))
+          }, 0)
+        })
+        dataSource.push(last)
+        let index = dataSource.length - 1
+        if(dimension === '1' || dimension === '2') {
+          // dataSource.push({key: dataSource.length, ...pageSum, projectName: '当前页-合计'})
+          dataSource.splice(index,0,{key: dataSource.length, ...pageSum,  projectName: '当前页-合计', businessUnit: 'zzz1'})
+        }else{
+          // dataSource.push({key: dataSource.length, ...pageSum, organName: '当前页-合计', projectName: '当前页-合计'})
+          dataSource.splice(index,0,{key: dataSource.length, ...pageSum, organName: '当前页-合计'})
+        }
+        
         if (dimension === '1' || dimension === '2') {
-          dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
+          // dimension === '2' && fixedColumnsCopy.splice(2, 0, ...columnsByAsset)
+          // dimension === '2' && fixedColumnsCopy.splice(3, 0, ...columnsByAsset)
           // 计算需要合并的单元格起始位置及数量
           let temp = {}
-          dataSource.sort(sortFunc).forEach((m, index) => {
-            let { organName, projectName } = m
-            if (!temp[organName]) {
-              temp[organName] = 0
-              temp[`${organName}_start`] = index
-            }
-            temp[organName] += 1
-            if (dimension === '2') {
-              let name = `${organName}_${projectName}`
-              if (!temp[name]) {
-                temp[name] = 0
-                temp[`${name}_start`] = index
+          // dataSource.sort(sortFunc).forEach((m, index) => { // 去掉排序
+          dataSource.forEach((m, index) => {
+            if(this.checkedHeaderArr.includes('organName')) {
+              let { organName, projectName } = m
+              if (!temp[organName]) {
+                temp[organName] = 0
+                temp[`${organName}_start`] = index
               }
-              temp[name] += 1
+              temp[organName] += 1
+              if (dimension === '2') {
+                let name = `${organName}_${projectName}`
+                if (!temp[name]) {
+                  temp[name] = 0
+                  temp[`${name}_start`] = index
+                }
+                temp[name] += 1
+              }
+            }else {
+              let { projectName } = m
+              if (dimension === '2') {
+                let name = `${projectName}`
+                if (!temp[name]) {
+                  temp[name] = 0
+                  temp[`${name}_start`] = index
+                }
+                temp[name] += 1
+              }
             }
           })
           columns = fixedColumnsCopy.map(c => {
             let { dataIndex } = c
-            if (dataIndex === 'organName' || (dimension === '2' && dataIndex === 'projectName')) {
-              return {
-                ...c, customRender: (text, row, i) => {
-                  let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
-                  return {
-                    children: text,
-                    attrs: { rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0 }
+            // (dimension === '2' && dataIndex === 'projectName')
+            if(this.checkedHeaderArr.includes('organName')) {
+              if (dataIndex === 'organName') {
+                return {
+                  ...c, customRender: (text, row, i) => {
+                    let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
+                    return {
+                      children: text,
+                      attrs: {rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? 0 : 1}
+                    }
+                  }
+                }
+              }else if ((dimension === '2' && dataIndex === 'projectName')){
+                return {
+                  ...c, customRender: (text, row, i) => {
+                    let keyName = dataIndex === 'projectName' ? `${row.organName}_${row.projectName}` : `${row.organName}`
+                    return {
+                      children: text,
+                      attrs: {rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? 3 : 1}
+                    }
+                  }
+                }
+              }else if(dataIndex === 'projectName') {
+                return {
+                  ...c,
+                  customRender: (text, row, i) => {
+                    return {
+                      children: text,
+                      attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 3 } : {}
+                    }
                   }
                 }
               }
-            } else {
+            }else {
+              if ((dimension === '2' && dataIndex === 'projectName')){
+                return {
+                  ...c, customRender: (text, row, i) => {
+                    let keyName = dataIndex === 'projectName' ? `${row.projectName}` : `${row.organName}`
+                    return {
+                      children: text,
+                      attrs: {rowSpan: temp[`${keyName}_start`] === i ? temp[keyName] : 0, colSpan: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? 2 : 1}
+                    }
+                  }
+                }
+              }else if(dataIndex === 'projectName') {
+                return {
+                  ...c,
+                  customRender: (text, row, i) => {
+                    return {
+                      children: text,
+                      attrs: (text === '当前页-合计' || text === '所有页-合计') ? { colSpan: 2 } : {}
+                    }
+                  }
+                }
+              }
+            }
+            if((dataIndex === 'organName' || dataIndex === 'businessUnit')){
+              return {
+                ...c,
+                customRender: (text, row, i) => {
+                  return {
+                    children: text,
+                    attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
+                  }
+                }
+              }
+            }else {
               return c
             }
           }).concat(arr)
         } else {
-          columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(2)), ...arr)
+          // columns = columnsByOrgan.concat(...(fixedColumnsCopy.splice(3)), ...arr)
+          columns = [...fixedColumnsCopy, ...arr]
         }
         Object.assign(this.tableObj, {
           columns,
           dataSource,
           scroll: { x: columns.length * 160 }
         })
+        handleTableScrollHeight(this.tableObj.scroll)
+        let formatArr = ['originalValue', 'assetValuation', 'firstMarketValue', 'marketValue', 'assetArea']
+        this.tableObj.dataSource.forEach(item => {
+          Object.keys(item).forEach(key => {
+            if(key.includes('date_')){
+              item[key] = getFormat(item[key])
+            }
+            if(formatArr.includes(key)) {
+              item[key] = getFormat(item[key])
+            }
+          })
+        })
       },
 
       // 查询列表数据
-      queryTableData ({pageNo = 1, pageLength = 10, type}) {
+      async queryTableData ({pageNo = 1, pageLength = 10, type}) {
+        await this.getColumns()
         const { organProjectValue: { organId, projectId }, queryObj: { status, assetType, ...others} } = this
         if (!organId) { return this.$message.warn('请选择组织机构') }
         if (others.queryType !== '0' && !others.endTime) {
@@ -310,19 +532,39 @@
           others.endTime = others.startTime
         }
         let form = {
-          ...others, organId, projectIdList: projectId || [], pageSize: pageLength, pageNum: pageNo,
+          ...others, organId, projectIdList: projectId || [],
           assetType: assetType.includes('-1') ? '' : assetType.join(','),
           status: status.includes('-1') ? '' : status.join(',')
         }
+        let totalObj = {}
+        try {
+          this.overviewNumSpinning = true
+          let {data: {data: { valueOfYearCount }}} = await this.$api.tableManage.getAssetValueStatistics(form)
+          form.pageSize = pageLength
+          form.pageNum = pageNo
+          let res = await this.$api.tableManage.getAssetValueCount(form)
+          let counts = res.data.data
+          totalObj = {dynamicData: [...valueOfYearCount], ...counts} // 数据统计
+          if (res.data && String(res.data.code) === '0') {
+            counts ? this.numList = this.numList.map(m => {
+              return { ...m, value: counts[m.key] }
+            }) : false
+          }
+          this.overviewNumSpinning = false
+        } catch (error) {
+          this.overviewNumSpinning = false
+          this.$message.error(error || '查询统计出错')
+          console.log(error, 'getAssetValueCount')
+        }
         if (type === 'export') { return form }
         this.tableObj.loading = true
-        this.$api.tableManage.getAssetValue(form).then(r => {
+        this.$api.tableManage.getAssetValue(form).then(r => { // 列表
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
             const { count, data } = res.data
             // 生成新的columns
-            this.generateColumns(others, data || [])
+            this.generateColumns(others, data || [], totalObj)
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
@@ -333,25 +575,7 @@
           this.$message.error(err || '查询接口出错')
         })
         // 查询统计数据
-        if (type === 'search') { this.queryStatisticsInfo(form) }
-      },
-
-      // 查询统计数据
-      queryStatisticsInfo (form) {
-        this.overviewNumSpinning = true
-        this.$api.tableManage.getAssetValueCount(form).then(r => {
-          this.overviewNumSpinning = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            return res.data ? this.numList = this.numList.map(m => {
-              return { ...m, value: res.data[m.key] }
-            }) : false
-          }
-          throw res.message
-        }).catch(err => {
-          this.overviewNumSpinning = false
-          this.$message.error(err || '查询统计出错')
-        })
+        // if (type === 'search') { this.queryStatisticsInfo(form) }
       },
 
       // 生成结束时间选项
@@ -401,6 +625,7 @@
         this.sortFunc = (a, b) => {
           // 第一维度
           if (value === '1') {
+            console.log({a}, {b}, 'sortFunc')
             return a['organName'].localeCompare(b['organName'])
           } else if (value === '2') {
             if (a['organName'].localeCompare(b['organName']) === 0) {
@@ -413,7 +638,8 @@
       }
     },
 
-    created () {
+    async created () {
+      await this.getColumns()
       this.queryAssetType()
       // 初始化Table列头
       let{ fixedColumns } = this
@@ -463,9 +689,12 @@
 <style lang='less' scoped>
   .asset_worth {
     .custom-table {
-      padding: 8px 0 55px;
+      padding: 8px 0 70px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
+      & /deep/ .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+        height: 47px;
+      }
       & /deep/ .ant-table {
         .ant-table-thead th {
           white-space: nowrap;
@@ -474,6 +703,22 @@
           padding-left: 6px !important;
         }
       }
+      & /deep/ .ant-table-tbody tr td:last-child {
+        padding-right: 0 !important;
+      }
+    }
+    & /deep/ .ant-table {
+      .ant-table-thead th {
+        white-space: nowrap;
+        text-align: center;
+      }
+      td {
+        text-align: center;
+      }
+      tr:last-child, tr:nth-last-child(2) {
+        font-weight: bold !important;
+      }
     }
   }
+  
 </style>

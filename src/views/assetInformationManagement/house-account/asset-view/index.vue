@@ -702,7 +702,7 @@
       // 导出资产视图/房屋卡片
       handleExport (type) {
         let labelName = ''
-        if(this.label.length > 0 && this.assetLabelSelect.length > 0){
+        if(this.label && this.label.length > 0 && this.assetLabelSelect.length > 0){
           labelName = this.label.map(item => {
             return this.assetLabelSelect.find(sub => sub.value === item).title
           })

@@ -168,24 +168,27 @@
       </SearchContainer>
       <div>
         <a-table
-          class="custom-table td-pd10"
+          class="custom-scroll custom-total td-pd10"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{ x: 1400}"
+          :scroll="tableScrollOptions"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
+          rowKey="assetObjectId"
+          ref="table"
         >
-          <template slot="assetName" slot-scope="text, record">
-            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+          <template slot="assetName" slot-scope="text, record, index">
+            <span v-if="index < table.dataSource.length - 2" class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+            <span v-else :title="record.warrantNbr">{{record.assetName}}</span>
           </template>
           <template slot="tranProgress" slot-scope="text, record">
             <div style="padding-right: 20px;">
               <a-progress :percent="Number(record.tranProgress) || 0" />
             </div>
           </template>
-          <template slot="operation" slot-scope="text, record">
-            <span v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_SET" @click="goPage('detail', record)" class="btn_click mr15">详情</span>
+          <template slot="operation" slot-scope="text, record, index">
+            <span v-if="index < table.dataSource.length - 2" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_SET" @click="goPage('detail', record)" class="btn_click mr15">详情</span>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -209,6 +212,7 @@ import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
+import {handleTableHeaderScrollHeight, handleTableScrollHeight, handleTableTotalRow} from "utils/share";
 let getUuid = ((uuid = 1) => () => ++uuid)();
 // 页面跳转
 const operationTypes = {
@@ -268,17 +272,20 @@ const supportMaterialOpt = [
   { label: "有证明材料证件", value: 1 },
   { label: "无证明材料证件", value: 0 },
 ]
+// 需要合计的列
+const totalKeyArr = ['area']
 let columns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
     scopedSlots: { customRender: "assetName" },
-    width: 150
+    width: 200,
+    fixed: 'left'
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: 120
+    width: 300
   },
   {
     title: "资产类型",
@@ -288,7 +295,7 @@ let columns = [
   {
     title: "资产分类",
     dataIndex: "objectTypeName",
-    width: 120
+    width: 200
   },
   {
     title: "管理机构",
@@ -303,12 +310,12 @@ let columns = [
   {
     title: "所在位置",
     dataIndex: "location",
-    width: 200
+    width: 360
   },
   {
     title: "面积(㎡)",
     dataIndex: "area",
-    width: 100
+    width: 200
   },
   {
     title: "权属情况",
@@ -350,8 +357,13 @@ let columns = [
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
     width: 100
-  }
+  },
 ];
+// 添加 根据宽度自动省略 属性
+columns.forEach(ele=>ele.ellipsis = true)
+columns.push({
+  title:'',
+})
 export default {
   components: {
     SearchContainer,
@@ -362,6 +374,7 @@ export default {
   },
   data() {
     return {
+      tableScrollOptions: { x: "100%"},
       assetClassifyData: [{label: '全部资产分类', value: ''}],
       assetTypeOptions: [],
       ASSET_MANAGEMENT,
@@ -394,8 +407,25 @@ export default {
     this.platformDictFn("AMS_KIND_OF_RIGHT");
     this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
     this.platformDictFn("asset_type");
+    handleTableScrollHeight(this.tableScrollOptions, 530)
+  },
+  mounted() {
+    handleTableHeaderScrollHeight(this.$refs.table.$el)
   },
   methods: {
+    queryOwnershipCardTableTotal(form){
+      this.$api.basics.statistics(form).then(({data:{code,message,data}})=>{
+        if (code==="0"){
+          const temp = this.table.dataSource.pop()
+          const resData = {
+            area: data.areaCount
+          }
+          this.table.dataSource.push({...temp,...resData})
+        }else {
+          this.$message.error(message)
+        }
+      })
+    },
     query() {
       let data = {
         ...this.queryCondition,
@@ -423,6 +453,13 @@ export default {
                 ...item
               };
             });
+            handleTableTotalRow({
+              columns: this.table.columns,
+              dataSource: this.table.dataSource,
+              rowKey:'assetObjectId',
+              totalKeyArr,
+            });
+            this.queryOwnershipCardTableTotal(data)
             this.table.totalCount = res.data.data ? res.data.data.count : 0;
           } else {
             this.$message.error(res.data.message);

@@ -60,6 +60,10 @@ export function getAssetValue (data) {
 export function getAssetValueCount (data) {
   return axiosPost(tableManage.getAssetValueCount, data)
 }
+// 资产价值数据报表合计
+export function getAssetValueStatistics (data) {
+  return axiosPost(tableManage.getAssetValueStatistics, data)
+}
 // 资产项目数据报表
 export function projectAsset (data) {
   return axiosPost(tableManage.projectAsset, data)
@@ -79,6 +83,10 @@ export function exportAssetHouseList (data) {
 // 房屋资产统计分析-汇总分析
 export function queryAssetHouseTotal (data) {
   return axiosPost(tableManage.queryAssetHouseTotal, data)
+}
+// 房屋资产统计分析-查询列表-合计
+export function pageListStatistics (data) {
+  return axiosPost(tableManage.pageListStatistics, data)
 }
 // 有证房屋资产统计表
 export function queryWarrantHouse (data) {
@@ -136,6 +144,10 @@ export function queryHouseAssetSumInfo (data) {
 // 权属证件一览表(汇总)
 export function queryOwnershipCardSumInfo (data) {
   return axiosPost(tableManage.queryOwnershipCardSumInfo, data)
+}
+// 权属证件一览表(汇总)
+export function queryOwnershipCardTableTotal (data) {
+  return axiosPost(tableManage.queryOwnershipCardTableTotal, data)
 }
 //  --------------------------------------房屋资产&资源统计表-------------------------------------------------------------
 // 房屋资产&资源统计表-导出

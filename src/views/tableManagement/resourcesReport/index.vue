@@ -11,7 +11,7 @@
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm" style="text-align: left; float: right">
-        <a-checkbox :checked="!!queryCondition.containEmpty" @change="onCheck">展示资产数量为0得机构</a-checkbox>
+        <a-checkbox :checked="!!queryCondition.containEmpty" @change="onCheck">展示资产数量为0的机构</a-checkbox>
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类" :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -32,11 +32,11 @@
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
-        class="custom-table table-boxs"
+        class="custom-table custom-total table-boxs"
         :pagination="false"
         >
-        <span slot="action" slot-scope="text, record">
-          <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">资产明细</span>
+        <span slot="action" slot-scope="text, record, index">
+          <span v-if="index < tableData.length - 2" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">资产明细</span>
         </span>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -58,7 +58,8 @@ import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { getFormat } from '../../../utils/utils'
+import {handleTableTotalRow, handleTableScrollHeight} from "@/utils/share"
+const totalKeyArr = ['assetNum', 'assetArea', 'buildNum', 'houseNum', 'houseTotalArea', 'rentedArea', 'leaseArea', 'oneselfArea', 'idleArea', 'sellArea', 'originalValue', 'marketValue',]
 const columnsData = [
   { title: '管理机构', dataIndex: 'organName', width: 150 },
   { title: '资产数量', dataIndex: 'assetNum', width: 150 },
@@ -252,6 +253,35 @@ export default {
         return []
       }
     },
+    handleNumber(dataSource){
+      dataSource.forEach(ele=>{
+        Object.keys(ele).forEach(keyStr=>{
+          if (totalKeyArr.includes(keyStr)){
+            if (!isNaN(Number(ele[keyStr]))){
+              ele[keyStr] = Number(ele[keyStr]).toLocaleString()
+            }
+          }
+        })
+      })
+    },
+    queryTableTotal(form){
+      return new Promise((resolve, reject) => {
+        this.$api.tableManage.houseResourceTotal(form).then(({data:{code,message,data}})=>{
+          if (code==="0"){
+            const temp = this.tableData.pop()
+            const resData = {
+              ...data
+            }
+            delete resData.organName
+            this.tableData.push({...temp,...resData})
+            resolve()
+          }else {
+            this.$message.error(message)
+            reject(message)
+          }
+        })
+      })
+    },
     // 查询
     query (str) {
       this.loading = true
@@ -262,16 +292,19 @@ export default {
         pageNum: this.queryCondition.pageNum,                               // 当前页
         pageSize: this.queryCondition.pageSize,                              // 每页显示记录数
       }
-      this.$api.tableManage.houseResourcePageList({...obj,containEmpty: this.queryCondition.containEmpty}).then(res => {
+      const req = {...obj,containEmpty: this.queryCondition.containEmpty}
+      this.$api.tableManage.houseResourcePageList(req).then( async res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
-          data.forEach(item => {
-            for(let sub in item){
-              if(sub != 'organId' && sub != 'organName'){
-                item[sub] = getFormat(item[sub])
-              }
-            }
-          })
+          this.tableData = data
+          handleTableTotalRow({
+            columns: this.columns,
+            dataSource: this.tableData,
+            rowKey:'organId',
+            totalKeyArr,
+          });
+          await this.queryTableTotal(req)
+          this.handleNumber(this.tableData)
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
@@ -314,6 +347,7 @@ export default {
     }
   },
   created () {
+    handleTableScrollHeight(this.scroll)
   },
   mounted () {
   }
@@ -331,7 +365,7 @@ export default {
     margin-left: 10px;
   }
   .custom-table {
-    padding-bottom: 60px;
+    padding-bottom: 70px;
   }
   .overflowX{
     /deep/ .ant-table-scroll {

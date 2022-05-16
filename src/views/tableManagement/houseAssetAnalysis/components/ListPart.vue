@@ -13,7 +13,14 @@
           <a-icon type="setting" @click="openModal" style="color: #299fff; font-size: 18px; cursor: pointer; padding-right: 8px"/>
         </a-col>
       </a-row>
-      <a-table :columns="columns" :dataSource="dataSource" bordered class="custom-table td-pd10" :pagination="false" :loading="tableLoading">
+      <a-table 
+        :columns="columns" 
+        :dataSource="dataSource" 
+        bordered 
+        class="custom-table td-pd10" 
+        :pagination="false" 
+        :loading="tableLoading"
+        :scroll="tableScroll">
         <template slot="area" slot-scope="text">
           <span>{{getFormat(text)}}</span>
         </template>
@@ -56,13 +63,19 @@ import EditTableHeader from './EditTableHeader'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 import {getFormat, getMutipSort, getSort, utils} from '@/utils/utils'
-
+import { handleTableScrollHeight } from "utils/share";
+import {math} from '@/utils/math'
 export default {
     name: 'ListPart',
     components: { EditTableHeader },
     props: ['queryInfo'],
     data () {
       return {
+        // scroll:{x: 1500, y: 600},
+        tableScroll:{
+          x: '80%',
+          y: 600
+        },
         getFormat,
         penetrateData: '2',
         organQueryType: '2',    // 统计维度设置
@@ -71,20 +84,20 @@ export default {
         exportBtnLoading: false, // 导出button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
         dataSource: [], // Table数据源
-        columnsPC: [{ title: '省份', dataIndex: 'provinceName' }, { title: '城市', dataIndex: 'cityName' }], // 省份城市字段跟随地区展示
+        columnsPC: [{ title: '省份', dataIndex: 'provinceName', width: 80 }, { title: '城市', dataIndex: 'cityName', width: 80 }], // 省份城市字段跟随地区展示
         columnsFixed: [
-          { title: '资产数量', dataIndex: 'assetNum' },
-          { title: '资产面积(㎡)', dataIndex: 'area', scopedSlots: { customRender: 'area' } }, { title: '运营(㎡)', dataIndex: 'transferOperationArea', scopedSlots: { customRender: 'transferOperationArea' } },
-          { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' } }, { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' } },
-          { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' } }, { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' } },
-          { title: '资产原值', dataIndex: 'originalValue', scopedSlots: { customRender: 'originalValue' } }, { title: '首次评估原值', dataIndex: 'firstOriginalValue', scopedSlots: { customRender: 'firstOriginalValue' } },
-          { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' } },
+          { title: '资产数量', dataIndex: 'assetNum', width: 100 },
+          { title: '资产面积(㎡)', dataIndex: 'area', scopedSlots: { customRender: 'area' }, width: 150 }, { title: '运营(㎡)', dataIndex: 'transferOperationArea', scopedSlots: { customRender: 'transferOperationArea' }, width: 150 },
+          { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' }, width: 150 }, { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' }, width: 150 },
+          { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' }, width: 150 }, { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' }, width: 150 },
+          { title: '资产原值', dataIndex: 'originalValue', scopedSlots: { customRender: 'originalValue' }, width: 150 }, { title: '首次评估原值', dataIndex: 'firstOriginalValue', scopedSlots: { customRender: 'firstOriginalValue' }, width: 150},
+          { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' }, width: 150 },
         ], // Table 列头固定部分
         sortFactor: [
-          { title: '管理机构', dataIndex: 'organName' }, { title: '资产项目', dataIndex: 'projectName' },
-          { title: '经营单位', dataIndex: 'businessUnit' },
-          { title: '资产分类', dataIndex: 'objectTypeName' }, { title: '权属情况', dataIndex: 'ownershipStatusName' },
-          { title: '地区', dataIndex: 'regionName' },
+          { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 180 }, { title: '资产项目', dataIndex: 'projectName', width: 160 },
+          { title: '经营单位', dataIndex: 'businessUnit', width: 150},
+          { title: '资产分类', dataIndex: 'objectTypeName', width: 100 }, { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
+          { title: '地区', dataIndex: 'regionName', width: 80},
         ], // 统计维度的集合
         columnsDynamic: [], // Table 列头动态部分, 用于合成columns
         columns: [], // // Table 列头 = columnsDynamic合并单元格处理后 + columnsFixed
@@ -99,10 +112,13 @@ export default {
           businessUnit: 6,
           regionName: 4,
         }, // 统计维度的顺序表，用于导出
-        sortFunc: (a, b) => a - b // 默认排序算法
+        sortFunc: (a, b) => a - b, // 默认排序算法
+        totalData: {}
       }
     },
-    
+    created(){
+      handleTableScrollHeight(this.tableScroll, 290)
+    },
     mounted () {
       const { sortFactor, columnsPC } = this
       let sortFactorData = utils.deepClone(sortFactor)
@@ -122,9 +138,8 @@ export default {
 
     methods: {
       // 查询Table DataSource
-      queryTableData ({pageNo = 1, pageLength = 10}) {
+      async queryTableData ({pageNo = 1, pageLength = 10}) {
         const { queryInfo, columnsDynamic, sortIndex } = this
-        console.log(columnsDynamic, 'columnsDynamic')
         this.tableLoading = true
         let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
         dimension.splice(dimension.indexOf(6),1)
@@ -137,12 +152,17 @@ export default {
             const { count, data } = res.data
             const arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName', 'businessUnit']
             const sortArr = this.sortFactor.map(ele=>ele.dataIndex)
+            sortArr.forEach((ele,index)=>{
+              // regionName 代表 三个字段合并前后顺序 固定 省/市/区
+              if (ele === 'regionName'){
+                sortArr.splice(index,1, 'provinceName', 'cityName', 'regionName')
+              }
+            })
             const sortFnArr = sortArr.map(ele=>{
               return getSort( (a,b) => {
                 return a[ele] > (b[ele])
               })
             })
-            console.log({sortFnArr})
             this.dataSource = (data || []).map((m, key) => {
               let obj = {}
               // 防止排序时出现字段值为null,无法使用localeCompare
@@ -211,7 +231,7 @@ export default {
         // this.handleColumns()
         this.queryTableData({})
         // 防止较少列时出现滚动
-        // this.scroll = { x: columns.length * 100 }
+        // this.scroll = { x: columns.length * 160 }
       },
 
       // 按统计维度生成排序算法
@@ -285,8 +305,8 @@ export default {
       },
 
       // 处理columns中需要合并的列
-      handleColumns () {
-        const { columnsFixed, dataSource, columnsDynamic } = this
+      async handleColumns () {
+        const { columnsFixed, dataSource, columnsDynamic, queryInfo, sortIndex } = this
         // 对dataSource按统计维度排序
         // let newDataSource = dataSource.sort(sortFunc)
         let gatherInfo = this.calcRowSpan(dataSource, columnsDynamic)
@@ -296,22 +316,69 @@ export default {
             customRender: (value, row) => this.renderCellContent(value, row, m.dataIndex, i, columnsDynamic, gatherInfo)
           }
         }).concat(columnsFixed)
+        // 表格添加合计和小计
+        let sumarr = ['assetNum', 'area', 'transferOperationArea', 'selfUserArea','idleArea', 'occupationArea', 'otherArea', 'originalValue', 'firstOriginalValue', 'latestValuationValue']
+        let sumObj = {}
+        // sumarr.forEach(key => {
+        //   let num = 0
+        //   this.dataSource.forEach((item, index) => {
+        //     item[key] = item[key] ? item[key] : 0
+        //     num += Number(item[key])
+        //     if(index === this.dataSource.length - 1) sumObj[key] = num
+        //   })
+        // })
+        // 计算小计
+        const { format, bignumber, add } = math
+        sumarr.forEach(key => {
+         sumObj[key]= this.dataSource.reduce((pre, cur) => {
+            cur[key] = cur[key] ? cur[key] : 0
+            return  +format(add(bignumber(pre || 0), bignumber(cur[key] || 0)))
+          }, 0)
+        })
+        let dimension = columnsDynamic.map(m => sortIndex[m.dataIndex]).filter(n => n)
+        dimension.splice(dimension.indexOf(6),1)
+        try {
+          let res = await this.$api.tableManage.pageListStatistics({...queryInfo, dimension,  organQueryType: this.organQueryType})
+          if(res.data.code === '0'){
+            this.totalData = res.data.data
+            console.log(this.totalData)
+          }
+        } catch (error) {
+          console.log(error)
+          this.$message.error(error || '合计查询失败')
+        }
+        // 处理合计数据
+        let totalObj = {}
+        Object.keys(this.totalData).forEach(key => {
+          if(key === 'assetAreaCount'){
+            totalObj.area = this.totalData[key]
+          }else{
+            let str = key.split('C')[0]
+            totalObj[str] = this.totalData[key]
+          }
+        })
+
+        this.dataSource && this.dataSource.length > 0 && this.dataSource.push({ organName: '当前页-合计', ...sumObj}, { ...totalObj,organName: '所有页-合计' }) // ,
       },
 
       // 合并单元格
       renderCellContent (value, row, dataIndex, i, columnsDynamic, gatherInfo) {
-        let attrs = {}
-        let rowSpanInfo = row.rowSpanInfo
-        if (rowSpanInfo[dataIndex]) {
-          let name = ''
-          for (let c = 0; c <= i; c++) {
-            name += `_${row[columnsDynamic[c].dataIndex]}`
+        if(row.organName !== '当前页-合计' && row.organName !== '所有页-合计'){
+          let attrs = {}
+          let rowSpanInfo = row.rowSpanInfo
+          if (rowSpanInfo[dataIndex]) {
+            let name = ''
+            for (let c = 0; c <= i; c++) {
+              name += `_${row[columnsDynamic[c].dataIndex]}`
+            }
+            attrs.rowSpan = gatherInfo[name]
+          } else {
+            attrs.rowSpan = 0
           }
-          attrs.rowSpan = gatherInfo[name]
-        } else {
-          attrs.rowSpan = 0
+          return { children: value, attrs }
+        }else {
+          return {children: value}
         }
-        return { children: value, attrs }
       },
 
       // 导出
@@ -345,10 +412,16 @@ export default {
           padding-left: 0 !important;
           padding-right: 0 !important;
         }
+        tr:last-child, tr:nth-last-child(2) {
+          font-weight: bold !important;
+        }
         .ant-table-placeholder {
           display: block !important;
           border-bottom: 1px solid #e8e8e8 !important;
         }
+      }
+      & /deep/ .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+        height: unset !important;
       }
     }
   }

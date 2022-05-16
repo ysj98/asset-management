@@ -120,6 +120,10 @@ export function ownerShipUserSelect (data) {
 export function queryByProjectId (data) {
   return axiosGet(ownershipSurvey.queryByProjectId, data)
 }
+// 资产项目权属汇总
+export function statistics (data) {
+  return axiosPost(ownershipSurvey.statistics, data)
+}
 // 根据组织机构查询人
 export function queryUserPageList (data) {
   return axiosPost(basics.queryUserPageList, data)

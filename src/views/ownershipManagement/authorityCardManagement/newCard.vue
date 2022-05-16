@@ -132,14 +132,14 @@
           </a-col>
           <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" :colon="false">
-              <label slot="label">附记：</label>
+              <label slot="label">附加说明：</label>
               <a-textarea
-                placeholder="请输入附记"
+                placeholder="请输入附加说明"
                 :style="widthBox"
                 :autosize="{ minRows: 2, maxRows: 4 }"
                 :maxLength="200"
                 v-decorator="['excursus',
-                  {rules: [{required: false, max: 200, message: '请输入附记(不超过200字符)'}], initialValue: newCardData.excursus}
+                  {rules: [{required: false, max: 200, message: '请输入附加说明(不超过200字符)'}], initialValue: newCardData.excursus}
                 ]"
               />
             </a-form-item>
@@ -363,7 +363,7 @@ export default {
             kindOfRight: undefined, // 权证类型
             propertyRightUnit: '',  // 实际产权单位
             safekeepUnit: '',  // 实际保管单位
-            excursus: '', // 附记
+            excursus: '', // 附加说明
             remark: ''  // 备注
           })
           this.newCardData = utils.deepClone(newCardData)
@@ -520,7 +520,7 @@ export default {
             rigisterDate: conditionalJudgment.includes(values.rigisterDate) ? '' : `${values.rigisterDate.format('YYYY-MM-DD')}`,                // 登记日期
             organId: this.organId,                                                 // 组织机构
             remark: conditionalJudgment.includes(values.remark) ? '' : values.remark,                            // 备注
-            excursus: conditionalJudgment.includes(values.excursus) ? '' : values.excursus,                      // 附记
+            excursus: conditionalJudgment.includes(values.excursus) ? '' : values.excursus,                      // 附加说明
             handoverDate: conditionalJudgment.includes(values.handoverDate) ? '' : `${values.handoverDate.format('YYYY-MM-DD')}`,  // 交接日期
             houseOwner: conditionalJudgment.includes(values.houseOwner) ? '' : values.houseOwner,                // 房屋所有权人(使用权证所有)
             tenant: conditionalJudgment.includes(values.tenant) ? '' : values.tenant,                            // (使用权证所有)
@@ -814,7 +814,7 @@ export default {
               ownerType: String(data.amsOwnershipWarrant.ownerType),      // 权属形式
               kindOfRight: String(data.amsOwnershipWarrant.kindOfRight), // 权证类型
               remark: data.amsOwnershipWarrant.remark,  // 备注
-              excursus: data.amsOwnershipWarrant.excursus,  // 附记
+              excursus: data.amsOwnershipWarrant.excursus,  // 附加说明
               exclusiveBuildArea: data.amsOwnershipWarrant.exclusiveBuildArea,  // 专有建筑面积
               apportionArea: data.amsOwnershipWarrant.apportionArea,  // 分摊面积
               ownershipUse: conditionalJudgment.includes(data.amsOwnershipWarrant.ownershipUse) ? undefined : String(data.amsOwnershipWarrant.ownershipUse),  // 权属用途

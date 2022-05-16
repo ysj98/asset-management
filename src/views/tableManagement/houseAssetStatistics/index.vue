@@ -7,6 +7,7 @@
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_HA_EXPORT">
           导出
         </SG-Button>
+        <SG-Button class="ml20" @click="changeListSettingsModal(true)">列表设置</SG-Button>
       </a-col>
       <a-col :span="12">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
@@ -16,9 +17,11 @@
       </a-col>
     </a-row>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10"/>
+    <a-table v-bind="tableObj" class="custom-total custom-scroll td-pd10" ref="table"/>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
+    <div class="h100"></div>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <TableHeaderSettings v-if="listSettingFlag" :funType="funType" width="1200px" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -27,12 +30,46 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
+  import { handleTableScrollHeight,handleTableHeaderScrollHeight,initTableColumns } from '@/utils/share.js'
+  import TableHeaderSettings from "@/components/TableHeaderSettings";
+  import Utils from '@/utils/utils.js'
+  const totalKeyArr = [
+    'ownBuildNumber',
+    'ownHouseNumber',
+    'ownUsedBuildNumber',
+    'ownUsedHouseNumber',
+    'otherBuildNumber',
+    'otherHouseNumber',
+    'otherUsedBuildNumber',
+    'otherUsedHouseNumber'
+  ]
+  const detailColumns =  [
+    { title: '资产项目名称', dataIndex: 'projectName', width: 300, fixed: 'left'},
+    { title: '资产项目编码', dataIndex: 'projectCode', width: 300,
+      customRender(text,{projectCode}){
+        // 特殊处理 合计 行的值
+        return Utils.isString(projectCode) ? projectCode : ''
+      }
+    },
+    { title: '管理机构', dataIndex: 'organName', width: 300},
+    { title: '本单位有产权楼栋数量', dataIndex: 'ownBuildNumber', width: 180 },
+    { title: '本单位有产权房屋数量', dataIndex: 'ownHouseNumber', width: 180 },
+    { title: '本单位有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber', width: 180},
+    { title: '本单位有使用权房屋数量', dataIndex: 'ownUsedHouseNumber', width: 180 },
+    { title: '其他单位有产权楼栋数量', dataIndex: 'otherBuildNumber', width: 180 },
+    { title: '其他单位有产权房屋数量', dataIndex: 'otherHouseNumber', width: 180 },
+    { title: '其他单位有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber', width: 180},
+    { title: '其他单位有使用权房屋数量', dataIndex: 'otherUsedHouseNumber', width: 180},
+  ]
+
   export default {
     name: 'index',
-    components: { OrganProject, NoDataTip },
+    components: { OrganProject, NoDataTip, TableHeaderSettings },
     data () {
       return {
         ASSET_MANAGEMENT, // 权限对象
+        listSettingFlag: false,
+        funType: 13,
         exportBtnLoading: false, // 导出按钮loading
         organProjectValue: {}, // 查询条件-组织机构及项目值
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -41,35 +78,8 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: 2400 },
-          columns: [
-            { title: '资产项目名称', dataIndex: 'projectName', width: 320, fixed: 'left', customRender: (text) => {
-              return {
-                children: text,
-                attrs: (text === '当前页-合计' || text === '所有页-合计') ? {colSpan: 3} : {}
-              }
-            } },
-            { title: '资产项目编码', dataIndex: 'projectCode', width: 150, customRender: (text, row) => {
-              return {
-                children: text,
-                attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
-              }
-            } },
-            { title: '管理机构', dataIndex: 'organName', width: 180, customRender: (text, row) => {
-              return {
-                children: text,
-                attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
-              }
-            } },
-            { title: '本单位有产权楼栋数量', dataIndex: 'ownBuildNumber' },
-            { title: '本单位有产权房屋数量', dataIndex: 'ownHouseNumber' },
-            { title: '本单位有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber'},
-            { title: '本单位有使用权房屋数量', dataIndex: 'ownUsedHouseNumber' },
-            { title: '其他单位有产权楼栋数量', dataIndex: 'otherBuildNumber' },
-            { title: '其他单位有产权房屋数量', dataIndex: 'otherHouseNumber' },
-            { title: '其他单位有使用权楼栋数量', dataIndex: 'otherUsedBuildNumber'},
-            { title: '其他单位有使用权房屋数量', dataIndex: 'otherUsedHouseNumber'},
-          ]
+          scroll: { x: "100%" },
+          columns: []
         },
         dataSum: {} // 所有数据合计
       }
@@ -82,6 +92,24 @@
     },
 
     methods: {
+      handleNumber(dataSource){
+        dataSource.forEach(ele=>{
+          Object.keys(ele).forEach(keyStr=>{
+            if (totalKeyArr.includes(keyStr)){
+              if (!isNaN(Number(ele[keyStr]))){
+                ele[keyStr] = Number(ele[keyStr]).toLocaleString()
+              }
+            }
+          })
+        })
+      },
+      handleTableHeaderSuccess(){
+        this.changeListSettingsModal(false)
+        initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
+      },
+      changeListSettingsModal(flag){
+        this.listSettingFlag = flag
+      },
       // 导出
       handleExport () {
         const {organProjectValue: {organId, projectId}} = this
@@ -147,7 +175,10 @@
             Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
-            return this.tableObj.dataSource = (type === 'sum') ? dataSource : dataSource.concat(dataSum)
+
+            this.tableObj.dataSource = (type === 'sum') ? dataSource : dataSource.concat(dataSum)
+            this.handleNumber(this.tableObj.dataSource)
+            return this.tableObj.dataSource
           }
           throw res.message
         }).catch(err => {
@@ -158,6 +189,7 @@
         if (type === 'sum') {
           Promise.all([queryTablePromise, this.queryDataSum(form)]).then(([dataSource, dataSum]) => {
             dataSource && (this.tableObj.dataSource = dataSource.concat(dataSum))
+            this.handleNumber(this.tableObj.dataSource)
           })
         }
       },
@@ -176,6 +208,13 @@
           return this.dataSum = obj
         })
       }
+    },
+    created() {
+      handleTableScrollHeight(this.tableObj.scroll, 350)
+      initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
+    },
+    mounted() {
+      handleTableHeaderScrollHeight(this.$refs.table.$el)
     }
   }
 </script>

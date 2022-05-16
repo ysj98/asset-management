@@ -1,24 +1,22 @@
+import {ownership} from '@/config/config.url'
 export default {
   methods: {
     // 自定义下载
     customDownload (file) {
-      let loadingName = this.SG_Loding('下载中...')
-      this.$api.ownership.downLoadAnnex(({ attachmentPath: file.url,fileName: file.name })).then(res => {
-        this.DE_Loding(loadingName).then(() => {
-          let blob = new Blob([res.data])
-          let a = document.createElement('a')
-          a.href = URL.createObjectURL(blob)
-          a.download = file.name
-          a.style.display = 'none'
-          document.body.appendChild(a)
-          a.click()
-          a.remove()
-        })
-      }, () => {
-        this.DE_Loding(loadingName).then(res => {
-          this.$SG_Message.error('下载失败！')
-        })
-      })
+      console.log({file})
+      // 处理新旧数据
+      const fileUrl = file.url || ''
+      const fileName = file.name || ''
+      const newHref = `${ownership.authorityCardManagement.downLoadAnnex}?attachmentPath=${fileUrl}&fileName=${fileName}`
+      const oldHref = `/uhomecp-app/common/downloadFile.do?fileName=${fileName}&filePath=${fileUrl}`
+      const resHref = file.fileSources === 0 ? oldHref : newHref
+      let a = document.createElement('a')
+      a.href = resHref
+      a.download = file.name
+      a.style.display = 'none'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
     },
     // 自定义上传
     customUpload (list = []) {

@@ -90,6 +90,8 @@
 
 <script>
 // 获取图片域名
+import configs from "@/config/config.base";
+
 const config = window.__configs
 let hostImg  = config ? config.hostImg : ''
 import PreviewItem from './PreviewItem'
@@ -482,7 +484,11 @@ export default {
       this.$previewImages.destroy()
       this.$previewImages.init({
         list: this.imagesList.map(el => {
-          return this.hostImg + el.url
+          let resUrl = this.hostImg + el.url
+          if (el.fileSources === 0){
+            resUrl = configs.hostImg + el.url
+          }
+          return resUrl
         }),
         index
       }).view(index)

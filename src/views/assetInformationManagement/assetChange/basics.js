@@ -174,6 +174,13 @@ export const changeDirectionUseEq = [{
     customRender:'newUseDirection'
   }
 },
+{
+  title: '操作',
+  dataIndex: 'operation',
+  align: 'center',
+  scopedSlots: { customRender: 'operation' },
+  width: 120
+}
 ]
 
 

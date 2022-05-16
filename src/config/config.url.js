@@ -742,6 +742,8 @@ export const ownershipSurvey = {
   ownerShipUserSelect: "/ams/ownerShipUser/select",
   // 根据项目id查询权属情况
   queryByProjectId: "/ams/ownerShip/queryByProjectId",
+  // 资产项目权属汇总
+  statistics: "/ams/ownerShip/attr/asset/statistics",
 };
 
 export const ownership = {
@@ -1081,6 +1083,8 @@ export const tableManage = {
   getAssetValue: "/ams/statistics/getAssetValue",
   // 资产价值查询统计
   getAssetValueCount: "/ams/statistics/getValueCount",
+  // 资产价值数据报表合计
+  getAssetValueStatistics: "/ams/statistics/getAssetValueStatistics",
   // 资产项目数据报表
   projectAsset: "/ams/statistics/projectAsset",
   // 资产项目数据查询统计
@@ -1093,6 +1097,8 @@ export const tableManage = {
   exportAssetHouseList: "/ams/statistics/asset-house/pageList/export",
   // 房屋资产统计分析-汇总分析
   queryAssetHouseTotal: "/ams/statistics/asset-house/total",
+  // 房屋资产统计分析-查询列表-合计
+  pageListStatistics: "/ams/statistics/asset-house/pageListStatistics",
   // 有证房屋资产统计表
   queryWarrantHouse: "/ams/statistics/asset/house/warrant",
   // 有证房屋资产统计表（导出）
@@ -1121,6 +1127,8 @@ export const tableManage = {
   queryHouseAssetSumInfo: "/ams/statistics/asset/house/warrantCount",
   // 权属证件一览表(汇总)
   queryOwnershipCardSumInfo: "/ams/statistics/ownership/warrant/count",
+  // 权属证件一览表-合计
+  queryOwnershipCardTableTotal: "/ams/statistics/ownership/warrantCount",
   // 房屋资产&资源统计表-导出
   houseResourceExport: "/ams/statistics/houseResource/export",
   // 房屋资产&资源统计表-明细-导出
