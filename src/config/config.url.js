@@ -1570,3 +1570,8 @@ export const transfer = {
   // 资产查询批量租赁信息
   leaseBatchQuery:"/ams/makeover/leaseBatchQuery",
 }
+
+export const cartPark = {
+  // 车位资产视图列表查询
+  parkingPage: "/ams/asset-carPark/parking/page",
+} 

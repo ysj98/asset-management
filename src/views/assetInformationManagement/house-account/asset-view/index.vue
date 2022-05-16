@@ -574,11 +574,13 @@
           this.tableObj.columns = columns
         }
         if(this.modalType === 2){
-          let arr = this.$refs.editTagRef.labelName
+          let arr = this.$refs.editTagRef.checkedList
+          console.log(arr, 'label')
           let data = {
             houseIds: this.selectedRowKeys.join(','),
             label: arr.join('、')
           }
+          return
           if(!data.label) delete data.label
           this.$api.assets.updateAssetLabelConfig(data).then(res =>{
             if(res.data.code === '0'){
