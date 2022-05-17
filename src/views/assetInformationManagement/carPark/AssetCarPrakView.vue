@@ -476,7 +476,7 @@
           if(!data) this.assetLabelOpt = []
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelId})
+              return ({label: item.labelName, value: item.labelValue})
             })
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : []
           }
@@ -598,17 +598,17 @@
       },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        let labelName = ''
-        if(this.label && this.assetLabelSelect.length > 0){
-          labelName = this.label.map(item => {
-            return this.assetLabelSelect.find(sub => sub.value === item).title
-          })
-          labelName = labelName.length > 0 ? labelName.join('、') : ''
-        }
+        // let labelName = ''
+        // if(this.label && this.assetLabelSelect.length > 0){
+        //   labelName = this.label.map(item => {
+        //     return this.assetLabelSelect.find(sub => sub.value === item).title
+        //   })
+        //   labelName = labelName.length > 0 ? labelName.join('、') : ''
+        // }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment
+          useType,sourceModes, address, uploadAttachment, label
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -623,11 +623,11 @@
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
-          label: labelName,
+          label: label ? label.join('、') : '',
           uploadAttachment
         }
         if(!uploadAttachment) delete form.uploadAttachment
-        if(labelName === '全部资产标签' || !labelName) delete form.label
+        if(label === '全部资产标签' || !label) delete form.label
         this.$api.carPrak.parkingPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -653,13 +653,15 @@
           this.$message.error(err || '查询接口出错')
         })
         // 查询楼栋面积统计数据
-        if (type === 'search') { this.queryAssetAreaInfo(form) }
+        // if (type === 'search') { this.queryAssetAreaInfo(form) }
       },
       // 合计汇总合并
       totalFn (form) {
-        this.$api.assets.assetHousePageTotal(form).then(res => {
+        // this.$api.assets.assetHousePageTotal(form).then(res => {
+        this.$api.carPrak.parkingArea(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
+
             for(let key in data){
               data[key] = getFormat(data[key])
             }
@@ -667,12 +669,12 @@
             this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
             this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
             this.totalField.idleArea = judgment.includes(data.totalIdleArea) ? 0 : data.totalIdleArea                    // 闲置
-            this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : data.totalOccupationArea        // 占用
+            // this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : data.totalOccupationArea        // 占用
             this.totalField.otherArea = judgment.includes(data.totalOtherArea) ? 0 : data.totalOtherArea                  // 其他
             this.totalField.originalValue = judgment.includes(data.totalOriginalValue) ? 0 : data.totalOriginalValue          // 资产原值
             this.totalField.marketValue = judgment.includes(data.totalMarketValue) ? 0 : data.totalMarketValue              // 最新估值
-            this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
-            this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
+            // this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
+            // this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
             this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
           } else {
             this.$message.error(res.message)
@@ -680,22 +682,22 @@
         })
       },
       // 查询楼栋视图面积概览数据
-      queryAssetAreaInfo (form) {
-        this.overviewNumSpinning = true
-        this.$api.assets.queryAssetViewArea(form).then(r => {
-          this.overviewNumSpinning = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            return this.numList = this.numList.map(m => {
-              return { ...m, value: res.data[m.key] }
-            })
-          }
-          throw res.message || '查询资产视图面积使用统计出错'
-        }).catch(err => {
-          this.overviewNumSpinning = false
-          this.$message.error(err || '查询资产视图面积使用统计出错')
-        })
-      },
+      // queryAssetAreaInfo (form) {
+      //   this.overviewNumSpinning = true
+      //   this.$api.assets.queryAssetViewArea(form).then(r => {
+      //     this.overviewNumSpinning = false
+      //     let res = r.data
+      //     if (res && String(res.code) === '0') {
+      //       return this.numList = this.numList.map(m => {
+      //         return { ...m, value: res.data[m.key] }
+      //       })
+      //     }
+      //     throw res.message || '查询资产视图面积使用统计出错'
+      //   }).catch(err => {
+      //     this.overviewNumSpinning = false
+      //     this.$message.error(err || '查询资产视图面积使用统计出错')
+      //   })
+      // },
 
       // 导出资产视图/房屋卡片
       handleExport (type) {
