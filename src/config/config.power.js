@@ -396,6 +396,7 @@ export const ASSET_MANAGEMENT = {
   TM_AP_EXPORT: 'table_manage_asset_project_export',     // 报表管理-资产项目数据查询导出
   TM_AP_HEADERS_SETTING: 'table_manage_asset_project_set_headers',     // 报表管理-资产项目数据查询表头设置
   TM_HA_EXPORT: 'table_manage_house_asset_export',       // 报表管理-有证房屋资产导出
+  TM_HA_HEADERS_SETTING: 'tm_ha_headers_setting',        // 报表管理-有证房屋资产统计标 表头设置
   TM_OA_EXPORT: 'table_manage_ownership_amount_export',  // 报表管理-权证数量统计导出
   TM_OL_EXPORT: 'table_manage_ownership_list_export',    // 报表管理-权属证件一览表导出
   TM_OL_TABLE_HEADERS_SETTING:'table_manage_ownership_set_table_headers',                        // 报表管理-权属证件一览表列表设置
