@@ -7,7 +7,7 @@
         <SG-Button icon="import" :loading='exportBtnLoading' @click="handleExport" v-power="ASSET_MANAGEMENT.TM_HA_EXPORT">
           导出
         </SG-Button>
-        <SG-Button class="ml20" @click="changeListSettingsModal(true)">列表设置</SG-Button>
+        <SG-Button class="ml20" @click="changeListSettingsModal(true)" v-power="ASSET_MANAGEMENT.TM_HA_HEADERS_SETTING">列表设置</SG-Button>
       </a-col>
       <a-col :span="12">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
