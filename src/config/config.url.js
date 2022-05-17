@@ -1582,4 +1582,13 @@ export const transfer = {
 export const cartPark = {
   // 车位资产视图列表查询
   parkingPage: "/ams/asset-carPark/parking/page",
-} 
+}
+// 设备设施台帐
+export const equipmentview = {
+  // 列表页面查询
+  getPage:"/ams/equipment/view/page",
+  // 列表页面统计
+  getTotal:"/ams/equipment/view/total",
+  // 设备资产视图基本信息
+  getDetail:"/ams/equipment/view/detail"
+}

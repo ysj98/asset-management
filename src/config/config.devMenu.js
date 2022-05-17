@@ -108,6 +108,19 @@ export default [
     ]
   },
   {
+    title: '设备设施台帐',
+    children: [
+      {
+        title: '设备设施项目视图',
+        path: '/equipmentprojectview'
+      },
+      {
+        title: '设备设施资产视图',
+        path: '/equipmentview'
+      },
+    ]
+  },
+  {
     title: '基础信息管理',
     children: [
       {
