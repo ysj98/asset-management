@@ -1583,7 +1583,11 @@ export const cartPark = {
   // 车位资产视图列表查询
   parkingPage: "/ams/asset-carPark/parking/page",
   // 资产视图使用面积统计
-  parkingArea: "/ams/asset-carPark/parking/area"
+  parkingArea: "/ams/asset-carPark/parking/area",
+  // 车场单个资产的面积
+  cartParkArea: "/ams/asset-carPark/area",
+  // 车场资产信息查询
+  assetCarPark: "/ams/asset-carPark"
 }
 // 设备设施台帐
 export const equipmentview = {

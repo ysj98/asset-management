@@ -11,10 +11,10 @@
       导出房屋卡片
     </SG-Button>
     <!--基础信息部分-->
-    <base-info-part ref="baseInfoPart" v-if="assetHouseId" :assetHouseId="assetHouseId" @updateTransfer="updateTransfer" :baseInfoKeys="baseInfoKeys" @parkingDetail="parkingDetail"/>
-    <SpaceInfo/>
+    <base-info-part ref="baseInfoPart" v-if="assetCarParkId" :assetCarParkId="assetCarParkId" @updateTransfer="updateTransfer" :baseInfoKeys="baseInfoKeys" @parkingDetail="parkingDetail"/>
+    <SpaceInfo :assetCarParkId="assetCarParkId"/>
     <!--其它信息部分-->
-    <other-info-part v-if="assetHouseId" :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
+    <other-info-part v-if="assetCarParkId" :assetCarParkId="assetCarParkId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
       return {
         ASSET_MANAGEMENT, // 权限对象
         exportBtnLoading: false,
-        assetHouseId: '', // 房屋Id
+        assetCarParkId: '', // 房屋Id
         assetId: '', // 资产Id
         transferOperationArea: '', // 转运营面积
         transferOperationTime: '', // 转运营时间
@@ -39,11 +39,11 @@
           //   {title: '主图', key: 'picturePath'},
           // ], // 列1
           [
-            {title: '资产名称', key: 'buildName'}, {title: '资产类型', key: 'buildCode'}, {title: '建筑面积(㎡)', key: 'area'},
-            {title: '资产状态', key: 'roomNum'}
+            {title: '资产名称', key: 'assetName'}, {title: '资产类型', key: 'assetType'}, {title: '建筑面积(㎡)', key: 'area'},
+            {title: '资产状态', key: 'statusName'}
           ], // 列2
           [
-            {title: '资产编码', key: 'years'}, {title: '资产分类', key: 'addressNo'}, {title: '资产形态', key: 'buildHeight'}
+            {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'}, {title: '资产形态', key: 'typeName'}
           ], // 列3
           [
             {title: '', key: 'picturePath'},
@@ -58,8 +58,8 @@
       // 导出房屋卡片
       exportCard () {
         this.exportBtnLoading = true
-        const { assetHouseId, assetId } = this
-        this.$api.assets.exportHouseCard({ assetHouseId, assetId }).then(res => {
+        const { assetCarParkId, assetId } = this
+        this.$api.assets.exportHouseCard({ assetCarParkId, assetId }).then(res => {
           this.exportBtnLoading = false
           if (String(res.status) === '200' && res.data && res.data.size) {
             let a = document.createElement('a')
@@ -84,8 +84,8 @@
     },
     
     created () {
-      const { query: { houseId, assetId } } = this.$route
-      this.assetHouseId = houseId
+      const { query: { assetCarParkId, assetId } } = this.$route
+      this.assetCarParkId = assetCarParkId
       this.assetId = assetId
     }
   }

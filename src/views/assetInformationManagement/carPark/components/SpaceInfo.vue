@@ -31,13 +31,13 @@
   export default {
     name: 'BaseInfoPart',
     components: { OverviewNumber },
-    props: ['assetHouseId'],
+    props: ['assetCarParkId'],
     data () {
       return {
         judgingCondition: [undefined, null, ''],
         spinning: false,
         spaceInfoKeys: [
-          {title: '运营项目', key: 'projectName'}, {title: '所在车场', key: 'buildName'}, {title: '所在区域', key: 'proCity'},
+          {title: '运营项目', key: 'communityName'}, {title: '所在车场', key: 'placeName'}, {title: '所在区域', key: 'parkingAreaName'},
           {title: '地理位置', key: 'totalAddress', span: 24},
         ], // 空间位置字段
         infoData: {}, // 信息数据
@@ -57,7 +57,7 @@
       // 查询详情
       queryDetailInfo () {
         this.spinning = true
-        this.$api.assets.queryAssetViewBaseInfo({assetHouseId: this.assetHouseId}).then(r => {
+        this.$api.carPrak.assetCarPark({assetCarParkId: this.assetCarParkId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -78,8 +78,9 @@
 
       // 查询楼栋视图面积概览数据
       queryHouseAreaInfo () {
-        const { assetHouseId, numList } = this
-        return this.$api.assets.queryAssetViewHouseArea({ assetHouseId }).then(r => {
+        const { assetCarParkId, numList } = this
+        console.log('assetCarParkId', assetCarParkId)
+        return this.$api.carPrak.cartParkArea({ assetCarParkId }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             // 查楼栋视图详情的面积数据
@@ -99,9 +100,9 @@
         if (type === 'location') {
           return false
         }
-        const { infoData: { assetName, assetCode, decorationSituation, assetHouseId, ownerUser, ownerOrgan, ownerOrganName } } = this
+        const { infoData: { assetName, assetCode, decorationSituation, assetCarParkId, ownerUser, ownerOrgan, ownerOrganName } } = this
         this.modalObj.status = true
-        this.details = { assetName, assetCode, decorationSituation, assetHouseId, ownerUser, ownerOrgan, ownerOrganName }
+        this.details = { assetName, assetCode, decorationSituation, assetCarParkId, ownerUser, ownerOrgan, ownerOrganName }
       },
 
       // Modal关闭

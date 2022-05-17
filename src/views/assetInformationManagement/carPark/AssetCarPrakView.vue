@@ -39,7 +39,6 @@
               option-filter-prop="title"
               placeholder="请选择资产形态"
               :options="$addTitle(sourceOptions)"
-              @change="changeSource"
             />
           </a-col>
           <a-col :span="4">
@@ -166,7 +165,7 @@
         </span>
       </template>
       <span slot="action" slot-scope="text, record">
-        <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetCarPrakView/detail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
+        <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetCarPrakView/detail', query: { assetCarParkId: record.assetCarParkId, assetId: record.assetId } }">详情</router-link>
       </span>
       <template slot="fireMaterial" slot-scope="text, record">
         <span v-if="record.assetName !== '所有页-合计'">
@@ -289,7 +288,7 @@
         assetLabelOpt,
         assetLabelSelect: [],
         label: '',
-        sourceModes:[],  // 查询条件-来源方式
+        sourceModes:'',  // 查询条件-来源方式
         ownershipUseOPt: [],
         ownershipUse: '',
         useType: [],           // 用途
@@ -311,7 +310,7 @@
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         tableObj: {
           pagination: false,
-          rowKey: 'assetHouseId',
+          rowKey: 'assetCarParkId',
           loading: false,
           initColumns: [],
           dataSource: [],
@@ -325,7 +324,7 @@
             { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
             { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, width: 200 },
             { title: '车场类型', dataIndex: 'objectTypeName', scopedSlots: { customRender: 'objectTypeName' }, width: 120 },
-            { title: '区域', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
+            { title: '区域', dataIndex: 'parkingAreaName', scopedSlots: { customRender: 'buildName' }, width: 150 },
             // { title: '单元', dataIndex: 'unitName', width: 100 },
             // { title: '楼层', dataIndex: 'floor', width: 100 },
             // { title: '层高', dataIndex: 'floorHeight', width: 100 },
@@ -333,8 +332,8 @@
             // { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
             // { title: '用途', dataIndex: 'useType', width: 100 },
             { title: '资产形态', dataIndex: 'typeName', width: 100 },
-            { title: '权属类型', dataIndex: 'ownershipStatusName', width: 100 },
-            // { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
+            { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+            { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
             { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
             // { title: '权属人', dataIndex: 'obligeeName', width: 100 },
             // { title: '财务卡片编码', dataIndex: 'houseProveLife', width: 150 },
@@ -343,7 +342,7 @@
             // { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
 
             // { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
-            { title: '接管时间', dataIndex: 'startDate', width: 150  },
+            { title: '接管日期', dataIndex: 'ownerTime', width: 150  },
             { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
             { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
             { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
@@ -365,14 +364,14 @@
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
-          {title: '资产数量', key: 'totalArea', value: 0, fontColor: '#324057'},
+          {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
           {title: '资产面积(㎡)', key: 'totalArea', value: 0, bgColor: '#4BD288'},
           {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6'},
           {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'},
-          {title: '资产原值(元)', key: 'totalOccupationArea', value: 0, bgColor: '#4BD288'},
-          {title: '资产估值(元)', key: 'totalOccupationArea', value: 0, bgColor: '#1890FF'},
+          {title: '资产原值(元)', key: 'totalOriginalValue', value: 0, bgColor: '#4BD288'},
+          {title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#1890FF'},
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
@@ -392,7 +391,20 @@
           rentedArea: '',              // 已租面积
           unRentedArea: ''             // 未租面积
         },
-        sourceOptions:[],
+        sourceOptions:[
+          {
+            value: '',
+            label: '全部资产形态'
+          },
+          {
+            value: 1,
+            label: '车场'
+          },
+          {
+            value: 2,
+            label: '车位'
+          }
+        ],
         modalType: 1, // 1 设置列表表头 2 设置资产标签
       }
     },
@@ -401,7 +413,7 @@
         this.queryTableData({type: 'search'})
         if(val.organId !== pre.organId){
           this.queryCategoryOptions(val.organId)
-          this.getSourceOptions(val.organId)
+          // this.getSourceOptions(val.organId)
           this.organDict('OWNERSHIP_USE',val.organId)
           if(val.organId.split(',').length === 1){
             this.getAssetLabel(val.organId)
@@ -513,11 +525,11 @@
         this.status = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
       },
       // 来源方式
-      changeSource(value){
-        console.log('value', value)
-        let lastIndex = value.length - 1
-        this.sourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
-      },
+      // changeSource(value){
+      //   console.log('value', value)
+      //   let lastIndex = value.length - 1
+      //   this.sourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
+      // },
       // 全选与其他选项资产分类
       categoryChange (value) {
         let lastIndex = value.length - 1
@@ -546,13 +558,13 @@
         }).catch(err => this.$message.error(err || '查询资产分类出错'))
       },
       // 根据organId查询来源方式
-      async getSourceOptions(organId){
-        this.sourceOptions = []
-        this.sourceModes = []
-        querySourceType(organId, this).then(list => {
-          return this.sourceOptions = [{ key: 'all', title: '全部来源方式' }].concat(list)
-        })
-      },
+      // async getSourceOptions(organId){
+      //   this.sourceOptions = []
+      //   this.sourceModes = []
+      //   querySourceType(organId, this).then(list => {
+      //     return this.sourceOptions = [{ key: 'all', title: '全部来源方式' }].concat(list)
+      //   })
+      // },
       // 列表设置Modal保存
       handleModalOk: throttle (function(){
         let arr = []
@@ -574,18 +586,18 @@
           this.tableObj.columns = columns
         }
         if(this.modalType === 2){
-          let arr = this.$refs.editTagRef.labelName
+          let arr = this.$refs.editTagRef.checkedList
           let data = {
-            houseIds: this.selectedRowKeys.join(','),
-            label: arr.join('、')
+            assetCarParkIds: this.selectedRowKeys.join(','),
+            labelCode: arr.join('、')
           }
-          if(!data.label) delete data.label
+          if(!data.labelCode) delete data.labelCode
           this.$api.assets.updateAssetLabelConfig(data).then(res =>{
             if(res.data.code === '0'){
               this.selectedRowKeys = []
               this.queryTableData({type: ''})
-              this.$refs.editTagRef.checkedList = []
-              this.$refs.editTagRef.change()
+              // this.$refs.editTagRef.checkedList = []
+              // this.$refs.editTagRef.change()
             }
           })
         }
@@ -607,26 +619,31 @@
         // }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, supportMaterial,
           useType,sourceModes, address, uploadAttachment, label
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
-          organId: 1, buildIdList, projectIdList, pageSize: pageLength,
-          province, city, region, assetName, pageNum: pageNo, address,
+          // assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
+          organId: 1, 
+          // buildIdList, 
+          projectIdList, 
+          pageSize: pageLength,
+          province, city, region, 
+          assetName, 
+          pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
-          ownershipUse,
-          supportMaterial,
+          // ownershipUse,
+          // supportMaterial,
           statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
-          useTypes: useType.includes('all') ? '' : useType.join(','),
-          sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
+          // useTypes: useType.includes('all') ? '' : useType.join(','),
+          type: sourceModes,//sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
           label: label ? label.join('、') : '',
-          uploadAttachment
+          // uploadAttachment
         }
-        if(!uploadAttachment) delete form.uploadAttachment
+        // if(!uploadAttachment) delete form.uploadAttachment
         if(label === '全部资产标签' || !label) delete form.label
         this.$api.carPrak.parkingPage(form).then(r => {
           this.tableObj.loading = false
@@ -661,7 +678,9 @@
         this.$api.carPrak.parkingArea(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
-
+            this.numList = this.numList.map(m => {
+              return { ...m, value: data[m.key] }
+            })
             for(let key in data){
               data[key] = getFormat(data[key])
             }
@@ -669,12 +688,9 @@
             this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
             this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
             this.totalField.idleArea = judgment.includes(data.totalIdleArea) ? 0 : data.totalIdleArea                    // 闲置
-            // this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : data.totalOccupationArea        // 占用
             this.totalField.otherArea = judgment.includes(data.totalOtherArea) ? 0 : data.totalOtherArea                  // 其他
             this.totalField.originalValue = judgment.includes(data.totalOriginalValue) ? 0 : data.totalOriginalValue          // 资产原值
             this.totalField.marketValue = judgment.includes(data.totalMarketValue) ? 0 : data.totalMarketValue              // 最新估值
-            // this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
-            // this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
             this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
           } else {
             this.$message.error(res.message)
@@ -728,7 +744,7 @@
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
-          sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
+          type: this.sourceModes,
           label: labelName,
           uploadAttachment: this.uploadAttachment
         }

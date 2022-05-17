@@ -93,7 +93,7 @@
         </div>
       </a-tab-pane>
       <a-tab-pane tab="运营信息" key="operationInformation">
-        <operationInformation :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
+        <operationInformation :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
       </a-tab-pane>
     </a-tabs>
     <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex='bigImg.imgIndex' :list="bigImg.list"></preview-images>
@@ -122,7 +122,7 @@
   }
   export default {
     name: 'OtherInfoPart',
-    props: ['assetHouseId', 'assetId', 'transferOperationArea', 'transferOperationTime'],
+    props: ['assetCarParkId', 'assetId', 'transferOperationArea', 'transferOperationTime'],
     components: {
       operationInformation, PreviewImages
     },
@@ -181,10 +181,12 @@
           if (res && String(res.code) === '0') {
             const info = res.data
             if (type === 'ownInfo') {
-              let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = info
-              detailData = { ownerTypeName, ownershipStatusName }
-              tableData = ownershipInfo
-              table2Data = transactionList
+              if(info) {
+                let { ownerTypeName, ownershipStatusName, ownershipInfo, transactionList } = info
+                detailData = { ownerTypeName, ownershipStatusName }
+                tableData = ownershipInfo
+                table2Data = transactionList
+              }
             } else if (type === 'receiveInfo') {
               let { deliveryDetailList, ...others } = info
               let { infoKeys: { receiveInfo: { details } } } = this

@@ -232,7 +232,7 @@
           if(!data) this.assetLabelOpt = []
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelId})
+              return ({label: item.labelName, value: item.labelValue})
             })
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : undefined
             this.label = this.assetLabelOpt.length > 0 ? '' : undefined
@@ -255,15 +255,15 @@
       },
       // 资产设置
       handleModalOk: throttle(function() {
-        let arr = this.$refs.editTagRef.labelName
+        let arr = this.$refs.editTagRef.checkedList
         if( this.selectedRowKeys.length <= 0){
           return this.$message.error('请选择需要设置标签的楼栋')
         }
         let data = {
           buildIds: this.selectedRowKeys.join(','),
-          label:arr.join('、')
+          labelCode:arr.join('、')
         }
-        if(!data.label) delete data.label
+        if(!data.labelCode) delete data.labelCode
         this.$api.assets.updateAssetLabelConfig(data).then(res =>{
           if(res.data.code === '0'){
             this.selectedRowKeys = []

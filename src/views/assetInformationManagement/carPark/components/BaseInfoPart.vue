@@ -29,7 +29,7 @@
   import {win} from "utils/utils";
   export default {
     name: 'BaseInfoPart',
-    props: ['buildId', 'baseInfoKeys'],
+    props: ['assetCarParkId', 'baseInfoKeys'],
     data () {
       return {
         imgPrx: basics.common.imgStr,
@@ -46,7 +46,7 @@
           return
         }
         const fromType = 'portal'
-        const positionId = this.$route.query.buildId
+        const positionId = this.$route.query.assetCarParkId
         const tabTitle = '车场详情'
         const tabUrl = `/asset-management/#/createBuildDetail?fromType=${fromType}&positionId=${positionId}`
         win.openPortalMenu(tabUrl,tabTitle)
@@ -54,12 +54,13 @@
       // 查询基本信息
       queryHouseInfo () {
         this.spinning = true
-        this.$api.assets.queryBuildingViewBuildInfo({buildId: this.buildId}).then(r => {
+        this.$api.carPrak.assetCarPark({assetCarParkId: this.assetCarParkId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
             let temp = res.data
-            temp.ownText = Number(temp.type) === 1 ? '房屋' : '楼栋'
+            this.$set(temp, 'assetType', '车场')
+            this.$set(temp, 'typeName', temp.type === 1 ? '车场' : '车位')
             return this.baseInfoData = temp
           }
           throw res.message || '查询车场信息出错'
