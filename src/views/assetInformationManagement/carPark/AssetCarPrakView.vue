@@ -321,10 +321,10 @@
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '管理机构', dataIndex: 'ownerOrganName', width: 150 },
             // { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-            { title: '资产项目', dataIndex: 'address', width: 300 },
+            { title: '资产项目', dataIndex: 'projectName', width: 300 },
             { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
-            { title: '车场名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
-            { title: '车场类型', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },
+            { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, width: 200 },
+            { title: '车场类型', dataIndex: 'objectTypeName', scopedSlots: { customRender: 'objectTypeName' }, width: 120 },
             { title: '区域', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
             // { title: '单元', dataIndex: 'unitName', width: 100 },
             // { title: '楼层', dataIndex: 'floor', width: 100 },
@@ -333,8 +333,8 @@
             // { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
             // { title: '用途', dataIndex: 'useType', width: 100 },
             { title: '资产形态', dataIndex: 'typeName', width: 100 },
-            { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
-            { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
+            { title: '权属类型', dataIndex: 'ownershipStatusName', width: 100 },
+            // { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
             { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
             // { title: '权属人', dataIndex: 'obligeeName', width: 100 },
             // { title: '财务卡片编码', dataIndex: 'houseProveLife', width: 150 },
@@ -533,10 +533,12 @@
       queryCategoryOptions (organId) {
         this.categoryId = []
         this.categoryOptions = []
-        this.$api.assets.getList({organId: 1,organIds: organId, assetType: '1'}).then(({data: res}) => {
+        // this.$api.assets.getList({organId: 1,organIds: organId, assetType: '1'})
+        this.$api.assets.platformDict({code: 'PARKING_PLACE_RESOURCE_TYPE'})
+        .then(({data: res}) => {
           if (res && String(res.code) === '0') {
             const arr = (res.data || []).map(m => {
-              return { title: m.professionName, key: m.professionCode }
+              return { title: m.name, key: m.value }
             })
             return this.categoryOptions = [{ title: '全部分类', key: 'all' }].concat(arr)
           }
@@ -626,7 +628,7 @@
         }
         if(!uploadAttachment) delete form.uploadAttachment
         if(labelName === '全部资产标签' || !labelName) delete form.label
-        this.$api.assets.queryAssetViewPage(form).then(r => {
+        this.$api.carPrak.parkingPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {

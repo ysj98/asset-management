@@ -24,3 +24,4 @@ yarn-error.log*
 .VSCodeCounter/results.csv
 .VSCodeCounter/details.md
 .VSCodeCounter/results.md
+.history

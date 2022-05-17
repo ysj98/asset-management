@@ -478,7 +478,7 @@
           if(!data) this.assetLabelOpt = []
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelId})
+              return ({label: item.labelName, value: item.labelValue})
             })
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : []
           }
@@ -575,19 +575,17 @@
         }
         if(this.modalType === 2){
           let arr = this.$refs.editTagRef.checkedList
-          console.log(arr, 'label')
           let data = {
             houseIds: this.selectedRowKeys.join(','),
             label: arr.join('、')
           }
-          return
           if(!data.label) delete data.label
           this.$api.assets.updateAssetLabelConfig(data).then(res =>{
             if(res.data.code === '0'){
               this.selectedRowKeys = []
               this.queryTableData({type: ''})
-              this.$refs.editTagRef.checkedList = []
-              this.$refs.editTagRef.change()
+              // this.$refs.editTagRef.checkedList = []
+              // this.$refs.editTagRef.change()
             }
           })
         }
@@ -600,17 +598,10 @@
       },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        let labelName = ''
-        if(this.label && this.assetLabelSelect.length > 0){
-          labelName = this.label.map(item => {
-            return this.assetLabelSelect.find(sub => sub.value === item).title
-          })
-          labelName = labelName.length > 0 ? labelName.join('、') : ''
-        }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment
+          useType,sourceModes, address, uploadAttachment, label
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -625,11 +616,11 @@
           useTypes: useType.includes('all') ? '' : useType.join(','),
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
-          label: labelName,
+          label: label ? label.join('、') : '',
           uploadAttachment
         }
         if(!uploadAttachment) delete form.uploadAttachment
-        if(labelName === '全部资产标签' || !labelName) delete form.label
+        if(label === '' || !label) delete form.label
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -701,13 +692,6 @@
 
       // 导出资产视图/房屋卡片
       handleExport (type) {
-        let labelName = ''
-        if(this.label && this.label.length > 0 && this.assetLabelSelect.length > 0){
-          labelName = this.label.map(item => {
-            return this.assetLabelSelect.find(sub => sub.value === item).title
-          })
-          labelName = labelName.length > 0 ? labelName.join('、') : ''
-        }
         if (!this.tableObj.dataSource.length) {
           return this.$message.info('无可导出数据')
         }
@@ -716,7 +700,7 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType, address,
-          tableObj: { columns }, current
+          tableObj: { columns }, current, label
         } = this
         let form = type === 'exportHouseBtn' ? {
           assetHouseId: buildIdList.join(',')
@@ -729,11 +713,11 @@
           useTypes: useType.includes('all') ? '' : useType.join(','),
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
           sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
-          label: labelName,
+          label: label ? label.join('、') : '',
           uploadAttachment: this.uploadAttachment
         }
         if(!this.uploadAttachment) delete form.uploadAttachment
-        if(labelName === '全部资产标签' || !labelName){
+        if(label === '全部资产标签' || !label){
           delete form.label
         }
         if(type === 'exportAssetBtn'){
