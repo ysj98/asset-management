@@ -16,3 +16,14 @@ export function cartParkArea (data) {
 export function assetCarPark (data) {
   return axiosGet(cartPark.assetCarPark, data)
 }
+// 导出车场资产视图
+export function parkingExcel (data) {
+  return axiosPost(cartPark.parkingExcel, data, false, false, {responseType: 'blob'})
+}
+export function carParkViewPage (data) {
+  return axiosPost(cartPark.carParkViewPage, data)
+}
+// 车场视图面积信息
+export function carParkViewArea (data) {
+  return axiosPost(cartPark.carParkViewArea, data)
+}

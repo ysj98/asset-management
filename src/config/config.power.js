@@ -566,6 +566,19 @@ export const ASSET_MANAGEMENT = {
    power_land_relatedExpenses: 'power_land_relatedExpenses', // 相关费用页签
    power_land_archive: 'power_land_archive', // 档案文件页签
    power_land_operationInformation: 'power_land_operationInformation', // 运营信息页签
+    /**
+   * 车场资产视图详情中的其它信息tab页签权限管理
+   */
+  power_car_ownInfo: 'power_car_ownInfo', // 权属信息页签
+  power_car_receiveInfo: 'power_car_receiveInfo', // 接管信息页签
+  power_car_changeInfo: 'power_car_changeInfo', // 权属信息页签
+  power_car_billInfo: 'power_car_billInfo', // 账面信息页签
+  power_car_patrolRecord: 'power_car_patrolRecord', // 巡查记录页签
+  power_car_accessoryInfo: 'power_car_accessoryInfo', // 附属&配套页签
+  power_car_disposeInfo: 'power_car_disposeInfo', // 资产信息页签
+  power_car_relatedExpenses: 'power_car_relatedExpenses', // 相关费用页签
+  power_car_archive: 'power_car_archive', // 档案文件页签
+  power_car_operationInformation: 'power_car_operationInformation', // 运营信息页签
    /**
    * 资产条码 & 条码管理
    */

@@ -5,62 +5,25 @@ const keys = {
   receiveInfo: {
     title: '接管信息',
     details: {
-      organName: '管理机构',
-      projectName: '资产项目名称',
-      projectCode: '资产项目编码',
-      takeoverAssetStatusName: '接管时资产状态',
+      projectName: '资产项目',
       sourceTypeName: '来源方式',
       sourceChannelType: '来源渠道',
-      isTransferOperation: '是否接管',
+      organName: '管理机构',
       takeOverDate: '接管日期',
-      projectStatus: '项目状态',
-      remark: '备注',
-      attachment: '附件',
-      '':''
-    },
-    other1: {
-      key1: '权属办理中存在问题',
-      key2: '历史遗留问题',
-      key3: '上报基础情况表时间',
-      key4: '上报基础情况表时间',
-      key5: '上报资产划转请示时间',
-      key6: '上报资产划转请示时间',
-      key7: '划转批复下发时间',
-      key8: '划转批复下发时间'
-    },
-    other2: {
-      key1: '权属办理中存在问题',
-      key2: '历史遗留问题',
-      key3: '购买日期'
-    },
-    other4: {
-      key1: '权属办理中存在问题',
-      key2: '历史遗留问题',
-      key3: '租入开始日期',
-      key4: '租入结束日期',
-      key5: '租入合同编号',
-    },
-    other3: {
-      key1: '权属办理中存在问题',
-      key2: '历史遗留问题',
-      key3: '开发商',
-      key4: '承建商',
-      key5: '竣工日期',
-      key6: '交付日期',
-    },
-    other5: {
-      key1: '权属办理中存在问题',
-      key2: '历史遗留问题',
+      isTransferOperation: '是否转运营',
+      // transferOperationTime: '转运营日期',
+      isTransfer: '是否转物业'
+      // transferTime: '转物业日期',
     },
     table: {
       rowKey: 'changeOrderDetailId',
       columns: [
-        // { title: '编号', dataIndex: 'deliveryDetailId' },
-        // { title: '交付类型', dataIndex: 'deliveryTypeName' },
-        // { title: '交付时间', dataIndex: 'deliveryDate' },
-        // { title: '交付面积(㎡)', dataIndex: 'deliveryArea' },
-        // { title: '接收单位', dataIndex: 'deliveryCompany' },
-        // { title: '终止日期', dataIndex: 'endDate' }
+        { title: '编号', dataIndex: 'deliveryDetailId' },
+        { title: '交付类型', dataIndex: 'deliveryTypeName' },
+        { title: '交付时间', dataIndex: 'deliveryDate' },
+        { title: '交付面积(㎡)', dataIndex: 'deliveryArea' },
+        { title: '接收单位', dataIndex: 'deliveryCompany' },
+        { title: '终止日期', dataIndex: 'endDate' }
       ]
     }
   },
@@ -199,29 +162,47 @@ const keys = {
       ]
     }
   },
+  // 巡查记录
+  patrolRecord : {
+    title: '巡查记录',
+    details: {
+    },
+    table: {
+      rowKey: 'recordId',
+      pagination: true,
+      columns: [
+        { title: '巡查编号', dataIndex: 'recordId' },
+        { title: '巡查类型', dataIndex: 'inspectionTypeName' },
+        { title: '巡查日期', dataIndex: 'actualInspectionDate' },
+        { title: '巡查人', dataIndex: 'userNames' },
+        { title: '问题描述', dataIndex: 'problemDescription' },
+        { title: '巡查图片', dataIndex: 'attachmentList', scopedSlots: { customRender: 'attachmentList' } },
+        { title: '现场处理措施', dataIndex: 'sceneHandleMeasure' },
+        { title: '整改后图片', dataIndex: 'rectifyAttachmentList', scopedSlots: { customRender: 'rectifyAttachmentList' } },
+        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
+      ]
+    }
+  },
   // 档案文件
   archive : {
-    title: '资产使用',
+    title: '档案文件',
     details: {
-      cleaningOrderId: '资产使用期限',
-      createTime: '开始使用日期',
-      cleanupTypeName: '已使用期限信息'
     },
     table: {
       rowKey: 'archiveId',
-      pagination: false,
+      pagination: true,
       columns: [
-        // { title: '文档编号', dataIndex: 'archiveId' },
-        // { title: '文档名称', dataIndex: 'archiveName' },
-        // { title: '类型', dataIndex: 'typeName' },
-        // { title: '密级', dataIndex: 'secretLevelName' },
-        // { title: '纸质档案(实物)', dataIndex: 'hasPaper' },
-        // { title: '电子档', dataIndex: 'hasElectronic' },
-        // { title: '建档日期', dataIndex: 'filingDate' },
-        // { title: '建档人', dataIndex: 'createByName' },
-        // { title: '存放位置', dataIndex: 'positionName' },
-        // { title: '备注', dataIndex: 'description' },
-        // { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
+        { title: '文档编号', dataIndex: 'archiveId' },
+        { title: '文档名称', dataIndex: 'archiveName' },
+        { title: '类型', dataIndex: 'typeName' },
+        { title: '密级', dataIndex: 'secretLevelName' },
+        { title: '纸质档案(实物)', dataIndex: 'hasPaper' },
+        { title: '电子档', dataIndex: 'hasElectronic' },
+        { title: '建档日期', dataIndex: 'filingDate' },
+        { title: '建档人', dataIndex: 'createByName' },
+        { title: '存放位置', dataIndex: 'positionName' },
+        { title: '备注', dataIndex: 'description' },
+        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
       ]
     }
   }

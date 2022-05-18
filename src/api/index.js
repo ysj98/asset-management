@@ -44,7 +44,7 @@ import * as approve from './approve'
 import * as transfer from './transfer'
 import * as bpm from './bpm'
 import * as equipmentview from './equipmentview'
-import * as carPrak from './carPrak'
+import * as carPark from './carPark'
 const API = {
   auth,
   global,
@@ -78,7 +78,7 @@ const API = {
   transfer,
   bpm,
   equipmentview,
-  carPrak
+  carPark
 }
 export default {
   install (Vue) {

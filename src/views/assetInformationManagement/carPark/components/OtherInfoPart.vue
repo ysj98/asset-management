@@ -23,36 +23,36 @@
                 v-model="detailData[key]"/>
             </div>
           </a-col>
-          <template v-if="sourceType === '1'">
+          <!-- <template v-if="sourceTypeName === '划转'">
             <a-col :span="8" v-for="(name, key) in item.other1" :key="key">
               <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
               <span style="color: #49505E">{{detailData[key] || '无'}}</span>
             </a-col>
           </template>
-          <template v-if="sourceType === '2'">
+          <template v-if="sourceTypeName === '外购'">
             <a-col :span="8" v-for="(name, key) in item.other2" :key="key">
               <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
               <span style="color: #49505E">{{detailData[key] || '无'}}</span>
             </a-col>
           </template>
-          <template v-if="sourceType === '3'">
+          <template v-if="sourceTypeName === '自建'">
             <a-col :span="8" v-for="(name, key) in item.other3" :key="key">
               <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
               <span style="color: #49505E">{{detailData[key] || '无'}}</span>
             </a-col>
           </template>
-          <template v-if="sourceType === '4'">
+          <template v-if="sourceTypeName === '租入'">
             <a-col :span="8" v-for="(name, key) in item.other4" :key="key">
               <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
               <span style="color: #49505E">{{detailData[key] || '无'}}</span>
             </a-col>
           </template>
-          <template v-if="sourceType === '5'">
+          <template  v-if="sourceTypeName === '其他'">
             <a-col :span="8" v-for="(name, key) in item.other5" :key="key">
               <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
               <span style="color: #49505E">{{detailData[key] || '无'}}</span>
             </a-col>
-          </template>
+          </template> -->
         </a-row>
         <!--列表部分-->
         <div v-if="item['table']['tableTitle']" style="color: #49505E; margin: 15px 0; font-weight: bold">{{item['table']['tableTitle']}}</div>
@@ -139,21 +139,21 @@
         cacheDataObj: {}, // 缓存信息
         pagination: { ...pagination}, // 缓存分页一
         apiObj: {
-          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId', prower: 'power_ownInfo' }, // 权属信息
-          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId', prower: 'power_receiveInfo' }, // 接管信息
-          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId', prower: 'power_changeInfo' }, // 变动记录
-          billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId', prower: 'power_billInfo' }, // 账面信息
-          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_patrolRecord' }, // 巡查记录
-          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId', prower: 'power_accessoryInfo' }, // 附属&配套
-          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId', prower: 'power_disposeInfo' }, // 资产处置
-          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_relatedExpenses' }, // 相关费用
-          archive: { api: 'queryAssetViewArchiveDetail', tip: '资产使用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_archive' } // 档案文件
+          ownInfo: { api: 'queryAssetViewOwnDetail', tip: '权属信息', param: 'assetId', data: 'assetId', prower: 'power_car_ownInfo' }, // 权属信息
+          receiveInfo: { api: 'queryAssetViewTakeOverDetail', tip: '接管信息', param: 'assetId', data: 'assetId', prower: 'power_car_receiveInfo' }, // 接管信息
+          changeInfo: { api: 'queryAssetViewChangeDetail', tip: '变动记录', param: 'assetId', data: 'assetId', prower: 'power_car_changeInfo' }, // 变动记录
+          billInfo: { api: 'queryAssetViewBillDetail', tip: '账面信息', param: 'assetId', data: 'assetId', prower: 'power_car_billInfo' }, // 账面信息
+          patrolRecord: { api: 'queryAssetViewPatrolDetail', tip: '巡查记录', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_car_patrolRecord' }, // 巡查记录
+          accessoryInfo: { api: 'queryAssetViewAccessoryDetail', tip: '附属&配套', param: 'assetId', data: 'assetId', prower: 'power_car_accessoryInfo' }, // 附属&配套
+          disposeInfo: { api: 'queryAssetViewDisposeDetail', tip: '资产处置', param: 'assetId', data: 'assetId', prower: 'power_car_disposeInfo' }, // 资产处置
+          relatedExpenses: { api: 'assetExpenseInfo', tip: '相关费用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_car_relatedExpenses' }, // 相关费用
+          archive: { api: 'queryAssetViewArchiveDetail', tip: '资产使用', param: 'assetId', data: 'assetId', pagination: true, prower: 'power_car_archive' } // 档案文件
         }, // 接口API相关, api接口url,tip提示中文，param接口入参字段名, data接口入参字段值
         bigImg: { // 查看大图所需数据
           show: false,
           list: [],
           imgIndex: 0
-        }
+        },
       }
     },
 

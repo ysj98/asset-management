@@ -8,7 +8,7 @@
           icon="import"
           type="primary"
           :loading='exportAssetBtn'
-          @click="handleExport('exportAssetBtn')"
+          @click="handleExport()"
           v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT"
         >导出资产视图</SG-Button>
         <!--二期开发-->
@@ -250,25 +250,25 @@
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
   import { throttle } from '@/utils/utils'
   const judgment = [undefined, null, '']
-  const supportMaterialOpt = [
-    { label: "全部证件情况", value: "" },
-    { label: "有证明材料证件", value: 1 },
-    { label: "无证明材料证件", value: 0 },
-  ]
-  const attachmentStatus = [
-  {
-    label: '全部附件状态',
-    value: ''
-  },
-  {
-    label: '未上传',
-    value: '0'
-  },
-  {
-    label: '已上传',
-    value: '1'
-  }
-]
+  // const supportMaterialOpt = [
+  //   { label: "全部证件情况", value: "" },
+  //   { label: "有证明材料证件", value: 1 },
+  //   { label: "无证明材料证件", value: 0 },
+  // ]
+//   const attachmentStatus = [
+//   {
+//     label: '全部附件状态',
+//     value: ''
+//   },
+//   {
+//     label: '未上传',
+//     value: '0'
+//   },
+//   {
+//     label: '已上传',
+//     value: '1'
+//   }
+// ]
   const assetLabelOpt = [
     // { label: "全部资产标签  ", value: "" },
     // { label: "正常", value: 1 },
@@ -276,20 +276,29 @@
   ]
   export default {
     name: 'index',
-    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
+    components: { 
+      EditTableHeader, 
+      OverviewNumber, 
+      SearchContainer, 
+      ProvinceCityDistrict, 
+      OrganProjectBuilding, 
+      NoDataTip, 
+      tooltipText, 
+      EditTag
+    },
     data () {
       return {
-        uploadAttachment: '',
-        attachmentStatus,
+        // uploadAttachment: '',
+        // attachmentStatus,
         getFormat,
-        supportMaterialOpt,
-        supportMaterial: '',
+        // supportMaterialOpt,
+        // supportMaterial: '',
         selectedRowKeys: [],
         assetLabelOpt,
         assetLabelSelect: [],
         label: '',
         sourceModes:'',  // 查询条件-来源方式
-        ownershipUseOPt: [],
+        // ownershipUseOPt: [],
         ownershipUse: '',
         useType: [],           // 用途
         useTypeOptions: [],    // 用途
@@ -319,45 +328,24 @@
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
             { title: '管理机构', dataIndex: 'ownerOrganName', width: 150 },
-            // { title: '宗地号', dataIndex: 'addressNo', width: 150 },
             { title: '资产项目', dataIndex: 'projectName', width: 300 },
             { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
             { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, width: 200 },
             { title: '车场类型', dataIndex: 'objectTypeName', scopedSlots: { customRender: 'objectTypeName' }, width: 120 },
             { title: '区域', dataIndex: 'parkingAreaName', scopedSlots: { customRender: 'buildName' }, width: 150 },
-            // { title: '单元', dataIndex: 'unitName', width: 100 },
-            // { title: '楼层', dataIndex: 'floor', width: 100 },
-            // { title: '层高', dataIndex: 'floorHeight', width: 100 },
-            // { title: '分类', dataIndex: 'objectTypeName', width: 100 },
-            // { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
-            // { title: '用途', dataIndex: 'useType', width: 100 },
             { title: '资产形态', dataIndex: 'typeName', width: 100 },
             { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
             { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
             { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
-            // { title: '权属人', dataIndex: 'obligeeName', width: 100 },
-            // { title: '财务卡片编码', dataIndex: 'houseProveLife', width: 150 },
-            // TODO
-            // { title: '是否有消防验收材料', dataIndex: 'XX2', width: 150 },
-            // { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
-
-            // { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
             { title: '接管日期', dataIndex: 'ownerTime', width: 150  },
             { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
             { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
             { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
-            // { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
             { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
             { title: '资产状态', dataIndex: 'statusName', width: 100 },
-            // { title: '物业管理单位', dataIndex: 'organManagement', width: 150 },
-            // { title: '物业缴费期限', dataIndex: 'organPayDeadline', width: 150 },
-            // { title: '物业费', dataIndex: 'organFee', width: 100 },
-            // { title: '已租面积', dataIndex: 'rentedArea', width: 100, scopedSlots: { customRender: 'rentedArea' } },
-            // { title: '未租面积', dataIndex: 'unRentedArea', width: 100, scopedSlots: { customRender: 'unRentedArea' } },
-            // { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150, scopedSlots: { customRender: 'fireMaterial' }},
             { title: '资产标签', dataIndex: 'label', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
@@ -374,7 +362,7 @@
           {title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#1890FF'},
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
-        exportHouseBtn: false, // 导出房屋卡片button loading标志
+        // exportHouseBtn: false, // 导出房屋卡片button loading标志
         exportAssetBtn: false, // 导出资产视图button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
@@ -414,7 +402,7 @@
         if(val.organId !== pre.organId){
           this.queryCategoryOptions(val.organId)
           // this.getSourceOptions(val.organId)
-          this.organDict('OWNERSHIP_USE',val.organId)
+          // this.organDict('OWNERSHIP_USE',val.organId)
           if(val.organId.split(',').length === 1){
             this.getAssetLabel(val.organId)
           }
@@ -443,9 +431,9 @@
 
     methods: {
       // 选择附件上传状态
-      attachmentStatusFn (val){
-        console.log(val)
-      },
+      // attachmentStatusFn (val){
+      //   console.log(val)
+      // },
       initHeader (){
         // 初始化Table列头
         let{ columns } = this.tableObj
@@ -509,11 +497,11 @@
         this.modalType = 2
         this.modalObj.status = true
       },3000),
-      filterOption(input, option) {
-        return (
-          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        )
-      },
+      // filterOption(input, option) {
+      //   return (
+      //     option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      //   )
+      // },
       // 全选与其他选项互斥处理
       useTypeChange (value) {
         let lastIndex = value.length - 1
@@ -557,14 +545,6 @@
           throw res.message || '查询资产分类出错'
         }).catch(err => this.$message.error(err || '查询资产分类出错'))
       },
-      // 根据organId查询来源方式
-      // async getSourceOptions(organId){
-      //   this.sourceOptions = []
-      //   this.sourceModes = []
-      //   querySourceType(organId, this).then(list => {
-      //     return this.sourceOptions = [{ key: 'all', title: '全部来源方式' }].concat(list)
-      //   })
-      // },
       // 列表设置Modal保存
       handleModalOk: throttle (function(){
         let arr = []
@@ -596,8 +576,6 @@
             if(res.data.code === '0'){
               this.selectedRowKeys = []
               this.queryTableData({type: ''})
-              // this.$refs.editTagRef.checkedList = []
-              // this.$refs.editTagRef.change()
             }
           })
         }
@@ -610,42 +588,29 @@
       },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
-        // let labelName = ''
-        // if(this.label && this.assetLabelSelect.length > 0){
-        //   labelName = this.label.map(item => {
-        //     return this.assetLabelSelect.find(sub => sub.value === item).title
-        //   })
-        //   labelName = labelName.length > 0 ? labelName.join('、') : ''
-        // }
         const {
-          organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment, label
+          organProjectBuildingValue: { organId, projectId: projectIdList, },
+          provinceCityDistrictValue: { province, city, district: region }, 
+          assetName, status, current, categoryId,sourceModes, label
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
-          // assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId: 1, 
-          // buildIdList, 
           projectIdList, 
           pageSize: pageLength,
           province, city, region, 
           assetName, 
           pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
-          // ownershipUse,
-          // supportMaterial,
-          statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
-          // useTypes: useType.includes('all') ? '' : useType.join(','),
-          type: sourceModes,//sourceModes.includes('all') ? '' : sourceModes.join(','),
+          statusList: status.includes('all') ? [] : status, 
+          flag: current ? (current - 1) : '',
+          type: sourceModes,
           organIds: organId,
           label: label ? label.join('、') : '',
-          // uploadAttachment
         }
-        // if(!uploadAttachment) delete form.uploadAttachment
         if(label === '全部资产标签' || !label) delete form.label
-        this.$api.carPrak.parkingPage(form).then(r => {
+        this.$api.carPark.parkingPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -675,7 +640,7 @@
       // 合计汇总合并
       totalFn (form) {
         // this.$api.assets.assetHousePageTotal(form).then(res => {
-        this.$api.carPrak.parkingArea(form).then(res => {
+        this.$api.carPark.parkingArea(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
             this.numList = this.numList.map(m => {
@@ -716,52 +681,45 @@
       // },
 
       // 导出资产视图/房屋卡片
-      handleExport (type) {
-        let labelName = ''
-        if(this.label.length > 0 && this.assetLabelSelect.length > 0){
-          labelName = this.label.map(item => {
-            return this.assetLabelSelect.find(sub => sub.value === item).title
-          })
-          labelName = labelName.length > 0 ? labelName.join('、') : ''
-        }
+      handleExport () {
+        // let labelName = ''
+        // if(this.label.length > 0 && this.assetLabelSelect.length > 0){
+        //   labelName = this.label.map(item => {
+        //     return this.assetLabelSelect.find(sub => sub.value === item).title
+        //   })
+        //   labelName = labelName.length > 0 ? labelName.join('、') : ''
+        // }
         if (!this.tableObj.dataSource.length) {
           return this.$message.info('无可导出数据')
         }
-        this[type] = true
-        let api = { exportHouseBtn: 'exportAssetViewHouseExcel', exportAssetBtn: 'exportAssetViewExcel' }
         const {
-          organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType, address,
-          tableObj: { columns }, current
+          organProjectBuildingValue: { organId, projectId: projectIdList, },
+          provinceCityDistrictValue: { province, city, district: region }, 
+          paginationObj:{ pageLength, pageNo },tableObj: {columns},
+          assetName, status, current, categoryId,sourceModes, label
         } = this
-        let form = type === 'exportHouseBtn' ? {
-          assetHouseId: buildIdList.join(',')
-        } : {
-          assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
-          organId: 1, organIds: organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
-          province, city, region, assetName,  address,
-          statusList: status.includes('all') ? [] : status,
+        let form = {
+          organId: 1, 
+          projectIdList, 
+          pageSize: pageLength,
+          province, 
+          city, 
+          region, 
+          assetName, 
+          pageNum: pageNo,
+          objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
+          statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
+          type: sourceModes,
+          organIds: organId,
+          label: label ? label.join('、') : '',
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
-          useTypes: useType.includes('all') ? '' : useType.join(','),
-          objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
-          type: this.sourceModes,
-          label: labelName,
-          uploadAttachment: this.uploadAttachment
         }
-        if(!this.uploadAttachment) delete form.uploadAttachment
-        if(labelName === '全部资产标签' || !labelName){
-          delete form.label
-        }
-        if(type === 'exportAssetBtn'){
-          this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
-            if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res1.data.message) }
-            if(+res1.data.code === 0){
-          this.$api.assets[api[type]](form).then(res => {
-          this[type] = false
-          if (res.status === 200 && res.data && res.data.size) {
+        if(label === '全部资产标签' || !label) delete form.label
+        this.$api.carPark.parkingExcel(form).then(res => {
+          if (res.status === 200 && res.data) {
             let a = document.createElement('a')
             a.href = URL.createObjectURL(new Blob([res.data]))
-            a.download = `${type === 'exportHouseExcel' ? '房屋卡片' : '资产视图'}导出列表.xls`
+            a.download = '车场资产视图导出列表.xls'
             a.style.display = 'none'
             document.body.appendChild(a)
             a.click()
@@ -769,32 +727,9 @@
           }
           throw res.message || '导出失败'
         }).catch(err => {
-          this[type] = false
+          console.log(err)
           this.$message.error(err || '导出失败')
         })
-            }
-
-          } )
-        }else{
-            this.$api.assets[api[type]](form).then(res => {
-          if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res.data.message) }
-          this[type] = false
-          if (res.status === 200 && res.data && res.data.size) {
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(new Blob([res.data]))
-            a.download = `${type === 'exportHouseExcel' ? '房屋卡片' : '资产视图'}导出列表.xls`
-            a.style.display = 'none'
-            document.body.appendChild(a)
-            a.click()
-            return a.remove()
-          }
-          throw res.message || '导出失败'
-        }).catch(err => {
-          this[type] = false
-          this.$message.error(err || '导出失败')
-        })
-        }
-
       },
 
       // 转物业、转运营
@@ -823,26 +758,26 @@
         })
       },
       // 机构字典
-      organDict (code,organId) {
-        this.ownershipUse = ''
-        this.ownershipUseOPt = []
-        this.$api.assets.organDict({ organId: 1,organIds: organId, code }).then(res => {
-          if (res.data.code === "0") {
-            let result = res.data.data || [];
-            let arr = result.map(item => ({ label: item.name, value: item.value }));
-            // 附属信息类型
-            if (code === "OWNERSHIP_USE") {
-              this.ownershipUseOPt = []
-              this.ownershipUseOPt = [
-                ...arr
-              ];
-              this.ownershipUseOPt.unshift({label: '全部权属用途', value: ''})
-            }
-          } else {
-            this.$message.error(res.data.message);
-          }
-        })
-      },
+      // organDict (code,organId) {
+      //   this.ownershipUse = ''
+      //   this.ownershipUseOPt = []
+      //   this.$api.assets.organDict({ organId: 1,organIds: organId, code }).then(res => {
+      //     if (res.data.code === "0") {
+      //       let result = res.data.data || [];
+      //       let arr = result.map(item => ({ label: item.name, value: item.value }));
+      //       // 附属信息类型
+      //       if (code === "OWNERSHIP_USE") {
+      //         this.ownershipUseOPt = []
+      //         this.ownershipUseOPt = [
+      //           ...arr
+      //         ];
+      //         this.ownershipUseOPt.unshift({label: '全部权属用途', value: ''})
+      //       }
+      //     } else {
+      //       this.$message.error(res.data.message);
+      //     }
+      //   })
+      // },
     },
   }
 </script>

@@ -304,7 +304,7 @@
         if(labelName === '全部资产标签' || !labelName){
           delete data.label
         }
-        this.$api.assets.queryBuildingViewPage(data).then(r => {
+        this.$api.carPark.carParkViewPage(data).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
