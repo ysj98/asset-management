@@ -1502,6 +1502,8 @@ export const drawMap = {
   setLayerFields: "/ams/layerScheme/setLayerFields",
   // 查询浮层需要的字段
   queryLayerFields: "/ams/layerScheme/queryLayerFields",
+  // 导出 已绘制图块
+  exportLandDetails: "/ams/layerScheme/exportLandDetails",
 };
 export const operationParams = {
   // 分页查询转运营参数列表
