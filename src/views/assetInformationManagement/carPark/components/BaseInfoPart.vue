@@ -29,7 +29,7 @@
   import {win} from "utils/utils";
   export default {
     name: 'BaseInfoPart',
-    props: ['assetCarParkId', 'baseInfoKeys'],
+    props: ['assetCarParkId', 'baseInfoKeys', 'placeId', 'comType'],
     data () {
       return {
         imgPrx: basics.common.imgStr,
@@ -53,8 +53,15 @@
       },
       // 查询基本信息
       queryHouseInfo () {
+        let {comType, placeId,assetCarParkId } = this
         this.spinning = true
-        this.$api.carPrak.assetCarPark({assetCarParkId: this.assetCarParkId}).then(r => {
+        let form = {}
+        if(comType === 'assetCarPark') {
+          form = {assetCarParkId}
+        }else if(comType === 'carParkViewDetail') {
+          form = {placeId}
+        }
+        this.$api.carPark[comType](form).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {

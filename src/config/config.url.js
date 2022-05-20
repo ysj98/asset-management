@@ -1594,6 +1594,14 @@ export const cartPark = {
   carParkViewPage: "/ams/asset-carPark/carParking/page",
   // 车场视图面积信息
   carParkViewArea: "/ams/asset-carPark/carParking/area",
+  // 车场视图列表导出
+  carParkViewExcel: "/ams/asset-carPark/place/excel",
+  // 根据组织机构和项目查询车场列表
+  organPlace: "/ams/asset-carPark/organ/place",
+  // 车场视图详情
+  carParkViewDetail: "/ams/asset-carPark/carParking",
+  // 车场下车位列表信息
+  carParkingList: "/ams/asset-carPark/parkingList"
 }
 // 设备设施台帐
 export const equipmentview = {

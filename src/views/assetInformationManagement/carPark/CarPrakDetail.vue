@@ -4,9 +4,9 @@
       <!--返回-->
     <!--</SG-Button>-->
     <!--基本信息-->
-    <base-info-part v-if="buildId" :buildId="buildId" :baseInfoKeys="baseInfoKeys"/>
+    <base-info-part v-if="placeId" :placeId="placeId" :baseInfoKeys="baseInfoKeys" comType="carParkViewDetail"/>
     <!--资产使用方向-->
-    <asset-direct-part v-if="buildId" :buildId="buildId" :organId="organId" :organ-name="organName" />
+    <asset-direct-part v-if="placeId" :buildId="placeId" :organId="organId" :organ-name="organName" />
     <!--其它信息-->
     <!-- <other-info-part v-if="buildId" :buildId="buildId" :assetIds="assetIds" style="margin-bottom: 35px"/> -->
   </div>
@@ -14,8 +14,8 @@
 
 <script>
   import BaseInfoPart from './components/BaseInfoPart'
-  import OtherInfoPart from './components/OtherInfoPart'
   import AssetDirectPart from './components/AssetDirectPart'
+  import OtherInfoPart from './components/OtherInfoPart'
   export default {
     name: 'BuildingDetailPage',
     components: { AssetDirectPart, BaseInfoPart, OtherInfoPart },
@@ -23,30 +23,39 @@
       return {
         organName:'',
         organId: '', // 组织机构id
-        buildId: '', // 房间id
+        placeId: '', // 房间id
         assetIds: [], // 资产id
         baseInfoKeys: [
           [
             {title: '主图', key: 'picturePath'},
           ], // 列1
           [
-            {title: '车场名称', key: 'buildName'}, {title: '车场面积(㎡)', key: 'area'}, {title: '运营项目', key: 'buildCode'}, 
-            {title: '交付时间', key: 'roomNum'}, {title: '车场位置', key: 'buildCode'}, {title: '备注', key: 'buildCode'}, 
+            {title: '车场名称', key: 'placeName'}, {title: '车场面积(㎡)', key: 'area'}, {title: '运营项目', key: 'communityName'}, 
+            {title: '交付时间', key: 'deliveryDate'}, {title: '车场位置', key: 'totalAddress'}, {title: '备注', key: 'desc'}, 
           ], // 列2
           [
-            {title: '车场编码', key: 'years'},{title: '车场类型', key: 'buildCode'},  {title: '车位数量', key: 'addressNo'}
+            {title: '车场编码', key: 'placeCode'},{title: '车场类型', key: 'objectType'},  {title: '车位数量', key: 'parkingNum'}
           ], // 列3
+          
         ],
       }
     },
 
-    methods: {},
+    methods: {
+      getCarParkViewDetail () {
+        this.$api.carPark.carParkViewDetail({placeId: this.placeId})
+        .then(res => {
+          console.log(res)
+        })
+      },
+    },
 
     created () {
-      const { organId, assetIds, buildId, organName } = this.$route.query
+      const { organId, assetIds, placeId, organName } = this.$route.query
       Object.assign(this, {
-        organId, assetIds, buildId, organName
+        organId, assetIds, placeId, organName
       })
+      
     }
   }
 </script>

@@ -27,3 +27,15 @@ export function carParkViewPage (data) {
 export function carParkViewArea (data) {
   return axiosPost(cartPark.carParkViewArea, data)
 }
+// 车场视图面积信息
+export function carParkViewExcel (data) {
+  return axiosPost(cartPark.carParkViewExcel, data, false, false, { responseType: 'blob' })
+}
+// 根据组织机构和项目查询车场列表
+export function organPlace (data) {
+  return axiosGet(cartPark.organPlace, data)
+}
+// 车场视图详情
+export function carParkViewDetail (data) {
+  return axiosGet(cartPark.carParkViewDetail, data)
+}

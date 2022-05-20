@@ -35,7 +35,7 @@
           ></a-select>
         </a-col>
         <a-col :span="4">
-         <AssetProject :organId="organProjectBuildingValue.organId"/>
+         <AssetProject :organId="organProjectBuildingValue.organId" @projectChange="projectChange" modeStr="multiple"/>
         </a-col>
         <a-col :span="4">
           <a-select
@@ -47,7 +47,8 @@
             placeholder="请选择车场"
             :options="$addTitle(buildingOptions)"
             :filterOption="filterOption"
-            v-model="organProjectBuildingValue.buildingId"
+            v-model="organProjectBuildingValue.placeId"
+            @select="placeFun"
           ></a-select>
         </a-col>
         <a-col :span="4">
@@ -60,6 +61,7 @@
             placeholder="请选择资产标签"
             :options="$addTitle(assetLabelSelect)"
           />
+          <a-checkbox style="line-height: 32px; margin-right: 5px" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
         </a-col>
         <a-col :span="2">
           <SG-Button
@@ -79,18 +81,15 @@
       v-bind="tableObj" 
       class="custom-table td-pd10"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll }">
-      <template slot="buildName" slot-scope="text">
+      <!-- <template slot="buildName" slot-scope="text">
         <tooltip-text :text="text"/>
-      </template>
-      <span slot="assetNum" slot-scope="text">
-        <span style="color: #0084FF; cursor: pointer">{{text}}</span>
-      </span>
+      </template> -->
       <span slot="action" slot-scope="text, record">
         <span style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
-      <template slot="fireMaterial" slot-scope="text">
+      <!-- <template slot="fireMaterial" slot-scope="text">
         {{+text===1?'是':'否'}}
-      </template>
+      </template> -->
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -137,7 +136,7 @@
         organProjectBuildingValue: {
           organId: undefined,
           projectId: undefined, // 用不到，暂存，临时需求隐藏处理
-          buildingId: undefined,
+          placeId: undefined,
           statusList: []
         }, // 查询条件-组织机构-资产项目-车场对象
         numList: [
@@ -151,59 +150,62 @@
           loading: false,
           scroll: { x: 2500 },
           pagination: false,
-          rowKey: 'buildId',
+          rowKey: 'placeId',
           columns: [
-            { title: '车场名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
-            { title: '车场编号', dataIndex: 'buildCode', width: 200},
-            { title: '管理机构', dataIndex: 'manageOrgan', width: 200},
+            { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
+            { title: '车场编号', dataIndex: 'placeCode', width: 200},
+            { title: '管理机构', dataIndex: 'communityName', width: 200},
             { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
-            // { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-            // { title: '建筑年代', dataIndex: 'years', width: 150 },
-            // { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 200 },
-            // { title: '实际保管单位', dataIndex: 'safekeepUnit', width: 200 },
             { title: '车场面积(㎡)', dataIndex: 'buildBuiltArea', width: 150 },
-            // { title: '房屋建筑面积(㎡)', dataIndex: 'area', width: 150 },
-            { title: '车场类型', dataIndex: 'buildHeight', width: 150 },
-            // { title: '层数', dataIndex: 'floorNum', width: 150 },
-            // { title: '地上层数', dataIndex: 'upFloorNum', width: 150 },
+            { title: '车场类型', dataIndex: 'objectType', width: 150 },
             { title: '所在位置', dataIndex: 'address', width: 150 },
-            { title: '车位数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' }, width: 150 },
+            { title: '车位数量', dataIndex: 'placeNum', scopedSlots: { customRender: 'placeNum' }, width: 150 },
             { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
             { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
             { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
-            // { title: '占用(㎡)', dataIndex: 'occupationArea', width: 150 },
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-            // { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
             { title: '资产标签', dataIndex: 'label', width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         current: null, // 当前选中的概览区域下标，与后台入参一一对应
-        statusListOpt: [
-          { title: "全部状态", key: "all" },
-          { title: "待入库", key: "0" },
-          { title: "正常", key: "1" },
-          { title: "报废", key: "2" },
-          { title: "转让", key: "3" },
-          { title: "报损", key: "4" },
-        ],
         options: [],
-        formatArr: ['buildBuiltArea' ,'transferOperationArea', 'selfUserArea', 'idleArea', 'otherArea', 'originalValue', 'marketValue']
+        formatArr: ['buildBuiltArea' ,'transferOperationArea', 'selfUserArea', 'idleArea', 'otherArea', 'originalValue', 'marketValue'],
+        onlyCurrentOrgan: false,
+        projectId: '',
       }
     },
 
     methods: {
+      projectChange (val) {
+        this.projectId = val
+        this.queryBuildingList('project')
+      },
+      // 仅选择当前机构下资产项目
+      onOnlyCurrentOrganChange (e) {
+        this.onlyCurrentOrgan = e.target.checked
+        this.queryTableData({type: 'search'})
+      },
+      placeFun (value){
+        this.$nextTick(function () {
+          this.organProjectBuildingValue.placeId = this.handleMultipleSelectValue(
+            value,
+            this.organProjectBuildingValue.placeId,
+            this.buildingOptions
+          );
+        });
+      },
       assetLabelFn(value){
         this.$nextTick(function () {
-        this.label = this.handleMultipleSelectValue(
-          value,
-          this.label,
-          this.assetLabelSelect
-        );
-      });
+          this.label = this.handleMultipleSelectValue(
+            value,
+            this.label,
+            this.assetLabelSelect
+          );
+        });
       },
       // 处理多选下拉框有全选时的数组
       handleMultipleSelectValue(value, data, dataOptions) {
@@ -229,7 +231,7 @@
           if(!data) this.assetLabelOpt = []
           if(code === '0'){
             this.assetLabelOpt = data.data.map(item => {
-              return ({label: item.labelName, value: item.labelId})
+              return ({label: item.labelName, value: item.labelValue})
             })
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : undefined
             this.label = this.assetLabelOpt.length > 0 ? '' : undefined
@@ -252,21 +254,21 @@
       },
       // 资产设置
       handleModalOk: throttle(function() {
-        let arr = this.$refs.editTagRef.labelName
+        let arr = this.$refs.editTagRef.checkedList
         if( this.selectedRowKeys.length <= 0){
           return this.$message.error('请选择需要设置标签的车场')
         }
         let data = {
-          buildIds: this.selectedRowKeys.join(','),
-          label:arr.join('、')
+          placeIds: this.selectedRowKeys.join(','),
+          labelCode:arr.join('、')
         }
         if(!data.label) delete data.label
         this.$api.assets.updateAssetLabelConfig(data).then(res =>{
           if(res.data.code === '0'){
             this.selectedRowKeys = []
             this.queryTableData({type: ''})
-            this.$refs.editTagRef.checkedList = []
-            this.$refs.editTagRef.change()
+            // this.$refs.editTagRef.checkedList = []
+            // this.$refs.editTagRef.change()
           }
         })
         this.modalObj.status = false
@@ -278,11 +280,10 @@
       },
       // 查看车场视图详情
       handleViewDetail (record) {
-        console.log('record', record)
         const { organProjectBuildingValue: { organId } } = this
         const resObj = this.organOptions.filter(ele=>ele.vaslukeye = organId)[0]
         const organName = resObj ? resObj.title : ''
-        record.buildId && this.$router.push({ path: '/carPrakView/detail', query: {organId, assetIds: record.assetIds, buildId: record.buildId,organName:organName }})
+        record.placeId && this.$router.push({ path: '/carPrakView/detail', query: {organId, assetIds: JSON.stringify(record.assetIds), placeId: record.placeId,organName:organName }})
       },
 
       // 查询列表数据
@@ -290,16 +291,21 @@
         let labelName = ''
         if(this.label.length > 0 && this.assetLabelSelect.length > 0){
           labelName = this.label.map(item => {
-            return this.assetLabelSelect.find(sub => sub.value === item).title
+            return this.assetLabelSelect.find(sub => sub.value === item).value
           })
           labelName = labelName.length > 0 ? labelName.join('、') : ''
         }
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, current } = this
-        let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, placeId: placeIdList }, current } = this
+        // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let data = {
-          organId, buildIdList, statusList, projectIdList, pageSize: pageLength,label: labelName, pageNum: pageNo, flag: current ? (current - 1) : ''
+          currentOrgan: this.onlyCurrentOrgan,
+          organId, 
+          placeIdList, 
+          // statusList, 
+          projectIdList, pageSize: pageLength,
+          label: labelName, pageNum: pageNo, flag: current ? (current - 1) : ''
         }
         if(labelName === '全部资产标签' || !labelName){
           delete data.label
@@ -324,10 +330,10 @@
             })
             return false
           }
-          throw res.message || '查询资产项目接口出错'
+          throw res.message || '查询出错'
         }).catch(err => {
           this.tableObj.loading = false
-          this.$message.error(err || '查询资产项目接口出错')
+          this.$message.error(err || '查询出错')
         })
         // 查询车场面积统计数据
         if (type === 'search') { this.queryAreaInfo() }
@@ -335,10 +341,10 @@
 
       // 查询车场视图面积概览数据
       queryAreaInfo () {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList }, numList } = this
-        let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, placeId: placeIdList }, numList, onlyCurrentOrgan } = this
+        // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         this.overviewNumSpinning = true
-        this.$api.assets.queryBuildingViewFloorArea({ organId, statusList, buildIdList, projectIdList }).then(r => {
+        this.$api.carPark.carParkViewArea({ organId , placeIdList, projectIdList, currentOrgan: onlyCurrentOrgan}).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -361,19 +367,19 @@
         let labelName = ''
         if(this.label.length > 0 && this.assetLabelSelect.length > 0){
           labelName = this.label.map(item => {
-            return this.assetLabelSelect.find(sub => sub.value === item).title
+            return this.assetLabelSelect.find(sub => sub.value === item).value
           })
           labelName = labelName.length > 0 ? labelName.join('、') : ''
         }
 
         this.exportBtnLoading = true
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList}, current } = this
-        let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
-        let data = {organId, buildIdList, projectIdList, statusList, label: labelName, flag: current ? (current - 1) : ''}
+        const { organProjectBuildingValue: { organId, projectId: projectIdList, placeId: placeIdList}, current } = this
+        // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
+        let data = {organId, placeIdList, projectIdList, label: labelName, flag: current ? (current - 1) : ''}
         if(labelName === '全部资产标签' || !labelName){
           delete data.label
         }
-        this.$api.assets.exportBuildingViewExcel(data ).then(res => {
+        this.$api.carPark.carParkViewExcel(data ).then(res => {
           this.exportBtnLoading = false
           if (res.status === 200 && res.data && res.data.size) {
             let a = document.createElement('a')
@@ -399,24 +405,25 @@
       },
 
       // 查询组织机构对应的车场数据
-      queryBuildingList () {
-        const { organProjectBuildingValue: { organId } } = this
+      queryBuildingList (val) {
+        const { organProjectBuildingValue: { organId } , projectId} = this
         // 清空组织机构，重置车场选项
         if (!organId) { return this.$message.warn('组织机构不存在') }
         this.buildingOptions = []
-        this.organProjectBuildingValue.buildingId = undefined
-        
-        this.getAssetLabel(organId)
-        this.$api.assets.queryBuildingByOrganId({organId}).then(r => {
+        this.organProjectBuildingValue.buildingId = undefined      
+        if(val !== 'project') this.getAssetLabel(organId)
+        this.$api.carPark.organPlace({organId,projectIds: projectId ? projectId.join(',') : ''})
+        .then(r => { // 查询当前组织机构下所有的楼栋 后面改成查询所有车场
           let res = r.data
           if (res && String(res.code) === '0') {
             this.buildingOptions = (res.data || []).map(item => {
               return {
-                key: item.buildId,
-                title: item.buildName
+                key: item.placeId,
+                title: item.placeName
               }
             })
             this.buildingOptions.unshift({key: '', title: '全部车场'})
+            this.queryTableData({type: 'search'})
             return false
           }
           throw res.message || '查询车场失败'
@@ -453,14 +460,14 @@
     created () {
       this.queryOrganList()
     },
-    watch: {
-      organProjectBuildingValue: {
-        handler: function (val) {
-          val && val.organId && this.queryTableData({type: 'search'})
-        },
-        deep: true
-      }
-    }
+    // watch: {
+    //   organProjectBuildingValue: {
+    //     handler: function (val) {
+    //       val && val.organId && this.queryTableData({type: 'search'})
+    //     },
+    //     deep: true
+    //   }
+    // }
   }
 </script>
 

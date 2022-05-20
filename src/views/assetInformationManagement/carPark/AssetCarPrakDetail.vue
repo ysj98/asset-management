@@ -11,7 +11,7 @@
       导出房屋卡片
     </SG-Button>
     <!--基础信息部分-->
-    <base-info-part ref="baseInfoPart" v-if="assetCarParkId" :assetCarParkId="assetCarParkId" @updateTransfer="updateTransfer" :baseInfoKeys="baseInfoKeys" @parkingDetail="parkingDetail"/>
+    <base-info-part ref="baseInfoPart" v-if="assetCarParkId" comType="assetCarPark" :assetCarParkId="assetCarParkId" @updateTransfer="updateTransfer" :baseInfoKeys="baseInfoKeys" @parkingDetail="parkingDetail"/>
     <SpaceInfo :assetCarParkId="assetCarParkId"/>
     <!--其它信息部分-->
     <other-info-part v-if="assetCarParkId" :assetCarParkId="assetCarParkId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
