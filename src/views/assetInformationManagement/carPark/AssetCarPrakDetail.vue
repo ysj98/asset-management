@@ -45,9 +45,9 @@
           [
             {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'}, {title: '资产形态', key: 'typeName'}
           ], // 列3
-          [
-            {title: '', key: 'picturePath'},
-          ]
+          // [
+          //   {title: '', key: 'picturePath'},
+          // ]
         ],
       }
     },

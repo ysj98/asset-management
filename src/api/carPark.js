@@ -39,3 +39,23 @@ export function organPlace (data) {
 export function carParkViewDetail (data) {
   return axiosGet(cartPark.carParkViewDetail, data)
 }
+// 车场下车位列表信息
+export function carParkingList (data) {
+  return axiosGet(cartPark.carParkingList, data)
+}
+// 车场视图车位区域名称列表
+export function parkingAreaNames (data) {
+  return axiosGet(cartPark.parkingAreaNames, data)
+}
+// 组织机构视图汇总
+export function organGetTotal (data) {
+  return axiosPost(cartPark.organGetTotal, data)
+}
+// 车场组织机构视图列表查询
+export function carParkViewOrgan (data) {
+  return axiosPost(cartPark.carParkViewOrgan, data)
+}
+// 单个车场面积汇总
+export function placeArea (data) {
+  return axiosGet(cartPark.placeArea, data)
+}

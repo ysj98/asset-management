@@ -101,7 +101,7 @@
     mounted () {
       this.setPos(this.position)
       // 第一次查询,后面查询通过watch监听执行
-      this.searchRoomData(this.roomId)
+      // this.searchRoomData(this.roomId)
     },
 
     watch: {

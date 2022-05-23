@@ -16,13 +16,13 @@
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
-        <a-col :span="3">
+        <!-- <a-col :span="3">
           <SG-Button
             v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_ASSET_LABEL"
             type="default"
             @click="clickAsset"
           >资产标签</SG-Button>
-        </a-col>
+        </a-col> -->
         <a-col :span="4">
           <a-select
             showSearch
@@ -156,7 +156,7 @@
             { title: '车场编号', dataIndex: 'placeCode', width: 200},
             { title: '管理机构', dataIndex: 'communityName', width: 200},
             { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
-            { title: '车场面积(㎡)', dataIndex: 'buildBuiltArea', width: 150 },
+            { title: '车场面积(㎡)', dataIndex: 'area', width: 150 },
             { title: '车场类型', dataIndex: 'objectType', width: 150 },
             { title: '所在位置', dataIndex: 'address', width: 150 },
             { title: '车位数量', dataIndex: 'placeNum', scopedSlots: { customRender: 'placeNum' }, width: 150 },
@@ -166,7 +166,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-            { title: '资产标签', dataIndex: 'label', width: 150 },
+            // { title: '资产标签', dataIndex: 'label', width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]
         },

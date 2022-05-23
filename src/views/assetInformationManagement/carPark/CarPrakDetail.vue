@@ -6,7 +6,7 @@
     <!--基本信息-->
     <base-info-part v-if="placeId" :placeId="placeId" :baseInfoKeys="baseInfoKeys" comType="carParkViewDetail"/>
     <!--资产使用方向-->
-    <asset-direct-part v-if="placeId" :buildId="placeId" :organId="organId" :organ-name="organName" />
+    <asset-direct-part v-if="placeId" :placeId="placeId" :organId="organId" :organ-name="organName" />
     <!--其它信息-->
     <!-- <other-info-part v-if="buildId" :buildId="buildId" :assetIds="assetIds" style="margin-bottom: 35px"/> -->
   </div>
@@ -27,7 +27,7 @@
         assetIds: [], // 资产id
         baseInfoKeys: [
           [
-            {title: '主图', key: 'picturePath'},
+            {title: '主图', key: 'placeImg'},
           ], // 列1
           [
             {title: '车场名称', key: 'placeName'}, {title: '车场面积(㎡)', key: 'area'}, {title: '运营项目', key: 'communityName'}, 
@@ -42,12 +42,6 @@
     },
 
     methods: {
-      getCarParkViewDetail () {
-        this.$api.carPark.carParkViewDetail({placeId: this.placeId})
-        .then(res => {
-          console.log(res)
-        })
-      },
     },
 
     created () {

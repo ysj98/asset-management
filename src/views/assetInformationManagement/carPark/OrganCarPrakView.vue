@@ -100,7 +100,7 @@ export default {
         columns: [
           { title: "管理机构", dataIndex: "organName" },
           { title: "建筑面积(㎡)", dataIndex: "area" },
-          { title: "车场数", dataIndex: "buildNum" },
+          { title: "车场数", dataIndex: "placeNum" },
           { title: "资产数量", dataIndex: "assetNum" },
           { title: "运营(㎡)", dataIndex: "transferOperationArea" },
           { title: "自用(㎡)", dataIndex: "selfUserArea" },
@@ -120,7 +120,7 @@ export default {
       },
       sumObj: {
         area: "",
-        buildNum: "",
+        placeNum: "",
         assetNum: "",
         transferOperationArea: "",
         selfUserArea: "",
@@ -174,7 +174,7 @@ export default {
         return this.$message.info("请选择组织机构");
       }
       this.tableObj.loading = true;
-      this.$api.assets.queryOrganViewList({
+      this.$api.carPark.carParkViewOrgan({
         organId,
         pageSize: pageLength,
         pageNum: pageNo,
@@ -248,8 +248,7 @@ export default {
         statusList,
       } = this;
       this.overviewNumSpinning = true;
-      this.$api.assets
-        .queryOrganArea({
+      this.$api.carPark.organGetTotal({
           organId,
           flag: current ? current - 1 : "",
           statusList: statusList.includes("all") ? [] : statusList,

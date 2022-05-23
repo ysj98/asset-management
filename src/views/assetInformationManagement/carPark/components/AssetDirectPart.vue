@@ -6,40 +6,46 @@
       <div class="title_div" style="margin-top: 20px">
         <overview-number :numList="numList" style="margin-bottom: 12px"/>
         <!--楼层数据-->
-        <a-row style="padding: 3px 0 15px" v-if="buildingList.length || unitOptions.length">
+        <a-row style="padding: 3px 0 15px" v-if="placingList.length || unitOptions.length">
           <a-col :span="12">
             <span style="line-height: 32px; font-weight: bold; color: #49505E; font-size: 14px">车位列表</span>
           </a-col>
           <a-col :span="12" style="text-align: right" v-if="unitOptions.length">
-            <a-select v-model="unitId" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择" :options="$addTitle(unitOptions)"/>
+            <a-select v-model="parkingAreaName" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择" :options="$addTitle(unitOptions)"/>
           </a-col>
         </a-row>
-        <div class="building_style" v-if="buildingList.length">
-          <div class="floor_style" v-for="floor in buildingList" :key="floor.floorName">
-            <div class="floor_num">{{floor.floorName}}</div>
+        <div class="building_style" v-if="placingList.length">
+          <div class="floor_style" v-for="item in placingList" :key="item.parkingAreaName">
+            <div class="floor_num">{{item.parkingAreaName}}</div>
             <div class="floor_rooms">
-              <div
+              <div 
                 class="room_style"
-                v-for="room in floor.roomList"
-                :key="room.roomNo"
-                :style="handleStyle(room.areaInfo, room.totalArea)"
-                @mousemove="handleMouseMove($event, true, room.roomId, room.roomNo)"
+                v-for="place in item.parkingList"
+                :key="place.parkingId">
+                <a-popover :title="place.parkingName" overlayClassName="tooltip_sty">
+                  <template slot="content">
+                    <p>运营(㎡): {{place.areaInfo.transferOperationArea}}</p>
+                    <p>闲置(㎡): {{place.areaInfo.idleArea}}</p>
+                    <p>自用(㎡): {{place.areaInfo.selfUserArea}}</p>
+                    <p>占用(㎡): {{place.areaInfo.occupationArea}}</p>
+                    <p>其他(㎡): {{place.areaInfo.otherArea}}</p>
+                  </template>
+                  <a @click="goDetail({id:place.parkingId})">{{place.parkingName}}</a>
+                </a-popover>
+              </div>
+              <!-- <div
+                class="room_style"
+                v-for="place in item.parkingList"
+                :key="place.parkingId"
+                :style="handleStyle(place.areaInfo)"
+                @mousemove="handleMouseMove($event, true, place.parkingId, place.parkingName)"
                 @mouseout="handleMouseMove($event, false)"
               >
-                <a @click="goDetail({id:room.roomId})">{{room.roomNo}}</a>
-              </div>
+                <a @click="goDetail({id:place.parkingId})">{{place.parkingName}}</a>
+              </div> -->
             </div>
           </div>
         </div>
-        <float-view
-          v-if="roomId"
-          :roomNo="roomNo"
-          :roomId="roomId"
-          :position='position'
-          v-show="isShowFloatView"
-          @queryAreaInfo="queryHouseAreaInfo"
-          @handleMouseAction="handleShowFloatView"
-        />
       </div>
     </a-spin>
   </div>
@@ -52,7 +58,7 @@
   export default {
     name: 'AssetDirectPart',
     components: { OverviewNumber, FloatView },
-    props: ['organId', 'buildId','organName'],
+    props: ['organId', 'placeId','organName'],
     data () {
       return {
         spinning: false, // 加载状态
@@ -63,20 +69,20 @@
         isShowFloatView: false, // 控制浮窗显示
         maxTotalArea: 1, // 每层所有房间面积之和中的最大值
         numList: [
-          {title: '车位数量', key: 'operationArea', value: 0, bgColor: '#4BD288'},
-          {title: '车场面积(㎡)', key: 'operationArea', value: 0, bgColor: '#1890FF'},
+          {title: '车位数量', key: 'parkingNums', value: 0, bgColor: '#4BD288'},
+          {title: '车场面积(㎡)', key: 'placeArea', value: 0, bgColor: '#1890FF'},
           {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#DD81E6'},
           {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#FD7474'},
           {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
           // {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
-        mouseData: [
-          {title: '车位名称', key: 'operationArea', value: 0},
-          {title: '车位编码', key: 'operationArea', value: 0},
-          {title: '车场面积(㎡)', key: 'operationArea', value: 0},
-          {title: '使用方向', key: 'idleArea', value: 0},
-        ],
+        // mouseData: [
+        //   {title: '车位名称', key: 'operationArea', value: 0},
+        //   {title: '车位编码', key: 'operationArea', value: 0},
+        //   {title: '车场面积(㎡)', key: 'operationArea', value: 0},
+        //   {title: '使用方向', key: 'idleArea', value: 0},
+        // ],
         bgColorObj: {
           idleArea: '#1890FF',
           otherArea: '#BBC8D6',
@@ -84,9 +90,10 @@
           occupationArea: '#FD7474',
           transferOperationArea: '#4BD288'
         }, // 房间背景色映射
-        buildingList: [], // 楼层列表数据
-        unitId: undefined, // 单元名下的楼层编码
-        unitOptions: [] // 单元选项
+        placingList: [], // 楼层列表数据
+        parkingAreaName: undefined, // 单元名下的楼层编码
+        unitOptions: [], // 单元选项
+        placeNum: 0, // 车位数量
       }
     },
 
@@ -97,12 +104,12 @@
         win.openPortalMenu(tabUrl,tabTitle)
       },
       // 处理背景色和宽度
-      handleStyle (areaInfo, totalArea) {
+      handleStyle (areaInfo) {
         const { bgColorObj, maxTotalArea } = this
         let colorArr = Object.keys(areaInfo).filter(n => areaInfo[n])
         let bagColor = colorArr.length === 1 ? bgColorObj[colorArr[0]] : ''
         let fontColor = colorArr.length === 1 ? '#fff' : '#687485'
-        let width = Math.floor(Number(totalArea || 0) * 100000 / maxTotalArea) / 1000
+        let width = Math.floor(Number(areaInfo.totalArea || 0) * 100000 / maxTotalArea) / 1000
         return `background-color: ${bagColor}; width: ${width}%; color: ${fontColor}`
       },
 
@@ -148,38 +155,47 @@
       },
 
       // 查车场视图面积概览数据
-      queryHouseAreaInfo (args) {
-        const { buildId, mouseData } = this
-        let api = args ? 'queryBuildingViewRoomArea' : 'queryBuildingViewDetailArea'
-        let param = args ? { houseId: args.id, buildId } : { buildId }
-        return this.$api.assets[api](param).then(r => {
+      queryPlaceArea () {
+        // const { buildId, mouseData } = this
+        // let api = args ? 'queryBuildingViewRoomArea' : 'queryBuildingViewDetailArea'
+        // let param = args ? { houseId: args.id, buildId } : { buildId }
+        return this.$api.carPark.placeArea({placeId: this.placeId}).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            // 查车场视图详情的面积数据
-            let arr = mouseData.map(m => {
-              const { percent, number } = res.data[m.key]
-              return { ...m, value: `${number}（${percent}）` }
+            this.numList = this.numList.map(m => {
+              if(m.key === 'parkingNums' || m.key === 'placeArea') {
+                console.log(m.key)
+                return{...m, value: res.data[m.key] || 0}
+              }else{
+                const { percent, number } = res.data[m.key]
+                return { ...m, value: `${number}（${percent}）` }
+              }
             })
+            // 查车场视图详情的面积数据
+            // let arr = mouseData.map(m => {
+            //   const { percent, number } = res.data[m.key]
+            //   return { ...m, value: `${number}（${percent}）` }
+            // })
             // 查浮窗的面积数据与详情页面的面积数据共用一个接口
-            return args ? args.resolve(arr) : this.mouseData = arr
+            // return args ? args.resolve(arr) : this.mouseData = arr
           }
           throw res.message || '查询车场视图面积使用统计出错'
         }).catch(err => {
-          args && args.reject()
+          console.log(err)
           this.$message.error(err || '查询车场视图面积使用统计出错')
         })
       },
 
       // 楼层信息查询
       queryFloorInfo () {
-        const { unitId, buildId, organId } = this
+        const { parkingAreaName, placeId, organId } = this
         // if (!unitId) { return sign === 'init' ? false : this.$message.warn('单元Id不存在') }
         this.spinning = true
-        this.$api.assets.queryBuildingViewFloorInfo({buildId, organId, unitId}).then(r => {
+        this.$api.carPark.carParkingList({placeId, organId, parkingAreaName}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            this.buildingList = res.data
+            this.placingList = res.data
             return this.calcMaxTotalArea(res.data)
           }
           throw res.message || '查询楼层信息出错'
@@ -190,15 +206,16 @@
       },
 
       // 查询车场下的单元-楼层关系
-      queryUnit () {
+      queryNameList () {
         this.spinning = true
-        this.$api.assets.queryBuildingViewUnitByHouseId({buildId: this.buildId, organId: this.organId}).then(r => {
+        this.$api.carPark.parkingAreaNames({placeId: this.placeId, organId: this.organId}).then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
+            // this.parkingAreaId = res.data[0].parkingAreaName
             this.unitOptions = (res.data || []).map((n, i) => {
-              i === 0 && (this.unitId = n.unitId) // 默认查询第一条
-              return { title: n.unitName, key: n.unitId }
+              i === 0 && (this.parkingAreaName = n.parkingAreaName) // 默认查询第一条
+              return { title: n.parkingAreaName, key: n.parkingAreaName }
             })
             return this.queryFloorInfo()
           }
@@ -211,8 +228,8 @@
     },
 
     mounted () {
-      this.queryUnit()
-      this.queryHouseAreaInfo()
+      this.queryNameList()
+      this.queryPlaceArea()
     }
   }
 </script>
@@ -256,7 +273,28 @@
             text-align: center;
             display: inline-block;
             border-right: 1px solid #E5E9F2;
+            padding-left: 10px;
+            padding-right: 10px;
           }
+        }
+      }
+    }
+  }
+</style>
+<style lang="less">
+// 
+  .tooltip_sty .ant-popover-content {
+    .ant-popover-arrow {
+      position: unset;
+    }
+    .ant-popover-inner {
+      div{
+        background-color: rgba(0,0,0,0.5) ;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        .ant-popover-title {
+          font-size: 16px;
         }
       }
     }
