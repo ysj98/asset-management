@@ -59,3 +59,19 @@ export function carParkViewOrgan (data) {
 export function placeArea (data) {
   return axiosGet(cartPark.placeArea, data)
 }
+// 组织机构车场列表导出
+export function carParkExPortForOrgan (data) {
+  return axiosPost(cartPark.carParkExPortForOrgan, data, false, false, { responseType:'blob' })
+} 
+// 组织机构详情列表
+export function getCarParkListForOrgan (data) {
+  return axiosPost(cartPark.getCarParkListForOrgan, data)
+}
+// 组织机构视图详情表头统计
+export function getCarParkStatisticsForOrgan (data) {
+  return axiosPost(cartPark.getCarParkStatisticsForOrgan, data)
+}
+// 组织机构视图详情权属
+export function getCarParkViewShip (data) {
+  return axiosPost(cartPark.getCarParkViewShip, data)
+}

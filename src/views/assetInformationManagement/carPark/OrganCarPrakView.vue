@@ -100,7 +100,7 @@ export default {
         columns: [
           { title: "管理机构", dataIndex: "organName" },
           { title: "建筑面积(㎡)", dataIndex: "area" },
-          { title: "车场数", dataIndex: "placeNum" },
+          { title: "车场数量", dataIndex: "placeNum" },
           { title: "资产数量", dataIndex: "assetNum" },
           { title: "运营(㎡)", dataIndex: "transferOperationArea" },
           { title: "自用(㎡)", dataIndex: "selfUserArea" },
@@ -220,9 +220,7 @@ export default {
                   item[sub] = getFormat(item[sub], 4)
                 }
               })
-              
             })
-            console.log(this.tableObj.dataSource, '查询数据')
             return Object.assign(this.paginationObj, {
               totalCount: count,
               pageNo,
@@ -290,8 +288,7 @@ export default {
     handleExport() {
       this.exportBtnLoading = true;
       const { organId, current } = this;
-      this.$api.assets
-        .exportOrganView({
+      this.$api.carPark.carParkExPortForOrgan({
           organId,
           flag: current ? current - 1 : "",
           pageSize: 1,

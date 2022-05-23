@@ -127,8 +127,8 @@ let columns = [
     dataIndex: "area",
   },
   {
-    title: "车场数",
-    dataIndex: "buildNum",
+    title: "车场数量",
+    dataIndex: "placeNum",
   },
   {
     title: "资产数量",
@@ -242,17 +242,16 @@ export default {
     this.routeQueryStore = { organId, statusList };
   },
   mounted() {
-    this.viewGetAssetHouseListForOrgan();
-    this.viewGetAssetHouseStatisticsForOrgan();
-    this.queryOrganViewDetail();
+    this.getCarParkListForOrgan();
+    this.getCarParkStatisticsForOrgan();
+    this.getCarParkViewShip();
   },
   methods: {
     // 查询详情列表
-    viewGetAssetHouseListForOrgan() {
+    getCarParkListForOrgan() {
       let data = { ...this.routeQueryStore, ...this.queryCondition };
       this.table.loading = true;
-      this.$api.assets
-        .viewGetAssetHouseListForOrgan(data)
+      this.$api.carPark.getCarParkListForOrgan(data)
         .then((res) => {
           if (Number(res.data.code) === 0) {
             let data = res.data.data.data || [];
@@ -280,11 +279,11 @@ export default {
         });
     },
     // 组织机构视图详情表头统计
-    viewGetAssetHouseStatisticsForOrgan() {
+    getCarParkStatisticsForOrgan() {
       let data = { ...this.routeQueryStore };
       this.overviewNumSpinning = true;
-      this.$api.assets
-        .viewGetAssetHouseStatisticsForOrgan(data)
+      this.$api.carPark
+      .getCarParkStatisticsForOrgan(data)
         .then((res) => {
           if (Number(res.data.code) === 0) {
             let data = res.data.data || {};
@@ -303,11 +302,11 @@ export default {
         });
     },
     // 查询组织机构视图详情
-    queryOrganViewDetail() {
+    getCarParkViewShip() {
       let data = { ...this.routeQueryStore };
       this.tableFirst.loading = true;
-      this.$api.assets
-        .queryOrganViewDetail(data)
+      this.$api.carPark
+        .getCarParkViewShip(data)
         .then((res) => {
           if (Number(res.data.code) === 0) {
             let result = res.data.data || {};
@@ -327,7 +326,7 @@ export default {
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.queryCondition.pageSize = data.pageLength;
-      this.viewGetAssetHouseListForOrgan();
+      this.getCarParkListForOrgan();
     },
   },
 };

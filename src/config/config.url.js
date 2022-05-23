@@ -1610,6 +1610,14 @@ export const cartPark = {
   carParkViewOrgan: "/ams/asset-carPark/organ/carParkView",
   // 单个车场的使用面积
   placeArea: "/ams/asset-carPark/placeArea",
+  // 组织机构车场列表导出
+  carParkExPortForOrgan: "/ams/asset-carPark/organ/carParkExPort",
+  // 组织机构详情列表
+  getCarParkListForOrgan: "/ams/asset-carPark/viewGetCarParkListForOrgan",
+  // 组织机构视图详情表头统计
+  getCarParkStatisticsForOrgan: "/ams/asset-carPark/viewGetCarParkStatisticsForOrgan",
+  // 组织机构视图详情权属
+  getCarParkViewShip: "/ams/asset-carPark/organ/carParkViewShip",
 }
 // 设备设施台帐
 export const equipmentview = {
