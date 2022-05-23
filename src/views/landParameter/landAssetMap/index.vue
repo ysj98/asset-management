@@ -61,6 +61,16 @@
       <!--      <button @click="autoChange">开启自动轮播</button>-->
       <!--      <button @click="autoChange">关闭自动轮播</button>-->
       <!--      <button @click="changeStyle">改变透明度</button>-->
+      <div v-if="mapFlag" class="summary">
+        <div>
+          <span class="title">宗地：</span>
+          <span>{{parcel}}块</span>
+        </div>
+        <div v-if="!hasSelf">
+          <span class="title">自有：</span>
+          <span>{{allAssetArea}}m²</span>
+        </div>
+      </div>
       <div
         class="item"
         v-for="item in operationModeList"
@@ -71,17 +81,6 @@
         <div class="text">
           <div style="margin-bottom: 5px">{{ item.operName }}</div>
           <div>{{ `${item.landArea}m²` }}</div>
-        </div>
-      </div>
-
-      <div v-if="mapFlag" class="summary">
-        <div>
-          <span class="title">宗地：</span>
-          <span>{{parcel}}块</span>
-        </div>
-        <div>
-          <span class="title">自有：</span>
-          <span>{{allAssetArea}}m²</span>
         </div>
       </div>
       <div class="export" v-if="mapFlag">
@@ -150,6 +149,7 @@ export default {
       },
       sleepTimer: null,
       timer: null,
+      hasSelf: false // operationModeList是否含有自有项目
     };
   },
   computed: {
@@ -503,6 +503,7 @@ export default {
       } = await this.$api.drawMap.landUseStatistics(req);
       if (code === "0") {
         this.operationModeList = data;
+        this.hasSelf = this.operationModeList.some(item => item.operName === '自有')
       } else {
         this.$SG_Message.error(message);
       }
@@ -680,7 +681,7 @@ export default {
       margin-right: 20px;
       display: flex;
       align-items: baseline;
-
+      margin-left: 40px;
       .color-block {
         width: 8px;
         height: 8px;
@@ -797,7 +798,6 @@ export default {
   display: none;
 }
 .summary{
-  margin-left: 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
