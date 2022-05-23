@@ -115,8 +115,8 @@ const columns = [
     width: 100
   },
   {
-    title: '车场数',
-    dataIndex: 'buildNum',
+    title: '车场数量',
+    dataIndex: 'placeNum',
     width: 100
   },
   {
@@ -190,8 +190,8 @@ export default {
         {title: '车场数量',  key: 'measuredArea', value: 0, fontColor: '#324057'},
         {title: '车场总面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#4BD288'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
-        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474'},{title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}, 
-        {title: '资产原值(元)', key: 'occupationArea', value: 0, bgColor: '#1890FF'}, 
+        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474'}, 
+        {title: '资产原值(元)', key: 'occupationArea', value: 0, bgColor: '#4BD288'}, 
         {title: '最新估值(元)', key: 'occupationArea', value: 0, bgColor: '#1890FF'}, 
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       columns,
@@ -299,7 +299,7 @@ export default {
       if (type === 'export') {
         return form
       }
-      return this.$api.assets.viewGetAssetHouseList(form).then(res => {
+      return this.$api.carPark.viewGetCarParkList(form).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data.data
           if (data.length === 0) {

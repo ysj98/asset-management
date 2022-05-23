@@ -75,3 +75,7 @@ export function getCarParkStatisticsForOrgan (data) {
 export function getCarParkViewShip (data) {
   return axiosPost(cartPark.getCarParkViewShip, data)
 }
+// 资产项目视图列表-查询信息分页查询
+export function viewGetCarParkList (data) {
+  return axiosPost(cartPark.viewGetCarParkList, data)
+}

@@ -1618,6 +1618,8 @@ export const cartPark = {
   getCarParkStatisticsForOrgan: "/ams/asset-carPark/viewGetCarParkStatisticsForOrgan",
   // 组织机构视图详情权属
   getCarParkViewShip: "/ams/asset-carPark/organ/carParkViewShip",
+  // 资产项目视图列表-查询信息分页查询
+  viewGetCarParkList: "/ams/project/viewGetCarParkList"
 }
 // 设备设施台帐
 export const equipmentview = {
