@@ -7,11 +7,32 @@
     <SG-Title title="设备设施属性" />
     <Information v-bind="attrInfoOptions" />
     <SG-Title title="其他信息" />
+    <a-tabs>
+      <a-tab-pane
+        v-for="(item, key) in otherTabOptions"
+        :key="key"
+        :tab="item.tab"
+      >
+        <keep-alive>
+          <component
+            :is="item.component"
+            :assetId="queryParams.assetId"
+          ></component>
+        </keep-alive>
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 
 <script>
 import Information from "@/components/Information";
+import TakeOverInformation from "@/views/equipmentview/assetview/components/TakeOverInformation";
+import RelatedCosts from "@/views/equipmentview/assetview/components/RelatedCosts";
+import Changelog from "@/views/equipmentview/assetview/components/Changelog";
+import BookInformation from "@/views/equipmentview/assetview/components/BookInformation";
+import AssetDisposal from "@/views/equipmentview/assetview/components/AssetDisposal";
+import ArchiveFile from "@/views/equipmentview/assetview/components/ArchiveFile";
+import AncillaryPackage from "@/views/equipmentview/assetview/components/AncillaryPackage";
 export default {
   name: "assetViewDetail",
   components: {
@@ -21,6 +42,7 @@ export default {
     return {
       queryParams: {
         assetEquipmentId: "",
+        assetId: "",
       },
       basicInfoOptions: {
         data: {},
@@ -35,7 +57,6 @@ export default {
               key: "assetCode",
             },
             {
-              // todo:枚举转换
               title: "资产类型",
               key: "assetType",
             },
@@ -64,7 +85,6 @@ export default {
               key: "scrapDate",
             },
             {
-              // todo:枚举转换
               title: "使用方向",
               key: "useType",
             },
@@ -109,6 +129,44 @@ export default {
         BasicInfoList: [],
         colProps: { span: 8 },
       },
+      otherTabOptions: {
+        one: {
+          tab: "接管信息",
+          key: "",
+          component: TakeOverInformation,
+          auth: "",
+        },
+        two: {
+          tab: "账面信息",
+          key: "",
+          component: BookInformation,
+        },
+        three: {
+          tab: "附属&配套",
+          key: "",
+          component: AncillaryPackage,
+        },
+        four: {
+          tab: "资产处置",
+          key: "",
+          component: AssetDisposal,
+        },
+        five: {
+          tab: "变动记录",
+          key: "",
+          component: Changelog,
+        },
+        six: {
+          tab: "相关费用",
+          key: "",
+          component: RelatedCosts,
+        },
+        seven: {
+          tab: "档案文件",
+          key: "",
+          component: ArchiveFile,
+        },
+      },
     };
   },
   methods: {
@@ -122,12 +180,14 @@ export default {
         .then(({ data: { code, message, data } }) => {
           if (code === "0") {
             console.log({ data });
-            this.attrInfoOptions = (data.attrData || []).map((ele) => {
-              return {
-                title: ele.attrName,
-                value: ele.attrValue,
-              };
-            });
+            this.attrInfoOptions.BasicInfoList = (data.attrList || []).map(
+              (ele) => {
+                return {
+                  title: ele.attrName,
+                  value: ele.attrValue,
+                };
+              }
+            );
             this.basicInfoOptions.data = { ...data };
             this.spaceInfoOptions.data = { ...data };
           } else {
@@ -137,9 +197,12 @@ export default {
     },
   },
   mounted() {
-    const { assetEquipmentId } = this.$route.query;
-    this.queryParams.assetEquipmentId = assetEquipmentId;
     this.queryDetail();
+  },
+  created() {
+    const { assetEquipmentId, assetId } = this.$route.query;
+    this.queryParams.assetEquipmentId = assetEquipmentId;
+    this.queryParams.assetId = assetId;
   },
 };
 </script>

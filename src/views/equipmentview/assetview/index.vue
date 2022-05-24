@@ -3,9 +3,28 @@
     <!-- 搜索条件 -->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="import" type="primary">导出</SG-Button>
-        <SG-Button icon="setting" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button type="default">资产标签</SG-Button>
+        <SG-Button
+          :loading="exportFlag"
+          @click="handleExport"
+          icon="import"
+          type="primary"
+          >导出</SG-Button
+        >
+        <SG-Button
+          @click="openSetTableHeaderPop"
+          icon="setting"
+          style="margin: 0 10px"
+        >
+          列表设置
+        </SG-Button>
+        <SG-Button
+          @click="openSetAssetLabelPop"
+          type="default"
+          :disabled="!selectedRowKeys.length"
+          :title="selectedRowKeys.length ? '资产标签' : '请选择资产'"
+        >
+          资产标签
+        </SG-Button>
       </div>
       <div slot="headerForm">
         <div class="headerForm">
@@ -64,8 +83,15 @@
             v-model="provinceCityDistrictValue"
             @input="handleAddress"
           />
-          <!-- todo: 后台暂未定义枚举 -->
-          <a-select class="search-item" placeholder="全部资产标签"></a-select>
+          <a-select
+            v-model="queryForm.labels"
+            :options="labelOptions"
+            :maxTagCount="1"
+            :allowClear="true"
+            mode="multiple"
+            class="search-item"
+            placeholder="全部资产标签"
+          ></a-select>
           <a-button @click="doSearch" type="primary">查询</a-button>
         </div>
       </div>
@@ -81,11 +107,12 @@
       <!-- class="custom-table" -->
       <a-table
         v-bind="tableOptions"
+        :columns="tableOptions.columns"
         :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }"
       >
         <!-- 操作-->
-        <template #action="text, { assetEquipmentId }">
-          <a @click="goDetail({ assetEquipmentId })">详情</a>
+        <template #action="text, { assetEquipmentId, assetId }">
+          <a @click="goDetail({ assetEquipmentId, assetId })">详情</a>
         </template>
       </a-table>
     </div>
@@ -93,6 +120,43 @@
     <div style="height: 100px"></div>
     <!-- 分页 -->
     <SG-FooterPagination v-bind="paginationObj" @change="changePage" />
+    <!-- 设置资产标签-->
+    <SG-Modal
+      v-model="modalList.setAssetLabel.show"
+      :title="modalList.setAssetLabel.title"
+      okText="保存"
+      :maskClosable="false"
+      @cancel="doClosePop('setAssetLabel')"
+      @ok="setAssetLabelPopSave"
+    >
+      <div v-if="labelOptions.length">
+        <a-checkbox-group
+          v-model="selectedLabel"
+          :options="labelOptions"
+        ></a-checkbox-group>
+      </div>
+      <div v-else>
+        <a-empty />
+      </div>
+    </SG-Modal>
+    <!-- 列表表头设置 -->
+    <SG-Modal
+      v-model="modalList.setTableHeader.show"
+      :title="modalList.setTableHeader.title"
+      okText="保存"
+      @ok="setTableHeaderPopSave"
+      @cancel="doClosePop('setTableHeader')"
+    >
+      <a-checkbox-group v-model="selectedColumns">
+        <a-row :gutter="[5, 10]">
+          <a-col :span="4" v-for="item in allColumns" :key="item.value">
+            <a-checkbox :value="item.dataIndex || item.key">
+              {{ item.title }}
+            </a-checkbox>
+          </a-col>
+        </a-row>
+      </a-checkbox-group>
+    </SG-Modal>
   </div>
 </template>
 
@@ -102,9 +166,107 @@ import SearchContainer from "@/views/common/SearchContainer";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import TreeSelect from "@/views/common/treeSelect";
 import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import { SET_AMS_USE_DIRECTION } from "store/types/platformDictTypes";
+import { SET_AMS_USE_DIRECTION } from "@/store/types/platformDictTypes";
+import { handleTableScrollHeight } from "@/utils/share";
+import { handleDownloadFile } from "utils/utils";
+
+const allColumns = [
+  {
+    title: "资产名称",
+    dataIndex: "assetName",
+    width: 200,
+    fixed: "left",
+  },
+  {
+    title: "资产编码",
+    dataIndex: "assetCode",
+    width: 200,
+  },
+  {
+    title: "资产分类",
+    dataIndex: "equipmentTypeName",
+    width: 120,
+  },
+  {
+    title: "管理机构",
+    dataIndex: "organName",
+    width: 200,
+  },
+  {
+    title: "资产项目名称",
+    dataIndex: "projectName",
+    width: 200,
+  },
+  {
+    title: "规格型号",
+    dataIndex: "equipmentModel",
+    width: 120,
+  },
+  {
+    title: "所在位置",
+    dataIndex: "address",
+    width: 300,
+  },
+  {
+    title: "使用方向",
+    dataIndex: "useType",
+    width: 120,
+  },
+  {
+    title: "设备厂家",
+    dataIndex: "factory",
+    width: 120,
+  },
+  {
+    title: "出厂日期",
+    dataIndex: "dateOfProduction",
+    width: 200,
+  },
+  {
+    title: "报废日期",
+    dataIndex: "scrapDate",
+    width: 200,
+  },
+  {
+    title: "接管日期",
+    dataIndex: "startDate",
+    width: 200,
+  },
+  {
+    title: "财务卡片编码",
+    dataIndex: "financialCode",
+    width: 200,
+  },
+  {
+    title: "资产原值(元)",
+    dataIndex: "originalValue",
+    width: 120,
+  },
+  {
+    title: "最新估值(元)",
+    dataIndex: "assetValuation",
+    width: 120,
+  },
+  {
+    title: "资产状态",
+    dataIndex: "statusName",
+    width: 120,
+  },
+  {
+    title: "资产标签",
+    dataIndex: "label",
+    width: 120,
+  },
+  {
+    title: "操作",
+    key: "action",
+    width: 120,
+    fixed: "right",
+    scopedSlots: { customRender: "action" },
+  },
+];
 export default {
-  name: "index",
+  name: "equipmentviewAssetView",
   components: {
     SearchContainer,
     provinceCityDistrict,
@@ -114,6 +276,21 @@ export default {
   },
   data() {
     return {
+      exportFlag: false,
+      allColumns,
+      selectedColumns: [],
+      modalList: {
+        setAssetLabel: {
+          show: false,
+          title: "资产标签设置",
+        },
+        setTableHeader: {
+          show: false,
+          title: "列表表头设置",
+        },
+      },
+      selectedLabel: [],
+      labelOptions: [],
       totalLoadingFlag: false,
       statusListOpt: [
         { title: "未生效", key: "0" },
@@ -140,7 +317,7 @@ export default {
         province: "",
         city: "",
         region: "",
-        label: "",
+        labels: [],
         projectIdList: [],
         useTypes: [],
         statusList: [],
@@ -188,101 +365,7 @@ export default {
       selectedRowKeys: [],
       tableOptions: {
         loading: false,
-        columns: [
-          {
-            title: "资产名称",
-            dataIndex: "assetName",
-            width: 200,
-            fixed: "left",
-          },
-          {
-            title: "资产编码",
-            dataIndex: "assetCode",
-            width: 200,
-          },
-          {
-            title: "资产分类",
-            dataIndex: "equipmentTypeName",
-            width: 120,
-          },
-          {
-            title: "管理机构",
-            dataIndex: "organName",
-            width: 200,
-          },
-          {
-            title: "资产项目名称",
-            dataIndex: "projectName",
-            width: 200,
-          },
-          {
-            title: "规格型号",
-            dataIndex: "equipmentModel",
-            width: 120,
-          },
-          {
-            title: "所在位置",
-            dataIndex: "address",
-            width: 300,
-          },
-          {
-            title: "使用方向",
-            dataIndex: "useType",
-            width: 120,
-          },
-          {
-            title: "设备厂家",
-            dataIndex: "factory",
-            width: 120,
-          },
-          {
-            title: "出厂日期",
-            dataIndex: "dateOfProduction",
-            width: 200,
-          },
-          {
-            title: "报废日期",
-            dataIndex: "scrapDate",
-            width: 200,
-          },
-          {
-            title: "接管日期",
-            dataIndex: "startDate",
-            width: 200,
-          },
-          {
-            title: "财务卡片编码",
-            dataIndex: "financialCode",
-            width: 200,
-          },
-          {
-            title: "资产原值(元)",
-            dataIndex: "originalValue",
-            width: 120,
-          },
-          {
-            title: "最新估值(元)",
-            dataIndex: "assetValuation",
-            width: 120,
-          },
-          {
-            title: "资产状态",
-            dataIndex: "statusName",
-            width: 120,
-          },
-          {
-            title: "资产标签",
-            dataIndex: "label",
-            width: 120,
-          },
-          {
-            title: "操作",
-            key: "action",
-            width: 120,
-            fixed: "right",
-            scopedSlots: { customRender: "action" },
-          },
-        ],
+        columns: allColumns,
         dataSource: [],
         pagination: false,
         rowKey: "assetEquipmentId",
@@ -303,15 +386,124 @@ export default {
     },
   },
   methods: {
-    goDetail({ assetEquipmentId }) {
+    // 导出
+    handleExport() {
+      const otherReq = this.handleQueryTableOptions();
+      const req = {
+        ...otherReq,
+        display: this.tableOptions.columns
+          .filter((ele) => ele.dataIndex)
+          .map((ele) => ele.dataIndex),
+      };
+      this.exportFlag = true;
+      this.$api.equipmentview
+        .exportExcel(req)
+        .then(async ({ data }) => {
+          console.log("data", data);
+          const { err } = await handleDownloadFile({
+            data,
+            fileName: "设备设施资产视图列表.xlsx",
+          });
+          if (err) {
+            this.$message.error(err);
+          } else {
+            this.$message.success("导出成功");
+          }
+        })
+        .finally(() => {
+          this.exportFlag = false;
+        });
+    },
+    doClosePop(modal) {
+      this.modalList[modal].show = false;
+    },
+    // 列表设置弹窗 保存
+    setTableHeaderPopSave() {
+      console.log("this.selectedColumns", this.selectedColumns);
+      this.tableOptions.columns = this.allColumns.filter((ele) => {
+        const keyStr = ele.dataIndex || ele.key;
+        return this.selectedColumns.includes(keyStr);
+      });
+      this.$message.success("操作成功");
+      this.doClosePop("setTableHeader");
+    },
+    // 资产标签弹窗 保存
+    setAssetLabelPopSave() {
+      const req = {
+        labelCode: this.selectedLabel.join(","),
+        assetEquipmentIds: this.selectedRowKeys.join(","),
+      };
+      console.log({ req });
+      this.$api.equipmentview
+        .updateLabel(req)
+        .then(({ data: { code, message } }) => {
+          if (code === "0") {
+            this.$message.success("操作成功");
+            this.modalList.setAssetLabel.show = false;
+            this.queryTableDataAndTotal(true);
+          } else {
+            this.$message.error(message);
+          }
+        });
+    },
+    // 打开 列表设置弹窗
+    openSetTableHeaderPop() {
+      this.selectedColumns = this.tableOptions.columns.map((ele) => {
+        return ele.dataIndex || ele.key;
+      });
+      this.modalList.setTableHeader.show = true;
+    },
+    // 打开 资产标签弹窗
+    openSetAssetLabelPop() {
+      this.selectedLabel = [];
+      this.modalList.setAssetLabel.show = true;
+    },
+    // 获取 资产标签
+    getAssetLabel({ organId }) {
+      this.$api.publicCode
+        .queryAssetLabelConfig({ organId })
+        .then(
+          ({
+            data: {
+              code,
+              message,
+              data: { data },
+            },
+          }) => {
+            if (code === "0") {
+              console.log({ data });
+              if (data) {
+                this.labelOptions = data.map((ele) => {
+                  return {
+                    value: ele.labelValue,
+                    title: ele.labelName,
+                    label: ele.labelName,
+                  };
+                });
+              }
+            } else {
+              this.$message.error(message);
+            }
+          }
+        )
+        .catch((err) => {
+          this.$message.error("系统内部错误，请重载当前页面后重试");
+          console.error(err);
+        });
+    },
+    // 打开详情页
+    goDetail({ assetEquipmentId, assetId }) {
       const queryParams = {
         assetEquipmentId,
+        assetId,
       };
+      console.log({ queryParams });
       this.$router.push({
         path: "/equipmentview/detail",
         query: queryParams,
       });
     },
+    // 地址级联 处理搜索入参
     handleAddress({ province, city, district }) {
       this.queryForm.province = province || "";
       this.queryForm.city = city || "";
@@ -347,6 +539,7 @@ export default {
       this.queryForm.organIds = organId;
       this.getObjectKeyValueByOrganIdFn({ organId });
       this.queryTableDataAndTotal();
+      this.getAssetLabel({ organId });
     },
     // 获取 tableData
     queryTableData(options) {
@@ -364,6 +557,7 @@ export default {
             this.paginationObj.totalCount = count;
             this.tableOptions.dataSource = data || [];
             this.tableOptions.loading = false;
+            this.selectedRowKeys = [];
           } else {
             this.$message.error(message);
           }
@@ -386,13 +580,16 @@ export default {
           }
         });
     },
-    queryTableDataAndTotal(notRequiredTotalFlag) {
+    handleQueryTableOptions() {
       const { pageNo, pageLength } = this.paginationObj;
-      const options = {
+      return {
         ...this.queryForm,
         pageNum: pageNo,
         pageSize: pageLength,
       };
+    },
+    queryTableDataAndTotal(notRequiredTotalFlag) {
+      const options = this.handleQueryTableOptions();
       this.queryTableData(options);
       if (!notRequiredTotalFlag) {
         this.queryTotal(options);
@@ -409,16 +606,14 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
   },
+  created() {
+    handleTableScrollHeight(this.tableOptions.scroll);
+  },
   mounted() {
     this.$store.dispatch("platformDict/getPlatformDict", {
       code: "AMS_USE_DIRECTION",
       type: SET_AMS_USE_DIRECTION,
     });
-  },
-  activated() {
-    if (this.queryForm.organIds) {
-      this.queryTableDataAndTotal();
-    }
   },
 };
 </script>

@@ -12,6 +12,12 @@ export default {
   components: {
     Information,
   },
+  props: {
+    assetId: {
+      type: [String, Number],
+      required: true,
+    },
+  },
   data() {
     return {
       infoOptions: {
@@ -20,72 +26,94 @@ export default {
           [
             {
               title: "资产项目",
-              key: "name",
+              key: "projectName",
             },
             {
               title: "来源方式",
-              key: "name",
+              key: "sourceTypeName",
             },
             {
               title: "来源渠道",
-              key: "name",
+              key: "sourceChannelType",
             },
           ],
           [
             {
               title: "管理机构",
-              key: "name",
+              key: "organName",
             },
-            {
-              title: "是否接管",
-              key: "name",
-            },
+            // {
+            //   title: "是否接管",
+            //   // 暂时不展示
+            //   key: "todo",
+            // },
             {
               title: "接管日期",
-              key: "name",
+              key: "takeOverDate",
+            },
+            {
+              title: "上报基础情况表时间",
+              key: "reportBasicInfoDate",
             },
           ],
           [
             {
-              title: "上报基础情况表时间",
-              key: "name",
-            },
-            {
               title: "设备设施核实时间",
-              key: "name",
+              key: "houseVerificationDate",
             },
             {
               title: "上报设备设施划转请示时间",
-              key: "name",
+              key: "reportHouseTransferReqDate",
+            },
+            {
+              title: "上报核实报告时间",
+              key: "reportingVerificationReportDate",
             },
           ],
           [
             {
-              title: "上报核实报告时间",
-              key: "name",
-            },
-            {
               title: "划转批复下发时间",
-              key: "name",
+              key: "transferApprovalDate",
             },
             {
               title: "协议签署时间",
-              key: "name",
+              key: "agreementSignDate",
             },
           ],
           [
             {
               title: "权属办理中存在问题",
-              key: "name",
+              key: "ownershipHandleProblems",
             },
             {
               title: "历史遗留问题",
-              key: "name",
+              key: "houseTransferHisProblem",
             },
           ],
         ],
+        colProps: { span: 8 },
       },
     };
+  },
+  methods: {
+    queryAssetViewTakeOverDetail() {
+      const req = {
+        assetId: this.assetId,
+      };
+      console.log({ req });
+      this.$api.assets
+        .queryAssetViewTakeOverDetail(req)
+        .then(({ data: { code, message, data } }) => {
+          if (code === "0") {
+            this.infoOptions.data = data;
+          } else {
+            this.$message.error(message);
+          }
+        });
+    },
+  },
+  mounted() {
+    this.queryAssetViewTakeOverDetail();
   },
 };
 </script>

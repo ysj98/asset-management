@@ -4,6 +4,7 @@
  * 日期：2019年6月26日
  */
 import host from "./config.base.js";
+import {exportExcel} from "api/equipmentview";
 export const User = {
   // 登录
   login: "/uhomecp-sso/v3/propertyUser/login",
@@ -1638,5 +1639,9 @@ export const equipmentview = {
   // 列表页面统计
   getTotal:"/ams/equipment/view/total",
   // 设备资产视图基本信息
-  getDetail:"/ams/equipment/view/detail"
+  getDetail:"/ams/equipment/view/detail",
+  // 更新设备资产标签
+  updateLabel:"/ams/equipment/view/updateLabel",
+  // 列表页面动态列导出
+  exportExcel:"/ams/equipment/view/export"
 }

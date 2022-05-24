@@ -711,14 +711,30 @@ export function generateTableAreaByAssetTypeString({keyStr, assetTypeName, recor
 
 
 export function handleDownloadFile({data,fileName}){
-  let blob = new Blob([data])
-  let a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = fileName
-  a.style.display = 'none'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
+  return new Promise((resolve) => {
+    if (data.type === 'application/json'){
+      data.arrayBuffer().then(buffer => {
+        const res = new TextDecoder('utf-8')
+        let data = JSON.parse(res.decode(new Uint8Array(buffer))) || {};
+        console.log({data})
+        resolve({err: data.message})
+      })
+      // todo: 性能与上面方式差异 待比较
+      // data.text().then(buffer => {
+      //   console.log('buffer',JSON.parse(buffer))
+      // })
+    }else {
+      let blob = new Blob([data])
+      let a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = fileName
+      a.style.display = 'none'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      resolve({})
+    }
+  })
 }
 
 export function generateAssetStringByCode({ record }) {

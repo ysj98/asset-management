@@ -11,3 +11,11 @@ export function getPage (data) {
 export function getTotal (data) {
   return axiosPost(equipmentview.getTotal, data)
 }
+export function updateLabel (data) {
+  return axiosPost(equipmentview.updateLabel, data, true)
+}
+export function exportExcel (data) {
+  return axiosPost(equipmentview.exportExcel, data,false,false,{
+    responseType: 'blob'
+  })
+}
