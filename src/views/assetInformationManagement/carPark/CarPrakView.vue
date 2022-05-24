@@ -10,22 +10,19 @@
             type="primary"
             @click="handleExport"
             :loading="exportBtnLoading"
-            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_EXPORT"
+            v-power="ASSET_MANAGEMENT.CARPARK_VIEW_EXPORT"
           >导出车场视图</SG-Button>
         </a-col>
         <a-col :span="3">
-          <div></div>
+          <SG-Button
+            v-power="ASSET_MANAGEMENT.CARPARK_VIEW_LABEL_SET"
+            type="default"
+            @click="clickAsset"
+          >资产标签</SG-Button>
         </a-col>
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
-        <!-- <a-col :span="3">
-          <SG-Button
-            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_ASSET_LABEL"
-            type="default"
-            @click="clickAsset"
-          >资产标签</SG-Button>
-        </a-col> -->
         <a-col :span="4">
           <a-select
             showSearch
@@ -55,7 +52,7 @@
           ></a-select>
         </a-col>
         <a-col :span="4">
-          <!-- <a-select
+          <a-select
             v-model="label"
             mode="multiple"
             :maxTagCount="1"
@@ -63,8 +60,7 @@
             style="width: 100%"
             placeholder="请选择资产标签"
             :options="$addTitle(assetLabelSelect)"
-          /> -->
-          <a-checkbox style="line-height: 32px; margin-right: 5px" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
+          />
         </a-col>
         <a-col :span="2">
           <SG-Button

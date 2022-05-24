@@ -650,6 +650,19 @@ export const ASSET_MANAGEMENT = {
   ASSET_TRANSFER_APPROVE: 'asset_transfer_approve', // 审批
   ASSET_TRANSFER_ANTI_APPROVE: 'asset_transfer_anti_approve', // 反审核
   ASSET_TRANSFER_DEL: 'asset_transfer_del', // 删除
+
+  /**
+   * 车场台账
+   */
+  //组织机构视图
+  CARPARK_ORGAN_VIEW_EXPORT: 'carpark_organ_view_export', // 导出
+  // 车场项目视图
+  CARPARK_PROJECT_VIEW_EXPORT: 'carpark_project_view_export',// 导出
+  // 车场视图
+  CARPARK_VIEW_EXPORT: 'carpark_view_export', // 导出
+  CARPARK_VIEW_LABEL_SET: 'carpark_view_label_set', // 资产标签
+  // 车场资产视图
+  CARPARK_ASSET_VIEW_EXPORT: 'carpark_asset_view_export', // 导出
+  CARPARK_ASSET_VIEW_HEADER_SET: 'carpark_asset_view_header_set', // 列表表头设置
+  CARPARK_ASSET_VIEW_LABEL_SET: 'carpark_asset_view_label_set', // 资产标签
 }
-
-

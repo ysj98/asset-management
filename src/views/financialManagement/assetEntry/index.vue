@@ -8,7 +8,7 @@
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_EXPORT">导出</SG-Button>
         <SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
-        <SG-Button type="primary" style="margin-right: 8px" :disabled="selectedRowKeys.length <= 0" @click="batchSubmit">批量提交</SG-Button>
+        <SG-Button type="primary" style="margin-right: 8px" :disabled="selectedRowKeys.length <= 0" @click="batchSubmit" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_BATCH_SUBMISSION">批量提交</SG-Button>
         <!-- 暂时不用 -->
         <!-- <SG-Button type="primary" style="margin-right: 8px" @click="listSet">列表设置</SG-Button> -->
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
@@ -341,8 +341,8 @@
       // 批量提交
       batchSubmit () {
         console.log(this.selectedRowKeys, 'this.selectedRowKeys')
-        this.$api.assets.batchSubmission({cardIdList: this.selectedRowKeys}).then(res => {
-          console.log(res, 'res')
+        this.$api.assets.batchSubmission({cardIdList: this.selectedRowKeys})
+        .then(res => {
           if(res.data.code === '0') {
             this.selectedRowKeys = []
             this.queryClick()

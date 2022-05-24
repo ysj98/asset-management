@@ -8,7 +8,7 @@
           type="primary"
           @click="handleExport"
           :loading='exportBtnLoading'
-          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT"
+          v-power="ASSET_MANAGEMENT.CARPARK_PROJECT_VIEW_EXPORT"
         >导出</SG-Button>
       </div>
       <div slot="headRight">

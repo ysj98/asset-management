@@ -10,7 +10,7 @@
             type="primary"
             @click="handleExport"
             :loading="exportBtnLoading"
-            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
+            v-power="ASSET_MANAGEMENT.CARPARK_ORGAN_VIEW_EXPORT"
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">

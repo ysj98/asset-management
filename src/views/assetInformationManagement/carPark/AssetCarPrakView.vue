@@ -9,7 +9,7 @@
           type="primary"
           :loading='exportAssetBtn'
           @click="handleExport()"
-          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT"
+          v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_EXPORT"
         >导出资产视图</SG-Button>
         <!--二期开发-->
         <!--<SG-Button-->
@@ -22,8 +22,8 @@
         <!--&gt;导出房屋卡片</SG-Button>-->
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
-        <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
+        <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_HEADER_SET">列表设置</SG-Button>
+        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
