@@ -57,7 +57,8 @@
       // 查询详情
       queryDetailInfo () {
         this.spinning = true
-        this.$api.carPrak.assetCarPark({assetCarParkId: this.assetCarParkId}).then(r => {
+        this.$api.carPark.assetCarPark({assetCarParkId: this.assetCarParkId})
+        .then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -79,8 +80,7 @@
       // 查询楼栋视图面积概览数据
       queryHouseAreaInfo () {
         const { assetCarParkId, numList } = this
-        console.log('assetCarParkId', assetCarParkId)
-        return this.$api.carPrak.cartParkArea({ assetCarParkId }).then(r => {
+        return this.$api.carPark.cartParkArea({ assetCarParkId }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
             // 查楼栋视图详情的面积数据

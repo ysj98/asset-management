@@ -13,6 +13,9 @@
             v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_EXPORT"
           >导出车场视图</SG-Button>
         </a-col>
+        <a-col :span="3">
+          <div></div>
+        </a-col>
         <!--<a-col :span="15">-->
           <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
@@ -52,7 +55,7 @@
           ></a-select>
         </a-col>
         <a-col :span="4">
-          <a-select
+          <!-- <a-select
             v-model="label"
             mode="multiple"
             :maxTagCount="1"
@@ -60,7 +63,7 @@
             style="width: 100%"
             placeholder="请选择资产标签"
             :options="$addTitle(assetLabelSelect)"
-          />
+          /> -->
           <a-checkbox style="line-height: 32px; margin-right: 5px" @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
         </a-col>
         <a-col :span="2">

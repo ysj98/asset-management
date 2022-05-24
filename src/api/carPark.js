@@ -79,3 +79,24 @@ export function getCarParkViewShip (data) {
 export function viewGetCarParkList (data) {
   return axiosPost(cartPark.viewGetCarParkList, data)
 }
+// 资产项目视图列表头-查询车场信息统计
+export function getAssetCarParkStatistics (data) {
+  return axiosPost(cartPark.getAssetCarParkStatistics, data)
+}
+// 查询资产项目详情查询
+export function projectDetailsById (data) {
+  return axiosPost(cartPark.projectDetailsById, data)
+}
+// 资产项目视图列表-导出
+export function carParkProjectExPort (data) {
+  return axiosPost(cartPark.carParkProjectExPort, data, false, false, { responseType: 'blob' })
+}
+// 资产项目视图详情-资产状况统计列表分页
+export function viewCarParkDetailsPage (data) {
+  return axiosPost(cartPark.viewCarParkDetailsPage, data)
+}
+// 资产项目视图（详情）-车场资产状况统计
+export function viewProjectCarParkDetails (data) {
+  return axiosPost(cartPark.viewProjectCarParkDetails, data)
+}
+

@@ -1,6 +1,6 @@
 <template>
   <div class="asset_view">
-    <SG-Button
+    <!-- <SG-Button
       icon="export"
       type="primary"
       @click="exportCard"
@@ -9,7 +9,7 @@
       style="position: absolute; top: 10px; right: 30px; z-index: 999"
     >
       导出房屋卡片
-    </SG-Button>
+    </SG-Button> -->
     <!--基础信息部分-->
     <base-info-part ref="baseInfoPart" v-if="assetCarParkId" comType="assetCarPark" :assetCarParkId="assetCarParkId" @updateTransfer="updateTransfer" :baseInfoKeys="baseInfoKeys" @parkingDetail="parkingDetail"/>
     <SpaceInfo :assetCarParkId="assetCarParkId"/>

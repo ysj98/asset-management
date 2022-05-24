@@ -179,9 +179,7 @@
             // 查浮窗的面积数据与详情页面的面积数据共用一个接口
             // return args ? args.resolve(arr) : this.mouseData = arr
           }
-          throw res.message || '查询车场视图面积使用统计出错'
         }).catch(err => {
-          console.log(err)
           this.$message.error(err || '查询车场视图面积使用统计出错')
         })
       },
@@ -191,7 +189,8 @@
         const { parkingAreaName, placeId, organId } = this
         // if (!unitId) { return sign === 'init' ? false : this.$message.warn('单元Id不存在') }
         this.spinning = true
-        this.$api.carPark.carParkingList({placeId, organId, parkingAreaName}).then(r => {
+        this.$api.carPark.carParkingList({placeId, organId, parkingAreaName})
+        .then(r => {
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {

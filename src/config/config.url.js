@@ -1619,7 +1619,17 @@ export const cartPark = {
   // 组织机构视图详情权属
   getCarParkViewShip: "/ams/asset-carPark/organ/carParkViewShip",
   // 资产项目视图列表-查询信息分页查询
-  viewGetCarParkList: "/ams/project/viewGetCarParkList"
+  viewGetCarParkList: "/ams/project/viewGetCarParkList",
+  // 资产项目视图列表头-查询车场信息统计
+  getAssetCarParkStatistics: "/ams/project/viewGetAssetCarParkStatistics",
+  // 查询资产项目详情查询
+  projectDetailsById: "/ams/project/projectDetailsById",
+  // 资产项目视图列表-导出
+  carParkProjectExPort: "/ams/project/carParkProjectExPort",
+  // 资产项目视图详情-资产状况统计列表分页
+  viewCarParkDetailsPage: "/ams/project/viewCarParkDetailsPage",
+  // 资产项目视图（详情）-车场资产状况统计
+  viewProjectCarParkDetails: "/ams/project/viewProjectCarParkDetails"
 }
 // 设备设施台帐
 export const equipmentview = {

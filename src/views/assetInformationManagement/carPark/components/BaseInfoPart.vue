@@ -34,7 +34,7 @@
       return {
         imgPrx: basics.common.imgStr,
         spinning: false, // 页面加载状态
-        defaultImgUrl: require('src/assets/image/default_house.png'),
+        defaultImgUrl: require('src/assets/image/carPark@2x.png'),
         baseInfoData: {}
       }
     },

@@ -187,12 +187,12 @@ export default {
         { title: '入库中', key: '7' }
       ], // 查询条件-资产状态选项
       numList: [
-        {title: '车场数量',  key: 'measuredArea', value: 0, fontColor: '#324057'},
+        {title: '车场数量',  key: 'placeNum', value: 0, fontColor: '#324057'},
         {title: '车场总面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#4BD288'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
         {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474'}, 
-        {title: '资产原值(元)', key: 'occupationArea', value: 0, bgColor: '#4BD288'}, 
-        {title: '最新估值(元)', key: 'occupationArea', value: 0, bgColor: '#1890FF'}, 
+        {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#4BD288'}, 
+        {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#1890FF'}, 
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       columns,
       dataSource: [],
@@ -240,7 +240,7 @@ export default {
     handleExport () {
       this.exportBtnLoading = true
       exportDataAsExcel(
-        this.queryList('export'), this.$api.assets.exportAssetProjectViewList, '资产项目视图列表.xls', this
+        this.queryList('export'), this.$api.carPark.carParkProjectExPort, '资产项目视图列表.xls', this
       ).finally(() => this.exportBtnLoading = false)
     },
 
@@ -344,7 +344,7 @@ export default {
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null
       }
-      this.$api.assets.viewGetAssetHouseStatistics(form).then(res => {
+      this.$api.carPark.getAssetCarParkStatistics(form).then(res => {
         if (res.data.code === '0') {
           let temp = res.data.data || {}
           let {measuredArea} = temp
