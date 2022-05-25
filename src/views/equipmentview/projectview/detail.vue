@@ -5,74 +5,173 @@
     <SG-Title title="其他信息" />
     <Information v-bind="otherInfoOptions" />
     <SG-Title title="权属概况" />
+    <a-table v-bind="tableOptions" class="custom-table"></a-table>
     <SG-Title title="资产状况" />
+    <div style="max-height: 600px; overflow: auto">
+      <overview-number :numList="numList" />
+      <!-- 与 numlist 顺序一致   -->
+      <!-- todo:有时间优化此段代码 -->
+      <div
+        style="display: flex"
+        v-for="rowItem in assetList"
+        :key="rowItem._key"
+      >
+        <!-- 资产数量 -->
+        <div class="asset-col" :title="rowItem.assetName">
+          {{ rowItem.assetName }}
+          （{{ (rowItem.assetCount || 0).toLocaleString() }}）
+        </div>
+        <!-- 运营 -->
+        <div class="asset-col">
+          {{ rowItem.operationCount }}
+          （{{ (rowItem.operationPercentage || 0).toLocaleString() }}%）
+        </div>
+        <!-- 闲置 -->
+        <div class="asset-col">
+          {{ rowItem.idleCount }}
+          （{{ (rowItem.idlePercentage || 0).toLocaleString() }}%）
+        </div>
+        <!-- 自用 -->
+        <div class="asset-col">
+          {{ rowItem.selfCount }}
+          （{{ (rowItem.selfPercentage || 0).toLocaleString() }}%）
+        </div>
+        <!-- 其它 -->
+        <div class="asset-col">
+          {{ rowItem.otherCount }}
+          （{{ (rowItem.otherPercentage || 0).toLocaleString() }}%）
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import OverviewNumber from "@/views/common/OverviewNumber";
 import Information from "@/components/Information";
 export default {
   name: "projectviewDetail",
   components: {
     Information,
+    OverviewNumber,
   },
   data() {
     return {
+      assetList: [],
+      numList: [
+        {
+          title: "资产数量",
+          key: "assetCount",
+          percentageKey: "assetCount",
+          value: 0,
+          fontColor: "#324057",
+        },
+        {
+          title: "运营",
+          key: "operationCount",
+          percentageKey: "operationPercentage",
+          value: 0,
+          bgColor: "#4BD288",
+        },
+        {
+          title: "闲置",
+          key: "idleCount",
+          percentageKey: "idlePercentage",
+          value: 0,
+          bgColor: "#1890FF",
+        },
+        {
+          title: "自用",
+          key: "selfCount",
+          percentageKey: "selfPercentage",
+          value: 0,
+          bgColor: "#DD81E6",
+        },
+        {
+          title: "其他",
+          key: "otherCount",
+          percentageKey: "otherPercentage",
+          value: 0,
+          bgColor: "#BBC8D6",
+        },
+      ],
+      tableOptions: {
+        rowKey: "_key",
+        pagination: false,
+        columns: [
+          {
+            title: "有证",
+            dataIndex: "ownershipYesCount",
+          },
+          {
+            title: "无证",
+            dataIndex: "ownershipNoCount",
+          },
+          {
+            title: "待办",
+            dataIndex: "ownershipPendingCount",
+          },
+          {
+            title: "权属办理进度 (%)",
+            dataIndex: "ownershipProgress",
+          },
+        ],
+        dataSource: [],
+      },
+      queryParams: {
+        projectId: "",
+      },
       basicInfoOptions: {
         data: {},
         formatBasicInfoList: [
           [
             {
               title: "管理机构",
-              key: "name",
+              key: "organName",
             },
             {
               title: "资产项目名称",
-              key: "name",
+              key: "projectName",
             },
             {
               title: "资产项目编码",
-              key: "name",
+              key: "projectCode",
             },
           ],
           [
             {
               title: "来源方式",
-              key: "name",
+              key: "sourceTypeName",
             },
             {
               title: "来源渠道",
-              key: "name",
+              key: "souceChannelType",
             },
             {
               title: "是否接管",
-              key: "name",
+              key: "takeOver",
             },
           ],
           [
             {
               title: "接管时间",
-              key: "apprStatusStr",
+              key: "takeOverDate",
             },
             {
               title: "接管时资产状态",
-              key: "applyId",
+              key: "takeoverAssetStatusName",
             },
             {
-              title: "项目状态",
-              key: "applyId",
-            },
-          ],
-          [
-            {
-              title: "暂无",
-              key: "apprStatusStr",
+              title: "备注",
+              key: "remark",
             },
           ],
           [
             {
               title: "附件",
-              key: "applyId",
+              key: "attachment",
+              // todo:待开发
+              render() {},
               colProps: {
                 span: 24,
               },
@@ -87,47 +186,39 @@ export default {
           [
             {
               title: "上报基础情况表时间",
-              key: "name",
+              key: "reportBasicInfoDate",
             },
             {
-              title: "房屋核实时间",
-              key: "name",
+              title: "设备设施核实时间",
+              key: "houseVerificationDate",
             },
             {
               title: "上报房屋划转请示时间",
-              key: "name",
+              key: "reportHouseTransferReqDate",
             },
           ],
           [
             {
               title: "上报核实报告时间",
-              key: "name",
+              key: "reportingVerificationReportDate",
             },
             {
               title: "划转批复下发时间",
-              key: "name",
+              key: "transferApprovalDate",
             },
             {
               title: "协议签署时间",
-              key: "name",
+              key: "agreementSignDate",
             },
           ],
           [
             {
               title: "权属办理中存在问题",
-              key: "name",
-              colProps: {
-                span: 24,
-              },
+              key: "ownershipHandleProblems",
             },
-          ],
-          [
             {
               title: "历史遗留问题",
-              key: "name",
-              colProps: {
-                span: 24,
-              },
+              key: "houseTransferHisProblem",
             },
           ],
         ],
@@ -135,11 +226,97 @@ export default {
       },
     };
   },
+  methods: {
+    async getDetail() {
+      const req = {
+        projectId: this.queryParams.projectId,
+      };
+      console.log({ req });
+      const res1 = this.$api.equipmentview.detailProject(req);
+      const res2 = this.$api.assets.queryProjectManageDetailById(req);
+      Promise.all([res1, res2])
+        .then(
+          ([
+            {
+              data: { code: code1, message: message1, data: data1 },
+            },
+            {
+              data: { code: code2, message: message2, data: data2 },
+            },
+          ]) => {
+            if (code1 === "0" && code2 === "0") {
+              // 优先使用 设备设施详情的接口数据
+              const resData = Object.assign({}, data2, data1);
+              console.log({ resData });
+              this.basicInfoOptions.data = resData;
+              this.otherInfoOptions.data = resData;
+
+              // 处理权属概况数据
+              const {
+                ownershipYesCount,
+                ownershipNoCount,
+                ownershipPendingCount,
+                ownershipProgress,
+              } = resData;
+              this.tableOptions.dataSource = [
+                {
+                  ownershipYesCount,
+                  ownershipNoCount,
+                  ownershipPendingCount,
+                  ownershipProgress,
+                  _key: Math.random(),
+                },
+              ];
+              this.assetList = (resData.list || []).map((ele) => ({
+                ...ele,
+                _key: Math.random(),
+              }));
+              // list 出参 第一个数据就是汇总数据
+              const tempRes = this.assetList.shift();
+              // 处理资产概况数据
+              this.numList.forEach((ele) => {
+                ele.value = Number(tempRes[ele.key] || 0);
+              });
+            } else {
+              if (code1 !== "0") {
+                this.$message.error(message1);
+              }
+              if (code2 !== "0") {
+                this.$message.error(message2);
+              }
+            }
+          }
+        )
+        .catch((reason) => {
+          console.error(reason);
+        });
+    },
+  },
+  mounted() {
+    this.queryParams.projectId = this.$route.query.projectId;
+    this.getDetail();
+  },
 };
 </script>
 
 <style scoped>
 .equipmentview-projectview-detail {
   padding: 20px 60px;
+}
+.asset-col {
+  font-size: 16px;
+  text-align: center;
+  width: 25%;
+  height: 80px;
+  line-height: 40px;
+  box-sizing: border-box;
+  padding: 20px;
+  border-bottom: 1px solid #eff2f7;
+  border-right: 1px solid #eff2f7;
+  border-left: 1px solid #eff2f7;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

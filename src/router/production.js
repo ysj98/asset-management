@@ -1268,15 +1268,15 @@ let proRouter = [{
   {
     path: '/equipmentprojectview',
     name: '设备设施项目视图',
-    component: () => import('@/views/equipmentview/projectview/index.vue')
+    component: () => import('@/views/equipmentview/projectview/index.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/equipmentprojectview/detail',
     name: '设备设施项目视图详情',
     component: () => import('@/views/equipmentview/projectview/detail.vue'),
-    meta: {
-      keepAlive: true
-    }
   },
   {
     path: '/equipmentview',

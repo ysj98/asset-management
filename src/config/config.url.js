@@ -1643,5 +1643,15 @@ export const equipmentview = {
   // 更新设备资产标签
   updateLabel:"/ams/equipment/view/updateLabel",
   // 列表页面动态列导出
-  exportExcel:"/ams/equipment/view/export"
+  exportExcel:"/ams/equipment/view/export",
+
+
+  // 设备设施项目视图列表
+  viewProject:"/ams/asset-equipment/viewProject",
+  // 设备设施项目导出
+  exportExcelProject:"/ams/asset-equipment/export",
+  // 项目视图列表统计
+  equipmentStatistics:"/ams/asset-equipment/equipmentStatistics",
+  // 资产项目详情
+  detailProject:"/ams/asset-equipment/detailProject"
 }

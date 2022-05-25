@@ -1,4 +1,4 @@
-import {  axiosPost } from '../utils/axios'
+import {axiosGet, axiosPost} from '../utils/axios'
 import {equipmentview} from '../config/config.url'
 
 
@@ -18,4 +18,20 @@ export function exportExcel (data) {
   return axiosPost(equipmentview.exportExcel, data,false,false,{
     responseType: 'blob'
   })
+}
+
+
+export function viewProject (data) {
+  return axiosPost(equipmentview.viewProject, data,false)
+}
+export function exportExcelProject (data) {
+  return axiosPost(equipmentview.exportExcelProject,  data,false,false,{
+    responseType: 'blob'
+  })
+}
+export function equipmentStatistics (data) {
+  return axiosPost(equipmentview.equipmentStatistics, data, false)
+}
+export function detailProject (data) {
+  return axiosGet(equipmentview.detailProject, data, true)
 }
