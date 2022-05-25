@@ -76,7 +76,8 @@
         </form-footer>
       </div>
     </a-spin>
-    <a-button @click="printFn" type="primary" class="print">打印</a-button>
+    <!-- v2.2.2版本不上 入库打印功能   -->
+    <a-button v-if="false" @click="printFn" type="primary" class="print">打印</a-button>
   </div>
 </template>
 
