@@ -390,7 +390,7 @@ export default {
 
 <style lang="less" scoped>
   .custom-table {
-    padding-bottom: 50px;
+    padding-bottom: 70px;
     & /deep/ table {
       tr:last-child, tr:nth-last-child(2) {
         font-weight: bold;
