@@ -396,7 +396,7 @@ export default {
     },
     // 获取权属概况
     getOwnershipData (projectId) {
-      this.$api.assets.queryAssetProjectOwnershipInfo({projectId, assetType: 1}).then(res => {
+      this.$api.assets.queryAssetProjectOwnershipInfo({projectId, assetType: 5}).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data
           data.key = 0

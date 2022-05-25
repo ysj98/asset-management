@@ -151,7 +151,7 @@
           pagination: false,
           rowKey: 'placeId',
           columns: [
-            { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
+            { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, fixed: 'left', width: 250 },
             { title: '车场编号', dataIndex: 'placeCode', width: 200},
             { title: '管理机构', dataIndex: 'communityName', width: 200},
             { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
@@ -165,7 +165,7 @@
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-            // { title: '资产标签', dataIndex: 'label', width: 150 },
+            { title: '资产标签', dataIndex: 'label', width: 150 },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]
         },

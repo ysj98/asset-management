@@ -99,8 +99,8 @@
 
     methods: {
       goDetail({id}){
-        const tabTitle = '房间详情'
-        const tabUrl = `/asset-management/#/buildingDict/detailHouse?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&houseId=${id}&searchBuildName=`
+        const tabTitle = '车位详情'
+        const tabUrl = `/asset-management/#//buildingDict/detailViewStall?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&placeId=${this.placeId}&parkingId=${id}`
         win.openPortalMenu(tabUrl,tabTitle)
       },
       // 处理背景色和宽度
