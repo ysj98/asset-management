@@ -47,14 +47,17 @@
 </template>
 
 <script>
+import configBase from "@/config/config.base";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import Information from "@/components/Information";
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 export default {
   name: "projectviewDetail",
   components: {
     Information,
     OverviewNumber,
   },
+  mixins: [uploadAndDownLoadFIle],
   data() {
     return {
       assetList: [],
@@ -170,8 +173,15 @@ export default {
             {
               title: "附件",
               key: "attachment",
-              // todo:待开发
-              render() {},
+              render(_h, data, resValue) {
+                return _h("SG-UploadFile", {
+                  props: {
+                    type: "all",
+                    files: resValue,
+                    show: true,
+                  },
+                });
+              },
               colProps: {
                 span: 24,
               },
@@ -247,7 +257,33 @@ export default {
             if (code1 === "0" && code2 === "0") {
               // 优先使用 设备设施详情的接口数据
               const resData = Object.assign({}, data2, data1);
+
+              // mock数据
+              resData.attachment = [
+                {
+                  attachmentId: 2796,
+                  objectType: 8,
+                  objectId: 100205,
+                  newAttachmentName: "wKgBB2J1zS6AP0fJAB9RobfhZ4o899.jpg",
+                  attachmentPath:
+                    "group1/M1B/00/74/wKgBB2J1zS6AP0fJAB9RobfhZ4o899.jpg",
+                  attachmentSuffix: ".jpg",
+                  oldAttachmentName: "7fcb43d25f2cbeceb5456d9ff01eb90e.jpg",
+                  originName: null,
+                  fileSources: 1,
+                  subType: null,
+                  bpmFileId: null,
+                },
+              ];
               console.log({ resData });
+              resData.attachment = resData.attachment.map((ele) => {
+                return {
+                  ...ele,
+                  url: ele.attachmentPath,
+                  name: ele.oldAttachmentName,
+                };
+              });
+
               this.basicInfoOptions.data = resData;
               this.otherInfoOptions.data = resData;
 
