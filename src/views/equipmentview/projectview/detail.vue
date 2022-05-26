@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import configBase from "@/config/config.base";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import Information from "@/components/Information";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
