@@ -8,6 +8,7 @@
           @click="handleExport"
           icon="import"
           type="primary"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_PROJECT_VIEW_EXPORT"
         >
           导出
         </SG-Button>
@@ -58,7 +59,7 @@ import TreeSelect from "@/views/common/treeSelect";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import { handleTableScrollHeight } from "utils/share";
 import { handleDownloadFile } from "utils/utils";
-import { exportExcelProject } from "api/equipmentview";
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 const detailColumns = [
   {
     title: "资产项目名称",
@@ -145,6 +146,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       exportFlag: false,
       totalLoadingFlag: false,
       isCurrentOrgan: false,

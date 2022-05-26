@@ -665,4 +665,17 @@ export const ASSET_MANAGEMENT = {
   CARPARK_ASSET_VIEW_EXPORT: 'carpark_asset_view_export', // 导出
   CARPARK_ASSET_VIEW_HEADER_SET: 'carpark_asset_view_header_set', // 列表表头设置
   CARPARK_ASSET_VIEW_LABEL_SET: 'carpark_asset_view_label_set', // 资产标签
+
+
+  /*
+  * 设备设施台帐
+  * */
+
+  // 项目视图
+  EQUIPMENTVIEW_PROJECT_VIEW_EXPORT:"equipmentview_project_view_export",  //导出
+
+  // 资产视图
+  EQUIPMENTVIEW_ASSET_VIEW_EXPORT: "equipmentview_asset_view_export", // 导出
+  EQUIPMENTVIEW_ASSET_VIEW_HEADERS_SETTING: "equipmentview_asset_view_headers_setting", // 列表设置
+  EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING: "equipmentview_asset_view_labels_setting" // 资产标签设置
 }

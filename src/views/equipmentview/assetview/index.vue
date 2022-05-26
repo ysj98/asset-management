@@ -8,6 +8,7 @@
           @click="handleExport"
           icon="import"
           type="primary"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_EXPORT"
         >
           导出
         </SG-Button>
@@ -15,6 +16,7 @@
           @click="openSetTableHeaderPop"
           icon="setting"
           style="margin: 0 10px"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_HEADERS_SETTING"
         >
           列表设置
         </SG-Button>
@@ -23,6 +25,7 @@
           type="default"
           :disabled="!selectedRowKeys.length"
           :title="selectedRowKeys.length ? '资产标签' : '请选择资产'"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING"
         >
           资产标签
         </SG-Button>
@@ -162,6 +165,7 @@
 </template>
 
 <script>
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import provinceCityDistrict from "@/views/common/ProvinceCityDistrict";
 import SearchContainer from "@/views/common/SearchContainer";
 import OverviewNumber from "@/views/common/OverviewNumber";
@@ -277,6 +281,7 @@ export default {
   },
   data() {
     return {
+      ASSET_MANAGEMENT,
       exportFlag: false,
       allColumns,
       selectedColumns: [],
