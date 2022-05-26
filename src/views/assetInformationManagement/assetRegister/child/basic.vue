@@ -40,10 +40,10 @@
           <a-input v-if="setType === 'new'" placeholder="请输入实际产权单位" v-model="record.propertyRightUnit"/>
           <span v-else>{{ text }}</span>
         </template>
-        <template slot="houseNumber" slot-scope="text,record">
+        <!-- <template slot="houseNumber" slot-scope="text,record">
           <a-input v-if="setType === 'new'" placeholder="请输入实际产权单位" v-model="record.houseNumber"/>
           <span v-else>{{ text }}</span>
-        </template>
+        </template> -->
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination

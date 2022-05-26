@@ -201,7 +201,7 @@
           <a-row class="asset-project-content" v-for="(item,index) in assetList" :key="index">
             <a-col :span="4">
               <div class="asset-project-introduction">
-                <img :src="item.pictureUrl">
+                <!-- <img :src="item.pictureUrl"> -->
                 <div class="asset-project-introduction-name">{{item.buildName}}</div>
               </div>
             </a-col>
