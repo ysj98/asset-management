@@ -46,11 +46,31 @@
         {{ errorText }}
       </div>
       <div v-else id="leaflet-map"></div>
+      <AssetLandList
+        ref="AssetLandListRef"
+        class="filter-block"
+        :class="{'filter-block-full': isFull}"
+        v-if="mapFlag"
+        :popupDataSource="popupDataSource"
+        :previewMode="true"
+        @handleDraw="handleClickAsset"
+        @initAssetLayers="initAssetLayers"
+      />
     </div>
     <div class="bottom-show">
       <!--      <button @click="autoChange">开启自动轮播</button>-->
       <!--      <button @click="autoChange">关闭自动轮播</button>-->
       <!--      <button @click="changeStyle">改变透明度</button>-->
+      <div v-if="mapFlag" class="summary">
+        <div>
+          <span class="title">宗地：</span>
+          <span>{{parcel}}块</span>
+        </div>
+        <div v-if="!hasSelf">
+          <span class="title">自有：</span>
+          <span>{{allAssetArea}}m²</span>
+        </div>
+      </div>
       <div
         class="item"
         v-for="item in operationModeList"
@@ -63,6 +83,9 @@
           <div>{{ `${item.landArea}m²` }}</div>
         </div>
       </div>
+      <div class="export" v-if="mapFlag">
+        <SG-Button type="primary" icon="import" :loading='exportLoading' @click="handleExport">导出</SG-Button>
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +93,7 @@
 <script>
 import Vue from "vue";
 import LandDetailPopup from "@/views/landParameter/landAssetMap/LandDetailPopup";
+import AssetLandList from "@/views/mapDrawLand/AssetLandList";
 import {
   arrayToObj,
   generatePathStyle,
@@ -83,7 +107,8 @@ import Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 import { queryLayerById } from "@/views/mapDrawLand/share";
-
+import {exportLandDetails} from "api/drawMap";
+import {handleDownloadFile} from "utils/utils";
 export default {
   /*
    * 土地资产地图预览
@@ -91,9 +116,16 @@ export default {
   name: "landAssetMap",
   components: {
     TreeSelect,
+    AssetLandList
   },
   data() {
     return {
+      exportLoading: false,
+      parcel: 0,
+      allAssetArea: 0,
+      currentSelectLayer: null,
+      oldPathOptions: {},
+      isFull: false,
       selectedLayerInfo: {},
       popupDataSource: [],
       autoChaneIngFlag: false,
@@ -112,9 +144,12 @@ export default {
       layerSchemeId: "",
       operationModeList: [],
       mapEle: null,
-      pathStyle: {},
+      pathStyle: {
+        fillOpacity: 0.11,
+      },
       sleepTimer: null,
       timer: null,
+      hasSelf: false // operationModeList是否含有自有项目
     };
   },
   computed: {
@@ -127,6 +162,70 @@ export default {
     },
   },
   methods: {
+    async handleExport() {
+      this.exportLoading = true
+      try{
+        const req = this.$refs.AssetLandListRef.handleGetListReq()
+        const responseData = await this.$api.drawMap.exportLandDetails(req);
+        if (responseData.data.type === "application/json") {
+          const enc = new TextDecoder("utf-8");
+          responseData.data.arrayBuffer().then((buffer) => {
+            let data = JSON.parse(enc.decode(new Uint8Array(buffer))) || {};
+            console.log("data", data);
+            this.$SG_Message.error(data.message);
+          });
+        } else {
+          handleDownloadFile({
+            data: responseData.data,
+            fileName: "已绘制地块资产列表.xls",
+          });
+        }
+      }finally {
+        this.exportLoading = false
+      }
+    },
+    // 资产列表 点击具体资产对应事件
+    handleClickAsset({ assetItemInfo },{needOpenDetailPop} = {needOpenDetailPop: false}){
+      if (this.currentSelectLayer){
+        this.currentSelectLayer.setStyle(this.oldPathOptions)
+      }
+      console.log({ assetItemInfo })
+      const { assetId } = assetItemInfo;
+      const layer = this.mapLayers[assetId];
+      this.currentSelectLayer = layer
+      const latlng = layer.getCenter();
+      jumpMapLand(layer, this.mapInstance);
+      if (needOpenDetailPop){
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.generateDetailPop({
+              layer,
+              assetId: this.cycleArr[this.idx],
+              latlng,
+            });
+          }, 300);
+        });
+      }
+
+      const {
+        color,
+        fillColor,
+        fillOpacity,
+        weight,
+      } = layer.options
+
+      this.oldPathOptions = {
+        color,
+        fillColor,
+        fillOpacity,
+        weight
+      }
+      layer.setStyle({
+        weight: 4,
+        color:'white',
+        fillOpacity: Math.min(1,this.pathStyle.fillOpacity + 0.3),
+      })
+    },
     handleProgress(e) {
       if (
         !["ant-progress-inner", "ant-progress-bg"].includes(e.target.className)
@@ -142,11 +241,12 @@ export default {
         this.changeStyle({ fillOpacity: e.offsetX / allWidth });
       }
     },
+    // 改变透明度
     changeStyle({ fillOpacity = 0.11 }) {
       this.pathStyle = {
         fillOpacity: fillOpacity,
       };
-      this.initAssetLayers(this.assetList);
+      this.initAssetLayers(this.assetList, {needGetLandUseStatistics: false});
     },
     closeAutoChange() {
       console.log("关闭了定时器");
@@ -156,7 +256,7 @@ export default {
     async autoChange(flag = true) {
       const _this = this;
       if (!Object.keys(this.mapLayers).length) {
-        console.warn("没有涂层数据");
+        console.warn("没有图层数据");
         return null;
       }
       this.closeAutoChange();
@@ -171,26 +271,9 @@ export default {
         if (_this.idx === Object.keys(_this.mapLayers).length) {
           _this.idx = 0;
         }
-        const layer = _this.mapLayers[_this.cycleArr[_this.idx]];
-        const latlng = layer.getCenter();
-        jumpMapLand(layer, _this.mapInstance);
         _this.$nextTick(() => {
-          setTimeout(() => {
-            _this.generateDetailPop({
-              layer,
-              assetId: _this.cycleArr[_this.idx],
-              latlng,
-            });
-          }, 300);
+          _this.handleClickAsset({assetItemInfo:{assetId: _this.cycleArr[_this.idx]}},{needOpenDetailPop:true})
         });
-        // const data = layer.toGeoJSON();
-        //
-        // // TODO:自动切换 "高亮" 对应图块
-        // // layer.remove();
-        // data.properties.style.fillOpacity = 0.9;
-        // _this.mapLayers[_this.cycleArr[_this.idx]] =
-        //   _this.createLayersFromJson(data);
-        // _this.createLayersFromJson(layer.toGeoJSON())
         _this.idx++;
       }
     },
@@ -205,8 +288,19 @@ export default {
       if (document.fullscreenElement) document.exitFullscreen();
       else this.$refs.mapWrapperRef.requestFullscreen();
     },
-
-    initAssetLayers(assetList) {
+    handleSummary(){
+      this.parcel = this.assetList.length
+      this.allAssetArea = this.assetList.reduce((pre,cur)=>{
+        return pre + cur.landArea
+      },0)
+    },
+    // type参数用来控制是否调用 汇总信息接口,注意: 子组件 emit传参变动，此处判断要做对应修改
+    initAssetLayers(assetList, {needGetLandUseStatistics} = {needGetLandUseStatistics:true}) {
+      this.assetList = assetList
+      if (needGetLandUseStatistics){
+        this.getLandUseStatistics({ assetList })
+      }
+      this.handleSummary()
       this.cycleArr = assetList
         .filter((ele) => ele.layerSchemeDetailVo)
         .map((ele) => ele.assetId);
@@ -360,11 +454,14 @@ export default {
         layerDetailId: feature.layerDetailId,
       });
       layer.on("click", (e) => {
+        const assetId = e.target._assetId
         this.generateDetailPop({
           layer,
           latlng: layer.getBounds().getCenter(),
-          assetId: e.target._assetId,
+          assetId,
         });
+        this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
+        this.handleClickAsset({assetItemInfo:{assetId}})
       });
       layer.on("mouseover", (e) => {
         if (this.autoChaneIngFlag) {
@@ -375,6 +472,7 @@ export default {
           latlng: layer.getBounds().getCenter(),
           assetId: e.target._assetId,
         });
+        this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
       });
       layer.on("mouseout", mouseoutCb, this);
       layer.addTo(this.polygonLayer);
@@ -405,6 +503,7 @@ export default {
       } = await this.$api.drawMap.landUseStatistics(req);
       if (code === "0") {
         this.operationModeList = data;
+        this.hasSelf = this.operationModeList.some(item => item.operName === '自有')
       } else {
         this.$SG_Message.error(message);
       }
@@ -511,7 +610,10 @@ export default {
                 this.generateCenterMarker({ latlng: defaultLatLng, centralName });
               });
             });
-            this.getAssetList();
+            this.$refs.AssetLandListRef.initData({
+              layerSchemeId: value,
+              organId,
+            });
             this.organIdByMethod = organId;
           });
         } else {
@@ -520,25 +622,6 @@ export default {
         }
       } else {
         this.$SG_Message.error("系统出错,请刷新后重试");
-      }
-    },
-
-    async getAssetList() {
-      const req = {
-        layerSchemeId: this.layerSchemeId,
-        assetNameOrCode: this.assetNameOrCode,
-        projectIdList: this.currentAssetProject,
-        organId: this.organId,
-      };
-      const {
-        data: { data, code, message },
-      } = await this.$api.drawMap.queryAssetOpMode(req);
-      if (code === "0") {
-        this.initAssetLayers(data);
-        this.assetList = data;
-        this.getLandUseStatistics({ assetList: data });
-      } else {
-        this.$SG_Message.error(message);
       }
     },
     mouseMoveCb() {
@@ -552,7 +635,8 @@ export default {
       document.addEventListener("fullscreenchange", this.fullscreenchangeCb);
     },
     fullscreenchangeCb() {
-      console.log("this", this);
+      console.log("this", arguments);
+      this.isFull = document.fullscreenElement
       this.$refs.closeBtn.className = document.fullscreenElement
         ? "full-screen-close"
         : "default-close-btn";
@@ -591,12 +675,13 @@ export default {
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    position: relative;
     .item {
       height: 100%;
       margin-right: 20px;
       display: flex;
       align-items: baseline;
-
+      margin-left: 40px;
       .color-block {
         width: 8px;
         height: 8px;
@@ -639,6 +724,16 @@ export default {
       .custom-popup {
         width: 400px;
       }
+    }
+    .filter-block {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      z-index: 999;
+      min-width: 600px;
+    }
+    .filter-block-full{
+      display: none;
     }
   }
   .top-block {
@@ -701,5 +796,19 @@ export default {
 }
 ::v-deep .leaflet-popup-tip-container {
   display: none;
+}
+.summary{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .title{
+    font-weight: bold;
+  }
+}
+.export{
+  position: absolute;
+  top: 50%;
+  right: 60px;
+  transform: translate(0,-50%);
 }
 </style>

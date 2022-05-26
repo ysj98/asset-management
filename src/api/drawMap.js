@@ -63,3 +63,9 @@ export function setLayerFields(data) {
 export function queryLayerFields(data) {
   return axiosGet(drawMap.queryLayerFields, data);
 }
+export function exportLandDetails(data) {
+  return axiosPost(drawMap.exportLandDetails, data, false, false,{
+    responseType: 'blob'
+  });
+}
+

@@ -39,11 +39,11 @@
         <template #indicator>
           <a-icon type="loading" style="font-size: 24px" spin />
         </template>
-        <div v-if="!assetList.length" style="text-align: center">暂无数据</div>
+        <div v-if="!assetListCom.length" style="text-align: center">暂无数据</div>
         <div v-else>
           <div
             ref="itemRef"
-            v-for="item in assetList"
+            v-for="item in assetListCom"
             :key="item.assetId"
             class="item-block"
             :class="{ 'activity-asset': item.assetId === currentAssetId }"
@@ -67,6 +67,7 @@
                   >
                   </span>
                   <span
+                    v-if="!previewMode"
                     class="title-flag"
                     :class="{
                       'activity-asset': item.assetId === currentAssetId,
@@ -75,7 +76,7 @@
                     {{ item.drawStatus ? "已绘制" : "未绘制" }}
                   </span>
                 </div>
-                <div @click="handleDraw(item, 'edit')">
+                <div v-if="!previewMode" @click="handleDraw(item, 'edit')">
                   <SG-Icon
                     :class="{
                       'activity-asset': item.assetId === currentAssetId,
@@ -114,6 +115,10 @@ export default {
       type: Array,
       required: true,
     },
+    previewMode:{
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -126,6 +131,17 @@ export default {
       assetProjectOptions: [],
       assetList: [],
     };
+  },
+  computed:{
+    assetListCom(){
+      if (this.previewMode){
+        return this.assetList.filter(ele=>{
+          return ele.drawStatus
+        })
+      }else {
+        return this.assetList
+      }
+    },
   },
   methods: {
     toggle() {
@@ -167,21 +183,27 @@ export default {
           }
         });
     },
-    async getAssetList() {
-      this.listLoadingFlag = true;
-      const req = {
+    /*
+    * ref 调用获取 请求参数
+    * */
+    handleGetListReq(){
+      return {
         layerSchemeId: this.layerSchemeId,
         assetNameOrCode: this.assetNameOrCode,
         projectIdList: this.currentAssetProject,
         organId: this.organId,
       };
+    },
+    async getAssetList() {
+      this.listLoadingFlag = true;
+      const req = this.handleGetListReq()
       const {
         data: { data, code, message },
       } = await this.$api.drawMap.queryAssetOpMode(req);
       if (code === "0") {
         this.assetList = data;
         this.listLoadingFlag = false;
-        this.$emit("initAssetLayers", data);
+        this.$emit("initAssetLayers", this.assetListCom);
       } else {
         this.$SG_Message.error(message);
       }
