@@ -94,9 +94,9 @@
           <a-col :span="4">
             <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
           </a-col>
-          <!-- <a-col :span="4">
+          <a-col :span="4">
             <a-input placeholder="公安门牌号" v-model="houseNumber"/>
-          </a-col> -->
+          </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4">
@@ -605,7 +605,7 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment, label
+          useType,sourceModes, address, uploadAttachment, label, houseNumber
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -621,7 +621,7 @@
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
           label: label ? label.join('、') : '',
-          uploadAttachment
+          uploadAttachment,houseNumber
         }
         if(!uploadAttachment) delete form.uploadAttachment
         if(label === '' || !label) delete form.label
