@@ -40,6 +40,10 @@
           <a-input v-if="setType === 'new'" placeholder="请输入实际产权单位" v-model="record.propertyRightUnit"/>
           <span v-else>{{ text }}</span>
         </template>
+        <template slot="houseNumber" slot-scope="text,record">
+          <a-input v-if="setType === 'new'" placeholder="请输入实际产权单位" v-model="record.houseNumber"/>
+          <span v-else>{{ text }}</span>
+        </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
@@ -554,6 +558,7 @@ export default {
     * @return String 错误信息
     * */
     handleValidateExcelData(arrData){
+      console.log('assetType', this.assetType, 'ASSET_TYPE_CODE', this.ASSET_TYPE_CODE)
       let publicData = []
       if (Object.keys(this.ASSET_TYPE_CODE).map(e => (this.ASSET_TYPE_CODE[e])).includes(this.assetType)){
         const ASSET_TYPE_VERSIFICATION_LIST = handleAssetTypeField(this.assetType,'verificationList')
@@ -562,7 +567,9 @@ export default {
       for (let i = 0; i < arrData.length; i++) {
         for (let j = 0; j < publicData.length; j++) {
           // 必填字段
+          // console.log(publicData[j].required, 'required', j, publicData[j].title, )
           if (publicData[j].required) {
+            // console.log('arrKey', arrData[i], publicData[j], arrData[i][publicData[j].dataIndex], 'dataIndex')
             if (!arrData[i][publicData[j].dataIndex]) {
               return `请输入${publicData[j].title}`
             }

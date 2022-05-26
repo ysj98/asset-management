@@ -23,10 +23,10 @@ export const columnsData = [
   { title: '实际产权单位', dataIndex: 'propertyRightUnit', width: 150, scopedSlots: { customRender: 'propertyRightUnit' } },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
+  { title: '公安门牌号', dataIndex: 'houseNumber', width: 100, scopedSlots: { customRender: 'houseNumber' } },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
-
-
+ 
 // 房屋导入校验规则
 export const houseVerificationList = [
   { title: '用途', dataIndex: 'useType', required: false },
@@ -34,6 +34,7 @@ export const houseVerificationList = [
   { title: '市', dataIndex: 'city', required: false },
   { title: '区', dataIndex: 'region', required: false },
   { title: '详细地址', dataIndex: 'address', required: false },
+  // { title: '公安门牌号', dataIndex: 'houseNumber', required: false },
   { title: '资产分类', dataIndex: 'objectType', required: false },
   { title: '类型', dataIndex: 'type', required: false },
   { title: '楼栋ID', dataIndex: 'buildId', required: false },

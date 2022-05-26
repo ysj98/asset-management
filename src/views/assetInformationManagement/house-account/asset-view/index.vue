@@ -94,6 +94,9 @@
           <a-col :span="4">
             <a-input placeholder="详细地址" v-model="address" :maxLength="20"/>
           </a-col>
+          <a-col :span="4">
+            <a-input placeholder="公安门牌号" v-model="houseNumber"/>
+          </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4">
@@ -147,11 +150,11 @@
       class="custom-table td-pd10"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll,
       getCheckboxProps: record => ({
-          props: {
-            disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
-            name: record.assetName,
-          },
-        }) }">>
+        props: {
+          disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
+          name: record.assetName,
+        },
+      }) }">>
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
         <span :title="text">
@@ -364,6 +367,7 @@
             { title: '产权证土地面积(㎡)', dataIndex: 'landArea', width: 150},
             { title: '产权证土地用途', dataIndex: 'landUse', width: 150},
             { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
+            { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -601,7 +605,7 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment, label
+          useType,sourceModes, address, uploadAttachment, label, houseNumber
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -617,7 +621,7 @@
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
           label: label ? label.join('、') : '',
-          uploadAttachment
+          uploadAttachment,houseNumber
         }
         if(!uploadAttachment) delete form.uploadAttachment
         if(label === '' || !label) delete form.label

@@ -98,6 +98,14 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :span="8">
+                <a-form-item label="公安门牌号" v-bind="formItemLayout">
+                  <a-input
+                    :style="allWidth"
+                    v-decorator="['houseNumber', {initialValue: '' || undefined, rules: [{required: false, message: '公安门牌号'}]}]"
+                  />
+                </a-form-item>
+              </a-col>
             </a-row>
           </div>
         </div>
@@ -426,6 +434,7 @@ export default {
       }
       this.form.validateFields(async (err, values) => {
         console.log("得到值=>", values);
+        
         if (!err) {
           let data = {};
           utils.each(values, (value, key) => {
@@ -536,6 +545,7 @@ export default {
         repairTime: data.repairTime || undefined,
         balconyArea: data.balconyArea || undefined,
         useArea:data.useArea || undefined,
+        houseNumber: data.houseNumber || undefined
       });
       // 处理平面图
       if (data.planeFigurePath) {

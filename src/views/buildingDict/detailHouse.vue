@@ -44,6 +44,12 @@
                   <div class="item-content">{{houseInfo.roomNo || '-'}}</div>
                 </div>
               </a-col>
+              <a-col :span="8">
+                <div class="detail-item">
+                  <div class="item-label">公安门牌号：</div>
+                  <div class="item-content">{{houseInfo.houseNumber || '-'}}</div>
+                </div>
+              </a-col>
             </a-row>
           </div>
        </div>

@@ -139,10 +139,13 @@
           statusList: []
         }, // 查询条件-组织机构-资产项目-车场对象
         numList: [
-          {title: '车场数量', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '车场总面积(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '车场数量', key: 'placeNums', value: 0, fontColor: '#324057'}, 
+          {title: '车场总面积(㎡)', key: 'totalArea', value: 0, bgColor: '#FD7474'},
           {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, 
+          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
           dataSource: [],
