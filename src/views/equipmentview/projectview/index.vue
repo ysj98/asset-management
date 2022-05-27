@@ -138,7 +138,7 @@ const detailColumns = [
   },
 ];
 export default {
-  name: "index",
+  name: "equipmentViewProjectview",
   components: {
     SearchContainer,
     TreeSelect,
@@ -220,6 +220,7 @@ export default {
     handleQueryTableOptions() {
       return {
         ...this.queryForm,
+        current: Number(this.isCurrentOrgan)
       };
     },
     // 导出
