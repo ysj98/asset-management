@@ -97,6 +97,7 @@
         :pagination="false"
         :row-selection="rowSelection"
         rowKey="cardId"
+        :customRow="customRow"
       >
       <!-- { selectedRowKeys: selectedRowKeys, onChange: onSelectChange} -->
         <template slot="operation" slot-scope="text, record">
@@ -105,6 +106,14 @@
           <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleOperation('edit', record)"  v-power="ASSET_MANAGEMENT.ASSET_ENTRY_EDIT">编辑</a>
           <a class="operation-btn" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" @click="handleStatus(record, 4)" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_DELETE">删除</a>
           <a class="operation-btn" @click="handleOperation('detail', record)">详情</a>
+        </template>
+        <template slot="cardCode" slot-scope="text">
+          <a-popover placement="topLeft">
+            <template slot="content">
+              <span>{{text}}</span>
+            </template>
+            <span>{{text}}</span>
+          </a-popover>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
@@ -143,16 +152,17 @@
       title: '所属机构',
       dataIndex: 'organName',
       disabled: true,
-      width: 300,
+      width: 280,
       fixed: 'left'
     },
     {
       title: '卡片编码',
       dataIndex: 'cardCode',
       disabled: true,
-      width: 180,
+      width: 220,
       fixed: 'left',
-      ellipsis: true,
+      scopedSlots: { customRender: 'cardCode' },
+      // ellipsis: true,
     },
     {
       title: '卡片名称',
@@ -306,7 +316,7 @@
           {title: '资产净值(元)', key: 'netValue', value: 0, bgColor: '#DD81E6'},
           {title: '减值准备(元)', key: 'impairmentReady', value: 0, bgColor: '#FD7474'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-        selectedRowKeys: []
+        selectedRowKeys: [],
       }
     },
     watch: {
@@ -338,6 +348,13 @@
     },
     methods: {
       moment,
+      customRow: (record, index) => {
+        return {
+          class: {
+            'text_hidden': record
+            },
+        }
+      },
       // 批量提交
       batchSubmit () {
         console.log(this.selectedRowKeys, 'this.selectedRowKeys')
@@ -732,5 +749,17 @@
   }
   .custom-table {
     padding-bottom: 50px;
+  }
+</style>
+<style lang="less">
+  .assets-entry{
+    .text_hidden {
+      .ant-table-row-cell-break-word {
+        max-width: 160px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
   }
 </style>

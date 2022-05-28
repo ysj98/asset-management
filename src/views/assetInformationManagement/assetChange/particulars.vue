@@ -302,7 +302,8 @@ export default {
                 item.managementRightName = j.title
               }
             })
-
+            item.oldUseDirection = item.oldUseDirectionName
+            item.useDirection = item.newUseDirectionName
           });
           this.tableData = data;
           this.queryCondition.count = res.data.data.count;

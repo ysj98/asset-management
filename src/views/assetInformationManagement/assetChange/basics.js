@@ -165,13 +165,15 @@ export const changeDirectionUseEq = [{
   dataIndex: 'assetUse'
 }, {
   title: '变更前使用方向',
-  key: 'oldUseDirection',
+  // dataIndex: 'useDirection',
+  dataIndex: 'oldUseDirection'
 },
 {
   title: '变更后使用方向',
-  key: 'newUseDirection',
+  // dataIndex: 'newUseDirection',
+  dataIndex: 'useDirection',
   scopedSlots:{
-    customRender:'newUseDirection'
+    customRender:'useDirection'
   }
 },
 {

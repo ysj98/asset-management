@@ -264,13 +264,13 @@
         <span class="section-title blue">资产列表</span>
         <div class="button-box">
           <SG-Button
-            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
+            v-show="changeType === '4'"
             class="buytton-nav"
             weaken
             @click="addTheAsset('batchUpdate')"
           >批量更新</SG-Button>
           <SG-Button
-            v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
+            v-show="changeType === '4'"
             class="buytton-nav"
             type="primary"
             style="margin-right: 10px;"
@@ -328,8 +328,8 @@
               {{[$store.state.ASSET_TYPE_STRING.EQUIPMENT,$store.state.ASSET_TYPE_CODE.EQUIPMENT].includes(String(record.assetType)) ? '/' : record.assetArea}}
             </template>
             <!-- 使用方向 -->
-            <template #newUseDirection="text,record">
-              <a-select v-model="record.newUseDirection" style="width: 200px;" :options="amsUseDirectionCom"></a-select>
+            <template #useDirection="text,record">
+              <a-select v-model="record.useDirection" style="width: 200px;" :options="amsUseDirectionCom"></a-select>
             </template>
             <!-- 交付运营 -->
             <template
@@ -750,9 +750,11 @@ export default {
       this.$api.assets.readUseDirectionTemplate(formData,type).then(res => {
         if(res.data.code === '0') {
           res.data.data.forEach(item => {
-            this.$set(item, 'newUseDirection', item.useDirection)
+            // this.$set(item, 'newUseDirection', item.useDirection)
+            // this.$set(item, 'oldUseDirection', item.useDirection)
           })
           this.tableData = res.data.data
+          console.log(this.tableData, 'tableData')
         }
       })
     },
@@ -912,7 +914,7 @@ export default {
               }
             } else if (String(this.changeType) === "4") {
               if (String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
-                if(conditionalJudgment.includes(this.tableData[i].newUseDirection)){
+                if(conditionalJudgment.includes(this.tableData[i].useDirection)){
                   this.$message.info("请输入变更后使用方向");
                   return;
                 }
@@ -992,8 +994,8 @@ export default {
               }
             }
           }
-
           this.tableData.forEach((item) => {
+            let useDirectionId = this.$store.state.platformDict.AMS_USE_DIRECTION.find(u => item.useDirection === u.name).value
             arr.push({
               assetId: item.assetId,
               projectId: Number(item.projectId), // 资产项目Id
@@ -1038,7 +1040,7 @@ export default {
               debtAmount:
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
               newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : "" ,  // 变更后资产面积
-              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : "", // 变更后使用方向(设备设施 独有)
+              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? useDirectionId : "", // 变更后使用方向(设备设施 独有)
               newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "", // 变更后资产分类
               propertyRightUnit: String(this.changeType) === "10" ? item.newPropertyRightUnit : "", //变更后实际产权单位
               oldAssetArea: item.assetArea || ""
@@ -1098,6 +1100,10 @@ export default {
         item.oldSourceModeName = oldSourceModeName
       });
       this.tableData = data;
+      this.tableData.forEach(item => {
+        this.$set(item, 'oldUseDirection', item.useDirection)
+        delete item.useDirection
+      })
       console.log("有走这里=>", this.tableData);
       this.$refs.assetBundlePopover.show = false;
     },
@@ -1122,7 +1128,8 @@ export default {
         let data = {
           organId: this.organId,
           assetType: this.assetType,
-          projectId: this.projectId
+          projectId: this.projectId,
+          assetIds: this.checkedData
         }
         // 1:楼栋，2房间，3构筑物，4土地
         let name = this.assetTypeData.find(item =>item.value === this.assetType).name

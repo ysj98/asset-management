@@ -100,7 +100,7 @@
     methods: {
       goDetail({id}){
         const tabTitle = '车位详情'
-        const tabUrl = `/asset-management/#//buildingDict/detailViewStall?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&placeId=${this.placeId}&parkingId=${id}`
+        const tabUrl = `/asset-management/#/buildingDict/detailViewStall?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&placeId=${this.placeId}&parkingId=${id}`
         win.openPortalMenu(tabUrl,tabTitle)
       },
       // 处理背景色和宽度

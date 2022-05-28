@@ -43,13 +43,22 @@
         :dataSource="dataSource"
         class="custom-table pb70 car"
         :pagination="false"
-        :scroll="{ x: 1900 }"
+        :scroll="scroll"
+        size="middle"
         :customRow="customRow">
         <template slot="operation" slot-scope="text, record">
           <a
             v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'"
             class="operation-btn" @click="toDetail(record)"
           >详情</a>
+        </template>
+        <template slot="organName" slot-scope="text">
+          <a-popover placement="topLeft">
+            <template slot="content">
+              <span>{{text}}</span>
+            </template>
+            <span>{{text}}</span>
+          </a-popover>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
@@ -71,6 +80,7 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 import { getFormat } from '../../../utils/utils'
+import { handleTableScrollHeight } from "@/utils/share";
 const columns = [
   {
     title: '资产项目名称',
@@ -87,7 +97,8 @@ const columns = [
   {
     title: '接管机构',
     dataIndex: 'organName',
-    width: 120
+    width: 120,
+    scopedSlots: { customRender: 'organName' },
   },
   {
     title: '来源方式',
@@ -173,6 +184,7 @@ export default {
   },
   data () {
     return {
+      scroll: { x: 1900, y: 1200 },
       ASSET_MANAGEMENT, // 权限对象
       allStyle: 'width: 170px; margin-right: 10px;',
       organId: '',
@@ -216,24 +228,6 @@ export default {
         class: {
           'text_hidden':record
         },
-        on: {
-          mouseover: (e) => {
-            let arr = e.target.parentNode.childNodes || e.target.parentElement.childNodes
-            arr.forEach(item => {
-              item.style.whiteSpace = 'unset'
-              item.style.overflow = 'unset'
-              item.style.textOverflow = 'unset'
-            })
-          },  // 鼠标移入行
-          mouseout: (e) => {
-            let arr = e.target.parentNode.childNodes || e.target.parentElement.childNodes
-            arr.forEach(item => {
-              item.style.whiteSpace = 'nowrap'
-              item.style.overflow = 'hidden'
-              item.style.textOverflow = 'ellipsis'
-            })
-          }
-        }
       }    
     },
     // 导出
@@ -384,7 +378,10 @@ export default {
         }
       })
     },
-  }
+  },
+  created (){
+    handleTableScrollHeight(this.scroll, 247)
+  },
 }
 </script>
 
@@ -411,6 +408,6 @@ export default {
     }
   }
   .car .ant-table-fixed-header .ant-table-scroll .ant-table-header {
-    height: 46px !important;
+    height: 52px !important;
   }
 </style>

@@ -27,7 +27,7 @@ export default {
     return {
       maxTagCount: 1,
       assetProjectOptions: [],
-      assetProject: [],
+      assetProject: [''],
       allStyle: 'width: 215px; margin-right: 10px;',
     }
   },

@@ -342,6 +342,7 @@
             { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
             { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
             { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
             { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
@@ -358,9 +359,10 @@
           {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6'},
           {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'},
-          {title: '资产原值(元)', key: 'totalOriginalValue', value: 0, bgColor: '#4BD288'},
-          {title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#1890FF'},
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#BBC8D6'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288'},
+          {title: '资产原值(元)', key: 'totalOriginalValue', value: 0, bgColor: '#1890FF'},
+          {title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#DD81E6'},
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
         // exportHouseBtn: false, // 导出房屋卡片button loading标志

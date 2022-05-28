@@ -135,7 +135,7 @@
         organProjectBuildingValue: {
           organId: undefined,
           projectId: undefined, // 用不到，暂存，临时需求隐藏处理
-          placeId: undefined,
+          placeId: [''],
           statusList: []
         }, // 查询条件-组织机构-资产项目-车场对象
         numList: [
@@ -165,6 +165,7 @@
             { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
             { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
             { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 150 },
             { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
@@ -298,6 +299,7 @@
           labelName = labelName.length > 0 ? labelName.join('、') : ''
         }
         const { organProjectBuildingValue: { organId, projectId: projectIdList, placeId: placeIdList }, current } = this
+        
         // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -309,6 +311,7 @@
           projectIdList, pageSize: pageLength,
           label: labelName, pageNum: pageNo, flag: current ? (current - 1) : ''
         }
+        data.placeIdList = data.placeIdList.length === 1 && !data.placeIdList[0] ? [] : data.placeIdList
         if(labelName === '全部资产标签' || !labelName){
           delete data.label
         }
@@ -343,10 +346,13 @@
 
       // 查询车场视图面积概览数据
       queryAreaInfo () {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList, placeId: placeIdList }, numList, onlyCurrentOrgan } = this
+        const { organProjectBuildingValue: { organId, projectId: projectIdList }, numList, onlyCurrentOrgan } = this
         // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         this.overviewNumSpinning = true
-        this.$api.carPark.carParkViewArea({ organId , placeIdList, projectIdList, currentOrgan: onlyCurrentOrgan}).then(r => {
+        let ids = this.organProjectBuildingValue.placeId
+        ids = ids.length === 1 && !ids[0] ? [] : ids
+
+        this.$api.carPark.carParkViewArea({ organId , placeIdList: ids, projectIdList, currentOrgan: onlyCurrentOrgan}).then(r => {
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -356,6 +362,7 @@
           }
           throw res.message || '查询车场视图面积使用统计出错'
         }).catch(err => {
+          console.log(err)
           this.overviewNumSpinning = false
           this.$message.error(err || '查询车场视图面积使用统计出错')
         })
