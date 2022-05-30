@@ -74,7 +74,7 @@
           {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#DD81E6'},
           {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#FD7474'},
           {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
-          // {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
           {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
         // mouseData: [
