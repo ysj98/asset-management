@@ -160,8 +160,8 @@ export default {
         dataSource: [],
       },
       paginationObj: {
-        pageSize: 10,
-        pageNum: 1,
+        pageLength: 10,
+        pageNo: 1,
         totalCount: 0,
         location: "fixed",
       },
@@ -269,8 +269,8 @@ export default {
       });
     },
     changePage({ pageNo, pageLength }) {
-      this.paginationObj.pageNum = pageNo;
-      this.paginationObj.pageSize = pageLength;
+      this.paginationObj.pageNo = pageNo;
+      this.paginationObj.pageLength = pageLength;
       this.queryTableDataAndTotal(true);
     },
     doSearch() {
@@ -308,8 +308,8 @@ export default {
     },
     // 获取 tableData
     queryTableData(options) {
-      const { pageSize, pageNum } = this.paginationObj;
-      const req = { ...options, pageNum, pageSize };
+      const { pageLength, pageNo } = this.paginationObj;
+      const req = { ...options, pageNum: pageNo, pageSize: pageLength };
       console.log({ req });
       this.tableOptions.loading = true;
       this.$api.equipmentview
