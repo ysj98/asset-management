@@ -995,7 +995,8 @@ export default {
             }
           }
           this.tableData.forEach((item) => {
-            let useDirectionId = this.$store.state.platformDict.AMS_USE_DIRECTION.find(u => item.useDirection === u.name).value
+            let useDirectionId = ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? 
+              this.$store.state.platformDict.AMS_USE_DIRECTION.find(u => item.useDirection === u.name).value : ""
             arr.push({
               assetId: item.assetId,
               projectId: Number(item.projectId), // 资产项目Id

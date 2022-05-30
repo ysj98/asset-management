@@ -150,11 +150,11 @@ const columns = [
     dataIndex: 'idleArea',
     width: 100
   },
-  // {
-  //   title: '占用(㎡)',
-  //   dataIndex: 'occupationArea',
-  //   width: 100
-  // },
+  {
+    title: '占用(㎡)',
+    dataIndex: 'occupationArea',
+    width: 100
+  },
   {
     title: '其他(㎡)',
     dataIndex: 'otherArea',
@@ -202,9 +202,10 @@ export default {
         {title: '车场数量',  key: 'placeNum', value: 0, fontColor: '#324057'},
         {title: '车场总面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#4BD288'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
         {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
-        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474'}, 
-        {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#4BD288'}, 
-        {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#1890FF'}, 
+        {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, 
+        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}, 
+        {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#1890FF'}, 
+        {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#DD81E6'}, 
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       columns,
       dataSource: [],

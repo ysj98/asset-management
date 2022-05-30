@@ -202,7 +202,7 @@
             <a-col :span="4">
               <div class="asset-project-introduction">
                 <!-- <img :src="item.pictureUrl"> -->
-                <div class="asset-project-introduction-name">{{item.buildName}}</div>
+                <div class="asset-project-introduction-name">{{item.placeName}}</div>
               </div>
             </a-col>
             <a-col :span="4"><div class="asset-project-item"><div class="asset-project-item-number">{{item.operationNum}}<span>({{item.operationNumPercent}})</span></div></div></a-col>
@@ -522,7 +522,7 @@ export default {
           /*border-top: 1px solid #EFF2F7;*/
           border-right: none;
           position: relative;
-          padding-bottom: 50px;
+          padding-bottom: 70px;
           .custom-height {
             padding: 18px 0;
             height: auto !important;
@@ -578,6 +578,7 @@ export default {
               border-bottom: 1px solid #EFF2F7;
               display: flex;
               align-items: center;
+              justify-content: center;
               img {
                 width: 60px;
                 height: 60px;
