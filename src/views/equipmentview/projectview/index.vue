@@ -245,7 +245,7 @@ export default {
         .then(async ({ data }) => {
           const { err } = await handleDownloadFile({
             data,
-            fileName: "设备设施资产项目列表.xlsx",
+            fileName: "设备设施资产项目列表.xls",
           });
           if (err) {
             this.$message.error(err);

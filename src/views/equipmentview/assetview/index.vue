@@ -408,7 +408,7 @@ export default {
           console.log("data", data);
           const { err } = await handleDownloadFile({
             data,
-            fileName: "设备设施资产视图列表.xlsx",
+            fileName: "设备设施资产视图列表.xls",
           });
           if (err) {
             this.$message.error(err);
