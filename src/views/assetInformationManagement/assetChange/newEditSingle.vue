@@ -750,7 +750,7 @@ export default {
   methods: {
     clearData () {
       this.tableData = []
-      console.log(this.$refs.fileUpload)
+      this.$refs.fileUpload.value = ''
     },
     change (files, e) {
       var formData = new FormData();
