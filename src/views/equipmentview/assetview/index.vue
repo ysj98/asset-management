@@ -473,13 +473,12 @@ export default {
             data: {
               code,
               message,
-              data: { data },
+              data,
             },
           }) => {
             if (code === "0") {
-              console.log({ data });
-              if (data) {
-                this.labelOptions = data.map((ele) => {
+              if (data.data) {
+                this.labelOptions = data.data.map((ele) => {
                   return {
                     value: ele.labelValue,
                     title: ele.labelName,
@@ -488,12 +487,13 @@ export default {
                 });
               }
             } else {
-              this.$message.error(message);
+              console.warn(message)
+              // this.$message.error(message);
             }
           }
         )
         .catch((err) => {
-          this.$message.error("系统内部错误，请重载当前页面后重试");
+          // this.$message.error("系统内部错误，请重载当前页面后重试");
           console.error(err);
         });
     },
