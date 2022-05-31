@@ -282,7 +282,7 @@
             class="buytton-nav"
             style="margin-right: 10px;"
             weaken
-            @click="tableData = []"
+            @click="clearData"
           >清空列表</SG-Button>
           <SG-Button
             v-show="changeType!=='3' || !['1', '2','3'].includes(originalObjectType)"
@@ -535,7 +535,7 @@
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
-    <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
+    <input ref="fileUpload" @input="change($event.target.files, $event)" type="file" style="display:none">
   </div>
 </template>
 
@@ -748,6 +748,10 @@ export default {
     }
   },
   methods: {
+    clearData () {
+      this.tableData = []
+      console.log(this.$refs.fileUpload)
+    },
     change (files, e) {
       var formData = new FormData();
       formData.append("file" , files[0])
@@ -755,11 +759,10 @@ export default {
       this.$api.assets.readUseDirectionTemplate(formData,type).then(res => {
         if(res.data.code === '0') {
           res.data.data.forEach(item => {
-            // this.$set(item, 'newUseDirection', item.useDirection)
+            this.$set(item, 'newUseDirection', item.useDirection)
             // this.$set(item, 'oldUseDirection', item.useDirection)
           })
           this.tableData = res.data.data
-          console.log(this.tableData, 'tableData')
         }
       })
     },
@@ -1000,6 +1003,9 @@ export default {
             }
           }
           this.tableData.forEach((item) => {
+            if((isNaN(Number(item.newUseDirection)) && (String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT)){
+              item.newUseDirection = this.$store.state.platformDict.AMS_USE_DIRECTION.find(u => item.newUseDirection === u.name).value
+            }
             arr.push({
               assetId: item.assetId,
               projectId: Number(item.projectId), // 资产项目Id
