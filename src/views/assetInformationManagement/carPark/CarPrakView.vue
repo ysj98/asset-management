@@ -309,7 +309,7 @@
           placeIdList, 
           // statusList, 
           projectIdList, pageSize: pageLength,
-          label: labelName, pageNum: pageNo, flag: current ? (current - 1) : ''
+          label: labelName, pageNum: pageNo, flag: current ? (current - 2) : ''
         }
         data.placeIdList = data.placeIdList.length === 1 && !data.placeIdList[0] ? [] : data.placeIdList
         if(labelName === '全部资产标签' || !labelName){
@@ -384,7 +384,7 @@
         this.exportBtnLoading = true
         const { organProjectBuildingValue: { organId, projectId: projectIdList, placeId: placeIdList}, current } = this
         // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
-        let data = {organId, placeIdList, projectIdList, label: labelName, flag: current ? (current - 1) : ''}
+        let data = {organId, placeIdList, projectIdList, label: labelName, flag: current ? (current - 2) : ''}
         if(labelName === '全部资产标签' || !labelName){
           delete data.label
         }

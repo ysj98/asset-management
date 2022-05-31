@@ -303,7 +303,7 @@ export default {
               }
             })
             item.oldUseDirection = item.oldUseDirectionName
-            item.useDirection = item.newUseDirectionName
+            item.newUseDirection = item.newUseDirectionName
           });
           this.tableData = data;
           this.queryCondition.count = res.data.data.count;
@@ -417,7 +417,7 @@ export default {
   .particulars-nav {
     padding: 42px 126px 20px 70px;
     .particulars-obj {
-      padding: 20px 0 20px 40px;
+      // padding: 20px 0 20px 40px;
       .playground-row {
         .playground-col {
           height: 40px;

@@ -147,7 +147,7 @@ export const changeDirectionUse = [{
 // 使用方向变动-设备
 export const changeDirectionUseEq = [{
   title: '资产名称',
-  dataIndex: 'assetName'
+  dataIndex: 'assetName',
 }, {
   title: '资产编码',
   dataIndex: 'assetCode'
@@ -166,14 +166,17 @@ export const changeDirectionUseEq = [{
 }, {
   title: '变更前使用方向',
   // dataIndex: 'useDirection',
-  dataIndex: 'oldUseDirection'
+  dataIndex: 'oldUseDirection',
+  scopedSlots:{
+    customRender:'oldUseDirection'
+  }
 },
 {
   title: '变更后使用方向',
-  // dataIndex: 'newUseDirection',
-  dataIndex: 'useDirection',
+  dataIndex: 'newUseDirection',
+  // dataIndex: 'useDirection',
   scopedSlots:{
-    customRender:'useDirection'
+    customRender:'newUseDirection'
   }
 },
 {

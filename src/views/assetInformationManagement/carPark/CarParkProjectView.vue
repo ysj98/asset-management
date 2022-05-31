@@ -288,7 +288,7 @@ export default {
         pageSize: pageLength,
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
-        flag: current ? (current - 1) : null,
+        flag: current ? (current - 2) : null,
         statusList: status.includes('all') ? [] : status
       }
       if (type === 'export') {

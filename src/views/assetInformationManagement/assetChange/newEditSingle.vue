@@ -327,9 +327,14 @@
             <template #assetArea="text,record">
               {{[$store.state.ASSET_TYPE_STRING.EQUIPMENT,$store.state.ASSET_TYPE_CODE.EQUIPMENT].includes(String(record.assetType)) ? '/' : record.assetArea}}
             </template>
+            <!-- 变更前使用方向 -->
+            <template #oldUseDirection="text,record">
+              <!-- <span>{{text}}{{amsUseDirectionCom}}</span> -->
+              <a-select v-model="record.oldUseDirection" style="width: 120px;" :options="amsUseDirectionCom" :disabled="true"></a-select>
+            </template>
             <!-- 使用方向 -->
-            <template #useDirection="text,record">
-              <a-select v-model="record.useDirection" style="width: 200px;" :options="amsUseDirectionCom"></a-select>
+            <template #newUseDirection="text,record">
+              <a-select v-model="record.newUseDirection" style="width: 120px;" :options="amsUseDirectionCom"></a-select>
             </template>
             <!-- 交付运营 -->
             <template
@@ -914,7 +919,7 @@ export default {
               }
             } else if (String(this.changeType) === "4") {
               if (String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT){
-                if(conditionalJudgment.includes(this.tableData[i].useDirection)){
+                if(conditionalJudgment.includes(this.tableData[i].newUseDirection)){
                   this.$message.info("请输入变更后使用方向");
                   return;
                 }
@@ -995,8 +1000,6 @@ export default {
             }
           }
           this.tableData.forEach((item) => {
-            let useDirectionId = ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? 
-              this.$store.state.platformDict.AMS_USE_DIRECTION.find(u => item.useDirection === u.name).value : ""
             arr.push({
               assetId: item.assetId,
               projectId: Number(item.projectId), // 资产项目Id
@@ -1041,7 +1044,7 @@ export default {
               debtAmount:
                 String(this.changeType) === "8" ? item.newDebtAmount : "", // 变更后债权金额
               newAssetArea: String(this.changeType) === "9" ? item.newAssetArea : "" ,  // 变更后资产面积
-              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? useDirectionId : "", // 变更后使用方向(设备设施 独有)
+              newUseDirection: ((String(this.changeType) === "4") && String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT) ? item.newUseDirection : "", // 变更后使用方向(设备设施 独有)
               newAssetCategoryCode: String(this.changeType) === "7" ? item.newAssetCategoryCode : "", // 变更后资产分类
               propertyRightUnit: String(this.changeType) === "10" ? item.newPropertyRightUnit : "", //变更后实际产权单位
               oldAssetArea: item.assetArea || ""
@@ -1064,6 +1067,7 @@ export default {
             shareWay: values.shareWay,
             assetDetailList: arr,
           };
+          console.log(obj, 'obj')
           let loadingName = this.SG_Loding("保存中...");
           this.$api.assets.submitChange(obj).then((res) => {
             if (Number(res.data.code) === 0) {

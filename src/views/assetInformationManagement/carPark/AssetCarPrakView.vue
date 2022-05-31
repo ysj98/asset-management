@@ -528,7 +528,9 @@
       },
       // 点击总览数据块
       handleClickOverview ({i}) {
+        console.log(i, 'current')
         this.current = i
+
         this.queryTableData({type: ''})
       },
 
@@ -607,7 +609,7 @@
           pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           statusList: status.includes('all') ? [] : status, 
-          flag: current ? (current - 1) : '',
+          flag: current ? (current - 2) : '',
           type: sourceModes,
           organIds: organId,
           label: label ? label.join('、') : '',
@@ -711,7 +713,7 @@
           assetName, 
           pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
-          statusList: status.includes('all') ? [] : status, flag: current ? (current - 1) : '',
+          statusList: status.includes('all') ? [] : status, flag: current ? (current - 2) : '',
           type: sourceModes,
           organIds: organId,
           label: label ? label.join('、') : '',
