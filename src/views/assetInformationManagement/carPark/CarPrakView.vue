@@ -176,7 +176,7 @@
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         current: null, // 当前选中的概览区域下标，与后台入参一一对应
         options: [],
-        formatArr: ['buildBuiltArea' ,'transferOperationArea', 'selfUserArea', 'idleArea', 'otherArea', 'originalValue', 'marketValue'],
+        formatArr: ['buildBuiltArea' ,'transferOperationArea', 'selfUserArea', 'idleArea', 'otherArea', 'originalValue', 'marketValue', 'area', 'placeNum', 'occupationArea'],
         onlyCurrentOrgan: false,
         projectId: '',
       }

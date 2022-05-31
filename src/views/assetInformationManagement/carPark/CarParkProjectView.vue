@@ -219,7 +219,7 @@ export default {
         area: '', buildNum: '', assetNum: '', transferOperationArea: '', selfUserArea: '',
         idleArea: '', occupationArea: '', otherArea: '', originalValue: '', marketValue: ''
       }, // 求和用的对象
-      formatArr: ['area', 'transferOperationArea', 'selfUserArea', 'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue'],
+      formatArr: ['area', 'transferOperationArea', 'selfUserArea', 'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue', 'placeNum'],
       current: null // 当前选中的概览区域下标，与后台入参一一对应
     }
   },

@@ -170,7 +170,7 @@ export default {
   },
   data() {
     return {
-      formatArr: ['transferOperationArea', 'selfUserArea', 'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue'],
+      formatArr: ['transferOperationArea', 'selfUserArea', 'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue', 'area', 'assetNum', 'placeNum'],
       tableFirst: {
         loading: false,
         columns: columnsFrist,
