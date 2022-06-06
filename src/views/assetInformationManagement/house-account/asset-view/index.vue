@@ -277,6 +277,7 @@
     components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
+        houseNumber: '',
         uploadAttachment: '',
         attachmentStatus,
         getFormat,

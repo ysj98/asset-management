@@ -388,6 +388,12 @@ export default [
     ]
   },
   {
+    title: '保险管理',
+    children: [
+      { title: '保险管理', path: '/insuranceManagement' },
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {

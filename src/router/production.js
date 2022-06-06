@@ -1327,6 +1327,11 @@ let proRouter = [{
     component: () => import('@/views/assetInformationManagement/carPark/CarPrakDetail')
   },
   {
+    path: '/insuranceManagement',
+    name: '保险管理',
+    component: () => import('@/views/insuranceManagement')
+  },
+  {
     path: '/approve',
     name: '通用审批',
     component: () => import('@/views/approve/index.vue'),
