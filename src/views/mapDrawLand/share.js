@@ -61,7 +61,7 @@ export function initMap(
     crs: Leaflet.CRS.Simple,
     attributionControl: false,
     zoomControl: false,
-    minZoom: 4,
+    minZoom: 2,
     maxBoundsViscosity: 0.9,
   });
   new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(this.mapInstance);
@@ -148,8 +148,8 @@ export async function queryLayerById({ layerId }) {
 
 export const allBaseFields = [
   {
-    title: "资产项目",
-    key: "projectName",
+    title: "土地名称",
+    key: "assetName",
   },
   {
     title: "资产编码",
