@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import AssetInsurancePolicy from './AssetInsurancePolicy.vue'
-import AssetInsuranceSchedule from './AssetInsuranceSchedule.vue'
-import ExpiringInsurance from './ExpiringInsurance.vue'
+import AssetInsurancePolicy from './assetInsurancePolicy/index.vue'
+import AssetInsuranceSchedule from './assetInsuranceSchedule/index.vue'
+import ExpiringInsurance from './expiringInsurance/index.vue'
 export default {
   components: { AssetInsurancePolicy, AssetInsuranceSchedule, ExpiringInsurance },
   data(){
@@ -29,12 +29,12 @@ export default {
         {
           key:'2',
           title: '即将到期保险',
-          tagTitle: 'AssetInsuranceSchedule'
+          tagTitle: 'ExpiringInsurance'
         },
         {
           key:'3',
-          title: '即将到期保险',
-          tagTitle: 'ExpiringInsurance'
+          title: '资产保险一览表',
+          tagTitle: 'AssetInsuranceSchedule'
         },
       ]
     }

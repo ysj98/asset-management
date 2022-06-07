@@ -3,9 +3,10 @@
     mode="multiple"
     style="width: 100%"
     placeholder="请选择保险公司"
-    :default-value="['全部保险公司']"
-    @change="handleChange"
+    v-model="companys"
+    @select="handleChange"
     :options="options"
+    :maxTagCount="1"
   >
   </a-select>
 </template>
@@ -14,6 +15,7 @@
 export default {
   data () {
     return {
+      companys: ['0'],
       options: [
         {
           value: '0',
@@ -35,8 +37,19 @@ export default {
     }
   },
   methods: {
-    handleChange () {
-      
+    handleChange (value) {
+      if(value === '0'){
+        this.companys = ['0']
+      }else{
+        if(this.companys.includes('0') && this.companys.length !== this.options.length - 1){
+          let idx = this.companys.indexOf('0')
+          this.companys = this.companys.splice(idx+1, 1)
+        }
+        if(this.companys.length === this.options.length - 1 && !this.companys.includes('0')){
+          this.companys = ['0']
+        }
+      }
+      this.$emit('companyClick', value)
     }
   }
 }

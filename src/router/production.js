@@ -1331,6 +1331,21 @@ let proRouter = [{
     name: '保险管理',
     component: () => import('@/views/insuranceManagement')
   },
+  // {
+  //   path: '/insuranceManagement/assetInsurancePolicy',
+  //   name: '资产保险单',
+  //   component: () => import('@/views/insuranceManagement/assetInsurancePolicy')
+  // },
+  {
+    path: '/insuranceManagement/addInsurancePolicy',
+    name: '新增',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AddAssetInsurancePolicy')
+  },
+  {
+    path: '/insuranceManagement/insurancePolicyDetail',
+    name: '详情',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AssetInsurancePolicyDetail')
+  },
   {
     path: '/approve',
     name: '通用审批',
