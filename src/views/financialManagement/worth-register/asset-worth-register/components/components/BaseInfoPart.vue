@@ -142,10 +142,10 @@
             :maxSize="153600"
             type="all"
             v-model="attachment"
-            :show="type == 'approval' || type == 'detail'"
-            v-if="type == 'edit' || type == 'add' || attachment.length"
+            :show="(type == 'approval' || type == 'detail') && (details.approvalStatusName !== '已审批')"
+            @update="handleChangeFile"
+            @delete="handleChangeFile"
           />
-          <span v-else style="margin-left: 12px">无</span>
         </a-form-item>
       </a-col>
     </a-row>
@@ -177,6 +177,8 @@
     props: ['type', 'details'],
     data () {
       return {
+        // 全部关联资产数据
+        registerValueRelList:[],
         formItemLayout: {
           labelCol: { span: 6 },
           wrapperCol: { span: 18 }
@@ -194,6 +196,48 @@
     },
 
     methods: {
+      // 根据登记Id查询资产详情的列表数据--全部
+      queryAssetListByRegisterId () {
+        this.$api.worthRegister.queryRelPageList({ registerId: this.$route.params.registerId, pageSize: 99999, pageNum: 1 }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { data } = res.data
+            this.registerValueRelList = (data || []).map((ele)=>{
+              return { assetId: ele.assetId, assessmentValue: ele.assessmentValue, upRate: ele.upRate === '--' ? 0 : ele.upRate }
+            })
+          }else {
+            this.$message.error(res.message)
+          }
+        })
+      },
+      async handleChangeFile(){
+        // 上传文件组件 可"编辑"且是详情页面时 文件变动自动调用编辑保存接口
+        if ((this.type == 'approval' || this.type == 'detail') && (this.details.approvalStatusName === '已审批')){
+          try {
+            const res = await new Promise((resolve, reject) => {
+              this.handleSubmit(resolve, reject)
+            })
+            console.log({res})
+            const req = {
+              ...res,
+              // 1就是 已审批，只有 已审批 的数据和 编辑状态的数据可编辑附件信息
+              registerValueRelList:this.registerValueRelList, registerId:this.$route.params.registerId, approvalStatus: 1,
+              assessmentOrgan: this.details.assessmentOrgan,
+              assessmentMethod: this.details.assessmentMethod,
+              assetType: this.details.assetType
+            }
+            this.$api.worthRegister.updateRegister(req).then(({data:{code,message}})=>{
+              if (code === "0"){
+                this.$message.success('附件编辑成功')
+              }else {
+                this.$message.error(message)
+              }
+            })
+          }catch (error) {
+            console.error(error)
+          }
+        }
+      },
       changeAssessmentOrganName(date,dateString){
           this.form.setFieldsValue({ assessmentValidDate: moment(dateString,'YYYY-MM-DD').add(1,'y').add(-1,'day') })
           this.setData(dateString, 'assessmenBaseDate')
@@ -355,6 +399,9 @@
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }
+      }
+      if ( ['detail', 'approval'].includes(this.type) ){
+        this.queryAssetListByRegisterId()
       }
     },
     watch: {
