@@ -125,9 +125,9 @@ export default {
       let data = {
         dictCode: "OCM_MODE_OPER",
         dictFlag: "1",
-        groupId: this.organIdMain,
+        groupId: this.organId,
         code: "OCM_MODE_OPER",
-        organId: this.organIdMain,
+        organId: this.organId,
       }
       this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {

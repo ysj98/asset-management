@@ -162,7 +162,6 @@ import ExportAndDownload from "../../common/eportAndDownFile"
 import SearchContainer from "@/views/common/SearchContainer";
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
-import segiIcon from "@/components/segiIcon.vue";
 import { utils } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
@@ -180,12 +179,9 @@ import AssetManage from "./components/AssetManage";
 import OverviewNumber from "./components/OverviewNumber";
 import EditDialog from "./components/EditDialog";
 import ExportDoalog from "./components/ExportDoalog";
-import {exportOperationAttr} from "../../../api/assetBussinessInformation";
-import ImportDoalog from "./components/ImportDoalog";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
   components: {
-    ImportDoalog,
     ExportDoalog,
     EditDialog,
     OverviewNumber,
@@ -195,7 +191,6 @@ export default {
     DictSelect,
     TreeSelect,
     noDataTips,
-    segiIcon,
     OperationPopover,
     SearchContainer,
     ExportAndDownload
