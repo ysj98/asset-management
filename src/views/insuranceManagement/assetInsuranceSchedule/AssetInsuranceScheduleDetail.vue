@@ -12,149 +12,118 @@
           <span class="label-value">{{detail.projectName || '无'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">保险单号：</span>
-          <span class="label-value">{{detail.insuranceCode || '无'}}</span>
+          <span class="label-name">资产ID：</span>
+          <span class="label-value">{{detail.assetId || '无'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">保险类型：</span>
-          <span class="label-value">{{detail.insuranceTypeName || '无'}}</span>
+          <span class="label-name">资产名称：</span>
+          <span class="label-value">{{detail.assetName || '无'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">投保人：</span>
-          <span class="label-value">{{detail.policyHolder || '无'}}</span>
+          <span class="label-name">资产类型：</span>
+          <span class="label-value">{{detail.type && detail.type === '1'?'楼栋':'房屋' || '无'}}</span>
         </div>
       </div>
       <div class="edit-box-content two">
         <div class="edit-box-content-item">
-          <span class="label-name">保险公司：</span>
-          <span class="label-value">{{detail.insuranceCompanyName || '否'}}</span>
+          <span class="label-name">资产分类：</span>
+          <span class="label-value">{{detail.objectTypeName || '否'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">保险公司电话：</span>
-          <span class="label-value">{{detail.insurancePhone || '无'}}</span>
+          <span class="label-name">资产地址：</span>
+          <span class="label-value">{{detail.pasitionString || '无'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">保单金额：</span>
-          <span class="label-value">{{detail.policyAmount || '无'}}</span>
+          <span class="label-name">有无投保：</span>
+          <span class="label-value">{{detail.insuranceStatus ? '有':'无'}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">保险有效期：</span>
-          <span class="label-value">{{detail.periodOfInsurance ||'无'}}</span>
+          <span class="label-name">投保情况：</span>
+          <span class="label-value">
+            {{detail.notStarted ? '待承保'+detail.notStarted+',':''}}
+            {{detail.effective ? '已生效'+detail.effective+',':''}}
+            {{detail.terminated ? '已终止'+detail.terminated:''}}
+            {{!detail.notStarted && !detail.notStarted && !detail.notStarted ? '无':''}}
+          </span>
         </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">保单状态：</span>
-          <span class="label-value">{{detail.insuranceStatusName ||'无'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">创建时间：</span>
-          <span class="label-value">{{detail.createDate ||'无'}}</span>
-        </div>
-        <div class="edit-box-content-item">
-          <span class="label-name">创建人：</span>
-          <span class="label-value">{{detail.createUserName ||'无'}}</span>
-        </div>
-      </div>
-      <div class="edit-box-content two">
-        <span>备注：</span>
-        <span>{{ detail.remark || '无' }}</span>
-      </div>
-      <div class="edit-box-content">
-        <p>附件：<span v-if="attachmentList.length<=0">无</span></p>
-        <!--  -->
-        <SGUploadFilePlus
-          v-if="attachmentList && attachmentList.length > 0"
-          :baseImgURL="configBase.hostImg1"
-          type="all"
-          v-model="attachmentList"
-          :max="10"
-          :maxSize="80"
-          >
-          <span slot="tips">(注：上传的附件最多为 10 个,且文件大小小于80M)</span>
-        </SGUploadFilePlus>
       </div>
     </div>
-    <SG-Title title="资产信息"/>
+    <SG-Title title="投保信息"/>
+    <!-- <div class="button-box">
+      <a-row :gutter="8">
+        <a-col :span="12"></a-col>
+        <a-col :span="4">
+          <InsuranceCompany @companyClick="filterClick"/>
+        </a-col>
+        <a-col :span="4">
+          <InsuranceType @companyClick="filterClick"/>
+        </a-col>
+        <a-col :span="4">
+          <InsuranceStatus @typeClick="filterClick"/>
+        </a-col>
+      </a-row>
+    </div> -->
     <a-table
       v-bind="tableObj"
       class="custom-table td-pd10">
+      <template slot="action" slot-scope="text, record">
+        <p @click="detailPolicy(record)" style="color: #40a9ff;cursor: pointer; font-size: 14px;margin-bottom:0;">详情</p>
+      </template>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="pageChange"/>
   </div>
 </template>
 
 <script>
-import SGUploadFilePlus from "@/components/SGUploadFilePlus";
-import configBase from "@/config/config.base";
+import InsuranceType from '../components/InsuranceType.vue'
+import InsuranceCompany from '../components/InsuranceCompany.vue'
+import InsuranceStatus from '../components/InsuranceStatus.vue'
 export default {
-  components: {SGUploadFilePlus},
+  components: {
+    InsuranceType, InsuranceCompany, InsuranceStatus
+  },
   data () {
     return {
-      configBase,
-      insuranceId:'',
-      attachmentList: [],
-      detail:{},
+      attachment: [],
+      detail: {},
       tableObj: {
         pagination: false,
-        rowKey: 'assetCode',
+        // rowKey: 'assetId',
         loading: false,
-        dataSource: [],
+        dataSource: [
+          {
+            index: '1',
+            assetName: '测试',
+            assetCode: '1231'
+          }
+        ],
         columns: [
-          { title: '序号', dataIndex: 'index', fixed: 'left'},
-          { title: '资产编码', dataIndex: 'assetCode' },
-          { title: '资产名称', dataIndex: 'assetName' },
-          { title: '地址', dataIndex: 'address', ellipsis: true },
-          { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产分类', dataIndex: 'objectTypeName' },
-          { title: '资产面积（㎡）', dataIndex: 'area' }
+          { title: '序号', dataIndex: 'index'},
+          { title: '保险单号', dataIndex: 'insuranceId' },
+          { title: '投保人', dataIndex: 'policyHolder' },
+          { title: '保险类型', dataIndex: 'insuranceTypeName' },
+          { title: '保险公司', dataIndex: 'insuranceCompanyName' },
+          { title: '保单金额（元）', dataIndex: 'policyAmount' },
+          { title: '保单状态', dataIndex: 'insuranceStatus' },
+          { title: '保险有效期', dataIndex: 'periodOfInsurance'},
+          { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }},
         ]
       },
       paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
     }
   },
   created () {
-
-    this.insuranceId = this.$route.query.insuranceId
-    this.getDetailBaseInfo()
-    this.getDetailAssetInfo()
+    this.detail = JSON.parse(this.$route.query.detail)
+    this.tableObj.dataSource = this.detail.insuranceResDetailList
+    this.tableObj.dataSource.forEach((item,index) => {
+      item.index = index
+    })
   },
   methods: {
-    pageChange (val) {
-      this.paginationObj.pageLength = val.pageLength
-      this.paginationObj.pageNo = val.pageNo
-      this.getDetailAssetInfo()
-    },
-    getDetailBaseInfo () {
-      this.$api.assetInsurance.getDetailBaseInfo({ insuranceId: this.insuranceId }).then(res => {
-        if(res.data.code === '0') {
-          this.detail = res.data.data
-          if (this.detail.attachmentList && this.detail.attachmentList.length > 0) {
-            this.detail.attachmentList.forEach((item) => {
-              this.attachmentList.push({
-                url: item.attachmentPath,
-                name: item.newAttachmentName,
-              });
-            });
-          }
-        }
-      }).catch(err => {
-        console.log(err)      
-        this.$message.error('查询失败' || err)  
-      })
-    },
-    // 资产信息
-    getDetailAssetInfo () {
-      let {insuranceId, paginationObj: {pageNo,pageLength}} = this
-      this.$api.assetInsurance.getDetailAssetInfo({ insuranceId: insuranceId, pageNum: pageNo, pageSize: pageLength  })
-      .then(res => {
-        console.log(res, 'res')
-        if(res.data.code === '0') {
-          this.tableObj.dataSource = res.data.data.data
-          this.paginationObj.totalCount = res.data.data.count
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('查询失败' || err)
-      })
+    pageChange () {},
+    filterClick () {},
+    detailPolicy (row) {
+      this.$router.push({path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail', query: { insuranceId:  row.insuranceId }})
     }
   }
 }
@@ -307,9 +276,5 @@ export default {
         border-bottom: 1px solid #e8e8e8;
       }
     }
-    
   }
-  .custom-table {
-      padding-bottom: 70px;
-    }
 </style>

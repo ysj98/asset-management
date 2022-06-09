@@ -23,7 +23,8 @@
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
+        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1" style="margin: 0 10px">资产标签</SG-Button>
+        <SG-Button type="default" @click="modalObj.status=true;modalType=3" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL">质押情况</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
@@ -137,6 +138,14 @@
               placeholder="全部附件状态"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="pledge"
+              style="width: 100%"
+              :options="$addTitle(pledgeList)"
+              placeholder="请选择质押情况"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -229,6 +238,7 @@
         :columns="tableObj.initColumns"
       />
       <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef"/>
+      <edit-pledge v-if="modalType === 3 && modalObj.status" :options="pledgeList" ref="pledgeRef"/>
     </SG-Modal>
   </div>
 </template>
@@ -245,6 +255,7 @@
   import {querySourceType} from "@/views/common/commonQueryApi";
   import { getFormat } from "utils/utils";
   import EditTag from '../building-view/editTag.vue'
+  import EditPledge from './components/components/EditPledge.vue'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
   import { throttle } from '@/utils/utils'
   const judgment = [undefined, null, '']
@@ -274,9 +285,14 @@
   ]
   export default {
     name: 'index',
-    components: { EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
+    components: { EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
+        pledge: undefined, // 质押情况
+        pledgeList: [
+          { label: "有质押", value: 1 },
+          { label: "无质押", value: 0 },
+        ],
         houseNumber: '',
         uploadAttachment: '',
         attachmentStatus,
@@ -369,6 +385,7 @@
             { title: '产权证土地用途', dataIndex: 'landUse', width: 150},
             { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
             { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
+            { title: '质押情况', dataIndex: 'pledge', width: 120},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -570,6 +587,9 @@
         if(this.modalType === 2 && !this.selectedRowKeys.length){
           return this.$message.error('请选择要添加标签的资产!')
         }
+        if(this.modalType === 3 && !this.selectedRowKeys.length){
+          return this.$message.error('请选择要添加质押情况的资产!')
+        }
         this.modalObj.status = false
         if(this.modalType === 1){
           let{ initColumns } = this.tableObj
@@ -594,6 +614,20 @@
             }
           })
         }
+        if(this.modalType === 3) {
+          let data  = {
+            assetHouseIds: this.selectedRowKeys.join(','),
+            pledge: this.$refs.pledgeRef.checked,
+          }
+          this.$api.assets.updateAssetPledgeConfig(data).then(res => {
+            if(res.data.code === '0'){
+              this.selectedRowKeys = []
+              this.queryTableData({type: ''})
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+        }
       }, 3000) ,
       // 打开/关闭列表列头编辑Modal
       handleModalStatus (status) {
@@ -606,8 +640,9 @@
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment, label, houseNumber
+          useType,sourceModes, address, uploadAttachment, label, houseNumber,pledge
         } = this
+        // this.pledge = !this.pledge ? '' : this.pledge
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
         let form = {
@@ -622,7 +657,8 @@
           sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
           organIds: organId,
           label: label ? label.join('、') : '',
-          uploadAttachment,houseNumber
+          uploadAttachment,houseNumber,
+          pledge
         }
         if(!uploadAttachment) delete form.uploadAttachment
         if(label === '' || !label) delete form.label

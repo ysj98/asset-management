@@ -467,12 +467,12 @@ export default {
     },
     // 文件上传
     change (files, e) {
-      console.log(files)
       if (!files.length) { return }
       let fileData = new FormData()
       fileData.append('registerOrderModelFile', files[0])
       fileData.append('assetType', this.assetType)
       fileData.append('projectId',this.projectId)
+      fileData.append('organId',this.organId)
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')

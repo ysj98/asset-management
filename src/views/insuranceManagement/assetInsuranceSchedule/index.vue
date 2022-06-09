@@ -1,18 +1,14 @@
 <template>
   <div>
-    <!--搜索条件-->
+    <!--资产保险一览表 -- 搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerForm">
         <div style="width: 75%; float: right; margin-right: 8px; text-align: left">
           <a-row :gutter="8">
+            <a-col :span="6">
+            </a-col>
             <a-col :span="12">
               <organ-project-building v-model="organProjectBuildingValue" :isShowBuilding="false"/>
-            </a-col>
-            <a-col :span="6">
-              <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"  @select="assetTypeDataFn" v-model="assetType">
-                <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-              </a-select>
-        <!-- <InsuranceCompany/> -->
             </a-col>
             <a-col :span="6"><a-input placeholder="资产名称/资产编码" v-model="assetName"/></a-col>
           </a-row>
@@ -37,11 +33,20 @@
     </a-spin>
     <a-table
       v-bind="tableObj"
-      class="custom-table td-pd10">
+      class="custom-table td-pd70">
       <template slot="action" slot-scope="text, record">
-        <a class="handle_sty" @click="handleClic(record)">
+        <a class="handle_sty" @click="handleClick(record)">
           详情
         </a>
+      </template>
+      <template slot="insuranceStatus" slot-scope="text">
+        <span>{{ text ? '有' : '无' }}</span>
+      </template>
+      <template slot="area" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="type" slot-scope="text">
+        <span>{{ types[text] }}</span>
       </template>
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="pageChange"/>
@@ -55,6 +60,7 @@ import InsuranceType from '../components/InsuranceType.vue'
 import InsuranceCompany from '../components/InsuranceCompany.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from 'src/views/common/ProvinceCityDistrict'
+import { getFormat } from "utils/utils";
 export default {
   components: {
     OrganProjectBuilding,
@@ -66,6 +72,7 @@ export default {
   },
   data () {
     return {
+      getFormat,
       allStyle: 'width: 100%; margin-right: 10px;',
       assetName: '',
       assetType: [],
@@ -100,47 +107,93 @@ export default {
       ],
       overviewNumSpinning: true,
       numList: [
-        {title: '全部', key: 'totalArea', value: 0, fontColor: '#324057'},
-        {title: '待承保', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-        {title: '已生效', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
-        {title: '已终止', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+        {title: '全部', key: 'allTotalArea', value: 0, fontColor: '#324057', numkey: 'allTotalCount'},
+        {title: '已投保资产', key: 'effectiveArea', value: 0, bgColor: '#4BD288', numkey: 'effectiveCount'},
+        {title: '未投保资产(', key: 'terminatedArea', value: 0, bgColor: '#1890FF', numkey: 'terminatedCount'},
       ],
+      numarr: ['全部', '已投保资产', '未投保资产'],
       tableObj: {
         pagination: false,
         rowKey: 'assetHouseId',
         loading: false,
+        scroll: {x: '100%'},
         dataSource: [
-          {
-            assetName: '测试',
-            assetCode: '1231'
-          }
         ],
         columns: [
-          { title: '保险单号', dataIndex: 'assetName', fixed: 'left', width: 180 },
-          { title: '所属机构', dataIndex: 'assetCode', width: 150 },
-          { title: '资产项目', dataIndex: 'ownerOrganName', width: 150 },
-          { title: '投保人', dataIndex: 'addressNo', width: 150 },
-          { title: '保险类型', dataIndex: 'area', width: 150 },
-          { title: '保险公司', dataIndex: 'projectName', width: 200 },
-          { title: '保险有效期', dataIndex: 'uploadAttachment', width: 120 },
-          { title: '保单金额（元）', dataIndex: 'address', width: 300 },
-          { title: '资产数量', dataIndex: 'buildName', width: 150 },
-          { title: '保单状态', dataIndex: 'unitName', width: 100 },
-          { title: '提交时间', dataIndex: 'floor', width: 100 },
-          { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
+          { title: '管理机构', dataIndex: 'organName', width: 280, fixed: 'left' },
+          { title: '资产项目', dataIndex: 'projectName', width: 150 },
+          { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+          { title: '资产名称', dataIndex: 'assetName', width: 150 },
+          { title: '资产类型', dataIndex: 'type', width: 150, scopedSlots: { customRender: 'type' } },
+          { title: '资产分类', dataIndex: 'objectTypeName', width: 120 },
+          { title: '资产面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
+          { title: '地理位置', dataIndex: 'pasitionString', width: 200,}, //  ellipsis: true
+          { title: '有无投保', dataIndex: 'insuranceStatus', width: 100 ,scopedSlots: { customRender: 'insuranceStatus' }},
+          { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: 100 }
         ]
       },
+      types: ['','楼栋','房屋'],
       paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+    }
+  },
+  watch: {
+    organProjectBuildingValue: {
+      deep: true,
+      handler(newval,oldval){
+        this.init(newval.organId)
+        
+      }
     }
   },
   created () {
     this.platformDictFn()
   },
   methods: {
+    init (organId, load) {
+      let {organProjectBuildingValue: {projectId}, assetName, provinceCityDistrictValue: { city, district, province }, paginationObj: {pageNo,pageLength}} = this
+      let data = {
+        organId,
+        projectId:projectId,
+        province,
+        city,
+        region: district,
+        pageSize: pageLength,
+        pageNum: pageNo,
+        assetNameCode: assetName,
+      }
+      this.$api.assetInsurance.findAssetRegInsuranceList(data)
+      .then(res => {
+        if(res.data.code === '0') {
+          this.tableObj.dataSource = res.data.data.data
+          this.paginationObj.totalCount = res.data.data.count
+        }
+        if(!load){
+          this.getCount(data)
+        }
+      }).catch(err => {
+        this.$message.error('查询列表失败' || err)
+      })
+
+    },
+    getCount (data) {
+      this.$api.assetInsurance.getAssetRegInsuranceTotal(data)
+      .then(res => {
+        if(res.data.code === '0') {
+          this.numList.map((item,index) => {
+            this.numList[index].value = res.data.data[item.key]+'㎡'
+            this.numList[index].title = `${this.numarr[index]}(${res.data.data[item.numkey]})`
+          })
+        }
+        this.overviewNumSpinning = false
+      }).catch(err => {
+        this.overviewNumSpinning = false
+        this.$message.error('查询统计失败' || err)
+      })
+    },
     // 资产类型变化
     assetTypeDataFn (value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.assetType, this.assetTypeData)
+        this.assetType = this.handleMultipleSelectValue(value, this.assetType, this.assetTypeData)
       })
     },
     platformDictFn () {
@@ -157,16 +210,20 @@ export default {
         }
       })
     },
-    addPolicy () {
-      let {organId, organName} = this.organProjectBuildingValue
-      this.$router.push({path: '/insuranceManagement/addInsurancePolicy', query: {organId: organId, organName: organName}})
-    },
     handleChange () {},
-    queryTableData () {},
-    handleClickOverview () {},
-    pageChange () {},
-    handleClic (record) {
-      this.$router.push({path: '/insuranceManagement/insurancePolicyDetail'})
+    queryTableData () {
+      let {organId} = this.organProjectBuildingValue
+      this.init(organId)
+    },
+    handleClickOverview () {return},
+    pageChange (pageInfo) {
+      let {organId} = this.organProjectBuildingValue
+      this.paginationObj.pageNo = pageInfo.pageNo
+      this.paginationObj.pageLength = pageInfo.pageLength
+      this.init(organId, true)
+    },
+    handleClick (record) {
+      this.$router.push({path: '/insuranceManagement/insuranceSchedule/detail', query: { detail: JSON.stringify(record)}})
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {
@@ -201,5 +258,8 @@ export default {
     span{
       padding-left: 8px;
     }
+  }
+  .custom-table {
+    padding-bottom: 70px;
   }
 </style>

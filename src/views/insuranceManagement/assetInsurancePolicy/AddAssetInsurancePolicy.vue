@@ -5,9 +5,13 @@
       <div class="main_info">
         <a-row :gutter="24">
         <a-col :span="8">
-          <a-form-item label="保险单号(必填):">
+          <a-form-item >
+            <div slot="label" class="label_tit">
+              保险单号<span>(必填):</span>
+            </div>
             <a-input
-              v-model="form.insurancePolicy"
+              v-decorator="['insuranceCode',{initialValue: form.insuranceCode}]"
+              placeholder="请输入保险单号"
             />
           </a-form-item>
         </a-col>
@@ -20,11 +24,15 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="资产项目(必填):">
+          <a-form-item>
+            <div slot="label" class="label_tit">
+              资产项目<span>(必填):</span>
+            </div>
             <a-select
-              v-model="projectId"
+              v-decorator="['projectId', {initialValue: form.projectId}]"
               class="project_style"
               :options="projectOptions"
+              @change="changeProject"
               placeholder="请选择资产项目"
             ></a-select>
           </a-form-item>
@@ -32,20 +40,27 @@
         </a-row>
         <a-row :gutter="24">
           <a-col :span="8">
-            <a-form-item label="保险类型(必填):">
+            <a-form-item>
+              <div slot="label" class="label_tit">
+                保险类型<span>(必填):</span>
+              </div>
               <a-select
-                v-model="form.insuranceType"
+                v-decorator="['insuranceType', {initialValue: form.insuranceType}]"
                 class="project_style"
-                :options="projectOptions"
+                :options="typeList"
                 placeholder="请选择保险类型"
-                :loading="loading && !projectOptions.length"
+                :loading="loading && !typeList.length"
               ></a-select>
             </a-form-item>
           </a-col>
           <a-col :span="8">
-            <a-form-item label="投保人(必填):">
+            <a-form-item>
+              <div slot="label" class="label_tit">
+                投保人<span>(必填):</span>
+              </div>
               <a-input
-                v-model="form.policyHolder"
+                v-decorator="['policyHolder', {initialValue: form.policyHolder}]"
+                placeholder="请输入投保人"
               />
             </a-form-item>
           </a-col>
@@ -55,38 +70,53 @@
         </a-row>
         <a-row :gutter="24">
           <a-col :span="8">
-            <a-form-item label="保险公司(必填):">
+            <a-form-item>
+              <div slot="label" class="label_tit">
+                保险公司<span>(必填):</span>
+              </div>
               <a-select
-                v-model="form.insuranceCompany"
+                v-decorator="['insuranceCompanyId', {initialValue: form.insuranceCompanyId}]"
                 class="project_style"
-                :options="projectOptions"
+                :options="companyList"
                 placeholder="请选择保险公司"
                 :loading="loading && !projectOptions.length"
               ></a-select>
             </a-form-item>
           </a-col>
           <a-col :span="8">
-            <a-form-item label="保险公司电话(非必填):">
+            <a-form-item >
+              <div slot="label" class="label_tit">
+                保险公司电话<span>(非必填):</span>
+              </div>
               <a-input
-                v-model="form.phone"
+                v-decorator="['insurancePhone', {initialValue: form.insurancePhone}]"
+                placeholder="请输入保险公司电话"
               />
             </a-form-item>
           </a-col>
           <a-col :span="8">
-            <a-form-item label="保单金额(合计)(必填):">
+            <a-form-item>
+              <div slot="label" class="label_tit">
+                保单金额(合计)<span>(必填):</span>
+              </div>
               <a-input
-                v-model="form.amount"
+                v-decorator="['policyAmount', {initialValue: form.policyAmount}]"
+                placeholder="请输入保单金额"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col>
-            <a-form-item label="保险有效期(必填):">
+            <a-form-item>
+              <div slot="label" class="label_tit">
+                保险有效期<span>(必填):</span>
+              </div>
               <SG-DatePicker
-                  pickerType="RangePicker"
-                  v-model="rangeValue"
-                  :defaultValue="defaultValue"
+                v-decorator="['rangeValue', {initialValue: form.rangeValue}]"
+                pickerType="RangePicker"
+                format="YYYY-MM-DD"
+                @change="change"
                 ></SG-DatePicker>
               <!-- <a-range-picker v-decorator="['range-picker', { rules: [{ required: true, message: '请选择保险有效期' }] }]" /> -->
             </a-form-item>
@@ -96,9 +126,9 @@
           <a-col :span="24">
             <a-form-item label="备注">
               <a-textarea
-                v-model="form.remark"
+                v-decorator="['remark', {initialValue: form.remark}]"
                 placeholder="请填写备注"
-                :auto-size="{ minRows: 3, maxRows: 5 }"
+                :autoSize="{ minRows: 3, maxRows: 5 }"
               />
             </a-form-item>
           </a-col>
@@ -172,6 +202,7 @@ import SGUploadFilePlus from "@/components/SGUploadFilePlus";
 import warantAnnex from '@/views/ownershipManagement/authorityCardManagement/warrantAnnex'
 import FormFooter from "@/components/FormFooter";
 import AssetBundlePopover from "../../common/assetBundlePopover";
+import { reg } from '@/config/config.rules'
 import moment from 'moment'
 export default {
   components: {
@@ -182,7 +213,9 @@ export default {
   mixins: [warantAnnex],
   data () {
     return {
-      defaultValue: [moment('2019-02-02'), moment('2019-02-04')],
+      companyList: [],
+      typeList: [],
+      // defaultValue: [moment('2019-02-02'), moment('2019-02-04')],
       rangeValue: [undefined, undefined],
       organName: '', // 组织机构
       organId: '',
@@ -194,26 +227,17 @@ export default {
       form: this.$form.createForm(this),
       tableObj: {
         pagination: false,
-        rowKey: 'assetId',
+        rowKey: 'index',
         loading: false,
-        dataSource: [
-          {
-            assetName: '测试',
-            assetCode: '1231'
-          }
-        ],
+        dataSource: [],
         columns: [
-          { title: '序号', dataIndex: 'index', fixed: 'left'},
+          { title: '序号', dataIndex: 'index', width: 100},
           { title: '资产编码', dataIndex: 'assetCode' },
           { title: '资产名称', dataIndex: 'assetName' },
           { title: '地址', dataIndex: 'address', ellipsis: true },
-          { title: '保险类型', dataIndex: 'type' },
-          { title: '保险公司', dataIndex: 'projectName' },
-          { title: '保险有效期', dataIndex: 'uploadAttachment' },
-          { title: '保单金额（元）', dataIndex: 'amount' },
-          { title: '资产数量', dataIndex: 'buildName' },
-          { title: '保单状态', dataIndex: 'unitName' },
-          { title: '提交时间', dataIndex: 'floor' },
+          { title: '资产类型', dataIndex: 'assetTypeName' },
+          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '资产面积（㎡）', dataIndex: 'area' },
           { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
         ]
       },
@@ -225,14 +249,153 @@ export default {
     this.organName = this.$route.query.organName
     this.organId = this.$route.query.organId
     this.getProjects()
+    this.getDictData()
+    if(this.$route.query.insuranceId) {
+      // 编辑
+      this.$api.assetInsurance.getDetailBaseInfo({ insuranceId: this.$route.query.insuranceId }).then(res => {
+        if(res.data.code === '0') {
+          // this.form = res.data.data
+          let {
+            insuranceCode,remark,insurancePhone,
+            periodOfInsurance,
+            policyHolder,
+            policyAmount,
+            projectId,
+            insuranceType,
+            insuranceCompanyId,
+            attachmentList
+            } 
+          = res.data.data
+          this.form.setFieldsValue({
+            insuranceCode,
+            remark,
+            policyHolder,
+            policyAmount,
+            insurancePhone,
+            projectId,//: moment(data.changeDate, "YYYY-MM-DD"),
+            insuranceCompanyId: String(insuranceCompanyId),
+            insuranceType: String(insuranceType),
+            rangeValue: [moment(periodOfInsurance.split('~')[0], "YYYY-MM-DD"),moment(periodOfInsurance.split('~')[1], "YYYY-MM-DD")]
+          });
+          this.rangeValue = [periodOfInsurance.split('~')[0], periodOfInsurance.split('~')[1]]
+          if (attachmentList && attachmentList.length > 0) {
+            attachmentList.forEach((item) => {
+              this.attachmentList.push({
+                url: item.attachmentPath,
+                name: item.newAttachmentName,
+              });
+            });
+          }
+          this.form.projectId = projectId
+          // this.attachmentList = attachmentList
+          this.getDetailAssetInfo(this.$route.query.insuranceId)
+        }
+      }).catch(err => {
+        console.log(err)      
+        this.$message.error('查询失败' || err)  
+      })
+    }
   },
   methods: {
+    getDetailAssetInfo (insuranceId) {
+      this.$api.assetInsurance.getDetailAssetInfo({ insuranceId, pageNum: 1, pageSize: 100 })
+      .then(res => {
+        if(res.data.code === '0') {
+          this.tableObj.dataSource = res.data.data.data
+          this.tableObj.dataSource.forEach((item, index) => {
+            item.index = index+1
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('查询失败' || err)
+      })
+    },
+    changeProject (val,val2) {
+      this.form.projectId = val
+    },
+    change (val, val2) {
+      this.rangeValue = val2
+    },
     save () {
-      let {form : {insurancePolicy, insuranceType, policyHolder, insuranceCompany, amount}, rangeValue, projectId} = this
-      if(!insurancePolicy || !insuranceType || !policyHolder || !insuranceCompany || !projectId || !amount || rangeValue.includes(undefined)){
+      let {insuranceCode, insuranceType, policyHolder, insuranceCompanyId, policyAmount, projectId, rangeValue, insurancePhone} = this.form.getFieldsValue()
+      if(!insuranceCode || !insuranceType || !policyHolder || !insuranceCompanyId || !projectId || !policyAmount || !rangeValue){
         this.$message.info("必填项不能为空");
         return
       }
+      if(!reg.mobile.test(insurancePhone)){
+        this.$message.info("请输入合法手机号码");
+        return
+      }
+      let regPos = /^\d+(\.\d+)?$/
+      if(!regPos.test(policyAmount)){
+        this.$message.info("格式不正确，必须为正数值型");
+        return
+      }
+      if(policyAmount < 0 || policyAmount > 9999999999.9999) {
+        this.$message.info("该值取值范围为0-9999999999.9999");
+        return
+      }
+      let data = this.form.getFieldsValue()
+      data.insuranceBeginDate = this.rangeValue[0]
+      data.insuranceEndDate = this.rangeValue[1]
+      data.organId = this.organId
+      this.attachmentList = this.attachmentList.map(item => {
+        console.log(item, 'item')
+        return {
+          attachmentPath: item.url,
+          oldAttachmentName: item.name,
+          fileSources: '1'
+        }
+      })
+      let assetInsuranceDetailList = this.tableObj.dataSource.map(item => {
+        return {
+          projectId: item.projectId,
+          assetType: item.assetType,
+          organId: this.organId,
+          assetId: item.assetId,
+        }
+      })
+      data.attachmentList = this.attachmentList 
+      data.assetInsuranceDetailList = assetInsuranceDetailList
+      if(this.$route.query.insuranceId){
+        data.insuranceId = this.$route.query.insuranceId
+      }
+      this.$api.assetInsurance.addOrUpdateAssetInsurance(data).then(res => {
+        
+        let { data: {data,code} } = res
+        if(code === '0') {
+          this.$message.success("新增成功");
+          this.$router.go(-1)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 保险公司，保险类型
+    getDictData () {
+      const list = [
+          { code: 'ASSET_INSURANCE', tip: '保险公司', optionName: 'companyList', model: 'insuranceCompanyId' },
+          { code: 'INSURANCE_TYPE', tip: '保险类型', optionName: 'typeList', model: 'insuranceType' }
+        ]
+        list.forEach(m => {
+          const { code, tip, optionName, model } = m
+          this.$api.basics.organDict({code, organId: this.organId}).then(r => {
+            let res = r.data
+            if (res && String(res.code) === '0') {
+              if(res.data.length > 0) {
+                this.form[model] = res.data[0].value // 默认选第一项
+                return this[optionName] = res.data.map(item => ({
+                  label: item.name, value: item.value
+                }))
+              }else {
+                this[optionName] = []
+              }
+            }
+          }).catch(err => {
+            this.$message.error(err || `查询${tip}失败`)
+          })
+        })
     },
     getProjects () {
       this.$api.assets.getObjectKeyValueByOrganId({organId: this.organId}).then(res => {
@@ -242,7 +405,7 @@ export default {
             label: item.projectName
           }
         })
-        this.projectId = this.projectOptions[0].value
+        this.form.projectId = this.projectOptions[0].value
       }).catch(err => {
         console.log(err)
       })
@@ -252,7 +415,7 @@ export default {
       this.tableObj.dataSource = this.tableObj.dataSource.filter(item => item.assetId !== row.assetId)
     },
     status (val, data) {
-      this.checkedData = [...val];
+      this.checkedData = [...val];  
       data.forEach((item, index) => {
         this.$set(item, 'index', index+1)
       });
@@ -260,14 +423,13 @@ export default {
       this.$refs.assetBundlePopover.show = false;
     },
     addTheAsset () {
-      if (!this.projectId) {
+      if (!this.form.projectId) {
         this.$message.info("请先选择资产项目");
         return;
       }
       this.$refs.assetBundlePopover.redactCheckedDataFn(
         this.checkedData,
-        // this.form.getFieldValue("projectId"),
-        this.projectId,
+        this.form.projectId,
         '1',
         this.tableObj.dataSource
       );
@@ -292,6 +454,7 @@ export default {
   .add_policy {
     padding-bottom: 70px;
     padding-left: 20px;
+    padding-right: 20px;
     .main_info {
       padding-left: 20px;
     }
@@ -302,5 +465,15 @@ export default {
         float: right;
       }
     }
+    .label_tit {
+      font-size: 14px;
+      span{
+        color: #ccc;
+        font-size: 12px;
+      }
+    }
+  }
+  .custom-table {
+    padding-bottom: 70px;
   }
 </style>

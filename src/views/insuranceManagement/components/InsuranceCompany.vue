@@ -13,30 +13,48 @@
 
 <script>
 export default {
+  // props: {
+  //   options: {
+  //     type: Array,
+  //     default: []
+  //   }
+  // },
   data () {
     return {
-      companys: ['0'],
-      options: [
-        {
-          value: '0',
-          label: '全部保险公司'
-        },
-        {
-          value: '1',
-          label: '保险公司1'
-        },
-        {
-          value: '2',
-          label: '保险公司3'
-        },
-        {
-          value: '3',
-          label: '保险公司2'
-        },
-      ]
+      companys: [],
+      options: []
     }
   },
+  created () {
+    
+  },
   methods: {
+    getDictData (organId) {
+      let _this = this
+      // const list = [
+      //     { code: 'ASSET_INSURANCE', tip: '保险公司', optionName: 'companyList', model: 'insuranceCompanyId' },
+      //     { code: 'INSURANCE_TYPE', tip: '保险类型', optionName: 'typeList', model: 'insuranceType' }
+      //   ]
+      this.$api.basics.organDict({code: 'ASSET_INSURANCE', organId: organId}).then(r => {
+        let res = r.data
+        if (res && String(res.code) === '0') {
+          if(res.data.length > 0) {
+            _this.options = []
+            res.data.forEach(item => {
+              _this.options.push({label: item.name, value: item.value})
+            })
+            _this.options.unshift( {
+              value: '0',
+              label: '全部保险公司'
+            })
+            this.companys = ['0']
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message.error(err || `查询${tip}失败`)
+      })
+    },
     handleChange (value) {
       if(value === '0'){
         this.companys = ['0']
@@ -49,7 +67,7 @@ export default {
           this.companys = ['0']
         }
       }
-      this.$emit('companyClick', value)
+      this.$emit('companyClick', this.companys)
     }
   }
 }

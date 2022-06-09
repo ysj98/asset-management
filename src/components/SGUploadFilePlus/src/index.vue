@@ -229,7 +229,7 @@ export default {
     imagesList () {
       let imageExt = this.imageExt
       return this.fileLists.filter(el => {
-        const ext = el.url.split('.').pop().toLocaleLowerCase()
+        const ext = el.url && el.url.split('.').pop().toLocaleLowerCase()
         return imageExt.includes(ext)
       })
     },
@@ -237,7 +237,7 @@ export default {
     imagesListIndex () {
       let len = 0
       return this.lists.map(el => {
-        const ext = el.url.split('.').pop().toLocaleLowerCase()
+        const ext = el.url && el.url.split('.').pop().toLocaleLowerCase()
         if (this.imageExt.includes(ext)) {
           len += 1
           return len - 1

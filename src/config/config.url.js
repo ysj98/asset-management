@@ -430,6 +430,8 @@ export const assets = {
   },
   // 房屋台账 - 资产视图
   assetView: {
+    // 更新房屋资产质押配置
+    updateAssetPledgeConfig: '/ams/asset-house/house/updateAssetPledgeConfig',
     // 房屋资产信息查询
     queryHouseInfo: "/ams/asset-house",
     // 资产使用面积详情
@@ -1656,4 +1658,35 @@ export const equipmentview = {
   equipmentStatistics:"/ams/asset-equipment/equipmentStatistics",
   // 资产项目详情
   detailProject:"/ams/asset-equipment/detailProject"
+}
+// 保险管理
+export const assetInsurance = {
+  /**
+   * 资产保险单
+   */
+  // 新增
+  addOrUpdateAssetInsurance: '/ams/assetInsurance/addOrUpdateAssetInsurance',
+  // 首页列表
+  queryAssetInsuranceList: '/ams/assetInsurance/queryAssetInsuranceList',
+  // 首页统计
+  getAssetInsuranceCount: '/ams/assetInsurance/getAssetInsuranceCount',
+  // 详情
+  getDetailBaseInfo: '/ams/assetInsurance/getDetailBaseInfo',
+  // 详情-资产信息
+  getDetailAssetInfo: '/ams/assetInsurance/getDetailAssetInfo',
+  /**
+   * 即将到期保险
+   */
+  // 主列表查询
+  queryExpiringInsuranceList: '/ams/assetInsurance/queryExpiringInsuranceList',
+  // 统计
+  getExpiringInsuranceCount: '/ams/assetInsurance/getExpiringInsuranceCount',
+  /**
+   * 资产保险一览表
+   */
+  findAssetRegInsuranceList: '/ams/assetInsurance/findAssetRegInsuranceList',
+  // 资产保险一览表--统计
+  getAssetRegInsuranceTotal: '/ams/assetInsurance/getAssetRegInsuranceTotal',
+  //  
+  deleteInsurance: '/ams/assetInsurance/deleteInsurance'
 }

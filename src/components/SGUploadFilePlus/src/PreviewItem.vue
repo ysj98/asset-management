@@ -72,7 +72,7 @@ export default {
     },
     // 扩展名，即文件类型
     Ext () {
-      return this.item.url.split('.').pop().toLocaleLowerCase()
+      return this.item.url && this.item.url.split('.').pop().toLocaleLowerCase()
     },
     // 判断是否是文件类型
     isFile () {

@@ -1,9 +1,8 @@
 <template>
   <div>
-    <a-tabs  @change="tabClick">
+    <a-tabs  @change="tabClick" :activeKey="componentTag">
       <template v-for="item in tabs">
         <a-tab-pane :tab="item.title" :key="item.tagTitle">
-          <!-- {{ item.title }} -->
         </a-tab-pane>
       </template>
     </a-tabs>
@@ -37,6 +36,12 @@ export default {
           tagTitle: 'AssetInsuranceSchedule'
         },
       ]
+    }
+  },
+  created (){
+    if(this.$route.meta && this.$route.meta.comname){
+      this.componentTag = this.$route.meta.comname
+      console.log(this.componentTag)
     }
   },
   methods: {

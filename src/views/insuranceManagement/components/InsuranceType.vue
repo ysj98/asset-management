@@ -15,28 +15,39 @@
 export default {
   data () {
     return {
-      types: ['0'],
-      options: [
-        {
-          value: '0',
-          label: '全部保险类型'
-        },
-        {
-          value: '1',
-          label: '保险类型1'
-        },
-        {
-          value: '2',
-          label: '保险类型3'
-        },
-        {
-          value: '3',
-          label: '保险类型2'
-        },
-      ]
+      types: [],
+      options: [],
+      // options: [
+      //   {
+      //     value: '0',
+      //     label: '全部保险类型'
+      //   },
+      // ]
     }
   },
   methods: {
+    getDictData (organId) {
+
+      this.$api.basics.organDict({code: 'INSURANCE_TYPE', organId: organId}).then(r => {
+        let res = r.data
+        if (res && String(res.code) === '0') {
+          if(res.data.length > 0) {
+            this.options = []
+            res.data.forEach(item => {
+              this.options.push({label: item.name, value: item.value})
+            })
+            this.options.unshift( {
+              value: '0',
+              label: '全部保险类型'
+            })
+            this.types = ['0']
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message.error(err || `查询${tip}失败`)
+      })
+    },
     handleChange (value) {
       if(value === '0'){
         this.types = ['0']
@@ -49,7 +60,7 @@ export default {
           this.types = ['0']
         }
       }
-      this.$emit('typeClick', value)
+      this.$emit('typeClick', this.types)
     }
   }
 }
