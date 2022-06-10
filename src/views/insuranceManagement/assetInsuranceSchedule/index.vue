@@ -180,7 +180,7 @@ export default {
       .then(res => {
         if(res.data.code === '0') {
           this.numList.map((item,index) => {
-            this.numList[index].value = res.data.data[item.key]+'㎡'
+            this.numList[index].value = getFormat(res.data.data[item.key])+'㎡'
             this.numList[index].title = `${this.numarr[index]}(${res.data.data[item.numkey]})`
           })
         }

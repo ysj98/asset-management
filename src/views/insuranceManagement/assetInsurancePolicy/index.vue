@@ -4,6 +4,7 @@
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
         <SG-Button
+          v-power="ASSET_MANAGEMENT.INSURANCE_INSURANCE_POLICY_CREATE"
           type="primary"
           @click="addPolicy"
         >新建</SG-Button>
@@ -50,11 +51,11 @@
       <template slot="action" slot-scope="text, record">
         <a-popover trigger="click" placement="bottomRight">
           <div slot="content">
-            <p class="handle_sty" @click="handleClic('1',record)">
+            <p class="handle_sty" @click="handleClic('1',record)" v-power="ASSET_MANAGEMENT.INSURANCE_INSURANCE_POLICY_EDIT">
               <a-icon type="edit" />
               <span>编辑</span>
             </p>
-            <p class="handle_sty" @click="handleClic('2',record)">
+            <p class="handle_sty" @click="handleClic('2',record)" v-power="ASSET_MANAGEMENT.INSURANCE_INSURANCE_POLICY_DELETE">
               <a-icon type="delete" />
               <span>删除</span>
             </p>
@@ -78,6 +79,7 @@ import InsuranceType from '../components/InsuranceType.vue'
 import InsuranceCompany from '../components/InsuranceCompany.vue'
 import InsuranceStatus from '../components/InsuranceStatus.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 import { getFormat } from "utils/utils";
 export default {
   components: {
@@ -90,6 +92,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       companyList: [],
       typeList: [],
       getFormat,
@@ -180,26 +183,30 @@ export default {
         if(res.data.code === '0') {
           this.tableObj.dataSource = res.data.data.data
           this.paginationObj.totalCount = res.data.data.count
+        }else{
+          this.$message.error(res.data.message || '查询列表数据失败')
         }
         if(!load) {
           this.getCount(data)
         }
       }).catch(err => {
-        this.$message.error('查询列表数据失败' || err)
         console.log(err)
       })
     },
     getCount (data) {
+      delete data.pageNum
+      delete data.pageSize
       this.$api.assetInsurance.getAssetInsuranceCount(data).then(res => {
         if(res.data.code === '0') {
           this.numList.map((item,index) => {
             this.numList[index].value = res.data.data[item.key]
           })
-          this.overviewNumSpinning = false
+        }else{
+          this.$message.error(res.data.message || '查询统计数据失败')
         }
+        this.overviewNumSpinning = false
       }).catch(err => {
         console.log(err)
-        this.$message.error('查询统计数据失败' || err)
         this.overviewNumSpinning = false
       })
     },
@@ -230,15 +237,16 @@ export default {
           if(res.data.code === '0') {
             this.$message.success('删除成功')  
             this.init(organId)
+          }else{
+            this.$message.error(res.data.message || '删除失败')
           }
         }).catch(err => {
           this.$message.error('删除失败' || err)
-          console.log(err)
         })
       }
       if(val === '1'){
         let {organId, organName} = this.organProjectBuildingValue
-        this.$router.push({path: '/insuranceManagement/insurancePolicy/addInsurancePolicy', query: { insuranceId: record.insuranceId, organId: organId, organName: organName }})
+        this.$router.push({path: '/insuranceManagement/insurancePolicy/deit', query: { insuranceId: record.insuranceId, organId: organId, organName: organName }})
       }
       if(val === '3'){
         this.$router.push({path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail', query: { insuranceId: record.insuranceId }})

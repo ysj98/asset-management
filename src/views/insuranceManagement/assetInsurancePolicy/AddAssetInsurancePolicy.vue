@@ -227,7 +227,7 @@ export default {
       form: this.$form.createForm(this),
       tableObj: {
         pagination: false,
-        rowKey: 'index',
+        rowKey: 'assetId',
         loading: false,
         dataSource: [],
         columns: [
@@ -305,6 +305,8 @@ export default {
           this.tableObj.dataSource.forEach((item, index) => {
             item.index = index+1
           })
+          // 拿到已有的资产id
+          this.checkedData = this.tableObj.dataSource.map(item => item.assetId)
         }
       }).catch(err => {
         console.log(err)
@@ -336,12 +338,15 @@ export default {
         this.$message.info("该值取值范围为0-9999999999.9999");
         return
       }
+      if(this.tableObj.dataSource.length <= 0) {
+        this.$message.info("请选择资产信息");
+        return
+      }
       let data = this.form.getFieldsValue()
       data.insuranceBeginDate = this.rangeValue[0]
       data.insuranceEndDate = this.rangeValue[1]
       data.organId = this.organId
       this.attachmentList = this.attachmentList.map(item => {
-        console.log(item, 'item')
         return {
           attachmentPath: item.url,
           oldAttachmentName: item.name,
@@ -362,11 +367,17 @@ export default {
         data.insuranceId = this.$route.query.insuranceId
       }
       this.$api.assetInsurance.addOrUpdateAssetInsurance(data).then(res => {
-        
-        let { data: {data,code} } = res
+        // console.log(res)
+        let { data: {data,code,message} } = res
         if(code === '0') {
-          this.$message.success("新增成功");
+          if(this.$route.query.insuranceId){
+            this.$message.success("修改成功");
+          }else{
+            this.$message.success("新增成功");
+          }
           this.$router.go(-1)
+        }else {
+          this.$message.error(message || '新增失败');
         }
       }).catch(err => {
         console.log(err)
@@ -391,6 +402,8 @@ export default {
               }else {
                 this[optionName] = []
               }
+            }else{
+              this.$message.error(res.message || `查询${tip}失败`)
             }
           }).catch(err => {
             this.$message.error(err || `查询${tip}失败`)
@@ -445,6 +458,7 @@ export default {
       this.tableObj.dataSource = this.tableObj.dataSource.filter(item => {
         return !this.selectedRowKeys.includes(item.assetId)
       })
+      this.checkedData = this.tableObj.dataSource.map(item => item.assetId)
     }
   }
 }

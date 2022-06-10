@@ -1345,6 +1345,11 @@ let proRouter = [{
     component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AddAssetInsurancePolicy')
   },
   {
+    path: '/insuranceManagement/insurancePolicy/deit',
+    name: '编辑',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/EditAssetInsurancePolicy')
+  },
+  {
     path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail',
     name: '详情',
     component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AssetInsurancePolicyDetail')

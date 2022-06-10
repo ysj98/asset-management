@@ -49,20 +49,6 @@
       </div>
     </div>
     <SG-Title title="投保信息"/>
-    <!-- <div class="button-box">
-      <a-row :gutter="8">
-        <a-col :span="12"></a-col>
-        <a-col :span="4">
-          <InsuranceCompany @companyClick="filterClick"/>
-        </a-col>
-        <a-col :span="4">
-          <InsuranceType @companyClick="filterClick"/>
-        </a-col>
-        <a-col :span="4">
-          <InsuranceStatus @typeClick="filterClick"/>
-        </a-col>
-      </a-row>
-    </div> -->
     <a-table
       v-bind="tableObj"
       class="custom-table td-pd10">
@@ -90,13 +76,7 @@ export default {
         pagination: false,
         // rowKey: 'assetId',
         loading: false,
-        dataSource: [
-          {
-            index: '1',
-            assetName: '测试',
-            assetCode: '1231'
-          }
-        ],
+        dataSource: [],
         columns: [
           { title: '序号', dataIndex: 'index'},
           { title: '保险单号', dataIndex: 'insuranceId' },
@@ -109,19 +89,23 @@ export default {
           { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }},
         ]
       },
-      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 2, location: 'absolute' },
     }
   },
   created () {
     this.detail = JSON.parse(this.$route.query.detail)
     this.tableObj.dataSource = this.detail.insuranceResDetailList
+    this.getPageInfo()
     this.tableObj.dataSource.forEach((item,index) => {
-      item.index = index
+      item.index = index+1
     })
   },
   methods: {
+    getPageInfo(){
+      let count = Math.ceil(this.tableObj.dataSource.length / this.paginationObj.pageLength)
+      this.paginationObj.totalCount = count
+    },
     pageChange () {},
-    filterClick () {},
     detailPolicy (row) {
       this.$router.push({path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail', query: { insuranceId:  row.insuranceId }})
     }

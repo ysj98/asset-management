@@ -157,17 +157,22 @@ export default {
       })
     },
     getCount (data) {
+      delete data.pageNum
+      delete data.pageSize
+      delete data.insuranceStatusList
+      // data.insuranceStatusList = data.insuranceStatusList.length > 0 ? data.insuranceStatusList.join(','):''
       this.$api.assetInsurance.getExpiringInsuranceCount(data).then(res => {
         if(res.data.code === '0') {
           this.numList.map((item,index) => {
             this.numList[index].value = res.data.data[item.key]
             this.numList[index].title = `${this.numarr[index]}(${res.data.data[item.numkey]})`
           })
-          this.overviewNumSpinning = false
+        }else{
+          this.$message.error(res.data.message || '查询统计失败')
         }
+        this.overviewNumSpinning = false
       }).catch(err => {
         this.overviewNumSpinning = false
-        this.$message.error('查询统计失败' || err)
         console.log(err)
       })
     },
