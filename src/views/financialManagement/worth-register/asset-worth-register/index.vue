@@ -210,6 +210,7 @@
             { title: '评估机构', dataIndex: 'assessmentOrganName', width: 180, ellipsis: true }, { title: '评估基准日', dataIndex: 'assessmenBaseDate', ellipsis: true},
             { title: '资产数量', dataIndex: 'num', ellipsis: true }, { title: '提交人', dataIndex: 'createByName', ellipsis: true },
             { title: '提交时间', dataIndex: 'createTime', ellipsis: true }, { title: '状态', dataIndex: 'approvalStatusName', ellipsis: true },
+            { title: '附件', key: 'uploadAttachment', customRender(text,{uploadAttachment}){ return uploadAttachment ? '已上传' : '未上传'  }, ellipsis: true },
             { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 220, ellipsis: true }
           ]
         },

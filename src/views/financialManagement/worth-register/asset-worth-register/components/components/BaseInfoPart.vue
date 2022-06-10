@@ -137,12 +137,15 @@
           :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
-          <SG-UploadFile
+          <SGUploadFilePlus
+            :baseImgURL="configBase.hostImg1"
             :max="5"
             :maxSize="153600"
             type="all"
             v-model="attachment"
             :show="(type == 'approval' || type == 'detail') && (details.approvalStatusName !== '已审批')"
+            :customUpload="customUpload"
+            :customDownload="customDownload"
             @update="handleChangeFile"
             @delete="handleChangeFile"
           />
@@ -171,12 +174,18 @@
 </template>
 
 <script>
+  import configBase from "@/config/config.base";
+  import SGUploadFilePlus from "@/components/SGUploadFilePlus";
   import moment from 'moment'
+  import warrantAnnex from "@/views/ownershipManagement/authorityCardManagement/warrantAnnex";
   export default {
     name: 'BaseInfoPart',
+    components:{SGUploadFilePlus},
+    mixins:[warrantAnnex],
     props: ['type', 'details'],
     data () {
       return {
+        configBase,
         // 全部关联资产数据
         registerValueRelList:[],
         formItemLayout: {
@@ -211,6 +220,7 @@
         })
       },
       async handleChangeFile(){
+        console.log("update")
         // 上传文件组件 可"编辑"且是详情页面时 文件变动自动调用编辑保存接口
         if ((this.type == 'approval' || this.type == 'detail') && (this.details.approvalStatusName === '已审批')){
           try {
@@ -224,7 +234,8 @@
               registerValueRelList:this.registerValueRelList, registerId:this.$route.params.registerId, approvalStatus: 1,
               assessmentOrgan: this.details.assessmentOrgan,
               assessmentMethod: this.details.assessmentMethod,
-              assetType: this.details.assetType
+              assetType: this.details.assetType,
+              projectId: this.details.projectId
             }
             this.$api.worthRegister.updateRegister(req).then(({data:{code,message}})=>{
               if (code === "0"){
@@ -251,8 +262,13 @@
           if (!err) {
             const { attachment, details: { organId } } = this
             let attachArr = attachment.map(m => {
-              const { url: attachmentPath, name: oldAttachmentName } = m
-              return { attachmentPath, oldAttachmentName }
+              const { url: attachmentPath, name: oldAttachmentName,  } = m
+              return {
+                attachmentPath,
+                oldAttachmentName,
+                fileSources: [undefined,null].includes(m.fileSources) ? 1 : m.fileSources,
+                originName: oldAttachmentName
+              }
             }) // 处理附件格式
             // 转换日期格式为string
             let date = values.assessmenBaseDate ? moment(values.assessmenBaseDate).format('YYYY-MM-DD') : ''
@@ -274,7 +290,12 @@
           assessmentMethodName, assessmentOrganName, projectId, assetType, assessmentOrgan, projectName, assessmentNum
         } = details
         let attachArr = (attachmentList || []).map(m => {
-          return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
+          return {
+            fileSources: m.fileSources,
+            attachmentId: m.attachmentId,
+            url: m.attachmentPath,
+            name: m.oldAttachmentName,
+            suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
         let resAssessmentValidDate = assessmentValidDate
