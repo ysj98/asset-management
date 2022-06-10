@@ -100,6 +100,7 @@
                 保单金额(合计)<span>(必填):</span>
               </div>
               <a-input
+                @blur="inputClick($event)"
                 v-decorator="['policyAmount', {initialValue: form.policyAmount}]"
                 placeholder="请输入保单金额"
               />
@@ -297,6 +298,29 @@ export default {
     }
   },
   methods: {
+    inputClick (e) {
+      let val = e.target._value
+      let regPos = /^\d+(\.\d+)?$/
+      if(!regPos.test(val)){
+        this.$message.info("保单金额格式不正确，必须为正数值型");
+        this.form.setFieldsValue({
+          policyAmount: ''
+        })
+      }
+      if(val < 0 || val > 9999999999.9999) {
+        this.$message.info("保单金额值取值范围为0-9999999999.9999");
+        this.form.setFieldsValue({
+          policyAmount: ''
+        })
+      }
+      if(val.toString().includes('.')) {
+        if(val.toString().split('.')[1].length > 4) {
+          this.form.setFieldsValue({
+            policyAmount: Number(val.toString().substr(0,val.length-1))
+          })
+        }
+      }
+    },
     getDetailAssetInfo (insuranceId) {
       this.$api.assetInsurance.getDetailAssetInfo({ insuranceId, pageNum: 1, pageSize: 100 })
       .then(res => {
@@ -331,11 +355,11 @@ export default {
       }
       let regPos = /^\d+(\.\d+)?$/
       if(!regPos.test(policyAmount)){
-        this.$message.info("格式不正确，必须为正数值型");
+        this.$message.info("保单金额格式不正确，必须为正数值型");
         return
       }
       if(policyAmount < 0 || policyAmount > 9999999999.9999) {
-        this.$message.info("该值取值范围为0-9999999999.9999");
+        this.$message.info("保单金额值取值范围为0-9999999999.9999");
         return
       }
       if(this.tableObj.dataSource.length <= 0) {
