@@ -913,4 +913,9 @@ export function getGeneralSurveyExport (data) {
 // 列表更新资产标签
 export function updateAssetLabelConfig (data) {
   return axiosPost(assets.projectManage.updateAssetLabelConfig, data)
+
+}
+// 更新房屋资产质押配置
+export function updateAssetPledgeConfig (data) {
+  return axiosPost(assets.assetView.updateAssetPledgeConfig, data)
 }

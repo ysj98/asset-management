@@ -411,6 +411,7 @@ export const ASSET_MANAGEMENT = {
   HOUSE_ACCOUNT_OV_EXPORT: 'house_account_organ_view_export',   // 房屋台账-组织机构视图导出
   HOUSE_ACCOUNT_BV_ASSET_LABEL: 'house_account_bv_asset_label',   // 房屋台账-楼栋视图资产标签
   HOUSE_ACCOUNT_AV_ASSET_LABEL: 'house_account_av_asset_label',   // 房屋台账-房屋资产试图资产标签
+  HOUSE_ACCOUNT_AV_ASSET_PLEDGE: 'house_account_av_asset_pledge',   // 房屋台账-房屋资产试图质押情况
   /**
    * V2.0.2资产入库
    */
@@ -677,5 +678,16 @@ export const ASSET_MANAGEMENT = {
   // 资产视图
   EQUIPMENTVIEW_ASSET_VIEW_EXPORT: "equipmentview_asset_view_export", // 导出
   EQUIPMENTVIEW_ASSET_VIEW_HEADERS_SETTING: "equipmentview_asset_view_headers_setting", // 列表设置
-  EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING: "equipmentview_asset_view_labels_setting" // 资产标签设置
+  EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING: "equipmentview_asset_view_labels_setting", // 资产标签设置
+
+  /**
+   * 保险管理
+   */
+  insurance_asset_insurance_policy: 'insurance_asset_insurance_policy', // 资产保险单tab
+  insurance_expiring_insurance: 'insurance_expiring_insurance', // 即将到期保险tab
+  insurance_asset_insurance_schedule: 'insurance_asset_insurance_schedule', // 资产保险一览表tab
+
+  INSURANCE_INSURANCE_POLICY_CREATE: 'insurance_insurance_policy_create', // 资产保险单新增
+  INSURANCE_INSURANCE_POLICY_EDIT: 'insurance_insurance_policy_edit', // 资产保险单编辑
+  INSURANCE_INSURANCE_POLICY_DELETE: 'insurance_insurance_policy_delete', // 资产保险单删除
 }

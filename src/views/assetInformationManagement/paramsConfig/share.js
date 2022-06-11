@@ -46,6 +46,11 @@ export const serviceTypeAll = {
     component: SelectApproval,
     needValidate: false,
   },
+  1009: {
+    serviceTypeText: "资产登记校验权证号",
+    component: ProvinceCity,
+    needValidate: false,
+  },
 };
 export const columns = [
   {

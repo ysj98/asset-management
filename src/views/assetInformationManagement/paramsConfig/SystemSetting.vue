@@ -46,7 +46,7 @@
 
 <script>
 // 显示在当前tab的 approveServiceType
-const approveServiceType = [1001];
+const approveServiceType = [1001, 1009];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*

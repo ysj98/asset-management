@@ -36,7 +36,7 @@ export function queryRelList (data) {
 }
 // 价值登记资产查询(分页)
 export function queryRelPageList (data) {
-  return axiosPost(worthRegister.queryValueRegisterRelPageList, data)
+  return axiosPost(worthRegister.queryValueRegisterRelPageList, data, true)
 }
 // 新增价值登记
 export function insertRegister (data) {

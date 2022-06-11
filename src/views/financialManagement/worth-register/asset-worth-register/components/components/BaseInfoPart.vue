@@ -137,15 +137,18 @@
           :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
-          <SG-UploadFile
+          <SGUploadFilePlus
+            :baseImgURL="configBase.hostImg1"
             :max="5"
             :maxSize="153600"
             type="all"
             v-model="attachment"
-            :show="type == 'approval' || type == 'detail'"
-            v-if="type == 'edit' || type == 'add' || attachment.length"
+            :show="(type == 'approval' || type == 'detail') && (details.approvalStatusName !== '已审批')"
+            :customUpload="customUpload"
+            :customDownload="customDownload"
+            @update="handleChangeFile"
+            @delete="handleChangeFile"
           />
-          <span v-else style="margin-left: 12px">无</span>
         </a-form-item>
       </a-col>
     </a-row>
@@ -171,12 +174,20 @@
 </template>
 
 <script>
+  import configBase from "@/config/config.base";
+  import SGUploadFilePlus from "@/components/SGUploadFilePlus";
   import moment from 'moment'
+  import warrantAnnex from "@/views/ownershipManagement/authorityCardManagement/warrantAnnex";
   export default {
     name: 'BaseInfoPart',
+    components:{SGUploadFilePlus},
+    mixins:[warrantAnnex],
     props: ['type', 'details'],
     data () {
       return {
+        configBase,
+        // 全部关联资产数据
+        registerValueRelList:[],
         formItemLayout: {
           labelCol: { span: 6 },
           wrapperCol: { span: 18 }
@@ -194,6 +205,50 @@
     },
 
     methods: {
+      // 根据登记Id查询资产详情的列表数据--全部
+      queryAssetListByRegisterId () {
+        this.$api.worthRegister.queryRelPageList({ registerId: this.$route.params.registerId, pageSize: 99999, pageNum: 1 }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            const { data } = res.data
+            this.registerValueRelList = (data || []).map((ele)=>{
+              return { assetId: ele.assetId, assessmentValue: ele.assessmentValue, upRate: ele.upRate === '--' ? 0 : ele.upRate }
+            })
+          }else {
+            this.$message.error(res.message)
+          }
+        })
+      },
+      async handleChangeFile(){
+        console.log("update")
+        // 上传文件组件 可"编辑"且是详情页面时 文件变动自动调用编辑保存接口
+        if ((this.type == 'approval' || this.type == 'detail') && (this.details.approvalStatusName === '已审批')){
+          try {
+            const res = await new Promise((resolve, reject) => {
+              this.handleSubmit(resolve, reject)
+            })
+            console.log({res})
+            const req = {
+              ...res,
+              // 1就是 已审批，只有 已审批 的数据和 编辑状态的数据可编辑附件信息
+              registerValueRelList:this.registerValueRelList, registerId:this.$route.params.registerId, approvalStatus: 1,
+              assessmentOrgan: this.details.assessmentOrgan,
+              assessmentMethod: this.details.assessmentMethod,
+              assetType: this.details.assetType,
+              projectId: this.details.projectId
+            }
+            this.$api.worthRegister.updateRegister(req).then(({data:{code,message}})=>{
+              if (code === "0"){
+                this.$message.success('附件编辑成功')
+              }else {
+                this.$message.error(message)
+              }
+            })
+          }catch (error) {
+            console.error(error)
+          }
+        }
+      },
       changeAssessmentOrganName(date,dateString){
           this.form.setFieldsValue({ assessmentValidDate: moment(dateString,'YYYY-MM-DD').add(1,'y').add(-1,'day') })
           this.setData(dateString, 'assessmenBaseDate')
@@ -207,8 +262,13 @@
           if (!err) {
             const { attachment, details: { organId } } = this
             let attachArr = attachment.map(m => {
-              const { url: attachmentPath, name: oldAttachmentName } = m
-              return { attachmentPath, oldAttachmentName }
+              const { url: attachmentPath, name: oldAttachmentName,  } = m
+              return {
+                attachmentPath,
+                oldAttachmentName,
+                fileSources: [undefined,null].includes(m.fileSources) ? 1 : m.fileSources,
+                originName: oldAttachmentName
+              }
             }) // 处理附件格式
             // 转换日期格式为string
             let date = values.assessmenBaseDate ? moment(values.assessmenBaseDate).format('YYYY-MM-DD') : ''
@@ -230,7 +290,12 @@
           assessmentMethodName, assessmentOrganName, projectId, assetType, assessmentOrgan, projectName, assessmentNum
         } = details
         let attachArr = (attachmentList || []).map(m => {
-          return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.oldAttachmentName.split('.')[0] }
+          return {
+            fileSources: m.fileSources,
+            attachmentId: m.attachmentId,
+            url: m.attachmentPath,
+            name: m.oldAttachmentName,
+            suffix: m.oldAttachmentName.split('.')[0] }
         }) // 处理附件格式
         Object.assign(this, { attachment: attachArr, organName })
         let resAssessmentValidDate = assessmentValidDate
@@ -355,6 +420,9 @@
       } else {
         // 修改布局
         this.formItemLayout = { labelCol: {span: 6}, wrapperCol: {span: 18} }
+      }
+      if ( ['detail', 'approval'].includes(this.type) ){
+        this.queryAssetListByRegisterId()
       }
     },
     watch: {

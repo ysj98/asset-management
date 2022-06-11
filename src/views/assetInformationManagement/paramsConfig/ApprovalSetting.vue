@@ -49,7 +49,7 @@
 <script>
 import {clone} from "lodash";
 
-const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008];
+const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008]; // 1009
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
@@ -87,6 +87,7 @@ export default {
     tabDataSource: {
       handler: function (newValue) {
         this.tData = clone(newValue).filter((ele) => {
+          console.log(approveServiceType.includes(ele.serviceType), ele.serviceType)
           return approveServiceType.includes(ele.serviceType);
         });
       },
@@ -98,7 +99,7 @@ export default {
      * payload {subKey:city,paramKey:province}
      * */
     handleSendData(record, payload) {
-      console.log("payload", payload);
+      console.log("payload", record,payload);
       Object.assign(record.customServiceParamSet, payload);
     },
     /*

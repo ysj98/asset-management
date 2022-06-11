@@ -29,12 +29,11 @@
           <a-icon :style="{ color: '#ffffff' }" type="search" />
         </div>
       </div>
-      <div v-if="false" style="display: inline-block">
-        <button @click="toggle">{{ listFlag ? "收起" : "展开" }}</button>
+      <div style="margin-left: 20px;">
+        <SG-Button type="primary" @click="toggle">{{ listFlag ? "收起" : "展开" }}</SG-Button>
       </div>
     </div>
-    <!--  v-show="listFlag"   -->
-    <div class="asset-land-list" ref="assetLandListRef">
+    <div v-show="listFlag" class="asset-land-list" ref="assetLandListRef">
       <a-spin :spinning="listLoadingFlag">
         <template #indicator>
           <a-icon type="loading" style="font-size: 24px" spin />
@@ -122,7 +121,7 @@ export default {
   },
   data() {
     return {
-      listFlag: false,
+      listFlag: true,
       currentAssetId: "",
       organId: "",
       listLoadingFlag: true,
@@ -262,6 +261,7 @@ export default {
   // TODO:地图遮蔽区域优化
   //background-color: rgba(0, 0, 0, 0.1);
   .content-filter-block {
+    display: flex;
     .select-layer {
       background: #ffffff;
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);

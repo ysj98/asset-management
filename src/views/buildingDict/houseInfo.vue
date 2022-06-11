@@ -143,6 +143,7 @@
     <div class="table-layout-fixed">
       <a-table
         class="custom-table operation"
+        :scroll="{x:'100%',y:600}"
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"
@@ -255,6 +256,7 @@ let columns = [
   {
     title: "房间名称",
     dataIndex: "houseName",
+    width: 300,
     scopedSlots: { customRender: "houseName" }
   },
   {
@@ -265,17 +267,17 @@ let columns = [
   {
     title: "建筑面积(㎡)",
     dataIndex: "area",
-    width: "15%"
+    width: 150
   },
   {
     title: "使用面积(㎡)",
     dataIndex: "useArea",
-    width: "15%"
+    width: 150
   },
   {
     title: "套内面积(㎡)",
     dataIndex: "innerArea",
-    width: "15%"
+    width: 150
   },
   {
     title: "房间状态",

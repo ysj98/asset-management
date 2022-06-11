@@ -107,8 +107,7 @@ import Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
 import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
 import { queryLayerById } from "@/views/mapDrawLand/share";
-import {exportLandDetails} from "api/drawMap";
-import {handleDownloadFile} from "utils/utils";
+import {handleDownloadFile} from "@/utils/utils";
 export default {
   /*
    * 土地资产地图预览
@@ -455,13 +454,10 @@ export default {
       });
       layer.on("click", (e) => {
         const assetId = e.target._assetId
-        this.generateDetailPop({
-          layer,
-          latlng: layer.getBounds().getCenter(),
-          assetId,
-        });
-        this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
-        this.handleClickAsset({assetItemInfo:{assetId}})
+        this.$nextTick(()=>{
+          this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
+          this.handleClickAsset({assetItemInfo:{assetId}},{ needOpenDetailPop: true})
+        })
       });
       layer.on("mouseover", (e) => {
         if (this.autoChaneIngFlag) {

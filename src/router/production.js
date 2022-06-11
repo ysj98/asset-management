@@ -1327,6 +1327,47 @@ let proRouter = [{
     component: () => import('@/views/assetInformationManagement/carPark/CarPrakDetail')
   },
   {
+    path: '/insuranceManagement',
+    name: '保险管理',
+    component: () => import('@/views/insuranceManagement')
+  },
+  {
+    path: '/insuranceManagement/insurancePolicy',
+    name: '资产保险单',
+    component: () => import('@/views/insuranceManagement'),
+    meta: {
+      comname: 'AssetInsurancePolicy'
+    }
+  },
+  {
+    path: '/insuranceManagement/insurancePolicy/addInsurancePolicy',
+    name: '新增',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AddAssetInsurancePolicy')
+  },
+  {
+    path: '/insuranceManagement/insurancePolicy/deit',
+    name: '编辑',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/EditAssetInsurancePolicy')
+  },
+  {
+    path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail',
+    name: '详情',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AssetInsurancePolicyDetail')
+  },
+  {
+    path: '/insuranceManagement/insuranceSchedule',
+    name: '资产保一览表',
+    component: () => import('@/views/insuranceManagement'),
+    meta: {
+      comname: 'AssetInsuranceSchedule'
+    }
+  },
+  {
+    path: '/insuranceManagement/insuranceSchedule/detail',
+    name: '详情',
+    component: () => import('@/views/insuranceManagement/assetInsuranceSchedule/AssetInsuranceScheduleDetail'),
+  }, 
+  {
     path: '/approve',
     name: '通用审批',
     component: () => import('@/views/approve/index.vue'),

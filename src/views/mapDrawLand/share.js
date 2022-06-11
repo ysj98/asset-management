@@ -61,7 +61,7 @@ export function initMap(
     crs: Leaflet.CRS.Simple,
     attributionControl: false,
     zoomControl: false,
-    minZoom: 4,
+    minZoom: 2,
     maxBoundsViscosity: 0.9,
   });
   new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(this.mapInstance);
@@ -148,8 +148,8 @@ export async function queryLayerById({ layerId }) {
 
 export const allBaseFields = [
   {
-    title: "资产项目",
-    key: "projectName",
+    title: "土地名称",
+    key: "assetName",
   },
   {
     title: "资产编码",
@@ -221,8 +221,8 @@ export function getOffsetNum({ mapInstance, latlng, width, height }) {
   }
   if (currentY <= height) {
     console.log("弹窗向下偏移");
-    // 30，20是边距 10是防止弹窗与容器贴和
-    resOffset[1] = height - currentY + 30;
+    // 30，20是边距 70是防止弹窗与容器贴和
+    resOffset[1] = height - currentY + 80;
     // 防止弹窗覆盖图块 向左/右 偏移
     if (currentX > allX / 2) {
       resOffset[0] = Math.min(-(width / 2), resOffset[0]);
