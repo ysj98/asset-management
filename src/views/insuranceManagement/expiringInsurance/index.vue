@@ -96,7 +96,7 @@ export default {
       numarr: ['已到期', '1个月内到期', '3个月内到期', '6个月内到期'],
       tableObj: {
         pagination: false,
-        rowKey: 'insuranceCode',
+        rowKey: 'insuranceId',
         loading: false,
         dataSource: [],
         scroll:{x: '100%'},

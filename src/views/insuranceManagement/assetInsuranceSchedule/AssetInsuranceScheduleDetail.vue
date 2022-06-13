@@ -40,10 +40,11 @@
         <div class="edit-box-content-item">
           <span class="label-name">投保情况：</span>
           <span class="label-value">
-            {{detail.notStarted ? '待承保'+detail.notStarted+',':''}}
-            {{detail.effective ? '已生效'+detail.effective+',':''}}
-            {{detail.terminated ? '已终止'+detail.terminated:''}}
-            {{!detail.notStarted && !detail.notStarted && !detail.notStarted ? '无':''}}
+            <span>{{ detail.info && detail.info.length > 0 && detail.info.join(',') }}</span>
+            <!-- {{detail.notStarted ? '待承保'+detail.notStarted+',':''}}{{ detail.notStarted && detail.effective  ? ',':''}}
+            {{detail.effective ? '已生效'+detail.effective:''}} {{ detail.effective && detail.terminated  ? ',':''}}
+            {{detail.terminated ? '已终止'+detail.terminated:''}} -->
+            {{!detail.effective && !detail.notStarted && !detail.terminated ? '无':''}}
           </span>
         </div>
       </div>
@@ -96,7 +97,12 @@ export default {
   },
   created () {
     this.detail = JSON.parse(this.$route.query.detail)
-    // this.tableObj.dataSource = this.detail.insuranceResDetailList
+    let arr = []
+    this.detail.notStarted ?  arr.push('待承保'+this.detail.notStarted) : arr
+    this.detail.effective ? arr.push('已生效'+this.detail.effective) : arr
+    this.detail.terminated ? arr.push('已终止'+this.detail.terminated): arr
+    this.detail.info = arr 
+    this.tableObj.dataSource = this.detail.insuranceResDetailList
     this.paginationObj.totalCount = this.tableObj.dataSource.length
     this.cloneList = utils.deepClone(this.tableObj.dataSource)
     this.getTable()

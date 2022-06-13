@@ -1356,7 +1356,7 @@ let proRouter = [{
   },
   {
     path: '/insuranceManagement/insuranceSchedule',
-    name: '资产保一览表',
+    name: '资产保险一览表',
     component: () => import('@/views/insuranceManagement'),
     meta: {
       comname: 'AssetInsuranceSchedule'

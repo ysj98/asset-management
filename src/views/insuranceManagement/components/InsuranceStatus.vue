@@ -4,7 +4,7 @@
     style="width: 100%"
     placeholder="请选择状态"
     v-model="status"
-    @select="handleChange"
+    @change="handleChange"
     :options="optionStatus"
     :maxTagCount="1"
   >

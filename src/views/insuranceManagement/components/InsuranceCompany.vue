@@ -4,7 +4,7 @@
     style="width: 100%"
     placeholder="请选择保险公司"
     v-model="companys"
-    @select="handleChange"
+    @change="handleChange"
     :options="options"
     :maxTagCount="1"
   >
