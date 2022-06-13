@@ -349,7 +349,7 @@ export default {
         this.$message.info("必填项不能为空");
         return
       }
-      if(!reg.mobile.test(insurancePhone)){
+      if(insurancePhone && !reg.mobile.test(insurancePhone)){
         this.$message.info("请输入合法手机号码");
         return
       }

@@ -64,6 +64,7 @@
 import InsuranceType from '../components/InsuranceType.vue'
 import InsuranceCompany from '../components/InsuranceCompany.vue'
 import InsuranceStatus from '../components/InsuranceStatus.vue'
+import {utils} from '@/utils/utils.js'
 export default {
   components: {
     InsuranceType, InsuranceCompany, InsuranceStatus
@@ -90,22 +91,31 @@ export default {
         ]
       },
       paginationObj: { pageNo: 1, totalCount: 0, pageLength: 2, location: 'absolute' },
+      cloneList: []
     }
   },
   created () {
     this.detail = JSON.parse(this.$route.query.detail)
-    this.tableObj.dataSource = this.detail.insuranceResDetailList
-    this.getPageInfo()
-    this.tableObj.dataSource.forEach((item,index) => {
-      item.index = index+1
-    })
+    // this.tableObj.dataSource = this.detail.insuranceResDetailList
+    this.paginationObj.totalCount = this.tableObj.dataSource.length
+    this.cloneList = utils.deepClone(this.tableObj.dataSource)
+    this.getTable()
   },
   methods: {
-    getPageInfo(){
-      let count = Math.ceil(this.tableObj.dataSource.length / this.paginationObj.pageLength)
-      this.paginationObj.totalCount = count
+    getTable () {
+      let { paginationObj: {pageNo,pageLength } } = this
+      this.tableObj.dataSource = 
+      this.cloneList.slice((pageNo - 1) * pageLength, pageNo * pageLength)
+      this.tableObj.dataSource.forEach((item,index) => {
+        item.index = index+1
+      })
     },
-    pageChange () {},
+    pageChange (val) {
+      this.paginationObj.pageNo = val.pageNo
+      this.paginationObj.pageLength = val.pageLength
+      this.getTable()
+    },
+
     detailPolicy (row) {
       this.$router.push({path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail', query: { insuranceId:  row.insuranceId }})
     }
