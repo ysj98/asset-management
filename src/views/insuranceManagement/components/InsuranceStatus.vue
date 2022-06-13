@@ -41,7 +41,7 @@ export default {
       if(value === '-1'){
         this.status = ['-1']
       }else{
-        if(this.status.includes('-1') && this.status.length !== this.optionStatus.length - 1){
+        if(this.status.includes('-1')){
           let idx = this.status.indexOf('-1')
           this.status = this.status.splice(idx+1, 1)
         }

@@ -59,7 +59,7 @@ export default {
       if(value === '0'){
         this.companys = ['0']
       }else{
-        if(this.companys.includes('0') && this.companys.length !== this.options.length - 1){
+        if(this.companys.includes('0')){
           let idx = this.companys.indexOf('0')
           this.companys = this.companys.splice(idx+1, 1)
         }

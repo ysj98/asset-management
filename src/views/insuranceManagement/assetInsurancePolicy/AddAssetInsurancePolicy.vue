@@ -140,7 +140,7 @@
               type="all"
               v-model="attachmentList"
               :max="10"
-              :maxSize="80"
+              :maxSize="81920"
               :customDownload="
                 (value) => {
                   return customDownload(value, $api.ownership.downLoadAnnex);
@@ -238,7 +238,7 @@ export default {
           { title: '地址', dataIndex: 'address', ellipsis: true },
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产分类', dataIndex: 'assetCategoryName' },
-          { title: '资产面积（㎡）', dataIndex: 'area' },
+          { title: '资产面积（㎡）', dataIndex: 'assetArea' },
           { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
         ]
       },
@@ -287,7 +287,8 @@ export default {
               });
             });
           }
-          this.form.projectId = projectId
+          // this.form.projectId = projectId
+          console.log(this.form.getFieldsValue(), 'projectId')
           // this.attachmentList = attachmentList
           this.getDetailAssetInfo(this.$route.query.insuranceId)
         }
@@ -466,7 +467,7 @@ export default {
       }
       this.$refs.assetBundlePopover.redactCheckedDataFn(
         this.checkedData,
-        this.form.projectId,
+        this.form.getFieldsValue().projectId,
         '1',
         this.tableObj.dataSource
       );

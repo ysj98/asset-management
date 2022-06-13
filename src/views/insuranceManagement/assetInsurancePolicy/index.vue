@@ -296,4 +296,7 @@ export default {
   .custom-table {
     padding-bottom: 70px;
   }
+  /deep/.overview_num .current_selected:before {
+    border: 0 !important;
+  }
 </style>

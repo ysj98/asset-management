@@ -146,9 +146,11 @@ export default {
       let {insuranceId, paginationObj: {pageNo,pageLength}} = this
       this.$api.assetInsurance.getDetailAssetInfo({ insuranceId: insuranceId, pageNum: pageNo, pageSize: pageLength  })
       .then(res => {
-        console.log(res, 'res')
         if(res.data.code === '0') {
           this.tableObj.dataSource = res.data.data.data
+          this.tableObj.dataSource.forEach((item, index) => {
+            item.index = index+1
+          })
           this.paginationObj.totalCount = res.data.data.count
         }
       }).catch(err => {

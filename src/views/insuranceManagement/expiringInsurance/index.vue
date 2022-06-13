@@ -142,7 +142,8 @@ export default {
         insuranceStatusList: insuranceStatusList,
         insuranceTypeList: insuranceTypeList,
         pageSize: this.paginationObj.pageLength,
-        pageNum: this.paginationObj.pageNo
+        pageNum: this.paginationObj.pageNo,
+        status: '1'
       }
       this.$api.assetInsurance.queryExpiringInsuranceList(data).then(res => {
         if(res.data.code === '0') {
@@ -242,5 +243,8 @@ export default {
   }
   .custom-table {
     padding-bottom: 70px;
+  }
+  /deep/.overview_num .current_selected:before {
+    border: 0 !important;
   }
 </style>
