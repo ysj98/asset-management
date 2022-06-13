@@ -49,8 +49,7 @@ export default {
       })
     },
     handleChange (value) {
-      debugger
-      if(value === '0'){
+      if(value[value.length-1] === '0'){
         this.types = ['0']
       }else{
         if(this.types.includes('0')){

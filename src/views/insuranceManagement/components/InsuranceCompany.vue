@@ -56,7 +56,7 @@ export default {
       })
     },
     handleChange (value) {
-      if(value === '0'){
+      if(value[value.length-1] === '0'){
         this.companys = ['0']
       }else{
         if(this.companys.includes('0')){

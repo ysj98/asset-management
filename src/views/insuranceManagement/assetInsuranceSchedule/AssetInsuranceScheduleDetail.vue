@@ -31,7 +31,7 @@
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">资产地址：</span>
-          <span class="label-value">{{detail.pasitionString || '无'}}</span>
+          <div class="label-value label_div" :title="detail.pasitionString">{{detail.pasitionString || '无'}}</div>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">有无投保：</span>
@@ -91,7 +91,7 @@ export default {
           { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }},
         ]
       },
-      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 2, location: 'absolute' },
+      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
       cloneList: []
     }
   },
@@ -275,6 +275,13 @@ export default {
         display: block;
         border-bottom: 1px solid #e8e8e8;
       }
+    }
+    .label_div {
+      width: 260px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
     }
   }
 </style>

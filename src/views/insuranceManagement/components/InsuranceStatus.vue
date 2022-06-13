@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     handleChange (value) {
-      if(value === '-1'){
+      if(value[value.length-1] === '-1'){
         this.status = ['-1']
       }else{
         if(this.status.includes('-1')){

@@ -340,6 +340,7 @@ export default {
     },
     changeProject (val,val2) {
       this.form.projectId = val
+      this.tableObj.dataSource = []
     },
     change (val, val2) {
       this.rangeValue = val2
