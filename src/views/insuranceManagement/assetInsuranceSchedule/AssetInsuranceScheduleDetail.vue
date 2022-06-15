@@ -23,12 +23,12 @@
           <span class="label-name">资产类型：</span>
           <span class="label-value">{{detail.type && detail.type === '1'?'楼栋':'房屋' || '无'}}</span>
         </div>
-      </div>
-      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">资产分类：</span>
           <span class="label-value">{{detail.objectTypeName || '否'}}</span>
         </div>
+      </div>
+      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">资产地址：</span>
           <div class="label-value label_div" :title="detail.pasitionString">{{detail.pasitionString || '无'}}</div>
@@ -81,7 +81,7 @@ export default {
         dataSource: [],
         columns: [
           { title: '序号', dataIndex: 'index'},
-          { title: '保险单号', dataIndex: 'insuranceId' },
+          { title: '保险单编号', dataIndex: 'insuranceId' },
           { title: '投保人', dataIndex: 'policyHolder' },
           { title: '保险类型', dataIndex: 'insuranceTypeName' },
           { title: '保险公司', dataIndex: 'insuranceCompanyName' },
