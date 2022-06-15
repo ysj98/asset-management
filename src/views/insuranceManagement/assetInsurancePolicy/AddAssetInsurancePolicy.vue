@@ -16,7 +16,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="组织机构名称:">
+          <a-form-item label="组织机构名称:"  class="label_tit">
             <a-input
               :disabled="true"
               v-model="organName"
@@ -65,11 +65,6 @@
             </a-form-item>
           </a-col>
           <a-col :span="8">
-            
-          </a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="8">
             <a-form-item>
               <div slot="label" class="label_tit">
                 保险公司<span>(必填):</span>
@@ -83,6 +78,8 @@
               ></a-select>
             </a-form-item>
           </a-col>
+        </a-row>
+        <a-row :gutter="24">
           <a-col :span="8">
             <a-form-item >
               <div slot="label" class="label_tit">
@@ -106,9 +103,7 @@
               />
             </a-form-item>
           </a-col>
-        </a-row>
-        <a-row>
-          <a-col>
+           <a-col :span="8">
             <a-form-item>
               <div slot="label" class="label_tit">
                 保险有效期<span>(必填):</span>
@@ -123,12 +118,14 @@
             </a-form-item>
           </a-col>
         </a-row>
+
         <a-row>
           <a-col :span="24">
             <a-form-item label="备注">
               <a-textarea
+                maxLength="2000"
                 v-decorator="['remark', {initialValue: form.remark}]"
-                placeholder="请填写备注"
+                placeholder="请填写备注(不超过2000字)"
                 :autoSize="{ minRows: 3, maxRows: 5 }"
               />
             </a-form-item>
@@ -515,5 +512,8 @@ export default {
   }
   .custom-table {
     padding-bottom: 70px;
+  }
+  .sg-datePicker-wrapper {
+    width: 100% !important;
   }
 </style>
