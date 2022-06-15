@@ -23,12 +23,12 @@
           <span class="label-name">投保人：</span>
           <span class="label-value">{{detail.policyHolder || '无'}}</span>
         </div>
-      </div>
-      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">保险公司：</span>
           <span class="label-value">{{detail.insuranceCompanyName || '否'}}</span>
         </div>
+      </div>
+      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">保险公司电话：</span>
           <span class="label-value">{{detail.insurancePhone || '无'}}</span>
