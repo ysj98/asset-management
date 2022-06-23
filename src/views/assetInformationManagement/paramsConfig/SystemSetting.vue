@@ -38,6 +38,7 @@
           @sendData="handleSendData(record, $event)"
           v-bind="record.customServiceParamSet"
           :isValid="record.isValid"
+          :serviceTypeText="record.serviceTypeText"
         ></component>
       </template>
     </a-table>

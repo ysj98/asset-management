@@ -4,7 +4,7 @@
     style="width: 100%"
     placeholder="请选择保险类型"
     v-model="types"
-    @select="handleChange"
+    @change="handleChange"
     :options="options"
     :maxTagCount="1"
   >
@@ -49,10 +49,10 @@ export default {
       })
     },
     handleChange (value) {
-      if(value === '0'){
+      if(value[value.length-1] === '0'){
         this.types = ['0']
       }else{
-        if(this.types.includes('0') && this.types.length !== this.options.length - 1){
+        if(this.types.includes('0')){
           let idx = this.types.indexOf('0')
           this.types = this.types.splice(idx+1, 1)
         }

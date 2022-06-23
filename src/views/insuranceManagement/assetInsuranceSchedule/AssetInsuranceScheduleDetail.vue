@@ -23,15 +23,15 @@
           <span class="label-name">资产类型：</span>
           <span class="label-value">{{detail.type && detail.type === '1'?'楼栋':'房屋' || '无'}}</span>
         </div>
-      </div>
-      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">资产分类：</span>
           <span class="label-value">{{detail.objectTypeName || '否'}}</span>
         </div>
+      </div>
+      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">资产地址：</span>
-          <span class="label-value">{{detail.pasitionString || '无'}}</span>
+          <div class="label-value label_div" :title="detail.pasitionString">{{detail.pasitionString || '无'}}</div>
         </div>
         <div class="edit-box-content-item">
           <span class="label-name">有无投保：</span>
@@ -40,10 +40,11 @@
         <div class="edit-box-content-item">
           <span class="label-name">投保情况：</span>
           <span class="label-value">
-            {{detail.notStarted ? '待承保'+detail.notStarted+',':''}}
-            {{detail.effective ? '已生效'+detail.effective+',':''}}
-            {{detail.terminated ? '已终止'+detail.terminated:''}}
-            {{!detail.notStarted && !detail.notStarted && !detail.notStarted ? '无':''}}
+            <span>{{ detail.info && detail.info.length > 0 && detail.info.join(',') }}</span>
+            <!-- {{detail.notStarted ? '待承保'+detail.notStarted+',':''}}{{ detail.notStarted && detail.effective  ? ',':''}}
+            {{detail.effective ? '已生效'+detail.effective:''}} {{ detail.effective && detail.terminated  ? ',':''}}
+            {{detail.terminated ? '已终止'+detail.terminated:''}} -->
+            {{!detail.effective && !detail.notStarted && !detail.terminated ? '无':''}}
           </span>
         </div>
       </div>
@@ -64,6 +65,7 @@
 import InsuranceType from '../components/InsuranceType.vue'
 import InsuranceCompany from '../components/InsuranceCompany.vue'
 import InsuranceStatus from '../components/InsuranceStatus.vue'
+import {utils} from '@/utils/utils.js'
 export default {
   components: {
     InsuranceType, InsuranceCompany, InsuranceStatus
@@ -79,7 +81,7 @@ export default {
         dataSource: [],
         columns: [
           { title: '序号', dataIndex: 'index'},
-          { title: '保险单号', dataIndex: 'insuranceId' },
+          { title: '保险单编号', dataIndex: 'insuranceId' },
           { title: '投保人', dataIndex: 'policyHolder' },
           { title: '保险类型', dataIndex: 'insuranceTypeName' },
           { title: '保险公司', dataIndex: 'insuranceCompanyName' },
@@ -89,23 +91,37 @@ export default {
           { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }},
         ]
       },
-      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 2, location: 'absolute' },
+      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
+      cloneList: []
     }
   },
   created () {
     this.detail = JSON.parse(this.$route.query.detail)
+    let arr = []
+    this.detail.notStarted ?  arr.push('待承保'+this.detail.notStarted) : arr
+    this.detail.effective ? arr.push('已生效'+this.detail.effective) : arr
+    this.detail.terminated ? arr.push('已终止'+this.detail.terminated): arr
+    this.detail.info = arr 
     this.tableObj.dataSource = this.detail.insuranceResDetailList
-    this.getPageInfo()
-    this.tableObj.dataSource.forEach((item,index) => {
-      item.index = index+1
-    })
+    this.paginationObj.totalCount = this.tableObj.dataSource.length
+    this.cloneList = utils.deepClone(this.tableObj.dataSource)
+    this.getTable()
   },
   methods: {
-    getPageInfo(){
-      let count = Math.ceil(this.tableObj.dataSource.length / this.paginationObj.pageLength)
-      this.paginationObj.totalCount = count
+    getTable () {
+      let { paginationObj: {pageNo,pageLength } } = this
+      this.tableObj.dataSource = 
+      this.cloneList.slice((pageNo - 1) * pageLength, pageNo * pageLength)
+      this.tableObj.dataSource.forEach((item,index) => {
+        item.index = index+1
+      })
     },
-    pageChange () {},
+    pageChange (val) {
+      this.paginationObj.pageNo = val.pageNo
+      this.paginationObj.pageLength = val.pageLength
+      this.getTable()
+    },
+
     detailPolicy (row) {
       this.$router.push({path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail', query: { insuranceId:  row.insuranceId }})
     }
@@ -259,6 +275,13 @@ export default {
         display: block;
         border-bottom: 1px solid #e8e8e8;
       }
+    }
+    .label_div {
+      width: 260px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
     }
   }
 </style>
