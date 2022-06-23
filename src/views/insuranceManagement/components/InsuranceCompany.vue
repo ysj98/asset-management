@@ -4,7 +4,7 @@
     style="width: 100%"
     placeholder="请选择保险公司"
     v-model="companys"
-    @select="handleChange"
+    @change="handleChange"
     :options="options"
     :maxTagCount="1"
   >
@@ -56,10 +56,10 @@ export default {
       })
     },
     handleChange (value) {
-      if(value === '0'){
+      if(value[value.length-1] === '0'){
         this.companys = ['0']
       }else{
-        if(this.companys.includes('0') && this.companys.length !== this.options.length - 1){
+        if(this.companys.includes('0')){
           let idx = this.companys.indexOf('0')
           this.companys = this.companys.splice(idx+1, 1)
         }

@@ -4,7 +4,7 @@
     style="width: 100%"
     placeholder="请选择状态"
     v-model="status"
-    @select="handleChange"
+    @change="handleChange"
     :options="optionStatus"
     :maxTagCount="1"
   >
@@ -38,10 +38,10 @@ export default {
   },
   methods: {
     handleChange (value) {
-      if(value === '-1'){
+      if(value[value.length-1] === '-1'){
         this.status = ['-1']
       }else{
-        if(this.status.includes('-1') && this.status.length !== this.optionStatus.length - 1){
+        if(this.status.includes('-1')){
           let idx = this.status.indexOf('-1')
           this.status = this.status.splice(idx+1, 1)
         }

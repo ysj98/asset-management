@@ -757,7 +757,7 @@ const requiredColumn = [
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType, address,
-          tableObj: { columns }, current, label
+          tableObj: { columns }, current, label, pledge, houseNumber
         } = this
         let form = type === 'exportHouseBtn' ? {
           assetHouseId: buildIdList.join(',')
@@ -771,13 +771,16 @@ const requiredColumn = [
           objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
           sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
           label: label ? label.join('、') : '',
-          uploadAttachment: this.uploadAttachment
+          uploadAttachment: this.uploadAttachment,
+
         }
         if(!this.uploadAttachment) delete form.uploadAttachment
         if(label === '全部资产标签' || !label){
           delete form.label
         }
         if(type === 'exportAssetBtn'){
+          form.pledge = pledge
+          form.houseNumber = houseNumber
           this.$api.assets.exportAssetViewExcelExam(form).then( res1 => {
             if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res1.data.message) }
             if(+res1.data.code === 0){
@@ -801,7 +804,7 @@ const requiredColumn = [
 
           } )
         }else{
-            this.$api.assets[api[type]](form).then(res => {
+          this.$api.assets[api[type]](form).then(res => {
           if(+res1.data.code === -1){ this[type] = false; return this.$message.error(res.data.message) }
           this[type] = false
           if (res.status === 200 && res.data && res.data.size) {

@@ -1,5 +1,9 @@
 import ProvinceCity from "./components/ProvinceCity";
 import SelectApproval from "@/views/assetInformationManagement/paramsConfig/components/SelectApproval";
+import SelectSwitch from "./components/SelectSwitch";
+/*
+* 每个组件中 都要有 sendData 方法
+* */
 import * as apiParamsConfig from "@/api/paramsConfig";
 /*
  * 前端维护一份 对应的数据
@@ -48,7 +52,7 @@ export const serviceTypeAll = {
   },
   1009: {
     serviceTypeText: "资产登记校验权证号",
-    component: ProvinceCity,
+    component: SelectSwitch,
     needValidate: false,
   },
 };

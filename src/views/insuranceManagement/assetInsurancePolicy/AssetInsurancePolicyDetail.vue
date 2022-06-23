@@ -23,12 +23,12 @@
           <span class="label-name">投保人：</span>
           <span class="label-value">{{detail.policyHolder || '无'}}</span>
         </div>
-      </div>
-      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">保险公司：</span>
           <span class="label-value">{{detail.insuranceCompanyName || '否'}}</span>
         </div>
+      </div>
+      <div class="edit-box-content two">
         <div class="edit-box-content-item">
           <span class="label-name">保险公司电话：</span>
           <span class="label-value">{{detail.insurancePhone || '无'}}</span>
@@ -146,9 +146,11 @@ export default {
       let {insuranceId, paginationObj: {pageNo,pageLength}} = this
       this.$api.assetInsurance.getDetailAssetInfo({ insuranceId: insuranceId, pageNum: pageNo, pageSize: pageLength  })
       .then(res => {
-        console.log(res, 'res')
         if(res.data.code === '0') {
           this.tableObj.dataSource = res.data.data.data
+          this.tableObj.dataSource.forEach((item, index) => {
+            item.index = index+1
+          })
           this.paginationObj.totalCount = res.data.data.count
         }
       }).catch(err => {
