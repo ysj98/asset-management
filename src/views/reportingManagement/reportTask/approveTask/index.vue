@@ -103,7 +103,7 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 1600 },
+          scroll: { x: 1600, y: "calc(100vh - 280px)"},
           pagination: false,
           rowKey: 'reportTaskId',
           columns: [
@@ -235,6 +235,17 @@
         .ant-table-thead th {
           white-space: nowrap;
         }
+      }
+      /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+      .ant-table-thead{
+       font-size: 14px;
+       background-color: #fff;
+       border-top: 1px solid #E6EAEF;
+       border-bottom: 1px solid #E6EAEF;
+       box-shadow:0px 2px 6px 0px rgba(66,155,255,0.2);}
       }
     }
   }

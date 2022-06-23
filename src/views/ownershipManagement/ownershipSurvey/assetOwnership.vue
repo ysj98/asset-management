@@ -166,6 +166,7 @@
           </div>
         </div>
       </SearchContainer>
+      <overview-number :numList="numList" />
       <div>
         <a-table
           class="custom-scroll custom-total td-pd10"
@@ -205,6 +206,7 @@
   </div>
 </template>
 <script>
+import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from "@/components/noDataTips";
 import SearchContainer from "@/views/common/SearchContainer";
 import TreeSelect from "@/views/common/treeSelect";
@@ -370,11 +372,20 @@ export default {
     TreeSelect,
     noDataTips,
     segiIcon,
-    EquipmentSelectTree
+    EquipmentSelectTree,
+    OverviewNumber
   },
   data() {
     return {
-      tableScrollOptions: { x: "100%"},
+      numList: [
+        {title: '全部资产 (㎡)', key: 'totalNum', value: 0, fontColor: '#324057'},
+        {title: '房屋资产(㎡)', key: 'houseNum', value: 0, bgColor: '#4BD288'},
+        {title: '土地资产(㎡)', key: 'landNum', value: 0, bgColor: '#1890FF'},
+        {title: '其它资产(㎡)', key: 'otherNum', value: 0, bgColor: '#DD81E6'},
+        {title: '有证资产(㎡)', key: 'certifiedNum', value: 0, bgColor: '#FD7474'},
+        {title: '无证资产(㎡)', key: 'unlicensedNum', value: 0, bgColor: 'gray'}
+      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      tableScrollOptions: { x: "100%", y:300},
       assetClassifyData: [{label: '全部资产分类', value: ''}],
       assetTypeOptions: [],
       ASSET_MANAGEMENT,
@@ -397,6 +408,11 @@ export default {
       }
     };
   },
+  watch: {
+    toggle (val) {
+      this.tableScrollOptions.y = val ? 190 : 360
+    }
+  },
   computed:{
     isSelectedEquipment(){
       const assetTypeArr = this.queryCondition.assetTypes
@@ -408,11 +424,42 @@ export default {
     this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
     this.platformDictFn("asset_type");
     handleTableScrollHeight(this.tableScrollOptions, 530)
+    this.tableScrollOptions.y = 190
   },
   mounted() {
     handleTableHeaderScrollHeight(this.$refs.table.$el)
   },
   methods: {
+    listStatis () {
+      this.table.loading = true
+      let data = {
+        ...this.queryCondition,
+        flag: "0"
+      };
+      data.ownershipStatuss = data.ownershipStatuss.join(',')
+      data.kindOfRights = data.kindOfRights.join(',')
+      data.statuss = data.statuss.join(',')
+      data.assetTypes[0] === '' ? data.assetTypes = [] : data.assetTypes.join(',')
+      data.objectTypes[0] === '' ? data.objectTypes = [] : data.objectTypes.join(',')
+      this.$api.basics.listStatis(data).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.numList[0].value = data.totalNum
+          this.numList[1].value = data.houseNum
+          this.numList[2].value = data.landNum
+          this.numList[3].value = data.otherNum
+          this.numList[4].value = data.certifiedNum
+          this.numList[5].value = data.unlicensedNum
+          this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.numList.forEach(item => {
+            item.value = 0
+          })
+          this.table.loading = false
+        }
+      })
+    },
     queryOwnershipCardTableTotal(form){
       this.$api.basics.statistics(form).then(({data:{code,message,data}})=>{
         if (code==="0"){
@@ -600,6 +647,7 @@ export default {
     searchQuery() {
       this.queryCondition.pageNum = 1;
       this.query();
+      this.listStatis()
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;

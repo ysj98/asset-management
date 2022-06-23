@@ -39,7 +39,7 @@
       <!-- class="custom-table td-pd10 eliminate-table" -->
       <a-table
         class="custom-tables"
-        :scroll="{ x: 2700}"
+        :scroll="{ x: 2700, y: 405}"
         bordered
         :loading="table.loading"
         :pagination="false"
@@ -397,10 +397,20 @@ export default {
       white-space: nowrap;
     }
     tr:last-child {
+      height: 151px !important;
       font-weight: bold;
     }
   }
+     /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+    }
+    
 }
+/deep/ .ant-table-header{
+      height: 100% !important;
+    }
 </style>
 
 <style lang='less'>

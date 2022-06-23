@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2021-05-25 14:45:09
+ * @LastEditTime: 2022-06-18 15:17:39
  * @Description: 房屋名称
 -->
 <template>
@@ -13,6 +13,7 @@
     :noPadding="true"
     @cancel="cancel"
   >
+  <overview-number :numList="numList" />
     <div class="housingDetails m15">
       <div class="mt10 mb10">
         <div style="text-align: right;" v-if="this.record.type === 1">
@@ -93,6 +94,7 @@
 
 <script>
 import noDataTips from '@/components/noDataTips'
+import OverviewNumber from 'src/views/common/OverviewNumber'
 import { utils } from "@/utils/utils";
 const unitOpt = [{ label: "全部单元", value: "" }]
 const floorOpt = [{ label: "全部楼层", value: "" }]
@@ -115,7 +117,7 @@ const columns = [
   { title: '租户名称', dataIndex: 'lessee', width: 100 }
 ]
 export default {
-  components: {noDataTips},
+  components: {noDataTips, OverviewNumber},
   props: {
     record: {
       type: Object,
@@ -124,6 +126,10 @@ export default {
   },
   data () {
     return {
+      numList: [
+        {title: '房间面积(㎡)', key: 'areaNum', value: 0, bgColor: '#FD7474'},
+        {title: '可租面积(㎡)', key: 'rentableAreaNum', value: 0, bgColor: '#FE0974'}
+      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       allStyle: 'width: 170px; margin-left: 10px;',
       loading: false,
       status: false,
@@ -212,21 +218,30 @@ export default {
       * type 1 楼栋
       * type 2 房屋
       * */
+      let totalFn = this.$api.building.queryHouseStatisV2
       let apiFn = this.$api.building.queryHouseByPageV2
       if (this.isHouse){
         apiFn = this.$api.building.queryHouseByPageV3
+        totalFn = this.$api.building.queryHouseStatisV3
       }
       this.loading = true
       let obj = {
-        organId: this.record.organId,
-        buildId: this.record.buildId,
+        organId: !this.record.organId || '67',
+        buildId: !this.record.buildId || '116028205',
         unitId: this.queryCondition.unitId,              // 单元ID
         floorId: this.queryCondition.floorId,            // 楼层ID
         status: this.queryCondition.houseStatus,         // 房屋状态
-        houseId: this.queryCondition.houseId,             // 房号
+        houseId: '',//this.queryCondition.houseId,             // 房号
         pageNum: this.queryCondition.pageNum,            // 当前页
         pageSize: this.queryCondition.pageSize           // 每页显示记录数
       }
+      this.totalData = {areaNum: '', rentableAreaNum: ''}
+      totalFn(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.numList[0].value = res.data.data.areaNum
+          this.numList[1].value = res.data.data.rentableAreaNum
+        }
+      })
       apiFn(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = []
@@ -248,6 +263,7 @@ export default {
           }
           this.loading = false
         } else {
+          //this.tableData = this.tableData.length ? this.tableData.concat({...pageSum,projectName: '当前页-合计', key: Date.now()}, {...this.sumObj,projectName: '所有页-合计', key: Date.now()+100}) : []
           this.$message.error(res.data.message)
           this.loading = false
         }

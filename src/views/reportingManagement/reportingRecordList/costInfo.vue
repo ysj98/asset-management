@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-10-19 16:51:58
+ * @LastEditTime: 2022-06-21 17:23:17
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -38,7 +38,7 @@
      <!-- class="table-layout-fixed" -->
     <div>
      <a-table
-      :scroll="{ x: 3500 }"
+      :scroll="{ x: 3500, y: scrollHeight }"
       :loading="loading"
       :columns="columns"
       :dataSource="tableData"
@@ -207,6 +207,7 @@ export default {
   props: {},
   data () {
     return {
+      scrollHeight: 320,
       toggle: false,
       ASSET_MANAGEMENT,
       isChild: false,
@@ -428,6 +429,9 @@ export default {
     },
   },
   watch: {
+    toggle (val) {
+      this.scrollHeight = val ? 450 : 320
+    },
     '$route' () {
       if (this.$route.path === '/reportingList' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
@@ -471,5 +475,10 @@ export default {
     color: #0084FF;
     cursor: pointer;
   }
+  /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+    }
 }
 </style>

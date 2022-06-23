@@ -148,6 +148,7 @@
             :customDownload="customDownload"
             @update="handleChangeFile"
             @delete="handleChangeFile"
+            :isCustom="true"
           />
         </a-form-item>
       </a-col>

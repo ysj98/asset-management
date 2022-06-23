@@ -462,7 +462,7 @@
           rowKey: 'projectId',
           loading: false,
           dataSource: [],
-          scroll: { x: "100%" },
+          scroll: { x: "100%", y: 300 },
           columns: []
         },
         numList: [
@@ -650,11 +650,15 @@
       // 初始化Table列头
       initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
       handleTableScrollHeight(this.tableObj.scroll)
+      this.tableObj.scroll.y = 280
     },
     mounted() {
       handleTableHeaderScrollHeight(this.$refs.table.$el)
     },
     watch: {
+      fold(val) {
+        this.tableObj.scroll.y = val ? 280 : 420
+      },
       organProjectValue: {
         handler: function (val, pre) {
           !pre.organId && this.queryTableData({type: 'search'})

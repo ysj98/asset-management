@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2021-06-03 14:20:36
+ * @LastEditTime: 2022-06-21 17:08:48
  -->
 <template>
   <div>
@@ -102,7 +102,7 @@
           class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{x:4500}"
+          :scroll="{x:4500, y: scrollHeight}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -316,6 +316,7 @@ export default {
   },
   data() {
     return {
+      scrollHeight: 330,
       ASSET_MANAGEMENT,
       moment,
       toggle: true,
@@ -336,6 +337,11 @@ export default {
   },
   created() {
   },
+  watch: {
+    toggle (val) {
+      this.scrollHeight = val ? 330 : 460
+    }
+  },
   methods: {
     query() {
       let data = {
@@ -353,7 +359,6 @@ export default {
         res => {
           this.table.loading = false;
           if (res.data.code === "0") {
-            let result = res.data.data.data || [];
             this.table.dataSource = result.map(item => {
               item.taskTypeName = item.taskTypeName || '--'
               item.objId = item.objId || item.objectId || '-'
@@ -517,4 +522,10 @@ export default {
     overflow-x: auto !important;
     width: 100%;
   }
+  /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+    }
+    
 </style>

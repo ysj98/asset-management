@@ -112,7 +112,7 @@
             :columns="table.columns"
             :dataSource="table.dataSource"
             :locale="{emptyText: '暂无数据'}"
-            :scroll="{x: 1200}"
+            :scroll="{x: 1200, y: scrollHeight}"
         >
           <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
@@ -197,6 +197,7 @@ export default {
   },
   data() {
     return {
+      scrollHeight: '346px',
       exportPower: false,
       listConfigPower: false,
       downloadPower: false,
@@ -258,6 +259,13 @@ export default {
         this.query();
       }
     },
+    toggle (val) {
+      if (val) {
+        this.scrollHeight = '220px'
+      } else {
+        this.scrollHeight = '346px'
+      }
+    }
   },
   mounted() {
     this.init()
@@ -629,7 +637,12 @@ export default {
 </script>
 <style lang="less" scoped>
 .custom-table {
-  padding-bottom: 40px;
+  //padding-bottom: 40px;
+  /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+    }
 }
 .top-search-one {
   padding: 20px;

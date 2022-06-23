@@ -45,7 +45,7 @@
         :dataSource="dataSource"
         class="custom-table td-pd10"
         :pagination="false"
-        :scroll="{ x: 1900 }">
+        :scroll="{ x: 1900, y:400 }">
         <template slot="operation" slot-scope="text, record">
           <a
             v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'"
@@ -173,6 +173,7 @@ export default {
   },
   data () {
     return {
+      scroll: {x: 1000, y: 300},
       ASSET_MANAGEMENT, // 权限对象
       allStyle: 'width: 170px; margin-right: 10px;',
       organId: '',
@@ -356,5 +357,18 @@ export default {
         font-weight: bold;
       }
     }
+    
+    /deep/.ant-table-fixed {
+      padding: 9px 0 6px 6px;
+      background-color: #fff;
+      color: #49505E;
+      .ant-table-thead{
+    font-size: 14px;
+    background-color: #fff;
+    border-top: 1px solid #E6EAEF;
+    border-bottom: 1px solid #E6EAEF;
+    box-shadow:0px 2px 6px 0px rgba(66,155,255,0.2);}
+    }
   }
 </style>
+

@@ -102,6 +102,8 @@ export const basics = {
   // 土地信息文档模板下载
   landDownLoadExcel:
     "/basic-data-batch-api/rest-api/v1/ams/blankApi/downLoadExcel",
+  // 根据项目查询项目业态
+  queryCommunityTypeInfo: "/basic-data-api/rest-api/v1/community/queryCommunityTypeInfo"
 };
 
 // 资产管理
@@ -721,6 +723,10 @@ export const building = {
   // 根据communitId和positionType查询具体资源
   positionSelectAsynByOwnership:
     "/basic-data-api/rest-api/v1/positionApi/positionSelectAsynByOwnership",
+  // 分页查询房屋信息统计V3
+  queryHouseStatisV3: '/ams/houseApi/queryHouseStatisV3',
+  // 分页查询房屋信息统计V2
+  queryHouseStatisV2: '/ams/houseApi/queryHouseStatisV2',
 };
 
 // 权属概况
@@ -747,6 +753,8 @@ export const ownershipSurvey = {
   queryByProjectId: "/ams/ownerShip/queryByProjectId",
   // 资产项目权属汇总
   statistics: "/ams/ownerShip/attr/asset/statistics",
+  // 资产权属列表统计
+  listStatis: "/ams/ownerShip/attr/asset/listStatis"
 };
 
 export const ownership = {
@@ -1094,6 +1102,8 @@ export const tableManage = {
   getAssetCount: "/ams/statistics/getAssetCount",
   // 资产项目查询导出
   exportAssetProject: "/ams/statistics/exportAsset",
+  // 查询资产分类统计明细
+  queryAssetTypeDetailTotal: '/ams/statistics/queryAssetTypeDetailTotal',
   // 房屋资产统计分析-查询列表
   queryAssetHouseList: "/ams/statistics/asset-house/pageList",
   // 房屋资产统计分析-查询列表（导出）

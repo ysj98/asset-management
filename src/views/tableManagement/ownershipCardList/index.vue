@@ -110,7 +110,7 @@
         ASSET_MANAGEMENT, // 权限对象
         queryObj: {
           ownerFlag: '',  // 权证归属
-          status: '', // 查询条件-权属状态
+          status: '1', // 查询条件-权属状态
           warrantNbr: '', // 查询条件-权证号
           kindOfRight: '', // 查询条件-权属类型
           obligeeId: '', // 查询条件-权属人
@@ -135,7 +135,7 @@
         ], // 概览数据，title 标题，value 数值，color 背景色
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
-          scroll: { x: "100%", y: 600 },
+          scroll: { x: "100%", y: 200 },
           pagination: false,
           rowKey: 'warrantId',
           loading: false,
@@ -147,6 +147,7 @@
     created () {
       this.queryType()
       handleTableScrollHeight(this.tableObj.scroll)
+      this.tableObj.scroll.y = 296
       initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
     },
     mounted() {
@@ -268,6 +269,9 @@
     },
 
     watch: {
+      toggle (val) {
+        this.tableObj.scroll.y = val ? 416 : 296
+      },
       organProjectValue: function (val, pre) {
         val.organId !== pre.organId && this.queryOwner(val.organId)
         this.queryTableData({})

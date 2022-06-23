@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2021-02-01 17:41:10
+ * @LastEditTime: 2022-06-23 15:34:26
  * @Description: 土地资产视图
 -->
 <template>
@@ -140,13 +140,13 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" isEmit @click="handleClickOverview"/>
     </a-spin>
-    <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
+    <!-- <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}"> -->
+      <div>
       <a-table
         :scroll="scroll"
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
-        class="custom-table table-boxs"
         :pagination="false"
         >
         <template slot="landArea" slot-scope="text">
@@ -220,7 +220,7 @@ import { getFormat } from "@/utils/utils";
 const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
-  { title: '资产名称', dataIndex: 'assetName', width: 150, disabled: true },
+  { title: '资产名称', dataIndex: 'assetName', width: 150, disabled: true, fixed: 'left'},
   { title: '资产编码', dataIndex: 'assetCode', width: 150, disabled: true },
   { title: '管理机构', dataIndex: 'organName', width: 150, disabled: true },
   { title: '宗地号', dataIndex: 'theNo', width: 150 },
@@ -248,7 +248,7 @@ const columnsData = [
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150, scopedSlots: { customRender: 'marketValue' } },
   { title: '批准日期', dataIndex: 'approvalDate', width: 150 },
   { title: '资产状态', dataIndex: 'statusName', width: 150 },
-  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 70}
+  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right'}
 ]
 const approvalStatusData = [
   { name: '全部状态', value: ''},
@@ -291,7 +291,7 @@ export default {
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: {x: columnsData.length * 150},
+      scroll: {x: 1200, y: 285},
       numList: [
         {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
         {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
@@ -361,6 +361,11 @@ export default {
     }
   },
   computed: {
+  },
+  watch: {
+    toggle(val){
+      this.scroll.y = val ? 285 : 425
+    }
   },
   methods: {
     // 查询和导出使用
@@ -470,7 +475,9 @@ export default {
         }
       })
       this.columns = arr
-      this.scroll = {x: this.columns.length * 150}
+      this.scroll = {x: this.columns.length * 150 - 60, y: 'calc(100vh - 481px)'}
+      console.log(222222222, this.columns)
+      console.log(222222222, this.scroll)
       this.modalShow = false
     },
     // 组织机构树
@@ -641,7 +648,7 @@ export default {
               item.key = index
               item.ownershipStatusName = String(item.ownershipStatus) ? this.ownershipStatusObj[String(item.ownershipStatus)] : ''
             })
-            this.tableData = data
+            this.tableData = [...data, data[0], data[0], data[0], data[0]]
             this.count = res.data.data.count
             this.totalFn(obj)
           } else {
@@ -719,6 +726,7 @@ export default {
   },
   mounted () {
     this.columns = this.columns.filter(ele=>!ele.defaultHide)
+    this.scroll = {x: 1200 , y: 'calc(100vh - 481px)'}
   }
 }
 </script>
@@ -734,7 +742,7 @@ export default {
     margin-left: 10px;
   }
   .custom-table {
-    padding-bottom: 60px;
+    //padding-bottom: 60px;
     & /deep/ table {
       tr:last-child, tr:nth-last-child(1) {
         font-weight: bold;

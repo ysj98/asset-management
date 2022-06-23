@@ -367,6 +367,15 @@ export default {
   mounted() {
     this.platformDictFn("asset_type");
   },
+  // 路由卫士，用于新建、编辑、审批成功后刷新列表
+    beforeRouteEnter ({query: {refresh}}, {path}, next) {
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        if ((path === '/rentRegister/rentAdd' || path === '/rentRegister/rentEdit' || path === '/rentRegister/rentApproval') && refresh) {
+          vm.allQuery()
+        }
+      })
+    },
   methods: {
     query(type) {
       let obj = {

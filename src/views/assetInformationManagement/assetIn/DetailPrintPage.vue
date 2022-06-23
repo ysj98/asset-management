@@ -1,3 +1,11 @@
+<!--
+ * @Author: LDC
+ * @Date: 2022-06-09 15:08:00
+ * @LastEditTime: 2022-06-22 14:49:56
+ * @Description: 
+ * 
+ * 
+-->
 <script>
 import DetailPage from "./DetailPage.vue";
 export default {
@@ -16,7 +24,6 @@ export default {
     const detailNode = document.querySelector(".detail_page");
     const allHeight = document.body.scrollHeight;
     detailNode.height = `${allHeight}px`;
-
     // 取消 table scroll 属性
     this.tableObj.scroll = {};
   },

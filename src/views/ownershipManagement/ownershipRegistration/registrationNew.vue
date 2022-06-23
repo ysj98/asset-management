@@ -310,6 +310,7 @@ export default {
     },
     // 选择权证给回来的数据
     chooseWarrantsStatus (val, data, roeNameData, selectKey) {
+      console.log(data)
       let warrantNbrDataIs = [{label: roeNameData.join(','), value: val.join(',')}]
       this.tableData.forEach((item, index) => {
         if (item.key === selectKey) {
@@ -573,7 +574,6 @@ export default {
               })
             })
           }
-          let arr = []
           for (let i = 0; i < this.tableData.length; i++) {
             if (String(this.changeType) !== '3') {
               if (!this.tableData[i].warrantNbr) {
@@ -582,44 +582,79 @@ export default {
               }
             }
           }
-          this.tableData.forEach(item => {
-            arr.push({
-              projectId: Number(item.projectId),        // 资产项目Id
-              organId: this.organId,
-              assetType: item.assetType,                // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
-              warrantNbr: item.warrantNbrData.length > 0 ? item.warrantNbrData[0].label : '',
-              assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
+          let array = []
+          this.tableData.map(item => {
+            let assetArea = item.assetArea
+            let buildArea = 0
+            console.log(assetArea)
+            item.warrantGeneralData.map(e => {
+              console.log(e.buildArea)
+              buildArea += e.buildArea
+              console.log(buildArea)
             })
-          })
-          let obj = {
-            registerName: values.registerName,                          // 登记单名称
-            remark: values.remark,                                      // 备注
-            ownershipHandleId: '',                                      // 权属办理任务ID
-            registerType: values.registerType,                          // 登记类型Id
-            assetType: values.assetType,                                // 资产类型
-            projectId: Number(values.projectId),                        // 资产项目Id
-            organId: Number(values.organId),                            // 组织机构id
-            approvalStatus: str === 'draft' ? 0 : 1,                    // 0:草稿 1:已审核
-            registerId: this.registerId,                                // 权属登记Id(空为新增，不为空为编辑)
-            attachmentList: files,                                          // 附件
-            ownershipRegisterDetailList: arr
-          }
-          console.log(obj)
-          let loadingName = this.SG_Loding('保存中...')
-          this.$api.ownership.saveOrUpdate(obj).then(res => {
-            if (Number(res.data.code) === 0) {
-              this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success('提交成功')
-                this.$router.push({path: '/ownershipRegistration', query: {refresh: true}})
-              })
-            } else {
-              this.DE_Loding(loadingName).then(() => {
-                this.$message.error(res.data.message)
-              })
+            console.log(assetArea, buildArea)
+            if (assetArea !== buildArea) {
+              array.push(item.assetName)
             }
           })
+          if (array.length) {
+            let tips = array.join('、') + '与权证的面积不一致，确定登记吗？'
+            this.$SG_Message.confirmDelete({
+              content: tips,
+              confirmText: '确定',
+              onConfirm: () => {
+                this.submitData(str, values, files)
+              },
+              onCancel: () => {
+                return
+              }
+            })
+          } else {
+            this.submitData(str, values, files)
+          }
+          
         }
       })
+    },
+    // 提交数据
+    submitData (str, values, files) {
+      let arr = []
+      this.tableData.forEach(item => {
+           arr.push({
+             projectId: Number(item.projectId),        // 资产项目Id
+             organId: this.organId,
+             assetType: item.assetType,                // 登记类型 1:楼栋，2房间，3构筑物，4土地，5设备  item.assetType
+             warrantNbr: item.warrantNbrData.length > 0 ? item.warrantNbrData[0].label : '',
+             assetObjectId: item.assetObjectId,  // 资产对象Id 为1和2时，asset_object_id对应的ams_asset_house表asset_house_id
+           })
+         })
+         let obj = {
+           registerName: values.registerName,                          // 登记单名称
+           remark: values.remark,                                      // 备注
+           ownershipHandleId: '',                                      // 权属办理任务ID
+           registerType: values.registerType,                          // 登记类型Id
+           assetType: values.assetType,                                // 资产类型
+           projectId: Number(values.projectId),                        // 资产项目Id
+           organId: Number(values.organId),                            // 组织机构id
+           approvalStatus: str === 'draft' ? 0 : 1,                    // 0:草稿 1:已审核
+           registerId: this.registerId,                                // 权属登记Id(空为新增，不为空为编辑)
+           attachmentList: files,                                          // 附件
+           ownershipRegisterDetailList: arr
+         }
+         console.log(obj)
+         let loadingName = this.SG_Loding('保存中...')
+         this.$api.ownership.saveOrUpdate(obj).then(res => {
+           if (Number(res.data.code) === 0) {
+             this.DE_Loding(loadingName).then(() => {
+               this.$SG_Message.success('提交成功')
+               this.$router.push({path: '/ownershipRegistration', query: {refresh: true}})
+             })
+           } else {
+             this.DE_Loding(loadingName).then(() => {
+               this.$message.error(res.data.message)
+             })
+           }
+         })
     },
     // 取消
     cancel () {

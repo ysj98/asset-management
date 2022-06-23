@@ -152,10 +152,10 @@
       </a-spin>
       <div class="table-layout-fixed">
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table "
           :loading="table.loading"
           :pagination="false"
-          :scroll="{ x: 1400 }"
+          :scroll="{ x: 1400, y: scrollHeight }"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{ emptyText: '暂无数据' }"
@@ -221,6 +221,7 @@ export default {
   },
   data() {
     return {
+      scrollHeight: 290,
       hasRegisterViewExport: false, // 导出权限
       allStyle,
       allWidth,
@@ -248,6 +249,15 @@ export default {
         pagination: false,
         loading: false,
       },
+    }
+  },
+  watch: {
+    toggle (val) {
+      if (val) {
+        this.scrollHeight = 290
+      } else {
+        this.scrollHeight = 422
+      }
     }
   },
   computed:{

@@ -49,7 +49,7 @@
       <!--资产明细-->
       <SG-Title title="资产明细"/>
       <div style="margin-left: 45px">
-        <a-table v-bind="tableObj" class="custom-table td-pd10 table-border table-print"/>
+        <a-table v-bind="tableObj" class="custom-table td-pd10 table-border "/>
         <SG-FooterPagination
           class="footer-pagination"
           v-if="tableObj.dataSource.length"
@@ -77,7 +77,7 @@
       </div>
     </a-spin>
     <!-- v2.2.2版本不上 入库打印功能   -->
-    <a-button v-if="false" @click="printFn" type="primary" class="print">打印</a-button>
+    <a-button  @click="printFn" type="primary" class="print">打印</a-button>
   </div>
 </template>
 

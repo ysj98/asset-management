@@ -217,7 +217,7 @@
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
-    <SG-Modal
+    <!-- <SG-Modal
       v-bind="modalObj"
       v-model="modalObj.status"
       @ok="handleModalOk"
@@ -231,7 +231,8 @@
         :columns="tableObj.initColumns"
       />
       <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef"/>
-    </SG-Modal>
+    </SG-Modal> -->
+    <TableHeaderSettings v-if="modalObj.status" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -249,6 +250,37 @@
   import EditTag from './components/editTag.vue'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
   import { throttle } from '@/utils/utils'
+  import TableHeaderSettings from 'src/components/TableHeaderSettings'
+  import { handleTableScrollHeight,handleTableHeaderScrollHeight,initTableColumns } from '@/utils/share.js'
+const detailColumns = [
+  { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+  { title: '管理机构', dataIndex: 'ownerOrganName', width: 150 },
+  { title: '资产项目', dataIndex: 'projectName', width: 300 },
+  { title: '资产位置', dataIndex: 'address', width: 300 },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
+  { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, width: 200 },
+  { title: '车场类型', dataIndex: 'objectTypeName', scopedSlots: { customRender: 'objectTypeName' }, width: 120 },
+  { title: '区域', dataIndex: 'parkingAreaName', scopedSlots: { customRender: 'parkingAreaName' }, width: 150 },
+  { title: '资产形态', dataIndex: 'typeName', width: 100 },
+  { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+  { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '接管日期', dataIndex: 'ownerTime', width: 150  },
+  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
+  { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
+  { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
+  { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
+  { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
+  { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
+  { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
+  { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
+  { title: '资产状态', dataIndex: 'statusName', width: 100 },
+  { title: '资产标签', dataIndex: 'label', width: 150},
+]
+const requiredColumn = [
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
+]
   const judgment = [undefined, null, '']
   // const supportMaterialOpt = [
   //   { label: "全部证件情况", value: "" },
@@ -284,10 +316,13 @@
       OrganProjectBuilding, 
       NoDataTip, 
       tooltipText, 
-      EditTag
+      EditTag,
+      TableHeaderSettings
     },
     data () {
       return {
+        extraHeight: '0px',
+        funType: 16,
         // uploadAttachment: '',
         // attachmentStatus,
         getFormat,
@@ -323,7 +358,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 3500 },
+          scroll: { x: 3500, y: `calc(100vh - 480px)` },
           columns: [
             { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
             { title: '资产编码', dataIndex: 'assetCode', width: 150 },
@@ -411,7 +446,15 @@
           }
         }
       },
-
+      fold (val) {
+        console.log(val)
+        if (val) {
+          this.tableObj.scroll.y = 'calc(100vh -  480px)'
+        } else {
+          this.tableObj.scroll.y = 'calc(100vh -  340px)'
+        }
+        
+      }
       // 全选与其他选项互斥处理
       // status: function (val) {
       //   if (val && val.length !== 1 && val.includes('all')) {
@@ -429,10 +472,18 @@
       this.queryNodesByRootCode()
     },
     created () {
-      this.initHeader()
+      //this.initHeader()
+      initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
     },
 
     methods: {
+      handleTableHeaderSuccess () {
+      this.changeListSettingsModal(false)
+      initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
+    },
+      changeListSettingsModal (val) {
+        this.modalObj.status = val
+      },
       // 选择附件上传状态
       // attachmentStatusFn (val){
       //   console.log(val)
@@ -789,7 +840,7 @@
 
 <style lang='less' scoped>
   .custom-table {
-    padding-bottom: 70px;
+    //padding-bottom: 70px;
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table {
@@ -801,6 +852,11 @@
       tr:last-child, tr:nth-last-child(1) {
         font-weight: bold;
       }
+    }
+    /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
     }
   }
   /deep/ .sg-FooterPagination{

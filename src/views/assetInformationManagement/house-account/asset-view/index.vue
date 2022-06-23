@@ -224,7 +224,7 @@
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
-    <SG-Modal
+    <!-- <SG-Modal
       v-bind="modalObj"
       v-model="modalObj.status"
       @ok="handleModalOk"
@@ -240,11 +240,13 @@
       />
       <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef"/>
       <edit-pledge v-if="modalType === 3 && modalObj.status" :options="pledgeList" ref="pledgeRef"/>
-    </SG-Modal>
+    </SG-Modal> -->
+    <TableHeaderSettings v-if="modalObj.status" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
 <script>
+  import TableHeaderSettings from 'src/components/TableHeaderSettings'
   import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   import ProvinceCityDistrict from 'src/views/common/ProvinceCityDistrict'
   import SearchContainer from 'src/views/common/SearchContainer'
@@ -259,6 +261,7 @@
   import EditPledge from './components/components/EditPledge.vue'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
   import { throttle } from '@/utils/utils'
+  import { handleTableScrollHeight,handleTableHeaderScrollHeight,initTableColumns } from '@/utils/share.js'
   const judgment = [undefined, null, '']
   const supportMaterialOpt = [
     { label: "全部证件情况", value: "" },
@@ -284,9 +287,66 @@
     // { label: "正常", value: 1 },
     // { label: "异常", value: 0 },
   ]
+  const detailColumns = [
+  { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
+            { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+            { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
+            { title: '宗地号', dataIndex: 'addressNo', width: 150 },
+            { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
+            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
+            { title: '产证附件状态', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },
+            { title: '地理位置', dataIndex: 'address', width: 300 },
+            { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
+            { title: '单元', dataIndex: 'unitName', width: 100 },
+            { title: '楼层', dataIndex: 'floor', width: 100 },
+            { title: '层高', dataIndex: 'floorHeight', width: 100 },
+            { title: '分类', dataIndex: 'objectTypeName', width: 100 },
+            { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
+            { title: '用途', dataIndex: 'useType', width: 100 },
+            { title: '资产形态', dataIndex: 'typeName', width: 100 },
+            { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
+            { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
+            { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+            { title: '权属人', dataIndex: 'obligeeName', width: 100 },
+            { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
+            { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
+            { title: '房产证起始时间', dataIndex: 'houseStartDate', width: 150 },
+            { title: '房产证截止时间', dataIndex: 'houseEndDate', width: 150 },
+            { title: '房产证使用年限', dataIndex: 'houseProveLife', width: 150 },
+            { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
+            { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
+            { title: '接管时间', dataIndex: 'startDate', width: 150  },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
+            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
+            { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
+            { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
+            { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
+            { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
+            { title: '资产状态', dataIndex: 'statusName', width: 100 },
+            { title: '物业管理单位', dataIndex: 'organManagement', width: 150 },
+            { title: '物业缴费期限', dataIndex: 'organPayDeadline', width: 150 },
+            { title: '物业费', dataIndex: 'organFee', width: 100 },
+            { title: '已租面积', dataIndex: 'rentedArea', width: 100, scopedSlots: { customRender: 'rentedArea' } },
+            { title: '未租面积', dataIndex: 'unRentedArea', width: 100, scopedSlots: { customRender: 'unRentedArea' } },
+            { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150, scopedSlots: { customRender: 'fireMaterial' }},
+            { title: '资产标签', dataIndex: 'label', width: 150},
+            { title: '竣工日期', dataIndex: 'completionDate', width: 300},
+            { title: '楼龄', dataIndex: 'buildAge', width: 150},
+            { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150},
+            { title: '产权证土地面积(㎡)', dataIndex: 'landArea', width: 150},
+            { title: '产权证土地用途', dataIndex: 'landUse', width: 150},
+            { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
+            { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
+            { title: '质押情况', dataIndex: 'pledge', width: 120},
+]
+const requiredColumn = [
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
+]
   export default {
     name: 'index',
-    components: { EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
+    components: { TableHeaderSettings, EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
         pledge: undefined, // 质押情况
@@ -294,6 +354,7 @@
           { label: "有质押", value: 1 },
           { label: "无质押", value: 0 },
         ],
+        funType: 14,
         houseNumber: '',
         uploadAttachment: '',
         attachmentStatus,
@@ -330,65 +391,8 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 'max-content' },
-          columns: [
-            { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
-            { title: '资产编码', dataIndex: 'assetCode', width: 150 },
-            { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
-            { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-            { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
-            { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
-            { title: '产证附件状态', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },
-            { title: '地理位置', dataIndex: 'address', width: 300 },
-            { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
-            { title: '单元', dataIndex: 'unitName', width: 100 },
-            { title: '楼层', dataIndex: 'floor', width: 100 },
-            { title: '层高', dataIndex: 'floorHeight', width: 100 },
-            { title: '分类', dataIndex: 'objectTypeName', width: 100 },
-            { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
-            { title: '用途', dataIndex: 'useType', width: 100 },
-            { title: '资产形态', dataIndex: 'typeName', width: 100 },
-            { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
-            { title: '权属状态', dataIndex: 'ownershipStatusName', width: 100 },
-            { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
-            { title: '权属人', dataIndex: 'obligeeName', width: 100 },
-            { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
-            { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
-            { title: '房产证起始时间', dataIndex: 'houseStartDate', width: 150 },
-            { title: '房产证截止时间', dataIndex: 'houseEndDate', width: 150 },
-            { title: '房产证使用年限', dataIndex: 'houseProveLife', width: 150 },
-            // TODO
-            // { title: '是否有消防验收材料', dataIndex: 'XX2', width: 150 },
-            { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
-
-            { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
-            { title: '接管时间', dataIndex: 'startDate', width: 150  },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
-            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
-            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
-            { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
-            { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
-            { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
-            { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
-            { title: '资产状态', dataIndex: 'statusName', width: 100 },
-            { title: '物业管理单位', dataIndex: 'organManagement', width: 150 },
-            { title: '物业缴费期限', dataIndex: 'organPayDeadline', width: 150 },
-            { title: '物业费', dataIndex: 'organFee', width: 100 },
-            { title: '已租面积', dataIndex: 'rentedArea', width: 100, scopedSlots: { customRender: 'rentedArea' } },
-            { title: '未租面积', dataIndex: 'unRentedArea', width: 100, scopedSlots: { customRender: 'unRentedArea' } },
-            { title: '是否有消防验收材料', dataIndex: 'isFireMaterial', width: 150, scopedSlots: { customRender: 'fireMaterial' }},
-            { title: '资产标签', dataIndex: 'label', width: 150},
-            { title: '竣工日期', dataIndex: 'completionDate', width: 300},
-            { title: '楼龄', dataIndex: 'buildAge', width: 150},
-            { title: '权利性质', dataIndex: 'qualityOfRightName', width: 150},
-            { title: '产权证土地面积(㎡)', dataIndex: 'landArea', width: 150},
-            { title: '产权证土地用途', dataIndex: 'landUse', width: 150},
-            { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
-            { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
-            { title: '质押情况', dataIndex: 'pledge', width: 120},
-            { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
-          ]
+          scroll: { x: 'max-content', y: 236 },
+          columns: []
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
@@ -422,6 +426,9 @@
       }
     },
     watch: {
+      fold (val) {
+        this.tableObj.scroll.y = val ? 236 : 420
+      },
       organProjectBuildingValue: function (val, pre) {
         this.queryTableData({type: 'search'})
         if(val.organId !== pre.organId){
@@ -451,10 +458,18 @@
       this.queryNodesByRootCode()
     },
     created () {
-      this.initHeader()
+      //this.initHeader()
+      initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
     },
 
     methods: {
+    handleTableHeaderSuccess () {
+      this.changeListSettingsModal(false)
+      initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
+    },
+      changeListSettingsModal (val) {
+        this.modalObj.status = val
+      },
       // 选择附件上传状态
       attachmentStatusFn (val){
         console.log(val)
@@ -859,7 +874,7 @@
 
 <style lang='less' scoped>
   .custom-table {
-    padding-bottom: 55px;
+    //padding-bottom: 55px;
     /*if you want to set scroll: { x: true }*/
     /*you need to add style .ant-table td { white-space: nowrap; }*/
     & /deep/ .ant-table {
@@ -871,6 +886,11 @@
       tr:last-child, tr:nth-last-child(1) {
         font-weight: bold;
       }
+    }
+    /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
     }
   }
   /deep/ .sg-FooterPagination{

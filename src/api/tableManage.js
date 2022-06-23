@@ -44,6 +44,10 @@ export function exportDetailExcel (data) {
 export function projectAssetTotal (data) {
   return axiosPost(tableManage.projectAssetTotal, data)
 }
+// 资产项目数据查询汇总
+export function queryAssetTypeDetailTotal (data) {
+  return axiosPost(tableManage.queryAssetTypeDetailTotal, data)
+}
 // 资产项目导出
 export function exportAssetProject (data) {
   return axiosPost(tableManage.exportAssetProject, data, false, false, {responseType: 'blob'})

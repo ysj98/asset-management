@@ -63,6 +63,18 @@
           <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部附件状态" v-model="queryCondition.attachmentStatus">
             <a-select-option :title="item.name" v-for="(item, index) in attachmentStatus" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部用途"
+            :tokenSeparators="[',']"
+            @select="useFn"
+            v-model="queryCondition.ownershipUseList"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in useData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px;" @click="queryHandler">查询</SG-Button>
@@ -90,6 +102,7 @@
         class="custom-table td-pd10"
         :pagination="false"
         :rowKey='record=>record.warrantId'
+        :scroll="{y: scrollHeight}"
         >
         <template slot="obligeeName" slot-scope="text, record">
           <span>{{record.obligeeName || '--'}}</span>
@@ -218,19 +231,22 @@ const queryCondition =  {
     organId: '',        // 组织机构
     kindOfRights: '',   // 权证类型(多选)
     obligeeId: '',      // 权属人
-    status: '',         // 权证状态
+    status: ['1'],         // 权证状态
     attachmentStatus: '', // 附加状态
     warrantNbr: '',     // 权证号
     ownerTypeList: [],  // 权属形式
     pageNum: 1,         // 第几页
     pageSize: 10,       // 每页显示记录数
-    seatingPosition: '' // 坐落位置
+    seatingPosition: '', // 坐落位置
+    ownershipUseList: [''] //用途
   }
 export default {
   components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, TableHeaderSettings},
   props: {},
   data () {
     return {
+      scrollHeight: 260,
+      useData: [],
       funType: 5,
       listSettingFlag: false,
       ASSET_MANAGEMENT,
@@ -276,6 +292,26 @@ export default {
   computed: {
   },
   methods: {
+     // 查询评估机构-机构字典
+      queryUseOptions () {
+        this.queryCondition.ownershipUseList = ['']
+        const { organId } = this.queryCondition
+        if (!organId) { return false }
+        this.$api.basics.organDict({ code: 'OWNERSHIP_USE', organId }).then(r => {
+          let res = r.data
+          if (res && String(res.code) === '0') {
+            console.log(res)
+            res.data.unshift({
+    name: '全部用途',
+    value: ''
+  })
+            return this.useData = res.data
+          }
+          throw res.message || '查询用途失败'
+        }).catch(err => {
+          this.$message.error(err || '查询用途失败')
+        })
+      },
     async initTableColumns(){
       // 暂不考虑固定表头顺序问题，目前只有操作列
       const res = await getTableHeaders({funType:this.funType})
@@ -381,6 +417,7 @@ export default {
       this.queryCondition.obligeeId = ''
       this.selectFn()
       this.queryHandler()
+      this.queryUseOptions()
     },
     // 搜索
     onSearch () {
@@ -449,6 +486,12 @@ export default {
         this.queryCondition.status = this.handleMultipleSelectValue(value, this.queryCondition.status, this.statusData)
       })
     },
+    // 用途发生变化
+    useFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.ownershipUseList = this.handleMultipleSelectValue(value, this.queryCondition.ownershipUseList, this.useData)
+      })
+    },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue (value, data, dataOptions) {
       // 如果选的是全部
@@ -474,6 +517,7 @@ export default {
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
       this.queryCondition.ownerTypeList = []
+      this.queryCondition.ownershipUseList = ['']
       this.queryHandler()
     },
     filterOption(input, option) {
@@ -498,7 +542,8 @@ export default {
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
-        uploadAttachment: this.queryCondition.attachmentStatus
+        uploadAttachment: this.queryCondition.attachmentStatus,
+        ownershipUseList: this.queryCondition.ownershipUseList
       }
     },
     // 查询
@@ -695,6 +740,9 @@ export default {
     this.tableObj.columns = this.tableObj.columns.filter(ele=>!ele.defaultHide)
   },
   watch: {
+    toggle (val) {
+      this.scrollHeight = val ? 260 : 390
+    },
     '$route' () {
       if (this.$route.path === '/authorityCardManagement' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1
@@ -750,6 +798,9 @@ export default {
   }
   .custom-table {
     padding-bottom: 60px;
+  }
+  .ant-table-header{
+    height: 100% !important;
   }
 }
 .sg-message>.main.confirmDelete>.content, .sg-message>.main.custom>.content, .sg-message>.main.error>.content, .sg-message>.main.info>.content, .sg-message>.main.loading>.content, .sg-message>.main.loadingErr>.content, .sg-message>.main.networkErr>.content, .sg-message>.main.success>.content {

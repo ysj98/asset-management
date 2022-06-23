@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:09:17
- * @LastEditTime: 2022-01-21 11:18:12
+ * @LastEditTime: 2022-06-21 14:46:21
  * @Description: 资源报表
 -->
 <template>
@@ -107,7 +107,7 @@ export default {
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: {x: columnsData.length * 150},
+      scroll: {x: columnsData.length * 150, y: 200},
       numList: [
         {title: '资产数量(个)', key: 'assetNum', value: 0, fontColor: '#324057'},
         {title: '资产面积(㎡)', key: 'assetArea', value: 0, bgColor: '#4BD288'},
@@ -348,6 +348,7 @@ export default {
   },
   created () {
     handleTableScrollHeight(this.scroll)
+    this.scroll.y = 420
   },
   mounted () {
   }

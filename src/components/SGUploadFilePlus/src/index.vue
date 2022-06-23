@@ -17,7 +17,8 @@
           :multiple="max >= 0"
         >
       </div>
-      <div class="tips"><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}。文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize} kb` }}</slot></div>
+      <div class="tips" v-if="!isCustom"><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}。文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize} kb` }}</slot></div>
+      <div class="tips" v-else><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}。单文件大小最大为 {{ maxSize === 0 ? '不限' : `${maxSize / 1024} M，` }}支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。</slot></div>
       <div class="total" v-show="lists.length > 5">共<span>{{ lists.length }}</span>个</div>
     </div>
     <!-- 预览部分 -->
@@ -158,6 +159,11 @@ export default {
     errorTips: {
       type: String,
       default: '以下文件上传失败，请重新检查后再上传。'
+    },
+    // 自定义提示语
+    isCustom: {
+      type: Boolean,
+      default: false
     }
   },
   provide () {

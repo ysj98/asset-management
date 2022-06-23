@@ -184,7 +184,7 @@ export default {
   },
   data () {
     return {
-      scroll: { x: 1900, y: 1200 },
+      scroll: { x: 1900, y: 'calc(100vh - 336px)' },
       ASSET_MANAGEMENT, // 权限对象
       allStyle: 'width: 170px; margin-right: 10px;',
       organId: '',
@@ -381,14 +381,14 @@ export default {
     },
   },
   created (){
-    handleTableScrollHeight(this.scroll, 247)
+    //handleTableScrollHeight(this.scroll, 247)
   },
 }
 </script>
 
 <style lang="less" scoped>
   .custom-table {
-    padding-bottom: 70px;
+    //padding-bottom: 70px;
     & /deep/ table {
       tr:last-child, tr:nth-last-child(2) {
         font-weight: bold;

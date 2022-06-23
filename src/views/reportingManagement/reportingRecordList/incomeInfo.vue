@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产收入信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2020-11-17 18:26:08
+ * @LastEditTime: 2022-06-21 17:15:26
  -->
 <template>
   <div>
@@ -97,7 +97,7 @@
           class="custom-table td-pd10 overflowX"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{x:3400}"
+          :scroll="{x:3400, y: scrollHeight}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -293,6 +293,7 @@ export default {
   },
   data() {
     return {
+      scrollHeight: 330,
       ASSET_MANAGEMENT,
       moment,
       defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
@@ -312,6 +313,11 @@ export default {
     };
   },
   created() {
+  },
+  watch: {
+    toggle (val) {
+      this.scrollHeight = val ? 330 : 460
+    }
   },
   methods: {
     query() {
@@ -485,4 +491,9 @@ export default {
 .overflowX{
     overflow-x: auto !important;
   }
+  /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+    }
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Description:
  * @Date: 2020-02-17 18:49:15
- * @LastEditTime: 2020-03-11 09:59:25
+ * @LastEditTime: 2022-06-21 14:38:23
  -->
 <!--
 资产信息 附属配套信息 管理
@@ -119,7 +119,7 @@
           class="custom-table td-pd10"
           :loading="table.loading"
           :pagination="false"
-          :scroll="{ x: 1400}"
+          :scroll="{ x: 1400, y: scrollHeight}"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
@@ -341,6 +341,7 @@ export default {
   },
   data() {
     return {
+      scrollHeight: 390,
       ASSET_MANAGEMENT,
       toggle: true,
       allStyle,
@@ -368,6 +369,10 @@ export default {
   },
 
   watch: {
+    toggle (val) {
+      console.log(val)
+        this.scrollHeight = val ? 390 : 520
+      },
     '$route' () {
       if (this.$route.path === '/subsidiary' && this.$route.query.refresh) {
         this.queryCondition.pageNum = 1

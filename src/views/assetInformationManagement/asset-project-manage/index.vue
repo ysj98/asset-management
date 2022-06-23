@@ -181,7 +181,7 @@
           loading: false,
           pagination: false,
           rowKey: 'projectId',
-          scroll: { x: 1800 },
+          scroll: { x: 1800, y: 235},
           columns: [
             { title: '管理机构', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 200, fixed:
                 'left' },
@@ -517,7 +517,7 @@
   .project_manage {
     /*padding: 8px;*/
     .custom-table {
-      padding-bottom: 70px;
+      //padding-bottom: 70px;
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {
@@ -525,6 +525,11 @@
           white-space: nowrap;
         }
       }
+      /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
+    }
     }
     .action_text {
       color: #0084FF;

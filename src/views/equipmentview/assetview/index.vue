@@ -144,7 +144,7 @@
       </div>
     </SG-Modal>
     <!-- 列表表头设置 -->
-    <SG-Modal
+    <!-- <SG-Modal
       v-model="modalList.setTableHeader.show"
       :title="modalList.setTableHeader.title"
       okText="保存"
@@ -160,7 +160,8 @@
           </a-col>
         </a-row>
       </a-checkbox-group>
-    </SG-Modal>
+    </SG-Modal> -->
+    <TableHeaderSettings v-if="modalList.setTableHeader.show" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -172,9 +173,106 @@ import OverviewNumber from "@/views/common/OverviewNumber";
 import TreeSelect from "@/views/common/treeSelect";
 import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 import { SET_AMS_USE_DIRECTION } from "@/store/types/platformDictTypes";
-import { handleTableScrollHeight } from "@/utils/share";
+import { handleTableScrollHeight,initTableColumns } from "@/utils/share";
 import { handleDownloadFile } from "utils/utils";
-
+import TableHeaderSettings from 'src/components/TableHeaderSettings'
+const detailColumns = [
+  {
+    title: "资产名称",
+    dataIndex: "assetName",
+    width: 200,
+    fixed: "left",
+  },
+  {
+    title: "资产编码",
+    dataIndex: "assetCode",
+    width: 200,
+  },
+  {
+    title: "资产分类",
+    dataIndex: "equipmentTypeName",
+    width: 120,
+  },
+  {
+    title: "管理机构",
+    dataIndex: "organName",
+    width: 200,
+  },
+  {
+    title: "资产项目名称",
+    dataIndex: "projectName",
+    width: 200,
+  },
+  {
+    title: "规格型号",
+    dataIndex: "equipmentModel",
+    width: 120,
+  },
+  {
+    title: "所在位置",
+    dataIndex: "address",
+    width: 300,
+  },
+  {
+    title: "使用方向",
+    dataIndex: "useType",
+    width: 120,
+  },
+  {
+    title: "设备厂家",
+    dataIndex: "factory",
+    width: 120,
+  },
+  {
+    title: "出厂日期",
+    dataIndex: "dateOfProduction",
+    width: 200,
+  },
+  {
+    title: "报废日期",
+    dataIndex: "scrapDate",
+    width: 200,
+  },
+  {
+    title: "接管日期",
+    dataIndex: "startDate",
+    width: 200,
+  },
+  {
+    title: "财务卡片编码",
+    dataIndex: "financialCode",
+    width: 200,
+  },
+  {
+    title: "资产原值(元)",
+    dataIndex: "originalValue",
+    width: 120,
+  },
+  {
+    title: "最新估值(元)",
+    dataIndex: "assetValuation",
+    width: 120,
+  },
+  {
+    title: "资产状态",
+    dataIndex: "statusName",
+    width: 120,
+  },
+  {
+    title: "资产标签",
+    dataIndex: "label",
+    width: 120,
+  },
+]
+const requiredColumn = [
+  {
+    title: "操作",
+    key: "action",
+    width: 120,
+    fixed: "right",
+    scopedSlots: { customRender: "action" },
+  },
+]
 const allColumns = [
   {
     title: "资产名称",
@@ -278,9 +376,11 @@ export default {
     OverviewNumber,
     TreeSelect,
     EquipmentSelectTree,
+    TableHeaderSettings
   },
   data() {
     return {
+      funType: 15,
       ASSET_MANAGEMENT,
       exportFlag: false,
       allColumns,
@@ -392,6 +492,13 @@ export default {
     },
   },
   methods: {
+      handleTableHeaderSuccess () {
+      this.changeListSettingsModal(false)
+      initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
+    },
+      changeListSettingsModal (val) {
+        this.modalList.setTableHeader.show = val
+      },
     // 导出
     handleExport() {
       const otherReq = this.handleQueryTableOptions();
@@ -614,6 +721,7 @@ export default {
   },
   created() {
     handleTableScrollHeight(this.tableOptions.scroll);
+    initTableColumns({columns:this.tableOptions.columns,detailColumns, requiredColumn, funType: this.funType})
   },
   mounted() {
     this.$store.dispatch("platformDict/getPlatformDict", {

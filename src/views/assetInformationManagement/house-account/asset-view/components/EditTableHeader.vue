@@ -1,3 +1,11 @@
+<!--
+ * @Author: LDC
+ * @Date: 2022-06-09 15:08:00
+ * @LastEditTime: 2022-06-20 10:46:31
+ * @Description: 
+ * 
+ * 
+-->
 <!--资产视图业务-资产视图列表页面-编辑列表表头组件-->
 <template>
   <div class="table_header">

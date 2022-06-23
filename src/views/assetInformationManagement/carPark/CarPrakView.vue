@@ -150,7 +150,7 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 2500 },
+          scroll: { x: 2500, y: 'calc(100vh - 336px)'},
           pagination: false,
           rowKey: 'placeId',
           columns: [
@@ -489,6 +489,11 @@
       .ant-table-thead th {
         white-space: nowrap;
       }
+    }
+     /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
     }
   }
   /deep/ .sg-FooterPagination{

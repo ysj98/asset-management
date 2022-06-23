@@ -55,7 +55,7 @@
         :dataSource="dataSource"
         class="custom-table td-pd10"
         :pagination="false"
-        :scroll="{ x: 2200 }">
+        :scroll="{ x: 2200, y: 'calc(100vh - 337px)' }">
         <template slot="operation" slot-scope="text, record">
           <a
             v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'"
@@ -401,6 +401,11 @@ export default {
       tr:last-child, tr:nth-last-child(2) {
         font-weight: bold;
       }
+    }
+     /deep/.ant-table-fixed {
+      padding: 9px 0 6px 0px;
+      background-color: #fff;
+      color: #49505E;
     }
   }
 </style>

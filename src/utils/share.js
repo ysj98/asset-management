@@ -66,7 +66,7 @@ export async function initTableColumns({columns,detailColumns,requiredColumn,fun
   res.customShow.forEach( ele =>{
     let mapRes = {}
     // 匹配用户预设表头，使用前端代码对应表头配置
-    const temp = detailColumns.find(item=>[item.key,item.dataIndex].includes(ele.colCode))
+    const temp = detailColumns.find(item=>{return [item.key,item.dataIndex].includes(ele.colCode)})
     if (temp){
       mapRes = temp
     }else {

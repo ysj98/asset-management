@@ -65,12 +65,11 @@
     <a-row class="a_row">
       <a-col :span="22" :offset="2">
         <div>
-          附件：<SG-UploadFile
-            type="all"
-            v-model="uploadList"
-            :show="true"
-            class="mt20"
-          />
+          附件：<SG-UploadFile type="all" v-model="uploadList" :maxSize="10240" class="mt20">
+              <div slot="tips">
+                上传的文件最多为 5 个，单文件大小最大为 10M，支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。
+              </div>
+            </SG-UploadFile>
         </div>
       </a-col>
     </a-row>
@@ -379,7 +378,7 @@ export default {
           this.$message.success(
             `${type === "reject" ? "驳回成功" : "审批通过"}`
           );
-          this.$router.push("/rentRegister");
+          this.$router.push({path: "/rentRegister", query: {refresh: true}});
         } else {
           this.$message.error(res.data.message);
         }

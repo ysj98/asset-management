@@ -25,11 +25,13 @@
       </a-col>
     </a-row>
     <div style="padding: 0 45px 35px;">
+      <SG-Button type="primary" @click="searchDetail">查看明细</SG-Button>
       <!--汇总分析图表部分-->
       <chart-part :queryInfo="queryInfo"/>
       <!--查询列表部分-->
       <list-part :queryInfo="queryInfo"/>
     </div>
+    <asset-detail ref="assetDetail" :queryInfo="queryInfo"></asset-detail>
   </div>
 </template>
 
@@ -39,9 +41,10 @@
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import ChartPart from './components/ChartPart'
   import ListPart from './components/ListPart'
+  import AssetDetail from './components/AssetDetail'
   export default {
     name: 'index',
-    components: { ListPart, ChartPart, OrganProject, ProvinceCityDistrict },
+    components: { ListPart, ChartPart, OrganProject, ProvinceCityDistrict, AssetDetail },
     data () {
       return {
         key: 0, // 刷新汇总分析组件
@@ -71,6 +74,9 @@
     },
 
     methods: {
+      searchDetail () {
+        this.$refs.assetDetail.show = true
+      },
       // 资产类型全选与其他选项互斥处理
       objectTypeChange (value) {
         this.objectType = value[value.length - 1] === 'all' ? ['all'] : value.filter(m => m !== 'all')

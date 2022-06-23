@@ -130,6 +130,22 @@
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
+                  <a-form-item label="建筑形态" v-bind="formItemLayout">
+                    <!-- 房屋建筑形态 -->
+                    <a-select
+                      showSearch
+                      placeholder="请选择建筑形态"
+                      optionFilterProp="children"
+                      :style="allWidth"
+                      :options="$addTitle(houseCategoryOpt)"
+                      :allowClear="false"
+                      :filterOption="filterOption"
+                      notFoundContent="没有查询到数据"
+                      v-decorator="['buildHouseType', {rules: [{required: false, whitespace: true, message: '请选择建筑形态'}]}]"
+                    />
+                  </a-form-item>
+                </a-col>
+                <a-col v-bind="formSpan">
                   <a-form-item label="地上层高(m)" v-bind="formItemLayout">
                     <a-input-number :min="0" :max="999.99" :style="allWidth" v-decorator="['upGroundHigh', {initialValue: '' || undefined}]"/>
                   </a-form-item>
@@ -407,6 +423,7 @@ export default {
       filepaths: [], // 附件
       buildTypeOpt: [], // 楼栋类型
       useTypeOpt: [], // 楼栋用途
+      houseCategoryOpt: [], // 楼栋用途
       buildStructOpt: [], // 建筑结构
       communityIdOpt: [], // 项目列表
       communityIdDisabled: false, // 是否禁止选择项目
@@ -453,11 +470,17 @@ export default {
     this.queryProvinceList()
     this.queryNodesByRootCode('30')
     this.queryNodesByRootCode('60')
+    this.queryNodesByRootCode('20')
     this.platformDictFn()
     this.init()
     this.handleBtn()
   },
   methods: {
+    queryCommunityTypeInfo (communityId) {
+      this.$api.basics.queryCommunityTypeInfo({communityId: communityId}).then(res => {
+        console.log(res)
+      })
+    },
     async changeTree(value){
       this.organIdMain = value || ''
       // 有值 且 非禁用状态
@@ -705,6 +728,7 @@ export default {
       console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false
       data.communityId = data.communityId && data.communityId !== '-1' ? data.communityId : ''
+      this.queryCommunityTypeInfo(data.communityId)
       // end
       let o = this.form.getFieldsValue()
       console.log('表单数据=>', o)
@@ -765,6 +789,9 @@ export default {
           }
           if (code === '60') {
             this.useTypeOpt = [...resultArr]
+          }
+          if (code === '20') {
+            this.houseCategoryOpt = [...resultArr]
           }
         }
       })

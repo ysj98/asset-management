@@ -104,6 +104,10 @@ export function attrSet (data) {
 export function assetList (data) {
   return axiosPost(ownershipSurvey.assetList, data)
 }
+// 资产权属列表统计
+export function listStatis (data) {
+  return axiosPost(ownershipSurvey.listStatis, data)
+}
 // 资产权属导出
 export function assetExport (data) {
   return axiosPost(ownershipSurvey.assetExport, data, false, false, {responseType: 'blob'})
@@ -181,3 +185,8 @@ export function landImportExcel (organId, data) {
 export function landDownLoadExcel (data) {
   return axiosGet(basics.landDownLoadExcel, data, false, {responseType: 'blob'})
 }
+// 根据项目查询项目业态
+export function queryCommunityTypeInfo (data) {
+  return axiosGet(basics.queryCommunityTypeInfo, data)
+}
+

@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产折旧信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2020-11-17 14:19:00
+ * @LastEditTime: 2022-06-21 17:30:26
  -->
 <template>
   <div class="assetsRegistration">
@@ -35,9 +35,10 @@
         </div>
       </div>
     </SG-SearchContainer>
-    <div class="table-layout-fixed">
+    <!-- <div class="table-layout-fixed"> -->
      <a-table
       :loading="loading"
+      :scroll="{ x: 2500, y: scrollHeight }"
       :columns="columns"
       :dataSource="tableData"
       class="custom-table td-pd10"
@@ -56,7 +57,7 @@
       v-model="queryCondition.pageNum"
       @change="handleChange"
     />
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -149,6 +150,7 @@ export default {
   props: {},
   data () {
     return {
+      scrollHeight: 320,
       toggle: false,
       ASSET_MANAGEMENT,
       isChild: false,
@@ -390,6 +392,9 @@ export default {
     },
   },
   watch: {
+    toggle (val) {
+      this.scrollHeight = val ? 450 : 320
+    },
     '$route' () {
       if (this.$route.path === '/reportingList' && this.$route.query.refresh) {
       this.queryCondition.pageNum = 1

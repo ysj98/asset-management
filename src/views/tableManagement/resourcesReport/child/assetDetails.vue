@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 10:41:03
- * @LastEditTime: 2021-05-26 11:31:13
+ * @LastEditTime: 2022-06-18 10:24:35
  * @Description: 资产明细
 -->
 <template>
@@ -262,7 +262,7 @@ export default {
               this.$message.error(data.message)
               this.overviewNumSpinning = false
             }
-          } catch (error) {
+          } catch (error) {          
             console.log(error)
           }
         }
@@ -307,6 +307,7 @@ export default {
           }
           this.loading = false
         } else {
+          this.tableData = [{organName: '拉开点距离飞洒'}]
           this.$message.error(res.data.message)
           this.loading = false
         }

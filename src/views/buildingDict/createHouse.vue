@@ -599,6 +599,25 @@ export default {
       }
       this.queryBuildList(organId);
     },
+    queryBuildDetails (buildId) {
+      let data = {
+        buildId
+      }
+      this.loading = true
+      this.$api.building.queryBuildDetail(data).then(res => {
+        this.loading = false
+        if (res.data.code === '0') {
+          this.form.setFieldsValue({houseCategory: res.data.data.buildHouseType || undefined})
+          this.watchHouseCategory(res.data.data.buildHouseType)
+        } else {
+          this.$message.error(res.data.message)
+        }
+      }, () => {
+        this.loading = false
+      })
+    },
+    // 获取建筑形态
+    
     // 监听楼栋改变
     watchBuildChange(buildId) {
       this.form.setFieldsValue({
@@ -610,6 +629,8 @@ export default {
       if (!buildId) {
         return;
       }
+      // 获取楼栋详情
+      this.queryBuildDetails(buildId)
       // 请求单元
       this.getOptions("getUnitByBuildId", buildId);
       // 请求楼层

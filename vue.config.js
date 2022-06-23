@@ -5,6 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const openInEditor = require('launch-editor-middleware');
 const isProd = process.env.NODE_ENV === 'production'
 const isDebug = process.env.VUE_APP_IS_DEBUG === 'true'
+require('events').EventEmitter.defaultMaxListeners = 0;
 // 获取本机ip
 const getIPAdress = () => {
   var interfaces = os.networkInterfaces();
@@ -21,9 +22,8 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress()
 console.log('IP', localhost)
-
 const target = 'http://192.168.1.7:8088'
-// const target = 'http://beta.uhomecp.com/'
+//const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 const proxyURL = [
   '/uhomecp-sso/',
@@ -80,7 +80,6 @@ const proxy = new Proxy()
  proxy.addUrls(proxyURL, localhost, target)
 //  proxy.addUrls(['/basic-data-api'], localhost, 'http://192.168.3.31:8080')
 // proxy.addUrls(['/basic-data-batch-api'], localhost, 'http://192.168.3.31:8080')
-// proxy.addUrls(['/ams/'], localhost, 'http://192.168.3.31:8081')
 
 // 配置
 module.exports = {

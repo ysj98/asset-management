@@ -21,6 +21,13 @@ export function queryHouseByPageV2 (data) {
 export function queryHouseByPageV3 (data) {
   return axiosPost(building.queryHouseByPageV3, data)
 }
+// 房屋资产&资源统计表 资产明细 分页查询房屋信息统计
+export function queryHouseStatisV2 (data) {
+  return axiosPost(building.queryHouseStatisV2, data)
+}
+export function queryHouseStatisV3 (data) {
+  return axiosPost(building.queryHouseStatisV3, data)
+}
 // 修改房屋
 export function updateHouse (data) {
   return axiosPost(building.updateHouse, data)
