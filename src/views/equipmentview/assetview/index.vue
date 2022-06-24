@@ -494,7 +494,7 @@ export default {
   methods: {
       handleTableHeaderSuccess () {
       this.changeListSettingsModal(false)
-      initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
+      initTableColumns({columns:this.tableOptions.columns,detailColumns, requiredColumn, funType: this.funType})
     },
       changeListSettingsModal (val) {
         this.modalList.setTableHeader.show = val
