@@ -476,9 +476,16 @@ export default {
         pagination: false,
         rowKey: "assetEquipmentId",
         // y: "max-content"
-        scroll: { x: "max-content", y: 600 },
+        scroll: { x: 3000, y: 600 },
       },
     };
+  },
+  watch: {
+    'tableOptions.columns'(val){
+    this.tableOptions.scroll.x = val.length * 150
+    console.log(val)
+     
+    }
   },
   computed: {
     amsUseDirectionCom() {
@@ -749,4 +756,21 @@ export default {
   margin-right: 10px;
   margin-bottom: 10px;
 }
+</style>
+<style lang="less" scoped>
+/deep/.ant-table-fixed {
+    td{
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    tr:hover{
+      td{
+        white-space: normal;
+        overflow: auto;
+        text-overflow: clip;
+      }
+    }
+}
+
 </style>
