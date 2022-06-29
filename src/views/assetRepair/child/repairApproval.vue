@@ -231,4 +231,7 @@ export default {
     }
   }
 }
+/deep/.sg-uploadFile {
+    max-width: 100% !important;
+  }
 </style>

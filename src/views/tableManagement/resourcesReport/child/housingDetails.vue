@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2020-11-03 14:17:56
- * @LastEditTime: 2022-06-18 15:17:39
+ * @LastEditTime: 2022-06-27 17:15:09
  * @Description: 房屋名称
 -->
 <template>
@@ -218,6 +218,7 @@ export default {
       * type 1 楼栋
       * type 2 房屋
       * */
+     console.log(this.record)
       let totalFn = this.$api.building.queryHouseStatisV2
       let apiFn = this.$api.building.queryHouseByPageV2
       if (this.isHouse){
@@ -226,12 +227,12 @@ export default {
       }
       this.loading = true
       let obj = {
-        organId: !this.record.organId || '67',
-        buildId: !this.record.buildId || '116028205',
+        organId: this.record.organId,
+        buildId: this.record.buildId,
         unitId: this.queryCondition.unitId,              // 单元ID
         floorId: this.queryCondition.floorId,            // 楼层ID
         status: this.queryCondition.houseStatus,         // 房屋状态
-        houseId: '',//this.queryCondition.houseId,             // 房号
+        houseId: this.queryCondition.houseId,             // 房号
         pageNum: this.queryCondition.pageNum,            // 当前页
         pageSize: this.queryCondition.pageSize           // 每页显示记录数
       }

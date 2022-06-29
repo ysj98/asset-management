@@ -435,6 +435,9 @@ const requiredColumn = [
       }
     },
     watch: {
+      'tableObj.columns'(val){
+        this.tableObj.scroll.x = val.length * 100
+        },
       organProjectBuildingValue: function (val, pre) {
         this.queryTableData({type: 'search'})
         if(val.organId !== pre.organId){
@@ -862,4 +865,18 @@ const requiredColumn = [
   /deep/ .sg-FooterPagination{
     z-index: 2;
   }
+  /deep/.ant-table-fixed {
+    td{
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    tr:hover{
+      td{
+        white-space: normal;
+        overflow: auto;
+        text-overflow: clip;
+      }
+    }
+}
 </style>
