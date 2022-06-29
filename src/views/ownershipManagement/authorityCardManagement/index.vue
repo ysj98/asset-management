@@ -543,7 +543,7 @@ export default {
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
         uploadAttachment: this.queryCondition.attachmentStatus,
-        ownershipUseList: this.queryCondition.ownershipUseList
+        ownershipUseList: this.queryCondition.ownershipUseList[0] ? this.queryCondition.ownershipUseList : []
       }
     },
     // 查询
@@ -589,7 +589,7 @@ export default {
       this.warrantTotal()
     },
     warrantTotal () {
-      this.loading = true
+      //this.loading = true
       let obj = {
         organId: Number(this.queryCondition.organId),        // 组织机构
         kindOfRights: this.queryCondition.kindOfRights.length > 0 ? this.queryCondition.kindOfRights.join(',') : '',   // 权证类型(多选)
@@ -608,13 +608,13 @@ export default {
           this.numList[3].value = data.landWarrantCount
           this.numList[4].value = data.useWarrantCount
           this.numList[5].value = data.houseWarrantCount
-          this.loading = false
+          //this.loading = false
         } else {
           this.$message.error(res.data.message)
           this.numList.forEach(item => {
             item.value = 0
           })
-          this.loading = false
+          //this.loading = false
         }
       })
     },

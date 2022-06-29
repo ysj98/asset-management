@@ -81,7 +81,7 @@ export default {
           colName: ele.colName,
           funType: this.funType,
         }));
-      const req = { chooseList };
+      const req = { chooseList, funType: this.funType };
       this.$api.global
         .addCustomShowV2(req)
         .then(({ data: { code, message, data } }) => {

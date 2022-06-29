@@ -391,7 +391,7 @@ const requiredColumn = [
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: { x: 'max-content', y: 236 },
+          scroll: { x: 3500, y: 236 },
           columns: []
         },
         key: 0, // 更新Modal包裹的子组件
@@ -426,6 +426,11 @@ const requiredColumn = [
       }
     },
     watch: {
+
+        'tableObj.columns'(val){
+        this.tableObj.scroll.x = val.length * 120
+        },
+
       fold (val) {
         this.tableObj.scroll.y = val ? 236 : 420
       },
@@ -896,6 +901,20 @@ const requiredColumn = [
       color: #49505E;
     }
   }
+  /deep/.ant-table-fixed {
+    td{
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    tr:hover{
+      td{
+        white-space: normal;
+        overflow: auto;
+        text-overflow: clip;
+      }
+    }
+}
   /deep/ .sg-FooterPagination{
     z-index: 2;
   }
