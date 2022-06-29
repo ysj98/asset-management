@@ -55,7 +55,7 @@
           {title: '资产名称', key: 'assetName'}, {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'},
           {title: '资产类型', key: 'assetType'}, {title: '房屋形态', key: 'houseType'}, {title: '户型', key: 'apartmentName'},
           {title: '装修情况', key: 'decorationSituation'}, {title: '建筑结构', key: 'buildStruct'}, {title: '资产用途', key: 'useType'},
-          {title: '建筑面积', key: 'area'}, {title: '竣工日期', key: 'completionDate'}, {title: '维修日期', key: 'repair'},
+          {title: '建筑面积', key: 'area'}, {title: '可出租面积', key: 'rentArea'}, {title: '竣工日期', key: 'completionDate'}, {title: '维修日期', key: 'repair'},
           {title: '资产状态', key: 'statusName'}, {title: '物业管理单位', key: 'organManagement'}, {title: '物业缴费期限', key: 'organPayDeadline'}, {title: '物业费', key: 'organFee'}, {title: '已租面积', key: 'rentedArea'}, {title: '未租面积', key: 'unRentedArea'}, {title: '相关描述', key: 'desc', span: 16}
           // {title: '资产二维码', key: 'QRCode', span: 24}
         ], // 基本信息字段

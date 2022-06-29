@@ -835,4 +835,7 @@ export default {
     text-align: center;
   }
 }
+/deep/.sg-uploadFile {
+    max-width: 100% !important;
+  }
 </style>

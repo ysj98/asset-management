@@ -18,6 +18,8 @@
           :columns="item['table']['columns']"
           :dataSource="tableData"
           :pagination="false">
+          <span slot="warrantNbr" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openWarrant(record)">{{ record.warrantNbr }}</span>
+          <span slot="assessmentId" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="goRegister(record)">{{ record.assessmentId }}</span>
           <span slot="operation" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="checkDetail(record)">详情</span>
           <span class="img-icon" slot="attachmentList" slot-scope="text, record">
             <img v-if="record.attachmentList.length" :src="getUrl(record.attachmentList[0].attachmentPath)" alt="" @click="openBigImg(record.attachmentList)">
@@ -52,16 +54,22 @@
       <a-tab-pane tab="运营信息" key="operationInformation">
         <operationInformation :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
       </a-tab-pane>
+      <a-tab-pane tab="保险信息" key="insuranceInformation">
+        <insuranceInformation :assetHouseId="assetHouseId" :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime"/>
+      </a-tab-pane>
     </a-tabs>
     <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex='bigImg.imgIndex' :list="bigImg.list"></preview-images>
+    <CardDetails ref="cardDetails" ></CardDetails>
   </div>
 </template>
 
 <script>
+import CardDetails from '@/views/ownershipManagement/authorityCardManagement/cardDetails.vue'
   import { ASSET_MANAGEMENT } from "@/config/config.power";
   import infoKeys from './otherInfoKeys'
   import PreviewImages from 'components/PreviewImages.vue'
   import operationInformation from './operationInformation'
+  import insuranceInformation from './insurance'
   let getUuid = ((uuid = 1) => () => ++uuid)();
   // let 2 收入，3费用
   let reportBillIdNameMap = {
@@ -81,7 +89,7 @@
     name: 'OtherInfoPart',
     props: ['assetHouseId', 'assetId', 'transferOperationArea', 'transferOperationTime'],
     components: {
-      operationInformation, PreviewImages
+      operationInformation, PreviewImages, CardDetails, insuranceInformation
     },
     data () {
       return {
@@ -114,6 +122,14 @@
     },
 
     methods: {
+      goRegister (record) {
+        this.$router.push({name: '价值登记详情', params: {registerId: record.registerId, type: 'detail', relatedOrganId: record.organId}})
+        //this.$router.push({name: '价值登记详情', params: {registerId: '260002', type: 'detail', relatedOrganId: '1000279'}})
+      },
+      openWarrant(val) {
+        this.$refs.cardDetails.initData({warrantNbr: val.warrantNbr})
+        this.$refs.cardDetails.query({ warrantId: val.warrantId})
+      },
       queryDetail (type) {
         let { api, tip, param, data } = this.apiObj[type]
         if (!api) { return false }
@@ -272,7 +288,7 @@
     watch: {
       tabKey (key) {
         // 如果是运营管理退出
-        if (key === 'operationInformation') {
+        if (key === 'operationInformation' || key === 'insuranceInformation') {
           return
         }
         // 如果Tab被激活过，不再请求接口数据

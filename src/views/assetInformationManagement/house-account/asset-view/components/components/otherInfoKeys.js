@@ -39,7 +39,7 @@ const keys = {
       rowKey: 'warrantNbr',
       columns: [
         { title: '权属类型', dataIndex: 'kindOfRightName' },
-        { title: '权证号', dataIndex: 'warrantNbr' },
+        { title: '权证号', dataIndex: 'warrantNbr', scopedSlots: {customRender: 'warrantNbr' } },
         { title: '权属人', dataIndex: 'obligeeNames' },
         { title: '证件号码', dataIndex: 'certificateNos' },
         { title: '丘地号', dataIndex: 'lotNo' },
@@ -88,6 +88,7 @@ const keys = {
       rowKey: 'index',
       columns: [
         { title: '序号', dataIndex: 'index' },
+        { title: '价值登记单ID', dataIndex: 'assessmentId', scopedSlots: {customRender: 'assessmentId' } },
         { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
         { title: '评估机构', dataIndex: 'assessmentOrganName' },
         { title: '评估方法', dataIndex: 'assessmentMethodName' },
@@ -205,7 +206,31 @@ const keys = {
         { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
       ]
     }
-  }
+  },
+  // 保险信息
+  // archive : {
+  //   title: '保险信息',
+  //   details: {
+  //   },
+  //   table: {
+  //     rowKey: 'insuranceId',
+  //     pagination: true,
+  //     columns:  [
+  //       { title: '保险单号', dataIndex: 'insuranceCode' },
+  //       { title: '所属机构', dataIndex: 'organName' },
+  //       { title: '资产项目', dataIndex: 'projectName' },
+  //       { title: '投保人', dataIndex: 'policyHolder' },
+  //       { title: '保险类型', dataIndex: 'insuranceTypeName' },
+  //       { title: '保险公司', dataIndex: 'insuranceCompanyName' },
+  //       { title: '保险有效期', dataIndex: 'periodOfInsurance'},
+  //       { title: '保单金额（元）', dataIndex: 'policyAmount', scopedSlots: { customRender: 'policyAmount' } },
+  //       { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' } },
+  //       { title: '保单状态', dataIndex: 'insuranceStatusName' },
+  //       { title: '提交时间', dataIndex: 'createDate' },
+  //     ]
+  //   }
+  // }
+
 }
 
 export default keys

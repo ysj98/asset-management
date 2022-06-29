@@ -713,7 +713,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .edit_page {
   padding: 0 45px 70px 70px;
   & /deep/ .ant-table-placeholder {
@@ -743,4 +743,7 @@ export default {
     text-align: center;
   }
 }
+/deep/.sg-uploadFile {
+    max-width: 100% !important;
+  }
 </style>

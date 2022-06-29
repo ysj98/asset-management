@@ -22,6 +22,7 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
     >
+    <span slot="contractCode" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openWarrant(record)">{{ record.contractCode }}</span>
     </a-table>
     <SG-FooterPagination
       :pageLength="table.pageSize"
@@ -73,6 +74,7 @@ let columns = [
   {
     title: "合同编号",
     dataIndex: "contractCode",
+    scopedSlots: {customRender: 'contractCode' } 
   },
   {
     title: "客户名称",
@@ -196,6 +198,7 @@ export default {
             }
           })
           this.table.totalCount = res.data.data.count
+          //this.table.dataSource = [{contractCode: '1001'}]
         } else {
           this.$message.error(res.data.message || res.data.msg)
         }
