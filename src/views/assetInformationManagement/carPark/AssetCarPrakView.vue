@@ -22,7 +22,7 @@
         <!--&gt;导出房屋卡片</SG-Button>-->
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
-        <SG-Button icon="setting" @click="handleModalStatus(true)" style="margin: 0 10px" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_HEADER_SET">列表设置</SG-Button>
+        <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_HEADER_SET">列表设置</SG-Button>
         <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
       </div>
       <div slot="headerForm">
@@ -217,22 +217,22 @@
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑列表表头-->
-    <!-- <SG-Modal
+    <SG-Modal
       v-bind="modalObj"
       v-model="modalObj.status"
       @ok="handleModalOk"
       @cancel="handleModalStatus(false)"
     >
-      <edit-table-header
+      <!-- <edit-table-header
         v-if="modalType === 1"
         :key="key"
         ref="tableHeader"
         :checkedArr="checkedHeaderArr"
         :columns="tableObj.initColumns"
-      />
+      /> -->
       <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef"/>
-    </SG-Modal> -->
-    <TableHeaderSettings v-if="modalObj.status" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
+    </SG-Modal>
+    <TableHeaderSettings v-if="modalObj.switch" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -403,7 +403,7 @@ const requiredColumn = [
         // exportHouseBtn: false, // 导出房屋卡片button loading标志
         exportAssetBtn: false, // 导出资产视图button loading标志
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
-        modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605 },
+        modalObj: { title: '展示列表设置', status: false, okText: '保存', width: 605, switch: false },
         current: null, // 当前选中的概览区域下标，与后台入参一一对应
         totalField: {
           area: '',                    // 建筑面积
@@ -485,7 +485,7 @@ const requiredColumn = [
       initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
     },
       changeListSettingsModal (val) {
-        this.modalObj.status = val
+        this.modalObj.switch = val
       },
       // 选择附件上传状态
       // attachmentStatusFn (val){
@@ -644,6 +644,9 @@ const requiredColumn = [
         this.modalObj.status = status
         status ? this.modalType = 1 : ''
         status && (this.key = new Date().getTime())
+      },
+      handleSettings (val) {
+        this.modalObj.switch = val
       },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
