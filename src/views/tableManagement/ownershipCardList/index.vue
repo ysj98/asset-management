@@ -300,6 +300,18 @@
       width: 150px;
     }
   }
+  /deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 2px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 53px;
+    background: #fff;
+  }
+}
 </style>
 
 <style lang='less'>

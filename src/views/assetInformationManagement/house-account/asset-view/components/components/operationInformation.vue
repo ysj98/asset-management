@@ -22,7 +22,7 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
     >
-    <span slot="contractCode" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openWarrant(record)">{{ record.contractCode }}</span>
+    <span slot="contractCode" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openContract(record)">{{ record.contractCode }}</span>
     </a-table>
     <SG-FooterPagination
       :pageLength="table.pageSize"
@@ -182,6 +182,9 @@ export default {
     this.queryTable2()
   },
   methods: {
+    openContract () {
+      
+    },
     queryTable() {
       let data = {
         pageNum: this.table.pageNum,

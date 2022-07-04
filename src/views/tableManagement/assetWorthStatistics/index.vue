@@ -183,7 +183,7 @@
           loading: false,
           initColumns: [],
           dataSource: [],
-          scroll: {  },
+          scroll: { y: 300 },
           columns: []
         },
         numList: [
@@ -505,9 +505,9 @@
         Object.assign(this.tableObj, {
           columns,
           dataSource,
-          scroll: { x: columns.length * 160 }
+          scroll: { x: columns.length * 160, y: 300 }
         })
-        handleTableScrollHeight(this.tableObj.scroll)
+       // handleTableScrollHeight(this.tableObj.scroll)
         let formatArr = ['originalValue', 'assetValuation', 'firstMarketValue', 'marketValue', 'assetArea']
         this.tableObj.dataSource.forEach(item => {
           Object.keys(item).forEach(key => {
@@ -687,6 +687,18 @@
 </script>
 
 <style lang='less' scoped>
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 4px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 43px;
+    background: #fff;
+  }
+}
   .asset_worth {
     .custom-table {
       padding: 8px 0 70px;

@@ -395,7 +395,18 @@ export default {
       }
     }
   }
-  
+  /deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 43px;
+    background: #fff;
+  }
+}
 </style>
 <style lang="less">
   .car {

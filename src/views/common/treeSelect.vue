@@ -144,16 +144,46 @@ export default {
     },
     // 组织机构子节点选择
     onLoadData (node) {
-      return new Promise((resolve) => {
-        this.$api.assets.queryAsynOrganByUserId({parentOrganId: node.value, typeFilter: this.typeFilter}).then(res => {
-          if (Number(res.data.code) === 0) {
-            let children = this.mapTreeNodes(res.data.data)
-            this.setTree(node.value, this.treeData, children)
-            this.treeData = [...this.treeData]
-            resolve()
-          }
-        })
+      return new Promise((re) => {
+         this.$api.paramsConfig.queryParamsConfigDetail({organId: node.value, serviceType: 1010}).then(res => {
+             console.log(res)
+             if (res.data.code === "0"){
+           const {isValid, paramKey} = res.data.data
+           if (isValid === 1 && paramKey) {
+            if (this.typeFilter.length ) {
+                if (!this.typeFilter.includes('7')) {
+                  this.typeFilter = this.typeFilter + ',7'
+                }
+            } else {
+              this.typeFilter = '7'
+            }
+           } else {
+             if (this.typeFilter.length && this.typeFilter.includes('7')) {
+                this.typeFilter = this.typeFilter.split(',').filter((item) => {return item !== '7'}).join(',')
+            }
+           }
+           this.$api.assets.queryAsynOrganByUserId({parentOrganId: node.value, typeFilter: this.typeFilter}).then(r => {
+             if (Number(r.data.code) === 0) {
+               let children = this.mapTreeNodes(r.data.data)
+               this.setTree(node.value, this.treeData, children)
+               this.treeData = [...this.treeData]
+               resolve()
+             }
+           })
+         }
+      re()
       })
+    })
+      // return new Promise((resolve) => {
+      //   this.$api.assets.queryAsynOrganByUserId({parentOrganId: node.value, typeFilter: this.typeFilter}).then(res => {
+      //     if (Number(res.data.code) === 0) {
+      //       let children = this.mapTreeNodes(res.data.data)
+      //       this.setTree(node.value, this.treeData, children)
+      //       this.treeData = [...this.treeData]
+      //       resolve()
+      //     }
+      //   })
+      // })
     },
     setTree (id, tree, children) {
       for (let i = 0; i < tree.length; i++) {

@@ -55,6 +55,11 @@ export const serviceTypeAll = {
     component: SelectSwitch,
     needValidate: false,
   },
+  1010: {
+    serviceTypeText: "组织机构查询是否过滤非营业机构",
+    component: SelectSwitch,
+    needValidate: false,
+  },
 };
 export const columns = [
   {

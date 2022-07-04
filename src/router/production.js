@@ -369,7 +369,10 @@ let proRouter = [{
   {
     path: '/assetView/assetViewDetail',
     name: '房屋资产视图详情',
-    component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
+    component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/buildingView',
@@ -496,6 +499,11 @@ let proRouter = [{
     meta: {
       keepAlive: true
     }
+  },
+  {
+    path: '/assetView/assetViewDetail/detailRegister',
+    name: '资产价值详情',
+    component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage')
   },
   {
     path: '/worthRegister/detailRegister',
@@ -1352,6 +1360,11 @@ let proRouter = [{
   {
     path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail',
     name: '详情',
+    component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AssetInsurancePolicyDetail')
+  },
+  {
+    path: '/assetView/assetViewDetail/insurancePolicyDetail',
+    name: '资产保险详情',
     component: () => import('@/views/insuranceManagement/assetInsurancePolicy/AssetInsurancePolicyDetail')
   },
   {

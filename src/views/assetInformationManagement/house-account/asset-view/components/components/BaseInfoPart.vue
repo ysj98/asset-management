@@ -82,6 +82,7 @@
       queryDetailInfo () {
         this.spinning = true
         this.$api.assets.queryAssetViewBaseInfo({assetHouseId: this.assetHouseId}).then(r => {
+          console.log(r)
           this.spinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
@@ -89,6 +90,7 @@
             // temp.PCD = `${temp.province}${temp.city}${temp.region}`
             temp.assetType = '房屋'
             temp.houseType = '房屋'
+            temp.rentArea = Number(temp.rentedArea) + Number(temp.unRentedArea)
             let {transferOperationTime, transferOperationArea} = temp
             this.$emit('updateTransfer', {transferOperationTime, transferOperationArea})
             return this.infoData = temp

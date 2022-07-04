@@ -88,7 +88,7 @@ const keys = {
       rowKey: 'index',
       columns: [
         { title: '序号', dataIndex: 'index' },
-        { title: '价值登记单ID', dataIndex: 'assessmentId', scopedSlots: {customRender: 'assessmentId' } },
+        { title: '价值登记单ID', dataIndex: 'registerId', scopedSlots: {customRender: 'registerId' } },
         { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
         { title: '评估机构', dataIndex: 'assessmentOrganName' },
         { title: '评估方法', dataIndex: 'assessmentMethodName' },

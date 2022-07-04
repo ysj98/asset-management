@@ -390,6 +390,13 @@ export default {
 };
 </script>
 <style lang='less' scoped>
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+}
 .custom-table {
   padding-bottom: 55px;
   & /deep/ .ant-table {

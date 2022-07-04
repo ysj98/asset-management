@@ -865,18 +865,25 @@ const requiredColumn = [
   /deep/ .sg-FooterPagination{
     z-index: 2;
   }
-  /deep/.ant-table-fixed {
-    td{
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-    }
-    tr:hover{
-      td{
-        white-space: normal;
-        overflow: auto;
-        text-overflow: clip;
-      }
-    }
+//   /deep/.ant-table-fixed {
+//     td{
+//       white-space: nowrap !important;
+//       overflow: hidden !important;
+//       text-overflow: ellipsis !important;
+//     }
+//     tr:hover{
+//       td{
+//         white-space: normal;
+//         overflow: auto;
+//         text-overflow: clip;
+//       }
+//     }
+// }
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
 }
 </style>

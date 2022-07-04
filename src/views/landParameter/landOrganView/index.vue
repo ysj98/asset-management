@@ -11,7 +11,7 @@
             @click="handleExport"
             v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT"
             :loading="exportBtnLoading"
-          >导出组织机构视图</SG-Button>
+          >导出组织机构视图1</SG-Button>
         </a-col>
         <a-col :span="5">
           <tree-select @changeTree="changeTree" style="width: 100%" />
@@ -88,6 +88,7 @@ export default {
         { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableObj: {
+        scroll: {y: 420},
         dataSource: [],
         loading: false,
         pagination: false,
@@ -103,7 +104,7 @@ export default {
           { title: "其它(㎡)", dataIndex: "otherArea" },
           { title: "资产原值", dataIndex: "originalValue" },
           { title: "最新估值", dataIndex: "marketValue" },
-          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
+          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60}
         ],
       },
       paginationObj: {
@@ -323,6 +324,18 @@ export default {
     tr:nth-last-child(2) {
       font-weight: bold;
     }
+  }
+}
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 4px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 43px;
+    background: #fff;
   }
 }
 </style>

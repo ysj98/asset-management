@@ -109,8 +109,9 @@ export default {
           { title: "其它(㎡)", dataIndex: "otherArea" },
           { title: "资产原值(元)", dataIndex: "originalValue" },
           { title: "最新估值(元)", dataIndex: "marketValue" },
-          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
+          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }}
         ],
+        scroll: {y: 420}
       },
       paginationObj: {
         pageNo: 1,
@@ -338,6 +339,18 @@ export default {
     tr:nth-last-child(2) {
       font-weight: bold;
     }
+  }
+}
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 4px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 43px;
+    background: #fff;
   }
 }
 </style>

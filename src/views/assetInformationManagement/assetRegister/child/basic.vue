@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:50:51
- * @LastEditTime: 2020-11-10 15:59:02
+ * @LastEditTime: 2022-07-04 10:33:37
  * @Description: 房屋土地
 -->
 <template>
@@ -945,6 +945,7 @@ export default {
       },this)
       console.log(data, '-=-=-=')
       this.basicData = data
+      return false
     }
   },
   activated() {

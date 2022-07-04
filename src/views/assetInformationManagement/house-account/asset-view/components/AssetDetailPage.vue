@@ -1,3 +1,11 @@
+<!--
+ * @Author: LDC
+ * @Date: 2022-06-09 15:08:00
+ * @LastEditTime: 2022-07-04 18:10:17
+ * @Description: 
+ * 
+ * 
+-->
 <!--资产视图业务-资产视图详情页面-->
 <template>
   <div class="asset_view">
@@ -69,7 +77,15 @@
       const { query: { houseId, assetId } } = this.$route
       this.assetHouseId = houseId
       this.assetId = assetId
-    }
+    },
+    // 路由卫士，用于审批及提交成功后刷新列表
+    beforeRouteEnter (to, from, next) {
+      const { name } = from
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+          vm.$route.meta.keepAlive = name === '资产价值详情' || name === '资产保险详情'
+      })
+    },
   }
 </script>
 

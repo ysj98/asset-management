@@ -1,4 +1,4 @@
-<!--资产视图业务-资产视图列表页面-->
+<!--资产视图业务-房屋资产视图列表页面-->
 <template>
   <div>
     <!--搜索条件-->
@@ -881,6 +881,13 @@ const requiredColumn = [
 </script>
 
 <style lang='less' scoped>
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+}
   .custom-table {
     //padding-bottom: 55px;
     /*if you want to set scroll: { x: true }*/

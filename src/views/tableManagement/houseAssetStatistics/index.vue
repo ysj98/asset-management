@@ -78,7 +78,7 @@
           rowKey: 'projectCode',
           loading: false,
           dataSource: [],
-          scroll: { x: "100%" },
+          scroll: { x: "100%", y:540 },
           columns: []
         },
         dataSum: {} // 所有数据合计
@@ -210,7 +210,7 @@
       }
     },
     created() {
-      handleTableScrollHeight(this.tableObj.scroll, 350)
+      //handleTableScrollHeight(this.tableObj.scroll, 350)
       initTableColumns({columns:this.tableObj.columns,detailColumns,funType: this.funType})
     },
     mounted() {
@@ -235,4 +235,16 @@
       }
     }
   }
+      /deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 52px;
+    background: #fff;
+  }
+}
 </style>

@@ -425,4 +425,16 @@ export default {
       }
     }
   }
+   /deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 40px;
+    background: #fff;
+  }
+   }
 </style>

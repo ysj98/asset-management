@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2020-07-30 14:26:59
+ * @LastEditTime: 2022-07-04 10:37:02
  * @Description: 登记单新建编辑 新建登记单
 -->
 <template>
@@ -28,6 +28,7 @@
           :organId="organId"
           :registerOrderId="registerOrderId"
           :assetTypeId="assetType"
+          @handleSubmit="handSubmit"
         >
         </basic>
       </keep-alive>
@@ -41,7 +42,7 @@
       <correlativeCharges v-if="this.activeStepIndex === 4" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></correlativeCharges>
     </div>
     <div class="step-footer-operation" v-if="setType === 'new'">
-      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :showAloneCancel="true" @aloneCancel="aloneCancel" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="handleSubmit" @cancel="handleBackOrReset"></tabFormFooter>
+      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :showAloneCancel="true" @aloneCancel="aloneCancel" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="confirmArea" @cancel="handleBackOrReset"></tabFormFooter>
     </div>
   </div>
 </template>
@@ -136,6 +137,38 @@ export default {
   mounted () {
   },
   methods: {
+    confirmArea () {
+      if (this.activeStepIndex === 0 && !this.registerOrderId) {
+        let tableData = this.$refs.basicRef.tableData
+        if (tableData.length === 0) {
+        this.$message.info('请导入资产明细')
+        return true
+      }
+      let array = []
+          tableData.map(item => {
+            if (Number(item.area) !== Number(item.buildArea)) {
+              array.push(item.assetName)
+            }
+          })
+          if (array.length) {
+            let tips = array.join('、') + '与权证的面积不一致，确定登记吗？'
+            this.$SG_Message.confirmDelete({
+              content: tips,
+              confirmText: '确定',
+              onConfirm: () => {
+                this.handleSubmit()
+              },
+              onCancel: () => {
+                return
+              }
+            })
+          } else {
+            this.handleSubmit()
+          }
+      } else {
+        this.handleSubmit()
+      }
+    },
     // 上一步
     handleSubmit () {
       // 保存(基本信息的单个保存全部放在这里)

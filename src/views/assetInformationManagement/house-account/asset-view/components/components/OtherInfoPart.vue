@@ -19,7 +19,7 @@
           :dataSource="tableData"
           :pagination="false">
           <span slot="warrantNbr" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openWarrant(record)">{{ record.warrantNbr }}</span>
-          <span slot="assessmentId" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="goRegister(record)">{{ record.assessmentId }}</span>
+          <span slot="registerId" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="goRegister(record)">{{ record.registerId }}</span>
           <span slot="operation" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="checkDetail(record)">详情</span>
           <span class="img-icon" slot="attachmentList" slot-scope="text, record">
             <img v-if="record.attachmentList.length" :src="getUrl(record.attachmentList[0].attachmentPath)" alt="" @click="openBigImg(record.attachmentList)">
@@ -123,8 +123,8 @@ import CardDetails from '@/views/ownershipManagement/authorityCardManagement/car
 
     methods: {
       goRegister (record) {
-        this.$router.push({name: '价值登记详情', params: {registerId: record.registerId, type: 'detail', relatedOrganId: record.organId}})
-        //this.$router.push({name: '价值登记详情', params: {registerId: '260002', type: 'detail', relatedOrganId: '1000279'}})
+        //window.parent.openPortalMenu(`/mvue/tenantManager`, '租户管理')
+        this.$router.push({name: '资产价值详情', params: {registerId: record.registerId, type: 'detail', relatedOrganId: record.organId}})
       },
       openWarrant(val) {
         this.$refs.cardDetails.initData({warrantNbr: val.warrantNbr})

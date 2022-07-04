@@ -1,5 +1,5 @@
 <!--
-  资产项目视图列表页-戚思婷
+  资产房屋项目视图列表页-戚思婷
 -->
 <template>
   <div class="asset-project-view-list">
@@ -350,6 +350,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 43px;
+    background: #fff;
+  }
+}
   .custom-table {
     padding-bottom: 50px;
     & /deep/ table {

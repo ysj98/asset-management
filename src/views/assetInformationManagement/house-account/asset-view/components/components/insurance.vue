@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     goDetail (insuranceId) {
-      this.$router.push({path: '/insuranceManagement/insurancePolicy/insurancePolicyDetail', query: {insuranceId}})
+      this.$router.push({path: '/assetView/assetViewDetail/insurancePolicyDetail', query: {insuranceId}})
     },
     queryTable() {
       let data = {

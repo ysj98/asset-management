@@ -25,6 +25,7 @@
           @change="
             value => {
               record.isValid = Number(value);
+              console.log(record.isValid)
             }
           "
         />
@@ -47,7 +48,7 @@
 
 <script>
 // 显示在当前tab的 approveServiceType
-const approveServiceType = [1001, 1009];
+const approveServiceType = [1001, 1009, 1010];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*

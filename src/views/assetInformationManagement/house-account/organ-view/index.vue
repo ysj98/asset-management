@@ -1,4 +1,4 @@
-<!--组织机构视图业务-列表页面-->
+<!--房屋机构视图业务-列表页面-->
 <template>
   <div>
     <!--搜索条件-->
@@ -91,6 +91,7 @@ export default {
         { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableObj: {
+        scroll: {y: 420},
         dataSource: [],
         loading: false,
         pagination: false,
@@ -107,7 +108,7 @@ export default {
           { title: "其它(㎡)", dataIndex: "otherArea" },
           { title: "资产原值(元)", dataIndex: "originalValue" },
           { title: "最新估值(元)", dataIndex: "marketValue" },
-          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60, fixed: 'right' }
+          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90 }
         ],
       },
       paginationObj: {
@@ -313,6 +314,19 @@ export default {
 </script>
 
 <style lang='less' scoped>
+/deep/.ant-table-tbody {
+  //padding: 0px 0 15px 0px;
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 43px;
+    background: #fff;
+  }
+}
 .custom-table {
   padding-bottom: 55px;
   /*if you want to set scroll: { x: true }*/
@@ -325,6 +339,19 @@ export default {
     tr:nth-last-child(2) {
       font-weight: bold;
     }
+    td{
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    tr:hover{
+      td{
+        white-space: normal !important;
+        overflow: auto !important;
+        text-overflow: clip !important;
+      }
+    }
   }
+  
 }
 </style>

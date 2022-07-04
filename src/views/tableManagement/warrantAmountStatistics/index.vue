@@ -16,7 +16,7 @@
       </a-col>
     </a-row>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered :scroll="{x: '100%', y: 600}"/>
+    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered :scroll="{x: '100%', y: 500}"/>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>
@@ -193,4 +193,16 @@ import { getFormat } from '../../../utils/utils'
       }
     }
   }
+    /deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0px;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 40px;
+    background: #fff;
+  }
+}
 </style>

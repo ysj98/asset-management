@@ -1,7 +1,7 @@
 <!--
  * @Description: 
  * @Date: 2020-02-26 12:46:43
- * @LastEditTime: 2021-05-26 17:47:48
+ * @LastEditTime: 2022-07-04 11:46:38
  -->
 <template>
   <a-spin :spinning="spinning">
@@ -273,7 +273,7 @@
             <div class="edit-box-content-item mb24">
               <div class="label-name-box">
                 <span class="label-name label-space-between">
-                  合同编号
+                  合同编号1
                   <i></i>
                 </span>
                 <span>：</span>

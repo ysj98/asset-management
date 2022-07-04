@@ -758,6 +758,18 @@ export default {
     flex: 0 0 190px;
   }
 }
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+  tr:nth-last-child(2){
+    position: sticky;
+    bottom: 51px;
+    background: #fff;
+  }
+}
 </style>
 
 <style lang="less">
