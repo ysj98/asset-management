@@ -22,7 +22,7 @@
       :columns="table.columns"
       :dataSource="table.dataSource"
     >
-    <span slot="contractCode" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openContract(record)">{{ record.contractCode }}</span>
+    <span slot="contractCode" style="color: #0084FF; cursor: pointer" slot-scope="text, record" @click="openContract(record.contractId)">{{ record.contractCode }}</span>
     </a-table>
     <SG-FooterPagination
       :pageLength="table.pageSize"
@@ -182,8 +182,8 @@ export default {
     this.queryTable2()
   },
   methods: {
-    openContract () {
-      
+    openContract (id) {
+      window.parent.openPortalMenu(`/web/rental-sys/#/home/contractDetail?id=${id}&tabItem=0`, '合同详情')
     },
     queryTable() {
       let data = {
