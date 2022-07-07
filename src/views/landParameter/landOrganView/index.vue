@@ -11,7 +11,7 @@
             @click="handleExport"
             v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT"
             :loading="exportBtnLoading"
-          >导出组织机构视图1</SG-Button>
+          >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
           <tree-select @changeTree="changeTree" style="width: 100%" />

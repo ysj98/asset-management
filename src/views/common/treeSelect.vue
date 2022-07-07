@@ -149,7 +149,7 @@ export default {
              console.log(res)
              if (res.data.code === "0"){
            const {isValid, paramKey} = res.data.data
-           if (isValid === 1 && paramKey) {
+           if (Number(isValid) === 1) {
             if (this.typeFilter.length ) {
                 if (!this.typeFilter.includes('7')) {
                   this.typeFilter = this.typeFilter + ',7'
@@ -167,7 +167,6 @@ export default {
                let children = this.mapTreeNodes(r.data.data)
                this.setTree(node.value, this.treeData, children)
                this.treeData = [...this.treeData]
-               resolve()
              }
            })
          }
