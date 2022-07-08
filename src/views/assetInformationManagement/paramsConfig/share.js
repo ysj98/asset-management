@@ -56,7 +56,7 @@ export const serviceTypeAll = {
     needValidate: false,
   },
   1010: {
-    serviceTypeText: "组织机构查询是否过滤非营业机构",
+    serviceTypeText: "是否过滤部门节点",
     component: SelectSwitch,
     needValidate: false,
   },
