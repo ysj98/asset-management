@@ -59,6 +59,50 @@ export const columns = [
   }
 ]
 
+export const transfer = [
+  {
+    title: "申请单ID",
+    dataIndex: "applyId",
+    width: '10%'
+  },
+  {
+    title: "所属机构",
+    dataIndex: "organName",
+    width: '10%'
+  },
+  {
+    title: "申请单名称",
+    dataIndex: "name",
+    width: '10%'
+  },
+  {
+    title: "资产项目",
+    dataIndex: "projectName",
+    width: '10%'
+  },
+  {
+    title: "挂牌价格(元)",
+    dataIndex: "listingPrice",
+    width: '10%'
+  },
+  {
+    title: "提交人",
+    dataIndex: "create",
+    width: '10%'
+  },
+  {
+    title: "提交时间",
+    dataIndex: "createTime",
+    width: '10%'
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    align: 'center',
+    scopedSlots: { customRender: "operation" },
+    width: '6%'
+  }]
+
 export const receivingData = [{
     title: "编号",
     dataIndex: "indexKey",

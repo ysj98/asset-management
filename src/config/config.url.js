@@ -873,6 +873,12 @@ export const dispose = {
   getDispOrgProDetListPage: "/ams/disposeRegister/getDispOrgProDetListPage",
   // 组织机构视图，详情统计
   getDispOrgStatProDetail: "/ams/disposeRegister/getDispOrgStatProDetail",
+  //资产转让按钮
+  detail: "/ams/basicSettings/detail",
+  //资产转让列表
+  getTransferList:'/ams/makeover/list',
+  //根据处置单查询资产转让列表
+  listByDisposeRegisterOrderId:'/ams/makeover/listByDisposeRegisterOrderId'
 };
 
 // 盘点管理

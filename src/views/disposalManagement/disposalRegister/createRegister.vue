@@ -67,6 +67,7 @@
                   :allowClear="false"
                   :filterOption="filterOption"
                   notFoundContent="没有查询到处置类型"
+                  @change="transferChange"
                   >
                   <a-select-option :title="item.name" v-for="(item) in disposeTypeData" :key="item.value" :value='item.value'>{{item.name}}</a-select-option>
                 </a-select>
@@ -130,6 +131,11 @@
                 :maxLength="40"
                 v-decorator="['assetReceiver', {rules: [{required: false, max: 50, whitespace: true, message: '请输入资产接收人(不超过40字符)'}], initialValue: newCardData.assetReceiver}]"/>
               </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="8" v-if="transferShow">
+              <a-button type='primary' @click="showTransfer">
+                  资产转让单
+              </a-button>
             </a-col>
             <!-- <a-col class="playground-col" :span="8">
               <a-form-item label="费用分摊方式：" v-bind="formItemLayout">
@@ -230,6 +236,23 @@
             <!-- 操作 -->
             <template slot="operation" slot-scope="text, record, index">
               <span class="postAssignment-icon" weaken @click="deleteFn(record, 'property', index)">删除</span>
+            </template>
+          </a-table>
+        </div>
+      </div>
+    </div>
+    <div class="createRegister-nav">
+      <span class="section-title blue">转让申请单</span>
+      <div class="createRegister-obj">
+        <div class="table-layout-fixed table-border-lr">
+          <a-table
+            :columns="transferInfo.columns"
+            :dataSource="transferInfo.dataSource"
+            class="custom-table td-pd10"
+            :pagination="false"
+            >
+            <template slot="operation" slot-scope="text, record, index">
+              <span class="postAssignment-icon" weaken @click="deleteFn(record, 'transfer', index)">删除</span>
             </template>
           </a-table>
         </div>
@@ -390,6 +413,7 @@
       </div>
     </div>
     </SG-Modal>
+    <transfer-model ref="transfer" :organId="organId" @transferlist='saveTransfer'></transfer-model>
 <!--    快捷设置  结束-->
   </div>
 </template>
@@ -398,12 +422,13 @@
 import {utils} from '@/utils/utils.js'
 import FormFooter from '@/components/FormFooter'
 import AssetBundlePopover from '../../common/assetBundlePopover'
+import TransferModel from './transferModel.vue'
 import moment from 'moment'
-import {columns, receivingData, costSharingModeData, receiptPayment, conditionalJudgment} from './beat.js'
+import {columns, receivingData, costSharingModeData, receiptPayment, conditionalJudgment, transfer} from './beat.js'
 import {calc} from '@/utils/utils'
 
 export default {
-  components: {FormFooter, AssetBundlePopover},
+  components: {FormFooter, AssetBundlePopover,TransferModel},
   props: {},
   data () {
     return {
@@ -490,10 +515,24 @@ export default {
         loading: false,
       },
       checkedData: [],         // 存着资产总的数据
-      billConfigOptions: []    // 科目
+      billConfigOptions: [] ,   // 科目
+      transferInfo:{   //资产转让数据
+        columns: [...transfer],
+        dataSource: [],
+      },
+      transferShow:false   
     }
   },
   computed: {
+  },
+  watch:{
+    'newCardData.disposeType':{
+      handler(val){
+        if(val==='3' && this.type === 'edit'){
+          this.listByDisposeRegisterOrderId()
+        }
+      }
+    }
   },
   methods: {
     moment,
@@ -783,9 +822,17 @@ export default {
             })
           }
           // console.log(receivecostPlanList, '计划的数据')
+          let ApplyIds=[]
+          if(this.transferInfo.dataSource.length>0){
+            this.transferInfo.dataSource.forEach(item=>{
+              ApplyIds.push(item.applyId)
+            })
+          }
+          ApplyIds=ApplyIds.join(',')
           let obj = {
             disposeName: values.disposeName,        // 处置名称
             organId: this.organId,                  // 所属组织机构
+            applyIds: ApplyIds,                     // 资产转让ID
             projectId: values.projectId,            // 资产项目ID
             assetType: values.assetType,            // 资产类型 平台字典表asset_type 1房屋，2构筑物，3设备
             disposeType: values.disposeType,        // 处置类型 平台字典 AMS_DISPOSE_TYPE 1 资产报废 2 资产报损 3 资产转让
@@ -856,6 +903,8 @@ export default {
         })
       } else if (str === 'receiving') {
         this.receiving.dataSource.splice(index, 1)
+      }else if(str === 'transfer'){
+        this.transferInfo.dataSource.splice(index, 1)
       }
     },
     handleSubmit (e) {
@@ -1036,7 +1085,52 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    }
+    },
+    //查询是否需要展示资产转让按钮
+    getTransferButton(){
+      this.$api.disposalManagement.transferButton().then(res => {
+        if (res.data.code === '0') {
+          if(res.data.data){
+            this.transferShow=true
+          }else{
+            this.transferShow=false
+          }
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    //保存选中的资产转让数据
+    saveTransfer(list){
+      this.transferInfo.dataSource=list
+    },
+    //资产框
+    showTransfer(){
+      this.$refs.transfer.show=true
+    },
+    //判断是否为资产转让
+    transferChange(val,option){
+      console.log(val,option)
+      if(val==='3'){
+        this.getTransferButton()
+      }
+    },
+    //获取转让单列表
+    listByDisposeRegisterOrderId() {
+      let obj = {
+        disposeRegisterOrderId: this.disposeRegisterOrderId,
+      };
+      this.$api.basics.getreceivecostPlanList(obj).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data;
+          this.transferInfo.dataSource = data;
+          this.loading = false;
+        } else {
+          this.$message.error(res.data.message);
+          this.loading = false;
+        }
+      });
+    },
   },
   created () {
     this.particularsData = this.$route.query
