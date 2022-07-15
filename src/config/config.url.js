@@ -801,6 +801,8 @@ export const ownership = {
     uploadAnnex: "/ams/attachment/uploadAnnex",
     // 权证管理附件下载
     downLoadAnnex: "/ams/attachment/downLoadAnnex2Path",
+    // 打记标签接口
+    updateWarrantTag: "/ams/ownerShipUser/warrant/updateWarrantTag",
   },
   // 组织机构权属
   organView: "/ams/ownerShip/owner/organView",

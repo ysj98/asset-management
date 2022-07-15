@@ -126,3 +126,7 @@ export function uploadAnnex (data) {
 export function downLoadAnnex (data) {
   return axiosGet(ownership.authorityCardManagement.downLoadAnnex, data, false, {responseType: 'blob'})
 }
+// 打记标签接口
+export function updateWarrantTag (data) {
+  return axiosPost(ownership.authorityCardManagement.updateWarrantTag, data)
+}

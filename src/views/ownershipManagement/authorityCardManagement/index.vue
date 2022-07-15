@@ -10,6 +10,7 @@
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn" style="margin-right: 8px">新建权证</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_SETTING" icon="setting" @click="changeListSettingsModal(true)" style="margin: 0 10px">列表设置</SG-Button>
+        <SG-Button :disabled="control" @click="tagsFn" style="margin: 0 10px">权证标签</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
@@ -74,6 +75,18 @@
             v-model="queryCondition.ownershipUseList"
           >
             <a-select-option :title="item.name" v-for="(item, index) in useData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部权证标签"
+            :tokenSeparators="[',']"
+            @select="warrantTagFn"
+            v-model="queryCondition.warrantTags"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in warrantTagsList" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
         </div>
         <div class="two-row-box">
@@ -147,6 +160,8 @@
     <batch-import @upload="uploadFile" @down="downTemplate" ref="batchImport" title="权证批量导入"/>
     <!--编辑列表表头-->
     <TableHeaderSettings v-if="listSettingFlag" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
+    <!-- 标签设置 -->
+    <commonLabelComponent :listData="listData" title="权证标签设置" @commonFn="commonFn" @cancelFn="cancelFn" ref="componentRef" v-if="componentShow"></commonLabelComponent>
   </div>
 </template>
 
@@ -161,9 +176,11 @@ import CardDetails from './cardDetails.vue'
 import noDataTips from '@/components/noDataTips'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 // import {utils, debounce} from '@/utils/utils.js'
+import {utils} from '@/utils/utils'
 import BatchImport from 'src/views/common/eportAndDownFile'
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 import {getTableHeaders} from "utils/share";
+import commonLabelComponent from '@/components/commonLabelComponent'
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 const detailColumns = [
   {
@@ -238,13 +255,18 @@ const queryCondition =  {
     pageNum: 1,         // 第几页
     pageSize: 10,       // 每页显示记录数
     seatingPosition: '', // 坐落位置
-    ownershipUseList: [''] //用途
+    ownershipUseList: [''], //用途
+    warrantTags: ['']
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, TableHeaderSettings},
+  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, TableHeaderSettings, commonLabelComponent},
   props: {},
   data () {
     return {
+      warrantTagsList: [],
+      listData: [],
+      componentShow: false,
+      warrantTags: '',
       scrollHeight: 260,
       useData: [],
       funType: 5,
@@ -292,24 +314,66 @@ export default {
   computed: {
   },
   methods: {
+    cancelFn () {
+      this.componentShow = false
+    },
+    // 标签提交
+    commonFn (val, name) {
+      console.log(val, '90909')
+      if (!val) {
+        this.$message.info('请选择权证标签')
+        return
+      }
+      let obj = {
+        warrantIds: this.idArr.join(','),
+        warrantTags: val,
+        warrantTagNames: name
+      }
+      this.$api.ownership.updateWarrantTag(obj).then(res => {
+        if (Number(res.data.code) === 0) {
+          this.$message.info('保存成功')
+          this.cancelFn()
+          this.query()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    // 标签方法
+    tagsFn () {
+      this.componentShow = true
+      this.$nextTick(() => {
+        this.$refs.componentRef.show = true
+      })
+    },
      // 查询评估机构-机构字典
-      queryUseOptions () {
+      queryUseOptions (val) {
         this.queryCondition.ownershipUseList = ['']
         const { organId } = this.queryCondition
         if (!organId) { return false }
-        this.$api.basics.organDict({ code: 'OWNERSHIP_USE', organId }).then(r => {
+        this.$api.basics.organDict({ code: val, organId }).then(r => {
           let res = r.data
           if (res && String(res.code) === '0') {
-            console.log(res)
-            res.data.unshift({
-    name: '全部用途',
-    value: ''
-  })
-            return this.useData = res.data
+            if (val === 'OWNERSHIP_USE') {
+              res.data.unshift({
+                name: '全部用途',
+                value: ''
+              })
+              this.useData = res.data
+            }
+            if (val === 'AMS_WARRANT_TAG') {
+              let arr = utils.deepClone(res.data)
+              // 查询标签
+              arr.unshift({
+                name: '全部权证标签',
+                value: ''
+              })
+              this.warrantTagsList = arr
+              this.listData = res.data
+            }
           }
-          throw res.message || '查询用途失败'
         }).catch(err => {
-          this.$message.error(err || '查询用途失败')
+          this.$message.error(err)
         })
       },
     async initTableColumns(){
@@ -417,7 +481,8 @@ export default {
       this.queryCondition.obligeeId = ''
       this.selectFn()
       this.queryHandler()
-      this.queryUseOptions()
+      this.queryUseOptions('OWNERSHIP_USE')
+      this.queryUseOptions('AMS_WARRANT_TAG')
     },
     // 搜索
     onSearch () {
@@ -486,6 +551,12 @@ export default {
         this.queryCondition.status = this.handleMultipleSelectValue(value, this.queryCondition.status, this.statusData)
       })
     },
+    // 权证标签
+    warrantTagFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.warrantTags = this.handleMultipleSelectValue(value, this.queryCondition.warrantTags, this.warrantTagsList)
+      })
+    },
     // 用途发生变化
     useFn (value) {
       this.$nextTick(function () {
@@ -518,6 +589,7 @@ export default {
       this.queryCondition.organId = organId
       this.queryCondition.ownerTypeList = []
       this.queryCondition.ownershipUseList = ['']
+      this.queryCondition.warrantTags = ['']
       this.queryHandler()
     },
     filterOption(input, option) {
@@ -543,6 +615,7 @@ export default {
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
         uploadAttachment: this.queryCondition.attachmentStatus,
+        warrantTags: this.queryCondition.warrantTags.length > 0 ? this.queryCondition.warrantTags.join(',') : '', 
         ownershipUseList: this.queryCondition.ownershipUseList[0] ? this.queryCondition.ownershipUseList : []
       }
     },
