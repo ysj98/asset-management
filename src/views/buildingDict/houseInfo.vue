@@ -194,7 +194,7 @@
 import SearchContainer from "@/views/common/SearchContainer";
 import segiIcon from "@/components/segiIcon.vue";
 import topOrganByUser from "@/views/common/topOrganByUser";
-import { utils, debounce } from "@/utils/utils";
+import { utils, debounce, getFormat } from "@/utils/utils";
 import OperationPopover from "@/components/OperationPopover";
 import houseExport from "./child/houseExport.vue";
 import eportAndDownFile from "@/views/common/eportAndDownFile.vue";
@@ -277,6 +277,11 @@ let columns = [
   {
     title: "套内面积(㎡)",
     dataIndex: "innerArea",
+    width: 150
+  },
+  {
+    title: "分摊土地面积(㎡)",
+    dataIndex: "shareArea",
     width: 150
   },
   {
@@ -423,9 +428,11 @@ export default {
           this.table.loading = false;
           if (res.data.code === "0") {
             this.table.dataSource = res.data.data.map(item => {
-              item.innerArea = item.innerArea || "-";
-              item.area = item.area || "-";
+              item.innerArea = getFormat(item.innerArea, '') || "-";
+              item.area = getFormat(item.area, '') || "-";
+              item.useArea = getFormat(item.useArea, '') || "-"
               item.houseName = item.houseName || "-";
+              item.shareArea = getFormat(item.shareArea, '') || "-"
               item.statusName = statusMap[item.status] || "-";
               return {
                 key: getUuid(),
@@ -433,12 +440,27 @@ export default {
               };
             });
             this.table.totalCount = res.data.paginator.totalCount || 0;
+            this.queryHouseTotal(data)
           }
         },
         () => {
           this.table.loading = false;
         }
       );
+    },
+    // 合计
+    queryHouseTotal (data) {
+      this.$api.building.queryHouseTotal(data).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          data.area =  getFormat(data.areaTotal, '') || "-"
+          data.innerArea =  getFormat(data.innerAreaTotal, '') || "-"
+          data.shareArea =  getFormat(data.shareAreaTotal, '') || "-"
+          data.useArea =  getFormat(data.useAreaTotal, '') || "-"
+          data.houseId = '合计'
+          this.table.dataSource.push(data)
+        }
+      });
     },
     // 处理按钮
     handleBtn() {

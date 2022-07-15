@@ -583,6 +583,8 @@ export const building = {
   // 修改房屋状态
   updateHouseStatus:
     "/basic-data-api/rest-api/v1/ams/houseApi/updateHouseStatus",
+  // 房间列表合计
+  queryHouseTotal: '/basic-data-api/rest-api/v1/ams/houseApi/queryHouseTotal',
   // 修改楼栋
   updateBuild: "/basic-data-api/rest-api/v1/ams/buildApi/updateBuild",
   // 删除楼栋
@@ -631,6 +633,8 @@ export const building = {
     "/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcel/",
   // 土地分页列表
   blankApiPageList: "/basic-data-api/rest-api/v1/ams/blankApi/pageList",
+  // 查询土地列表合计
+  queryBlankLandTotal: "/basic-data-api/rest-api/v1/ams/blankApi/queryBlankLandTotal",
   // 土地修改
   blankApiUpdate: "/basic-data-api/rest-api/v1/ams/blankApi/update",
   // 土地删除

@@ -32,6 +32,10 @@ export function queryHouseStatisV3 (data) {
 export function updateHouse (data) {
   return axiosPost(building.updateHouse, data)
 }
+// 合计
+export function queryHouseTotal (data) {
+  return axiosPost(building.queryHouseTotal, data)
+}
 // 新增房屋
 export function addHouse (data) {
   return axiosPost(building.addHouse, data)
@@ -157,6 +161,10 @@ export function buildImportExcel (organId, data) {
 // 土地分页列表
 export function blankApiPageList (data) {
   return axiosPost(building.blankApiPageList, data)
+}
+// 土地分页列表合计
+export function queryBlankLandTotal (data) {
+  return axiosPost(building.queryBlankLandTotal, data)
 }
 // 土地修改
 export function blankApiUpdate (data) {

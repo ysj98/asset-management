@@ -138,7 +138,7 @@ import SearchContainer from "@/views/common/SearchContainer";
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from "@/components/segiIcon.vue";
-import { utils } from "@/utils/utils";
+import { utils, getFormat } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
@@ -224,6 +224,9 @@ export default {
             return {
               key: utils.getUuid(),
               ...item,
+              floorArea: getFormat(item.floorArea, '') || "-",
+              useArea: getFormat(item.useArea, '') || "-",
+              shareArea: getFormat(item.shareArea, '') || "-",
               operationDataBtn: btnArr,
             };
           });

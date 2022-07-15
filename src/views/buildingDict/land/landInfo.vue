@@ -80,7 +80,7 @@
       <!-- 表格部分 -->
       <div>
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 custom-total-one"
           :loading="table.loading"
           :pagination="false"
           :columns="table.columns"
@@ -91,8 +91,9 @@
           <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
           </template>
-          <template slot="buildArea" slot-scope="text">
-            <span>{{Number(text).toFixed(4)}}</span>
+          <template slot="buildArea" slot-scope="text, record">
+            <span>{{record.buildArea ? getFormat(text, '') : "-"}}</span>
+            <!-- <span>{{Number(text).toFixed(4)}}</span> -->
           </template>
           <template slot="operation" slot-scope="text, record">
             <OperationPopover
@@ -118,7 +119,7 @@
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from "@/components/segiIcon.vue";
-import { utils } from "@/utils/utils";
+import { utils, getFormat } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
@@ -143,6 +144,7 @@ export default {
   },
   data() {
     return {
+      getFormat,
       typeFilter,
       ASSET_MANAGEMENT,
       hasPowerExport: false, // 导出按钮权限
@@ -210,10 +212,12 @@ export default {
                 ...item,
                 landuseName: landuseOptRow.label,
                 landTypeName: landTypeOptRow.label,
+                acreage: getFormat(item.acreage, '') || "-",
                 operationDataBtn: btnArr,
               };
             });
             this.table.totalCount = res.data.paginator.totalCount || 0;
+            this.queryBlankLandTotal(data)
           } else {
             this.$message.error(res.data.message);
           }
@@ -222,6 +226,18 @@ export default {
           this.table.loading = false;
         }
       );
+    },
+    // 合计 
+    queryBlankLandTotal (data) {
+      this.$api.building.queryBlankLandTotal(data).then((res) => {
+        if (res.data.code === "0") {
+          let data = res.data.data;
+          data.acreage =  getFormat(data.acreageTotal, '') || "-"
+          data.buildArea =  getFormat(data.buildAreaTotal, '') || "-"
+          data.blankId = '合计'
+          this.table.dataSource.push(data)
+        }
+      });
     },
     // 重置分页查询
     searchQuery() {
