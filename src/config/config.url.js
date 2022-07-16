@@ -648,7 +648,7 @@ export const building = {
   // 土地新增
   blankApiInsert: "/basic-data-api/rest-api/v1/ams/blankApi/insert",
   // 土地编码
-  generatBlankCode: 'basic-data-api/rest-api/v1/ams/blankApi/generatBlankCode',
+  generatBlankCode: '/basic-data-api/rest-api/v1/ams/blankApi/generatBlankCode',
   // 车场 分页查询
   parkApiPageList:
     "/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceList.json",
