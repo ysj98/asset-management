@@ -585,6 +585,8 @@ export const building = {
   // 修改房屋状态
   updateHouseStatus:
     "/basic-data-api/rest-api/v1/ams/houseApi/updateHouseStatus",
+  // 房间列表合计
+  queryHouseTotal: '/basic-data-api/rest-api/v1/ams/houseApi/queryHouseTotal',
   // 修改楼栋
   updateBuild: "/basic-data-api/rest-api/v1/ams/buildApi/updateBuild",
   // 删除楼栋
@@ -633,6 +635,8 @@ export const building = {
     "/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcel/",
   // 土地分页列表
   blankApiPageList: "/basic-data-api/rest-api/v1/ams/blankApi/pageList",
+  // 查询土地列表合计
+  queryBlankLandTotal: "/basic-data-api/rest-api/v1/ams/blankApi/queryBlankLandTotal",
   // 土地修改
   blankApiUpdate: "/basic-data-api/rest-api/v1/ams/blankApi/update",
   // 土地删除
@@ -812,6 +816,8 @@ export const ownership = {
     uploadAnnex: "/ams/attachment/uploadAnnex",
     // 权证管理附件下载
     downLoadAnnex: "/ams/attachment/downLoadAnnex2Path",
+    // 打记标签接口
+    updateWarrantTag: "/ams/ownerShipUser/warrant/updateWarrantTag",
   },
   // 组织机构权属
   organView: "/ams/ownerShip/owner/organView",
@@ -884,6 +890,12 @@ export const dispose = {
   getDispOrgProDetListPage: "/ams/disposeRegister/getDispOrgProDetListPage",
   // 组织机构视图，详情统计
   getDispOrgStatProDetail: "/ams/disposeRegister/getDispOrgStatProDetail",
+  //资产转让按钮
+  detail: "/ams/basicSettings/detail",
+  //资产转让列表
+  getTransferList:'/ams/makeover/list',
+  //根据处置单查询资产转让列表
+  listByDisposeRegisterOrderId:'/ams/makeover/listByDisposeRegisterOrderId'
 };
 
 // 盘点管理

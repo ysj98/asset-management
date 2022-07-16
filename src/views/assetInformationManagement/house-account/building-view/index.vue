@@ -3,7 +3,7 @@
   <div>
     <!--搜索条件-->
     <div style="padding: 20px 30px">
-      <a-row :gutter="8">
+      <a-row :gutter="6">
         <a-col :span="3">
           <SG-Button
             icon="import"
@@ -22,6 +22,10 @@
             type="default"
             @click="clickAsset"
           >资产标签</SG-Button>
+          <SG-Button
+            type="default"
+            @click="clickHeader"
+          >表头设置</SG-Button>
         </a-col>
         <a-col :span="4">
           <a-select
@@ -110,6 +114,15 @@
     >
       <edit-tag ref="editTagRef" :options="assetLabelOpt"/>
     </SG-Modal>
+    <SG-Modal
+      v-bind="modalHead"
+      v-model="modalHead.status"
+      width='800px'
+      @ok="headModalOk"
+      @cancel="modalHead.status = false"
+    >
+      <header-tag ref="headRef" :options="headerList"/>
+    </SG-Modal>
   </div>
 </template>
 
@@ -119,22 +132,57 @@
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import EditTag from './editTag'
+  import HeaderTag from './headerTag'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
   import { throttle } from '@/utils/utils'
+  import { getTableHeaders } from '@/utils/share.js'
   // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
   const assetLabelOpt = [
     // { label: "全部资产标签  ", value: "" },
   ]
+  const defaultHeader =[
+            { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
+            { title: '楼栋编号', dataIndex: 'buildCode', width: 200},
+            { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
+            { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' }, width: 150 },
+            { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
+            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
+  ]
+  const chooseHeader =[
+            { title: '宗地号', dataIndex: 'addressNo', width: 150 },
+            { title: '建筑年代', dataIndex: 'years', width: 150 },
+            { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 200 },
+            { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 200 },
+            { title: '楼栋建筑面积(㎡)', dataIndex: 'buildBuiltArea', width: 150 },
+            { title: '房屋建筑面积(㎡)', dataIndex: 'area', width: 150 },
+            { title: '楼高', dataIndex: 'buildHeight', width: 150 },
+            { title: '层数', dataIndex: 'floorNum', width: 150 },
+            { title: '地上层数', dataIndex: 'upFloorNum', width: 150 },
+            { title: '地下层数', dataIndex: 'downFloorNum', width: 150 },
+            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
+            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
+            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
+            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 150 },
+            { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
+            { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
+            { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+            { title: '资产标签', dataIndex: 'label', width: 150 },
+  ]
+  // const optionHeader =[
+  //   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
+  // ]
   export default {
     name: 'index',
-    components: { OverviewNumber, NoDataTip, TooltipText,EditTag },
+    components: { OverviewNumber, NoDataTip, TooltipText,EditTag, HeaderTag },
     data () {
       return {
         assetLabelOpt,
         assetLabelSelect: [],
         label: [],
+        funType: 17,
         selectedRowKeys: [],
         modalObj: { title: '资产设置', status: false, okText: '确定', width: 605 },
+        modalHead: { title: '表头设置', status: false, okText: '确定', width: 605 },
         ASSET_MANAGEMENT, // 权限对象
         overviewNumSpinning: false, // 查询视图面积概览数据loading
         exportBtnLoading: false, // 导出按钮loading
@@ -149,7 +197,8 @@
         numList: [
           {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'}, {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},{title: '楼栋面积(㎡)', key: 'totalBuildArea', value: 0, bgColor: '#fff03c'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
           dataSource: [],
@@ -158,30 +207,30 @@
           pagination: false,
           rowKey: 'buildId',
           columns: [
-            { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
-            { title: '楼栋编号', dataIndex: 'buildCode', width: 200},
-            { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
-            { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-            { title: '建筑年代', dataIndex: 'years', width: 150 },
-            { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 200 },
-            { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 200 },
-            { title: '楼栋建筑面积(㎡)', dataIndex: 'buildBuiltArea', width: 150 },
-            { title: '房屋建筑面积(㎡)', dataIndex: 'area', width: 150 },
-            { title: '楼高', dataIndex: 'buildHeight', width: 150 },
-            { title: '层数', dataIndex: 'floorNum', width: 150 },
-            { title: '地上层数', dataIndex: 'upFloorNum', width: 150 },
-            { title: '地下层数', dataIndex: 'downFloorNum', width: 150 },
-            { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' }, width: 150 },
-            { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
-            { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
-            { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
-            { title: '占用(㎡)', dataIndex: 'occupationArea', width: 150 },
-            { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
-            { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
-            { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
-            { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
-            { title: '资产标签', dataIndex: 'label', width: 150 },
-            { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
+            // { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
+            // { title: '楼栋编号', dataIndex: 'buildCode', width: 200},
+            // { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
+            // { title: '宗地号', dataIndex: 'addressNo', width: 150 },
+            // { title: '建筑年代', dataIndex: 'years', width: 150 },
+            // { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 200 },
+            // { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 200 },
+            // { title: '楼栋建筑面积(㎡)', dataIndex: 'buildBuiltArea', width: 150 },
+            // { title: '房屋建筑面积(㎡)', dataIndex: 'area', width: 150 },
+            // { title: '楼高', dataIndex: 'buildHeight', width: 150 },
+            // { title: '层数', dataIndex: 'floorNum', width: 150 },
+            // { title: '地上层数', dataIndex: 'upFloorNum', width: 150 },
+            // { title: '地下层数', dataIndex: 'downFloorNum', width: 150 },
+            // { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' }, width: 150 },
+            // { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
+            // { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
+            // { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
+            // { title: '占用(㎡)', dataIndex: 'occupationArea', width: 150 },
+            // { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
+            // { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
+            // { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+            // { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150,scopedSlots: { customRender: 'fireMaterial' }},
+            // { title: '资产标签', dataIndex: 'label', width: 150 },
+            // { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
           ]
         },
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -197,7 +246,24 @@
         options: []
       }
     },
-
+    computed:{
+      headerList(){
+        let list =defaultHeader.concat(chooseHeader)
+        let options=[]
+        list.forEach(item=>{
+          if(item.dataIndex){
+            let cur={}
+            cur.label=item.title
+            cur.value=item.dataIndex
+            if(item.dataIndex=='buildName'|| item.dataIndex=='buildCode'||item.dataIndex=='projectName'||item.dataIndex=='assetNum'||item.dataIndex=='fireMaterial'){
+              cur.disabled=true
+            }
+            options.push(cur)
+          }
+        })
+        return options
+      }
+    },
     methods: {
       assetLabelFn(value){
         this.$nextTick(function () {
@@ -253,6 +319,16 @@
         // if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
         this.modalObj.status = true
       },
+      clickHeader(){
+        this.modalHead.status = true
+        this.$nextTick(() => {
+          let cur=[]
+          this.tableObj.columns.forEach(item=>{
+            cur.push(item.dataIndex)
+            })
+            this.$refs.headRef.checkedList=cur
+        })
+      },
       // 资产设置
       handleModalOk: throttle(function() {
         let arr = this.$refs.editTagRef.checkedList
@@ -274,6 +350,32 @@
         })
         this.modalObj.status = false
       }, 3000), 
+      //更改表头
+      headModalOk(){
+        let list=this.$refs.headRef.checkedList
+        let params={
+          funType:17,
+          chooseList:[]
+        }
+        list.forEach(item=>{
+          this.tableObj.columns.forEach(ele=>{
+            let cur={}
+            if(ele.dataIndex===item){
+              cur.colCode=item
+              cur.colName=ele.title
+              cur.funType=17
+              params.chooseList.push(cur)
+            }
+          })
+        })
+        this.$api.global
+        .addCustomShowV2(params).then(res =>{
+            if(res.data.code === '0'){
+              this.getChoosedList()
+              this.modalHead.status=false
+            }
+          })
+      },
       // 点击总览数据块
       handleClickOverview ({i}) {
         this.current = i
@@ -441,11 +543,32 @@
         }).catch(err => {
           this.$message.error(err || '查询组织机构失败')
         })
+      },
+      //获取选中的表头
+      getChoosedList: async function(){
+        let cur = await getTableHeaders({funType:this.funType})
+        this.tableObj.columns=[...defaultHeader]
+        cur.customChose.forEach(item=>{
+          let cur =chooseHeader.find(ele=>{
+            return ele.dataIndex==item.colCode
+          })
+          if(cur){
+
+            this.tableObj.columns.push(cur)
+          }
+        })
+        // this.tableObj.columns.forEach((item,index)=>{
+        //   if(!){
+        //     this.tableObj.columns.splice(index,1)
+        //   }
+        // })
+            console.log(this.tableObj.columns)
       }
     },
 
     created () {
       this.queryOrganList()
+      this.getChoosedList()
     },
     watch: {
       organProjectBuildingValue: {

@@ -30,3 +30,17 @@
     }
   }
 }
+
+/*
+带合计的表格（当前页面合计和所有合计一行 字体加粗样式）
+*/
+.custom-total-one{
+  .ant-table {
+    .ant-table-thead th, td {
+      white-space: nowrap;
+    }
+    .ant-table-tbody tr:nth-last-child(-n + 1) {
+      font-weight: bold !important;
+    }
+  }
+}

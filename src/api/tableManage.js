@@ -160,7 +160,7 @@ export function houseResourceExport (data) {
 }
 // 房屋资产&资源统计表-明细-导出
 export function detailExport (data) {
-  return axiosPost(tableManage.detailExport, data, false, false, {responseType: 'blob'})
+  return axiosPost(tableManage.detailExport, data, false, false, {responseType: 'blob',timeout:300000})
 }
 // 房屋资产&资源统计表-明细-房屋列表
 export function detailPageList (data) {
