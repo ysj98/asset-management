@@ -63,6 +63,8 @@ export const basics = {
     "/basic-data-api/rest-api/v1/organInfo/queryAllTopOrganByUser",
   // 请求楼栋单元
   getOptions: "/basic-data-api/rest-api/v1/common/getOptions",
+  // 资产查询房号 
+  getOptionsByAms: "/basic-data-api/rest-api/v1/common/getOptionsByAms",
   // 请求业态类型
   queryNodesByRootCode:
     "/basic-data-api/rest-api/v1/professionType/queryNodesByRootCode",

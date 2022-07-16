@@ -223,6 +223,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
   // 权证管理-列表字段自定义
   ASSET_ACM_SETTING: 'zcgl_asset_acm_setting',
+  // 权证管理-自定义标签
+  zcgl_asset_acm_custom_labels: 'zcgl_asset_acm_custom_labels',
 
   /**
   * 权属人管理

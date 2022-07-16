@@ -10,7 +10,7 @@
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn" style="margin-right: 8px">新建权证</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_SETTING" icon="setting" @click="changeListSettingsModal(true)" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button :disabled="control" @click="tagsFn" style="margin: 0 10px">权证标签</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.zcgl_asset_acm_custom_labels" :disabled="control" @click="tagsFn" style="margin: 0 10px">权证标签</SG-Button>
         <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
         <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>

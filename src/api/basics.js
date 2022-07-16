@@ -40,6 +40,10 @@ export function queryAllTopOrganByUser (data) {
 export function getOptions (data) {
   return axiosPost(basics.getOptions, data)
 }
+// 资产查询房号 
+export function getOptionsByAms (data, houseName) {
+  return axiosPost(`${basics.getOptionsByAms}?name=${houseName}`, data)
+}
 // 根据根节点业态code获取下面的业态类型
 export function queryNodesByRootCode (data) {
   return axiosGet(basics.queryNodesByRootCode, data)
