@@ -74,13 +74,13 @@
           <!-- 房号 -->
           <a-select
             showSearch
+            @search="onChangeHouseOpt"
             placeholder="请选择房号"
             v-model="queryCondition.houseId"
-            optionFilterProp="children"
             :style="allWidth"
             :options="$addTitle(houseOpt)"
             :allowClear="false"
-            :filterOption="filterOption"
+            :filter-option="false"
             notFoundContent="没有查询到数据"
           />
           <!-- 房屋建筑形态 -->
@@ -324,6 +324,7 @@ export default {
   },
   data() {
     return {
+      houseName: '',
       selectedOrganName: '', // 当前所选 组织名称 导出弹窗回显使用
       typeFilter,
       ASSET_MANAGEMENT,
@@ -407,6 +408,71 @@ export default {
     this.queryNodesByRootCode("60");
   },
   methods: {
+    // 房间收拾搜索
+    onChangeHouseOpt (val) {
+      if (val) {
+        this.houseName = val
+        this.debounceHouse()
+      }
+    },
+    // 防抖函数后台请求楼栋数据
+    debounceHouse: debounce(function() {
+      // 如果选择了楼栋和单元的就按单元查  反正按楼栋查
+      // queryCondition.buildId
+      // queryCondition.unitId
+      let str = ''
+      let strType = ''
+      if (this.queryCondition.buildId && this.queryCondition.unitId) {
+        str = this.queryCondition.unitId
+        strType = 'getHouseByUnitId'
+      } else {
+        str = this.queryCondition.buildId
+        strType = 'getHouseByBuildId'
+      }
+      this.getOptionsByAms(
+        strType,
+        str
+      );
+    }, 300),
+    getOptionsByAms (type, value = "") {
+      if (!type) {
+        return;
+      }
+      if (!value) {
+        return
+      }
+      let PARAMS = "";
+      let resetArr = [];
+      // 以单元请求房号
+      if (type === "getHouseByUnitId") {
+        PARAMS = "#UNIT_ID:" + value;
+        resetArr = utils.deepClone(houseOpt);
+        this.houseOpt = resetArr;
+      }
+      // 以楼栋请求房号
+      if (type === "getHouseByBuildId") {
+        PARAMS = "#BUILD_ID:" + value;
+        resetArr = utils.deepClone(houseOpt);
+        this.houseOpt = resetArr;
+      }
+      let data = {
+        SQL_CODE: type,
+        PARAMS: PARAMS
+      };
+      this.$api.basics.getOptionsByAms(data, this.houseName).then(res => {
+        if (res.data.code === "0") {
+          let result = res.data.data || [];
+          resetArr.push(
+            ...result.map(item => {
+              return {
+                label: item.C_TEXT,
+                value: item.C_VALUE
+              };
+            })
+          );
+        }
+      });
+    },
     // 处理是否选中仅当前机构
     changeChecked (e) {
       this.queryCondition.isCurrent = Number(e.target.checked)

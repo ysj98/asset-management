@@ -148,6 +148,15 @@
               placeholder="请选择质押情况"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              :allowClear="true"
+              v-model="ownershipStatus"
+              style="width: 100%"
+              :options="$addTitle(ownershipStatusList)"
+              placeholder="请选择权属状态"
+            />
+          </a-col>
         </a-row>
       </div>
     </search-container>
@@ -360,6 +369,12 @@ const requiredColumn = [
         pledgeList: [
           { label: "有质押", value: 1 },
           { label: "无质押", value: 0 },
+        ],
+        ownershipStatus: undefined,
+        ownershipStatusList: [
+          { label: "无证", value: 0 },
+          { label: "有证", value: 1 },
+          { label: "待办证", value: 2 },
         ],
         funType: 14,
         houseNumber: '',
@@ -732,7 +747,7 @@ const requiredColumn = [
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment, label, houseNumber,pledge
+          useType,sourceModes, address, uploadAttachment, label, houseNumber,pledge,ownershipStatus
         } = this
         // this.pledge = !this.pledge ? '' : this.pledge
         if (!organId) { return this.$message.info('请选择组织机构') }
@@ -750,7 +765,8 @@ const requiredColumn = [
           organIds: organId,
           label: label ? label.join('、') : '',
           uploadAttachment,houseNumber,
-          pledge
+          pledge,
+          ownershipStatus
         }
         if(!uploadAttachment) delete form.uploadAttachment
         if(label === '' || !label) delete form.label
