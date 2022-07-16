@@ -1,7 +1,7 @@
 /*
  * @Author: LW
  * @Date: 2020-07-10 17:11:45
- * @LastEditTime: 2020-11-10 15:53:45
+ * @LastEditTime: 2022-07-12 10:16:15
  * @Description: file content
  */
 
@@ -24,6 +24,10 @@ export const columnsData = [
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
   { title: '公安门牌号', dataIndex: 'houseNumber', width: 100, scopedSlots: { customRender: 'houseNumber' } },
+  { title: '质押', dataIndex: 'pledge', width: 100 },
+  { title: '抵押', dataIndex: 'mortgage', width: 100 },
+  { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
  
@@ -66,6 +70,10 @@ export const houseVerificationList = [
   { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', required: false, type: 'float' },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', required: false, type: 'float' },
   { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' },
+  { title: '质押', dataIndex: 'pledge', required: false },
+  { title: '抵押', dataIndex: 'mortgage', required: false },
+  { title: '涉诉', dataIndex: 'lawsuit', required: false },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', required: false, fontLength: 500 },
 ]
 // 土地导入校验规则
 export const landVerificationList = [
@@ -99,7 +107,11 @@ export const landVerificationList = [
   { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' },
   { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', required: false, type: 'float' },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', required: false, type: 'float' },
-  { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' }
+  { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' },
+  { title: '质押', dataIndex: 'pledge', required: false },
+  { title: '抵押', dataIndex: 'mortgage', required: false },
+  { title: '涉诉', dataIndex: 'lawsuit', required: false },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', required: false, fontLength: 500 },
 ]
 
 export const yardVerificationList = [
@@ -122,7 +134,11 @@ export const yardVerificationList = [
   { title: '已使用期数(月)', dataIndex: 'usedDate', required: false, type: 'number' },
   { title: '累计折旧金额(元)', dataIndex: 'depreciationAmount', required: false, type: 'float' },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', required: false, type: 'float' },
-  { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' }
+  { title: '债务金额(元)', dataIndex: 'debtAmount', required: false, type: 'float' },
+  { title: '质押', dataIndex: 'pledge', required: false },
+  { title: '抵押', dataIndex: 'mortgage', required: false },
+  { title: '涉诉', dataIndex: 'lawsuit', required: false },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', required: false, fontLength: 500 },
 ]
 // 设备设施导入校验规则
 export const equipmentVerificationList = [
@@ -162,6 +178,10 @@ export const landData = [
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
+  { title: '质押', dataIndex: 'pledge', width: 100 },
+  { title: '抵押', dataIndex: 'mortgage', width: 100 },
+  { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
@@ -264,6 +284,10 @@ export const yard = [
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 100 },
+  { title: '质押', dataIndex: 'pledge', width: 100 },
+  { title: '抵押', dataIndex: 'mortgage', width: 100 },
+  { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 

@@ -124,6 +124,10 @@ export default [
     title: '基础信息管理',
     children: [
       {
+        title: '房屋状态设置',
+        path: '/houseStatusConfig'
+      },
+      {
         title: '楼盘字典',
         path: '/buildingDict'
       },
@@ -172,6 +176,10 @@ export default [
   {
     title: '权属管理',
     children: [
+      {
+        title: '权证变更日志管理',
+        path: '/ownershipChangeLog'
+      },
       {
         title: '权属人管理',
         path: '/propertyOwnerManagement'

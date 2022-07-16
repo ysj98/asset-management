@@ -138,3 +138,78 @@ export const receiptPayment = [
 ]
 
 export const conditionalJudgment = [undefined, null, '']
+
+export const h5Receiving = [ {
+  title: "收付款类型",
+  dataIndex: "receivecostType",
+  scopedSlots: { customRender: "receivecostType" },
+  // width: '13%'
+}, {
+  title: "收款方",
+  dataIndex: "payee",
+  scopedSlots: { customRender: "payee" },
+  // width: '12%'
+}, {
+  title: "付款方",
+  dataIndex: "payer",
+  scopedSlots: { customRender: "payer" },
+  // width: '10%'
+}, {
+  title: "费用科目",
+  dataIndex: "feeSubject",
+  scopedSlots: { customRender: "feeSubject" },
+  // width: '13%'
+}, {
+  title: "金额(元)",
+  dataIndex: "amount",
+  scopedSlots: { customRender: "amount" },
+  // width: '12%'
+},
+{
+  title: "收付款时间",
+  dataIndex: "receivecostDate",
+  scopedSlots: { customRender: "receivecostDate" },
+  // width: '12%'
+},
+{
+  title: "跟进人",
+  dataIndex: "secondMover",
+  scopedSlots: { customRender: "secondMover" },
+  // width: '12%'
+}]
+
+export const h5Columns = [
+  {
+    title: "资产名称",
+    dataIndex: "assetName",
+    width: '10%'
+  }, {
+    title: "资产编码",
+    dataIndex: "assetCode",
+    width: '10%'
+  }, {
+    title: "资产分类",
+    dataIndex: "assetCategoryName",
+    width: '10%'
+  },
+  {
+    // title: "处置成本(元)",
+    slots: {title: 'disposeCost'},
+    dataIndex: "disposeCost",
+    scopedSlots: { customRender: "disposeCost" },
+    width: '10%'
+  },
+  {
+    // title: "处置收入(元)",
+    slots: {title: 'disposeReceive'},
+    dataIndex: "disposeReceive1",
+    scopedSlots: { customRender: "disposeReceive" },
+    width: '10%'
+  },
+  {
+    title: "是否需协助办证",
+    scopedSlots: { customRender: "isAssistAccreditation" },
+    width: '10%',
+    align: 'center'
+  },
+]

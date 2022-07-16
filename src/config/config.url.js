@@ -432,6 +432,8 @@ export const assets = {
   },
   // 房屋台账 - 资产视图
   assetView: {
+    // 添加备注
+    insertDesc: '/ams/asset-house/insertDesc',
     // 更新房屋资产质押配置
     updateAssetPledgeConfig: '/ams/asset-house/house/updateAssetPledgeConfig',
     // 房屋资产信息查询
@@ -641,6 +643,8 @@ export const building = {
   blankApiDetail: "/basic-data-api/rest-api/v1/ams/blankApi/detail",
   // 土地新增
   blankApiInsert: "/basic-data-api/rest-api/v1/ams/blankApi/insert",
+  // 土地编码
+  generatBlankCode: 'basic-data-api/rest-api/v1/ams/blankApi/generatBlankCode',
   // 车场 分页查询
   parkApiPageList:
     "/car-parking-api/rest-api/v1/parkingPlaceRestApiController/getParkingPlaceList.json",
@@ -758,6 +762,13 @@ export const ownershipSurvey = {
 };
 
 export const ownership = {
+  // 权证变更日志管理
+  ownershipChangeLog: {
+    // 权证变更日志列表
+    logList: "/ams/ownerShipUser/warrant/logList",
+    // 权证变更日志详情
+    logDetail: "/ams/ownerShipUser/warrant/logDetail"
+  },
   // 权属登记
   ownershipRegistration: {
     // 权属登记删除
@@ -1699,4 +1710,13 @@ export const assetInsurance = {
   getAssetRegInsuranceTotal: '/ams/assetInsurance/getAssetRegInsuranceTotal',
   //  
   deleteInsurance: '/ams/assetInsurance/deleteInsurance'
+}
+// 房屋状态配置
+export const houseStatusConfig = {
+  //查询房屋状态
+  querySettingByOrganId: '/ams/houseStatusSetting/querySettingByOrganId',
+  //房屋状态插入
+  insertSetting: '/ams/houseStatusSetting/insertSetting',
+  //房屋状态更新
+  updateSetting: '/ams/houseStatusSetting/updateSetting'
 }

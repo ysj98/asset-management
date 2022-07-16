@@ -1,7 +1,7 @@
 export const tableHeader = [
   {
     align: 'center',
-    width: 100,
+    width: 110,
     title: '资产类型',
     dataIndex: 'codeTypeName',
     scopedSlots: { customRender: 'codeTypeName' },

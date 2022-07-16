@@ -40,10 +40,10 @@
           // ], // 列1
           [
             {title: '资产名称', key: 'assetName'}, {title: '资产类型', key: 'assetType'}, {title: '建筑面积(㎡)', key: 'area'},
-            {title: '资产状态', key: 'statusName'}
+            {title: '资产状态', key: 'statusName'},{title: '是否抵押', key: 'mortgage'}, {title: '涉诉情况', key: 'lawsuitRemark'}
           ], // 列2
           [
-            {title: '资产编码', key: 'assetCode'}, {title: '资产分类', key: 'objectType'}, {title: '资产形态', key: 'typeName'}
+            {title: '资产编码', key: 'assetCode'}, {title: '是否质押', key: 'pledge'}, {title: '涉诉', key: 'lawsuit'}
           ], // 列3
           // [
           //   {title: '', key: 'picturePath'},

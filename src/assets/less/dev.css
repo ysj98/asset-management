@@ -1,0 +1,140 @@
+body.dev {
+  margin-left: 200px;
+  position: relative;
+  width: calc(100vw - 200px);
+  transition: all 0.4s ease;
+}
+.p-development {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+.p-development .m-devMenu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  transition: left 0.4s ease;
+}
+.p-development .m-devMenu > .ant-menu {
+  height: calc(100vh - 50px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.p-development .m-devMenu > .devOpts {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0px;
+  background: #f8f8f8;
+}
+.p-development .m-devMenu > .devOpts .cell {
+  line-height: 50px;
+  padding: 0 10px;
+  border-right: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  cursor: pointer;
+}
+.p-development .m-devMenu > .devOpts .cell .anticon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.p-development .m-devBreadNav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 200px;
+  line-height: 40px;
+  height: 40px;
+  padding-left: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  transition: left 0.4s ease;
+}
+.p-development .m-devBreadNav .toggleMenu {
+  float: left;
+  margin-right: 10px;
+}
+.p-development .m-devBreadNav .nav {
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.p-development .m-devBreadNav .nav li {
+  float: left;
+  color: #999;
+  margin-right: 10px;
+}
+.p-development .m-devBreadNav .nav li .anticon {
+  margin-left: 5px;
+  font-size: 12px;
+}
+.p-development .m-devBreadNav .nav li:last-child {
+  color: #666;
+}
+.p-development .m-devBreadNav .nav li:last-child .anticon {
+  display: none;
+}
+.p-development .m-devBreadNav > .right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-right: 10px;
+}
+body.dev .m-devLogin {
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+body.dev.closeMenu {
+  margin-left: 0;
+  width: 100%;
+}
+body.dev.closeMenu .p-development .m-devMenu {
+  left: -200px;
+}
+body.dev.closeMenu .m-devBreadNav {
+  left: 0;
+}
+.ant-drawer-left.dev {
+  left: 0;
+}
+body.dev .p-devOpts .item {
+  overflow: hidden;
+  line-height: 40px;
+  border-bottom: 1px solid #eee;
+}
+body.dev .p-devOpts .item:last-child {
+  border-bottom: none;
+}
+body.dev .p-devOpts .item .label {
+  float: left;
+}
+body.dev .p-devOpts .item .tool {
+  float: right;
+}
+@media print {
+  .bread-nav {
+    display: none;
+  }
+  #Dev {
+    display: none;
+  }
+  body.dev {
+    margin-left: 0;
+    width: 100%;
+  }
+  body {
+    margin: 0 !important;
+    width: 100%;
+  }
+  .router-view {
+    height: auto;
+  }
+}

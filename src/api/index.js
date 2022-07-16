@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-19 14:44:17
- * @LastEditTime: 2020-11-10 17:54:50
+ * @LastEditTime: 2022-07-13 11:07:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \asset-management\src\api\index.js
@@ -46,6 +46,7 @@ import * as bpm from './bpm'
 import * as equipmentview from './equipmentview'
 import * as carPark from './carPark'
 import * as assetInsurance from './assetInsurance'
+import * as houseStatusConfig from './houseStatusConfig'
 const API = {
   auth,
   global,
@@ -80,7 +81,8 @@ const API = {
   bpm,
   equipmentview,
   carPark,
-  assetInsurance
+  assetInsurance,
+  houseStatusConfig
 }
 export default {
   install (Vue) {

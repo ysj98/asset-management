@@ -158,6 +158,14 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :span="8">
+                <a-form-item label="分摊土地面积" v-bind="formItemLayout">
+                  <a-input-number
+                    :style="allWidth"
+                    v-decorator="['landArea', {initialValue: '' || undefined }]"
+                  />
+                </a-form-item>
+              </a-col>
             </a-row>
           </div>
         </div>
@@ -545,7 +553,8 @@ export default {
         repairTime: data.repairTime || undefined,
         balconyArea: data.balconyArea || undefined,
         useArea:data.useArea || undefined,
-        houseNumber: data.houseNumber || undefined
+        houseNumber: data.houseNumber || undefined,
+        landArea: data.landArea || undefined
       });
       // 处理平面图
       if (data.planeFigurePath) {

@@ -19,6 +19,7 @@
 import {tableHeader, mock} from "./componentDict";
 import RuleModal from "./RuleModal";
 import {queryTopOrganByOrganID} from "../../buildingDict/publicFn";
+import { utils } from "@/utils/utils";
 
 export default {
   components: {RuleModal},
@@ -27,20 +28,33 @@ export default {
       type: String,
       default: ''
     },
+    type: {
+      type: Number,
+      default: 1
+    },
     data: {
       type: Array,
       default: () => [...mock]
     }
   },
   data: () => ({
-    tableHeader,
+    tableHeader: utils.deepClone(tableHeader),
     mock,
     selectIndex: -1, // 插入参数的编码规则
     ruleVisible: false,
     codeTypeId: '',
   }),
+  created () {
+    if (this.type === 2) {
+        this.tableHeader[0].title = '资产卡片类型'
+        console.log(this.tableHeader)
+      }
+  },
   methods: {
     handleSave (record) {
+      if (!record.customCode.includes('序号')){
+        return this.$message.error('自定义编码里必须包含序号字段！')
+      }
       console.log(record)
       // this.refresh()
       this.postSave(record)

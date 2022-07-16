@@ -87,7 +87,7 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="16">
+          <!-- <a-col :span="16">
             <a-form-model-item label="地理位置" :label-col="{ span: 2 }" :wrapper-col="{ span: 19 }" prop="placeAddr">
               <a-input
                 :maxLength="128"
@@ -96,7 +96,60 @@
                 v-model="formInfo.placeAddr"
               />
             </a-form-model-item>
-          </a-col>
+          </a-col> -->
+          <a-col :span="16">
+                  <a-form-model-item label="车场位置" v-bind="formItemLayout2" :required="true">
+                    <div class="address-box">
+                      <a-select
+                      :style="allWidth1"
+                        placeholder="省"
+                        :getPopupContainer="getPopupContainer"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="$addTitle(provinceOpt)"
+                        :allowClear="false"
+                        @change="cityOrRegionChange($event, 'province')"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                        v-decorator="['province', {initialValue: '' || undefined, rules: [{required: true, message: '请选择省'}, {validator: validateAddress}]}]"
+                      />
+                      <a-select
+                      :style="allWidth1"
+                        placeholder="市"
+                        :getPopupContainer="getPopupContainer"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="$addTitle(cityOpt)"
+                        v-model="formInfo.city"
+                        :allowClear="false"
+                        @change="cityOrRegionChange($event, 'city')"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                      />
+                      <a-select
+                        :style="allWidth1"
+                        placeholder="区/县"
+                        :getPopupContainer="getPopupContainer"
+                        showSearch
+                        optionFilterProp="children"
+                        v-model="formInfo.region"
+                        @change="cityOrRegionChange($event, 'region')"
+                        :options="$addTitle(regionOpt)"
+                        :allowClear="false"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                      />
+                      <a-input :maxLength="100" @input="getLL" v-model="formInfo.placeAddr" :style="allWidth2" placeholder="详细地址"/>
+                    </div>
+                  </a-form-model-item>
+                </a-col>
+                <a-col v-bind="formSpan">
+                  <a-form-model-item label="经纬度" v-bind="formItemLayout">
+                    <a-input :style="allWidth" v-decorator="['lngAndlat', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请选择或输入经纬度'}]}]">
+                      <a-icon type="plus" @click="showSelectMap" class="pointer" slot="suffix"/>
+                    </a-input>
+                  </a-form-model-item>
+                </a-col>
           <a-col :span="8">
             <a-form-model-item label="车场类型" :required="true" prop="typeId">
               <dict-select
@@ -330,10 +383,12 @@ const tableDataTemplate = {
   areaOtherImg: [], // 图片
   areaDescription:'' // 描述
 }
+const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 export default {
   components: { DictSelect, TreeSelect, FormFooter},
   mixins: [dictMixin],
   data: () =>({
+    allWidth1,
     areaTitle,
     typeFilter,
     bussType: "parkDir",
@@ -352,8 +407,32 @@ export default {
       otherImg: [], // 其它图片
       carPlaceDoc: [], // 附件
       description: undefined, // 备注
-      areaArray: []
+      areaArray: [],
+      region: '',
+      city: '',
+      province: ''
     },
+    provinceOpt: [], // 省
+      cityOpt: [], // 市
+      regionOpt: [], // 区/县
+      point: {  // 经纬度
+        lng: '',
+        lat: ''
+      },
+    formSpan: {
+       xl: 8,
+       sm: 12
+      },
+    formItemLayout2: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 2 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 20 }
+        }
+      },
     rules:{
       organId: [
         { required: true, message: '请选择所属机构' },
@@ -391,6 +470,67 @@ export default {
     organNameMain:'', // 所属机构名称
   }),
   methods: {
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    cityOrRegionChange (e, type) {
+      console.log('改变项', e, type)
+      // 如果是区/县 请求经纬度
+      if (type === 'region') {
+        this.getLL()
+      }
+      // 市
+      if (type === 'province') {
+        this.formInfo.region = undefined
+        this.formInfo.city = undefined
+      }
+      // 区
+      if (type === 'city') {
+        this.formInfo.region = undefined
+      }
+      // 触发验证
+      // if (['region', 'city'].includes(type)) {
+      //   this.formInfo.validateFields(['province'], {force: true})
+      // }
+      // 请求联动数据
+      if (['province', 'city'].includes(type)) {
+        this.queryCityAndAreaList(e, type)
+      }
+    },
+    // 请求省
+    queryProvinceList () {
+      return this.$api.basics.queryProvinceList().then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data || []
+          this.provinceOpt = data.map(item => {
+            return {label: item.name, value: item.regionId}
+          })
+        }
+      })
+    },
+    // 请求市区
+    queryCityAndAreaList (parentRegionId, type) {
+      this.$api.basics.queryCityAndAreaList({parentRegionId}).then(res => {
+        if (res.data.code === '0') {
+          let data = res.data.data || []
+          let result = data.map(item => {
+            return {label: item.name, value: item.regionId}
+          })
+          // 市
+          if (type === 'province') {
+            this.regionOpt = []
+            this.cityOpt = result
+          }
+          // 区
+          if (type === 'city') {
+            this.regionOpt = result
+          }
+        }
+      })
+    },
+    getPopupContainer (e) {
+      return e.parentElement
+    },
     async changeTree(value){
       if (value) {
         let {organId:organTopId} = await queryTopOrganByOrganID(
@@ -784,6 +924,7 @@ export default {
       routeQuery: { organName, organId, type, placeId },
     })
     this.init()
+    this.queryProvinceList()
   },
 }
 </script>
@@ -812,4 +953,8 @@ export default {
   padding-top: 10px;
   line-height: 16px;
 }
+.address-box{
+    display: flex;
+    margin-top: 7px;
+  }
 </style>
