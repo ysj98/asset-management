@@ -317,8 +317,6 @@
   .detail_page {
     width: 100vw;
     overflow-x: hidden;
-    //font-size: 24px !important;
-    // height: 100vh;
     padding: 0 10px ;
     & /deep/ .ant-table-placeholder {
       display: block;

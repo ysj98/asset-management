@@ -115,7 +115,7 @@ export default {
   computed:{
     listTableDataSourceCom(){
       let idx = (this.listPageObj.current-1) * 10
-      return this.listTableOptions.dataSource.slice(idx, idx + 9)
+      return this.listTableOptions.dataSource.slice(idx, idx + 10)
     }
   },
   mounted() {

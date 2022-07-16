@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-10 16:07:39
- * @LastEditTime: 2022-07-04 10:37:02
+ * @LastEditTime: 2022-07-16 11:55:44
  * @Description: 登记单新建编辑 新建登记单
 -->
 <template>
@@ -146,7 +146,7 @@ export default {
       }
       let array = []
           tableData.map(item => {
-            if (Number(item.area) !== Number(item.buildArea)) {
+            if (item.ownershipStatusName==='有证' && Number(item.area) !== Number(item.buildArea)) {
               array.push(item.assetName)
             }
           })
