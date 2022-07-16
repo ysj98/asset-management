@@ -93,6 +93,12 @@
                   <div class="item-content">{{houseInfo.balconyArea || '-'}}</div>
                 </div>
               </a-col>
+              <a-col :span="8">
+                <div class="detail-item">
+                  <div class="item-label">分摊土地面积(㎡)：</div>
+                  <div class="item-content">{{houseInfo.landArea || '-'}}</div>
+                </div>
+              </a-col>
             </a-row>
           </div>
        </div>

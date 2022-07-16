@@ -277,6 +277,10 @@ const detailColumns = [
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
   { title: '资产状态', dataIndex: 'statusName', width: 100 },
   { title: '资产标签', dataIndex: 'label', width: 150},
+  { title: '质押', dataIndex: 'pledge', width: 100 },
+  { title: '抵押', dataIndex: 'mortgage', width: 100 },
+  { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
 ]
 const requiredColumn = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }

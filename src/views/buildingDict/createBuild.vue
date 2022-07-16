@@ -284,6 +284,11 @@
                     <a-input :maxLength="30" :style="allWidth" v-decorator="['organFee', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
+                <a-col :span="10">
+                  <a-form-item label="分摊土地面积(㎡)" v-bind="formItemLayout">
+                    <a-input-number :precision="4" :min="0" :style="allWidth" v-decorator="['landArea', {initialValue: '' || undefined}]"/>
+                  </a-form-item>
+                </a-col>
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">

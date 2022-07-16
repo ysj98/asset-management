@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-15 14:50:50
- * @LastEditTime: 2020-08-01 10:25:54
+ * @LastEditTime: 2022-07-15 14:44:07
  * @Description: 使用方向
 -->
 <template>
@@ -59,13 +59,13 @@ import noDataTips from '@/components/noDataTips'
 import directionUseEdit from './../common/directionUseEdit'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 const numList = [
-  {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057'},
-  {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9'},
-  {title: '运营面积(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288'},
-  {title: '自用面积(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-  {title: '占用面积(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
-  {title: '其他面积(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'},
-  {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
+  {title: '建筑面积(㎡)', key: 'buildArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y'},
+  {title: '转物业面积(㎡)', key: 'transferArea', value: 0, bgColor: '#5b8ff9', code: '1000', isAble: 'Y'},
+  {title: '运营面积(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y'},
+  {title: '自用面积(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y'},
+  {title: '占用面积(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y'},
+  {title: '其他面积(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y'},
+  {title: '闲置面积(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y'},
 ]
 const numListEquipment = [
   {title: '资产数量', key: 'assetNum', value: 0, fontColor: '#324057'},
@@ -243,12 +243,35 @@ export default {
           this.tableData = data
           this.count = res.data.data.count
           this.useForSummary()
+          this.useForConfig()
           this.loading = false
         } else {
           this.$message.error(res.data.message)
           this.loading = false
         }
       })
+    },
+    // 配置
+    useForConfig () {
+      this.$api.houseStatusConfig.querySettingByOrganId({organId: this.organId}).then(res => {
+      if (res.data.code == 0) {
+        let data = res.data.data
+        data.map(item => {
+          this.numList.map((e) => {
+            if(item.code == e.code){
+              e.bgColor = item.color
+              e.isAble = item.isAble
+              e.title = item.alias || e.title
+            }
+          })
+        })
+        this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y'
+        })
+      } else {
+        this.$message.error(res.message || '系统内部错误')
+      }
+     })
     },
     // 统计
     useForSummary () {

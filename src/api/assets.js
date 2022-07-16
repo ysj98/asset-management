@@ -919,3 +919,8 @@ export function updateAssetLabelConfig (data) {
 export function updateAssetPledgeConfig (data) {
   return axiosPost(assets.assetView.updateAssetPledgeConfig, data)
 }
+// 添加备注
+export function insertDesc (data) {
+  return axiosPost(assets.assetView.insertDesc, data)
+}
+

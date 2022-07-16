@@ -21,6 +21,7 @@
                 class="mr10">
               <segiIcon type="#icon-ziyuan10" class="mr10" />导出
             </SG-Button>
+            <SG-Button v-if="stallImportButton" @click="showStallDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
           </div>
           <div style="overflow: visible;margin-top:-10px;">
             <a-checkbox :checked="Boolean(queryCondition.isOnlyCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
@@ -131,6 +132,12 @@
         />
       </div>
     </div>
+    <stallDataImport 
+    title="导入数据" ref="stallDataImport" 
+    :organIdCopy="queryCondition.organId"
+    :defaultOrganName="selectedOrganName"
+    @success="stallImportSuccess"
+   ></stallDataImport>
   </div>
 </template>
 <script>
@@ -142,6 +149,7 @@ import { utils, getFormat } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import OperationPopover from "@/components/OperationPopover";
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
+import stallDataImport from './stallDataImport.vue'
 import {
   operationTypes,
   allStyle,
@@ -163,10 +171,12 @@ export default {
     noDataTips,
     segiIcon,
     OperationPopover,
-    SearchContainer
+    SearchContainer,
+    stallDataImport
   },
   data() {
     return {
+      stallImportButton: false,
       typeFilter,
       ASSET_MANAGEMENT,
       carTypeOptions,
@@ -209,6 +219,9 @@ export default {
     this.handlePower();
   },
   methods: {
+    stallImportSuccess () {
+      this.query()
+    },
     query() {
       let data = {
         ...this.queryCondition,
@@ -327,6 +340,12 @@ export default {
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
         this.hasPowerExport = true
       }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_STALL_IMPORT)) {
+        this.stallImportButton = true
+      }
+    },
+    showStallDataImport () {
+      this.$refs.stallDataImport.visible = true
     },
     // 删除车位
     handleDel(record) {

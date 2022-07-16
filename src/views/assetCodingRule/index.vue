@@ -22,11 +22,11 @@
     <div>
       <a-row :offset="1" style="padding:20px;">
         <SG-Title noMargin title="资产编码规则" />
-        <code-rule-table :organ-id="formInfo.organId" style="margin-left: 20px" :data="tableData | filterData(1)"/>
+        <code-rule-table :organ-id="formInfo.organId" :type="1" style="margin-left: 20px" :data="tableData | filterData(1)"/>
       </a-row>
       <a-row :offset="1" style="padding:20px;">
         <SG-Title noMargin title="资产卡片编码规则" />
-        <code-rule-table :organ-id="formInfo.organId" style="margin-left: 20px" :data="tableData | filterData(2)"/>
+        <code-rule-table :organ-id="formInfo.organId" :type="2" style="margin-left: 20px" :data="tableData | filterData(2)"/>
       </a-row>
     </div>
   </div>

@@ -414,6 +414,7 @@ export const ASSET_MANAGEMENT = {
   HOUSE_ACCOUNT_BV_ASSET_LABEL: 'house_account_bv_asset_label',   // 房屋台账-楼栋视图资产标签
   HOUSE_ACCOUNT_AV_ASSET_LABEL: 'house_account_av_asset_label',   // 房屋台账-房屋资产试图资产标签
   HOUSE_ACCOUNT_AV_ASSET_PLEDGE: 'house_account_av_asset_pledge',   // 房屋台账-房屋资产试图质押情况
+  HOUSE_ACCOUNT_AV_ASSET_REMARK: 'house_account_av_asset_remark',   // 房屋台账-房屋资产试图资产备注
   /**
    * V2.0.2资产入库
    */

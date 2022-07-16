@@ -6,13 +6,18 @@
     <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, span} in baseInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span style="margin-left: 9px; color: #49505E">{{judgingCondition.includes(infoData[key]) ? '无' : infoData[key]}}</span>
-        <!--<a-icon-->
-          <!--type="edit"-->
-          <!--v-if="key==='assetName'"-->
-          <!--@click="handleModalOpen('edit')"-->
-          <!--style="color: #0084FF; cursor: pointer; margin-left: 11px"-->
-        <!--/>-->
+        <span style="margin-left: 9px; color: #49505E" v-if="title !== '附件'">{{judgingCondition.includes(infoData[key]) ? '无' : infoData[key]}}</span>
+        <div v-else >
+        <SGUploadFilePlus
+        :show="true"
+        :customDownload="customDownload"
+        :baseImgURL="configBase.hostImg1"
+        v-model="infoData[key]"
+        type="all"
+        :maxSize="51200"
+        >
+        </SGUploadFilePlus>
+        </div>
       </a-col>
     </a-row>
     <!--空间位置-->
@@ -42,13 +47,18 @@
 
 <script>
   import EditAssetDetail from './EditAssetDetail'
+  import SGUploadFilePlus from "@/components/SGUploadFilePlus";
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import configBase from "@/config/config.base";
+  import customMix from './customMix'
   export default {
     name: 'BaseInfoPart',
-    components: { EditAssetDetail, OverviewNumber },
+    components: { EditAssetDetail, OverviewNumber, SGUploadFilePlus },
     props: ['assetHouseId'],
+    mixins: [customMix],
     data () {
       return {
+        configBase,
         judgingCondition: [undefined, null, ''],
         spinning: false,
         baseInfoKeys: [
@@ -56,7 +66,8 @@
           {title: '资产类型', key: 'assetType'}, {title: '房屋形态', key: 'houseType'}, {title: '户型', key: 'apartmentName'},
           {title: '装修情况', key: 'decorationSituation'}, {title: '建筑结构', key: 'buildStruct'}, {title: '资产用途', key: 'useType'},
           {title: '建筑面积', key: 'area'}, {title: '可出租面积', key: 'rentArea'}, {title: '竣工日期', key: 'completionDate'}, {title: '维修日期', key: 'repair'},
-          {title: '资产状态', key: 'statusName'}, {title: '物业管理单位', key: 'organManagement'}, {title: '物业缴费期限', key: 'organPayDeadline'}, {title: '物业费', key: 'organFee'}, {title: '已租面积', key: 'rentedArea'}, {title: '未租面积', key: 'unRentedArea'}, {title: '相关描述', key: 'desc', span: 16}
+          {title: '资产状态', key: 'statusName'}, {title: '物业管理单位', key: 'organManagement'}, {title: '物业缴费期限', key: 'organPayDeadline'}, {title: '物业费', key: 'organFee'}, {title: '已租面积', key: 'rentedArea'}, {title: '未租面积', key: 'unRentedArea'}, 
+          {title: '质押', key: 'pledge'}, {title: '抵押', key: 'mortgage'}, {title: '涉诉', key: 'lawsuit'}, {title: '涉诉情况', key: 'lawsuitRemark'},{title: '相关描述', key: 'remark', span: 16},{title: '附件', key: 'attachmentList', span: 16},
           // {title: '资产二维码', key: 'QRCode', span: 24}
         ], // 基本信息字段
         spaceInfoKeys: [
@@ -68,16 +79,38 @@
         details: {}, // 编辑基本信息数据
         modalObj: { title: '编辑资产信息', status: false, okText: '保存', cancelText: '取消', width: 550, loading: false },
         numList: [
-          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y'},
+          {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y'},
+          {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y'},
+          {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y'},
+          {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y'}
         ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
       }
     },
 
     methods: {
+       // 配置
+    useForConfig () {
+      this.$api.houseStatusConfig.querySettingByOrganId({organId: this.organId}).then(res => {
+      if (res.data.code == 0) {
+        let data = res.data.data
+        data.map(item => {
+          this.numList.map((e) => {
+            if(item.code == e.code){
+              e.bgColor = item.color
+              e.isAble = item.isAble
+              e.title = item.alias || e.title
+            }
+          })
+        })
+        this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y'
+        })
+      } else {
+        this.$message.error(res.message || '系统内部错误')
+      }
+     })
+    },
       // 查询详情
       queryDetailInfo () {
         this.spinning = true
@@ -91,6 +124,12 @@
             temp.assetType = '房屋'
             temp.houseType = '房屋'
             temp.rentArea = Number(temp.rentedArea) + Number(temp.unRentedArea)
+            temp.attachmentList = temp.attachmentList.map(e => {
+              return {
+                name: e.oldAttachmentName,
+                url: e.attachmentPath
+              }
+            })
             let {transferOperationTime, transferOperationArea} = temp
             this.$emit('updateTransfer', {transferOperationTime, transferOperationArea})
             return this.infoData = temp
@@ -155,6 +194,7 @@
     created () {
       this.queryDetailInfo()
       this.queryHouseAreaInfo()
+      this.useForConfig()
     }
   }
 </script>

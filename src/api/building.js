@@ -10,6 +10,10 @@ import { building, inventory} from '../config/config.url'
  * 楼盘字典
  * 
 */
+// 
+export function generatBlankCode (data) {
+  return axiosPost(building.generatBlankCode, data)
+}
 // 房屋列表
 export function queryHouseByPage (data) {
   return axiosPost(building.queryHouseByPage, data)

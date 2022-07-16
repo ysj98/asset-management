@@ -304,6 +304,11 @@ let proRouter = [{
     component: () => import('@/views/assetInformationManagement/assetClear/checkClearForm.vue')
   },
   {
+    path: '/assetClear/H5',
+    name: '出库单审核',
+    component: () => import('@/views/assetInformationManagement/assetClear/clearH5.vue')
+  },
+  {
     path: '/assetClassSet',
     name: '资产分类',
     component: () => import('@/views/assetInformationManagement/assetClassSet/index.vue'),
@@ -394,6 +399,21 @@ let proRouter = [{
     meta: {
       keepAlive: true
     }
+  },
+  {
+    path: '/ownershipChangeLog',
+    name: '权证变更日志管理',
+    component: () => import('@/views/ownershipManagement/ownershipChangeLog/index.vue')
+  },
+  {
+    path: '/ownershipChangeLog/detail',
+    name: '权证变更日志详情',
+    component: () => import('@/views/ownershipManagement/ownershipChangeLog/detail.vue')
+  },
+  {
+    path: '/houseStatusConfig',
+    name: '房屋状态设置',
+    component: () => import('@/views/houseStatusConfig/index.vue')
   },
   {
     path: '/ownershipRegistration',
@@ -580,6 +600,16 @@ let proRouter = [{
     path: '/disposalRegister/approval',
     name: '审批处置登记',
     component: () => import('@/views/disposalManagement/disposalRegister/approvalRegister')
+  },
+  {
+    path: '/disposalRegister/detailH5',
+    name: '详情处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/disposalH5')
+  },
+  {
+    path: '/disposalRegister/approvalH5',
+    name: '详情处置登记',
+    component: () => import('@/views/disposalManagement/disposalRegister/disposalH5')
   },
   {
     path: '/disposalManagement/listDisposal',
@@ -926,6 +956,10 @@ let proRouter = [{
     name: '审核', // 资产入库审核
     component: () => import('@/views/assetInformationManagement/assetIn/DetailPage')
   }, {
+    path: '/assetIn/approveH5',
+    name: 'h5审核', // 资产入库审核
+    component: () => import('@/views/assetInformationManagement/assetIn/DetailH5')
+  },{
     path: '/assetIn/edit',
     name: '编辑', // 资产入库编辑
     component: () => import('@/views/assetInformationManagement/assetIn/EditPage')

@@ -24,7 +24,8 @@
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px">列表设置</SG-Button>
         <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1" style="margin: 0 10px">资产标签</SG-Button>
-        <SG-Button type="default" @click="modalObj.status=true;modalType=3" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_PLEDGE">质押情况</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_REMARK" @click="openRemark">备注信息</SG-Button>
+        <!-- <SG-Button type="default" @click="modalObj.status=true;modalType=3" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_PLEDGE">质押情况</SG-Button> -->
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
@@ -249,6 +250,7 @@
       /> -->
       <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef"/>
       <edit-pledge v-if="modalType === 3 && modalObj.status" :options="pledgeList" ref="pledgeRef"/>
+      <edit-remark v-if="modalType === 4 && modalObj.status" ref="remarkRef" :list="selectedRows" />
     </SG-Modal>
     <TableHeaderSettings v-if="modalObj.switch" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
@@ -268,6 +270,7 @@
   import { getFormat } from "utils/utils";
   import EditTag from '../building-view/editTag.vue'
   import EditPledge from './components/components/EditPledge.vue'
+  import EditRemark from './components/components/EditRemark.vue'
   import {queryAssetLabelConfig} from '@/api/publicCode.js'
   import { throttle } from '@/utils/utils'
   import { handleTableScrollHeight,handleTableHeaderScrollHeight,initTableColumns } from '@/utils/share.js'
@@ -349,13 +352,17 @@
             { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
             { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
             { title: '质押情况', dataIndex: 'pledge', width: 120},
-]
+            { title: '质押', dataIndex: 'pledge', width: 100 },
+            { title: '抵押', dataIndex: 'mortgage', width: 100 },
+            { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+            { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+          ]
 const requiredColumn = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
 ]
   export default {
     name: 'index',
-    components: { TableHeaderSettings, EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
+    components: { EditRemark, TableHeaderSettings, EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
         pledge: undefined, // 质押情况
@@ -377,6 +384,7 @@ const requiredColumn = [
         supportMaterialOpt,
         supportMaterial: '',
         selectedRowKeys: [],
+        selectedRows: [],
         assetLabelOpt,
         assetLabelSelect: [],
         label: '',
@@ -411,12 +419,12 @@ const requiredColumn = [
         },
         key: 0, // 更新Modal包裹的子组件
         numList: [
-          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'},
-          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'},
-          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y'},
+          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y'},
+          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y'},
+          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y'},
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         checkedHeaderArr: [], // 格式如['name', 'age']
         exportHouseBtn: false, // 导出房屋卡片button loading标志
@@ -457,6 +465,7 @@ const requiredColumn = [
           this.organDict('OWNERSHIP_USE',val.organId)
           if(val.organId.split(',').length === 1){
             this.getAssetLabel(val.organId)
+            this.useForConfig(val.organId)
           }
         }
       },
@@ -479,10 +488,41 @@ const requiredColumn = [
     },
     created () {
       //this.initHeader()
+      //this.useForConfig()
       initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
     },
 
     methods: {
+      // 配置
+    useForConfig (organId) {
+      this.$api.houseStatusConfig.querySettingByOrganId({organId}).then(res => {
+      if (res.data.code == 0) {
+        let data = res.data.data
+        data.map(item => {
+          this.numList.map((e) => {
+            if(item.code == e.code){
+              e.bgColor = item.color
+              e.isAble = item.isAble
+              e.title = item.alias || e.title
+            }
+          })
+        })
+        this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y'
+        })
+      } else {
+        this.$message.error(res.message || '系统内部错误')
+      }
+     })
+    },
+    openRemark () {
+      if (!this.selectedRows.length){
+        return this.$message.error('请选择要添加备注的资产')
+      }
+      this.modalObj.status=true;
+      this.modalType=4; 
+      this.modalObj.title='房屋资产信息备注'
+    },
     handleTableHeaderSuccess () {
       this.changeListSettingsModal(false)
       initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
@@ -545,8 +585,10 @@ const requiredColumn = [
           this.$message.error(err || '当前组织机构下无资产标签')
         })
       },// 多选
-      onSelectChange (selectedRowKeys){
+      onSelectChange (selectedRowKeys, selectedRows){
+        console.log(selectedRowKeys, selectedRows)
         this.selectedRowKeys = selectedRowKeys;
+        this.selectedRows = selectedRows
       },
       onSelectAll (selected){
         // console.log(this.selectedRowKeys)
@@ -626,6 +668,9 @@ const requiredColumn = [
         if(this.modalType === 3 && !this.selectedRowKeys.length){
           return this.$message.error('请选择要添加质押情况的资产!')
         }
+        if(this.modalType === 4 && !this.selectedRowKeys.length){
+          return this.$message.error('请选择要添加备注的资产!')
+        }
         this.modalObj.status = false
         if(this.modalType === 1){
           let{ initColumns } = this.tableObj
@@ -656,6 +701,29 @@ const requiredColumn = [
             pledge: this.$refs.pledgeRef.checked,
           }
           this.$api.assets.updateAssetPledgeConfig(data).then(res => {
+            if(res.data.code === '0'){
+              this.selectedRowKeys = []
+              this.queryTableData({type: ''})
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+        }
+        if(this.modalType === 4) {
+          console.log(this.$refs.remarkRef.uploadList, this.$refs.remarkRef.desc)
+          let attachmentList = []
+          this.$refs.remarkRef.uploadList.map(item => {
+            attachmentList.push({
+              attachmentPath: item.url,
+              oldAttachmentName: item.name
+            })
+          })
+          let data  = {
+            assetHouseId: this.$refs.remarkRef.assetHouseId,
+            remark: this.$refs.remarkRef.remark,
+            attachmentList
+          }
+          this.$api.assets.insertDesc(data).then(res => {
             if(res.data.code === '0'){
               this.selectedRowKeys = []
               this.queryTableData({type: ''})

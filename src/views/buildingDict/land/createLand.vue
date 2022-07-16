@@ -620,12 +620,30 @@ export default {
   },
   mounted() {
     let { organName, organId, type, blankId } = this.$route.query
+    this.organIdMain = organId
+    this.organNameMain = organName
     Object.assign(this, {
       routeQuery: { organName, organId, type, blankId },
     })
     this.init()
   },
   methods: {
+     async getCode (organId) {
+      try {
+        const {data: res} = await this.$api.building.generatBlankCode({organId})
+        if(res.code == '0') {
+          let code = res.data
+          let params = {blankCode: code, theNo: code}
+          this.form.setFieldsValue(params)
+          //this.tableData = res.data
+          
+        } else {
+          this.$message.error(res.message)
+        }
+      } catch {
+        this.$message.error('系统异常')
+      }
+    },
     async changeTree(value){
       this.organIdMain = value || ''
       if (value) {
@@ -1136,6 +1154,8 @@ export default {
       if (this.routeQuery.type === "edit") {
         await this.blankApiDetail()
         this.initPreData()
+      } else {
+        this.getCode(this.routeQuery.organId)
       }
       this.queryProvinceList()
     }

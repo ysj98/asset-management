@@ -20,6 +20,15 @@ import { ownership } from '../config/config.url'
 //   })
 // }
 
+// 权证变更日志管理
+export function logList (data) {
+  return axiosPost(ownership.ownershipChangeLog.logList, data)
+}
+// 权证变更日志详情
+export function logDetail (data) {
+  return axiosPost(ownership.ownershipChangeLog.logDetail, data)
+}
+
 // 权属管理 - 权属登记
 // 权属登记删除
 export function shipDelete (data) {

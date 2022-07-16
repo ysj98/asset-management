@@ -22,8 +22,8 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress()
 console.log('IP', localhost)
-//const target = 'http://192.168.1.7:8088'
-const target = 'http://beta.uhomecp.com/'
+const target = 'http://192.168.1.7:8088'
+//const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 //const t = 'http://192.168.2.36:8081'
 const t = 'http://192.168.3.36:8081'
@@ -79,8 +79,9 @@ class Proxy {
 }
 // 实例化 Proxy 类
 const proxy = new Proxy()
- proxy.addUrls(proxyURL, localhost, target)
- //proxy.addUrls(['/ams'], localhost, t)
+proxy.addUrls(['/basic-data-api'], localhost, 'http://192.168.3.27:8080')
+proxy.addUrls(['/ams'], localhost, 'http://192.168.3.27:8081')
+proxy.addUrls(proxyURL, localhost, target)
 // proxy.addUrls(['/basic-data-batch-api'], localhost, 'http://192.168.3.31:8080')
 
 // 配置
@@ -88,7 +89,7 @@ module.exports = {
   // 部署应用包时的基本 URL
   publicPath: './',
   // build后文件名
-  outputDir: 'dist',
+  outputDir: 'asset-management',
   // 引用的静态文件
   assetsDir: './static',
   filenameHashing: true,
