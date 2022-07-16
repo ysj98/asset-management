@@ -1422,5 +1422,10 @@ let proRouter = [{
       noShowProBreadNav: true
     }
   },
+  {
+    path: '/projectManager',
+    name: '资产项目责任人管理',
+    component: () => import('@/views/projectManager/index.vue')
+  }
 ]
 export default proRouter

@@ -402,6 +402,12 @@ export default [
     ]
   },
   {
+    title: '资产项目责任人管理',
+    children: [
+      { title: '资产项目责任人管理', path: '/projectManager' },
+    ]
+  },
+  {
     title: '示例：基本',
     children: [
       {
