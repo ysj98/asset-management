@@ -1088,9 +1088,14 @@ export default {
     },
     //查询是否需要展示资产转让按钮
     getTransferButton(){
-      this.$api.disposalManagement.transferButton().then(res => {
+      const params ={
+        serviceType: 1011,
+        organId:this.organId
+      }
+      this.$api.disposalManagement.transferButton(params).then(res => {
         if (res.data.code === '0') {
-          if(res.data.data){
+          console.log(res.data.data)
+          if(res.data.data.isValid===1){
             this.transferShow=true
           }else{
             this.transferShow=false
