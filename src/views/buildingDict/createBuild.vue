@@ -790,8 +790,8 @@ export default {
       this.region = data.region
       this.address = data.address
       Promise.all([
-        this.queryCityAndAreaList(data.province, 'province'),
-        this.queryCityAndAreaList(data.city, 'city')
+        this.queryCityAndAreaList(data.province, 'province', 'edit'),
+        this.queryCityAndAreaList(data.city, 'city', 'edit')
       ]).then(() => {
         // 处理省市区名称回显到地图
         this.addressObj.provinceName = this.transformProvince(data.province)
@@ -919,7 +919,7 @@ export default {
       })
     },
     // 请求市区
-    queryCityAndAreaList (parentRegionId, type) {
+    queryCityAndAreaList (parentRegionId, type, val) {
       return this.$api.basics.queryCityAndAreaList({parentRegionId}).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data || []
@@ -928,7 +928,9 @@ export default {
           })
           // 市
           if (type === 'province') {
-            this.regionOpt = []
+            if (val !== 'edit') {
+              this.regionOpt = []
+            }
             this.cityOpt = result
           }
           // 区
