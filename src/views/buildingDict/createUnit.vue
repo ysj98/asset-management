@@ -152,6 +152,17 @@ export default {
       if (this.type === 'edit') {
         this.queryUnitDetail()
       }
+      if (this.type === 'create') {
+        this.getObjectSeq()
+      }
+    },
+    //objectId type=1时，为项目ID，type=2为楼栋ID ，type=3时，根据isBuild 传楼栋ID或者单元ID
+    getObjectSeq () {
+      this.$api.building.getObjectSeq({objectId: this.objectData.positionId, type: '2', isBuild: '1'}).then(res => {
+        if (+res.data.code === 0) {
+          this.form.setFieldsValue({seq: +res.data.data + 1})
+        }
+      })
     },
     handleBtn () {
       if (this.type==='create') {

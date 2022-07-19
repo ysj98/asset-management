@@ -252,7 +252,20 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="宗地号" v-bind="formItemLayout">
-                    <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/>
+                    <a-select
+                      :style="allWidth"
+                      :getPopupContainer="getPopupContainer"
+                        placeholder="请选择宗地号"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="$addTitle(addressNoList)"
+                        :allowClear="false"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                        v-decorator="['addressNo', {rules: [{required: true, whitespace: true, message: '请选择楼栋类型'}]}]"
+                      />
+                    <!-- @change="addressNoChange" -->
+                    <!-- <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/> -->
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -400,6 +413,7 @@ export default {
   },
   data () {
     return {
+      addressNoList: [],
       visibleShow: false,
       lngAndlatData: '',
       fireMaterialOpt:[
@@ -496,6 +510,30 @@ export default {
     this.handleBtn()
   },
   methods: {
+    getLandTheNo () {
+      let obj = {
+        organId: this.organIdMain,
+        province: this.form.getFieldValue('province') || '',
+        city: this.city || '',
+        region: this.region || ''
+      }
+      console.log(obj, '宗地号')
+      this.$api.building.getLandTheNo(obj).then(res => {
+        if (+res.data.code === 0) {
+          this.addressNoList = res.data.data.map(item => {
+            return {value: item, label: item}
+          })
+        }
+      })
+    },
+    //objectId type=1时，为项目ID，type=2为楼栋ID ，type=3时，根据isBuild 传楼栋ID或者单元ID
+    getObjectSeq (id) {
+      this.$api.building.getObjectSeq({objectId: id, type: '1', isBuild: '0'}).then(res => {
+        if (+res.data.code === 0) {
+          this.form.setFieldsValue({seq: +res.data.data + 1}) 
+        }
+      })
+    },
     cancel () {
       this.visibleShow = false
     },
@@ -531,6 +569,8 @@ export default {
         await this.queryCommunityListByOrganId(organTopId, organTopName)
         this.form.resetFields(['communityId'])
       }
+      this.form.setFieldsValue({addressNo: ''})
+      this.getLandTheNo()
     },
     async init () {
       this.resetAll()
@@ -548,11 +588,16 @@ export default {
     },
     // 选择项目变化
     communityIdChange (e) {
+      console.log(e, 'jsjjsdh')
       let o = this.communityIdOpt.filter(item => item.value === e)[0]
       let communityName = o.name
       let name = this.form.getFieldValue('name')
       if (name) {
         this.form.setFieldsValue({aliasName: `${name}_${communityName}`})
+      }
+      // 新增的时候回去顺顺序
+      if (this.type==='create') {
+        this.getObjectSeq(e)
       }
       // console.log('得到值', name, '2',communityName)
     },
@@ -763,6 +808,7 @@ export default {
       )
       this.organIdMain = data.organId
       this.$refs.organTopRef.initDepartment(organTopId, organTopName)
+      this.getLandTheNo()
       // console.log('dfsdfsdf')
       // 在获取 所属机构id 之后 获取项目 暂时和所属机构一样只能选同一 一级机构下的
       try {
@@ -919,6 +965,8 @@ export default {
       if (type === 'region') {
         // this.getLL()
         this.addressObj.regionName = val.data.props.title
+        this.form.setFieldsValue({addressNo: ''})
+        this.getLandTheNo()
       }
       // 市
       if (type === 'province') {

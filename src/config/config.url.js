@@ -737,6 +737,10 @@ export const building = {
   queryHouseStatisV3: '/ams/houseApi/queryHouseStatisV3',
   // 分页查询房屋信息统计V2
   queryHouseStatisV2: '/ams/houseApi/queryHouseStatisV2',
+  // 获取楼栋单元楼层顺序
+  getObjectSeq: '/basic-data-api/rest-api/v1/ams/buildApi/getObjectSeq',
+  // 查询宗地号下拉列表接口
+  getLandTheNo: '/basic-data-api/rest-api/v1/ams/blankApi/getLandTheNo'
 };
 
 // 权属概况
