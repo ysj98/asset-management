@@ -197,8 +197,8 @@
         numList: [
           {title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057'}, {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
           {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},{title: '楼栋面积(㎡)', key: 'totalBuildArea', value: 0, bgColor: '#fff03c'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'}
+          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6'},{title: '楼栋面积(㎡)', key: 'totalBuildArea', value: 0, fontColor: '#324057'},
         ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
         tableObj: {
           dataSource: [],

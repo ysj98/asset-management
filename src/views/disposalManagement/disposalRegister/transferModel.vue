@@ -22,7 +22,6 @@
     <SG-FooterPagination
       :pageLength="searchData.pageSize"
       :totalCount="tableInfo.total"
-      location="fixed"
       :noPageTools="false"
       v-model="searchData.pageNum"
       @change="changePage"
@@ -102,7 +101,9 @@ export default {
         }
         this.$api.disposalManagement.getTransferList(params).then(res => {
         if (res.data.code === '0') {
-         let data=res.data.data
+         let data=res.data.data.data
+         console.log(data)
+         this.tableInfo.data=data
         } else {
           this.$message.error(res.data.message)
         }
@@ -111,6 +112,13 @@ export default {
     quickFn(){
         this.$emit('transferlist',this.selectedRows)
         this.show=false
+    }
+  },
+  watch:{
+    show(val){
+      if(val){
+        this.getTableList()
+      }
     }
   }
 };

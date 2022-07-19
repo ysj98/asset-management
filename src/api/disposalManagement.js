@@ -60,12 +60,12 @@ export function getDispOrgStatProDetail(data) {
   return axiosPost(dispose.getDispOrgStatProDetail, data)
 }
 // 资产转让按钮
-export function transferButton() {
-  return axiosPost(dispose.detail, )
+export function transferButton(data) {
+  return axiosPost(dispose.detail, data)
 }
 // 资产转让按钮
 export function getTransferList(data) {
-  return axiosPost(dispose.detail,data )
+  return axiosPost(dispose.getTransferList,data )
 }
 // 根据处置单查询资产转让列表
 export function listByDisposeRegisterOrderId(data) {
