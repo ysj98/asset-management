@@ -622,6 +622,7 @@ export default {
     let { organName, organId, type, blankId } = this.$route.query
     this.organIdMain = organId
     this.organNameMain = organName
+    this.queryCommunityListByOrganId(organId)
     Object.assign(this, {
       routeQuery: { organName, organId, type, blankId },
     })

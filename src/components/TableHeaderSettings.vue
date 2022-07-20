@@ -41,6 +41,14 @@ export default {
       type: Number,
       required: true,
     },
+    hiddenConfig: {
+      type: Array,
+      required: [],
+    },
+    aliasConfig: {
+      type: Object,
+      required: {},
+    },
   },
   data() {
     return {
@@ -63,6 +71,17 @@ export default {
       this.loading = false;
       if (code === "0") {
         console.log(data);
+        console.log(this.aliasConfig, this.hiddenConfig)
+        if (Object.keys(this.aliasConfig).length) {
+          data.templeCode.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
+          data.customShow.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
+          data.customChose.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
+        }
+        if (this.hiddenConfig.length) {
+          data.templeCode = data.templeCode.filter(item => {return !this.hiddenConfig.includes(item.colCode)})
+          data.customShow = data.customShow.filter(item => {return !this.hiddenConfig.includes(item.colCode)})
+          data.customChose = data.customChose.filter(item => {return !this.hiddenConfig.includes(item.colCode)})
+        }
         this.listData = data.templeCode;
         this.listValue = data.customChose.map((ele) => ele.colCode);
         this.notAllowedCode = data.customShow.filter(ele=>{

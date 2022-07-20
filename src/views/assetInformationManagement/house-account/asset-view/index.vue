@@ -24,7 +24,7 @@
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px">列表设置</SG-Button>
         <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1" style="margin: 0 10px">资产标签</SG-Button>
-        <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_REMARK" @click="openRemark">备注信息</SG-Button>
+        <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_REMARK" @click="openRemark">信息备注</SG-Button>
         <!-- <SG-Button type="default" @click="modalObj.status=true;modalType=3" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_PLEDGE">质押情况</SG-Button> -->
       </div>
       <div slot="headerForm">
@@ -252,7 +252,7 @@
       <edit-pledge v-if="modalType === 3 && modalObj.status" :options="pledgeList" ref="pledgeRef"/>
       <edit-remark v-if="modalType === 4 && modalObj.status" ref="remarkRef" :list="selectedRows" />
     </SG-Modal>
-    <TableHeaderSettings v-if="modalObj.switch" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
+    <TableHeaderSettings v-if="modalObj.switch" :aliasConfig="aliasConfig" :hiddenConfig="hiddenConfig" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -332,7 +332,7 @@
             { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' }, },
             { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' }, },
             { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' }, },
-            { title: '其它(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
+            { title: '其他(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' }, },
             { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
             { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
@@ -356,6 +356,7 @@
             { title: '抵押', dataIndex: 'mortgage', width: 100 },
             { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
             { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+            { title: '相关描述', dataIndex: 'remark', width: 350 },
           ]
 const requiredColumn = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
@@ -365,6 +366,16 @@ const requiredColumn = [
     components: { EditRemark, TableHeaderSettings, EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
+        configItem: ['transferOperationArea', 'idleArea', 'selfUserArea', 'occupationArea', 'otherArea'],
+        configOrganId: '',
+        hiddenConfig: [],
+        aliasConfig: {
+          transferOperationArea: '',
+          idleArea: '',
+          selfUserArea: '',
+          occupationArea: '',
+          otherArea: ''
+        },
         pledge: undefined, // 质押情况
         pledgeList: [
           { label: "有质押", value: 1 },
@@ -452,6 +463,7 @@ const requiredColumn = [
 
         'tableObj.columns'(val){
         this.tableObj.scroll.x = val.length * 120
+        this.useForConfig()
         },
 
       fold (val) {
@@ -465,8 +477,9 @@ const requiredColumn = [
           this.getSourceOptions(val.organId)
           this.organDict('OWNERSHIP_USE',val.organId)
           if(val.organId.split(',').length === 1){
+            this.configOrganId = val.organId
             this.getAssetLabel(val.organId)
-            this.useForConfig(val.organId)
+            this.useForConfig()
           }
         }
       },
@@ -512,17 +525,65 @@ const requiredColumn = [
     }},
     methods: {
       // 配置
-    useForConfig (organId) {
-      this.$api.houseStatusConfig.querySettingByOrganId({organId}).then(res => {
+    useForConfig () {
+      this.$api.houseStatusConfig.querySettingByOrganId({organId: this.configOrganId}).then(res => {
       if (res.data.code == 0) {
+        this.hiddenConfig = []
         let data = res.data.data
         data.map(item => {
           this.numList.map((e) => {
             if(item.code == e.code){
               e.bgColor = item.color
               e.isAble = item.isAble
-              e.title = item.alias || e.title
+              e.title = item.alias || item.statusName
             }
+          })
+          if(item.code == 1001) {
+            this.aliasConfig.transferOperationArea = item.alias || item.statusName
+          }
+          if(item.code == 1002) {
+            this.aliasConfig.idleArea = item.alias || item.statusName
+          }
+          if(item.code == 1003) {
+            this.aliasConfig.selfUserArea = item.alias || item.statusName
+          }
+          if(item.code == 1004) {
+            this.aliasConfig.occupationArea = item.alias || item.statusName
+          }
+          if(item.code == 1005) {
+            this.aliasConfig.otherArea = item.alias || item.statusName
+          }
+          if(item.isAble==='N') {
+              if(item.code == 1001) {
+                this.hiddenConfig.push('transferOperationArea')
+              }
+              if(item.code == 1002) {
+                this.hiddenConfig.push('idleArea')
+              }
+              if(item.code == 1003) {
+                this.hiddenConfig.push('selfUserArea')
+              }
+              if(item.code == 1004) {
+                this.hiddenConfig.push('occupationArea')
+              }
+              if(item.code == 1005) {
+                this.hiddenConfig.push('otherArea')
+              }
+          }
+          this.tableObj.columns.map((m, i) => {
+            let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea'
+            let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea'
+            let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea'
+            let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea'
+            let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea'
+            let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea
+            if(flag){
+               m.title = item.alias || item.statusName
+               if(item.isAble==='N') {
+                 this.tableObj.columns.splice(i, 1)
+               }
+            } 
+            
           })
         })
         this.numList = this.numList.filter((i) => {

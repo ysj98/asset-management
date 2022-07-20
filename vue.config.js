@@ -34,6 +34,7 @@ const proxyURL = [
   '/basic-data-batch-api',
   '/uhomecp-app/',
   '/common-api',
+  '/car-parking',
   '/uis/',
   '/ams/',
   '/charging-api/',

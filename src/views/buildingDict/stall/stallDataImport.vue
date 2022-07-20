@@ -3,7 +3,7 @@
     @cancel="hiddeModal"
     title="导入数据"
     v-model="visible"
-    :width="543"
+    :width="903"
     @ok="handleSave"
     okText="导入"
     :maskClosable="false"
@@ -20,15 +20,38 @@
          <div :style="inputStyple">
            <!-- 公司 -->
            <treeSelect
-             :default="false"
-             :defaultOrganName="defaultOrganName"
-             :value="organId"
+             :default="true"
+             :value="formInfo.organId"
              @changeTree="changeTree"
-             placeholder='请选择公司'
+             placeholder='请选择组织机构'
              :allowClear="false"
              :style="inputStyple"
            >
            </treeSelect>
+            <a-select
+              show-search
+              :style="allWidth"
+              @search="handleSearch"
+              @change="handleParkChange"
+              placeholder="请选择车场名称"
+              :options="$addTitle(placeArr)"
+              :default-active-first-option="false"
+              v-model="formInfo.importPlaceId"
+            />
+            <a-select
+              :style="allWidth"
+              :options="$addTitle(placeAreaArr)"
+              placeholder="请选择区域名称"
+              :default-active-first-option="false"
+              v-model="formInfo.importArea"
+            />
+            <dict-select
+              :style="allWidth"
+              placeholder="请选择车位用途"
+              @change="handleCarStallUsage"
+              :dict-options="parkingUsageOption"
+              v-model="formInfo.parkingUsage"
+            />
          </div>
        </div>
        <!-- 中间内容 -->
@@ -53,8 +76,11 @@
 </SG-Modal>
 </template>
 <script>
+const allWidth = { width: "100%", marginLeft: '10px' };
 import downErrorFile from '@/views/common/downErrorFile'
 import TreeSelect from "@/views/common/treeSelect";
+import DictSelect from "../../common/DictSelect";
+import { carTypeMenu, parkingUsageOption, parkTypeOpt } from "./dict";
 // let getUuid = ((uuid = 1) => () => ++uuid)()
 export default {
   props: {
@@ -68,58 +94,152 @@ export default {
   },
   components: {
     downErrorFile,
-    TreeSelect
+    TreeSelect,
+    DictSelect
   },
   created () {
-    if (this.organIdCopy) {
-      this.organId = this.organIdCopy
-    }
+    // if (this.organIdCopy) {
+    //   this.formInfo.organId = this.organIdCopy
+    // }
   },
   data () {
     return {
       // uuid: getUuid(),
+      organName: '',
+      parkingUsageOption,
+      allWidth,
+      formInfo: {
+        organId: undefined,
+        importPlaceId: undefined,
+        importArea: undefined,
+        contractFile: '',
+        parkingUsage: undefined,
+      },
       visible: false,
       organId: '',
       upErrorInfo: '',
-      inputStyple: {width: '165px'},
+      inputStyple: {width: '605px', display: 'flex'},
       fileName: '',
       formData: null,
       fileMaxSize: 10240,
       fileType: ['xls', 'xlsx'],
-      tipText: ''
+      tipText: '',
+      placeArr: [],
+      placeAreaArr: []
     }
   },
   watch: {
+    defaultOrganName (val) {
+      this.organName = val
+      console.log(val)
+    },
     visible (nv) {
       if (!nv) {
+        this.formInfo = {
+        organId: undefined,
+        importPlaceId: undefined,
+        importArea: undefined,
+        contractFile: '',
+        parkingUsage: undefined,
+      },
        this.hiddeModal()
       }
     },
     organIdCopy (nv) {
       console.log('2', nv)
       if (nv) {
-        this.organId = nv
+        this.formInfo.organId = nv
       }
     },
+    'formInfo.organId'(val) {
+      this.parkApiList()
+    }
   },
   methods: {
+    // 查询 区域
+    async parkAreaApiList(data) {
+      const {data: res} = await this.$api.building.parkApiDetail(data)
+        if (String(res.code) === "0") {
+          this.placeAreaArr = (res.data.areaArray || []).map(item => ({
+            value: item.parkingAreaId,
+            label: item.areaName
+          }));
+        } else {
+          this.$message.error(res.message);
+        }
+    },
+    // 车场 变化查询区域
+    handleParkChange(ev) {
+      const params = {
+        placeId: ev,
+        organId: this.formInfo.organId
+      };
+      this.formInfo.parkingAreaId= undefined
+      this.placeAreaArr = [];
+      this.parkAreaApiList(params);
+    },
+    // 查询 车场列表
+    async parkApiList() {
+      if (!this.formInfo.organId) {
+        this.$message.error("请选择所属机构");
+        return;
+      }
+      this.placeArr = [];
+      const params = {
+        onlyCurrentNode: 1,
+        organId: this.formInfo.organId,
+        pageNo: 1,
+        pageLength: 999
+      };
+      const {data: res} = await this.$api.building.parkApiList(params)
+        if (String(res.code) === "0") {
+          let result = res.data.resultList || [];
+          this.placeArr = result.map(item => ({
+            value: item.placeId,
+            label: item.placeName
+          }));
+        } else {
+          this.$message.error(res.data.message);
+        }
+    },
     hiddeModal () {
       this.visible = false
       this.upErrorInfo = ''
       this.fileName = ''
       this.formData = null
       this.$refs.fileUpload.value = ''
+      this.$emit('close')
     },
     // orangId改变
-    changeTree (value) {
-      this.organId = value
+    changeTree (value, organName) {
+      this.organName = organName
+      this.formInfo.organId = value
+      this.parkApiList({ organId: value })
     },
     handleSave () {
-      if (this.formData === null) {
+      if (!this.formInfo.contractFile) {
         return this.$message.error('请先上传文件!')
       }
+      if (!this.formInfo.organId) {
+        return this.$message.error('请选择组织机构!')
+      }
+       if (!this.formInfo.importPlaceId) {
+        return this.$message.error('请选择车场!')
+      }
+       if (!this.formInfo.importArea) {
+        return this.$message.error('请选择区域!')
+      }
+       if (!this.formInfo.parkingUsage) {
+        return this.$message.error('请选择车场用途!')
+      }
+      let formData = new FormData()
+      formData.append('contractFile', this.formInfo.contractFile)
+      formData.append('organId', this.formInfo.organId)
+      formData.append('importPlaceId', this.formInfo.importPlaceId)
+      formData.append('importArea', this.formInfo.importArea)
+      formData.append('parkingUsage', this.formInfo.parkingUsage)
       let loadingName = this.SG_Loding('导入中...')
-      this.$api.building.importExcel(this.organId, this.formData).then(res => {
+      this.$api.building.saveParkingImport(formData).then(res => {
         if (res.data.code === '0') {
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.success('导入成功！')
@@ -160,7 +280,7 @@ export default {
         return
       }
       let fileData = new FormData()
-      fileData.append('file', files[0])
+      fileData.append('contractFile', files[0])
       let validObj = this.checkFile(files[0].name, files[0].size)
       if (!validObj.type) {
         this.$message.error('上传文件类型错误!')
@@ -171,29 +291,39 @@ export default {
         return
       }
       this.fileName = files[0].name
-      this.formData = fileData
+      this.formInfo.contractFile = files[0]
+      //this.formData = fileData
     },
     // 上传文件
     handleUpload () {
       this.$refs.fileUpload.click()
     },
-    // 下载文件
-    downHouseSource () {
-      if (!this.organId) {
-        return this.$message.error('请选择公司!')
-      }
-      let loadingName = this.$SG_Message.loading({content: '下载中...'})
-      this.$api.building.downLoadExcel({organId: this.organId}).then(res => {
-            this.$SG_Message.destroy(loadingName)
-            let blob = new Blob([res.data])
+    // 下载模板
+    downloadParkingTemplate (data) {
+      this.$api.building.downloadParkingTemplate(data).then(r => {
+        console.log(r.data)
+            let blob = new Blob([r.data])
+            console.log(blob)
             let a = document.createElement('a')
             a.href = URL.createObjectURL(blob)
-            a.download = `车位资料模板.xls`
+            a.download = data
             a.style.display = 'none'
             document.body.appendChild(a)
             a.click()
             a.remove()
-      }, () => {
+        })
+    },
+    // 下载文件
+    downHouseSource () {
+      if (!this.formInfo.organId) {
+        return this.$message.error('请选择组织机构!')
+      }
+      let loadingName = this.$SG_Message.loading({content: '下载中...'})
+      this.$api.building.downloadParkingTemplateByCommunityId({organId: this.formInfo.organId, organName: this.organName, systemCode: 'asset'}).then(res => {
+        this.$SG_Message.destroy(loadingName)
+        this.downloadParkingTemplate(res.data.data)
+      }, (err) => {
+        console.log(err)
         this.$SG_Message.destroy(loadingName)
         this.$SG_Message.error('导出房间模板失败!')
       })

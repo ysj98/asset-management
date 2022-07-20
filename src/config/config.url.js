@@ -699,6 +699,12 @@ export const building = {
   // 车位 导出
   stallApiExport:
     "/car-batch/rest-api/v1/parkingBatchApiController/downloadParkingData",
+  // 车位 导入
+  saveParkingImport: '/car-batch/rest-api/v1/parkingBatchApiController/saveParkingImport',
+  // 车位 导入模板名下载
+  downloadParkingTemplateByCommunityId: '/car-batch/rest-api/v1/parkingBatchApiController/downloadParkingTemplateByCommunityId',
+// 车位 导入模板下载
+  downloadParkingTemplate: '/car-parking/parkingMgr/dowload/excel/xlsx',
   // 设备 分页查询
   equipmentApiPageList: "/equipment-openapi/equipmentInst/pageEquipmentInst",
   // 设备 新增

@@ -430,7 +430,8 @@ export default {
                 percentTotal = percentTotal + this.amsOwnershipWarrantObligeeList[i].percent
                 amsOwnershipWarrantObligeeList.push({
                   obligeeId: this.amsOwnershipWarrantObligeeList[i].obligeeId,
-                  percent: this.amsOwnershipWarrantObligeeList[i].percent
+                  percent: this.amsOwnershipWarrantObligeeList[i].percent,
+                  relId: this.amsOwnershipWarrantObligeeList[i].relId
                 })
               }
               if (percentTotal !== 100) {
@@ -474,7 +475,8 @@ export default {
                   mortgageBank: this.amsOwnershipWarrantMortgageList[i].mortgageBank,
                   mortgageYear: this.amsOwnershipWarrantMortgageList[i].mortgageYear,
                   mortgageName: this.amsOwnershipWarrantMortgageList[i].mortgageName,
-                  loanContractName: this.amsOwnershipWarrantMortgageList[i].loanContractName
+                  loanContractName: this.amsOwnershipWarrantMortgageList[i].loanContractName,
+                  mortgageId: this.amsOwnershipWarrantMortgageList[i].mortgageId
                 })
               }
             }

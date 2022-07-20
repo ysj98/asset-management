@@ -1,7 +1,7 @@
 <!--
  * @Author: LDC
  * @Date: 2022-07-12 15:13:37
- * @LastEditTime: 2022-07-15 17:38:31
+ * @LastEditTime: 2022-07-20 14:42:55
  * @Description: 
  * 
  * 
@@ -18,7 +18,7 @@
     
       <div class="right-box">
         <a-spin :spinning="spinning">
-      <div style="marginBottom: 10px">已选择的房屋资产：</div>
+      <div style="marginBottom: 10px">备注内容：</div>
      <div class="content">
        <a-textarea placeholder="请输入备注内容" showCount :maxlength="200" :rows="5" v-model="remark"></a-textarea>
        <div class="files">

@@ -98,7 +98,7 @@
             </a-form-model-item>
           </a-col> -->
           <a-col :span="16">
-                  <a-form-model-item label="车场位置" v-bind="formItemLayout2" :required="true">
+                  <a-form-model-item label="车场位置" v-bind="formItemLayout2" :required="true" prop="location">
                     <div class="address-box">
                       <a-select
                       :style="allWidth1"
@@ -111,7 +111,8 @@
                         @change="cityOrRegionChange($event, 'province')"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['province', {initialValue: '' || undefined, rules: [{required: true, message: '请选择省'}, {validator: validateAddress}]}]"
+                        v-model="formInfo.location.province"
+                        :rules="[{ required: true, message: '请选择省!' }]"
                       />
                       <a-select
                       :style="allWidth1"
@@ -120,7 +121,7 @@
                         showSearch
                         optionFilterProp="children"
                         :options="$addTitle(cityOpt)"
-                        v-model="formInfo.city"
+                        v-model="formInfo.location.city"
                         :allowClear="false"
                         @change="cityOrRegionChange($event, 'city')"
                         :filterOption="filterOption"
@@ -132,8 +133,8 @@
                         :getPopupContainer="getPopupContainer"
                         showSearch
                         optionFilterProp="children"
-                        v-model="formInfo.region"
-                        @change="cityOrRegionChange($event, 'region')"
+                        v-model="formInfo.location.district"
+                        @change="cityOrRegionChange($event, 'district')"
                         :options="$addTitle(regionOpt)"
                         :allowClear="false"
                         :filterOption="filterOption"
@@ -145,7 +146,7 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-model-item label="经纬度" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['lngAndlat', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请选择或输入经纬度'}]}]">
+                    <a-input :style="allWidth" v-model="lngAndlat">
                       <a-icon type="plus" @click="showSelectMap" class="pointer" slot="suffix"/>
                     </a-input>
                   </a-form-model-item>
@@ -363,6 +364,7 @@
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
       <SG-Button @click="handleCancel">取消</SG-Button>
     </FormFooter>
+    <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>
   </div>
 </template>
 <script>
@@ -373,6 +375,8 @@ import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import {areaTitle,} from "./dict";
 import DictSelect from "../../common/DictSelect";
+import selectLngAndLat from '@/views/common/selectLngAndLat.vue';
+import { utils } from "@/utils/utils";
 
 const tableDataTemplate = {
   areaName:'', // 名称
@@ -385,7 +389,7 @@ const tableDataTemplate = {
 }
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 export default {
-  components: { DictSelect, TreeSelect, FormFooter},
+  components: { DictSelect, TreeSelect, FormFooter, selectLngAndLat},
   mixins: [dictMixin],
   data: () =>({
     allWidth1,
@@ -408,9 +412,17 @@ export default {
       carPlaceDoc: [], // 附件
       description: undefined, // 备注
       areaArray: [],
-      region: '',
-      city: '',
-      province: ''
+      provinceName: '',
+      cityName: '',
+      districtName: '',
+      location: {
+        district: undefined,
+        city: undefined,
+        province: undefined,
+        lng: undefined,
+        lat: undefined
+      }
+      
     },
     provinceOpt: [], // 省
       cityOpt: [], // 市
@@ -470,27 +482,55 @@ export default {
     organNameMain:'', // 所属机构名称
   }),
   methods: {
+    bMapChange (point) {
+      console.log('经纬度改变=>', point)
+      let lngAndlat = point.lng + '-' + point.lat
+      this.formInfo.location.lng = point.lng
+      this.formInfo.location.lat = point.lat
+      this.lngAndlat = lngAndlat
+      this.point = {...point}
+    },
+    // 显示百度地图
+    showSelectMap () {
+      this.$refs.longitudeAndLatitud.visible = true
+    },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
     cityOrRegionChange (e, type) {
       console.log('改变项', e, type)
       // 如果是区/县 请求经纬度
-      if (type === 'region') {
-        this.getLL()
+      if (type === 'district') {
+        this.regionOpt.map(item => {
+          if (item.value === e) {
+            this.districtName = item.label
+          }
+        })
+        //this.getLL()
       }
       // 市
       if (type === 'province') {
-        this.formInfo.region = undefined
-        this.formInfo.city = undefined
+        this.provinceOpt.map(item => {
+          if (item.value === e) {
+            this.provinceName = item.label
+          }
+        })
+        console.log(this.provinceName)
+        this.formInfo.location.district = undefined
+        this.formInfo.location.city = undefined
       }
       // 区
       if (type === 'city') {
-        this.formInfo.region = undefined
+        this.cityOpt.map(item => {
+          if (item.value === e) {
+            this.cityName = item.label
+          }
+        })
+        this.formInfo.location.district = undefined
       }
       // 触发验证
-      // if (['region', 'city'].includes(type)) {
-      //   this.formInfo.validateFields(['province'], {force: true})
+      // if (['district', 'city'].includes(type)) {
+      //   this.$refs.form.validateFields(['localtion'], {force: true})
       // }
       // 请求联动数据
       if (['province', 'city'].includes(type)) {
@@ -509,13 +549,14 @@ export default {
       })
     },
     // 请求市区
-    queryCityAndAreaList (parentRegionId, type) {
+    queryCityAndAreaList (parentRegionId, type, callback = () => {}) {
       this.$api.basics.queryCityAndAreaList({parentRegionId}).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data || []
           let result = data.map(item => {
             return {label: item.name, value: item.regionId}
           })
+          console.log(type, result)
           // 市
           if (type === 'province') {
             this.regionOpt = []
@@ -525,6 +566,7 @@ export default {
           if (type === 'city') {
             this.regionOpt = result
           }
+          callback()
         }
       })
     },
@@ -563,9 +605,12 @@ export default {
       console.log(this.$refs.uploadFile.$data.hostImg )
     },
     handleSave () {
+      if (!Object.values(this.formInfo.location).every(item => {return item})) {
+        return this.$SG_Message.error('请填写完整车场地址')
+      }
       this.$refs.form.validate(valid => {
         if (valid) {
-          const data = this.beforeSubmit(this.formInfo)
+          const data = this.beforeSubmit(utils.deepClone(this.formInfo))
           if (this.routeQuery.type === "create") {
             this.parkApiInsert(data)
           } else if(this.routeQuery.type === "edit") {
@@ -660,6 +705,9 @@ export default {
       console.log('value',value)
       let areaArray = this.formInfo.areaArray || []
       areaArray = areaArray.map(item=>({...item,areaOtherImg: item.areaOtherImg.map(node=>node.url).join(',')}))
+      value.location.province = value.location.province + '/' + this.provinceName
+      value.location.city = value.location.city + '/' + this.cityName
+      value.location.district = value.location.district + '/' + this.districtName
       return {
         ...value,
         otherImg:this.formInfo.otherImg.map(node=>node.url).join(','),
@@ -671,6 +719,14 @@ export default {
       const data = {
         ...value,
       }
+      this.provinceName = data.location.province.split('/')[1]
+      this.cityName = data.location.city.split('/')[1]
+      this.districtName = data.location.district.split('/')[1]
+      data.location.province = data.location.province.split('/')[0]
+      data.location.city = data.location.city.split('/')[0]
+      data.location.district = data.location.district.split('/')[0]
+      this.queryCityAndAreaList(data.location.province, 'province', this.queryCityAndAreaList(data.location.city, 'city'))
+      this.lngAndlat = data.location.lng + '-' + data.location.lat
       data.organId = String(data.organId)
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
@@ -925,6 +981,9 @@ export default {
     })
     this.init()
     this.queryProvinceList()
+    if (type === 'create') {
+      this.handleTableAppend()
+    }
   },
 }
 </script>

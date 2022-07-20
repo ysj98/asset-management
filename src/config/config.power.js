@@ -128,6 +128,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_DICT_PARK_DELETE: 'zcgl_dict_park_delete',
   // 楼盘字典-创建车位
   ASSET_DICT_STALL_CREATE: 'zcgl_dict_stall_create',
+  // 楼盘字典-批量导入车位
+  ASSET_DICT_STALL_IMPORT: 'zcgl_dict_stall_import',
   // 楼盘字典-修改车位
   ASSET_DICT_STALL_EDIT: 'zcgl_dict_stall_edit',
   // 楼盘字典-删除车位

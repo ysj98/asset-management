@@ -527,11 +527,14 @@ export default {
   },
   watch:{
     'newCardData.disposeType':{
-      handler(val){
+      handler(val,pre){
+        console.log(val,pre)
         if(val==='3' && this.type === 'edit'){
           this.listByDisposeRegisterOrderId()
         }
-      }
+      },
+      deep:true,
+      immediate:true
     }
   },
   methods: {
@@ -951,6 +954,9 @@ export default {
               disposeReason: data.disposeReason,
               remark: data.remark
             })
+            if(String(data.disposeType)==='3'){
+              this.getTransferButton()
+            }
             this.assetType = String(data.assetType)
           })
         } else {
@@ -1136,9 +1142,25 @@ export default {
         }
       });
     },
+    listByDisposeRegisterOrderId() {
+      let obj = {
+        disposeRegisterOrderId: this.disposeRegisterOrderId,
+      };
+      this.$api.disposalManagement.listByDisposeRegisterOrderId(obj).then((res) => {
+        console.log('res',res)
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data.data;
+          this.transferInfo.dataSource = data;
+          this.loading = false;
+        } else {
+          this.$message.error(res.data.message);
+          this.loading = false;
+        }
+      });
+    },
   },
   created () {
-    this.particularsData = this.$route.query
+    this.particularsData = this.$route.query    
     this.organId = this.particularsData.organId
     this.newCardData.organName = this.particularsData.organName
     this.type = this.particularsData.type
@@ -1149,9 +1171,11 @@ export default {
     this.getFeeTypeList()                    // 费用科目
   },
   mounted () {
+    console.log(this.type)
     if (this.type === 'edit') {
       this.disposeRegisterOrderId = this.particularsData.disposeRegisterOrderId
       this.query()
+      this.listByDisposeRegisterOrderId()
       this.getDetailList()                  // 处置登记-查询处置清单列表
       this.getreceivecostPlanList()         // 查询收付款计划列表
     }

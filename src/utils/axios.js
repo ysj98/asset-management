@@ -38,7 +38,7 @@ axiosX.interceptors.request.use(
       if (method === 'post') {
         if (Object.prototype.toString.call(config.data) === "[object FormData]"){
           config.data.append("systemCode","assets")
-        }else {
+        }else if (Object.prototype.toString.call(config.data) !== "[object String]"){
           config.data.systemCode = 'assets'
         }
       } else if (method === 'get') {
