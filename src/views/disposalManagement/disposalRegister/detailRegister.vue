@@ -424,9 +424,10 @@ export default {
       let obj = {
         disposeRegisterOrderId: this.disposeRegisterOrderId,
       };
-      this.$api.basics.getreceivecostPlanList(obj).then((res) => {
+      this.$api.disposalManagement.listByDisposeRegisterOrderId(obj).then((res) => {
+        console.log('res',res)
         if (Number(res.data.code) === 0) {
-          let data = res.data.data;
+          let data = res.data.data.data;
           this.transfertData = data;
           this.loading = false;
         } else {
