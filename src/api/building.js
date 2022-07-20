@@ -263,6 +263,19 @@ export function stallApiExport (data) {
     responseType: 'blob'
   })
 }
+// 车位 导入
+export function saveParkingImport (data) {
+  return axiosPost(building.saveParkingImport, data, false, false)
+}
+// 车位 导入模板下载
+export function downloadParkingTemplateByCommunityId (data) {
+  return axiosPost(building.downloadParkingTemplateByCommunityId, data,false, true)
+}
+export function downloadParkingTemplate (data) {
+  return axiosGet(building.downloadParkingTemplate + '/' + data, {},false, {
+    responseType: 'blob'
+  })
+}
 // 设备 列表查询
 export function equipmentApiPageList (data) {
   return axiosPost(building.equipmentApiPageList, data)

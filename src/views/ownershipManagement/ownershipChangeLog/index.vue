@@ -152,6 +152,7 @@ export default {
           }
           data.forEach((item, index) => {
             item.key = index
+            item.index = index + 1 + ((this.paginator.pageNo - 1) * this.paginator.pageLength)
             for (let key in item) {
               if (item[key] === '') {
                 item[key] = '--'
@@ -162,20 +163,6 @@ export default {
           this.paginator.totalCount = res.data.data.count
         } else {
           this.$message.error(res.data.message)
-        }
-      }).catch(() => {
-        for (let index = 0; index < 20; index++) {
-          this.dataSource.push({
-            logId: index,
-            index: index + 1,
-            organName: '海天酱油',
-            warrantNbr: 2141251123214 + index,
-            kindOfRightName: 'sssss111',
-            createByName: '娃娃官方',
-            createAccount: '100868773333333333',
-            createTime: '2022-9-27 10:22:31'
-          });
-          
         }
       })
     },

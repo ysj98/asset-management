@@ -47,11 +47,16 @@
             </a-row>
             <a-row>
               <a-col :span="16">
-                <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
+                <a-form-item label="车场位置" v-bind="formItemLayoutGeo">
                   <div class="address-box">
                     {{formInfo.placeAddr}}
                   </div>
                 </a-form-item>
+                <!-- <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
+                  <div class="address-box">
+                    {{formInfo.placeAddr}}
+                  </div>
+                </a-form-item> -->
               </a-col>
               <a-col :span="8">
                 <a-form-item label="车场类型" v-bind="formItemLayout">
@@ -270,6 +275,8 @@ export default {
                 this.formInfo =await this.afterParkApiDetail(res.data.data)
                 this.page.totalCount = this.formInfo.areaArray.length
                 this.handleChange(this.page)
+                this.formInfo.placeAddr = this.formInfo.location.province.split('/')[1] + this.formInfo.location.city.split('/')[1] + this.formInfo.location.district.split('/')[1] + this.formInfo.placeAddr
+                console.log()
               } else {
                 this.$message.error(res.data.message)
               }

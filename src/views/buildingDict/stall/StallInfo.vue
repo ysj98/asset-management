@@ -132,11 +132,13 @@
         />
       </div>
     </div>
-    <stallDataImport 
+    <stallDataImport
+    v-if="showImport" 
     title="导入数据" ref="stallDataImport" 
     :organIdCopy="queryCondition.organId"
-    :defaultOrganName="selectedOrganName"
+    :defaultOrganName="organName"
     @success="stallImportSuccess"
+    @close="closeImport"
    ></stallDataImport>
   </div>
 </template>
@@ -176,6 +178,7 @@ export default {
   },
   data() {
     return {
+      showImport: false,
       stallImportButton: false,
       typeFilter,
       ASSET_MANAGEMENT,
@@ -219,7 +222,11 @@ export default {
     this.handlePower();
   },
   methods: {
+    closeImport () {
+      this.showImport = false
+    },
     stallImportSuccess () {
+      this.showImport = false
       this.query()
     },
     query() {
@@ -345,7 +352,10 @@ export default {
       }
     },
     showStallDataImport () {
-      this.$refs.stallDataImport.visible = true
+      this.showImport = true
+      this.$nextTick(() => {this.$refs.stallDataImport.visible = true})
+      
+            
     },
     // 删除车位
     handleDel(record) {

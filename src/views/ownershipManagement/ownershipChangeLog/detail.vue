@@ -184,21 +184,27 @@ const mortgageColumns = [
   },
 ]
 const basicObj = {
+  rigthType: '权利类型',
+  rigthTypeName: '权利类型',
   warrantId: '权证id',
   warrantNbr: '权证号',
+  ownerTypeName: '权属形式',
   ownerType: '权属形式',
   kindOfRight: '权证类型',
+  kindOfRightName: '权证类型',
   lotNo: '丘地号',
   estateUnitCode: '不动产单元号',
   seatingPosition: '坐落位置',
   landArea: '土地面积',
   ownershipUse: '权属用途',
+  ownershipUseName: '权属用途',
   structure: '结构',
   buildArea: '建筑面积',
   exclusiveBuildArea: '专属建筑面积',
   apportionArea: '分摊面积',
   totalSuite: '总套数',
   qualityOfRight: '权利性质',
+  qualityOfRightName: '权利性质',
   useLimitDate: '使用期限',
   rigisterDate: '登记日期',
   organId: '组织机构',
@@ -263,7 +269,7 @@ export default {
   },
   methods: {
     markRed (name, type) {
-      return (name.includes('---》') || type != 2) ? 'red' : ''
+      return (name.includes('->') || type != 2) ? 'red' : ''
     },
     // 查询详情
     query () {
@@ -273,81 +279,15 @@ export default {
       this.$api.ownership.logDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
-          this.particularsData = data.registerInfo
-          data.amsOwnershipRegisterDetailList.forEach((item, index) => {
-            item.key = index
-            item.address = item.location
-            item.assetArea = item.area
+          this.basicData = data.ownershipWarrantLog.filter(item => {
+            return this.basicObj[item.code]
           })
-          this.tableData = data.amsOwnershipRegisterDetailList
+          console.log(this.basicData)
+          this.obligeeData = data.obligeeLogList
+          this.mortgageData = data.mortgageLogList
         } else {
           this.$message.error(res.data.message)
         }
-      }).catch(() => {
-        this.basicData = [
-          {
-            code: 'exclusiveBuildArea',
-            oldValue: '12',
-            newValue: '46'
-          },
-          {
-            code: 'exclusiveArea',
-            oldValue: '56',
-            newValue: '33'
-          }
-        ]
-        this.obligeeData = [
-          {
-            obligeeName: '哇啊发生的---》打发发发',
-            certificateTypeName: '身份证',
-            certificateNo: '44444444444444',
-            percent: '47%---》93%',
-            type: 2
-          },
-          {
-            obligeeName: '爱上烦烦烦',
-            certificateTypeName: '身份证',
-            certificateNo: '44444444444444',
-            percent: '43%',
-            type: 1
-          },
-          {
-            obligeeName: '看加哦加哦',
-            certificateTypeName: '身份证',
-            certificateNo: '44444444444444',
-            percent: '15%',
-            type: 0
-          },
-        ]
-        this.mortgageData = [
-          {
-            mortgageAmount: '20---》100',
-            pledgee: '玩大话',
-            mortgageBank: '中国银行---》中国弄农业银行',
-            mortgageYear: '70年',
-            mortgageName: '别墅',
-            loanContractName: '3434dff',
-            type: 2
-          },
-          {
-            mortgageAmount: '2100',
-            pledgee: '玩大话',
-            mortgageBank: '中国工商银行',
-            mortgageYear: '70年',
-            mortgageName: '别墅',
-            loanContractName: '3434dff',
-            type: 1
-          },
-          {
-            mortgageAmount: '4500',
-            pledgee: '玩大话',
-            mortgageBank: '中国建设银行',
-            mortgageYear: '70年',
-            mortgageName: '别墅',
-            loanContractName: '3434dff',
-            type: 0
-          },
-        ]
       })
     },
   },

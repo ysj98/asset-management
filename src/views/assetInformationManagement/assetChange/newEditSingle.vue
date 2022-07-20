@@ -725,6 +725,7 @@ export default {
   created() {
     this.organIdData = JSON.parse(this.$route.query.record);
     this.organId = this.organIdData[0].value;
+    this.getStatusConfig()
     this.setType = this.$route.query.setType;
     this.$store.dispatch('platformDict/getPlatformDict',{
       code:'AMS_USE_DIRECTION',
@@ -748,6 +749,29 @@ export default {
     }
   },
   methods: {
+    getStatusConfig () {
+      this.$api.houseStatusConfig.querySettingByOrganId({organId: this.organId}).then(res => {
+      if (res.data.code == 0) {
+        let hiddenItem = []
+        res.data.data.map(item => {
+            changeDirectionUse.map((e, index) => {
+              console.log(e.title.includes(item.statusName))
+              if (e.title.includes(item.statusName)) {
+                e.title = item.alias || item.statusName
+                if (item.isAble === 'N' ) {
+                changeDirectionUse.splice(index, 1)
+              }
+              }
+            })
+        })
+        console.log(res.data.data, changeDirectionUse)
+      } else {
+        this.$message.error(res.message || '系统内部错误')
+      }
+     }).catch(err => {
+      console.log(err)
+     })
+    },
     clearData () {
       this.tableData = []
       this.$refs.fileUpload.value = ''
