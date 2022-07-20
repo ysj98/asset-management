@@ -743,6 +743,10 @@ export const building = {
   queryHouseStatisV3: '/ams/houseApi/queryHouseStatisV3',
   // 分页查询房屋信息统计V2
   queryHouseStatisV2: '/ams/houseApi/queryHouseStatisV2',
+  // 获取楼栋单元楼层顺序
+  getObjectSeq: '/basic-data-api/rest-api/v1/ams/buildApi/getObjectSeq',
+  // 查询宗地号下拉列表接口
+  getLandTheNo: '/basic-data-api/rest-api/v1/ams/blankApi/getLandTheNo'
 };
 
 // 权属概况
@@ -1739,4 +1743,21 @@ export const houseStatusConfig = {
   insertSetting: '/ams/houseStatusSetting/insertSetting',
   //房屋状态更新
   updateSetting: '/ams/houseStatusSetting/updateSetting'
+}
+
+export const projectManager = {
+  // 查询资产项目责任人列表
+  getProjectResponsibility: '/ams/project/getProjectResponsibility',
+  // 查询资产项目责任人详情
+  queryProjectResponsibilityDetail: '/ams/project/queryProjectResponsibilityDetail',
+  // 新增项目资产责任人
+  addProjectResponsibility: '/ams/project/addProjectResponsibility',
+  // 删除资产项目责任人
+  deleteProjectResponsibility: '/ams/project/deleteProjectResponsibility',
+  // 资产项目责任人导入
+  importProjectResponsibility: '/ams/project/importProjectResponsibility',
+  // 资产项目责任人导出
+  exportProjectResponsibility: '/ams/project/exportProjectResponsibility',
+  // 模板导出
+  downExport: '/ams/project/downExport'
 }

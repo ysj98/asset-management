@@ -470,6 +470,7 @@ const requiredColumn = [
         this.tableObj.scroll.y = val ? 236 : 420
       },
       organProjectBuildingValue: function (val, pre) {
+        console.log(val,4546)
         this.queryTableData({type: 'search'})
         if(val.organId !== pre.organId){
           this.queryCategoryOptions(val.organId)
@@ -498,13 +499,30 @@ const requiredColumn = [
     },
     mounted () {
       this.queryNodesByRootCode()
+      
     },
     created () {
       //this.initHeader()
       //this.useForConfig()
       initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
     },
-
+    activated(){
+      const info=this.$route.query.params
+      if(info){
+       setTimeout(()=>{
+          this.organProjectBuildingValue.organId=String(info.organIds)
+          this.organProjectBuildingValue.projectId=[info.projectId]
+          this.provinceCityDistrictValue.province=info.province
+          this.provinceCityDistrictValue.city=info.city
+          this.provinceCityDistrictValue.district=info.region
+          this.categoryId=[info.objectType]
+          console.log(this.organProjectBuildingValue)
+          console.log(this.provinceCityDistrictValue)
+          this.status=[]
+          this.ownershipStatus=Number(info.ownershipStatus)
+          this.queryTableData({type: ''})
+        },1000)
+    }},
     methods: {
       // 配置
     useForConfig () {
@@ -831,6 +849,7 @@ const requiredColumn = [
         }
         if(!uploadAttachment) delete form.uploadAttachment
         if(label === '' || !label) delete form.label
+        console.log(form)
         this.$api.assets.queryAssetViewPage(form).then(r => {
           this.tableObj.loading = false
           let res = r.data

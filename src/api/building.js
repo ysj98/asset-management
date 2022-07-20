@@ -338,3 +338,11 @@ export function positionSelectByCommunityID(data) {
 export function positionSelectAsynByOwnership(data) {
   return axiosPost(building.positionSelectAsynByOwnership,data)
 }
+// 获取楼栋单元楼层顺序
+export function getObjectSeq(data) {
+  return axiosGet(building.getObjectSeq,data)
+}
+// 获取楼栋单元楼层顺序
+export function getLandTheNo(data) {
+  return axiosGet(building.getLandTheNo,data)
+}

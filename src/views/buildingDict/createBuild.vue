@@ -197,7 +197,7 @@
                         optionFilterProp="children"
                         :options="$addTitle(provinceOpt)"
                         :allowClear="false"
-                        @change="cityOrRegionChange($event, 'province')"
+                        @change="(e, val) => cityOrRegionChange(e, val, 'province')"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                         v-decorator="['province', {initialValue: '' || undefined, rules: [{required: true, message: '请选择省'}, {validator: validateAddress}]}]"
@@ -211,7 +211,7 @@
                         :options="$addTitle(cityOpt)"
                         v-model="city"
                         :allowClear="false"
-                        @change="cityOrRegionChange($event, 'city')"
+                        @change="(e, val) => cityOrRegionChange(e, val, 'city')"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
@@ -222,13 +222,14 @@
                         showSearch
                         optionFilterProp="children"
                         v-model="region"
-                        @change="cityOrRegionChange($event, 'region')"
+                        @change="(e, val) => cityOrRegionChange(e, val, 'region')"
                         :options="$addTitle(regionOpt)"
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
-                      <a-input :maxLength="100" @input="getLL" v-model="address" :style="allWidth2" placeholder="详细地址"/>
+                      <!-- @input="getLL" -->
+                      <a-input :maxLength="100" :disabled="true" v-model="address" :style="allWidth2" placeholder="详细地址"/>
                     </div>
                   </a-form-item>
                 </a-col>
@@ -251,7 +252,20 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="宗地号" v-bind="formItemLayout">
-                    <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/>
+                    <a-select
+                      :style="allWidth"
+                      :getPopupContainer="getPopupContainer"
+                        placeholder="请选择宗地号"
+                        showSearch
+                        optionFilterProp="children"
+                        :options="$addTitle(addressNoList)"
+                        :allowClear="false"
+                        :filterOption="filterOption"
+                        notFoundContent="没有查询到数据"
+                        v-decorator="['addressNo', {rules: [{required: true, whitespace: true, message: '请选择楼栋类型'}]}]"
+                      />
+                    <!-- @change="addressNoChange" -->
+                    <!-- <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/> -->
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -344,14 +358,20 @@
        <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr2']" @click="handleSave" type="primary">保存</SG-Button>
        <SG-Button v-power="ASSET_MANAGEMENT.ASSET_BUILD_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
      </FormFooter>
-     <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>
+     <div v-if="visibleShow">
+      <newSelectLngAndLat @cancel="cancel" :addressData="address" :oneSearchValue="oneSearchValue" :point="point" @addressFn="addressFn" ref="longitudeAndLatitud">
+        <div class="detail-item mt15">
+            <div class="detail-item-label">详情地址：</div><div class="detail-item-content">{{`${this.oneSearchValueData}（经纬度：${lngAndlatData}）`}}</div>
+          </div>
+      </newSelectLngAndLat>
+     </div>
    </div>
 </template>
 <script>
 
 
 import FormFooter from '@/components/FormFooter.vue'
-import selectLngAndLat from '@/views/common/selectLngAndLat.vue'
+import newSelectLngAndLat from '@/views/common/newSelectLngAndLat.vue'
 import utils from '@/utils/utils'
 import moment from 'moment'
 import {ASSET_MANAGEMENT} from '@/config/config.power'
@@ -366,7 +386,7 @@ const allWidth2 = {width: '250px', flex: 1}
 export default {
   components: {
     FormFooter,
-    selectLngAndLat,
+    newSelectLngAndLat,
     TreeSelect
   },
   mixins: [dictMixin],
@@ -393,6 +413,9 @@ export default {
   },
   data () {
     return {
+      addressNoList: [],
+      visibleShow: false,
+      lngAndlatData: '',
       fireMaterialOpt:[
         {key: 0, title: '否'},
         {key: 1, title: '是'}
@@ -432,6 +455,13 @@ export default {
       buildStructOpt: [], // 建筑结构
       communityIdOpt: [], // 项目列表
       communityIdDisabled: false, // 是否禁止选择项目
+      addressObj: {
+        provinceName: '',
+        cityName: '',
+        regionName: ''
+      },
+      oneSearchValueData: '',
+      oneSearchValue: '',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -466,7 +496,6 @@ export default {
     }
   },
   mounted () {
-    console.log('mounted执行')
     this.fromType = this.$route.query.fromType
     if (this.fromType === 'portal'){
       this.resetAll()
@@ -481,6 +510,47 @@ export default {
     this.handleBtn()
   },
   methods: {
+    getLandTheNo () {
+      let obj = {
+        organId: this.organIdMain,
+        province: this.form.getFieldValue('province') || '',
+        city: this.city || '',
+        region: this.region || ''
+      }
+      console.log(obj, '宗地号')
+      this.$api.building.getLandTheNo(obj).then(res => {
+        if (+res.data.code === 0) {
+          this.addressNoList = res.data.data.map(item => {
+            return {value: item, label: item}
+          })
+        }
+      })
+    },
+    //objectId type=1时，为项目ID，type=2为楼栋ID ，type=3时，根据isBuild 传楼栋ID或者单元ID
+    getObjectSeq (id) {
+      this.$api.building.getObjectSeq({objectId: id, type: '1', isBuild: '0'}).then(res => {
+        if (+res.data.code === 0) {
+          this.form.setFieldsValue({seq: +res.data.data + 1}) 
+        }
+      })
+    },
+    cancel () {
+      this.visibleShow = false
+    },
+    addressFn (address, { lng, lat }, type) {
+      if (type === 'zero') {
+        this.oneSearchValueData = address
+        this.lngAndlatData = `${lng}-${lat}`
+      } else {
+        this.oneSearchValueData = `${this.oneSearchValueData}${address}`
+        let lngAndlat = lng + '-' + lat
+        this.form.setFieldsValue({lngAndlat})
+        this.address = address
+        this.point.lng = lng
+        this.point.lat = lat
+        this.visibleShow = false
+      }
+    },
     queryCommunityTypeInfo (communityId) {
       this.$api.basics.queryCommunityTypeInfo({communityId: communityId}).then(res => {
         console.log(res)
@@ -499,6 +569,8 @@ export default {
         await this.queryCommunityListByOrganId(organTopId, organTopName)
         this.form.resetFields(['communityId'])
       }
+      this.form.setFieldsValue({addressNo: ''})
+      this.getLandTheNo()
     },
     async init () {
       this.resetAll()
@@ -516,13 +588,18 @@ export default {
     },
     // 选择项目变化
     communityIdChange (e) {
+      console.log(e, 'jsjjsdh')
       let o = this.communityIdOpt.filter(item => item.value === e)[0]
       let communityName = o.name
       let name = this.form.getFieldValue('name')
       if (name) {
         this.form.setFieldsValue({aliasName: `${name}_${communityName}`})
       }
-      console.log('得到值', name, '2',communityName)
+      // 新增的时候回去顺顺序
+      if (this.type==='create') {
+        this.getObjectSeq(e)
+      }
+      // console.log('得到值', name, '2',communityName)
     },
     // 请求项目
     queryCommunityListByOrganId (organTopId) {
@@ -553,7 +630,7 @@ export default {
         return null;
       }
       this.form.validateFields((err, values) => {
-        console.log('得到值=>', values)
+        // console.log('得到值=>', values)
         if (!err) {
           let data = {}
           utils.each(values, (value, key) => {
@@ -712,8 +789,16 @@ export default {
       this.city = data.city
       this.region = data.region
       this.address = data.address
-      this.queryCityAndAreaList(data.province, 'province')
-      this.queryCityAndAreaList(data.city, 'city')
+      Promise.all([
+        this.queryCityAndAreaList(data.province, 'province', 'edit'),
+        this.queryCityAndAreaList(data.city, 'city', 'edit')
+      ]).then(() => {
+        // 处理省市区名称回显到地图
+        this.addressObj.provinceName = this.transformProvince(data.province)
+        this.addressObj.cityName = this.transformCity()
+        this.addressObj.regionName = this.transformArea()
+        this.lngAndlatData = `${data.longitude}-${data.latitude}`
+      })
       this.organNameMain = data.organName
       let {organId:organTopId, organName:organTopName}  = await queryTopOrganByOrganID(
         {
@@ -723,6 +808,8 @@ export default {
       )
       this.organIdMain = data.organId
       this.$refs.organTopRef.initDepartment(organTopId, organTopName)
+      this.getLandTheNo()
+      // console.log('dfsdfsdf')
       // 在获取 所属机构id 之后 获取项目 暂时和所属机构一样只能选同一 一级机构下的
       try {
         await this.queryCommunityListByOrganId(organTopId)
@@ -730,20 +817,20 @@ export default {
         console.error(e)
       }
       // 处理项目是否可以选择
-      console.log('楼栋数据=>', data)
+      // console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false
       data.communityId = data.communityId && data.communityId !== '-1' ? data.communityId : ''
       this.queryCommunityTypeInfo(data.communityId)
       // end
       let o = this.form.getFieldsValue()
-      console.log('表单数据=>', o)
+      // console.log('表单数据=>', o)
       let values = {}
       utils.each(o, (value, key) => {
         if (data[key] && data[key] !== 0) {
           values[key] = data[key]
         }
       })
-      console.log('得到值all=>', values)
+      // console.log('得到值all=>', values)
       this.form.setFieldsValue(values)
     },
     // 重置所有数据
@@ -760,15 +847,18 @@ export default {
       this.buildPic = [] // 图片
       this.filepaths = [] // 附件
     },
-    bMapChange (point) {
-      console.log('经纬度改变=>', point)
-      let lngAndlat = point.lng + '-' + point.lat
-      this.form.setFieldsValue({lngAndlat})
-      this.point = {...point}
-    },
     // 显示百度地图
     showSelectMap () {
-      this.$refs.longitudeAndLatitud.visible = true
+      if (!this.region) {
+        this.$message.info('请先选择省市区');
+        return   
+      }
+      this.oneSearchValue = `${this.addressObj.provinceName}${this.addressObj.cityName}${this.addressObj.regionName}${this.address}`
+      this.oneSearchValueData = this.oneSearchValue
+      this.visibleShow = true
+      this.$nextTick(() => {
+        this.$refs.longitudeAndLatitud.visible = true
+      })
     },
     /* 根据根节点业态code获取下面的业态类型 */
     queryNodesByRootCode (code) {
@@ -829,8 +919,8 @@ export default {
       })
     },
     // 请求市区
-    queryCityAndAreaList (parentRegionId, type) {
-      this.$api.basics.queryCityAndAreaList({parentRegionId}).then(res => {
+    queryCityAndAreaList (parentRegionId, type, val) {
+      return this.$api.basics.queryCityAndAreaList({parentRegionId}).then(res => {
         if (res.data.code === '0') {
           let data = res.data.data || []
           let result = data.map(item => {
@@ -838,7 +928,9 @@ export default {
           })
           // 市
           if (type === 'province') {
-            this.regionOpt = []
+            if (val !== 'edit') {
+              this.regionOpt = []
+            }
             this.cityOpt = result
           }
           // 区
@@ -850,7 +942,7 @@ export default {
     },
     // 验证省市区
     validateAddress  (rule, value, callback) {
-      console.log('ss', this.city)
+      // console.log('ss', this.city)
       if (!value) {
         callback('请选择省份')
       } else if (!this.city) {
@@ -861,20 +953,33 @@ export default {
         callback()
       }
     },
-    cityOrRegionChange (e, type) {
-      console.log('改变项', e, type)
+    cityOrRegionChange (e,val,type) {
+      // console.log('改变项', e, val, type)
+      // 只要一改变就直接清空经纬度和详细地址
+      this.oneSearchValueData = ''
+      this.form.setFieldsValue({lngAndlat: ''})
+      this.address = '' // 详细地址
+      this.point = {  // 经纬度
+        lng: '',
+        lat: ''
+      }
       // 如果是区/县 请求经纬度
       if (type === 'region') {
-        this.getLL()
+        // this.getLL()
+        this.addressObj.regionName = val.data.props.title
+        this.form.setFieldsValue({addressNo: ''})
+        this.getLandTheNo()
       }
       // 市
       if (type === 'province') {
         this.region = undefined
         this.city = undefined
+        this.addressObj.provinceName = val.data.props.title
       }
       // 区
       if (type === 'city') {
         this.region = undefined
+        this.addressObj.cityName = val.data.props.title
       }
       // 触发验证
       if (['region', 'city'].includes(type)) {
@@ -885,8 +990,8 @@ export default {
         this.queryCityAndAreaList(e, type)
       }
     },
-    transformProvince () {
-      let value = this.form.getFieldsValue().province
+    transformProvince (val) {
+      let value = val
       let arr = this.provinceOpt.filter(item => String(item.value) === String(value))
       return arr[0].label
     },
@@ -901,27 +1006,27 @@ export default {
       return arr[0].label
     },
     // 请求经纬度坐标
-    getLL () {
-      if (!BMap) return
-      if (!this.region) return
-      var myGeo = new BMap.Geocoder()
-      let self = this
-      let longitude = 0
-      let latitude = 0
-      let transformProvince = this.transformProvince()
-      let transformCity = this.transformCity()
-      let transformArea = this.transformArea()
-      let address = this.address
-      console.log('动态经纬度=>', transformProvince)
-      if (transformProvince && transformCity && transformArea) {
-        myGeo.getPoint(transformProvince + transformCity + transformArea + address, (point) => {
-          if (point) {
-            let lngAndlat = point.lng + '-' + point.lat
-            this.form.setFieldsValue({lngAndlat})
-          }
-        })
-      }
-    },
+    // getLL () {
+    //   if (!BMap) return
+    //   if (!this.region) return
+    //   var myGeo = new BMap.Geocoder()
+    //   let self = this
+    //   let longitude = 0
+    //   let latitude = 0
+    //   let transformProvince = this.transformProvince()
+    //   let transformCity = this.transformCity()
+    //   let transformArea = this.transformArea()
+    //   let address = this.address
+    //   console.log('动态经纬度=>', transformProvince)
+    //   if (transformProvince && transformCity && transformArea) {
+    //     myGeo.getPoint(transformProvince + transformCity + transformArea + address, (point) => {
+    //       if (point) {
+    //         let lngAndlat = point.lng + '-' + point.lat
+    //         this.form.setFieldsValue({lngAndlat})
+    //       }
+    //     })
+    //   }
+    // },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },

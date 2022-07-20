@@ -61,15 +61,16 @@
                 </a-col>
                 <a-col :span="12">
                   <a-form-item label="是否有消防验收材料" v-bind="formItemLayout">
+                    <!-- 疯狂报错 先去掉不知道怎么写的-->
+                    <!-- :getPopupContainer="getPopupContainer" -->
+                    <!-- :filterOption="filterOption" -->
                     <a-select
                       :style="allWidth"
-                      :getPopupContainer="getPopupContainer"
                         placeholder="是否有消防验收材料"
                         showSearch
                         optionFilterProp="children"
                         :options="$addTitle(fireMaterialOpt)"
                         :allowClear="false"
-                        :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                         v-decorator="['fireMaterial', {initialValue: 0}]"
                       />
@@ -187,6 +188,18 @@ export default {
       if (this.type === 'edit') {
         this.queryFloorDetail()
       }
+      if (this.type==='create') {
+        this.getObjectSeq()
+      }
+    },
+    //objectId type=1时，为项目ID，type=2为楼栋ID ，type=3时，根据isBuild 传楼栋ID或者单元ID
+    getObjectSeq () {
+      let isBuild = this.objectData.positionId === this.objectData.upPositionId ? '1' : '0'
+      this.$api.building.getObjectSeq({objectId: this.objectData.positionId, type: '3', isBuild: isBuild}).then(res => {
+        if (+res.data.code === 0) {
+          this.form.setFieldsValue({floorIndex: +res.data.data + 1})
+        }
+      })
     },
     handleBtn () {
       if (this.type==='create') {

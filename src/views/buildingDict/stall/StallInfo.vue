@@ -104,7 +104,7 @@
       <!-- 表格部分 -->
       <div>
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 custom-total-one"
           :loading="table.loading"
           :pagination="false"
           :columns="table.columns"
@@ -251,6 +251,12 @@ export default {
             };
           });
           this.table.totalCount = res.data.Paginator.totalCount || 0;
+          this.table.dataSource.length && this.table.dataSource.push({
+            parkingId: '合计',
+            floorArea: getFormat(res.data.dataTotal.floorAreaTotal, '') || "-",
+            useArea: getFormat(res.data.dataTotal.shareAreaTotal, '') || "-",
+            shareArea: getFormat(res.data.dataTotal.useAreaTotal, '') || "-",
+          })
         } else {
           this.$message.error(res.message);
           this.table.loading = false;

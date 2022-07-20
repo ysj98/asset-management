@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-07-12 10:50:45
+ * @LastEditTime: 2022-07-20 14:24:57
  * @Description: 土地资产视图
 -->
 <template>
@@ -652,7 +652,7 @@ export default {
               item.key = index
               item.ownershipStatusName = String(item.ownershipStatus) ? this.ownershipStatusObj[String(item.ownershipStatus)] : ''
             })
-            this.tableData = [...data, data[0], data[0], data[0], data[0]]
+            this.tableData = [...data]
             this.count = res.data.data.count
             this.totalFn(obj)
           } else {

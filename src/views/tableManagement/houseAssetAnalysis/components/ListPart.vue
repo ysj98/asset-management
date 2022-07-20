@@ -48,6 +48,9 @@
         <template slot="firstOriginalValue" slot-scope="text">
           <span>{{getFormat(text)}}</span>
         </template>
+        <template slot="detail" slot-scope="text,record,index">
+          <span v-if="index<(dataSource.length-2)" @click="showIndex(index,record)">明细</span>
+        </template>
       </a-table>
       <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     </div>
@@ -91,7 +94,7 @@ export default {
           { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' }, width: 150 }, { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' }, width: 150 },
           { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' }, width: 150 }, { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' }, width: 150 },
           { title: '资产原值', dataIndex: 'originalValue', scopedSlots: { customRender: 'originalValue' }, width: 150 }, { title: '首次评估原值', dataIndex: 'firstOriginalValue', scopedSlots: { customRender: 'firstOriginalValue' }, width: 150},
-          { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' }, width: 150 },
+          { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' }, width: 150 },{ title: '',  scopedSlots: { customRender: 'detail' }, width: 100,align: 'center' },
         ], // Table 列头固定部分
         sortFactor: [
           { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 180 }, { title: '资产项目', dataIndex: 'projectName', width: 160 },
@@ -392,6 +395,25 @@ export default {
         exportDataAsExcel({...queryInfo, dimension}, this.$api.tableManage.exportAssetHouseList, '房屋资产统计分析列表.xls', this).then(() => {
           this.exportBtnLoading = false
         })
+      },
+      showIndex(val,record){
+        console.log(val,record)
+        const params={
+          organIds:record.organId,
+          projectId:record.projectId,
+          objectType:record.objectType,
+          ownershipStatus:record.ownershipStatus,
+          province:record.province,
+          city:record.city,
+          region:record.region,
+          type:'across'
+        }
+        this.$router.push({
+        path: '/assetView',
+        query: {
+          params: params
+        }
+      })
       }
     }
   }

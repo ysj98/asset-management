@@ -13,7 +13,8 @@ export default [
       { title: '权证数量统计表', path: '/warrantAmountStatistics' },
       { title: '权属证件一览表', path: '/ownershipCardList' },
       { title: '资产价值统计表', path: '/assetWorthStatistics' },
-      { title: '房屋资产&资源统计表', path: '/resourcesReport' }
+      { title: '房屋资产&资源统计表', path: '/resourcesReport' },
+      { title: '资产使用一览表', path: '/assetUsageList' }
     ]
   },
   {
@@ -399,6 +400,12 @@ export default [
     title: '保险管理',
     children: [
       { title: '保险管理', path: '/insuranceManagement' },
+    ]
+  },
+  {
+    title: '资产项目责任人管理',
+    children: [
+      { title: '资产项目责任人管理', path: '/projectManager' },
     ]
   },
   {
