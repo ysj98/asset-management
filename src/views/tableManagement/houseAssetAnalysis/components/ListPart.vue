@@ -49,10 +49,7 @@
           <span>{{getFormat(text)}}</span>
         </template>
         <template slot="detail" slot-scope="text,record,index">
-          <span v-if="index<10" @click="showIndex(index,record)">明细</span>
-        </template>
-        <template slot="customTitle">
-          <span class="lastTitle">操作</span>
+          <span v-if="index<(dataSource.length-2)" @click="showIndex(index,record)">明细</span>
         </template>
       </a-table>
       <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -401,6 +398,22 @@ export default {
       },
       showIndex(val,record){
         console.log(val,record)
+        const params={
+          organIds:record.organId,
+          projectId:record.projectId,
+          objectType:record.objectType,
+          ownershipStatus:record.ownershipStatus,
+          province:record.province,
+          city:record.city,
+          region:record.region,
+          type:'across'
+        }
+        this.$router.push({
+        path: '/assetView',
+        query: {
+          params: params
+        }
+      })
       }
     }
   }
