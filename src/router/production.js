@@ -1426,6 +1426,14 @@ let proRouter = [{
     path: '/projectManager',
     name: '资产项目责任人管理',
     component: () => import('@/views/projectManager/index.vue')
-  }
+  },
+  {
+    path: '/assetUsageList',
+    name: '资产归还一览表',
+    component: () => import('@/views/assetUsageList/index'),
+    meta: {
+      keepAlive: true
+    }
+  },
 ]
 export default proRouter
