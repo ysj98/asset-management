@@ -1,7 +1,7 @@
 <!--
  * @Author: LDC
  * @Date: 2022-07-12 15:13:37
- * @LastEditTime: 2022-07-20 14:42:55
+ * @LastEditTime: 2022-07-20 18:27:24
  * @Description: 
  * 
  * 
@@ -32,6 +32,7 @@
                 v-model="uploadList"
                 type="all"
                 :maxSize="51200"
+                :isMultiple="false"
               >
               <div slot="tips">上传的文件最多为5个，文件大小最多为50M</div>
               </SGUploadFilePlus>
@@ -88,9 +89,7 @@ methods: {
                 })
               })
             }
-            this.uploadList = [{
-              name: '资产登记模板 (3).xls', url: 'group1/M16/00/7B/wKgBB2LOJnaAactRAACgAP6Sv5w648.xls'
-            }]//uploadList
+            this.uploadList = uploadList
           }
           //throw res.message || '查询接口出错'
         }).catch(err => {
