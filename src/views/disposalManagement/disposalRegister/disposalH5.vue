@@ -144,6 +144,7 @@ export default {
   props: {},
   data () {
     return {
+      storeId: '',
       path: '',
       apprId: '',
       stepList:[],
@@ -174,16 +175,77 @@ export default {
   computed: {
   },
   methods: {
+    async init(){
+        console.log('this.$route',this.$route)
+        const { query: { instId }, path } = this.$route
+        let obj = this.$route.query
+        if (instId){
+          // 嵌套在 bpm 中时，关闭 面包屑
+          this.$route.meta.noShowProBreadNav = true
+          const req = {
+            serviceOrderId: instId
+          }
+          const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
+          if (code === '0'){
+            console.log('data',data)
+            // 合并数据 query 和 接口 data
+            Object.assign(obj,data)
+            // 返回的数据 busId 代表 入库单id
+            obj.id = data.busId
+            obj.relatedOrganId = obj.organId
+          }else {
+            this.$message.error(message)
+          }
+        }else {
+          this.$route.meta.noShowProBreadNav = false
+        }
+        const {id, relatedOrganId,} = obj
+        this.storeId = id
+        if (id){
+          this.query()
+          this.getRegisterDetailListPage()
+          this.getreceivecostPlanList()
+          if (relatedOrganId){
+            // 资产处置 1006 硬编码
+            // 详情页面也需要展示审批轨迹
+            const req = {busType: 1006,busId:id,organId: relatedOrganId}
+            this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
+              if (code==='0'){
+                // 旧数据不存在审批单，但是 code 为“0”
+                if (message === '审批单不存在'){
+                  if (path === '/disposalRegister/detailH5'){
+                    this.isApprove  = true
+                  }
+                  this.isOld = true
+                }else {
+                  this.isOld = false
+                  this.apprId = data.amsApprovalResDto.apprId
+                  this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
+                    return {
+                      date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
+                      title: ele.operOpinion,
+                      desc: "", isDone: false, operation: [],
+                    }
+                  })
+                  this.stepList.length && (this.stepList[0].isDone = true)
+                  if (path === '/disposalRegister/detailH5'){
+                    this.isApprove = data.amsApprovalResDto.isAbRole === 1
+                  }
+                }
+              }else {
+                this.$message.error(message)
+              }
+            })
+          }
+        }
+      },
     queryApprovalRecordByBus(){
       const { relatedOrganId, disposeRegisterOrderId } = this.detailData
       const req = {busType: 1006,busId:disposeRegisterOrderId,organId: relatedOrganId}
       this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
         if (code==='0'){
           if (message === '审批单不存在'){
-            // if (this.detailData.type === 'approval'){
-            //   this.isApprove  = true
-            // }
-            if (this.path === '/disposalRegister/approvalH5'){
+            if (this.detailData.type === 'approval'){
               this.isApprove  = true
             }
           }else {
@@ -196,10 +258,7 @@ export default {
               }
             })
             this.stepList.length && (this.stepList[0].isDone = true)
-            // if (this.detailData.type === 'approval'){
-            //   this.isApprove = data.amsApprovalResDto.isAbRole === 1
-            // }
-            if ( this.path === '/disposalRegister/approvalH5'){
+            if (this.detailData.type === 'approval'){
               this.isApprove = data.amsApprovalResDto.isAbRole === 1
             }
            
@@ -247,7 +306,7 @@ export default {
     // 查询详情
     query () {
       let obj = {
-        disposeRegisterOrderId: this.disposeRegisterOrderId
+        disposeRegisterOrderId: this.storeId
       }
       this.$api.basics.getDisposeRegisterById(obj).then(res => {
         console.log(res)
@@ -275,7 +334,7 @@ export default {
       let obj = {
         pageSize: this.queryCondition.pageSize,
         pageNum: this.queryCondition.pageNum,
-        disposeRegisterOrderId: this.disposeRegisterOrderId
+        disposeRegisterOrderId: this.storeId
       }
       this.$api.basics.getRegisterDetailListPage(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -297,7 +356,7 @@ export default {
     getreceivecostPlanList () {
       this.loading = true
       let obj = {
-        disposeRegisterOrderId: this.disposeRegisterOrderId
+        disposeRegisterOrderId: this.storeId
       }
       this.$api.basics.getreceivecostPlanList(obj).then(res => {
         if (Number(res.data.code) === 0) {
@@ -323,26 +382,16 @@ export default {
     // 详情表头没有操作
     this.columnsData = utils.deepClone(h5Columns)
     this.receivingColumnsData = utils.deepClone(h5Receiving)
+    this.init()
   },
   mounted () {
-    this.path = this.$route.path
-    this.detailData = this.$route.query
-    this.organId = this.detailData.organId
-    this.disposeRegisterOrderId = this.detailData.disposeRegisterOrderId
-    this.query()
-    this.getRegisterDetailListPage()
-    this.getreceivecostPlanList()
-
-    if (['detail', 'approval'].includes(this.detailData.type)){
-      this.queryApprovalRecordByBus()
-    }
   },
   beforeRouteEnter(to, from, next){
     console.log(to.path)
-    to.meta.noShowProBreadNav = (to.path === '/disposalRegister/detailH5' || to.path === '/disposalRegister/apprpvalH5');
+    to.meta.noShowProBreadNav = (to.path === '/disposalRegister/detailH5');
     next(vm =>{
       const {params:{ fromBpmApprove }} = from
-      vm.isApprove = to.path === '/disposalRegister/apprpvalH5' || false;
+      //vm.isApprove = detailData.type === 'approval' || false;
     })
   }
 }

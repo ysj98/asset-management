@@ -607,11 +607,6 @@ let proRouter = [{
     component: () => import('@/views/disposalManagement/disposalRegister/disposalH5')
   },
   {
-    path: '/disposalRegister/approvalH5',
-    name: '详情处置登记',
-    component: () => import('@/views/disposalManagement/disposalRegister/disposalH5')
-  },
-  {
     path: '/disposalManagement/listDisposal',
     name: '资产处置一览表',
     component: () => import('@/views/disposalManagement/listDisposal/index')
