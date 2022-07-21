@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-16 15:16:48
- * @LastEditTime: 2022-07-16 18:19:50
+ * @LastEditTime: 2022-07-20 18:29:50
  * @Description: 资产项目责任人管理
 -->
 <!--价值登记业务页面Tab--价值登记记录组件-->
@@ -34,6 +34,9 @@
       <div slot="contentForm">
         <a-row :gutter="8">
           <a-col :span="5">
+            <a-input placeholder="资产项目名称" v-model.trim="queryObj.projectName" style="width: 180px; margin: 0 10px"/>
+          </a-col>
+          <a-col :span="5">
             <a-input placeholder="项目联系人名称/电话" v-model.trim="queryObj.contractOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
@@ -62,6 +65,7 @@
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
       <!--导入-->
     <export-and-download @upload="uploadFile" showDown ref="batchImport" title="导入" @down="down"></export-and-download>
+    <thoseResponsible :type="type" v-if="thoseResponsibleShow" ref="thoseResponsibleRef" @handleCancel="handleCancel"></thoseResponsible>
   </div>
 </template>
 
@@ -73,14 +77,16 @@
   import {exportDataAsExcel} from "../common/commonQueryApi";
   import SearchContainer from 'src/views/common/SearchContainer'
   import OperationPopover from '@/components/OperationPopover'
+  import thoseResponsible from './thoseResponsible'
   export default {
     name: 'WorthRegisterRecord',
-    components: { SearchContainer, TreeSelect, NoDataTip, OperationPopover, ExportAndDownload },
+    components: { SearchContainer, TreeSelect, NoDataTip, OperationPopover, ExportAndDownload, thoseResponsible },
     data () {
       return {
+        thoseResponsibleShow: false,
         operationDataBtn: [
-          {iconType: 'edit', text: '设置责任人', editType: 'edit'},
-          {iconType: 'edit', text: '详情', editType: 'edit'}
+          {iconType: 'edit', text: '设置责任人', editType: 'set'},
+          {iconType: 'file-text', text: '详情', editType: 'details'}
         ],
         // ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
@@ -120,13 +126,29 @@
           contractOrTel: '',
           responsibilityOrTel: '',
           leaderOrTel: '',
-          organId: ''
-        }
+          organId: '',
+          projectName: ''
+        },
+        type: ''
       }
     },
 
     methods: {
-      operationFun () {},
+      handleCancel (val) {
+        this.thoseResponsibleShow = false
+        val && this.queryTableData()
+      },
+      operationFun (type, record) {
+        this.type = type
+        if (type === 'set') {
+          this.thoseResponsibleShow = true
+          this.$nextTick(() => {
+            this.$refs.thoseResponsibleRef.visible = true
+            this.$refs.thoseResponsibleRef.basicInformation = record
+          })
+        }
+        console.log(type, record, 'jjjdsfklsd')
+      },
       // 获取选择的组织机构
       changeTree (organId) {
         this.queryObj.organId = organId
@@ -174,24 +196,31 @@
       },
       // 查询列表数据
       queryTableData () {
+        this.tableObj.dataSource = [
+          {
+            organName: '所属上级机构1',
+            projectName: '资产项目名称1',
+            projectCode: '资产项目编码1'
+          }
+        ]
         let form = {
           ...this.queryObj,
           pageNum: this.paginationObj.pageNo,
           pageSize: this.paginationObj.pageLength
         }
-        this.tableObj.loading = true
+        // this.tableObj.loading = true
         this.$api.projectManager.getProjectResponsibility(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            const { count, data } = res.data
-            this.tableObj.dataSource = data.map((item, index) => {
-              return {
-                ...item,
-                key: index
-              }
-            })
-            this.paginationObj.totalCount = count
+            // const { count, data } = res.data
+            // this.tableObj.dataSource = data.map((item, index) => {
+            //   return {
+            //     ...item,
+            //     key: index
+            //   }
+            // })
+            // this.paginationObj.totalCount = count
           } else {
             this.$message.error(r.data.message || '查询接口出错')
           }
