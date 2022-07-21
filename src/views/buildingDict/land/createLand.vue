@@ -424,6 +424,24 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="是否确权" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    v-decorator="[
+                      'isRight',
+                      {
+                        initialValue: ''
+                      },
+                    ]"
+                    placeholder="请选择"
+                    :options="yesOrNoOptions"
+                  >
+                    <a-select-option value="1">是</a-select-option>
+                    <a-select-option value="0">否</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="是否缴纳土地出让金" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
@@ -440,6 +458,82 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="缴纳土地出让金时间" v-bind="formItemLayout">
+                  <a-date-picker
+                    :style="allWidth"
+                    placeholder="请选择缴纳土地出让金时间"
+                    :getPopupContainer="getPopupContainer"
+                    v-decorator="['payAssignmentTime', { initialValue: undefined }]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="是否城市更新项目" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    v-decorator="[
+                      'cityUpdate',
+                      {
+                        initialValue: ''
+                      },
+                    ]"
+                    placeholder="请选择"
+                    :options="yesOrNoOptions"
+                  >
+                    <a-select-option value="1">是</a-select-option>
+                    <a-select-option value="0">否</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="三旧改造图编号" v-bind="formItemLayout">
+                  <a-input
+                    :style="allWidth"
+                    :maxLength="50"
+                    v-decorator="[
+                      'transformDrawingNo',
+                      {
+                        initialValue: '' || undefined,
+                        rules: [
+                          {
+                            required: false,
+                            whitespace: false,
+                            message: '请输入三旧改造图编号',
+                          },
+                        ],
+                      },
+                    ]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="地块是否已签订土地交储协议" v-bind="formItemLayout">
+                  <a-select
+                    :style="allWidth"
+                    v-decorator="[
+                      'isSign',
+                      {
+                        initialValue: ''
+                      },
+                    ]"
+                    placeholder="请选择"
+                    :options="yesOrNoOptions"
+                  >
+                    <a-select-option value="1">是</a-select-option>
+                    <a-select-option value="0">否</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <!-- 文本框 -->
+                <a-form-item label="四至范围" v-bind="formItemLayout2">
+                  <a-textarea
+                    :maxLength="500"
+                    v-decorator="['fourToRange', { initialValue: '' }]"
+                  />
+                </a-form-item>
+              </a-col>
+              <!-- <a-col :span="8">
                 <a-form-item label="是否抵押" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
@@ -456,7 +550,7 @@
                     <a-select-option value="0">否</a-select-option>
                   </a-select>
                 </a-form-item>
-              </a-col>
+              </a-col> -->
               <a-col :span="24">
                 <a-form-item label="围墙图片" v-bind="formItemLayout2">
                   <SG-UploadFile
@@ -682,6 +776,9 @@ export default {
           // 处理批准日期
           if (data.approvalDate) {
             data.approvalDate = data.approvalDate.format("YYYY-MM-DD")
+          }
+          if (data.payAssignmentTime) {
+            data.payAssignmentTime = data.payAssignmentTime.format("YYYY-MM-DD")
           }
           // 处理经纬度
           let lngAnLatArr = data.lngAndlat.split("-")

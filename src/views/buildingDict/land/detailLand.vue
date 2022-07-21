@@ -139,6 +139,18 @@
                 <div class="item-content">{{blankInfo.isEncloseWall || '-'}}</div>
               </div>
             </a-col>
+            <!-- <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">是否抵押：</div>
+                <div class="item-content"> {{ blankInfo.isPledge || "--"}}</div>
+              </div>
+            </a-col> -->
+            <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">是否确权：</div>
+                <div class="item-content"> {{ blankInfo.isRight || "--"}}</div>
+              </div>
+            </a-col>
             <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">是否缴纳土地出让金：</div>
@@ -147,8 +159,32 @@
             </a-col>
             <a-col :span="8">
               <div class="detail-item">
-                <div class="item-label">是否抵押：</div>
-                <div class="item-content"> {{ blankInfo.isPledge || "--"}}</div>
+                <div class="item-label">缴纳土地出让金时间：</div>
+                <div class="item-content"> {{ blankInfo.payAssignmentTime || "--"}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+            <div class="detail-item">
+                <div class="item-label">是否城市更新项目：</div>
+                <div class="item-content"> {{ blankInfo.cityUpdate || "--"}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+            <div class="detail-item">
+                <div class="item-label">三旧改造图编号：</div>
+                <div class="item-content"> {{ blankInfo.transformDrawingNo || "--"}}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+            <div class="detail-item">
+                <div class="item-label">地块是否已签订土地交储协议：</div>
+                <div class="item-content"> {{ blankInfo.isSign || "--"}}</div>
+              </div>
+            </a-col>
+            <a-col :span="24">
+              <div class="detail-item">
+                <div class="item-label">四至范围：</div>
+                <div class="item-content">{{blankInfo.fourToRange || '-'}}</div>
               </div>
             </a-col>
             <a-col :span="8">
@@ -255,7 +291,9 @@ export default {
           // 处理图片
           this.blankInfo = data;
           this.blankInfo.isSell = handleEnumerationConversion(this.blankInfo.isSell, yesOrNoOptions, ['value', 'title']) || "--"
-          this.blankInfo.isPledge = handleEnumerationConversion(this.blankInfo.isPledge, yesOrNoOptions, ['value', 'title']) || "--"
+          this.blankInfo.isRight = handleEnumerationConversion(this.blankInfo.isRight, yesOrNoOptions, ['value', 'title']) || "--"
+          this.blankInfo.cityUpdate = handleEnumerationConversion(this.blankInfo.cityUpdate, yesOrNoOptions, ['value', 'title']) || "--"
+          this.blankInfo.isSign = handleEnumerationConversion(this.blankInfo.isSign, yesOrNoOptions, ['value', 'title']) || "--"
           // 处理所处机构
           this.organIdMain = data.organId
           this.organNameMain = data.organName

@@ -351,7 +351,7 @@
             { title: '产权证土地用途', dataIndex: 'landUse', width: 150},
             { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
             { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
-            { title: '质押情况', dataIndex: 'pledge', width: 120},
+            // { title: '质押情况', dataIndex: 'pledge', width: 120},
             { title: '质押', dataIndex: 'pledge', width: 100 },
             { title: '抵押', dataIndex: 'mortgage', width: 100 },
             { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
