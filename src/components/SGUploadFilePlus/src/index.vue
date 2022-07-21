@@ -14,7 +14,7 @@
           ref="file"
           type="file"
           :accept="uploadFileType"
-          :multiple="max >= 0"
+          :multiple="max >= 0 && isMultiple"
         >
       </div>
       <div class="tips" v-if="!isCustom"><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}。文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize} kb` }}</slot></div>
@@ -107,6 +107,10 @@ export default {
     PreviewItem
   },
   props: {
+    isMultiple: {
+      type: Boolean,
+      default: true
+    },
     // 是否显示设为封面按钮
     showCover: {
       type: Boolean,

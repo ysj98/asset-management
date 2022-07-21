@@ -22,8 +22,8 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress()
 console.log('IP', localhost)
-const target = 'http://192.168.1.7:8088'
-//const target = 'http://beta.uhomecp.com/'
+//const target = 'http://192.168.1.7:8088'
+const target = 'http://beta.uhomecp.com/'
 // const target = `http://${localhost}:8089`
 //const t = 'http://192.168.2.36:8081'
 const t = 'http://192.168.3.36:8081'
