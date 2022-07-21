@@ -27,10 +27,10 @@
             <a-radio v-for="(item, index) in assetTypeList" :value="item.value" :key="index">{{item.name}}</a-radio>
           </a-radio-group>
         </div>
-        <a-select v-if="+queryCondition.type === 3" :style="allStyle" placeholder="全部分类" v-model="queryCondition.objectType">
+        <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="全部分类" v-model="queryCondition.objectType">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-input v-if="+queryCondition.type === 3" v-model.trim="queryCondition.assetNameOrCode" :style="allStyle" placeholder="资产名称或编码"/>
+        <a-input v-if="+queryCondition.type === 2" v-model.trim="queryCondition.assetNameOrCode" :style="allStyle" placeholder="资产名称或编码"/>
         <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
       </div>
     </SearchContainer>
@@ -65,7 +65,7 @@ import TreeSelect from '../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import {handleTableScrollHeight} from "@/utils/share"
-import {typeList,assetTypeList, queryCondition, columnsData} from './common.js'
+import {typeList,assetTypeList, queryCondition, columnsData, projectData, assetsColumns} from './common.js'
 const totalKeyArr = ['assetNum', 'assetArea', 'buildNum', 'houseNum', 'houseTotalArea', 'rentedArea', 'leaseArea', 'oneselfArea', 'idleArea', 'sellArea', 'originalValue', 'marketValue',]
 export default {
   components: {SearchContainer, TreeSelect, noDataTips},
@@ -94,12 +94,18 @@ export default {
       count: '',
       assetClassifyData: [{name: '全部分类', value: ''}],
       modalObj: { title: '展示列表设置', status: false, okText: '应用', width: 600 },
+      typeColumns: {
+        '0': columnsData,
+        '1': projectData,
+        '2': assetsColumns
+      }
     }
   },
   computed: {
   },
   methods: {
     typeChange () {
+      this.columns = this.typeColumns[this.queryCondition.type]
       this.allQuery()
     },
     // 表头自定义设置
@@ -206,11 +212,12 @@ export default {
     },
     // 查询
     query (str) {
+      this.tableData = []
       this.loading = true
-      this.$api.assetUsageList.queryYueXinReport(this.queryCondition).then(res => {
+      let typeUrl = this.queryCondition.type === '0' ? 'queryYueXinReportByAsset' : 'queryYueXinReport'
+      this.$api.assetUsageList[typeUrl](this.queryCondition).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
-          this.tableData = data
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index
@@ -223,7 +230,7 @@ export default {
           }
           this.loading = false
           if (str !== 'asset' || str !== 'changePage') {
-            this.assetViewTotal(obj)
+            // this.assetViewTotal(this.queryCondition)
           }
         } else {
           this.$message.error(res.data.message)
@@ -259,18 +266,18 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-/deep/.ant-table-tbody {
-  tr:nth-last-child(1){
-    position: sticky;
-    bottom: 4px;
-    background: #fff;
-  }
-  tr:nth-last-child(2){
-    position: sticky;
-    bottom: 43px;
-    background: #fff;
-  }
-}
+// /deep/.ant-table-tbody {
+//   tr:nth-last-child(1){
+//     position: sticky;
+//     bottom: 4px;
+//     background: #fff;
+//   }
+//   tr:nth-last-child(2){
+//     position: sticky;
+//     bottom: 43px;
+//     background: #fff;
+//   }
+// }
 .landAssetsView {
   .from-second {
     padding-top: 14px;

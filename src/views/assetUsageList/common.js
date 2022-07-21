@@ -1,7 +1,7 @@
 /*
  * @Author: L
  * @Date: 2022-07-19 17:28:50
- * @LastEditTime: 2022-07-20 16:19:33
+ * @LastEditTime: 2022-07-21 14:26:12
  * @Description: file content
  */
 export const typeList = [
@@ -42,7 +42,7 @@ export const queryCondition =  {
   pageNum: 1,         // 当前页
   pageSize: 10        // 每页显示记录数
 }
-
+// 机构维度
 export const columnsData = [
   { title: '所属组织机构', dataIndex: 'organName' },
   { title: '资产数量', dataIndex: 'assetCount' },
@@ -69,7 +69,7 @@ export const columnsData = [
     ]
   }
 ]
-
+// 项目维度
 export const projectData = [
   { title: '资产项目', dataIndex: 'projectName' },
   { title: '资产数量', dataIndex: 'assetCount' },
@@ -96,8 +96,8 @@ export const projectData = [
     ]
   }
 ]
-
-export const assets = [
+// 资产维度
+export const assetsColumns = [
   { title: '资产项目', dataIndex: 'projectName' },
   { title: '资产编码', dataIndex: 'assetCode' },
   { title: '资产名称', dataIndex: 'assetName' },
