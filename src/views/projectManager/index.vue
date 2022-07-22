@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-16 15:16:48
- * @LastEditTime: 2022-07-22 17:34:01
+ * @LastEditTime: 2022-07-22 18:01:35
  * @Description: 资产项目责任人管理
 -->
 <!--价值登记业务页面Tab--价值登记记录组件-->
@@ -34,16 +34,16 @@
       <div slot="contentForm">
         <a-row :gutter="8">
           <a-col :span="5">
-            <a-input placeholder="资产项目名称" v-model.trim="queryObj.projectName" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="资产项目名称" v-model.trim="queryObj.projectName" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="项目联系人名称/电话" v-model.trim="queryObj.contractOrTel" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="项目联系人名称/电话" v-model.trim="queryObj.contractOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="项目经理名称/电话" v-model.trim="queryObj.responsibilityOrTel" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="项目经理名称/电话" v-model.trim="queryObj.responsibilityOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="分管领导名称/电话" v-model.trim="queryObj.leaderOrTel" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="分管领导名称/电话" v-model.trim="queryObj.leaderOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="4" style="text-align: left">
             <SG-Button type="primary" @click="query()">查询</SG-Button>
@@ -198,7 +198,7 @@
           this.downBtnLoading = false
         })
       },
-      footerQueryTableData (pageNo, pageLength) {
+      footerQueryTableData ({pageNo, pageLength}) {
         this.paginationObj.pageNo = pageNo
         this.paginationObj.pageLength = pageLength
         this.queryTableData()

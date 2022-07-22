@@ -383,6 +383,7 @@ const requiredColumn = [
         ],
         ownershipStatus: undefined,
         ownershipStatusList: [
+          { label: "全部权证状态", value: '' },
           { label: "无证", value: 0 },
           { label: "有证", value: 1 },
           { label: "待办证", value: 2 },

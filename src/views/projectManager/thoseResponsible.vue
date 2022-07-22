@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-20 16:46:40
- * @LastEditTime: 2022-07-22 17:25:01
+ * @LastEditTime: 2022-07-22 17:57:35
  * @Description: 设置责任人
 -->
 <template>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-const judgeArr = ['0', 0, undefined, null]
+const judgeArr = [undefined, null, '']
 export default {
   components: {},
   props: {
