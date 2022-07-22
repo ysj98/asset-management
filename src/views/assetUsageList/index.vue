@@ -219,25 +219,41 @@ export default {
     query (str) {
       this.tableData = []
       this.loading = true
-      let typeUrl = this.queryCondition.type === '3' ? 'queryYueXinReportByAsset' : 'queryYueXinReport'
+      let typeUrl = this.queryCondition.type === '2' ? 'queryYueXinReportByAsset' : 'queryYueXinReport'
       let obj = {}
-      if (this.queryCondition.type === '3') {
+      if (this.queryCondition.type === '2') {
         obj = {...this.queryCondition}
       } else {
-        // 机构味道和项目维度查询条件没有资产分类和资产名称
+        // 机构维度和项目维度查询条件没有资产分类和资产名称
         obj = {
           ...this.queryCondition,
           objectType: '',
           assetNameOrCode: ''
         }
       }
-      console.log(obj)
       this.$api.assetUsageList[typeUrl](obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
+            let newArr = []
+            let objNum = {}
+            // 找到每行出现的次数 用于合并
+            if (this.queryCondition.type === '2') {
+              data.forEach((element) => {
+                if (newArr.includes(element.projectId)) {
+                  objNum[element.projectId] = objNum[element.projectId] + 1
+                } else {
+                  newArr.push(element.projectId)
+                  objNum[element.projectId] = 1
+                }
+              })
+            }
             data.forEach((item, index) => {
               item.key = index
+              if (this.queryCondition.type === '2' && objNum[item.projectId] > 1) {
+                item.count = objNum[item.projectId]
+                delete objNum[item.projectId]
+              }
             })
             this.tableData = data
             this.count = res.data.data.count
