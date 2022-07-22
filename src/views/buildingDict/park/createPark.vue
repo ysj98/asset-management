@@ -419,8 +419,8 @@ export default {
         district: undefined,
         city: undefined,
         province: undefined,
-        lng: undefined,
-        lat: undefined
+        lng: '',
+        lat: ''
       }
       
     },
@@ -719,14 +719,16 @@ export default {
       const data = {
         ...value,
       }
-      this.provinceName = data.location.province.split('/')[1]
-      this.cityName = data.location.city.split('/')[1]
-      this.districtName = data.location.district.split('/')[1]
-      data.location.province = data.location.province.split('/')[0]
-      data.location.city = data.location.city.split('/')[0]
-      data.location.district = data.location.district.split('/')[0]
+      data.location = data.location || this.formInfo.location
+      console.log(data.location)
+      this.provinceName = data.location.province ? data.location.province.split('/')[1] : ''
+      this.cityName = data.location.city ? data.location.city.split('/')[1] : ''
+      this.districtName = data.location.district ? data.location.district.split('/')[1] : ''
+      data.location.province = data.location.province ? data.location.province.split('/')[0] : undefined
+      data.location.city = data.location.city ? data.location.city.split('/')[0] : undefined
+      data.location.district = data.location.district ? data.location.district.split('/')[0] : undefined
       this.queryCityAndAreaList(data.location.province, 'province', this.queryCityAndAreaList(data.location.city, 'city'))
-      this.lngAndlat = data.location.lng + '-' + data.location.lat
+      this.lngAndlat = (data.location.lng && data.location.lat) ? (data.location.lng + '-' + data.location.lat) : ''
       data.organId = String(data.organId)
       data.otherImg = (value.otherImg|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
       data.carPlaceDoc = (value.carPlaceDoc|| "").split(',').filter(item=>item).map(item=>({url:item,name:item.split('/').pop()}))
