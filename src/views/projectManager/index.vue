@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-16 15:16:48
- * @LastEditTime: 2022-07-22 16:24:55
+ * @LastEditTime: 2022-07-22 17:34:01
  * @Description: 资产项目责任人管理
 -->
 <!--价值登记业务页面Tab--价值登记记录组件-->
@@ -46,7 +46,7 @@
             <a-input placeholder="分管领导名称/电话" v-model.trim="queryObj.leaderOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="4" style="text-align: left">
-            <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+            <SG-Button type="primary" @click="query()">查询</SG-Button>
           </a-col>
         </a-row>
         <a-row style="margin-top: 14px">
@@ -62,7 +62,7 @@
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => footerQueryTableData({ pageNo, pageLength })"/>
       <!--导入-->
     <export-and-download @upload="uploadFile" showDown ref="batchImport" title="导入" @down="down"></export-and-download>
     <thoseResponsible :type="type" v-if="thoseResponsibleShow" ref="thoseResponsibleRef" @handleCancel="handleCancel"></thoseResponsible>
@@ -152,7 +152,7 @@
       // 获取选择的组织机构
       changeTree (organId) {
         this.queryObj.organId = organId
-        organId && this.queryTableData()
+        organId && this.query()
       },
       down () {},
       // 导入
@@ -173,8 +173,11 @@
             this.$SG_Message.success(res.message || '导入成功')
             this.importBtnLoading = false
             this.$refs.batchImport.visible = false
+          } else {
+            this.$SG_Message.success(res.message || '批量导入失败')
+            this.importBtnLoading = false
+            this.$refs.batchImport.visible = false
           }
-          throw res.message
         }).catch(err => {
           this.$SG_Message.destroy(name)
           this.$SG_Message.error(err || '批量导入失败')
@@ -194,6 +197,15 @@
         exportDataAsExcel('', this.$api.projectManager.downExport, '资产项目责任人模板.xls', this).then(() => {
           this.downBtnLoading = false
         })
+      },
+      footerQueryTableData (pageNo, pageLength) {
+        this.paginationObj.pageNo = pageNo
+        this.paginationObj.pageLength = pageLength
+        this.queryTableData()
+      },
+      query () {
+        this.paginationObj.pageNo = 1
+        this.queryTableData()
       },
       // 查询列表数据
       queryTableData () {

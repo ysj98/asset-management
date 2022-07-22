@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-20 16:46:40
- * @LastEditTime: 2022-07-22 16:15:08
+ * @LastEditTime: 2022-07-22 17:25:01
  * @Description: 设置责任人
 -->
 <template>
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+const judgeArr = ['0', 0, undefined, null]
 export default {
   components: {},
   props: {
@@ -192,7 +193,11 @@ export default {
       })
     },
     handleOk () {
+      let show = false
       let form = this.dataSource.map(item => {
+        if (judgeArr.includes(item.type) || judgeArr.includes(item.tel) || judgeArr.includes(item.name)) {
+          show = true
+        }
         return {
           type: item.type,
           tel: item.tel,
@@ -202,6 +207,10 @@ export default {
           id: item.id || ''
         }
       })
+      if (show) {
+        this.$message.info('请填写完整')
+        return
+      }
       this.$api.projectManager.addProjectResponsibility(form).then(r => {
         let res = r.data
         if (res && String(res.code) === '0') {
