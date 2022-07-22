@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-16 15:16:48
- * @LastEditTime: 2022-07-20 18:29:50
+ * @LastEditTime: 2022-07-22 16:24:55
  * @Description: 资产项目责任人管理
 -->
 <!--价值登记业务页面Tab--价值登记记录组件-->
@@ -56,7 +56,7 @@
       </div>
     </search-container>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table :scroll="scroll" v-bind="tableObj" class="custom-table td-pd10">
       <template slot="operation" slot-scope="text, record">
         <OperationPopover :operationData="operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
       </template>
@@ -91,6 +91,7 @@
         // ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         exportBtnLoading: false, // 导出按钮
+        scroll: {y: 420},
         downBtnLoading: false,
         importBtnLoading: false,
         organProjectType: {
@@ -136,17 +137,16 @@
     methods: {
       handleCancel (val) {
         this.thoseResponsibleShow = false
-        val && this.queryTableData()
+        this.queryTableData()
       },
       operationFun (type, record) {
         this.type = type
-        if (type === 'set') {
-          this.thoseResponsibleShow = true
-          this.$nextTick(() => {
-            this.$refs.thoseResponsibleRef.visible = true
-            this.$refs.thoseResponsibleRef.basicInformation = record
-          })
-        }
+        this.thoseResponsibleShow = true
+        this.$nextTick(() => {
+          this.$refs.thoseResponsibleRef.visible = true
+          this.$refs.thoseResponsibleRef.basicInformation = record
+          this.$refs.thoseResponsibleRef.queryProjectResponsibilityDetail()
+        })
         console.log(type, record, 'jjjdsfklsd')
       },
       // 获取选择的组织机构
@@ -190,37 +190,31 @@
       // 模板下载
       downExport () {
         this.downBtnLoading = true
-        exportDataAsExcel(this.queryObj, this.$api.projectManager.downExport, '资产项目责任人模板.xls', this).then(() => {
+        // this.queryObj
+        exportDataAsExcel('', this.$api.projectManager.downExport, '资产项目责任人模板.xls', this).then(() => {
           this.downBtnLoading = false
         })
       },
       // 查询列表数据
       queryTableData () {
-        this.tableObj.dataSource = [
-          {
-            organName: '所属上级机构1',
-            projectName: '资产项目名称1',
-            projectCode: '资产项目编码1'
-          }
-        ]
         let form = {
           ...this.queryObj,
           pageNum: this.paginationObj.pageNo,
           pageSize: this.paginationObj.pageLength
         }
-        // this.tableObj.loading = true
+        this.tableObj.loading = true
         this.$api.projectManager.getProjectResponsibility(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            // const { count, data } = res.data
-            // this.tableObj.dataSource = data.map((item, index) => {
-            //   return {
-            //     ...item,
-            //     key: index
-            //   }
-            // })
-            // this.paginationObj.totalCount = count
+            const { count, data } = res.data
+            this.tableObj.dataSource = data.map((item, index) => {
+              return {
+                ...item,
+                key: index
+              }
+            })
+            this.paginationObj.totalCount = count
           } else {
             this.$message.error(r.data.message || '查询接口出错')
           }

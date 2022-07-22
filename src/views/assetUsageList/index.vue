@@ -64,7 +64,7 @@ import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
-import {handleTableScrollHeight} from "@/utils/share"
+// import {handleTableScrollHeight} from "@/utils/share"
 import {typeList,assetTypeList, queryCondition, columnsData, projectData, assetsColumns} from './common.js'
 const totalKeyArr = ['assetNum', 'assetArea', 'buildNum', 'houseNum', 'houseTotalArea', 'rentedArea', 'leaseArea', 'oneselfArea', 'idleArea', 'sellArea', 'originalValue', 'marketValue',]
 export default {
@@ -81,7 +81,7 @@ export default {
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: {x: columnsData.length * 150, y: 200},
+      scroll: {x: columnsData.length * 150, y: 420},
       loading: false,
       noPageTools: false,
       location: 'absolute',
@@ -106,6 +106,11 @@ export default {
   methods: {
     typeChange () {
       this.columns = this.typeColumns[this.queryCondition.type]
+      this.scroll = {
+        x:  3000,
+        y: 420
+      }
+      console.log(this.scroll, 'this.scrollthis.scroll')
       this.allQuery()
     },
     // 表头自定义设置
@@ -214,8 +219,20 @@ export default {
     query (str) {
       this.tableData = []
       this.loading = true
-      let typeUrl = this.queryCondition.type === '0' ? 'queryYueXinReportByAsset' : 'queryYueXinReport'
-      this.$api.assetUsageList[typeUrl](this.queryCondition).then(res => {
+      let typeUrl = this.queryCondition.type === '3' ? 'queryYueXinReportByAsset' : 'queryYueXinReport'
+      let obj = {}
+      if (this.queryCondition.type === '3') {
+        obj = {...this.queryCondition}
+      } else {
+        // 机构味道和项目维度查询条件没有资产分类和资产名称
+        obj = {
+          ...this.queryCondition,
+          objectType: '',
+          assetNameOrCode: ''
+        }
+      }
+      console.log(obj)
+      this.$api.assetUsageList[typeUrl](obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
@@ -258,8 +275,8 @@ export default {
     }
   },
   created () {
-    handleTableScrollHeight(this.scroll)
-    this.scroll.y = 420
+    // handleTableScrollHeight(this.scroll)
+    // this.scroll.y = 420
   },
   mounted () {
   }

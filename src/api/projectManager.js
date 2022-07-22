@@ -1,10 +1,10 @@
 /*
  * @Author: L
  * @Date: 2022-07-16 16:18:44
- * @LastEditTime: 2022-07-16 18:20:51
+ * @LastEditTime: 2022-07-22 16:27:02
  * @Description: file content
  */
-import { axiosPost } from "../utils/axios";
+import { axiosPost, axiosGet } from "../utils/axios";
 import {projectManager} from "../config/config.url";
 
 
@@ -14,7 +14,7 @@ export function getProjectResponsibility(data) {
 }
 // 查询资产项目责任人详情
 export function queryProjectResponsibilityDetail(data) {
-  return axiosPost(projectManager.queryProjectResponsibilityDetail, data);
+  return axiosGet(projectManager.queryProjectResponsibilityDetail, data);
 }
 // 新增项目资产责任人
 export function addProjectResponsibility(data) {
@@ -22,7 +22,7 @@ export function addProjectResponsibility(data) {
 }
 // 删除资产项目责任人
 export function deleteProjectResponsibility(data) {
-  return axiosPost(projectManager.deleteProjectResponsibility, data,true);
+  return axiosGet(projectManager.deleteProjectResponsibility, data,true);
 }
 // 资产项目责任人导入
 export function importProjectResponsibility(data, id) {
@@ -34,6 +34,6 @@ export function exportProjectResponsibility(data) {
 }
 // 资产项目责任人模板导出
 export function downExport(data) {
-  return  axiosPost(projectManager.downExport, data, false, false, {responseType: 'blob'})
+  return  axiosGet(projectManager.downExport, data, false, {responseType: 'blob'})
 }
 

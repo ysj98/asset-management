@@ -1,7 +1,7 @@
 /*
  * @Author: L
  * @Date: 2022-07-20 14:54:22
- * @LastEditTime: 2022-07-20 15:02:45
+ * @LastEditTime: 2022-07-22 14:24:25
  * @Description: file content
  */
 import { axiosPost, axiosGet  } from '../utils/axios'
@@ -29,4 +29,12 @@ export function exportQueryYueXinReportByAsset (data) {
 // 导出下钻
 export function exportQueryYueXinReportByAssetDetail (data) {
   return axiosPost('/ams/yueXinReport/exportQueryYueXinReportByAssetDetail', data, false, false, { responseType: 'blob'})
+}
+// 粤新报表资产维度查询汇总
+export function queryYueXinReportByAssetTotal(data) {
+  return axiosPost('/ams/yueXinReport/queryYueXinReportByAssetTotal', data)
+}
+// 粤新报表，组织机构，资产项目维度汇总
+export function queryYueXinReportTotal(data) {
+  return axiosPost('/ams/yueXinReport/queryYueXinReportTotal', data)
 }

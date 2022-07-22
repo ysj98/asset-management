@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-20 16:46:40
- * @LastEditTime: 2022-07-20 18:39:30
+ * @LastEditTime: 2022-07-22 16:15:08
  * @Description: 设置责任人
 -->
 <template>
@@ -10,10 +10,11 @@
     :title="title"
     :visible="visible"
     width="800px"
+    :footer="null"
     @ok="handleOk"
     @cancel="handleCancel"
   >
-    <SG-Title title="标题" />
+    <SG-Title title="基本信息" />
       <div>
         <a-row>
           <a-col :span="12">
@@ -29,7 +30,7 @@
       </div>
     <SG-Title title="项目责任人列表" />
       <div>
-        <a-table :columns="columns" :data-source="dataSource" :pagination="false" bordered>
+        <a-table :scroll="scroll" :columns="columns" :data-source="dataSource" :pagination="false">
           <template slot="type" slot-scope="text, record">
             <a-select
                v-if="type === 'set'" 
@@ -52,7 +53,11 @@
             <span class="color-delete" @click="deleteFn(record, index)">删除</span>
           </template>
         </a-table>
-        <div class="table-sub" @click="subFn">添加</div>
+        <div v-if="type === 'set'" class="table-sub" @click="subFn">添加</div>
+      </div>
+      <div v-if="type === 'set'" class="tr-modal-footer">
+        <a-button class="mr20" @click="handleCancel" type="dashed">取消</a-button>
+        <a-button @click="handleOk" type="primary">确定</a-button>
       </div>
   </a-modal>
 </template>
@@ -68,20 +73,22 @@ export default {
   },
   data () {
     return {
+      scroll: {y: 420},
       basicInformation: {},
+      footer: true,
       visible: false,
-      title: '标题',
+      title: '',
       typeOptions: [
         {
-          key: '1',
+          key: '0',
           title: '项目联系人'
         },
         {
-          key: '2',
+          key: '1',
           title: '项目经理'
         },
         {
-          key: '3',
+          key: '2',
           title: '分管领导'
         }
       ],
@@ -93,16 +100,19 @@ export default {
         },
         {
           dataIndex: 'name',
+          width: 200,
           scopedSlots: { customRender: "name" },
           title: '姓名',
         },
         {
           dataIndex: 'tel',
+          width: 200,
           scopedSlots: { customRender: "tel" },
           title: '联系电话',
         },
         {
           dataIndex: 'operation',
+          width: 100,
           scopedSlots: { customRender: "operation" },
           title: '操作',
         }
@@ -115,15 +125,28 @@ export default {
   created () {
   },
   mounted () {
-
+    if (this.type === 'set') {
+      this.title = '设置责任人'
+    } else {
+      this.title = '详情'
+      this.columns.pop()
+      // this.columns = arr
+    }
   },
   methods: {
     // 详情
     queryProjectResponsibilityDetail () {
-      this.$api.projectManager.addProjectResponsibility({projectId: this.basicInformation.projectId}).then(r => {
+      this.$api.projectManager.queryProjectResponsibilityDetail({projectId: this.basicInformation.projectId}).then(r => {
         let res = r.data
         if (res && String(res.code) === '0') {
-          this.$message.info('提交成功')
+          let data = res.data || []
+          this.dataSource = data.map((item, index) => {
+            return {
+              ...item,
+              type: String(item.type),
+              key: index
+            }
+          })
         } else {
           this.$message.error(r.data.message || '查询接口出错')
         }
@@ -143,12 +166,13 @@ export default {
     },
     // 删除
     deleteFn (record, index) {
+      let _this = this
       if (record.id) {
         this.$confirm({
           title: '提示',
           content: '确认删除吗？',
           onOk() {
-            this.subDelete(record.id, index)
+            _this.subDelete(record.id, index)
           },
           onCancel() {},
         });
@@ -174,7 +198,8 @@ export default {
           tel: item.tel,
           name: item.name,
           projectId: this.basicInformation.projectId,
-          organId: this.basicInformation.organId
+          organId: this.basicInformation.organId,
+          id: item.id || ''
         }
       })
       this.$api.projectManager.addProjectResponsibility(form).then(r => {
@@ -196,6 +221,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .thoseResponsible {
+  .sg-title {
+    margin: 10px 0;
+  }
   .table-sub {
     margin-top: 6px;
     width: 100%;
@@ -214,6 +242,10 @@ export default {
   }
   .color-delete:hover {
     color: red;
+  }
+  .tr-modal-footer {
+    text-align: center;
+    margin: 20px 0 0 0;
   }
 }
 </style>
