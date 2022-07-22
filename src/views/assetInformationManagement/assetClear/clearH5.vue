@@ -9,55 +9,55 @@
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">出库单名称<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;" >{{detail.cleaningOrderCode || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;" >{{detail.cleaningOrderCode || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产项目<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value " style="font-size: 24px;">{{detail.projectName || '--'}}</span>
+              <span class="label-value " style="font-size: 18px;">{{detail.projectName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">资产类型<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;">{{detail.assetTypeName || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;">{{detail.assetTypeName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box" :class="{'required': editable}"><span class="label-name" :class="{'label-space-between': editable}">出库原因<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;">{{detail.cleanupTypeName || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;">{{detail.cleanupTypeName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">所属机构<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;">{{organName || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;">{{organName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name">创建人<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;">{{detail.createByName || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;">{{detail.createByName || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name">创建时间<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;">{{formatDate(detail.createTime) || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;">{{formatDate(detail.createTime) || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
             <div class="label-name-box"><span class="label-name">备注<i></i></span><span>：</span></div>
             <a-form-item>
-              <span class="label-value" style="font-size: 24px;">{{detail.remark || '--'}}</span>
+              <span class="label-value" style="font-size: 18px;">{{detail.remark || '--'}}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
-              <SGUploadFilePlus
+              <!-- <SGUploadFilePlus
                 :show="true"
                 :baseImgURL="configBase.hostImg1"
                 v-model="detail.attachment"
@@ -70,7 +70,9 @@
                   :customUpload="(value)=>{
                   return customUpload(value,$api.ownership.uploadAnnex)
                 }"
-                />
+                /> -->
+                <!-- <div>{{detail}}</div> -->
+              <div v-for="(item, index) in detail.attachment" :key="index"><a   @click="customDownload({url: item.attachmentPath, name:item.oldAttachmentName})">{{item.oldAttachmentName}}</a></div>
               <span class="file-null" style="font-size: 24px;" v-if="detail.attachment.length === 0">--</span>
             </a-form-item>
           </div>
@@ -79,22 +81,29 @@
       <div class="edit-box">
         <!-- <div class="edit-box-title"><i></i><span>资产明细</span></div> -->
         <SG-Title title="资产明细"/>
-        <div class="edit-box-content table-border" style="padding-bottom: 50px">
-          <a-table
+        <div class="edit-box-content table-border" >
+          <!-- <a-table
             :columns="columnsCom"
             :dataSource="dataSource"
             class="custom-table td-pd10"
             :pagination="false"
           >
-          </a-table>
-          <div class="table-space-pagination"></div>
+          </a-table> -->
+          <!-- <div class="table-space-pagination"></div>
           <SG-FooterPagination
             :pageLength="paginator.pageLength"
             :totalCount="paginator.totalCount"
             location="absolute"
             v-model="paginator.pageNo"
             @change="handlePageChange"
-          />
+          /> -->
+         <div class="asset-card" v-for="(item, index) in dataSource" :key="index">
+          <div style="margin: 10px">资产名称:  {{item.assteName}}</div>
+          <div style="margin: 10px">资产编码:  {{item.assteCode}}</div>
+          <div style="margin: 10px">资产类型:  {{item.assteTypeName}}</div>
+          <div style="margin: 10px">所在位置:  {{item.address}}</div>
+          <div style="margin: 10px">面积(㎡):  {{item.assetArea}}</div>
+         </div>
         </div>
       </div>
     </a-form>
@@ -104,16 +113,16 @@
       <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px"/>
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
     </div>
-    <div v-if="isApprove">
+    <!-- <div v-if="isApprove">
       <SG-Title title="审核意见"/>
       <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice"/>
-    </div>
+    </div> -->
     <!-- <form-footer v-show="isApprove" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="handleApprove(1)" @cancel="handleApprove(0)">
     </form-footer> -->
-    <div class="footer-action" v-if="isApprove">
+    <!-- <div class="footer-action" v-if="isApprove">
         <a-button type="primary" @click="handleApprove(1)" :loading="submitBtnLoading" block >审批通过</a-button>
           <SG-Button type="dangerous" @click="handleApprove(0)" :loading="submitBtnLoading" style="margin-right: 8px" block>驳回</SG-Button>
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -212,7 +221,7 @@ export default {
       },
       paginator: {
         pageNo: 1,
-        pageLength: 10,
+        pageLength: 99999,
         totalCount: 0
       }
     }
@@ -438,8 +447,8 @@ export default {
     getAssetDetailList () {
       let form = {
         cleaningOrderId: this.cleaningOrderId,
-        pageNum: this.paginator.pageNo,
-        pageSize: this.paginator.pageLength
+        pageNum: 1,//this.paginator.pageNo,
+        pageSize: 99999//this.paginator.pageLength
       }
       this.$api.assets.getCleanupDetailPage(form).then(res => {
         if (res.data.code === '0') {
@@ -521,21 +530,21 @@ export default {
 <style lang="less" scoped>
 /deep/.ant-table-row{
     td{
-    font-size: 24px !important;
+    font-size: 18px !important;
     }
   }
 /deep/.track-step{
     .time-item{
       .time, .date{
-        font-size: 18px !important;
+        font-size: 14px !important;
       }
     }
     .title,.desc{
-      font-size: 18px !important;
+      font-size: 14px !important;
     }
   }
 /deep/.sg-title-text,/deep/.ant-table-column-title{
-  font-size: 24px !important;
+  font-size: 18px !important;
 }
   .handle-clear-form {
     width: 100vw;
@@ -551,7 +560,7 @@ export default {
       height: 60px;
       button{
         height: 60px;
-        font-size: 24px !important;
+        font-size: 18px !important;
       }
     }
     .edit-box {
@@ -560,7 +569,7 @@ export default {
       margin-bottom: 16px;
       .edit-box-title {
         height: 14px;
-        font-size: 24px;
+        font-size: 18px;
         font-weight:bold;
         i {
           display: block;
@@ -583,10 +592,14 @@ export default {
         position: relative;
         display: inline-block;
         width: 100%;
+        .asset-card {
+          border: 2px solid #000;
+          font-size: 18px
+        }
         .edit-box-content-item {
           width: 100%;
           float: left;
-          font-size: 24px;
+          font-size: 18px;
           .label-name-box {
             float: left;
             line-height: 34px;

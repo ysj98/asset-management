@@ -23,11 +23,12 @@
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
-              <SG-UploadFile
+              <!-- <SG-UploadFile
                 v-model="files"
                 type="all"
                 :show="true"
-              />
+              /> -->
+              <div v-for="(item, index) in files" :key="index"><a  @click="customDownload({url: item.url, name:item.name})">{{item.name}}</a></div>
             </div>
           </a-col>
         </a-row>
@@ -38,40 +39,14 @@
       <SG-Title title="资产处置清单"></SG-Title>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :loading="loading"
-            :columns="columnsData"
-            :dataSource="tableData"
-            class="custom-table td-pd10"
-            :pagination="false"
-            >
-            <!-- 是否需协助办证 -->
-            <template #isAssistAccreditation="text,record">
-              {{record.isAssistAccreditation?"是":"否"}}
-            </template>
-            <!-- 处置成本 -->
-            <template slot="disposeCost">
-              <span>处置成本(元)</span>
-            </template>
-            <template slot="disposeCost" slot-scope="text, record">
-              <span>{{record.disposeCost}}</span>
-            </template>
-            <!-- 处置收入 -->
-            <template slot="disposeReceive">
-              <span>处置收入(元)</span>
-            </template>
-            <template slot="disposeReceive" slot-scope="text, record">
-              <span>{{record.disposeReceive}}</span>
-            </template>
-          </a-table>
-          <SG-FooterPagination
-            :pageLength="queryCondition.pageSize"
-            :totalCount="queryCondition.count"
-            :location="location"
-            :noPageTools="noPageTools"
-            v-model="queryCondition.pageNum"
-            @change="handleChange"
-          />
+          <div class="asset-card" v-for="(item, index) in tableData" :key="index">
+          <div style="margin: 10px">资产名称:  {{item.assetName}}</div>
+          <div style="margin: 10px">资产编码:  {{item.assetCode}}</div>
+          <div style="margin: 10px">资产分类:  {{item.assetCategoryName}}</div>
+          <div style="margin: 10px">处置成本(元):  {{item.disposeCost}}</div>
+          <div style="margin: 10px">处置收入(元):  {{item.disposeReceive}}</div>
+          <div style="margin: 10px">是否需协助办证:  {{item.isAssistAccreditation}}</div>
+         </div>
           <no-data-tips v-show="tableData.length === 0"></no-data-tips>
         </div>
       </div>
@@ -81,14 +56,23 @@
       <SG-Title title="收付款计划"></SG-Title>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
+          <!-- <a-table
             :loading="loading"
             :columns="receivingColumnsData"
             :dataSource="inventoryReportData"
             class="custom-table td-pd10"
             :pagination="false"
             >
-          </a-table>
+          </a-table> -->
+          <div class="asset-card" v-for="(item, index) in inventoryReportData" :key="index">
+          <div style="margin: 10px">收付款类型:  {{item.receivecostType}}</div>
+          <div style="margin: 10px">收款方:  {{item.payee}}</div>
+          <div style="margin: 10px">付款方:  {{item.payer}}</div>
+          <div style="margin: 10px">费用科目:  {{item.feeSubject}}</div>
+          <div style="margin: 10px">金额(元):  {{item.amount}}</div>
+          <div style="margin: 10px">收付款时间:  {{item.receivecostDate}}</div>
+          <div style="margin: 10px">跟进人:  {{item.secondMover}}</div>
+         </div>
           <no-data-tips v-show="inventoryReportData.length === 0"></no-data-tips>
         </div>
       </div>
@@ -104,7 +88,7 @@
       />
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
     </div>
-    <div class="countingTaskDetail-nav" v-if="isApprove">
+    <!-- <div class="countingTaskDetail-nav" v-if="isApprove">
       <SG-Title title="审核意见" />
       <a-textarea
         :rows="4"
@@ -112,7 +96,7 @@
         placeholder="请输入审核意见"
         v-model="advice"
       />
-    </div>
+    </div> -->
     <!-- <div style="height: 70px"></div>
     <div v-if="isApprove">
       <form-footer location="fixed">
@@ -126,10 +110,10 @@
         </SG-Button>
       </form-footer>
     </div> -->
-    <div class="footer-action" v-if="isApprove">
+    <!-- <div class="footer-action" v-if="isApprove">
         <a-button type="primary" @click="handleBtn(1)" :loading="submitBtnLoading" block >审批通过</a-button>
           <SG-Button type="dangerous" @click="handleBtn(0)" :loading="submitBtnLoading" style="margin-right: 8px" block>驳回</SG-Button>
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -137,10 +121,12 @@
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips"
 import {utils} from '@/utils/utils.js'
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import {h5Columns, h5Receiving, conditionalJudgment} from './beat.js'
 import moment from "moment";
 export default {
   components: {noDataTips, FormFooter},
+  mixins:[uploadAndDownLoadFIle],
   props: {},
   data () {
     return {
@@ -332,8 +318,8 @@ export default {
     getRegisterDetailListPage () {
       this.loading = true
       let obj = {
-        pageSize: this.queryCondition.pageSize,
-        pageNum: this.queryCondition.pageNum,
+        pageSize: 99999,//this.queryCondition.pageSize,
+        pageNum: 1,//this.queryCondition.pageNum,
         disposeRegisterOrderId: this.storeId
       }
       this.$api.basics.getRegisterDetailListPage(obj).then(res => {
@@ -398,6 +384,10 @@ export default {
 </script>
 <style lang="less" scoped>
 .countingTaskDetail {
+  .asset-card {
+          border: 2px solid #000;
+          font-size: 18px
+        }
  .footer-action{
       z-index: 999999;
       position: sticky;
@@ -408,7 +398,7 @@ export default {
       height: 60px;
       button{
         height: 60px;
-        font-size: 24px !important;
+        font-size: 18px !important;
       }
     }
   .countingTaskDetail-nav{
@@ -422,7 +412,7 @@ export default {
         .playground-row {
           .playground-col {
             line-height: 40px;
-            font-size: 24px;
+            font-size: 18px;
           }
         }
       }
@@ -440,20 +430,20 @@ export default {
 }
 /deep/.ant-table-row{
     td{
-    font-size: 24px !important;
+    font-size: 18px !important;
     }
   }
 /deep/.track-step{
     .time-item{
       .time, .date{
-        font-size: 18px !important;
+        font-size: 14px !important;
       }
     }
     .title,.desc{
-      font-size: 18px !important;
+      font-size: 14px !important;
     }
   }
 /deep/.sg-title-text,/deep/.ant-table-column-title{
-  font-size: 24px !important;
+  font-size: 18px !important;
 }
 </style>

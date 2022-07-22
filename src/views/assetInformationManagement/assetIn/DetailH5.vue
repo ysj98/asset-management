@@ -8,13 +8,13 @@
         :key="key"
          v-for="{title, key} in baseInfoKeys"
             :title="key === 'assetRegisterName' ? infoData[key] : ''"
-            style="margin: 12px 0; white-space: nowrap; overflow: hidden; font-size: 24px"
+            style="margin: 12px 0; white-space: nowrap; overflow: hidden; font-size: 18px"
         >
            <span style="color: #282D5B">{{title}}:</span>
             <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '--'}}</span>
         </div>
         <div  style="margin-top: 8px;display: flex">
-          <span style="color: #282D5B; float: left; padding-right: 10px;flex-shrink: 0; font-size: 24px">图片:</span>
+          <span style="color: #282D5B; float: left; padding-right: 10px;flex-shrink: 0; font-size: 18px">图片:</span>
           <div style="width: 100%;" v-if="imageAttachment.length">
             <SG-UploadFile show v-model="oldImgAttachment"/>
             <SG-UploadFile 
@@ -28,9 +28,9 @@
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
         <div style="margin-top: 8px; display: flex">
-          <span style="color: #282D5B; float: left; padding-right: 10px; flex-shrink: 0;font-size: 24px">附件:</span>
+          <span style="color: #282D5B; float: left; padding-right: 10px; flex-shrink: 0;font-size: 18px">附件:</span>
           <div v-if="otherAttachment.length">
-            <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
+            <!-- <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
             <SG-UploadFile 
               v-model="newOtherAttachment" 
               :baseImgURL="configBase.hostImg1"
@@ -38,22 +38,29 @@
                 return customDownload(value,$api.ownership.downLoadAnnex)
               }"
               type="file"
-              show />
+              show /> -->
+             <div v-for="(item, index) in otherAttachment" :key="index"><a @click="customDownload({url: item.attachmentPath, name:item.oldAttachmentName})">{{item.oldAttachmentName}}</a></div>
           </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
       </div>
       <!--资产明细-->
       <SG-Title title="资产明细"/>
-      <div >
-        <a-table v-bind="tableObj" class="custom-table td-pd10 table-border" />
+      <div v-if="tableObj.dataSource.length">
+        <!-- <a-table v-bind="tableObj" class="custom-table td-pd10 table-border" />
         <SG-FooterPagination
           class="footer-pagination"
           v-if="tableObj.dataSource.length"
           :noPageTools="true"
           v-bind="paginationObj" style="margin-top: 15px"
           @change="({ pageNo, pageLength }) => queryAssetByRegistId({ pageNo, pageLength })"
-        />
+        /> -->
+        <div class="asset-card" v-for="(item, index) in tableObj.dataSource" :key="index">
+          <div style="margin: 10px">资产名称:  {{item.assteName}}</div>
+          <div style="margin: 10px">资产编码:  {{item.assteCode}}</div>
+          <div style="margin: 10px">资产类型:  {{item.assteTypeName}}</div>
+          <div style="margin: 10px">面积(㎡):  {{item.assetArea}}</div>
+         </div>
       </div>
       <!--审批轨迹-->
       <div v-if="!isOld">
@@ -61,14 +68,14 @@
         <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" />
         <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       </div>
-      <div class="footer-advice" v-if="isApprove && !isOld">
+      <!-- <div class="footer-advice" v-if="isApprove && !isOld">
         <SG-Title title="审核意见"/>
         <a-textarea :rows="4" style="resize: none" placeholder="请输入审核意见" v-model="advice"/>
       </div>
       <div class="footer-action" v-if="isApprove">
         <a-button type="primary" @click="handleBtn(1)" :loading="submitBtnLoading" block >审批通过</a-button>
           <SG-Button type="dangerous" @click="handleBtn(0)" :loading="submitBtnLoading" style="margin-right: 8px" block>驳回</SG-Button>
-      </div>
+      </div> -->
     </a-spin>
   </div>
 </template>
@@ -331,26 +338,30 @@
       height: 60px;
       button{
         height: 60px;
-        font-size: 24px !important;
+        font-size: 18px !important;
       }
     }
   }
+  .asset-card {
+          border: 2px solid #000;
+          font-size: 18px
+        }
   /deep/.ant-table-row{
     td{
-    font-size: 24px !important;
+    font-size: 18px !important;
     }
   }
   /deep/.sg-title-text,/deep/.ant-table-column-title{
-    font-size: 24px !important;
+    font-size: 18px !important;
   }
   /deep/.track-step{
     .time-item{
       .time, .date{
-        font-size: 18px !important;
+        font-size: 14px !important;
       }
     }
     .title,.desc{
-      font-size: 18px !important;
+      font-size: 14px !important;
     }
   }
 </style>
