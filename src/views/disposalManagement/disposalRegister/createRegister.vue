@@ -1113,7 +1113,15 @@ export default {
     },
     //保存选中的资产转让数据
     saveTransfer(list){
-      this.transferInfo.dataSource=list
+      let selKey=[]
+      this.transferInfo.dataSource.forEach(item=>{
+        selKey.push(item.applyId)
+      })
+      list.forEach(item=>{
+        if(!selKey.includes(item.applyId)){
+          this.transferInfo.dataSource.push(item)
+        }
+      })
     },
     //资产框
     showTransfer(){

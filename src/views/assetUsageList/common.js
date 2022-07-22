@@ -1,7 +1,7 @@
 /*
  * @Author: L
  * @Date: 2022-07-19 17:28:50
- * @LastEditTime: 2022-07-20 16:19:33
+ * @LastEditTime: 2022-07-22 14:07:52
  * @Description: file content
  */
 export const typeList = [
@@ -42,88 +42,88 @@ export const queryCondition =  {
   pageNum: 1,         // 当前页
   pageSize: 10        // 每页显示记录数
 }
-
+// 机构维度
 export const columnsData = [
-  { title: '所属组织机构', dataIndex: 'organName' },
-  { title: '资产数量', dataIndex: 'assetCount' },
-  { title: '资产面积(㎡)', dataIndex: 'assetArea' },
-  { title: '权证面积(㎡)', dataIndex: 'shipArea' },
+  { title: '所属组织机构', dataIndex: 'organName', width: 150 },
+  { title: '资产数量', dataIndex: 'assetCount', width: 150 },
+  { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
+  { title: '权证面积(㎡)', dataIndex: 'shipArea', width: 150 },
   {
     title: '使用方向',
     children: 
     [
-      { title: '经营面积(㎡)', dataIndex: 'managerArea' },
-      { title: '自用面积(㎡)', dataIndex: 'selfUserArea' },
-      { title: '占用面积(㎡)', dataIndex: 'occupationArea'}
+      { title: '经营面积(㎡)', dataIndex: 'managerArea', width: 150 },
+      { title: '自用面积(㎡)', dataIndex: 'selfUserArea', width: 150 },
+      { title: '占用面积(㎡)', dataIndex: 'occupationArea', width: 150}
     ]
   },
   {
     title: '经营情况',
     children: 
     [
-      { title: '建筑面积(㎡)',dataIndex: 'area' },
-      { title: '使用面积(㎡)',dataIndex: 'useArea' },
-      { title: '可租面积(㎡)',dataIndex: 'rentArea' },
-      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea' },
-      { title: '未租面积(㎡)',dataIndex: 'rentNotArea'  }
+      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150 },
+      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150 },
+      { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150 },
+      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150 },
+      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150   }
     ]
   }
 ]
-
+// 项目维度
 export const projectData = [
-  { title: '资产项目', dataIndex: 'projectName' },
-  { title: '资产数量', dataIndex: 'assetCount' },
-  { title: '资产面积(㎡)', dataIndex: 'assetArea' },
-  { title: '权证面积(㎡)', dataIndex: 'shipArea' },
+  { title: '资产项目', dataIndex: 'projectName', width: 150 },
+  { title: '资产数量', dataIndex: 'assetCount', width: 150 },
+  { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
+  { title: '权证面积(㎡)', dataIndex: 'shipArea', width: 150 },
   {
     title: '使用方向',
     children: 
     [
-      { title: '经营面积(㎡)', dataIndex: 'managerArea' },
-      { title: '自用面积(㎡)', dataIndex: 'selfUserArea' },
-      { title: '占用面积(㎡)', dataIndex: 'occupationArea'}
+      { title: '经营面积(㎡)', dataIndex: 'managerArea', width: 150 },
+      { title: '自用面积(㎡)', dataIndex: 'selfUserArea', width: 150 },
+      { title: '占用面积(㎡)', dataIndex: 'occupationArea', width: 150}
     ]
   },
   {
     title: '经营情况',
     children: 
     [
-      { title: '建筑面积(㎡)',dataIndex: 'area' },
-      { title: '使用面积(㎡)',dataIndex: 'useArea' },
-      { title: '可租面积(㎡)',dataIndex: 'rentArea' },
-      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea' },
-      { title: '未租面积(㎡)',dataIndex: 'rentNotArea'  }
+      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150 },
+      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150 },
+      { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150 },
+      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150 },
+      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150  }
     ]
   }
 ]
-
-export const assets = [
-  { title: '资产项目', dataIndex: 'projectName' },
-  { title: '资产编码', dataIndex: 'assetCode' },
-  { title: '资产名称', dataIndex: 'assetName' },
-  { title: '资产类型', dataIndex: 'typeName' },
-  { title: '资产分类', dataIndex: 'objectTypeName' },
-  { title: '权证号', dataIndex: 'warrantNbr' },
-  { title: '资产面积(㎡)', dataIndex: 'assetArea' },
-  { title: '权证面积(㎡)', dataIndex: 'shipArea' },
+// 资产维度
+export const assetsColumns = [
+  { title: '资产项目', dataIndex: 'projectName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产类型', dataIndex: 'typeName', width: 150 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 150 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
+  { title: '权证面积(㎡)', dataIndex: 'shipArea', width: 150 },
   {
     title: '使用方向',
     children: 
     [
-      { title: '经营面积(㎡)', dataIndex: 'managerArea' },
-      { title: '自用面积(㎡)', dataIndex: 'selfUserArea' },
-      { title: '占用面积(㎡)', dataIndex: 'occupationArea'}
+      { title: '经营面积(㎡)', dataIndex: 'managerArea', width: 150 },
+      { title: '自用面积(㎡)', dataIndex: 'selfUserArea', width: 150 },
+      { title: '占用面积(㎡)', dataIndex: 'occupationArea', width: 150 }
     ]
   },
   {
     title: '经营情况',
     children: 
     [
-      { title: '建筑面积(㎡)',dataIndex: 'area' },
-      { title: '使用面积(㎡)',dataIndex: 'useArea' },
-      { title: '可租面积(㎡)',dataIndex: 'rentArea' },
-      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea' },
-      { title: '未租面积(㎡)',dataIndex: 'rentNotArea'  }
+      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150  },
+      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150  },
+      { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150  },
+      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150  },
+      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150   }
     ]
   }
 ]

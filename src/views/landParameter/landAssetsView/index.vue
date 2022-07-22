@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-07-20 14:24:57
+ * @LastEditTime: 2022-07-21 16:29:00
  * @Description: 土地资产视图
 -->
 <template>
@@ -251,7 +251,13 @@ const columnsData = [
   { title: '质押', dataIndex: 'pledge', width: 100 },
   { title: '抵押', dataIndex: 'mortgage', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
-  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 150 },
+  { title: '地块是否已签订土地交储协议', dataIndex: 'isSign', width: 150 },
+  { title: '是否城市更新项目', dataIndex: 'cityUpdate', width: 150 },
+  { title: '三旧改造图编号', dataIndex: 'transformDrawingNo', width: 150 },
+  { title: '四至范围', dataIndex: 'fourToRange', width: 350 },
+  { title: '是否确权', dataIndex: 'isRight', width: 150 },
+  { title: '缴纳土地出让金时间', dataIndex: 'payAssignmentTime', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right'}
 ]
 const approvalStatusData = [

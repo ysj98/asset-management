@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-16 15:16:48
- * @LastEditTime: 2022-07-20 18:29:50
+ * @LastEditTime: 2022-07-22 18:01:35
  * @Description: 资产项目责任人管理
 -->
 <!--价值登记业务页面Tab--价值登记记录组件-->
@@ -34,19 +34,19 @@
       <div slot="contentForm">
         <a-row :gutter="8">
           <a-col :span="5">
-            <a-input placeholder="资产项目名称" v-model.trim="queryObj.projectName" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="资产项目名称" v-model.trim="queryObj.projectName" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="项目联系人名称/电话" v-model.trim="queryObj.contractOrTel" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="项目联系人名称/电话" v-model.trim="queryObj.contractOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="项目经理名称/电话" v-model.trim="queryObj.responsibilityOrTel" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="项目经理名称/电话" v-model.trim="queryObj.responsibilityOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="5">
-            <a-input placeholder="分管领导名称/电话" v-model.trim="queryObj.leaderOrTel" style="width: 180px; margin: 0 10px"/>
+            <a-input allowClear placeholder="分管领导名称/电话" v-model.trim="queryObj.leaderOrTel" style="width: 180px; margin: 0 10px"/>
           </a-col>
           <a-col :span="4" style="text-align: left">
-            <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
+            <SG-Button type="primary" @click="query()">查询</SG-Button>
           </a-col>
         </a-row>
         <a-row style="margin-top: 14px">
@@ -56,13 +56,13 @@
       </div>
     </search-container>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table :scroll="scroll" v-bind="tableObj" class="custom-table td-pd10">
       <template slot="operation" slot-scope="text, record">
         <OperationPopover :operationData="operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => footerQueryTableData({ pageNo, pageLength })"/>
       <!--导入-->
     <export-and-download @upload="uploadFile" showDown ref="batchImport" title="导入" @down="down"></export-and-download>
     <thoseResponsible :type="type" v-if="thoseResponsibleShow" ref="thoseResponsibleRef" @handleCancel="handleCancel"></thoseResponsible>
@@ -91,6 +91,7 @@
         // ASSET_MANAGEMENT, // 权限对象
         fold: true, // 查询条件折叠按钮
         exportBtnLoading: false, // 导出按钮
+        scroll: {y: 420},
         downBtnLoading: false,
         importBtnLoading: false,
         organProjectType: {
@@ -136,23 +137,22 @@
     methods: {
       handleCancel (val) {
         this.thoseResponsibleShow = false
-        val && this.queryTableData()
+        this.queryTableData()
       },
       operationFun (type, record) {
         this.type = type
-        if (type === 'set') {
-          this.thoseResponsibleShow = true
-          this.$nextTick(() => {
-            this.$refs.thoseResponsibleRef.visible = true
-            this.$refs.thoseResponsibleRef.basicInformation = record
-          })
-        }
+        this.thoseResponsibleShow = true
+        this.$nextTick(() => {
+          this.$refs.thoseResponsibleRef.visible = true
+          this.$refs.thoseResponsibleRef.basicInformation = record
+          this.$refs.thoseResponsibleRef.queryProjectResponsibilityDetail()
+        })
         console.log(type, record, 'jjjdsfklsd')
       },
       // 获取选择的组织机构
       changeTree (organId) {
         this.queryObj.organId = organId
-        organId && this.queryTableData()
+        organId && this.query()
       },
       down () {},
       // 导入
@@ -173,8 +173,11 @@
             this.$SG_Message.success(res.message || '导入成功')
             this.importBtnLoading = false
             this.$refs.batchImport.visible = false
+          } else {
+            this.$SG_Message.success(res.message || '批量导入失败')
+            this.importBtnLoading = false
+            this.$refs.batchImport.visible = false
           }
-          throw res.message
         }).catch(err => {
           this.$SG_Message.destroy(name)
           this.$SG_Message.error(err || '批量导入失败')
@@ -190,37 +193,40 @@
       // 模板下载
       downExport () {
         this.downBtnLoading = true
-        exportDataAsExcel(this.queryObj, this.$api.projectManager.downExport, '资产项目责任人模板.xls', this).then(() => {
+        // this.queryObj
+        exportDataAsExcel('', this.$api.projectManager.downExport, '资产项目责任人模板.xls', this).then(() => {
           this.downBtnLoading = false
         })
       },
+      footerQueryTableData ({pageNo, pageLength}) {
+        this.paginationObj.pageNo = pageNo
+        this.paginationObj.pageLength = pageLength
+        this.queryTableData()
+      },
+      query () {
+        this.paginationObj.pageNo = 1
+        this.queryTableData()
+      },
       // 查询列表数据
       queryTableData () {
-        this.tableObj.dataSource = [
-          {
-            organName: '所属上级机构1',
-            projectName: '资产项目名称1',
-            projectCode: '资产项目编码1'
-          }
-        ]
         let form = {
           ...this.queryObj,
           pageNum: this.paginationObj.pageNo,
           pageSize: this.paginationObj.pageLength
         }
-        // this.tableObj.loading = true
+        this.tableObj.loading = true
         this.$api.projectManager.getProjectResponsibility(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            // const { count, data } = res.data
-            // this.tableObj.dataSource = data.map((item, index) => {
-            //   return {
-            //     ...item,
-            //     key: index
-            //   }
-            // })
-            // this.paginationObj.totalCount = count
+            const { count, data } = res.data
+            this.tableObj.dataSource = data.map((item, index) => {
+              return {
+                ...item,
+                key: index
+              }
+            })
+            this.paginationObj.totalCount = count
           } else {
             this.$message.error(r.data.message || '查询接口出错')
           }

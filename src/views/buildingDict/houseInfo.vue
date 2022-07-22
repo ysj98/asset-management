@@ -280,7 +280,7 @@ let columns = [
     width: 150
   },
   {
-    title: "分摊土地面积(㎡)",
+    title: "分摊面积(㎡)",
     dataIndex: "shareArea",
     width: 150
   },

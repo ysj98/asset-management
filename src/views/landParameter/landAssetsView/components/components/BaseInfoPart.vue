@@ -49,7 +49,14 @@
           {title: '批准日期', key: 'approvalDate'}, {title: '计容面积(㎡)', key: 'acreage'}, {title: '资产用途', key: 'landuse'},
           {title: '容积率', key: 'landRate'}, {title: '资产状态', key: 'statusName'}, {title: '使用年限', key: 'validPeriod'},
           {title: '有限期限', key: 'endDate'}, {title: '土地性质', key: 'landuseType ', span: 16},
-          { title: '质押', key: 'pledge'},{ title: '抵押', key: 'mortgage'},{ title: '涉诉', key: 'lawsuit' },{ title: '涉诉情况', key: 'lawsuitRemark', span: 16} 
+          { title: '质押', key: 'pledge'},{ title: '抵押', key: 'mortgage'},{ title: '涉诉', key: 'lawsuit' },
+          { title: '是否城市更新项目', key: 'cityUpdate'},
+          { title: '三旧改造图编号', key: 'transformDrawingNo'},
+          { title: '地块是否已签订土地交储协议', key: 'isSign'},
+          { title: '是否确权', key: 'isRight'},
+          { title: '缴纳土地出让金时间', key: 'payAssignmentTime'},
+          { title: '四至范围', key: 'fourToRange', span: 16},
+          { title: '涉诉情况', key: 'lawsuitRemark', span: 16},
         ], // 基本信息字段
         spaceInfoKeys: [
           {title: '运营项目', key: 'projectName', type: 'text'}, {title: '土地位置', key: 'location', type: 'text'}, {title: '用地红线图', key: 'redMap', type: 'img'},
