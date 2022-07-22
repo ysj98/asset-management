@@ -112,6 +112,8 @@ export default {
     quickFn(){
         this.$emit('transferlist',this.selectedRows)
         this.show=false
+        this.selectedRows=[]
+        this.selectedRowKeys=[]
     }
   },
   watch:{
