@@ -1460,5 +1460,10 @@ let proRouter = [{
     name: '土地资产视图',
     component: () => import('@/views/landParameter/landAssetsView/components/landDetailPage.vue')
   },
+  {
+    path: '/assetUsageList/scheduleOf',
+    name: '明细表',
+    component: () => import('@/views/assetUsageList/scheduleOf.vue'),
+  },
 ]
 export default proRouter

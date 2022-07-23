@@ -1,7 +1,7 @@
 /*
  * @Author: L
  * @Date: 2022-07-19 17:28:50
- * @LastEditTime: 2022-07-22 22:03:08
+ * @LastEditTime: 2022-07-23 16:06:54
  * @Description: file content
  */
 export const typeList = [
@@ -76,11 +76,11 @@ export const columnsData = [
     title: '经营情况',
     children: 
     [
-      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150},
-      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150 },
+      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' }},
+      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150, scopedSlots: { customRender: 'useArea' }},
       { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150, scopedSlots: { customRender: 'rentArea' }},
-      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150 },
-      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150   }
+      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150, scopedSlots: { customRender: 'rentAlreadyArea' }},
+      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150, scopedSlots: { customRender: 'rentNotArea' }}
     ]
   }
 ]
@@ -103,11 +103,11 @@ export const projectData = [
     title: '经营情况',
     children: 
     [
-      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150 },
-      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150 },
+      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
+      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150, scopedSlots: { customRender: 'useArea' } },
       { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150, scopedSlots: { customRender: 'rentArea' } },
-      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150 },
-      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150  }
+      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150, scopedSlots: { customRender: 'rentAlreadyArea' } },
+      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150, scopedSlots: { customRender: 'rentNotArea' } }
     ]
   }
 ]
@@ -146,11 +146,44 @@ export const assetsColumns = [
     title: '经营情况',
     children: 
     [
-      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150  },
-      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150  },
-      { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150  },
-      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150,scopedSlots: { customRender: 'rentArea' } },
-      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150   }
+      { title: '建筑面积(㎡)',dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' }},
+      { title: '使用面积(㎡)',dataIndex: 'useArea', width: 150, scopedSlots: { customRender: 'useArea' }},
+      { title: '可租面积(㎡)',dataIndex: 'rentArea', width: 150, scopedSlots: { customRender: 'rentArea' }},
+      { title: '已租面积(㎡)',dataIndex: 'rentAlreadyArea', width: 150,scopedSlots: { customRender: 'rentAlreadyArea' } },
+      { title: '未租面积(㎡)',dataIndex: 'rentNotArea', width: 150, scopedSlots: { customRender: 'rentNotArea' }}
     ]
   }
 ]
+
+
+// ------------------------------明细表-----------------------------------------
+// const scheduleCell = (record, index, val) => {
+//   const attrs = {}
+//   let style = {}
+//   if (record.key !== 'sg-t') {
+//     attrs.rowSpan = record[`${val}Len`]
+//     if (!record[`${val}Len`]) {
+//       style.display = 'none'
+//     }
+//   }
+//   return {
+//     attrs,
+//     style
+//   }
+// }
+// customCell: (record, index) => {return scheduleCell(record, index, 'organId')},
+export const scheduleOfList = [
+  { title: '管理机构', dataIndex: 'organName', width: 150},
+  { title: '资产项目', dataIndex: 'projectName', width: 150 },
+  { title: '资产名称', dataIndex: 'assetName', width: 150 },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+  { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
+  { title: '资产分类', dataIndex: 'objectTypeName', width: 150 },
+  { title: '资源名称', dataIndex: 'resName', width: 150 },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 150 },
+  { title: '使用面积(㎡)', dataIndex: 'useArea', width: 150 },
+  { title: '可租面积(㎡)', dataIndex: 'rentArea', width: 150 },
+  { title: '已租面积(㎡)', dataIndex: 'rentAlreadyArea', width: 150 },
+  { title: '未租面积(㎡)', dataIndex: 'rentNotArea', width: 150 }
+]
+export const scheduleTotalKeyArr = ['assetArea', 'area', 'useArea', 'rentArea', 'rentAlreadyArea', 'rentNotArea']

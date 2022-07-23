@@ -34,7 +34,7 @@
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-input v-if="+queryCondition.type === 2" v-model.trim="queryCondition.assetNameOrCode" :style="allStyle" placeholder="资产名称或编码"/>
-        <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+        <SG-Button type="primary" style="margin-right: 10px;" @click="allQuery">查询</SG-Button>
       </div>
     </SearchContainer>
     <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
@@ -58,9 +58,26 @@
         <span slot="occupationArea" slot-scope="text, record">
           <span @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
         </span>
+        <!-- 经营情况 -->
+        <!-- 建筑面积 -->
+        <span slot="area" slot-scope="text, record">
+          <span class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
+        </span>
+        <!-- 可租面积 -->
+        <span slot="useArea" slot-scope="text, record">
+          <span class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
+        </span>
         <!-- 可租面积 -->
         <span slot="rentArea" slot-scope="text, record">
-          <span :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+          <span class="tab-text-decoration" @click="nextDetailFn(record)" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+        </span>
+        <!-- 已租面积 -->
+        <span class="tab-text-decoration" slot="rentAlreadyArea" slot-scope="text, record">
+          <span @click="nextDetailFn(record)">{{text}}</span>
+        </span>
+        <!-- 未租面积 -->
+        <span slot="rentNotArea" slot-scope="text, record">
+          <span class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
         </span>
       </a-table>
       <!-- <no-data-tips v-show="tableData.length === 0"></no-data-tips> -->
@@ -184,11 +201,15 @@ export default {
         this.$router.push({path: '/assetUsageList/landProjectUsageList', query: { projectId: record.projectId }})
       } else if (this.queryCondition.type === '2' && this.queryCondition.assetType === '1') {
         // 房屋资产视图 是资产维度+资产类型是 房屋
-        this.$router.push({path: '/assetUsageList/usageListAssetView', query: { houseId: record.houseId, assetId: record.assetId}})
+        this.$router.push({path: '/assetUsageList/usageListAssetView', query: { houseId: record.assetHouseId, assetId: record.assetId}})
       } else if (this.queryCondition.type === '2' && this.queryCondition.assetType === '4') {
         // 土地资产视图 是资产维度+资产类型是 土地
         this.$router.push({path: '/assetUsageList/usageListViewDetail', query: { assetLandId: record.assetLandId, assetId: record.assetId, organId: record.organId, organName: record.organName}})
       }
+    },
+    // 明细表
+    nextDetailFn (record) {
+      this.$router.push({path: '/assetUsageList/scheduleOf', query: { type: record.type, assetType: this.queryCondition.assetType}})
     },
     // 组织机构树
     changeTree (value, label) {
@@ -196,7 +217,7 @@ export default {
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = ''
-      this.queryCondition.objectTypes = ''
+      this.queryCondition.objectType = ''
       this.projectFn()
       this.getListFn()
       this.allQuery()
@@ -219,7 +240,7 @@ export default {
       }
       let obj = {
         organId: this.queryCondition.organId,
-        assetType: '1'
+        assetType: this.queryCondition.assetType
       }
       this.$api.assets.getList(obj).then(res => {
         if (Number(res.data.code) === 0) {
