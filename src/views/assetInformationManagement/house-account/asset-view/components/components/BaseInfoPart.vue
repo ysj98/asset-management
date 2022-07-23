@@ -67,7 +67,7 @@
           {title: '装修情况', key: 'decorationSituation'}, {title: '建筑结构', key: 'buildStruct'}, {title: '资产用途', key: 'useType'},
           {title: '建筑面积', key: 'area'}, {title: '可出租面积', key: 'rentArea'}, {title: '竣工日期', key: 'completionDate'}, {title: '维修日期', key: 'repair'},
           {title: '资产状态', key: 'statusName'}, {title: '物业管理单位', key: 'organManagement'}, {title: '物业缴费期限', key: 'organPayDeadline'}, {title: '物业费', key: 'organFee'}, {title: '已租面积', key: 'rentedArea'}, {title: '未租面积', key: 'unRentedArea'}, 
-          {title: '质押', key: 'pledge'}, {title: '抵押', key: 'mortgage'}, {title: '涉诉', key: 'lawsuit'}, {title: '涉诉情况', key: 'lawsuitRemark'},{title: '相关描述', key: 'remark', span: 16},{title: '附件', key: 'attachmentList', span: 16},
+          {title: '质押', key: 'pledgeName'}, {title: '抵押', key: 'mortgageName'}, {title: '涉诉', key: 'lawsuitName'}, {title: '涉诉情况', key: 'lawsuitRemark'},{title: '相关描述', key: 'remark', span: 16},{title: '附件', key: 'attachmentList', span: 16},
           // {title: '资产二维码', key: 'QRCode', span: 24}
         ], // 基本信息字段
         spaceInfoKeys: [

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-07-21 16:29:00
+ * @LastEditTime: 2022-07-23 10:16:25
  * @Description: 土地资产视图
 -->
 <template>
@@ -248,9 +248,9 @@ const columnsData = [
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 150, scopedSlots: { customRender: 'marketValue' } },
   { title: '批准日期', dataIndex: 'approvalDate', width: 150 },
   { title: '资产状态', dataIndex: 'statusName', width: 150 },
-  { title: '质押', dataIndex: 'pledge', width: 100 },
-  { title: '抵押', dataIndex: 'mortgage', width: 100 },
-  { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+  { title: '质押', dataIndex: 'pledgeName', width: 100 },
+  { title: '抵押', dataIndex: 'mortgageName', width: 100 },
+  { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 150 },
   { title: '地块是否已签订土地交储协议', dataIndex: 'isSign', width: 150 },
   { title: '是否城市更新项目', dataIndex: 'cityUpdate', width: 150 },

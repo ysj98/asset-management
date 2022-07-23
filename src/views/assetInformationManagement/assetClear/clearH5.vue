@@ -98,9 +98,9 @@
             @change="handlePageChange"
           /> -->
          <div class="asset-card" v-for="(item, index) in dataSource" :key="index">
-          <div style="margin: 10px">资产名称:  {{item.assteName}}</div>
-          <div style="margin: 10px">资产编码:  {{item.assteCode}}</div>
-          <div style="margin: 10px">资产类型:  {{item.assteTypeName}}</div>
+          <div style="margin: 10px">资产名称:  {{item.assetName}}</div>
+          <div style="margin: 10px">资产编码:  {{item.assetCode}}</div>
+          <div style="margin: 10px">资产类型:  {{item.assetTypeName}}</div>
           <div style="margin: 10px">所在位置:  {{item.address}}</div>
           <div style="margin: 10px">面积(㎡):  {{item.assetArea}}</div>
          </div>

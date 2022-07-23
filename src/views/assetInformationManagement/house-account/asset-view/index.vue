@@ -352,9 +352,9 @@
             { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150},
             { title: '公安门牌号', dataIndex: 'houseNumber', width: 150},
             // { title: '质押情况', dataIndex: 'pledge', width: 120},
-            { title: '质押', dataIndex: 'pledge', width: 100 },
-            { title: '抵押', dataIndex: 'mortgage', width: 100 },
-            { title: '涉诉', dataIndex: 'lawsuit', width: 100 },
+            { title: '质押', dataIndex: 'pledgeName', width: 100 },
+            { title: '抵押', dataIndex: 'mortgagName', width: 100 },
+            { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
             { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
             { title: '相关描述', dataIndex: 'remark', width: 350 },
           ]

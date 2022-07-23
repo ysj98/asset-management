@@ -10,6 +10,7 @@ export default {
       let loadingName = this.SG_Loding("下载中...");
       apiOwnership.downLoadAnnex({ attachmentPath: file.url,fileName: file.name }).then(
         (res) => {
+          this.$SG_Message.error(res);
           this.DE_Loding(loadingName).then(() => {
             let blob = new Blob([res.data]);
             let a = document.createElement("a");
@@ -21,9 +22,10 @@ export default {
             a.remove();
           });
         },
-        () => {
+        (err) => {
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.error("下载失败！");
+            this.$SG_Message.error(err);
+            //this.$SG_Message.error("下载失败！");
           });
         }
       );
