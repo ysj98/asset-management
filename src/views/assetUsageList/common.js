@@ -1,7 +1,7 @@
 /*
  * @Author: L
  * @Date: 2022-07-19 17:28:50
- * @LastEditTime: 2022-07-23 16:06:54
+ * @LastEditTime: 2022-07-23 16:52:29
  * @Description: file content
  */
 export const typeList = [
@@ -157,26 +157,28 @@ export const assetsColumns = [
 
 
 // ------------------------------明细表-----------------------------------------
-// const scheduleCell = (record, index, val) => {
-//   const attrs = {}
-//   let style = {}
-//   if (record.key !== 'sg-t') {
-//     attrs.rowSpan = record[`${val}Len`]
-//     if (!record[`${val}Len`]) {
-//       style.display = 'none'
-//     }
-//   }
-//   return {
-//     attrs,
-//     style
-//   }
-// }
-// customCell: (record, index) => {return scheduleCell(record, index, 'organId')},
+const scheduleCell = (record, index, val) => {
+  const attrs = {}
+  let style = {}
+  if (val) {
+    if (record.key !== 'sg-t') {
+      attrs.rowSpan = record[`${val}Len`]
+      if (+record[`${val}Len`] === 0) {
+        attrs.rowSpan = 0
+        style.display = 'none'
+      }
+    }
+  }
+  return {
+    attrs,
+    style
+  }
+}
 export const scheduleOfList = [
-  { title: '管理机构', dataIndex: 'organName', width: 150},
-  { title: '资产项目', dataIndex: 'projectName', width: 150 },
-  { title: '资产名称', dataIndex: 'assetName', width: 150 },
-  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+  { title: '管理机构', dataIndex: 'organName', width: 150, customCell: (record, index) => {return scheduleCell(record, index, 'organId')}},
+  { title: '资产项目', dataIndex: 'projectName', width: 150, customCell: (record, index) => {return scheduleCell(record, index, 'projectId')}},
+  { title: '资产名称', dataIndex: 'assetName', width: 150, customCell: (record, index) => {return scheduleCell(record, index, 'assetId')}},
+  { title: '资产编码', dataIndex: 'assetCode', width: 150, customCell: (record, index) => {return scheduleCell(record, index, 'assetCode')}},
   { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
   { title: '资产分类', dataIndex: 'objectTypeName', width: 150 },
   { title: '资源名称', dataIndex: 'resName', width: 150 },

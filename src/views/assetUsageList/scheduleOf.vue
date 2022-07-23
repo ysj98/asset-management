@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-23 11:37:46
- * @LastEditTime: 2022-07-23 16:06:13
+ * @LastEditTime: 2022-07-23 16:55:05
  * @Description: 明细表
 -->
 <template>
@@ -63,7 +63,7 @@ export default {
   data () {
     return {
       allStyle: 'width: 170px; margin-right: 10px;',
-      scroll: {x: 3000, y: 'calc(100vh - 430px)'},
+      scroll: {x: 3000, y: 'calc(100vh - 370px)'},
       toggle: true,
       loading: false,
       noPageTools: false,
@@ -122,14 +122,13 @@ export default {
                     item[element + 'Len'] = 1
                   } else {
                     item[element + 'Len'] = 0
-                    map[item[element]].item[element + 'len'] += 1
+                    map[item[element]].item[element + 'Len'] += 1
                   }
                 } else {
                   item[element + 'Len'] = 1
                 }
               })
             })
-            console.log(data, 'datadatadatadatadatadata')
             this.tableData = data
             this.count = res.data.data.count
           } else {
@@ -254,6 +253,7 @@ export default {
 .schedule {
   /deep/.ant-table-tbody {
   tr:nth-last-child(1){
+    border: 1px solid #ccc;
     position: sticky;
     bottom: 4px;
     background: #fff;
