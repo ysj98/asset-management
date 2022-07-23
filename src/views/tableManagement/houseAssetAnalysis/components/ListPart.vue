@@ -49,7 +49,7 @@
           <span>{{getFormat(text)}}</span>
         </template>
         <template slot="detail" slot-scope="text,record,index">
-          <span v-if="index<(dataSource.length-2)" @click="showIndex(index,record)">明细</span>
+          <span v-if="index<(dataSource.length-2)" @click="showIndex(index,record)" class="detail">明细</span>
         </template>
       </a-table>
       <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
@@ -408,12 +408,13 @@ export default {
           region:record.region,
           type:'across'
         }
-        this.$router.push({
-        path: '/assetView',
-        query: {
-          params: params
-        }
-      })
+        window.parent.openPortalMenu(`/asset-managemen/#/assetView?organIds=${record.organId}&projectId=${record.projectId}&objectType=${record.objectType}&ownershipStatus=${record.ownershipStatus}&province=${record.province}&city=${record.city}&region=${record.region}`, '房屋资产视图')
+        // this.$router.push({
+        // path: '/assetView',
+        // query: {
+        //   params: params
+        // }
+      // })
       }
     }
   }
@@ -458,5 +459,9 @@ export default {
     bottom: 40px;
     background: #fff;
   }
+   }
+   .detail{
+     color: blue;
+     cursor: pointer;
    }
 </style>
