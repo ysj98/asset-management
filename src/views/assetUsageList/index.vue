@@ -6,14 +6,23 @@
   <div class="landAssetsView">
     <SearchContainer type="" v-model="toggle" :contentStyle="{paddingTop:'16px'}">
       <div slot="headerBtns">
-        <!-- <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" @click="downloadFn">导出</SG-Button> -->
+        <!-- v-power="ASSET_MANAGEMENT.ASSET_RESOURCE_STATISTICS_EXPORT" -->
+        <SG-Button type="primary" @click="downloadFn">导出</SG-Button>
+      </div>
+      <div slot="headerForm" style="text-align: left; float: right">
         <span>统计维度：</span>
         <a-radio-group v-model="queryCondition.type" @change="typeChange">
           <a-radio v-for="(item, index) in typeList" :value="item.value" :key="index">{{item.name}}</a-radio>
         </a-radio-group>
-      </div>
-      <div slot="headerForm" style="text-align: left; float: right">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+      </div>
+      <div slot="contentForm" style="margin-top: 15px">
+        <div class="dbl">
+          <span>资产类型：</span>
+          <a-radio-group v-model="queryCondition.assetType" @change="allQuery">
+            <a-radio v-for="(item, index) in assetTypeList" :value="item.value" :key="index">{{item.name}}</a-radio>
+          </a-radio-group>
+        </div>
         <a-select
           v-model="queryCondition.projectId"
           :style="allStyle"
@@ -21,12 +30,6 @@
           placeholder="请选择资产项目"
           :filterOption="filterOption"
         ></a-select>
-        <div class="dbl">
-          <span>资产类型：</span>
-          <a-radio-group v-model="queryCondition.assetType">
-            <a-radio v-for="(item, index) in assetTypeList" :value="item.value" :key="index">{{item.name}}</a-radio>
-          </a-radio-group>
-        </div>
         <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="全部分类" v-model="queryCondition.objectType">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
@@ -36,15 +39,29 @@
     </SearchContainer>
     <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
       <a-table
+        class="custom-total-one"
         :scroll="scroll"
         :loading="loading"
         :columns="columns"
         :dataSource="tableData"
         :pagination="false"
         >
-        <!-- <span slot="action" slot-scope="text, record, index">
-          <span v-if="index < tableData.length - 2" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">资产明细</span>
-        </span> -->
+        <!-- 经营面积 -->
+        <span slot="managerArea" slot-scope="text, record">
+          <span @click="nextPageFn(record)" class="tab-text-decoration" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+        </span>
+        <!-- 自用面积(㎡) -->
+        <span slot="selfUserArea" slot-scope="text, record">
+          <span @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
+        </span>
+        <!-- 占用面积(㎡) -->
+        <span slot="occupationArea" slot-scope="text, record">
+          <span @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
+        </span>
+        <!-- 可租面积 -->
+        <span slot="rentArea" slot-scope="text, record">
+          <span :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+        </span>
       </a-table>
       <!-- <no-data-tips v-show="tableData.length === 0"></no-data-tips> -->
       <SG-FooterPagination
@@ -65,8 +82,8 @@ import TreeSelect from '../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 // import {handleTableScrollHeight} from "@/utils/share"
-import {typeList,assetTypeList, queryCondition, columnsData, projectData, assetsColumns} from './common.js'
-const totalKeyArr = ['assetNum', 'assetArea', 'buildNum', 'houseNum', 'houseTotalArea', 'rentedArea', 'leaseArea', 'oneselfArea', 'idleArea', 'sellArea', 'originalValue', 'marketValue',]
+import { getFormat } from "@/utils/utils";
+import {typeList,assetTypeList, queryCondition, columnsData, projectData, assetsColumns, totalKeyArr} from './common.js'
 export default {
   components: {SearchContainer, TreeSelect, noDataTips},
   props: {},
@@ -81,11 +98,11 @@ export default {
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: {x: columnsData.length * 150, y: 420},
+      scroll: {x: 3000, y: 'calc(100vh - 430px)'},
       loading: false,
       noPageTools: false,
       location: 'absolute',
-      toggle: false,
+      toggle: true,
       columns: columnsData,
       organName: '',
       organId: '',
@@ -106,32 +123,34 @@ export default {
   methods: {
     typeChange () {
       this.columns = this.typeColumns[this.queryCondition.type]
-      this.scroll = {
-        x:  3000,
-        y: 420
-      }
-      console.log(this.scroll, 'this.scrollthis.scroll')
       this.allQuery()
     },
     // 表头自定义设置
     handleModalOk () {},
     // 导出
     downloadFn () {
-      // let obj = {
-      //   organId: this.queryCondition.organId,                               // 组织机构id
-      //   objectTypeIdList: this.alljudge(this.queryCondition.objectTypes),   // 资产分类
-      //   statusList: this.alljudge(this.queryCondition.statuss)                 //  资产状态(多选)
-      // }
-      // this.$api.tableManage.houseResourceExport(obj).then(res => {
-      //   let blob = new Blob([res.data])
-      //   let a = document.createElement('a')
-      //   a.href = URL.createObjectURL(blob)
-      //   a.download = '房屋资产&资源统计表.xls'
-      //   a.style.display = 'none'
-      //   document.body.appendChild(a)
-      //   a.click()
-      //   a.remove()
-      // })
+      let obj = {}
+      if (this.queryCondition.type === '2') {
+        obj = {...this.queryCondition}
+      } else {
+        // 机构维度和项目维度查询条件没有资产分类和资产名称
+        obj = {
+          ...this.queryCondition,
+          objectType: '',
+          assetNameOrCode: ''
+        }
+      }
+      let typeUrl = this.queryCondition.type === '2' ? 'exportQueryYueXinReportByAsset' : 'exportQueryYueXinReport'
+      this.$api.assetUsageList[typeUrl](obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产使用一览表.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
     },
     projectFn () {
       this.$api.assets.getObjectKeyValueByOrganId({organId: this.queryCondition.organId}).then(r => {
@@ -150,8 +169,26 @@ export default {
       })
     },
     // 查看土地资产视图详情
-    handleViewDetail ({organId}) {
-      this.$router.push({path: '/resourcesReport/assetDetails', query: { organId, selectOrganId: this.queryCondition.organId }})
+    nextPageFn (record) {
+      // 房屋机构视图 是机构维度+资产类型是 房屋
+      if (this.queryCondition.type === '0' && this.queryCondition.assetType === '1') {
+        this.$router.push({path: '/assetUsageList/UsageListOrganViewDetail', query: { organId: record.organId }})
+      } else if (this.queryCondition.type === '0' && this.queryCondition.assetType === '4') {
+        // 土地机构视图 是机构维度+资产类型是 土地
+        this.$router.push({path: '/assetUsageList/landViewUsageList', query: { organId: record.organId }})
+      } else if (this.queryCondition.type === '1' && this.queryCondition.assetType === '1') {
+        // 房屋项目视图 是项目维度+资产类型是 房屋
+        this.$router.push({path: '/assetUsageList/projectViewDetail', query: { projectId: record.projectId }})
+      } else if (this.queryCondition.type === '1' && this.queryCondition.assetType === '4') {
+        // 土地项目视图 是项目维度+资产类型是 土地
+        this.$router.push({path: '/assetUsageList/landProjectUsageList', query: { projectId: record.projectId }})
+      } else if (this.queryCondition.type === '2' && this.queryCondition.assetType === '1') {
+        // 房屋资产视图 是资产维度+资产类型是 房屋
+        this.$router.push({path: '/assetUsageList/usageListAssetView', query: { houseId: record.houseId, assetId: record.assetId}})
+      } else if (this.queryCondition.type === '2' && this.queryCondition.assetType === '4') {
+        // 土地资产视图 是资产维度+资产类型是 土地
+        this.$router.push({path: '/assetUsageList/usageListViewDetail', query: { assetLandId: record.assetLandId, assetId: record.assetId, organId: record.organId, organName: record.organName}})
+      }
     },
     // 组织机构树
     changeTree (value, label) {
@@ -204,19 +241,20 @@ export default {
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
     },
+    // 千分位展示
     handleNumber(dataSource){
       dataSource.forEach(ele=>{
         Object.keys(ele).forEach(keyStr=>{
           if (totalKeyArr.includes(keyStr)){
             if (!isNaN(Number(ele[keyStr]))){
-              ele[keyStr] = Number(ele[keyStr]).toLocaleString()
+              ele[keyStr] = getFormat(ele[keyStr]) || "0"
             }
           }
         })
       })
     },
     // 查询
-    query (str) {
+    query () {
       this.tableData = []
       this.loading = true
       let typeUrl = this.queryCondition.type === '2' ? 'queryYueXinReportByAsset' : 'queryYueXinReport'
@@ -262,9 +300,7 @@ export default {
             this.count = 0
           }
           this.loading = false
-          if (str !== 'asset' || str !== 'changePage') {
-            // this.assetViewTotal(this.queryCondition)
-          }
+          this.assetViewTotal(obj)
         } else {
           this.$message.error(res.data.message)
           this.loading = false
@@ -274,14 +310,20 @@ export default {
     // 明细统计
     assetViewTotal (obj) {
       this.overviewNumSpinning = true
-      obj.pageNum = 1
-      obj.pageSize = 1
-      this.$api.tableManage.houseResourceTotal(obj).then(res => {
+      // obj.pageNum = 1
+      // obj.pageSize = 10
+      let typeUrl = this.queryCondition.type === '2' ? 'queryYueXinReportByAssetTotal' : 'queryYueXinReportTotal'
+      this.$api.assetUsageList[typeUrl](obj).then(res => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.numList = this.numList.map(m => {
-            return { ...m, value: data[m.key] || 0 }
-          })
+          let data = res.data.data || []
+          data.key = 'sg-t'
+          if (this.queryCondition.type === '0' ) {
+            data.organName = '合计'
+          } else {
+            data.projectName = '合计'
+          }
+          this.tableData.push(data)
+          this.handleNumber(this.tableData)
           this.overviewNumSpinning = false
         } else {
           this.$message.error(res.data.message)
@@ -291,26 +333,24 @@ export default {
     }
   },
   created () {
-    // handleTableScrollHeight(this.scroll)
-    // this.scroll.y = 420
   },
   mounted () {
   }
 }
 </script>
 <style lang="less" scoped>
-// /deep/.ant-table-tbody {
-//   tr:nth-last-child(1){
-//     position: sticky;
-//     bottom: 4px;
-//     background: #fff;
-//   }
-//   tr:nth-last-child(2){
-//     position: sticky;
-//     bottom: 43px;
-//     background: #fff;
-//   }
-// }
+/deep/.ant-table-tbody {
+  tr:nth-last-child(1){
+    position: sticky;
+    bottom: 4px;
+    background: #fff;
+  }
+  // tr:nth-last-child(2){
+  //   position: sticky;
+  //   bottom: 43px;
+  //   background: #fff;
+  // }
+}
 .landAssetsView {
   .from-second {
     padding-top: 14px;
@@ -375,5 +415,12 @@ export default {
     padding-top: 14px;
     flex: 0 0 190px;
   }
+}
+.tab-red-color {
+  color: red;
+  cursor: pointer
+}
+.tab-text-decoration {
+  text-decoration: underline;
 }
 </style>
