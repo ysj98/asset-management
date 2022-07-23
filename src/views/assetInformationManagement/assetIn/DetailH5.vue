@@ -13,8 +13,8 @@
            <span style="color: #282D5B">{{title}}:</span>
             <span style="margin-left: 9px; color: #49505E">{{infoData[key] || '--'}}</span>
         </div>
-        <div  style="margin-top: 8px;display: flex">
-          <span style="color: #282D5B; float: left; padding-right: 10px;flex-shrink: 0; font-size: 18px">图片:</span>
+        <div  style="margin-top: 8px">
+          <span style="color: #282D5B; padding-right: 10px; font-size: 18px">图片:</span>
           <div style="width: 100%;" v-if="imageAttachment.length">
             <SG-UploadFile show v-model="oldImgAttachment"/>
             <SG-UploadFile 
@@ -251,10 +251,6 @@
             let img1 = arr1.filter(img => Number(img.fileSources) === 1)
             let file0 = arr2.filter(img => Number(img.fileSources) === 0)
             let file1 = arr2.filter(img => Number(img.fileSources) === 1)
-            for (let index = 0; index < 5; index++) {
-              img1.push(img1[0])
-              
-            }
             console.log(this.otherAttachment, this.imageAttachment, 'this.otherAttachment')
             Object.assign(this, {
               assetRegisterId,
