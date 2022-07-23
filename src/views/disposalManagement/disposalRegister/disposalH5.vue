@@ -45,7 +45,7 @@
           <div style="margin: 10px">资产分类:  {{item.assetCategoryName}}</div>
           <div style="margin: 10px">处置成本(元):  {{item.disposeCost}}</div>
           <div style="margin: 10px">处置收入(元):  {{item.disposeReceive}}</div>
-          <div style="margin: 10px">是否需协助办证:  {{item.isAssistAccreditation}}</div>
+          <div style="margin: 10px">是否需协助办证:  {{item.isAssistAccreditation==1 ? '是' : '否'}}</div>
          </div>
           <no-data-tips v-show="tableData.length === 0"></no-data-tips>
         </div>
@@ -384,6 +384,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .countingTaskDetail {
+  width: 100vw;
+  height: 100vh;
   .asset-card {
           border: 2px solid #000;
           font-size: 18px

@@ -27,8 +27,8 @@
           </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
-        <div style="margin-top: 8px; display: flex">
-          <span style="color: #282D5B; float: left; padding-right: 10px; flex-shrink: 0;font-size: 18px">附件:</span>
+        <div style="margin-top: 8px">
+          <span style="color: #282D5B;  padding-right: 10px; flex-shrink: 0;font-size: 18px">附件:</span>
           <div v-if="otherAttachment.length">
             <!-- <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
             <SG-UploadFile 
@@ -39,7 +39,7 @@
               }"
               type="file"
               show /> -->
-             <div v-for="(item, index) in otherAttachment" :key="index"><a @click="customDownload({url: item.attachmentPath, name:item.oldAttachmentName})">{{item.oldAttachmentName}}</a></div>
+             <div v-for="(item, index) in otherAttachment" :key="index"><a @click="customDownload({url: item.url, name:item.name})">{{item.name}}</a></div>
           </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
@@ -59,7 +59,7 @@
           <div style="margin: 10px">资产名称:  {{item.assetName}}</div>
           <div style="margin: 10px">资产编码:  {{item.assetCode}}</div>
           <div style="margin: 10px">资产类型:  {{item.assetTypeName}}</div>
-          <div style="margin: 10px">面积(㎡):  {{item.assetArea}}</div>
+          <div style="margin: 10px">面积(㎡):  {{item.area}}</div>
          </div>
       </div>
       <!--审批轨迹-->
@@ -251,8 +251,12 @@
             let img1 = arr1.filter(img => Number(img.fileSources) === 1)
             let file0 = arr2.filter(img => Number(img.fileSources) === 0)
             let file1 = arr2.filter(img => Number(img.fileSources) === 1)
+            for (let index = 0; index < 5; index++) {
+              img1.push(img1[0])
+              
+            }
             console.log(this.otherAttachment, this.imageAttachment, 'this.otherAttachment')
-            return Object.assign(this, {
+            Object.assign(this, {
               assetRegisterId,
               infoData: { ...others, statusName: nameList[status] },
               otherAttachment: (arr2 || []).map(m => {
@@ -274,6 +278,7 @@
                 return { url: m.attachmentPath, name: m.oldAttachmentName, suffix: m.attachmentSuffix, fileSources: m.fileSources, attachmentId: m.attachmentId }
               }),
             })
+            return console.log(this.otherAttachment)
           }
           throw res.message || '查询详情出错'
         }).catch(err => {
@@ -323,7 +328,6 @@
 <style lang='less' scoped>
   .detail_page {
     width: 100vw;
-    overflow-x: hidden;
     padding: 0 10px ;
     & /deep/ .ant-table-placeholder {
       display: block;

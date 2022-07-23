@@ -7,11 +7,12 @@ export default {
   methods: {
     // 自定义下载
     customDownload(file) {
+      console.log(333333333333)
       let loadingName = this.SG_Loding("下载中...");
       apiOwnership.downLoadAnnex({ attachmentPath: file.url,fileName: file.name }).then(
         (res) => {
-          this.$SG_Message.error(res);
           this.DE_Loding(loadingName).then(() => {
+            this.$message.error(9999999);
             let blob = new Blob([res.data]);
             let a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
@@ -23,6 +24,7 @@ export default {
           });
         },
         (err) => {
+          console.log(err)
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.error(err);
             //this.$SG_Message.error("下载失败！");

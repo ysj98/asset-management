@@ -95,6 +95,7 @@ body.dev .m-devLogin {
 body.dev.closeMenu {
   margin-left: 0;
   width: 100%;
+  overflow-x: hidden;
 }
 body.dev.closeMenu .p-development .m-devMenu {
   left: -200px;
