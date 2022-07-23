@@ -241,7 +241,7 @@
         </div>
       </div>
     </div>
-    <div class="createRegister-nav">
+    <div class="createRegister-nav" v-if="transferShow">
       <span class="section-title blue">转让申请单</span>
       <div class="createRegister-obj">
         <div class="table-layout-fixed table-border-lr">
@@ -1132,6 +1132,8 @@ export default {
       console.log(val,option)
       if(val==='3'){
         this.getTransferButton()
+      }else{
+        this.transferShow=false
       }
     },
     //获取转让单列表

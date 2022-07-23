@@ -262,6 +262,9 @@
           }
         })
         return options
+      },
+      allList(){
+        return defaultHeader.concat(chooseHeader)
       }
     },
     methods: {
@@ -353,12 +356,14 @@
       //更改表头
       headModalOk(){
         let list=this.$refs.headRef.checkedList
+        console.log(list)
+        console.log(this.tableObj.columns)
         let params={
           funType:17,
           chooseList:[]
         }
         list.forEach(item=>{
-          this.tableObj.columns.forEach(ele=>{
+          this.allList.forEach(ele=>{
             let cur={}
             if(ele.dataIndex===item){
               cur.colCode=item
