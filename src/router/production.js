@@ -1424,11 +1424,41 @@ let proRouter = [{
   },
   {
     path: '/assetUsageList',
-    name: '资产归还一览表',
+    name: '资产使用一览表',
     component: () => import('@/views/assetUsageList/index'),
     meta: {
       keepAlive: true
     }
+  },
+  {
+    path: '/assetUsageList/UsageListOrganViewDetail',
+    name: '房屋机构视图详情',
+    component: () => import('@/views/assetInformationManagement/house-account/organ-view/organViewDetail.vue')
+  },
+  {
+    path: '/assetUsageList/landViewUsageList',
+    name: '土地机构视图详情',
+    component: () => import('@/views/landParameter/landOrganView/landOrganViewDetail.vue')
+  },
+  {
+    path: '/assetUsageList/projectViewDetail',
+    name: '房屋项目视图详情',
+    component: () => import('@/views/assetInformationManagement/houseStandingBook/assetProjectViewDetail')
+  },
+  {
+    path: '/assetUsageList/landProjectUsageList',
+    name: '土地项目视图',
+    component: () => import('@/views/landParameter/landProjectView/landProjectViewDetail.vue')
+  },
+  {
+    path: '/assetUsageList/usageListAssetView',
+    name: '房屋资产视图详情',
+    component: () => import('@/views/assetInformationManagement/house-account/asset-view/components/AssetDetailPage')
+  },
+  {
+    path: '/assetUsageList/usageListViewDetail',
+    name: '土地资产视图',
+    component: () => import('@/views/landParameter/landAssetsView/components/landDetailPage.vue')
   },
 ]
 export default proRouter
