@@ -408,7 +408,7 @@ export default {
           region:record.region,
           type:'across'
         }
-        window.parent.openPortalMenu(`/asset-managemen/#/assetView?organIds=${record.organId}&projectId=${record.projectId}&objectType=${record.objectType}&ownershipStatus=${record.ownershipStatus}&province=${record.province}&city=${record.city}&region=${record.region}`, '房屋资产视图')
+        window.parent.openPortalMenu(`/asset-management/#/assetView?organIds=${record.organId}&projectId=${record.projectId}&objectType=${record.objectType}&ownershipStatus=${record.ownershipStatus}&province=${record.province}&city=${record.city}&region=${record.region}`, '房屋资产视图')
         // this.$router.push({
         // path: '/assetView',
         // query: {
