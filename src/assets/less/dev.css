@@ -3,6 +3,7 @@ body.dev {
   position: relative;
   width: calc(100vw - 200px);
   transition: all 0.4s ease;
+  overflow-x: hidden;
 }
 .p-development {
   position: fixed;
