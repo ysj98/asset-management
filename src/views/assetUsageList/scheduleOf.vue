@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-23 11:37:46
- * @LastEditTime: 2022-07-23 16:55:05
+ * @LastEditTime: 2022-07-25 17:48:09
  * @Description: 明细表
 -->
 <template>
@@ -73,7 +73,6 @@ export default {
       tableData: [],
       queryCondition: {
         organId: '',
-        type: '',
         projectId: '',
         assetType: '',
         objectType: '',
@@ -91,7 +90,7 @@ export default {
   created () {
   },
   mounted () {
-    this.queryCondition.type = this.$route.query.type
+    // this.queryCondition.type = this.$route.query.type
     this.queryCondition.assetType = this.$route.query.assetType
     console.log(this.queryCondition, 'dsfdsfs')
   },
@@ -146,7 +145,10 @@ export default {
     // 明细统计
     assetViewTotal () {
       this.overviewNumSpinning = true
-      this.$api.assetUsageList.queryYueXinReportByAssetDetailTotal(this.queryCondition).then(res => {
+      let obj = {
+        ...this.queryCondition
+      }
+      this.$api.assetUsageList.queryYueXinReportByAssetDetailTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || []
           data.key = 'sg-t'

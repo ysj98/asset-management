@@ -79,7 +79,7 @@
         </template>
         <!-- 已租面积 -->
         <template slot="rentAlreadyArea" slot-scope="text, record">
-          <span v-if="record.key !== 'sg-t'" @click="nextDetailFn(record)">{{text}}</span>
+          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
           <span v-else >{{text}}</span>
         </template>
         <!-- 未租面积 -->
@@ -217,7 +217,8 @@ export default {
     },
     // 明细表
     nextDetailFn (record) {
-      this.$router.push({path: '/assetUsageList/scheduleOf', query: { type: record.type, assetType: this.queryCondition.assetType}})
+      // type: record.type,
+      this.$router.push({path: '/assetUsageList/scheduleOf', query: { assetType: record.assetType}})
     },
     // 组织机构树
     changeTree (value, label) {
@@ -337,10 +338,14 @@ export default {
       })
     },
     // 明细统计
-    assetViewTotal (obj) {
+    assetViewTotal (val) {
+      let obj = {
+        ...val
+      }
       this.overviewNumSpinning = true
       // obj.pageNum = 1
       // obj.pageSize = 10
+      delete obj.type
       let typeUrl = this.queryCondition.type === '2' ? 'queryYueXinReportByAssetTotal' : 'queryYueXinReportTotal'
       this.$api.assetUsageList[typeUrl](obj).then(res => {
         if (Number(res.data.code) === 0) {
