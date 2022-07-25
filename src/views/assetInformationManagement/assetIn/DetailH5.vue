@@ -84,7 +84,7 @@
   import moment from 'moment'
   import FormFooter from '@/components/FormFooter'
   import {generateTableAreaByAssetTypeString} from "utils/utils";
-  import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+  import uploadAndDownLoadFIle from "@/mixins/downLoadH5.js";
   import configBase from "@/config/config.base";
   export default {
     name: 'DetailPage',
