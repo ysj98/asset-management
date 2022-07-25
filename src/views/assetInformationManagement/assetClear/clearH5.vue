@@ -129,7 +129,7 @@
 <script>
 import configBase from "@/config/config.base";
 import FormFooter from '@/components/FormFooter'
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import uploadAndDownLoadFIle from "@/mixins/downLoadH5.js";
 import SGUploadFilePlus from '@/components/SGUploadFilePlus'
 import {dateToString} from 'utils/formatTime'
 import moment from "moment";

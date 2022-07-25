@@ -28,7 +28,7 @@
                 type="all"
                 :show="true"
               /> -->
-              <div v-for="(item, index) in files" :key="index"><a  @click="customDownload({url: item.url, name:item.name})">{{item.name}}</a></div>
+              <div v-for="(item, index) in files" :key="index"><a  @click="download(item.url)">{{item.name}}</a></div>
             </div>
           </a-col>
         </a-row>
@@ -161,6 +161,9 @@ export default {
   computed: {
   },
   methods: {
+    download (url) {
+      window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg + url)
+    },
     async init(){
         console.log('this.$route',this.$route)
         const { query: { instId }, path } = this.$route
@@ -385,7 +388,6 @@ export default {
 <style lang="less" scoped>
 .countingTaskDetail {
   width: 100vw;
-  height: 100vh;
   .asset-card {
           border: 2px solid #000;
           font-size: 18px

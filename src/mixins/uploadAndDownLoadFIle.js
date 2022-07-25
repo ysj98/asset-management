@@ -7,7 +7,6 @@ export default {
   methods: {
     // 自定义下载
     customDownload(file) {
-      console.log(333333333333)
       let loadingName = this.SG_Loding("下载中...");
       apiOwnership.downLoadAnnex({ attachmentPath: file.url,fileName: file.name }).then(
         (res) => {
@@ -23,7 +22,6 @@ export default {
           });
         },
         (err) => {
-          console.log(err)
           this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.error("下载失败！");
           });
