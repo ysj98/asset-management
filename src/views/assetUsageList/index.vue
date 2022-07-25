@@ -47,38 +47,46 @@
         :pagination="false"
         >
         <!-- 经营面积 -->
-        <span slot="managerArea" slot-scope="text, record">
-          <span @click="nextPageFn(record)" class="tab-text-decoration" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
-        </span>
+        <template slot="managerArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" @click="nextPageFn(record)" class="tab-text-decoration" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+          <span v-else :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+        </template>
         <!-- 自用面积(㎡) -->
-        <span slot="selfUserArea" slot-scope="text, record">
-          <span @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
-        </span>
+        <template slot="selfUserArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
         <!-- 占用面积(㎡) -->
-        <span slot="occupationArea" slot-scope="text, record">
-          <span @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
-        </span>
+        <template slot="occupationArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" @click="nextPageFn(record)" class="tab-text-decoration" >{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
         <!-- 经营情况 -->
         <!-- 建筑面积 -->
-        <span slot="area" slot-scope="text, record">
-          <span class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
-        </span>
+        <template slot="area" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
         <!-- 可租面积 -->
-        <span slot="useArea" slot-scope="text, record">
-          <span class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
-        </span>
+        <template slot="useArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
         <!-- 可租面积 -->
-        <span slot="rentArea" slot-scope="text, record">
-          <span class="tab-text-decoration" @click="nextDetailFn(record)" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
-        </span>
+        <template slot="rentArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
         <!-- 已租面积 -->
-        <span class="tab-text-decoration" slot="rentAlreadyArea" slot-scope="text, record">
-          <span @click="nextDetailFn(record)">{{text}}</span>
-        </span>
+        <template slot="rentAlreadyArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" @click="nextDetailFn(record)">{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
         <!-- 未租面积 -->
-        <span slot="rentNotArea" slot-scope="text, record">
-          <span class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
-        </span>
+        <template slot="rentNotArea" slot-scope="text, record">
+          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
+          <span v-else >{{text}}</span>
+        </template>
       </a-table>
       <!-- <no-data-tips v-show="tableData.length === 0"></no-data-tips> -->
       <SG-FooterPagination
