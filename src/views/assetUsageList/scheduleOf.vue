@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-23 11:37:46
- * @LastEditTime: 2022-07-25 17:48:09
+ * @LastEditTime: 2022-07-25 19:45:56
  * @Description: 明细表
 -->
 <template>
@@ -92,7 +92,7 @@ export default {
   mounted () {
     // this.queryCondition.type = this.$route.query.type
     this.queryCondition.assetType = this.$route.query.assetType
-    console.log(this.queryCondition, 'dsfdsfs')
+    // console.log(this.queryCondition, 'dsfdsfs')
   },
   methods: {
     // 查询
@@ -107,6 +107,7 @@ export default {
           let data = res.data.data.data
           if (data && data.length > 0) {
             data.forEach((item, index) => {
+              item.assetId = +this.queryCondition.assetType === 1 ? item.assetHouseId :  item.assetLandId
               item.key = index
             })
             let tempArr = ['organId', 'projectId', 'assetId', 'assetCode'] // 前四列的合并行
