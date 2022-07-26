@@ -72,6 +72,7 @@
     </div>
     <downErrorFile ref="downErrorFile">
       <div>{{upErrorInfo}}</div>
+      <div>详情错误原因：<a @click="downloadParkingTemplate(failPath)">{{failPath}}</a></div>
     </downErrorFile>
 </SG-Modal>
 </template>
@@ -105,6 +106,7 @@ export default {
   data () {
     return {
       // uuid: getUuid(),
+      failPath: '',
       organName: '',
       parkingUsageOption,
       allWidth,
@@ -205,6 +207,7 @@ export default {
     hiddeModal () {
       this.visible = false
       this.upErrorInfo = ''
+      this.failPath = ''
       this.fileName = ''
       this.formData = null
       this.$refs.fileUpload.value = ''
@@ -250,6 +253,7 @@ export default {
           this.DE_Loding(loadingName).then(() => {
             this.$refs.downErrorFile.visible = true
             this.upErrorInfo = res.data.message
+            this.failPath = res.data.data
           })
         }
       }, () => {
