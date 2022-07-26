@@ -25,7 +25,7 @@
           <SG-Button
             type="default"
             @click="clickHeader"
-          >表头设置</SG-Button>
+          >列表设置</SG-Button>
         </a-col>
         <a-col :span="4">
           <a-select

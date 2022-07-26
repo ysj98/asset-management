@@ -176,7 +176,7 @@ export default {
 .choose_area {
   .province_style,
   .city_style {
-    width: 100%;
+    width: 120px;
   }
 }
 </style>
