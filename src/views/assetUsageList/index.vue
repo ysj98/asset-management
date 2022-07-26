@@ -357,9 +357,9 @@ export default {
           let data = res.data.data || []
           data.key = 'sg-t'
           if (this.queryCondition.type === '0' ) {
-            data.organName = '合计'
+            data.organName = '所有页-合计'
           } else {
-            data.projectName = '合计'
+            data.projectName = '所有页-合计'
             data.warrantNbr = ''
           }
           this.tableData.push(data)

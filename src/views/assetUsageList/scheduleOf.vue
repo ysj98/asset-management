@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-23 11:37:46
- * @LastEditTime: 2022-07-25 19:45:56
+ * @LastEditTime: 2022-07-26 14:39:19
  * @Description: 明细表
 -->
 <template>
@@ -153,7 +153,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || []
           data.key = 'sg-t'
-          data.organName = '合计'
+          data.organName = '所有页-合计'
           this.tableData.push(data)
           this.handleNumber(this.tableData)
           this.overviewNumSpinning = false
