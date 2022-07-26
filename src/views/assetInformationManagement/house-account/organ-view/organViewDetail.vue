@@ -27,7 +27,7 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" />
     </a-spin>
-    <div class="table-layout-fixed pb50">
+    <div class="table-layout-fixed pb80">
       <a-table
         :loading="table.loading"
         :columns="table.columns"
