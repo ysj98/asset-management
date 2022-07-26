@@ -458,9 +458,10 @@ export default {
 }
 .tab-red-color {
   color: red;
-  cursor: pointer
+  cursor: pointer;
 }
 .tab-text-decoration {
   text-decoration: underline;
+  cursor: pointer;
 }
 </style>
