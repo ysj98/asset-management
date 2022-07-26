@@ -39,7 +39,7 @@
               }"
               type="file"
               show /> -->
-             <div v-for="(item, index) in otherAttachment" :key="index"><a @click="customDownload({url: item.url, name:item.name})">{{item.name}}</a></div>
+             <div v-for="(item, index) in otherAttachment" :key="index"><a @click="download(item.url)">{{item.name}}</a></div>
           </div>
           <span v-else style="margin-left: 9px; color: #49505E">--</span>
         </div>
@@ -138,6 +138,9 @@
       this.init()
     },
     methods: {
+      download (url) {
+      window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg1 + url)
+    },
       printFn(){
         if (this.$route.path==='/assetIn/printDetail'){
           window.print()

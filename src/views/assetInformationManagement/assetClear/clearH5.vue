@@ -72,7 +72,7 @@
                 }"
                 /> -->
                 <!-- <div>{{detail}}</div> -->
-              <div v-for="(item, index) in detail.attachment" :key="index"><a   @click="customDownload({url: item.attachmentPath, name:item.oldAttachmentName})">{{item.oldAttachmentName}}</a></div>
+              <div v-for="(item, index) in detail.attachment" :key="index"><a @click="download(item.attachmentPath)" >{{item.oldAttachmentName}}</a></div>
               <span class="file-null" style="font-size: 24px;" v-if="detail.attachment.length === 0">--</span>
             </a-form-item>
           </div>
@@ -239,6 +239,9 @@ export default {
     }
   },
   methods: {
+    download (url) {
+      window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg1 + url)
+    },
     formatDate (value) {
       if (value) {
         return dateToString(new Date(value), 'yyyy-mm-dd')
