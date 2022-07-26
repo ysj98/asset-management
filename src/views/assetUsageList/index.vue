@@ -49,7 +49,7 @@
         <!-- 经营面积 -->
         <template slot="managerArea" slot-scope="text, record">
           <span v-if="record.key !== 'sg-t'" @click="nextPageFn(record)" class="tab-text-decoration" :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
-          <span v-else :class="{'tab-red-color': record.managerArea !== record.pointer}" >{{text}}</span>
+          <span v-else >{{text}}</span>
         </template>
         <!-- 自用面积(㎡) -->
         <template slot="selfUserArea" slot-scope="text, record">
@@ -79,7 +79,7 @@
         </template>
         <!-- 已租面积 -->
         <template slot="rentAlreadyArea" slot-scope="text, record">
-          <span v-if="record.key !== 'sg-t'" @click="nextDetailFn(record)">{{text}}</span>
+          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{text}}</span>
           <span v-else >{{text}}</span>
         </template>
         <!-- 未租面积 -->
@@ -217,7 +217,8 @@ export default {
     },
     // 明细表
     nextDetailFn (record) {
-      this.$router.push({path: '/assetUsageList/scheduleOf', query: { type: record.type, assetType: this.queryCondition.assetType}})
+      // type: record.type,
+      this.$router.push({path: '/assetUsageList/scheduleOf', query: { assetType: record.assetType}})
     },
     // 组织机构树
     changeTree (value, label) {
@@ -302,26 +303,31 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
-            let newArr = []
-            let objNum = {}
-            // 找到每行出现的次数 用于合并
-            if (this.queryCondition.type === '2') {
-              data.forEach((element) => {
-                if (newArr.includes(element.projectId)) {
-                  objNum[element.projectId] = objNum[element.projectId] + 1
-                } else {
-                  newArr.push(element.projectId)
-                  objNum[element.projectId] = 1
-                }
-              })
-            }
             data.forEach((item, index) => {
               item.key = index
-              if (this.queryCondition.type === '2' && objNum[item.projectId] > 1) {
-                item.count = objNum[item.projectId]
-                delete objNum[item.projectId]
-              }
             })
+            // 找到每行出现的次数 用于合并
+            if (this.queryCondition.type === '2') {
+              let tempArr = ['projectId'] // 前四列的合并行
+              let map = {}
+              tempArr.forEach((element) => {
+                data.forEach(item => {
+                  if (item[element]) {
+                    if (!map[item[element]]) {
+                      map[item[element]] = {
+                        item: item
+                      }
+                      item[element + 'Len'] = 1
+                    } else {
+                      item[element + 'Len'] = 0
+                      map[item[element]].item[element + 'Len'] += 1
+                    }
+                  } else {
+                    item[element + 'Len'] = 1
+                  }
+                })
+              })
+            }
             this.tableData = data
             this.count = res.data.data.count
           } else {
@@ -337,19 +343,24 @@ export default {
       })
     },
     // 明细统计
-    assetViewTotal (obj) {
+    assetViewTotal (val) {
+      let obj = {
+        ...val
+      }
       this.overviewNumSpinning = true
       // obj.pageNum = 1
       // obj.pageSize = 10
+      delete obj.type
       let typeUrl = this.queryCondition.type === '2' ? 'queryYueXinReportByAssetTotal' : 'queryYueXinReportTotal'
       this.$api.assetUsageList[typeUrl](obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || []
           data.key = 'sg-t'
           if (this.queryCondition.type === '0' ) {
-            data.organName = '合计'
+            data.organName = '所有页-合计'
           } else {
-            data.projectName = '合计'
+            data.projectName = '所有页-合计'
+            data.warrantNbr = ''
           }
           this.tableData.push(data)
           this.handleNumber(this.tableData)
@@ -447,9 +458,10 @@ export default {
 }
 .tab-red-color {
   color: red;
-  cursor: pointer
+  cursor: pointer;
 }
 .tab-text-decoration {
   text-decoration: underline;
+  cursor: pointer;
 }
 </style>

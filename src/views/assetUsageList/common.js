@@ -1,7 +1,7 @@
 /*
  * @Author: L
  * @Date: 2022-07-19 17:28:50
- * @LastEditTime: 2022-07-23 16:52:29
+ * @LastEditTime: 2022-07-25 20:05:11
  * @Description: file content
  */
 export const typeList = [
@@ -111,12 +111,17 @@ export const projectData = [
     ]
   }
 ]
-const customCell = (record) => {
+const customCell = (record, index, val) => {
   const attrs = {}
   let style = {}
-  attrs.rowSpan = record.count
-  if (record.count === 0) {
-    style.display = 'none'
+  if (val) {
+    if (record.key !== 'sg-t') {
+      attrs.rowSpan = record[`${val}Len`]
+      if (+record[`${val}Len`] === 0) {
+        attrs.rowSpan = 0
+        style.display = 'none'
+      }
+    }
   }
   return {
     attrs,
@@ -125,7 +130,7 @@ const customCell = (record) => {
 }
 // 资产维度
 export const assetsColumns = [
-  { title: '资产项目', dataIndex: 'projectName', width: 150, customCell: customCell},
+  { title: '资产项目', dataIndex: 'projectName', width: 150, customCell: (record, index) => {return customCell(record, index, 'projectId')}},
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
   { title: '资产类型', dataIndex: 'typeName', width: 150 },

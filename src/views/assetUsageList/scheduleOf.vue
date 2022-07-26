@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-23 11:37:46
- * @LastEditTime: 2022-07-23 16:55:05
+ * @LastEditTime: 2022-07-26 14:39:19
  * @Description: 明细表
 -->
 <template>
@@ -73,7 +73,6 @@ export default {
       tableData: [],
       queryCondition: {
         organId: '',
-        type: '',
         projectId: '',
         assetType: '',
         objectType: '',
@@ -91,9 +90,9 @@ export default {
   created () {
   },
   mounted () {
-    this.queryCondition.type = this.$route.query.type
+    // this.queryCondition.type = this.$route.query.type
     this.queryCondition.assetType = this.$route.query.assetType
-    console.log(this.queryCondition, 'dsfdsfs')
+    // console.log(this.queryCondition, 'dsfdsfs')
   },
   methods: {
     // 查询
@@ -108,6 +107,7 @@ export default {
           let data = res.data.data.data
           if (data && data.length > 0) {
             data.forEach((item, index) => {
+              item.assetId = +this.queryCondition.assetType === 1 ? item.assetHouseId :  item.assetLandId
               item.key = index
             })
             let tempArr = ['organId', 'projectId', 'assetId', 'assetCode'] // 前四列的合并行
@@ -146,11 +146,14 @@ export default {
     // 明细统计
     assetViewTotal () {
       this.overviewNumSpinning = true
-      this.$api.assetUsageList.queryYueXinReportByAssetDetailTotal(this.queryCondition).then(res => {
+      let obj = {
+        ...this.queryCondition
+      }
+      this.$api.assetUsageList.queryYueXinReportByAssetDetailTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || []
           data.key = 'sg-t'
-          data.organName = '合计'
+          data.organName = '所有页-合计'
           this.tableData.push(data)
           this.handleNumber(this.tableData)
           this.overviewNumSpinning = false
