@@ -200,7 +200,7 @@ export default {
       let isBuild = +this.activeType === 0 ? '1' : '0'
       this.$api.building.getObjectSeq({objectId: this.objectData.positionId, type: '3', isBuild: isBuild}).then(res => {
         if (+res.data.code === 0) {
-          this.form.setFieldsValue({floorIndex: res.data.data})
+          this.form.setFieldsValue({floorIndex: res.data.data || 0})
         }
       })
     },

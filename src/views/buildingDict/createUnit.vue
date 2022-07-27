@@ -160,7 +160,7 @@ export default {
     getObjectSeq () {
       this.$api.building.getObjectSeq({objectId: this.objectData.positionId, type: '2', isBuild: '1'}).then(res => {
         if (+res.data.code === 0) {
-          this.form.setFieldsValue({seq: res.data.data})
+          this.form.setFieldsValue({seq: res.data.data || 0})
         }
       })
     },
