@@ -81,6 +81,7 @@
       <!-- 新建楼层 -->
       <createFloor
         :type="pageType"
+        :activeType="activeType"
         @success="handleBuildSucc"
         :organId="organIdOwn"
         :objectData="activeItem"

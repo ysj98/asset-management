@@ -118,6 +118,9 @@ export default {
     },
     objectData: {
       default: () => ({})
+    },
+    activeType: {
+      default: ''
     }
   },
   data () {
@@ -194,10 +197,10 @@ export default {
     },
     //objectId type=1时，为项目ID，type=2为楼栋ID ，type=3时，根据isBuild 传楼栋ID或者单元ID
     getObjectSeq () {
-      let isBuild = this.objectData.positionId === this.objectData.upPositionId ? '1' : '0'
+      let isBuild = +this.activeType === 0 ? '1' : '0'
       this.$api.building.getObjectSeq({objectId: this.objectData.positionId, type: '3', isBuild: isBuild}).then(res => {
         if (+res.data.code === 0) {
-          this.form.setFieldsValue({floorIndex: +res.data.data + 1})
+          this.form.setFieldsValue({floorIndex: res.data.data})
         }
       })
     },

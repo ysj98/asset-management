@@ -530,7 +530,7 @@ export default {
     getObjectSeq (id) {
       this.$api.building.getObjectSeq({objectId: id, type: '1', isBuild: '0'}).then(res => {
         if (+res.data.code === 0) {
-          this.form.setFieldsValue({seq: +res.data.data + 1}) 
+          this.form.setFieldsValue({seq: res.data.data}) 
         }
       })
     },
