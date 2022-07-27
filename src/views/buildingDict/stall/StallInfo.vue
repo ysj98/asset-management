@@ -254,8 +254,8 @@ export default {
           this.table.dataSource.length && this.table.dataSource.push({
             parkingId: '合计',
             floorArea: getFormat(res.data.dataTotal.floorAreaTotal, '') || "-",
-            useArea: getFormat(res.data.dataTotal.shareAreaTotal, '') || "-",
-            shareArea: getFormat(res.data.dataTotal.useAreaTotal, '') || "-",
+            useArea: getFormat(res.data.dataTotal.useAreaTotal, '') || "-",
+            shareArea: getFormat(res.data.dataTotal.shareAreaTotal, '') || "-",
           })
         } else {
           this.$message.error(res.message);
