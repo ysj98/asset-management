@@ -39,6 +39,7 @@
     </SearchContainer>
     <div class="table-layout-fixed" :class="{'overflowX': tableData.length === 0}">
       <a-table
+        bordered
         class="custom-total-one"
         :scroll="scroll"
         :loading="loading"
@@ -218,7 +219,7 @@ export default {
     // 明细表
     nextDetailFn (record) {
       // type: record.type,
-      this.$router.push({path: '/assetUsageList/scheduleOf', query: { assetType: record.assetType}})
+      this.$router.push({path: '/assetUsageList/scheduleOf', query: { assetType: record.assetType, organId: this.queryCondition.organId, organName: this.organName}})
     },
     // 组织机构树
     changeTree (value, label) {

@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-23 11:37:46
- * @LastEditTime: 2022-07-26 14:39:19
+ * @LastEditTime: 2022-07-28 18:36:23
  * @Description: 明细表
 -->
 <template>
@@ -11,7 +11,7 @@
         <SG-Button type="primary" @click="downloadFn">导出</SG-Button>
       </div>
       <div slot="headerForm" style="text-align: left; float: right">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect :defaultOrganName="organName" :placeholder="placeholder" :default="false" @changeTree="changeTree"  :allowClear="false" :style="allStyle"></treeSelect>
       </div>
       <div slot="contentForm" style="margin-top: 15px">
         <a-select
@@ -71,6 +71,7 @@ export default {
       columns: scheduleOfList,
       count: '',
       tableData: [],
+      organName: '',
       queryCondition: {
         organId: '',
         projectId: '',
@@ -82,7 +83,8 @@ export default {
         pageNum:1
       },
       projectOptions: [],
-      assetClassifyData: []
+      assetClassifyData: [],
+      placeholder: ''
     }
   },
   computed: {
@@ -92,13 +94,18 @@ export default {
   mounted () {
     // this.queryCondition.type = this.$route.query.type
     this.queryCondition.assetType = this.$route.query.assetType
-    // console.log(this.queryCondition, 'dsfdsfs')
+    this.queryCondition.organId = this.$route.query.organId
+    this.organName = this.$route.query.organName
+    // console.log(this.$route.query, 'dsfdsfs')
+    this.allQuery()
+    this.projectFn()
+    this.getListFn()
   },
   methods: {
     // 查询
-    allQuery (str) {
+    allQuery () {
       this.queryCondition.pageNum = 1
-      this.query(str)
+      this.query()
     },
     query () {
       this.tableData = []
@@ -194,15 +201,14 @@ export default {
       this.query()
     },
     // 组织机构树
-    changeTree (value, label) {
-      this.organName = label
+    changeTree (value) {
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = ''
       this.queryCondition.objectType = ''
+      this.allQuery()
       this.projectFn()
       this.getListFn()
-      this.allQuery()
     },
     projectFn () {
       this.$api.assets.getObjectKeyValueByOrganId({organId: this.queryCondition.organId}).then(r => {

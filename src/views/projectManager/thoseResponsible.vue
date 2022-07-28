@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-20 16:46:40
- * @LastEditTime: 2022-07-22 17:57:35
+ * @LastEditTime: 2022-07-28 18:20:31
  * @Description: 设置责任人
 -->
 <template>
@@ -118,7 +118,13 @@ export default {
           title: '操作',
         }
       ],
-      dataSource: []
+      dataSource: [
+        {
+          type: undefined,
+          tel: '',
+          name: ''
+        }
+      ]
     }
   },
   computed: {
@@ -141,13 +147,15 @@ export default {
         let res = r.data
         if (res && String(res.code) === '0') {
           let data = res.data || []
-          this.dataSource = data.map((item, index) => {
-            return {
-              ...item,
-              type: String(item.type),
-              key: index
-            }
-          })
+          if (data.length > 0) {
+            this.dataSource = data.map((item, index) => {
+              return {
+                ...item,
+                type: String(item.type),
+                key: index
+              }
+            })
+          }
         } else {
           this.$message.error(r.data.message || '查询接口出错')
         }
