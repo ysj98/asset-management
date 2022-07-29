@@ -1,7 +1,7 @@
 <!--
  * @Author: L
  * @Date: 2022-07-16 15:16:48
- * @LastEditTime: 2022-07-22 18:01:35
+ * @LastEditTime: 2022-07-28 18:17:46
  * @Description: 资产项目责任人管理
 -->
 <!--价值登记业务页面Tab--价值登记记录组件-->
@@ -147,7 +147,6 @@
           this.$refs.thoseResponsibleRef.basicInformation = record
           this.$refs.thoseResponsibleRef.queryProjectResponsibilityDetail()
         })
-        console.log(type, record, 'jjjdsfklsd')
       },
       // 获取选择的组织机构
       changeTree (organId) {
