@@ -140,7 +140,7 @@
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
-                      <a-input :maxLength="100" @input="getLL" v-model="formInfo.placeAddr" :style="allWidth2" placeholder="详细地址"/>
+                      <a-input :disabled="true" :maxLength="100" @input="getLL" v-model="formInfo.placeAddr" :style="allWidth2" placeholder="详细地址"/>
                     </div>
                   </a-form-model-item>
                 </a-col>
@@ -364,11 +364,17 @@
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
       <SG-Button @click="handleCancel">取消</SG-Button>
     </FormFooter>
-    <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/>
+    <!-- <selectLngAndLat :point="point" @change="bMapChange" ref="longitudeAndLatitud"/> -->
+    <newSelectLngAndLat @cancel="cancel" :addressData="formInfo.placeAddr" :oneSearchValue="oneSearchValue" :point="point" @addressFn="addressFn" ref="longitudeAndLatitud">
+        <div class="detail-item mt15">
+            <div class="detail-item-label">详情地址：</div><div class="detail-item-content">{{`${this.oneSearchValueData}（经纬度：${this.lngAndlatData}）`}}</div>
+          </div>
+      </newSelectLngAndLat>
   </div>
 </template>
 <script>
 import FormFooter from "@/components/FormFooter.vue"
+import newSelectLngAndLat from '@/views/common/newSelectLngAndLat.vue'
 import dictMixin from "../dictMixin.js"
 import TreeSelect from "@/views/common/treeSelect";
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
@@ -389,14 +395,18 @@ const tableDataTemplate = {
 }
 const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
 export default {
-  components: { DictSelect, TreeSelect, FormFooter, selectLngAndLat},
+  components: { DictSelect, TreeSelect, FormFooter, selectLngAndLat, newSelectLngAndLat},
   mixins: [dictMixin],
   data: () =>({
     allWidth1,
     areaTitle,
     typeFilter,
+    lngAndlatData: '',
+    oneSearchValueData: '',
+    oneSearchValue: '',
     bussType: "parkDir",
     allWidth: "width:100%",
+    visibleShow: false,
     formInfo: { // 表单
       organId: undefined, // 组织机构ID
       communityId: undefined, // 项目Id
@@ -482,6 +492,25 @@ export default {
     organNameMain:'', // 所属机构名称
   }),
   methods: {
+    cancel () {
+      this.visibleShow = false
+    },
+    addressFn (address, { lng, lat }, type) {
+      if (type === 'zero') {
+        this.oneSearchValueData = address
+        this.lngAndlatData = `${lng}-${lat}`
+      } else {
+        this.oneSearchValueData = `${this.oneSearchValueData}${address}`
+        let lngAndlat = lng + '-' + lat
+        this.lngAndlat = lngAndlat
+        this.formInfo.placeAddr = address
+        this.point.lng = lng
+        this.point.lat = lat
+        this.formInfo.location.lng = lng
+      this.formInfo.location.lat = lat
+        this.visibleShow = false
+      }
+    },
     bMapChange (point) {
       console.log('经纬度改变=>', point)
       let lngAndlat = point.lng + '-' + point.lat
@@ -492,12 +521,31 @@ export default {
     },
     // 显示百度地图
     showSelectMap () {
-      this.$refs.longitudeAndLatitud.visible = true
+      if (!this.formInfo.location.province || !this.formInfo.location.city || !this.formInfo.location.district) {
+        this.$message.info('请先选择省市区');
+        return   
+      }
+      this.oneSearchValue = `${this.provinceName}${this.cityName}${this.districtName}${this.formInfo.placeAddr}`
+      this.oneSearchValueData = this.oneSearchValue
+      this.visibleShow = true
+      this.$nextTick(() => {
+        this.$refs.longitudeAndLatitud.visible = true
+      })
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
     cityOrRegionChange (e, type) {
+      // 只要一改变就直接清空经纬度和详细地址
+      this.oneSearchValueData = ''
+      this.lngAndlat = ''
+      this.formInfo.placeAddr = ''
+      this.formInfo.location.lng = ''
+      this.formInfo.location.lat = ''
+      this.point = {  // 经纬度
+        lng: '',
+        lat: ''
+      }
       console.log('改变项', e, type)
       // 如果是区/县 请求经纬度
       if (type === 'district') {
