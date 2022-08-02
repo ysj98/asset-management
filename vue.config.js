@@ -24,7 +24,7 @@ const localhost = getIPAdress()
 console.log('IP', localhost)
 //const target = 'http://192.168.1.7:8088'
 const target = 'http://beta.uhomecp.com/'
-// const target = `http://${localhost}:8089`
+// const target = 'http://192.168.1.11:10060'
 //const t = 'http://192.168.2.36:8081'
 const t = 'http://192.168.3.36:8081'
 const proxyURL = [
@@ -81,7 +81,7 @@ class Proxy {
 // 实例化 Proxy 类
 const proxy = new Proxy()
 // proxy.addUrls(['/basic-data-api'], localhost, 'http://192.168.3.27:8080')
-// proxy.addUrls(['/ams'], localhost, 'http://192.168.3.27:8081')
+// proxy.addUrls(['/ams'], localhost, 'http://192.168.3.36:8081')
 proxy.addUrls(proxyURL, localhost, target)
 // proxy.addUrls(['/basic-data-batch-api'], localhost, 'http://192.168.3.31:8080')
 

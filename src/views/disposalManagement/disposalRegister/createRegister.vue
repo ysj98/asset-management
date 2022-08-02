@@ -193,6 +193,11 @@
     <div class="createRegister-nav">
       <span class="section-title blue">资产处置清单（已选择资产总数: {{table.dataSource.length}})</span>
       <div class="button-box">
+        <div style='float: left;padding: 5px 0;' v-if="!checkNick">
+          <a-checkbox :checked="checkNick" @change="handleChange" :disabled="true">
+            自动资产入库
+          </a-checkbox>
+        </div>
         <div class="buytton-nav">
           <SG-Button class="choice" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
           <SG-Button class="choice" type="primary" weaken @click="quickEntry('1')">快捷录入处置成本</SG-Button>
@@ -432,6 +437,7 @@ export default {
   props: {},
   data () {
     return {
+      checkNick: false,
       assetType:'',
       // 快捷录入弹出框
       modalInfo: {
@@ -1168,6 +1174,23 @@ export default {
         }
       });
     },
+    // 获取是否资产自动出库 设置 checkNick
+    async getApproveConfig(){
+      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        // 参考 serviceTypeAll.js 文件
+        serviceType: 1013,
+        organId: this.organId,
+      })
+      if (code === "0"){
+        const {isValid} = data
+        if( isValid === 1){
+          this.checkNick = true
+        }
+      }
+    },
+    handleChange(e) {
+       this.checkNick = e.target.checked;
+    },
   },
   created () {
     this.particularsData = this.$route.query    
@@ -1188,6 +1211,8 @@ export default {
       this.listByDisposeRegisterOrderId()
       this.getDetailList()                  // 处置登记-查询处置清单列表
       this.getreceivecostPlanList()         // 查询收付款计划列表
+    } else if (this.type === 'create') {
+      this.getApproveConfig()
     }
   }
 }

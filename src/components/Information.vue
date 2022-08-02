@@ -109,12 +109,16 @@ export default {
         const resNum = Math.floor(24 / this.colProps.span);
         resArr = chunk(this.BasicInfoList, resNum);
       }
-      const children = resArr.map(groupItem => {
+      const children = resArr.map((groupItem, index) => {
         const rowChildren = groupItem.map(ele => this.generateACol(ele));
         return _h(
           "a-row",
           {
-            props: _this.rowProps
+            props: _this.rowProps,
+            style: index === 0 ? {
+              fontWeight: 'bold',
+              fontSize: '15px'
+            } : {}
           },
           rowChildren
         );
@@ -124,7 +128,7 @@ export default {
         {
           style: {
             lineHeight: "40px"
-          }
+          },
         },
         children
       );

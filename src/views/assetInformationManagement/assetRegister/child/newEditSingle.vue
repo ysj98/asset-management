@@ -28,8 +28,8 @@
           :organId="organId"
           :registerOrderId="registerOrderId"
           :assetTypeId="assetType"
-          @handleSubmit="handSubmit"
         >
+          <!-- @handleSubmit="handSubmit" -->
         </basic>
       </keep-alive>
       <!-- 附属配套 -->

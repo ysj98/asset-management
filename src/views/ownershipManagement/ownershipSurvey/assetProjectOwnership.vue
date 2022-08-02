@@ -4,7 +4,7 @@
  * @Description: 资产项目权属
  -->
  <template>
-  <div class="assetProject-page pb70">
+  <div class="assetProjectOwnership pb70">
     <SearchContainer type="line" :value="false">
       <div slot="headerBtns">
         <SG-Button type="primary" @click="exportList" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_ITEMS_EXPORT">
@@ -51,9 +51,9 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 2700, y: 456}"
+        :scroll="{ x: 2700, y: 440}"
+        class="custom-tables"
         bordered
-        class="custom-table td-pd10"
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"
@@ -167,22 +167,22 @@ let columns = [
       {
         title: "总数",
         dataIndex: "ownerShipCount",
-        width: 100
+        width: "100px"
       },
       {
         title: "有证",
         dataIndex: "ownerShipYesCount",
-        width: 100
+        width: "100px"
       },
       {
         title: "无证",
         dataIndex: "ownerShipNoCount",
-        width: 100
+        width: "100px"
       },
       {
         title: "待办证",
         dataIndex: "ownerShipWaitCount",
-       width: 100
+        width: "100px"
       }
     ],
   },
@@ -193,21 +193,21 @@ let columns = [
       {
         title: "总数",
         dataIndex: "useShipCount",
-        width: 100
+        width: "100px"
       },
       {
         title: "有证",
-        width: 100,
+        width: "100px",
         dataIndex: "useShipYesCount",
       },
       {
         title: "无证",
-        width: 100,
+        width: "100px",
         dataIndex: "useShipNoCount",
       },
       {
         title: "待办证",
-       width: 100,
+        width: "100px",
         dataIndex: "useShipWaitCount",
       }
     ],
@@ -219,16 +219,16 @@ let columns = [
       {
         title: "总数",
         dataIndex: "temporaryCount",
-        width: 100
+        width: "100px"
       },
       {
         title: "无证",
-        width: 100,
+        width: "100px",
         dataIndex: "temporaryNoCount",
       },
       {
         title: "待办证",
-        width: 100,
+        width: "100px",
         dataIndex: "temporaryWaitCount",
       }
     ],
@@ -468,6 +468,9 @@ export default {
 };
 </script>
  <style lang="less" scoped>
-.assetProject-page {
+.assetProjectOwnership {
+   /deep/ .ant-table-header{
+      height: 100% !important;
+   }
 }
 </style>

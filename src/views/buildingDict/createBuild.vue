@@ -262,7 +262,7 @@
                         :allowClear="false"
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
-                        v-decorator="['addressNo', {rules: [{required: true, whitespace: true, message: '请选择楼栋类型'}]}]"
+                        v-decorator="['addressNo', {rules: [{required: false, whitespace: true, message: '请选择宗地号'}]}]"
                       />
                     <!-- @change="addressNoChange" -->
                     <!-- <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/> -->

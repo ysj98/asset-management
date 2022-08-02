@@ -150,6 +150,7 @@ export default {
   props: {},
   data () {
     return {
+      checkNick: false,
       toggle: false,
       // scrollHeight: {y: 0},
       ASSET_MANAGEMENT,
@@ -193,6 +194,20 @@ export default {
   computed: {
   },
   methods: {
+    // 获取是否资产自动入库 设置 checkNick
+    async getApproveConfig(){
+      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        // 参考 serviceTypeAll.js 文件
+        serviceType: 1012,
+        organId: this.queryCondition.organId,
+      })
+      if (code === "0"){
+        const {isValid} = data
+        if( isValid === 1){
+          this.checkNick = true
+        }
+      }
+    },
     // 操作
     operationFun (str, val) {
       let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName, ...val}])
@@ -255,7 +270,8 @@ export default {
         succeedMessage = '撤销核实该登记单成功'
       } else if (str === 'verify') {         // 核实
         interfaceName = 'registerOrderAudit'
-        contentTitle = '确认要核实该登记单吗？'
+        contentTitle = h => <div>确认要核实该登记单吗？<p v-if='checkNick'><input style='vertical-align: middle;' type='checkbox' checked="true" disabled="true">
+        </input>自动资产入库</p></div>,
         succeedMessage = '核实该登记单成功'
       }
       this.$confirm({
@@ -311,6 +327,7 @@ export default {
       this.queryCondition.organId = value
       this.queryCondition.pageNum = 1
       this.queryCondition.projectId = undefined
+      this.getApproveConfig()
       this.query()
       this.getObjectKeyValueByOrganIdFn()
     },

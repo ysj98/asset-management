@@ -1,11 +1,11 @@
 <template>
   <SGUploadFilePlus
     :max="5"
-    :maxSize="50"
+    :maxSize="10240"
     :files="value"
     @input="inputFn"
     :baseImgURL="configBase.hostImg1"
-    errorTips="以下文件上传失败,请重新检查后再上传(附件大小超出50M或当前网络不稳定)"
+    errorTips="以下文件上传失败,请重新检查后再上传(附件大小超出10M或当前网络不稳定)"
     :customDownload="
       (value) => {
         return customDownload(value, $api.ownership.downLoadAnnex);
@@ -16,9 +16,9 @@
         return customUpload(value, $api.ownership.uploadAnnex);
       }
     "
-    type="file"
+    accept="image/png, image/jpg, image/jpeg,application/pdf,application/msword,application/vnd.ms-powerpoint,application/vnd.ms-excel"
   >
-    <span slot="tips">(注：上传的附件最多为 5 个,且文件大小小于50M)</span>
+    <!-- <span slot="tips">(注：上传的附件最多为 5 个,且文件大小小于10M)</span> -->
   </SGUploadFilePlus>
 </template>
 

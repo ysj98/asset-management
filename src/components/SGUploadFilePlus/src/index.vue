@@ -17,7 +17,7 @@
           :multiple="max >= 0 && isMultiple"
         >
       </div>
-      <div class="tips" v-if="!isCustom"><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}。文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize} kb` }}</slot></div>
+      <div class="tips" v-if="!isCustom"><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}，文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize / 1024} M。` }}</slot></div>
       <div class="tips" v-else><slot name="tips">注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}。单文件大小最大为 {{ maxSize === 0 ? '不限' : `${maxSize / 1024} M，` }}支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。</slot></div>
       <div class="total" v-show="lists.length > 5">共<span>{{ lists.length }}</span>个</div>
     </div>
@@ -271,7 +271,6 @@ export default {
       // 将文件列表转换为数组
       let files = Array.from(this.$refs.file.files)
       this.$refs.file.value = ''
-
       // 判断是否是否选择超出数量的文件
       const maxLen = this.max - this.lists.length
       if (files.length > maxLen && this.max !== 0) {
@@ -287,7 +286,8 @@ export default {
       if (this.uploadLists.length > 0) this.showUploadStatus = true
 
       // 如果有自定义上传过程，则执行自定义的上传过程
-      if (this.customUpload) {
+      if (!this.customUpload) {
+        console.log('自定义过程')
         const customUpload = this.customUpload(files)
         // 判断是否返回 Promise 对象
         if (!customUpload || !customUpload.then) {
@@ -318,9 +318,11 @@ export default {
       files.forEach(item => {
         const ext = item.name.split('.').pop().toLocaleLowerCase()
         if (this.imageExt.includes(ext)) {
+          console.log('图片')
           ImgFormData.append('file', item)
           ImgList.push({ ...item, url: item.name, name: item.name,})
         } else {
+          console.log('文件')
           FileFOrmData.append('file', item)
           FileList.push({ ...item, url: item.name, name: item.name, })
         }

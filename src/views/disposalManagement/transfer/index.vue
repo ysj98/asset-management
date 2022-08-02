@@ -10,8 +10,8 @@
           icon="plus"
           type="primary"
           style="margin-right: 8px"
-          v-power="ASSET_MANAGEMENT.ASSET_TRANSFER_ADD"
         >
+          <!-- v-power="ASSET_MANAGEMENT.ASSET_TRANSFER_ADD" -->
           新增资产转让单
         </SG-Button>
         <!--TODO: 会议结果导出暂时不做        -->
@@ -57,7 +57,7 @@
           />
           <!-- 申请单名称ID -->
           <a-input
-            style="width: 200px; margin-right: 8px"
+            style="width: 200px; margin-right: 8px; margin-bottom: 15px;"
             v-model="queryForm.name"
             placeholder="申请单名称/申请单ID"
           />
@@ -494,6 +494,6 @@ export default {
   flex-wrap: wrap;
 }
 .contentForm-btn {
-  flex-basis: 200px;
+  flex-basis: 100px;
 }
 </style>

@@ -873,7 +873,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
 .detail-transfer {
   padding: 10px 20px;
 }
@@ -917,5 +917,9 @@ export default {
 }
 p {
   white-space: pre-line;
+}
+/deep/ .track-step .right .detail-item .title {
+  font-weight: normal;
+  font-size: 15px;
 }
 </style>

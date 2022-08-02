@@ -196,6 +196,32 @@
               <span class="file-null" v-if="!editable && detail.attachment.length === 0">--</span>
             </a-form-item>
           </div>
+          <div class="edit-box-content-item" v-if="checkNick">
+            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">AppID<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-input
+                placeholder="请输入AppID"
+                :style="allStyle"
+                :max="60"
+                v-if="editable"
+                v-decorator="['agentTel',
+                {rules: [{max: 60, whitespace: true, message: 'AppID长度最多为60'}, {validator: validateTel}], initialValue: detail.agentTel}]"/>
+              <span class="label-value" v-else>{{detail.appId || '--'}}</span>
+            </a-form-item>
+          </div>
+          <div class="edit-box-content-item" v-if="checkNick">
+            <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">秘钥<i></i></span><span>：</span></div>
+            <a-form-item>
+              <a-input
+                placeholder="请输入秘钥"
+                :style="allStyle"
+                :max="60"
+                v-if="editable"
+                v-decorator="['agentTel',
+                {rules: [{max: 60, whitespace: true, message: '秘钥长度最多为60'}, {validator: validateTel}], initialValue: detail.agentTel}]"/>
+              <span class="label-value" v-else>{{detail.secretKey || '--'}}</span>
+            </a-form-item>
+          </div>
         </div>
       </div>
     </a-form>
@@ -225,6 +251,7 @@ export default {
   },
   data () {
     return {
+      checkNick: false,
       modal: {
         title: '新建权属人',
         width: '860px',
@@ -249,7 +276,9 @@ export default {
         agent: '',
         agentTel: '',
         remark: '',
-        attachment: []
+        attachment: [],
+        appId: '',
+        secretKey: ''
       },
       obligeeTypeOptions: [],
       certificateTypeOptions: []
@@ -516,11 +545,26 @@ export default {
           })
         }
       })
-    }
+    },
+    // 获取是否AppID , 秘钥 设置 checkNick
+    async getApproveConfig(){
+      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        // 参考 serviceTypeAll.js 文件
+        serviceType: 1014,
+        organId: this.organId,
+      })
+      if (code === "0"){
+        const {isValid} = data
+        if( isValid === 1){
+          this.checkNick = true
+        }
+      }
+    },
   },
   mounted () {
     this.getObligeeTypeOptions()
     this.getCertificateTypeOptions()
+    this.getApproveConfig()
   }
 }
 </script>
