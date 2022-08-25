@@ -5,10 +5,10 @@
  * @Description: file content
  */
 export const typeList = [
-  {
-    name: '机构维度',
-    value: '0'
-  },
+  // {
+  //   name: '机构维度',
+  //   value: '0'
+  // },
   {
     name: '项目维度',
     value: '1'
@@ -34,7 +34,7 @@ export const assetTypeList = [
 // 查询条件
 export const queryCondition =  {
   organId: '',        // 组织机构id
-  type: '0',          // 机构味道
+  type: '1',          // 机构味道
   projectId: '',      // 项目id
   assetType: '1',     // 资产类型
   objectType: '',     // 资产分类编码
