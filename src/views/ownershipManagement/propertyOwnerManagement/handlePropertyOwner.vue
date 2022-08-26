@@ -204,8 +204,8 @@
                 :style="allStyle"
                 :max="60"
                 v-if="editable"
-                v-decorator="['agentTel',
-                {rules: [{max: 60, whitespace: true, message: 'AppID长度最多为60'}, {validator: validateTel}], initialValue: detail.agentTel}]"/>
+                v-decorator="['appId',
+                {rules: [{max: 60, whitespace: true, message: 'AppID长度最多为60'} ], initialValue: detail.appId}]"/>
               <span class="label-value" v-else>{{detail.appId || '--'}}</span>
             </a-form-item>
           </div>
@@ -217,8 +217,8 @@
                 :style="allStyle"
                 :max="60"
                 v-if="editable"
-                v-decorator="['agentTel',
-                {rules: [{max: 60, whitespace: true, message: '秘钥长度最多为60'}, {validator: validateTel}], initialValue: detail.agentTel}]"/>
+                v-decorator="['secretKey',
+                {rules: [{max: 60, whitespace: true, message: '秘钥长度最多为60'} ], initialValue: detail.secretKey}]"/>
               <span class="label-value" v-else>{{detail.secretKey || '--'}}</span>
             </a-form-item>
           </div>
@@ -324,6 +324,11 @@ export default {
           })
         }
         this.detail.attachment = []
+      }
+    },
+    organId (val) {
+      if (val) {
+        this.getApproveConfig()
       }
     }
   },
@@ -564,7 +569,6 @@ export default {
   mounted () {
     this.getObligeeTypeOptions()
     this.getCertificateTypeOptions()
-    this.getApproveConfig()
   }
 }
 </script>

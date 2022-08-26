@@ -287,7 +287,6 @@ export default {
 
       // 如果有自定义上传过程，则执行自定义的上传过程
       if (!this.customUpload) {
-        console.log('自定义过程')
         const customUpload = this.customUpload(files)
         // 判断是否返回 Promise 对象
         if (!customUpload || !customUpload.then) {
@@ -318,11 +317,9 @@ export default {
       files.forEach(item => {
         const ext = item.name.split('.').pop().toLocaleLowerCase()
         if (this.imageExt.includes(ext)) {
-          console.log('图片')
           ImgFormData.append('file', item)
           ImgList.push({ ...item, url: item.name, name: item.name,})
         } else {
-          console.log('文件')
           FileFOrmData.append('file', item)
           FileList.push({ ...item, url: item.name, name: item.name, })
         }

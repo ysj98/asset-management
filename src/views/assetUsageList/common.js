@@ -147,7 +147,7 @@ export const assetsColumns = [
         title: '权证面积(㎡)',
         children: 
         [
-          { title: '权证建筑面积', dataIndex: 'assetArea', width: 120 },
+          { title: '权证建筑面积', dataIndex: 'shipArea', width: 120 },
           { title: '权证土地面积', dataIndex: 'shipLandArea', width: 120 }
         ]
       },

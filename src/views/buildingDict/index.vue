@@ -23,10 +23,10 @@
         ></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
-        <a-tab-pane v-if="!$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD)" tab="楼栋信息" key="building">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD)" tab="楼栋信息" key="building">
           <buildingInfo :isCurrent="isCurrent" :organId="organId"/>
         </a-tab-pane>
-        <a-tab-pane v-if="!$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE)" tab="房间信息" key="house">
+        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE)" tab="房间信息" key="house">
           <houseInfo />
         </a-tab-pane>
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND)" tab="土地信息" key="land">
