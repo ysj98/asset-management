@@ -50,6 +50,8 @@
           {title: '容积率', key: 'landRate'}, {title: '资产状态', key: 'statusName'}, {title: '使用年限', key: 'validPeriod'},
           {title: '有限期限', key: 'endDate'}, {title: '土地性质', key: 'landuseType ', span: 16},
           { title: '质押', key: 'pledgeName'},{ title: '抵押', key: 'mortgageName'},{ title: '涉诉', key: 'lawsuitName' },
+          { title: '土地上盖建筑物面积(㎡)', key: 'structureArea'},{ title: '不可开发利用土地面积(㎡)', key: 'unavailableArea'},{ title: '其他土地面积(㎡)', key: 'otherLandArea' },
+          {title: '该地块原用地性质', key: 'landNature', span: 16}, {title: '该地块最新城市规划情况', key: 'landPlanning ', span: 16},
           { title: '是否城市更新项目', key: 'cityUpdate'},
           { title: '三旧改造图编号', key: 'transformDrawingNo'},
           { title: '地块是否已签订土地交储协议', key: 'isSign'},

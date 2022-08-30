@@ -43,11 +43,11 @@ export default {
     },
     hiddenConfig: {
       type: Array,
-      required: [],
+      // required: [],
     },
     aliasConfig: {
       type: Object,
-      required: {},
+      // required: {},
     },
   },
   data() {
@@ -70,14 +70,12 @@ export default {
       } = await this.$api.global.assetRolListV2(req);
       this.loading = false;
       if (code === "0") {
-        console.log(data);
-        console.log(this.aliasConfig, this.hiddenConfig)
-        if (Object.keys(this.aliasConfig).length) {
+        if (this.aliasConfig && Object.keys(this.aliasConfig).length) {
           data.templeCode.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
           data.customShow.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
           data.customChose.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
         }
-        if (this.hiddenConfig.length) {
+        if (this.hiddenConfig && this.hiddenConfig.length) {
           data.templeCode = data.templeCode.filter(item => {return !this.hiddenConfig.includes(item.colCode)})
           data.customShow = data.customShow.filter(item => {return !this.hiddenConfig.includes(item.colCode)})
           data.customChose = data.customChose.filter(item => {return !this.hiddenConfig.includes(item.colCode)})

@@ -370,6 +370,51 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
+                <a-form-item label="土地上盖建筑物面积(㎡)" v-bind="formItemLayout">
+                  <a-input-number
+                    :max="999999.9999"
+                    :style="allWidth"
+                    v-decorator="['structureArea']"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="不可开发利用土地面积(㎡)" v-bind="formItemLayout">
+                  <a-input-number
+                    :max="999999.9999"
+                    :style="allWidth"
+                    v-decorator="['unavailableArea']"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="其他土地面积(㎡)" v-bind="formItemLayout">
+                  <a-input-number
+                    :max="999999.9999"
+                    :style="allWidth"
+                    v-decorator="['otherLandArea']"
+                  />
+                </a-form-item>
+              </a-col>
+               <a-col :span="24">
+                <!-- 文本框 -->
+                <a-form-item label="该地块原用地性质" v-bind="formItemLayout2">
+                  <a-textarea
+                    :maxLength="500"
+                    v-decorator="['landNature', { initialValue: '' }]"
+                  />
+                </a-form-item>
+              </a-col>
+               <a-col :span="24">
+                <!-- 文本框 -->
+                <a-form-item label="该地块最新城市规划情况" v-bind="formItemLayout2">
+                  <a-textarea
+                    :maxLength="500"
+                    v-decorator="['landPlanning', { initialValue: '' }]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="经营方式" v-bind="formItemLayout">
                   <a-select
                     :style="allWidth"
@@ -688,17 +733,17 @@ export default {
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 6 },
+          sm: { span: 8 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 12 },
+          sm: { span: 14 },
         },
       },
       formItemLayout2: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 2 },
+          sm: { span: 3 },
         },
         wrapperCol: {
           xs: { span: 24 },
@@ -1251,10 +1296,11 @@ export default {
     async init(){
       if (this.routeQuery.type === "edit") {
         await this.blankApiDetail()
-        this.initPreData()
       } else {
         this.getCode(this.routeQuery.organId)
       }
+      // 请求下拉框数据
+      this.initPreData()
       this.queryProvinceList()
     }
   },

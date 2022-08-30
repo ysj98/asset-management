@@ -2,7 +2,7 @@
  * @Date: 2020-07-16 15:29:25
  * @Description: 土地详情
 -->
- <template>
+<template>
   <div class="detailHouse-page">
     <!-- 基础信息 -->
     <div class="detail-page-item">
@@ -121,10 +121,40 @@
                 <div class="item-content">{{blankInfo.redlineArea || '-'}}</div>
               </div>
             </a-col>
-            <a-col :span="8">
+            <a-col :span="24">
               <div class="detail-item">
                 <div class="item-label">可出租土地面积(㎡)：</div>
                 <div class="item-content">{{blankInfo.rentArea || '-'}}</div>
+              </div>
+            </a-col>
+             <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">土地上盖建筑物面积(㎡)：</div>
+                <div class="item-content">{{blankInfo.structureArea || '-'}}</div>
+              </div>
+            </a-col>
+             <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">不可开发利用土地面积(㎡)：</div>
+                <div class="item-content">{{blankInfo.unavailableArea || '-'}}</div>
+              </div>
+            </a-col>
+             <a-col :span="8">
+              <div class="detail-item">
+                <div class="item-label">其他土地面积(㎡)：</div>
+                <div class="item-content">{{blankInfo.otherLandArea || '-'}}</div>
+              </div>
+            </a-col>
+            <a-col :span="24">
+              <div class="detail-item">
+                <div class="item-label">该地块原用地性质：</div>
+                <div class="item-content">{{blankInfo.landNature || '-'}}</div>
+              </div>
+            </a-col>
+            <a-col :span="24">
+              <div class="detail-item">
+                <div class="item-label">该地块最新城市规划情况：</div>
+                <div class="item-content">{{blankInfo.landPlanning || '-'}}</div>
               </div>
             </a-col>
             <a-col :span="8">
@@ -469,7 +499,7 @@ export default {
     display: flex;
     margin-bottom: 32px;
     .item-label {
-      flex: 0 0 125px;
+      // flex: 0 0 125px;
       margin-right: 12px;
       text-align: right;
     }
