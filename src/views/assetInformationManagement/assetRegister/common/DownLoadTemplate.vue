@@ -239,6 +239,13 @@ export default {
                   label: item.aliasName
                 };
               });
+              if (this.checkboxAssetType === '1') {
+                this.positionNameData.unshift({
+                  name: '全部楼栋',
+                  value: '-1',
+                  label: '全部楼栋'
+                });
+              }
             }
           });
       }

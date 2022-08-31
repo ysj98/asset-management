@@ -107,6 +107,21 @@ export const columns = [
     width: 100
   },
   {
+    title: "土地上盖建筑物面积(㎡)",
+    dataIndex: "structureArea",
+    width: 170
+  },
+  {
+    title: "不可开发利用土地面积(㎡)",
+    dataIndex: "unavailableArea",
+    width: 180
+  },
+  {
+    title: "其他土地面积(㎡)",
+    dataIndex: "otherArea",
+    width: 120
+  },
+  {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
