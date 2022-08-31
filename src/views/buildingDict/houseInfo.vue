@@ -154,6 +154,7 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <OperationPopover
+            v-if="record.houseId !== '合计'"
             :operationData="String(record.status) === '1'?operationDataOn:operationDataOff"
             @operationFun="operationFun($event, record)"
           ></OperationPopover>
