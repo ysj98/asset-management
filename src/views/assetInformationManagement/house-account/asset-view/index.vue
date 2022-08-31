@@ -177,9 +177,9 @@
       }) }">>
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
-        <span :title="text">
+        <div :title="text" style="width:264px;white-space: normal;">
           {{text}}
-        </span>
+        </div>
       </template>
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }">详情</router-link>
@@ -1084,9 +1084,9 @@ const requiredColumn = [
     }
     tr:hover{
       td{
-        white-space: normal;
-        overflow: auto;
-        text-overflow: clip;
+        white-space: normal !important;
+        overflow: auto !important;
+        text-overflow: clip !important;
       }
     }
 }

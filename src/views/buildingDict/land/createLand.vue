@@ -392,7 +392,7 @@
                   <a-input-number
                     :max="999999.9999"
                     :style="allWidth"
-                    v-decorator="['otherLandArea']"
+                    v-decorator="['otherArea']"
                   />
                 </a-form-item>
               </a-col>
@@ -400,7 +400,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="该地块原用地性质" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="500"
+                    :maxLength="1000"
                     v-decorator="['landNature', { initialValue: '' }]"
                   />
                 </a-form-item>
@@ -409,7 +409,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="该地块最新城市规划情况" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="500"
+                    :maxLength="1000"
                     v-decorator="['landPlanning', { initialValue: '' }]"
                   />
                 </a-form-item>

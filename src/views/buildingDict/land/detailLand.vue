@@ -142,7 +142,7 @@
              <a-col :span="8">
               <div class="detail-item">
                 <div class="item-label">其他土地面积(㎡)：</div>
-                <div class="item-content">{{blankInfo.otherLandArea || '-'}}</div>
+                <div class="item-content">{{blankInfo.otherArea || '-'}}</div>
               </div>
             </a-col>
             <a-col :span="24">
