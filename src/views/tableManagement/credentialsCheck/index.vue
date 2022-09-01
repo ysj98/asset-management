@@ -22,7 +22,7 @@
     <!--列表Table-->
     <a-table v-bind="tableObj" class="custom-table td-pd10" bordered :scroll="{ x: '100%', y: 500 }" />
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px" />
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData(pageNo, pageLength)" />
   </div>
 </template>
 
@@ -77,20 +77,18 @@ export default {
     },
 
     // 查询列表数据
-    queryTableData({ pageNo = 1, pageLength = 10 }) {
+    queryTableData(pageNo = 1, pageLength = 10) {
       const {
         organProjectValue: { organId, projectId },
       } = this;
+      let form = { organId, projectIds: projectId || undefined, ...this.queryObj, pageSize: pageLength, pageNum: pageNo };
       if (!organId) {
         return this.$message.warn('请选择组织机构');
       }
       this.tableObj.loading = true;
-      let form = { organId, projectIds: projectId || undefined };
       this.$api.tableManage
         .checkShipArea({
           ...form,
-          pageSize: pageLength,
-          pageNum: pageNo,
         })
         .then(r => {
           this.tableObj.loading = false;
@@ -98,7 +96,13 @@ export default {
           if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             if (!data || !data.length) {
-              this.tableObj.dataSource = data;
+
+              this.tableObj.dataSource = data.map((item)=>{
+                return {
+                  ...item,
+                  ownershipStatus: ownershipStatus[ownershipStatus] || '无'
+                }
+              });
             }
             Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength });
           }

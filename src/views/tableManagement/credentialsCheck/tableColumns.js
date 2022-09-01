@@ -55,11 +55,11 @@ const tableColumns = [
     key: 'diffArea',
   },
 ];
-const ownershipStatus = [
-  { value: '0', text: '无证' },
-  { value: '1', text: '有证' },
-  { value: '2', text: '待办' },
-];
+const ownershipStatus = {
+  0: '无证',
+  1: '有证',
+  2: '待办',
+};
 export default {
   tableColumns,
   ownershipStatus,
