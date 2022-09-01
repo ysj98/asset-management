@@ -822,6 +822,7 @@ export default {
           if (data.approvalDate) {
             data.approvalDate = data.approvalDate.format("YYYY-MM-DD")
           }
+          // 处理缴纳土地出让金时间
           if (data.payAssignmentTime) {
             data.payAssignmentTime = data.payAssignmentTime.format("YYYY-MM-DD")
           }
@@ -959,6 +960,10 @@ export default {
               // 处理批准日期
               if (data.approvalDate) {
                 data.approvalDate = moment(data.approvalDate, "YYYY-MM-DD")
+              }
+              // 处理缴纳土地出让金时间
+              if (data.payAssignmentTime) {
+                data.payAssignmentTime = moment(data.payAssignmentTime, "YYYY-MM-DD")
               }
               if (data.longitude) {
                 data.lngAndlat = data.longitude + "-" + data.latitude
