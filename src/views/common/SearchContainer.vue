@@ -111,6 +111,7 @@ export default {
       }
     }
     .search-content{
+      // min-height: 180px;
       padding: 30px 20px 30px 0px;
       display: flex;
       transition: all .2s ease;
