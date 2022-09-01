@@ -203,15 +203,15 @@ export default {
             let btnArr = this.createOperationBtn();
 
             this.table.dataSource = result.map((item) => {
-              let landuseOptRow =
-                this.landuseOpt.find((v) => v.value === item.landuse) || {};
-              let landTypeOptRow =
-                this.landTypeOpt.find((v) => v.value === item.landType) || {};
+              // let landuseOptRow =
+              //   this.landuseOpt.find((v) => v.value === item.landuse) || {};
+              // let landTypeOptRow =
+              //   this.landTypeOpt.find((v) => v.value === item.landType) || {};
               return {
                 key: utils.getUuid(),
                 ...item,
-                landuseName: landuseOptRow.label,
-                landTypeName: landTypeOptRow.label,
+                // landuseName: landuseOptRow.label,
+                // landTypeName: landTypeOptRow.label,
                 acreage: getFormat(item.acreage, '') || "-",
                 operationDataBtn: btnArr,
               };

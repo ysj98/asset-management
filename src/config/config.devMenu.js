@@ -14,7 +14,8 @@ export default [
       { title: '权属证件一览表', path: '/ownershipCardList' },
       { title: '资产价值统计表', path: '/assetWorthStatistics' },
       { title: '房屋资产&资源统计表', path: '/resourcesReport' },
-      { title: '资产使用一览表', path: '/assetUsageList' }
+      { title: '资产使用一览表', path: '/assetUsageList' },
+      { title: '有证面积不匹对核查报表', path: '/credentialsCheck' },
     ]
   },
   {

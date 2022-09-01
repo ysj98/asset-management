@@ -116,6 +116,10 @@ export function queryWarrantStatistics (data) {
 export function exportWarrantStatistics (data) {
   return axiosPost(tableManage.exportWarrantStatistics, data, false, false, {responseType: 'blob'})
 }
+// 查询权证面积稽查列表
+export function checkShipArea (data) {
+  return axiosPost(tableManage.checkShipArea, data)
+}
 // 多模块导入
 // 权属人批量导入
 export function importOwnerData (query, data) {

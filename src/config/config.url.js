@@ -1159,6 +1159,8 @@ export const tableManage = {
   queryWarrantStatistics: "/ams/statistics/warrant/number",
   // 权证数量统计表（导出）
   exportWarrantStatistics: "/ams/statistics/warrant/number/export",
+  // 查询权证面积稽查列表
+  checkShipArea: "/ams/yueXinReport/checkShipArea",
   // 权属人批量导入
   importOwnerData: "/ams/ownerShipUser/importData",
   // 权属证件批量导入

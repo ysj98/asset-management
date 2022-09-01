@@ -928,7 +928,15 @@ let proRouter = [{
     meta: {
       keepAlive: true
     }
-  }, {
+  },{
+    path: '/credentialsCheck',
+    name: '有证面积不匹对核查报表',
+    component: () => import('@/views/tableManagement/credentialsCheck'),
+    meta: {
+      keepAlive: true
+    }
+  }, 
+  {
     path: '/assetIn',
     name: '资产入库',
     component: () => import('@/views/assetInformationManagement/assetIn/index.vue'),
