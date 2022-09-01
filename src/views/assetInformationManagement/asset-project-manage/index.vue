@@ -2,7 +2,7 @@
 <template>
   <div class="project_manage">
     <!--搜索条件-->
-    <search-container v-model="fold" style="position: relative;height:260px;">
+    <search-container v-model="fold" style="position: relative;">
       <div slot="headerBtns">
         <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
         <SG-Button
@@ -12,7 +12,7 @@
           @click="handleModalOpen('add', new Date().getTime())"
         >新增资产项目</SG-Button>
       </div>
-      <div slot="contentForm" style="text-align: left;width: 100%; position: absolute">
+      <div slot="contentForm" style="text-align: left;width: 100%; position: absolute;display:contents">
         <a-row :gutter="10" style="width: 100%">
           <a-col :span="6" style="text-align: left; width: 20%">
             <tree-select @changeTree="changeTree" style="width: 100%;" placeholder='请选择组织机构' :allowClear="false"/>
