@@ -46,11 +46,14 @@
         @change="handlePositionIds"
         @search="handleSearch"
         optionFilterProp="children"
-        :options="$addTitle(positionNameData)"
         :allowClear="true"
         :filterOption="false"
         notFoundContent="没有查询到数据"
-      />
+      >
+      <a-select-option v-for="(item,index) in positionNameData" :key="index + 'positionNameData'" :value="item.value">
+        {{ item.label }}
+      </a-select-option>
+    </a-select>
     </div>
     <div
       class="modal-nav container"
@@ -167,7 +170,16 @@ export default {
   },
   methods: {
     handlePositionIds(value) {
-      this.$emit("update:positionIds", value);
+      // 全选/单选功能
+      let temp = value;
+      if (temp[temp.length - 1] === '-1') {
+        temp = ['-1']
+      } else {
+        if (temp.indexOf('-1') !== -1) {
+          temp.splice(temp.indexOf('-1'), 1)
+        }
+      }
+      this.$emit("update:positionIds", temp);
     },
     async handleChangeOrgan(userSelectedOrganId) {
       this.$emit("changeOrganId", userSelectedOrganId);
@@ -234,14 +246,12 @@ export default {
               let result = res.data.data || [];
               this.positionNameData = result.map(item => {
                 return {
-                  name: item.aliasName,
                   value: item.positionId,
                   label: item.aliasName
                 };
               });
               if (this.checkboxAssetType === '1') {
                 this.positionNameData.unshift({
-                  name: '全部楼栋',
                   value: '-1',
                   label: '全部楼栋'
                 });
