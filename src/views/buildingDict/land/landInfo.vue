@@ -79,7 +79,7 @@
       </div>
       <!-- 表格部分 -->
       <div>
-        <a-table
+        <SG-Table
           class="custom-table td-pd10 custom-total-one"
           :loading="table.loading"
           :pagination="false"
@@ -101,7 +101,7 @@
               @operationFun="operationFun($event, record)"
             ></OperationPopover>
           </template>
-        </a-table>
+        </SG-Table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
           :pageLength="queryCondition.pageSize"

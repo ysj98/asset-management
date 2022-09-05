@@ -193,7 +193,7 @@
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
-        <div style="height: 70px;"></div>
+        <!-- <div style="height: 70px;"></div> -->
         <SG-FooterPagination
           :pageLength="queryCondition.pageSize"
           :totalCount="table.totalCount"

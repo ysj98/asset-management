@@ -51,7 +51,7 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 2700, y: 440}"
+        :scroll="{ x: 3000, y: 540}"
         class="custom-tables"
         bordered
         :loading="table.loading"
