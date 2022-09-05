@@ -78,9 +78,9 @@
         </div>
       </div>
       <!-- 表格部分 -->
-      <div>
-        <SG-Table
-          class="custom-table td-pd10 custom-total-one"
+      <div class="table-layout-fixed">
+        <a-table
+          class="custom-table td-pd10"
           :loading="table.loading"
           :pagination="false"
           :columns="table.columns"
@@ -91,14 +91,14 @@
           <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
           </template>
-          <template slot="blankName" slot-scope="text">
+          <!-- <template slot="blankName" slot-scope="text">
             <a-tooltip placement="topLeft">
               <template slot="title">
                 <span>{{text}}</span>
               </template>
               {{text}}
             </a-tooltip>
-          </template>
+          </template> -->
           <template slot="buildArea" slot-scope="text, record">
             <span>{{record.buildArea ? getFormat(text, '') : "-"}}</span>
             <!-- <span>{{Number(text).toFixed(4)}}</span> -->
@@ -109,7 +109,7 @@
               @operationFun="operationFun($event, record)"
             ></OperationPopover>
           </template>
-        </SG-Table>
+        </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
         <SG-FooterPagination
           :pageLength="queryCondition.pageSize"
