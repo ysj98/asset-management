@@ -91,6 +91,14 @@
           <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
           </template>
+          <template slot="blankName" slot-scope="text">
+            <a-tooltip placement="topLeft">
+              <template slot="title">
+                <span>{{text}}</span>
+              </template>
+              {{text}}
+            </a-tooltip>
+          </template>
           <template slot="buildArea" slot-scope="text, record">
             <span>{{record.buildArea ? getFormat(text, '') : "-"}}</span>
             <!-- <span>{{Number(text).toFixed(4)}}</span> -->

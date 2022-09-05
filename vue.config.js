@@ -26,7 +26,6 @@ console.log('IP', localhost)
 const target = 'http://beta.uhomecp.com/'
 // const target = 'http://192.168.1.11:10060'
 //const t = 'http://192.168.2.36:8081'
-const t = 'http://192.168.3.36:8081'
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
@@ -139,7 +138,7 @@ module.exports = {
     if (isProd) {
       // 配置不打包的资源，需指定 cdn 加载
       config.externals = {
-        'ant-design-vue': 'antd',
+        // 'ant-design-vue': 'antd',
         'axios': 'axios',
         'vue': 'Vue',
         'vuex': 'Vuex',

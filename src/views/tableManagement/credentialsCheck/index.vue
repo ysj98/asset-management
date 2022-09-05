@@ -9,7 +9,7 @@
       </a-col>
       <a-col :span="4">
         <!-- 资产类型 -->
-        <a-select mode="multiple" :maxTagCount="1" style="width: 100%" @change="assetTypeChange" :options="$addTitle(assetTypeOptions)" v-model="queryObj.assetType" placeholder="请选择资产类型" />
+        <a-select :maxTagCount="1" style="width: 100%" @change="assetTypeChange" :options="$addTitle(assetTypeOptions)" v-model="queryObj.assetType" placeholder="请选择资产类型" />
       </a-col>
       <a-col :span="4">
         <!-- 资产名称/编码 -->
@@ -40,7 +40,7 @@ export default {
       organProjectValue: {}, // 查询条件-组织机构及项目值
       paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
       queryObj: {
-        assetType: ['-1'], // 查询条件-资产类型值,多选
+        assetType: '-1', // 查询条件-资产类型值,多选
         assetNameOrCode: '', //  查询条件-资产名称或编码
       },
       tableObj: {
@@ -81,7 +81,7 @@ export default {
       const {
         organProjectValue: { organId, projectId },
       } = this;
-      let form = { organId, projectIds: projectId || undefined, ...this.queryObj, pageSize: pageLength, pageNum: pageNo };
+      let form = { organId, projectIds: projectId || '', ...this.queryObj, pageSize: pageLength, pageNum: pageNo };
       if (!organId) {
         return this.$message.warn('请选择组织机构');
       }
@@ -89,6 +89,7 @@ export default {
       this.$api.tableManage
         .checkShipArea({
           ...form,
+          assetType : form.assetType === '-1' ? '' : form.assetType
         })
         .then(r => {
           this.tableObj.loading = false;

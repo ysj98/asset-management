@@ -48,6 +48,8 @@ export const columns = [
   {
     title: "土地名称",
     dataIndex: "blankName",
+    ellipsis: true,
+    scopedSlots:{ customRender: 'blankName' },
     width: 120
   },
   {
@@ -64,6 +66,7 @@ export const columns = [
   {
     title: "运营项目",
     dataIndex: "communityName",
+    ellipsis: true,
     width: 120
   },
   {
@@ -84,6 +87,7 @@ export const columns = [
   {
     title: "土地位置",
     dataIndex: "address",
+    ellipsis: true,
     width: 120
   },
   {

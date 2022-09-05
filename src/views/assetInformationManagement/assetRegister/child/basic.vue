@@ -491,13 +491,13 @@ export default {
           let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
           arrData =  res.data.data[ASSET_TYPE_LIST]
           // 遍历判断必填有字段
-          let validateRes = this.handleValidateExcelData( arrData)
-          if(validateRes){
-            this.DE_Loding(loadingName).then(() => {
-              this.$message.info(validateRes)
-            })
-            return null
-          }
+          // let validateRes = this.handleValidateExcelData( arrData)
+          // if(validateRes){
+          //   this.DE_Loding(loadingName).then(() => {
+          //     this.$message.info(validateRes)
+          //   })
+          //   return null
+          // }
           resData = utils.deepClone([...arrData, ...this.tableData])
           // 房屋
           let generateKeyFn = null
