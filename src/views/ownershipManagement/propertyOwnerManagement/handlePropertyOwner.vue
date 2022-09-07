@@ -4,13 +4,20 @@
 <template>
   <SG-Modal
     class="handlePropertyOwner"
-    :footer='editable? null  : ""'
     :width="modal.width"
     v-model="modal.show"
     :title="modal.title"
     @ok="handleSubmit"
     @cancel="handleCancel"
   >
+  <div slot="footer" v-show="editable">
+        <SG-Button key="submit" type="primary"  @click="handleSubmit">
+          提交
+        </SG-Button>
+        <SG-Button key="back" @click="handleCancel">
+          取消
+        </SG-Button>
+      </div>
     <a-form :form="form" @submit="handleSubmit">
       <div class="edit-box">
         <div class="edit-box-content">

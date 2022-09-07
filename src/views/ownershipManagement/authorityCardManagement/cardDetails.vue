@@ -23,7 +23,6 @@
               <div class="umImg">
                 <SGUploadFilePlus
                   :baseImgURL="configBase.hostImg1"
-                  :customDownload="customDownload"
                   v-model="files"
                   type="all"
                   :show="true"
