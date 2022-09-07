@@ -483,6 +483,7 @@ export default {
       this.queryHandler()
       this.queryUseOptions('OWNERSHIP_USE')
       this.queryUseOptions('AMS_WARRANT_TAG')
+      this.platformDictFn(value)
     },
     // 搜索
     onSearch () {
@@ -526,11 +527,12 @@ export default {
       })
     },
     // 权证类型
-    platformDictFn () {
+    platformDictFn (val) {
       let obj = {
-        code: 'AMS_KIND_OF_RIGHT'
+        code: 'AMS_KIND_OF_RIGHT',
+        organId: val
       }
-      this.$api.assets.platformDict(obj).then(res => {
+      this.$api.assets.organDict(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.kindOfRightsData = [{name: '全部权证类型', value: ''}, ...data]
@@ -826,7 +828,7 @@ export default {
   },
   mounted () {
     // 权证类型
-    this.platformDictFn()
+    
     // 权属类型
     this.platformDict()
     // 添加可以选择不同数量分页
