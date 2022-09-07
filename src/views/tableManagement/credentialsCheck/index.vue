@@ -97,7 +97,6 @@ export default {
           if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             if (!data || !data.length) {
-
               this.tableObj.dataSource = data.map((item)=>{
                 return {
                   ...item,
@@ -107,7 +106,6 @@ export default {
             }
             Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength });
           }
-          throw res.message;
         })
         .catch(err => {
           this.tableObj.loading = false;
