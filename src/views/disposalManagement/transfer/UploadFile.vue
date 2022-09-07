@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     inputFn(value) {
-      console.log("value", value);
       this.$emit("input", value);
     },
   },

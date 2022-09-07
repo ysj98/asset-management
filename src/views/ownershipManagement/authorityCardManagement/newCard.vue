@@ -160,15 +160,7 @@
           <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" :colon="false">
               <label slot="label">上传附件：</label>
-              <SGUploadFilePlus
-                :baseImgURL="configBase.hostImg1"
-                :customUpload="customUpload"
-                :customDownload="customDownload"
-                v-model="newCardData.files"
-                type="all"
-                :maxSize="20480"
-                :max="20"
-              />
+              <UploadFile v-model="newCardData.files" />
             </a-form-item>
           </a-col>
         </a-form>
@@ -251,6 +243,7 @@
 
 <script>
 import SGUploadFilePlus from "@/components/SGUploadFilePlus";
+import UploadFile from "@/views/disposalManagement/transfer/UploadFile";
 import TreeSelect from "src/views/common/treeSelect";
 // import Cephalosome from '@/components/Cephalosome'
 import configBase from "@/config/config.base";
@@ -261,7 +254,7 @@ import warantAnnex from './warrantAnnex'
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {TreeSelect, SGUploadFilePlus},
+  components: {TreeSelect, SGUploadFilePlus, UploadFile},
   props: {
     queryType: {
       type: [String, Number],
