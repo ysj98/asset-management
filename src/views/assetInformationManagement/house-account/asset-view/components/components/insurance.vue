@@ -72,6 +72,7 @@ export default {
         status: '1',
         pageNum: this.table.pageNum,
         pageSize: this.table.pageSize,
+        assetId:this.assetId
       }
       this.$api.assetInsurance.queryAssetInsuranceList(data).then(res => {
         console.log(this.table)

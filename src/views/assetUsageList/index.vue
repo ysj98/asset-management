@@ -33,6 +33,15 @@
         <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="全部分类" v-model="queryCondition.objectType">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
+        <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="是否纳入考核" v-model="queryCondition.managementType">
+          <a-select-option value="1">纳入考核</a-select-option>
+          <a-select-option value="0">不纳入考核</a-select-option>
+        </a-select>
+        <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="是否有证" v-model="queryCondition.ownershipStatus">
+          <a-select-option value="1">有证</a-select-option>
+          <a-select-option value="0">无证</a-select-option>
+          <a-select-option value="2">待办</a-select-option>
+        </a-select>
         <a-input v-if="+queryCondition.type === 2" v-model.trim="queryCondition.assetNameOrCode" :style="allStyle" placeholder="资产名称或编码"/>
         <SG-Button type="primary" style="margin-right: 10px;" @click="allQuery">查询</SG-Button>
       </div>

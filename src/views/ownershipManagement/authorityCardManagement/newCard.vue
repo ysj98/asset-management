@@ -598,7 +598,8 @@ export default {
         this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}),
         this.$api.assets.organDict({code: 'OWNERSHIP_USE', organId: this.organId}),
         this.$api.assets.platformDict({code: 'BUILD_STRUCT'}),
-        this.$api.assets.organDict({code: 'QUALITY_OF_RIGHT', organId: this.organId})
+        this.$api.assets.organDict({code: 'QUALITY_OF_RIGHT', organId: this.organId}),
+        this.$api.assets.organDict({code: 'AMS_KIND_OF_RIGHT', organId: this.organId})
       ]).then(res => {
         // 权属形式
         if (+res[0].data.code === 0) {
@@ -610,15 +611,15 @@ export default {
           this.ownerTypeData = arr
         }
         // 权证类型
-        if (+res[1].data.code === 0) {
-          let data = res[1].data.data
-          let arr = []
-          data.forEach(item => {
-            arr.push({ value: item.value, label: item.name })
-          })
-          let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}, {label:'房屋产权证', value:'3'}] // 临时本地模拟数据
-          this.kindOfRightData = arr.length < 3 ? temp : arr
-        }
+        // if (+res[1].data.code === 0) {
+        //   let data = res[1].data.data
+        //   let arr = []
+        //   data.forEach(item => {
+        //     arr.push({ value: item.value, label: item.name })
+        //   })
+        //   let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}, {label:'房屋产权证', value:'3'}] // 临时本地模拟数据
+        //   this.kindOfRightData = arr.length < 3 ? temp : arr
+        // }
         // 权属用途
         if (+res[2].data.code === 0) {
           let data = res[2].data.data
@@ -645,6 +646,15 @@ export default {
             arr.push({ value: item.value, label: item.name })
           })
           this.qualityOfRightData = arr
+        }
+        //权证类型
+        if (+res[5].data.code === 0) {
+          let data = res[5].data.data
+          let arr = []
+          data.forEach(item => {
+            arr.push({ value: item.value, label: item.name })
+          })
+          this.kindOfRightData = arr
         }
         this.titleDeed.forEach(item => {
           // 权属用途

@@ -35,6 +35,8 @@ export const assetTypeList = [
 export const queryCondition =  {
   organId: '',        // 组织机构id
   type: '1',          // 机构味道
+  managementType:'1',  //是否纳入考核
+  ownershipStatus:'1', //是否有证
   projectId: '',      // 项目id
   assetType: '1',     // 资产类型
   objectType: '',     // 资产分类编码
