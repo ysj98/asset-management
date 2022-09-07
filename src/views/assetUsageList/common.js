@@ -9,10 +9,10 @@ export const typeList = [
   //   name: '机构维度',
   //   value: '0'
   // },
-  {
-    name: '项目维度',
-    value: '1'
-  },
+  // {
+  //   name: '项目维度',
+  //   value: '1'
+  // },
   {
     name: '资产维度',
     value: '2'
@@ -34,7 +34,7 @@ export const assetTypeList = [
 // 查询条件
 export const queryCondition =  {
   organId: '',        // 组织机构id
-  type: '1',          // 机构味道
+  type: '2',          // 统计维度
   managementType:'1',  //是否纳入考核
   ownershipStatus:'1', //是否有证
   projectId: '',      // 项目id

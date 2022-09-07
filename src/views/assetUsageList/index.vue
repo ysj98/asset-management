@@ -138,7 +138,7 @@ export default {
       noPageTools: false,
       location: 'absolute',
       toggle: true,
-      columns: projectData,
+      columns: assetsColumns,
       organName: '',
       organId: '',
       tableData: [],

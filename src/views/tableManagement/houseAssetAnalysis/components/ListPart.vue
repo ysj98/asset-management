@@ -410,11 +410,11 @@ export default {
         }
         window.parent.openPortalMenu(`/asset-management/#/assetView?organIds=${record.organId}&projectId=${record.projectId}&objectType=${record.objectType}&ownershipStatus=${record.ownershipStatus}&province=${record.province}&city=${record.city}&region=${record.region}`, '房屋资产视图')
         // this.$router.push({
-        // path: '/assetView',
-        // query: {
-        //   params: params
-        // }
-      // })
+        //   path: '/assetView',
+        //   query: {
+        //     ...params
+        //   }
+        // })
       }
     }
   }

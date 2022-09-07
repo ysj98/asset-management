@@ -2,7 +2,7 @@
 <template>
   <div>
     <!--搜索条件-->
-    <search-container size="fold" v-model="fold">
+    <search-container size="fold" v-model="fold" v-if="isSearch">
       <div slot="headerBtns">
         <SG-Button
           icon="import"
@@ -366,6 +366,7 @@ const requiredColumn = [
     components: { EditRemark, TableHeaderSettings, EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
     data () {
       return {
+        isSearch: true,
         configItem: ['transferOperationArea', 'idleArea', 'selfUserArea', 'occupationArea', 'otherArea'],
         configOrganId: '',
         hiddenConfig: [],
@@ -471,7 +472,7 @@ const requiredColumn = [
         this.tableObj.scroll.y = val ? 236 : 420
       },
       organProjectBuildingValue: function (val, pre) {
-        console.log(val,4546)
+        if (this.$route.query) return
         this.queryTableData({type: 'search'})
         if(val.organId !== pre.organId){
           this.queryCategoryOptions(val.organId)
@@ -508,22 +509,20 @@ const requiredColumn = [
       initTableColumns({columns:this.tableObj.columns,detailColumns, requiredColumn, funType: this.funType})
     },
     activated(){
-      const info=this.$route.query.params
+      const info = this.$route.query
       if(info){
-       setTimeout(()=>{
-          this.organProjectBuildingValue.organId=String(info.organIds)
-          this.organProjectBuildingValue.projectId=[info.projectId]
-          this.provinceCityDistrictValue.province=info.province
-          this.provinceCityDistrictValue.city=info.city
-          this.provinceCityDistrictValue.district=info.region
-          this.categoryId=[info.objectType]
-          console.log(this.organProjectBuildingValue)
-          console.log(this.provinceCityDistrictValue)
-          this.status=[]
-          this.ownershipStatus=Number(info.ownershipStatus)
-          this.queryTableData({type: ''})
-        },1000)
-    }},
+        this.isSearch = false
+        this.organProjectBuildingValue.organId=String(info.organIds)
+        this.organProjectBuildingValue.projectId=[info.projectId]
+        this.provinceCityDistrictValue.province=info.province
+        this.provinceCityDistrictValue.city=info.city
+        this.provinceCityDistrictValue.district=info.region
+        this.categoryId=[info.objectType]
+        this.status=[]
+        this.ownershipStatus=Number(info.ownershipStatus)
+        this.queryTableData({type: ''})
+      }
+    },
     methods: {
       // 配置
     useForConfig () {
