@@ -20,8 +20,9 @@
         <a-input-search placeholder="权属人名称" :style="allStyle" v-model="ownerName" @search="queryClick" />
       </div>
     </SG-SearchContainer>
-    <div>
+    <div class="pb20">
       <a-table
+      :scroll="{ x:1200}"
         :columns="columns"
         :dataSource="dataSource"
         class="custom-table td-pd10"

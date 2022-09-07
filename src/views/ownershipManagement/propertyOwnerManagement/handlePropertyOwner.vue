@@ -4,7 +4,7 @@
 <template>
   <SG-Modal
     class="handlePropertyOwner"
-    :class="{'no-footer': !editable}"
+    :footer='editable? null  : ""'
     :width="modal.width"
     v-model="modal.show"
     :title="modal.title"
@@ -291,6 +291,7 @@ export default {
       } else {
         this.editable = true
       }
+        console.log(this.editable)
     },
     'modal.show' (val) {
       if (val) {
@@ -671,9 +672,9 @@ export default {
       }
     }
   }
-  .no-footer {
-    /deep/ .ant-modal-footer {
-      display: none!important;
-    }
-  }
+  // .no-footer {
+  //   /deep/ .sg-modal .ant-modal-footer {
+  //     display: none ;
+  //   }
+  // }
 </style>
