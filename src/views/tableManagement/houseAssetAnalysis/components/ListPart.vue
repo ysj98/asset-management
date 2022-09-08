@@ -397,7 +397,6 @@ export default {
         })
       },
       showIndex(val,record){
-        console.log(val,record)
         const params={
           organIds:record.organId,
           projectId:record.projectId,

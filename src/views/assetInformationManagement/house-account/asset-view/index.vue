@@ -472,8 +472,9 @@ const requiredColumn = [
         this.tableObj.scroll.y = val ? 236 : 420
       },
       organProjectBuildingValue: function (val, pre) {
-        if (this.$route.query) return
-        this.queryTableData({type: 'search'})
+        if (!this.$route.query.organIds) {
+          this.queryTableData({type: 'search'})
+        }
         if(val.organId !== pre.organId){
           this.queryCategoryOptions(val.organId)
           this.getSourceOptions(val.organId)
@@ -510,7 +511,7 @@ const requiredColumn = [
     },
     activated(){
       const info = this.$route.query
-      if(info){
+      if(info.organIds){
         this.isSearch = false
         this.organProjectBuildingValue.organId=String(info.organIds)
         this.organProjectBuildingValue.projectId=[info.projectId]
@@ -521,6 +522,8 @@ const requiredColumn = [
         this.status=[]
         this.ownershipStatus=Number(info.ownershipStatus)
         this.queryTableData({type: ''})
+        this.useForConfig()
+        this.getAssetLabel(this.organProjectBuildingValue.organId)
       }
     },
     methods: {
@@ -875,7 +878,7 @@ const requiredColumn = [
           this.$message.error(err || '查询接口出错')
         })
         // 查询楼栋面积统计数据
-        if (type === 'search') { this.queryAssetAreaInfo(form) }
+        if (type === 'search' || this.$route.query.organIds) { this.queryAssetAreaInfo(form) }
       },
       // 合计汇总合并
       totalFn (form) {
