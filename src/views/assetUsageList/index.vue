@@ -34,10 +34,12 @@
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="是否纳入考核" v-model="queryCondition.managementType">
+          <a-select-option value="">全部</a-select-option>
           <a-select-option value="1">纳入考核</a-select-option>
           <a-select-option value="0">不纳入考核</a-select-option>
         </a-select>
         <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="是否有证" v-model="queryCondition.ownershipStatus">
+          <a-select-option value="">全部</a-select-option>
           <a-select-option value="1">有证</a-select-option>
           <a-select-option value="0">无证</a-select-option>
           <a-select-option value="2">待办</a-select-option>
@@ -389,6 +391,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
 /deep/.ant-table-tbody {
   tr:nth-last-child(1){
     position: sticky;

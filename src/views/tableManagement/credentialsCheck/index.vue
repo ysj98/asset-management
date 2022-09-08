@@ -113,11 +113,6 @@ export default {
   },
 };
 </script>
-<style>
-.ant-table-header {
-  min-width: 12px !important;
-}
-</style>
 
 <style lang="less" scoped>
 .credentialsCheck {

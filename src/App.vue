@@ -21,3 +21,11 @@ export default {
 <style src="@/assets/less/common.less" lang="less"></style>
 <style src="@/assets/less/replaceAnt.less" lang="less"></style>
 <style src="@/assets/less/custom.less" lang="less"></style>
+<style>
+  .ant-table-header{
+    min-width: 12px !important;
+  }
+  .ant-table-wrapper{
+    padding-bottom: 68px !important;
+  }
+</style>
