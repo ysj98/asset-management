@@ -160,7 +160,19 @@
           <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" :colon="false">
               <label slot="label">上传附件：</label>
-              <UploadFile v-model="newCardData.files" />
+                <SG-UploadFile
+                :baseImgURL="configBase.hostImg1"
+                v-model="newCardData.files"
+                type="all"
+                :max="5"
+                :maxSize="20480"
+                :customDownload="(value)=>{
+                return customDownload(value,$api.ownership.downLoadAnnex)
+              }"
+                :customUpload="(value)=>{
+                return customUpload(value,$api.ownership.uploadAnnex)
+              }"
+              />
             </a-form-item>
           </a-col>
         </a-form>
@@ -250,8 +262,9 @@ import configBase from "@/config/config.base";
 import moment from 'moment'
 import {debounce, utils} from '@/utils/utils'
 import {accessCard, titleDeed, newCardData, columns, mortgageInformation, landDeed} from './beat'
-import warantAnnex from './warrantAnnex'
+// import warantAnnex from './warrantAnnex'
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
+import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 const conditionalJudgment = [undefined, null, '']
 export default {
   components: {TreeSelect, SGUploadFilePlus, UploadFile},
@@ -264,7 +277,7 @@ export default {
       type: Number
     }
   },
-  mixins: [warantAnnex],
+  mixins: [uploadAndDownLoadFIle],
   data () {
     return {
       typeFilter,
