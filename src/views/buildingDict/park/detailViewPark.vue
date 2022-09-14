@@ -105,6 +105,10 @@
                       区域名称</span>
                     <span slot="areaCodeTitle">
                       区域编码</span>
+                      <span slot="areaZone">
+                      区域面积</span>
+                      <span slot="areaPosiNums">
+                      区域车位数</span>
                     <template v-for="com in areaTitle.filter(item=>item.dataIndex !=='operation')" :slot="com.dataIndex" slot-scope="item, record, index">
                       <div :key="com.dataIndex">
                         <a-form-item style="margin: -5px;">

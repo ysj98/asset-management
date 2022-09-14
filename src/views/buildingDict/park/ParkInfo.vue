@@ -62,7 +62,7 @@
         </div>
       </div>
       <!-- 表格部分 -->
-      <div>
+      <div class="table-layout-fixed">
         <a-table
           class="custom-table td-pd10 custom-total-one"
           :loading="table.loading"
