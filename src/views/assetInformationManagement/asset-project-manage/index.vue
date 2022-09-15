@@ -4,7 +4,7 @@
     <!--搜索条件-->
     <search-container v-model="fold" style="position: relative;">
       <div slot="headerBtns">
-        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal" v-power="ASSET_MANAGEMENT.ASSET_APM_INPORT">导入</SG-Button>
         <SG-Button
           icon="plus"
           type="primary"

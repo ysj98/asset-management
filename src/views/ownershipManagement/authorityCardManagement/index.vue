@@ -5,7 +5,7 @@
   <div class="ownershipRegistration">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}" style=" position: relative">
       <div slot="headerBtns">
-        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal" v-power="ASSET_MANAGEMENT.ASSET_ACM_INPORT">导入</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_EXPORT" type="primary" style="margin-right: 8px" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" @click="newChangeSheetFn" style="margin-right: 8px">新建权证</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>

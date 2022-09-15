@@ -197,6 +197,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_APM_EDIT: 'zcgl_apm_edit',
   // 资产项目管理-新建
   ASSET_APM_NEW: 'zcgl_apm_new',
+  // 资产项目管理-导入
+  ASSET_APM_INPORT: 'zcgl_apm_import',
 
   /**
    * 权属登记
@@ -223,6 +225,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ACM_DELETE: 'zcgl_asset_acm_delete',
   // 权证管理-导出
   ASSET_ACM_EXPORT: 'zcgl_asset_acm_export',
+  // 权证管理-导入
+  ASSET_ACM_INPORT: 'zcgl_asset_acm_inport',
   // 权证管理-列表字段自定义
   ASSET_ACM_SETTING: 'zcgl_asset_acm_setting',
   // 权证管理-自定义标签
@@ -253,6 +257,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_ENTRY_DELETE: 'zcgl_asset_entry_delete',
   // 资产入账-导出
   ASSET_ENTRY_EXPORT: 'zcgl_asset_entry_export',
+  // 资产入账-导入
+  ASSET_ENTRY_INPORT: 'zcgl_asset_entry_inport',
   // 资产入账-批量提交
   ASSET_ENTRY_BATCH_SUBMISSION: 'zcgl_asset_batch_submission',
   /**
@@ -421,6 +427,7 @@ export const ASSET_MANAGEMENT = {
    * V2.0.2资产入库
    */
   ASSET_IN_LIST_EXPORT: 'asset_in_list_export',                           // 资产入库列表-导出
+  ASSET_IN_LIST_REGISTER: 'asset_in_list_register',                           // 资产入库列表-入库登记
   /**
    * V2.0.2价值登记
    */
@@ -442,6 +449,7 @@ export const ASSET_MANAGEMENT = {
    * 权属人管理
    **/
   PROPERTY_OWNER_EXPORT: 'property_owner_export',   // 权属人管理-导出
+  PROPERTY_OWNER_INPORT: 'property_owner_inport',   // 权属人管理-导入
   /**
    * 权属概况
    */

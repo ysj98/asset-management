@@ -5,7 +5,7 @@
   <div>
     <SG-SearchContainer background="white">
       <div slot="headBtns">
-        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_INPORT">导入</SG-Button>
         <SG-Button
           icon="export"
           @click="handleExport"

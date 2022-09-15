@@ -5,7 +5,7 @@
   <div class="assets-entry">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal">导入</SG-Button>
+        <SG-Button icon="import" style="margin-right: 8px" @click="openImportModal" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_INPORT">导入</SG-Button>
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_EXPORT">导出</SG-Button>
         <SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="newAssetEntry" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_NEW">新建卡片</SG-Button>
         <SG-Button type="primary" style="margin-right: 8px" :disabled="selectedRowKeys.length <= 0" @click="batchSubmit" v-power="ASSET_MANAGEMENT.ASSET_ENTRY_BATCH_SUBMISSION">批量提交</SG-Button>
