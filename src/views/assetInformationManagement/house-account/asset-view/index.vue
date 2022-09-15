@@ -765,9 +765,9 @@ const requiredColumn = [
           let arr = this.$refs.editTagRef.checkedList
           let data = {
             houseIds: this.selectedRowKeys.join(','),
-            label: arr.join('、')
+            labelCode: arr.join('、')
           }
-          if(!data.label) delete data.label
+          if(!data.labelCode) delete data.labelCode
           this.$api.assets.updateAssetLabelConfig(data).then(res =>{
             if(res.data.code === '0'){
               this.selectedRowKeys = []

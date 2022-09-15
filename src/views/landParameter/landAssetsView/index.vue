@@ -148,6 +148,7 @@
         :columns="columns"
         :dataSource="tableData"
         :pagination="false"
+        class="pb70"
         >
         <template slot="landArea" slot-scope="text">
           <span>{{getFormat(text)}}</span>
@@ -301,7 +302,7 @@ export default {
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: {x: 1200, y: 285},
+      scroll: {x: 100, y: 285},
       numList: [
         {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
         {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
