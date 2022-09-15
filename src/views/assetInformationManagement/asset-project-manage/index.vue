@@ -181,7 +181,7 @@
           loading: false,
           pagination: false,
           rowKey: 'projectId',
-          scroll: { x: 1800, y: 235},
+          scroll: { x: 1800, y: 900},
           columns: [
             { title: '管理机构', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 200, fixed:
                 'left' },

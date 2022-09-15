@@ -30,7 +30,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .no-data-tips {
     padding: 80px 0 100px 0;
     img {

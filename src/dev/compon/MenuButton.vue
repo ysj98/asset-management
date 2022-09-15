@@ -19,7 +19,6 @@
           <a-icon type="gitlab" />
         </a-button>
       </a-tooltip>
-      </a-tooltip>
       <!-- docs -->
       <a-tooltip placement="topLeft" >
         <template slot="title">
@@ -84,7 +83,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .menu-button-components {
   position: fixed;
   left: -46px;

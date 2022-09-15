@@ -56,6 +56,7 @@
           { title: '三旧改造图编号', key: 'transformDrawingNo'},
           { title: '地块是否已签订土地交储协议', key: 'isSign'},
           { title: '是否确权', key: 'isRight'},
+          { title: '是否缴纳土地出让金', key: 'isSell'},
           { title: '缴纳土地出让金时间', key: 'payAssignmentTime'},
           { title: '四至范围', key: 'fourToRange', span: 16},
           { title: '涉诉情况', key: 'lawsuitRemark', span: 16},
