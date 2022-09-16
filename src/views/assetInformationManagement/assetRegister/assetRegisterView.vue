@@ -68,6 +68,7 @@
           ref="ProvinceCityDistrict"
           v-model="provinces"
         ></ProvinceCityDistrict>
+        <a-input-search v-model="queryCondition.detailAddress" placeholder="请输入地址" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
       </div>
     </SG-SearchContainer>
     <!--数据总览-->
@@ -183,6 +184,7 @@ export default {
         organId:1,                 // 组织机构id
         assetType: [''],           // 资产类型id(多个用，分割)
         approvalStatus: '',        // 状态
+        detailAddress:'',          //详细地址
         assetNameCode: '',         // 资产名称/编码
         assetClassify: [''],        // 资产分类
         registerOrderNameOrId: '',     // 登记单编号

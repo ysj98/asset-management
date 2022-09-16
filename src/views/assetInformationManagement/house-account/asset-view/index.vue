@@ -663,6 +663,7 @@ const requiredColumn = [
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" },...this.assetLabelOpt] : []
           }
           this.label = this.assetLabelOpt.length > 0 ? '' : undefined
+          console.log(this.assetLabelOpt)
         }).catch(err =>{
           this.$message.error(err || '当前组织机构下无资产标签')
         })
@@ -680,6 +681,10 @@ const requiredColumn = [
         if(this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签')
         this.modalType = 2
         this.modalObj.status = true
+        let arr=[]
+        this.assetLabelOpt.forEach(item=>{
+          
+        })
       },3000),
       filterOption(input, option) {
         return (
