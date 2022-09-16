@@ -60,7 +60,7 @@
             <a-select
               :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择是否接管' : ''"
               :options="$addTitle(takeOverOptions)" @change="getTakeOver"
-              v-decorator="['takeOver', {initialValue: undefined, rules: [{required: true, message: '请选择是否接管'}]}]"
+              v-decorator="['takeOver', {initialValue: '1', rules: [{required: true, message: '请选择是否接管'}]}]"
             />
           </a-form-item>
         </a-col>
