@@ -385,6 +385,7 @@ export const ASSET_MANAGEMENT = {
   ASSET_IN_EDIT: 'asset_in_edit', // 编辑
   ASSET_IN_APPROVE: 'asset_in_approve', // 审批
   ASSET_IN_DELETE: 'asset_in_delete', // 删除
+  ASSET_IN_ANTIAUDIT: 'asset_in_antiaudit', // 反审核
 
   ASSET_IN_EXPORT: 'asset_in_export', // 资产出库一览表导出
   ASSET_IN_SET_TABLE_HEADER:'asset_in_set_table_header', // 资产出库一览表 列表设置!!!

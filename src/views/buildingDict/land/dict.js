@@ -27,6 +27,7 @@ export const queryCondition = {
   landuse: '', // 土地用途
   status: '', // 土地名称/编码/宗地号
   pageNum: 1,
+  detailAddress:'',          //详细地址
   pageSize: 10,
   isCurrent: 0
 };

@@ -159,6 +159,17 @@
               placeholder="权属备注"
               :style="allStyle"
             />
+            <ProvinceCityDistrict
+          class="city"
+          ref="ProvinceCityDistrict"
+          v-model="provinces"
+        ></ProvinceCityDistrict>
+        <a-input
+              :maxLength="30"
+              v-model="queryCondition.detailAddress"
+              placeholder="请输入地址"
+              :style="allStyle"
+            />
           </div>
           <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
@@ -209,6 +220,7 @@
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import noDataTips from "@/components/noDataTips";
 import SearchContainer from "@/views/common/SearchContainer";
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
 import TreeSelect from "@/views/common/treeSelect";
 import segiIcon from '@/components/segiIcon.vue'
 import { utils } from "@/utils/utils";
@@ -246,6 +258,7 @@ const queryCondition = {
   ownershipRemark: "",
   pageNum: 1,
   pageSize: 10,
+  detailAddress:'',
   supportMaterial: ''
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
@@ -373,7 +386,8 @@ export default {
     noDataTips,
     segiIcon,
     EquipmentSelectTree,
-    OverviewNumber
+    OverviewNumber,
+    ProvinceCityDistrict
   },
   data() {
     return {
@@ -405,7 +419,12 @@ export default {
         dataSource: [],
         loading: false,
         totalCount: 0
-      }
+      },
+      provinces: {
+        province: undefined,
+        city: undefined,
+        district: undefined
+      },
     };
   },
   watch: {
@@ -476,6 +495,7 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
+        ...this.provinces,
         flag: "0"
       };
       data.ownershipStatuss = data.ownershipStatuss.join(',')
@@ -666,6 +686,7 @@ export default {
       this.queryCondition.assetTypes = ['']
       this.queryCondition.objectTypes = ['']
       this.queryCondition.shipType = "";
+      this.queryCondition.detailAddress = "";
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
@@ -770,6 +791,30 @@ export default {
     background: #fff;
   }
 }
+.city {
+    float: left;
+    margin-right: 8px;
+    margin-top: 14px;
+    /deep/.ant-col-8 {width: 180px;}
+    /deep/.province_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.city_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.district_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 </style>
 
 <style lang="less">

@@ -97,6 +97,15 @@
               <a-icon type="delete" style="color: #a7adb8; font-size: 15px"/>
               <span style="margin-left: 12px; color: #49505E; font-size: 15px">删除</span>
             </a>
+            <a
+              v-if="String(record.status) === '1'"
+              style="display: block; line-height: 35px"
+              @click="deback(record)"
+              v-power="ASSET_MANAGEMENT.ASSET_IN_ANTIAUDIT"
+            >
+              <a-icon type="audit" style="color: #a7adb8; font-size: 15px"/>
+              <span style="margin-left: 12px; color: #49505E; font-size: 15px">反审批</span>
+            </a>
             <router-link
               v-if="String(record.status) === '2'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_APPROVE"
@@ -270,7 +279,10 @@
           this.exportBtnLoading = false
         })
       },
+      //反审批
+      deback(record){
 
+      },
       // 查询列表数据
       queryTableData ({pageNo = 1, pageLength = 10, type}) {
         const {

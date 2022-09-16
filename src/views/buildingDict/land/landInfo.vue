@@ -74,6 +74,12 @@
             v-model="queryCondition.queryName"
             :style="allStyle"
           />
+          <ProvinceCityDistrict
+          class="city"
+          ref="ProvinceCityDistrict"
+          v-model="provinces"
+        ></ProvinceCityDistrict>
+        <a-input-search v-model="queryCondition.detailAddress" placeholder="请输入地址" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="searchQuery" />
           <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
         </div>
       </div>
@@ -126,6 +132,7 @@
 <script>
 import noDataTips from "@/components/noDataTips";
 import TreeSelect from "@/views/common/treeSelect";
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
 import segiIcon from "@/components/segiIcon.vue";
 import { utils, getFormat } from "@/utils/utils";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
@@ -148,7 +155,8 @@ export default {
     noDataTips,
     segiIcon,
     OperationPopover,
-    landDataImport
+    landDataImport,
+    ProvinceCityDistrict
   },
   data() {
     return {
@@ -172,6 +180,11 @@ export default {
       createPower: false, // 新建
       editPower: false, // 编辑
       deletePower: false, // 删除
+      provinces: {
+        province: undefined,
+        city: undefined,
+        district: undefined
+      },
     };
   },
   watch: {
@@ -198,6 +211,7 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
+        ...this.province,
         communityId: this.queryCondition.communityId.join(","),
       };
       this.table.dataSource = []
@@ -486,5 +500,28 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+.city {
+    float: left;
+    margin-right: 8px;
+    /deep/.ant-col-8 {width: 180px;}
+    /deep/.province_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.city_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.district_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 </style>
 
